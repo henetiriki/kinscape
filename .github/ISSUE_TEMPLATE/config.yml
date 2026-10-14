@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 How we work (start here)
+    url: https://github.com/henetiriki/kinscape/blob/main/docs/how-we-work.md
+    about: The workflow, labels and who does what, in plain language.

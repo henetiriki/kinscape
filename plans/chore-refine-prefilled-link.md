@@ -37,8 +37,8 @@ Same non-goal as before: the skill never posts to GitHub itself. `gh issue creat
 
 | File | New / changed | What |
 |---|---|---|
-| `.claude/skills/refine/intent.md` | changed | *The draft*: build the prefilled link (id table, encoding and length rules, fallback), then print the blocks, then the plain steps (open the link, check the form, press **Submit new issue**). |
-| `.claude/skills/refine/SKILL.md` | changed | "Never touch GitHub on your own": a prefilled link the user opens and submits is allowed; creating or editing issues is still only on request. Description line says "ready to submit via a prefilled link or paste". |
+| `.claude/skills/refine/intent.md` | changed | Opening message describes the link. *The draft*: show the blocks for review, then build the prefilled link (repo and form file looked up, id table, encoder command, encoding and length rules, fallback), then the plain steps (open the link, check the form, press **Submit new issue**). |
+| `.claude/skills/refine/SKILL.md` | changed | "Never touch GitHub on your own": a prefilled link the user opens and submits is allowed; creating or editing issues is still only on request. "Never build anything" allows a command that only formats text. Description line says "(an Intent comes with a prefilled link)". |
 | `docs/how-we-work.md` | changed | "Drafting with Claude": the PO opens the link Claude gives and presses Submit; blocks are the fallback. |
 | `plans/chore-refine-prefilled-link.md` | new | This plan. |
 
@@ -78,4 +78,9 @@ Prefilled links for Specs, `gh issue create` flows, step 6 observability (droppe
 
 ## Deviations
 
-None.
+- SKILL.md description reads "(an Intent comes with a prefilled link)" rather than "ready to submit via a prefilled link or paste": shorter, and the paste route is only a fallback now.
+- After code review: the "How to open" message now describes the link, not copying text (it was missed in the first edit).
+- After code review: the one-line `jq --arg v "$text"` example is replaced by a Python command that builds the whole link from a quoted heredoc and prints its length, with `jq` and PowerShell named as per-box alternatives. Putting the PO's text inside shell quotes let `"`, `$` and backticks change it; the PO's Windows machine may not have `jq`; and the length rule needs the encoded length, not the plain text. Python is suggested, not required: hand encoding stays the fallback, so no new dependency.
+- After code review: the owner, repository and form file are looked up (`git remote`, `.github/ISSUE_TEMPLATE/`) instead of trusted from the example, so a renamed form can't silently open a blank issue.
+- After code review: the blocks are no longer printed twice. The reviewed blocks are the fallback; they are reprinted only if one changed after review.
+- After code review: the skill tells the PO before the encoder asks for permission, and SKILL.md's "Never build anything" now allows a command that only formats text.

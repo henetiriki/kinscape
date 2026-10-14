@@ -28,7 +28,7 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 ## Rules for every mode
 
-- **Never build anything.** No code, no branches, no pull requests, and no edits to repository files. The output is a draft in the conversation.
+- **Never build anything.** No code, no branches, no pull requests, and no edits to repository files. The output is a draft in the conversation. A command that only reads or formats text, such as encoding the Intent link, is fine.
 - **Never touch GitHub on your own.** Print the draft under one heading per form box. In intent mode, also give a prefilled link that opens the form filled in, so the user checks it and submits it themselves. Only if the user asks you to create or change an issue, and has `gh` available, do it, with their confirmation for each issue.
 - **Use the project's words.** The terms in the *Key concepts* table of `docs/requirements.md` (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date, and the rest) mean exactly that. If a new term is needed, don't edit the table: list it as `Proposed term: <name> = <meaning>` under *Open questions*. Changes to the requirements go through an approved Intent.
 - **Cite requirement IDs** (e.g. `MAP-03`) where they apply. Don't invent requirements. If something isn't covered, ask.

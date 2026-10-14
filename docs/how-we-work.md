@@ -36,7 +36,7 @@ Specs and plans share an id: the milestone number plus an index, for example `M0
 
 ## Drafting with Claude
 
-Claude helps with the first two stages through the `/refine` skill in this repository. It asks questions until you agree on what is wanted, then prints a draft for the GitHub issue form. It never files anything or builds anything by itself: you submit the issue yourself. It works best on Claude's Opus model at high effort: if your session isn't set up that way, it warns you at the start. Switch with the model and effort selectors in the Claude app (or `/model opus` and `/effort high` in the terminal).
+Claude helps with the first two stages through the `/refine` skill in this repository. It asks questions until you agree on what is wanted, then prints a draft for the GitHub issue form. It never files anything or builds anything by itself: you submit the issue yourself. It works best on Claude's Opus model at high effort, so **before you start, choose Opus and High effort** in the model and effort selectors in the Claude app (or type `/model opus` and `/effort high` in the terminal). The skill asks for this itself, but the desktop app ignores that, so don't rely on it.
 
 - **PO:** run `/refine intent` and answer the questions in plain language. Claude gives you a link that opens the Intent form already filled in. Check it, change anything you like, and press **Submit new issue**. If the link doesn't work, copy each block of the draft into the box with the same name on **Issues → New issue → Intent**.
 - **Tech lead:** run `/refine spec <Intent number>`. Claude proposes how the Intent is sliced into Specs, then drafts each Spec for **Issues → New issue → Spec**.

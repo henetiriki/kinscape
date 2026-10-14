@@ -54,7 +54,7 @@ gh api -X PATCH "repos/$REPO" \
   -F has_issues=true -F has_wiki=false -F has_projects=false -F has_discussions=false >/dev/null
 
 echo "== Ruleset: Protect main"
-id=$(gh api "repos/$REPO/rulesets" --jq '.[] | select(.name=="Protect main") | .id')
+id=$(gh api "repos/$REPO/rulesets" --jq '[.[] | select(.name=="Protect main") | .id] | first // empty')
 if [ -n "$id" ]; then
   gh api -X PUT "repos/$REPO/rulesets/$id" --input "$DIR/github/ruleset-main.json" >/dev/null
 else

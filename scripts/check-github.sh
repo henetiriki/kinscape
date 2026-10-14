@@ -23,10 +23,12 @@ check "Wiki off"                       "$(r .has_wiki)" "false"
 check "Projects off"                   "$(r .has_projects)" "false"
 check "Discussions off"                "$(r .has_discussions)" "false"
 
-id=$(gh api "repos/$REPO/rulesets" --jq '.[] | select(.name=="Protect main") | .id')
+ids=$(gh api "repos/$REPO/rulesets" --jq '.[] | select(.name=="Protect main") | .id')
+id=$(printf '%s\n' "$ids" | head -n1)
 if [ -z "$id" ]; then
   echo "❌ Ruleset 'Protect main' missing"; fail=1
 else
+  check "Single 'Protect main' ruleset" "$(printf '%s\n' "$ids" | wc -l | tr -d ' ')" "1"
   q() { gh api "repos/$REPO/rulesets/$id" --jq "$1"; }
   pr='.rules[] | select(.type=="pull_request") | .parameters'
   check "Ruleset active"                    "$(q .enforcement)" "active"

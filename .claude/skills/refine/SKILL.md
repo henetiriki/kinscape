@@ -17,11 +17,18 @@ The argument picks the mode. Read the matching file and follow it, together with
 - `spec <number>` → [spec.md](spec.md). For the tech lead. Turns an accepted Intent into Specs.
 - No argument, or anything else: ask which one they want. Don't guess.
 
-## Model check
+## Model check (do this before anything else)
 
-Refining is judgement work, so it should run on Opus at high effort. This skill asks for that, but the request lasts only for the first turn, so check once at the start. Effort for this session: `${CLAUDE_EFFORT}`.
+Refining is judgement work, so it should run on Opus at high effort. The `model` and `effort` lines above ask for that, but the request lasts only for the first turn, and some apps, including the Claude desktop app, ignore it. So don't assume it worked: check, every time you start.
 
-If you are not running on Opus, or the effort above isn't `high`, add one short line at the top of your first message saying so, with the fix: type `/model opus` and `/effort high`. Then carry on. Never block on it, and say it only once. If both are already right, say nothing about it.
+- **Model:** the model you are running on right now.
+- **Effort:** `${CLAUDE_EFFORT}`. If that still shows the literal text, or is empty, treat the effort as unknown.
+
+If you are not on Opus, **or** the effort is not `high` (unknown counts as not high), the first line of your first reply must be this warning, filled in:
+
+> ⚠️ This works best on Opus at high effort, and this session is on **<model>**, effort **<effort or "unknown">**. Switch with the model and effort selectors in the Claude app, or with `/model opus` and `/effort high` in the terminal. You can switch at any point; I'll carry on either way.
+
+Then continue with the first question as normal. Never block on it, and show the warning only once. If the model is Opus and the effort is `high`, say nothing about this.
 
 ## Method
 

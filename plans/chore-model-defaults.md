@@ -69,4 +69,4 @@ Subagent models, an `effortLevel` default, per-model effort in `modelSettings`, 
 
 ## Deviations
 
-None.
+- Test in the Claude desktop app: it started on Sonnet 5.5 at medium effort, ignored the skill's `model` and `effort` frontmatter, and the Model check printed nothing. (The CLI applied the project `opusplan` default as intended.) Rewrote the check in `SKILL.md` as a mandatory first step with a fixed warning line, treated unreadable effort as "unknown, so warn", and pointed to the app's model and effort selectors as well as `/model` and `/effort`. Intent unchanged.

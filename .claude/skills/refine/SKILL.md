@@ -28,7 +28,7 @@ If you are not on Opus, **or** the effort is not `high` (unknown counts as not h
 
 > ⚠️ This works best on Opus at high effort, and this session is on **<model>**, effort **<effort or "unknown">**. Switch with the model and effort selectors in the Claude app, or with `/model opus` and `/effort high` in the terminal. You can switch at any point; I'll carry on either way.
 
-Then continue with the first question as normal. Never block on it, and show the warning only once. If the model is Opus and the effort is `high`, say nothing about this.
+The mode file's opening repeats this step, so it can't be missed: the warning is always the first line of the first reply, before anything else. Then continue with the first question as normal. Never block on it, and show the warning only once. If the model is Opus and the effort is `high`, say nothing about this.
 
 ## Method
 

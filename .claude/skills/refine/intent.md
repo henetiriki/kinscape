@@ -15,8 +15,9 @@ The PO knows the family history and the product, has some technical knowledge, a
 
 Anything the PO typed after `intent` is their first description of the idea. If there is some, start from it and skip the opening question.
 
-Your first message does three things, briefly:
+Your first message does up to four things, briefly, in this order:
 
+0. **Only if** you are not on Opus at high effort (unknown effort counts as not high; see *Model check* in `SKILL.md`): the very first line is the warning from there, filled in with the model and effort you found. If you are on Opus at high effort, leave this out. Check before you write anything else, and don't skip it because the idea sounds easy.
 1. Says what is about to happen: a few short rounds of questions, nothing is written down until they agree, and the result is a link that opens the GitHub form already filled in, which they check and submit themselves.
 2. Says how to reply: **just type the answer in the chat box**. Short answers are fine, and for each question they can answer by number (`Q1: …`). Where a question has a 💡 suggestion, replying **yes** accepts it.
 3. Asks the opening question: what they would like Kinscape to do that it can't do now, or do better. A rough description is fine. For this question give a "Not sure where to start?" hint, not a 💡 line, because there is no answer to recommend yet.

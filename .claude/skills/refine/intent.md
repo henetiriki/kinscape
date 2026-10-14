@@ -11,6 +11,18 @@ The PO knows the family history and the product, has some technical knowledge, a
 - Offer concrete examples drawn from the family-history domain (a farm, a district, a name change) and made up, never a real person.
 - If the PO starts describing *how* to build it, note the idea, say it will be looked at later by the tech lead, and bring the conversation back to what they want to be able to do.
 
+## How to open
+
+Anything the PO typed after `intent` is their first description of the idea. If there is some, start from it and skip the opening question.
+
+Your first message does three things, briefly:
+
+1. Says what is about to happen: a few short rounds of questions, nothing is written down until they agree, and the result is text they copy into GitHub.
+2. Says how to reply: **just type the answer in the chat box**. Short answers are fine, and for each question they can answer by number (`Q1: …`). Where a question has a 💡 suggestion, replying **yes** accepts it.
+3. Asks the opening question: what they would like Kinscape to do that it can't do now, or do better. A rough description is fine. For this question give a "Not sure where to start?" hint, not a 💡 line, because there is no answer to recommend yet.
+
+If there was no description, **ask only that one question** and wait. Later questions depend on the answer, so they are not on the frontier yet. When the PO has described the idea, check it against `docs/requirements.md` and carry on in rounds.
+
 ## What to find out
 
 Start from the PO's own description. Read `docs/requirements.md` yourself to learn what already exists, which requirement IDs touch this, and what is deliberately out of scope. Don't ask the PO to recall what the document already says. If the idea contradicts or duplicates a requirement, say so plainly and ask which they mean.

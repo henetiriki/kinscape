@@ -2,7 +2,7 @@
 name: refine
 description: Interview the user until both sides share an understanding, then draft a Kinscape Intent or Spec ready to paste into the GitHub issue form. Use `/refine intent` (product owner) or `/refine spec <intent issue number>` (tech lead).
 disable-model-invocation: true
-argument-hint: intent | spec <intent issue number>
+argument-hint: intent [your idea] | spec <intent issue number>
 ---
 
 # Refine
@@ -11,7 +11,7 @@ Questions first, drafting last. The goal is that the user and you agree on what 
 
 The argument picks the mode. Read the matching file and follow it, together with the method below:
 
-- `intent` → [intent.md](intent.md). For the product owner (PO). Plain language only.
+- `intent [idea]` → [intent.md](intent.md). For the product owner (PO). Plain language only. Any text after `intent` is the PO's first description of the idea.
 - `spec <number>` → [spec.md](spec.md). For the tech lead. Turns an accepted Intent into Specs.
 - No argument, or anything else: ask which one they want. Don't guess.
 
@@ -19,7 +19,7 @@ The argument picks the mode. Read the matching file and follow it, together with
 
 Treat the topic as a **design tree**: every decision opens smaller decisions beneath it. Work in **rounds**.
 
-1. **Find the frontier.** The frontier is every open question whose inputs are already settled. Put the whole frontier to the user in one round, then stop and wait.
+1. **Find the frontier.** The frontier is every open question whose inputs are already settled. A question that depends on an answer you don't have yet is not on it. Put the whole frontier to the user in one round, then stop and wait. Tell the user how to reply (type in the chat; "yes" accepts a 💡 suggestion).
 2. **Number each question** (Q1, Q2, …). Give each a short title and a body, with options where there are real alternatives. End each with a 💡 line stating the answer you recommend, worded so a plain "yes" accepts it.
 3. **Redraw the tree** from the answers. New decisions may appear, and some may disappear. Build the next frontier from what is now open.
 4. **Look facts up, don't ask.** If a question depends on something you can check, such as `docs/requirements.md`, an existing issue, or a file in the repo, check it yourself. Ask only about decisions, which belong to the user. While a lookup is pending, leave the questions that depend on it for the next round and ask the rest.

@@ -73,4 +73,4 @@ Observability and the agent-report section (step 6), PO onboarding and their mul
 
 ## Deviations
 
-None.
+- Dry run of `/refine intent` showed the opening gave no instructions on how to reply and asked a dependent question too early. Added a "How to open" section to `intent.md`, a frontier note to `SKILL.md`, and an optional idea after `intent` (`argument-hint: intent [your idea] | spec <intent issue number>`). Behaviour and files are as planned.

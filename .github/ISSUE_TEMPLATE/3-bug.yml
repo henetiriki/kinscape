@@ -1,0 +1,23 @@
+name: 🐞 Something's wrong
+description: Report something that doesn't work the way it should.
+title: "Bug: "
+labels: ["type: bug", "status: ready-for-dev"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, and what did you see? Screenshots are very welcome. Paste or drag them in.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where?
+      description: The link you were on (copy it from the address bar), and your device or browser if relevant.

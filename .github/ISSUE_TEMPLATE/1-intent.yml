@@ -1,0 +1,51 @@
+name: 💡 Intent
+description: Describe something you want Kinscape to do, in your own words. No technical language needed.
+title: "Intent: "
+labels: ["type: intent", "status: draft"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        An **intent** says *what* you want and *why*. It doesn't say *how*.
+        Write it the way you'd explain it to a friend. Claude can help you draft it, and will turn it into a Spec once you accept it.
+        When you're happy with it, swap the label `status: draft` for `status: ready-for-dev`.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What can't you do today, or what's frustrating? Who is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: What better looks like
+      description: If this were done, what would you be able to do? A short example helps.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: How we'll know it works
+      description: One or more checks in the form "Given …, when I …, then I see …".
+      placeholder: "Given map date 1875, when I click on Kimberley, then the panel shows Griqualand West."
+  - type: input
+    id: requirements
+    attributes:
+      label: Related requirement IDs (optional)
+      description: IDs from docs/requirements.md, if you know them, e.g. MAP-03, PIN-01
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: Anything that must or must not happen (privacy, cost, devices, deadlines).
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What this intent deliberately does *not* include.
+  - type: textarea
+    id: questions
+    attributes:
+      label: Open questions
+      description: Things you're unsure about. Leaving questions here is fine; it's better than guessing.

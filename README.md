@@ -1,0 +1,14 @@
+# Kinscape
+
+A time-travelling landscape for your kin. Drag the slider from 1652 to today and watch colonies, republics and provinces come and go, while great-great-oupa stays put on the family farm.
+
+> Borders move. Farms don't.
+
+## Where things are
+
+- **[How we work](docs/how-we-work.md)**: the workflow, labels and who does what. Start here.
+- **[Requirements](docs/requirements.md)**: the baseline, with requirement IDs.
+- **[Issues](https://github.com/henetiriki/kinscape/issues)**: Intents, Specs and bugs.
+- **[CLAUDE.md](CLAUDE.md)**: what Claude reads at the start of every session.
+
+Built as an experiment in the [AI-native SDLC](https://claude.com/resources/articles/the-ai-native-sdlc-playbook).

@@ -1,0 +1,60 @@
+name: 📐 Spec
+description: Requirements and design for an accepted Intent. Drafted by Claude, approved by the PO.
+title: "Spec: "
+labels: ["type: spec", "status: draft"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A **spec** turns an accepted Intent into something the build can be planned against.
+        Claude drafts it and sets `status: ready-for-po`. The PO reads the **Flagged concerns** first, then approves by setting `status: ready-for-dev`.
+  - type: input
+    id: intent
+    attributes:
+      label: Intent
+      description: The Intent issue this spec answers, e.g. #12
+    validations:
+      required: true
+  - type: input
+    id: requirements
+    attributes:
+      label: Requirement IDs covered
+      description: e.g. MAP-01, MAP-02, NFR-01
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: In plain language, what will be built.
+    validations:
+      required: true
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Behaviour and UX
+      description: What the user sees and does, screen by screen or step by step.
+  - type: textarea
+    id: design
+    attributes:
+      label: Technical design
+      description: Components, API endpoints, data model changes, and libraries chosen and why.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance checks
+      description: Testable Given/When/Then checks. Each one becomes an automated test where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: concerns
+    attributes:
+      label: ⚠️ Flagged concerns
+      description: Risks, conflicting requirements and decisions the PO must make before build. Write "None" if there are none.
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope / carried forward
+      description: Open questions from the Intent that this spec does not answer, and where they go next.

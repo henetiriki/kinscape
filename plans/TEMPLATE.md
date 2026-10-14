@@ -1,9 +1,9 @@
-# Plan: <milestone or change name>
+# Plan: <spec-id>: <name>
 
 <!--
-Copy to plans/<milestone>.md (e.g. plans/M0-foundations.md).
+One plan per Spec. Copy to plans/<spec-id>-<slug>.md (e.g. plans/M0.1-hello-vercel.md).
 The approved version is the FIRST commit on the branch, with a message like:
-  plan(M0): approved by @<tech-lead>
+  plan(M0.1): approved by @<tech-lead>
 Don't edit the sections above "Deviations" after approval. Record departures there instead (see AGENTS.md › Plans).
 -->
 

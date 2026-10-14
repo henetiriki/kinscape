@@ -3,6 +3,8 @@ name: refine
 description: Interview the user until both sides share an understanding, then draft a Kinscape Intent or Spec for the GitHub issue form (an Intent comes with a prefilled link). Use `/refine intent` (product owner) or `/refine spec <intent issue number>` (tech lead).
 disable-model-invocation: true
 argument-hint: intent [your idea] | spec <intent issue number>
+model: opus
+effort: high
 ---
 
 # Refine
@@ -14,6 +16,12 @@ The argument picks the mode. Read the matching file and follow it, together with
 - `intent [idea]` → [intent.md](intent.md). For the product owner (PO). Plain language only. Any text after `intent` is the PO's first description of the idea.
 - `spec <number>` → [spec.md](spec.md). For the tech lead. Turns an accepted Intent into Specs.
 - No argument, or anything else: ask which one they want. Don't guess.
+
+## Model check
+
+Refining is judgement work, so it should run on Opus at high effort. This skill asks for that, but the request lasts only for the first turn, so check once at the start. Effort for this session: `${CLAUDE_EFFORT}`.
+
+If you are not running on Opus, or the effort above isn't `high`, add one short line at the top of your first message saying so, with the fix: type `/model opus` and `/effort high`. Then carry on. Never block on it, and say it only once. If both are already right, say nothing about it.
 
 ## Method
 

@@ -7,6 +7,7 @@ Closes #<!-- spec issue -->
 - **Intent:** #
 - **Requirement IDs:** <!-- e.g. MAP-01, MAP-03 -->
 - **Plan:** <!-- link to plans/<milestone>.md in this PR -->
+- **Deviations from the approved plan:** <!-- "None", or see the plan's Deviations section -->
 
 ## Acceptance checks
 

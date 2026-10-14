@@ -14,7 +14,7 @@ Intent ──► Spec ──► Plan ──► Build & Test ──► Preview �
 |---|---|---|---|
 | **Plan** | The PO describes what they want, optionally drafting it with Claude | Intent issue | PO accepts the Intent |
 | **Design** | Claude turns the Intent into a Spec and flags anything that needs a decision | Spec issue | PO approves the Spec |
-| **Build** | Claude writes an implementation plan, then the code and tests | Pull request | Tech lead approves the plan |
+| **Build** | Claude writes an implementation plan, the tech lead approves it, then Claude writes the code and tests. Small departures are logged in the plan; big ones go back for re-approval | Pull request (`plans/`) | Tech lead approves the plan |
 | **Test** | Automated checks run on every change; Claude only reports done when they pass | Pull request checks | Tech lead reviews |
 | **Deploy** | Every pull request gets a preview link. The PO tries it against the acceptance checks | Preview link in the PR | PO says "looks right", tech lead merges |
 | **Maintain** | Problems and new ideas are filed as issues and feed the next Intent | Bug / Intent issue | PO prioritises |
@@ -41,7 +41,7 @@ To change a label: open the issue, click the ⚙️ next to **Labels** on the ri
 | | Does | Approves | Doesn't |
 |---|---|---|---|
 | **Product owner** | Writes and corrects Intents, answers questions, tries previews, reports bugs | Intents, Specs, "the preview does what I asked" | Touch code |
-| **Tech lead** | Interrogates plans, reviews pull requests, owns settings and secrets | Plans, merges, production releases, changes to `CLAUDE.md` | Hand-write routine code |
+| **Tech lead** | Interrogates plans, reviews pull requests, owns settings and secrets | Plans, merges, production releases, changes to `AGENTS.md` / `CLAUDE.md` | Hand-write routine code |
 | **Claude** | Drafts Intents and Specs, plans, builds, tests, reviews, fixes review comments | Nothing | Merge to `main`, release to production, approve its own work |
 
 ## Milestones

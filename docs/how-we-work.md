@@ -34,6 +34,13 @@ Specs and plans share an id: the milestone number plus an index, for example `M0
 | Change tooling, CI, docs, process or settings | No issue: a `chore:` pull request | Tech lead | n/a |
 | Change [the requirements](requirements.md) | **Intent** (the only route) | PO | `status: ready-for-po` |
 
+## Drafting with Claude
+
+Claude helps with the first two stages through the `/refine` skill in this repository. It asks questions until you agree on what is wanted, then prints a draft you paste into the GitHub issue form. It never files anything or builds anything by itself.
+
+- **PO:** run `/refine intent` and answer the questions in plain language. Copy each block of the draft into the box with the same name on **Issues → New issue → Intent**.
+- **Tech lead:** run `/refine spec <Intent number>`. Claude proposes how the Intent is sliced into Specs, then drafts each Spec for **Issues → New issue → Spec**.
+
 ## Data rules
 
 - **No real people's data** in the repo, issues or pull requests. Examples and test data are made up. Living people never appear (POPIA).

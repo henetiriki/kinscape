@@ -40,7 +40,7 @@ Anything about the cost, the technology, the number of steps or the order of wor
 
 ## The draft
 
-When everything is confirmed, show the draft under **one heading per box of the GitHub form**, in this order, so the PO can copy each block into its box. Use the PO's wording where you can.
+When everything is confirmed, first show the draft under **one heading per box of the GitHub form**, in this order. Use the PO's wording where you can. Let the PO adjust any block before you build the link.
 
 > **Title** (starts with "Intent: ")
 >
@@ -58,10 +58,39 @@ When everything is confirmed, show the draft under **one heading per box of the 
 >
 > **Open questions** (include any `Proposed term: <name> = <meaning>` lines here)
 
+### The prefilled link
+
+Once the PO is happy with the blocks, give them **one link** that opens the GitHub Intent form with every box already filled in. GitHub fills a form from the link when it carries `template=` and one parameter per box, named by the box's id:
+
+```
+https://github.com/henetiriki/kinscape/issues/new?template=1-intent.yml&title=…&problem=…&outcome=…&acceptance=…&requirements=…&constraints=…&out-of-scope=…&questions=…
+```
+
+| Box | Parameter |
+|---|---|
+| Title | `title` |
+| Problem | `problem` |
+| What better looks like | `outcome` |
+| How we'll know it works | `acceptance` |
+| Related requirement IDs | `requirements` |
+| Constraints | `constraints` |
+| Out of scope | `out-of-scope` |
+| Open questions | `questions` |
+
+Check the ids against `.github/ISSUE_TEMPLATE/1-intent.yml` before you build the link. If the form has changed, follow the form.
+
+- **Percent-encode every value**: space `%20`, line break `%0A`, `&` `%26`, `#` `%23`, `%` `%25`, `+` `%2B`, and quotes and non-English letters too. A stray `&` or `#` would cut a box short. If a shell is handy, let it do the encoding (for example `jq -rn --arg v "$text" '$v|@uri'`); otherwise encode carefully and re-read the link before showing it.
+- **Leave out** a parameter whose box is empty.
+- **Keep it short enough.** If the finished link is longer than about 6,000 characters, don't give it, say why, and use the blocks only.
+- **Re-check the data rules** before building it: no real people's data, no secrets. The text ends up in the web address, so it must be safe to show.
+- Show the link as a normal clickable link, and **always print the blocks as well**, in case the link doesn't open or gets cut off when it wraps.
+- Never create the issue yourself. The PO submits it, so it carries their name.
+
 Then tell the PO, in plain steps:
 
-1. On GitHub, open the repository, choose **Issues → New issue → Intent → Get started**.
-2. Copy each block above into the box with the same name, and give the issue the title shown.
-3. Press **Submit new issue**. The Intent starts as `status: draft`. When they are happy with it, they change the label to `status: ready-for-dev`, as the form explains.
+1. Open the link. GitHub shows the Intent form with everything filled in. If it asks you to sign in, do that and open the link again.
+2. Read through it and change anything you like.
+3. Press **Submit new issue**. The Intent starts as `status: draft`. When you are happy with it, change the label to `status: ready-for-dev`, as the form explains.
+4. If the link didn't work: go to **Issues → New issue → Intent → Get started** and copy each block above into the box with the same name.
 
-Offer to adjust any block before they paste it. Don't start on a Spec. That is the tech lead's step.
+Don't start on a Spec. That is the tech lead's step.

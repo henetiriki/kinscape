@@ -20,7 +20,7 @@ The argument picks the mode. Read the matching file and follow it, together with
 Treat the topic as a **design tree**: every decision opens smaller decisions beneath it. Work in **rounds**.
 
 1. **Find the frontier.** The frontier is every open question whose inputs are already settled. A question that depends on an answer you don't have yet is not on it. Put the whole frontier to the user in one round, then stop and wait. Tell the user how to reply (type in the chat; "yes" accepts a 💡 suggestion).
-2. **Number each question** (Q1, Q2, …). Give each a short title and a body, with options where there are real alternatives. End each with a 💡 line stating the answer you recommend, worded so a plain "yes" accepts it.
+2. **Number each question** (Q1, Q2, …), and keep counting across rounds for the whole session. Never restart at Q1, so an answer by number is always unambiguous. Give each a short title and a body, with options where there are real alternatives. End each with a 💡 line stating the answer you recommend, worded so a plain "yes" accepts it.
 3. **Redraw the tree** from the answers. New decisions may appear, and some may disappear. Build the next frontier from what is now open.
 4. **Look facts up, don't ask.** If a question depends on something you can check, such as `docs/requirements.md`, an existing issue, or a file in the repo, check it yourself. Ask only about decisions, which belong to the user. While a lookup is pending, leave the questions that depend on it for the next round and ask the rest.
 5. **A recommendation is not an answer.** Until the user confirms it, a branch stays open. Never fill a gap silently. If a question comes up later, while drafting, come back and ask it.

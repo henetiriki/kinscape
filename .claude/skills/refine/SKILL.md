@@ -3,6 +3,8 @@ name: refine
 description: Interview the user until both sides share an understanding, then draft a Kinscape Intent or Spec for the GitHub issue form (an Intent comes with a prefilled link). Use `/refine intent` (product owner) or `/refine spec <intent issue number>` (tech lead).
 disable-model-invocation: true
 argument-hint: intent [your idea] | spec <intent issue number>
+model: opus
+effort: high
 ---
 
 # Refine

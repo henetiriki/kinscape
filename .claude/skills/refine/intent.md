@@ -44,10 +44,10 @@ Then give **one link** that opens the form filled in.
 
 - Re-check the data rules first.
 - Tell the PO the command you'll ask to run only turns their text into a link.
-- Run [intent-link.mjs](intent-link.mjs) with each box after a `=== <id>` line, in a quoted heredoc, never in quotes on the command line:
+- Run [intent-link.mjs](scripts/intent-link.mjs) with each box after a `=== <id>` line, in a quoted heredoc, never in quotes on the command line:
 
   ```
-  node .claude/skills/refine/intent-link.mjs <<'EOF'
+  node .claude/skills/refine/scripts/intent-link.mjs <<'EOF'
   === title
   Intent: …
   === problem

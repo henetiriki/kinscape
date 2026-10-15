@@ -2,7 +2,7 @@
 //
 // Usage, with each box's text after a `=== <id>` line:
 //
-//   node .claude/skills/refine/intent-link.mjs <<'EOF'
+//   node .claude/skills/refine/scripts/intent-link.mjs <<'EOF'
 //   === title
 //   Intent: ...
 //   === problem
@@ -17,7 +17,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
 const form = path.join(root, ".github", "ISSUE_TEMPLATE", "1-intent.yml");
 const maxLength = 6000;
 

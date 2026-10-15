@@ -40,32 +40,22 @@ Show one block per form box, in the PO's wording, and let them adjust it. In ord
 
 ## The prefilled link
 
-Then give **one link** that opens the form filled in. Get the owner and repository from `git remote get-url origin`, and the form file from `.github/ISSUE_TEMPLATE/`.
+Then give **one link** that opens the form filled in.
 
+- Re-check the data rules first.
 - Tell the PO the command you'll ask to run only turns their text into a link.
-- Build it with this command. Put each box after a `=== <id>` line in the quoted heredoc, never in quotes on the command line:
+- Run [intent-link.mjs](intent-link.mjs) with each box after a `=== <id>` line, in a quoted heredoc, never in quotes on the command line:
 
   ```
-  python3 -c '
-  import sys, urllib.parse
-  boxes, key = {}, None
-  for line in sys.stdin.read().splitlines():
-      if line.startswith("=== "):
-          key = line[4:].strip(); boxes[key] = []
-      elif key:
-          boxes[key].append(line)
-  url = sys.argv[1] + "".join("&" + k + "=" + urllib.parse.quote("\n".join(v).strip(), safe="")
-      for k, v in boxes.items() if "\n".join(v).strip())
-  print(url); print(len(url), "characters")
-  ' "https://github.com/<owner>/<repo>/issues/new?template=<form file>" <<'EOF'
+  node .claude/skills/refine/intent-link.mjs <<'EOF'
   === title
   Intent: …
+  === problem
+  …
   EOF
   ```
 
-- Without Python, encode by hand and re-read the link.
-- Over about 6,000 characters: give no link, say why, and use the blocks.
-- Re-check the data rules first.
+- If it fails, or Node isn't available, give no link, say why, and use the blocks.
 - The blocks are the fallback; reprint them only if one changed.
 
 Then tell the PO:

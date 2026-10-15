@@ -1,6 +1,6 @@
 {
-  "name": "Kinscape",
-  "short_name": "Kinscape",
+  "name": "KinScape",
+  "short_name": "KinScape",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

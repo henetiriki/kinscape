@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Kinscape",
+  title: "KinScape",
   description: "A map of South Africa from 1652 to today.",
   // NFR-03: nothing is indexed by search engines.
   robots: { index: false, follow: false },

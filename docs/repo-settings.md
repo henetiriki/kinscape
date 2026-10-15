@@ -24,6 +24,17 @@ GitHub settings live outside git, so we keep them **as code** instead:
 | Dependabot alerts and security fixes | On | Free on private repos |
 | Actions token | Read-only; can't approve PRs | Least privilege; an agent's workflow can't approve its own PR |
 
+## Vercel
+
+Vercel has no settings-as-code here: the tech lead sets these by hand in the Vercel dashboard, and nothing checks for drift. Update this table in the same PR as any change.
+
+| Setting | Value | Why |
+|---|---|---|
+| Project | `kinscape`, Hobby plan, Git repo `henetiriki/kinscape` | Every PR gets a preview; every merge to `main` deploys production |
+| Production branch | `main` | Production only changes through a merged PR |
+| Framework, Node | Next.js; Node 24.x (from `package.json` `engines`) | Matches local development |
+| Vercel Authentication | Standard Protection: previews need a Vercel sign-in, production is public | Previews stay private; production is empty until sign-in (NFR-03) arrives in M2 |
+
 ## Accounts and access
 
 | Who | Access | Notes |

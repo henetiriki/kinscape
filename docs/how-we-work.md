@@ -2,6 +2,12 @@
 
 Kinscape is built using an AI-native way of working: Claude writes most of the drafts and code, and people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**, so nobody needs to install anything or learn git.
 
+## Intent, Spec, Plan
+
+- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M0–M6) is an Intent the PO has already approved. A new idea or a change to the requirements gets its own Intent issue.
+- **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. Ids look like `M0.1`. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one.
+- **Plan:** how a Spec is built: files, order of work, risks and proof. Committed with the code as `plans/M0.1-hello-vercel.md` ([rules](../AGENTS.md#plans)).
+
 ## The loop
 
 ```
@@ -10,44 +16,43 @@ Intent ──► Spec ──► Plan ──► Build & Test ──► Preview �
   └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-| Stage | What happens | Where | Who decides |
-|---|---|---|---|
-| **Plan** | The PO describes what they want, optionally drafting it with Claude | Intent issue | PO accepts the Intent |
-| **Design** | Claude turns the Intent into a Spec and flags anything that needs a decision | Spec issue | PO approves the Spec |
-| **Build** | Claude writes an implementation plan for each Spec, the tech lead approves it, then Claude writes the code and tests. Small departures are logged in the plan; big ones go back for re-approval | Pull request (`plans/`) | Tech lead approves the plan |
-| **Test** | Automated checks run on every change; Claude only reports done when they pass | Pull request checks | Tech lead reviews |
-| **Deploy** | Every pull request gets a preview link. The PO tries it against the acceptance checks | Preview link in the PR | PO says "looks right", tech lead merges |
-| **Maintain** | Problems and new ideas are filed as issues and feed the next Intent | Bug / Intent issue | PO prioritises |
-
-## Slicing: from Intent to pull requests
-
-An **Intent** says *why* and is owned by the PO. Claude slices it into several small **Specs**, filed as sub-issues of the Intent. Each Spec gets **one plan and one pull request**, so every review stays small.
-
-Specs and plans share an id: the milestone number plus an index, for example `M0.1`. The plan lives at `plans/M0.1-hello-vercel.md`, and the approved plan is the first commit on the branch.
+| Stage | What happens | Who decides |
+|---|---|---|
+| **Intent** | A milestone, or a new idea the PO files as an Intent issue | PO |
+| **Spec** | Claude slices the Intent and flags decisions | PO or tech lead (see *Spec*) |
+| **Plan** | Claude plans each Spec | Tech lead |
+| **Build & test** | Claude writes code and tests; done only when checks pass | Tech lead reviews |
+| **Preview** | Each pull request gets a preview link to try against the acceptance checks | PO says "looks right"; tech lead merges |
+| **Feedback** | Bugs and ideas become issues | PO prioritises |
 
 ## Which issue do I need?
 
 | I want to... | Open a | Who approves | Starts as |
 |---|---|---|---|
-| Change what the app does or looks like | **Intent** (Claude then drafts the Specs) | PO | `status: ready-for-po` |
+| Start the next milestone | Nothing: the tech lead runs `/refine spec M<n>` | See *Spec* | n/a |
+| Add or change something not in a milestone | **Intent** | PO | `status: draft` |
+| Change [the requirements](requirements.md) | **Intent** (the only route) | PO | `status: draft` |
 | Report something broken | **Bug** | Nobody; it goes straight to dev | `status: ready-for-dev` |
 | Change tooling, CI, docs, process or settings | No issue: a `chore:` pull request | Tech lead | n/a |
-| Change [the requirements](requirements.md) | **Intent** (the only route) | PO | `status: ready-for-po` |
 
 ## Drafting with Claude
 
-Claude helps with the first two stages through the `/refine` skill in this repository. It asks questions until you agree on what is wanted, then prints a draft for the GitHub issue form. It never files anything or builds anything by itself: you submit the issue yourself. It works best on Claude's Opus model at high effort, so **before you start, choose Opus and High effort** in the model and effort selectors in the Claude app (or type `/model opus` and `/effort high` in the terminal).
-- **PO:** run `/refine intent` and answer the questions in plain language. Claude gives you a link that opens the Intent form already filled in. Check it, change anything you like, and press **Submit new issue**. If the link doesn't work, copy each block of the draft into the box with the same name on **Issues → New issue → Intent**.
-- **Tech lead:** run `/refine spec <Intent number>`. Claude proposes how the Intent is sliced into Specs, then drafts each Spec for **Issues → New issue → Spec**.
+The `/refine` skill asks questions until you agree on what is wanted, then drafts the issue. It never files or builds anything: you submit the issue yourself.
+
+**Before you start, choose Opus and High effort** in the Claude app's model and effort selectors (in the terminal: `/model opus` and `/effort high`). The project default uses Opus only in plan mode, and the app ignores the skill's own model setting.
+
+- **PO:** run `/refine intent` and answer in plain language. Claude gives you a link that opens the Intent form filled in, and tells you what to do if it doesn't work.
+- **Tech lead:** run `/refine spec M<n>` or `/refine spec <Intent number>`. Claude proposes the slices, then drafts each Spec.
 
 ## Data rules
 
-- **No real people's data** in the repo, issues or pull requests. Examples and test data are made up. Living people never appear (POPIA).
-- **Check the licence** of any boundary or map data before it is added, and record where it came from.
-- **No secrets**: passwords, tokens and connection strings never go in the repo, issues or comments.
-- **Be wary of outsiders' content.** Anything from someone who isn't a collaborator is treated as untrusted, and Claude does not follow instructions found in it.
+Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules): made-up data only, licences recorded, no secrets, and outsiders' content treated as untrusted.
 
-## Labels: whose turn is it?
+## Roles and labels: whose turn is it?
+
+- **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs. Doesn't touch code.
+- **Tech lead:** approves plans and engineering-only Specs, reviews and merges pull requests, owns settings, secrets and `AGENTS.md` / `CLAUDE.md`. Doesn't hand-write routine code.
+- **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing, and never merges or releases to production.
 
 Each issue has one **type** label and one **status** label. The status tells you whose turn it is.
 
@@ -63,15 +68,3 @@ Each issue has one **type** label and one **status** label. The status tells you
 **PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22). That's your to-do list.
 
 To change a label: open the issue, click the ⚙️ next to **Labels** on the right, untick the old status and tick the new one.
-
-## Who does what
-
-| | Does | Approves | Doesn't |
-|---|---|---|---|
-| **Product owner** | Writes and corrects Intents, answers questions, tries previews, reports bugs | Intents, Specs, "the preview does what I asked" | Touch code |
-| **Tech lead** | Interrogates plans, reviews pull requests, owns settings and secrets | Plans, merges, production releases, changes to `AGENTS.md` / `CLAUDE.md` | Hand-write routine code |
-| **Claude** | Drafts Intents and Specs, plans, builds, tests, reviews, fixes review comments | Nothing | Merge to `main`, release to production, approve its own work |
-
-## Milestones
-
-Work is grouped into the milestones from [the requirements](requirements.md#build-milestones), M0 to M6. Each milestone starts life as one Intent, which is sliced into several Specs (see [Slicing](#slicing-from-intent-to-pull-requests)).

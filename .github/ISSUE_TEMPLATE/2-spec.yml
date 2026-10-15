@@ -1,18 +1,18 @@
 name: 📐 Spec
-description: Requirements and design for an accepted Intent. Drafted by Claude, approved by the PO.
+description: One slice of a milestone or an accepted Intent. Drafted by Claude, approved by the PO or the tech lead.
 title: "Spec: "
 labels: ["type: spec", "status: draft"]
 body:
   - type: markdown
     attributes:
       value: |
-        A **spec** turns an accepted Intent into something the build can be planned against.
-        Claude drafts it and sets `status: ready-for-po`. The PO reads the **Flagged concerns** first, then approves by setting `status: ready-for-dev`.
+        A **spec** says what one slice of a milestone or Intent will change, and how we'll know it works. How it's built goes in the plan.
+        If it changes what the user sees, set `status: ready-for-po`: the PO reads the **Flagged concerns** first, then approves by setting `status: ready-for-dev`. If it is engineering-only, the tech lead approves by setting `status: ready-for-dev`.
   - type: input
     id: intent
     attributes:
-      label: Intent
-      description: The Intent issue this spec answers, e.g. #12
+      label: Intent or milestone
+      description: The Intent issue or milestone this spec slices, e.g. #12 or M0
     validations:
       required: true
   - type: input
@@ -26,7 +26,7 @@ body:
     id: summary
     attributes:
       label: Summary
-      description: In plain language, what will be built.
+      description: In plain language, what will change.
     validations:
       required: true
   - type: textarea
@@ -34,11 +34,6 @@ body:
     attributes:
       label: Behaviour and UX
       description: What the user sees and does, screen by screen or step by step.
-  - type: textarea
-    id: design
-    attributes:
-      label: Technical design
-      description: Components, API endpoints, data model changes, and libraries chosen and why.
   - type: textarea
     id: acceptance
     attributes:
@@ -50,7 +45,7 @@ body:
     id: concerns
     attributes:
       label: ⚠️ Flagged concerns
-      description: Risks, conflicting requirements and decisions the PO must make before build. Write "None" if there are none.
+      description: Risks, conflicting requirements, hard-to-reverse choices and decisions the approver must make before build. Write "None" if there are none.
     validations:
       required: true
   - type: textarea

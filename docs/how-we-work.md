@@ -44,9 +44,13 @@ The `/refine` skill asks questions until you agree on what is wanted, then draft
 - **PO:** run `/refine intent` and answer in plain language. Claude gives you a link that opens the Intent form filled in, and tells you what to do if it doesn't work.
 - **Tech lead:** run `/refine spec M<n>` or `/refine spec <Intent number>`. Claude proposes the slices, then drafts each Spec.
 
+## Building a Spec
+
+For a `status: ready-for-dev` Spec, the tech lead starts a new session in plan mode and says `Pick up Spec M0.1 (#<issue>)`. Accepting the plan approves it; Claude then builds and opens the pull request.
+
 ## Data rules
 
-Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules): made-up data only, licences recorded, no secrets, and outsiders' content treated as untrusted.
+Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules).
 
 ## Roles and labels: whose turn is it?
 
@@ -59,12 +63,12 @@ Each issue has one **type** label and one **status** label. The status tells you
 | Label | Meaning | Ball is with |
 |---|---|---|
 | `status: draft` | Still being written | Author |
-| `status: ready-for-po` | Needs the PO to read, answer or approve | **PO** |
+| `status: ready-for-po` | Needs the PO to read, answer, approve or try a preview | **PO** |
 | `status: ready-for-dev` | Approved; can be picked up | Tech lead / Claude |
-| `status: in-progress` | Being worked on | Tech lead / Claude |
-| `status: in-review` | A pull request is open; try the preview | **PO** + tech lead |
 | `status: blocked` | Waiting on something outside the team | Whoever is named in the latest comment |
+
+An issue being built shows its pull request under **Development**.
 
 **PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22). That's your to-do list.
 
-To change a label: open the issue, click the ⚙️ next to **Labels** on the right, untick the old status and tick the new one.
+To change a label: open the issue, click ⚙️ beside **Labels**, untick the old status and tick the new one.

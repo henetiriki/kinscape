@@ -1,24 +1,24 @@
-// Prints a link that opens the GitHub Intent form with every box filled in.
+// Prints a link that opens a GitHub issue form with every box filled in.
 //
-// Usage, with each box's text after a `=== <id>` line:
+// Usage: name the form, then give each box's text after a `=== <id>` line:
 //
-//   node .claude/skills/refine/scripts/intent-link.mjs <<'EOF'
+//   node .claude/skills/refine/scripts/form-link.mjs 2-spec.yml <<'EOF'
 //   === title
-//   Intent: ...
-//   === problem
+//   Spec: ...
+//   === summary
 //   ...
 //   EOF
 //
-// Exits non-zero, with the reason, if a box id isn't on the form or the link
-// is too long for GitHub. Then the PO uses the blocks instead.
+// Exits non-zero, with the reason, if the form doesn't exist, a box id isn't
+// on the form, or the link is too long for GitHub. Then use the blocks instead.
 
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../..");
-const form = path.join(root, ".github", "ISSUE_TEMPLATE", "1-intent.yml");
+const forms = path.join(root, ".github", "ISSUE_TEMPLATE");
 const maxLength = 6000;
 
 function fail(message) {
@@ -49,6 +49,13 @@ function readBoxes(text) {
     .filter(([, value]) => value);
 }
 
+const formName = process.argv[2];
+const available = readdirSync(forms).filter((name) => name.endsWith(".yml") && name !== "config.yml");
+if (!formName || path.basename(formName) !== formName || !existsSync(path.join(forms, formName))) {
+  fail(`name a form: ${available.join(", ")}`);
+}
+const form = path.join(forms, formName);
+
 const ids = new Set([...readFileSync(form, "utf8").matchAll(/^\s+id:\s*(\S+)/gm)].map((match) => match[1]));
 ids.add("title");
 
@@ -57,7 +64,7 @@ const unknown = boxes.map(([id]) => id).filter((id) => !ids.has(id));
 if (unknown.length) fail(`not on the form: ${unknown.join(", ")}. Form ids: ${[...ids].sort().join(", ")}`);
 
 const url =
-  `https://github.com/${repository()}/issues/new?template=${path.basename(form)}` +
+  `https://github.com/${repository()}/issues/new?template=${formName}` +
   boxes.map(([id, value]) => `&${id}=${encodeURIComponent(value)}`).join("");
 if (url.length > maxLength) fail(`link is ${url.length} characters, over ${maxLength}`);
 console.log(url);

@@ -40,25 +40,7 @@ Show one block per form box, in the PO's wording, and let them adjust it. In ord
 
 ## The prefilled link
 
-Then give **one link** that opens the form filled in.
-
-- Re-check the data rules first.
-- Tell the PO the command you'll ask to run only turns their text into a link.
-- Run [intent-link.mjs](scripts/intent-link.mjs) with each box after a `=== <id>` line, in a quoted heredoc, never in quotes on the command line:
-
-  ```
-  node .claude/skills/refine/scripts/intent-link.mjs <<'EOF'
-  === title
-  Intent: …
-  === problem
-  …
-  EOF
-  ```
-
-- If it fails, or Node isn't available, give no link, say why, and use the blocks.
-- The blocks are the fallback; reprint them only if one changed.
-
-Then tell the PO:
+Then give **one link** for form `1-intent.yml`, as *Prefilled links* in [SKILL.md](SKILL.md) describes, and tell the PO:
 
 1. Open the link (sign in to GitHub if asked), and change anything you like.
 2. Press **Submit new issue**. It starts as `status: draft`; when you're happy, change the label to `status: ready-for-dev`.

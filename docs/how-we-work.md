@@ -63,11 +63,11 @@ Each issue has one **type** label and one **status** label. The status tells you
 | Label | Meaning | Ball is with |
 |---|---|---|
 | `status: draft` | Still being written | Author |
-| `status: ready-for-po` | Needs the PO to read, answer or approve | **PO** |
+| `status: ready-for-po` | Needs the PO to read, answer, approve or try a preview | **PO** |
 | `status: ready-for-dev` | Approved; can be picked up | Tech lead / Claude |
-| `status: in-progress` | Being worked on | Tech lead / Claude |
-| `status: in-review` | A pull request is open; try the preview | **PO** + tech lead |
 | `status: blocked` | Waiting on something outside the team | Whoever is named in the latest comment |
+
+An issue being built shows its pull request under **Development**.
 
 **PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22). That's your to-do list.
 

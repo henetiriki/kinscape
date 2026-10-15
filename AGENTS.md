@@ -18,7 +18,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - Only build from a Spec labelled `status: ready-for-dev`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
 - Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - When drafting a Spec, list anything you can't resolve under **Flagged concerns** rather than choosing silently.
-- Set status labels as the workflow says: `ready-for-po` when the PO must act, `in-review` when a PR is open.
+- Set status labels as the workflow says: `ready-for-po` when the PO must act, including when a PR for a user-visible change is ready to try.
 
 ## Plans
 

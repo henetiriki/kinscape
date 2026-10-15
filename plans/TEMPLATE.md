@@ -1,14 +1,11 @@
 # Plan: <spec-id>: <name>
 
 <!--
-One plan per Spec. Copy to plans/<spec-id>-<slug>.md (e.g. plans/M0.1-hello-vercel.md).
-The approved version is the FIRST commit on the branch, with a message like:
-  plan(M0.1): approved by @<tech-lead>
-Don't edit the sections above "Deviations" after approval. Record departures there instead (see AGENTS.md › Plans).
+Copy to plans/<spec-id>-<slug>.md. Rules: AGENTS.md › Plans. Budget: 600 words.
+Leave out any section that would only say "none".
 -->
 
 - **Spec:** #
-- **Intent:** #
 - **Requirement IDs:** <!-- e.g. MAP-01, MAP-02, NFR-01 -->
 - **Status:** draft | approved
 
@@ -17,8 +14,6 @@ Don't edit the sections above "Deviations" after approval. Record departures the
 <!-- 3–6 sentences: how the change will be made and why this way. -->
 
 ## Alternatives considered
-
-<!-- Options rejected and why. Keep it short. -->
 
 ## Files that change
 
@@ -29,27 +24,19 @@ Don't edit the sections above "Deviations" after approval. Record departures the
 ## Order of work
 
 1.
-2.
-3.
 
 ## Risks
 
-<!-- What could break, which step is most risky, and how it's mitigated. -->
+<!-- What could break, and how it's mitigated. -->
 
 ## Proof
 
-<!-- How each acceptance check from the Spec will be shown to pass. -->
-
 | Acceptance check | Proven by |
 |---|---|
-| | <!-- test file/name, validator, screenshot, preview check --> |
+| | <!-- test, validator, screenshot, preview check --> |
 
 ## Out of scope
 
-<!-- Things a reader might expect here that this plan deliberately leaves out. -->
-
 ## Deviations
 
-<!-- Added during the build. One line per departure: what changed, why, and the commit. "None" if none. -->
-
-None.
+<!-- Added during the build. One line each: what changed, why, the commit. -->

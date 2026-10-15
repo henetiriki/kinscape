@@ -53,7 +53,7 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order:
 
 ## Hand-over
 
-Tell the user to file each one via **Issues → New issue → Spec**, as a sub-issue of the Intent if there is an issue.
+Give **one link** per Spec for form `2-spec.yml`, as *Prefilled links* in [SKILL.md](SKILL.md) describes. Whoever files it checks the form, presses **Submit new issue**, and makes it a sub-issue of the Intent if there is one. If a link doesn't work: **Issues → New issue → Spec**, and copy each block into the box with the same name.
 
 - **Changes what the user sees:** set `status: ready-for-po`. The PO reads the Flagged concerns, then approves with `status: ready-for-dev`.
 - **Engineering-only:** the tech lead approves with `status: ready-for-dev`.

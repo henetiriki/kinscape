@@ -63,7 +63,7 @@ Budgets, in words. `requirements.md` is exempt (the PO's document). From M0.2 a 
 
 ## Commands
 
-_To be filled in during M0 (install, dev, lint, test, e2e, validate boundaries)._
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`.
 
 ## Verifying your work
 

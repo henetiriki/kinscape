@@ -1,0 +1,11 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Sized, not positioned: MapLibre's own CSS sets the container's position. */
+.map {
+  width: 100vw;
+  height: 100dvh;
+}

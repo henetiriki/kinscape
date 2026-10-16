@@ -53,7 +53,7 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order:
 
 ## Hand-over
 
-Give **one link** per Spec for form `2-spec.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. Whoever files it checks the form, presses **Submit new issue**, and makes it a sub-issue of the Intent if there is one, so the Intent is flagged for the PO when its Specs close. If a link doesn't work: **Issues → New issue → Spec**, and copy each block into the box with the same name.
+Give **one link** per Spec for form `2-spec.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. Whoever files it checks the form, presses **Submit new issue**,. A workflow links it to the Intent named in the form; if it comments that it couldn't, add the link by hand. If a link doesn't work: **Issues → New issue → Spec**, and copy each block into the box with the same name.
 
 - **Changes what the user sees:** set `status: ready-for-po`. The PO reads the Flagged concerns, then approves with `status: ready-for-dev`.
 - **Engineering-only:** the tech lead approves with `status: ready-for-dev`.

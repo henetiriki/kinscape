@@ -47,6 +47,8 @@ The `/refine` skill asks questions until you agree on what is wanted, then draft
 
 For a `status: ready-for-dev` Spec, the tech lead starts a new session in plan mode and says `Pick up Spec M0.1 (#<issue>)`. Accepting the plan approves it; Claude then builds and opens the pull request.
 
+Claude reviews each pull request automatically, except drafts, Dependabot PRs and PRs that change only `docs/` or `plans/`.
+
 ## Dependency updates
 
 Dependabot opens security PRs as soon as an advisory lands and routine updates weekly, labelled `dependencies`. Nothing auto-merges: the tech lead reviews and merges each one once CI passes, within:

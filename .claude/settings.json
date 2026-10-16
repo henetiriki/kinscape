@@ -1,3 +1,16 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/word-count.mts\" --hook",
+            "type": "command"
+          }
+        ],
+        "matcher": "Write|Edit"
+      }
+    ]
+  },
   "model": "opusplan"
 }

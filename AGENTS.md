@@ -63,3 +63,4 @@ Run lint, tests and the boundary validator before reporting a task done, and pas
 _Add an entry whenever the same correction is needed twice._
 
 - **Verbose drafts.** Keep to the budgets in _Writing_.
+

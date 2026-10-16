@@ -9,6 +9,17 @@ updates:
       - dependencies
     commit-message:
       prefix: chore
+    # Held majors: see "Held packages" in docs/how-we-work.md.
+    ignore:
+      - dependency-name: eslint
+        update-types:
+          - version-update:semver-major
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
     groups:
       next:
         patterns:

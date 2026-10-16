@@ -57,6 +57,16 @@ Dependabot opens security PRs as soon as an advisory lands and routine updates w
 | Medium           | 2 weeks               |
 | Low              | The next weekly batch |
 
+### Held packages
+
+Dependabot ignores the major version of these. To lift a hold, remove its entry from `.github/dependabot.yml` and its row here in the same PR.
+
+| Package       | Held at        | Why                                               | Lift when                                                      |
+| ------------- | -------------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| `eslint`      | 9              | `eslint-config-next`'s plugins don't accept 10    | `eslint-config-next` supports 10                               |
+| `typescript`  | 6              | typescript-eslint needs the JS API, which 7 omits | typescript-eslint supports 7                                   |
+| `@types/node` | `.nvmrc` major | Types must match the Node version we run          | `.nvmrc` moves; bump both in one PR (Dependabot can't read it) |
+
 ## Data rules
 
 Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules).

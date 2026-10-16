@@ -35,6 +35,7 @@ export default defineConfig([
         },
       ],
       '@typescript-eslint/no-unused-vars': 'error',
+      'import/no-default-export': 'error',
       'no-restricted-syntax': [
         'error',
         {
@@ -48,6 +49,16 @@ export default defineConfig([
       ],
       'prefer-arrow-callback': 'error',
     },
+  },
+  {
+    // Next.js and tool config loaders require a default export here.
+    files: [
+      'app/**/{page,layout,loading,error,global-error,not-found,template,default}.tsx',
+      'app/**/{robots,sitemap,manifest}.ts',
+      'app/**/{icon,apple-icon,opengraph-image,twitter-image}.tsx',
+      '*.config.{ts,mts,mjs}',
+    ],
+    rules: { 'import/no-default-export': 'off' },
   },
   {
     ...packageJson.configs.recommended,

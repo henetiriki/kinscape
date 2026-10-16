@@ -18,7 +18,7 @@ setWorkerUrl(
 const CENTRE: [number, number] = [25, -29];
 const ZOOM = 4.5;
 
-const MapView = () => {
+export const MapView = () => {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,5 +51,3 @@ const MapView = () => {
 
   return <div className='map' ref={container} />;
 };
-
-export default MapView;

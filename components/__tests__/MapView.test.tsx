@@ -21,7 +21,7 @@ const maplibre = vi.hoisted(() => {
 vi.mock('maplibre-gl', () => maplibre);
 vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
-import MapView from '../MapView';
+import { MapView } from '../MapView';
 
 // Recorded at import time, before any test can clear the mock.
 const [workerUrl] = maplibre.setWorkerUrl.mock.calls[0];

@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 vi.mock('@/components/MapView', () => ({
-  default: () => <div data-testid='map-view' />,
+  MapView: () => <div data-testid='map-view' />,
 }));
 
 import Home from '../page';

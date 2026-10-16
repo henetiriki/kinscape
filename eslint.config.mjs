@@ -20,7 +20,7 @@ export default defineConfig([
   ...typescript,
   perfectionist.configs['recommended-alphabetical'],
   {
-    files: ['**/*.{js,jsx,mjs,ts,tsx}'],
+    files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
     plugins: { '@stylistic': stylistic },
     rules: {
       ...jsxA11y.flatConfigs.recommended.rules,

@@ -10,35 +10,35 @@ GitHub settings live outside git, so we keep them **as code** instead:
 
 ## What's set and why
 
-| Setting | Value | Why |
-|---|---|---|
-| Merge methods | Squash only | One commit on `main` per PR; linear history |
-| Squash commit message | PR title + commit messages | Keeps each PR's `plan(…): approved by @…` line in `main`'s history |
-| Delete branch on merge | On | No stale branches |
-| Suggest updating PR branches, auto-merge | On | Branches stay current; auto-merge is ready for when CI exists |
-| Wiki, Projects, Discussions | Off | Fewer places for the PO to look. Work lives in Issues |
-| Ruleset *Protect main* | No deletion, no force push, linear history, PR required | `main` only changes through a reviewed PR |
-| Required approvals | 1, stale approvals dismissed, conversations resolved | PO approval of a product PR is their recorded sign-off |
-| Bypass | Repository admin, **via PR only** | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged |
-| Required status checks | _Not yet_ | Added in M0.2 once CI exists |
-| Dependabot alerts and security fixes | On | Free on private repos |
-| Actions token | Read-only; can't approve PRs | Least privilege; an agent's workflow can't approve its own PR |
+| Setting                                  | Value                                                   | Why                                                                                       |
+| ---------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Merge methods                            | Squash only                                             | One commit on `main` per PR; linear history                                               |
+| Squash commit message                    | PR title + commit messages                              | Keeps each PR's `plan(…): approved by @…` line in `main`'s history                        |
+| Delete branch on merge                   | On                                                      | No stale branches                                                                         |
+| Suggest updating PR branches, auto-merge | On                                                      | Branches stay current; auto-merge is ready for when CI exists                             |
+| Wiki, Projects, Discussions              | Off                                                     | Fewer places for the PO to look. Work lives in Issues                                     |
+| Ruleset _Protect main_                   | No deletion, no force push, linear history, PR required | `main` only changes through a reviewed PR                                                 |
+| Required approvals                       | 1, stale approvals dismissed, conversations resolved    | PO approval of a product PR is their recorded sign-off                                    |
+| Bypass                                   | Repository admin, **via PR only**                       | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged |
+| Required status checks                   | _Not yet_                                               | Added in M0.2 once CI exists                                                              |
+| Dependabot alerts and security fixes     | On                                                      | Free on private repos                                                                     |
+| Actions token                            | Read-only; can't approve PRs                            | Least privilege; an agent's workflow can't approve its own PR                             |
 
 ## Vercel
 
 Vercel has no settings-as-code here: the tech lead sets these by hand in the Vercel dashboard, and nothing checks for drift. Update this table in the same PR as any change.
 
-| Setting | Value | Why |
-|---|---|---|
-| Project | `kinscape`, Hobby plan, Git repo `henetiriki/kinscape` | Every PR gets a preview; every merge to `main` deploys production |
-| Production branch | `main` | Production only changes through a merged PR |
-| Framework, Node | Next.js; Node 24.x (from `package.json` `engines`) | Matches local development |
+| Setting               | Value                                                                     | Why                                                                             |
+| --------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Project               | `kinscape`, Hobby plan, Git repo `henetiriki/kinscape`                    | Every PR gets a preview; every merge to `main` deploys production               |
+| Production branch     | `main`                                                                    | Production only changes through a merged PR                                     |
+| Framework, Node       | Next.js; Node 24.x (from `package.json` `engines`)                        | Matches local development                                                       |
 | Vercel Authentication | Standard Protection: previews need a Vercel sign-in, production is public | Previews stay private; production is empty until sign-in (NFR-03) arrives in M2 |
 
 ## Accounts and access
 
-| Who | Access | Notes |
-|---|---|---|
-| Tech lead (@henetiriki) | Owner | Applies settings; merges |
-| Product owner | Collaborator (write) | Personal repos can't grant less than write; the ruleset stops direct pushes to `main` |
-| Claude GitHub App | Not installed | Agents work through the tech lead's local Claude Code session |
+| Who                     | Access               | Notes                                                                                 |
+| ----------------------- | -------------------- | ------------------------------------------------------------------------------------- |
+| Tech lead (@henetiriki) | Owner                | Applies settings; merges                                                              |
+| Product owner           | Collaborator (write) | Personal repos can't grant less than write; the ruleset stops direct pushes to `main` |
+| Claude GitHub App       | Not installed        | Agents work through the tech lead's local Claude Code session                         |

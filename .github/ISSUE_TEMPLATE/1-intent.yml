@@ -1,7 +1,7 @@
 name: 💡 Intent
 description: Describe something you want Kinscape to do, in your own words. No technical language needed.
-title: "Intent: "
-labels: ["type: intent", "status: draft"]
+title: 'Intent: '
+labels: ['type: intent', 'status: draft']
 body:
   - type: markdown
     attributes:
@@ -28,7 +28,7 @@ body:
     attributes:
       label: How we'll know it works
       description: One or more checks in the form "Given …, when I …, then I see …".
-      placeholder: "Given map date 1875, when I click on Kimberley, then the panel shows Griqualand West."
+      placeholder: 'Given map date 1875, when I click on Kimberley, then the panel shows Griqualand West.'
   - type: input
     id: requirements
     attributes:

@@ -32,7 +32,7 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 - **Never build anything:** no code, branches, pull requests or edits to repository files. The output is a draft in the conversation. A command that only formats text, such as encoding a form link, is fine.
 - **Never touch GitHub on your own.** Print the draft under one heading per form box. Create or change an issue only if the user asks and has `gh`, confirming each one.
-- **Use the project's words.** The *Key concepts* terms in `docs/requirements.md` mean exactly that. For a new term, add `Proposed term: <name> = <meaning>` under *Open questions*; don't edit the table.
+- **Use the project's words.** The _Key concepts_ terms in `docs/requirements.md` mean exactly that. For a new term, add `Proposed term: <name> = <meaning>` under _Open questions_; don't edit the table.
 - **Cite requirement IDs** (e.g. `MAP-03`). Don't invent requirements. If something isn't covered, ask.
 - Follow the data rules in `AGENTS.md`.
 - **Leave sizing out of an Intent.** Slicing happens only in spec mode.

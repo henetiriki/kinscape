@@ -32,7 +32,7 @@ The long pole is data, not code: researching and digitising 300+ years of shifti
 These terms are used exactly as defined below throughout the spec and the code.
 
 | Term               | Meaning                                                                                                             |
-|--------------------|---------------------------------------------------------------------------------------------------------------------|
+| ------------------ | ------------------------------------------------------------------------------------------------------------------- |
 | Person             | An individual in the family tree, with names, life dates and notes                                                  |
 | Relationship       | A parent–child or spouse link between two people, optionally dated                                                  |
 | Place              | A physical location (coordinates), independent of what it was called or who governed it                             |
@@ -50,7 +50,7 @@ These terms are used exactly as defined below throughout the spec and the code.
 The map is the main screen; changing the map date must feel instant, with no reload or spinner.
 
 | ID     | Requirement                                                                                                                            | Priority |
-|--------|----------------------------------------------------------------------------------------------------------------------------------------|----------|
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | MAP-01 | Pan and zoom a map of South Africa, with Lesotho, eSwatini and neighbouring border areas for context                                   | Must     |
 | MAP-02 | Basemap shows terrain, coastline and major rivers but no modern borders, so present-day lines never leak into a historical view        | Must     |
 | MAP-03 | Date control: a slider plus a typed date field, range 1652-01-01 to today. Steps by year by default; month and day precision on demand | Must     |
@@ -77,7 +77,7 @@ The map is the main screen; changing the map date must feel instant, with no rel
 Boundaries are data with dates attached, never hard-coded: each shape is valid for a period, and names change separately from shapes.
 
 | ID     | Requirement                                                                                                                                | Priority |
-|--------|--------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
 | BND-01 | Each boundary version stores polity, level, geometry, valid-from, valid-to (open = still current), source and confidence                   | Must     |
 | BND-02 | Polity names have their own dated history, separate from geometry (a renamed province keeps its shape)                                     | Must     |
 | BND-03 | Which polity sits inside which is dated too (a district moves from one colony to another)                                                  | Must     |
@@ -102,7 +102,7 @@ A pin says "this person was here, at this time, and this is how I know"; the app
 **People and relationships**
 
 | ID     | Requirement                                                                                                                                                        | Priority |
-|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
 | PPL-01 | Create and edit a person: given names, surname, maiden name, spelling variants (e.g. Van der Merwe, v.d. Merwe), sex, birth and death as fuzzy dates, notes, photo | Must     |
 | PPL-02 | Relationships: parent–child (biological, adoptive, step) and spouse, with marriage and divorce dates                                                               | Must     |
 | PPL-03 | A simple pedigree or descendants view to move around the family                                                                                                    | Should   |
@@ -110,7 +110,7 @@ A pin says "this person was here, at this time, and this is how I know"; the app
 **Pins**
 
 | ID     | Requirement                                                                                                                                                                   | Priority |
-|--------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | PIN-01 | Create a pin by clicking the map, searching a known place, or typing coordinates; then choose the person, date and event type                                                 | Must     |
 | PIN-02 | Pin fields: person, place, address as recorded (verbatim), precision (building, erf, farm, town, district, approximate), event type, fuzzy date or date range, sources, notes | Must     |
 | PIN-03 | Event types: birth, baptism, residence, marriage, death, burial, land ownership, occupation, other                                                                            | Must     |
@@ -134,7 +134,7 @@ A pin says "this person was here, at this time, and this is how I know"; the app
 The map date drives everything: only pins true on that date are shown, and uncertainty is visible rather than hidden.
 
 | ID     | Requirement                                                                                                                                                                        | Priority |
-|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | EXP-01 | Range pins (residence, land ownership) show while the map date falls inside their range; point events (birth, marriage, death) show within a configurable window around their date | Must     |
 | EXP-02 | Fuzzy pins render faded or with a halo that grows with their uncertainty                                                                                                           | Must     |
 | EXP-03 | Filter pins by person, surname, event type, or branch (ancestors or descendants of a chosen person)                                                                                | Must     |
@@ -155,7 +155,7 @@ The map date drives everything: only pins true on that date are shown, and uncer
 Everything that changes over time carries a half-open validity interval \[from, to), with an empty "to" meaning still current. Coordinates are WGS84.
 
 | Entity          | Key fields                                                                                            | Notes                                           |
-|-----------------|-------------------------------------------------------------------------------------------------------|-------------------------------------------------|
+| --------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | Person          | id, given names, surname, name variants, sex, birth, death, notes                                     | Birth and death are FuzzyDates                  |
 | Relationship    | id, person A, person B, type (parent of, spouse of), subtype, start, end                              | Subtype: biological, adoptive, step             |
 | Place           | id, lat, lon, precision                                                                               | Physical location only; names live in PlaceName |
@@ -200,7 +200,7 @@ The 1900–1902 overlaps are the contested periods BND-04 exists for: Britain an
 Sized for one researcher with a large family tree: assume up to 2,000 people and 10,000 pins.
 
 | ID     | Requirement                                                                                      | Priority |
-|--------|--------------------------------------------------------------------------------------------------|----------|
+| ------ | ------------------------------------------------------------------------------------------------ | -------- |
 | NFR-01 | Changing the map date redraws all layers and pins within 100 ms on a mid-range laptop            | Must     |
 | NFR-02 | First load of the map in under 3 s on a typical home connection                                  | Should   |
 | NFR-03 | Private: sign-in required, no public pages, nothing indexed by search engines                    | Must     |

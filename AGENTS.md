@@ -11,7 +11,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves a slice that changes what the user sees; the tech lead approves an engineering-only slice.
 - `plans/<spec-id>-<slug>.md` (e.g. `plans/M0.1-hello-vercel.md`): the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
 - `docs/how-we-work.md`: the workflow, labels and roles. Follow it.
-- Use the terms in the requirements' *Key concepts* table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
+- Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 
 ## Workflow rules
 
@@ -51,19 +51,19 @@ Example. Before: "Today that is `henetiriki/kinscape`, but look them up rather t
 
 Budgets, in words. `requirements.md` is exempt (the PO's document). From M0.2 a CI check counts words per path.
 
-| Item | Budget |
-|---|---|
-| Chat reply | Short; detail on request |
-| PR body | 250 |
-| Spec plan | 600 |
-| Chore plan | 300 |
-| `CLAUDE.md` | 150 |
-| `AGENTS.md`, `docs/how-we-work.md` | 800 each |
-| Each skill file | 600 |
+| Item                               | Budget                   |
+| ---------------------------------- | ------------------------ |
+| Chat reply                         | Short; detail on request |
+| PR body                            | 250                      |
+| Spec plan                          | 600                      |
+| Chore plan                         | 300                      |
+| `CLAUDE.md`                        | 150                      |
+| `AGENTS.md`, `docs/how-we-work.md` | 800 each                 |
+| Each skill file                    | 600                      |
 
 ## Commands
 
-Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`.
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run format:check`, `npm run format` (writes fixes).
 
 ## Verifying your work
 
@@ -73,4 +73,4 @@ Run lint, tests and the boundary validator before reporting a task done, and pas
 
 _Add an entry whenever the same correction is needed twice._
 
-- **Verbose drafts.** Keep to the budgets in *Writing*.
+- **Verbose drafts.** Keep to the budgets in _Writing_.

@@ -2,7 +2,7 @@
 
 A map of South Africa from 1652 to today. Historical boundaries redraw as a date slider moves, and the user's ancestors are pinned where they were at the time.
 
-This file is tool-agnostic. Agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`), which imports this one.
+This file is tool-agnostic. Agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
 
 ## Source of truth
 
@@ -62,7 +62,7 @@ Budgets, in words. `requirements.md` is exempt (the PO's document). From M0.2 a 
 
 ## Commands
 
-Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
 
 ## Verifying your work
 

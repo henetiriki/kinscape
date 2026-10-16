@@ -13,7 +13,7 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         '**/*.d.ts',
       ],
-      include: ['{app,components,scripts}/**/*.{ts,tsx,js,mjs}'],
+      include: ['{app,components,scripts}/**/*.{ts,tsx,js,mjs,mts}'],
       provider: 'v8',
       reporter: ['text', 'lcov'],
       thresholds: {

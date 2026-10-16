@@ -22,6 +22,7 @@ const MapView = () => {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    /* v8 ignore next -- React sets the ref before effects run; the guard only narrows the type */
     if (!container.current) return;
 
     // A background layer only: no basemap, tiles or borders until M1.

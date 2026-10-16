@@ -33,7 +33,7 @@ These terms are used exactly as defined below throughout the spec and the code.
 
 | Term               | Meaning                                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| Account            | Someone who signs in to Kinscape. Never a Person                                                                    |
+| Account            | A sign-in. Separate from Person: the human who signs in may also be a Person in a Tree, but nothing links the two   |
 | Tree               | The people, relationships, pins, sources and places that one or more Accounts work on                               |
 | Person             | An individual in the family tree, with names, life dates and notes                                                  |
 | Relationship       | A parent–child or spouse link between two people, optionally dated                                                  |
@@ -158,7 +158,7 @@ Everything that changes over time carries a half-open validity interval \[from, 
 
 | Entity          | Key fields                                                                                                     | Notes                                           |
 | --------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Account         | id, sign-in identity                                                                                           | Never a Person (NFR-09)                         |
+| Account         | id, sign-in identity                                                                                           | Not linked to a Person (NFR-09)                 |
 | Tree            | id, name                                                                                                       |                                                 |
 | TreeAccount     | tree id, account id                                                                                            | One row in v1; no roles                         |
 | Person          | id, tree id, given names, surname, name variants, sex, birth, death, notes                                     | Birth and death are FuzzyDates                  |

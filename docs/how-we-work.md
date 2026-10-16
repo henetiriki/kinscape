@@ -5,6 +5,7 @@ Claude writes most drafts and code; people make the decisions. Everything happen
 ## Intent, Spec, Plan
 
 - **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M0–M6) is an Intent the PO has already approved.- **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. Ids look like `M0.1`. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one.
+- When the last Spec filed as a sub-issue of an Intent closes, a workflow sets the Intent to `status: ready-for-po`. The PO checks the outcome and closes it.
 - **Plan:** how a Spec is built: files, order of work, risks and proof. Committed with the code as `plans/M0.1-hello-vercel.md` ([rules](../AGENTS.md#plans)).
 
 ## The loop

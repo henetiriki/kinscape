@@ -4,7 +4,6 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "fix:file": "sh -c 'prettier --write --ignore-unknown \"$0\" && eslint --fix --max-warnings 0 --no-warn-ignored \"$0\"'",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings 0",

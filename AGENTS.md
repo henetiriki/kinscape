@@ -18,6 +18,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - Only build from a Spec labelled `status: ready-for-dev`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
 - Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - When drafting a Spec, list anything you can't resolve under **Flagged concerns** rather than choosing silently.
+- Never use `--no-verify`. If a hook fails, fix the code.
 - Set status labels as the workflow says: `ready-for-po` when the PO must act, including when a PR for a user-visible change is ready to try.
 
 ## Plans
@@ -46,8 +47,6 @@ For chat replies, plans, PRs, issues and docs:
 - One line per deviation.
 - Leave out any section that would only say "none".
 - Prefer deleting text to adding it.
-
-Example. Before: "Today that is `henetiriki/kinscape`, but look them up rather than trusting this page: the owner and repository from `git remote get-url origin`." After: "Get the owner and repository from `git remote get-url origin`."
 
 Budgets, in words. `requirements.md` is exempt (the PO's document). From M0.2 a CI check counts words per path.
 

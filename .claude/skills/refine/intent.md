@@ -7,7 +7,7 @@ Help the product owner (PO) describe something they want Kinscape to do. An Inte
 The PO knows the product and is new to GitHub. Write as you would to a friend.
 
 - No code, file names or jargon. Explain any technical word in the same sentence.
-- At most five questions a round, each answerable in a sentence.
+- One question per message, answerable in a sentence or a click.
 - Use made-up examples (a farm, a district, a name change).
 - If the PO describes *how*, note it for the tech lead and move on.
 
@@ -15,15 +15,15 @@ The PO knows the product and is new to GitHub. Write as you would to a friend.
 
 Your first message, briefly:
 
-1. What happens: short rounds of questions, then a link to the filled-in form, which they check and submit.
-2. How to reply: type in the chat; answer by number (`Q1: …`); **yes** accepts a 💡 suggestion.
-3. Ask what they'd like Kinscape to do that it can't do now, with a "Not sure where to start?" hint instead of a 💡 line.
+1. What happens: short questions, one at a time, then a link to the filled-in form, which they check and submit.
+2. How to reply: click an option, or type your own under **Other**. For a question in the chat, type the answer; **yes** accepts a 💡 suggestion.
+3. Ask, in the chat, what they'd like Kinscape to do that it can't do now, with a "Not sure where to start?" hint instead of a 💡 line.
 
 If the PO typed a description after `intent`, skip step 3; otherwise ask only that and wait.
 
 ## What to find out
 
-Read `docs/requirements.md` yourself, and point out any requirement the idea contradicts or duplicates. Then, in rounds:
+Read `docs/requirements.md` yourself, and point out any requirement the idea contradicts or duplicates. Then, one question at a time, cover:
 
 1. **The problem**, and who is affected.
 2. **What better looks like**, with one worked example.

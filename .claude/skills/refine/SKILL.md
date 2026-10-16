@@ -17,12 +17,14 @@ The argument picks the mode. Read the matching file and follow it, with the meth
 
 ## Method
 
-Treat the topic as a **design tree**: every decision opens smaller decisions beneath it. Work in **rounds**.
+Treat the topic as a **design tree**: every decision opens smaller decisions beneath it.
 
-1. **Ask the frontier.** The frontier is every open question whose inputs are already settled. Put the whole frontier in one round, then stop and wait. Tell the user how to reply: type in the chat, and "yes" accepts a 💡 suggestion.
-2. **Number each question** (Q1, Q2, …) and keep counting across rounds; never restart at Q1. Give each a short title and a body, with options where there are real alternatives. End each with a 💡 line stating your recommended answer, worded so a plain "yes" accepts it.
-3. **Redraw the tree** from the answers and build the next frontier.
-4. **Look facts up, don't ask.** Check `docs/requirements.md`, existing issues and the repo yourself. Ask only about decisions. Questions that depend on a pending lookup wait for the next round.
+1. **Ask one question, then wait:** of the open questions whose inputs are settled, the one whose answer shapes the most others.
+2. **Number it** (Q1, Q2, …; never restart) and give it a short title.
+   - **Real alternatives:** call `AskUserQuestion` with just this question: text starting `Q<n> ·`, a header of up to 12 characters, 2–4 options, your pick first as "(Recommended)". The picker adds **Other**.
+   - **Otherwise, or without the picker:** ask in chat, ending with a 💡 line worded so a plain "yes" accepts it. Say so the first time.
+3. **Redraw the tree** after each answer. Skip questions an answer already settled.
+4. **Look facts up, don't ask.** Check `docs/requirements.md`, existing issues and the repo yourself. Ask only about decisions. Questions that depend on a pending lookup wait until it's done.
 5. **A recommendation is not an answer.** A branch stays open until the user confirms it. Never fill a gap silently; if a question comes up while drafting, ask it.
 6. **Finish** when every branch is confirmed. Summarise what was agreed in a few lines, then write the draft as the mode file describes.
 

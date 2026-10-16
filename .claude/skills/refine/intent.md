@@ -9,7 +9,7 @@ The PO knows the product and is new to GitHub. Write as you would to a friend.
 - No code, file names or jargon. Explain any technical word in the same sentence.
 - One question per message, answerable in a sentence or a click.
 - Use made-up examples (a farm, a district, a name change).
-- If the PO describes *how*, note it for the tech lead and move on.
+- If the PO describes _how_, note it for the tech lead and move on.
 
 ## How to open
 
@@ -32,7 +32,7 @@ Read `docs/requirements.md` yourself, and point out any requirement the idea con
 5. **Out of scope:** suggest items to accept or reject.
 6. **Open questions:** leaving one open beats guessing.
 
-Technology, cost and order of work go under *Open questions* for the tech lead.
+Technology, cost and order of work go under _Open questions_ for the tech lead.
 
 ## The draft
 
@@ -40,7 +40,7 @@ Show one block per form box, in the PO's wording, and let them adjust it. In ord
 
 ## The prefilled link
 
-Then give **one link** for form `1-intent.yml`, as *Prefilled links* in [SKILL.md](SKILL.md) describes, and tell the PO:
+Then give **one link** for form `1-intent.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes, and tell the PO:
 
 1. Open the link (sign in to GitHub if asked), and change anything you like.
 2. Press **Submit new issue**. It starts as `status: draft`; when you're happy, change the label to `status: ready-for-dev`.

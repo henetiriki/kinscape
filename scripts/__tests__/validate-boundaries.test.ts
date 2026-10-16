@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { run, validateBoundaries } from '../validate-boundaries';
+import { run, validateBoundaries } from '../validate-boundaries.mts';
 
 const collection = { features: [], type: 'FeatureCollection' };
 

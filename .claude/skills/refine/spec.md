@@ -13,7 +13,7 @@ Slice a milestone or an accepted Intent into **Specs**, each small enough for on
 
 ## What to settle
 
-Run rounds as described in `SKILL.md`. Typical branches:
+Ask questions as described in `SKILL.md`. Typical branches:
 
 - **Behaviour:** what the user sees and does, and the edges (no data, a Fuzzy date, a failed load).
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from *Suggested tech approach* (e.g. Next.js instead of Vite). Record each as a Flagged concern, so the approver sees it.

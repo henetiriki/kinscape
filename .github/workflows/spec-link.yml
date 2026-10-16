@@ -1,0 +1,67 @@
+name: Link Spec to Intent
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  link-spec:
+    if: "contains(github.event.issue.labels.*.name, 'type: spec')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { number, id, body } = context.payload.issue;
+
+            try {
+              await github.request(
+                'GET /repos/{owner}/{repo}/issues/{issue_number}/parent',
+                { owner, repo, issue_number: number },
+              );
+              return; // already linked
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+
+            const field = /### Intent or milestone\s+(.*)/.exec(body ?? '');
+            const value = field ? field[1].trim() : '';
+            if (/^M\d+$/.test(value)) return; // a milestone Spec has no parent issue
+
+            const match = /^#?(\d+)$/.exec(value);
+            let linked = false;
+            if (match) {
+              try {
+                const { data: intent } = await github.rest.issues.get({
+                  owner,
+                  repo,
+                  issue_number: Number(match[1]),
+                });
+                if (
+                  intent.state === 'open' &&
+                  !intent.pull_request &&
+                  intent.labels.some((label) => label.name === 'type: intent')
+                ) {
+                  await github.request(
+                    'POST /repos/{owner}/{repo}/issues/{issue_number}/sub_issues',
+                    { owner, repo, issue_number: intent.number, sub_issue_id: id },
+                  );
+                  linked = true;
+                }
+              } catch (error) {
+                core.warning(`Could not link Spec #${number}: ${error.message}`);
+              }
+            }
+
+            if (!linked) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: number,
+                body: `Couldn't link this Spec to an Intent from "Intent or milestone" (\`${value}\`). If it slices an Intent, add it as a sub-issue of that Intent.`,
+              });
+            }

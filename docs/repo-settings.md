@@ -20,7 +20,7 @@ GitHub settings live outside git, so we keep them **as code** instead:
 | Ruleset _Protect main_                   | No deletion, no force push, linear history, PR required | `main` only changes through a reviewed PR                                                 |
 | Required approvals                       | 1, stale approvals dismissed, conversations resolved    | PO approval of a product PR is their recorded sign-off                                    |
 | Bypass                                   | Repository admin, **via PR only**                       | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged |
-| Required status checks                   | _Not yet_                                               | Added in M0.2 once CI exists                                                              |
+| Required status checks                   | lint, format, test, e2e, boundaries, words, Codecov     | Nothing merges with a red check. Names match the CI job names and Codecov's statuses      |
 | Dependabot alerts and security fixes     | On                                                      | Free on private repos                                                                     |
 | Actions token                            | Read-only; can't approve PRs                            | Least privilege; an agent's workflow can't approve its own PR                             |
 

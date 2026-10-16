@@ -40,6 +40,7 @@ else
   check "Stale approvals dismissed"         "$(q "$pr | .dismiss_stale_reviews_on_push")" "true"
   check "Conversations must be resolved"    "$(q "$pr | .required_review_thread_resolution")" "true"
   check "Squash only in ruleset"            "$(q "$pr | .allowed_merge_methods | join(\",\")")" "squash"
+  check "Required checks" "$(q '[.rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context] | sort | join(",")')" "boundaries,codecov/patch,codecov/project,e2e,format,lint,test,words"
   check "Bypass: admin, via PR only"        "$(q '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "RepositoryRole:5:pull_request"
 fi
 

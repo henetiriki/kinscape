@@ -1,0 +1,62 @@
+name: Intent ready for PO
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+
+jobs:
+  flag-intent:
+    if: "contains(github.event.issue.labels.*.name, 'type: spec')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const number = context.payload.issue.number;
+
+            let parent;
+            try {
+              ({ data: parent } = await github.request(
+                'GET /repos/{owner}/{repo}/issues/{issue_number}/parent',
+                { owner, repo, issue_number: number },
+              ));
+            } catch (error) {
+              if (error.status === 404) return; // a Spec with no parent Intent
+              throw error;
+            }
+
+            const labels = parent.labels.map((label) => label.name);
+            const { total, completed } = parent.sub_issues_summary;
+            if (
+              parent.state !== 'open' ||
+              !labels.includes('type: intent') ||
+              labels.includes('status: ready-for-po') ||
+              completed < total
+            ) {
+              return;
+            }
+
+            for (const name of labels.filter((l) => l.startsWith('status: '))) {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: parent.number,
+                name,
+              });
+            }
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: parent.number,
+              labels: ['status: ready-for-po'],
+            });
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: parent.number,
+              body: 'Every Spec of this Intent is closed. PO: check the outcome is met, then close this Intent, or file another Spec if something is missing.',
+            });

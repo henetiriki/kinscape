@@ -9,8 +9,8 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - `docs/requirements.md`: the baseline requirements. Every requirement has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
 - **Intents:** each milestone in `requirements.md` (M0–M6) is an Intent the PO has already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
 - **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves a slice that changes what the user sees; the tech lead approves an engineering-only slice.
-- `plans/<spec-id>-<slug>.md` (e.g. `plans/M0.1-hello-vercel.md`): the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
-- `docs/how-we-work.md`: the workflow, labels and roles. Follow it.
+- `plans/<spec-id>-<slug>.md`: the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
+- `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 
 ## Workflow rules
@@ -62,7 +62,7 @@ Budgets, in words. `requirements.md` is exempt (the PO's document). From M0.2 a 
 
 ## Commands
 
-Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run format:check`, `npm run format` (writes fixes).
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
 
 ## Verifying your work
 

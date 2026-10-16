@@ -1,11 +1,10 @@
 # How we work on Kinscape
 
-Kinscape is built using an AI-native way of working: Claude writes most of the drafts and code, and people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**, so nobody needs to install anything or learn git.
+Claude writes most drafts and code; people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**, so nobody needs to install anything or learn git.
 
 ## Intent, Spec, Plan
 
-- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M0–M6) is an Intent the PO has already approved. A new idea or a change to the requirements gets its own Intent issue.
-- **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. Ids look like `M0.1`. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one.
+- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M0–M6) is an Intent the PO has already approved.- **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. Ids look like `M0.1`. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one.
 - **Plan:** how a Spec is built: files, order of work, risks and proof. Committed with the code as `plans/M0.1-hello-vercel.md` ([rules](../AGENTS.md#plans)).
 
 ## The loop
@@ -48,15 +47,23 @@ The `/refine` skill asks questions until you agree on what is wanted, then draft
 
 For a `status: ready-for-dev` Spec, the tech lead starts a new session in plan mode and says `Pick up Spec M0.1 (#<issue>)`. Accepting the plan approves it; Claude then builds and opens the pull request.
 
+## Dependency updates
+
+Dependabot opens security PRs as soon as an advisory lands and routine updates weekly, labelled `dependencies`. Nothing auto-merges: the tech lead reviews and merges each one once CI passes, within:
+
+| Severity         | Deadline              |
+| ---------------- | --------------------- |
+| Critical or high | 3 days                |
+| Medium           | 2 weeks               |
+| Low              | The next weekly batch |
+
 ## Data rules
 
 Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules).
 
 ## Roles and labels: whose turn is it?
 
-- **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs. Doesn't touch code.
-- **Tech lead:** approves plans and engineering-only Specs, reviews and merges pull requests, owns settings, secrets and `AGENTS.md` / `CLAUDE.md`. Doesn't hand-write routine code.
-- **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing, and never merges or releases to production.
+- **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs.- **Tech lead:** approves plans and engineering-only Specs, reviews and merges pull requests, owns settings, secrets and `AGENTS.md` / `CLAUDE.md`.- **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing, and never merges or releases to production.
 
 Each issue has one **type** label and one **status** label. The status tells you whose turn it is.
 
@@ -67,8 +74,4 @@ Each issue has one **type** label and one **status** label. The status tells you
 | `status: ready-for-dev` | Approved; can be picked up                             | Tech lead / Claude                     |
 | `status: blocked`       | Waiting on something outside the team                  | Whoever is named in the latest comment |
 
-An issue being built shows its pull request under **Development**.
-
-**PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22). That's your to-do list.
-
-To change a label: open the issue, click ⚙️ beside **Labels**, untick the old status and tick the new one.
+**PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22): your to-do list.

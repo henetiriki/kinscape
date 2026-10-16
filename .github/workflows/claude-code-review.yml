@@ -12,6 +12,8 @@ on:
 
 jobs:
   claude-review:
+    # Dependabot pull requests get no Actions secrets, so the review cannot run.
+    if: github.actor != 'dependabot[bot]'
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||

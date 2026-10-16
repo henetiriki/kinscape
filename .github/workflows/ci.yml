@@ -38,7 +38,7 @@ jobs:
           node-version-file: .nvmrc
       - run: npm ci
       - run: npm test
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         if: ${{ !cancelled() }}
         with:
           fail_ci_if_error: false

@@ -1,5 +1,5 @@
-import MapView from "@/components/MapView";
+import MapView from '@/components/MapView';
 
-export default function Home() {
-  return <MapView />;
-}
+const Home = () => <MapView />;
+
+export default Home;

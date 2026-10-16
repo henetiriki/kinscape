@@ -7,7 +7,7 @@ Oct 13, 2026 · @Louw
 
 ## Purpose and scope
 
-A private, single-user web app for placing my ancestors on a map of South Africa as it was on any date from 1652 to today. Moving a date control redraws the colonial, republican, provincial and homeland boundaries of that moment, and shows where each person was at the time.
+A private, single-user web app for placing the user's ancestors on a map of South Africa as it was on any date from 1652 to today. Moving a date control redraws the colonial, republican, provincial and homeland boundaries of that moment, and shows where each person was at the time.
 
 **In scope for v1**
 
@@ -21,7 +21,7 @@ A private, single-user web app for placing my ancestors on a map of South Africa
 
 - An automatic "which district and colony was this in, then?" lookup for every pin
 
-**Users:** one (me). No sign-up, sharing or multi-tenancy, but the data must stay private and be backed up.
+**Users:** one in v1. No sign-up or sharing, but the data must stay private and be backed up, and adding users later must not need a rebuild (NFR-09).
 
 **How to read this spec:** it is written for delivery with AI agents. Every requirement has an ID, a priority (Must, Should, Could) and testable wording. Agents cite IDs in plans, commits and PRs, and a milestone is done when its listed IDs pass their checks.
 
@@ -33,6 +33,8 @@ These terms are used exactly as defined below throughout the spec and the code.
 
 | Term               | Meaning                                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Account            | Someone who signs in to Kinscape. Never a Person                                                                    |
+| Tree               | The people, relationships, pins, sources and places that one or more Accounts work on                               |
 | Person             | An individual in the family tree, with names, life dates and notes                                                  |
 | Relationship       | A parent–child or spouse link between two people, optionally dated                                                  |
 | Place              | A physical location (coordinates), independent of what it was called or who governed it                             |
@@ -66,9 +68,9 @@ The map is the main screen; changing the map date must feel instant, with no rel
 
 **Acceptance checks**
 
-- Given map date 1875, when I click on Kimberley, then the panel shows Griqualand West.
+- Given map date 1875, when the user clicks on Kimberley, then the panel shows Griqualand West.
 
-- Given map date 1900-01-01, when I click on Bloemfontein, then the panel shows Orange Free State.
+- Given map date 1900-01-01, when the user clicks on Bloemfontein, then the panel shows Orange Free State.
 
 - Dragging the slider from 1890 to 1915 shows the Boer republics give way to colonies and then to the four Union provinces, with no frame taking longer than the target in NFR-01.
 
@@ -97,7 +99,7 @@ Boundaries are data with dates attached, never hard-coded: each shape is valid f
 
 ## People and pins
 
-A pin says "this person was here, at this time, and this is how I know"; the app then works out which district and colony that was.
+A pin says "this person was here, at this time, and this is how the user knows"; the app then works out which district and colony that was.
 
 **People and relationships**
 
@@ -154,18 +156,23 @@ The map date drives everything: only pins true on that date are shown, and uncer
 
 Everything that changes over time carries a half-open validity interval \[from, to), with an empty "to" meaning still current. Coordinates are WGS84.
 
-| Entity          | Key fields                                                                                            | Notes                                           |
-| --------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Person          | id, given names, surname, name variants, sex, birth, death, notes                                     | Birth and death are FuzzyDates                  |
-| Relationship    | id, person A, person B, type (parent of, spouse of), subtype, start, end                              | Subtype: biological, adoptive, step             |
-| Place           | id, lat, lon, precision                                                                               | Physical location only; names live in PlaceName |
-| PlaceName       | place id, name, from, to, source id                                                                   |                                                 |
-| Pin             | id, person id, place id, address verbatim, event type, date, source ids, notes, jurisdiction (cached) | Cache rebuilt when boundaries change (PIN-05)   |
-| Polity          | id, type (colony, republic, province, homeland, district, field cornetcy)                             |                                                 |
-| PolityName      | polity id, name, from, to                                                                             |                                                 |
-| PolityParent    | child id, parent id, from, to                                                                         | Dated nesting (BND-03)                          |
-| BoundaryVersion | id, polity id, level, geometry, from, to, confidence, contested, source id                            | MultiPolygon, to allow enclaves                 |
-| Source          | id, title, repository, reference, URL, attachment, notes                                              |                                                 |
+| Entity          | Key fields                                                                                                     | Notes                                           |
+| --------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Account         | id, sign-in identity                                                                                           | Never a Person (NFR-09)                         |
+| Tree            | id, name                                                                                                       |                                                 |
+| TreeAccount     | tree id, account id                                                                                            | One row in v1; no roles                         |
+| Person          | id, tree id, given names, surname, name variants, sex, birth, death, notes                                     | Birth and death are FuzzyDates                  |
+| Relationship    | id, tree id, person A, person B, type (parent of, spouse of), subtype, start, end                              | Subtype: biological, adoptive, step             |
+| Place           | id, tree id, lat, lon, precision                                                                               | Physical location only; names live in PlaceName |
+| PlaceName       | place id, name, from, to, source id                                                                            | Follows its Place's Tree                        |
+| Pin             | id, tree id, person id, place id, address verbatim, event type, date, source ids, notes, jurisdiction (cached) | Cache rebuilt when boundaries change (PIN-05)   |
+| Polity          | id, type (colony, republic, province, homeland, district, field cornetcy)                                      |                                                 |
+| PolityName      | polity id, name, from, to                                                                                      |                                                 |
+| PolityParent    | child id, parent id, from, to                                                                                  | Dated nesting (BND-03)                          |
+| BoundaryVersion | id, polity id, level, geometry, from, to, confidence, contested, source id                                     | MultiPolygon, to allow enclaves                 |
+| Source          | id, tree id, title, repository, reference, URL, attachment, notes                                              |                                                 |
+
+Polity, PolityName, PolityParent and BoundaryVersion carry no tree id: every Account shares them (NFR-09).
 
 **FuzzyDate** is stored as: qualifier, date 1, date 2 (for ranges), precision (day, month, year), plus derived earliest and latest ISO dates. All date filtering uses the derived earliest–latest pair, so "ABT 1850" and "BET 1848 AND 1852" are queried the same way.
 
@@ -199,16 +206,17 @@ The 1900–1902 overlaps are the contested periods BND-04 exists for: Britain an
 
 Sized for one researcher with a large family tree: assume up to 2,000 people and 10,000 pins.
 
-| ID     | Requirement                                                                                      | Priority |
-| ------ | ------------------------------------------------------------------------------------------------ | -------- |
-| NFR-01 | Changing the map date redraws all layers and pins within 100 ms on a mid-range laptop            | Must     |
-| NFR-02 | First load of the map in under 3 s on a typical home connection                                  | Should   |
-| NFR-03 | Private: sign-in required, no public pages, nothing indexed by search engines                    | Must     |
-| NFR-04 | Daily automatic backup, plus one-click export of all data as JSON and GeoJSON                    | Must     |
-| NFR-05 | Desktop-first; usable on a tablet; read-only lookups work on a phone                             | Should   |
-| NFR-06 | Date control fully usable by keyboard; colour never the only way meaning is shown                | Should   |
-| NFR-07 | Works offline for reading and adding pins (useful in archives and on farm visits), syncing later | Could    |
-| NFR-08 | Licence and attribution recorded for every basemap and boundary source, and shown in the app     | Must     |
+| ID     | Requirement                                                                                                                                                                    | Priority |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| NFR-01 | Changing the map date redraws all layers and pins within 100 ms on a mid-range laptop                                                                                          | Must     |
+| NFR-02 | First load of the map in under 3 s on a typical home connection                                                                                                                | Should   |
+| NFR-03 | Private: sign-in required, no public pages, nothing indexed by search engines                                                                                                  | Must     |
+| NFR-04 | Daily automatic backup, plus one-click export of all data as JSON and GeoJSON                                                                                                  | Must     |
+| NFR-05 | Desktop-first; usable on a tablet; read-only lookups work on a phone                                                                                                           | Should   |
+| NFR-06 | Date control fully usable by keyboard; colour never the only way meaning is shown                                                                                              | Should   |
+| NFR-07 | Works offline for reading and adding pins (useful in archives and on farm visits), syncing later                                                                               | Could    |
+| NFR-08 | Licence and attribution recorded for every basemap and boundary source, and shown in the app                                                                                   | Must     |
+| NFR-09 | Multi-user ready: sign-in is an Account; people, relationships, pins, sources and places belong to a Tree; boundaries, polities and historical maps are shared by all Accounts | Must     |
 
 ## Suggested tech approach
 
@@ -238,11 +246,14 @@ Prove the live slider with a few easy epochs first, then add people, then spend 
 
 2.  **M1 Time-aware map.** Boundary model and date control with three easy epochs only: 1910 Union provinces, 1994 provinces, today. Covers MAP-01 to MAP-06, BND-01, BND-02, BND-06, BND-07, NFR-01.
 
-3.  **M2 People and pins.** PPL-01, PPL-02, PIN-01 to PIN-04, PIN-06, persistence and sign-in (NFR-03). Exit: create a person, pin them, watch the pin appear and disappear as the date moves.
+3.  **M2 People and pins.** PPL-01, PPL-02, PIN-01 to PIN-04, PIN-06, persistence and sign-in (NFR-03), NFR-09. Exit: create a person, pin them, watch the pin appear and disappear as the date moves. Also:
+    - Given the user's Tree has been entered, when the tech lead creates a second Account, then all the user's people, pins and sources are unchanged and not re-entered.
+    - Given two Accounts with separate Trees, when the second signs in, then they see none of the first Tree's people, pins or sources, but the same historical maps.
+    - Given v1, when the user uses it, then they see only a sign-in: no sign-up, sharing or account screens.
 
 4.  **M3 Jurisdiction and exploring.** PIN-05, MAP-07, EXP-01 to EXP-05, NFR-04.
 
-5.  **M4 Pre-Union boundaries.** Research and digitise the polity layer from 1652 to 1910 (BND-03 to BND-05), then district layers for the regions my family lived in first.
+5.  **M4 Pre-Union boundaries.** Research and digitise the polity layer from 1652 to 1910 (BND-03 to BND-05), then district layers for the regions the user's family lived in first.
 
 6.  **M5 Apartheid-era homelands and richer views.** Homeland layers, MAP-08, MAP-09, EXP-06, EXP-07, PIN-07, PIN-08.
 
@@ -262,6 +273,6 @@ Prove the live slider with a few easy epochs first, then add people, then spend 
 
 - [ ] Homelands at full detail with all enclaves, or simplified shapes?
 
-- [ ] Hosted (Vercel plus Postgres) or local-first?
+- [x] Hosted (Vercel plus Postgres) or local-first? Hosted (#13).
 
 - [ ] Hide living people's details by default, even in a private app?

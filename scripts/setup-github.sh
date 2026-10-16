@@ -17,6 +17,9 @@ label "type: spec"   "3B82F6" "Requirements and design for an accepted intent"
 label "type: bug"    "EF4444" "Something isn't working"
 label "type: chore"  "9CA3AF" "Tooling, config, housekeeping"
 
+# Applied by Dependabot to its pull requests
+label "dependencies" "0366D6" "Dependency update"
+
 # Status: whose turn is it
 label "status: draft"         "E5E7EB" "Still being written"
 label "status: ready-for-po"  "F59E0B" "Waiting on the product owner"

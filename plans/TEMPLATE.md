@@ -18,8 +18,8 @@ Leave out any section that would only say "none".
 ## Files that change
 
 | File | New / changed | What |
-|---|---|---|
-| | | |
+| ---- | ------------- | ---- |
+|      |               |      |
 
 ## Order of work
 
@@ -31,9 +31,9 @@ Leave out any section that would only say "none".
 
 ## Proof
 
-| Acceptance check | Proven by |
-|---|---|
-| | <!-- test, validator, screenshot, preview check --> |
+| Acceptance check | Proven by                                           |
+| ---------------- | --------------------------------------------------- |
+|                  | <!-- test, validator, screenshot, preview check --> |
 
 ## Out of scope
 

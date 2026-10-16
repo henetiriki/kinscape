@@ -16,24 +16,24 @@ Intent ──► Spec ──► Plan ──► Build & Test ──► Preview �
   └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-| Stage | What happens | Who decides |
-|---|---|---|
-| **Intent** | A milestone, or a new idea the PO files as an Intent issue | PO |
-| **Spec** | Claude slices the Intent and flags decisions | PO or tech lead (see *Spec*) |
-| **Plan** | Claude plans each Spec | Tech lead |
-| **Build & test** | Claude writes code and tests; done only when checks pass | Tech lead reviews |
-| **Preview** | Each pull request gets a preview link to try against the acceptance checks | PO says "looks right"; tech lead merges |
-| **Feedback** | Bugs and ideas become issues | PO prioritises |
+| Stage            | What happens                                                               | Who decides                             |
+| ---------------- | -------------------------------------------------------------------------- | --------------------------------------- |
+| **Intent**       | A milestone, or a new idea the PO files as an Intent issue                 | PO                                      |
+| **Spec**         | Claude slices the Intent and flags decisions                               | PO or tech lead (see _Spec_)            |
+| **Plan**         | Claude plans each Spec                                                     | Tech lead                               |
+| **Build & test** | Claude writes code and tests; done only when checks pass                   | Tech lead reviews                       |
+| **Preview**      | Each pull request gets a preview link to try against the acceptance checks | PO says "looks right"; tech lead merges |
+| **Feedback**     | Bugs and ideas become issues                                               | PO prioritises                          |
 
 ## Which issue do I need?
 
-| I want to... | Open a | Who approves | Starts as |
-|---|---|---|---|
-| Start the next milestone | Nothing: the tech lead runs `/refine spec M<n>` | See *Spec* | n/a |
-| Add or change something not in a milestone | **Intent** | PO | `status: draft` |
-| Change [the requirements](requirements.md) | **Intent** (the only route) | PO | `status: draft` |
-| Report something broken | **Bug** | Nobody; it goes straight to dev | `status: ready-for-dev` |
-| Change tooling, CI, docs, process or settings | No issue: a `chore:` pull request | Tech lead | n/a |
+| I want to...                                  | Open a                                          | Who approves                    | Starts as               |
+| --------------------------------------------- | ----------------------------------------------- | ------------------------------- | ----------------------- |
+| Start the next milestone                      | Nothing: the tech lead runs `/refine spec M<n>` | See _Spec_                      | n/a                     |
+| Add or change something not in a milestone    | **Intent**                                      | PO                              | `status: draft`         |
+| Change [the requirements](requirements.md)    | **Intent** (the only route)                     | PO                              | `status: draft`         |
+| Report something broken                       | **Bug**                                         | Nobody; it goes straight to dev | `status: ready-for-dev` |
+| Change tooling, CI, docs, process or settings | No issue: a `chore:` pull request               | Tech lead                       | n/a                     |
 
 ## Drafting with Claude
 
@@ -60,12 +60,12 @@ Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules).
 
 Each issue has one **type** label and one **status** label. The status tells you whose turn it is.
 
-| Label | Meaning | Ball is with |
-|---|---|---|
-| `status: draft` | Still being written | Author |
-| `status: ready-for-po` | Needs the PO to read, answer, approve or try a preview | **PO** |
-| `status: ready-for-dev` | Approved; can be picked up | Tech lead / Claude |
-| `status: blocked` | Waiting on something outside the team | Whoever is named in the latest comment |
+| Label                   | Meaning                                                | Ball is with                           |
+| ----------------------- | ------------------------------------------------------ | -------------------------------------- |
+| `status: draft`         | Still being written                                    | Author                                 |
+| `status: ready-for-po`  | Needs the PO to read, answer, approve or try a preview | **PO**                                 |
+| `status: ready-for-dev` | Approved; can be picked up                             | Tech lead / Claude                     |
+| `status: blocked`       | Waiting on something outside the team                  | Whoever is named in the latest comment |
 
 An issue being built shows its pull request under **Development**.
 

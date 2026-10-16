@@ -48,17 +48,7 @@ For chat replies, plans, PRs, issues and docs:
 - Leave out any section that would only say "none".
 - Prefer deleting text to adding it.
 
-Budgets, in words. `requirements.md` is exempt (the PO's document). From M0.2 a CI check counts words per path.
-
-| Item                               | Budget                   |
-| ---------------------------------- | ------------------------ |
-| Chat reply                         | Short; detail on request |
-| PR body                            | 250                      |
-| Spec plan                          | 600                      |
-| Chore plan                         | 300                      |
-| `CLAUDE.md`                        | 150                      |
-| `AGENTS.md`, `docs/how-we-work.md` | 800 each                 |
-| Each skill file                    | 600                      |
+Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforced in CI. A hook runs it as you write. Review rules, not enforced: chat replies short with detail on request; PR body 250 words; chore plan 300.
 
 ## Commands
 

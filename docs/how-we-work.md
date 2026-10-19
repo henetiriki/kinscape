@@ -46,7 +46,7 @@ The `/refine` skill asks questions until you agree on what is wanted, then draft
 
 ## Building a Spec
 
-For a `status: ready-for-dev` Spec, the tech lead starts a new session in plan mode and says `Pick up Spec M0.1 (#<issue>)`. Accepting the plan approves it; Claude then builds and opens the pull request.
+Setting a Spec to `status: ready-for-dev` starts Claude in GitHub Actions. It opens a draft pull request with the plan; comment `@claude` there to change it. Approve the pull request and Claude builds it and marks it ready for review.
 
 Claude reviews each pull request automatically, except drafts, Dependabot PRs and PRs that change only `docs/` or `plans/`.
 

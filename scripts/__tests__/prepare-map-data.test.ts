@@ -40,7 +40,7 @@ describe('buildCommands', () => {
       '-i ne_10m_land.shp ne_10m_coastline.shp ne_10m_rivers_lake_centerlines.shp ne_10m_admin_1_states_provinces.shp combine-files'
     );
     expect(commands).toContain("'scalerank <= 7'");
-    expect(commands).toContain('-clip bbox=15,-36,34,-21 target=*');
+    expect(commands).toContain('-clip bbox=5,-45,45,-10 target=*');
     expect(commands.match(/-simplify interval=500 keep-shapes/g)).toHaveLength(
       1
     );

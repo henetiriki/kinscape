@@ -19,8 +19,8 @@ const LAYERS = [
 
 const PROVINCES = 'ne_10m_admin_1_states_provinces';
 
-/** Southern Africa: west, south, east, north. */
-const BBOX = '15,-36,34,-21';
+/** West, south, east, north: `MAX_BOUNDS` in `MapView` plus a margin. */
+const BBOX = '5,-45,45,-10';
 
 /** Metres. Every layer is simplified in one run so shared edges stay identical. */
 const TOLERANCE = 500;

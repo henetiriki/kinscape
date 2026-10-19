@@ -18,17 +18,21 @@ permissions:
 
 jobs:
   plan:
+    # Bugs are filed already ready-for-dev, hence the type check.
     if: |
       github.event_name == 'issues' &&
-      github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-dev' &&
       contains(github.event.issue.labels.*.name, 'type: spec') &&
       github.actor != 'henetiriki-bot'
     concurrency: spec-issue-${{ github.event.issue.number }}
     runs-on: ubuntu-latest
-    steps:
+    env:
+      PROMPT: 'Pick up Spec #${{ github.event.issue.number }}. Draft the plan only.'
+    steps: &steps
       - uses: actions/checkout@v7
         with:
+          # Empty on `issues` events, so the default branch is checked out.
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 1
 
       - uses: actions/setup-node@v7
@@ -43,10 +47,11 @@ jobs:
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
           bot_name: henetiriki-bot
           bot_id: '344434370'
-          prompt: 'Pick up Spec #${{ github.event.issue.number }}. Draft the plan only.'
+          prompt: ${{ env.PROMPT }}
           claude_args: '--allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
 
   build:
+    # The bot opens chore PRs too: only a draft on a spec/ branch is a plan PR.
     if: |
       github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
@@ -56,23 +61,6 @@ jobs:
       startsWith(github.event.pull_request.head.ref, 'spec/')
     concurrency: spec-pr-${{ github.event.pull_request.number }}
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v7
-        with:
-          cache: npm
-          node-version-file: .nvmrc
-      - run: npm ci
-
-      - uses: anthropics/claude-code-action@v1
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
-          bot_name: henetiriki-bot
-          bot_id: '344434370'
-          prompt: '@${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it.'
-          claude_args: '--allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
+    env:
+      PROMPT: '@${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it.'
+    steps: *steps

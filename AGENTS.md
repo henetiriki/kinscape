@@ -10,6 +10,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - **Intents:** each milestone in `requirements.md` (M1–M6) has its own Intent issue, filed already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
 - **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves a slice that changes what the user sees; the tech lead approves an engineering-only slice.
 - `plans/<spec-id>-<slug>.md`: the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
+- `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
 - `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 

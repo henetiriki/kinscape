@@ -11,14 +11,59 @@ on:
     types: [submitted]
 
 jobs:
+  # Decides whether to run and on which model. Event text arrives through env,
+  # never interpolated into the script.
+  gate:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+      model_args: ${{ steps.decide.outputs.model_args }}
+    steps:
+      - id: decide
+        env:
+          EVENT: ${{ github.event_name }}
+          ACTOR: ${{ github.actor }}
+          COMMENT: ${{ github.event.comment.body }}
+          REVIEW: ${{ github.event.review.body }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          DRAFT: ${{ github.event.pull_request.draft || github.event.issue.draft }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          case "$EVENT" in
+            issue_comment | pull_request_review_comment) text=$COMMENT ;;
+            pull_request_review) text=$REVIEW ;;
+            issues) text="$ISSUE_TITLE $ISSUE_BODY" ;;
+          esac
+
+          # The spec agent's build job owns approving reviews on a plan PR.
+          if [ "$EVENT" = pull_request_review ] && [ "$REVIEW_STATE" = approved ] &&
+            [ "$DRAFT" = true ] && [[ $HEAD_REF == spec/* ]]; then
+            text=
+          fi
+
+          # Claude posts as henetiriki-bot; its own comments never start a run.
+          run=false
+          if [ "$ACTOR" != henetiriki-bot ] && [[ $text == *@claude* ]]; then
+            run=true
+          fi
+
+          # A draft PR is a plan PR: plan on Opus, everything else on Sonnet.
+          model_args='--model sonnet'
+          if [ "$DRAFT" = true ]; then
+            model_args='--model opus --effort high'
+          fi
+
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+          echo "model_args=$model_args" >> "$GITHUB_OUTPUT"
+
   claude:
-    # Claude posts as henetiriki-bot; its own comments never start a run.
-    if: |
-      github.actor != 'henetiriki-bot' && (
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))))
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    # Shared with the spec agent's jobs, so a revision and a build never overlap.
+    concurrency: thread-${{ github.event.pull_request.number || github.event.issue.number }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -48,5 +93,4 @@ jobs:
           bot_id: '344434370'
           additional_permissions: |
             actions: read
-          # A draft PR is a plan PR: plan on Opus, everything else on Sonnet.
-          claude_args: '${{ (github.event.issue.draft || github.event.pull_request.draft) && ''--model opus --effort high'' || ''--model sonnet'' }} --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
+          claude_args: '${{ needs.gate.outputs.model_args }} --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'

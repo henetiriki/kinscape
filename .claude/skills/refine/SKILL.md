@@ -1,6 +1,6 @@
 ---
 name: refine
-description: Interview the user until both sides agree on what is wanted, then draft a Kinscape Intent or the Specs for a milestone or Intent, each with a prefilled form link. Use `/refine intent` (product owner) or `/refine spec M<n>` / `/refine spec <intent issue number>` (tech lead).
+description: Interview the user until both sides agree on what is wanted, then draft a KinScape Intent or the Specs for a milestone or Intent, each with a prefilled form link. Use `/refine intent` (product owner) or `/refine spec M<n>` / `/refine spec <intent issue number>` (tech lead).
 disable-model-invocation: true
 argument-hint: intent [your idea] | spec <M<n> or intent issue number>
 ---

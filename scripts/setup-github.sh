@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Apply Kinscape's GitHub configuration: labels, milestones, repo settings,
+# Apply KinScape's GitHub configuration: labels, milestones, repo settings,
 # the ruleset protecting main, and security/Actions settings.
 # Needs the GitHub CLI (brew install gh) and `gh auth login` as a repo admin.
 # Safe to re-run. To change a setting, change it here in a PR, merge, then re-run.

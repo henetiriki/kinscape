@@ -1,6 +1,6 @@
 # `/refine intent`: for the product owner
 
-Help the product owner (PO) describe something they want Kinscape to do. An Intent says **what** and **why**, never **how**.
+Help the product owner (PO) describe something they want KinScape to do. An Intent says **what** and **why**, never **how**.
 
 ## Who you are talking to
 
@@ -17,7 +17,7 @@ Your first message, briefly:
 
 1. What happens: short questions, one at a time, then a link to the filled-in form, which they check and submit.
 2. How to reply: click an option, or type your own under **Other**. For a question in the chat, type the answer; **yes** accepts a 💡 suggestion.
-3. Ask, in the chat, what they'd like Kinscape to do that it can't do now, with a "Not sure where to start?" hint instead of a 💡 line.
+3. Ask, in the chat, what they'd like KinScape to do that it can't do now, with a "Not sure where to start?" hint instead of a 💡 line.
 
 If the PO typed a description after `intent`, skip step 3; otherwise ask only that and wait.
 

@@ -17,8 +17,11 @@ jobs:
       github.actor != 'henetiriki-bot' && (
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude') &&
+        !(github.event.review.state == 'approved' && github.event.pull_request.draft && startsWith(github.event.pull_request.head.ref, 'spec/'))) ||
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))))
+    # Shared with the spec agent's jobs, so a revision and a build never overlap.
+    concurrency: thread-${{ github.event.pull_request.number || github.event.issue.number }}
     runs-on: ubuntu-latest
     permissions:
       contents: write

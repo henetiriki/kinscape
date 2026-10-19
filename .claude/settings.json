@@ -8,7 +8,7 @@
             "type": "command"
           },
           {
-            "command": "git add -- $CLAUDE_FILE_PATHS 2>/dev/null; yarn lint-staged",
+            "command": "git add -- $CLAUDE_FILE_PATHS 2>/dev/null; npx lint-staged",
             "statusMessage": "Linting the edited file",
             "timeout": 60,
             "type": "command"

@@ -1,4 +1,4 @@
-# How we work on Kinscape
+# How we work on KinScape
 
 Claude writes most drafts and code; people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**, so nobody needs to install anything or learn git.
 

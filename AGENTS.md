@@ -1,4 +1,4 @@
-# Kinscape: instructions for AI agents
+# KinScape: instructions for AI agents
 
 A map of South Africa from 1652 to today. Historical boundaries redraw as a date slider moves, and the user's ancestors are pinned where they were at the time.
 

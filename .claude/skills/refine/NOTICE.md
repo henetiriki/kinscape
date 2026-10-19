@@ -1,6 +1,6 @@
 # Notice
 
-The `refine` skill is written for Kinscape's workflow, and adapts ideas and structure from two MIT-licensed projects. No source text is copied verbatim.
+The `refine` skill is written for KinScape's workflow, and adapts ideas and structure from two MIT-licensed projects. No source text is copied verbatim.
 
 ## `refine`, from rameezk/skills
 
@@ -60,6 +60,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## Changes for Kinscape
+## Changes for KinScape
 
-Hand-offs to other skills were replaced with Kinscape's GitHub issue forms (Intent and Spec), a slicing step was added to spec mode, a plain-language mode was added for the product owner, and questions are asked one at a time, using the question picker where there are options, instead of in rounds.
+Hand-offs to other skills were replaced with KinScape's GitHub issue forms (Intent and Spec), a slicing step was added to spec mode, a plain-language mode was added for the product owner, and questions are asked one at a time, using the question picker where there are options, instead of in rounds.

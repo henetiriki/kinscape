@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROMPT: 'Pick up Spec #${{ github.event.issue.number }}. Draft the plan only.'
+      MODEL_ARGS: --model opus --effort high
     steps: &steps
       - uses: actions/checkout@v7
         with:
@@ -48,7 +49,9 @@ jobs:
           bot_name: henetiriki-bot
           bot_id: '344434370'
           prompt: ${{ env.PROMPT }}
-          claude_args: '--allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
+          # The repo is private; turn off once runs are reliable.
+          show_full_output: true
+          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
 
   build:
     # The bot opens chore PRs too: only a draft on a spec/ branch is a plan PR.
@@ -63,4 +66,5 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROMPT: '@${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it.'
+      MODEL_ARGS: --model sonnet
     steps: *steps

@@ -48,4 +48,5 @@ jobs:
           bot_id: '344434370'
           additional_permissions: |
             actions: read
-          claude_args: '--allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
+          # A draft PR is a plan PR: plan on Opus, everything else on Sonnet.
+          claude_args: '${{ (github.event.issue.draft || github.event.pull_request.draft) && ''--model opus --effort high'' || ''--model sonnet'' }} --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'

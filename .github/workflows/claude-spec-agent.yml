@@ -51,7 +51,7 @@ jobs:
           prompt: ${{ env.PROMPT }}
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
-          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
+          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm install:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
 
   build:
     # The bot opens chore PRs too: only a draft on a spec/ branch is a plan PR.

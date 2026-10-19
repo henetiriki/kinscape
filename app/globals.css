@@ -1,11 +1,169 @@
+:root {
+  --brand: #264f29;
+  --focus-ring: #9dbb9f;
+  --ink: #18211b;
+  --ink-3: #4a544c;
+  --line: #e2e5dd;
+  --scrim: rgb(24 33 27 / 0.45);
+  --shadow: 0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12);
+  --surface: #fff;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
 }
 
+body {
+  color: var(--ink);
+  font-family: 'Public Sans', system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 /* Sized, not positioned: MapLibre's own CSS sets the container's position. */
 .map {
   width: 100vw;
   height: 100dvh;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  left: 24px;
+  padding: 16px 20px;
+  position: absolute;
+  top: 24px;
+  width: 320px;
+  z-index: 1;
+}
+
+.section-heading {
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.layer-row {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.layer-row input {
+  accent-color: var(--brand);
+  height: 20px;
+  margin: 2px 0 0;
+  width: 20px;
+}
+
+.layer-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.layer-help {
+  color: var(--ink-3);
+  display: block;
+  font-size: 13px;
+}
+
+/* Bottom right until the date dock arrives and the design settles. */
+.credits {
+  background: rgb(255 255 255 / 0.8);
+  border-radius: 6px;
+  bottom: 24px;
+  color: #24302b;
+  font-size: 11px;
+  margin: 0;
+  padding: 2px 6px;
+  position: absolute;
+  right: 24px;
+  z-index: 1;
+}
+
+.credits button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.scrim {
+  align-items: center;
+  background: var(--scrim);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 10;
+}
+
+.dialog {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  max-height: 80dvh;
+  max-width: 720px;
+  overflow: auto;
+  padding: 24px;
+  position: relative;
+  width: calc(100vw - 48px);
+}
+
+.dialog h2 {
+  font-size: 20px;
+  margin: 0 40px 16px 0;
+}
+
+.dialog-close {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 24px;
+  height: 44px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 44px;
+}
+
+.dialog table {
+  border-collapse: collapse;
+  font-size: 13px;
+  width: 100%;
+}
+
+.dialog th,
+.dialog td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 8px 8px 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.source-detail {
+  color: var(--ink-3);
+  display: block;
+  font-size: 12px;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  white-space: nowrap;
 }

@@ -52,12 +52,14 @@ export default defineConfig([
     },
   },
   {
-    // Next.js and tool config loaders require a default export here.
+    // Next.js and tool config loaders require a default export here, and
+    // type declarations mirror the default exports of the packages they describe.
     files: [
       'app/**/{page,layout,loading,error,global-error,not-found,template,default}.tsx',
       'app/**/{robots,sitemap,manifest}.ts',
       'app/**/{icon,apple-icon,opengraph-image,twitter-image}.tsx',
       '*.config.{ts,mts,mjs}',
+      'types/*.d.ts',
     ],
     rules: { 'import/no-default-export': 'off' },
   },

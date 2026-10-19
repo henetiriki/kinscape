@@ -7,7 +7,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 ## Source of truth
 
 - `docs/requirements.md`: the baseline requirements. Every requirement has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
-- **Intents:** each milestone in `requirements.md` (M0–M6) is an Intent the PO has already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
+- **Intents:** each milestone in `requirements.md` (M1–M6) has its own Intent issue, filed already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
 - **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves a slice that changes what the user sees; the tech lead approves an engineering-only slice.
 - `plans/<spec-id>-<slug>.md`: the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
 - `docs/how-we-work.md`: the workflow, labels and roles.

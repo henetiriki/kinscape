@@ -111,19 +111,19 @@ A pin says "this person was here, at this time, and this is how the user knows";
 
 **Pins**
 
-| ID     | Requirement                                                                                                                                                                   | Priority |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| PIN-01 | Create a pin by clicking the map, searching a known place, or typing coordinates; then choose the person, date and event type                                                 | Must     |
+| ID     | Requirement                                                                                                                                                                                                             | Priority |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| PIN-01 | Create a pin by clicking the map, searching a known place, or typing coordinates; then choose the person, date and event type                                                                                           | Must     |
 | PIN-02 | Pin fields: person, place, address as recorded (verbatim), precision (street address, building, erf, farm, suburb, town or city, district, province, approximate), event type, fuzzy date or date range, sources, notes | Must     |
-| PIN-03 | Event types: birth, baptism, residence, marriage, death, burial, land ownership, occupation, other                                                                            | Must     |
-| PIN-04 | Fuzzy dates follow GEDCOM conventions: exact, ABT, BEF, AFT, BET…AND, FROM…TO, plus EST (estimated) and CAL (calculated); precision is day (YYYYMMDD), month (YYYYMM) or year (YYYY)                                                               | Must     |
-| PIN-05 | On save, the jurisdiction chain at the pin's date is computed and shown; it is recomputed when boundary data changes                                                          | Must     |
-| PIN-06 | Many pins can share one place (a family farm across generations)                                                                                                              | Must     |
-| PIN-07 | Sources are records of their own (title, repository, archive reference, URL, scan) linked to pins and person facts                                                            | Should   |
-| PIN-08 | Warnings for impossible pins: dated before birth or after death, or overlapping residences                                                                                    | Should   |
-| PIN-09 | Drag a pin to correct its location                                                                                                                                            | Could    |
-| PIN-10 | A pin with no place may take the place of the Person's previous pin, marked as inferred and replaceable | Could |
-| PIN-11 | A Person with no birth date may show their baptism date in its place, marked as derived; the birth date is never overwritten | Could |
+| PIN-03 | Event types: birth, baptism, residence, marriage, death, burial, land ownership, occupation, other                                                                                                                      | Must     |
+| PIN-04 | Fuzzy dates follow GEDCOM conventions: exact, ABT, BEF, AFT, BET…AND, FROM…TO, plus EST (estimated) and CAL (calculated); precision is day (YYYYMMDD), month (YYYYMM) or year (YYYY)                                    | Must     |
+| PIN-05 | On save, the jurisdiction chain at the pin's date is computed and shown; it is recomputed when boundary data changes                                                                                                    | Must     |
+| PIN-06 | Many pins can share one place (a family farm across generations)                                                                                                                                                        | Must     |
+| PIN-07 | Sources are records of their own (title, repository, archive reference, URL, scan) linked to pins and person facts                                                                                                      | Should   |
+| PIN-08 | Warnings for impossible pins: dated before birth or after death, or overlapping residences                                                                                                                              | Should   |
+| PIN-09 | Drag a pin to correct its location                                                                                                                                                                                      | Could    |
+| PIN-10 | A pin with no place may take the place of the Person's previous pin, marked as inferred and replaceable                                                                                                                 | Could    |
+| PIN-11 | A Person with no birth date may show their baptism date in its place, marked as derived; the birth date is never overwritten                                                                                            | Could    |
 
 **Acceptance checks**
 

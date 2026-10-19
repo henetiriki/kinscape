@@ -8,7 +8,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 
 - `docs/requirements.md`: the baseline requirements. Every requirement has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
 - **Intents:** each milestone in `requirements.md` (M1–M6) has its own Intent issue, filed already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
-- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves a slice that changes what the user sees; the tech lead approves an engineering-only slice.
+- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead approves engineering-only ones.
 - `plans/<spec-id>-<slug>.md`: the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
 - `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
 - `docs/how-we-work.md`: the workflow, labels and roles.
@@ -25,11 +25,12 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 ## Plans
 
 1. **Draft before code.** Plan in a read-only step: the files that change, the order of work, the risks, and how each acceptance check will be proven. Don't edit files until the tech lead approves the plan.
-2. **Spec plans are committed first.** Save the approved plan as `plans/<spec-id>-<slug>.md` with `Status: approved`, as the first commit on the branch: `plan(<spec-id>): approved by @<tech-lead>`. Spec ids are the milestone number plus an index (`M0.1`, `M0.2`). Each Spec gets its own plan and PR.
-3. **Chore plans are not committed.** The PR body says what changed and why.
-4. **Small departures** that don't change the plan's intent (file names, step order, an extra helper): update the plan in the same commit as the code, with one line under `## Deviations`.
-5. **Big departures:** stop and return to planning if a change would alter scope, the data model, a public API, an acceptance check, or would add a dependency. The tech lead re-approves before work continues.
-6. The tech lead's PR approval signs off the code and the final plan together.
+2. **Spec plans are committed first.** Save the approved plan as `plans/<spec-id>-<slug>.md` with `Status: approved`, as the first commit on the branch: `plan(<spec-id>): approved by @<tech-lead>`. Spec ids are the milestone number plus an index (`M0.1`, `M0.2`).
+3. **In GitHub Actions**, commit the plan as `plan(<spec-id>): draft` with `Status: draft` on `spec/<spec-id>-<slug>`, open a draft PR and stop. Approval is the tech lead's review or `@claude approved` comment; other `@claude` comments are feedback: revise the plan only. On approval, commit as rule 2 says, build, and mark the PR ready.
+4. **Chore plans are not committed.** The PR body says what changed and why.
+5. **Small departures** that don't change the plan's intent (file names, step order, an extra helper): update the plan in the same commit as the code, with one line under `## Deviations`.
+6. **Big departures:** stop and return to planning if a change would alter scope, the data model, a public API, an acceptance check, or would add a dependency. The tech lead re-approves before work continues.
+7. The tech lead's PR approval signs off the code and the final plan together.
 
 ## Data rules
 

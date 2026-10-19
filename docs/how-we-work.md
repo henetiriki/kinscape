@@ -4,7 +4,7 @@ Claude writes most drafts and code; people make the decisions. Everything happen
 
 ## Intent, Spec, Plan
 
-- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M0–M6) is an Intent the PO has already approved.- **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. Ids look like `M0.1`. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one.
+- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, filed already approved. M0 predates this and has none.- **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. Ids look like `M0.1`. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one.
 - A Spec filed with an Intent number becomes a sub-issue of that Intent automatically. When the last of an Intent's sub-issue Specs closes, a workflow sets the Intent to `status: ready-for-po`. The PO checks the outcome and closes it.
 - **Plan:** how a Spec is built: files, order of work, risks and proof. Committed with the code as `plans/M0.1-hello-vercel.md` ([rules](../AGENTS.md#plans)).
 
@@ -18,7 +18,7 @@ Intent ──► Spec ──► Plan ──► Build & Test ──► Preview �
 
 | Stage            | What happens                                                               | Who decides                             |
 | ---------------- | -------------------------------------------------------------------------- | --------------------------------------- |
-| **Intent**       | A milestone, or a new idea the PO files as an Intent issue                 | PO                                      |
+| **Intent**       | A milestone's Intent issue, or a new idea the PO files                     | PO                                      |
 | **Spec**         | Claude slices the Intent and flags decisions                               | PO or tech lead (see _Spec_)            |
 | **Plan**         | Claude plans each Spec                                                     | Tech lead                               |
 | **Build & test** | Claude writes code and tests; done only when checks pass                   | Tech lead reviews                       |
@@ -27,13 +27,13 @@ Intent ──► Spec ──► Plan ──► Build & Test ──► Preview �
 
 ## Which issue do I need?
 
-| I want to...                                  | Open a                                          | Who approves                    | Starts as               |
-| --------------------------------------------- | ----------------------------------------------- | ------------------------------- | ----------------------- |
-| Start the next milestone                      | Nothing: the tech lead runs `/refine spec M<n>` | See _Spec_                      | n/a                     |
-| Add or change something not in a milestone    | **Intent**                                      | PO                              | `status: draft`         |
-| Change [the requirements](requirements.md)    | **Intent** (the only route)                     | PO                              | `status: draft`         |
-| Report something broken                       | **Bug**                                         | Nobody; it goes straight to dev | `status: ready-for-dev` |
-| Change tooling, CI, docs, process or settings | No issue: a `chore:` pull request               | Tech lead                       | n/a                     |
+| I want to...                                  | Open a                                                     | Who approves                    | Starts as               |
+| --------------------------------------------- | ---------------------------------------------------------- | ------------------------------- | ----------------------- |
+| Start the next milestone                      | Nothing: the tech lead runs `/refine spec <Intent number>` | See _Spec_                      | n/a                     |
+| Add or change something not in a milestone    | **Intent**                                                 | PO                              | `status: draft`         |
+| Change [the requirements](requirements.md)    | **Intent** (the only route)                                | PO                              | `status: draft`         |
+| Report something broken                       | **Bug**                                                    | Nobody; it goes straight to dev | `status: ready-for-dev` |
+| Change tooling, CI, docs, process or settings | No issue: a `chore:` pull request                          | Tech lead                       | n/a                     |
 
 ## Drafting with Claude
 
@@ -42,7 +42,7 @@ The `/refine` skill asks questions until you agree on what is wanted, then draft
 **Before you start, choose Opus and High effort** in the Claude app's model and effort selectors (in the terminal: `/model opus` and `/effort high`). The project default uses Opus only in plan mode, and the app ignores the skill's own model setting.
 
 - **PO:** run `/refine intent` and answer in plain language. Claude gives you a link that opens the Intent form filled in, and tells you what to do if it doesn't work.
-- **Tech lead:** run `/refine spec M<n>` or `/refine spec <Intent number>`. Claude proposes the slices, then drafts each Spec.
+- **Tech lead:** run `/refine spec <Intent number>`, using the milestone's Intent issue. Claude proposes the slices, then drafts each Spec.
 
 ## Building a Spec
 

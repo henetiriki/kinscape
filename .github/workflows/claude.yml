@@ -76,8 +76,9 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
-          # Otherwise git pushes with GITHUB_TOKEN, not the PAT, and the runs it triggers wait for approval.
-          persist-credentials: false
+          # Persist the PAT, not GITHUB_TOKEN: the action fetches the PR branch before it sets up git auth,
+          # and runs triggered by a GITHUB_TOKEN push wait for approval.
+          token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       - uses: actions/setup-node@v7
         with:

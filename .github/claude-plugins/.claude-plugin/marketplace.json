@@ -1,0 +1,19 @@
+{
+  "name": "kinscape-ci",
+  "description": "Pins the plugin that .github/workflows/claude-code-review.yml installs. Dependabot does not track this file: bump the sha by hand.",
+  "owner": {
+    "name": "KinScape"
+  },
+  "plugins": [
+    {
+      "name": "code-review",
+      "description": "Anthropic's code-review plugin, pinned to one commit of anthropics/claude-code.",
+      "source": {
+        "source": "git-subdir",
+        "url": "anthropics/claude-code",
+        "path": "plugins/code-review",
+        "sha": "db8834ba1d72e9a26fba30ac85f3bc4316bb0689"
+      }
+    }
+  ]
+}

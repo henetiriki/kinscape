@@ -1,4 +1,5 @@
 @AGENTS.md
+@docs/security.md
 
 ## Claude-specific notes
 

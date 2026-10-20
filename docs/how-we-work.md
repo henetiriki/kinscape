@@ -57,7 +57,7 @@ Write each PO or tech-lead decision like this:
 Recommended: A, because …
 ```
 
-Answer with `D1: B` or `D1: other, <your option>` in a comment or review. Claude records it in the issue body (`gh issue view --json body`, then `gh issue edit --body-file`): the answer goes under the decision, and any Summary, Behaviour or Acceptance check it changes is reworded to match. Nothing is built while one is open. Hard-to-reverse engineering choices go to the tech lead, even in a Spec the PO approves.
+Answer with `D1: B` or `D1: other, <your option>` in a comment or review. Claude records it in the issue body, from the body in its prompt, with one command, `gh issue edit <n> --body-file - <<'EOF'` (no pipes, `&&` or temp files): the answer goes under the decision, and any Summary, Behaviour or Acceptance check it changes is reworded to match. Nothing is built while one is open. Hard-to-reverse engineering choices go to the tech lead, even in a Spec the PO approves.
 
 ## Building a Spec
 

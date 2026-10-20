@@ -30,7 +30,7 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 - The name is **KinScape**, capital S, in UI text and docs.
 - The icon is `app/icon0.svg`: a white tree on forest green, with a 25% corner radius. Never recolour it.
 - Wordmark: the icon, then "KinScape" in Bricolage Grotesque 700.
-- Tagline: "Borders move. Farms don't."
+- Tagline: "Borders move. Places don't."
 
 ## Fonts
 

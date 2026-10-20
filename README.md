@@ -2,7 +2,7 @@
 
 A time-travelling landscape for your kin. Drag the slider from 1652 to today and watch colonies, republics and provinces come and go, while great-great-oupa stays put on the family farm.
 
-> Borders move. Farms don't.
+> Borders move. Places don't.
 
 ## Where things are
 

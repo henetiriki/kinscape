@@ -9,5 +9,3 @@ Code and workflows follow these. The automated review flags a change that breaks
 - Database queries take parameters; never build SQL from strings.
 - Workflows grant the fewest `permissions:` they need, pin each action to a full commit SHA, and pass `${{ github.event.* }}` text to scripts through `env:`.
 - Logs and error messages never include secrets, tokens or Person data.
-
-Secrets, real people's data and untrusted content: [AGENTS.md › Data rules](../AGENTS.md#data-rules).

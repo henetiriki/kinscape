@@ -34,7 +34,11 @@ export const readPin = (root: string): Pin => {
     throw new Error(`${MARKETPLACE} has no code-review plugin`);
   }
 
-  return { path: source.path, repo: source.url, sha: source.sha };
+  // The marketplace needs an https URL (the owner/repo shorthand clones over
+  // SSH, which CI can't); the GitHub API and links need owner/repo.
+  const repo = source.url.replace(/^https:\/\/github\.com\/|\.git$/g, '');
+
+  return { path: source.path, repo, sha: source.sha };
 };
 
 // A code span keeps upstream @mentions from notifying anyone.

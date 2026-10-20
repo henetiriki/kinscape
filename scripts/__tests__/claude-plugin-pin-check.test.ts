@@ -27,13 +27,13 @@ const commit = (
 
 const marketplace = (plugins: unknown[]) => JSON.stringify({ plugins });
 
-const entry = (name: string) => ({
+const entry = (name: string, url = 'anthropics/claude-code') => ({
   name,
   source: {
     path: 'plugins/code-review',
     sha: PIN,
     source: 'git-subdir',
-    url: 'anthropics/claude-code',
+    url,
   },
 });
 
@@ -87,6 +87,15 @@ describe('run and readPin on a fixture', () => {
   afterEach(() => {
     rmSync(root, { force: true, recursive: true });
     vi.restoreAllMocks();
+  });
+
+  it.each([
+    'anthropics/claude-code',
+    'https://github.com/anthropics/claude-code.git',
+  ])('reads owner/repo from the url %s', url => {
+    writeMarketplace([entry('code-review', url)]);
+
+    expect(readPin(root).repo).toBe('anthropics/claude-code');
   });
 
   it('throws when the marketplace has no code-review plugin', () => {

@@ -1,4 +1,4 @@
-name: Intent ready for PO
+name: 'Backlog: Intent ready for PO'
 
 on:
   issues:

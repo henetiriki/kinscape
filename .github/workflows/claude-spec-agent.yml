@@ -1,4 +1,4 @@
-name: Claude Spec Agent
+name: 'Claude: Spec Agent - Plan/Build'
 
 # Two stages (AGENTS.md › Plans): a ready-for-dev Spec gets a draft plan PR;
 # the tech lead's approving review on that PR starts the build.

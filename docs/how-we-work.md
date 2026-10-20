@@ -1,6 +1,6 @@
 # How we work on KinScape
 
-Claude writes most drafts and code; people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**, so nobody needs to install anything or learn git.
+Claude writes most drafts and code; people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**; nobody needs to learn git.
 
 ## Intent, Spec, Plan
 
@@ -37,7 +37,7 @@ Intent ──► Spec ──► Plan ──► Build & Test ──► Preview �
 
 ## Drafting with Claude
 
-The `/refine` skill asks questions until you agree on what is wanted, then drafts the issue. It never files or builds anything: you submit the issue yourself.
+The `/refine` skill asks questions until you agree on what is wanted, then drafts the issue. It files and builds nothing.
 
 **Before you start, choose Opus and High effort** in the Claude app's model and effort selectors (in the terminal: `/model opus` and `/effort high`). The project default uses Opus only in plan mode, and the app ignores the skill's own model setting.
 
@@ -46,7 +46,7 @@ The `/refine` skill asks questions until you agree on what is wanted, then draft
 
 ## Building a Spec
 
-Setting a Spec to `status: ready-for-dev` starts Claude in GitHub Actions. It opens a draft pull request with the plan; comment `@claude` there to change it. Answer its open decisions in your approving review: Claude records them, builds, rewrites the PR description and marks it ready.
+Setting an approved Spec to `status: ready-for-agent` starts Claude in GitHub Actions. It opens a draft pull request with the plan; comment `@claude` there to change it. Answer its open decisions in your approving review: Claude records them, builds, rewrites the PR description and marks it ready.
 
 Claude reviews each pull request automatically, except drafts, Dependabot PRs and PRs that change only `docs/` or `plans/`.
 
@@ -80,11 +80,12 @@ Everyone follows [AGENTS.md › Data rules](../AGENTS.md#data-rules).
 
 Each issue has one **type** label and one **status** label. The status tells you whose turn it is.
 
-| Label                   | Meaning                                                | Ball is with                           |
-| ----------------------- | ------------------------------------------------------ | -------------------------------------- |
-| `status: draft`         | Still being written                                    | Author                                 |
-| `status: ready-for-po`  | Needs the PO to read, answer, approve or try a preview | **PO**                                 |
-| `status: ready-for-dev` | Approved; can be picked up                             | Tech lead / Claude                     |
-| `status: blocked`       | Waiting on something external, or a decision Spec      | Whoever is named in the latest comment |
+| Label                     | Meaning                                                | Ball is with                           |
+| ------------------------- | ------------------------------------------------------ | -------------------------------------- |
+| `status: draft`           | Still being written                                    | Author                                 |
+| `status: ready-for-po`    | Needs the PO to read, answer, approve or try a preview | **PO**                                 |
+| `status: ready-for-dev`   | Approved; a person picks it up                         | Tech lead                              |
+| `status: ready-for-agent` | Starts Claude's plan                                   | Claude                                 |
+| `status: blocked`         | Waiting on something external, or a decision Spec      | Whoever is named in the latest comment |
 
 **PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22): your to-do list.

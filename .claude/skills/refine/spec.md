@@ -64,4 +64,4 @@ A Spec with a **Blocking** concern is `status: blocked` until it is resolved.
 - **Changes what the user sees:** set `status: ready-for-po`. The PO reads the Flagged concerns, then approves with `status: ready-for-dev`.
 - **Engineering-only:** the tech lead approves with `status: ready-for-dev`.
 
-Stop there. Planning starts from an approved Spec, in plan mode.
+Then the tech lead sets `status: ready-for-agent` to start planning. Stop there.

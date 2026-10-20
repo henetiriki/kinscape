@@ -15,7 +15,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 
 ## Workflow rules
 
-- Only build from a Spec labelled `status: ready-for-dev`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
+- Only build from a Spec labelled `status: ready-for-dev` or `status: ready-for-agent`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
 - Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - Before you change anything, check that the change belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
 - When drafting a Spec, list anything you can't resolve under **Flagged concerns** rather than choosing silently.

@@ -97,6 +97,42 @@ describe('loadBoundaryData', () => {
     expect(data.boundaries[0]).toMatchObject({ polity: 'p1', validTo: null });
   });
 
+  it('keeps the optional processing note on a source', () => {
+    write('sources.json', {
+      sources: [{ ...source, processing: 'Simplified to 500 m.' }],
+    });
+
+    const { data, errors } = loadBoundaryData(root);
+
+    expect(errors).toEqual([]);
+    expect(data.sources[0].processing).toBe('Simplified to 500 m.');
+  });
+
+  it.each([
+    ['not a date', 'soon'],
+    ['not a real day', '2026-02-30'],
+    ['an impossible month', '2026-13-01'],
+    ['missing', undefined],
+  ])('rejects a source whose check date is %s', (_, dateChecked) => {
+    const sources = write('sources.json', {
+      sources: [{ ...source, dateChecked }],
+    });
+
+    expect(loadBoundaryData(root).errors).toEqual([
+      `${sources}: sources[0] is not a valid row`,
+    ]);
+  });
+
+  it('rejects a source whose processing note is not text', () => {
+    const sources = write('sources.json', {
+      sources: [{ ...source, processing: 5 }],
+    });
+
+    expect(loadBoundaryData(root).errors).toEqual([
+      `${sources}: sources[0] is not a valid row`,
+    ]);
+  });
+
   it('reports invalid JSON in the data files', () => {
     const polities = write('polities.json', '{ nope');
     const sources = write('sources.json', '{ nope');

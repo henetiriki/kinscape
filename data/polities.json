@@ -1,4 +1,83 @@
 {
-  "names": [],
-  "polities": []
+  "names": [
+    {
+      "name": "Eastern Cape",
+      "polity": "eastern-cape",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "eSwatini",
+      "polity": "eswatini",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Free State",
+      "polity": "free-state",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Gauteng",
+      "polity": "gauteng",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "KwaZulu-Natal",
+      "polity": "kwazulu-natal",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Lesotho",
+      "polity": "lesotho",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Limpopo",
+      "polity": "limpopo",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Mpumalanga",
+      "polity": "mpumalanga",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "North West",
+      "polity": "north-west",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Northern Cape",
+      "polity": "northern-cape",
+      "validFrom": 130484,
+      "validTo": null
+    },
+    {
+      "name": "Western Cape",
+      "polity": "western-cape",
+      "validFrom": 130484,
+      "validTo": null
+    }
+  ],
+  "polities": [
+    { "id": "eastern-cape" },
+    { "id": "eswatini" },
+    { "id": "free-state" },
+    { "id": "gauteng" },
+    { "id": "kwazulu-natal" },
+    { "id": "lesotho" },
+    { "id": "limpopo" },
+    { "id": "mpumalanga" },
+    { "id": "north-west" },
+    { "id": "northern-cape" },
+    { "id": "western-cape" }
+  ]
 }

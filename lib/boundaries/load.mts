@@ -1,12 +1,14 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type {
-  BoundaryData,
-  BoundaryVersion,
-  Polity,
-  PolityName,
-  Source,
+import {
+  type BoundaryData,
+  type BoundaryVersion,
+  fromDay,
+  type Polity,
+  type PolityName,
+  type Source,
+  toDay,
 } from './model.mts';
 
 export type LoadResult = { data: BoundaryData; errors: string[] };
@@ -96,12 +98,29 @@ const parseName = (row: Row): PolityName | undefined =>
       }
     : undefined;
 
-const parseSource = (row: Row): Source | undefined =>
-  SOURCE_FIELDS.every(field => isText(row[field]))
+const isIsoDate = (value: unknown): boolean => {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+
+  return (
+    !Number.isNaN(Date.parse(`${value}T00:00:00Z`)) &&
+    fromDay(toDay(value)) === value
+  );
+};
+
+const parseSource = (row: Row): Source | undefined => {
+  const fields = SOURCE_FIELDS.every(field => isText(row[field]));
+  const processing = row.processing === undefined || isText(row.processing);
+
+  return fields && processing && isIsoDate(row.dateChecked)
     ? (Object.fromEntries(
-        SOURCE_FIELDS.map(field => [field, row[field]])
+        [...SOURCE_FIELDS, 'processing']
+          .filter(field => row[field] !== undefined)
+          .map(field => [field, row[field]])
       ) as Source)
     : undefined;
+};
 
 const isMultiPolygon = (
   geometry: unknown

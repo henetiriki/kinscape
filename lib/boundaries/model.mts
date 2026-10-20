@@ -39,6 +39,8 @@ export type Source = {
   layer: string;
   licence: string;
   licenceLink: string;
+  /** What was done to the data, such as clipping and simplifying. */
+  processing?: string;
   title: string;
 };
 

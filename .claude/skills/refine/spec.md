@@ -21,7 +21,7 @@ Ask questions as described in `SKILL.md`. Typical branches:
 - **Cost:** anything that adds a paid service or moves the monthly budget (target ≤ US$10).
 - **Proof:** how each behaviour will be shown to work: an automated test, the boundary validator, a preview check.
 
-Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions); risks alone are Flagged concerns.
+Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions).
 
 ## Step 1: slice
 
@@ -51,7 +51,9 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order:
 >
 > **Acceptance checks** (Given / When / Then, each one able to become an automated test where possible)
 >
-> **⚠️ Flagged concerns** (risks and conflicts, one line each, then each decision. Mark each one that blocks the build **Blocking**. "None" only if there are none.)
+> **❓ Decisions** (in the decision format. Mark each one that blocks the build **Blocking**. "None" only if there are none.)
+>
+> **⚠️ Flagged concerns** (risks and conflicts, one line each. "None" only if there are none.)
 >
 > **Out of scope / carried forward** (with any `Proposed term: <name> = <meaning>` lines)
 
@@ -59,9 +61,9 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order:
 
 Give **one link** per Spec for form `2-spec.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. A workflow links it to the Intent; if it can't, add the link by hand. If a link doesn't work: **Issues → New issue → Spec**, and copy each block into the box with the same name.
 
-A Spec with a **Blocking** concern is `status: blocked` until it is resolved.
+A Spec with a **Blocking** decision is `status: blocked` until it is answered.
 
-- **Changes what the user sees:** set `status: ready-for-po`. The PO reads the Flagged concerns, then approves with `status: ready-for-dev`.
+- **Changes what the user sees:** set `status: ready-for-po`. The PO answers the Decisions, then approves with `status: ready-for-dev`.
 - **Engineering-only:** the tech lead approves with `status: ready-for-dev`.
 
 Then the tech lead sets `status: ready-for-agent` to start planning. Stop there.

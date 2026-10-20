@@ -52,7 +52,7 @@ Claude reviews each pull request automatically, except drafts, Dependabot PRs an
 
 ## Dependency updates
 
-Dependabot opens security PRs as soon as an advisory lands and routine updates weekly, labelled `dependencies`. Nothing auto-merges: the tech lead reviews and merges each one once CI passes, within:
+Dependabot opens security PRs when an advisory lands and routine updates weekly, labelled `dependencies`. Nothing auto-merges: the tech lead reviews and merges each one once CI passes, within:
 
 | Severity         | Deadline              |
 | ---------------- | --------------------- |
@@ -85,6 +85,6 @@ Each issue has one **type** label and one **status** label. The status tells you
 | `status: draft`         | Still being written                                    | Author                                 |
 | `status: ready-for-po`  | Needs the PO to read, answer, approve or try a preview | **PO**                                 |
 | `status: ready-for-dev` | Approved; can be picked up                             | Tech lead / Claude                     |
-| `status: blocked`       | Waiting on something outside the team                  | Whoever is named in the latest comment |
+| `status: blocked`       | Waiting on something external, or a decision Spec      | Whoever is named in the latest comment |
 
 **PO tip:** bookmark the issues filtered by [`status: ready-for-po`](https://github.com/henetiriki/kinscape/issues?q=is%3Aopen+label%3A%22status%3A+ready-for-po%22): your to-do list.

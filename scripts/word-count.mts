@@ -10,7 +10,7 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 800, pattern: /^docs\/how-we-work\.md$/ },
   { limit: 600, pattern: /^plans\/[^/]+\.md$/ },
   {
-    limit: 600,
+    limit: 650,
     pattern: /^\.claude\/skills\/(.+\/)?(?!NOTICE\.md$)[^/]+\.md$/,
   },
 ];

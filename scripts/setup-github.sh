@@ -24,7 +24,7 @@ label "dependencies" "0366D6" "Dependency update"
 label "status: draft"         "E5E7EB" "Still being written"
 label "status: ready-for-po"  "F59E0B" "Waiting on the product owner"
 label "status: ready-for-dev" "10B981" "Approved, can be picked up"
-label "status: blocked"       "7F1D1D" "Waiting on something external"
+label "status: blocked"       "7F1D1D" "Waiting on something external, or a decision Spec"
 
 # Remove GitHub's default labels that overlap with ours, and our retired ones (ignore if already gone)
 for l in bug documentation duplicate enhancement "good first issue" "help wanted" invalid question wontfix \

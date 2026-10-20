@@ -12,12 +12,12 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - `plans/<spec-id>-<slug>.md`: the implementation plan, one per Spec, committed in the same PR as the code. Use `plans/TEMPLATE.md`.
 - `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
 - `docs/how-we-work.md`: the workflow, labels and roles.
-- Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
+- Use the terms in the requirements' _Key concepts_ table exactly in code, UI and docs.
 
 ## Workflow rules
 
 - Only build from a Spec labelled `status: ready-for-dev`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
-- Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
+- Before new work, `git fetch origin main` and branch from `origin/main`; never edit on the checked-out branch. Open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - When drafting a Spec, list anything you can't resolve under **Flagged concerns** rather than choosing silently.
 - Never use `--no-verify`. If a hook fails, fix the code.
 - Set status labels as the workflow says: `ready-for-po` when the PO must act, including when a PR for a user-visible change is ready to try.
@@ -25,12 +25,11 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 ## Plans
 
 1. **Draft before code.** Plan in a read-only step: the files that change, the order of work, the risks, and how each acceptance check will be proven. Don't edit files until the tech lead approves the plan.
-2. **Spec plans are committed first.** Save the approved plan as `plans/<spec-id>-<slug>.md` with `Status: approved`, as the first commit on the branch: `plan(<spec-id>): approved by @<tech-lead>`. Spec ids look like `M0.1`.
-3. **In GitHub Actions**, commit the plan as `plan(<spec-id>): draft` with `Status: draft` on `spec/<spec-id>-<slug>`, open a draft PR and stop. Only the tech lead's approving review approves it (it may answer open decisions: record them, or comment and stop); `@claude` comments are feedback: revise the plan only. On approval, commit as rule 2 says, build, rewrite the PR body, and mark the PR ready.
-4. **Chore plans are not committed.** The PR body says what changed and why.
-5. **Small departures** that don't change the plan's intent (file names, step order, an extra helper): update the plan in the same commit as the code, with one line under `## Deviations`.
-6. **Big departures:** stop and return to planning if a change would alter scope, the data model, a public API, an acceptance check, or would add a dependency. The tech lead re-approves before work continues.
-7. The tech lead's PR approval signs off the code and the final plan together.
+2. **Spec plans are committed first.** Save the approved plan as `plans/<spec-id>-<slug>.md` with `Status: approved`, as the first commit on the branch: `plan(<spec-id>): approved by @<tech-lead>`.3. **In GitHub Actions**, commit the plan as `plan(<spec-id>): draft` with `Status: draft` on `spec/<spec-id>-<slug>`, open a draft PR and stop. Only the tech lead's approving review approves it (it may answer open decisions: record them, or comment and stop); `@claude` comments are feedback: revise the plan only. On approval, commit as rule 2 says, build, rewrite the PR body, and mark the PR ready.
+3. **Chore plans are not committed.** The PR body says what changed and why.
+4. **Small departures** that don't change the plan's intent (file names, step order, an extra helper): update the plan in the same commit as the code, with one line under `## Deviations`.
+5. **Big departures:** stop and return to planning if a change would alter scope, the data model, a public API, an acceptance check, or would add a dependency. The tech lead re-approves before work continues.
+6. The tech lead's PR approval signs off the code and the final plan together.
 
 ## Data rules
 
@@ -65,3 +64,4 @@ Run lint, tests and the boundary validator before reporting a task done, and pas
 _Add an entry whenever the same correction is needed twice._
 
 - **Verbose drafts.** Keep to the budgets in _Writing_.
+- **Editing on the checked-out branch.** See _Workflow rules_.

@@ -96,4 +96,6 @@ jobs:
           bot_id: '344434370'
           additional_permissions: |
             actions: read
+          # The repo is private; turn off once runs are reliable.
+          show_full_output: true
           claude_args: '${{ needs.gate.outputs.model_args }} --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'

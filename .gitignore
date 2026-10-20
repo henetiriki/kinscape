@@ -38,3 +38,6 @@ next-env.d.ts
 # tests
 /playwright-report/
 /test-results/
+
+# claude code
+/.claude/worktrees/

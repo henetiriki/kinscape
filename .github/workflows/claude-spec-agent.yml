@@ -1,6 +1,6 @@
 name: 'Claude: Spec Agent - Plan/Build'
 
-# Two stages (AGENTS.md › Plans): a ready-for-dev Spec gets a draft plan PR;
+# Two stages (plans/README.md): a ready-for-dev Spec gets a draft plan PR;
 # the tech lead's approving review on that PR starts the build.
 # `@claude` comments on the plan PR are handled by claude.yml.
 
@@ -30,7 +30,7 @@ jobs:
       # The issue or PR that gets a fallback comment if the agent leaves none.
       THREAD: ${{ github.event.issue.number }}
       PROMPT: >-
-        Pick up Spec #${{ github.event.issue.number }}. Draft the plan only.
+        Pick up Spec #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
         Push before you stop. If you're blocked, comment on the Spec saying why.
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
@@ -92,7 +92,7 @@ jobs:
     env:
       THREAD: ${{ github.event.pull_request.number }}
       PROMPT: >-
-        @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it.
+        @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it. Follow plans/README.md.
         Answers to the plan's open decisions are in the review body and the PR comments:
         record them in the plan in the approval commit.
         If a decision is still unanswered, comment asking for it and stop without building.

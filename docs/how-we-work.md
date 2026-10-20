@@ -10,6 +10,12 @@ Claude writes most drafts and code; people make the decisions. Everything happen
 
 ## The loop
 
+```
+Intent ──► Spec ──► Plan ──► Build & Test ──► Preview ──► Live ──► Feedback ──┐
+  ▲                                                                           │
+  └───────────────────────────────────────────────────────────────────────────┘
+```
+
 | Stage            | What happens                                                               | Who decides                             |
 | ---------------- | -------------------------------------------------------------------------- | --------------------------------------- |
 | **Intent**       | A milestone's Intent issue, or a new idea the PO files                     | PO                                      |

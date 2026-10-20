@@ -18,7 +18,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 - Only build from a Spec labelled `status: ready-for-dev` or `status: ready-for-agent`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
 - Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - Before you change anything, check that the change belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
-- When drafting a Spec, list anything you can't resolve under **Flagged concerns** rather than choosing silently.
+- Never choose silently. In Intents, Specs and plans, write each decision for the PO or tech lead in the [decision format](docs/how-we-work.md#decisions); list risks under **Flagged concerns**.
 - Never use `--no-verify`. If a hook fails, fix the code.
 - Set status labels as the workflow says: `ready-for-po` when the PO must act, including when a PR for a user-visible change is ready to try.
 

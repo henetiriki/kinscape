@@ -45,7 +45,7 @@ body:
     id: concerns
     attributes:
       label: ⚠️ Flagged concerns
-      description: Risks, conflicting requirements, hard-to-reverse choices and decisions the approver must make before build. Mark each one that blocks the build **Blocking**. Write "None" if there are none.
+      description: 'Risks and conflicts, one line each, then every decision in the format in docs/how-we-work.md › Decisions (D1 with options A, B, Other, and who decides). Answer with `D1: B`. Mark each one that blocks the build **Blocking**. Write "None" if there are none.'
     validations:
       required: true
   - type: textarea

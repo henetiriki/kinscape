@@ -31,6 +31,7 @@ jobs:
       THREAD: ${{ github.event.issue.number }}
       PROMPT: >-
         Pick up Spec #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        Write each open choice as a decision in the format in docs/how-we-work.md.
         Push before you stop. If you're blocked, comment on the Spec saying why,
         then swap its status label for `status: blocked`.
         Run commands in the foreground and never end your turn to wait.
@@ -99,8 +100,9 @@ jobs:
       THREAD: ${{ github.event.pull_request.number }}
       PROMPT: >-
         @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it. Follow plans/README.md.
-        Answers to the plan's open decisions are in the review body and the PR comments:
-        record them in the plan in the approval commit.
+        Answers to the plan's open decisions are in the review body and the PR comments,
+        as `D<n>: <option>` (older plans: free-form). Record each under its decision
+        in the plan in the approval commit.
         If a decision is still unanswered, comment asking for it and stop without building.
         Push before you stop, then comment on the PR saying what you did or what blocked you.
         Run commands in the foreground and never end your turn to wait.

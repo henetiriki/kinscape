@@ -8,4 +8,5 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
 4. **Chore plans are not committed.** The PR body says what changed and why.
 5. **Small departures** that don't change the plan's intent (file names, step order, an extra helper): update the plan in the same commit as the code, with one line under `## Deviations`.
 6. **Big departures:** stop and return to planning if a change would alter scope, the data model, a public API, an acceptance check, or would add a dependency. The tech lead re-approves before work continues.
-7. The tech lead's PR approval signs off the code and the final plan together.
+7. **Too big:** if the plan won't fit its word budget, or the diff will pass the line cap in `/refine spec` › Step 1, stop, commit what works and ask the tech lead to split the Spec.
+8. The tech lead's PR approval signs off the code and the final plan together.

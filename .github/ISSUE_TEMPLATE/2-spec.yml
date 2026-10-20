@@ -45,7 +45,7 @@ body:
     id: concerns
     attributes:
       label: ⚠️ Flagged concerns
-      description: Risks, conflicting requirements, hard-to-reverse choices and decisions the approver must make before build. Write "None" if there are none.
+      description: Risks, conflicting requirements, hard-to-reverse choices and decisions the approver must make before build. Mark each one that blocks the build **Blocking**. Write "None" if there are none.
     validations:
       required: true
   - type: textarea

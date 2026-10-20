@@ -25,8 +25,8 @@ describe('budgetFor', () => {
     ['docs/how-we-work.md', 800],
     ['plans/M0.1-hello-vercel.md', 600],
     ['plans/TEMPLATE.md', 600],
-    ['.claude/skills/refine/SKILL.md', 600],
-    ['.claude/skills/refine/nested/deep.md', 600],
+    ['.claude/skills/refine/SKILL.md', 650],
+    ['.claude/skills/refine/nested/deep.md', 650],
   ])('%s has a budget of %i', (path, budget) => {
     expect(budgetFor(path)).toBe(budget);
   });
@@ -90,7 +90,7 @@ describe('checkFiles and run', () => {
     write('CLAUDE.md', words(151));
     write('plans/a.md', words(10));
     write('plans/b.md', words(601));
-    write('.claude/skills/x/SKILL.md', words(601));
+    write('.claude/skills/x/SKILL.md', words(651));
     write('.claude/skills/x/NOTICE.md', words(5000));
 
     expect(run(root, [], '')).toBe(1);

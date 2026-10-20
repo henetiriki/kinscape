@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         A **spec** says what one slice of a milestone or Intent will change, and how we'll know it works. How it's built goes in the plan.
-        If it changes what the user sees, set `status: ready-for-po`: the PO reads the **Flagged concerns** first, then approves by setting `status: ready-for-dev`. If it is engineering-only, the tech lead approves by setting `status: ready-for-dev`. Then the tech lead sets `status: ready-for-agent` to have Claude plan it.
+        If it changes what the user sees, set `status: ready-for-po`: the PO answers the **Decisions** first, then approves by setting `status: ready-for-dev`. If it is engineering-only, the tech lead approves by setting `status: ready-for-dev`. Then the tech lead sets `status: ready-for-agent` to have Claude plan it.
   - type: input
     id: intent
     attributes:
@@ -42,10 +42,17 @@ body:
     validations:
       required: true
   - type: textarea
+    id: decisions
+    attributes:
+      label: ❓ Decisions
+      description: 'Every choice the approver must make, in the format in docs/how-we-work.md › Decisions (D1 with options A, B, Other, and who decides). Answer with `D1: B`. Mark each one that blocks the build **Blocking**. Write "None" if there are none.'
+    validations:
+      required: true
+  - type: textarea
     id: concerns
     attributes:
       label: ⚠️ Flagged concerns
-      description: 'Risks and conflicts, one line each, then every decision in the format in docs/how-we-work.md › Decisions (D1 with options A, B, Other, and who decides). Answer with `D1: B`. Mark each one that blocks the build **Blocking**. Write "None" if there are none.'
+      description: 'Risks and conflicts, one line each. Write "None" if there are none.'
     validations:
       required: true
   - type: textarea

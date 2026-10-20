@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         A **spec** says what one slice of a milestone or Intent will change, and how we'll know it works. How it's built goes in the plan.
-        If it changes what the user sees, set `status: ready-for-po`: the PO reads the **Flagged concerns** first, then approves by setting `status: ready-for-dev`. If it is engineering-only, the tech lead approves by setting `status: ready-for-dev`.
+        If it changes what the user sees, set `status: ready-for-po`: the PO reads the **Flagged concerns** first, then approves by setting `status: ready-for-dev`. If it is engineering-only, the tech lead approves by setting `status: ready-for-dev`. Then the tech lead sets `status: ready-for-agent` to have Claude plan it.
   - type: input
     id: intent
     attributes:

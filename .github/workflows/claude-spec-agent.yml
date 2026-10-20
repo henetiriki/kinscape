@@ -1,6 +1,6 @@
 name: 'Claude: Spec Agent - Plan/Build'
 
-# Two stages (plans/README.md): a ready-for-dev Spec gets a draft plan PR;
+# Two stages (plans/README.md): a ready-for-agent Spec gets a draft plan PR;
 # the tech lead's approving review on that PR starts the build.
 # `@claude` comments on the plan PR are handled by claude.yml.
 
@@ -18,10 +18,10 @@ permissions:
 
 jobs:
   plan:
-    # Bugs are filed already ready-for-dev, hence the type check.
+    # Only Specs get a plan, whatever else carries the label.
     if: |
       github.event_name == 'issues' &&
-      github.event.label.name == 'status: ready-for-dev' &&
+      github.event.label.name == 'status: ready-for-agent' &&
       contains(github.event.issue.labels.*.name, 'type: spec') &&
       github.actor != 'henetiriki-bot'
     concurrency: thread-${{ github.event.issue.number }}
@@ -31,7 +31,8 @@ jobs:
       THREAD: ${{ github.event.issue.number }}
       PROMPT: >-
         Pick up Spec #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
-        Push before you stop. If you're blocked, comment on the Spec saying why.
+        Push before you stop. If you're blocked, comment on the Spec saying why,
+        then swap its status label for `status: blocked`.
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
       MODEL_ARGS: --model opus --effort high
@@ -69,12 +70,17 @@ jobs:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
           GH_REPO: ${{ github.repository }}
           OUTCOME: ${{ steps.claude.outcome }}
+          EVENT: ${{ github.event_name }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           commented=$(gh issue view "$THREAD" --json comments \
             --jq "[.comments[] | select(.author.login == \"henetiriki-bot\" and .createdAt >= \"$STARTED\")] | length")
           if [ "$commented" = 0 ]; then
             gh issue comment "$THREAD" --body "The agent finished without commenting (step outcome: $OUTCOME). Check the [run]($RUN_URL) and the branch before re-triggering."
+            # On a plan run THREAD is the Spec: hand it back as blocked.
+            if [ "$EVENT" = issues ]; then
+              gh issue edit "$THREAD" --remove-label "status: ready-for-agent" --add-label "status: blocked"
+            fi
           fi
 
   build:

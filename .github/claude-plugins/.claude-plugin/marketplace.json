@@ -1,6 +1,6 @@
 {
   "name": "kinscape-ci",
-  "description": "Pins the plugin that .github/workflows/claude-code-review.yml installs. Dependabot does not track this file: bump the sha by hand.",
+  "description": "Pins the plugin that .github/workflows/claude-code-review.yml installs. Dependabot does not track this file: .github/workflows/claude-plugin-pin-check.yml opens an issue each week when upstream has moved.",
   "owner": {
     "name": "KinScape"
   },

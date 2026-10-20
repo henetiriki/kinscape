@@ -13,6 +13,10 @@ Leave out any section that would only say "none".
 
 <!-- 3–6 sentences: how the change will be made and why this way. -->
 
+## Decisions
+
+<!-- Each choice for the tech lead, in the format in docs/how-we-work.md › Decisions. -->
+
 ## Alternatives considered
 
 ## Files that change

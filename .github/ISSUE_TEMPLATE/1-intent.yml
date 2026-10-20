@@ -48,4 +48,4 @@ body:
     id: questions
     attributes:
       label: Open questions
-      description: Things you're unsure about. Leaving questions here is fine; it's better than guessing.
+      description: Things you're unsure about. Leaving questions here is fine; it's better than guessing. Write each decision as a question with options A, B and Other, and say who decides.

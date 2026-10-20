@@ -22,7 +22,7 @@ describe('budgetFor', () => {
     ['CLAUDE.md', 150],
     ['AGENTS.md', 650],
     ['docs/security.md', 200],
-    ['docs/how-we-work.md', 800],
+    ['docs/how-we-work.md', 850],
     ['plans/M0.1-hello-vercel.md', 600],
     ['plans/TEMPLATE.md', 600],
     ['.claude/skills/refine/SKILL.md', 650],

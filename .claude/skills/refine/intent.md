@@ -30,9 +30,9 @@ Read `docs/requirements.md` yourself, and point out any requirement the idea con
 3. **How they'd know it works:** checks phrased "Given …, when I …, then I see …".
 4. **Constraints:** privacy, cost, devices, deadlines, living people.
 5. **Out of scope:** suggest items to accept or reject.
-6. **Open questions:** leaving one open beats guessing.
+6. **Open questions:** leaving one open beats guessing. Write each that needs a decision as a [decision](../../../docs/how-we-work.md#decisions), in plain words.
 
-Technology, cost and order of work go under _Open questions_ for the tech lead.
+Technology, cost and order of work go under _Open questions_ as tech-lead decisions.
 
 ## The draft
 

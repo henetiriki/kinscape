@@ -53,7 +53,7 @@ Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `n
 
 ## Verifying your work
 
-Run lint, tests and the boundary validator before reporting a task done, and paste the output. If a test fails, fix the code, not the test.
+Run lint, tests, the boundary validator and `npm run e2e` before reporting done, and paste the output. If a test fails, fix the code, not the test.
 
 ## Known mistakes
 

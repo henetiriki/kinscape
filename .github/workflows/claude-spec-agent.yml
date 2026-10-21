@@ -9,6 +9,7 @@ name: 'Claude: Spec Agent - Plan/Build'
 run-name: >-
   ${{
     github.event_name == 'issues' &&
+    github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
     contains(github.event.issue.labels.*.name, 'type: spec') &&
     github.actor != 'henetiriki-bot' &&
@@ -40,13 +41,14 @@ permissions:
   actions: read
 
 jobs:
-  # Path 1: draft a plan. Runs when someone adds the "status: ready-for-agent" label to a Spec
-  # (not to any other kind of issue) and that person isn't Claude's own bot. Claude writes the
-  # plan and opens a draft PR, then stops to wait for the tech lead.
+  # Path 1: draft a plan. Runs when someone adds the "status: ready-for-agent" label to an open Spec
+  # (not to a closed Spec or any other kind of issue) and that person isn't Claude's own bot.
+  # Claude writes the plan and opens a draft PR, then stops to wait for the tech lead.
   plan:
-    # Only Specs get a plan, whatever else carries the label.
+    # Only open Specs get a plan, whatever else carries the label.
     if: |
       github.event_name == 'issues' &&
+      github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
       contains(github.event.issue.labels.*.name, 'type: spec') &&
       github.actor != 'henetiriki-bot'

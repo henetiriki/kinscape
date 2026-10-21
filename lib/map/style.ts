@@ -1,5 +1,7 @@
 import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
+import rawTokens from '../../design/tokens.json';
+import { resolveTokens } from '../design/tokens.mts';
 import { dateFilter } from './filter';
 
 /** The layers the "Polity borders" row shows and hides together. */
@@ -10,24 +12,11 @@ export const POLITY_LAYERS = [
   'polity-labels',
 ] as const;
 
-// Fills from design/DESIGN.md › Map style; the rest are muted tints of similar lightness.
-const FILLS: Record<string, string> = {
-  'eastern-cape': '#D9D3BC',
-  eswatini: '#CBD6DA',
-  'free-state': '#E3D2B2',
-  gauteng: '#D6CCBA',
-  'kwazulu-natal': '#DCD3BD',
-  lesotho: '#D9CFD9',
-  limpopo: '#D4D9C0',
-  mpumalanga: '#DAD0B6',
-  'north-west': '#D9CFBA',
-  'northern-cape': '#DDD6BE',
-  'western-cape': '#D3DCC4',
-};
+// Every colour and width comes from the `map` section of design/tokens.json.
+const { map } = resolveTokens(rawTokens);
+const { default: FALLBACK_FILL, ...FILLS } = map.polity;
 
-const FALLBACK_FILL = '#DCD3BD';
-
-const LAND = '#E9EBE2';
+const LAND = map.land;
 const LOW_CONFIDENCE: ExpressionSpecification = [
   '==',
   ['get', 'confidence'],
@@ -62,7 +51,7 @@ export const buildStyle = (day: number, showPolities: boolean) => {
     layers: [
       {
         id: 'background',
-        paint: { 'background-color': '#C9D5D2' },
+        paint: { 'background-color': map.sea },
         type: 'background',
       },
       {
@@ -83,15 +72,26 @@ export const buildStyle = (day: number, showPolities: boolean) => {
         id: 'rivers',
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: {
-          'line-color': '#6E99A3',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 3, 1, 8, 3],
+          'line-color': map.river.colour,
+          'line-width': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            map.river['zoom-min'],
+            map.river['width-min'],
+            map.river['zoom-max'],
+            map.river['width-max'],
+          ],
         },
         source: 'rivers',
         type: 'line',
       },
       {
         id: 'coastline',
-        paint: { 'line-color': '#7E9A98', 'line-width': 0.9 },
+        paint: {
+          'line-color': map.coastline.colour,
+          'line-width': map.coastline.width,
+        },
         source: 'coastline',
         type: 'line',
       },
@@ -99,7 +99,10 @@ export const buildStyle = (day: number, showPolities: boolean) => {
         filter: filters['polity-borders'],
         id: 'polity-borders',
         layout: { visibility },
-        paint: { 'line-color': '#3B3A2F', 'line-width': 1.5 },
+        paint: {
+          'line-color': map.border.colour,
+          'line-width': map.border.width,
+        },
         source: 'polities',
         type: 'line',
       },
@@ -108,9 +111,9 @@ export const buildStyle = (day: number, showPolities: boolean) => {
         id: 'polity-borders-low',
         layout: { visibility },
         paint: {
-          'line-color': '#3B3A2F',
-          'line-dasharray': [4, 2.6],
-          'line-width': 1.5,
+          'line-color': map.border.colour,
+          'line-dasharray': [map.border['dash-on'], map.border['dash-off']],
+          'line-width': map.border.width,
         },
         source: 'polities',
         type: 'line',
@@ -121,16 +124,16 @@ export const buildStyle = (day: number, showPolities: boolean) => {
         layout: {
           'text-field': ['get', 'name'],
           'text-font': ['Public Sans SemiBold'],
-          'text-letter-spacing': 0.15,
-          'text-max-width': 6,
-          'text-size': 12,
+          'text-letter-spacing': map['polity-label'].tracking,
+          'text-max-width': map['polity-label']['max-width'],
+          'text-size': map['polity-label'].size,
           'text-transform': 'uppercase',
           visibility,
         },
         paint: {
-          'text-color': '#2E2C22',
-          'text-halo-color': LAND,
-          'text-halo-width': 1.5,
+          'text-color': map['polity-label'].colour,
+          'text-halo-color': map['label-halo'].colour,
+          'text-halo-width': map['label-halo'].width,
         },
         source: 'polities',
         type: 'symbol',

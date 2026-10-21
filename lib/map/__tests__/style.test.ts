@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import tokens from '../../../design/tokens.json';
+import { resolveTokens } from '../../design/tokens.mts';
 import { dateFilter } from '../filter';
 import { buildStyle, POLITY_LAYERS, polityFilters } from '../style';
 
@@ -64,5 +66,61 @@ describe('buildStyle', () => {
     expect(layers(0, true).get('polity-labels')).toMatchObject({
       layout: { 'text-font': ['Public Sans SemiBold'] },
     });
+  });
+
+  // DM.2: the land fill and the label halo both follow map.land.
+  it('reads the land colour and label halo from map.land', () => {
+    const built = layers(0, true);
+
+    expect(built.get('land')).toMatchObject({
+      paint: { 'fill-color': tokens.map.land },
+    });
+    expect(built.get('polity-labels')).toMatchObject({
+      paint: { 'text-halo-color': tokens.map.land },
+    });
+  });
+
+  it('reads the sea, coast, river and border values from the tokens', () => {
+    const built = layers(0, true);
+
+    expect(built.get('background')).toMatchObject({
+      paint: { 'background-color': tokens.map.sea },
+    });
+    expect(built.get('coastline')).toMatchObject({
+      paint: { 'line-color': tokens.map.coastline.colour },
+    });
+    expect(built.get('rivers')).toMatchObject({
+      paint: { 'line-color': tokens.map.river.colour },
+    });
+    expect(built.get('polity-borders-low')).toMatchObject({
+      paint: {
+        'line-color': tokens.map.border.colour,
+        'line-dasharray': [4, 2.6],
+      },
+    });
+  });
+
+  it('tints each polity from map.polity, with the default as the fallback', () => {
+    const { paint } = layers(0, true).get('polity-fills') as unknown as {
+      paint: { 'fill-color': unknown[] };
+    };
+    const { default: fallback, ...tints } = tokens.map.polity;
+
+    expect(paint['fill-color']).toEqual([
+      'match',
+      ['get', 'polity'],
+      ...Object.entries(tints).flat(),
+      fallback,
+    ]);
+  });
+});
+
+describe('map tokens', () => {
+  // The selected point and the changed border follow the brand colour.
+  it('resolves map.selected to the brand colour', () => {
+    const { map } = resolveTokens(tokens);
+
+    expect(map.selected.colour).toBe(tokens.colour.brand);
+    expect(map.changed.colour).toBe(tokens.colour.brand);
   });
 });

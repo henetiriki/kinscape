@@ -13,6 +13,7 @@
     "prepare": "husky",
     "start": "next start",
     "test": "vitest run --coverage",
+    "tokens": "node scripts/tokens.mts",
     "validate:boundaries": "node scripts/validate-boundaries.mts",
     "words": "node scripts/word-count.mts"
   },

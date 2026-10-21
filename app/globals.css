@@ -1,17 +1,4 @@
-:root {
-  --brand: #264f29;
-  --field-border: #8e978c;
-  --focus-ring: #9dbb9f;
-  --ink-disabled: #6e776f;
-  --line-strong: #c9cfc5;
-  --segment: #eef0ea;
-  --ink: #18211b;
-  --ink-3: #4a544c;
-  --line: #e2e5dd;
-  --scrim: rgb(24 33 27 / 0.45);
-  --shadow: 0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12);
-  --surface: #fff;
-}
+/* The custom properties come from tokens.css, written from design/tokens.json. */
 
 html,
 body {
@@ -21,15 +8,22 @@ body {
 
 body {
   color: var(--ink);
-  font-family: 'Public Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
 :focus-visible {
-  outline: 3px solid var(--focus-ring);
-  outline-offset: 2px;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
-/* Sized, not positioned: MapLibre's own CSS sets the container's position. */
+/* MapLibre's control buttons set their own focus style; give them the same ring. */
+.map .maplibregl-ctrl-group button:focus:focus-visible {
+  box-shadow: none;
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* Sized, not positioned:MapLibre's own CSS sets the container's position. */
 .map {
   width: 100vw;
   height: 100dvh;
@@ -37,88 +31,88 @@ body {
 
 .panel {
   background: var(--surface);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
   box-sizing: border-box;
-  left: 24px;
-  padding: 16px 20px;
+  left: var(--size-gutter);
+  padding: var(--space-16) var(--space-20);
   position: absolute;
-  top: 24px;
-  width: 320px;
+  top: var(--size-gutter);
+  width: var(--size-panel);
   z-index: 1;
 }
 
 .section-heading {
   color: var(--ink-3);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  margin: 0 0 12px;
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  margin: 0 0 var(--space-12);
   text-transform: uppercase;
 }
 
 .layer-row {
   align-items: flex-start;
   display: flex;
-  gap: 12px;
-  min-height: 44px;
+  gap: var(--space-12);
+  min-height: var(--size-touch);
 }
 
 .layer-row input {
   accent-color: var(--brand);
-  height: 20px;
+  height: var(--size-checkbox);
   margin: 2px 0 0;
-  width: 20px;
+  width: var(--size-checkbox);
 }
 
 .layer-name {
   display: block;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
 }
 
 .layer-help {
   color: var(--ink-3);
   display: block;
-  font-size: 13px;
+  font-size: var(--type-small-size);
 }
 
 /* The dock and the credits line under it, right of the Layers panel. */
 .bottom {
-  bottom: 24px;
+  bottom: var(--size-gutter);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
   left: 392px;
   position: absolute;
-  right: 24px;
+  right: var(--size-gutter);
   z-index: 1;
 }
 
 .dock {
   background: var(--surface);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 16px 20px;
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
+  padding: var(--space-16) var(--space-20);
 }
 
 .dock-row {
   align-items: center;
   display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: var(--space-12);
+  margin-bottom: var(--space-20);
 }
 
 .dock-step {
   background: var(--surface);
   border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   color: var(--ink);
   cursor: pointer;
   font-size: 20px;
   font-weight: 600;
-  height: 44px;
-  width: 44px;
+  height: var(--size-control);
+  width: var(--size-control);
 }
 
 .dock-step:disabled {
@@ -129,18 +123,18 @@ body {
 
 .dock-field {
   border: 1px solid var(--field-border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   box-sizing: border-box;
-  font-size: 22px;
-  height: 44px;
-  padding: 0 12px;
+  font-size: var(--type-mono-l-size);
+  height: var(--size-field);
+  padding: 0 var(--space-12);
   text-align: center;
-  width: 188px;
+  width: var(--size-date-field);
 }
 
 .segmented {
   background: var(--segment);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   display: flex;
   padding: 3px;
 }
@@ -151,15 +145,15 @@ body {
   border-radius: 6px;
   cursor: pointer;
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
   height: 38px;
   padding: 0 14px;
 }
 
 .segmented button[aria-checked='true'] {
   background: var(--surface);
-  box-shadow: 0 1px 2px rgb(24 33 27 / 0.15);
+  box-shadow: var(--shadow-segment);
 }
 
 .date-slider input {
@@ -208,8 +202,8 @@ body {
 
 .credits {
   align-self: flex-end;
-  color: #24302b;
-  font-size: 11px;
+  color: var(--credits);
+  font-size: var(--type-credits-size);
   margin: 0;
 }
 
@@ -235,20 +229,20 @@ body {
 
 .dialog {
   background: var(--surface);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
   box-sizing: border-box;
   max-height: 80dvh;
   max-width: 720px;
   overflow: auto;
-  padding: 24px;
+  padding: var(--space-24);
   position: relative;
   width: calc(100vw - 48px);
 }
 
 .dialog h2 {
   font-size: 20px;
-  margin: 0 40px 16px 0;
+  margin: 0 40px var(--space-16) 0;
 }
 
 .dialog-close {
@@ -256,23 +250,23 @@ body {
   border: 0;
   cursor: pointer;
   font-size: 24px;
-  height: 44px;
+  height: var(--size-touch);
   position: absolute;
-  right: 8px;
-  top: 8px;
-  width: 44px;
+  right: var(--space-8);
+  top: var(--space-8);
+  width: var(--size-touch);
 }
 
 .dialog table {
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: var(--type-small-size);
   width: 100%;
 }
 
 .dialog th,
 .dialog td {
   border-bottom: 1px solid var(--line);
-  padding: 8px 8px 8px 0;
+  padding: var(--space-8) var(--space-8) var(--space-8) 0;
   text-align: left;
   vertical-align: top;
 }
@@ -284,6 +278,6 @@ body {
 }
 
 .mono {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-family: var(--font-mono);
   white-space: nowrap;
 }

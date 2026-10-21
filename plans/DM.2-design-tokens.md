@@ -80,22 +80,27 @@ Recommended: A, because it also fails locally.
 
 ## Risks
 
-- **A value is missing from `tokens.json`:** the tests list it; the tech lead adds it.
-- **Fonts need the network at build time:** Vercel and CI have it; unit tests mock `next/font/google`.
+- **A value is missing from `tokens.json`:** the tests list it.
+- **Fonts need the network at build:** unit tests mock `next/font/google`.
 
 ## Proof
 
-| Acceptance check                 | Proven by                                                                                                                                                    |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Changing `brand` changes all     | Tests: no colour literal in `globals.css`, components or `style.ts`; `map.selected` resolves to `brand`. E2E: focus ring, checkbox and slider thumb match it |
-| Changing `map.land` changes land | Test: the land fill and label halo equal `map.land`                                                                                                          |
-| Out-of-date CSS fails CI         | The D4 check, with a fixture                                                                                                                                 |
-| Snapshot colours are tokens      | Test on the 20 snapshots, plus a fixture with a stray colour                                                                                                 |
-| No Google requests; Public Sans  | E2E: no request to a Google domain; `document.fonts.check` passes for the body font                                                                          |
-| 2px brand focus outline          | E2E: computed outline on each control the keyboard reaches                                                                                                   |
+| Acceptance check                 | Proven by                                                                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Changing `brand` changes all     | Tests: no colour literal in `globals.css`, components or `style.ts`; `map.selected` resolves to `brand`. E2E: focus ring, checkbox match it |
+| Changing `map.land` changes land | Test: the land fill and label halo equal `map.land`                                                                                         |
+| Out-of-date CSS fails CI         | The D4 check, with a fixture                                                                                                                |
+| Snapshot colours are tokens      | Test on the 20 snapshots, plus a fixture with a stray colour                                                                                |
+| No Google requests; Public Sans  | E2E: no request to a Google domain; `document.fonts.check` passes for the body font                                                         |
+| 2px brand focus outline          | E2E: computed outline on each control the keyboard reaches                                                                                  |
 
-The app has no links or selected point yet; a token test covers the point.
+No links or selected point exist yet; a token test covers the point.
+
+## Deviations
+
+- A rule gives MapLibre's zoom buttons the focus ring.
+- A unit test checks the slider thumb colour (browsers hide it).
 
 ## Out of scope
 
-Regular and Italic map labels (no glyphs); moving screens onto new controls.
+Regular and Italic map labels (no glyphs).

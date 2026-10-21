@@ -1,0 +1,66 @@
+/* The /design-kit/type page, laid out like the Typography board */
+
+.kit {
+  background: var(--surface);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-height: 1790px;
+  padding: var(--space-64) 72px;
+}
+
+.scale {
+  border-top: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.row {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: var(--space-24);
+  grid-template-columns: 150px 300px minmax(0, 1fr);
+  min-height: 56px;
+  padding: 10px 0;
+}
+
+.columns {
+  border-bottom-color: var(--line-strong);
+  color: var(--ink-3);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  min-height: 0;
+  text-transform: uppercase;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name > :first-child {
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+}
+
+.hint {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+}
+
+.spec {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* The Map labels column stays empty; it keeps its width so Rules stays in place. */
+.mapLabels {
+  min-height: 300px;
+}

@@ -75,6 +75,11 @@ Recommended: A, because one rule then sets both boards' headers; `design:check` 
 | 404 in production                           | `page.test.tsx` with `VERCEL_ENV=production`, as `/design-kit` |
 | Tests and e2e pass, 100% coverage           | Their output in the PR                                         |
 
+## Deviations
+
+- `style-1-type` stays `report` at 2.24% (text edges, as `style-4-states` at 2.04%); the Overline and Mono samples take their colour from the page, not the board's `--ink-3` and `--ink-2`.
+- Every sample renders as a `div` so the page keeps one `h1`; `data-variant` marks each for the e2e test.
+
 ## Out of scope
 
 - `<Text>` on existing screens, including `/design-kit` (DM.4.5); map labels; the colour and foundations boards.

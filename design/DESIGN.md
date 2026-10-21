@@ -50,6 +50,8 @@ Each JPG is rendered from its HTML snapshot in `source/`, which holds written va
 | Public Sans         | 400, 500, 600, italic 400 and 500 | All UI text and every map label                         |
 | JetBrains Mono      | 400, 500                          | Dates, coordinates, keyboard hints, code. Ligatures off |
 
+Components set these styles with `<Text variant>` (`app/components/Text.tsx`); `/design-kit/type` shows them.
+
 All three are on Google Fonts under the OFL. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](#map-style)).
 
 | Style    | Font · size / line · weight                | Used for                       |

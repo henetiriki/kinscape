@@ -158,3 +158,52 @@ test('the arrow keys move the choice in a Segmented control', async ({
     live.getByRole('radio', { name: 'Month' }).first()
   ).toBeFocused();
 });
+
+// NFR-06: each sample on the type board computes to its tokens.
+test('each type sample has its style tokens', async ({ page }) => {
+  await page.goto('/design-kit/type');
+
+  const samples = await page.locator('[data-variant]').evaluateAll(nodes =>
+    nodes.map(node => {
+      const token = node
+        .getAttribute('data-variant')!
+        .replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+      // A probe styled by the same tokens: the family resolves through next/font to a generated name.
+      const probe = document.createElement('div');
+
+      probe.style.cssText = [
+        ['font-family', 'font'],
+        ['font-size', 'size'],
+        ['font-weight', 'weight'],
+        ['letter-spacing', 'tracking'],
+        ['line-height', 'line'],
+      ]
+        .map(([property, part]) => `${property}: var(--type-${token}-${part})`)
+        .join(';');
+      document.body.append(probe);
+
+      const read = (element: Element) => {
+        const style = getComputedStyle(element);
+
+        return [
+          style.fontFamily,
+          style.fontSize,
+          style.fontWeight,
+          style.letterSpacing,
+          style.lineHeight,
+        ];
+      };
+      const result = { actual: read(node), expected: read(probe) };
+
+      probe.remove();
+
+      return result;
+    })
+  );
+
+  expect(samples).toHaveLength(14);
+
+  for (const { actual, expected } of samples) {
+    expect(actual).toEqual(expected);
+  }
+});

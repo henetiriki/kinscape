@@ -1,0 +1,132 @@
+/* One class per style on the Typography board; each reads its five --type-* tokens */
+
+.display {
+  font-family: var(--type-display-font);
+  font-size: var(--type-display-size);
+  font-weight: var(--type-display-weight);
+  letter-spacing: var(--type-display-tracking);
+  line-height: var(--type-display-line);
+  margin: 0;
+}
+
+.h1 {
+  font-family: var(--type-h1-font);
+  font-size: var(--type-h1-size);
+  font-weight: var(--type-h1-weight);
+  letter-spacing: var(--type-h1-tracking);
+  line-height: var(--type-h1-line);
+  margin: 0;
+}
+
+.h2 {
+  font-family: var(--type-h2-font);
+  font-size: var(--type-h2-size);
+  font-weight: var(--type-h2-weight);
+  letter-spacing: var(--type-h2-tracking);
+  line-height: var(--type-h2-line);
+  margin: 0;
+}
+
+.h3 {
+  font-family: var(--type-h3-font);
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  letter-spacing: var(--type-h3-tracking);
+  line-height: var(--type-h3-line);
+  margin: 0;
+}
+
+.title {
+  font-family: var(--type-title-font);
+  font-size: var(--type-title-size);
+  font-weight: var(--type-title-weight);
+  letter-spacing: var(--type-title-tracking);
+  line-height: var(--type-title-line);
+  margin: 0;
+}
+
+.bodyL {
+  font-family: var(--type-body-l-font);
+  font-size: var(--type-body-l-size);
+  font-weight: var(--type-body-l-weight);
+  letter-spacing: var(--type-body-l-tracking);
+  line-height: var(--type-body-l-line);
+  margin: 0;
+}
+
+.body {
+  font-family: var(--type-body-font);
+  font-size: var(--type-body-size);
+  font-weight: var(--type-body-weight);
+  letter-spacing: var(--type-body-tracking);
+  line-height: var(--type-body-line);
+  margin: 0;
+}
+
+.label {
+  font-family: var(--type-label-font);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-tracking);
+  line-height: var(--type-label-line);
+  margin: 0;
+}
+
+.small {
+  color: var(--ink-3);
+  font-family: var(--type-small-font);
+  font-size: var(--type-small-size);
+  font-weight: var(--type-small-weight);
+  letter-spacing: var(--type-small-tracking);
+  line-height: var(--type-small-line);
+  margin: 0;
+}
+
+.caption {
+  color: var(--ink-3);
+  font-family: var(--type-caption-font);
+  font-size: var(--type-caption-size);
+  font-weight: var(--type-caption-weight);
+  letter-spacing: var(--type-caption-tracking);
+  line-height: var(--type-caption-line);
+  margin: 0;
+}
+
+.overline {
+  font-family: var(--type-overline-font);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  line-height: var(--type-overline-line);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.button {
+  font-family: var(--type-button-font);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  letter-spacing: var(--type-button-tracking);
+  line-height: var(--type-button-line);
+  margin: 0;
+}
+
+.monoL {
+  font-family: var(--type-mono-l-font);
+  font-size: var(--type-mono-l-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-l-weight);
+  letter-spacing: var(--type-mono-l-tracking);
+  line-height: var(--type-mono-l-line);
+  margin: 0;
+}
+
+.mono {
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-weight);
+  letter-spacing: var(--type-mono-tracking);
+  line-height: var(--type-mono-line);
+  margin: 0;
+}

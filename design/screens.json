@@ -8,6 +8,14 @@
       "width": 1440
     },
     {
+      "height": 1790,
+      "ignore": [{ "height": 300, "width": 632, "x": 72, "y": 1385 }],
+      "mode": "report",
+      "name": "style-1-type",
+      "route": "/design-kit/type",
+      "width": 1440
+    },
+    {
       "height": 1502,
       "ignore": [{ "height": 96, "width": 1296, "x": 72, "y": 653 }],
       "mode": "report",

@@ -13,6 +13,7 @@ import { Segmented } from '@/app/components/Segmented';
 import { Tabs } from '@/app/components/Tabs';
 import { TextLink } from '@/app/components/TextLink';
 
+import kit from './kit.module.css';
 import styles from './page.module.css';
 
 export const metadata: Metadata = { title: 'KinScape design kit' };
@@ -177,10 +178,10 @@ const DesignKit = () => {
 
   return (
     <main className={styles.kit}>
-      <header className={styles.kitHeader}>
-        <span className={styles.kitEyebrow}>Style guide · 04</span>
-        <h1 className={styles.kitTitle}>Component states</h1>
-        <p className={styles.kitLead}>
+      <header className={kit.kitHeader}>
+        <span className={kit.kitEyebrow}>Style guide · 04</span>
+        <h1 className={kit.kitTitle}>Component states</h1>
+        <p className={kit.kitLead}>
           How every control looks at rest, under the pointer, with keyboard
           focus, while pressed and when it can&apos;t be used. Toggles show off
           and on side by side.
@@ -213,7 +214,7 @@ const DesignKit = () => {
         ))}
       </figure>
 
-      <div className={styles.kitNotes}>
+      <div className={kit.kitNotes}>
         <section>
           <h2>Rules</h2>
           <ul>

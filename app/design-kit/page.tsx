@@ -3,15 +3,15 @@ import type { ReactNode } from 'react';
 
 import { notFound } from 'next/navigation';
 
-import type { ControlState } from '@/components/controls';
+import type { ControlState } from '@/app/components/controls';
 
-import { Button } from '@/components/Button';
-import { Checkbox } from '@/components/Checkbox';
-import { Chip } from '@/components/Chip';
-import { IconButton } from '@/components/IconButton';
-import { Segmented } from '@/components/Segmented';
-import { Tabs } from '@/components/Tabs';
-import { TextLink } from '@/components/TextLink';
+import { Button } from '@/app/components/Button';
+import { Checkbox } from '@/app/components/Checkbox';
+import { Chip } from '@/app/components/Chip';
+import { IconButton } from '@/app/components/IconButton';
+import { Segmented } from '@/app/components/Segmented';
+import { Tabs } from '@/app/components/Tabs';
+import { TextLink } from '@/app/components/TextLink';
 
 export const metadata: Metadata = { title: 'KinScape design kit' };
 

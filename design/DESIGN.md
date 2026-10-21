@@ -140,7 +140,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
 - **Layer rows:** a checkbox (accent `--brand`), name 14/600, a one-line description in `--ink-3`. The description reports live facts, such as how many pins are true on the date or where district data exists.
-- **Date dock:** step back, a typed date field, step forward, then Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that, the 1652–today slider with epoch ticks and the contested years hatched, then "Jump to" epoch buttons and keyboard hints.
+- **Date dock:** step back, a typed date field, step forward, then Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that, the 1652–today slider (the thumb snaps to each step at the chosen precision, with a small label above it showing the full date) with epoch ticks and the contested years hatched, then "Jump to" epoch buttons and keyboard hints.
 - **Jurisdiction popup:** "On this spot in {year}", the place name valid on that date, coordinates in mono, then the jurisdiction chain as level / name rows, then pins at that spot.
 - **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. Used for empty and loading states.
 - **Banner:** `--ink` background, white text, top centre of the map, with one action. For problems that don't block the map.
@@ -256,7 +256,7 @@ A Spec that needs one of these lists it under **Flagged concerns** instead of in
 - Clicking inside a contested area: how the popup shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).
 - Person panel, life trail and migration view (EXP-05 to EXP-07).
-- The slider mid-drag at month or day precision, and the changed-border flash (MAP-11).
+- The changed-border flash (MAP-11).
 - Comparing two dates (MAP-12).
 - Pin warnings (PIN-08) and source records on the map (PIN-07).
 - Tablet layout (NFR-05).

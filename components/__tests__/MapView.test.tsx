@@ -150,6 +150,40 @@ describe('MapView', () => {
     expect(maplibre.map.off).toHaveBeenCalledWith('load', apply);
   });
 
+  // NFR-01
+  it('times each Map date change until the map is idle', () => {
+    const measure = vi.spyOn(performance, 'measure');
+
+    render(<MapView mapDay={5} showPolities />);
+
+    expect(maplibre.map.once).toHaveBeenCalledWith(
+      'idle',
+      expect.any(Function)
+    );
+    expect(measure).not.toHaveBeenCalled();
+
+    const [, onIdle] = maplibre.map.once.mock.calls.find(
+      ([event]) => event === 'idle'
+    )!;
+
+    onIdle();
+    expect(measure).toHaveBeenCalledWith('map-date-redraw', 'map-date-change');
+    measure.mockRestore();
+  });
+
+  it('puts the map on window only in browser-test builds', () => {
+    const { unmount } = render(<MapView mapDay={5} showPolities />);
+
+    expect('kinscapeMap' in window).toBe(false);
+    unmount();
+
+    vi.stubEnv('NEXT_PUBLIC_E2E', '1');
+    render(<MapView mapDay={5} showPolities />);
+    expect('kinscapeMap' in window).toBe(true);
+    vi.unstubAllEnvs();
+    delete (window as unknown as { kinscapeMap?: unknown }).kinscapeMap;
+  });
+
   it('removes the map on unmount', () => {
     const { unmount } = render(<MapView mapDay={5} showPolities />);
 

@@ -1,6 +1,10 @@
 :root {
   --brand: #264f29;
+  --field-border: #8e978c;
   --focus-ring: #9dbb9f;
+  --ink-disabled: #6e776f;
+  --line-strong: #c9cfc5;
+  --segment: #eef0ea;
   --ink: #18211b;
   --ink-3: #4a544c;
   --line: #e2e5dd;
@@ -79,18 +83,116 @@ body {
   font-size: 13px;
 }
 
-/* Bottom right until the date dock arrives and the design settles. */
+/* The dock and the credits line under it, right of the Layers panel. */
+.bottom {
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  left: 392px;
+  position: absolute;
+  right: 24px;
+  z-index: 1;
+}
+
+.dock {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 16px 20px;
+}
+
+.dock-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dock-step {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  height: 44px;
+  width: 44px;
+}
+
+.dock-step:disabled {
+  background: var(--line);
+  color: var(--ink-disabled);
+  cursor: default;
+}
+
+.dock-field {
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 22px;
+  height: 44px;
+  padding: 0 12px;
+  text-align: center;
+  width: 188px;
+}
+
+.segmented {
+  background: var(--segment);
+  border-radius: 8px;
+  display: flex;
+  padding: 3px;
+}
+
+.segmented button {
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  height: 38px;
+  padding: 0 14px;
+}
+
+.segmented button[aria-checked='true'] {
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(24 33 27 / 0.15);
+}
+
+.date-slider {
+  padding-top: 24px;
+  position: relative;
+}
+
+.date-slider input {
+  accent-color: var(--brand);
+  display: block;
+  margin: 0;
+  width: 100%;
+}
+
+.date-slider-label {
+  background: var(--ink);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+}
+
 .credits {
+  align-self: flex-end;
   background: rgb(255 255 255 / 0.8);
   border-radius: 6px;
-  bottom: 24px;
   color: #24302b;
   font-size: 11px;
   margin: 0;
   padding: 2px 6px;
-  position: absolute;
-  right: 24px;
-  z-index: 1;
 }
 
 .credits button {

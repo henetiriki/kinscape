@@ -335,7 +335,9 @@
 .seg-item input {
   appearance: none;
   inset: 0;
+  border-radius: inherit;
   margin: 0;
+  outline: none;
   position: absolute;
 }
 

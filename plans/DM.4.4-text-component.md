@@ -77,7 +77,7 @@ Recommended: A, because one rule then sets both boards' headers; `design:check` 
 ## Deviations
 
 - `style-1-type` stays `report` at 2.24% (`style-4-states`: 2.04%).
-- Samples render as `div`s with `data-variant`, keeping one `h1`.
+- Samples carry `data-variant`; H1–H3 use their own element, the rest are `div`s.
 
 ## Out of scope
 

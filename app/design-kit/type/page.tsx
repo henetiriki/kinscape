@@ -19,7 +19,7 @@ type Row = {
   sample: string;
   spec: string;
 } & (
-  | { tag: 'h1' | 'h2' | 'h3'; variant: Heading }
+  | { tag: 'div' | 'h1' | 'h2' | 'h3'; variant: Heading }
   | { tag?: undefined; variant: Exclude<TextVariant, Heading> }
 );
 
@@ -29,7 +29,7 @@ const STYLES: Row[] = [
     name: 'Display',
     sample: "Borders move. Places don't.",
     spec: 'Bricolage 52 / 56 · 700 · −0.02em',
-    tag: 'h1',
+    tag: 'div',
     variant: 'display',
   },
   {
@@ -162,7 +162,7 @@ const TypeKit = () => {
               {row.spec}
             </span>
             <span role='cell'>
-              {/* Heading samples use their natural element, so the header title is a paragraph. */}
+              {/* Display is a div and the header title a paragraph, so the H1 sample is the only h1. */}
               {row.tag ? (
                 <Text
                   as={row.tag}

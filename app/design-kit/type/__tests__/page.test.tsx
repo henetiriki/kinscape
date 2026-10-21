@@ -30,7 +30,7 @@ it('shows the 14 styles outside production, with natural heading elements', () =
   // The header row and one row per style.
   expect(within(scale).getAllByRole('row')).toHaveLength(15);
   expect(scale.querySelectorAll('[data-variant]')).toHaveLength(14);
-  expect(within(scale).getAllByRole('heading', { level: 1 })).toHaveLength(2);
+  expect(within(scale).getAllByRole('heading', { level: 1 })).toHaveLength(1);
   expect(within(scale).getAllByRole('heading', { level: 2 })).toHaveLength(1);
   expect(within(scale).getAllByRole('heading', { level: 3 })).toHaveLength(1);
   expect(screen.getByRole('heading', { name: 'Rules' })).toBeTruthy();

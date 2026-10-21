@@ -2,7 +2,7 @@
 
 - **Spec:** #132 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,6 +19,8 @@ The ring sits on the segment's `<label>` when its radio has focus (`:has(:focus-
 
 Recommended: A, because Button, IconButton and TextLink keep the rule DM.4.2 shipped.
 
+**Answer: A** (@henetiriki)
+
 **D2 · Diff size** · Decides: Tech lead
 About 630 changed lines, over the 600 cap: about 590 are the moved CSS, counted once deleted and once added.
 
@@ -27,6 +29,8 @@ About 630 changed lines, over the 600 cap: about 590 are the moved CSS, counted 
 - **Other:** your own.
 
 Recommended: A, because the move is mechanical and was accepted for DM.4.2.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

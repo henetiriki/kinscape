@@ -1,7 +1,7 @@
 # Plan: DM.1: Design snapshots in the repo
 
 - **Spec:** #112 (Intent #111)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

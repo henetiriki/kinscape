@@ -10,7 +10,7 @@ const REAL_CONTROLS = ':is(button, input, a):not([inert] *)';
 test('Tab visits each enabled control with a 2px brand ring, and skips the disabled ones', async ({
   page,
 }) => {
-  await page.goto('/design-kit');
+  await page.goto('/design-kit/states');
 
   const expected = await page
     .locator(REAL_CONTROLS)
@@ -54,7 +54,7 @@ test('Tab visits each enabled control with a 2px brand ring, and skips the disab
 test('controls have names, and toggles report their state', async ({
   page,
 }) => {
-  await page.goto('/design-kit');
+  await page.goto('/design-kit/states');
 
   const live = matrix(page).locator(':not([inert] *)');
 
@@ -101,7 +101,7 @@ const hitsControl = async (control: Locator, dx: number, dy: number) => {
 };
 
 test('a small control has a 44px hit area', async ({ page }) => {
-  await page.goto('/design-kit');
+  await page.goto('/design-kit/states');
 
   const live = matrix(page).locator(':not([inert] *)');
   // Away from the neighbouring checkbox, whose 44px area overlaps this one.
@@ -122,7 +122,7 @@ test('a small control has a 44px hit area', async ({ page }) => {
 test('the live controls carry hashed class names, not the plain ones', async ({
   page,
 }) => {
-  await page.goto('/design-kit');
+  await page.goto('/design-kit/states');
 
   const live = matrix(page).locator(':not([inert] *)');
 
@@ -147,7 +147,7 @@ test('the live controls carry hashed class names, not the plain ones', async ({
 test('the arrow keys move the choice in a Segmented control', async ({
   page,
 }) => {
-  await page.goto('/design-kit');
+  await page.goto('/design-kit/states');
 
   const live = matrix(page).locator(':not([inert] *)');
 
@@ -158,6 +158,55 @@ test('the arrow keys move the choice in a Segmented control', async ({
     live.getByRole('radio', { name: 'Month' }).first()
   ).toBeFocused();
 });
+
+// NFR-06: the kit's index and nav.
+const BOARD_LINKS = [
+  { heading: 'Typography and hierarchy', path: '/design-kit/type' },
+  { heading: 'Component states', path: '/design-kit/states' },
+];
+
+test('the index links to each board', async ({ page }) => {
+  for (const { heading, path } of BOARD_LINKS) {
+    await page.goto('/design-kit');
+    await page
+      .getByRole('main')
+      .getByRole('link', { exact: true, name: heading })
+      .click();
+    await expect(page).toHaveURL(path);
+    await expect(
+      page.getByRole('main').getByText(heading, { exact: true })
+    ).toBeVisible();
+  }
+});
+
+for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
+  test(`on ${path}, the nav marks the current board and Tab reaches each link in order`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+
+    const nav = page.getByRole('navigation', { name: 'Boards' });
+
+    for (const { heading, path: href } of BOARD_LINKS) {
+      const link = nav.getByRole('link', { exact: true, name: heading });
+
+      if (href === path) {
+        await expect(link).toHaveAttribute('aria-current', 'page');
+      } else {
+        await expect(link).not.toHaveAttribute('aria-current');
+      }
+    }
+
+    await page.locator('body').click({ position: { x: 1, y: 1 } });
+
+    for (const { heading } of BOARD_LINKS) {
+      await page.keyboard.press('Tab');
+      await expect(
+        nav.getByRole('link', { exact: true, name: heading })
+      ).toBeFocused();
+    }
+  });
+}
 
 // NFR-06: each sample on the type board computes to its tokens.
 test('each type sample has its style tokens', async ({ page }) => {

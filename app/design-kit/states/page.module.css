@@ -1,0 +1,63 @@
+/* The /design-kit/states page, laid out like the Component states board */
+
+.kit {
+  background: var(--surface);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  min-height: 1502px;
+  padding: var(--space-64) 72px;
+}
+
+.kitMatrix {
+  border-top: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.kitRow {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: 190px repeat(5, minmax(0, 1fr));
+  min-height: 80px;
+  padding: var(--space-8) 0;
+}
+
+.kitColumns {
+  border-bottom-color: var(--line-strong);
+  color: var(--ink-3);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  min-height: 0;
+  padding: 10px 0;
+  text-transform: uppercase;
+}
+
+.kitName {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kitName > :first-child {
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+}
+
+.kitHint {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: 1.4;
+}
+
+.kitCell {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+  justify-self: start;
+}

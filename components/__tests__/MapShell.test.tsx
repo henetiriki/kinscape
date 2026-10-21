@@ -42,6 +42,13 @@ it('shows the map for today with Polity borders on', () => {
   });
 });
 
+// MAP-03
+it('moves the Map date from the date dock', () => {
+  render(<MapShell sources={sources} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+  expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
+});
+
 // MAP-02
 it('hides and restores the Polity borders from the Layers panel', () => {
   render(<MapShell sources={sources} />);

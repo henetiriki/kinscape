@@ -22,6 +22,14 @@ export const FIRST_VIEW: [[number, number], [number, number]] = [
   [33.5, -21.5],
 ];
 
+/** Room for the Layers panel on the left and the date dock below. */
+export const FIRST_VIEW_PADDING = {
+  bottom: 160,
+  left: 392,
+  right: 24,
+  top: 24,
+};
+
 /** Panning stops at the edge of this box, so the map can't be lost. */
 export const MAX_BOUNDS: [[number, number], [number, number]] = [
   [8, -42],
@@ -51,7 +59,7 @@ export const MapView = ({
       attributionControl: false,
       bounds: FIRST_VIEW,
       container: container.current,
-      fitBoundsOptions: { padding: 24 },
+      fitBoundsOptions: { padding: FIRST_VIEW_PADDING },
       maxBounds: MAX_BOUNDS,
       maxZoom: MAX_ZOOM,
       minZoom: MIN_ZOOM,
@@ -61,6 +69,12 @@ export const MapView = ({
     created.addControl(new NavigationControl());
     created.addControl(new ScaleControl());
     map.current = created;
+
+    // Only builds made for the browser tests (NEXT_PUBLIC_E2E=1) expose the map.
+    if (process.env.NEXT_PUBLIC_E2E === '1') {
+      (window as unknown as { kinscapeMap?: MapLibreMap }).kinscapeMap =
+        created;
+    }
 
     return () => created.remove();
   }, []);
@@ -72,6 +86,12 @@ export const MapView = ({
     if (!current) return;
 
     const apply = () => {
+      // NFR-01: from the Map date change to the next idle frame.
+      performance.mark('map-date-change');
+      current.once('idle', () => {
+        performance.measure('map-date-redraw', 'map-date-change');
+      });
+
       const filters = polityFilters(mapDay);
 
       for (const id of POLITY_LAYERS) {

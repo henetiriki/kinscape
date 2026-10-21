@@ -2,7 +2,7 @@
 
 - **Spec:** #116 (Intent #111)
 - **Requirement IDs:** MAP-03, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The estimate is about 1,300 changed lines; the cap is 600.
 - **B.** Two: DM.5.1 as A; DM.5.2 the rest (~950 lines).
 - **Other:** your own.
 
-Recommended: A, because each fits the cap.
+**Answer:** Other: keep this change in one Spec and PR.
 
 **D2 · How the board holds each case** · Decides: Tech lead
 
@@ -25,7 +25,7 @@ Recommended: A, because each fits the cap.
 - **B.** Read-only pictures; only the dock example is live.
 - **Other:** your own.
 
-Recommended: A, because the check then shoots the real control.
+**Answer:** A.
 
 **D3 · The message above the field** · Decides: Tech lead
 The dock example adds a sentence and drops the fix.
@@ -34,7 +34,7 @@ The dock example adds a sentence and drops the fix.
 - **B.** The same message and fix as below.
 - **Other:** your own.
 
-Recommended: A, because it follows the board.
+**Answer:** A.
 
 **D4 · The info note's 4 seconds** · Decides: Tech lead
 A self-clearing note could vanish before the design check shoots.
@@ -43,7 +43,7 @@ A self-clearing note could vanish before the design check shoots.
 - **B.** `DateField` clears it; the design check fakes timers on this board.
 - **Other:** your own.
 
-Recommended: A, because the dock causes the note. The Spec and #103 then change.
+**Answer:** A.
 
 **D5 · Where the board's drawing differs** · Decides: Tech lead
 Its form fields are 48px; its card step buttons 40px and `aria-hidden`.
@@ -52,7 +52,7 @@ Its form fields are 48px; its card step buttons 40px and `aria-hidden`.
 - **B.** Real `IconButton`s in the cards.
 - **C.** As A, plus an ignore region over Form fields until the sign-in Spec.
 
-Recommended: A, because C hides the error field from the check.
+**Answer:** A.
 
 ## Files that change
 

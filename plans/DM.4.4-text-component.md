@@ -59,9 +59,8 @@ Recommended: A, because one rule then sets both boards' headers; `design:check` 
 ## Risks
 
 - **Font family and size:** `--type-*-font` resolves through next/font variables to generated names; the e2e test compares each sample with a probe element styled by the same tokens, not with the token's text.
-- **Type error check:** `@ts-expect-error` is only proven where `tsc` runs; `next build` type-checks test files (`tsconfig` includes `**/*.tsx`).
+- **Type error check:** `next build` type-checks test files, proving `@ts-expect-error`.
 - **Threshold:** text edges kept `style-4-states` at 2.0%; if `style-1-type` misses 0.5% it stays `report` and the gap goes under Deviations.
-- **Diff size:** about 500 lines, under the 600 cap.
 
 ## Proof
 
@@ -77,8 +76,8 @@ Recommended: A, because one rule then sets both boards' headers; `design:check` 
 
 ## Deviations
 
-- `style-1-type` stays `report` at 2.24% (text edges, as `style-4-states` at 2.04%); the Overline and Mono samples take their colour from the page, not the board's `--ink-3` and `--ink-2`.
-- Every sample renders as a `div` so the page keeps one `h1`; `data-variant` marks each for the e2e test.
+- `style-1-type` stays `report` at 2.24% (`style-4-states`: 2.04%).
+- Samples render as `div`s with `data-variant`, keeping one `h1`.
 
 ## Out of scope
 

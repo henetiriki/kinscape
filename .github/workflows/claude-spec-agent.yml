@@ -98,7 +98,7 @@ jobs:
           bot_id: '344434370'
           prompt: ${{ env.PROMPT }}
           # The allowed tools let Claude edit files and run npm scripts, git, and GitHub commands.
-          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
+          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
       # step failed. If Claude left no comment, post one pointing at the run.

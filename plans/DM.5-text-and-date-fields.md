@@ -15,7 +15,6 @@ The estimate is about 1,300 changed lines; the cap is 600.
 
 - **A.** DM.5.1: `Icon`, `TextField`, `tone`, the states row. DM.5.2: `checkDate`, `DateField`. DM.5.3: the feedback board.
 - **B.** Two: DM.5.1 as A; DM.5.2 the rest (~950 lines).
-- **Other:** your own.
 
 **Answer:** Other: keep this change in one Spec and PR.
 
@@ -23,7 +22,6 @@ The estimate is about 1,300 changed lines; the cap is 600.
 
 - **A.** Each case is a live field: `defaultText` is checked on first render, except with `state='focus'` (Typing).
 - **B.** Read-only pictures; only the dock example is live.
-- **Other:** your own.
 
 **Answer:** A.
 
@@ -32,7 +30,6 @@ The dock example adds a sentence and drops the fix.
 
 - **A.** As drawn: the message bold, then "The map still shows {last good date}. Press Esc to go back to it."; no fix.
 - **B.** The same message and fix as below.
-- **Other:** your own.
 
 **Answer:** A.
 
@@ -41,7 +38,6 @@ A self-clearing note could vanish before the design check shoots.
 
 - **A.** `DateField` shows a `notice` while it is passed; #103 clears it after 4 seconds, with the precision switch.
 - **B.** `DateField` clears it; the design check fakes timers on this board.
-- **Other:** your own.
 
 **Answer:** A.
 
@@ -94,6 +90,12 @@ Its form fields are 48px; its card step buttons 40px and `aria-hidden`.
 | Design check                        | Report: Feedback differs only in Form fields (D5); states row matches |
 | Parsing covered                     | `date-input.test.ts`, 100% coverage                                   |
 
+## Deviations
+
+- D1: one Spec and PR, as the tech lead chose.
+- `DateField` takes `before` and `after` (step buttons); `TextField` takes `mark`.
+- Alerts, Toasts and banners are not built; the check ignores their place.
+
 ## Flagged concerns
 
-- The states row draws 15px text; `TextField` uses Body L, 16px.
+- The states row draws 15px text; `TextField` uses Body L, 16px. Messages use Small, 13px; the board draws 13.5px.

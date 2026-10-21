@@ -32,10 +32,17 @@ it('keeps the pointer-state cells out of the tab order and the accessibility tre
   ).toBe(true);
 });
 
-it('leaves the Text field row empty until DM.5', () => {
+it('shows the Text field with a placeholder at rest, text when typed and filled, and disabled', () => {
   render(<StatesKit />);
 
   const row = screen.getByText('Text field').closest('.kitRow')!;
+  const values = [...row.querySelectorAll('input')].map(
+    input => (input as HTMLInputElement).value
+  );
 
-  expect(row.querySelectorAll('input, button')).toHaveLength(0);
+  expect(values).toEqual(['', '', 'Kimberl', 'Kimberley', '']);
+  expect(
+    row.querySelectorAll('.kitCell:not([inert]) input:not(:disabled)')
+  ).toHaveLength(1);
+  expect(row.querySelectorAll('input:disabled')).toHaveLength(1);
 });

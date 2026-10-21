@@ -130,3 +130,16 @@
   line-height: var(--type-mono-line);
   margin: 0;
 }
+
+/* A message's colour, after the styles so it wins over their own. */
+.error {
+  color: var(--error);
+}
+
+.warning {
+  color: var(--warning);
+}
+
+.info {
+  color: var(--info);
+}

@@ -9,6 +9,7 @@ import { Chip } from '@/app/components/Chip';
 import { IconButton } from '@/app/components/IconButton';
 import { Segmented } from '@/app/components/Segmented';
 import { Tabs } from '@/app/components/Tabs';
+import { TextField } from '@/app/components/TextField';
 import { TextLink } from '@/app/components/TextLink';
 
 import { boardTitle } from '../boards';
@@ -30,6 +31,12 @@ const COLUMNS: { column: Column; title: string }[] = [
 
 const stateOf = (column: Column): ControlState | undefined =>
   column === 'default' || column === 'disabled' ? undefined : column;
+
+// The Text field has a placeholder at rest and text once typed (Focus) or filled (Pressed).
+const FIELD_VALUE: Partial<Record<Column, string>> = {
+  active: 'Kimberley',
+  focus: 'Kimberl',
+};
 
 const Plus = () => (
   <svg
@@ -95,8 +102,22 @@ const ROWS: {
       </TextLink>
     ),
   },
-  // The Text field is built in DM.5: the row keeps its place so the rows below don't shift.
-  { hint: 'Pressed column shows it filled', name: 'Text field' },
+  {
+    hint: 'Pressed column shows it filled',
+    name: 'Text field',
+    render: column => (
+      <span className={styles.kitField}>
+        <TextField
+          defaultValue={FIELD_VALUE[column]}
+          disabled={column === 'disabled'}
+          hideLabel
+          label='Search places'
+          placeholder='Search places'
+          state={stateOf(column)}
+        />
+      </span>
+    ),
+  },
   {
     hint: 'Off and on; 44px hit area',
     name: 'Checkbox',

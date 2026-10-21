@@ -28,6 +28,28 @@ test('Tab visits each enabled control with a 2px brand ring, and skips the disab
     await page.keyboard.press('Tab');
 
     const focused = page.locator(':focus');
+
+    // A field shows focus as a 2px brand border on its box, with no outline.
+    if (
+      await focused.evaluate(
+        node => node instanceof HTMLInputElement && node.type === 'text'
+      )
+    ) {
+      expect(
+        await focused.evaluate(node => {
+          const box = getComputedStyle(node.parentElement!);
+
+          return [
+            box.borderTopWidth,
+            box.borderTopColor,
+            getComputedStyle(node).outlineStyle,
+          ];
+        })
+      ).toEqual(['2px', 'rgb(38, 79, 41)', 'none']);
+
+      continue;
+    }
+
     const ring = await focused.evaluate(node => {
       const style = getComputedStyle(node.closest('label') ?? node);
 
@@ -163,6 +185,7 @@ test('the arrow keys move the choice in a Segmented control', async ({
 const BOARD_LINKS = [
   { heading: 'Typography and hierarchy', path: '/design-kit/type' },
   { heading: 'Component states', path: '/design-kit/states' },
+  { heading: 'Feedback and validation', path: '/design-kit/feedback' },
 ];
 
 test('the index links to each board', async ({ page }) => {
@@ -207,6 +230,95 @@ for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
     }
   });
 }
+
+// MAP-03, NFR-06: the map date field on the feedback board, in the first (Default) card.
+test.describe('the map date field', () => {
+  const ERROR_BORDER = 'rgb(180, 65, 47)';
+
+  const open = async (page: Page) => {
+    await page.goto('/design-kit/feedback');
+
+    const card = page.locator('div[class*="card"]').first();
+
+    return { card, field: card.getByRole('textbox', { name: 'Date shown' }) };
+  };
+
+  const border = (field: Locator) =>
+    field.evaluate(node => {
+      const box = getComputedStyle(node.parentElement!);
+
+      return [box.borderTopWidth, box.borderTopColor];
+    });
+
+  test('keeps 1901-02-30 with its message and fix, then Esc puts the date back', async ({
+    page,
+  }) => {
+    const { card, field } = await open(page);
+
+    await field.fill('1901-02-30');
+    await expect(card.getByRole('alert')).toHaveCount(0);
+    await field.press('Enter');
+
+    await expect(field).toHaveValue('1901-02-30');
+    await expect(field).toHaveAttribute('aria-invalid', 'true');
+    await expect(card.getByRole('alert')).toHaveText(
+      'February 1901 has 28 days.'
+    );
+    await expect(
+      card.getByRole('button', { name: 'Go to 1901-02-28' })
+    ).toBeVisible();
+    expect(await border(field)).toEqual(['2px', ERROR_BORDER]);
+
+    await field.press('Escape');
+
+    await expect(field).toHaveValue('1901');
+    await expect(card.getByRole('alert')).toHaveCount(0);
+  });
+
+  test('takes the fix, and pads 1901-6-4', async ({ page }) => {
+    const { card, field } = await open(page);
+
+    await field.fill('1901-02-30');
+    await field.press('Enter');
+    await card.getByRole('button', { name: 'Go to 1901-02-28' }).click();
+    await expect(field).toHaveValue('1901-02-28');
+
+    await field.fill('1901-6-4');
+    await field.press('Enter');
+    await expect(field).toHaveValue('1901-06-04');
+    expect(await border(field)).toEqual(['2px', 'rgb(38, 79, 41)']);
+  });
+
+  test('says what is wrong with 14/06/1901, 1650 and a later date', async ({
+    page,
+  }) => {
+    const { card, field } = await open(page);
+
+    for (const [text, message] of [
+      ['14/06/1901', 'Use 1901, 1901-06 or 1901-06-14.'],
+      ['1650', 'Dates run from 1652 to today.'],
+      ['2031', "That's after today."],
+    ]) {
+      await field.fill(text);
+      await field.press('Enter');
+      await expect(card.getByRole('alert')).toHaveText(message);
+    }
+
+    await expect(
+      card.getByRole('button', { name: 'Go to today' })
+    ).toBeVisible();
+  });
+
+  test('checks when focus leaves', async ({ page }) => {
+    const { card, field } = await open(page);
+
+    await field.fill('1901-13');
+    await page.locator('body').click({ position: { x: 1, y: 1 } });
+    await expect(card.getByRole('alert')).toHaveText(
+      'Use 1901, 1901-06 or 1901-06-14.'
+    );
+  });
+});
 
 // NFR-06: each sample on the type board computes to its tokens.
 test('each type sample has its style tokens', async ({ page }) => {

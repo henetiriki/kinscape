@@ -62,6 +62,7 @@ jobs:
         then swap its status label for `status: blocked`.
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
+        Writes outside the repo are denied: pass a PR body inline, `gh pr edit <n> --body "<text>"`, not as a temp file.
       MODEL_ARGS: --model opus --effort high
     # The steps below are shared: the `build` job reuses them as-is (`*steps`). The first one
     # downloads the repo's code; on a plan PR it takes that PR's branch.
@@ -106,6 +107,8 @@ jobs:
           bot_name: henetiriki-bot
           bot_id: '344434370'
           prompt: ${{ env.PROMPT }}
+          # The repo is private; turn off once runs are reliable.
+          show_full_output: true
           # The allowed tools let Claude edit files and run npm scripts, git, and GitHub commands.
           claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
 
@@ -158,5 +161,6 @@ jobs:
         Push before you stop, then comment on the PR saying what you did or what blocked you.
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
+        Writes outside the repo are denied: pass a PR body inline, `gh pr edit <n> --body "<text>"`, not as a temp file.
       MODEL_ARGS: --model sonnet
     steps: *steps

@@ -103,13 +103,13 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 
 ## Shape and depth
 
-| Token | Value |
-| --- | --- | --- |
-| Radius | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round |
-| Shadow | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment` |
-| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop |
-| Touch | Targets at least 44px. Buttons and fields 44–50px tall |
-| Focus | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead |
+| Token   | Value                                                                                                                             |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Radius  | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                                         |
+| Shadow  | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment` |
+| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                           |
+| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                            |
+| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead                      |
 
 ## Components
 
@@ -134,15 +134,15 @@ Every control has the five states in [style-4-states.jpg](style-4-states.jpg). H
 
 ## States
 
-| State | Design |
-| --- | --- | --- |
-| First load (NFR-02) | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. Only on first load: changing the date never shows a loader (NFR-01). |
-| No pins in the tree | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed. |
-| No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date". |
-| Districts on | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only"). |
-| Terrain failed | A banner with Retry. Borders and pins keep working because they load up front. |
-| Account menu | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time. |
-| Phone, collapsed | Date stepper and Play only, and a hint to tap the map. |
+| State                | Design                                                                                                                                                                                 |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First load (NFR-02)  | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. Only on first load: changing the date never shows a loader (NFR-01). |
+| No pins in the tree  | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed.                                                                   |
+| No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date".                 |
+| Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                             |
+| Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                         |
+| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time.                                                             |
+| Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                                 |
 
 ## Feedback and validation
 
@@ -200,25 +200,25 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 
 Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. The full layer stack is in [map-style.jpg](map-style.jpg). The map colours:
 
-| Use | Value |
-| --- | --- | --- |
-| Sea (background) | `map.sea` |
-| Land | `map.land` |
-| Coastline | `map.coastline` |
-| Rivers | `map.river`, widening with zoom |
-| Polity border | `map.border`; dashed when confidence is low |
-| District border | `map.district` |
-| Changed border (MAP-11) | `map.changed` (`--brand`), fades out |
-| Polity fills | `map.polity`, keyed by Polity id; `default` for any other (muted tints of similar lightness) |
-| Contested hatch | 45° stripes, 3px in 9px, `map.hatch` |
-| Hillshade | `map.hillshade` |
-| Polity label | Public Sans SemiBold, uppercase; `map.polity-label`; contested note in italic `map.contested-label` |
-| Place label | Public Sans Medium; `map.place-label`; dot `map.place-dot` |
-| Water and river labels | Public Sans Italic, `map.water-label` |
-| Context labels | Public Sans Italic, uppercase, `map.context-label` |
-| Label halo | `map.label-halo`, the land colour |
-| Uncertainty halo | `map.pin-halo`; radius grows with the date range |
-| Selected point | `map.selected` (`--brand`) |
+| Use                     | Value                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| Sea (background)        | `map.sea`                                                                                           |
+| Land                    | `map.land`                                                                                          |
+| Coastline               | `map.coastline`                                                                                     |
+| Rivers                  | `map.river`, widening with zoom                                                                     |
+| Polity border           | `map.border`; dashed when confidence is low                                                         |
+| District border         | `map.district`                                                                                      |
+| Changed border (MAP-11) | `map.changed` (`--brand`), fades out                                                                |
+| Polity fills            | `map.polity`, keyed by Polity id; `default` for any other (muted tints of similar lightness)        |
+| Contested hatch         | 45° stripes, 3px in 9px, `map.hatch`                                                                |
+| Hillshade               | `map.hillshade`                                                                                     |
+| Polity label            | Public Sans SemiBold, uppercase; `map.polity-label`; contested note in italic `map.contested-label` |
+| Place label             | Public Sans Medium; `map.place-label`; dot `map.place-dot`                                          |
+| Water and river labels  | Public Sans Italic, `map.water-label`                                                               |
+| Context labels          | Public Sans Italic, uppercase, `map.context-label`                                                  |
+| Label halo              | `map.label-halo`, the land colour                                                                   |
+| Uncertainty halo        | `map.pin-halo`; radius grows with the date range                                                    |
+| Selected point          | `map.selected` (`--brand`)                                                                          |
 
 Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed circle outlines, and boxes behind labels. Anything you click or type into is HTML over the map.
 

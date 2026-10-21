@@ -1,0 +1,33 @@
+.panel {
+  background: var(--surface);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
+  box-sizing: border-box;
+  left: var(--size-gutter);
+  padding: var(--space-16) var(--space-20);
+  position: absolute;
+  top: var(--size-gutter);
+  width: var(--size-panel);
+  z-index: 1;
+}
+
+.heading {
+  color: var(--ink-3);
+  margin-bottom: var(--space-12);
+}
+
+.row {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-12);
+  min-height: var(--size-touch);
+}
+
+.checkbox {
+  margin-top: 2px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}

@@ -10,43 +10,25 @@ Each map component gets a `*.module.css` holding the rules it now takes from `gl
 
 ## Decisions
 
-**D1 · Labelling the layer name** · Decides: Tech lead
-`Text` types its props as a `span`'s, so `<Text as='label'>` can't take `htmlFor`.
+**D1 · Labelling the layer name:** B, widen `Text` so `as='label'` accepts `htmlFor`. Answered by the tech lead on PR #140, despite the API change.
 
-- **A.** A plain `<label htmlFor>` wraps `<Text variant='label'>`.
-- **B.** Widen `Text`'s props so `as='label'` accepts `htmlFor`.
-- **Other:** your own.
-
-Recommended: A, because B changes a kit API the Spec doesn't ask for.
-
-**Answer (tech lead, PR #140): B**, despite the API change.
-
-**D2 · Precision keys** · Decides: PO
-Today Year, Month and Day are three Tab stops and the arrow keys do nothing. The kit's `Segmented` is native radios: one Tab stop, arrows move the choice.
-
-- **A.** Take the kit behaviour; reword the Spec's keyboard check to say so.
-- **B.** Keep three Tab stops by changing `Segmented` for this screen.
-- **Other:** your own.
-
-Recommended: A, because it is the standard radio-group pattern and the kit already proves it on `/design-kit`.
-
-**Answer (PO, via PR #140): A.**
+**D2 · Precision keys:** A, take the kit's `Segmented` behaviour (one Tab stop, arrows move the choice) and reword the Spec's keyboard check. Answered by the PO via PR #140.
 
 ## Files that change
 
-| File (`app/components/`)           | New / changed | What                                                        |
-| ---------------------------------- | ------------- | ----------------------------------------------------------- |
-| `MapShell.tsx`, `.module.css`      | Changed / new | `.bottom`                                                   |
-| `LayersPanel.tsx`, `.module.css`   | Changed / new | `.panel`, row layout; `Checkbox`; D1 B                      |
+| File (`app/components/`)              | New / changed | What                                                        |
+| ------------------------------------- | ------------- | ----------------------------------------------------------- |
+| `MapShell.tsx`, `.module.css`         | Changed / new | `.bottom`                                                   |
+| `LayersPanel.tsx`, `.module.css`      | Changed / new | `.panel`, row layout; `Checkbox`; D1 B                      |
 | `Text.tsx`, `__tests__/Text.test.tsx` | Changed       | `as='label'` accepts `htmlFor` (D1 B)                       |
-| `DateDock.tsx`, `.module.css`      | Changed / new | `.dock*`, field's mono rules; `IconButton`s; `Segmented`    |
-| `DateSlider.tsx`, `.module.css`    | Changed / new | Slider rules, same look                                     |
-| `Credits.tsx`, `.module.css`       | Changed / new | `.credits`, Attributions button                             |
-| `SourcesDialog.tsx`, `.module.css` | Changed / new | `.scrim`, `.dialog*`, table; `Text` h2, mono                |
-| `../globals.css`                   | Changed       | Delete the moved rules and `.mono`                          |
-| `__tests__/*`                      | Changed       | `aria-checked` becomes `checked`; queries by role and name  |
-| `e2e/smoke.spec.ts`                | Changed       | `.credits` locator becomes a role query                     |
-| `e2e/date-dock.spec.ts`            | Changed       | New keyboard test: Tab order, arrows, Space on the checkbox |
+| `DateDock.tsx`, `.module.css`         | Changed / new | `.dock*`, field's mono rules; `IconButton`s; `Segmented`    |
+| `DateSlider.tsx`, `.module.css`       | Changed / new | Slider rules, same look                                     |
+| `Credits.tsx`, `.module.css`          | Changed / new | `.credits`, Attributions button                             |
+| `SourcesDialog.tsx`, `.module.css`    | Changed / new | `.scrim`, `.dialog*`, table; `Text` h2, mono                |
+| `../globals.css`                      | Changed       | Delete the moved rules and `.mono`                          |
+| `__tests__/*`                         | Changed       | `aria-checked` becomes `checked`; queries by role and name  |
+| `e2e/smoke.spec.ts`                   | Changed       | `.credits` locator becomes a role query                     |
+| `e2e/date-dock.spec.ts`               | Changed       | New keyboard test: Tab order, arrows, Space on the checkbox |
 
 ## Order of work
 
@@ -72,6 +54,12 @@ Recommended: A, because it is the standard radio-group pattern and the kit alrea
 | Checkboxes and radio group keep names     | `getByRole('checkbox' \| 'radiogroup', { name })` in unit tests         |
 | `globals.css` holds none of the old rules | `grep -E '\.(dock\|segmented\|layer\|panel\|dialog\|credits)'` is empty |
 | Tests, e2e and boundaries pass, 100%      | Their output in the PR                                                  |
+
+## Deviations
+
+- `e2e/design.spec.ts`: the focus test reads a Segmented radio's label for the ring; the checkbox test reads `background-color`, since the kit checkbox draws its own box.
+- `lib/design/__tests__/design.test.ts`: the slider-thumb check reads `DateSlider.module.css`.
+- `DateDock`: Precision narrows with `PRECISIONS.filter(...).forEach(setPrecision)`, which keeps branch coverage at 100% without a cast.
 
 ## Out of scope
 

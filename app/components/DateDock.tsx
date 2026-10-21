@@ -10,7 +10,30 @@ import {
   stepDay,
 } from '@/lib/map/map-date';
 
+import styles from './DateDock.module.css';
 import { DateSlider } from './DateSlider';
+import { IconButton } from './IconButton';
+import { Segmented } from './Segmented';
+
+const OPTIONS = PRECISIONS.map(precision => ({
+  label: precision[0].toUpperCase() + precision.slice(1),
+  value: precision,
+}));
+
+const Chevron = ({ path }: { path: string }) => (
+  <svg
+    aria-hidden='true'
+    fill='none'
+    height='16'
+    stroke='currentColor'
+    strokeLinecap='round'
+    strokeLinejoin='round'
+    strokeWidth='2.2'
+    viewBox='0 0 24 24'
+    width='16'>
+    <path d={path} />
+  </svg>
+);
 
 export const DateDock = ({
   day,
@@ -24,42 +47,36 @@ export const DateDock = ({
   const [precision, setPrecision] = useState<Precision>('year');
 
   return (
-    <section aria-label='Map date' className='dock'>
-      <div className='dock-row'>
-        <button
-          aria-label='Back'
-          className='dock-step'
+    <section aria-label='Map date' className={styles.dock}>
+      <div className={styles.row}>
+        <IconButton
           disabled={day <= MIN_DAY}
-          onClick={() => onChange(stepDay(day, precision, -1, lastDay))}
-          type='button'>
-          ‹
-        </button>
+          label='Back'
+          onClick={() => onChange(stepDay(day, precision, -1, lastDay))}>
+          <Chevron path='M15 5l-7 7 7 7' />
+        </IconButton>
         <input
           aria-label='Date shown'
-          className='dock-field mono'
+          className={styles.field}
           readOnly
           value={shownDate(day, precision)}
         />
-        <button
-          aria-label='Forward'
-          className='dock-step'
+        <IconButton
           disabled={day >= lastDay}
-          onClick={() => onChange(stepDay(day, precision, 1, lastDay))}
-          type='button'>
-          ›
-        </button>
-        <div aria-label='Precision' className='segmented' role='radiogroup'>
-          {PRECISIONS.map(option => (
-            <button
-              aria-checked={option === precision}
-              key={option}
-              onClick={() => setPrecision(option)}
-              role='radio'
-              type='button'>
-              {option[0].toUpperCase() + option.slice(1)}
-            </button>
-          ))}
-        </div>
+          label='Forward'
+          onClick={() => onChange(stepDay(day, precision, 1, lastDay))}>
+          <Chevron path='M9 5l7 7-7 7' />
+        </IconButton>
+        <Segmented
+          label='Precision'
+          name='precision'
+          // Filtering narrows the string to a Precision without a cast.
+          onChange={value =>
+            PRECISIONS.filter(option => option === value).forEach(setPrecision)
+          }
+          options={OPTIONS}
+          value={precision}
+        />
       </div>
       <DateSlider
         day={day}

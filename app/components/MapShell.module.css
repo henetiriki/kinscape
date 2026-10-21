@@ -1,0 +1,11 @@
+/* The dock and the credits line under it, right of the Layers panel. */
+.bottom {
+  bottom: var(--size-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  left: 392px;
+  position: absolute;
+  right: var(--size-gutter);
+  z-index: 1;
+}

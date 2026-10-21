@@ -45,6 +45,19 @@ it('lets a non-heading style take another element and passes props through', () 
   expect(note.id).toBe('note');
 });
 
+it('lets a label point at its control', () => {
+  render(
+    <>
+      <Text as='label' htmlFor='field' variant='label'>
+        Name
+      </Text>
+      <input id='field' />
+    </>
+  );
+
+  expect(screen.getByLabelText('Name').id).toBe('field');
+});
+
 it('requires an element for a heading style', () => {
   // @ts-expect-error h1 without `as` is a type error
   const element = <Text variant='h1'>Title</Text>;

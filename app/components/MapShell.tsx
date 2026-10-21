@@ -9,6 +9,7 @@ import { todayDay } from '@/lib/map/map-date';
 import { Credits } from './Credits';
 import { DateDock } from './DateDock';
 import { LayersPanel } from './LayersPanel';
+import styles from './MapShell.module.css';
 import { MapView } from './MapView';
 import { SourcesDialog } from './SourcesDialog';
 
@@ -26,7 +27,7 @@ export const MapShell = ({ sources }: { sources: Source[] }) => {
         onShowPolitiesChange={setShowPolities}
         showPolities={showPolities}
       />
-      <div className='bottom'>
+      <div className={styles.bottom}>
         <DateDock day={mapDay} lastDay={lastDay} onChange={setMapDay} />
         <Credits
           onOpenAttributions={() => setShowSources(true)}

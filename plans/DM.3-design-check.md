@@ -79,7 +79,7 @@ Recommended: A, because font versions differ (next/font against Fontsource) and 
 
 - Also `@types/pngjs`, and an ESLint default-export exception for the reporter.
 - Compares the snapshot rendered from `design/source`, not the JPG.
-- `match-design` skill not written: `.claude/` writes denied.
+- Throwaway `blocking` run waived by the tech lead; unit tests cover it.
 
 ## Out of scope
 

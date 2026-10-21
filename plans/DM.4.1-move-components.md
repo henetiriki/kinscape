@@ -2,7 +2,7 @@
 
 - **Spec:** #130 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,6 +18,8 @@ One `git mv components app/components` moves the 14 components, `controls.ts` an
 - **Other:** your own.
 
 Recommended: A, because no stale path is left behind.
+
+**Answer (@henetiriki): A.**
 
 ## Files that change
 

@@ -2,7 +2,7 @@
 
 - **Spec:** #131 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,6 +18,8 @@ The diff is about 700 changed lines, over the 600 cap: about 540 are the moved C
 - **Other:** your own.
 
 Recommended: A, because the move is mechanical and a split leaves `controls.css` in a third mixed state.
+
+**Answer: A** (@henetiriki, PR #136 review).
 
 ## Files that change
 

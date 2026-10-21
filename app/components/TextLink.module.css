@@ -1,0 +1,28 @@
+.textLink {
+  composes: ring from './focus.module.css';
+  border-radius: var(--radius-link);
+  color: var(--brand);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-control-size);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.textLink:is(:hover, [data-state='hover']) {
+  color: var(--brand-hover);
+  text-decoration-thickness: 2px;
+}
+
+.textLink:is(:active, [data-state='active']) {
+  color: var(--brand-pressed);
+  text-decoration-thickness: 2px;
+}
+
+.textLink[aria-disabled='true'] {
+  color: var(--ink-disabled);
+  cursor: default;
+  text-decoration: none;
+}

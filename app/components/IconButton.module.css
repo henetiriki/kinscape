@@ -1,0 +1,30 @@
+.iconBtn {
+  composes: ring from './focus.module.css';
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  height: var(--size-control);
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  width: var(--size-control);
+}
+
+.iconBtn:is(:hover:not(:disabled), [data-state='hover']) {
+  background: var(--surface-2);
+}
+
+.iconBtn:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-tint);
+  color: var(--brand-hover);
+}
+
+.iconBtn:disabled {
+  color: var(--icon-disabled);
+  cursor: default;
+}

@@ -15,6 +15,10 @@ A Bug takes the same path; below, "Spec" means both. The branch is `spec/<id>-<s
 
 A plan run that ends without a comment gets a safety-net comment linking the run, and the Spec becomes `status: blocked`. Check the run and branch, then remove `blocked` and set `ready-for-agent` again. A stalled build: re-run it from the Actions tab.
 
+## Styles
+
+A component's CSS goes in a `*.module.css` beside it, with camelCase class names; a rule several components share goes in its own module and is taken with `composes`.
+
 ## Chores
 
 Tooling, CI, docs, process and settings need no issue. Claude plans in plan mode and the tech lead accepts the plan; it isn't committed, so the PR body says what changed and why. Open a `chore:` pull request from a branch off `origin/main`.

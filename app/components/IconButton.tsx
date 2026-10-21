@@ -2,6 +2,8 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from './controls';
 
+import styles from './IconButton.module.css';
+
 export const IconButton = ({
   label,
   state,
@@ -12,7 +14,7 @@ export const IconButton = ({
 } & Omit<ComponentProps<'button'>, 'aria-label' | 'className'>) => (
   <button
     aria-label={label}
-    className='icon-btn'
+    className={styles.iconBtn}
     data-state={state}
     type='button'
     {...rest}

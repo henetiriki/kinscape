@@ -10,7 +10,7 @@ it('is a secondary button that does not submit a form unless asked', () => {
 
   const button = screen.getByRole('button', { name: 'Copy chain' });
 
-  expect(button.className).toBe('btn btn-secondary');
+  expect(button.className).toBe('btn btnSecondary');
   expect(button.getAttribute('type')).toBe('button');
 });
 
@@ -25,7 +25,7 @@ it('is primary on request, shows a given state and can be disabled', () => {
     name: 'Sign in',
   }) as HTMLButtonElement;
 
-  expect(button.className).toContain('btn-primary');
+  expect(button.className).toContain('btnPrimary');
   expect(button.dataset.state).toBe('hover');
   expect(button.disabled).toBe(true);
 });

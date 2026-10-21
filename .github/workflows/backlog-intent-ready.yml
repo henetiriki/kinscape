@@ -1,5 +1,13 @@
 name: 'Backlog: Intent ready for PO'
 
+# Repeats the job's `if:` (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    contains(github.event.issue.labels.*.name, 'type: spec') &&
+    format('Check Intent: {0}', github.event.issue.title) ||
+    format('Skipped: {0}', github.event.issue.title)
+  }}
+
 on:
   issues:
     types: [closed]

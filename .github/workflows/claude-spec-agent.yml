@@ -1,5 +1,24 @@
 name: 'Claude: Spec Agent - Plan/Build'
 
+# Names the path the run took. It repeats the `if:` of the `plan` and `build` jobs
+# (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    github.event_name == 'issues' &&
+    github.event.label.name == 'status: ready-for-agent' &&
+    contains(github.event.issue.labels.*.name, 'type: spec') &&
+    github.actor != 'henetiriki-bot' &&
+    format('Plan: {0}', github.event.issue.title) ||
+    github.event_name == 'pull_request_review' &&
+    github.event.review.state == 'approved' &&
+    github.event.review.author_association == 'OWNER' &&
+    github.event.pull_request.draft &&
+    github.event.pull_request.user.login == 'henetiriki-bot' &&
+    startsWith(github.event.pull_request.head.ref, 'spec/') &&
+    format('Build: {0}', github.event.pull_request.title) ||
+    format('Skipped: {0}', github.event.issue.title || github.event.pull_request.title)
+  }}
+
 # Two stages (plans/README.md): a ready-for-agent Spec gets a draft plan PR;
 # the tech lead's approving review on that PR starts the build.
 # `@claude` comments on the plan PR are handled by claude.yml.

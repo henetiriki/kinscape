@@ -1,17 +1,22 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, type PlaywrightWorkerOptions } from '@playwright/test';
+
+const use: Partial<PlaywrightWorkerOptions> = {
+  browserName: 'chromium',
+  // Headless Chromium has no GPU; MapLibre needs software WebGL.
+  launchOptions: {
+    args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+  },
+};
 
 export default defineConfig({
   projects: [
-    {
-      name: 'chromium',
-      use: {
-        browserName: 'chromium',
-        // Headless Chromium has no GPU; MapLibre needs software WebGL.
-        launchOptions: {
-          args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
-        },
-      },
-    },
+    { name: 'chromium', testIgnore: 'design-check.spec.ts', use },
+    { name: 'design', testMatch: 'design-check.spec.ts', use },
+  ],
+  reporter: [
+    ...(process.env.CI ? [['github'] as const] : []),
+    ['list'],
+    ['./e2e/design-reporter.ts'],
   ],
   testDir: 'e2e',
   use: { baseURL: 'http://localhost:3000' },

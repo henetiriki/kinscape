@@ -18,8 +18,6 @@ Panels sit on top of the map, so a box over it would hide them too.
 - **B.** A fixed ignore rectangle per screen in `screens.json`.
 - **Other:** your own.
 
-Recommended: A, because it follows any layout without editing `screens.json`.
-
 **Answer:** A
 
 **D2 · What compares the pixels** · Decides: Tech lead
@@ -27,8 +25,6 @@ Recommended: A, because it follows any layout without editing `screens.json`.
 - **A.** `pixelmatch` 8 (ISC) and `pngjs` 7 (MIT) as dev dependencies; `pixelmatch` skips anti-aliased pixels.
 - **B.** Our own loop over the PNG bytes, decoded in the browser. No dependency, but no anti-aliasing filter.
 - **Other:** your own.
-
-Recommended: A, because anti-aliasing noise is the Spec's first concern.
 
 **Answer:** A
 
@@ -68,7 +64,6 @@ Recommended: A, because font versions differ (next/font against Fontsource) and 
 
 - **A dev server on port 3000** is reused locally and shows the Next.js badge: the skill says to stop it.
 - **Translucent panels over the map** fall inside the mask under D1 A; the screen Spec adds an ignore area if that hides a real difference.
-- **The upload action** must be pinned to a full commit SHA (`docs/security.md`).
 
 ## Proof
 
@@ -79,6 +74,12 @@ Recommended: A, because font versions differ (next/font against Fontsource) and 
 | Differences only in the map: matches   | Unit test: images differing only inside the mask score 0%                                 |
 | `/match-design map-desktop`            | Run locally; paste the side-by-side image in the PR                                       |
 | Missing route or snapshot: fails       | Unit tests for both, each error naming it                                                 |
+
+## Deviations
+
+- Also `@types/pngjs`, and an ESLint default-export exception for the reporter.
+- Compares the snapshot rendered from `design/source`, not the JPG.
+- `match-design` skill not written: `.claude/` writes denied.
 
 ## Out of scope
 

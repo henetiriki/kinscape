@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
 
-import { notFound } from 'next/navigation';
-
 import type { TextVariant } from '@/app/components/Text';
 
 import { Text } from '@/app/components/Text';
 
+import { boardTitle } from '../boards';
 import kit from '../kit.module.css';
 import styles from './page.module.css';
 
-export const metadata: Metadata = { title: 'KinScape design kit: type' };
+export const metadata: Metadata = { title: boardTitle('type') };
 
 type Heading = 'display' | 'h1' | 'h2' | 'h3';
 
@@ -128,90 +127,83 @@ const STYLES: Row[] = [
   },
 ];
 
-const TypeKit = () => {
-  // Vercel sets VERCEL_ENV at build, so in production the page is built as a 404.
-  if (process.env.VERCEL_ENV === 'production') {
-    notFound();
-  }
+const TypeKit = () => (
+  <main className={styles.kit}>
+    <header className={kit.kitHeader}>
+      <span className={kit.kitEyebrow}>Style guide · 01</span>
+      <p className={kit.kitTitle}>Typography and hierarchy</p>
+      <p className={kit.kitLead}>
+        Three families, each with one job. Bricolage Grotesque for headings,
+        Public Sans for everything you read or click, JetBrains Mono for dates
+        and coordinates.
+      </p>
+    </header>
 
-  return (
-    <main className={styles.kit}>
-      <header className={kit.kitHeader}>
-        <span className={kit.kitEyebrow}>Style guide · 01</span>
-        <p className={kit.kitTitle}>Typography and hierarchy</p>
-        <p className={kit.kitLead}>
-          Three families, each with one job. Bricolage Grotesque for headings,
-          Public Sans for everything you read or click, JetBrains Mono for dates
-          and coordinates.
-        </p>
-      </header>
-
-      <div aria-label='Type scale' className={styles.scale} role='table'>
-        <div className={`${styles.row} ${styles.columns}`} role='row'>
-          <span role='columnheader'>Style</span>
-          <span role='columnheader'>Font · size / line · weight</span>
-          <span role='columnheader'>Sample</span>
+    <div aria-label='Type scale' className={styles.scale} role='table'>
+      <div className={`${styles.row} ${styles.columns}`} role='row'>
+        <span role='columnheader'>Style</span>
+        <span role='columnheader'>Font · size / line · weight</span>
+        <span role='columnheader'>Sample</span>
+      </div>
+      {STYLES.map(row => (
+        <div className={styles.row} key={row.variant} role='row'>
+          <span className={styles.name} role='cell'>
+            <span>{row.name}</span>
+            <span className={styles.hint}>{row.hint}</span>
+          </span>
+          <span className={styles.spec} role='cell'>
+            {row.spec}
+          </span>
+          <span role='cell'>
+            {/* Display is a div and the header title a paragraph, so the H1 sample is the only h1. */}
+            {row.tag ? (
+              <Text
+                as={row.tag}
+                data-variant={row.variant}
+                variant={row.variant}>
+                {row.sample}
+              </Text>
+            ) : (
+              <Text as='div' data-variant={row.variant} variant={row.variant}>
+                {row.sample}
+              </Text>
+            )}
+          </span>
         </div>
-        {STYLES.map(row => (
-          <div className={styles.row} key={row.variant} role='row'>
-            <span className={styles.name} role='cell'>
-              <span>{row.name}</span>
-              <span className={styles.hint}>{row.hint}</span>
-            </span>
-            <span className={styles.spec} role='cell'>
-              {row.spec}
-            </span>
-            <span role='cell'>
-              {/* Display is a div and the header title a paragraph, so the H1 sample is the only h1. */}
-              {row.tag ? (
-                <Text
-                  as={row.tag}
-                  data-variant={row.variant}
-                  variant={row.variant}>
-                  {row.sample}
-                </Text>
-              ) : (
-                <Text as='div' data-variant={row.variant} variant={row.variant}>
-                  {row.sample}
-                </Text>
-              )}
-            </span>
-          </div>
-        ))}
-      </div>
+      ))}
+    </div>
 
-      <div className={kit.kitNotes}>
-        {/* Map labels are drawn on the map style, not here: the column stays empty so Rules keeps its place. */}
-        <section aria-hidden='true' className={styles.mapLabels} />
-        <section>
-          <h2>Rules</h2>
-          <ul>
-            <li>
-              Line height: 1.1–1.25 for headings, 1.45–1.55 for anything you
-              read in sentences, 1.3–1.4 for single-line UI text.
-            </li>
-            <li>Keep running text under 68 characters a line.</li>
-            <li>
-              Weights: Public Sans 400, 500 and 600 only. Bricolage 500 for page
-              titles, 700 for everything else. No other weights.
-            </li>
-            <li>Never set body text below 12.5px, or map labels below 11px.</li>
-            <li>
-              Sentence case everywhere. Uppercase only for overlines and polity
-              or context labels, always with letter-spacing.
-            </li>
-            <li>
-              JetBrains Mono for anything a person compares digit by digit:
-              dates, coordinates, archive references. Ligatures off.
-            </li>
-            <li>
-              Field text is 16px on phones so the browser doesn&apos;t zoom in.
-            </li>
-          </ul>
-        </section>
-      </div>
-    </main>
-  );
-};
+    <div className={kit.kitNotes}>
+      {/* Map labels are drawn on the map style, not here: the column stays empty so Rules keeps its place. */}
+      <section aria-hidden='true' className={styles.mapLabels} />
+      <section>
+        <h2>Rules</h2>
+        <ul>
+          <li>
+            Line height: 1.1–1.25 for headings, 1.45–1.55 for anything you read
+            in sentences, 1.3–1.4 for single-line UI text.
+          </li>
+          <li>Keep running text under 68 characters a line.</li>
+          <li>
+            Weights: Public Sans 400, 500 and 600 only. Bricolage 500 for page
+            titles, 700 for everything else. No other weights.
+          </li>
+          <li>Never set body text below 12.5px, or map labels below 11px.</li>
+          <li>
+            Sentence case everywhere. Uppercase only for overlines and polity or
+            context labels, always with letter-spacing.
+          </li>
+          <li>
+            JetBrains Mono for anything a person compares digit by digit: dates,
+            coordinates, archive references. Ligatures off.
+          </li>
+          <li>
+            Field text is 16px on phones so the browser doesn&apos;t zoom in.
+          </li>
+        </ul>
+      </section>
+    </div>
+  </main>
+);
 
 export default TypeKit;

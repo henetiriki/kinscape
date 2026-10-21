@@ -79,3 +79,8 @@ Recommended: A, because sighted keyboard users see where they are.
 ## Flagged concerns
 
 - The shell is not designed: it uses `Text`, `TextLink` and spacing tokens only, plus D2.
+
+## Deviations
+
+- New `app/design-kit/page.module.css` lays out the index; the old one moved to `states/`.
+- `boards.ts` also exports `boardTitle(slug)`, which each board's `metadata.title` reads.

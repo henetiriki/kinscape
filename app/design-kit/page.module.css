@@ -1,63 +1,29 @@
-/* The /design-kit page, laid out like the Component states board */
+/* The /design-kit index: one row per board */
 
-.kit {
-  background: var(--surface);
-  box-sizing: border-box;
+.index {
   display: flex;
   flex-direction: column;
-  gap: 36px;
-  min-height: 1502px;
-  padding: var(--space-64) 72px;
+  gap: var(--space-32);
+  padding: var(--space-48) var(--space-64);
 }
 
-.kitMatrix {
-  border-top: 2px solid var(--ink);
+.boards {
   display: flex;
   flex-direction: column;
+  gap: var(--space-24);
+  list-style: none;
   margin: 0;
+  padding: 0;
 }
 
-.kitRow {
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-  display: grid;
-  gap: var(--space-16);
-  grid-template-columns: 190px repeat(5, minmax(0, 1fr));
-  min-height: 80px;
-  padding: var(--space-8) 0;
-}
-
-.kitColumns {
-  border-bottom-color: var(--line-strong);
-  color: var(--ink-3);
-  font-size: var(--type-overline-size);
-  font-weight: var(--type-overline-weight);
-  letter-spacing: var(--type-overline-tracking);
-  min-height: 0;
-  padding: 10px 0;
-  text-transform: uppercase;
-}
-
-.kitName {
+.board {
+  align-items: flex-start;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-4);
 }
 
-.kitName > :first-child {
-  font-size: var(--type-label-size);
-  font-weight: var(--type-label-weight);
-}
-
-.kitHint {
+/* The style guide number, quiet like each board's eyebrow */
+.board > :first-child {
   color: var(--ink-3);
-  font-size: var(--type-caption-size);
-  line-height: 1.4;
-}
-
-.kitCell {
-  align-items: center;
-  display: inline-flex;
-  gap: 10px;
-  justify-self: start;
 }

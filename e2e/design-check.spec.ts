@@ -37,6 +37,9 @@ if (unknown.length > 0) {
 const HIDE_MAP =
   '.maplibregl-canvas, svg[role="img"] { visibility: hidden !important; }';
 
+// The design kit's banner isn't on any board, so each board is shot from its own top.
+const HIDE_KIT_BANNER = '[data-design-hide] { display: none !important; }';
+
 const shoot = async (page: Page) => PNG.sync.read(await page.screenshot());
 
 /** The screenshot, and the pixels that change when the map is hidden. */
@@ -93,6 +96,8 @@ for (const screen of config.screens.filter(
     });
 
     if (screen.state) await states[screen.state](page);
+
+    await page.addStyleTag({ content: HIDE_KIT_BANNER });
 
     const built = await shootWithMask(page);
 

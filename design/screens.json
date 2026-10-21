@@ -20,7 +20,7 @@
       "ignore": [{ "height": 96, "width": 1296, "x": 72, "y": 653 }],
       "mode": "report",
       "name": "style-4-states",
-      "route": "/design-kit",
+      "route": "/design-kit/states",
       "width": 1440
     }
   ],

@@ -132,7 +132,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 - **Alert:** 1px system border, system background and text, a filled 20px icon, a 14/600 title and one line.
 - **Toast:** white, popup shadow, bottom centre above the dock. Success leaves after 4 seconds; errors stay and offer a retry.
 
-Every control has the five states in [style-4-states.jpg](style-4-states.jpg). Hover darkens or tints, pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls), and disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover. The controls are built in `/design-kit` (a 404 in production).
+Every control has the five states in [style-4-states.jpg](style-4-states.jpg). Hover darkens or tints, pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls), and disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover. The controls are built in `/design-kit/states`; `/design-kit` lists the boards (the kit is a 404 in production).
 
 ## States
 

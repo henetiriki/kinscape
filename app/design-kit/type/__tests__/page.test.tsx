@@ -1,28 +1,10 @@
 import { render, screen, within } from '@testing-library/react';
-import { afterEach, expect, it, vi } from 'vitest';
-
-const notFound = vi.hoisted(() =>
-  vi.fn(() => {
-    throw new Error('NEXT_NOT_FOUND');
-  })
-);
-
-vi.mock('next/navigation', () => ({ notFound }));
+import { expect, it } from 'vitest';
 
 import TypeKit from '../page';
 
-afterEach(() => vi.unstubAllEnvs());
-
-// NFR-03
-it('is a 404 in production', () => {
-  vi.stubEnv('VERCEL_ENV', 'production');
-  expect(() => render(<TypeKit />)).toThrow('NEXT_NOT_FOUND');
-  expect(notFound).toHaveBeenCalled();
-});
-
 // NFR-06
-it('shows the 14 styles outside production, with natural heading elements', () => {
-  vi.stubEnv('VERCEL_ENV', 'preview');
+it('shows the 14 styles, with natural heading elements', () => {
   render(<TypeKit />);
 
   const scale = screen.getByRole('table', { name: 'Type scale' });

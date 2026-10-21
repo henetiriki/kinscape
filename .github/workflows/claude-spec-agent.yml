@@ -1,7 +1,11 @@
 name: 'Claude: Spec Agent - Plan/Build'
 
-# Names the path the run took. It repeats the `if:` of the `plan` and `build` jobs
-# (run-name cannot see job results): change them together.
+# The title shown for each run in the Actions tab. It names the path the run took:
+#   "Plan: <title>"  - a Spec was marked ready for the agent, so Claude drafts a plan
+#   "Build: <title>" - the tech lead approved a draft plan PR, so Claude builds it
+#   "Skipped: <title>" - neither happened, so nothing runs
+# This repeats the `if:` of the `plan` and `build` jobs (run-name cannot see job results):
+# change them together.
 run-name: >-
   ${{
     github.event_name == 'issues' &&
@@ -36,6 +40,9 @@ permissions:
   actions: read
 
 jobs:
+  # Path 1: draft a plan. Runs when someone adds the "status: ready-for-agent" label to a Spec
+  # (not to any other kind of issue) and that person isn't Claude's own bot. Claude writes the
+  # plan and opens a draft PR, then stops to wait for the tech lead.
   plan:
     # Only Specs get a plan, whatever else carries the label.
     if: |
@@ -56,6 +63,8 @@ jobs:
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
       MODEL_ARGS: --model opus --effort high
+    # The steps below are shared: the `build` job reuses them as-is (`*steps`). The first one
+    # downloads the repo's code; on a plan PR it takes that PR's branch.
     steps: &steps
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -65,16 +74,21 @@ jobs:
           # Otherwise git pushes with GITHUB_TOKEN, not the PAT, and the runs it triggers wait for approval.
           persist-credentials: false
 
+      # Install the project's tools so Claude can run lint and tests.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
       - run: npm ci
-      # The agent can't install it: npx isn't in its allowed tools. Plan runs don't build.
+      # Install the test browser, but only on a build (a PR review), when Claude runs the
+      # end-to-end tests. Plan runs don't build. The agent can't install it itself: npx isn't
+      # in its allowed tools.
       - if: github.event_name == 'pull_request_review'
         run: npx playwright install --with-deps chromium
+      # Note the start time, so the last step can tell whether Claude commented during this run.
       - run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
+      # Hand the job to Claude: the PROMPT and MODEL_ARGS set on each job say what to do.
       - id: claude
         uses: anthropics/claude-code-action@db77d4d3c98f3f6380e7cd45ffba2342a3dbde3c # v1.0.254
         with:
@@ -83,11 +97,11 @@ jobs:
           bot_name: henetiriki-bot
           bot_id: '344434370'
           prompt: ${{ env.PROMPT }}
-          # The repo is private; turn off once runs are reliable.
-          show_full_output: true
+          # The allowed tools let Claude edit files and run npm scripts, git, and GitHub commands.
           claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
 
-      # A stalled or failed run still leaves a trace.
+      # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
+      # step failed. If Claude left no comment, post one pointing at the run.
       - if: always()
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
@@ -96,16 +110,22 @@ jobs:
           EVENT: ${{ github.event_name }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          # Count the bot's comments on this thread since the run started.
           commented=$(gh issue view "$THREAD" --json comments \
             --jq "[.comments[] | select(.author.login == \"henetiriki-bot\" and .createdAt >= \"$STARTED\")] | length")
+          # None means Claude went quiet: say so, so a person knows to look.
           if [ "$commented" = 0 ]; then
             gh issue comment "$THREAD" --body "The agent finished without commenting (step outcome: $OUTCOME). Check the [run]($RUN_URL) and the branch before re-triggering."
-            # On a plan run THREAD is the Spec: hand it back as blocked.
+            # If this was a plan run (a Spec was labelled), the thread is the Spec itself:
+            # swap its "ready-for-agent" label for "blocked" to hand it back to a person.
             if [ "$EVENT" = issues ]; then
               gh issue edit "$THREAD" --remove-label "status: ready-for-agent" --add-label "status: blocked"
             fi
           fi
 
+  # Path 2: build the approved plan. Runs when the repo owner approves a review on a draft PR
+  # that Claude's bot opened from a branch starting with `spec/` (a plan PR). Claude then
+  # builds what the plan describes and comments on the PR with the result.
   build:
     # The bot opens chore PRs too: only a draft on a spec/ branch is a plan PR.
     if: |

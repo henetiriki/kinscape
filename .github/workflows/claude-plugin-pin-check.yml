@@ -1,8 +1,15 @@
 name: 'Claude: Plugin pin check'
 
+# In plain English: the automated code review uses a plugin fixed ("pinned") to one exact
+# version, and Dependabot can't update it. Once a week this checks whether the plugin has
+# newer changes. If it has, and no reminder is open yet, it files an issue asking a person to
+# review the changes and bump the pin.
+
 on:
   schedule:
+    # Every Monday at 06:00 UTC.
     - cron: '0 6 * * 1'
+  # Lets a person run it by hand from the Actions tab.
   workflow_dispatch:
 
 permissions:
@@ -17,6 +24,9 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
+      # Run the check (scripts/claude-plugin-pin-check.mts). It does nothing when the pin is
+      # current or a reminder issue is already open. GH_TOKEN lets it read the plugin's
+      # history and file the issue.
       - run: node scripts/claude-plugin-pin-check.mts
         env:
           GH_REPO: ${{ github.repository }}

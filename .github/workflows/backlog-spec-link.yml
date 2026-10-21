@@ -1,6 +1,11 @@
 name: 'Backlog: Link Spec to Intent'
 
-# Repeats the job's `if:` (run-name cannot see job results): change them together.
+# In plain English: when a new Spec is filed, attach it to the Intent it slices, using the
+# "Intent or milestone" answer on the issue form. If that can't be done, leave a comment.
+#
+# The title shown for each run in the Actions tab: "Link: <title>" for a Spec, "Skipped:
+# <title>" for any other issue. Repeats the job's `if:` (run-name cannot see job results):
+# change them together.
 run-name: >-
   ${{
     contains(github.event.issue.labels.*.name, 'type: spec') &&
@@ -16,6 +21,7 @@ permissions:
   issues: write
 
 jobs:
+  # Only new Specs matter here; every other new issue is ignored.
   link-spec:
     if: "contains(github.event.issue.labels.*.name, 'type: spec')"
     runs-on: ubuntu-latest
@@ -26,6 +32,7 @@ jobs:
             const { owner, repo } = context.repo;
             const { number, id, body } = context.payload.issue;
 
+            // 1. Already attached to an Intent? Then there is nothing to do.
             try {
               await github.request(
                 'GET /repos/{owner}/{repo}/issues/{issue_number}/parent',
@@ -36,10 +43,14 @@ jobs:
               if (error.status !== 404) throw error;
             }
 
+            // 2. Read the "Intent or milestone" answer from the issue form. A milestone such
+            //    as "M2" needs no link, because milestone Specs have no parent issue.
             const field = /### Intent or milestone\s+(.*)/.exec(body ?? '');
             const value = field ? field[1].trim() : '';
             if (/^M\d+$/.test(value)) return; // a milestone Spec has no parent issue
 
+            // 3. Otherwise the answer should be an issue number such as "42" or "#42". Look
+            //    that issue up and, if it is an open Intent, attach this Spec to it.
             const match = /^#?(\d+)$/.exec(value);
             let linked = false;
             if (match) {
@@ -65,6 +76,8 @@ jobs:
               }
             }
 
+            // 4. If no link was made (blank answer, not an issue number, not an open Intent),
+            //    ask the author to link it by hand.
             if (!linked) {
               await github.rest.issues.createComment({
                 owner,

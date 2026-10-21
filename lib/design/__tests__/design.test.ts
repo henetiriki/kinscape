@@ -39,12 +39,14 @@ describe('colour literals', () => {
     .filter(name => name.endsWith('.tsx'))
     .map(name => `components/${name}`);
 
-  it.each(['app/globals.css', 'lib/map/style.ts', ...components])(
-    '%s has none',
-    path => {
-      expect(read(path)).not.toMatch(COLOUR_LITERAL);
-    }
-  );
+  it.each([
+    'app/controls.css',
+    'app/globals.css',
+    'lib/map/style.ts',
+    ...components,
+  ])('%s has none', path => {
+    expect(read(path)).not.toMatch(COLOUR_LITERAL);
+  });
 });
 
 // The thumb is a pseudo-element the browser won't report, so check the source.

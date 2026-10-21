@@ -18,8 +18,6 @@ One component per control in `components/` (`Button` with `primary`/`secondary`,
 
 **Answer: A** (@henetiriki)
 
-Recommended: A, because it is one line and unit-testable.
-
 **D2 · How a state is shown without the pointer** · Decides: Tech lead
 
 - **A.** A `data-state="hover|focus|active"` prop; each rule reads `:hover, [data-state='hover']`. The Hover, Focus and Pressed cells are `inert`, so keyboard and screen reader meet each control in Default and Disabled only.
@@ -27,8 +25,6 @@ Recommended: A, because it is one line and unit-testable.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
-
-Recommended: A, because a state can't drift from the real one.
 
 **D3 · Board values with no token** · Decides: Tech lead
 Button text is 15px (`DESIGN.md`: 16); chip and segment text 13.5px; segment radii 9px and 7px; link radius 2px.
@@ -39,8 +35,6 @@ Button text is 15px (`DESIGN.md`: 16); chip and segment text 13.5px; segment rad
 
 **Answer: A** (@henetiriki)
 
-Recommended: A, because B may fail a `blocking` check.
-
 **D4 · The Text field row (DM.5)** · Decides: Tech lead
 
 - **A.** The kit keeps the row's label and height with empty cells; `screens.json` ignores that row until DM.5.
@@ -48,8 +42,6 @@ Recommended: A, because B may fail a `blocking` check.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
-
-Recommended: A.
 
 **D5 · Size** · Decides: Tech lead
 About 800 changed lines, over the 600 cap; CSS and tests are most of it.
@@ -94,3 +86,8 @@ About 800 changed lines, over the 600 cap; CSS and tests are most of it.
 | Matches `style-4-states`                 | `blocking` design check passes in CI                                                               |
 | Tab: brand ring, disabled skipped        | E2E: each focused element's outline is 2px brand; no disabled control is focused                   |
 | Icon buttons named; toggles report state | Unit tests by role and name; E2E checks `aria-pressed`, `checked`, `aria-checked`, `aria-selected` |
+
+## Deviations
+
+- `Segmented` and `Tabs` are client components (they hold handlers).
+- `style-4-states` is `report`, not `blocking`: 2.0% of pixels differ, all text edges, over the 0.5% limit. Tech lead decides.

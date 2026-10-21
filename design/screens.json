@@ -6,6 +6,14 @@
       "name": "map-desktop",
       "route": "/",
       "width": 1440
+    },
+    {
+      "height": 1502,
+      "ignore": [{ "height": 96, "width": 1296, "x": 72, "y": 653 }],
+      "mode": "report",
+      "name": "style-4-states",
+      "route": "/design-kit",
+      "width": 1440
     }
   ],
   "threshold": 0.5

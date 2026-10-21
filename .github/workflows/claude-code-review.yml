@@ -1,6 +1,6 @@
 name: 'Claude: Code Review'
 
-# In plain English: when a PR is opened, updated or marked ready, Claude reviews the code and
+# When a PR is opened, updated or marked ready, Claude reviews the code and
 # leaves comments on it.
 
 on:

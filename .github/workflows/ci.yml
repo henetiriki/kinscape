@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
 
-# In plain English: the automated checks that every change must pass.
+# The automated checks that every change must pass.
 # Drafts are mostly plan PRs: only format and words run on them. Every job runs on a push to main.
 jobs:
   # Checks the code for mistakes and style problems.

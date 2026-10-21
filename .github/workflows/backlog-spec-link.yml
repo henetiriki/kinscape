@@ -1,6 +1,6 @@
 name: 'Backlog: Link Spec to Intent'
 
-# In plain English: when a new Spec is filed, attach it to the Intent it slices, using the
+# When a new Spec is filed, attach it to the Intent it slices, using the
 # "Intent or milestone" answer on the issue form. If that can't be done, leave a comment.
 #
 # The title shown for each run in the Actions tab: "Link: <title>" for a Spec, "Skipped:

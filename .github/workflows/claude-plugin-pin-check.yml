@@ -1,6 +1,6 @@
 name: 'Claude: Plugin pin check'
 
-# In plain English: the automated code review uses a plugin fixed ("pinned") to one exact
+# The automated code review uses a plugin fixed ("pinned") to one exact
 # version, and Dependabot can't update it. Once a week this checks whether the plugin has
 # newer changes. If it has, and no reminder is open yet, it files an issue asking a person to
 # review the changes and bump the pin.

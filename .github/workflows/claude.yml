@@ -1,6 +1,6 @@
 name: 'Claude: Code'
 
-# In plain English: this workflow lets people talk to Claude by writing "@claude" in an
+# This workflow lets people talk to Claude by writing "@claude" in an
 # issue, a comment or a PR review.
 #
 # The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude

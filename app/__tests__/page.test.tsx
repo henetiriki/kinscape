@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 const shell = vi.hoisted(() => vi.fn());
 
-vi.mock('@/components/MapShell', () => ({
+vi.mock('@/app/components/MapShell', () => ({
   MapShell: (props: { sources: unknown[] }) => {
     shell(props);
 

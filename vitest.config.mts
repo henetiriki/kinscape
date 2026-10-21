@@ -13,7 +13,7 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         '**/*.d.ts',
       ],
-      include: ['{app,components,lib,scripts}/**/*.{ts,tsx,js,mjs,mts}'],
+      include: ['{app,lib,scripts}/**/*.{ts,tsx,js,mjs,mts}'],
       provider: 'v8',
       reporter: ['text', 'lcov'],
       thresholds: {
@@ -24,7 +24,7 @@ export default defineConfig({
       },
     },
     environment: 'jsdom',
-    include: ['{app,components,lib,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
+    include: ['{app,lib,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],
   },
 });

@@ -35,9 +35,9 @@ describe('the design snapshots', () => {
 const COLOUR_LITERAL = /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i;
 
 describe('colour literals', () => {
-  const components = readdirSync(join(root, 'components'))
+  const components = readdirSync(join(root, 'app/components'))
     .filter(name => name.endsWith('.tsx'))
-    .map(name => `components/${name}`);
+    .map(name => `app/components/${name}`);
 
   it.each([
     'app/controls.css',

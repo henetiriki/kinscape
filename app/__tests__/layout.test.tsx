@@ -7,11 +7,11 @@ import RootLayout, { metadata } from '../layout';
 
 // next/font fetches from Google at build time, so the unit tests stand in for it.
 const { calls, font } = vi.hoisted(() => {
-  const recorded: { variable: string; weight: string[] }[] = [];
+  const recorded: { variable: string; weight: string | string[] }[] = [];
 
   return {
     calls: recorded,
-    font: (options: { variable: string; weight: string[] }) => {
+    font: (options: { variable: string; weight: string | string[] }) => {
       recorded.push(options);
 
       return { variable: `class-${options.variable}` };
@@ -56,7 +56,7 @@ it('loads the weights the style guide lists', () => {
     calls.map(options => [options.variable, options.weight])
   );
 
-  expect(weights['--next-font-bricolage-grotesque']).toEqual(['500', '700']);
+  expect(weights['--next-font-bricolage-grotesque']).toBe('variable');
   expect(weights['--next-font-public-sans']).toEqual(['400', '500', '600']);
   expect(weights['--next-font-jetbrains-mono']).toEqual(['400', '500']);
 });

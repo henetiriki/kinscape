@@ -8,9 +8,9 @@
 
 The tech lead commits `design/tokens.json` on this branch (Spec D1). The build needs today's `--` colours plus `credits` and the segmented-control shadow, `map.polity` keyed by the ids in `data/polities.json` plus `default`, and every colour and width `style.ts` uses.
 
-`lib/design/tokens.mts` flattens the groups and resolves references (D1). `scripts/tokens.mts` (`npm run tokens`) writes `app/tokens.css` with a "generated" header; Prettier skips it. `style.ts` reads the resolved JSON, so MapLibre gets plain values.
+`lib/design/tokens.mts` flattens the groups and resolves references (D1). `scripts/tokens.mts` (`npm run tokens`) writes `app/tokens.css` with a "generated" header; Prettier skips it. `style.ts` reads the resolved JSON.
 
-`app/layout.tsx` loads the Spec's font weights with `next/font/google` and sets each font's CSS variable on `<html>`. next/font renames the families, so font stacks in `tokens.css` start with that variable.
+`app/layout.tsx` loads the fonts with `next/font/google` and sets each CSS variable on `<html>`. next/font renames families, so `tokens.css` font stacks start with that variable.
 
 ## Decisions
 
@@ -100,6 +100,7 @@ No links or selected point exist yet; a token test covers the point.
 
 - A rule gives MapLibre's zoom buttons the focus ring.
 - A unit test checks the slider thumb colour (browsers hide it).
+- Bricolage Grotesque loads as `variable` weight (Turbopack rejects a weight list).
 
 ## Out of scope
 

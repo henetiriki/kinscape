@@ -14,7 +14,8 @@ import './globals.css';
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
   variable: '--next-font-bricolage-grotesque',
-  weight: ['500', '700'],
+  // A variable font: Turbopack rejects a list of weights for one.
+  weight: 'variable',
 });
 const publicSans = Public_Sans({
   style: ['normal', 'italic'],

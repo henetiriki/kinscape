@@ -6,6 +6,9 @@ coverage
 playwright-report
 test-results
 
+# Written by npm run tokens
+app/tokens.css
+
 # Written by npm run map:prepare
 data/boundaries
 public/glyphs

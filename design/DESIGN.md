@@ -71,46 +71,24 @@ Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 
 
 ## Colours
 
-```css
-:root {
-  /* brand and interactive */
-  --brand: #264f29; /* primary buttons, links, selection, focus ring */
-  --brand-hover: #1d3e20;
-  --brand-pressed: #163019;
-  --brand-tint: #e6eee4; /* selected tab, chip on, pressed secondary */
-  --focus-ring: #264f29; /* 2px outline, 2px offset; white inside --ink banners */
+Every value (colours, type, spacing, radii, shadows, focus, motion and the map) is in [`tokens.json`](tokens.json). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties: colours are `--brand`, `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. Where a token is used:
 
-  /* neutrals */
-  --ink: #18211b; /* main text, dark banners */
-  --ink-2: #2e3a33; /* secondary text */
-  --ink-3: #4a544c; /* helper text, section headings */
-  --ink-disabled: #6e776f; /* disabled text and icons */
-  --field-border: #8e978c; /* fields and checkboxes */
-  --line-strong: #c9cfc5; /* secondary button borders */
-  --line: #e2e5dd; /* dividers, disabled fills */
-  --segment: #eef0ea; /* segmented control track */
-  --surface-2: #f4f5f0; /* insets, hover fills, sign-in page */
-  --surface: #ffffff; /* panels, dock, popups, dialogs */
-  --scrim: rgb(24 33 27 / 0.45); /* behind dialogs */
-
-  /* accent */
-  --pin: #9a3b12; /* pins, clusters, event glyphs */
-
-  /* system: text, border and icon, background */
-  --error: #7e2316;
-  --error-border: #b4412f;
-  --error-bg: #fbedea;
-  --warning: #6b4a00;
-  --warning-border: #b7791f;
-  --warning-bg: #fdf3dd;
-  --success: #1e5e32;
-  --success-border: #2f7d46;
-  --success-bg: #eaf4ec;
-  --info: #1e4e6b;
-  --info-border: #3e7fa6;
-  --info-bg: #e8f1f7;
-}
-```
+| Token                                               | Used for                                                                     |
+| --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `--brand`, `-hover`, `-pressed`                     | Primary buttons, links, selection                                            |
+| `--brand-tint`, `-hover`, `-pressed`                | Selected tab, chip on, pressed secondary                                     |
+| `--focus-ring`, `--focus-ring-on-dark`              | Focus outline; white inside `--ink` banners                                  |
+| `--ink`, `--ink-2`, `--ink-3`                       | Main text and dark banners; secondary text; helper text and section headings |
+| `--ink-disabled`                                    | Disabled text and icons                                                      |
+| `--field-border`                                    | Fields and checkboxes                                                        |
+| `--line-strong`, `--line`                           | Secondary button borders; dividers and disabled fills                        |
+| `--segment`                                         | Segmented control track                                                      |
+| `--surface-2`, `--surface`                          | Insets, hover fills, sign-in page; panels, dock, popups, dialogs             |
+| `--scrim`                                           | Behind dialogs                                                               |
+| `--credits`                                         | Credits line                                                                 |
+| `--pin`                                             | Pins, clusters, event glyphs                                                 |
+| `--error`, `--warning`, `--success`, `--info`       | System text, with `-border` (border and icon) and `-bg` (background)         |
+| `--google-text`, `--google-border`, `--google-mark` | Google sign-in button                                                        |
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
 
@@ -126,8 +104,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 | Token | Value |
 | --- | --- | --- |
 | Radius | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round |
-| Shadow | `0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12)` |
-| Popup shadow | `0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2)` |
+| Shadow | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment` |
 | Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop |
 | Touch | Targets at least 44px. Buttons and fields 44–50px tall |
 | Focus | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead |
@@ -136,7 +113,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 
 - **Primary button:** `--brand` fill, white 16/600 text, 50px tall on sign-in, 40–44 elsewhere.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
-- **Google sign-in (proposed):** not in the requirements yet, so it needs an Intent issue before it's built. Under "Sign in", after an "or" divider. White, 1px `#747775` border, `#1F1F1F` text, "Continue with Google". Use Google's own button or the official "G" mark from their branding kit, never a redrawn one; the mockup's dashed box marks the spot. Hide the button and the divider when Google sign-in is off.
+- **Google sign-in (proposed):** not in the requirements yet, so it needs an Intent issue before it's built. Under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark from their branding kit, never a redrawn one; the mockup's dashed box marks the spot. Hide the button and the divider when Google sign-in is off.
 - **Text field:** 44px in the app, 48px on sign-in, 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
@@ -201,7 +178,7 @@ The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single di
 NFR-08 requires every source to be credited in the app. The design fixes the format; the licence checks (NFR-08, BND-06) supply the text.
 
 - One sources file in the repo lists each source: layer, title, author, licence, licence link, attribution text and the date it was checked. A source isn't added to the map until its licence is checked.
-- The credits line under the date dock joins the attribution text of the sources on screen with " · " and ends with an "Attributions" link. 11px, `#24302B`.
+- The credits line under the date dock joins the attribution text of the sources on screen with " · " and ends with an "Attributions" link. 11px, `--credits`.
 - The "Sources and attributions" dialog, opened from that link or the account menu, lists every source as layer, source, licence and date checked.
 - The mockups show `[Source]` and `[Licence]` until the checks are done. Don't fill them in with guesses.
 
@@ -223,23 +200,23 @@ Every map visual is something MapLibre GL can draw: flat fills, solid or dashed 
 
 | Use | Value |
 | --- | --- | --- |
-| Sea (background) | `#C9D5D2` |
-| Land | `#E9EBE2` |
-| Coastline | `#7E9A98`, 0.9px |
-| Rivers | `#6E99A3`, 1–3px by zoom |
-| Polity border | `#3B3A2F`, 1.5px; dashed `[4, 2.6]` when confidence is low |
-| District border | `#6F7263`, 0.8px |
-| Changed border (MAP-11) | `--brand`, 4px, fades out |
-| Polity fills | Cape `#D3DCC4` · Natal `#DCD3BD` · OFS `#E3D2B2` · ZAR `#D9CFBA` · Basutoland `#D9CFD9` · Swaziland `#CBD6DA` (other polities: pick muted tints of similar lightness) |
-| Contested hatch | 45° stripes, 3px in 9px, `#8B4A1C` at 34% |
-| Hillshade | shadow `#5B6355`, highlight `#FFFFFF`, exaggeration 0.3 |
-| Polity label | Public Sans SemiBold, uppercase, tracking 0.15em, `#2E2C22`; contested note in italic `#6B3412` |
-| Place label | Public Sans Medium, `--ink`, dot 3.4px with white stroke |
-| Water and river labels | Public Sans Italic, `#3F646C` |
-| Context labels | Public Sans Italic, uppercase, `#56615A` |
-| Label halo | Land colour, 1.5px |
-| Uncertainty halo | `--pin`, opacity 0.24, blur 0.8, radius grows with the date range |
-| Selected point | 17px ring, `--brand`, 2.5px |
+| Sea (background) | `map.sea` |
+| Land | `map.land` |
+| Coastline | `map.coastline` |
+| Rivers | `map.river`, widening with zoom |
+| Polity border | `map.border`; dashed when confidence is low |
+| District border | `map.district` |
+| Changed border (MAP-11) | `map.changed` (`--brand`), fades out |
+| Polity fills | `map.polity`, keyed by Polity id; `default` for any other (muted tints of similar lightness) |
+| Contested hatch | 45° stripes, 3px in 9px, `map.hatch` |
+| Hillshade | `map.hillshade` |
+| Polity label | Public Sans SemiBold, uppercase; `map.polity-label`; contested note in italic `map.contested-label` |
+| Place label | Public Sans Medium; `map.place-label`; dot `map.place-dot` |
+| Water and river labels | Public Sans Italic, `map.water-label` |
+| Context labels | Public Sans Italic, uppercase, `map.context-label` |
+| Label halo | `map.label-halo`, the land colour |
+| Uncertainty halo | `map.pin-halo`; radius grows with the date range |
+| Selected point | `map.selected` (`--brand`) |
 
 Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed circle outlines, and boxes behind labels. Anything you click or type into is HTML over the map.
 

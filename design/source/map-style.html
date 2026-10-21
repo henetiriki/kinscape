@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape — MapLibre layer stack</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+      a{color:#264F29}a:hover{color:#1D3E20}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 1440px; min-height: 1640px; box-sizing: border-box; padding: 64px 72px; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B; display: flex; flex-direction: column; gap: 32px">
+      <header
+        style="display: flex; align-items: flex-end; justify-content: space-between; gap: 40px">
+        <div
+          style="display: flex; flex-direction: column; gap: 10px; max-width: 760px">
+          <span
+            style="font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #4A544C"
+            >Map style</span
+          >
+          <h1
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 44px; letter-spacing: -0.02em; line-height: 1.05">
+            MapLibre layer stack
+          </h1>
+          <p
+            style="margin: 0; font-size: 16px; line-height: 1.55; color: #2E3A33">
+            Bottom to top. Everything drawn on the map is one of these layers.
+            The panels, date dock, popup and zoom buttons are HTML on top of the
+            map.
+          </p>
+        </div>
+        <div style="display: flex; gap: 18px; font-size: 13px; color: #2E3A33">
+          <span style="display: inline-flex; align-items: center; gap: 8px"
+            ><span
+              style="width: 14px; height: 14px; border-radius: 3px; background: #264F29"></span
+            >Brand #264F29</span
+          >
+          <span style="display: inline-flex; align-items: center; gap: 8px"
+            ><span
+              style="width: 14px; height: 14px; border-radius: 3px; background: #9A3B12"></span
+            >Pins #9A3B12</span
+          >
+          <span style="display: inline-flex; align-items: center; gap: 8px"
+            ><span
+              style="width: 14px; height: 14px; border-radius: 3px; background: #3B3A2F"></span
+            >Borders #3B3A2F</span
+          >
+        </div>
+      </header>
+
+      <div
+        role="table"
+        aria-label="Layers"
+        style="display: flex; flex-direction: column; border-top: 2px solid #18211B">
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+          <span role="columnheader">#</span
+          ><span role="columnheader">Looks like</span
+          ><span role="columnheader">Layer id</span
+          ><span role="columnheader">Type</span
+          ><span role="columnheader">Source / filter</span
+          ><span role="columnheader">Key properties</span
+          ><span role="columnheader">Covers</span>
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >01</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #C9D5D2"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >background</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >background</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4">—</span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >background-color #C9D5D2</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >02</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #E9EBE2; border: 1px solid #D6DAD2"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >land</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >fill</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >Coastline polygon (land only)</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >fill-color #E9EBE2</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-01, MAP-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >03</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #D3DCC4"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >polity-fill</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >fill</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >boundaries.geojson · onDate</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >fill-color match polity_id → tint · fill-opacity 0.6</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-04, MAP-05, BND-01</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >04</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.38) 0 3px, #E3D2B2 3px 9px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >polity-contested</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >fill</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >same · contested == true</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >fill-pattern "hatch-contested" (9 px tile)</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >BND-04</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >05</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: radial-gradient(circle at 30% 30%, #F4F5F0, #B9BDB0)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >hillshade</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >hillshade</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >raster-dem tiles</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >shadow #5B6355 · highlight #FFFFFF · exaggeration 0.3 ·
+            illumination 315°</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >06</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: linear-gradient(to bottom, #E9EBE2 0 50%, #C9D5D2 50%)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >coastline</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >line</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >Coastline line</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >line-color #7E9A98 · line-width 0.9</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >07</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: linear-gradient(to bottom, #E9EBE2 0 16px, #6E99A3 16px 19px, #E9EBE2 19px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >rivers</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >line</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >rivers.geojson</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >line-color #6E99A3 · line-width interpolate zoom 4→1, 9→3</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >08</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: linear-gradient(to bottom, #E9EBE2 0 17px, #6F7263 17px 18px, #E9EBE2 18px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >district-line</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >line</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >districts.geojson · onDate · off by default</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >line-color #6F7263 · line-width 0.8</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-05</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >09</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: linear-gradient(to bottom, #E9EBE2 0 17px, #3B3A2F 17px 19px, #E9EBE2 19px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >polity-line</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >line</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >boundaries · confidence != low</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >line-color #3B3A2F · line-width 1.5 · line-join round</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >BND-01</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >10</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: repeating-linear-gradient(90deg, #3B3A2F 0 8px, transparent 8px 13px) 0 17px / 100% 2px no-repeat, #E9EBE2"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >polity-line-approx</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >line</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >boundaries · confidence == low</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >as above · line-dasharray [4, 2.6]</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >BND-05</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >11</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: linear-gradient(to bottom, #E9EBE2 0 15px, #264F29 15px 20px, #E9EBE2 20px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >boundary-changed</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >line</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >boundaries · id in changedIds</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >line-color #264F29 · line-width 4 · line-opacity faded in JS</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-11</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >12</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #C9D5D2; font: italic 11px Public Sans, sans-serif; letter-spacing: 1.5px; color: #3F646C"
+            >OCEAN</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >water-label</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >symbol</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >Ocean label points</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >text-font Italic · text-letter-spacing 0.2 · text-color
+            #3F646C</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-06</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >13</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #E9EBE2; font: italic 12px Public Sans, sans-serif; color: #3F646C"
+            >Vaal</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >river-label</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >symbol</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >rivers.geojson</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >symbol-placement line · text-font Italic</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-06</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >14</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #E3D2B2; font: 600 10px Public Sans, sans-serif; letter-spacing: 1.2px; color: #2E2C22"
+            >NATAL</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >polity-label</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >symbol</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >polity-names.geojson · onDate</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >text-field format [upcase name, "\n", note (italic, font-scale
+            0.85)] · text-letter-spacing 0.15 · text-halo-color #E9EBE2 ·
+            text-halo-width 1.5</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-06, BND-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >15</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: radial-gradient(circle, #18211B 0 3.5px, #FFFFFF 3.5px 5px, #E9EBE2 5px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >place-dot</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >circle</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >place-names.geojson · onDate</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >circle-radius 3.4 · circle-color #18211B · circle-stroke #FFFFFF
+            1.6</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >BND-08</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >16</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #E9EBE2; font: 500 12px Public Sans, sans-serif; color: #18211B"
+            >Kimberley</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >place-label</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >symbol</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >place-names.geojson · onDate</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >text-variable-anchor [left, right, top] · text-radial-offset 0.6 ·
+            text-halo-width 1.5</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-06, BND-08</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >17</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: radial-gradient(circle, rgba(154,59,18,0.35) 0, rgba(154,59,18,0) 17px), #E9EBE2"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >pin-halo</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >circle</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >pins.geojson · pinsOn · fuzzy only</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >circle-radius from uncertainty_days · circle-color #9A3B12 ·
+            circle-opacity 0.24 · circle-blur 0.8</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >EXP-02</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >18</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: #E9EBE2; font: 16px Public Sans, sans-serif; letter-spacing: 4px; color: #9A3B12"
+            >●■◆✚</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >pins</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >symbol</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >pins.geojson · pinsOn · filters</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >icon-image match event_type → SDF · icon-color #9A3B12 · icon-halo
+            #FFFFFF 2 · icon-opacity 0.6 when fuzzy</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >EXP-01, EXP-03, PIN-03</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >19</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: radial-gradient(circle, #9A3B12 0 12px, #FFFFFF 12px 14px, #E9EBE2 14px); font: 600 12px Public Sans, sans-serif; color: #FFFFFF"
+            >3</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >pin-cluster</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >circle + symbol</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >pins source, cluster: true, clusterRadius 40</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >circle-color #9A3B12 · text-field point_count_abbreviated</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >EXP-08</span
+          >
+        </div>
+
+        <div
+          role="row"
+          style="display: grid; grid-template-columns: 40px 96px 190px 92px 230px minmax(0, 1fr) 140px; gap: 16px; align-items: center; min-height: 52px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px">
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #4A544C"
+            >20</span
+          >
+          <span
+            role="cell"
+            style="display: flex; align-items: center; justify-content: center; width: 80px; height: 36px; border-radius: 6px; box-sizing: border-box; background: radial-gradient(circle, #E9EBE2 0 11px, #264F29 11px 13.5px, #FFFFFF 13.5px 15px, #E9EBE2 15px)"></span>
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 500"
+            >selection</span
+          >
+          <span role="cell"
+            ><span
+              style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: #EEF0EA; font-family: 'JetBrains Mono', monospace; font-size: 12px"
+              >circle</span
+            ></span
+          >
+          <span role="cell" style="color: #2E3A33; line-height: 1.4"
+            >One clicked point</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.5; color: #2E3A33"
+            >circle-radius 17 · circle-opacity 0 · circle-stroke-color #264F29 ·
+            circle-stroke-width 2.5</span
+          >
+          <span
+            role="cell"
+            style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #1D3E20"
+            >MAP-07</span
+          >
+        </div>
+      </div>
+
+      <div
+        style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <h2
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px">
+            The date moves filters, not data
+          </h2>
+          <p
+            style="margin: 0; font-size: 14.5px; line-height: 1.55; color: #2E3A33">
+            Every dated feature carries
+            <code
+              style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+              >from</code
+            >
+            and
+            <code
+              style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+              >to</code
+            >
+            as day numbers since 1652-01-01 (open = 999999). Moving the slider
+            calls
+            <code
+              style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+              >setFilter</code
+            >
+            on each dated layer, so nothing is fetched while scrubbing (NFR-01).
+          </p>
+          <pre
+            style="margin: 0; padding: 16px 18px; border-radius: 10px; background: #18211B; color: #E9EBE2; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; font-variant-ligatures: none">
+const onDate = ['all',
+  ['&lt;=', ['get', 'from'], d],
+  ['&gt;',  ['get', 'to'],   d]];
+for (const id of DATED_LAYERS) map.setFilter(id, onDate);
+
+// pins: range events by from/to, point events by a window
+const pinsOn = ['all',
+  ['&lt;=', ['get', 'earliest'], d + win],
+  ['&gt;=', ['get', 'latest'],   d - win]];</pre>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <h2
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px">
+            Kept to what MapLibre can draw
+          </h2>
+          <ul
+            style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; line-height: 1.5; color: #2E3A33">
+            <li>
+              Flat polygon fills only. No shadows, glows or gradient fills on
+              polygons.
+            </li>
+            <li>
+              The contested hatch is a
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >fill-pattern</code
+              >
+              image added with
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >map.addImage</code
+              >. Pattern colour is fixed in the image, so each hatch colour
+              needs its own image.
+            </li>
+            <li>
+              Halos are blurred circles (<code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >circle-blur</code
+              >), because circle strokes can't be dashed.
+            </li>
+            <li>
+              Labels use text halos, not background boxes. Contested names are
+              one
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >format</code
+              >
+              expression: the name, then a smaller italic line.
+            </li>
+            <li>
+              Pin glyphs are SDF icons, so
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >icon-color</code
+              >
+              and
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >icon-halo</code
+              >
+              restyle them. The shape shows the event type, so colour is never
+              the only cue (NFR-06).
+            </li>
+            <li>
+              Map text needs glyph PBFs: Public Sans Regular, SemiBold and
+              Italic, built once and served from
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >/fonts/{fontstack}/{range}.pbf</code
+              >.
+            </li>
+            <li>
+              Popup:
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >maplibregl.Popup</code
+              >
+              with
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 13px"
+                >className: 'ks-popup'</code
+              >
+              and its own close button. Zoom and fit are a custom IControl.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

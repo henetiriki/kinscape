@@ -4,32 +4,34 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 
 ## Screens
 
-| Screen                                  | File                                               |
-| --------------------------------------- | -------------------------------------------------- |
-| Sign in, desktop                        | [sign-in-desktop.jpg](sign-in-desktop.jpg)         |
-| Sign in, phone, wrong password          | [sign-in-phone-error.jpg](sign-in-phone-error.jpg) |
-| Map, desktop, Layers tab, point clicked | [map-desktop.jpg](map-desktop.jpg)                 |
-| Map, desktop, Filters tab               | [map-desktop-filters.jpg](map-desktop-filters.jpg) |
-| Map, phone, look-up only (NFR-05)       | [map-phone.jpg](map-phone.jpg)                     |
-| Map, phone, sheet collapsed             | [map-phone-collapsed.jpg](map-phone-collapsed.jpg) |
-| First load                              | [map-loading.jpg](map-loading.jpg)                 |
-| No pins in the tree                     | [map-empty-tree.jpg](map-empty-tree.jpg)           |
-| No pins on this date                    | [map-empty-date.jpg](map-empty-date.jpg)           |
-| Districts layer on                      | [map-districts.jpg](map-districts.jpg)             |
-| Terrain failed to load                  | [map-offline.jpg](map-offline.jpg)                 |
-| Account menu                            | [map-account-menu.jpg](map-account-menu.jpg)       |
-| Sources and attributions                | [map-sources.jpg](map-sources.jpg)                 |
-| Map style: MapLibre layer stack         | [map-style.jpg](map-style.jpg)                     |
-| Invalid date typed in the dock          | [map-date-invalid.jpg](map-date-invalid.jpg)       |
-| Style guide 01: typography              | [style-1-type.jpg](style-1-type.jpg)               |
-| Style guide 02: colour                  | [style-2-colour.jpg](style-2-colour.jpg)           |
-| Style guide 03: spacing, shape, motion  | [style-3-foundations.jpg](style-3-foundations.jpg) |
-| Style guide 04: component states        | [style-4-states.jpg](style-4-states.jpg)           |
-| Style guide 05: feedback and validation | [style-5-feedback.jpg](style-5-feedback.jpg)       |
+| Screen                                  | File                                               | Source                                                      |
+| --------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------- |
+| Sign in, desktop                        | [sign-in-desktop.jpg](sign-in-desktop.jpg)         | [sign-in-desktop.html](source/sign-in-desktop.html)         |
+| Sign in, phone, wrong password          | [sign-in-phone-error.jpg](sign-in-phone-error.jpg) | [sign-in-phone-error.html](source/sign-in-phone-error.html) |
+| Map, desktop, Layers tab, point clicked | [map-desktop.jpg](map-desktop.jpg)                 | [map-desktop.html](source/map-desktop.html)                 |
+| Map, desktop, Filters tab               | [map-desktop-filters.jpg](map-desktop-filters.jpg) | [map-desktop-filters.html](source/map-desktop-filters.html) |
+| Map, phone, look-up only (NFR-05)       | [map-phone.jpg](map-phone.jpg)                     | [map-phone.html](source/map-phone.html)                     |
+| Map, phone, sheet collapsed             | [map-phone-collapsed.jpg](map-phone-collapsed.jpg) | [map-phone-collapsed.html](source/map-phone-collapsed.html) |
+| First load                              | [map-loading.jpg](map-loading.jpg)                 | [map-loading.html](source/map-loading.html)                 |
+| No pins in the tree                     | [map-empty-tree.jpg](map-empty-tree.jpg)           | [map-empty-tree.html](source/map-empty-tree.html)           |
+| No pins on this date                    | [map-empty-date.jpg](map-empty-date.jpg)           | [map-empty-date.html](source/map-empty-date.html)           |
+| Districts layer on                      | [map-districts.jpg](map-districts.jpg)             | [map-districts.html](source/map-districts.html)             |
+| Terrain failed to load                  | [map-offline.jpg](map-offline.jpg)                 | [map-offline.html](source/map-offline.html)                 |
+| Account menu                            | [map-account-menu.jpg](map-account-menu.jpg)       | [map-account-menu.html](source/map-account-menu.html)       |
+| Sources and attributions                | [map-sources.jpg](map-sources.jpg)                 | [map-sources.html](source/map-sources.html)                 |
+| Map style: MapLibre layer stack         | [map-style.jpg](map-style.jpg)                     | [map-style.html](source/map-style.html)                     |
+| Invalid date typed in the dock          | [map-date-invalid.jpg](map-date-invalid.jpg)       | [map-date-invalid.html](source/map-date-invalid.html)       |
+| Style guide 01: typography              | [style-1-type.jpg](style-1-type.jpg)               | [style-1-type.html](source/style-1-type.html)               |
+| Style guide 02: colour                  | [style-2-colour.jpg](style-2-colour.jpg)           | [style-2-colour.html](source/style-2-colour.html)           |
+| Style guide 03: spacing, shape, motion  | [style-3-foundations.jpg](style-3-foundations.jpg) | [style-3-foundations.html](source/style-3-foundations.html) |
+| Style guide 04: component states        | [style-4-states.jpg](style-4-states.jpg)           | [style-4-states.html](source/style-4-states.html)           |
+| Style guide 05: feedback and validation | [style-5-feedback.jpg](style-5-feedback.jpg)       | [style-5-feedback.html](source/style-5-feedback.html)       |
 
 ![Map, desktop](map-desktop.jpg)
 
 People, pins and boundary shapes in the mockups are illustrative, not data.
+
+Each JPG is rendered from its HTML snapshot in `source/`, which holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing a snapshot, run `npm run design:shots -- <name>…` naming the ones you changed. Chromium draws text differently per OS, so don't render the rest.
 
 ## Brand
 
@@ -121,14 +123,14 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 
 ## Shape and depth
 
-| Token        | Value                                                                                                        |
-| ------------ | ------------------------------------------------------------------------------------------------------------ |
-| Radius       | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                    |
-| Shadow       | `0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12)`                                            |
-| Popup shadow | `0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2)`                                             |
-| Spacing      | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                      |
-| Touch        | Targets at least 44px. Buttons and fields 44–50px tall                                                       |
-| Focus        | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead |
+| Token | Value |
+| --- | --- | --- |
+| Radius | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round |
+| Shadow | `0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12)` |
+| Popup shadow | `0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2)` |
+| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop |
+| Touch | Targets at least 44px. Buttons and fields 44–50px tall |
+| Focus | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead |
 
 ## Components
 
@@ -153,15 +155,15 @@ Every control has the five states in [style-4-states.jpg](style-4-states.jpg). H
 
 ## States
 
-| State                | Design                                                                                                                                                                                 |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First load (NFR-02)  | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. Only on first load: changing the date never shows a loader (NFR-01). |
-| No pins in the tree  | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed.                                                                   |
-| No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date".                 |
-| Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                             |
-| Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                         |
-| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time.                                                             |
-| Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                                 |
+| State | Design |
+| --- | --- | --- |
+| First load (NFR-02) | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. Only on first load: changing the date never shows a loader (NFR-01). |
+| No pins in the tree | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed. |
+| No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date". |
+| Districts on | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only"). |
+| Terrain failed | A banner with Retry. Borders and pins keep working because they load up front. |
+| Account menu | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time. |
+| Phone, collapsed | Date stepper and Play only, and a hint to tap the map. |
 
 ## Feedback and validation
 
@@ -219,25 +221,25 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 
 Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. The full layer stack is in [map-style.jpg](map-style.jpg). The map colours:
 
-| Use                     | Value                                                                                                                                                                 |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Sea (background)        | `#C9D5D2`                                                                                                                                                             |
-| Land                    | `#E9EBE2`                                                                                                                                                             |
-| Coastline               | `#7E9A98`, 0.9px                                                                                                                                                      |
-| Rivers                  | `#6E99A3`, 1–3px by zoom                                                                                                                                              |
-| Polity border           | `#3B3A2F`, 1.5px; dashed `[4, 2.6]` when confidence is low                                                                                                            |
-| District border         | `#6F7263`, 0.8px                                                                                                                                                      |
-| Changed border (MAP-11) | `--brand`, 4px, fades out                                                                                                                                             |
-| Polity fills            | Cape `#D3DCC4` · Natal `#DCD3BD` · OFS `#E3D2B2` · ZAR `#D9CFBA` · Basutoland `#D9CFD9` · Swaziland `#CBD6DA` (other polities: pick muted tints of similar lightness) |
-| Contested hatch         | 45° stripes, 3px in 9px, `#8B4A1C` at 34%                                                                                                                             |
-| Hillshade               | shadow `#5B6355`, highlight `#FFFFFF`, exaggeration 0.3                                                                                                               |
-| Polity label            | Public Sans SemiBold, uppercase, tracking 0.15em, `#2E2C22`; contested note in italic `#6B3412`                                                                       |
-| Place label             | Public Sans Medium, `--ink`, dot 3.4px with white stroke                                                                                                              |
-| Water and river labels  | Public Sans Italic, `#3F646C`                                                                                                                                         |
-| Context labels          | Public Sans Italic, uppercase, `#56615A`                                                                                                                              |
-| Label halo              | Land colour, 1.5px                                                                                                                                                    |
-| Uncertainty halo        | `--pin`, opacity 0.24, blur 0.8, radius grows with the date range                                                                                                     |
-| Selected point          | 17px ring, `--brand`, 2.5px                                                                                                                                           |
+| Use | Value |
+| --- | --- | --- |
+| Sea (background) | `#C9D5D2` |
+| Land | `#E9EBE2` |
+| Coastline | `#7E9A98`, 0.9px |
+| Rivers | `#6E99A3`, 1–3px by zoom |
+| Polity border | `#3B3A2F`, 1.5px; dashed `[4, 2.6]` when confidence is low |
+| District border | `#6F7263`, 0.8px |
+| Changed border (MAP-11) | `--brand`, 4px, fades out |
+| Polity fills | Cape `#D3DCC4` · Natal `#DCD3BD` · OFS `#E3D2B2` · ZAR `#D9CFBA` · Basutoland `#D9CFD9` · Swaziland `#CBD6DA` (other polities: pick muted tints of similar lightness) |
+| Contested hatch | 45° stripes, 3px in 9px, `#8B4A1C` at 34% |
+| Hillshade | shadow `#5B6355`, highlight `#FFFFFF`, exaggeration 0.3 |
+| Polity label | Public Sans SemiBold, uppercase, tracking 0.15em, `#2E2C22`; contested note in italic `#6B3412` |
+| Place label | Public Sans Medium, `--ink`, dot 3.4px with white stroke |
+| Water and river labels | Public Sans Italic, `#3F646C` |
+| Context labels | Public Sans Italic, uppercase, `#56615A` |
+| Label halo | Land colour, 1.5px |
+| Uncertainty halo | `--pin`, opacity 0.24, blur 0.8, radius grows with the date range |
+| Selected point | 17px ring, `--brand`, 2.5px |
 
 Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed circle outlines, and boxes behind labels. Anything you click or type into is HTML over the map.
 

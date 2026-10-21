@@ -1,0 +1,12 @@
+{
+  "screens": [
+    {
+      "height": 900,
+      "mode": "report",
+      "name": "map-desktop",
+      "route": "/",
+      "width": 1440
+    }
+  ],
+  "threshold": 0.5
+}

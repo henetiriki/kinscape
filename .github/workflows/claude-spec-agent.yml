@@ -62,6 +62,7 @@ jobs:
       THREAD: ${{ github.event.issue.number }}
       PROMPT: >-
         Pick up Spec or Bug #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        A Spec's id is on the Spec (`M1.4`) and its branch is spec/<id>-<slug>.
         A Bug's id is B${{ github.event.issue.number }} and its branch is bug/B${{ github.event.issue.number }}-<slug>.
         Write each open choice as a decision in the format in docs/how-we-work.md.
         Push before you stop, then comment on the Spec with a link to the plan PR.

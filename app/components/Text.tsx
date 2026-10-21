@@ -33,7 +33,10 @@ const DEFAULT_TAG: Record<Other, Tag> = {
   title: 'span',
 };
 
-type Props = ({ as: Tag; variant: Heading } | { as?: Tag; variant: Other }) &
+type Props = {
+  /** For `as='label'`. */
+  htmlFor?: string;
+} & ({ as: Tag; variant: Heading } | { as?: Tag; variant: Other }) &
   Omit<ComponentProps<'span'>, 'className' | 'ref'>;
 
 export const Text = ({ as, variant, ...rest }: Props) => {

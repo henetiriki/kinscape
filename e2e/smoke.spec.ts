@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 test('the page loads and the map canvas renders', async ({ page }) => {
   const errors: Error[] = [];
@@ -59,6 +59,11 @@ test('the map pans and zooms', async ({ page }) => {
   await expect(canvas).toBeVisible();
 });
 
+const creditsLine = (page: Page) =>
+  page
+    .getByRole('paragraph')
+    .filter({ has: page.getByRole('button', { name: 'Attributions' }) });
+
 // MAP-02
 test('the Polity borders row toggles and drops its credits', async ({
   page,
@@ -66,7 +71,7 @@ test('the Polity borders row toggles and drops its credits', async ({
   await page.goto('/');
 
   const row = page.getByRole('checkbox', { name: 'Polity borders' });
-  const credits = page.locator('.credits');
+  const credits = creditsLine(page);
 
   await expect(row).toBeChecked();
   await expect(credits).toContainText('Public Sans');
@@ -83,9 +88,7 @@ test('the credits line opens the sources and attributions dialog', async ({
   page,
 }) => {
   await page.goto('/');
-  await expect(page.locator('.credits')).toContainText(
-    'Made with Natural Earth'
-  );
+  await expect(creditsLine(page)).toContainText('Made with Natural Earth');
   await page.getByRole('button', { name: 'Attributions' }).click();
 
   const dialog = page.getByRole('dialog', { name: 'Sources and attributions' });

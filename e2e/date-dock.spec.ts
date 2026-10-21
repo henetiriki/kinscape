@@ -115,3 +115,29 @@ test('the step buttons stop at today', async ({ page }) => {
   await page.getByRole('button', { name: 'Back' }).click();
   await expect(page.getByRole('button', { name: 'Forward' })).toBeEnabled();
 });
+
+// NFR-06: Precision is one Tab stop and the arrow keys move the choice (DM.4.5 D2 A).
+test('keyboard: Space on the checkbox, Tab order, arrows in Precision', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const polities = page.getByRole('checkbox', { name: 'Polity borders' });
+
+  await polities.focus();
+  await page.keyboard.press('Space');
+  await expect(polities).not.toBeChecked();
+  await page.keyboard.press('Space');
+  await expect(polities).toBeChecked();
+
+  await page.getByRole('button', { name: 'Back' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('textbox', { name: 'Date shown' })).toBeFocused();
+  // Forward is disabled on today, so the next stop is the Precision group.
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('radio', { name: 'Year' })).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('radio', { name: 'Month' })).toBeChecked();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('slider', { name: 'Map date' })).toBeFocused();
+});

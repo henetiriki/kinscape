@@ -1,0 +1,16 @@
+.credits {
+  align-self: flex-end;
+  color: var(--credits);
+  font-size: var(--type-credits-size);
+  margin: 0;
+}
+
+.credits button {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}

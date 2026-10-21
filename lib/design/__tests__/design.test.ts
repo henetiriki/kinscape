@@ -67,7 +67,7 @@ it('has no controls.css and nothing imports it', () => {
 
 // The thumb is a pseudo-element the browser won't report, so check the source.
 it('colours the slider thumb with the brand token', () => {
-  const thumbs = read('app/globals.css').match(
+  const thumbs = read('app/components/DateSlider.module.css').match(
     /::-(?:webkit|moz)-(?:slider|range)-thumb \{[^}]*\}/g
   );
 

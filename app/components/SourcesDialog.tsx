@@ -4,6 +4,9 @@ import { useEffect, useRef } from 'react';
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
+import styles from './SourcesDialog.module.css';
+import { Text } from './Text';
+
 export const SourcesDialog = ({
   onClose,
   sources,
@@ -25,7 +28,7 @@ export const SourcesDialog = ({
 
   return (
     <div
-      className='scrim'
+      className={styles.scrim}
       onKeyDown={event => {
         if (event.key === 'Escape') onClose();
       }}
@@ -33,18 +36,22 @@ export const SourcesDialog = ({
       <div
         aria-labelledby='sources-title'
         aria-modal='true'
-        className='dialog'
+        className={styles.dialog}
         role='dialog'>
         <button
           aria-label='Close'
-          className='dialog-close'
+          className={styles.close}
           onClick={onClose}
           ref={close}
           type='button'>
           ×
         </button>
-        <h2 id='sources-title'>Sources and attributions</h2>
-        <table>
+        <div className={styles.title}>
+          <Text as='h2' id='sources-title' variant='h2'>
+            Sources and attributions
+          </Text>
+        </div>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th scope='col'>Layer</th>
@@ -59,7 +66,7 @@ export const SourcesDialog = ({
                 <td>{source.layer}</td>
                 <td>
                   {source.title}
-                  <span className='source-detail'>
+                  <span className={styles.detail}>
                     {source.author}
                     {source.processing ? `. ${source.processing}` : ''}
                   </span>
@@ -69,7 +76,9 @@ export const SourcesDialog = ({
                     {source.licence}
                   </a>
                 </td>
-                <td className='mono'>{source.dateChecked}</td>
+                <td className={styles.date}>
+                  <Text variant='mono'>{source.dateChecked}</Text>
+                </td>
               </tr>
             ))}
           </tbody>

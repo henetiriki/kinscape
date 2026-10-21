@@ -1,0 +1,28 @@
+.dock {
+  background: var(--surface);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
+  padding: var(--space-16) var(--space-20);
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-12);
+  margin-bottom: var(--space-20);
+}
+
+.field {
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  font-family: var(--type-mono-l-font);
+  font-size: var(--type-mono-l-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-l-weight);
+  height: var(--size-field);
+  padding: 0 var(--space-12);
+  text-align: center;
+  white-space: nowrap;
+  width: var(--size-date-field);
+}

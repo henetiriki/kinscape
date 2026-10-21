@@ -7,6 +7,8 @@ import {
   sliderValue,
 } from '@/lib/map/map-date';
 
+import styles from './DateSlider.module.css';
+
 /**
  * The 1652-to-today slider. The thumb moves in steps of `precision`.
  */
@@ -25,7 +27,7 @@ export const DateSlider = ({
   const value = sliderValue(day, precision);
 
   return (
-    <div className='date-slider'>
+    <div className={styles.slider}>
       <input
         aria-label='Map date'
         max={max}

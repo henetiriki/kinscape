@@ -43,8 +43,8 @@ it('shows the date at Month and Day precision', () => {
       .value
   ).toBe('2026-10-21');
   expect(
-    screen.getByRole('radio', { name: 'Day' }).getAttribute('aria-checked')
-  ).toBe('true');
+    (screen.getByRole('radio', { name: 'Day' }) as HTMLInputElement).checked
+  ).toBe(true);
 });
 
 it('steps forward and back by the precision', () => {

@@ -2,6 +2,8 @@
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
+import styles from './Credits.module.css';
+
 /** Layers whose sources are credited only while that layer is on. */
 export const POLITY_LAYER = 'Polity borders';
 
@@ -28,7 +30,7 @@ export const Credits = ({
   ];
 
   return (
-    <p className='credits'>
+    <p className={styles.credits}>
       {credits.map(text => `${text} · `)}
       <button onClick={onOpenAttributions} type='button'>
         Attributions

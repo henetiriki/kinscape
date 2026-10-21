@@ -41,7 +41,13 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
 
   for (let step = 0; step < 12; step += 1) {
     const outline = await page.evaluate(() => {
-      const style = getComputedStyle(document.activeElement!);
+      const active = document.activeElement!;
+      // A Segmented radio is hidden; its label draws the ring.
+      const ringed =
+        active instanceof HTMLInputElement && active.type === 'radio'
+          ? active.parentElement!
+          : active;
+      const style = getComputedStyle(ringed);
 
       return {
         colour: style.outlineColor,
@@ -69,7 +75,7 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
   expect(seen.size).toBeGreaterThan(0);
 });
 
-// Changing `brand` changes the checkbox with no other edit.
+// Changing `brand` changes the checked checkbox with no other edit.
 test('the checkbox uses the brand colour', async ({ page }) => {
   await page.goto('/');
 
@@ -80,5 +86,5 @@ test('the checkbox uses the brand colour', async ({ page }) => {
 
   await expect(
     page.getByRole('checkbox', { name: 'Polity borders' })
-  ).toHaveCSS('accent-color', `rgb(${r}, ${g}, ${b})`);
+  ).toHaveCSS('background-color', `rgb(${r}, ${g}, ${b})`);
 });

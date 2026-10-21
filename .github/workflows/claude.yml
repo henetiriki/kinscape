@@ -85,6 +85,8 @@ jobs:
           cache: npm
           node-version-file: .nvmrc
       - run: npm ci
+      # The agent can't install it: npx isn't in its allowed tools.
+      - run: npx playwright install --with-deps chromium
 
       - name: Run Claude Code
         id: claude

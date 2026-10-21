@@ -51,6 +51,9 @@ jobs:
           cache: npm
           node-version-file: .nvmrc
       - run: npm ci
+      # The agent can't install it: npx isn't in its allowed tools. Plan runs don't build.
+      - if: github.event_name == 'pull_request_review'
+        run: npx playwright install --with-deps chromium
       - run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
       - id: claude

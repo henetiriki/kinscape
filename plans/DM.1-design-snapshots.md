@@ -5,38 +5,44 @@
 
 ## Approach
 
-The tech lead commits the exported snapshots (Spec D1): one per `DESIGN.md` › Screens row, 20 in all. The Spec says 13 screens and states; the table has 14, plus six boards.
+The tech lead has committed the exported snapshots (Spec D1): one per `DESIGN.md` › Screens row, 20 in all, each linking `fonts.css`. Prettier formats them like any other file. The Spec says 13 screens and states; the table has 14, plus six boards.
 
 `scripts/design-shots.mts` opens each `design/source/<name>.html` from `file://` in Playwright's Chromium. It fails on any non-`file:` request, waits for `document.fonts.ready`, and writes `design/<name>.jpg` only if the bytes changed. Names containing `phone`: 390 × 844, 2x. `style-*` and `map-style`: full page, 1440 wide. Others: 1440 × 900. Launching the browser sits behind a `v8 ignore`, as in `prepare-map-data.mts`; the rest is injected and tested.
 
-`scripts/__tests__/design-shots.test.ts` fails when a Screens row lacks a snapshot or JPG, or a snapshot lacks a row. It also fails on `<script`, `var(`, `calc(`, any `http(s)` load, or a local `url()` or `href` that doesn't resolve.
+`scripts/__tests__/design-shots.test.ts` fails when a Screens row lacks a snapshot or JPG, or a snapshot lacks a row. It also fails on `<script`, `var(`, `calc(`, any `http(s)` load, or a local `url()` or `href` that doesn't resolve (`#id` must match an `id`; bare `#` passes).
 
 ## Decisions
 
 **D1 · Where the font files come from** · Decides: Tech lead
 
-- **A.** `@fontsource/bricolage-grotesque`, `public-sans` and `jetbrains-mono` 5.3.0 (OFL-1.1) as dev dependencies, referenced in `node_modules`. Offline after `npm ci`; DM.2 can reuse them (NFR-03).
-- **B.** Copy the nine woff2 files and `OFL.txt` into `design/source/fonts/`. No install needed, but Dependabot never updates them.
-- **Other:** your own.
+- **A.** `@fontsource-variable/bricolage-grotesque`, `@fontsource-variable/public-sans` and `@fontsource/jetbrains-mono` (OFL-1.1) as dev dependencies, referenced in `node_modules`. Offline after `npm ci`; DM.2 can reuse them (NFR-03).
+- ~~**B.** Copy the woff2 files and `OFL.txt` into `design/source/fonts/`. Dependabot never updates them.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because the Spec asks for local packages and everyone runs `npm ci`.
+
+**Answer: A** (Tech lead)
 
 **D2 · Where the `@font-face` rules live** · Decides: Tech lead
 
 - **A.** One `design/source/fonts.css`, linked by every snapshot.
-- **B.** Inline in every snapshot: 20 copies.
-- **Other:** your own.
+- ~~**B.** Inline in every snapshot: 20 copies.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because a font change then touches one file.
+
+**Answer: A** (Tech lead)
 
 **D3 · Keeping unchanged JPGs unchanged** · Decides: Tech lead
 Chromium draws text differently on macOS and Linux, so rendering everything elsewhere rewrites every JPG.
 
 - **A.** `npm run design:shots -- <name>…` renders only the named snapshots, or all with none. `DESIGN.md` says to name the ones you changed.
-- **B.** Always render all, inside the pinned Playwright Docker image. Needs Docker.
-- **Other:** your own.
+- ~~**B.** Always render all, inside the pinned Playwright Docker image. Needs Docker.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because it works on any machine without Docker.
+
+**Answer: A** (Tech lead)
 
 ## Files that change
 
@@ -48,17 +54,15 @@ Recommended: A, because it works on any machine without Docker.
 | `scripts/design-shots.mts`               | New           | The renderer                             |
 | `scripts/__tests__/design-shots.test.ts` | New           | Screens table and snapshot rules         |
 | `package.json`, `package-lock.json`      | Changed       | `design:shots`; fonts (D1 A)             |
-| `.prettierignore`                        | Changed       | `design/source/`, kept as exported       |
 | `design/DESIGN.md`                       | Changed       | Source column, how to refresh            |
 
 ## Order of work
 
-1. The tech lead pushes the snapshots and the `.prettierignore` line together, so the pre-commit hook leaves them as exported.
-2. On approval, commit the plan. Stop and comment if snapshots and rows don't match.
-3. Fonts; point each snapshot's font link at them.
-4. Tests, then the script.
-5. Render all JPGs; list visible differences from the canvas JPGs in the PR.
-6. `DESIGN.md`; run the checks.
+1. On approval, commit the plan.
+2. Font packages and `fonts.css`, naming each family as the snapshots do (`'Public Sans'`, not the packages' `Variable` names).
+3. Tests, then the script.
+4. Render all JPGs; list visible differences from the canvas JPGs in the PR.
+5. `DESIGN.md`; run the checks.
 
 ## Risks
 

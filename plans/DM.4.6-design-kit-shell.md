@@ -2,7 +2,7 @@
 
 - **Spec:** #141 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,6 +19,8 @@ The states board already has an `<h1>`; the index has no heading of its own.
 
 Recommended: A, because each page's own title stays its top heading.
 
+**Answer: A** (@henetiriki)
+
 **D2 · The current board's look** · Decides: Tech lead
 `DESIGN.md` has no nav design.
 
@@ -27,6 +29,8 @@ Recommended: A, because each page's own title stays its top heading.
 - **Other:** your own.
 
 Recommended: A, because sighted keyboard users see where they are.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

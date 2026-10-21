@@ -1,7 +1,7 @@
 # Plan: DM.3: Design check
 
 - **Spec:** #114 (Intent #111)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,6 +20,8 @@ Panels sit on top of the map, so a box over it would hide them too.
 
 Recommended: A, because it follows any layout without editing `screens.json`.
 
+**Answer:** A
+
 **D2 · What compares the pixels** · Decides: Tech lead
 
 - **A.** `pixelmatch` 8 (ISC) and `pngjs` 7 (MIT) as dev dependencies; `pixelmatch` skips anti-aliased pixels.
@@ -27,6 +29,8 @@ Recommended: A, because it follows any layout without editing `screens.json`.
 - **Other:** your own.
 
 Recommended: A, because anti-aliasing noise is the Spec's first concern.
+
+**Answer:** A
 
 **D3 · The blocking threshold** · Decides: Tech lead
 A pixel differs at `pixelmatch`'s default colour threshold, 0.1.
@@ -36,6 +40,8 @@ A pixel differs at `pixelmatch`'s default colour threshold, 0.1.
 - **Other:** your own.
 
 Recommended: A, because font versions differ (next/font against Fontsource) and 0.5% still catches a moved panel. Tune it in `screens.json` once screens become `blocking`.
+
+**Answer:** A
 
 ## Files that change
 
@@ -53,11 +59,10 @@ Recommended: A, because font versions differ (next/font against Fontsource) and 
 
 ## Order of work
 
-1. On approval, commit the plan.
-2. `check.mts`, test first.
-3. Spec, states, reporter, config.
-4. CI upload, then the skill and `DESIGN.md`.
-5. Run the checks; push a throwaway commit listing `map-desktop` as `blocking`, link the failing run, revert.
+1. `check.mts`, test first.
+2. Spec, states, reporter, config.
+3. CI upload, then the skill and `DESIGN.md`.
+4. Run the checks; push a throwaway commit listing `map-desktop` as `blocking`, link the failing run, revert.
 
 ## Risks
 

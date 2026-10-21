@@ -20,6 +20,12 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 | Account menu                            | [map-account-menu.jpg](map-account-menu.jpg)       |
 | Sources and attributions                | [map-sources.jpg](map-sources.jpg)                 |
 | Map style: MapLibre layer stack         | [map-style.jpg](map-style.jpg)                     |
+| Invalid date typed in the dock          | [map-date-invalid.jpg](map-date-invalid.jpg)       |
+| Style guide 01: typography              | [style-1-type.jpg](style-1-type.jpg)               |
+| Style guide 02: colour                  | [style-2-colour.jpg](style-2-colour.jpg)           |
+| Style guide 03: spacing, shape, motion  | [style-3-foundations.jpg](style-3-foundations.jpg) |
+| Style guide 04: component states        | [style-4-states.jpg](style-4-states.jpg)           |
+| Style guide 05: feedback and validation | [style-5-feedback.jpg](style-5-feedback.jpg)       |
 
 ![Map, desktop](map-desktop.jpg)
 
@@ -42,43 +48,69 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 All three are on Google Fonts under the OFL. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](#map-style)).
 
-| Role               | Size / weight                                               |
-| ------------------ | ----------------------------------------------------------- |
-| Sign-in headline   | Bricolage 52 / 700, tracking -0.02em                        |
-| Page title         | Bricolage 32 / 500 (28 on phone)                            |
-| Popup place name   | Bricolage 22 / 700                                          |
-| Body, inputs       | Public Sans 15–16 / 400. Inputs are 16 so phones don't zoom |
-| Labels, row titles | Public Sans 14 / 600                                        |
-| Helper text        | Public Sans 12.5–13 / 400, `--ink-3`                        |
-| Section heading    | Public Sans 11 / 600, uppercase, tracking 0.1em             |
-| Map date field     | JetBrains Mono 22 / 500                                     |
+| Style    | Font · size / line · weight                | Used for                       |
+| -------- | ------------------------------------------ | ------------------------------ |
+| Display  | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline               |
+| H1       | Bricolage 32 / 40 · 500 · −0.015em         | Page title (28 on phone)       |
+| H2       | Bricolage 24 / 32 · 700                    | Dialog and section titles      |
+| H3       | Bricolage 22 / 28 · 700                    | Place name in a popup, cards   |
+| Title    | Public Sans 15 / 22 · 600                  | Notice titles, row titles      |
+| Body L   | Public Sans 16 / 24 · 400                  | Sign-in, fields                |
+| Body     | Public Sans 15 / 22 · 400                  | Panels, popups                 |
+| Label    | Public Sans 14 / 20 · 600                  | Field labels, layer rows       |
+| Small    | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                    |
+| Caption  | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes             |
+| Overline | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings               |
+| Button   | Public Sans 16 or 14 · 600                 | Button labels                  |
+| Mono L   | JetBrains Mono 22 / 28 · 500               | Map date field                 |
+| Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
+
+Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line, and never set body text below 12.5px or map labels below 11px.
 
 ## Colours
 
 ```css
 :root {
-  --brand: #264f29; /* primary buttons, selection, focus, active states */
+  /* brand and interactive */
+  --brand: #264f29; /* primary buttons, links, selection, focus ring */
   --brand-hover: #1d3e20;
-  --brand-tint: #e6eee4; /* selected tab, pressed chip */
-  --focus-ring: #9dbb9f;
+  --brand-pressed: #163019;
+  --brand-tint: #e6eee4; /* selected tab, chip on, pressed secondary */
+  --focus-ring: #264f29; /* 2px outline, 2px offset; white inside --ink banners */
+
+  /* neutrals */
   --ink: #18211b; /* main text, dark banners */
-  --ink-2: #2e3a33; /* secondary text on light grounds */
+  --ink-2: #2e3a33; /* secondary text */
   --ink-3: #4a544c; /* helper text, section headings */
-  --surface: #ffffff; /* panels, dock, popup */
-  --surface-2: #f4f5f0; /* insets, search field, sign-in page */
+  --ink-disabled: #6e776f; /* disabled text and icons */
+  --field-border: #8e978c; /* fields and checkboxes */
+  --line-strong: #c9cfc5; /* secondary button borders */
+  --line: #e2e5dd; /* dividers, disabled fills */
   --segment: #eef0ea; /* segmented control track */
-  --line: #e2e5dd; /* dividers */
-  --line-strong: #c9cfc5; /* secondary button and field borders */
-  --field-border: #b9c0b6;
+  --surface-2: #f4f5f0; /* insets, hover fills, sign-in page */
+  --surface: #ffffff; /* panels, dock, popups, dialogs */
   --scrim: rgb(24 33 27 / 0.45); /* behind dialogs */
+
+  /* accent */
+  --pin: #9a3b12; /* pins, clusters, event glyphs */
+
+  /* system: text, border and icon, background */
   --error: #7e2316;
   --error-border: #b4412f;
   --error-bg: #fbedea;
-  --pin: #9a3b12; /* pins, clusters, event glyphs */
+  --warning: #6b4a00;
+  --warning-border: #b7791f;
+  --warning-bg: #fdf3dd;
+  --success: #1e5e32;
+  --success-border: #2f7d46;
+  --success-bg: #eaf4ec;
+  --info: #1e4e6b;
+  --info-border: #3e7fa6;
+  --info-bg: #e8f1f7;
 }
 ```
 
-Text colours pass 4.5:1 on `--surface` and `--surface-2`. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
+Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
 
 ## Layout
 
@@ -89,21 +121,21 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Colour never carries m
 
 ## Shape and depth
 
-| Token        | Value                                                                                     |
-| ------------ | ----------------------------------------------------------------------------------------- |
-| Radius       | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round |
-| Shadow       | `0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12)`                         |
-| Popup shadow | `0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2)`                          |
-| Spacing      | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                   |
-| Touch        | Targets at least 44px. Buttons and fields 44–50px tall                                    |
-| Focus        | 3px `--focus-ring` outline, 2px offset                                                    |
+| Token        | Value                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| Radius       | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                    |
+| Shadow       | `0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12)`                                            |
+| Popup shadow | `0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2)`                                             |
+| Spacing      | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                      |
+| Touch        | Targets at least 44px. Buttons and fields 44–50px tall                                                       |
+| Focus        | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead |
 
 ## Components
 
 - **Primary button:** `--brand` fill, white 16/600 text, 50px tall on sign-in, 40–44 elsewhere.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
 - **Google sign-in (proposed):** not in the requirements yet, so it needs an Intent issue before it's built. Under "Sign in", after an "or" divider. White, 1px `#747775` border, `#1F1F1F` text, "Continue with Google". Use Google's own button or the official "G" mark from their branding kit, never a redrawn one; the mockup's dashed box marks the spot. Hide the button and the divider when Google sign-in is off.
-- **Text field:** 48px, 1px `--field-border`, radius 8. On error: 1.5px `--error-border`, plus an alert box above the fields in `--error-bg`. Clear the password after a failed attempt.
+- **Text field:** 44px in the app, 48px on sign-in, 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
@@ -114,6 +146,10 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Colour never carries m
 - **Banner:** `--ink` background, white text, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.
 - **Dialog:** centred over a `--scrim`, radius 12, close button top right.
+- **Alert:** 1px system border, system background and text, a filled 20px icon, a 14/600 title and one line.
+- **Toast:** white, popup shadow, bottom centre above the dock. Success leaves after 4 seconds; errors stay and offer a retry.
+
+Every control has the five states in [style-4-states.jpg](style-4-states.jpg). Hover darkens or tints, pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls), and disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
 
 ## States
 
@@ -126,6 +162,37 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Colour never carries m
 | Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                         |
 | Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time.                                                             |
 | Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                                 |
+
+## Feedback and validation
+
+Errors block until fixed, warnings don't, success confirms something finished, and info explains something the app did. Each one has an icon and words. Where it goes:
+
+- **A field's problem:** next to the field, replacing its helper text.
+- **A problem with one part of the screen:** an alert in that part, such as a failed sign-in above the form.
+- **The result of an action:** a toast.
+- **A problem with the app:** a banner.
+
+Errors use `role="alert"`; everything else uses `role="status"`.
+
+### Map date field
+
+The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
+
+1. Check on Enter or when focus leaves, never while typing.
+2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field, set `aria-invalid`, and link the message with `aria-describedby`.
+3. In the dock, the message opens above the field and points at it. Everywhere else it goes below.
+4. The map, slider and URL stay on the last good date, and the message names it.
+5. Esc restores the last good date. The slider, step buttons and Jump to buttons also clear the error.
+6. A good date gets no success styling: the map moving is the confirmation.
+
+| Case                    | Message                                        | Fix offered              |
+| ----------------------- | ---------------------------------------------- | ------------------------ |
+| Wrong format            | Use 1901, 1901-06 or 1901-06-14.               |                          |
+| Before 1652             | Dates run from 1652 to today.                  | Go to 1652               |
+| After today             | That's after today.                            | Go to today              |
+| Doesn't exist           | February 1901 has 28 days.                     | Go to the last valid day |
+| No borders for the date | No borders are mapped for 1750 yet. (warning)  |                          |
+| More precise than set   | Switched to month precision. (info, 4 seconds) |                          |
 
 ## Attributions
 

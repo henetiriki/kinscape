@@ -16,7 +16,8 @@ run-name: >-
     !(github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
       github.event.pull_request.draft &&
-      startsWith(github.event.pull_request.head.ref, 'spec/')) &&
+      (startsWith(github.event.pull_request.head.ref, 'spec/') ||
+        startsWith(github.event.pull_request.head.ref, 'bug/'))) &&
     contains(
       github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
       github.event_name == 'pull_request_review' && github.event.review.body ||
@@ -69,7 +70,7 @@ jobs:
           # 2. If the tech lead approved a draft plan PR, discard the text: the spec agent's
           #    build job owns that review and starts the build, so Claude must not also answer.
           if [ "$EVENT" = pull_request_review ] && [ "$REVIEW_STATE" = approved ] &&
-            [ "$DRAFT" = true ] && [[ $HEAD_REF == spec/* ]]; then
+            [ "$DRAFT" = true ] && [[ $HEAD_REF == spec/* || $HEAD_REF == bug/* ]]; then
             text=
           fi
 

@@ -2,7 +2,7 @@
 
 A map of South Africa from 1652 to today. Historical boundaries redraw as a date slider moves, and the user's ancestors are pinned where they were at the time.
 
-This file is tool-agnostic. Agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
+Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
 
 ## Source of truth
 
@@ -15,7 +15,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 
 ## Workflow rules
 
-- Only build from a Spec labelled `status: ready-for-dev` or `status: ready-for-agent`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
+- Only build from a Spec or Bug labelled `status: ready-for-dev` or `status: ready-for-agent`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
 - Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - Before you change anything, check that the change belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
 - Never choose silently. Write each PO or tech-lead decision in the [decision format](docs/how-we-work.md#decisions) (Spec: **Decisions**; Intent: _Open questions_; plan: `## Decisions`); risks go under **Flagged concerns**. When a Spec decision is answered, update the issue body as it says.
@@ -24,7 +24,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 
 ## Plans
 
-One plan per Spec, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md).
+One plan per Spec or Bug, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md).
 
 ## Data rules
 

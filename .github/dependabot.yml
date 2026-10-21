@@ -9,7 +9,7 @@ updates:
       - dependencies
     commit-message:
       prefix: chore
-    # Held majors: see "Held packages" in docs/how-we-work.md.
+    # Held majors: see "Held packages" in docs/dependencies.md.
     ignore:
       - dependency-name: eslint
         update-types:

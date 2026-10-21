@@ -6,20 +6,24 @@ type TestWindow = {
     queryRenderedFeatures: (
       geometry: undefined,
       options: { layers: string[] }
-    ) => { properties: { name: string } }[];
+    ) => { properties: { polity: string } }[];
   };
 };
 
-const drawnLabels = (page: Page) =>
-  page.evaluate(() => {
+// Fills, not labels: label collision can hide a Polity's name at small viewports.
+const drawnPolities = async (page: Page) => {
+  await page.waitForFunction(() => 'kinscapeMap' in window);
+
+  return page.evaluate(() => {
     const { kinscapeMap } = window as unknown as TestWindow;
 
     return new Set(
       kinscapeMap
-        .queryRenderedFeatures(undefined, { layers: ['polity-labels'] })
-        .map(feature => feature.properties.name)
+        .queryRenderedFeatures(undefined, { layers: ['polity-fills'] })
+        .map(feature => feature.properties.polity)
     ).size;
   });
+};
 
 const slider = (page: Page) => page.getByRole('slider', { name: 'Map date' });
 
@@ -29,7 +33,7 @@ test('loads on today with the eleven Polities', async ({ page }) => {
   await expect(page.getByRole('textbox', { name: 'Date shown' })).toHaveValue(
     new Date().toISOString().slice(0, 4)
   );
-  await expect.poll(() => drawnLabels(page)).toBe(11);
+  await expect.poll(() => drawnPolities(page)).toBe(11);
 });
 
 // MAP-04
@@ -44,7 +48,7 @@ test('dragging to 1800 and back loads no more boundary data', async ({
     }
   });
   await page.goto('/');
-  await expect.poll(() => drawnLabels(page)).toBe(11);
+  await expect.poll(() => drawnPolities(page)).toBe(11);
 
   const input = slider(page);
   const max = Number(await input.getAttribute('max'));
@@ -53,9 +57,9 @@ test('dragging to 1800 and back loads no more boundary data', async ({
   await expect(page.getByRole('textbox', { name: 'Date shown' })).toHaveValue(
     '1800'
   );
-  await expect.poll(() => drawnLabels(page)).toBe(0);
+  await expect.poll(() => drawnPolities(page)).toBe(0);
   await input.fill(String(max));
-  await expect.poll(() => drawnLabels(page)).toBe(11);
+  await expect.poll(() => drawnPolities(page)).toBe(11);
   expect(polityRequests).toHaveLength(1);
 });
 
@@ -71,16 +75,16 @@ test('draws no Polities before 2009-04-03 and eleven after', async ({
   const dayOf = (iso: string) => (Date.parse(iso) - epoch) / 86_400_000;
 
   await input.fill(String(dayOf('2008-06-01')));
-  await expect.poll(() => drawnLabels(page)).toBe(0);
+  await expect.poll(() => drawnPolities(page)).toBe(0);
   await input.fill(String(dayOf('2010-06-01')));
-  await expect.poll(() => drawnLabels(page)).toBe(11);
+  await expect.poll(() => drawnPolities(page)).toBe(11);
 });
 
 // NFR-01: 20 steps across 2009-04-03, each redraw under 250 ms (software WebGL on CI).
 test('each redraw across 2009-04-03 stays under 250 ms', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('radio', { name: 'Day' }).click();
-  await expect.poll(() => drawnLabels(page)).toBe(11);
+  await expect.poll(() => drawnPolities(page)).toBe(11);
 
   const input = slider(page);
   const epoch = Date.UTC(1652, 0, 1);

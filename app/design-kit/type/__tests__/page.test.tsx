@@ -21,7 +21,7 @@ it('is a 404 in production', () => {
 });
 
 // NFR-06
-it('shows the 14 styles outside production, with one level 1 heading', () => {
+it('shows the 14 styles outside production, with natural heading elements', () => {
   vi.stubEnv('VERCEL_ENV', 'preview');
   render(<TypeKit />);
 
@@ -30,6 +30,8 @@ it('shows the 14 styles outside production, with one level 1 heading', () => {
   // The header row and one row per style.
   expect(within(scale).getAllByRole('row')).toHaveLength(15);
   expect(scale.querySelectorAll('[data-variant]')).toHaveLength(14);
-  expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+  expect(within(scale).getAllByRole('heading', { level: 1 })).toHaveLength(2);
+  expect(within(scale).getAllByRole('heading', { level: 2 })).toHaveLength(1);
+  expect(within(scale).getAllByRole('heading', { level: 3 })).toHaveLength(1);
   expect(screen.getByRole('heading', { name: 'Rules' })).toBeTruthy();
 });

@@ -60,7 +60,8 @@ jobs:
       PROMPT: >-
         Pick up Spec #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
         Write each open choice as a decision in the format in docs/how-we-work.md.
-        Push before you stop. If you're blocked, comment on the Spec saying why,
+        Push before you stop, then comment on the Spec with a link to the plan PR.
+        If you're blocked, comment on the Spec saying why,
         then swap its status label for `status: blocked`.
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
@@ -115,7 +116,8 @@ jobs:
           claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
-      # step failed. If Claude left no comment, post one pointing at the run.
+      # step failed. If Claude left no comment, post one pointing at the run, or at the PR it
+      # opened. Only a run with neither hands the Spec back as blocked.
       - if: always()
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
@@ -127,13 +129,23 @@ jobs:
           # Count the bot's comments on this thread since the run started.
           commented=$(gh issue view "$THREAD" --json comments \
             --jq "[.comments[] | select(.author.login == \"henetiriki-bot\" and .createdAt >= \"$STARTED\")] | length")
-          # None means Claude went quiet: say so, so a person knows to look.
+          # None means Claude went quiet. On a plan run (a Spec was labelled) it may still have
+          # opened the plan PR: find a bot PR from this run that closes the Spec.
           if [ "$commented" = 0 ]; then
-            gh issue comment "$THREAD" --body "The agent finished without commenting (step outcome: $OUTCOME). Check the [run]($RUN_URL) and the branch before re-triggering."
-            # If this was a plan run (a Spec was labelled), the thread is the Spec itself:
-            # swap its "ready-for-agent" label for "blocked" to hand it back to a person.
+            pr=""
             if [ "$EVENT" = issues ]; then
-              gh issue edit "$THREAD" --remove-label "status: ready-for-agent" --add-label "status: blocked"
+              pr=$(gh pr list --state all --author henetiriki-bot --json number,createdAt,closingIssuesReferences \
+                --jq "[.[] | select(.createdAt >= \"$STARTED\" and any(.closingIssuesReferences[]; .number == $THREAD))][0].number // empty")
+            fi
+            if [ -n "$pr" ]; then
+              gh issue comment "$THREAD" --body "The agent opened #$pr but left no comment here. See the [run]($RUN_URL)."
+            else
+              gh issue comment "$THREAD" --body "The agent finished without commenting (step outcome: $OUTCOME). Check the [run]($RUN_URL) and the branch before re-triggering."
+              # If this was a plan run, the thread is the Spec itself:
+              # swap its "ready-for-agent" label for "blocked" to hand it back to a person.
+              if [ "$EVENT" = issues ]; then
+                gh issue edit "$THREAD" --remove-label "status: ready-for-agent" --add-label "status: blocked"
+              fi
             fi
           fi
 

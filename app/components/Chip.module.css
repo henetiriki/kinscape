@@ -1,0 +1,71 @@
+/* A 36px pill with a 44px hit area */
+
+.chip {
+  composes: ring from './focus.module.css';
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  color: var(--ink-3);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-body);
+  font-size: var(--type-chip-size);
+  font-weight: 400;
+  gap: 6px;
+  height: var(--size-chip);
+  line-height: var(--type-chip-line);
+  padding: 0 var(--space-12);
+  position: relative;
+}
+
+.chip::before {
+  content: '';
+  /* Relative to the padding box, inside the 1px border. */
+  inset: calc((var(--size-chip) - var(--size-touch)) / 2 - 1px) -1px;
+  position: absolute;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+  color: var(--brand-hover);
+  font-weight: var(--type-chip-weight);
+}
+
+.chip:is(:hover:not(:disabled), [data-state='hover']) {
+  background: var(--surface-2);
+  border-color: var(--field-border);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true']:is(:hover:not(:disabled), [data-state='hover']) {
+  background: var(--brand-tint-hover);
+  border-color: var(--brand-hover);
+  color: var(--brand-hover);
+}
+
+.chip:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--segment);
+  border-color: var(--field-border);
+  color: var(--ink);
+}
+
+.chip[aria-pressed='true']:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-tint-pressed);
+  border-color: var(--brand-pressed);
+  color: var(--brand-pressed);
+}
+
+.chip:disabled {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-disabled);
+  cursor: default;
+}
+
+.chip[aria-pressed='true']:disabled {
+  background: var(--segment);
+  border-color: var(--line-strong);
+}

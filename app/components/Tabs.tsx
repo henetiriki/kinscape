@@ -2,6 +2,8 @@
 
 import type { ControlState } from './controls';
 
+import styles from './Tabs.module.css';
+
 export type Tab = { label: string; state?: ControlState; value: string };
 
 export const Tabs = ({
@@ -17,11 +19,11 @@ export const Tabs = ({
   selected: string;
   tabs: Tab[];
 }) => (
-  <div aria-label={label} className='tabs' role='tablist'>
+  <div aria-label={label} className={styles.tabs} role='tablist'>
     {tabs.map(tab => (
       <button
         aria-selected={tab.value === selected}
-        className='tab'
+        className={styles.tab}
         data-state={tab.state}
         disabled={disabled}
         key={tab.value}

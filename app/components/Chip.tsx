@@ -2,6 +2,8 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from './controls';
 
+import styles from './Chip.module.css';
+
 export const Chip = ({
   on,
   state,
@@ -12,7 +14,7 @@ export const Chip = ({
 } & Omit<ComponentProps<'button'>, 'aria-pressed' | 'className'>) => (
   <button
     aria-pressed={on}
-    className='chip'
+    className={styles.chip}
     data-state={state}
     type='button'
     {...rest}

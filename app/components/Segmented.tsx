@@ -2,6 +2,8 @@
 
 import type { ControlState } from './controls';
 
+import styles from './Segmented.module.css';
+
 export type Segment = { label: string; state?: ControlState; value: string };
 
 /** One choice from a few, as radios: the arrow keys move the choice. */
@@ -20,9 +22,12 @@ export const Segmented = ({
   options: Segment[];
   value: string;
 }) => (
-  <div aria-label={label} className='seg' role='radiogroup'>
+  <div aria-label={label} className={styles.seg} role='radiogroup'>
     {options.map(option => (
-      <label className='seg-item' data-state={option.state} key={option.value}>
+      <label
+        className={styles.segItem}
+        data-state={option.state}
+        key={option.value}>
         <input
           checked={option.value === value}
           disabled={disabled}

@@ -2,7 +2,7 @@
 
 - **Spec:** #113 (Intent #111)
 - **Requirement IDs:** NFR-03, NFR-06, MAP-02
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,6 +23,8 @@ The focus ring and selected point must follow `brand` with no second edit.
 
 Recommended: A, because `tokens.json` then names each use.
 
+**Answer:** A
+
 **D2 · CSS property names** · Decides: Tech lead
 
 - **A.** Colours unprefixed (`--brand`, `--ink-3`); other groups prefixed (`--radius-panel`).
@@ -30,6 +32,8 @@ Recommended: A, because `tokens.json` then names each use.
 - **Other:** your own.
 
 Recommended: A, because `DESIGN.md` and `globals.css` already use those colour names.
+
+**Answer:** A
 
 **D3 · Snapshot colours with transparency** · Decides: Tech lead
 The snapshots use ink at six opacities, and the hatch at 38% and 55% where `DESIGN.md` says 34%.
@@ -40,6 +44,8 @@ The snapshots use ink at six opacities, and the hatch at 38% and 55% where `DESI
 
 Recommended: A, because otherwise every shadow step needs a token.
 
+**Answer:** A
+
 **D4 · Where the out-of-date check runs** · Decides: Tech lead
 
 - **A.** A Vitest test that fails with "run `npm run tokens`".
@@ -47,6 +53,8 @@ Recommended: A, because otherwise every shadow step needs a token.
 - **Other:** your own.
 
 Recommended: A, because it also fails locally.
+
+**Answer:** A
 
 ## Files that change
 
@@ -64,12 +72,11 @@ Recommended: A, because it also fails locally.
 
 ## Order of work
 
-1. On approval, commit the plan.
-2. Check `tokens.json` holds the values above.
-3. Resolver and generator, test first.
-4. Snapshot colour test: hex and `rgb()` in styles and SVG attributes, never `href="#…"`.
-5. `globals.css`, fonts, then `style.ts`.
-6. E2E, `DESIGN.md`, checks.
+1. Check `tokens.json` holds the values above.
+2. Resolver and generator, test first.
+3. Snapshot colour test: hex and `rgb()` in styles and SVG attributes, never `href="#…"`.
+4. `globals.css`, fonts, then `style.ts`.
+5. E2E, `DESIGN.md`, checks.
 
 ## Risks
 
@@ -87,7 +94,7 @@ Recommended: A, because it also fails locally.
 | No Google requests; Public Sans  | E2E: no request to a Google domain; `document.fonts.check` passes for the body font                                                                          |
 | 2px brand focus outline          | E2E: computed outline on each control the keyboard reaches                                                                                                   |
 
-The app has no links or selected point yet; the token test covers the point.
+The app has no links or selected point yet; a token test covers the point.
 
 ## Out of scope
 

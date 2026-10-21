@@ -4,3 +4,9 @@
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
+
+/* For a control that holds the focusable element, such as a Segmented label around its radio. */
+.ringWithin:is(:has(:focus-visible), [data-state='focus']) {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

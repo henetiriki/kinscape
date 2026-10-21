@@ -1,4 +1,4 @@
-import { globSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, globSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -42,24 +42,26 @@ describe('colour literals', () => {
   const modules = globSync('app/**/*.module.css', { cwd: root }).toSorted();
 
   it('finds the CSS modules', () => {
-    expect(modules.length).toBeGreaterThanOrEqual(5);
+    expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 
-  it.each([
-    'app/controls.css',
-    'app/globals.css',
-    'lib/map/style.ts',
-    ...components,
-    ...modules,
-  ])('%s has none', path => {
-    expect(read(path)).not.toMatch(COLOUR_LITERAL);
-  });
+  it.each(['app/globals.css', 'lib/map/style.ts', ...components, ...modules])(
+    '%s has none',
+    path => {
+      expect(read(path)).not.toMatch(COLOUR_LITERAL);
+    }
+  );
 });
 
-// DM.4.2: these controls live in modules, so the shared sheet must not carry their rules.
-it('keeps the Button, IconButton and TextLink rules out of controls.css', () => {
-  expect(read('app/controls.css')).not.toMatch(
-    /\.(?:btn|icon-btn|text-link|kit)\b/
+// DM.4.3: every control lives in a module, so the shared sheet is gone.
+it('has no controls.css and nothing imports it', () => {
+  const sources = globSync('{app,lib,e2e}/**/*.{ts,tsx,css}', {
+    cwd: root,
+  }).filter(path => !path.endsWith('design.test.ts'));
+
+  expect(existsSync(join(root, 'app/controls.css'))).toBe(false);
+  expect(sources.filter(path => read(path).includes('controls.css'))).toEqual(
+    []
   );
 });
 

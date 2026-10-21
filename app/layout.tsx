@@ -8,7 +8,6 @@ import {
 
 import './tokens.css';
 import './globals.css';
-import './controls.css';
 
 // Fetched at build time and served by KinScape (NFR-03).
 // Each variable is the one tokens.css starts that font's stack with.

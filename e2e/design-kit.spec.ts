@@ -130,6 +130,10 @@ test('the live controls carry hashed class names, not the plain ones', async ({
     [live.getByRole('button', { name: 'Sign in' }), 'btnPrimary'],
     [live.getByRole('button', { name: 'Zoom in' }), 'iconBtn'],
     [live.getByRole('link', { name: 'Attributions' }), 'textLink'],
+    [live.getByRole('checkbox', { name: 'Checkbox off' }), 'checkbox'],
+    [live.getByRole('button', { name: 'Birth' }), 'chip'],
+    [live.locator('label', { hasText: 'Month' }), 'segItem'],
+    [live.getByRole('tab', { name: 'Filters' }), 'tab'],
   ] as const) {
     const tokens = await control
       .first()
@@ -138,4 +142,19 @@ test('the live controls carry hashed class names, not the plain ones', async ({
     expect(tokens.some(token => token.includes(plain))).toBe(true);
     expect(tokens).not.toContain(plain);
   }
+});
+
+test('the arrow keys move the choice in a Segmented control', async ({
+  page,
+}) => {
+  await page.goto('/design-kit');
+
+  const live = matrix(page).locator(':not([inert] *)');
+
+  await live.getByRole('radio', { name: 'Year' }).first().focus();
+  await page.keyboard.press('ArrowRight');
+
+  await expect(
+    live.getByRole('radio', { name: 'Month' }).first()
+  ).toBeFocused();
 });

@@ -1,0 +1,50 @@
+.tabs {
+  display: inline-flex;
+  gap: var(--space-4);
+}
+
+.tab {
+  composes: ring from './focus.module.css';
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  color: var(--ink-3);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  height: var(--size-control-s);
+  line-height: var(--type-label-line);
+  padding: 0 var(--space-16);
+  position: relative;
+}
+
+.tab::before {
+  content: '';
+  inset: calc((var(--size-control-s) - var(--size-touch)) / 2) 0;
+  position: absolute;
+}
+
+.tab[aria-selected='true'] {
+  background: var(--brand-tint);
+  color: var(--brand-hover);
+}
+
+.tab[aria-selected='false']:is(:hover:not(:disabled), [data-state='hover']) {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.tab[aria-selected='false']:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--segment);
+  color: var(--ink);
+}
+
+.tab:disabled {
+  color: var(--ink-disabled);
+  cursor: default;
+}
+
+.tab[aria-selected='true']:disabled {
+  background: var(--segment);
+}

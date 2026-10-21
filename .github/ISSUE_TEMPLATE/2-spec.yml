@@ -12,7 +12,7 @@ body:
     id: intent
     attributes:
       label: Intent or milestone
-      description: The Intent issue or milestone this spec slices, e.g. #12 or M0
+      description: The Intent issue this spec slices, e.g. #12. Write M0 only for M0, which has no Intent issue
     validations:
       required: true
   - type: input

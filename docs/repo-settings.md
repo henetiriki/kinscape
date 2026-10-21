@@ -15,10 +15,10 @@ GitHub settings live outside git, so we keep them **as code** instead:
 | Merge methods                            | Squash only                                             | One commit on `main` per PR; linear history                                               |
 | Squash commit message                    | PR title + commit messages                              | Keeps each PR's `plan(…): approved by @…` line in `main`'s history                        |
 | Delete branch on merge                   | On                                                      | No stale branches                                                                         |
-| Suggest updating PR branches, auto-merge | On                                                      | Branches stay current; auto-merge is ready for when CI exists                             |
+| Suggest updating PR branches, auto-merge | On                                                      | Branches stay current; nothing auto-merges ([Dependencies](dependencies.md))              |
 | Wiki, Projects, Discussions              | Off                                                     | Fewer places for the PO to look. Work lives in Issues                                     |
 | Ruleset _Protect main_                   | No deletion, no force push, linear history, PR required | `main` only changes through a reviewed PR                                                 |
-| Required approvals                       | 1, stale approvals dismissed, conversations resolved    | PO approval of a product PR is their recorded sign-off                                    |
+| Required approvals                       | 1, stale approvals dismissed, conversations resolved    | One approval from the PO or the tech lead is enough for now                               |
 | Bypass                                   | Repository admin, **via PR only**                       | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged |
 | Required status checks                   | lint, format, test, e2e, boundaries, words, Codecov     | Nothing merges with a red check. Names match the CI job names and Codecov's statuses      |
 | Dependabot alerts and security fixes     | On                                                      | Free on private repos                                                                     |
@@ -37,8 +37,8 @@ Vercel has no settings-as-code here: the tech lead sets these by hand in the Ver
 
 ## Accounts and access
 
-| Who                     | Access               | Notes                                                                                 |
-| ----------------------- | -------------------- | ------------------------------------------------------------------------------------- |
-| Tech lead (@henetiriki) | Owner                | Applies settings; merges                                                              |
-| Product owner           | Collaborator (write) | Personal repos can't grant less than write; the ruleset stops direct pushes to `main` |
-| Claude GitHub App       | Not installed        | Agents work through the tech lead's local Claude Code session                         |
+| Who                       | Access               | Notes                                                                                                                                                           |
+| ------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tech lead (@henetiriki)   | Owner                | Applies settings; merges                                                                                                                                        |
+| Product owner             | Collaborator (write) | Personal repos can't grant less than write; the ruleset stops direct pushes to `main`                                                                           |
+| Claude (`henetiriki-bot`) | Bot account          | Runs the Spec agent and `@claude` in GitHub Actions, using the `CLAUDE_CODE_OAUTH_TOKEN` and `KINSCAPE_BOT_PAT` secrets. The Claude GitHub App is not installed |

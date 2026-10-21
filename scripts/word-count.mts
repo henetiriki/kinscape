@@ -8,6 +8,8 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 650, pattern: /^AGENTS\.md$/ },
   { limit: 200, pattern: /^docs\/security\.md$/ },
   { limit: 850, pattern: /^docs\/how-we-work\.md$/ },
+  { limit: 400, pattern: /^docs\/building\.md$/ },
+  { limit: 200, pattern: /^docs\/dependencies\.md$/ },
   { limit: 600, pattern: /^plans\/[^/]+\.md$/ },
   {
     limit: 650,
@@ -69,6 +71,8 @@ export const run = (root: string, args: string[], stdin: string): number => {
           'CLAUDE.md',
           'AGENTS.md',
           'docs/how-we-work.md',
+          'docs/building.md',
+          'docs/dependencies.md',
           ...listFiles(root, 'plans'),
           ...listFiles(root, '.claude/skills'),
         ];

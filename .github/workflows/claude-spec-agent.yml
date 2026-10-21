@@ -11,7 +11,8 @@ run-name: >-
     github.event_name == 'issues' &&
     github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
-    contains(github.event.issue.labels.*.name, 'type: spec') &&
+    (contains(github.event.issue.labels.*.name, 'type: spec') ||
+      contains(github.event.issue.labels.*.name, 'type: bug')) &&
     github.actor != 'henetiriki-bot' &&
     format('Plan: {0}', github.event.issue.title) ||
     github.event_name == 'pull_request_review' &&
@@ -19,7 +20,8 @@ run-name: >-
     github.event.review.author_association == 'OWNER' &&
     github.event.pull_request.draft &&
     github.event.pull_request.user.login == 'henetiriki-bot' &&
-    startsWith(github.event.pull_request.head.ref, 'spec/') &&
+    (startsWith(github.event.pull_request.head.ref, 'spec/') ||
+      startsWith(github.event.pull_request.head.ref, 'bug/')) &&
     format('Build: {0}', github.event.pull_request.title) ||
     format('Skipped: {0}', github.event.issue.title || github.event.pull_request.title)
   }}
@@ -50,7 +52,8 @@ jobs:
       github.event_name == 'issues' &&
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
-      contains(github.event.issue.labels.*.name, 'type: spec') &&
+      (contains(github.event.issue.labels.*.name, 'type: spec') ||
+        contains(github.event.issue.labels.*.name, 'type: bug')) &&
       github.actor != 'henetiriki-bot'
     concurrency: thread-${{ github.event.issue.number }}
     runs-on: ubuntu-latest
@@ -58,7 +61,8 @@ jobs:
       # The issue or PR that gets a fallback comment if the agent leaves none.
       THREAD: ${{ github.event.issue.number }}
       PROMPT: >-
-        Pick up Spec #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        Pick up Spec or Bug #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        A Bug's id is B${{ github.event.issue.number }} and its branch is bug/B${{ github.event.issue.number }}-<slug>.
         Write each open choice as a decision in the format in docs/how-we-work.md.
         Push before you stop, then comment on the Spec with a link to the plan PR.
         If you're blocked, comment on the Spec saying why,
@@ -153,14 +157,15 @@ jobs:
   # that Claude's bot opened from a branch starting with `spec/` (a plan PR). Claude then
   # builds what the plan describes and comments on the PR with the result.
   build:
-    # The bot opens chore PRs too: only a draft on a spec/ branch is a plan PR.
+    # The bot opens chore PRs too: only a draft on a spec/ or bug/ branch is a plan PR.
     if: |
       github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
       github.event.review.author_association == 'OWNER' &&
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == 'henetiriki-bot' &&
-      startsWith(github.event.pull_request.head.ref, 'spec/')
+      (startsWith(github.event.pull_request.head.ref, 'spec/') ||
+        startsWith(github.event.pull_request.head.ref, 'bug/'))
     # Shared with claude.yml, so a plan revision finishes before the build starts.
     concurrency: thread-${{ github.event.pull_request.number }}
     runs-on: ubuntu-latest

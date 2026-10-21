@@ -2,20 +2,19 @@
 
 A map of South Africa from 1652 to today. Historical boundaries redraw as a date slider moves, and the user's ancestors are pinned where they were at the time.
 
-This file is tool-agnostic. Agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
+Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
 
 ## Source of truth
 
 - `docs/requirements.md`: the baseline requirements. Every requirement has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
 - **Intents:** each milestone in `requirements.md` (M1–M6) has its own Intent issue, filed already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
-- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead approves engineering-only ones.
-- `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
+- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead approves engineering-only ones.- `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
 - `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 
 ## Workflow rules
 
-- Only build from a Spec labelled `status: ready-for-dev` or `status: ready-for-agent`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
+- Only build from a Spec or Bug labelled `status: ready-for-dev` or `status: ready-for-agent`, or for a chore, from an approved plan. If something isn't covered, ask. Don't invent requirements.
 - Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
 - Before you change anything, check that the change belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
 - Never choose silently. Write each PO or tech-lead decision in the [decision format](docs/how-we-work.md#decisions) (Spec: **Decisions**; Intent: _Open questions_; plan: `## Decisions`); risks go under **Flagged concerns**. When a Spec decision is answered, update the issue body as it says.
@@ -24,7 +23,7 @@ This file is tool-agnostic. Agent-specific notes live in that agent's own file (
 
 ## Plans
 
-One plan per Spec, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md).
+One plan per Spec or Bug, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md).
 
 ## Data rules
 

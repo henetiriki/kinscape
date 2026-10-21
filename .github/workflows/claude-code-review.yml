@@ -1,5 +1,8 @@
 name: 'Claude: Code Review'
 
+# When a PR is opened, updated or marked ready, Claude reviews the code and
+# leaves comments on it.
+
 on:
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]

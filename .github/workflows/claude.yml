@@ -1,7 +1,15 @@
 name: 'Claude: Code'
 
-# Says whether Claude responded. It repeats the `gate` job below (run-name cannot see
-# job results): change them together. `contains` ignores case, the gate does not.
+# This workflow lets people talk to Claude by writing "@claude" in an
+# issue, a comment or a PR review.
+#
+# The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude
+# will answer, and "Skipped: <title>" when it won't. Claude answers when all of these hold:
+#   - the author is not Claude's own bot account (so Claude never answers itself)
+#   - it is not the tech lead approving a draft plan PR (the spec agent handles those)
+#   - the text mentions "@claude"
+# This repeats the `gate` job below (run-name cannot see job results): change them together.
+# `contains` ignores case, the gate does not.
 run-name: >-
   ${{
     github.actor != 'henetiriki-bot' &&
@@ -29,8 +37,8 @@ on:
     types: [submitted]
 
 jobs:
-  # Decides whether to run and on which model. Event text arrives through env,
-  # never interpolated into the script.
+  # Step 1: decide whether Claude should answer at all, and which model it should use.
+  # Event text arrives through env, never interpolated into the script.
   gate:
     runs-on: ubuntu-latest
     permissions: {}
@@ -50,33 +58,41 @@ jobs:
           DRAFT: ${{ github.event.pull_request.draft || github.event.issue.draft }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
+          # 1. Pick the text to search for "@claude", based on what just happened:
+          #    a comment, a PR review, or a newly opened or assigned issue.
           case "$EVENT" in
             issue_comment | pull_request_review_comment) text=$COMMENT ;;
             pull_request_review) text=$REVIEW ;;
             issues) text="$ISSUE_TITLE $ISSUE_BODY" ;;
           esac
 
-          # The spec agent's build job owns approving reviews on a plan PR.
+          # 2. If the tech lead approved a draft plan PR, discard the text: the spec agent's
+          #    build job owns that review and starts the build, so Claude must not also answer.
           if [ "$EVENT" = pull_request_review ] && [ "$REVIEW_STATE" = approved ] &&
             [ "$DRAFT" = true ] && [[ $HEAD_REF == spec/* ]]; then
             text=
           fi
 
+          # 3. Answer only if "@claude" appears in the text and the author isn't Claude itself.
           # Claude posts as henetiriki-bot; its own comments never start a run.
           run=false
           if [ "$ACTOR" != henetiriki-bot ] && [[ $text == *@claude* ]]; then
             run=true
           fi
 
-          # A draft PR is a plan PR: plan on Opus, everything else on Sonnet.
+          # 4. Choose the model. Planning is the hard thinking, so a draft PR (a plan PR) gets
+          #    the stronger Opus model; everything else gets the faster Sonnet model.
           model_args='--model sonnet'
           if [ "$DRAFT" = true ]; then
             model_args='--model opus --effort high'
           fi
 
+          # 5. Hand both answers to the next job.
           echo "run=$run" >> "$GITHUB_OUTPUT"
           echo "model_args=$model_args" >> "$GITHUB_OUTPUT"
 
+  # Step 2: let Claude read the request, work in the repo and reply. It starts only when the
+  # `gate` job above said yes; otherwise this job is skipped.
   claude:
     needs: gate
     if: needs.gate.outputs.run == 'true'
@@ -98,6 +114,7 @@ jobs:
           # and runs triggered by a GITHUB_TOKEN push wait for approval.
           token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
+      # Install the project's tools so Claude can run lint and tests.
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
@@ -116,6 +133,6 @@ jobs:
           bot_id: '344434370'
           additional_permissions: |
             actions: read
-          # The repo is private; turn off once runs are reliable.
-          show_full_output: true
+          # Model choice comes from the gate job; the allowed tools limit Claude to npm scripts,
+          # git, and GitHub PR and issue commands.
           claude_args: '${{ needs.gate.outputs.model_args }} --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'

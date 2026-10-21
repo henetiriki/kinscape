@@ -1,6 +1,11 @@
 name: 'Backlog: Intent ready for PO'
 
-# Repeats the job's `if:` (run-name cannot see job results): change them together.
+# When a Spec is closed, check whether that was the last open Spec of its
+# Intent. If so, hand the Intent to the PO to confirm the outcome and close it.
+#
+# The title shown for each run in the Actions tab: "Check Intent: <title>" for a Spec,
+# "Skipped: <title>" for any other issue. Repeats the job's `if:` (run-name cannot see job
+# results): change them together.
 run-name: >-
   ${{
     contains(github.event.issue.labels.*.name, 'type: spec') &&
@@ -16,6 +21,7 @@ permissions:
   issues: write
 
 jobs:
+  # Only closed Specs matter here; every other closed issue is ignored.
   flag-intent:
     if: "contains(github.event.issue.labels.*.name, 'type: spec')"
     runs-on: ubuntu-latest
@@ -26,6 +32,7 @@ jobs:
             const { owner, repo } = context.repo;
             const number = context.payload.issue.number;
 
+            // 1. Find the Intent this Spec belongs to (its "parent" issue).
             let parent;
             try {
               ({ data: parent } = await github.request(
@@ -37,6 +44,9 @@ jobs:
               throw error;
             }
 
+            // 2. Stop quietly unless all of these hold: the parent is still open, it really is
+            //    an Intent, it isn't already marked ready for the PO, and every one of its
+            //    Specs is now closed.
             const labels = parent.labels.map((label) => label.name);
             const { total, completed } = parent.sub_issues_summary;
             if (
@@ -48,6 +58,7 @@ jobs:
               return;
             }
 
+            // 3. Take off the Intent's old status label(s), then mark it "ready-for-po".
             for (const name of labels.filter((l) => l.startsWith('status: '))) {
               await github.rest.issues.removeLabel({
                 owner,
@@ -62,6 +73,7 @@ jobs:
               issue_number: parent.number,
               labels: ['status: ready-for-po'],
             });
+            // 4. Tell the PO what to do next.
             await github.rest.issues.createComment({
               owner,
               repo,

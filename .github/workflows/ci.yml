@@ -9,8 +9,10 @@ on:
 permissions:
   contents: read
 
+# The automated checks that every change must pass.
 # Drafts are mostly plan PRs: only format and words run on them. Every job runs on a push to main.
 jobs:
+  # Checks the code for mistakes and style problems.
   lint:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
@@ -23,6 +25,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
 
+  # Checks that files are laid out consistently.
   format:
     runs-on: ubuntu-latest
     steps:
@@ -34,6 +37,7 @@ jobs:
       - run: npm ci
       - run: npm run format:check
 
+  # Runs the automated tests, then sends the coverage report to Codecov (even if a test failed).
   test:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
@@ -52,6 +56,7 @@ jobs:
           files: coverage/lcov.info
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  # Checks the historical boundary data files are valid.
   boundaries:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
@@ -64,6 +69,7 @@ jobs:
       - run: npm ci
       - run: npm run validate:boundaries
 
+  # Checks that docs and plans stay within their word limits.
   words:
     runs-on: ubuntu-latest
     steps:
@@ -73,6 +79,7 @@ jobs:
           node-version-file: .nvmrc
       - run: npm run words
 
+  # Opens the app in a real browser and clicks through it, as a user would.
   e2e:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest

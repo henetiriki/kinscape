@@ -2,6 +2,8 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from './controls';
 
+import styles from './Button.module.css';
+
 export const Button = ({
   state,
   variant = 'secondary',
@@ -11,7 +13,7 @@ export const Button = ({
   variant?: 'primary' | 'secondary';
 } & Omit<ComponentProps<'button'>, 'className'>) => (
   <button
-    className={`btn btn-${variant}`}
+    className={`${styles.btn} ${variant === 'primary' ? styles.btnPrimary : styles.btnSecondary}`}
     data-state={state}
     type='button'
     {...rest}

@@ -29,16 +29,16 @@ it('shows every control in five states outside production', () => {
 
   expect(within(matrix).getAllByText('Sign in')).toHaveLength(5);
   expect(
-    matrix.querySelectorAll('.kit-cell:not([inert]) .btn-primary')
+    matrix.querySelectorAll('.kitCell:not([inert]) .btnPrimary')
   ).toHaveLength(2);
-  expect(matrix.querySelectorAll('.kit-row:not(.kit-columns)')).toHaveLength(9);
+  expect(matrix.querySelectorAll('.kitRow:not(.kitColumns)')).toHaveLength(9);
 });
 
 it('keeps the pointer-state cells out of the tab order and the accessibility tree', () => {
   vi.stubEnv('VERCEL_ENV', 'development');
   render(<DesignKit />);
 
-  const inert = document.querySelectorAll('.kit-cell[inert]');
+  const inert = document.querySelectorAll('.kitCell[inert]');
 
   // Hover, Focus and Pressed in each of the nine rows.
   expect(inert).toHaveLength(9 * 3);
@@ -55,7 +55,7 @@ it('leaves the Text field row empty until DM.5', () => {
   vi.stubEnv('VERCEL_ENV', 'development');
   render(<DesignKit />);
 
-  const row = screen.getByText('Text field').closest('.kit-row')!;
+  const row = screen.getByText('Text field').closest('.kitRow')!;
 
   expect(row.querySelectorAll('input, button')).toHaveLength(0);
 });

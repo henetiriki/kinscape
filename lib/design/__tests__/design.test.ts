@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { globSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -39,14 +39,28 @@ describe('colour literals', () => {
     .filter(name => name.endsWith('.tsx'))
     .map(name => `app/components/${name}`);
 
+  const modules = globSync('app/**/*.module.css', { cwd: root }).toSorted();
+
+  it('finds the CSS modules', () => {
+    expect(modules.length).toBeGreaterThanOrEqual(5);
+  });
+
   it.each([
     'app/controls.css',
     'app/globals.css',
     'lib/map/style.ts',
     ...components,
+    ...modules,
   ])('%s has none', path => {
     expect(read(path)).not.toMatch(COLOUR_LITERAL);
   });
+});
+
+// DM.4.2: these controls live in modules, so the shared sheet must not carry their rules.
+it('keeps the Button, IconButton and TextLink rules out of controls.css', () => {
+  expect(read('app/controls.css')).not.toMatch(
+    /\.(?:btn|icon-btn|text-link|kit)\b/
+  );
 });
 
 // The thumb is a pseudo-element the browser won't report, so check the source.

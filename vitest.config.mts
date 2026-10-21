@@ -23,6 +23,7 @@ export default defineConfig({
         statements: 100,
       },
     },
+    css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',
     include: ['{app,lib,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],

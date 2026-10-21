@@ -13,6 +13,8 @@ import { Segmented } from '@/app/components/Segmented';
 import { Tabs } from '@/app/components/Tabs';
 import { TextLink } from '@/app/components/TextLink';
 
+import styles from './page.module.css';
+
 export const metadata: Metadata = { title: 'KinScape design kit' };
 
 // A column of the board: the state a control shows, or Disabled.
@@ -174,34 +176,34 @@ const DesignKit = () => {
   }
 
   return (
-    <main className='kit'>
-      <header className='kit-header'>
-        <span className='kit-eyebrow'>Style guide · 04</span>
-        <h1 className='kit-title'>Component states</h1>
-        <p className='kit-lead'>
+    <main className={styles.kit}>
+      <header className={styles.kitHeader}>
+        <span className={styles.kitEyebrow}>Style guide · 04</span>
+        <h1 className={styles.kitTitle}>Component states</h1>
+        <p className={styles.kitLead}>
           How every control looks at rest, under the pointer, with keyboard
           focus, while pressed and when it can&apos;t be used. Toggles show off
           and on side by side.
         </p>
       </header>
 
-      <figure aria-label='State matrix' className='kit-matrix'>
-        <div className='kit-row kit-columns'>
+      <figure aria-label='State matrix' className={styles.kitMatrix}>
+        <div className={`${styles.kitRow} ${styles.kitColumns}`}>
           <span>Component</span>
           {COLUMNS.map(({ title }) => (
             <span key={title}>{title}</span>
           ))}
         </div>
         {ROWS.map(({ hint, name, render }) => (
-          <div className='kit-row' key={name}>
-            <span className='kit-name'>
+          <div className={styles.kitRow} key={name}>
+            <span className={styles.kitName}>
               <span>{name}</span>
-              <span className='kit-hint'>{hint}</span>
+              <span className={styles.kitHint}>{hint}</span>
             </span>
             {COLUMNS.map(({ column }) => (
               // Hover, Focus and Pressed are looks, not controls: inert keeps them out of the tab order and the accessibility tree.
               <span
-                className='kit-cell'
+                className={styles.kitCell}
                 inert={stateOf(column) !== undefined}
                 key={column}>
                 {render?.(column)}
@@ -211,7 +213,7 @@ const DesignKit = () => {
         ))}
       </figure>
 
-      <div className='kit-notes'>
+      <div className={styles.kitNotes}>
         <section>
           <h2>Rules</h2>
           <ul>

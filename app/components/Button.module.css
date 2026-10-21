@@ -1,0 +1,68 @@
+.btn {
+  composes: ring from './focus.module.css';
+  align-items: center;
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-body);
+  font-size: var(--type-control-size);
+  font-weight: var(--type-control-weight);
+  height: var(--size-control);
+  line-height: var(--type-control-line);
+  padding: 0 18px;
+  position: relative;
+  transition:
+    background var(--motion-press),
+    border-color var(--motion-press);
+}
+
+.btn:disabled {
+  cursor: default;
+}
+
+.btnPrimary:is(:active:not(:disabled), [data-state='active']) {
+  transform: translateY(1px);
+}
+
+.btnPrimary {
+  background: var(--brand);
+  border: 0;
+  color: var(--white);
+}
+
+.btnPrimary:is(:hover:not(:disabled), [data-state='hover']) {
+  background: var(--brand-hover);
+}
+
+.btnPrimary:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-pressed);
+}
+
+.btnPrimary:disabled {
+  background: var(--line);
+  color: var(--ink-disabled);
+}
+
+.btnSecondary {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+}
+
+.btnSecondary:is(:hover:not(:disabled), [data-state='hover']) {
+  background: var(--surface-2);
+  border-color: var(--field-border);
+}
+
+.btnSecondary:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+
+.btnSecondary:disabled {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-disabled);
+}

@@ -8,7 +8,8 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 
 - `docs/requirements.md`: the baseline requirements. Every requirement has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
 - **Intents:** each milestone in `requirements.md` (M1–M6) has its own Intent issue, filed already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
-- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead approves engineering-only ones.- `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
+- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead approves engineering-only ones.
+- `design/DESIGN.md`: how things look (fonts, colours, components, states, map style), with mockups beside it. If a screen isn't designed, list it under **Flagged concerns** instead of inventing the UI.
 - `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 

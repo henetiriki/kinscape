@@ -2,7 +2,7 @@
 
 - **Spec:** #134 (Intent #111)
 - **Requirement IDs:** NFR-06, MAP-03
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -13,11 +13,13 @@ Each map component gets a `*.module.css` holding the rules it now takes from `gl
 **D1 · Labelling the layer name** · Decides: Tech lead
 `Text` types its props as a `span`'s, so `<Text as='label'>` can't take `htmlFor`.
 
-- **A.** A plain `<label htmlFor>` in `LayersPanel` wraps `<Text variant='label'>`.
+- **A.** A plain `<label htmlFor>` wraps `<Text variant='label'>`.
 - **B.** Widen `Text`'s props so `as='label'` accepts `htmlFor`.
 - **Other:** your own.
 
 Recommended: A, because B changes a kit API the Spec doesn't ask for.
+
+**Answer (tech lead, PR #140): B**, despite the API change.
 
 **D2 · Precision keys** · Decides: PO
 Today Year, Month and Day are three Tab stops and the arrow keys do nothing. The kit's `Segmented` is native radios: one Tab stop, arrows move the choice.
@@ -28,12 +30,15 @@ Today Year, Month and Day are three Tab stops and the arrow keys do nothing. The
 
 Recommended: A, because it is the standard radio-group pattern and the kit already proves it on `/design-kit`.
 
+**Answer (PO, via PR #140): A.**
+
 ## Files that change
 
 | File (`app/components/`)           | New / changed | What                                                        |
 | ---------------------------------- | ------------- | ----------------------------------------------------------- |
 | `MapShell.tsx`, `.module.css`      | Changed / new | `.bottom`                                                   |
-| `LayersPanel.tsx`, `.module.css`   | Changed / new | `.panel`, row layout; `Checkbox`; D1                        |
+| `LayersPanel.tsx`, `.module.css`   | Changed / new | `.panel`, row layout; `Checkbox`; D1 B                      |
+| `Text.tsx`, `__tests__/Text.test.tsx` | Changed       | `as='label'` accepts `htmlFor` (D1 B)                       |
 | `DateDock.tsx`, `.module.css`      | Changed / new | `.dock*`, field's mono rules; `IconButton`s; `Segmented`    |
 | `DateSlider.tsx`, `.module.css`    | Changed / new | Slider rules, same look                                     |
 | `Credits.tsx`, `.module.css`       | Changed / new | `.credits`, Attributions button                             |

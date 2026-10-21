@@ -11,18 +11,25 @@ import styles from './page.module.css';
 
 export const metadata: Metadata = { title: 'KinScape design kit: type' };
 
-const STYLES: {
+type Heading = 'display' | 'h1' | 'h2' | 'h3';
+
+type Row = {
   hint: string;
   name: string;
   sample: string;
   spec: string;
-  variant: TextVariant;
-}[] = [
+} & (
+  | { tag: 'h1' | 'h2' | 'h3'; variant: Heading }
+  | { tag?: undefined; variant: Exclude<TextVariant, Heading> }
+);
+
+const STYLES: Row[] = [
   {
     hint: 'Sign-in headline',
     name: 'Display',
     sample: "Borders move. Places don't.",
     spec: 'Bricolage 52 / 56 · 700 · −0.02em',
+    tag: 'h1',
     variant: 'display',
   },
   {
@@ -30,6 +37,7 @@ const STYLES: {
     name: 'H1',
     sample: 'Sign in',
     spec: 'Bricolage 32 / 40 · 500 · −0.015em',
+    tag: 'h1',
     variant: 'h1',
   },
   {
@@ -37,6 +45,7 @@ const STYLES: {
     name: 'H2',
     sample: 'Sources and attributions',
     spec: 'Bricolage 24 / 32 · 700',
+    tag: 'h2',
     variant: 'h2',
   },
   {
@@ -44,6 +53,7 @@ const STYLES: {
     name: 'H3',
     sample: 'Kimberley',
     spec: 'Bricolage 22 / 28 · 700',
+    tag: 'h3',
     variant: 'h3',
   },
   {
@@ -128,7 +138,7 @@ const TypeKit = () => {
     <main className={styles.kit}>
       <header className={kit.kitHeader}>
         <span className={kit.kitEyebrow}>Style guide · 01</span>
-        <h1 className={kit.kitTitle}>Typography and hierarchy</h1>
+        <p className={kit.kitTitle}>Typography and hierarchy</p>
         <p className={kit.kitLead}>
           Three families, each with one job. Bricolage Grotesque for headings,
           Public Sans for everything you read or click, JetBrains Mono for dates
@@ -142,20 +152,29 @@ const TypeKit = () => {
           <span role='columnheader'>Font · size / line · weight</span>
           <span role='columnheader'>Sample</span>
         </div>
-        {STYLES.map(({ hint, name, sample, spec, variant }) => (
-          <div className={styles.row} key={variant} role='row'>
+        {STYLES.map(row => (
+          <div className={styles.row} key={row.variant} role='row'>
             <span className={styles.name} role='cell'>
-              <span>{name}</span>
-              <span className={styles.hint}>{hint}</span>
+              <span>{row.name}</span>
+              <span className={styles.hint}>{row.hint}</span>
             </span>
             <span className={styles.spec} role='cell'>
-              {spec}
+              {row.spec}
             </span>
             <span role='cell'>
-              {/* A page has one heading level 1: heading samples are blocks, not headings. */}
-              <Text as='div' data-variant={variant} variant={variant}>
-                {sample}
-              </Text>
+              {/* Heading samples use their natural element, so the header title is a paragraph. */}
+              {row.tag ? (
+                <Text
+                  as={row.tag}
+                  data-variant={row.variant}
+                  variant={row.variant}>
+                  {row.sample}
+                </Text>
+              ) : (
+                <Text as='div' data-variant={row.variant} variant={row.variant}>
+                  {row.sample}
+                </Text>
+              )}
             </span>
           </div>
         ))}

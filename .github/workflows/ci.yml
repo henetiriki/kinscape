@@ -105,3 +105,9 @@ jobs:
           path: ${{ github.workspace }}/.next/cache
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
       - run: npm run e2e
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: design-check
+          path: test-results/design
+          if-no-files-found: ignore

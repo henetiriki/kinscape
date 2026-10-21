@@ -91,7 +91,6 @@ export const dayFromSlider = (
 };
 
 /** The full date over the slider thumb. */
-export const sliderLabel = (day: number): string => fromDay(day);
 
 /** The date in the field: `2026`, `2026-10` or `2026-10-21`. */
 export const shownDate = (day: number, precision: Precision): string =>

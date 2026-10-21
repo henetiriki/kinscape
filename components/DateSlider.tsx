@@ -3,14 +3,12 @@
 import {
   dayFromSlider,
   type Precision,
-  sliderLabel,
   sliderMax,
   sliderValue,
 } from '@/lib/map/map-date';
 
 /**
- * The 1652-to-today slider. The thumb moves in steps of `precision` and the
- * label above it shows the full date; change both here.
+ * The 1652-to-today slider. The thumb moves in steps of `precision`.
  */
 export const DateSlider = ({
   day,
@@ -28,11 +26,6 @@ export const DateSlider = ({
 
   return (
     <div className='date-slider'>
-      <output
-        className='date-slider-label mono'
-        style={{ left: `${(value / max) * 100}%` }}>
-        {sliderLabel(day)}
-      </output>
       <input
         aria-label='Map date'
         max={max}

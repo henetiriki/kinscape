@@ -50,7 +50,9 @@ test('dragging to 1800 and back loads no more boundary data', async ({
   const max = Number(await input.getAttribute('max'));
 
   await input.fill('148');
-  await expect(page.getByRole('status')).toContainText('1800-');
+  await expect(page.getByRole('textbox', { name: 'Date shown' })).toHaveValue(
+    '1800'
+  );
   await expect.poll(() => drawnLabels(page)).toBe(0);
   await input.fill(String(max));
   await expect.poll(() => drawnLabels(page)).toBe(11);

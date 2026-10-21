@@ -162,37 +162,55 @@ body {
   box-shadow: 0 1px 2px rgb(24 33 27 / 0.15);
 }
 
-.date-slider {
-  padding-top: 24px;
-  position: relative;
-}
-
 .date-slider input {
-  accent-color: var(--brand);
+  appearance: none;
+  background: transparent;
   display: block;
+  height: 28px;
   margin: 0;
   width: 100%;
 }
 
-.date-slider-label {
-  background: var(--ink);
-  border-radius: 4px;
-  color: #fff;
-  font-size: 12px;
-  padding: 2px 6px;
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
+.date-slider input::-webkit-slider-runnable-track {
+  background: var(--line-strong);
+  border-radius: 3px;
+  height: 6px;
+}
+
+.date-slider input::-moz-range-track {
+  background: var(--line-strong);
+  border-radius: 3px;
+  height: 6px;
+}
+
+/* A brand dot inside a white ring, outlined in brand green. */
+.date-slider input::-webkit-slider-thumb {
+  appearance: none;
+  background: var(--brand);
+  border: 4px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--brand);
+  box-sizing: border-box;
+  height: 28px;
+  margin-top: -11px;
+  width: 28px;
+}
+
+.date-slider input::-moz-range-thumb {
+  background: var(--brand);
+  border: 4px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--brand);
+  box-sizing: border-box;
+  height: 28px;
+  width: 28px;
 }
 
 .credits {
   align-self: flex-end;
-  background: rgb(255 255 255 / 0.8);
-  border-radius: 6px;
   color: #24302b;
   font-size: 11px;
   margin: 0;
-  padding: 2px 6px;
 }
 
 .credits button {

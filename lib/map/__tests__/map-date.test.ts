@@ -5,7 +5,6 @@ import {
   dayFromSlider,
   MIN_DAY,
   shownDate,
-  sliderLabel,
   sliderMax,
   sliderValue,
   stepDay,
@@ -78,7 +77,6 @@ describe('labels', () => {
     expect(shownDate(day, 'year')).toBe('2026');
     expect(shownDate(day, 'month')).toBe('2026-10');
     expect(shownDate(day, 'day')).toBe('2026-10-21');
-    expect(sliderLabel(day)).toBe('2026-10-21');
   });
 
   it('knows today', () => {

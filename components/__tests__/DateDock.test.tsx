@@ -82,10 +82,9 @@ it('disables Back on 1652-01-01', () => {
   ).toBe(false);
 });
 
-it('moves the Map date from the slider, with the full date in its label', () => {
+it('moves the Map date from the slider', () => {
   const onChange = setup(today);
 
-  expect(screen.getByRole('status').textContent).toBe('2026-10-21');
   fireEvent.change(screen.getByRole('slider', { name: 'Map date' }), {
     target: { value: '148' },
   });

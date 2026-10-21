@@ -2,7 +2,7 @@
 
 - **Spec:** #115 (Intent #111)
 - **Requirement IDs:** NFR-06, NFR-03
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,6 +16,8 @@ One component per control in `components/` (`Button` with `primary`/`secondary`,
 - **B.** `proxy.ts` answers `/design-kit` with a 404 in production.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, because it is one line and unit-testable.
 
 **D2 · How a state is shown without the pointer** · Decides: Tech lead
@@ -23,6 +25,8 @@ Recommended: A, because it is one line and unit-testable.
 - **A.** A `data-state="hover|focus|active"` prop; each rule reads `:hover, [data-state='hover']`. The Hover, Focus and Pressed cells are `inert`, so keyboard and screen reader meet each control in Default and Disabled only.
 - **B.** A kit-only stylesheet repeating each state's rule under a class: two copies to keep in step.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 Recommended: A, because a state can't drift from the real one.
 
@@ -33,6 +37,8 @@ Button text is 15px (`DESIGN.md`: 16); chip and segment text 13.5px; segment rad
 - **B.** Use the nearest token (16px, `small`, `control`, `small`) and let the threshold absorb it.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, because B may fail a `blocking` check.
 
 **D4 · The Text field row (DM.5)** · Decides: Tech lead
@@ -40,6 +46,8 @@ Recommended: A, because B may fail a `blocking` check.
 - **A.** The kit keeps the row's label and height with empty cells; `screens.json` ignores that row until DM.5.
 - **B.** Leave the row out: every row below shifts, so the check can't be `blocking` until DM.5.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 Recommended: A.
 
@@ -49,6 +57,8 @@ About 800 changed lines, over the 600 cap; CSS and tests are most of it.
 - **A.** Keep one Spec.
 - **B.** Split: buttons and link first, toggles in DM.4.1.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

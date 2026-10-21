@@ -2,7 +2,7 @@
 
 - **Spec:** #133 (Intent #111)
 - **Requirement IDs:** NFR-06, NFR-03
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,6 +19,8 @@ The panel sits under a "Map labels" heading and above a note describing map-labe
 
 Recommended: A, because the note describes the map style, which the Spec carries forward with the panel.
 
+**Answer: A** (@henetiriki)
+
 **D2 · Kit header and Rules styles** · Decides: Tech lead
 The type board's header and two-column notes match the states board's, styled in `app/design-kit/page.module.css`.
 
@@ -27,6 +29,8 @@ The type board's header and two-column notes match the states board's, styled in
 - **Other:** your own.
 
 Recommended: A, because one rule then sets both boards' headers; `design:check` on `style-4-states` before and after proves `/design-kit` is unchanged.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

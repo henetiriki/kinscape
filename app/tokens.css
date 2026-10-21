@@ -113,6 +113,16 @@
   --type-button-line: 24px;
   --type-button-weight: 600;
   --type-button-tracking: 0;
+  --type-control-font: var(--font-body);
+  --type-control-size: 15px;
+  --type-control-line: 22px;
+  --type-control-weight: 600;
+  --type-control-tracking: 0;
+  --type-chip-font: var(--font-body);
+  --type-chip-size: 13.5px;
+  --type-chip-line: 20px;
+  --type-chip-weight: 600;
+  --type-chip-tracking: 0;
   --type-button-s-font: var(--font-body);
   --type-button-s-size: 14px;
   --type-button-s-line: 20px;
@@ -138,7 +148,10 @@
   --space-40: 40px;
   --space-48: 48px;
   --space-64: 64px;
+  --radius-link: 2px;
   --radius-small: 4px;
+  --radius-segment-item: 7px;
+  --radius-segment: 9px;
   --radius-control: 8px;
   --radius-panel: 12px;
   --radius-sheet: 18px;

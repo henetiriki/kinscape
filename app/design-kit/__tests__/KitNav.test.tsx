@@ -5,7 +5,21 @@ const pathname = vi.hoisted(() => ({ current: '/design-kit' }));
 
 vi.mock('next/navigation', () => ({ usePathname: () => pathname.current }));
 
-import { KitNav } from '../KitNav';
+import { KitNav, KitTitle } from '../KitNav';
+
+// NFR-06
+it.each([
+  ['/design-kit', 'page'],
+  ['/design-kit/type', null],
+])('on %s, the title link has aria-current %s', (path, current) => {
+  pathname.current = path;
+  render(<KitTitle />);
+
+  const link = screen.getByRole('link', { name: 'KinScape design kit' });
+
+  expect(link.getAttribute('href')).toBe('/design-kit');
+  expect(link.getAttribute('aria-current')).toBe(current);
+});
 
 const links = () =>
   within(screen.getByRole('navigation', { name: 'Boards' })).getAllByRole(

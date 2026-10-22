@@ -62,6 +62,11 @@ Recommended: A, because a screen reader then says where you are on every kit pag
 | Production 404                                        | `layout.test.tsx`; `VERCEL_ENV=production npm run build`, `npm start`, `curl` each kit route                  |
 | Tests, e2e, build pass, 100% coverage                 | Their output in the PR                                                                                        |
 
+## Deviations
+
+- The title link is a small client component, `KitTitle` in `KitNav.tsx`, so D1 A can mark it current from the pathname.
+- The e2e Tab test counts only visible controls, as the closed sheet's links are in the page but hidden.
+
 ## Flagged concerns
 
 - `design-kit-menu-phone` shows the type board on a phone, which is DM.12.2, so its score will be high.

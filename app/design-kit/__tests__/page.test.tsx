@@ -15,13 +15,13 @@ it('lists each board with its link and line', () => {
   const rows = screen.getAllByRole('listitem');
 
   expect(rows).toHaveLength(BOARDS.length);
-  BOARDS.forEach(({ line, number, slug, title }, i) => {
+  BOARDS.forEach(({ eyebrow, line, slug, title }, i) => {
     const row = within(rows[i]);
 
     expect(row.getByRole('link', { name: title }).getAttribute('href')).toBe(
       `/design-kit/${slug}`
     );
     expect(row.getByText(line)).toBeTruthy();
-    expect(row.getByText(`Style guide · ${number}`)).toBeTruthy();
+    expect(row.getByText(eyebrow)).toBeTruthy();
   });
 });

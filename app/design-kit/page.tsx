@@ -10,9 +10,9 @@ const DesignKitIndex = () => (
       Boards
     </Text>
     <ul className={styles.boards}>
-      {BOARDS.map(({ line, number, slug, title }) => (
+      {BOARDS.map(({ eyebrow, line, slug, title }) => (
         <li className={styles.board} key={slug}>
-          <Text variant='overline'>Style guide · {number}</Text>
+          <Text variant='overline'>{eyebrow}</Text>
           <TextLink href={`/design-kit/${slug}`}>{title}</TextLink>
           <Text variant='body'>{line}</Text>
         </li>

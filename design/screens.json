@@ -8,6 +8,28 @@
       "width": 1440
     },
     {
+      "height": 900,
+      "mode": "report",
+      "name": "design-kit",
+      "route": "/design-kit",
+      "width": 1440
+    },
+    {
+      "height": 941,
+      "mode": "report",
+      "name": "design-kit-phone",
+      "route": "/design-kit",
+      "width": 390
+    },
+    {
+      "height": 844,
+      "mode": "report",
+      "name": "design-kit-menu-phone",
+      "route": "/design-kit/type",
+      "state": "kit-menu-open",
+      "width": 390
+    },
+    {
       "height": 1851,
       "mode": "report",
       "name": "style-1-type",

@@ -60,6 +60,7 @@ Write each PO or tech-lead decision like this:
 - **A.** <option and what follows>
 - **B.** …
 - **Other:** your own.
+
 Recommended: A, because …
 ```
 

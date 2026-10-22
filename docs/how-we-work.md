@@ -63,7 +63,7 @@ Write each PO or tech-lead decision like this:
 Recommended: A, because …
 ```
 
-Answer with `D1: B` or `D1: other, <your option>`. On an issue, start the comment with `@claude`, or nothing records it; in a plan PR's approving review, no `@claude` is needed. Claude records it by rewriting the issue body in its prompt with one command, `gh issue edit <n> --body-file - <<'EOF'` (no pipes, `&&` or temp files): it adds `**Answer: B** (PO)` under the decision, strikes through (`~~…~~`) each option not chosen, and rewords any Summary, Behaviour or Acceptance check it changes. Nothing is built while one is open. Hard-to-reverse engineering choices go to the tech lead, even in a Spec the PO approves.
+Answer with `D1: B` or `D1: other, <your option>`. On an issue, start the comment with `@claude`, or nothing records it; in a plan PR's approving review, no `@claude` is needed. Claude records it by rewriting the issue body in its prompt with one command, `gh issue edit <n> --body-file - <<'EOF'` (no pipes, `&&` or temp files): it adds `**Answer: B** (PO)` under the decision, strikes through (`~~…~~`) each option not chosen, and rewords any Summary, Behaviour or Acceptance check it changes. A plan decision that changes the Spec's text is recorded the same way ([plan rules](../plans/README.md)). Nothing is built while one is open. Hard-to-reverse engineering choices go to the tech lead, even in a Spec the PO approves.
 
 ## Roles and labels: whose turn is it?
 

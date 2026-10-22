@@ -13,7 +13,7 @@
 - **D1 · Snapshot height** (tech lead): **A.** 1241 in `screens.json`, as the snapshot is; I reword the Spec's 1180.
 - **D2 · Shadow text** (tech lead): **B.** Token text verbatim; the design agent updated the board.
 - **D3 · Changed border easing** (tech lead): **B.** "600ms ease-out" from the token; the design agent updated the board.
-- **D4 · Nav name** (PO): **Other.** Title "Spacing, shape, depth, icons, motion"; each `boards.ts` row gets a short `label` ("Foundations") for the bar. Until the menu is built, the bar keeps showing `title`.
+- **D4 · Nav name** (PO): **Other.** Title "Spacing, shape, depth, icons, motion"; each `boards.ts` row gets a short `label` ("Foundations") for the bar. The bar shows `label` (PO revised this after the build).
 
 ## Files that change
 

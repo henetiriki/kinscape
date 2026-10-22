@@ -14,7 +14,7 @@ export const KitNav = () => {
   return (
     <nav aria-label='Boards' className={styles.nav}>
       <ul>
-        {BOARDS.map(({ slug, title }) => {
+        {BOARDS.map(({ label, slug }) => {
           const href = `/design-kit/${slug}`;
 
           return (
@@ -22,7 +22,7 @@ export const KitNav = () => {
               <TextLink
                 aria-current={pathname === href ? 'page' : undefined}
                 href={href}>
-                {title}
+                {label}
               </TextLink>
             </li>
           );

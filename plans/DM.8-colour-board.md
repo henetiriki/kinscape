@@ -2,7 +2,7 @@
 
 - **Spec:** #146 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The board rounds to the nearest 0.1. Field-border is 3.02:1.
 - **B.** Round to nearest, as the board.
 - **Other:** your own.
 
-Recommended: B. Threshold tests use unrounded ratios, so rounding cannot hide a failure.
+Answer: B (@henetiriki: "Accept all recommendations"). Recommended: B. Threshold tests use unrounded ratios, so rounding cannot hide a failure.
 
 **D2 · Every colour token has a swatch** · Decides: Tech lead
 
@@ -25,7 +25,7 @@ Recommended: B. Threshold tests use unrounded ratios, so rounding cannot hide a 
 - **B.** No such test; the design check catches drift visually.
 - **Other:** your own.
 
-Recommended: A, so a new token cannot miss the board.
+Answer: A (@henetiriki: "Accept all recommendations"). Recommended: A, so a new token cannot miss the board.
 
 **D3 · Colours with opacity** · Decides: Tech lead
 `scrim` is `rgb(24 33 27 / 0.45)`; `map.hatch` has `opacity: 0.34`.
@@ -34,7 +34,7 @@ Recommended: A, so a new token cannot miss the board.
 - **B.** Both show hex and opacity (`#18211B · 45%`), drawn at that opacity; the design agent updates both boards.
 - **Other:** your own.
 
-Recommended: A, as the board; the hatch still shows opacity.
+Answer: A (@henetiriki: "Accept all recommendations"). Recommended: A, as the board; the hatch still shows opacity.
 
 **D4 · Swatch counts** · Decides: PO
 The Spec says five groups and 22 swatches; the updated board has six (Interactive is now Focus) and 28. Both have 4 system colours.
@@ -43,7 +43,7 @@ The Spec says five groups and 22 swatches; the updated board has six (Interactiv
 - **B.** Keep 22 and 4; added tokens wait for another Spec.
 - **Other:** your own.
 
-Recommended: A, as the Spec says counts follow the updated board.
+Answer: A (@henetiriki: "Accept all recommendations"). Recommended: A, as the Spec says counts follow the updated board.
 
 ## Files that change
 

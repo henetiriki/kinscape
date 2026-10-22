@@ -75,7 +75,8 @@ jobs:
     # The steps below are shared: the `build` job reuses them as-is (`*steps`). The first one
     # downloads the repo's code; on a plan PR it takes that PR's branch.
     steps: &steps
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Empty on `issues` events, so the default branch is checked out.
           ref: ${{ github.event.pull_request.head.ref }}
@@ -84,30 +85,37 @@ jobs:
           persist-credentials: false
 
       # Install the project's tools so Claude can run lint and tests.
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
       # Install the test browser, but only on a build (a PR review), when Claude runs the
       # end-to-end tests. Plan runs don't build. The cache keeps the browser between runs:
       # a hit skips the download, not the system packages.
-      - id: playwright
+      - name: Read Playwright version
+        id: playwright
         if: github.event_name == 'pull_request_review'
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - if: github.event_name == 'pull_request_review'
+      - name: Cache Playwright browser
+        if: github.event_name == 'pull_request_review'
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
       # One retry, 3.5 minutes each: an apt or CDN stall can hang the install.
-      - if: github.event_name == 'pull_request_review'
+      - name: Install Playwright
+        if: github.event_name == 'pull_request_review'
         run: timeout 210 npm run e2e:install || timeout 210 npm run e2e:install
       # Note the start time, so the last step can tell whether Claude commented during this run.
-      - run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
+      - name: Note start time
+        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
       # Hand the job to Claude: the PROMPT and MODEL_ARGS set on each job say what to do.
-      - id: claude
+      - name: Run Claude Code
+        id: claude
         uses: anthropics/claude-code-action@db77d4d3c98f3f6380e7cd45ffba2342a3dbde3c # v1.0.254
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -123,7 +131,8 @@ jobs:
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
       # step failed. If Claude left no comment, post one pointing at the run, or at the PR it
       # opened. Only a run with neither hands the Spec back as blocked.
-      - if: always()
+      - name: Comment if Claude left none
+        if: always()
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
           GH_REPO: ${{ github.repository }}

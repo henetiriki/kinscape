@@ -2,7 +2,7 @@
 
 - **Spec:** #152 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,6 +18,8 @@ On `/design-kit` no board is current.
 - **Other:** your own.
 
 Recommended: A, because a screen reader then says where you are on every kit page.
+
+**Decision D1:** A
 
 ## Files that change
 

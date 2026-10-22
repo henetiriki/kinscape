@@ -47,7 +47,6 @@ Recommended: A, because a screen reader then says where you are on every kit pag
 ## Risks
 
 - An open sheet would survive a client-side navigation; the row's `onClick` closes it.
-- Tab from the page top meets the title first.
 
 ## Proof
 
@@ -65,7 +64,8 @@ Recommended: A, because a screen reader then says where you are on every kit pag
 ## Deviations
 
 - The title link is a client component, `KitTitle` in `KitNav.tsx`, to read the pathname for D1 A.
-- The e2e Tab test counts only visible controls.
+- The e2e Tab test counts visible controls.
+- The sheet shell is a shared `Sheet` component (modal only), per @henetiriki; `KitMenu` keeps the rows.
 
 ## Flagged concerns
 

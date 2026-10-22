@@ -1,0 +1,57 @@
+/* A modal bottom sheet: scrim, handle, head and the slide */
+
+.sheet {
+  background: var(--surface);
+  border: 0;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  box-shadow: var(--shadow-sheet);
+  box-sizing: border-box;
+  color: var(--ink);
+  margin: auto 0 0;
+  max-height: 90dvh;
+  max-width: none;
+  overflow: auto;
+  padding: 0;
+  width: 100%;
+}
+
+.sheet::backdrop {
+  background: var(--scrim);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet[open] {
+    animation: rise var(--motion-sheet);
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-12) var(--space-16) var(--space-32);
+}
+
+.handle {
+  align-self: center;
+  background: var(--line-strong);
+  border-radius: var(--radius-full);
+  height: 4px;
+  width: 40px;
+}
+
+.head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}

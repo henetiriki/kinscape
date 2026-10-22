@@ -216,7 +216,7 @@ Every map visual is something MapLibre GL can draw: flat fills, solid or dashed 
 | Hillshade               | `map.hillshade`                                                                                     |
 | Polity label            | Public Sans SemiBold, uppercase; `map.polity-label`; contested note in italic `map.contested-label` |
 | Place label             | Public Sans Medium; `map.place-label`; dot `map.place-dot`                                          |
-| Water and river labels  | Public Sans Italic, `map.water-label`                                                               |
+| Water and river labels  | Public Sans Italic; `map.water-label`, `map.river-label`; sizes in tokens                           |
 | Context labels          | Public Sans Italic, uppercase, `map.context-label`                                                  |
 | Label halo              | `map.label-halo`, the land colour                                                                   |
 | Uncertainty halo        | `map.pin-halo`; radius grows with the date range                                                    |

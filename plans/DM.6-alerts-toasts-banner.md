@@ -2,7 +2,7 @@
 
 - **Spec:** #117 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,6 +17,8 @@ The board draws no close button.
 - **B.** A 36px close `IconButton` after the action; the check reports the difference until it is designed.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, because it adds no undesigned UI.
 
 **D2 · Who removes a success toast** · Decides: Tech lead
@@ -25,6 +27,8 @@ Recommended: A, because it adds no undesigned UI.
 - **B.** `Toast` hides itself; the design check fakes timers on this board.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, as DM.5 D4 did for the date notice.
 
 **D3 · Where toasts and the banner are placed** · Decides: Tech lead
@@ -32,6 +36,8 @@ Recommended: A, as DM.5 D4 did for the date notice.
 - **A.** Unplaced here; the map Spec that first shows one places it above the dock or top centre.
 - **B.** Add a fixed `ToastRegion` and `BannerRegion` now, unused until a screen mounts them.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 Recommended: A, because the dock's height belongs to the map screen.
 
@@ -42,6 +48,8 @@ Foundations give popups a 160ms fade and 4px rise; leaving isn't drawn.
 - **B.** It also fades out, staying mounted 160ms after `onDismiss`.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, because it is simpler.
 
 **D5 · Proving the board match** · Decides: Tech lead
@@ -50,6 +58,8 @@ The whole board scores 7.42% today (Form fields, DM.5 D5), over the 0.5% thresho
 - **A.** One local run that ignores everything but Alerts and Toasts; the PR records that score. `screens.json` drops both ignore regions.
 - **B.** Add an `only` area list to the check config, so CI scores the regions.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 Recommended: A, because B is a tooling change outside this Spec.
 

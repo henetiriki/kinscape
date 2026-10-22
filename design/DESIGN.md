@@ -95,7 +95,7 @@ Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 
 
 ## Colours
 
-Every value (colours, type, spacing, radii, shadows, focus, motion and the map) is in [`tokens.json`](tokens.json). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties: colours are `--brand`, `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. Where a token is used:
+Every value (colours, type, spacing, radii, shadows, focus, motion and the map) is in [`tokens.json`](tokens.json). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties: colours are `--brand`, `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each with its value and contrast ratio. Where a token is used:
 
 | Token                                               | Used for                                                                     |
 | --------------------------------------------------- | ---------------------------------------------------------------------------- |

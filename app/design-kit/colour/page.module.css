@@ -1,0 +1,113 @@
+/* The /design-kit/colour page, laid out like the Colour board */
+
+.kit {
+  background: var(--surface);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-height: 2702px;
+  padding: var(--space-64) 72px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.heading {
+  align-items: baseline;
+  display: flex;
+  gap: 14px;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.note {
+  color: var(--ink-3);
+  font-size: 13.5px;
+}
+
+.swatches {
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.swatch {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chip {
+  height: 72px;
+}
+
+/* White has no edge on a white card, so its swatch is drawn as a ring, as on the board. */
+.ring {
+  border-bottom: 1px solid var(--line);
+  box-shadow: inset 0 0 0 3px var(--ink);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px 12px;
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.value {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.use {
+  color: var(--ink-3);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.system {
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tone {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lines {
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  gap: 4px;
+}
+
+.footer {
+  color: var(--ink-3);
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0;
+}

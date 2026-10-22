@@ -15,6 +15,13 @@
       "width": 1440
     },
     {
+      "height": 2702,
+      "mode": "report",
+      "name": "style-2-colour",
+      "route": "/design-kit/colour",
+      "width": 1440
+    },
+    {
       "height": 1563,
       "mode": "report",
       "name": "style-4-states",

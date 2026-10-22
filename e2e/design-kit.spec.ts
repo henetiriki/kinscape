@@ -184,9 +184,30 @@ test('the arrow keys move the choice in a Segmented control', async ({
   ).toBeFocused();
 });
 
+// NFR-06: each swatch on the colour board is filled with its token.
+test('colour swatches are filled with their tokens', async ({ page }) => {
+  await page.goto('/design-kit/colour');
+
+  const fill = (name: string) =>
+    page
+      .locator('code', { hasText: new RegExp(`^${name}$`) })
+      .locator('xpath=../preceding-sibling::div');
+
+  await expect(fill('--brand')).toHaveCSS(
+    'background-color',
+    'rgb(38, 79, 41)'
+  );
+  await expect(fill('--pin')).toHaveCSS('background-color', 'rgb(154, 59, 18)');
+  await expect(fill('map.hatch.colour')).toHaveCSS(
+    'background-color',
+    'rgb(139, 74, 28)'
+  );
+});
+
 // NFR-06: the kit's index and nav.
 const BOARD_LINKS = [
   { heading: 'Typography and hierarchy', path: '/design-kit/type' },
+  { heading: 'Colour', path: '/design-kit/colour' },
   { heading: 'Component states', path: '/design-kit/states' },
   { heading: 'Feedback and validation', path: '/design-kit/feedback' },
 ];

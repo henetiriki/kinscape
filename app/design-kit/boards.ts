@@ -7,6 +7,12 @@ export const BOARDS = [
     title: 'Typography and hierarchy',
   },
   {
+    line: 'Every colour token with its value, contrast ratio and use.',
+    number: '02',
+    slug: 'colour',
+    title: 'Colour',
+  },
+  {
     line: 'Every control at rest, hovered, focused, pressed and disabled.',
     number: '04',
     slug: 'states',

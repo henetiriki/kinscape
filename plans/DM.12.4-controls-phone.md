@@ -2,7 +2,7 @@
 
 - **Spec:** #155 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,6 +23,8 @@ The phone mocks keep it at 22px; browsers only zoom below 16px.
 - **B.** 16px; the design check lists the difference.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, because it matches the mocks.
 
 **D2 · The States board's forced hover on a touch screen** · Decides: Tech lead
@@ -31,6 +33,8 @@ Recommended: A, because it matches the mocks.
 - **A.** Split each rule; the forced state stays outside. About 70 more lines.
 - **B.** Move whole rules; on a touch screen the board's Hover column looks like Rest.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 Recommended: A, because the phone States board must show all five states.
 
@@ -41,6 +45,8 @@ Spec D1's reason says DM.6 places them on desktop; DM.6 D3 left them unplaced.
 - **B.** `placed` also sets desktop's: banner top centre, toast above the dock.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki)
+
 Recommended: A, because #104 changes the dock.
 
 **D4 · How the callout fits** · Decides: Tech lead
@@ -48,6 +54,8 @@ Recommended: A, because #104 changes the dock.
 - **A.** CSS: it spans the step buttons and field; with Play beside them it stops short of the right gutter.
 - **B.** JS measures the field and spans the gutters, as the mock does.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 Recommended: A, because it needs no script and holds in any layout.
 

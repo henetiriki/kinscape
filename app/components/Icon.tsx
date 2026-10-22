@@ -1,6 +1,27 @@
+// The twelve board icons are copied from design/source/style-3-foundations.html.
 const PATHS = {
+  alert: (
+    <>
+      <circle cx='12' cy='12' r='9' />
+      <path d='M12 7.5v5.5M12 16.5v.01' />
+    </>
+  ),
+  back: <path d='M15 5l-7 7 7 7' />,
+  close: <path d='M6 6l12 12M18 6L6 18' />,
   cloudOff: (
     <path d='M3 3l18 18M8.5 8.6A5.5 5.5 0 0 0 6.5 18H17M17.6 12.2A4 4 0 0 1 20.5 16' />
+  ),
+  copy: (
+    <>
+      <rect height='12' rx='2' width='12' x='8' y='8' />
+      <path d='M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3' />
+    </>
+  ),
+  done: (
+    <>
+      <circle cx='12' cy='12' r='9' />
+      <path d='M8 12.5l2.7 2.7L16 9.8' />
+    </>
   ),
   error: (
     <>
@@ -8,10 +29,31 @@ const PATHS = {
       <path d='M12 7.5v5.5M12 16.5v.01' />
     </>
   ),
+  export: <path d='M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14' />,
+  fit: <path d='M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5' />,
   info: (
     <>
       <circle cx='12' cy='12' r='9' />
       <path d='M12 11v5.5M12 7.5v.01' />
+    </>
+  ),
+  layers: (
+    <>
+      <path d='M12 3l9 5-9 5-9-5 9-5z' />
+      <path d='M3 13l9 5 9-5' />
+    </>
+  ),
+  place: (
+    <>
+      <path d='M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z' />
+      <circle cx='12' cy='9.8' r='2.3' />
+    </>
+  ),
+  play: <path d='M7 4.5v15l12.5-7.5z' fill='currentColor' stroke='none' />,
+  search: (
+    <>
+      <circle cx='11' cy='11' r='6.5' />
+      <path d='M16 16l4.5 4.5' />
     </>
   ),
   success: (
@@ -26,6 +68,7 @@ const PATHS = {
       <path d='M12 10v4.5M12 17.5v.01' />
     </>
   ),
+  zoomIn: <path d='M12 5v14M5 12h14' />,
 };
 
 // The white mark on a filled disc; a warning is a disc too, as on the Alerts board.
@@ -39,19 +82,27 @@ const MARKS = {
 export type FilledIconName = keyof typeof MARKS;
 export type IconName = keyof typeof PATHS;
 
-/** A decorative 18px icon in the current colour; the words beside it carry the meaning. */
-export const Icon = ({ name }: { name: IconName }) => (
+export type IconSize = 16 | 18 | 20 | 24;
+
+/** A decorative icon (18px unless sized) in the current colour; the words beside it carry the meaning. */
+export const Icon = ({
+  name,
+  size = 18,
+}: {
+  name: IconName;
+  size?: IconSize;
+}) => (
   <svg
     aria-hidden='true'
     data-icon={name}
     fill='none'
-    height='18'
+    height={size}
     stroke='currentColor'
     strokeLinecap='round'
     strokeLinejoin='round'
-    strokeWidth='2.2'
+    strokeWidth='2'
     viewBox='0 0 24 24'
-    width='18'>
+    width={size}>
     {PATHS[name]}
   </svg>
 );

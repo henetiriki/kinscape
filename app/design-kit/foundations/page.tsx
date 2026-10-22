@@ -1,12 +1,20 @@
 import type { Metadata } from 'next';
 
+import { Icon } from '@/app/components/Icon';
 import { Text } from '@/app/components/Text';
 
 import rawTokens from '../../../design/tokens.json';
 import { boardTitle } from '../boards';
 import kit from '../kit.module.css';
 import styles from './page.module.css';
-import { MAP_DATE_CHANGE, MOTION, RADII, SHADOWS, SPACE } from './values';
+import {
+  ICONS,
+  MAP_DATE_CHANGE,
+  MOTION,
+  RADII,
+  SHADOWS,
+  SPACE,
+} from './values';
 
 export const metadata: Metadata = { title: boardTitle('foundations') };
 
@@ -87,7 +95,24 @@ const FoundationsKit = () => (
     </div>
 
     <div className={styles.columns}>
-      <section aria-label='Icons' className={styles.icons} />
+      <section aria-label='Icons' className={styles.section}>
+        <Text as='h2' variant='h3'>
+          Icons
+        </Text>
+        <Text variant='small'>
+          Outline icons on a 24px grid, 2px stroke, round caps and joins, drawn
+          in currentColor. Shown at 16, 18, 20 or 24px. An icon-only button
+          always has an aria-label.
+        </Text>
+        <div className={styles.icons}>
+          {ICONS.map(({ label, name }) => (
+            <div className={styles.tile} key={name}>
+              <Icon name={name} size={24} />
+              <Text variant='caption'>{label}</Text>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section aria-label='Motion' className={styles.section}>
         <Text as='h2' variant='h3'>

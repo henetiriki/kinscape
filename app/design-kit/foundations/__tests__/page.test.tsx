@@ -9,17 +9,34 @@ afterEach(() => {
 });
 
 // NFR-06
-it('shows the four sections in board order, and an empty Icons area', async () => {
+it('shows the five sections in board order, and the twelve icons', async () => {
   const { default: FoundationsKit } = await import('../page');
 
   render(<FoundationsKit />);
 
   expect(
     screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent)
-  ).toEqual(['Spacing', 'Corner radius', 'Elevation', 'Motion']);
-  expect(screen.getByRole('region', { name: 'Icons' }).childNodes).toHaveLength(
-    0
-  );
+  ).toEqual(['Spacing', 'Corner radius', 'Elevation', 'Icons', 'Motion']);
+
+  const icons = screen.getByRole('region', { name: 'Icons' });
+  const tiles = icons.querySelectorAll('svg');
+
+  expect(tiles).toHaveLength(12);
+  expect([...tiles].map(svg => svg.parentElement!.textContent)).toEqual([
+    'search',
+    'zoom in',
+    'fit',
+    'layers',
+    'back',
+    'play',
+    'close',
+    'copy',
+    'place',
+    'alert',
+    'done',
+    'export',
+  ]);
+  expect(tiles[0].getAttribute('width')).toBe('24');
   expect(
     within(screen.getByRole('region', { name: 'Spacing' })).getByText('64px')
   ).toBeTruthy();

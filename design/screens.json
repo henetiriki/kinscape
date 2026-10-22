@@ -23,7 +23,6 @@
     },
     {
       "height": 1241,
-      "ignore": [{ "height": 250, "width": 624, "x": 72, "y": 748 }],
       "mode": "report",
       "name": "style-3-foundations",
       "route": "/design-kit/foundations",

@@ -58,14 +58,14 @@ Recommended: A, because it matches the board, and a filled triangle reads as Pla
 
 ## Proof
 
-| Acceptance check                                     | Proven by                                            |
-| ---------------------------------------------------- | ---------------------------------------------------- |
-| Twelve tiles with icons and names in board order     | `page.test.tsx`                                      |
-| Size 16, 18, 20 or 24 sets the svg's width and height    | `Icon.test.tsx`, each size and the default           |
-| Each icon is `aria-hidden` and draws in currentColor | `Icon.test.tsx`, looping over all names              |
-| Error and warning draw at stroke 2                   | `Icon.test.tsx`                                      |
-| No ignore region; differences listed                 | `screens.json` diff; `design:check` report in the PR |
-| Test, e2e and build pass at 100% coverage            | Pasted output in the PR                              |
+| Acceptance check                                      | Proven by                                            |
+| ----------------------------------------------------- | ---------------------------------------------------- |
+| Twelve tiles with icons and names in board order      | `page.test.tsx`                                      |
+| Size 16, 18, 20 or 24 sets the svg's width and height | `Icon.test.tsx`, each size and the default           |
+| Each icon is `aria-hidden` and draws in currentColor  | `Icon.test.tsx`, looping over all names              |
+| Error and warning draw at stroke 2                    | `Icon.test.tsx`                                      |
+| No ignore region; differences listed                  | `screens.json` diff; `design:check` report in the PR |
+| Test, e2e and build pass at 100% coverage             | Pasted output in the PR                              |
 
 ## Out of scope
 

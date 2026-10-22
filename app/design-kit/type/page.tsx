@@ -8,6 +8,7 @@ import { resolveTokens } from '@/lib/design/tokens.mts';
 import rawTokens from '../../../design/tokens.json';
 import { boardTitle } from '../boards';
 import kit from '../kit.module.css';
+import { type Label, labelStyle } from '../mapLabels';
 import styles from './page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('type') };
@@ -131,25 +132,9 @@ const STYLES: Row[] = [
 
 const { map } = resolveTokens(rawTokens);
 
-type Label = {
-  caps?: boolean;
-  italic?: boolean;
-  key: LabelKey;
-  name: string;
-  sample: string;
-  weight: 400 | 500 | 600;
-};
+type Sample = { name: string; sample: string } & Label;
 
-type LabelKey =
-  | 'contested-label'
-  | 'context-label'
-  | 'place-label'
-  | 'polity-label'
-  | 'river-label'
-  | 'water-label';
-
-// The map's label tokens have no CSS variables, so each sample reads its own.
-const LABELS: Label[] = [
+const LABELS: Sample[] = [
   {
     caps: true,
     key: 'polity-label',
@@ -190,20 +175,7 @@ const LABELS: Label[] = [
   },
 ];
 
-const labelStyle = ({ italic, key, weight }: Label) => {
-  const token = map[key];
-  const tracking = 'tracking' in token ? token.tracking : 0;
-
-  return {
-    color: token.colour,
-    fontSize: token.size,
-    fontStyle: italic ? 'italic' : 'normal',
-    fontWeight: weight,
-    letterSpacing: `${tracking}em`,
-  } as const;
-};
-
-const labelNote = ({ caps, italic, key, name, weight }: Label) => {
+const labelNote = ({ caps, italic, key, name, weight }: Sample) => {
   const token = map[key];
   const tracking = 'tracking' in token ? `, tracking ${token.tracking}em` : '';
   const style = [

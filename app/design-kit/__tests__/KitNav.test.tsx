@@ -25,6 +25,7 @@ it('links each board in order', () => {
     ['Foundations', '/design-kit/foundations'],
     ['Component states', '/design-kit/states'],
     ['Feedback', '/design-kit/feedback'],
+    ['Map style', '/design-kit/map-style'],
   ]);
   expect(links().some(link => link.hasAttribute('aria-current'))).toBe(false);
 });

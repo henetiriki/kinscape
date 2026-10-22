@@ -227,6 +227,11 @@ const BOARD_LINKS = [
     label: 'Feedback',
     path: '/design-kit/feedback',
   },
+  {
+    heading: 'MapLibre layer stack',
+    label: 'Map style',
+    path: '/design-kit/map-style',
+  },
 ];
 
 test('the index links to each board', async ({ page }) => {
@@ -517,5 +522,44 @@ test.describe('a toast rises in', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/design-kit/feedback');
     await expect(toast(page)).toHaveCSS('animation-name', 'none');
+  });
+});
+
+// NFR-06: the map style board has the layout's banner only, and previews drawn from the map tokens.
+test.describe('the map style board', () => {
+  const { map } = resolveTokens(tokens);
+
+  const rgb = (hex: string) => {
+    const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  const preview = (page: Page, id: string) =>
+    page
+      .getByRole('row')
+      .filter({ hasText: id })
+      .first()
+      .getByRole('cell')
+      .nth(1)
+      .locator('span')
+      .first();
+
+  test('has one banner and 20 layers', async ({ page }) => {
+    await page.goto('/design-kit/map-style');
+    await expect(page.getByRole('banner')).toHaveCount(1);
+    await expect(page.getByRole('row')).toHaveCount(21);
+  });
+
+  test('draws the sea and a border line from the tokens', async ({ page }) => {
+    await page.goto('/design-kit/map-style');
+    await expect(preview(page, 'background')).toHaveCSS(
+      'background-color',
+      rgb(map.sea)
+    );
+    await expect(preview(page, 'polity-line')).toHaveCSS(
+      '--line',
+      map.border.colour
+    );
   });
 });

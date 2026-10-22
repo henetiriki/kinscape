@@ -41,6 +41,13 @@
       "name": "style-5-feedback",
       "route": "/design-kit/feedback",
       "width": 1440
+    },
+    {
+      "height": 2067,
+      "mode": "report",
+      "name": "map-style",
+      "route": "/design-kit/map-style",
+      "width": 1440
     }
   ],
   "threshold": 0.5

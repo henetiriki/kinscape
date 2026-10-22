@@ -3,7 +3,9 @@ import type { Metadata } from 'next';
 import type { TextVariant } from '@/app/components/Text';
 
 import { Text } from '@/app/components/Text';
+import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import rawTokens from '../../../design/tokens.json';
 import { boardTitle } from '../boards';
 import kit from '../kit.module.css';
 import styles from './page.module.css';
@@ -127,6 +129,94 @@ const STYLES: Row[] = [
   },
 ];
 
+const { map } = resolveTokens(rawTokens);
+
+type Label = {
+  caps?: boolean;
+  italic?: boolean;
+  key: LabelKey;
+  name: string;
+  sample: string;
+  weight: 400 | 500 | 600;
+};
+
+type LabelKey =
+  | 'contested-label'
+  | 'context-label'
+  | 'place-label'
+  | 'polity-label'
+  | 'river-label'
+  | 'water-label';
+
+// The map's label tokens have no CSS variables, so each sample reads its own.
+const LABELS: Label[] = [
+  {
+    caps: true,
+    key: 'polity-label',
+    name: 'Polity',
+    sample: 'ORANGE FREE STATE',
+    weight: 600,
+  },
+  {
+    italic: true,
+    key: 'contested-label',
+    name: 'contested note',
+    sample: 'contested · Orange River Colony',
+    weight: 400,
+  },
+  { key: 'place-label', name: 'place', sample: 'Kimberley', weight: 500 },
+  {
+    italic: true,
+    key: 'river-label',
+    name: 'river',
+    sample: 'Vaal',
+    weight: 400,
+  },
+  {
+    caps: true,
+    italic: true,
+    key: 'context-label',
+    name: 'context',
+    sample: 'BECHUANALAND PROTECTORATE',
+    weight: 400,
+  },
+  {
+    caps: true,
+    italic: true,
+    key: 'water-label',
+    name: 'water',
+    sample: 'INDIAN OCEAN',
+    weight: 400,
+  },
+];
+
+const labelStyle = ({ italic, key, weight }: Label) => {
+  const token = map[key];
+  const tracking = 'tracking' in token ? token.tracking : 0;
+
+  return {
+    color: token.colour,
+    fontSize: token.size,
+    fontStyle: italic ? 'italic' : 'normal',
+    fontWeight: weight,
+    letterSpacing: `${tracking}em`,
+  } as const;
+};
+
+const labelNote = ({ caps, italic, key, name, weight }: Label) => {
+  const token = map[key];
+  const tracking = 'tracking' in token ? `, tracking ${token.tracking}em` : '';
+  const style = [
+    weight === 400 ? '' : ` / ${weight}`,
+    italic ? ' italic' : '',
+    caps ? ' uppercase' : '',
+  ].join('');
+
+  return `${name} ${token.size}${style}${tracking}`;
+};
+
+const NOTE = `${LABELS.map(labelNote).join(' · ')}. All with a ${map['label-halo'].width}px land-coloured halo.`;
+
 const TypeKit = () => (
   <main className={styles.kit}>
     <header className={kit.kitHeader}>
@@ -174,8 +264,29 @@ const TypeKit = () => (
     </div>
 
     <div className={kit.kitNotes}>
-      {/* Map labels are drawn on the map style, not here: the column stays empty so Rules keeps its place. */}
-      <section aria-hidden='true' className={styles.mapLabels} />
+      <section>
+        <h2>Map labels</h2>
+        <div className={styles.mapLabels} style={{ background: map.land }}>
+          <div className={styles.polity}>
+            {LABELS.slice(0, 2).map(label => (
+              <span key={label.key} style={labelStyle(label)}>
+                {label.sample}
+              </span>
+            ))}
+          </div>
+          {LABELS.slice(2, 5).map(label => (
+            <span key={label.key} style={labelStyle(label)}>
+              {label.sample}
+            </span>
+          ))}
+          <span
+            className={styles.chip}
+            style={{ ...labelStyle(LABELS[5]), background: map.sea }}>
+            {LABELS[5].sample}
+          </span>
+        </div>
+        <p className={styles.note}>{NOTE}</p>
+      </section>
       <section>
         <h2>Rules</h2>
         <ul>

@@ -8,22 +8,21 @@
       "width": 1440
     },
     {
-      "height": 1790,
-      "ignore": [{ "height": 300, "width": 632, "x": 72, "y": 1385 }],
+      "height": 1851,
       "mode": "report",
       "name": "style-1-type",
       "route": "/design-kit/type",
       "width": 1440
     },
     {
-      "height": 1502,
+      "height": 1563,
       "mode": "report",
       "name": "style-4-states",
       "route": "/design-kit/states",
       "width": 1440
     },
     {
-      "height": 1862,
+      "height": 1923,
       "mode": "report",
       "name": "style-5-feedback",
       "route": "/design-kit/feedback",

@@ -2,7 +2,7 @@
 
 - **Spec:** #153 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,6 +21,8 @@ The snapshots change seven lines: "(28 on phone)" on H1; "Focus" for "Focus (key
 - **B.** Phone copy and a drawn date sheet on a phone: each line rendered twice, one hidden per width, about 80 more lines, and a sheet look before M1.5.3 (#104) builds it.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki).
+
 Recommended: A, because the Spec keeps the copy and the date sheet isn't built yet.
 
 **D2 · Where the shared phone rules live** · Decides: Tech lead
@@ -30,6 +32,8 @@ The 28px title and one-column notes change classes in `kit.module.css` that ever
 - **B.** Override them in the three boards' modules; DM.12.3 moves them.
 - **Other:** your own.
 
+**Answer: A** (@henetiriki).
+
 Recommended: A, because the rule is said once and DM.12.3 needs it.
 
 **D3 · The Link's hit area** · Decides: PO
@@ -38,6 +42,8 @@ Recommended: A, because the rule is said once and DM.12.3 needs it.
 - **A.** Exempt in-text links (WCAG 2.5.8's inline exception); the check reads "any control except the Link".
 - **B.** Give `TextLink` a 44px-tall hit area everywhere.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki).
 
 Recommended: A, because in a paragraph a taller hit area catches taps meant for the lines around it.
 

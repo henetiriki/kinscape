@@ -71,16 +71,20 @@ jobs:
           token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       # Install the project's tools so Claude can run lint and tests.
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
       # see the system prompt below). The cache keeps the download between runs.
-      - id: playwright
+      - name: Read Playwright version
+        id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Cache Playwright browser
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright

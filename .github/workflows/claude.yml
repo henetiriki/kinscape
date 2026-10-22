@@ -8,8 +8,7 @@ name: 'Claude: Code'
 #   - the author is not Claude's own bot account (so Claude never answers itself)
 #   - it is not the tech lead approving a draft plan PR (the spec agent handles those)
 #   - the text mentions "@claude"
-# This repeats the `gate` job below (run-name cannot see job results): change them together.
-# `contains` ignores case, the gate does not.
+# This repeats the `if:` of the `claude` job below (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     github.actor != 'henetiriki-bot' &&
@@ -38,65 +37,21 @@ on:
     types: [submitted]
 
 jobs:
-  # Step 1: decide whether Claude should answer at all, and which model it should use.
-  # Event text arrives through env, never interpolated into the script.
-  gate:
-    runs-on: ubuntu-latest
-    permissions: {}
-    outputs:
-      run: ${{ steps.decide.outputs.run }}
-      model_args: ${{ steps.decide.outputs.model_args }}
-    steps:
-      - id: decide
-        env:
-          EVENT: ${{ github.event_name }}
-          ACTOR: ${{ github.actor }}
-          COMMENT: ${{ github.event.comment.body }}
-          REVIEW: ${{ github.event.review.body }}
-          REVIEW_STATE: ${{ github.event.review.state }}
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          DRAFT: ${{ github.event.pull_request.draft || github.event.issue.draft }}
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-        run: |
-          # 1. Pick the text to search for "@claude", based on what just happened:
-          #    a comment, a PR review, or a newly opened or assigned issue.
-          case "$EVENT" in
-            issue_comment | pull_request_review_comment) text=$COMMENT ;;
-            pull_request_review) text=$REVIEW ;;
-            issues) text="$ISSUE_TITLE $ISSUE_BODY" ;;
-          esac
-
-          # 2. If the tech lead approved a draft plan PR, discard the text: the spec agent's
-          #    build job owns that review and starts the build, so Claude must not also answer.
-          if [ "$EVENT" = pull_request_review ] && [ "$REVIEW_STATE" = approved ] &&
-            [ "$DRAFT" = true ] && [[ $HEAD_REF == spec/* || $HEAD_REF == bug/* ]]; then
-            text=
-          fi
-
-          # 3. Answer only if "@claude" appears in the text and the author isn't Claude itself.
-          # Claude posts as henetiriki-bot; its own comments never start a run.
-          run=false
-          if [ "$ACTOR" != henetiriki-bot ] && [[ $text == *@claude* ]]; then
-            run=true
-          fi
-
-          # 4. Choose the model. Planning is the hard thinking, so a draft PR (a plan PR) gets
-          #    the stronger Opus model; everything else gets the faster Sonnet model.
-          model_args='--model sonnet'
-          if [ "$DRAFT" = true ]; then
-            model_args='--model opus --effort high'
-          fi
-
-          # 5. Hand both answers to the next job.
-          echo "run=$run" >> "$GITHUB_OUTPUT"
-          echo "model_args=$model_args" >> "$GITHUB_OUTPUT"
-
-  # Step 2: let Claude read the request, work in the repo and reply. It starts only when the
-  # `gate` job above said yes; otherwise this job is skipped.
+  # Let Claude read the request, work in the repo and reply. A run that fails any of the checks
+  # in the `run-name` comment above skips this job, so the Actions tab shows the skipped icon.
   claude:
-    needs: gate
-    if: needs.gate.outputs.run == 'true'
+    if: >-
+      github.actor != 'henetiriki-bot' &&
+      !(github.event_name == 'pull_request_review' &&
+        github.event.review.state == 'approved' &&
+        github.event.pull_request.draft &&
+        (startsWith(github.event.pull_request.head.ref, 'spec/') ||
+          startsWith(github.event.pull_request.head.ref, 'bug/'))) &&
+      contains(
+        github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
+        github.event_name == 'pull_request_review' && github.event.review.body ||
+        github.event.comment.body,
+        '@claude')
     # Shared with the spec agent's jobs, so a revision and a build never overlap.
     concurrency: thread-${{ github.event.pull_request.number || github.event.issue.number }}
     runs-on: ubuntu-latest
@@ -142,11 +97,12 @@ jobs:
             actions: read
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
-          # Model choice comes from the gate job; the allowed tools limit Claude to npm scripts,
+          # Planning is the hard thinking, so a draft PR (a plan PR) gets the stronger Opus model and
+          # everything else gets the faster Sonnet model. The allowed tools limit Claude to npm scripts,
           # git, and GitHub PR and issue commands. A denied part denies the whole command, so the
           # system prompt tells Claude to run each command alone and pass a PR body inline.
           claude_args: >-
-            ${{ needs.gate.outputs.model_args }}
+            ${{ (github.event.issue.draft || github.event.pull_request.draft) && '--model opus --effort high' || '--model sonnet' }}
             --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"
             --append-system-prompt "Run each allowed command on its own: no pipes, &&, heredocs or temp files.
             Pass a PR body inline: gh pr edit <n> --body '<text>' (single quotes, so backticks stay literal).

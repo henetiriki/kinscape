@@ -6,7 +6,7 @@
 
 ## Approach
 
-The `map` group of `design/tokens.json` gains each label's size and tracking beside its colour (Spec D2 A; shape in D1). `app/design-kit/type/page.tsx` gets a `LABELS` table: sample text, token key, and the weight, italic and uppercase the panel draws. Each sample's inline `style` comes from that row and its resolved token, as the feedback board's sea does (D2); the note under the panel is built from the same rows and `map.label-halo`, so the two cannot disagree. Polity stays 12px (Spec D1 A). The panel and chip take `map.land` and `map.sea`; padding, gap and radius sit in `page.module.css`. No halo, as in the snapshot. `lib/map/style.ts` is unchanged.
+The `map` group of `design/tokens.json` gains each label's size and tracking beside its colour (Spec D2 A; shape in D1). `app/design-kit/type/page.tsx` gets a `LABELS` table: sample text, token key, and the weight, italic and uppercase the panel draws. Each sample's inline `style` comes from that row and its resolved token; the note under the panel is built from the same rows and `map.label-halo`, so the two cannot disagree. Polity stays 12px (Spec D1 A). The panel and chip take `map.land` and `map.sea`; padding, gap and radius sit in `page.module.css`. No halo, as in the snapshot. `lib/map/style.ts` is unchanged.
 
 ## Decisions
 
@@ -17,7 +17,7 @@ The `map` group of `design/tokens.json` gains each label's size and tracking bes
 - **B.** Keep the strings; add flat keys such as `place-label-size` and `river-label-size`.
 - **Other:** your own.
 
-Recommended: A, because one key then holds everything about one label, as `polity-label` does.
+Recommended: A, as `polity-label` does.
 
 **Answer: A**
 
@@ -28,7 +28,7 @@ Recommended: A, because one key then holds everything about one label, as `polit
 - **B.** Emit the `map` group as `--map-*` custom properties and use them from `page.module.css`.
 - **Other:** your own.
 
-Recommended: A, because it follows the feedback board and leaves `tokens.css` alone.
+Recommended: A, as the feedback board does.
 
 **Answer: A**
 

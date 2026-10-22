@@ -2,7 +2,7 @@
 
 - **Spec:** #145 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,6 +19,8 @@ The `map` group of `design/tokens.json` gains each label's size and tracking bes
 
 Recommended: A, because one key then holds everything about one label, as `polity-label` does.
 
+**Answer: A**
+
 **D2 · How the panel reads map tokens** · Decides: Tech lead
 `app/tokens.css` leaves out the `map` group.
 
@@ -27,6 +29,8 @@ Recommended: A, because one key then holds everything about one label, as `polit
 - **Other:** your own.
 
 Recommended: A, because it follows the feedback board and leaves `tokens.css` alone.
+
+**Answer: A**
 
 **D3 · Context tracking in the note** · Decides: Tech lead
 The board's sample tracks BECHUANALAND PROTECTORATE at 0.12em, but its note leaves that out.
@@ -37,6 +41,8 @@ The board's sample tracks BECHUANALAND PROTECTORATE at 0.12em, but its note leav
 
 Recommended: A, because a note built from the tokens shouldn't skip one.
 
+**Answer: A**
+
 **D4 · Proving the panel match** · Decides: Tech lead
 The whole board scores 2.24%, over the 0.5% threshold.
 
@@ -45,6 +51,8 @@ The whole board scores 2.24%, over the 0.5% threshold.
 - **Other:** your own.
 
 Recommended: A, as DM.6 D5.
+
+**Answer: A**
 
 ## Files that change
 

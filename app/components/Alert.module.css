@@ -1,0 +1,59 @@
+/* A bordered alert; each tone sets its three colours and the icon follows the border. */
+.alert {
+  align-items: flex-start;
+  background: var(--tone-bg);
+  border: 1px solid var(--tone-border);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--tone-text);
+  display: flex;
+  gap: var(--space-12);
+  padding: var(--space-12) 14px;
+}
+
+.alert > svg {
+  color: var(--tone-border);
+  flex: none;
+  margin-top: 1px;
+}
+
+.error {
+  --tone-bg: var(--error-bg);
+  --tone-border: var(--error-border);
+  --tone-text: var(--error);
+}
+
+.warning {
+  --tone-bg: var(--warning-bg);
+  --tone-border: var(--warning-border);
+  --tone-text: var(--warning);
+}
+
+.success {
+  --tone-bg: var(--success-bg);
+  --tone-border: var(--success-border);
+  --tone-text: var(--success);
+}
+
+.info {
+  --tone-bg: var(--info-bg);
+  --tone-border: var(--info-border);
+  --tone-text: var(--info);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.line {
+  font-size: 13.5px;
+  line-height: 1.4;
+}

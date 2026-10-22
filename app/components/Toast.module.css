@@ -1,0 +1,87 @@
+/* The 48px shape a Toast and a Banner share */
+.shape {
+  align-items: center;
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  display: flex;
+  font-family: var(--font-body);
+  font-size: 14px;
+  gap: 10px;
+  height: 48px;
+  padding: 0 6px 0 var(--space-16);
+}
+
+.shape > svg {
+  flex: none;
+}
+
+.message {
+  flex: 1;
+}
+
+.action {
+  composes: ring from './focus.module.css';
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  height: 36px;
+  padding: 0 var(--space-12);
+}
+
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-floating);
+}
+
+/* A success toast has no button, so it keeps the left padding on both sides. */
+.success {
+  padding-right: var(--space-16);
+}
+
+.success > svg {
+  color: var(--success-border);
+}
+
+.error {
+  border-color: var(--error-border);
+  color: var(--error);
+}
+
+.error > svg {
+  color: var(--error-border);
+}
+
+.banner {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.bannerAction {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--white) 45%, transparent);
+  color: var(--white);
+}
+
+.bannerAction:is(:focus-visible, [data-state='focus']) {
+  outline-color: var(--focus-ring-on-dark);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: rise var(--motion-popup);
+  }
+}

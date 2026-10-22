@@ -368,3 +368,34 @@ test('each type sample has its style tokens', async ({ page }) => {
     expect(actual).toEqual(expected);
   }
 });
+
+// NFR-06: the banner and the toasts on the feedback board.
+test('the banner action takes a white focus ring', async ({ page }) => {
+  await page.goto('/design-kit/feedback');
+
+  const retry = page.getByRole('button', { name: 'Retry' });
+
+  await retry.focus();
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  await expect(retry).toBeFocused();
+  await expect(retry).toHaveCSS('outline-color', 'rgb(255, 255, 255)');
+  await expect(retry).toHaveCSS('outline-width', '2px');
+});
+
+test.describe('a toast rises in', () => {
+  const toast = (page: Page) =>
+    page.getByText('Jurisdiction chain copied.').locator('..');
+
+  test('with motion allowed', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/design-kit/feedback');
+    await expect(toast(page)).not.toHaveCSS('animation-name', 'none');
+  });
+
+  test('not when reduced motion is on', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/design-kit/feedback');
+    await expect(toast(page)).toHaveCSS('animation-name', 'none');
+  });
+});

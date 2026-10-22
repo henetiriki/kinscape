@@ -134,3 +134,50 @@
   gap: var(--space-20);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
+.alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* The role label sits at the right of the alert, as the board draws it. */
+.alertRow {
+  display: grid;
+}
+
+.alertRow > * {
+  grid-area: 1 / 1;
+}
+
+.role {
+  align-self: center;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  justify-self: end;
+  margin-right: 14px;
+}
+
+.toasts {
+  align-items: start;
+  display: grid;
+  gap: var(--space-24);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.example {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.note {
+  color: var(--ink-3);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.where {
+  max-width: none;
+}

@@ -79,9 +79,21 @@
   padding: var(--space-16);
 }
 
-/* Left empty until DM.10 draws the icon set; the snapshot check ignores it. */
 .icons {
-  min-height: 250px;
+  color: var(--ink);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.tile {
+  align-items: center;
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-12) var(--space-4);
 }
 
 .motion {

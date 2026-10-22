@@ -1,3 +1,5 @@
+import type { IconName } from '@/app/components/Icon';
+
 /** The Foundations board's rows, in board order. Each is keyed by its token; the board reads the value. */
 export const SPACE = [
   { step: '4', use: 'Icon to text, tight pairs' },
@@ -25,6 +27,21 @@ export const SHADOWS = [
   { name: 'floating', title: 'Floating', use: 'Popups, menus' },
   { name: 'modal', title: 'Modal', use: 'Dialogs, over a scrim' },
 ] as const;
+
+export const ICONS = [
+  { label: 'search', name: 'search' },
+  { label: 'zoom in', name: 'zoomIn' },
+  { label: 'fit', name: 'fit' },
+  { label: 'layers', name: 'layers' },
+  { label: 'back', name: 'back' },
+  { label: 'play', name: 'play' },
+  { label: 'close', name: 'close' },
+  { label: 'copy', name: 'copy' },
+  { label: 'place', name: 'place' },
+  { label: 'alert', name: 'alert' },
+  { label: 'done', name: 'done' },
+  { label: 'export', name: 'export' },
+] as const satisfies readonly { label: string; name: IconName }[];
 
 export const MOTION = [
   { name: 'press', title: 'Hover, press', use: 'Colour and border only' },

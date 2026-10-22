@@ -23,8 +23,7 @@ const DesignKitLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-      {/* The design check hides the banner, so each board is shot from its own top. */}
-      <header className={styles.banner} data-design-hide>
+      <header className={styles.banner}>
         {/* A paragraph, so each page's own title is its top heading. */}
         <Text as='p' variant='h3'>
           KinScape design kit

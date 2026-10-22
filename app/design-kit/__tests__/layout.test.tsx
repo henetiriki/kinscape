@@ -30,7 +30,7 @@ it('is a 404 in production, for every kit page', () => {
 });
 
 // NFR-06
-it('shows the banner, hidden from the design check, then the page outside production', () => {
+it('shows the banner, then the page outside production', () => {
   vi.stubEnv('VERCEL_ENV', 'preview');
   render(
     <DesignKitLayout>
@@ -40,7 +40,6 @@ it('shows the banner, hidden from the design check, then the page outside produc
 
   const banner = screen.getByRole('banner');
 
-  expect(banner.hasAttribute('data-design-hide')).toBe(true);
   expect(banner.textContent).toContain('KinScape design kit');
   expect(screen.getByRole('navigation', { name: 'Boards' })).toBeTruthy();
   // The kit's name is not a heading: the page's title is the only h1.

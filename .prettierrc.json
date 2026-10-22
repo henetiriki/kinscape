@@ -6,6 +6,14 @@
   "htmlWhitespaceSensitivity": "css",
   "insertPragma": false,
   "jsxSingleQuote": true,
+  "overrides": [
+    {
+      "files": "*.{html,htm}",
+      "options": {
+        "htmlWhitespaceSensitivity": "ignore"
+      }
+    }
+  ],
   "printWidth": 80,
   "proseWrap": "preserve",
   "quoteProps": "as-needed",

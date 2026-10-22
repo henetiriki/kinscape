@@ -68,12 +68,25 @@ const MapStyleKit = () => (
             <span role='cell'>
               <code className={styles.type}>{type}</code>
             </span>
-            <span role='cell'>{filter}</span>
-            <span className={styles.properties} role='cell'>
-              {properties}
+            <span className={styles.field} role='cell'>
+              <span aria-hidden='true' className={styles.label}>
+                Source / filter
+              </span>
+              <span>{filter}</span>
             </span>
-            <span className={styles.covers} role='cell'>
-              {covers.join(', ')}
+            <span
+              className={`${styles.field} ${styles.properties}`}
+              role='cell'>
+              <span aria-hidden='true' className={styles.label}>
+                Key properties
+              </span>
+              <span>{properties}</span>
+            </span>
+            <span className={`${styles.field} ${styles.covers}`} role='cell'>
+              <span aria-hidden='true' className={styles.label}>
+                Covers
+              </span>
+              <span>{covers.join(', ')}</span>
             </span>
           </div>
         )

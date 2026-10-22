@@ -111,3 +111,25 @@
   line-height: 1.5;
   margin: 0;
 }
+
+/* A phone (Intent 104, D1): two columns of swatches, system colours stacked */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .kit {
+    min-height: 0;
+    padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
+  }
+
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .swatches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .system {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

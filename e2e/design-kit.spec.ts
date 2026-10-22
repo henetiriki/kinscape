@@ -793,3 +793,116 @@ test.describe('the boards on a phone', () => {
     });
   });
 });
+
+// NFR-05, NFR-06: the Colour, Foundations and Map style boards on a phone, in portrait and landscape.
+test.describe('the other boards on a phone', () => {
+  const boards = ['colour', 'foundations', 'map-style'];
+
+  for (const [name, size] of [
+    ['390 wide', { height: 844, width: 390 }],
+    ['844 by 390', { height: 390, width: 844 }],
+  ] as const) {
+    test.describe(`at ${name}`, () => {
+      test.use({ viewport: size });
+
+      for (const board of boards) {
+        test(`${board} does not scroll sideways`, async ({ page }) => {
+          await page.goto(`/design-kit/${board}`);
+
+          const widths = await page.evaluate(() => ({
+            client: document.documentElement.clientWidth,
+            scroll: document.documentElement.scrollWidth,
+          }));
+
+          expect(widths.scroll).toBe(widths.client);
+        });
+      }
+
+      test('map style shows 20 cards with their labels and a scrolling code sample', async ({
+        page,
+      }) => {
+        await page.goto('/design-kit/map-style');
+        await expect(
+          page.getByRole('columnheader', { name: 'Layer id' })
+        ).toBeHidden();
+
+        const rows = page
+          .getByRole('table', { name: 'Layer stack' })
+          .getByRole('row')
+          .filter({ visible: true });
+
+        await expect(rows).toHaveCount(20);
+        await expect(rows.getByText('Covers', { exact: true })).toHaveCount(20);
+        await expect(
+          rows.getByText('Covers', { exact: true }).first()
+        ).toBeVisible();
+
+        // At 844 wide the sample fits its box; only the narrow phone needs the scroll.
+        if (size.width === 390) {
+          const code = await page
+            .locator('pre')
+            .evaluate(pre => pre.scrollWidth > pre.clientWidth);
+
+          expect(code).toBe(true);
+        }
+      });
+    });
+  }
+
+  test.describe('at 390 wide', () => {
+    test.use({ viewport: { height: 844, width: 390 } });
+
+    for (const board of boards) {
+      test(`${board} stays inside 16px gutters`, async ({ page }) => {
+        await page.goto(`/design-kit/${board}`);
+
+        const outside = await page.locator('main *').evaluateAll(
+          nodes =>
+            nodes
+              .filter(node => node.checkVisibility())
+              .filter(node => !node.closest('pre'))
+              .map(node => node.getBoundingClientRect())
+              .filter(
+                box => box.width > 0 && (box.left < 16 || box.right > 374)
+              ).length
+        );
+
+        expect(outside).toBe(0);
+      });
+    }
+  });
+
+  test.describe('at 800 wide and 900 tall', () => {
+    test.use({ viewport: { height: 900, width: 800 } });
+
+    test('map style keeps its column headers', async ({ page }) => {
+      await page.goto('/design-kit/map-style');
+      await expect(
+        page.getByRole('columnheader', { name: 'Layer id' })
+      ).toBeVisible();
+    });
+
+    test('colour keeps five swatches in a row', async ({ page }) => {
+      await page.goto('/design-kit/colour');
+
+      const tops = await page
+        .locator('section[aria-label="Brand"] > div:last-child > div')
+        .evaluateAll(cards =>
+          cards.slice(0, 5).map(card => card.getBoundingClientRect().top)
+        );
+
+      expect(new Set(tops).size).toBe(1);
+    });
+
+    test('foundations keeps Spacing beside Corner radius', async ({ page }) => {
+      await page.goto('/design-kit/foundations');
+
+      const top = (label: string) =>
+        page
+          .locator(`section[aria-label="${label}"]`)
+          .evaluate(section => section.getBoundingClientRect().top);
+
+      expect(await top('Spacing')).toBe(await top('Corner radius'));
+    });
+  });
+});

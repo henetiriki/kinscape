@@ -33,7 +33,24 @@ it('shows 20 layers in order, with every column', () => {
   expect(within(rows[20]).getAllByRole('cell')[2].textContent).toBe(
     'selection'
   );
-  expect(within(rows[20]).getAllByRole('cell')[6].textContent).toBe('MAP-07');
+  expect(within(rows[20]).getAllByRole('cell')[6].textContent).toBe(
+    'CoversMAP-07'
+  );
+});
+
+// NFR-05: a phone shows each layer as a card, so its last three fields carry labels
+it('labels the source, key properties and covers of every layer', () => {
+  render(<MapStyleKit />);
+
+  const rows = within(
+    screen.getByRole('table', { name: 'Layer stack' })
+  ).getAllByRole('row');
+
+  for (const row of rows.slice(1)) {
+    expect(
+      [...row.querySelectorAll('.label')].map(label => label.textContent)
+    ).toEqual(['Source / filter', 'Key properties', 'Covers']);
+  }
 });
 
 // NFR-06

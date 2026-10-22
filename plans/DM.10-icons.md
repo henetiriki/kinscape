@@ -2,15 +2,16 @@
 
 - **Spec:** #148 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
-`Icon` gains twelve entries in `PATHS`, copied from the Icons section of `design/source/style-3-foundations.html`, and a `size` prop (`16 | 18 | 20`, default 18) that sets `width` and `height`. The shared `strokeWidth` drops from 2.2 to 2 (Spec D1). Keys follow the existing camelCase (`cloudOff`), so `zoom-in` is `zoomIn`. `alert` and `done` copy the board's paths, which match `error` and `success` today, as separate entries so either can change alone (Spec D2). `values.ts` gains `ICONS`, the twelve names and board labels ("zoom in") in board order. The page fills the Icons section with the h2, the board's line of copy and a six-column grid of tiles in `--surface-2` with `--radius-control`, each an `Icon` over a caption.
+`Icon` gains twelve entries in `PATHS`, copied from the Icons section of `design/source/style-3-foundations.html`, and a `size` prop (`16 | 18 | 20 | 24`, default 18; D1) that sets `width` and `height`. The shared `strokeWidth` drops from 2.2 to 2 (Spec D1). Keys follow the existing camelCase (`cloudOff`), so `zoom-in` is `zoomIn`. `alert` and `done` copy the board's paths, which match `error` and `success` today, as separate entries so either can change alone (Spec D2). `values.ts` gains `ICONS`, the twelve names and board labels ("zoom in") in board order. The page fills the Icons section with the h2, the board's line of copy and a six-column grid of tiles in `--surface-2` with `--radius-control`, each an `Icon` over a caption.
 
 ## Decisions
 
 **D1 · Tile icon size** · Decides: Tech lead
+**Answer: C** (Tech lead)
 The board draws tile icons at 24px; the Spec allows 16, 18 or 20.
 
 - **A.** Tile CSS draws the svg at 24px; `Icon` keeps 16, 18 and 20.
@@ -21,6 +22,7 @@ The board draws tile icons at 24px; the Spec allows 16, 18 or 20.
 Recommended: A, because it matches the snapshot without widening the API that screens use.
 
 **D2 · Play is filled** · Decides: Tech lead
+**Answer: A** (Tech lead)
 The board's `play` is a filled triangle with no stroke; the Spec says every icon draws at stroke 2.
 
 - **A.** `play` fills in `currentColor` with no stroke; I reword the Spec's line to "every outline icon".
@@ -59,7 +61,7 @@ Recommended: A, because it matches the board, and a filled triangle reads as Pla
 | Acceptance check                                     | Proven by                                            |
 | ---------------------------------------------------- | ---------------------------------------------------- |
 | Twelve tiles with icons and names in board order     | `page.test.tsx`                                      |
-| Size 16, 18 or 20 sets the svg's width and height    | `Icon.test.tsx`, each size and the default           |
+| Size 16, 18, 20 or 24 sets the svg's width and height    | `Icon.test.tsx`, each size and the default           |
 | Each icon is `aria-hidden` and draws in currentColor | `Icon.test.tsx`, looping over all names              |
 | Error and warning draw at stroke 2                   | `Icon.test.tsx`                                      |
 | No ignore region; differences listed                 | `screens.json` diff; `design:check` report in the PR |

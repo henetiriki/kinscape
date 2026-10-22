@@ -83,6 +83,17 @@ it('has no button without an action, and tolerates having no owner', () => {
   fireEvent.keyDown(toast, { key: 'Escape' });
 });
 
+// NFR-05
+it('marks a placed toast for its phone position', () => {
+  render(
+    <Toast placed tone='success'>
+      Copied.
+    </Toast>
+  );
+
+  expect(screen.getByRole('status').hasAttribute('data-placed')).toBe(true);
+});
+
 it('presses an action that has no handlers', () => {
   render(
     <Toast action='Retry' tone='error'>

@@ -119,14 +119,15 @@ export const DateField = ({
             state={state}
             value={text}
           />
-          {problem && above && (
-            <div className={styles.callout} id={messageId} role='alert'>
-              <strong>{problem.message}</strong> The map still shows {shown}.
-              Press Esc to go back to it.
-            </div>
-          )}
+          {problem && above && <span aria-hidden className={styles.pointer} />}
         </span>
         {after}
+        {problem && above && (
+          <div className={styles.callout} id={messageId} role='alert'>
+            <strong>{problem.message}</strong> The map still shows {shown}.
+            Press Esc to go back to it.
+          </div>
+        )}
       </div>
       {problem && !above && (
         <Text id={messageId} role='alert' tone='error' variant='small'>

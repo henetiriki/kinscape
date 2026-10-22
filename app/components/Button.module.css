@@ -31,7 +31,13 @@
   color: var(--white);
 }
 
-.btnPrimary:is(:hover:not(:disabled), [data-state='hover']) {
+@media (hover: hover) {
+  .btnPrimary:hover:not(:disabled) {
+    background: var(--brand-hover);
+  }
+}
+
+.btnPrimary[data-state='hover']:not(:disabled) {
   background: var(--brand-hover);
 }
 
@@ -50,7 +56,14 @@
   color: var(--ink);
 }
 
-.btnSecondary:is(:hover:not(:disabled), [data-state='hover']) {
+@media (hover: hover) {
+  .btnSecondary:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--field-border);
+  }
+}
+
+.btnSecondary[data-state='hover']:not(:disabled) {
   background: var(--surface-2);
   border-color: var(--field-border);
 }

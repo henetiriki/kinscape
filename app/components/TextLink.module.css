@@ -11,7 +11,14 @@
   text-underline-offset: 3px;
 }
 
-.textLink:is(:hover, [data-state='hover']) {
+@media (hover: hover) {
+  .textLink:hover {
+    color: var(--brand-hover);
+    text-decoration-thickness: 2px;
+  }
+}
+
+.textLink[data-state='hover'] {
   color: var(--brand-hover);
   text-decoration-thickness: 2px;
 }

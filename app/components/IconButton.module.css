@@ -15,7 +15,13 @@
   width: var(--size-control);
 }
 
-.iconBtn:is(:hover:not(:disabled), [data-state='hover']) {
+@media (hover: hover) {
+  .iconBtn:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+}
+
+.iconBtn[data-state='hover']:not(:disabled) {
   background: var(--surface-2);
 }
 

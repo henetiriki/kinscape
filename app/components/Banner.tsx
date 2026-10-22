@@ -7,13 +7,19 @@ export const Banner = ({
   children,
   icon,
   onAction,
+  placed,
 }: {
   action: string;
   children: string;
   icon: IconName;
   onAction?: () => void;
+  /** Fix it at its phone position, under the search bar. */
+  placed?: boolean;
 }) => (
-  <div className={`${styles.shape} ${styles.banner}`} role='alert'>
+  <div
+    className={`${styles.shape} ${styles.banner}`}
+    data-placed={placed ? '' : undefined}
+    role='alert'>
     <Icon name={icon} />
     <span className={styles.message}>{children}</span>
     <button

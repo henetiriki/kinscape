@@ -21,43 +21,30 @@ The phone mocks keep it at 22px; browsers only zoom below 16px.
 
 - **A.** Keep 22px; the Spec's lines read "at least 16px".
 - **B.** 16px; the design check lists the difference.
-- **Other:** your own.
 
 **Answer: A** (@henetiriki)
-
-Recommended: A, because it matches the mocks.
 
 **D2 · The States board's forced hover on a touch screen** · Decides: Tech lead
 `[data-state='hover']` shares each `:hover` rule.
 
 - **A.** Split each rule; the forced state stays outside. About 70 more lines.
 - **B.** Move whole rules; on a touch screen the board's Hover column looks like Rest.
-- **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
-Recommended: A, because the phone States board must show all five states.
-
 **D3 · Desktop placement** · Decides: Tech lead
-Spec D1's reason says DM.6 places them on desktop; DM.6 D3 left them unplaced.
 
 - **A.** `placed` sets only the phone position; a map Spec places them on desktop.
 - **B.** `placed` also sets desktop's: banner top centre, toast above the dock.
-- **Other:** your own.
 
 **Answer: A** (@henetiriki)
-
-Recommended: A, because #104 changes the dock.
 
 **D4 · How the callout fits** · Decides: Tech lead
 
 - **A.** CSS: it spans the step buttons and field; with Play beside them it stops short of the right gutter.
 - **B.** JS measures the field and spans the gutters, as the mock does.
-- **Other:** your own.
 
 **Answer: A** (@henetiriki)
-
-Recommended: A, because it needs no script and holds in any layout.
 
 ## Files that change
 
@@ -92,6 +79,12 @@ Recommended: A, because it needs no script and holds in any layout.
 | Toast and banner placed     | e2e at 390: banner top 80, toast 164 from the bottom, both in 16–374        |
 | Board at 390                | Design check scores for `style-5-feedback-phone` in the PR                  |
 | Tests, e2e, build, coverage | Their output in the PR                                                      |
+
+## Deviations
+
+- The e2e tests are in a new `e2e/controls-phone.spec.ts`, not `design-kit.spec.ts`.
+- The callout moves into the field's row, so it spans it on desktop too; the pointer is its own element on the field.
+- The board's Toast and Banner stay unplaced; the e2e sets `data-placed` to measure the phone position.
 
 ## Flagged concerns
 

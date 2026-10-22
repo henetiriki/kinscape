@@ -22,9 +22,13 @@
 
 .chip::before {
   content: '';
-  /* Relative to the padding box, inside the 1px border. */
-  inset: calc((var(--size-chip) - var(--size-touch)) / 2 - 1px) -1px;
+  height: var(--size-touch);
+  left: 50%;
   position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  /* The padding box is inside the 1px border. */
+  width: max(calc(100% + 2px), var(--size-touch));
 }
 
 .chip[aria-pressed='true'] {
@@ -34,13 +38,27 @@
   font-weight: var(--type-chip-weight);
 }
 
-.chip:is(:hover:not(:disabled), [data-state='hover']) {
+@media (hover: hover) {
+  .chip:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--field-border);
+    color: var(--ink);
+  }
+
+  .chip[aria-pressed='true']:hover:not(:disabled) {
+    background: var(--brand-tint-hover);
+    border-color: var(--brand-hover);
+    color: var(--brand-hover);
+  }
+}
+
+.chip[data-state='hover']:not(:disabled) {
   background: var(--surface-2);
   border-color: var(--field-border);
   color: var(--ink);
 }
 
-.chip[aria-pressed='true']:is(:hover:not(:disabled), [data-state='hover']) {
+.chip[aria-pressed='true'][data-state='hover']:not(:disabled) {
   background: var(--brand-tint-hover);
   border-color: var(--brand-hover);
   color: var(--brand-hover);

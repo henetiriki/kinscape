@@ -27,8 +27,12 @@
 
 .segItem::before {
   content: '';
-  inset: calc((var(--size-chip) - var(--size-touch)) / 2) 0;
+  height: var(--size-touch);
+  left: 50%;
   position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(100%, var(--size-touch));
 }
 
 /* The radio fills its label so a click anywhere on it lands on the radio. */
@@ -47,9 +51,14 @@
   color: var(--ink);
 }
 
-.segItem:is(:hover:not(:has(:disabled)), [data-state='hover']):not(
-    :has(:checked)
-  ) {
+@media (hover: hover) {
+  .segItem:hover:not(:has(:disabled)):not(:has(:checked)) {
+    background: color-mix(in srgb, var(--white) 60%, transparent);
+    color: var(--ink);
+  }
+}
+
+.segItem[data-state='hover']:not(:has(:disabled)):not(:has(:checked)) {
   background: color-mix(in srgb, var(--white) 60%, transparent);
   color: var(--ink);
 }

@@ -18,10 +18,13 @@
   position: relative;
 }
 
-.box:not([data-mark], :focus-within):is(
-    :hover:not(:has(:disabled)),
-    [data-state='hover']
-  ) {
+@media (hover: hover) {
+  .box:not([data-mark], :focus-within):hover:not(:has(:disabled)) {
+    border-color: var(--ink-3);
+  }
+}
+
+.box:not([data-mark], :focus-within)[data-state='hover']:not(:has(:disabled)) {
   border-color: var(--ink-3);
 }
 

@@ -17,16 +17,16 @@
 
 ## Files that change
 
-| File                                                      | New / changed | What                                                   |
-| --------------------------------------------------------- | ------------- | ------------------------------------------------------ |
-| `app/design-kit/foundations/values.ts`                    | New           | Rows, labels, use lines                                |
-| `app/design-kit/foundations/page.tsx`, `page.module.css`  | New           | The board                                              |
-| `app/design-kit/foundations/__tests__/page.test.tsx`      | New           | Sections, counts, order; mocked tokens change the text |
-| `app/design-kit/foundations/__tests__/values.test.ts`     | New           | Each row's token exists                                |
-| `app/design-kit/boards.ts`                                | Changed       | Row 03, `label` on every row (D4)                      |
-| `design/screens.json`                                     | Changed       | `style-3-foundations`, 1440 × 1241 (D1), ignore Icons  |
-| `e2e/design-kit.spec.ts`                                  | Changed       | Row in `BOARD_LINKS`; bar widths, radii, shadows match |
-| `design/DESIGN.md`                                        | Changed       | Shape and depth links `/design-kit/foundations`        |
+| File                                                     | New / changed | What                                                   |
+| -------------------------------------------------------- | ------------- | ------------------------------------------------------ |
+| `app/design-kit/foundations/values.ts`                   | New           | Rows, labels, use lines                                |
+| `app/design-kit/foundations/page.tsx`, `page.module.css` | New           | The board                                              |
+| `app/design-kit/foundations/__tests__/page.test.tsx`     | New           | Sections, counts, order; mocked tokens change the text |
+| `app/design-kit/foundations/__tests__/values.test.ts`    | New           | Each row's token exists                                |
+| `app/design-kit/boards.ts`                               | Changed       | Row 03, `label` on every row (D4)                      |
+| `design/screens.json`                                    | Changed       | `style-3-foundations`, 1440 × 1241 (D1), ignore Icons  |
+| `e2e/design-kit.spec.ts`                                 | Changed       | Row in `BOARD_LINKS`; bar widths, radii, shadows match |
+| `design/DESIGN.md`                                       | Changed       | Shape and depth links `/design-kit/foundations`        |
 
 ## Order of work
 

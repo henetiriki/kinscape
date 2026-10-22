@@ -1,0 +1,48 @@
+/** The Foundations board's rows, in board order. Each is keyed by its token; the board reads the value. */
+export const SPACE = [
+  { step: '4', use: 'Icon to text, tight pairs' },
+  { step: '8', use: 'Inside controls, between chips' },
+  { step: '12', use: 'Icon gaps, row padding' },
+  { step: '16', use: 'Panel padding on phone' },
+  { step: '20', use: 'Panel and dock padding' },
+  { step: '24', use: 'Between floating elements' },
+  { step: '32', use: 'Between sections' },
+  { step: '40', use: 'Between page blocks' },
+  { step: '48', use: 'Sign-in form padding' },
+  { step: '64', use: 'Page padding on boards' },
+] as const;
+
+export const RADII = [
+  { name: 'small', use: 'Keyboard keys, checkboxes' },
+  { name: 'control', use: 'Buttons, fields, segments' },
+  { name: 'panel', use: 'Panels, dock, popups, dialogs' },
+  { name: 'sheet', use: 'Top of phone sheet' },
+  { name: 'full', use: 'Chips, Play, avatar, pins' },
+] as const;
+
+export const SHADOWS = [
+  { name: 'raised', title: 'Raised', use: 'Panels, dock, search, cards' },
+  { name: 'floating', title: 'Floating', use: 'Popups, menus' },
+  { name: 'modal', title: 'Modal', use: 'Dialogs, over a scrim' },
+] as const;
+
+export const MOTION = [
+  { name: 'press', title: 'Hover, press', use: 'Colour and border only' },
+  { name: 'popup', title: 'Popups, menus', use: 'Fade and 4px rise' },
+  {
+    name: 'sheet',
+    title: 'Phone sheet',
+    use: 'Slides; follows the finger while dragged',
+  },
+  {
+    name: 'changed-border',
+    title: 'Changed border',
+    use: 'MAP-11 highlight, then gone',
+  },
+] as const;
+
+export const MAP_DATE_CHANGE = {
+  title: 'Map date change',
+  use: 'Redraw at once. Never animate or show a loader (NFR-01)',
+  value: 'none',
+} as const;

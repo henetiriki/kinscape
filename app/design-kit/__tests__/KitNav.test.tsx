@@ -22,6 +22,7 @@ it('links each board in order', () => {
   ).toEqual([
     ['Typography and hierarchy', '/design-kit/type'],
     ['Colour', '/design-kit/colour'],
+    ['Spacing, shape, depth, icons, motion', '/design-kit/foundations'],
     ['Component states', '/design-kit/states'],
     ['Feedback and validation', '/design-kit/feedback'],
   ]);

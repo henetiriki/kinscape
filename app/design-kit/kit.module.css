@@ -65,3 +65,16 @@
   font-family: var(--font-mono);
   font-size: 13px;
 }
+
+/* A phone (Intent 104, D1): the 28px title and one-column notes */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .kitTitle {
+    font-size: 28px;
+    line-height: 32px;
+  }
+
+  .kitNotes {
+    gap: var(--space-32);
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

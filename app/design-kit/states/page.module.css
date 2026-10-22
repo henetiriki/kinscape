@@ -65,3 +65,38 @@
   gap: 10px;
   justify-self: start;
 }
+
+.kitStateLabel {
+  display: none;
+}
+
+/* A phone (Intent 104, D1): one column inside 16px gutters, each cell labelled with its state */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .kit {
+    gap: var(--space-32);
+    min-height: 0;
+    padding: var(--space-24) var(--size-gutter-phone);
+  }
+
+  .kitColumns {
+    display: none;
+  }
+
+  .kitRow {
+    gap: var(--space-8);
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-16) 0;
+  }
+
+  .kitCell {
+    gap: var(--space-12);
+  }
+
+  .kitStateLabel {
+    color: var(--ink-3);
+    display: inline;
+    flex: none;
+    font-size: var(--type-caption-size);
+    width: 64px;
+  }
+}

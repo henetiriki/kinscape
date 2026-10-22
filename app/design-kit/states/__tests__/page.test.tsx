@@ -16,6 +16,22 @@ it('shows every control in five states', () => {
   expect(matrix.querySelectorAll('.kitRow:not(.kitColumns)')).toHaveLength(9);
 });
 
+it('labels every cell with its state for a phone', () => {
+  render(<StatesKit />);
+
+  const rows = document.querySelectorAll('.kitRow:not(.kitColumns)');
+
+  expect(rows).toHaveLength(9);
+
+  for (const row of rows) {
+    expect(
+      [...row.querySelectorAll('.kitStateLabel')].map(
+        label => label.textContent
+      )
+    ).toEqual(['Default', 'Hover', 'Focus (keyboard)', 'Pressed', 'Disabled']);
+  }
+});
+
 it('keeps the pointer-state cells out of the tab order and the accessibility tree', () => {
   render(<StatesKit />);
 

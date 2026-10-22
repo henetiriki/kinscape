@@ -23,8 +23,6 @@ The snapshots change seven lines: "(28 on phone)" on H1; "Focus" for "Focus (key
 
 **Answer: A** (@henetiriki).
 
-Recommended: A, because the Spec keeps the copy and the date sheet isn't built yet.
-
 **D2 · Where the shared phone rules live** · Decides: Tech lead
 The 28px title and one-column notes change classes in `kit.module.css` that every board uses.
 

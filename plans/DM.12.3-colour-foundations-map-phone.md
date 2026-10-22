@@ -2,7 +2,7 @@
 
 - **Spec:** #154 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ The Spec says "the preview at left (104px), then the number". The snapshot puts 
 - **B.** Follow the Spec; the design check lists the difference.
 - **Other:** your own.
 
-Recommended: A, because the design check compares against the snapshot.
+**Answer: A** (@henetiriki).
 
 **D2 · The Colour phone entry's height** · Decides: Tech lead
 The Spec gives `style-2-colour-phone` 390 × 3613; `style-2-colour-phone.jpg` is 390 × 4552. The other two match their mockups.
@@ -30,7 +30,7 @@ The Spec gives `style-2-colour-phone` 390 × 3613; `style-2-colour-phone.jpg` is
 - **B.** 390 × 3613; the check compares the top 79% of the board.
 - **Other:** your own.
 
-Recommended: A, because then the whole board is checked.
+**Answer: A** (@henetiriki).
 
 ## Files that change
 

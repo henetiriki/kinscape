@@ -121,15 +121,14 @@ jobs:
           cache: npm
           node-version-file: .nvmrc
       - run: npm ci
-      # Keep the browser between runs: a cache hit skips the download, not the system packages.
+      # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
+      # see the system prompt below). The cache keeps the download between runs.
       - id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
-      # The agent can't install it: npx isn't in its allowed tools.
-      - run: npx playwright install --with-deps chromium
 
       - name: Run Claude Code
         id: claude
@@ -144,5 +143,12 @@ jobs:
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
           # Model choice comes from the gate job; the allowed tools limit Claude to npm scripts,
-          # git, and GitHub PR and issue commands.
-          claude_args: '${{ needs.gate.outputs.model_args }} --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"'
+          # git, and GitHub PR and issue commands. A denied part denies the whole command, so the
+          # system prompt tells Claude to run each command alone and pass a PR body inline.
+          claude_args: >-
+            ${{ needs.gate.outputs.model_args }}
+            --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"
+            --append-system-prompt "Run each allowed command on its own: no pipes, &&, heredocs or temp files.
+            Pass a PR body inline: gh pr edit <n> --body '<text>' (single quotes, so backticks stay literal).
+            If npm run e2e or npm run design:check fails because Chromium is missing,
+            run npm run e2e:install, then retry."

@@ -12,6 +12,12 @@ export const BOARDS = [
     slug: 'states',
     title: 'Component states',
   },
+  {
+    line: 'The map date field, its errors and how it checks what you type.',
+    number: '05',
+    slug: 'feedback',
+    title: 'Feedback and validation',
+  },
 ] as const;
 
 export type Board = (typeof BOARDS)[number];

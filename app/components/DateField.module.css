@@ -1,0 +1,59 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-4);
+}
+
+/* What the callout points at. */
+.anchor {
+  position: relative;
+}
+
+/* A text link that is a button: the fix for a date that is out of range. */
+.fix {
+  composes: textLink from './TextLink.module.css';
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* Opens over the field and points down at it; 64px left of the field puts the point at its middle. */
+.callout {
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-control);
+  bottom: calc(100% + var(--space-12));
+  box-shadow: var(--shadow-raised);
+  box-sizing: border-box;
+  color: var(--error);
+  font-size: var(--type-small-size);
+  left: -64px;
+  line-height: 1.4;
+  padding: 10px var(--space-12);
+  position: absolute;
+  width: 330px;
+}
+
+.callout::after {
+  background: var(--error-bg);
+  border-bottom: 1px solid var(--error-border);
+  border-right: 1px solid var(--error-border);
+  bottom: -7px;
+  content: '';
+  height: 12px;
+  left: 152px;
+  position: absolute;
+  transform: rotate(45deg);
+  width: 12px;
+}
+
+.callout strong {
+  font-weight: 600;
+}

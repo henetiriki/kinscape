@@ -1,0 +1,100 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* The box draws the border, so the icon can sit inside it; focus is a 2px brand border instead of the ring. */
+.box {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  height: var(--size-field);
+  padding: 0 var(--space-12);
+  position: relative;
+}
+
+.box:not([data-mark], :focus-within):is(
+    :hover:not(:has(:disabled)),
+    [data-state='hover']
+  ) {
+  border-color: var(--ink-3);
+}
+
+.box:is(:focus-within, [data-state='focus']) {
+  border: 2px solid var(--brand);
+  padding: 0 11px;
+}
+
+.box[data-mark] {
+  border: 2px solid var(--error-border);
+  padding: 0 11px;
+}
+
+.box[data-mark='warning'] {
+  border-color: var(--warning-border);
+}
+
+.box:has(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-disabled);
+}
+
+.box > svg {
+  flex: none;
+}
+
+.box[data-mark='error'] > svg {
+  color: var(--error-border);
+}
+
+.box[data-mark='warning'] > svg {
+  color: var(--warning-border);
+}
+
+.input {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  flex: 1;
+  font-family: var(--type-body-l-font);
+  font-size: var(--type-body-l-size);
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+}
+
+.input::placeholder {
+  color: var(--ink-3);
+}
+
+.input:disabled {
+  cursor: default;
+}
+
+.date {
+  width: var(--size-date-field);
+}
+
+.date .input {
+  font-family: var(--type-mono-l-font);
+  font-size: var(--type-mono-l-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-l-weight);
+  text-align: center;
+}
+
+/* Room for the icon, so a long date stays centred in what is left. */
+.date[data-mark] .input {
+  padding-right: var(--space-24);
+}
+
+.date > svg {
+  position: absolute;
+  right: 9px;
+}

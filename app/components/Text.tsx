@@ -33,14 +33,23 @@ const DEFAULT_TAG: Record<Other, Tag> = {
   title: 'span',
 };
 
+export type Tone = 'error' | 'info' | 'warning';
+
 type Props = {
   /** For `as='label'`. */
   htmlFor?: string;
+  /** The colour of a message; the style's own colour without it. */
+  tone?: Tone;
 } & ({ as: Tag; variant: Heading } | { as?: Tag; variant: Other }) &
   Omit<ComponentProps<'span'>, 'className' | 'ref'>;
 
-export const Text = ({ as, variant, ...rest }: Props) => {
+export const Text = ({ as, tone, variant, ...rest }: Props) => {
   const Element = as ?? DEFAULT_TAG[variant as Other];
 
-  return <Element className={styles[variant]} {...rest} />;
+  return (
+    <Element
+      className={tone ? `${styles[variant]} ${styles[tone]}` : styles[variant]}
+      {...rest}
+    />
+  );
 };

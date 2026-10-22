@@ -97,7 +97,8 @@ jobs:
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
-      - run: npm run e2e:install
+      # One retry, 3.5 minutes each: an apt or CDN stall can hang the install.
+      - run: timeout 210 npm run e2e:install || timeout 210 npm run e2e:install
       # Keep Next.js's build cache. A source change still restores the last build for the same lockfile.
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:

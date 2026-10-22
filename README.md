@@ -7,10 +7,6 @@ A time-travelling landscape for your kin. Drag the slider from 1652 to today and
 
 > Borders move. Places don't.
 
-[![The KinScape sign-in screen: a map of South Africa with historical borders and a Pin on Farm Rietfontein](design/sign-in-desktop.jpg)](design/DESIGN.md)
-
-_Design mockup, not the built app._
-
 ## Where things are
 
 - **[How we work](docs/how-we-work.md)**: the workflow, labels and who does what. Start here.
@@ -19,5 +15,9 @@ _Design mockup, not the built app._
 - **[Repository settings](docs/repo-settings.md)**: GitHub settings, kept as code.
 - **[Issues](https://github.com/henetiriki/kinscape/issues)**: Intents, Specs and bugs.
 - **[AGENTS.md](AGENTS.md)**: what AI agents read at the start of every session (`CLAUDE.md` imports it).
+
+[![The KinScape sign-in screen: a map of South Africa with historical borders and a Pin on Farm Rietfontein](design/sign-in-desktop.jpg)](design/DESIGN.md)
+
+_Design mockup, not the built app._
 
 Built as an experiment in the [AI-native SDLC](https://claude.com/resources/articles/the-ai-native-sdlc-playbook).

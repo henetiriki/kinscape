@@ -52,7 +52,7 @@ The whole board scores 2.24%, over the 0.5% threshold.
 
 Recommended: A, as DM.6 D5.
 
-**Answer: A**
+**Answer: A.** Scored 5.66%; fix deferred to a later Spec.
 
 ## Files that change
 

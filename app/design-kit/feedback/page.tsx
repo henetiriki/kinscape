@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 
+import { Alert } from '@/app/components/Alert';
+import { Banner } from '@/app/components/Banner';
 import { Text } from '@/app/components/Text';
 import { TextField } from '@/app/components/TextField';
+import { Toast } from '@/app/components/Toast';
 import { toDay } from '@/lib/boundaries/model.mts';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
@@ -87,7 +90,32 @@ const BEHAVIOUR = [
   'In the dock the message opens above the field, pointing at it, so it isn’t cut off at the bottom of the screen.',
 ];
 
-// The board also draws Alerts, Toasts and banners: they are built with their own Spec, and the design check ignores their place.
+const ALERTS = [
+  {
+    role: 'alert',
+    text: "The map couldn't load borders for this date.",
+    title: 'Error',
+    tone: 'error',
+  },
+  {
+    role: 'status',
+    text: 'Borders before 1910 are approximate in this area.',
+    title: 'Warning',
+    tone: 'warning',
+  },
+  {
+    role: 'status',
+    text: 'Export saved: kinscape-2026-10-21.zip',
+    title: 'Success',
+    tone: 'success',
+  },
+  {
+    role: 'status',
+    text: 'Names on the map are the names used on the map date.',
+    title: 'Info',
+    tone: 'info',
+  },
+] as const;
 const FeedbackKit = () => (
   <main className={styles.kit}>
     <header className={`${kit.kitHeader} ${styles.header}`}>
@@ -166,6 +194,57 @@ const FeedbackKit = () => (
           use an error alert above the fields instead, as on the sign-in screen.
         </p>
       </div>
+      <div className={styles.column}>
+        <h2 className={styles.h2}>Alerts</h2>
+        <div className={styles.alerts}>
+          {ALERTS.map(({ role, text, title, tone }) => (
+            <div className={styles.alertRow} key={tone}>
+              <Alert title={title} tone={tone}>
+                {text}
+              </Alert>
+              <code className={styles.role}>role={role}</code>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section className={styles.section}>
+      <h2 className={styles.h2}>Toasts and banners</h2>
+      <div className={styles.toasts}>
+        <div className={styles.example}>
+          <Toast tone='success'>Jurisdiction chain copied.</Toast>
+          <span className={styles.note}>
+            Success toast. Bottom centre, above the dock. Gone after 4 seconds;
+            nothing to click.
+          </span>
+        </div>
+        <div className={styles.example}>
+          <Toast action='Try again' tone='error'>
+            The export didn&apos;t finish.
+          </Toast>
+          <span className={styles.note}>
+            Error toast. Stays until dismissed or retried.
+          </span>
+        </div>
+        <div className={styles.example}>
+          <Banner action='Retry' icon='cloudOff'>
+            Terrain didn&apos;t load.
+          </Banner>
+          <span className={styles.note}>
+            Banner. Top centre, for app-wide problems that don&apos;t stop the
+            map.
+          </span>
+        </div>
+      </div>
+      <p className={`${styles.lede} ${styles.where}`}>
+        Where it goes: a field&apos;s problem goes next to the field; a problem
+        with one part of the screen goes in an alert in that part; the result of
+        something you just did goes in a toast; something wrong with the app
+        goes in a banner. Errors and failures use{' '}
+        <code>role=&quot;alert&quot;</code>; everything else uses{' '}
+        <code>role=&quot;status&quot;</code>.
+      </p>
     </section>
   </main>
 );

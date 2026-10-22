@@ -17,7 +17,9 @@ it('shows the eight cases, each a live field with its message', () => {
     'Warning',
     'Info',
   ];
-  const cards = titles.map(title => screen.getByText(title).parentElement!);
+  const cards = titles.map(
+    title => screen.getAllByText(title)[0].parentElement!
+  );
 
   expect(
     cards.map(
@@ -103,6 +105,26 @@ it('steps the dock by a day', () => {
   fireEvent.click(within(dock).getByRole('button', { name: 'Back one day' }));
   fireEvent.click(within(dock).getByRole('button', { name: 'Back one day' }));
   expect(field.value).toBe('1901-02-27');
+});
+
+it('shows four alerts with their roles, two toasts and the banner', () => {
+  render(<FeedbackKit />);
+
+  const alerts = screen.getByRole('heading', {
+    name: 'Alerts',
+  }).nextElementSibling!;
+
+  expect(alerts.textContent).toContain('role=alert');
+  expect(alerts.textContent?.match(/role=status/g)).toHaveLength(3);
+  expect(
+    screen.getByText('Jurisdiction chain copied.').closest('[role=status]')
+  ).toBeTruthy();
+  expect(
+    screen.getByText("The export didn't finish.").closest('[role=alert]')
+  ).toBeTruthy();
+  expect(
+    screen.getByText("Terrain didn't load.").closest('[role=alert]')
+  ).toBeTruthy();
 });
 
 it('lists the behaviour and shows the form fields', () => {

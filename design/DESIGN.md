@@ -159,7 +159,7 @@ Errors use `role="alert"`; everything else uses `role="status"`.
 
 ### Map date field
 
-Built in `/design-kit/feedback` (the Alerts and Toasts on that board are not built yet). The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
+Built in `/design-kit/feedback`. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
 
 1. Check on Enter or when focus leaves, never while typing.
 2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field, set `aria-invalid`, and link the message with `aria-describedby`.

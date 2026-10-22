@@ -24,10 +24,6 @@
     },
     {
       "height": 1862,
-      "ignore": [
-        { "height": 345, "width": 624, "x": 744, "y": 1215 },
-        { "height": 240, "width": 1296, "x": 72, "y": 1590 }
-      ],
       "mode": "report",
       "name": "style-5-feedback",
       "route": "/design-kit/feedback",

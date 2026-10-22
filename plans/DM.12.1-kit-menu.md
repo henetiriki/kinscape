@@ -46,8 +46,8 @@ Recommended: A, because a screen reader then says where you are on every kit pag
 
 ## Risks
 
-- An open sheet would survive a client-side navigation; the row's `onClick` closes it, and e2e proves it.
-- Tab from the page top now meets the title first; the nav e2e test changes to expect it.
+- An open sheet would survive a client-side navigation; the row's `onClick` closes it.
+- Tab from the page top meets the title first.
 
 ## Proof
 
@@ -64,8 +64,8 @@ Recommended: A, because a screen reader then says where you are on every kit pag
 
 ## Deviations
 
-- The title link is a small client component, `KitTitle` in `KitNav.tsx`, so D1 A can mark it current from the pathname.
-- The e2e Tab test counts only visible controls, as the closed sheet's links are in the page but hidden.
+- The title link is a client component, `KitTitle` in `KitNav.tsx`, to read the pathname for D1 A.
+- The e2e Tab test counts only visible controls.
 
 ## Flagged concerns
 

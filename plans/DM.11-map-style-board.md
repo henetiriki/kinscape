@@ -2,7 +2,7 @@
 
 - **Spec:** #151 (Intent #111)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,6 +18,8 @@ The board says `interpolate zoom 4→1, 9→3`; `map.river` and the map say zoom
 - **Other:** your own.
 
 Recommended: A, because the board is meant to show what the tokens hold.
+
+**Answer (@henetiriki): A.**
 
 ## Files that change
 

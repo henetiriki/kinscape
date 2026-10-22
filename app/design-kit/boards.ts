@@ -38,6 +38,13 @@ export const BOARDS = [
     slug: 'feedback',
     title: 'Feedback and validation',
   },
+  {
+    label: 'Map style',
+    line: 'The 20 MapLibre layers, bottom to top, read from the map tokens.',
+    number: '06',
+    slug: 'map-style',
+    title: 'MapLibre layer stack',
+  },
 ] as const;
 
 export type Board = (typeof BOARDS)[number];

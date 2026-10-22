@@ -5,7 +5,8 @@ import { notFound } from 'next/navigation';
 
 import { Text } from '@/app/components/Text';
 
-import { KitNav } from './KitNav';
+import { KitMenu } from './KitMenu';
+import { KitNav, KitTitle } from './KitNav';
 import styles from './layout.module.css';
 
 export const metadata: Metadata = {
@@ -26,9 +27,10 @@ const DesignKitLayout = ({ children }: { children: ReactNode }) => {
       <header className={styles.banner}>
         {/* A paragraph, so each page's own title is its top heading. */}
         <Text as='p' variant='h3'>
-          KinScape design kit
+          <KitTitle />
         </Text>
         <KitNav />
+        <KitMenu />
       </header>
       {children}
     </>

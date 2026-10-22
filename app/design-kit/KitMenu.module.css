@@ -1,0 +1,60 @@
+/* The phone menu: a "Boards" button and the rows in its sheet */
+
+/* Shown only on a phone: below 640px wide or below 500px tall (Intent 104, D1). */
+.menu {
+  display: none;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .menu {
+    display: block;
+  }
+}
+
+.buttonContent {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--space-8);
+}
+
+.all > a {
+  align-items: center;
+  display: inline-flex;
+  min-height: var(--size-touch);
+  padding: 0 var(--space-8);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  composes: ring from '../components/focus.module.css';
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--brand);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  font-size: var(--type-control-size);
+  font-weight: 500;
+  min-height: var(--size-touch);
+  padding: var(--space-12) var(--space-8);
+  text-decoration: none;
+}
+
+.row > :first-child {
+  color: var(--ink-3);
+}
+
+.row[aria-current='page'] {
+  background: var(--brand-tint);
+}
+
+.rowTitle {
+  line-height: 24px;
+}

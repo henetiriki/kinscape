@@ -42,6 +42,14 @@ it('shows the banner, then the page outside production', () => {
 
   expect(banner.textContent).toContain('KinScape design kit');
   expect(screen.getByRole('navigation', { name: 'Boards' })).toBeTruthy();
+  expect(
+    screen
+      .getByRole('link', { name: 'KinScape design kit' })
+      .getAttribute('href')
+  ).toBe('/design-kit');
+  expect(
+    screen.getByRole('button', { name: 'Boards' }).getAttribute('aria-haspopup')
+  ).toBe('dialog');
   // The kit's name is not a heading: the page's title is the only h1.
   expect(screen.getAllByRole('heading')).toHaveLength(1);
   expect(

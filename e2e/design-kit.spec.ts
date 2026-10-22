@@ -19,7 +19,10 @@ test('Tab visits each enabled control with a 2px brand ring, and skips the disab
     .locator(REAL_CONTROLS)
     .evaluateAll(
       nodes =>
-        nodes.filter(node => !(node as HTMLButtonElement).disabled).length
+        nodes.filter(
+          node =>
+            !(node as HTMLButtonElement).disabled && node.checkVisibility()
+        ).length
     );
 
   // The two radios of the Segmented control share one tab stop.
@@ -267,6 +270,10 @@ for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
     }
 
     await page.locator('body').click({ position: { x: 1, y: 1 } });
+    await page.keyboard.press('Tab');
+    await expect(
+      page.getByRole('link', { exact: true, name: 'KinScape design kit' })
+    ).toBeFocused();
 
     for (const { label } of BOARD_LINKS) {
       await page.keyboard.press('Tab');
@@ -276,6 +283,144 @@ for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
     }
   });
 }
+
+// NFR-06: the kit's bar on a desktop and on a phone, and the sheet a phone opens.
+test.describe('the kit bar', () => {
+  const title = (page: Page) =>
+    page.getByRole('link', { exact: true, name: 'KinScape design kit' });
+  const nav = (page: Page) => page.getByRole('navigation', { name: 'Boards' });
+  const boards = (page: Page) => page.getByRole('button', { name: 'Boards' });
+
+  test('on a desktop is 61px, with the title link and no underline on the current board', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto('/design-kit/type');
+
+    expect((await page.getByRole('banner').boundingBox())!.height).toBeCloseTo(
+      61,
+      0
+    );
+    await expect(title(page)).toHaveAttribute('href', '/design-kit');
+    await expect(nav(page).getByRole('link', { name: 'Typography' })).toHaveCSS(
+      'text-decoration-line',
+      'none'
+    );
+    await expect(boards(page)).toBeHidden();
+  });
+
+  for (const [name, size] of [
+    ['390 wide', { height: 844, width: 390 }],
+    ['800 by 450', { height: 450, width: 800 }],
+  ] as const) {
+    test(`at ${name} shows the title and a 44px button, no links`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(size);
+      await page.goto('/design-kit');
+
+      await expect(title(page)).toBeVisible();
+      await expect(nav(page)).toBeHidden();
+      expect((await boards(page).boundingBox())!.height).toBe(44);
+      await expect(boards(page)).toHaveAttribute('aria-haspopup', 'dialog');
+    });
+  }
+
+  test.describe('the sheet', () => {
+    test.use({ viewport: { height: 844, width: 390 } });
+
+    const sheet = (page: Page) => page.getByRole('dialog', { name: 'Boards' });
+    const open = async (page: Page, path = '/design-kit/type') => {
+      await page.goto(path);
+      await boards(page).click();
+      await expect(sheet(page)).toBeVisible();
+    };
+
+    test('has six rows, the current one tinted, and All boards', async ({
+      page,
+    }) => {
+      await open(page);
+
+      const links = sheet(page).getByRole('link');
+
+      await expect(links).toHaveCount(7);
+      await expect(links.nth(6)).toHaveText('All boards');
+      await expect(links.first()).toHaveAttribute('aria-current', 'page');
+      await expect(links.first()).toHaveCSS(
+        'background-color',
+        'rgb(230, 238, 228)'
+      );
+      await expect(links.nth(1)).not.toHaveAttribute('aria-current');
+    });
+
+    test('keeps Tab inside it', async ({ page }) => {
+      await open(page);
+
+      for (let i = 0; i < 10; i++) {
+        await page.keyboard.press('Tab');
+        // Past the last control focus leaves the page for the browser, so the body holds it.
+        expect(
+          await page.evaluate(
+            () =>
+              document.activeElement === document.body ||
+              document.activeElement?.closest('dialog') !== null
+          )
+        ).toBe(true);
+      }
+    });
+
+    test('closes on Esc, and focus returns to the button', async ({ page }) => {
+      await open(page);
+      await page.keyboard.press('Escape');
+      await expect(sheet(page)).toBeHidden();
+      await expect(boards(page)).toBeFocused();
+    });
+
+    test('closes on Close, and focus returns to the button', async ({
+      page,
+    }) => {
+      await open(page);
+      await sheet(page).getByRole('button', { name: 'Close' }).click();
+      await expect(sheet(page)).toBeHidden();
+      await expect(boards(page)).toBeFocused();
+    });
+
+    test('closes on the scrim', async ({ page }) => {
+      await open(page);
+      await page.mouse.click(195, 20);
+      await expect(sheet(page)).toBeHidden();
+    });
+
+    test('closes on choosing a board', async ({ page }) => {
+      await open(page);
+      await sheet(page)
+        .getByRole('link', { name: /Colour/ })
+        .click();
+      await expect(page).toHaveURL('/design-kit/colour');
+      await expect(sheet(page)).toBeHidden();
+    });
+
+    test('marks All boards on the index', async ({ page }) => {
+      await open(page, '/design-kit');
+      await expect(
+        sheet(page).getByRole('link', { name: 'All boards' })
+      ).toHaveAttribute('aria-current', 'page');
+    });
+
+    test('slides in over 240ms, unless reduced motion is on', async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await open(page);
+      await expect(sheet(page)).toHaveCSS('animation-duration', '0.24s');
+
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await sheet(page).getByRole('button', { name: 'Close' }).click();
+      await boards(page).click();
+      await expect(sheet(page)).toHaveCSS('animation-name', 'none');
+    });
+  });
+});
 
 // MAP-03, NFR-06: the map date field on the feedback board, in the first (Default) card.
 test.describe('the map date field', () => {

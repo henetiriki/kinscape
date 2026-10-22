@@ -1,12 +1,22 @@
 /* The banner above every design kit page: the kit's name and the board nav */
 
 .banner {
-  align-items: baseline;
+  align-items: center;
   border-bottom: 1px solid var(--line);
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-8) var(--space-32);
+  min-height: 61px;
   padding: var(--space-16) var(--space-64);
+}
+
+/* The kit's name is a link to the index that reads as a title. */
+.title {
+  composes: ring from '../components/focus.module.css';
+  border-radius: var(--radius-link);
+  color: var(--ink);
+  text-decoration: none;
 }
 
 .nav ul {
@@ -23,4 +33,17 @@
   color: var(--ink);
   font-weight: 600;
   text-decoration: none;
+}
+
+/* A phone (Intent 104, D1): the title and the "Boards" button replace the links. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .banner {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: var(--space-8) var(--space-16);
+  }
+
+  .nav {
+    display: none;
+  }
 }

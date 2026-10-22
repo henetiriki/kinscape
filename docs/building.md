@@ -8,7 +8,7 @@ A Bug takes the same path; below, "Spec" means both. The branch is `spec/<id>-<s
 
 1. The tech lead sets `status: ready-for-agent`. Claude plans in GitHub Actions and opens a draft pull request with the plan ([plan rules](../plans/README.md)). Comment `@claude` there to change it.
 2. The tech lead's approving review starts the build. Answer the plan's open [decisions](how-we-work.md#decisions) in that review.
-3. Claude records them, builds, rewrites the PR description and marks it ready. A draft runs only the format and words checks; marking it ready runs them all.
+3. Claude records them (and rewords the Spec if one changes its text), builds, rewrites the PR description and marks it ready. A draft runs only the format and words checks; marking it ready runs them all.
 4. Claude reviews each ready pull request, except Dependabot's and those that change only `docs/` or `plans/`. Ask `@claude` on any issue or pull request to act on a comment.
 
 ### If a run stalls

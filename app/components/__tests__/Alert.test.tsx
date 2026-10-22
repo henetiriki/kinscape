@@ -43,6 +43,17 @@ it('announces a banner at once and runs its one action', () => {
   expect(calls).toEqual(['retry']);
 });
 
+// NFR-05
+it('marks a placed banner for its phone position', () => {
+  render(
+    <Banner action='Retry' icon='cloudOff' placed>
+      Terrain didn&apos;t load.
+    </Banner>
+  );
+
+  expect(screen.getByRole('alert').hasAttribute('data-placed')).toBe(true);
+});
+
 it('draws a decorative icon in both forms', () => {
   const { container } = render(
     <>

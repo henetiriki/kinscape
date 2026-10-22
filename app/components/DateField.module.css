@@ -8,6 +8,7 @@
   align-items: center;
   display: flex;
   gap: var(--space-4);
+  position: relative;
 }
 
 /* What the callout points at. */
@@ -24,7 +25,7 @@
   padding: 0;
 }
 
-/* Opens over the field and points down at it; 64px left of the field puts the point at its middle. */
+/* Opens over the row, from the first control to the last; the pointer sits on the field. */
 .callout {
   background: var(--error-bg);
   border: 1px solid var(--error-border);
@@ -34,24 +35,25 @@
   box-sizing: border-box;
   color: var(--error);
   font-size: var(--type-small-size);
-  left: -64px;
+  left: 0;
   line-height: 1.4;
   padding: 10px var(--space-12);
   position: absolute;
-  width: 330px;
+  right: 0;
 }
 
-.callout::after {
+.pointer {
   background: var(--error-bg);
   border-bottom: 1px solid var(--error-border);
   border-right: 1px solid var(--error-border);
-  bottom: -7px;
-  content: '';
+  bottom: calc(100% + 5px);
   height: 12px;
-  left: 152px;
+  left: 50%;
   position: absolute;
-  transform: rotate(45deg);
+  rotate: 45deg;
+  translate: -50%;
   width: 12px;
+  z-index: 1;
 }
 
 .callout strong {

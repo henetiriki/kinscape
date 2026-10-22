@@ -17,12 +17,15 @@ export const Toast = ({
   children,
   onAction,
   onDismiss,
+  placed,
   tone,
 }: {
   action?: string;
   children: string;
   onAction?: () => void;
   onDismiss?: () => void;
+  /** Fix it at its phone position, above the date sheet. */
+  placed?: boolean;
   tone: 'error' | 'success';
 }) => {
   useEffect(() => {
@@ -36,6 +39,7 @@ export const Toast = ({
   return (
     <div
       className={`${styles.shape} ${styles.toast} ${styles[tone]}`}
+      data-placed={placed ? '' : undefined}
       onKeyDown={event => {
         if (event.key === 'Escape') onDismiss?.();
       }}

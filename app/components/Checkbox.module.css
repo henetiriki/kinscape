@@ -45,12 +45,24 @@
   opacity: 1;
 }
 
-.checkbox:is(:hover:not(:disabled), [data-state='hover']) {
+@media (hover: hover) {
+  .checkbox:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--brand);
+  }
+
+  .checkbox:checked:hover:not(:disabled) {
+    background: var(--brand-hover);
+    border-color: var(--brand-hover);
+  }
+}
+
+.checkbox[data-state='hover']:not(:disabled) {
   background: var(--surface-2);
   border-color: var(--brand);
 }
 
-.checkbox:checked:is(:hover:not(:disabled), [data-state='hover']) {
+.checkbox:checked[data-state='hover']:not(:disabled) {
   background: var(--brand-hover);
   border-color: var(--brand-hover);
 }

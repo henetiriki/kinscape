@@ -80,6 +80,31 @@
   }
 }
 
+/* On a phone a placed Toast or Banner is fixed inside the gutters, at the offsets of the phone designs. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .shape[data-placed] {
+    left: var(--space-16);
+    position: fixed;
+    right: var(--space-16);
+  }
+
+  .banner[data-placed] {
+    top: 80px;
+  }
+
+  .toast[data-placed] {
+    bottom: 164px;
+  }
+
+  .shape:has(.action) {
+    height: 60px;
+  }
+
+  .action {
+    height: var(--size-touch);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .toast {
     animation: rise var(--motion-popup);

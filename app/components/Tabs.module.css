@@ -21,8 +21,12 @@
 
 .tab::before {
   content: '';
-  inset: calc((var(--size-control-s) - var(--size-touch)) / 2) 0;
+  height: var(--size-touch);
+  left: 50%;
   position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(100%, var(--size-touch));
 }
 
 .tab[aria-selected='true'] {
@@ -30,7 +34,14 @@
   color: var(--brand-hover);
 }
 
-.tab[aria-selected='false']:is(:hover:not(:disabled), [data-state='hover']) {
+@media (hover: hover) {
+  .tab[aria-selected='false']:hover:not(:disabled) {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+}
+
+.tab[aria-selected='false'][data-state='hover']:not(:disabled) {
   background: var(--surface-2);
   color: var(--ink);
 }

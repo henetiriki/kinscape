@@ -86,6 +86,27 @@
       "width": 390
     },
     {
+      "height": 4552,
+      "mode": "report",
+      "name": "style-2-colour-phone",
+      "route": "/design-kit/colour",
+      "width": 390
+    },
+    {
+      "height": 2449,
+      "mode": "report",
+      "name": "style-3-foundations-phone",
+      "route": "/design-kit/foundations",
+      "width": 390
+    },
+    {
+      "height": 4872,
+      "mode": "report",
+      "name": "map-style-phone",
+      "route": "/design-kit/map-style",
+      "width": 390
+    },
+    {
       "height": 2067,
       "mode": "report",
       "name": "map-style",

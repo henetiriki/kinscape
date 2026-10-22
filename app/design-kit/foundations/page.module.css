@@ -111,3 +111,49 @@
   min-height: 44px;
   padding: 6px 0;
 }
+
+/* A phone (Intent 104, D1): one column; icons four across; motion value beside its title */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .kit {
+    min-height: 0;
+    padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
+  }
+
+  .columns {
+    gap: var(--space-40);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .spaceRow {
+    column-gap: var(--space-12);
+    grid-template-columns: 48px minmax(0, 1fr);
+    row-gap: var(--space-4);
+  }
+
+  .spaceRow > :nth-child(3) {
+    grid-column: 2;
+  }
+
+  .radii {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sea {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-16);
+  }
+
+  .icons {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .motionRow {
+    gap: var(--space-4) var(--space-12);
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: var(--space-12) 0;
+  }
+
+  .motionRow > :nth-child(3) {
+    grid-column: 1 / -1;
+  }
+}

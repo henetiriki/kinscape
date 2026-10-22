@@ -16,8 +16,8 @@ A time-travelling landscape for your kin. Drag the slider from 1652 to today and
 - **[Issues](https://github.com/henetiriki/kinscape/issues)**: Intents, Specs and bugs.
 - **[AGENTS.md](AGENTS.md)**: what AI agents read at the start of every session (`CLAUDE.md` imports it).
 
-[![The KinScape sign-in screen: a map of South Africa with historical borders and a Pin on Farm Rietfontein](design/sign-in-desktop.jpg)](design/DESIGN.md)
+**_Design mockup, not the built app._**
 
-_Design mockup, not the built app._
+[![The KinScape sign-in screen: a map of South Africa with historical borders and a Pin on Farm Rietfontein](design/sign-in-desktop.jpg)](design/DESIGN.md)
 
 Built as an experiment in the [AI-native SDLC](https://claude.com/resources/articles/the-ai-native-sdlc-playbook).

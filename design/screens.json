@@ -65,6 +65,27 @@
       "width": 1440
     },
     {
+      "height": 1800,
+      "mode": "report",
+      "name": "style-1-type-phone",
+      "route": "/design-kit/type",
+      "width": 390
+    },
+    {
+      "height": 2400,
+      "mode": "report",
+      "name": "style-4-states-phone",
+      "route": "/design-kit/states",
+      "width": 390
+    },
+    {
+      "height": 3000,
+      "mode": "report",
+      "name": "style-5-feedback-phone",
+      "route": "/design-kit/feedback",
+      "width": 390
+    },
+    {
       "height": 2067,
       "mode": "report",
       "name": "map-style",

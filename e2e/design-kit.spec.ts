@@ -708,3 +708,88 @@ test.describe('the map style board', () => {
     );
   });
 });
+
+// NFR-05, NFR-06: the Type, States and Feedback boards on a phone, in portrait and landscape.
+test.describe('the boards on a phone', () => {
+  for (const [name, size] of [
+    ['390 wide', { height: 844, width: 390 }],
+    ['800 by 450', { height: 450, width: 800 }],
+  ] as const) {
+    for (const board of ['type', 'states', 'feedback']) {
+      test(`${board} at ${name} does not scroll sideways`, async ({ page }) => {
+        await page.setViewportSize(size);
+        await page.goto(`/design-kit/${board}`);
+
+        const widths = await page.evaluate(() => ({
+          client: document.documentElement.clientWidth,
+          scroll: document.documentElement.scrollWidth,
+        }));
+
+        expect(widths.scroll).toBe(widths.client);
+      });
+    }
+  }
+
+  test.describe('at 390 wide', () => {
+    test.use({ viewport: { height: 844, width: 390 } });
+
+    for (const board of ['type', 'states', 'feedback']) {
+      test(`${board} is one column inside 16px gutters`, async ({ page }) => {
+        await page.goto(`/design-kit/${board}`);
+
+        const outside = await page.locator('main *').evaluateAll(
+          nodes =>
+            nodes
+              .filter(node => node.checkVisibility())
+              .map(node => node.getBoundingClientRect())
+              .filter(
+                box => box.width > 0 && (box.left < 16 || box.right > 374)
+              ).length
+        );
+
+        expect(outside).toBe(0);
+      });
+    }
+
+    test('type rows share one left edge and the heading row is hidden', async ({
+      page,
+    }) => {
+      await page.goto('/design-kit/type');
+      await expect(
+        page.getByRole('columnheader', { name: 'Style' })
+      ).toBeHidden();
+
+      const lefts = await page
+        .getByRole('row')
+        .evaluateAll(rows =>
+          rows
+            .filter(row => row.checkVisibility())
+            .map(row => row.getBoundingClientRect().left)
+        );
+
+      expect(new Set(lefts).size).toBe(1);
+    });
+
+    test('states labels each cell and keeps 44px hit areas', async ({
+      page,
+    }) => {
+      await page.goto('/design-kit/states');
+      await expect(matrix(page).getByText('Pressed').last()).toBeVisible();
+
+      const live = matrix(page).locator(':not([inert] *)');
+
+      for (const control of [
+        live.getByRole('button', { name: 'Sign in' }).first(),
+        live.getByRole('button', { name: 'Copy chain' }).first(),
+        live.getByRole('button', { name: 'Zoom in' }).first(),
+        live.getByRole('checkbox', { name: 'Checkbox off' }).first(),
+        live.getByRole('button', { name: 'Birth' }).first(),
+        live.locator('label', { hasText: 'Month' }).first(),
+        live.getByRole('tab', { name: 'Filters' }).first(),
+      ]) {
+        expect(await hitsControl(control, 0, 21)).toBe(true);
+        expect(await hitsControl(control, 0, -21)).toBe(true);
+      }
+    });
+  });
+});

@@ -215,12 +215,15 @@ const StatesKit = () => (
             <span>{name}</span>
             <span className={styles.kitHint}>{hint}</span>
           </span>
-          {COLUMNS.map(({ column }) => (
+          {COLUMNS.map(({ column, title }) => (
             // Hover, Focus and Pressed are looks, not controls: inert keeps them out of the tab order and the accessibility tree.
             <span
               className={styles.kitCell}
               inert={stateOf(column) !== undefined}
               key={column}>
+              <span aria-hidden='true' className={styles.kitStateLabel}>
+                {title}
+              </span>
               {render?.(column)}
             </span>
           ))}

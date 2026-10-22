@@ -141,13 +141,34 @@ describe('MapView', () => {
       expect.any(Function)
     );
 
-    const [, apply] = maplibre.map.once.mock.calls[0];
+    // The first `load` listener marks the map loaded; the last applies the Map date.
+    const [, apply] = maplibre.map.once.mock.calls.findLast(
+      ([event]) => event === 'load'
+    )!;
 
     apply();
     expect(maplibre.map.setFilter).toHaveBeenCalledTimes(POLITY_LAYERS.length);
 
     unmount();
     expect(maplibre.map.off).toHaveBeenCalledWith('load', apply);
+  });
+
+  // MAP-04: setFilter makes isStyleLoaded() false until the tiles reload, and `load` never fires again.
+  it('applies a Map date change while tiles reload after the first load', () => {
+    maplibre.map.isStyleLoaded.mockReturnValue(false);
+
+    const { rerender } = render(<MapView mapDay={5} showPolities />);
+
+    for (const [event, onLoad] of maplibre.map.once.mock.calls) {
+      if (event === 'load') onLoad();
+    }
+
+    maplibre.map.setFilter.mockClear();
+    rerender(<MapView mapDay={9} showPolities />);
+
+    expect(maplibre.map.setFilter.mock.calls).toEqual(
+      POLITY_LAYERS.map(id => [id, polityFilters(9)[id]])
+    );
   });
 
   // NFR-01

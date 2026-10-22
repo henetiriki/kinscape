@@ -68,6 +68,8 @@ test('draws no Polities before 2009-04-03 and eleven after', async ({
   page,
 }) => {
   await page.goto('/');
+  // Without this the 0 below passes before the Polities have loaded.
+  await expect.poll(() => drawnPolities(page)).toBe(11);
   await page.getByRole('radio', { name: 'Day' }).click();
 
   const input = slider(page);

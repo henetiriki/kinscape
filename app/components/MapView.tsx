@@ -50,6 +50,8 @@ export const MapView = ({
   const map = useRef<MapLibreMap | null>(null);
   // The first style uses the values from the first render; later changes go through the effect below.
   const initial = useRef({ mapDay, showPolities });
+  // `load` fires once. After it, isStyleLoaded() is false while tiles reload, so it can't gate later changes.
+  const loaded = useRef(false);
 
   useEffect(() => {
     /* v8 ignore next -- React sets the ref before effects run; the guard only narrows the type */
@@ -68,6 +70,9 @@ export const MapView = ({
 
     created.addControl(new NavigationControl());
     created.addControl(new ScaleControl());
+    created.once('load', () => {
+      loaded.current = true;
+    });
     map.current = created;
 
     // Only builds made for the browser tests (NEXT_PUBLIC_E2E=1) expose the map.
@@ -104,7 +109,7 @@ export const MapView = ({
       }
     };
 
-    if (current.isStyleLoaded()) {
+    if (loaded.current || current.isStyleLoaded()) {
       apply();
 
       return;

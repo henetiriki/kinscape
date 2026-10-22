@@ -90,9 +90,8 @@ jobs:
           node-version-file: .nvmrc
       - run: npm ci
       # Install the test browser, but only on a build (a PR review), when Claude runs the
-      # end-to-end tests. Plan runs don't build. The agent can't install it itself: npx isn't
-      # in its allowed tools. The cache keeps the browser between runs: a hit skips the
-      # download, not the system packages.
+      # end-to-end tests. Plan runs don't build. The cache keeps the browser between runs:
+      # a hit skips the download, not the system packages.
       - id: playwright
         if: github.event_name == 'pull_request_review'
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -102,7 +101,7 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
       - if: github.event_name == 'pull_request_review'
-        run: npx playwright install --with-deps chromium
+        run: npm run e2e:install
       # Note the start time, so the last step can tell whether Claude commented during this run.
       - run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 

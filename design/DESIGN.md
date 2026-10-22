@@ -125,6 +125,8 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 
 ## Shape and depth
 
+Shown with spacing and motion at `/design-kit/foundations`.
+
 | Token   | Value                                                                                                                             |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Radius  | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                                         |

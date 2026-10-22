@@ -20,18 +20,19 @@ it('links each board in order', () => {
   expect(
     links().map(link => [link.textContent, link.getAttribute('href')])
   ).toEqual([
-    ['Typography and hierarchy', '/design-kit/type'],
+    ['Typography', '/design-kit/type'],
     ['Colour', '/design-kit/colour'],
+    ['Foundations', '/design-kit/foundations'],
     ['Component states', '/design-kit/states'],
-    ['Feedback and validation', '/design-kit/feedback'],
+    ['Feedback', '/design-kit/feedback'],
   ]);
   expect(links().some(link => link.hasAttribute('aria-current'))).toBe(false);
 });
 
 it.each([
-  ['/design-kit/type', 'Typography and hierarchy'],
+  ['/design-kit/type', 'Typography'],
   ['/design-kit/states', 'Component states'],
-  ['/design-kit/feedback', 'Feedback and validation'],
+  ['/design-kit/feedback', 'Feedback'],
 ])('on %s, marks only %s as the current page', (path, current) => {
   pathname.current = path;
   render(<KitNav />);

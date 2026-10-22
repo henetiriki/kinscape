@@ -206,10 +206,27 @@ test('colour swatches are filled with their tokens', async ({ page }) => {
 
 // NFR-06: the kit's index and nav.
 const BOARD_LINKS = [
-  { heading: 'Typography and hierarchy', path: '/design-kit/type' },
-  { heading: 'Colour', path: '/design-kit/colour' },
-  { heading: 'Component states', path: '/design-kit/states' },
-  { heading: 'Feedback and validation', path: '/design-kit/feedback' },
+  {
+    heading: 'Typography and hierarchy',
+    label: 'Typography',
+    path: '/design-kit/type',
+  },
+  { heading: 'Colour', label: 'Colour', path: '/design-kit/colour' },
+  {
+    heading: 'Spacing, shape, depth, icons, motion',
+    label: 'Foundations',
+    path: '/design-kit/foundations',
+  },
+  {
+    heading: 'Component states',
+    label: 'Component states',
+    path: '/design-kit/states',
+  },
+  {
+    heading: 'Feedback and validation',
+    label: 'Feedback',
+    path: '/design-kit/feedback',
+  },
 ];
 
 test('the index links to each board', async ({ page }) => {
@@ -234,8 +251,8 @@ for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
 
     const nav = page.getByRole('navigation', { name: 'Boards' });
 
-    for (const { heading, path: href } of BOARD_LINKS) {
-      const link = nav.getByRole('link', { exact: true, name: heading });
+    for (const { label, path: href } of BOARD_LINKS) {
+      const link = nav.getByRole('link', { exact: true, name: label });
 
       if (href === path) {
         await expect(link).toHaveAttribute('aria-current', 'page');
@@ -246,10 +263,10 @@ for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
 
     await page.locator('body').click({ position: { x: 1, y: 1 } });
 
-    for (const { heading } of BOARD_LINKS) {
+    for (const { label } of BOARD_LINKS) {
       await page.keyboard.press('Tab');
       await expect(
-        nav.getByRole('link', { exact: true, name: heading })
+        nav.getByRole('link', { exact: true, name: label })
       ).toBeFocused();
     }
   });
@@ -433,6 +450,43 @@ test('each map label has its token colour, size, weight and tracking', async ({
     'background-color',
     rgb(map.sea)
   );
+});
+
+// NFR-06: the Foundations board draws bars, radii and shadows from the tokens.
+test('the foundations board draws from the tokens', async ({ page }) => {
+  await page.goto('/design-kit/foundations');
+
+  const spacing = page.getByRole('region', { name: 'Spacing' });
+
+  for (const value of Object.values(tokens.space)) {
+    const bar = spacing
+      .getByText(value, { exact: true })
+      .locator('xpath=following-sibling::span[1]');
+
+    await expect(bar).toHaveCSS('width', `${Number.parseInt(value, 10) * 4}px`);
+  }
+
+  const corners = page.getByRole('region', { name: 'Corner radius' });
+
+  for (const name of ['small', 'control', 'panel', 'sheet', 'full'] as const) {
+    const label = name === 'full' ? name : tokens.radius[name];
+
+    await expect(
+      corners
+        .getByText(label, { exact: true })
+        .locator('xpath=preceding-sibling::span[1]')
+    ).toHaveCSS('border-top-left-radius', tokens.radius[name]);
+  }
+
+  const elevation = page.getByRole('region', { name: 'Elevation' });
+
+  for (const value of Object.values(tokens.shadow).slice(0, 3)) {
+    const card = elevation
+      .getByText(value, { exact: true })
+      .locator('xpath=..');
+
+    await expect(card).toHaveCSS('box-shadow', /rgba\(24, 33, 27/);
+  }
 });
 
 // NFR-06: the banner and the toasts on the feedback board.

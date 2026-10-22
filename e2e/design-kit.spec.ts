@@ -1,5 +1,8 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
+import tokens from '../design/tokens.json';
+import { resolveTokens } from '../lib/design/tokens.mts';
+
 // NFR-06: the design kit's controls, with the keyboard and by name.
 
 const matrix = (page: Page) =>
@@ -367,6 +370,48 @@ test('each type sample has its style tokens', async ({ page }) => {
   for (const { actual, expected } of samples) {
     expect(actual).toEqual(expected);
   }
+});
+
+// NFR-06: each map label sample computes to its map tokens.
+test('each map label has its token colour, size, weight and tracking', async ({
+  page,
+}) => {
+  const { map } = resolveTokens(tokens);
+  const rgb = (hex: string) =>
+    `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`;
+  const SAMPLES = [
+    ['ORANGE FREE STATE', 'polity-label', '600'],
+    ['contested · Orange River Colony', 'contested-label', '400'],
+    ['Kimberley', 'place-label', '500'],
+    ['Vaal', 'river-label', '400'],
+    ['BECHUANALAND PROTECTORATE', 'context-label', '400'],
+    ['INDIAN OCEAN', 'water-label', '400'],
+  ] as const;
+
+  await page.goto('/design-kit/type');
+  const panel = page.locator('[class*="mapLabels"]');
+
+  for (const [text, key, weight] of SAMPLES) {
+    const token = map[key];
+    const tracking =
+      'tracking' in token
+        ? Math.round(token.tracking * token.size * 100) / 100
+        : 0;
+    const sample = panel.getByText(text, { exact: true });
+
+    await expect(sample).toHaveCSS('color', rgb(token.colour));
+    await expect(sample).toHaveCSS('font-size', `${token.size}px`);
+    await expect(sample).toHaveCSS('font-weight', weight);
+    await expect(sample).toHaveCSS(
+      'letter-spacing',
+      tracking === 0 ? 'normal' : `${tracking}px`
+    );
+  }
+
+  await expect(panel.getByText('INDIAN OCEAN')).toHaveCSS(
+    'background-color',
+    rgb(map.sea)
+  );
 });
 
 // NFR-06: the banner and the toasts on the feedback board.

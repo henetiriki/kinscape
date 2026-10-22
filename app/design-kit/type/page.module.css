@@ -60,7 +60,29 @@
   line-height: 1.5;
 }
 
-/* The Map labels column stays empty; it keeps its width so Rules stays in place. */
 .mapLabels {
-  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: var(--space-24);
+  border-radius: var(--radius-panel);
+}
+
+.note {
+  color: var(--ink-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.polity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chip {
+  align-self: flex-start;
+  border-radius: 6px;
+  padding: 6px 10px;
 }

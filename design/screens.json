@@ -9,7 +9,6 @@
     },
     {
       "height": 1851,
-      "ignore": [{ "height": 300, "width": 632, "x": 72, "y": 1446 }],
       "mode": "report",
       "name": "style-1-type",
       "route": "/design-kit/type",

@@ -14,6 +14,9 @@ it('lists each board with its link and line', () => {
 
   const rows = screen.getAllByRole('listitem');
 
+  // Five rows for nine boards, so the sixth starts the second column
+  expect(screen.getByRole('list').style.getPropertyValue('--rows')).toBe('5');
+
   expect(rows).toHaveLength(BOARDS.length);
   BOARDS.forEach(({ eyebrow, line, slug, title }, i) => {
     const row = within(rows[i]);

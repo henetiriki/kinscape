@@ -165,6 +165,7 @@ test.describe('hover', () => {
     const rest = await background(button);
 
     await button.hover();
-    expect(await background(button)).not.toBe(rest);
+    // The tint fades in over the button's transition.
+    await expect.poll(() => background(button)).not.toBe(rest);
   });
 });

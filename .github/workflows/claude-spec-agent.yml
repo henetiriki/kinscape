@@ -63,6 +63,8 @@ env:
     Don't write outside the repo (no `/tmp`).
     Pass PR and issue bodies as `--body-file - <<'EOF' … EOF`, never inline `--body`.
     Run commands in the foreground, don't start subagents, and never end your turn to wait: the run ends when your turn does.
+    Run `npm test` and `npm run e2e` in the foreground, one command per call, with a Bash `timeout` of 600000.
+    Never use Monitor or wait loops (`sleep`, `until`, `while pgrep`): they match their own command line and never end.
     If a command is denied, name it in your comment.
 
 jobs:
@@ -80,6 +82,8 @@ jobs:
         contains(github.event.issue.labels.*.name, 'type: chore')) &&
       github.actor != 'henetiriki-bot'
     concurrency: thread-${{ github.event.issue.number }}
+    # A stuck agent stops here; the longest build so far took 17 minutes.
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     env:
       # The issue or PR that gets a fallback comment if the agent leaves none.
@@ -152,7 +156,7 @@ jobs:
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
           # The allowed tools let Claude edit files and run npm scripts, git, and GitHub commands.
-          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)" --disallowed-tools "Agent"'
+          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)" --disallowed-tools "Agent,Monitor"'
 
       # The Actions log can stop at an image read and lose the final result; the full output survives here.
       - name: Upload Claude's output
@@ -223,6 +227,7 @@ jobs:
         startsWith(github.event.pull_request.head.ref, 'chore/C9'))
     # Shared with claude.yml, so a plan revision finishes before the build starts.
     concurrency: thread-${{ github.event.pull_request.number }}
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     env:
       THREAD: ${{ github.event.pull_request.number }}

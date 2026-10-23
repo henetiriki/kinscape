@@ -59,7 +59,8 @@ env:
     Read several files with `cat a b c` or Read, not `for` loops.
     You start in the repo root; don't `cd`.
     Use `npm run lint -- --fix`, `npm run format`, `npm run typecheck`, `npm run e2e -- <file> -g "<name>"`
-    and `npm test -- <path>`, not `npx`, `node -e`, `python3` or `bash -n`.
+    and `npm test -- --coverage.enabled=false <path>`, not `npx`, `node -e`, `python3` or `bash -n`.
+    Don't write outside the repo (no `/tmp`).
     Pass PR and issue bodies as `--body-file - <<'EOF' … EOF`, never inline `--body`.
     Run commands in the foreground and never end your turn to wait.
     If a command is denied, name it in your comment.
@@ -231,7 +232,7 @@ jobs:
         (`--comments` can't be combined with `--json`).
         Answers to the plan's open decisions are in the review body and the PR comments,
         as `D<n>: <option>` (older plans: free-form). Record the approval and the answers in the approval commit with
-        `npm run plan-approve -- <plan> ${{ github.event.review.user.login }} D1=A …`.
+        `npm run plan-approve -- <plan> ${{ github.event.review.user.login }} D1=A "D2=other: <text>" …`.
         If this is a Chore plan PR, hand it back as plans/README.md rule 4 says instead of building where it applies.
         If a decision is still unanswered, comment asking for it and stop without building.
         While iterating, run only the affected test file; run the full `npm test` and `npm run e2e` once, before pushing.

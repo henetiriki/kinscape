@@ -5,7 +5,7 @@
 
 ## Approach
 
-The rules both prompts share move to one workflow-level `RULES` env var; the shared `Run Claude Code` step passes `${{ env.PROMPT }}` then `${{ env.RULES }}`. `RULES` holds the `--body-file` rule (replacing inline `--body`), the four new rules, and the foreground and denied-command lines both prompts now repeat. Each job's `PROMPT` keeps only its own lines, with the build's first command naming the PR number. A new `if: always()` step after `Run Claude Code` uploads the execution output with the SHA-pinned `upload-artifact` that `ci.yml` uses, 14-day retention. The hook reads `tool_input.file_path` with `jq` and skips paths outside `$CLAUDE_PROJECT_DIR`. It runs `prettier --write --ignore-unknown` and, for lint-staged's extensions, `eslint --fix --no-warn-ignored`, from `node_modules/.bin`.
+The rules both prompts share move to one workflow-level `RULES` env var, which `Run Claude Code` appends to each job's `PROMPT`. `RULES` holds the `--body-file` rule, the four new rules, and the foreground and denied-command lines both prompts repeat. A new `if: always()` step uploads the execution output with the SHA-pinned `upload-artifact` that `ci.yml` uses, 14-day retention. The hook reads `tool_input.file_path` with `jq` and skips paths outside `$CLAUDE_PROJECT_DIR`. It runs `eslint --fix --no-warn-ignored` for lint-staged's extensions, then `prettier --write --ignore-unknown`, from `node_modules/.bin`.
 
 ## Decisions
 
@@ -32,16 +32,22 @@ The rules both prompts share move to one workflow-level `RULES` env var; the sha
 
 ## Order of work
 
-1. Branch `chore/C203-agent-prompts` from `origin/main`; commit this plan: `plan(C203): approved by @henetiriki`.
+1. Commit this plan: `plan(C203): approved by @henetiriki`.
 2. Workflow, then settings.
 3. Run the checks under _Proof_; open the PR.
 
 ## Proof
 
-| Acceptance check                            | Proven by                                   |
-| ------------------------------------------- | ------------------------------------------- |
-| Unformatted `.md`, mis-ordered `.tsx` fixed | Write each in a session; hook JSON piped in |
-| Path outside the repo skipped               | Hook JSON with a `/tmp` path                |
-| Workflow valid                              | `actionlint`, if installed; the PR's checks |
-| No denials, artifact listed, `##` kept      | The next plan and build runs after merge    |
-| Lint, format, words                         | Their output                                |
+| Acceptance check                            | Proven by                                     |
+| ------------------------------------------- | --------------------------------------------- |
+| Unformatted `.md`, mis-ordered `.tsx` fixed | Write each in a session; hook JSON piped in   |
+| Path outside the repo skipped               | Hook JSON with a `/tmp` path                  |
+| Workflow valid                              | `actionlint`, if installed; the PR's checks   |
+| Targeted test run passes                    | `npm test -- --coverage.enabled=false <file>` |
+| Resolved prompts read correctly             | The parsed workflow YAML                      |
+| No denials, artifact listed, `##` kept      | The next plan and build runs after merge      |
+| Lint, format, words                         | Their output                                  |
+
+## Deviations
+
+- `eslint --fix` runs before `prettier`, so the file ends formatted; targeted tests need `--coverage.enabled=false`; `RULES` bans writes outside the repo.

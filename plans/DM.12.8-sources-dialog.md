@@ -2,7 +2,7 @@
 
 - **Spec:** #210 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06, NFR-08
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -41,7 +41,7 @@ Spec D2 builds a `Link` because none existed, but `app/components/TextLink.tsx` 
 - **B.** Build a separate `Link`, as Spec D2 reads, and add a sample on board 04 that the design doesn't draw.
 - **Other:** your own.
 
-Recommended: A, because two components for one look would drift apart.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -2,7 +2,7 @@ name: Design agent shots: HTML sources -> JPG snapshots
 
 # Renders every design snapshot (design/*.jpg) in the Playwright image that the design check
 # runs in, and commits the JPGs that changed to the branch it was run on. Run it by hand from the
-# Actions tab (or `gh workflow run design-shots.yml --ref <branch>`) after editing a snapshot,
+# Actions tab (or `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a snapshot,
 # or when the design check fails on text edges. Nobody renders snapshots locally.
 #
 # The commit is pushed with the bot's token, so CI runs on it. A push never starts this workflow,

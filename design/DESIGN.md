@@ -53,7 +53,7 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 `npm run design:check` renders each screen in `screens.json` beside its snapshot, ignoring the map, and writes the differences to `test-results/design/`. A `report` screen only lists them; change its `mode` to `blocking` once it matches, so CI fails above the threshold.
 
-Each JPG is rendered from its HTML snapshot in `source/`, which holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing a snapshot, run `npm run design:shots -- <name>…` naming the ones you changed. Chromium draws text differently per OS, so don't render the rest.
+Each JPG is rendered from its HTML snapshot in `source/`, which holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing a snapshot, push the branch and run the **Design shots** workflow on it (Actions tab, or `gh workflow run design-shots.yml --ref <branch>`). It renders every JPG in the image the design check runs in and commits those that changed. Never render JPGs locally: Chromium draws text differently per OS, so a JPG from another machine fails the check on text edges.
 
 ## Brand
 

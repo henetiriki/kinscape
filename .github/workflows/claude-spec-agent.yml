@@ -1,7 +1,7 @@
 name: 'Claude: Spec Agent - Plan/Build'
 
 # The title shown for each run in the Actions tab. It names the path the run took:
-#   "Plan: <title>"  - a Spec was marked ready for the agent, so Claude drafts a plan
+#   "Plan: <title>"  - a Spec, Bug or Chore was marked ready for the agent, so Claude drafts a plan
 #   "Build: <title>" - the tech lead approved a draft plan PR, so Claude builds it
 #   "Skipped: <title>" - neither happened, so nothing runs
 # This repeats the `if:` of the `plan` and `build` jobs (run-name cannot see job results):
@@ -12,7 +12,8 @@ run-name: >-
     github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
     (contains(github.event.issue.labels.*.name, 'type: spec') ||
-      contains(github.event.issue.labels.*.name, 'type: bug')) &&
+      contains(github.event.issue.labels.*.name, 'type: bug') ||
+      contains(github.event.issue.labels.*.name, 'type: chore')) &&
     github.actor != 'henetiriki-bot' &&
     format('Plan: {0}', github.event.issue.title) ||
     github.event_name == 'pull_request_review' &&
@@ -21,12 +22,21 @@ run-name: >-
     github.event.pull_request.draft &&
     github.event.pull_request.user.login == 'henetiriki-bot' &&
     (startsWith(github.event.pull_request.head.ref, 'spec/') ||
-      startsWith(github.event.pull_request.head.ref, 'bug/')) &&
+      startsWith(github.event.pull_request.head.ref, 'bug/') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C1') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C2') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C3') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C4') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C5') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C6') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C7') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C8') ||
+      startsWith(github.event.pull_request.head.ref, 'chore/C9')) &&
     format('Build: {0}', github.event.pull_request.title) ||
     format('Skipped: {0}', github.event.issue.title || github.event.pull_request.title)
   }}
 
-# Two stages (plans/README.md): a ready-for-agent Spec gets a draft plan PR;
+# Two stages (plans/README.md): a ready-for-agent Spec, Bug or Chore gets a draft plan PR;
 # the tech lead's approving review on that PR starts the build.
 # `@claude` comments on the plan PR are handled by claude.yml.
 
@@ -53,7 +63,8 @@ jobs:
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
       (contains(github.event.issue.labels.*.name, 'type: spec') ||
-        contains(github.event.issue.labels.*.name, 'type: bug')) &&
+        contains(github.event.issue.labels.*.name, 'type: bug') ||
+        contains(github.event.issue.labels.*.name, 'type: chore')) &&
       github.actor != 'henetiriki-bot'
     concurrency: thread-${{ github.event.issue.number }}
     runs-on: ubuntu-latest
@@ -61,9 +72,11 @@ jobs:
       # The issue or PR that gets a fallback comment if the agent leaves none.
       THREAD: ${{ github.event.issue.number }}
       PROMPT: >-
-        Pick up Spec or Bug #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        Pick up Spec, Bug or Chore #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
         A Spec's id is on the Spec (`M1.4`) and its branch is spec/<id>-<slug>.
         A Bug's id is B${{ github.event.issue.number }} and its branch is bug/B${{ github.event.issue.number }}-<slug>.
+        A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
+        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back as plans/README.md rule 4 says.
         Write each open choice as a decision in the format in docs/how-we-work.md.
         Push before you stop, then comment on the Spec with a link to the plan PR.
         If you're blocked, comment on the Spec saying why,
@@ -169,7 +182,7 @@ jobs:
   # that Claude's bot opened from a branch starting with `spec/` (a plan PR). Claude then
   # builds what the plan describes and comments on the PR with the result.
   build:
-    # The bot opens chore PRs too: only a draft on a spec/ or bug/ branch is a plan PR.
+    # The bot opens quick-chore PRs too: only a draft on a spec/, bug/ or chore/C<n> branch is a plan PR.
     if: |
       github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
@@ -177,7 +190,16 @@ jobs:
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == 'henetiriki-bot' &&
       (startsWith(github.event.pull_request.head.ref, 'spec/') ||
-        startsWith(github.event.pull_request.head.ref, 'bug/'))
+        startsWith(github.event.pull_request.head.ref, 'bug/') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C1') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C2') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C3') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C4') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C5') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C6') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C7') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C8') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C9'))
     # Shared with claude.yml, so a plan revision finishes before the build starts.
     concurrency: thread-${{ github.event.pull_request.number }}
     runs-on: ubuntu-latest
@@ -188,6 +210,7 @@ jobs:
         Answers to the plan's open decisions are in the review body and the PR comments,
         as `D<n>: <option>` (older plans: free-form). Record each under its decision
         in the plan in the approval commit.
+        If this is a Chore plan PR, hand it back as plans/README.md rule 4 says instead of building where it applies.
         If a decision is still unanswered, comment asking for it and stop without building.
         Push before you stop. If you built, set the PR title and body to describe the work as it would merge now (plans/README.md rule 3).
         Then comment on the PR saying what you did or what blocked you.

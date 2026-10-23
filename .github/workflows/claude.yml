@@ -16,7 +16,16 @@ run-name: >-
       github.event.review.state == 'approved' &&
       github.event.pull_request.draft &&
       (startsWith(github.event.pull_request.head.ref, 'spec/') ||
-        startsWith(github.event.pull_request.head.ref, 'bug/'))) &&
+        startsWith(github.event.pull_request.head.ref, 'bug/') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C1') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C2') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C3') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C4') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C5') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C6') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C7') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C8') ||
+        startsWith(github.event.pull_request.head.ref, 'chore/C9'))) &&
     contains(
       github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
       github.event_name == 'pull_request_review' && github.event.review.body ||
@@ -46,7 +55,16 @@ jobs:
         github.event.review.state == 'approved' &&
         github.event.pull_request.draft &&
         (startsWith(github.event.pull_request.head.ref, 'spec/') ||
-          startsWith(github.event.pull_request.head.ref, 'bug/'))) &&
+          startsWith(github.event.pull_request.head.ref, 'bug/') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C1') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C2') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C3') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C4') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C5') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C6') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C7') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C8') ||
+          startsWith(github.event.pull_request.head.ref, 'chore/C9'))) &&
       contains(
         github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
         github.event_name == 'pull_request_review' && github.event.review.body ||

@@ -8,12 +8,12 @@ A Bug takes the same path; below, "Spec" means both. The branch is `spec/<id>-<s
 
 1. The tech lead sets `status: ready-for-agent`. Claude plans in GitHub Actions and opens a draft pull request with the plan ([plan rules](../plans/README.md)). Comment `@claude` there to change it.
 2. The tech lead's approving review starts the build. Answer the plan's open [decisions](how-we-work.md#decisions) in that review.
-3. Claude records them (and rewords the Spec if one changes its text), builds, rewrites the PR description and marks it ready. A draft runs only the format and words checks; marking it ready runs them all.
-4. Claude reviews each ready pull request, except Dependabot's and those that change only `docs/` or `plans/`. Ask `@claude` on any issue or pull request to act on a comment.
+3. Claude records them (and rewords the Spec if one changes its text), builds, rewrites the PR description and marks it ready. A draft runs only the format and words checks.
+4. Claude reviews each ready pull request, except Dependabot's and those that change only `docs/` or `plans/`. Ask `@claude` to act on a comment.
 
 ### If a run stalls
 
-A plan run that ends without a comment gets a safety-net comment linking the run, and the Spec becomes `status: blocked`. Check the run and branch, then remove `blocked` and set `ready-for-agent` again. A stalled build: re-run it from the Actions tab.
+A plan run that ends without a comment gets a safety-net comment linking the run, and the Spec becomes `status: blocked`. Check the run, then swap `blocked` for `ready-for-agent`. A stalled build: re-run it from the Actions tab.
 
 ## Styles
 
@@ -21,7 +21,10 @@ A component's CSS goes in a `*.module.css` beside it, with camelCase class names
 
 ## Chores
 
-Tooling, CI, docs, process and settings need no issue. Claude plans in plan mode and the tech lead accepts it; the PR body says what changed and why. A chore filed as an issue commits its plan ([rule 4](../plans/README.md)). Open a `chore:` PR from a branch off `origin/main`.
+Tooling, CI, docs, process and settings.
+
+- **Quick, no issue:** Claude plans in plan mode, the tech lead accepts; the PR body says what changed and why. Open a `chore:` PR from a branch off `origin/main`.
+- **Filed as a Chore issue:** the tech lead sets `status: ready-for-agent` and the Spec Agent follows the Specs path above on `chore/C<n>-<slug>`, handing back what it can't build ([rule 4](../plans/README.md)).
 
 ## Merging
 

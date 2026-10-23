@@ -10,19 +10,20 @@ GitHub settings live outside git, so we keep them **as code** instead:
 
 ## What's set and why
 
-| Setting                                  | Value                                                   | Why                                                                                       |
-| ---------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Merge methods                            | Squash only                                             | One commit on `main` per PR; linear history                                               |
-| Squash commit message                    | PR title + commit messages                              | Keeps each PR's `plan(…): approved by @…` line in `main`'s history                        |
-| Delete branch on merge                   | On                                                      | No stale branches                                                                         |
-| Suggest updating PR branches, auto-merge | On                                                      | Branches stay current; nothing auto-merges ([Dependencies](dependencies.md))              |
-| Wiki, Projects, Discussions              | Off                                                     | Fewer places for the PO to look. Work lives in Issues                                     |
-| Ruleset _Protect main_                   | No deletion, no force push, linear history, PR required | `main` only changes through a reviewed PR                                                 |
-| Required approvals                       | 1, stale approvals dismissed, conversations resolved    | One approval from the PO or the tech lead is enough for now                               |
-| Bypass                                   | Repository admin, **via PR only**                       | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged |
-| Required status checks                   | lint, format, test, e2e, boundaries, words, Codecov     | Nothing merges with a red check. Names match the CI job names and Codecov's statuses      |
-| Dependabot alerts and security fixes     | On                                                      | Free on private repos                                                                     |
-| Actions token                            | Read-only; can't approve PRs                            | Least privilege; an agent's workflow can't approve its own PR                             |
+| Setting                                  | Value                                                   | Why                                                                                                   |
+| ---------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Merge methods                            | Squash only                                             | One commit on `main` per PR; linear history                                                           |
+| Squash commit message                    | PR title + commit messages                              | Keeps each PR's `plan(…): approved by @…` line in `main`'s history                                    |
+| Delete branch on merge                   | On                                                      | No stale branches                                                                                     |
+| Suggest updating PR branches, auto-merge | On                                                      | Branches stay current; nothing auto-merges ([Dependencies](dependencies.md))                          |
+| Wiki, Projects, Discussions              | Off                                                     | Fewer places for the PO to look. Work lives in Issues                                                 |
+| Ruleset _Protect main_                   | No deletion, no force push, linear history, PR required | `main` only changes through a reviewed PR                                                             |
+| Required approvals                       | 1, stale approvals dismissed, conversations resolved    | One approval from the PO or the tech lead is enough for now                                           |
+| Code-owner review                        | Required, for the paths in `.github/CODEOWNERS`         | A PO approval alone can't merge a change to agent-sensitive paths. The tech lead's bypass still works |
+| Bypass                                   | Repository admin, **via PR only**                       | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged             |
+| Required status checks                   | lint, format, test, e2e, boundaries, words, Codecov     | Nothing merges with a red check. Names match the CI job names and Codecov's statuses                  |
+| Dependabot alerts and security fixes     | On                                                      | Free on private repos                                                                                 |
+| Actions token                            | Read-only; can't approve PRs                            | Least privilege; an agent's workflow can't approve its own PR                                         |
 
 ## Vercel
 

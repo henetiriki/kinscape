@@ -2,7 +2,7 @@
 
 - **Spec:** #186 (Intent #111)
 - **Requirement IDs:** NFR-06, NFR-05, EXP-04, MAP-05
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The Spec says the padding differs; board 08, `map-desktop` and `map-phone-layers
 - **B.** Different values, chosen at build time.
 - **Other:** your own.
 
-Recommended: A, because no snapshot draws a difference.
+**Answer: A** (@henetiriki)
 
 **D2 · The uncertain-date swatch's white stroke** · Decides: Tech lead
 
@@ -32,7 +32,7 @@ The board draws 1.5; the map's pin halo is `map.pin.halo-width` (2).
 - **B.** 1.5 as drawn, a constant in the CSS.
 - **Other:** your own.
 
-Recommended: A, because Spec D3 has the Legend follow the map; 0.5px barely moves the design check.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -1,0 +1,3320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape style guide — Surfaces and overlays (phone)</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 390px; box-sizing: border-box; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+      <header
+        style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 16px; border-bottom: 1px solid #E2E5DD; background: #FFFFFF">
+        <a
+          href="design-kit-phone.html"
+          style="display: inline-flex; align-items: center; min-height: 44px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; color: #18211B; text-decoration: none; border-radius: 2px">
+          KinScape design kit
+        </a>
+        <a
+          href="design-kit-menu-phone.html"
+          aria-haspopup="dialog"
+          style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; font-weight: 600; text-decoration: none">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+          Boards
+        </a>
+      </header>
+
+      <main
+        style="display: flex; flex-direction: column; gap: 40px; padding: 32px 16px 48px">
+        <header style="display: flex; flex-direction: column; gap: 8px">
+          <span
+            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+            Style guide · 07
+          </span>
+          <h1
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 28px; line-height: 32px; letter-spacing: -0.015em">
+            Surfaces and overlays
+          </h1>
+          <p
+            style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
+            The cards, dialogs, sheets, menu, popup and callout that sit above
+            the map, from the panel up to the modal dialog.
+          </p>
+        </header>
+
+        <section
+          aria-label="Surface"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Surface
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              Everything that sits above the map is a white surface at one of
+              four levels. The higher it sits, the more it interrupts.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; gap: 24px; flex-direction: column">
+                  <div
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Raised
+                    </span>
+                    <span
+                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                      Panel, date dock, search bar, notice cards, map controls,
+                      layers button
+                    </span>
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 11px; line-height: 16px; color: #2E3A33">
+                      shadow.raised
+                    </span>
+                  </div>
+                  <div
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Floating
+                    </span>
+                    <span
+                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                      Jurisdiction popup, account menu, toasts
+                    </span>
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 11px; line-height: 16px; color: #2E3A33">
+                      shadow.floating
+                    </span>
+                  </div>
+                  <div
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3)">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Modal
+                    </span>
+                    <span
+                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                      Dialog, over the scrim
+                    </span>
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 11px; line-height: 16px; color: #2E3A33">
+                      shadow.modal
+                    </span>
+                  </div>
+                  <div
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16)">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Sheet
+                    </span>
+                    <span
+                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                      Phone bottom sheets (top corners 18)
+                    </span>
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 11px; line-height: 16px; color: #2E3A33">
+                      shadow.sheet
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Each level on the map colour. All are white with radius 12;
+                sheets round only the top corners, 18.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Surface measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Fill
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  white
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.surface
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Radius
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  12 · phone sheets 18 on top
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  radius.panel · radius.sheet
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Raised
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  panels, dock, search bar, notice cards, map controls
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  shadow.raised
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Floating
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  popups and menus
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  shadow.floating
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Modal
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  dialogs, with the scrim behind
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  shadow.modal · colour.scrim
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Sheet
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  phone sheets
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  shadow.sheet
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Off the scale
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Desktop avatar 0 4 14 / 0.16 · phone search pill and layers
+                  button 0 6 20 / 0.14 (map-phone) · banner 0 6 20 / 0.2 · date
+                  callout 0 6 20 / 0.12
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  <span style="font-style: italic; color: #4A544C">
+                    no token
+                  </span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Contrast
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Shadows separate surfaces but carry no meaning. Text on white
+                  passes 4.5:1; borders are not needed for contrast.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Scrim
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  The modal level always comes with the scrim, which blocks the
+                  map for pointer and screen reader alike
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    (aria-modal="true").
+                  </code>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Notice card"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Notice card
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              For empty and loading states on the map. Says what's going on in
+              one line and offers at most two ways out.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; padding: 16px; gap: 12px">
+                    <div
+                      style="display: flex; gap: 12px; align-items: flex-start">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#9A3B12"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                        style="flex: none; margin-top: 1px">
+                        <path
+                          d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path>
+                        <circle cx="12" cy="9.8" r="2.3"></circle>
+                      </svg>
+                      <div
+                        style="display: flex; flex-direction: column; gap: 4px">
+                        <span
+                          style="font-size: 15px; line-height: 22px; font-weight: 600">
+                          No pins in 1901
+                        </span>
+                        <span
+                          style="font-size: 14px; line-height: 20px; color: #2E3A33">
+                          Nobody in your filters is pinned to this date.
+                        </span>
+                      </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; padding-left: 32px">
+                      <span
+                        style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600; white-space: nowrap">
+                        Jump to 1898
+                      </span>
+                      <span
+                        style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; border: 1px solid #C9CFC5; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600; white-space: nowrap">
+                        Clear filters
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Icon and buttons · no pins on this date. Up to two buttons,
+                lined up with the text.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; padding: 16px; gap: 4px">
+                    <span
+                      style="font-size: 15px; line-height: 22px; font-weight: 600">
+                      No pins in 1901
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; color: #2E3A33">
+                      Nobody in your filters is pinned to this date.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                No icon · title and one line. Not on a screen yet; built from
+                the same parts.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; padding: 16px 20px; gap: 12px">
+                    <span
+                      style="font-size: 15px; line-height: 22px; font-weight: 600">
+                      Loading the map
+                    </span>
+                    <span
+                      style="display: block; width: 100%; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden">
+                      <span
+                        style="display: block; width: 45%; height: 100%; border-radius: 3px; background: #264F29"></span>
+                    </span>
+                    <span
+                      style="font-size: 13px; line-height: 20px; color: #4A544C">
+                      Every border from 1652 to today loads once, up front, so
+                      the slider never has to wait.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Loading · title, progress bar, one line. Only on first load.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="width: 100%; box-sizing: border-box; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; padding: 20px; gap: 8px">
+                    <svg
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#264F29"
+                      stroke-width="1.8"
+                      stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path
+                        d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path>
+                      <circle cx="12" cy="9.8" r="2.3"></circle>
+                    </svg>
+                    <span
+                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+                      No pins yet
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; color: #2E3A33">
+                      Pins show up here on the dates they were true. Until then
+                      the map works as an atlas: move the date and watch the
+                      borders change.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Large · no pins in the tree: 28 icon on top, H3 title (22 / 28).
+                Sits in the middle of the map.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Notice card measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Width
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  360 on desktop (380 for the large form) · full width less 16
+                  gutters on a phone
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  360, 380: no token · size.gutter-phone
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Padding
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  16 · loading 16 20 · large 20
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.16 · space.20
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Gap
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  12 inside (10 in the desktop loading card); icon 20, 12 from
+                  the text; buttons indent 32
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.12 · 10: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Title
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  15 / 22 · 600 · large form 22 / 28 Bricolage 700
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.title · type.h3
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Line
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  14 / 20 ink-2 · loading 13 ink-3
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  14/400, 13.5/400: no token · type.small
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Buttons
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  44 tall: primary then secondary, 8 apart
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.control · space.8
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Surface
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  white, radius 12, raised shadow
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.surface · radius.panel · shadow.raised
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    role="status",
+                  </code>
+                  so the change is announced politely. The loading card adds
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-live="polite".
+                  </code>
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Icon
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-hidden.
+                  </code>
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Buttons
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Real buttons in reading order after the text. Jump to moves
+                  the map date; Clear filters clears every filter.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Focus
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  The card never takes focus; it explains, and the buttons are
+                  there to Tab to.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Progress bar"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Progress bar
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              Shows how much of the first load is done. Only ever inside the
+              loading notice card.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <span
+                  style="display: flex; flex-direction: column; gap: 16px; width: 100%">
+                  <span
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%">
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #4A544C">
+                      0%
+                    </span>
+                    <span
+                      style="display: block; width: 100%; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden">
+                      <span
+                        style="display: block; width: 0%; height: 100%; border-radius: 3px; background: #264F29"></span>
+                    </span>
+                  </span>
+                  <span
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%">
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #4A544C">
+                      45%
+                    </span>
+                    <span
+                      style="display: block; width: 100%; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden">
+                      <span
+                        style="display: block; width: 45%; height: 100%; border-radius: 3px; background: #264F29"></span>
+                    </span>
+                  </span>
+                  <span
+                    style="display: flex; flex-direction: column; gap: 6px; width: 100%">
+                    <span
+                      style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #4A544C">
+                      100%
+                    </span>
+                    <span
+                      style="display: block; width: 100%; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden">
+                      <span
+                        style="display: block; width: 100%; height: 100%; border-radius: 3px; background: #264F29"></span>
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Determinate, as the loading card shows it: the fill is 45% of
+                the track. Shown at 0, 45 and 100.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Progress bar measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Track
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  6 tall, fully round (3), line
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  6, 3: no token · colour.line
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Fill
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  brand, same height and radius; width is the share loaded
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.brand
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Width
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Fills the card
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  <span style="color: #4A544C">—</span>
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Kind
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Determinate. There is no indeterminate form on any screen
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  <span style="color: #4A544C">—</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    role="progressbar"
+                  </code>
+                  with
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-valuenow,
+                  </code>
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-valuemin="0",
+                  </code>
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-valuemax="100",
+                  </code>
+                  labelled by the card title "Loading the map". The mockup has
+                  none of these yet.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Motion
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Width changes without easing under prefers-reduced-motion.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Dialog"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Dialog
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              For a task or a long read that needs the whole screen's attention.
+              Sources and attributions is the only one so far.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  role="region"
+                  aria-label="Desktop dialog, scrolls sideways"
+                  tabindex="0"
+                  style="max-width: 100%; overflow-x: auto; border-radius: 12px">
+                  <div
+                    style="position: relative; padding: 40px; border-radius: 12px; background: #C9D5D2; overflow: hidden">
+                    <span
+                      aria-hidden="true"
+                      style="position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></span>
+                    <div
+                      style="position: relative; width: 760px; box-sizing: border-box; padding: 24px 28px 28px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 16px">
+                      <div
+                        style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px">
+                          <span
+                            style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">
+                            Sources and attributions
+                          </span>
+                          <span style="font-size: 14px; color: #2E3A33">
+                            Where every layer on the map comes from, and the
+                            licence it's used under.
+                          </span>
+                        </div>
+                        <span
+                          style="flex: none; width: 44px; height: 44px; margin: -8px -10px 0 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            aria-hidden="true">
+                            <path d="M6 6l12 12M18 6L6 18"></path>
+                          </svg>
+                        </span>
+                      </div>
+                      <div
+                        style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; padding: 10px 0; border-bottom: 1px solid #E2E5DD; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                          <span>Layer</span>
+                          <span>Source</span>
+                          <span>Licence</span>
+                          <span>Checked</span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">Polity borders</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Source]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Licence]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">District borders</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Source]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Licence]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">Place names</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Source]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Licence]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">Coast and land</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Source]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Licence]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">Rivers</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Source]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Licence]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">Terrain</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [DEM source]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                            [Licence]
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                        <div
+                          style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 14px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 14px">
+                          <span style="font-weight: 600">Map library</span>
+                          <span style="color: #18211B">MapLibre GL JS</span>
+                          <span style="color: #18211B">BSD-3-Clause</span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            —
+                          </span>
+                        </div>
+                      </div>
+                      <span
+                        style="font-size: 13px; line-height: 1.5; color: #4A544C">
+                        The line under the date control is built from this list.
+                        A source isn't used until its licence has been checked.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Desktop · centred over the scrim, 760 wide. Title, subtitle,
+                Close top right, the Sources table, a footnote.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="position: relative; padding: 48px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 100%">
+                  <span
+                    aria-hidden="true"
+                    style="position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></span>
+                  <div style="position: relative">
+                    <div
+                      style="width: 100%; box-sizing: border-box; padding: 8px 16px 24px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 12px">
+                      <span
+                        aria-hidden="true"
+                        style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+                      <div
+                        style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px">
+                          <span
+                            style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">
+                            Sources and attributions
+                          </span>
+                          <span
+                            style="font-size: 14px; line-height: 20px; color: #2E3A33">
+                            Where every layer on the map comes from, and the
+                            licence it's used under.
+                          </span>
+                        </div>
+                        <span
+                          style="flex: none; width: 44px; height: 44px; margin: -4px -8px 0 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            aria-hidden="true">
+                            <path d="M6 6l12 12M18 6L6 18"></path>
+                          </svg>
+                        </span>
+                      </div>
+                      <div
+                        style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            Polity borders
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Source]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Licence]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            District borders
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Source]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Licence]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            Place names
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Source]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Licence]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            Coast and land
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Source]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Licence]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            Rivers
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Source]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Licence]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            Terrain
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [DEM source]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #4A544C">
+                              [Licence]
+                            </span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                        <div
+                          style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 14px; line-height: 20px; font-weight: 600">
+                            Map library
+                          </span>
+                          <span
+                            style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px">
+                            <span style="color: #18211B">MapLibre GL JS</span>
+                            <span style="color: #18211B">BSD-3-Clause</span>
+                            <span
+                              style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                              Checked —
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <span
+                        style="font-size: 13px; line-height: 20px; color: #4A544C">
+                        The line under the date control is built from this list.
+                        A source isn't used until its licence has been checked.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Phone · the same content as a bottom sheet over the scrim:
+                handle, title and subtitle with Close, then stacked rows.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Dialog measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Desktop
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  760 wide, padding 24 28 28, gap 16, radius 12, modal shadow,
+                  over the scrim
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  760, 28: no token · space.24 · space.16 · radius.panel ·
+                  shadow.modal · colour.scrim
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Phone
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Full width from 56 below the top, padding 8 16 24, gap 12, top
+                  radius 18, modal shadow
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  radius.sheet · shadow.modal (other sheets use shadow.sheet)
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Title
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  H2: Bricolage 24 / 32 · 700; subtitle 14 ink-2, 4 below
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.h2 · 14/400: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Close
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  44 × 44, fully round, ink-3; icon 18 desktop, 20 phone; pulled
+                  into the corner
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.touch · radius.full
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Table
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Columns 170 / rest / 150 / 120, gap 14; header row overline;
+                  rows min 44, 14 text; Checked in mono 12
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.overline · size.touch · type.mono · 14: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Phone rows
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Layer 14 / 600; then source, licence and "Checked —" on one
+                  wrapping line, 13 / 20; 12 above and below
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.label · type.small · space.12
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Handle
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  40 × 4, radius 2, line-strong; 8 from the top
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  40, 4, 2: no token · colour.line-strong
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Placeholders
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  [Source] and [Licence] in mono 12.5 ink-3 until the licence
+                  checks are done
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  12.5 mono: no token
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    role="dialog"
+                  </code>
+                  with
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-modal="true",
+                  </code>
+                  labelled by its title
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    (aria-labelledby).
+                  </code>
+                  The mockups use
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-label.
+                  </code>
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Focus
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Opening moves focus into the dialog (the Close button); Tab
+                  stays inside; closing returns focus to the link or menu item
+                  that opened it.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Keyboard
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Esc closes. On a phone, dragging the handle down closes too,
+                  but Close is always there.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Table
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  A real table on desktop
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    (role="table",
+                  </code>
+                  column headers); a list on a phone, where each item reads
+                  layer, source, licence, checked.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Phone sheet header"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Phone sheet header
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              The top of every phone bottom sheet: a handle, then one of three
+              header rows.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 100%">
+                  <div
+                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
+                    <span
+                      aria-hidden="true"
+                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+                    <div
+                      style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
+                      <span
+                        style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">
+                        Boards
+                      </span>
+                      <span
+                        style="flex: none; width: 44px; height: 44px; margin: 0 -8px 0 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          aria-hidden="true">
+                          <path d="M6 6l12 12M18 6L6 18"></path>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Title and Close · the design kit's Boards sheet. H2 24 / 32.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 100%">
+                  <div
+                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 8px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
+                    <span
+                      aria-hidden="true"
+                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+                    <div
+                      style="display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #E2E5DD">
+                      <div style="flex: 1; display: flex; gap: 4px">
+                        <span
+                          style="flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 600; background: #E6EEE4; color: #1D3E20">
+                          Layers
+                        </span>
+                        <span
+                          style="flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #4A544C">
+                          Filters
+                          <span
+                            style="display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 10px; background: #264F29; color: #FFFFFF; font-size: 12px; margin-left: 8px">
+                            1
+                          </span>
+                        </span>
+                      </div>
+                      <span
+                        style="flex: none; width: 44px; height: 44px; margin: 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          aria-hidden="true">
+                          <path d="M6 6l12 12M18 6L6 18"></path>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Tabs and Close · Layers and filters. Tabs 44 tall share the row.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 100%">
+                  <div
+                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+                    <span
+                      aria-hidden="true"
+                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+                    <div
+                      style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+                      <div
+                        style="display: flex; flex-direction: column; gap: 4px">
+                        <span
+                          style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">
+                          Sources and attributions
+                        </span>
+                        <span
+                          style="font-size: 14px; line-height: 20px; color: #2E3A33">
+                          Where every layer on the map comes from, and the
+                          licence it's used under.
+                        </span>
+                      </div>
+                      <span
+                        style="flex: none; width: 44px; height: 44px; margin: -4px -8px 0 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          aria-hidden="true">
+                          <path d="M6 6l12 12M18 6L6 18"></path>
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Title, subtitle and Close · Sources and attributions.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Phone sheet header measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Handle
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  40 × 4, radius 2, line-strong, centred, 8 from the top edge
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  40, 4, 2: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Padding
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  8 16 at the top; 8 (tabs) or 12 (title) from handle to header
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.8 · space.16 · space.12
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Title
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  H2 24 / 32 · 700
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.h2
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Close
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  44 × 44 round, ink-3, 20px icon; its right edge pulled 8 into
+                  the gutter so the icon lines up with the text column
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.touch
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Tabs row
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Tabs share the row, gap 8 to Close, 8 below, then a 1px line
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.8 · colour.line
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Heading
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  The title is a real
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    h2
+                  </code>
+                  and labels the sheet's dialog.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Close
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-label="Close";
+                  </code>
+                  Esc does the same.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Handle
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Decoration on an open sheet
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    (aria-hidden).
+                  </code>
+                  On the collapsed date sheet it is a button, "Expand the
+                  sheet", which isn't covered here.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Menu"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Menu
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              A short list of actions behind a trigger. Today only the account
+              menu, opened from the avatar.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
+                    <div
+                      style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
+                      <span
+                        style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                        Signed in as
+                      </span>
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        researcher@example.com
+                      </span>
+                    </div>
+                    <span
+                      style="display: block; height: 1px; background: #E2E5DD; margin: 0 8px 4px"></span>
+                    <span
+                      style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 100%">
+                      <span style="display: flex; color: #18211B">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path
+                            d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                        </svg>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="font-size: 14px; line-height: 20px; font-weight: 600">
+                          Export all data
+                        </span>
+                        <span
+                          style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                          JSON and GeoJSON
+                        </span>
+                      </span>
+                    </span>
+                    <span
+                      style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 100%">
+                      <span style="display: flex; color: #18211B">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M6 4h9l3 3v13H6z"></path>
+                          <path d="M9 11h6M9 15h6"></path>
+                        </svg>
+                      </span>
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Sources and attributions
+                      </span>
+                    </span>
+                    <span
+                      style="display: block; height: 1px; background: #E2E5DD; margin: 4px 8px"></span>
+                    <span
+                      style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 100%">
+                      <span style="display: flex; color: #18211B">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path>
+                        </svg>
+                      </span>
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Sign out
+                      </span>
+                    </span>
+                    <span
+                      style="padding: 8px 12px; font-size: 12.5px; line-height: 18px; color: #4A544C">
+                      Last backup: today, 02:00
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Phone · opened from the avatar, 296 wide. "Export all data" is
+                shown hovered.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 6px; box-sizing: border-box; display: flex; flex-direction: column">
+                    <div
+                      style="padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px">
+                      <span style="font-size: 12px; color: #4A544C">
+                        Signed in as
+                      </span>
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        researcher@example.com
+                      </span>
+                    </div>
+                    <span
+                      style="display: block; height: 1px; background: #E2E5DD; margin: 0 6px 6px"></span>
+                    <span
+                      style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 284px">
+                      <span style="display: flex; color: #18211B">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path
+                            d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                        </svg>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="font-size: 14px; line-height: 20px; font-weight: 600">
+                          Export all data
+                        </span>
+                        <span
+                          style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                          JSON and GeoJSON
+                        </span>
+                      </span>
+                    </span>
+                    <span
+                      style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 284px">
+                      <span style="display: flex; color: #18211B">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M6 4h9l3 3v13H6z"></path>
+                          <path d="M9 11h6M9 15h6"></path>
+                        </svg>
+                      </span>
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Sources and attributions
+                      </span>
+                    </span>
+                    <span
+                      style="display: block; height: 1px; background: #E2E5DD; margin: 6px"></span>
+                    <span
+                      style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 284px">
+                      <span style="display: flex; color: #18211B">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.8"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path>
+                        </svg>
+                      </span>
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Sign out
+                      </span>
+                    </span>
+                    <span
+                      style="padding: 8px 12px 6px; font-size: 12px; color: #4A544C">
+                      Last backup: today, 02:00
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Desktop · the same menu with the desktop spacing (6 inside, 6
+                around dividers).
+              </figcaption>
+            </figure>
+          </div>
+          <figure
+            aria-label="Menu item states"
+            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
+            <section
+              style="display: flex; flex-direction: column; gap: 4px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 4px">
+                <span
+                  style="font-size: 15px; line-height: 22px; font-weight: 600">
+                  Menu item
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  Icon and label
+                </span>
+              </span>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Default
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 100%">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path d="M6 4h9l3 3v13H6z"></path>
+                        <path d="M9 11h6M9 15h6"></path>
+                      </svg>
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Sources and attributions
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Hover
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 100%">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path d="M6 4h9l3 3v13H6z"></path>
+                        <path d="M9 11h6M9 15h6"></path>
+                      </svg>
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Sources and attributions
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Focus
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 100%; outline: 2px solid #264F29; outline-offset: 2px">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path d="M6 4h9l3 3v13H6z"></path>
+                        <path d="M9 11h6M9 15h6"></path>
+                      </svg>
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Sources and attributions
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Pressed
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #EEF0EA; color: #18211B; width: 100%">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path d="M6 4h9l3 3v13H6z"></path>
+                        <path d="M9 11h6M9 15h6"></path>
+                      </svg>
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Sources and attributions
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Disabled
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #6E776F; width: 100%">
+                    <span style="display: flex; color: #A3AAA1">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path d="M6 4h9l3 3v13H6z"></path>
+                        <path d="M9 11h6M9 15h6"></path>
+                      </svg>
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Sources and attributions
+                    </span>
+                  </span>
+                </span>
+              </div>
+            </section>
+            <section
+              style="display: flex; flex-direction: column; gap: 4px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 4px">
+                <span
+                  style="font-size: 15px; line-height: 22px; font-weight: 600">
+                  Menu item, two lines
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  Icon, label, second line
+                </span>
+              </span>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Default
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 100%">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path
+                          d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                      </svg>
+                    </span>
+                    <span style="display: flex; flex-direction: column">
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Export all data
+                      </span>
+                      <span
+                        style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                        JSON and GeoJSON
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Hover
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 100%">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path
+                          d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                      </svg>
+                    </span>
+                    <span style="display: flex; flex-direction: column">
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Export all data
+                      </span>
+                      <span
+                        style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                        JSON and GeoJSON
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Focus
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 100%; outline: 2px solid #264F29; outline-offset: 2px">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path
+                          d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                      </svg>
+                    </span>
+                    <span style="display: flex; flex-direction: column">
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Export all data
+                      </span>
+                      <span
+                        style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                        JSON and GeoJSON
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Pressed
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #EEF0EA; color: #18211B; width: 100%">
+                    <span style="display: flex; color: #18211B">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path
+                          d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                      </svg>
+                    </span>
+                    <span style="display: flex; flex-direction: column">
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Export all data
+                      </span>
+                      <span
+                        style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                        JSON and GeoJSON
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Disabled
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #6E776F; width: 100%">
+                    <span style="display: flex; color: #A3AAA1">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true">
+                        <path
+                          d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
+                      </svg>
+                    </span>
+                    <span style="display: flex; flex-direction: column">
+                      <span
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Export all data
+                      </span>
+                      <span
+                        style="font-size: 12.5px; line-height: 18px; color: #6E776F">
+                        JSON and GeoJSON
+                      </span>
+                    </span>
+                  </span>
+                </span>
+              </div>
+            </section>
+          </figure>
+          <figure
+            aria-label="Avatar states"
+            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
+            <section
+              style="display: flex; flex-direction: column; gap: 4px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="display: flex; flex-direction: column; gap: 2px; padding-bottom: 4px">
+                <span
+                  style="font-size: 15px; line-height: 22px; font-weight: 600">
+                  Avatar
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  Desktop: white ring and shadow · phone: plain, inside the
+                  search pill
+                </span>
+              </span>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Default
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #264F29; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600">
+                    L
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Hover
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #1D3E20; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600">
+                    L
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Focus
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #264F29; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600; outline: 2px solid #264F29; outline-offset: 2px">
+                    L
+                  </span>
+                </span>
+              </div>
+              <div
+                style="display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; align-items: center; min-height: 52px">
+                <span
+                  style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                  Open
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; justify-self: start">
+                  <span
+                    style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #163019; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600">
+                    L
+                  </span>
+                </span>
+              </div>
+            </section>
+          </figure>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Menu measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Menu
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  296 wide, white, radius 12, floating shadow; 4 inside
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  296: no token · radius.panel · shadow.floating · space.4
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Header
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  "Signed in as" 12.5 / 18 ink-3, email 14 / 600; padding 12
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.caption · type.label
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Item
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  min 44; padding 4 12; icon 18, 12 to the label; radius 8. A
+                  two-line item is 52 when hovered in the mockups
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.touch · space.12 · radius.control · 52: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Label
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  14 / 20 · 600; second line 12.5 / 18 ink-3
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.label · type.caption
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Hover
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  surface-2 fill
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.surface-2
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Divider
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  1px line, 8 in from the sides, 4 above and below
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.line
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Footer
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Last backup, 12.5 / 18 ink-3, padding 8 12
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.caption
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Avatar
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  44 round, brand, white initial 16 / 600
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.touch · type.button
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Trigger
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  The avatar is a
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    button
+                  </code>
+                  named "Account menu", with
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-haspopup="menu"
+                  </code>
+                  and
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-expanded.
+                  </code>
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    role="menu"
+                  </code>
+                  with
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    menuitem
+                  </code>
+                  children. The header and footer text sit outside the menuitems
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    (role="none"
+                  </code>
+                  or a labelled group) so arrow keys skip them.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Keyboard
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Opening moves focus to the first item. Up and Down move, Enter
+                  activates, Esc closes and returns focus to the avatar. Tab
+                  leaves and closes.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Name
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  The menu is labelled "Account". Icons are
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-hidden.
+                  </code>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Popup"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Popup
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              Answers "what was this spot part of on the map date?" where you
+              clicked: the Jurisdiction chain and the pins there.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; padding-right: 24px">
+                  <div
+                    style="position: relative; width: 304px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); margin-right: 8px">
+                    <span
+                      style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: #FFFFFF; transform: rotate(45deg); border-radius: 2px"></span>
+                    <div
+                      style="position: relative; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px">
+                      <div
+                        style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
+                        <div
+                          style="display: flex; flex-direction: column; gap: 2px">
+                          <span
+                            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                            On this spot in 1901
+                          </span>
+                          <span
+                            style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.01em">
+                            Kimberley
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #4A544C">
+                            28.738° S · 24.764° E
+                          </span>
+                        </div>
+                        <span
+                          style="flex: none; width: 36px; height: 36px; margin: -6px -8px 0 0; border-radius: 18px; color: #4A544C; display: flex; align-items: center; justify-content: center">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            aria-hidden="true">
+                            <path d="M6 6l12 12M18 6L6 18"></path>
+                          </svg>
+                        </span>
+                      </div>
+                      <ol
+                        style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+                        <li
+                          style="display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4A544C">
+                            District
+                          </span>
+                          <span style="font-size: 15px; font-weight: 600">
+                            Kimberley
+                          </span>
+                        </li>
+                        <li
+                          style="display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #E2E5DD">
+                          <span
+                            style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4A544C">
+                            Colony
+                          </span>
+                          <span style="display: flex; flex-direction: column">
+                            <span style="font-size: 15px; font-weight: 600">
+                              Cape Colony
+                            </span>
+                            <span style="font-size: 12.5px; color: #4A544C">
+                              Was Griqualand West until 1880
+                            </span>
+                          </span>
+                        </li>
+                      </ol>
+                      <div
+                        style="display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 8px; background: #F4F5F0">
+                        <span
+                          style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                          1 pin here
+                        </span>
+                        <span
+                          style="display: flex; align-items: center; gap: 10px; min-height: 32px; color: #18211B">
+                          <span
+                            style="color: #9A3B12; font-size: 14px"
+                            aria-hidden="true">
+                            ◆
+                          </span>
+                          <span
+                            style="flex: 1; display: flex; flex-direction: column">
+                            <span style="font-size: 14px; font-weight: 600">
+                              Marriage
+                            </span>
+                            <span style="font-size: 13px; color: #4A544C">
+                              J. Rossouw &amp; M. du Toit
+                            </span>
+                          </span>
+                          <span
+                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #2E3A33">
+                            1901-03-14
+                          </span>
+                        </span>
+                      </div>
+                      <span
+                        style="align-self: flex-start; height: 36px; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #8E978C; border-radius: 8px; background: #FFFFFF; font-size: 13px; font-weight: 600">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <rect
+                            x="8"
+                            y="8"
+                            width="12"
+                            height="12"
+                            rx="2"></rect>
+                          <path
+                            d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path>
+                        </svg>
+                        Copy chain
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Desktop · 304 wide, floating, pointing at the clicked spot.
+                Overline, place name, coordinates, Close; the chain; the pins
+                here; Copy chain.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 100%">
+                  <div
+                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+                    <span
+                      aria-hidden="true"
+                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+                    <div
+                      style="display: flex; flex-direction: column; gap: 2px">
+                      <span
+                        style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                        On this spot in 1901
+                      </span>
+                      <div
+                        style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
+                        <span
+                          style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px">
+                          Kimberley
+                        </span>
+                        <span
+                          style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 11.5px; color: #4A544C">
+                          28.738° S · 24.764° E
+                        </span>
+                      </div>
+                    </div>
+                    <ol
+                      style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+                      <li
+                        style="display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #E2E5DD">
+                        <span
+                          style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4A544C">
+                          District
+                        </span>
+                        <span style="font-size: 15px; font-weight: 600">
+                          Kimberley
+                        </span>
+                      </li>
+                      <li
+                        style="display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD">
+                        <span
+                          style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4A544C">
+                          Colony
+                        </span>
+                        <span style="display: flex; flex-direction: column">
+                          <span style="font-size: 15px; font-weight: 600">
+                            Cape Colony
+                          </span>
+                          <span style="font-size: 12.5px; color: #4A544C">
+                            Was Griqualand West until 1880
+                          </span>
+                        </span>
+                      </li>
+                    </ol>
+                    <span
+                      style="display: flex; align-items: center; gap: 10px; min-height: 44px; color: #18211B">
+                      <span
+                        style="color: #9A3B12; font-size: 14px"
+                        aria-hidden="true">
+                        ◆
+                      </span>
+                      <span
+                        style="flex: 1; display: flex; flex-direction: column">
+                        <span style="font-size: 14px; font-weight: 600">
+                          Marriage
+                        </span>
+                        <span style="font-size: 13px; color: #4A544C">
+                          J. Rossouw &amp; M. du Toit
+                        </span>
+                      </span>
+                      <span
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; color: #2E3A33">
+                        1901-03-14
+                      </span>
+                    </span>
+                    <span style="font-size: 12.5px; color: #4A544C">
+                      Look-up only on a phone. Add people and pins on a tablet
+                      or computer.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Phone · the same look-up inside the bottom sheet, below the date
+                controls (not shown). No Copy chain, no inset box; coordinates
+                beside the name.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Popup measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Popup
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  304 wide, radius 12, floating shadow, padding 14 16 16, gap
+                  12; pointer a 16 square turned 45°, radius 2
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  304, 14: no token · radius.panel · shadow.floating · space.16
+                  · space.12
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Header
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Overline "On this spot in {year}" · place name H3 Bricolage 22
+                  · 700 (−0.01em on desktop) · coordinates mono 11.5 ink-3
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.overline · type.h3 · 11.5 mono: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Close
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  36 × 36 round, ink-3, 16px icon, pulled 6 up and 8 right
+                  (desktop)
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  36: below size.touch
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Chain rows
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Grid 72 / rest, gap 10; 8 above and below; 1px line between.
+                  Label overline at 0.08em; value 15 / 600; detail 12.5 ink-3
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.title · type.caption · 0.08em, 10: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Pins here
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Row min 44, no inset. Glyph 14 pin, title 14 / 600, people 13
+                  ink-3, date mono 12 ink-2
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.surface-2 · type.label · type.small · type.mono
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Copy chain
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Desktop only: 36 secondary with the copy icon (board 06)
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  <span style="color: #4A544C">—</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Desktop: a non-modal
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    role="dialog"
+                  </code>
+                  named "Jurisdiction at this point". Phone: a region of the
+                  bottom sheet named by its overline.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Focus
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Opening a popup with the keyboard moves focus to it; Esc or
+                  Close returns focus to the map.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Chain
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  An ordered list
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    (&lt;ol&gt;),
+                  </code>
+                  smallest unit first. Each row reads level then name.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Pins
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Each pin is a link to its record. The glyph is
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-hidden;
+                  </code>
+                  the event name says what it is.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Copy chain
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Copies the chain as text and confirms with the "Jurisdiction
+                  chain copied." toast (board 05).
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Callout"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Callout
+            </h2>
+            <p
+              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              A message that belongs to one control and has to point at it:
+              today, the error on the map date field in the dock.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 24px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 16px 16px 28px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
+                  <div
+                    style="position: relative; width: 100%; box-sizing: border-box; padding: 12px 16px 4px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 14px; line-height: 20px; box-shadow: 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column">
+                    <span>
+                      <strong style="font-weight: 600">
+                        February 1901 has 28 days.
+                      </strong>
+                      The map still shows 1901-02-28.
+                    </span>
+                    <span
+                      style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 600; color: #264F29; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
+                      Go to 1901-02-28
+                    </span>
+                    <span
+                      style="position: absolute; left: 149px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Phone · full width over the date sheet, with "Go to 1901-02-28"
+                as a 44-tall link; pointer 149 from the left.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Callout measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Box
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Full width less 16 gutters · padding 12 16 4 · radius 8
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.gutter-phone · space.12 · space.16 · space.4 ·
+                  radius.control
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Colours
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  error-bg, 1px error-border, error text
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.error-bg · colour.error-border · colour.error
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Text
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  14 / 20; first sentence 600
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.label (600) · 14/400: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Pointer
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  12 square turned 45°, error-bg with the box's border on its
+                  two outer sides, 7 below the box
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  12, 7: no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Shadow
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  0 6 20 / 0.12 (the second half of raised)
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  no token
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Place
+                </span>
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Opens above the field it belongs to, so it isn't cut off at
+                  the bottom of the screen
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  <span style="color: #4A544C">—</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    role="alert",
+                  </code>
+                  with an
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    id
+                  </code>
+                  the field points at through
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    aria-describedby.
+                  </code>
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Keyboard
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Esc restores the last good date and closes the callout, and
+                  the Go to link offers the same fix to touch.
+                </dd>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; gap: 2px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <dt
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Pointer
+                </dt>
+                <dd
+                  style="margin: 0; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  Decoration (a styled
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    span),
+                  </code>
+                  never read.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

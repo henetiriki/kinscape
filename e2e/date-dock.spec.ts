@@ -83,32 +83,37 @@ test('draws no Polities before 2009-04-03 and eleven after', async ({
 });
 
 // NFR-01: 20 steps across 2009-04-03, each redraw under 2500 ms (software WebGL on CI).
-test('each redraw across 2009-04-03 stays under 2500 ms', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('radio', { name: 'Day' }).click();
-  await expect.poll(() => drawnPolities(page)).toBe(11);
+test(
+  'each redraw across 2009-04-03 stays under 2500 ms',
+  { tag: '@perf' },
+  async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('radio', { name: 'Day' }).click();
+    await expect.poll(() => drawnPolities(page)).toBe(11);
 
-  const input = slider(page);
-  const epoch = Date.UTC(1652, 0, 1);
-  const start = (Date.parse('2009-03-24') - epoch) / 86_400_000;
-  const times: number[] = [];
+    const input = slider(page);
+    const epoch = Date.UTC(1652, 0, 1);
+    const start = (Date.parse('2009-03-24') - epoch) / 86_400_000;
+    const times: number[] = [];
 
-  for (let step = 0; step < 20; step++) {
-    await input.fill(String(start + step));
-    await page.waitForFunction(
-      count => performance.getEntriesByName('map-date-redraw').length >= count,
-      times.length + 1
-    );
-    times.push(
-      await page.evaluate(
-        () => performance.getEntriesByName('map-date-redraw').at(-1)!.duration
-      )
-    );
+    for (let step = 0; step < 20; step++) {
+      await input.fill(String(start + step));
+      await page.waitForFunction(
+        count =>
+          performance.getEntriesByName('map-date-redraw').length >= count,
+        times.length + 1
+      );
+      times.push(
+        await page.evaluate(
+          () => performance.getEntriesByName('map-date-redraw').at(-1)!.duration
+        )
+      );
+    }
+
+    console.log('redraw ms', times.map(t => Math.round(t)).join(' '));
+    expect(Math.max(...times)).toBeLessThan(2500);
   }
-
-  console.log('redraw ms', times.map(t => Math.round(t)).join(' '));
-  expect(Math.max(...times)).toBeLessThan(2500);
-});
+);
 
 // MAP-03
 test('the step buttons stop at today', async ({ page }) => {

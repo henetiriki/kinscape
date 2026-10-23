@@ -1,7 +1,7 @@
 # Plan: C202: plan-approve and typecheck scripts, ignore .claude-pr
 
 - **Spec:** #202
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@ CSS module imports need `next-env.d.ts`, which is git-ignored, so a fresh `tsc -
 - **B.** `tsc --noEmit` only; it passes after `npm run build` or `npm run dev`.
 - **Other:** your own.
 
-Recommended: A, because it passes on a clean checkout.
+**Answer: A** (@henetiriki)
 
 **D2 · Who an Other answer names** · Decides: Tech lead
 
@@ -24,7 +24,7 @@ Recommended: A, because it passes on a clean checkout.
 - **B.** `**Answer: Other:** <text>`, as the Chore says.
 - **Other:** your own.
 
-Recommended: A, because every answer then names its reviewer.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

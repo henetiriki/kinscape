@@ -100,6 +100,11 @@ A `menuitem` is valid only in a `menu`.
 | `screens.json`          | The design check runs them                                      |
 | Tests, e2e, build       | Their output in the PR                                          |
 
+## Deviations
+
+- The kit's samples sit in `Samples.tsx` (client) and shared words in `data.ts`.
+- `PopupPointer` has no shadow, so it doesn't draw over the popup.
+
 ## Out of scope
 
 - Focus when a Popup opens or closes (MAP-07).

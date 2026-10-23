@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import type { ControlState } from '@/app/components/controls';
 
@@ -7,7 +7,9 @@ import styles from './page.module.css';
 // A column of a state matrix: the state a control shows, or Disabled.
 export type Column = 'default' | 'disabled' | ControlState;
 
-const COLUMNS: { column: Column; title: string }[] = [
+type MatrixColumn = { column: Column; title: string };
+
+const COLUMNS: MatrixColumn[] = [
   { column: 'default', title: 'Default' },
   { column: 'hover', title: 'Hover' },
   { column: 'focus', title: 'Focus (keyboard)' },
@@ -43,11 +45,14 @@ export const Section = ({
 export const Variant = ({
   caption,
   children,
+  desktop,
 }: {
   caption: string;
   children: ReactNode;
+  /** Drawn on a desktop only: a phone shows the variants that have no flag. */
+  desktop?: boolean;
 }) => (
-  <figure className={styles.variant}>
+  <figure className={styles.variant} data-desktop={desktop || undefined}>
     <div className={styles.sample}>{children}</div>
     <figcaption className={styles.caption}>{caption}</figcaption>
   </figure>
@@ -58,30 +63,41 @@ export const Variants = ({ children }: { children: ReactNode }) => (
 );
 
 export const Matrix = ({
+  columns = COLUMNS,
   label,
   rows,
 }: {
+  columns?: MatrixColumn[];
   label: string;
-  rows: { hint: string; name: string; render: (column: Column) => ReactNode }[];
+  rows: {
+    hint: string;
+    /** Every cell is only drawn. */
+    inert?: boolean;
+    name: string;
+    render: (column: Column) => ReactNode;
+  }[];
 }) => (
-  <figure aria-label={label} className={styles.matrix}>
+  <figure
+    aria-label={label}
+    className={styles.matrix}
+    style={{ '--columns': columns.length } as CSSProperties}>
     <div className={`${styles.row} ${styles.columns}`}>
       <span>Component</span>
-      {COLUMNS.map(({ title }) => (
+      {columns.map(({ title }) => (
         <span key={title}>{title}</span>
       ))}
     </div>
-    {rows.map(({ hint, name, render }) => (
+    {rows.map(({ hint, inert, name, render }) => (
       <div className={styles.row} key={name}>
         <span className={styles.name}>
           <span>{name}</span>
           <span className={styles.hint}>{hint}</span>
         </span>
-        {COLUMNS.map(({ column, title }) => (
+        {columns.map(({ column, title }) => (
           // Hover, Focus and Pressed are looks, not controls: inert keeps them out of the tab order and the accessibility tree.
           <span
             className={styles.cell}
-            inert={stateOf(column) !== undefined}
+            inert={inert || stateOf(column) !== undefined}
             key={column}>
             <span aria-hidden='true' className={styles.stateLabel}>
               {title}

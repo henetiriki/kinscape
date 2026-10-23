@@ -2,9 +2,14 @@ import type { ReactNode } from 'react';
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
+import { Avatar } from '@/app/components/Avatar';
+import { Button } from '@/app/components/Button';
 import { Callout, CalloutPointer } from '@/app/components/Callout';
 import { DialogPanel } from '@/app/components/Dialog';
+import { Icon } from '@/app/components/Icon';
+import { MenuItem, MenuPanel } from '@/app/components/Menu';
 import { NoticeCard } from '@/app/components/NoticeCard';
+import { Popup } from '@/app/components/Popup';
 import { ProgressBar } from '@/app/components/ProgressBar';
 import { SheetPanel } from '@/app/components/Sheet';
 import { SourcesList } from '@/app/components/SourcesDialog';
@@ -13,8 +18,18 @@ import { Surface, type SurfaceLevel } from '@/app/components/Surface';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import { Facts, Section, Variant, Variants } from '../inputs/Board';
+import {
+  type Column,
+  Facts,
+  Matrix,
+  Section,
+  stateOf,
+  Variant,
+  Variants,
+} from '../inputs/Board';
+import { CHAIN, MENU_GROUPS, MENU_WORDS, PINS } from './data';
 import styles from './page.module.css';
+import { AccountMenu, CopyChainPopup } from './Samples';
 
 const code = (text: string) => <code>{text}</code>;
 
@@ -500,6 +515,266 @@ export const SheetHeaders = () => (
           'Tabs row',
           'Tabs share the row, gap 8 to Close, 8 below, then a 1px line',
           'space.8 · colour.line',
+        ],
+      ]}
+    />
+  </Section>
+);
+
+const MENU_ITEM = MENU_GROUPS[0][1];
+const TWO_LINES = MENU_GROUPS[0][0];
+
+const ITEM_ROWS = [
+  { entry: MENU_ITEM, hint: 'Icon and label', name: 'Menu item' },
+  {
+    entry: TWO_LINES,
+    hint: 'Icon, label, second line',
+    name: 'Menu item, two lines',
+  },
+].map(({ entry, hint, name }) => ({
+  hint,
+  inert: true,
+  name,
+  render: (column: Column) => (
+    <span className={styles.itemSample}>
+      <MenuItem
+        entry={{ ...entry, disabled: column === 'disabled' || undefined }}
+        state={stateOf(column)}
+      />
+    </span>
+  ),
+}));
+
+const AVATAR_COLUMNS: { column: Column; title: string }[] = [
+  { column: 'default', title: 'Default' },
+  { column: 'hover', title: 'Hover' },
+  { column: 'focus', title: 'Focus (keyboard)' },
+  { column: 'active', title: 'Open' },
+];
+
+export const Menus = ({ sources }: { sources: Source[] }) => (
+  <Section
+    lead='A short list of actions behind a trigger. Today only the account menu, opened from the avatar.'
+    part={2}
+    title='Menu'>
+    <Variants>
+      <Variant caption='Opened from the avatar, 296 wide; the same on desktop and phone. "Export all data" is shown hovered.'>
+        <Stage>
+          <MenuPanel
+            {...MENU_WORDS}
+            groups={MENU_GROUPS}
+            hovered='export'
+            inert
+          />
+        </Stage>
+      </Variant>
+    </Variants>
+    <Matrix label='Menu item states' rows={ITEM_ROWS} />
+    <Matrix
+      columns={AVATAR_COLUMNS}
+      label='Avatar states'
+      rows={[
+        {
+          hint: 'Desktop and phone alike: raised shadow, no border',
+          name: 'Avatar',
+          render: column =>
+            column === 'default' ? (
+              <AccountMenu sources={sources} />
+            ) : (
+              <Avatar
+                expanded={column === 'active'}
+                initial={MENU_WORDS.initial}
+                state={stateOf(column)}
+              />
+            ),
+        },
+      ]}
+    />
+    <Facts
+      accessibility={[
+        [
+          'Trigger',
+          <>
+            The avatar is a {code('button')} named &ldquo;Account menu&rdquo;,
+            with {code('aria-haspopup="menu"')} and {code('aria-expanded')}.
+          </>,
+        ],
+        [
+          'Role',
+          <>
+            {code('role="menu"')} with {code('menuitem')} children. The header
+            and footer text sit outside the menuitems, so arrow keys skip them.
+            A disabled item is {code('aria-disabled')} and keeps its place in
+            the arrow-key order.
+          </>,
+        ],
+        [
+          'Keyboard',
+          'Opening moves focus to the first item. Up and Down move and wrap, Enter activates, Esc closes and returns focus to the avatar. Tab leaves and closes. Inside a dialog, Esc closes the menu first.',
+        ],
+        [
+          'Name',
+          <>
+            The menu is labelled &ldquo;Account&rdquo;. Icons are{' '}
+            {code('aria-hidden')}.
+          </>,
+        ],
+      ]}
+      label='Menu'
+      measurements={[
+        [
+          'Menu',
+          '296 wide, white, radius 12, floating shadow; 4 inside; 8 below the avatar, right-aligned',
+          '296: component size, no token · radius.panel · shadow.floating · space.4 · space.8',
+        ],
+        [
+          'Header',
+          '"Signed in as" 12.5 / 18 ink-3, 4 above the email 14 / 600; padding 12',
+          'type.caption · type.label · space.4 · space.12',
+        ],
+        [
+          'Item',
+          'min 44; padding 4 12; icon 18, 12 to the label; radius 8. The two-line item is 52 tall in the mockups',
+          'size.touch · space.12 · radius.control · 52: no token',
+        ],
+        [
+          'Label',
+          '14 / 20 · 600; second line 12.5 / 18 ink-3',
+          'type.label · type.caption',
+        ],
+        ['Hover', 'surface-2 fill', 'colour.surface-2'],
+        [
+          'Divider',
+          '1px line, 8 in from the sides, 4 above and below',
+          'colour.line · space.8 · space.4',
+        ],
+        [
+          'Footer',
+          'Last backup, 12.5 / 18 ink-3, padding 8 12',
+          'type.caption',
+        ],
+        [
+          'Avatar',
+          '44 round, brand, white initial 16 / 600, raised shadow, no border',
+          'size.touch · type.button · shadow.raised',
+        ],
+      ]}
+    />
+  </Section>
+);
+
+const HIT_NOTE = '44 × 44 hit area (proposed)';
+
+export const Popups = () => (
+  <Section
+    lead='Answers "what was this spot part of on the map date?" where you clicked: the Jurisdiction chain and the pins there.'
+    part={2}
+    title='Popup'>
+    <Variants>
+      <Variant
+        caption='Desktop · 304 wide, floating, pointing at the clicked spot. Overline, place name, coordinates, Close; the chain; the pins here; Copy chain.'
+        desktop>
+        <Stage>
+          <CopyChainPopup />
+        </Stage>
+      </Variant>
+      <Variant
+        caption='Close and Copy chain keep their 36 visual size, each with a hit area of its own.'
+        desktop>
+        <div className={styles.hits}>
+          <span className={styles.hit}>
+            <span className={styles.hitClose}>
+              <Icon name='close' size={16} />
+            </span>
+            <span className={styles.hitNote}>{HIT_NOTE}</span>
+          </span>
+          <span className={styles.hit}>
+            <span className={styles.hitCopy}>
+              <Button icon='copy' size='xs' tabIndex={-1}>
+                Copy chain
+              </Button>
+            </span>
+            <span className={styles.hitNote}>{HIT_NOTE}</span>
+          </span>
+        </div>
+      </Variant>
+      <Variant caption='Phone · the same look-up inside the bottom sheet, below the date controls (not shown). No Copy chain, no inset box; coordinates beside the name.'>
+        <SheetFrame>
+          <Popup
+            chain={CHAIN}
+            coordinates='28.738° S · 24.764° E'
+            form='sheet'
+            pins={PINS}
+            place='Kimberley'
+            year={1901}
+          />
+        </SheetFrame>
+      </Variant>
+    </Variants>
+    <Facts
+      accessibility={[
+        [
+          'Role',
+          <>
+            Desktop: a non-modal {code('role="dialog"')} named
+            &ldquo;Jurisdiction at this point&rdquo;. Phone: a region of the
+            bottom sheet named by its overline.
+          </>,
+        ],
+        [
+          'Focus',
+          'Opening a popup with the keyboard moves focus to it; Esc or Close returns focus to the map.',
+        ],
+        [
+          'Chain',
+          <>
+            An ordered list ({code('<ol>')}), smallest unit first. Each row
+            reads level then name.
+          </>,
+        ],
+        [
+          'Pins',
+          <>
+            A pin with a record is a link to it; one without is plain text. The
+            glyph is {code('aria-hidden')}; the event name says what it is.
+          </>,
+        ],
+        [
+          'Copy chain',
+          'Copies a line per level, smallest first, and confirms with the "Jurisdiction chain copied." toast (board 05). If the browser refuses, an error toast says "Couldn\'t copy the chain." and offers Try again.',
+        ],
+      ]}
+      label='Popup'
+      measurements={[
+        [
+          'Popup',
+          '304 wide, radius 12, floating shadow, padding 16, gap 12; pointer a 16 square turned 45°, radius 2',
+          '304: component size, no token · radius.panel · shadow.floating · space.16 · space.12',
+        ],
+        [
+          'Header',
+          'Overline "On this spot in {year}" · place name H3, Bricolage 22 / 28 · 700 · coordinates mono 12 / 16 ink-3',
+          'type.overline · type.h3 · type.mono',
+        ],
+        [
+          'Close',
+          '36 × 36 round, ink-3, 16px icon, pulled 8 up and 8 right; 44 × 44 hit area (proposed)',
+          'size.control-xs',
+        ],
+        [
+          'Chain rows',
+          'Grid 76 / rest, gap 8; 8 above and below; 1px line between. Label overline; value 15 / 22 · 600; detail 12.5 / 18 ink-3',
+          'type.overline · type.title · type.caption · space.8',
+        ],
+        [
+          'Pins here',
+          'Inset: surface-2, radius 8, padding 12, gap 8; row min 32. Glyph 14 pin, 8 to the title 14 / 600, people 13 / 20 ink-3, date mono 12 ink-2. No pins, no inset',
+          'colour.surface-2 · type.label · type.small · type.mono · 32: no token',
+        ],
+        [
+          'Copy chain',
+          'Desktop: 36 secondary with the copy icon (board 06), 44 × 44 hit area (proposed). The phone look-up has no Close and no Copy chain',
+          'size.control-xs',
         ],
       ]}
     />

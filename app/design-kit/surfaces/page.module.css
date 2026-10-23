@@ -94,6 +94,72 @@
   padding: 0;
 }
 
+.itemSample {
+  display: block;
+  width: 200px;
+}
+
+/* The Popup, its pointer on the bottom edge, and the Toast under it. */
+.popupStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.popupHolder {
+  position: relative;
+  width: 304px;
+}
+
+.popupPointer {
+  bottom: -8px;
+  left: 50%;
+}
+
+.hits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-24);
+}
+
+.hit {
+  align-items: center;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.hitClose,
+.hitCopy {
+  align-items: center;
+  border: 1px dashed var(--field-border);
+  box-sizing: border-box;
+  display: inline-flex;
+  height: var(--size-touch);
+  justify-content: center;
+}
+
+.hitClose {
+  width: var(--size-touch);
+}
+
+.hitClose > svg {
+  background: var(--surface-2);
+  border-radius: var(--radius-full);
+  box-sizing: content-box;
+  color: var(--ink-3);
+  padding: 10px;
+}
+
+.hitCopy {
+  padding: 0 1px;
+}
+
+.hitNote {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+}
+
 /* A dialog or sheet drawn whole, on the map colour (set inline); a scrim sits behind a dialog. */
 .scrimmed {
   border-radius: var(--radius-panel);

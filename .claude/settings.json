@@ -8,8 +8,8 @@
             "type": "command"
           },
           {
-            "command": "git add -- $CLAUDE_FILE_PATHS 2>/dev/null; npx lint-staged",
-            "statusMessage": "Linting the edited file",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in \"$CLAUDE_PROJECT_DIR\"/*) cd \"$CLAUDE_PROJECT_DIR\" && case \"$f\" in *.js|*.jsx|*.mjs|*.mts|*.cjs|*.ts|*.tsx|*.json) node_modules/.bin/eslint --fix --no-warn-ignored \"$f\";; esac; node_modules/.bin/prettier --write --ignore-unknown \"$f\";; esac; exit 0",
+            "statusMessage": "Formatting the edited file",
             "timeout": 60,
             "type": "command"
           }

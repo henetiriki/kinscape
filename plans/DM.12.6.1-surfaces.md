@@ -2,7 +2,7 @@
 
 - **Spec:** #185 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ Board 07 draws four levels; the Spec names three.
 - **A.** Add `sheet` (top corners 18, `shadow.sheet`); the Spec's Surface line gains it.
 - **B.** Three; the kit draws the sheet in plain CSS.
 
-Recommended: A, because the check asks for every variant drawn.
+**Answer: A** (@henetiriki)
 
 **D2 · The large Notice card** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ Board 07 draws a large form (28 icon on top, H3 title, 380 wide); the Spec doesn
 - **A.** Build it as `size="large"`; the Spec's Notice card line gains it.
 - **B.** Leave it to the empty-tree screen Spec; the check excludes it.
 
-Recommended: A: it reuses every part.
+**Answer: A** (@henetiriki)
 
 **D3 · Button height on a phone** · Decides: Tech lead
 
@@ -39,14 +39,14 @@ The card's buttons are 40 on desktop, 44 on a phone.
 - **A.** The card renders Button S, or M under the phone breakpoint or with `phone` (the kit's phone sample).
 - **B.** `actions` is a `ReactNode`; callers pick sizes.
 
-Recommended: A, because the card then owns the sizes board 07 measures.
+**Answer: A** (@henetiriki)
 
 **D4 · Placing the Callout's pointer** · Decides: Tech lead
 
 - **A.** The caller places `CalloutPointer`; the date field keeps it on the field.
 - **B.** `Callout` takes `pointerAt`; the date field measures the field after layout.
 
-Recommended: A: no measuring, and the phone pointer e2e stays unchanged.
+**Answer: A** (@henetiriki)
 
 **D5 · The date field's callout look** · Decides: PO
 
@@ -55,14 +55,14 @@ Today's look is board 05's: padding 10 12, 13.5px, raised shadow. Board 07 and `
 - **A.** Board 07's look everywhere; the check reads "looks as board 07 draws it".
 - **B.** Today's look in the date field; only the kit shows board 07's.
 
-Recommended: A, because the newer boards agree.
+**Answer: A** (@henetiriki)
 
 **D6 · Progress bar easing** · Decides: Tech lead
 
 - **A.** `motion.popup` (160ms ease-out).
 - **B.** Never eases.
 
-Recommended: A, the shortest ease.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

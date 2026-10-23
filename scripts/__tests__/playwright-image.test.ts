@@ -1,30 +1,42 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const root = process.cwd();
 const read = (file: string) => readFileSync(join(root, file), 'utf8');
 
+const PIN = '.github/playwright-image';
 const IMAGE =
-  /mcr\.microsoft\.com\/playwright:v([^\s@-]+)-noble@sha256:[0-9a-f]{64}\b/g;
+  /^mcr\.microsoft\.com\/playwright:v([^\s@-]+)-noble@sha256:[0-9a-f]{64}$/;
 
-describe('the e2e container image', () => {
+describe('the Playwright container image', () => {
   const playwright: string = JSON.parse(read('package.json')).devDependencies[
     '@playwright/test'
   ];
-  const images = [...read('.github/workflows/ci.yml').matchAll(IMAGE)];
+  const image = read(PIN).trim();
 
-  it('is pinned by tag and digest, once, in ci.yml', () => {
+  it(`is pinned by tag and digest, alone on one line of ${PIN}`, () => {
     expect(
-      images,
-      'ci.yml needs one mcr.microsoft.com/playwright:v<version>-noble@sha256:<digest> image'
-    ).toHaveLength(1);
+      image,
+      `${PIN} needs one mcr.microsoft.com/playwright:v<version>-noble@sha256:<digest> line`
+    ).toMatch(IMAGE);
   });
 
   it('has the version of @playwright/test in package.json', () => {
     expect(
-      images[0]?.[1],
-      `Playwright image is v${images[0]?.[1]} but package.json pins @playwright/test ${playwright}: bump both together`
+      image.match(IMAGE)?.[1],
+      `Playwright image is ${image} but package.json pins @playwright/test ${playwright}: bump both together`
     ).toBe(playwright);
+  });
+
+  it.each(
+    readdirSync(join(root, '.github/workflows')).filter(file =>
+      file.endsWith('.yml')
+    )
+  )('is not named in %s, which reads it from the pin', file => {
+    expect(
+      read(`.github/workflows/${file}`),
+      `${file} must read the image from ${PIN}`
+    ).not.toContain('mcr.microsoft.com/playwright');
   });
 });

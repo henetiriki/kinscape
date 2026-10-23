@@ -1,0 +1,107 @@
+name: 'Design agent shots: HTML sources -> JPG snapshots'
+
+# Renders every design snapshot (design/*.jpg) in the Playwright image that the design check
+# runs in, and commits the JPGs that changed to the branch it was run on. Run it by hand from the
+# Actions tab (or `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a snapshot,
+# or when the design check fails on text edges. Nobody renders snapshots locally.
+#
+# The commit is pushed with the bot's token, so CI runs on it. A push never starts this workflow,
+# so it cannot loop. A run on a branch that has moved since is rejected, never forced.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One run per branch at a time; a second waits its turn.
+concurrency:
+  group: design-shots-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Refuses main and non-branches, then reads the Playwright image (see ci.yml).
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.pin.outputs.image }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Refuse main and non-branches
+        run: node scripts/design-shots-ci.mts guard
+        env:
+          REF: ${{ github.ref }}
+      - name: Read the image
+        id: pin
+        run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
+
+  # Renders the snapshots and fails if anything but design/*.jpg changed. Holds no token that can push.
+  render:
+    needs: setup
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.setup.outputs.image }}
+      options: --user 1001
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - name: Install dependencies
+        run: npm ci
+      - name: Render the snapshots
+        run: npm run design:shots
+      # Lists the JPGs that changed in the job summary.
+      - name: Check what changed
+        id: check
+        run: OUTPUT_FILE="$GITHUB_OUTPUT" SUMMARY_FILE="$GITHUB_STEP_SUMMARY" node scripts/design-shots-ci.mts check
+      - name: Upload the snapshots
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ steps.check.outputs.changed != '0' }}
+        with:
+          name: design-snapshots
+          path: design/*.jpg
+
+  # Commits the changed JPGs as the bot. Its token starts CI on the new commit.
+  commit:
+    needs: render
+    if: ${{ needs.render.outputs.changed != '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          token: ${{ secrets.KINSCAPE_BOT_PAT }}
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Download the snapshots
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: design-snapshots
+          path: design
+      - name: Check that only snapshots changed
+        run: node scripts/design-shots-ci.mts check
+      - name: Commit and push
+        run: |
+          git config user.name henetiriki-bot
+          git config user.email 344434370+henetiriki-bot@users.noreply.github.com
+          git add -- 'design/*.jpg'
+          git commit -m 'chore: render design snapshots'
+          git push origin "HEAD:$REF"
+        env:
+          REF: ${{ github.ref }}

@@ -40,6 +40,8 @@ Recommended: A, because the merged commit then reads like every other chore.
 
 Recommended: A, because the branch holds an approved plan the tech lead may build from.
 
+**Answer: A.**
+
 ## Files that change
 
 | File                                      | New / changed | What                                                              |

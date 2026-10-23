@@ -1,0 +1,105 @@
+/* Samples of the /design-kit/surfaces page; the layout is the Inputs and actions board's. */
+
+/* The map's sea colour is set inline from the map tokens. */
+.stage {
+  align-items: flex-start;
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-24);
+  padding: var(--space-24);
+}
+
+.tight {
+  padding: var(--space-16);
+}
+
+.level {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-16);
+  width: 260px;
+}
+
+.levelTitle {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.levelUsed {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+}
+
+.mono {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-ligatures: none;
+  line-height: 16px;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 300px;
+}
+
+.bar {
+  align-items: center;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.barLabel {
+  color: var(--ink-3);
+  flex: none;
+  font-size: var(--type-caption-size);
+  text-align: right;
+  width: 36px;
+}
+
+/* The callout and its pointer; the pointer is placed on the box's bottom edge. */
+.callout {
+  padding-bottom: var(--space-12);
+  position: relative;
+  width: 340px;
+}
+
+.phoneCallout {
+  width: 100%;
+}
+
+.pointer {
+  bottom: 7px;
+}
+
+.offset {
+  left: 136px;
+}
+
+.centred {
+  left: 50%;
+}
+
+.goTo {
+  composes: textLink from '../../components/TextLink.module.css';
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .stage,
+  .level,
+  .bars,
+  .callout {
+    max-width: 100%;
+    width: 100%;
+  }
+}

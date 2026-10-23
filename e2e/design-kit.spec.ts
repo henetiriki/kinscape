@@ -237,6 +237,11 @@ const BOARD_LINKS = [
     path: '/design-kit/inputs',
   },
   {
+    heading: 'Surfaces and overlays',
+    label: 'Surfaces',
+    path: '/design-kit/surfaces',
+  },
+  {
     heading: 'MapLibre layer stack',
     label: 'Map style',
     path: '/design-kit/map-style',
@@ -342,15 +347,15 @@ test.describe('the kit bar', () => {
       await expect(sheet(page)).toBeVisible();
     };
 
-    test('has seven rows, the current one tinted, and All boards', async ({
+    test('has eight rows, the current one tinted, and All boards', async ({
       page,
     }) => {
       await open(page);
 
       const links = sheet(page).getByRole('link');
 
-      await expect(links).toHaveCount(8);
-      await expect(links.nth(7)).toHaveText('All boards');
+      await expect(links).toHaveCount(9);
+      await expect(links.nth(8)).toHaveText('All boards');
       await expect(links.first()).toHaveAttribute('aria-current', 'page');
       await expect(links.first()).toHaveCSS(
         'background-color',

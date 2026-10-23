@@ -1,0 +1,27 @@
+/* The four levels of surface; other modules `composes:` the one they sit at. */
+.base {
+  background: var(--surface);
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+}
+
+.raised {
+  composes: base;
+  box-shadow: var(--shadow-raised);
+}
+
+.floating {
+  composes: base;
+  box-shadow: var(--shadow-floating);
+}
+
+.modal {
+  composes: base;
+  box-shadow: var(--shadow-modal);
+}
+
+.sheet {
+  composes: base;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  box-shadow: var(--shadow-sheet);
+}

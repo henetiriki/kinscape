@@ -1,0 +1,11 @@
+.wordmark {
+  align-items: center;
+  color: var(--ink);
+  display: inline-flex;
+  gap: var(--space-12);
+}
+
+.icon {
+  display: block;
+  flex: none;
+}

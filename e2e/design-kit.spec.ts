@@ -242,6 +242,11 @@ const BOARD_LINKS = [
     path: '/design-kit/surfaces',
   },
   {
+    heading: 'Map furniture',
+    label: 'Map furniture',
+    path: '/design-kit/map-furniture',
+  },
+  {
     heading: 'MapLibre layer stack',
     label: 'Map style',
     path: '/design-kit/map-style',
@@ -347,15 +352,15 @@ test.describe('the kit bar', () => {
       await expect(sheet(page)).toBeVisible();
     };
 
-    test('has eight rows, the current one tinted, and All boards', async ({
+    test('has nine rows, the current one tinted, and All boards', async ({
       page,
     }) => {
       await open(page);
 
       const links = sheet(page).getByRole('link');
 
-      await expect(links).toHaveCount(9);
-      await expect(links.nth(8)).toHaveText('All boards');
+      await expect(links).toHaveCount(10);
+      await expect(links.nth(9)).toHaveText('All boards');
       await expect(links.first()).toHaveAttribute('aria-current', 'page');
       await expect(links.first()).toHaveCSS(
         'background-color',

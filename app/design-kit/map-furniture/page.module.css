@@ -1,0 +1,98 @@
+/* Samples of the /design-kit/map-furniture page; the layout is the Inputs and actions board's. */
+
+/* The map's sea colour is set inline from the map tokens. */
+.stage {
+  align-items: flex-start;
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-24);
+  padding: var(--space-20);
+}
+
+/* The phone sign-in strip the 36px wordmark sits on. */
+.strip {
+  border-radius: var(--radius-panel);
+  display: inline-flex;
+  padding: var(--space-16);
+}
+
+.pillHolder {
+  max-width: 100%;
+  width: 358px;
+}
+
+.glyphGrid {
+  display: grid;
+  gap: var(--space-12);
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  width: 1296px;
+}
+
+.glyphCard {
+  align-items: center;
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-8);
+}
+
+.glyphSizes {
+  align-items: baseline;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.glyphName {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.inUse {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16);
+}
+
+.legendRow {
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.pinRow {
+  align-items: center;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 600;
+  gap: var(--space-12);
+  line-height: 20px;
+}
+
+.legendPanel {
+  width: 288px;
+}
+
+.legendSheet {
+  max-width: 100%;
+  width: 358px;
+}
+
+/* A phone: the glyph grid wraps to three columns and nothing is wider than the screen. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .stage,
+  .pillHolder,
+  .legendSheet {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .glyphGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+}

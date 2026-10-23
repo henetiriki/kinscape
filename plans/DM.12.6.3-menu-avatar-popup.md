@@ -2,7 +2,7 @@
 
 - **Spec:** #198 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,14 +20,14 @@ About 1,300 changed lines; the cap is 600. DM.12.6.1 and DM.12.6.2 merged at 1,4
 - **A.** One PR.
 - **B.** Split: Menu and Avatar here; Popup and `screens.json` in a new Spec.
 
-Recommended: B, as rule 7 asks.
+**Answer: A** (@henetiriki)
 
 **D2 · What Copy chain copies** · Decides: PO
 
 - **A.** A line per level, smallest first: `District: Kimberley`, `Colony: Cape Colony (Was Griqualand West until 1880)`.
 - **B.** Names on one line: `Kimberley, Cape Colony`.
 
-Recommended: A, because the level says what each name was.
+**Answer: A** (@henetiriki)
 
 **D3 · When copying fails** · Decides: PO
 
@@ -36,28 +36,28 @@ Nothing draws this.
 - **A.** Board 05's error Toast: "Couldn't copy the chain." with Try again.
 - **B.** Nothing shows.
 
-Recommended: A, or the user pastes old text.
+**Answer: A** (@henetiriki)
 
 **D4 · A popup with no pins** · Decides: PO
 
 - **A.** No pins box.
 - **B.** A "No pins here" line.
 
-Recommended: A, because the chain is the answer.
+**Answer: A** (@henetiriki)
 
 **D5 · Esc in a Menu inside a Dialog** · Decides: Tech lead
 
 - **A.** The Menu cancels the key and closes; a second Esc closes the Dialog.
 - **B.** Esc closes both.
 
-Recommended: A: innermost first, as popovers do.
+**Answer: A** (@henetiriki)
 
 **D6 · Who shows the Copy chain Toast** · Decides: Tech lead
 
 - **A.** Popup calls `onCopied(ok)`; the caller shows it, as the screen places Toasts.
 - **B.** Popup renders it.
 
-Recommended: A.
+**Answer: A** (@henetiriki)
 
 **D7 · The kit's live Menu** · Decides: Tech lead
 
@@ -66,7 +66,7 @@ A `menuitem` is valid only in a `menu`.
 - **A.** The drawn menu and item states are inert looks. The Avatar's Default cell opens a live Menu with the board's items; Sources and attributions opens the Sources dialog, the others only close.
 - **B.** As A, but every item only closes.
 
-Recommended: A, so e2e sees the second item activate.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

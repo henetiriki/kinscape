@@ -20,16 +20,16 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
   └──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-| Stage            | What happens                                                                                | Who decides                   |
-| ---------------- | ------------------------------------------------------------------------------------------- | ----------------------------- |
-| **Intent**       | A milestone's Intent issue, or a new idea the PO files                                      | PO                            |
-| **Design**       | Screens a user-visible Intent needs are designed in Claude Design and exported to `design/` | PO                            |
-| **Spec**         | Claude slices the Intent and flags decisions; an undesigned screen is a Flagged concern     | PO or tech lead (see _Spec_)  |
-| **Plan**         | Claude plans each Spec                                                                      | Tech lead                     |
-| **Build & test** | Claude writes code and tests; done only when checks pass                                    | Tech lead reviews             |
-| **Preview**      | Each pull request gets a preview link to try against the acceptance checks                  | One approval, PO or tech lead |
-| **Live**         | Merging to `main` deploys production; [rollback](building.md#live)                          | Tech lead merges              |
-| **Feedback**     | Bugs and ideas become issues                                                                | PO prioritises                |
+| Stage            | What happens                                                                                                                                                             | Who decides                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- |
+| **Intent**       | A milestone's Intent issue, or a new idea the PO files                                                                                                                   | PO                            |
+| **Design**       | Screens a user-visible Intent needs are designed in Claude Design, which exports only `design/source/*.html`; a [workflow](../design/DESIGN.md#screens) renders the JPGs | PO                            |
+| **Spec**         | Claude slices the Intent and flags decisions; an undesigned screen is a Flagged concern                                                                                  | PO or tech lead (see _Spec_)  |
+| **Plan**         | Claude plans each Spec                                                                                                                                                   | Tech lead                     |
+| **Build & test** | Claude writes code and tests; done only when checks pass                                                                                                                 | Tech lead reviews             |
+| **Preview**      | Each pull request gets a preview link to try against the acceptance checks                                                                                               | One approval, PO or tech lead |
+| **Live**         | Merging to `main` deploys production; [rollback](building.md#live)                                                                                                       | Tech lead merges              |
+| **Feedback**     | Bugs and ideas become issues                                                                                                                                             | PO prioritises                |
 
 ## Which issue do I need?
 

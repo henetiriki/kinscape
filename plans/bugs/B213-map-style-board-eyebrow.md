@@ -2,7 +2,7 @@
 
 - **Spec:** #213 (Bug; board built in DM.11, #151)
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@
 - **B.** Add `boardEyebrow(slug)` beside `boardTitle` in `boards.ts` and read it on this page only, so the page and the kit menu can't drift apart.
 - **Other:** your own.
 
-Recommended: A, because it matches the sibling boards and is the smallest fix. Moving every board onto `BOARDS` would be a separate chore.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

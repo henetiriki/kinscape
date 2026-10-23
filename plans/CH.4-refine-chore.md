@@ -2,7 +2,7 @@
 
 - **Spec:** #194
 - **Requirement IDs:** none (process change)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -33,7 +33,9 @@ The skill is interactive and `disable-model-invocation: true`, so the build agen
 - **B.** As A, and the build agent also follows `chore.md` by hand, answering its own questions, and pastes the transcript.
 - **Other:** your own.
 
-Recommended: A, because a self-answered interview proves the wording, not the questioning.
+Recommended: A: a self-answered interview proves wording, not questioning.
+
+**Answer: Other.** The tech lead tests it when next needed; a Bug covers fixes. The build agent only runs `form-link.mjs`.
 
 ## Files that change
 
@@ -54,7 +56,7 @@ Recommended: A, because a self-answered interview proves the wording, not the qu
 ## Risks
 
 - **Word budgets:** if `how-we-work.md` is still over, trim more in the same file and add a line under _Deviations_.
-- **Screen is advice:** a missed path is still caught by CH.3's hand-back and the CODEOWNERS review.
+- **Screen is advice:** CH.3's hand-back and CODEOWNERS review still catch a missed path.
 
 ## Proof
 

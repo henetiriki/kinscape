@@ -2,6 +2,8 @@
 
 A map of South Africa from 1652 to today. Historical boundaries redraw as a date slider moves, and the user's ancestors are pinned where they were at the time.
 
+<!-- -->
+
 Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
 
 ## Source of truth

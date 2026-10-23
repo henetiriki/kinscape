@@ -126,6 +126,7 @@ jobs:
           claude_args: >-
             ${{ (github.event.issue.draft || github.event.pull_request.draft) && '--model opus --effort high' || '--model sonnet' }}
             --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"
+            --disallowed-tools "Agent"
             --append-system-prompt "Run each allowed command on its own: no pipes, &&, heredocs or temp files.
             Pass a PR body inline: gh pr edit <n> --body '<text>' (single quotes, so backticks stay literal).
             If npm run e2e or npm run design:check fails because Chromium is missing,

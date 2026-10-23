@@ -62,7 +62,7 @@ env:
     and `npm test -- --coverage.enabled=false <path>`, not `npx`, `node -e`, `python3` or `bash -n`.
     Don't write outside the repo (no `/tmp`).
     Pass PR and issue bodies as `--body-file - <<'EOF' … EOF`, never inline `--body`.
-    Run commands in the foreground and never end your turn to wait.
+    Run commands in the foreground, don't start subagents, and never end your turn to wait: the run ends when your turn does.
     If a command is denied, name it in your comment.
 
 jobs:
@@ -152,7 +152,7 @@ jobs:
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
           # The allowed tools let Claude edit files and run npm scripts, git, and GitHub commands.
-          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
+          claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)" --disallowed-tools "Agent"'
 
       # The Actions log can stop at an image read and lose the final result; the full output survives here.
       - name: Upload Claude's output

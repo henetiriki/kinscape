@@ -1,0 +1,7 @@
+AGENTS.md @henetiriki
+CLAUDE.md @henetiriki
+.claude/settings*.json @henetiriki
+scripts/setup-github.sh @henetiriki
+scripts/github/** @henetiriki
+.github/workflows/claude*.yml @henetiriki
+.github/CODEOWNERS @henetiriki

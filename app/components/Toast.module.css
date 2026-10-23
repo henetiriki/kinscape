@@ -1,7 +1,6 @@
 /* The 48px shape a Toast and a Banner share */
 .shape {
   align-items: center;
-  border-radius: var(--radius-panel);
   box-sizing: border-box;
   display: flex;
   font-family: var(--font-body);
@@ -35,9 +34,8 @@
 }
 
 .toast {
-  background: var(--surface);
+  composes: floating from './Surface.module.css';
   border: 1px solid var(--line);
-  box-shadow: var(--shadow-floating);
 }
 
 /* A success toast has no button, so it keeps the left padding on both sides. */
@@ -60,6 +58,7 @@
 
 .banner {
   background: var(--ink);
+  border-radius: var(--radius-panel);
   color: var(--white);
 }
 

@@ -27,6 +27,22 @@ it('announces an error alert at once and the other tones politely', () => {
   ]);
 });
 
+it('renders an untitled alert as the message alone, with the same role and class', () => {
+  render(
+    <>
+      <Alert title='Title' tone='error'>
+        Titled
+      </Alert>
+      <Alert tone='error'>Untitled</Alert>
+    </>
+  );
+
+  const [titled, untitled] = screen.getAllByRole('alert');
+
+  expect(untitled.textContent).toBe('Untitled');
+  expect(untitled.className).toBe(titled.className);
+});
+
 it('announces a banner at once and runs its one action', () => {
   const calls: string[] = [];
 

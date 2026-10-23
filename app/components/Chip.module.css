@@ -87,3 +87,69 @@
   background: var(--segment);
   border-color: var(--line-strong);
 }
+
+/* A chosen value: 30px, brand tint, with a 26px × inside a 44px hit area. */
+.removable {
+  align-items: center;
+  background: var(--brand-tint);
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  color: var(--brand-hover);
+  display: inline-flex;
+  font-family: var(--font-body);
+  font-size: var(--type-chip-size);
+  font-weight: var(--type-chip-weight);
+  gap: var(--space-4);
+  height: 30px;
+  line-height: var(--type-chip-line);
+  padding: 0 var(--space-4) 0 var(--space-12);
+}
+
+.removable[data-disabled] {
+  background: var(--segment);
+  color: var(--ink-disabled);
+}
+
+.remove {
+  composes: ring from './focus.module.css';
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-full);
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  height: 26px;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  width: 26px;
+}
+
+.remove::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: var(--size-touch);
+}
+
+@media (hover: hover) {
+  .remove:hover:not(:disabled) {
+    background: var(--brand-tint-hover);
+  }
+}
+
+.remove[data-state='hover']:not(:disabled) {
+  background: var(--brand-tint-hover);
+}
+
+.remove:active:not(:disabled) {
+  background: var(--brand-tint-pressed);
+}
+
+.remove:disabled {
+  cursor: default;
+}

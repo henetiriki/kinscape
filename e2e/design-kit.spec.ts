@@ -15,15 +15,16 @@ test('Tab visits each enabled control with a 2px brand ring, and skips the disab
 }) => {
   await page.goto('/design-kit/states');
 
-  const expected = await page
-    .locator(REAL_CONTROLS)
-    .evaluateAll(
-      nodes =>
-        nodes.filter(
-          node =>
-            !(node as HTMLButtonElement).disabled && node.checkVisibility()
-        ).length
-    );
+  const expected = await page.locator(REAL_CONTROLS).evaluateAll(
+    nodes =>
+      nodes.filter(
+        node =>
+          !(node as HTMLButtonElement).disabled &&
+          node.checkVisibility() &&
+          // Only the selected tab of a tab list is in the tab order.
+          (node as HTMLElement).tabIndex >= 0
+      ).length
+  );
 
   // The two radios of the Segmented control share one tab stop.
   const stops = expected - 1;
@@ -231,6 +232,11 @@ const BOARD_LINKS = [
     path: '/design-kit/feedback',
   },
   {
+    heading: 'Inputs and actions',
+    label: 'Inputs and actions',
+    path: '/design-kit/inputs',
+  },
+  {
     heading: 'MapLibre layer stack',
     label: 'Map style',
     path: '/design-kit/map-style',
@@ -336,15 +342,15 @@ test.describe('the kit bar', () => {
       await expect(sheet(page)).toBeVisible();
     };
 
-    test('has six rows, the current one tinted, and All boards', async ({
+    test('has seven rows, the current one tinted, and All boards', async ({
       page,
     }) => {
       await open(page);
 
       const links = sheet(page).getByRole('link');
 
-      await expect(links).toHaveCount(7);
-      await expect(links.nth(6)).toHaveText('All boards');
+      await expect(links).toHaveCount(8);
+      await expect(links.nth(7)).toHaveText('All boards');
       await expect(links.first()).toHaveAttribute('aria-current', 'page');
       await expect(links.first()).toHaveCSS(
         'background-color',
@@ -715,7 +721,7 @@ test.describe('the boards on a phone', () => {
     ['390 wide', { height: 844, width: 390 }],
     ['800 by 450', { height: 450, width: 800 }],
   ] as const) {
-    for (const board of ['type', 'states', 'feedback']) {
+    for (const board of ['type', 'states', 'feedback', 'inputs']) {
       test(`${board} at ${name} does not scroll sideways`, async ({ page }) => {
         await page.setViewportSize(size);
         await page.goto(`/design-kit/${board}`);
@@ -733,7 +739,7 @@ test.describe('the boards on a phone', () => {
   test.describe('at 390 wide', () => {
     test.use({ viewport: { height: 844, width: 390 } });
 
-    for (const board of ['type', 'states', 'feedback']) {
+    for (const board of ['type', 'states', 'feedback', 'inputs']) {
       test(`${board} is one column inside 16px gutters`, async ({ page }) => {
         await page.goto(`/design-kit/${board}`);
 

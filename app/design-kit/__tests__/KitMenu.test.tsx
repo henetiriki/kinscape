@@ -27,7 +27,7 @@ it('has a Boards button that announces a dialog', () => {
   ).toBe('dialog');
 });
 
-it('opens a dialog named Boards with six rows in order and All boards', () => {
+it('opens a dialog named Boards with seven rows in order and All boards', () => {
   render(<KitMenu />);
   fireEvent.click(screen.getByRole('button', { name: 'Boards' }));
 
@@ -47,6 +47,7 @@ it('opens a dialog named Boards with six rows in order and All boards', () => {
     ],
     ['Style guide · 04Component states', '/design-kit/states'],
     ['Style guide · 05Feedback and validation', '/design-kit/feedback'],
+    ['Style guide · 06Inputs and actions', '/design-kit/inputs'],
     ['Map styleMapLibre layer stack', '/design-kit/map-style'],
     ['All boards', '/design-kit'],
   ]);

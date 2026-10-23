@@ -20,16 +20,12 @@
 - **A.** The DESIGN.md character plus U+FE0E (never emoji), sized 12, 14 or 16px, as the board draws it.
 - **B.** An SVG per glyph: the same on every OS, but unlike the snapshot.
 
-Recommended: A, because it matches the snapshot and DESIGN.md.
-
 Answer: A
 
 **D2 · The "/" shortcut** · Decides: Tech lead
 
 - **A.** A `shortcut` prop sets `aria-keyshortcuts` and focuses the field on "/" unless a text input has focus. The kit sets it on one field.
 - **B.** Attribute and hint only; screen Specs wire the key.
-
-Recommended: A, because otherwise the attribute names a key that does nothing.
 
 Answer: A
 
@@ -38,16 +34,12 @@ Answer: A
 - **A.** The trimmed text; nothing if it is empty or already there (any case).
 - **B.** Whatever was typed.
 
-Recommended: A, because a repeat filters nothing.
-
 Answer: A
 
 **D4 · Arrow keys at the last tab** · Decides: Tech lead
 
 - **A.** Wrap to the other end, as the ARIA practices do.
 - **B.** Stop.
-
-Recommended: A, because screen reader users expect it.
 
 Answer: A
 
@@ -70,6 +62,12 @@ Answer: A
 1. Token, icons, EventGlyph, Divider, KeyHint, Alert.
 2. Button, Tabs, CheckboxField, TextField, SelectField, Chip, TokenField, each with tests.
 3. Kit page, boards, screens.json, e2e; then the AGENTS.md checks, design check and build.
+
+## Deviations
+
+- Button S also gets the 44px hit area; inputs reach over their border.
+- `KeyHint` takes `decorative`; the dock hint is not hidden.
+- Kit page split into `Board.tsx` and `sections.tsx`.
 
 ## Risks
 

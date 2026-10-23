@@ -7,7 +7,7 @@ import { Icon, type IconSize } from '../Icon';
 const svgOf = (container: HTMLElement) => container.querySelector('svg')!;
 
 // NFR-06
-it.each([16, 18, 20, 24] as IconSize[])('draws at size %i', size => {
+it.each([14, 16, 18, 20, 24] as IconSize[])('draws at size %i', size => {
   const svg = svgOf(render(<Icon name='search' size={size} />).container);
 
   expect(svg.getAttribute('width')).toBe(String(size));
@@ -32,7 +32,7 @@ it.each(ICONS.map(icon => icon.name))(
   }
 );
 
-it.each(['error', 'warning'] as const)('%s draws at stroke 2', name => {
+it.each(ICONS.map(icon => icon.name))('%s draws at stroke 2', name => {
   const svg = svgOf(render(<Icon name={name} />).container);
 
   expect(svg.getAttribute('stroke-width')).toBe('2');

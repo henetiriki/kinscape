@@ -39,6 +39,13 @@ export const BOARDS = [
     title: 'Feedback and validation',
   },
   {
+    eyebrow: 'Style guide · 06',
+    label: 'Inputs and actions',
+    line: 'Buttons, fields, chips, tabs, checkbox rows, alerts, dividers and key hints.',
+    slug: 'inputs',
+    title: 'Inputs and actions',
+  },
+  {
     eyebrow: 'Map style',
     label: 'Map style',
     line: 'Every layer drawn on the map, bottom to top, with the paint values it uses.',

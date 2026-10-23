@@ -103,6 +103,11 @@ jobs:
   e2e:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
+    # The image has the browser and its system packages. Its version must match @playwright/test
+    # (scripts/__tests__/playwright-image.test.ts); bump the tag and digest together.
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:47b510dd9230bf0b9bfc9b20102241e577ea7a99334ab4c3ca19f19770e9b8ea
+      options: --user 1001
     steps:
       - name: Check out code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -113,24 +118,12 @@ jobs:
           node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
-      # Keep the browser between runs: a cache hit skips the download, not the system packages.
-      - name: Read Playwright version
-        id: playwright
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - name: Cache Playwright browser
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
-          path: ~/.cache/ms-playwright
-      # One retry, 3.5 minutes each: an apt or CDN stall can hang the install.
-      - name: Install Playwright
-        run: timeout 210 npm run e2e:install || timeout 210 npm run e2e:install
       # Keep Next.js's build cache. A source change still restores the last build for the same lockfile.
       - name: Cache Next.js build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'lib/**', 'data/**', 'types/**', 'next.config.ts') }}
-          path: ${{ github.workspace }}/.next/cache
+          path: .next/cache
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
       - name: Run end-to-end tests
         run: npm run e2e

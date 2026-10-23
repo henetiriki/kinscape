@@ -12,10 +12,12 @@
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings 0",
     "map:prepare": "node scripts/prepare-map-data.mts",
+    "plan-approve": "node scripts/approve-plan.mts",
     "prepare": "husky",
     "start": "next start",
     "test": "vitest run --coverage",
     "tokens": "node scripts/tokens.mts",
+    "typecheck": "next typegen && tsc --noEmit",
     "validate:boundaries": "node scripts/validate-boundaries.mts",
     "words": "node scripts/word-count.mts"
   },

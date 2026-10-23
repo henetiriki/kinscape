@@ -1,4 +1,5 @@
 package-lock.json
+.claude-pr
 .next
 node_modules
 next-env.d.ts

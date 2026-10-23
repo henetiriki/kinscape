@@ -46,6 +46,13 @@ export const BOARDS = [
     title: 'Inputs and actions',
   },
   {
+    eyebrow: 'Style guide · 07',
+    label: 'Surfaces',
+    line: 'The surface levels, notice cards, progress bar and the date callout.',
+    slug: 'surfaces',
+    title: 'Surfaces and overlays',
+  },
+  {
     eyebrow: 'Map style',
     label: 'Map style',
     line: 'Every layer drawn on the map, bottom to top, with the paint values it uses.',

@@ -106,7 +106,7 @@ const MARKS = {
 export type FilledIconName = keyof typeof MARKS;
 export type IconName = keyof typeof PATHS;
 
-export type IconSize = 14 | 16 | 18 | 20 | 24;
+export type IconSize = 14 | 16 | 18 | 20 | 24 | 28;
 
 /** A decorative icon (18px unless sized) in the current colour; the words beside it carry the meaning. */
 export const Icon = ({

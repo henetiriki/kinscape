@@ -64,6 +64,11 @@ Today's look is board 05's: padding 10 12, 13.5px, raised shadow. Board 07 and `
 
 **Answer: A** (@henetiriki)
 
+## Deviations
+
+- D3: the card renders Button S and sets 44 in CSS (breakpoint or `phone`).
+- `IconSize` gains 28 for the large card.
+
 ## Files that change
 
 | File                                                        | New / changed | What                        |

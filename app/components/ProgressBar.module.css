@@ -1,0 +1,21 @@
+.track {
+  background: var(--line);
+  border-radius: 3px;
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.fill {
+  background: var(--brand);
+  border-radius: 3px;
+  display: block;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fill {
+    transition: width var(--motion-popup);
+  }
+}

@@ -7,6 +7,7 @@ import { type Precision, shownDate } from '@/lib/map/map-date';
 
 import type { ControlState } from './controls';
 
+import { Callout, CalloutPointer } from './Callout';
 import styles from './DateField.module.css';
 import { Text, type Tone } from './Text';
 import { TextField } from './TextField';
@@ -119,14 +120,14 @@ export const DateField = ({
             state={state}
             value={text}
           />
-          {problem && above && <span aria-hidden className={styles.pointer} />}
+          {problem && above && <CalloutPointer className={styles.pointer} />}
         </span>
         {after}
         {problem && above && (
-          <div className={styles.callout} id={messageId} role='alert'>
+          <Callout className={styles.callout} id={messageId}>
             <strong>{problem.message}</strong> The map still shows {shown}.
             Press Esc to go back to it.
-          </div>
+          </Callout>
         )}
       </div>
       {problem && !above && (

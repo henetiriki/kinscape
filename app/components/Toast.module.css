@@ -63,13 +63,10 @@
 }
 
 .bannerAction {
+  composes: ringOnDark from './focus.module.css';
   background: transparent;
   border-color: color-mix(in srgb, var(--white) 45%, transparent);
   color: var(--white);
-}
-
-.bannerAction:is(:focus-visible, [data-state='focus']) {
-  outline-color: var(--focus-ring-on-dark);
 }
 
 @keyframes rise {

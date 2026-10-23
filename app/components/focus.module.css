@@ -5,6 +5,11 @@
   outline-offset: var(--focus-offset);
 }
 
+/* Added beside `ring` on a dark surface. It follows `ring` in this file, so it wins whatever order the stylesheets load in. */
+.ringOnDark:is(:focus-visible, [data-state='focus']) {
+  outline-color: var(--focus-ring-on-dark);
+}
+
 /* For a control that holds the focusable element, such as a Segmented label around its radio. */
 .ringWithin:is(:has(:focus-visible), [data-state='focus']) {
   outline: var(--focus-width) solid var(--focus-ring);

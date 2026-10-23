@@ -128,6 +128,20 @@
       "width": 390
     },
     {
+      "height": 7892,
+      "mode": "report",
+      "name": "style-7-components-surfaces",
+      "route": "/design-kit/surfaces",
+      "width": 1440
+    },
+    {
+      "height": 6712,
+      "mode": "report",
+      "name": "style-7-components-surfaces-2-phone",
+      "route": "/design-kit/surfaces?part=2",
+      "width": 390
+    },
+    {
       "height": 4872,
       "mode": "report",
       "name": "map-style-phone",

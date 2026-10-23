@@ -9,7 +9,9 @@ import kit from '../kit.module.css';
 import {
   Callouts,
   Dialogs,
+  Menus,
   NoticeCards,
+  Popups,
   ProgressBars,
   SheetHeaders,
   Surfaces,
@@ -24,7 +26,7 @@ const OTHER_PART = {
   },
   2: {
     href: '/design-kit/surfaces?part=2',
-    text: 'Part 2: phone sheet headers, callout',
+    text: 'Part 2: phone sheet headers, menu, popup, callout',
   },
 } as const;
 
@@ -39,6 +41,7 @@ const SurfacesKit = async ({
 }) => {
   const part = (await searchParams).part === '2' ? 2 : 1;
   const other = OTHER_PART[part === 1 ? 2 : 1];
+  const { sources } = loadAppData();
 
   return (
     <main className={styles.kit} data-part={part}>
@@ -63,8 +66,10 @@ const SurfacesKit = async ({
       <Surfaces />
       <NoticeCards />
       <ProgressBars />
-      <Dialogs sources={loadAppData().sources} />
+      <Dialogs sources={sources} />
       <SheetHeaders />
+      <Menus sources={sources} />
+      <Popups />
       <Callouts />
     </main>
   );

@@ -7,7 +7,7 @@ const show = async (part?: string | string[]) =>
   render(await SurfacesKit({ searchParams: Promise.resolve({ part }) }));
 
 // NFR-06
-it('shows the six sections in board order, each with Measurements and Accessibility', async () => {
+it('shows the eight sections in board order, each with Measurements and Accessibility', async () => {
   await show();
 
   expect(
@@ -24,11 +24,17 @@ it('shows the six sections in board order, each with Measurements and Accessibil
     'Progress bar',
     'Dialog',
     'Phone sheet header',
+    'Menu',
+    'Popup',
     'Callout',
   ]);
   expect(
-    screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
-  ).toEqual(Array(6).fill(['Measurements', 'Accessibility']).flat());
+    // The Popup samples carry their own place name, an h3 too.
+    screen
+      .getAllByRole('heading', { level: 3 })
+      .map(h => h.textContent)
+      .filter(text => text === 'Measurements' || text === 'Accessibility')
+  ).toEqual(Array(8).fill(['Measurements', 'Accessibility']).flat());
 });
 
 it('draws every variant board 07 shows, in the order drawn', async () => {
@@ -86,6 +92,41 @@ it('draws every variant board 07 shows, in the order drawn', async () => {
     )
   ).toEqual(['title', 'tabs', 'subtitle']);
 
+  const menu = screen.getByRole('region', { name: 'Menu' });
+
+  // The drawn menu is only a look; the matrices show every state of an item and of the Avatar.
+  expect(menu.querySelector('[inert] [role=menu]')).toBeTruthy();
+  expect(
+    within(menu)
+      .getByRole('figure', { name: 'Menu item states' })
+      .querySelectorAll('[role=menuitem]').length
+  ).toBe(10);
+  expect(
+    [
+      ...within(menu)
+        .getByRole('figure', { name: 'Avatar states' })
+        .querySelectorAll('[data-state], [aria-expanded]'),
+    ].map(avatar => avatar.getAttribute('data-state'))
+  ).toEqual([null, 'hover', 'focus', 'active']);
+  expect(
+    within(menu)
+      .getByRole('figure', { name: 'Avatar states' })
+      .textContent?.includes('Open')
+  ).toBe(true);
+
+  const popup = screen.getByRole('region', { name: 'Popup' });
+
+  expect(
+    within(popup).getByRole('dialog', { name: 'Jurisdiction at this point' })
+  ).toBeTruthy();
+  expect(popup.querySelectorAll('[data-desktop]').length).toBe(2);
+  expect(
+    within(popup).getByRole('region', { name: 'On this spot in 1901' })
+  ).toBeTruthy();
+  expect(
+    [...popup.querySelectorAll('ol')].map(list => list.children.length)
+  ).toEqual([2, 2]);
+
   const callouts = within(
     screen.getByRole('region', { name: 'Callout' })
   ).getAllByRole('alert');
@@ -102,7 +143,9 @@ it('splits into two parts on a phone, with a link to the other', async () => {
   expect(screen.getByRole('main').getAttribute('data-part')).toBe('1');
   expect(
     screen
-      .getByRole('link', { name: 'Part 2: phone sheet headers, callout' })
+      .getByRole('link', {
+        name: 'Part 2: phone sheet headers, menu, popup, callout',
+      })
       .getAttribute('href')
   ).toBe('/design-kit/surfaces?part=2');
   expect(

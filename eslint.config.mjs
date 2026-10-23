@@ -9,6 +9,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   globalIgnores([
+    '.claude-pr/**',
     '.claude/worktrees/**',
     '.next/**',
     'coverage/**',

@@ -87,7 +87,8 @@ jobs:
       PROMPT: >-
         Pick up Spec, Bug or Chore #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
         A Spec's id is on the Spec (`M1.4`) and its branch is spec/<id>-<slug>.
-        A Bug's id is B${{ github.event.issue.number }} and its branch is bug/B${{ github.event.issue.number }}-<slug>.
+        A Bug's id is B${{ github.event.issue.number }}, its branch is bug/B${{ github.event.issue.number }}-<slug>
+        and its plan is plans/bugs/B${{ github.event.issue.number }}-<slug>.md.
         A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
         and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back as plans/README.md rule 4 says.
         Write each open choice as a decision in the format in docs/how-we-work.md.

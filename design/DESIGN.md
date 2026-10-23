@@ -213,7 +213,7 @@ NFR-08 requires every source to be credited in the app. The design fixes the for
 
 - One sources file in the repo lists each source: layer, title, author, licence, licence link, attribution text and the date it was checked. A source isn't added to the map until its licence is checked.
 - The credits line under the date dock joins the attribution text of the sources on screen with " · " and ends with an "Attributions" link. 11px, `--credits`.
-- The "Sources and attributions" dialog, opened from that link or the account menu, lists every source as layer, source, licence and date checked.
+- The "Sources and attributions" dialog, opened from that link or the account menu, lists every source as layer, source (with its detail line), licence and date checked.
 - The mockups show `[Source]` and `[Licence]` until the checks are done. Don't fill them in with guesses.
 
 ## Event glyphs

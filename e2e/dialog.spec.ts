@@ -42,6 +42,47 @@ test.describe('on a desktop', () => {
     ).toBeFocused();
   });
 
+  test('licence links are small Links; the head stays while the body scrolls', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 600, width: 1280 });
+
+    const dialog = await open(page);
+    const link = dialog.getByRole('table').getByRole('link').first();
+    const style = await link.evaluate(node => {
+      const { fontSize, fontWeight, lineHeight, textDecorationLine } =
+        getComputedStyle(node);
+
+      return { fontSize, fontWeight, lineHeight, textDecorationLine };
+    });
+
+    expect(style).toEqual({
+      fontSize: '13px',
+      fontWeight: '500',
+      lineHeight: '20px',
+      textDecorationLine: 'underline',
+    });
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', 'noreferrer');
+
+    const title = dialog.getByRole('heading', {
+      name: 'Sources and attributions',
+    });
+    const before = (await title.boundingBox())!;
+
+    await dialog
+      .getByRole('table')
+      .getByRole('row')
+      .last()
+      .scrollIntoViewIfNeeded();
+    expect((await title.boundingBox())!.y).toBe(before.y);
+    expect(
+      await dialog
+        .locator('[data-form] > :last-child')
+        .evaluate(node => node.scrollTop)
+    ).toBeGreaterThan(0);
+  });
+
   test('a click on the scrim closes it', async ({ page }) => {
     const dialog = await open(page);
 
@@ -65,6 +106,12 @@ test.describe('on a phone', () => {
     expect(Math.round(box.width)).toBe(390);
     await expect(dialog.getByRole('list')).toBeVisible();
     await expect(dialog.getByRole('table')).toBeHidden();
+    await expect(dialog.locator('[data-form] > span').first()).toBeVisible();
+    // Each item reads layer, then source, licence and date, then detail.
+    const item = dialog.getByRole('listitem').first();
+
+    await expect(item.locator('> *')).toHaveCount(3);
+    await expect(item.locator('> *').nth(1).getByRole('link')).toBeVisible();
 
     await dialog.locator('ul').evaluate(node => node.scrollIntoView(false));
     await dialog.evaluate(node => {

@@ -28,13 +28,14 @@ it('shows the eight sections in board order, each with Measurements and Accessib
     'Popup',
     'Callout',
   ]);
-  expect(
-    // The Popup samples carry their own place name, an h3 too.
-    screen
-      .getAllByRole('heading', { level: 3 })
-      .map(h => h.textContent)
-      .filter(text => text === 'Measurements' || text === 'Accessibility')
-  ).toEqual(Array(8).fill(['Measurements', 'Accessibility']).flat());
+  // The Popup samples carry their own place name, an h3 too.
+  const facts = screen
+    .getAllByRole('heading', { level: 3 })
+    .map(h => h.textContent)
+    .filter(text => text === 'Measurements' || text === 'Accessibility');
+
+  expect(facts.filter(text => text === 'Measurements').length).toBe(8);
+  expect(facts.filter(text => text === 'Accessibility').length).toBe(8);
 });
 
 it('draws every variant board 07 shows, in the order drawn', async () => {
@@ -83,6 +84,21 @@ it('draws every variant board 07 shows, in the order drawn', async () => {
   expect(
     within(dialog).getAllByRole('link', { name: 'Public domain' }).length
   ).toBeGreaterThan(0);
+  // One sample per board: the centred dialog on a desktop, the sheet on a phone.
+  expect(
+    [...dialog.querySelectorAll('figure')].map(figure => [
+      figure.hasAttribute('data-desktop'),
+      figure.hasAttribute('data-phone'),
+    ])
+  ).toEqual([
+    [true, false],
+    [false, true],
+  ]);
+  expect(
+    within(
+      within(dialog).getByRole('table', { name: 'Dialog measurements' })
+    ).getAllByRole('row').length
+  ).toBe(10);
 
   const heads = screen.getByRole('region', { name: 'Phone sheet header' });
 

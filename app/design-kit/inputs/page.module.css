@@ -66,6 +66,10 @@
   min-width: 0;
 }
 
+.variant[data-phone] {
+  display: none;
+}
+
 .sample {
   align-items: flex-start;
   display: flex;
@@ -255,6 +259,10 @@
   font-weight: 600;
 }
 
+.table[data-wide] .fact {
+  grid-template-columns: 150px minmax(0, 1fr) 480px;
+}
+
 .definition {
   color: var(--ink-2);
   margin: 0;
@@ -318,6 +326,14 @@
   .columns,
   .variant[data-desktop] {
     display: none;
+  }
+
+  .variant[data-phone] {
+    display: flex;
+  }
+
+  .table[data-wide] .fact {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .row {

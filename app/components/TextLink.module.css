@@ -11,6 +11,11 @@
   text-underline-offset: 3px;
 }
 
+.textLink[data-size='small'] {
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+}
+
 @media (hover: hover) {
   .textLink:hover {
     color: var(--brand-hover);

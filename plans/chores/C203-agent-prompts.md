@@ -5,7 +5,7 @@
 
 ## Approach
 
-The rules both prompts share move to one workflow-level `RULES` env var, which `Run Claude Code` appends to each job's `PROMPT`. `RULES` holds the `--body-file` rule, the four new rules, and the foreground and denied-command lines both prompts repeat. A new `if: always()` step uploads the execution output with the SHA-pinned `upload-artifact` that `ci.yml` uses, 14-day retention. The hook reads `tool_input.file_path` with `jq` and skips paths outside `$CLAUDE_PROJECT_DIR`. It runs `eslint --fix --no-warn-ignored` for lint-staged's extensions, then `prettier --write --ignore-unknown`, from `node_modules/.bin`.
+The rules both prompts share move to one workflow-level `RULES` env var, which `Run Claude Code` appends to each job's `PROMPT`. `RULES` holds the `--body-file` rule, the four new rules, and the foreground and denied-command lines both prompts repeat. A new `if: always()` step uploads the execution output (pinned `upload-artifact` as in `ci.yml`, 14 days). The hook reads `tool_input.file_path` with `jq` and skips paths outside `$CLAUDE_PROJECT_DIR`. It runs `eslint --fix --no-warn-ignored` for lint-staged's extensions, then `prettier --write --ignore-unknown`.
 
 ## Decisions
 
@@ -29,6 +29,7 @@ The rules both prompts share move to one workflow-level `RULES` env var, which `
 | ----------------------------------------- | ------------- | ---------------------------------- |
 | `.github/workflows/claude-spec-agent.yml` | Changed       | `RULES`, prompt lines, upload step |
 | `.claude/settings.json`                   | Changed       | Format hook replaces lint-staged   |
+| `.lintstagedrc.json`                      | Changed       | `eslint` before `prettier`         |
 
 ## Order of work
 
@@ -42,12 +43,12 @@ The rules both prompts share move to one workflow-level `RULES` env var, which `
 | ------------------------------------------- | --------------------------------------------- |
 | Unformatted `.md`, mis-ordered `.tsx` fixed | Write each in a session; hook JSON piped in   |
 | Path outside the repo skipped               | Hook JSON with a `/tmp` path                  |
-| Workflow valid                              | `actionlint`, if installed; the PR's checks   |
+| Workflow valid, prompts read correctly      | The parsed workflow YAML; the PR's checks     |
 | Targeted test run passes                    | `npm test -- --coverage.enabled=false <file>` |
-| Resolved prompts read correctly             | The parsed workflow YAML                      |
 | No denials, artifact listed, `##` kept      | The next plan and build runs after merge      |
 | Lint, format, words                         | Their output                                  |
 
 ## Deviations
 
-- `eslint --fix` runs before `prettier`, so the file ends formatted; targeted tests need `--coverage.enabled=false`; `RULES` bans writes outside the repo.
+- The hook and `.lintstagedrc.json` run `eslint --fix` before `prettier`; the other order left `.tsx` files failing `format:check`.
+- Targeted tests need `--coverage.enabled=false`; `RULES` bans writes outside the repo.

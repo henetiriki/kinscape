@@ -31,9 +31,12 @@ export const SHADOWS = [
 export const ICONS = [
   { label: 'search', name: 'search' },
   { label: 'zoom in', name: 'zoomIn' },
+  { label: 'zoom out', name: 'zoomOut' },
   { label: 'fit', name: 'fit' },
   { label: 'layers', name: 'layers' },
   { label: 'back', name: 'back' },
+  { label: 'forward', name: 'forward' },
+  { label: 'chevron down', name: 'chevronDown' },
   { label: 'play', name: 'play' },
   { label: 'close', name: 'close' },
   { label: 'copy', name: 'copy' },
@@ -41,6 +44,10 @@ export const ICONS = [
   { label: 'alert', name: 'alert' },
   { label: 'done', name: 'done' },
   { label: 'export', name: 'export' },
+  { label: 'document', name: 'document' },
+  { label: 'sign out', name: 'signOut' },
+  { label: 'eye', name: 'eye' },
+  { label: 'eye off', name: 'eyeOff' },
 ] as const satisfies readonly { label: string; name: IconName }[];
 
 export const MOTION = [

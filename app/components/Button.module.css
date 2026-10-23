@@ -5,16 +5,59 @@
   box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--font-body);
-  font-size: var(--type-control-size);
-  font-weight: var(--type-control-weight);
+  font-family: var(--type-button-s-font);
+  font-size: var(--type-button-s-size);
+  font-weight: var(--type-button-s-weight);
+  gap: var(--space-8);
   height: var(--size-control);
-  line-height: var(--type-control-line);
-  padding: 0 18px;
+  justify-content: center;
+  line-height: var(--type-button-s-line);
+  padding: 0 var(--space-16);
   position: relative;
   transition:
     background var(--motion-press),
     border-color var(--motion-press);
+  white-space: nowrap;
+}
+
+.btn[data-size='l'] {
+  font-size: var(--type-button-size);
+  height: var(--size-control-l);
+  line-height: var(--type-button-line);
+}
+
+.btn[data-size='s'] {
+  height: var(--size-control-s);
+}
+
+.btn[data-size='xs'] {
+  height: var(--size-control-xs);
+  padding: 0 var(--space-12);
+}
+
+/* A button under 44px keeps a 44px hit area, as Chip does. */
+:is(.btn[data-size='s'], .btn[data-size='xs'])::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(calc(100% + 2px), var(--size-touch));
+}
+
+.btn[data-full] {
+  width: 100%;
+}
+
+.btn[data-round] {
+  border-radius: var(--radius-full);
+  padding: 0 var(--space-16) 0 var(--space-12);
+}
+
+.btn[data-icon-only] {
+  aspect-ratio: 1;
+  padding: 0;
 }
 
 .btn:disabled {

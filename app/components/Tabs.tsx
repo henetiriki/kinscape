@@ -1,10 +1,20 @@
 'use client';
 
+import { type KeyboardEvent, useRef } from 'react';
+
 import type { ControlState } from './controls';
 
 import styles from './Tabs.module.css';
 
-export type Tab = { label: string; state?: ControlState; value: string };
+export type Tab = {
+  /** The id of the tabpanel this tab shows; the panel belongs to the screen. */
+  controls?: string;
+  /** How many choices are active in the panel; shown as a badge when above 0. */
+  count?: number;
+  label: string;
+  state?: ControlState;
+  value: string;
+};
 
 export const Tabs = ({
   disabled,
@@ -18,20 +28,51 @@ export const Tabs = ({
   onSelect?: (value: string) => void;
   selected: string;
   tabs: Tab[];
-}) => (
-  <div aria-label={label} className={styles.tabs} role='tablist'>
-    {tabs.map(tab => (
-      <button
-        aria-selected={tab.value === selected}
-        className={styles.tab}
-        data-state={tab.state}
-        disabled={disabled}
-        key={tab.value}
-        onClick={() => onSelect?.(tab.value)}
-        role='tab'
-        type='button'>
-        {tab.label}
-      </button>
-    ))}
-  </div>
-);
+}) => {
+  const buttons = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Left and Right select the neighbour and wrap at the ends.
+  const onKeyDown = (event: KeyboardEvent, index: number) => {
+    const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+
+    if (!step) return;
+    event.preventDefault();
+
+    const next = (index + step + tabs.length) % tabs.length;
+
+    buttons.current[next]!.focus();
+    onSelect?.(tabs[next].value);
+  };
+
+  return (
+    <div aria-label={label} className={styles.tabs} role='tablist'>
+      {tabs.map((tab, index) => (
+        <button
+          aria-controls={tab.controls}
+          aria-label={
+            tab.count ? `${tab.label}, ${tab.count} active` : undefined
+          }
+          aria-selected={tab.value === selected}
+          className={styles.tab}
+          data-state={tab.state}
+          disabled={disabled}
+          key={tab.value}
+          onClick={() => onSelect?.(tab.value)}
+          onKeyDown={event => onKeyDown(event, index)}
+          ref={node => {
+            buttons.current[index] = node;
+          }}
+          role='tab'
+          tabIndex={tab.value === selected ? 0 : -1}
+          type='button'>
+          {tab.label}
+          {tab.count ? (
+            <span aria-hidden='true' className={styles.count}>
+              {tab.count}
+            </span>
+          ) : null}
+        </button>
+      ))}
+    </div>
+  );
+};

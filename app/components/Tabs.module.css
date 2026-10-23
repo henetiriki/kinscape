@@ -59,3 +59,26 @@
 .tab[aria-selected='true']:disabled {
   background: var(--segment);
 }
+
+.tab:has(.count) {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--space-8);
+}
+
+.count {
+  background: var(--brand);
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  color: var(--white);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-chip-weight);
+  line-height: 20px;
+  min-width: 20px;
+  padding: 0 6px;
+  text-align: center;
+}
+
+.tab:disabled .count {
+  background: var(--line-strong);
+}

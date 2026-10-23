@@ -10,7 +10,7 @@ export const Alert = ({
   tone,
 }: {
   children: ReactNode;
-  title: string;
+  title?: string;
   tone: FilledIconName;
 }) => (
   <div
@@ -18,7 +18,7 @@ export const Alert = ({
     role={tone === 'error' ? 'alert' : 'status'}>
     <FilledIcon name={tone} />
     <span className={styles.body}>
-      <span className={styles.title}>{title}</span>
+      {title && <span className={styles.title}>{title}</span>}
       <span className={styles.line}>{children}</span>
     </span>
   </div>

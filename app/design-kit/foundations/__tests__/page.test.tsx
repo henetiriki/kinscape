@@ -9,7 +9,7 @@ afterEach(() => {
 });
 
 // NFR-06
-it('shows the five sections in board order, and the twelve icons', async () => {
+it('shows the five sections in board order, and the nineteen icons', async () => {
   const { default: FoundationsKit } = await import('../page');
 
   render(<FoundationsKit />);
@@ -21,13 +21,16 @@ it('shows the five sections in board order, and the twelve icons', async () => {
   const icons = screen.getByRole('region', { name: 'Icons' });
   const tiles = icons.querySelectorAll('svg');
 
-  expect(tiles).toHaveLength(12);
+  expect(tiles).toHaveLength(19);
   expect([...tiles].map(svg => svg.parentElement!.textContent)).toEqual([
     'search',
     'zoom in',
+    'zoom out',
     'fit',
     'layers',
     'back',
+    'forward',
+    'chevron down',
     'play',
     'close',
     'copy',
@@ -35,6 +38,10 @@ it('shows the five sections in board order, and the twelve icons', async () => {
     'alert',
     'done',
     'export',
+    'document',
+    'sign out',
+    'eye',
+    'eye off',
   ]);
   expect(tiles[0].getAttribute('width')).toBe('24');
   expect(

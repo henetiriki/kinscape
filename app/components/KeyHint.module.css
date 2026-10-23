@@ -1,0 +1,10 @@
+.key {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  color: var(--ink-3);
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
+  font-variant-ligatures: none;
+  line-height: 16px;
+  padding: 2px 4px;
+}

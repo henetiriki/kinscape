@@ -1,0 +1,358 @@
+/* The /design-kit/inputs page, laid out like the Inputs and actions board */
+
+.kit {
+  background: var(--surface);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  padding: var(--space-64) 72px;
+}
+
+.note {
+  color: var(--ink-3);
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Only a phone shows one part at a time. */
+.partOf,
+.otherPart {
+  display: none;
+}
+
+.section {
+  border-top: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+  padding-top: var(--space-24);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.lead {
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 860px;
+}
+
+.variants {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 40px;
+}
+
+.variant {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  min-width: 0;
+}
+
+.sample {
+  align-items: flex-start;
+  display: flex;
+}
+
+.caption {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: 1.45;
+  max-width: 400px;
+}
+
+.wide {
+  width: 360px;
+}
+
+.pair {
+  align-items: flex-start;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-20);
+}
+
+.field {
+  width: 260px;
+}
+
+.search {
+  width: 340px;
+}
+
+.tokens {
+  width: 300px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  max-width: 660px;
+}
+
+.glyphs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.glyphRow {
+  display: flex;
+  gap: var(--space-12);
+}
+
+.alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  width: 360px;
+}
+
+.divider {
+  width: 300px;
+}
+
+.hintLine {
+  align-items: center;
+  color: var(--ink-3);
+  display: inline-flex;
+  font-size: var(--type-caption-size);
+  gap: var(--space-8);
+  line-height: 18px;
+}
+
+.matrix {
+  border-top: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.row {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: 190px repeat(5, minmax(0, 1fr));
+  min-height: 80px;
+  padding: var(--space-8) 0;
+}
+
+.columns {
+  border-bottom-color: var(--line-strong);
+  color: var(--ink-3);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  min-height: 0;
+  padding: 10px 0;
+  text-transform: uppercase;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name > :first-child {
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+}
+
+.hint {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: 1.4;
+}
+
+.cell {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+  justify-self: start;
+  min-width: 0;
+  width: 100%;
+}
+
+.cellField {
+  min-width: 0;
+  width: 190px;
+}
+
+.stateLabel {
+  display: none;
+}
+
+.facts {
+  align-items: start;
+  display: grid;
+  gap: 48px;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+}
+
+.factsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.h3 {
+  color: var(--ink-3);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  line-height: 16px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.table,
+.list {
+  border-top: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.fact,
+.listRow {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  font-size: 13.5px;
+  gap: 14px;
+  line-height: 1.45;
+  padding: 6px 0;
+}
+
+.fact {
+  grid-template-columns: 110px minmax(0, 1fr) 210px;
+}
+
+.listRow {
+  grid-template-columns: 96px minmax(0, 1fr);
+}
+
+.factName {
+  font-weight: 600;
+}
+
+.definition {
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.token {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-ligatures: none;
+  line-height: 1.6;
+}
+
+.definition code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+/* A phone (Intent 104, D1): one part at a time inside 16px gutters, a link to the other, and one column */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .kit {
+    gap: var(--space-32);
+    padding: var(--space-24) var(--size-gutter-phone);
+  }
+
+  .partOf {
+    display: inline;
+  }
+
+  .otherPart {
+    display: inline-flex;
+    min-height: var(--size-touch);
+  }
+
+  .kit[data-part='1'] .section[data-part='2'],
+  .kit[data-part='2'] .section[data-part='1'] {
+    display: none;
+  }
+
+  .wide,
+  .field,
+  .search,
+  .tokens,
+  .alert,
+  .divider {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .wide,
+  .variant,
+  .sample {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .chips {
+    max-width: 100%;
+  }
+
+  .columns {
+    display: none;
+  }
+
+  .row {
+    gap: var(--space-8);
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-16) 0;
+  }
+
+  .cell {
+    gap: var(--space-12);
+  }
+
+  .cellField {
+    max-width: 100%;
+  }
+
+  .stateLabel {
+    color: var(--ink-3);
+    display: inline;
+    flex: none;
+    font-size: var(--type-caption-size);
+    width: 64px;
+  }
+
+  .facts {
+    gap: var(--space-24);
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .pair {
+    flex-direction: column;
+    width: 100%;
+  }
+}

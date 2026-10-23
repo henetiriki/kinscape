@@ -1,0 +1,39 @@
+.row {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-12);
+}
+
+/* Centre the 20px box in a 44px first line. */
+.row > input {
+  flex: none;
+  margin-top: var(--space-12);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-block: 11px;
+}
+
+.label {
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--type-label-font);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-line);
+}
+
+.description {
+  color: var(--ink-3);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+}
+
+.row[data-disabled] .label {
+  color: var(--ink-disabled);
+  cursor: default;
+}

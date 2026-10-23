@@ -1,4 +1,4 @@
-name: Design shots
+name: Design agent shots: HTML sources -> JPG snapshots
 
 # Renders every design snapshot (design/*.jpg) in the Playwright image that the design check
 # runs in, and commits the JPGs that changed to the branch it was run on. Run it by hand from the

@@ -2,7 +2,7 @@
 
 - **Spec:** #181
 - **Requirement IDs:** none (process change)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,6 +19,8 @@ Expression comparisons ignore case and have no regex, so `startsWith(ref, 'chore
 
 Recommended: A, because acceptance check 5 says no build starts.
 
+**Answer: A.** Open question from the tech lead: chores started from a CLI session with no Chore issue.
+
 **D2 · Chore plan PR title** · Decides: Tech lead
 Rule 3 says `<spec-id>: <Spec title> (plan)`; the Spec says `chore: …`.
 
@@ -27,6 +29,8 @@ Rule 3 says `<spec-id>: <Spec title> (plan)`; the Spec says `chore: …`.
 - **Other:** your own.
 
 Recommended: A, because the merged commit then reads like every other chore.
+
+**Answer: Other:** `C.<n>: <title> (plan)`, following normal spec numbering.
 
 **D3 · Draft PR after a build hand-back** · Decides: Tech lead
 

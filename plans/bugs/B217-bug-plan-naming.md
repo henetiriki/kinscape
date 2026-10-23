@@ -1,7 +1,7 @@
 # Plan: B217: Bug naming and plan location
 
 - **Spec:** #217
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -12,19 +12,23 @@ Bugs follow the Chore pattern. The plan PR is titled `B.<n>: <title without "Bug
 **D1 · Bug plan word budget** · Decides: Tech lead
 
 - **A.** 600, as a Spec plan.
-- **B.** 300, as a Chore plan.
-- **Other:** your own.
+- ~~**B.** 300, as a Chore plan.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because a Bug takes a Spec's path and can change as much code.
+
+**Answer: A** (Tech lead)
 
 **D2 · Who builds the workflow line** · Decides: Tech lead
 `claude-spec-agent.yml` is in `.github/CODEOWNERS`. Rule 4's hand-back covers Chores only.
 
 - **A.** The agent builds it on approval; CODEOWNERS already requires your review.
-- **B.** Hand it back as rule 4 says for a Chore.
-- **Other:** your own.
+- ~~**B.** Hand it back as rule 4 says for a Chore.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because CH.3 changed the same workflow this way.
+
+**Answer: A** (Tech lead)
 
 ## Files that change
 

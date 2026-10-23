@@ -27,6 +27,7 @@ describe('budgetFor', () => {
     ['docs/dependencies.md', 200],
     ['plans/M0.1-hello-vercel.md', 600],
     ['plans/TEMPLATE.md', 600],
+    ['plans/bugs/B1-x.md', 600],
     ['plans/chores/C1-x.md', 300],
     ['.claude/skills/refine/SKILL.md', 650],
     ['.claude/skills/refine/nested/deep.md', 650],
@@ -40,6 +41,7 @@ describe('budgetFor', () => {
     '.claude/skills/refine/NOTICE.md',
     '.claude/skills/NOTICE.md',
     'plans/sub/file.md',
+    'plans/bugs/sub/file.md',
     'plans/chores/sub/file.md',
   ])('%s has no budget', path => {
     expect(budgetFor(path)).toBeUndefined();
@@ -74,6 +76,16 @@ describe('checkFiles and run', () => {
     expect(checkFiles(root, ['CLAUDE.md'])).toEqual([]);
   });
 
+  it('budgets a bug plan at 600 words', () => {
+    write('plans/bugs/B1-x.md', words(600));
+    expect(checkFiles(root, ['plans/bugs/B1-x.md'])).toEqual([]);
+
+    write('plans/bugs/B1-x.md', words(601));
+    expect(checkFiles(root, ['plans/bugs/B1-x.md'])).toEqual([
+      'plans/bugs/B1-x.md: 601 words, budget 600',
+    ]);
+  });
+
   it('budgets a chore plan at 300 words', () => {
     write('plans/chores/C1-x.md', words(300));
     expect(checkFiles(root, ['plans/chores/C1-x.md'])).toEqual([]);
@@ -104,12 +116,13 @@ describe('checkFiles and run', () => {
     write('CLAUDE.md', words(151));
     write('plans/a.md', words(10));
     write('plans/b.md', words(601));
+    write('plans/bugs/B1-x.md', words(601));
     write('plans/chores/C1-x.md', words(301));
     write('.claude/skills/x/SKILL.md', words(651));
     write('.claude/skills/x/NOTICE.md', words(5000));
 
     expect(run(root, [], '')).toBe(1);
-    expect(console.error).toHaveBeenCalledTimes(4);
+    expect(console.error).toHaveBeenCalledTimes(5);
     expect(console.error).toHaveBeenCalledWith(
       'CLAUDE.md: 151 words, budget 150'
     );

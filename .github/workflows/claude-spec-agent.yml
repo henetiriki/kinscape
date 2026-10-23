@@ -187,7 +187,8 @@ jobs:
         as `D<n>: <option>` (older plans: free-form). Record each under its decision
         in the plan in the approval commit.
         If a decision is still unanswered, comment asking for it and stop without building.
-        Push before you stop, then comment on the PR saying what you did or what blocked you.
+        Push before you stop. If you built, set the PR title and body to describe the work as it would merge now (plans/README.md rule 3).
+        Then comment on the PR saying what you did or what blocked you.
         Run commands in the foreground and never end your turn to wait.
         If a command is denied, name it in your comment.
         Writes outside the repo are denied: pass a PR body inline, `gh pr edit <n> --body "<text>"`, not as a temp file.

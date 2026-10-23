@@ -93,8 +93,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       # Install the test browser, but only on a build (a PR review), when Claude runs the
-      # end-to-end tests. Plan runs don't build. The cache keeps the browser between runs:
-      # a hit skips the download, not the system packages.
+      # end-to-end tests. Plan runs don't build. The cache keeps the browser between runs.
+      # The runner already has Chromium's system packages, so only the browser is installed.
       - name: Read Playwright version
         id: playwright
         if: github.event_name == 'pull_request_review'
@@ -105,10 +105,12 @@ jobs:
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
-      # One retry, 3.5 minutes each: an apt or CDN stall can hang the install.
+      # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
+      # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
       - name: Install Playwright
         if: github.event_name == 'pull_request_review'
-        run: timeout 210 npm run e2e:install || timeout 210 npm run e2e:install
+        continue-on-error: true
+        run: timeout 210 npm run e2e:install
       # Note the start time, so the last step can tell whether Claude commented during this run.
       - name: Note start time
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"

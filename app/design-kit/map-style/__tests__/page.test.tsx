@@ -54,6 +54,13 @@ it('labels the source, key properties and covers of every layer', () => {
 });
 
 // NFR-06
+it('shows the Map style eyebrow in the header', () => {
+  render(<MapStyleKit />);
+
+  expect(screen.getByText('Map style')).toBeTruthy();
+});
+
+// NFR-06
 it('shows a changed map token in the key properties and the legend', () => {
   render(<MapStyleKit />);
 

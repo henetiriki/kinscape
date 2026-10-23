@@ -24,7 +24,7 @@ const MapStyleKit = () => (
   <main className={styles.kit}>
     <div className={styles.intro}>
       <header className={kit.kitHeader}>
-        <span className={kit.kitEyebrow}>Style guide · 06</span>
+        <span className={kit.kitEyebrow}>Map style</span>
         <h1 className={kit.kitTitle}>MapLibre layer stack</h1>
         <p className={kit.kitLead}>
           Bottom to top. Everything drawn on the map is one of these layers. The

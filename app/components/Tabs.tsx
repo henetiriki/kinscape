@@ -18,12 +18,15 @@ export type Tab = {
 
 export const Tabs = ({
   disabled,
+  fill,
   label,
   onSelect,
   selected,
   tabs,
 }: {
   disabled?: boolean;
+  /** The tabs share the row, 44 tall (a phone sheet head). */
+  fill?: boolean;
   label: string;
   onSelect?: (value: string) => void;
   selected: string;
@@ -45,7 +48,10 @@ export const Tabs = ({
   };
 
   return (
-    <div aria-label={label} className={styles.tabs} role='tablist'>
+    <div
+      aria-label={label}
+      className={fill ? `${styles.tabs} ${styles.fill}` : styles.tabs}
+      role='tablist'>
       {tabs.map((tab, index) => (
         <button
           aria-controls={tab.controls}

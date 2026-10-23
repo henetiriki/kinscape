@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import type { Source } from '@/lib/boundaries/model.mts';
@@ -29,59 +29,70 @@ const sources: Source[] = [
   },
 ];
 
+const renderDialog = (onClose = vi.fn(), open = true) =>
+  render(<SourcesDialog onClose={onClose} open={open} sources={sources} />);
+
 // NFR-08
 it('lists each source with its layer, licence link and date checked', () => {
-  render(<SourcesDialog onClose={vi.fn()} sources={sources} />);
+  renderDialog();
 
-  const rows = screen.getAllByRole('row').slice(1);
+  const rows = screen.getAllByRole('row', { hidden: true }).slice(1);
 
   expect(rows).toHaveLength(2);
   expect(rows[0].textContent).toContain('Land');
   expect(rows[0].textContent).toContain('Natural Earth land');
+  expect(rows[0].textContent).toContain('Natural Earth authors');
   expect(rows[0].textContent).toContain('Simplified to 500 m.');
   expect(rows[0].textContent).toContain('2026-10-19');
-  expect(screen.getByRole('link', { name: 'Public domain' })).toHaveProperty(
-    'href',
-    'https://example.com/licence'
-  );
   expect(rows[1].textContent).not.toContain('Simplified');
-  expect(screen.getByRole('dialog', { name: 'Sources and attributions' }));
+  expect(
+    screen
+      .getAllByRole('link', { hidden: true, name: 'Public domain' })
+      .map(link => link.getAttribute('href'))
+  ).toEqual(['https://example.com/licence', 'https://example.com/licence']);
+  expect(
+    screen
+      .getAllByRole('link', { hidden: true, name: 'BSD-3-Clause' })
+      .map(link => link.getAttribute('href'))
+  ).toEqual(['https://example.com/bsd', 'https://example.com/bsd']);
+  expect(
+    screen.getByRole('dialog', {
+      hidden: true,
+      name: 'Sources and attributions',
+    })
+  ).toBeTruthy();
 });
 
-it('closes from the button and from Escape', () => {
+it('says the board 07 words and has a list for a phone beside the table', () => {
+  renderDialog();
+
+  expect(
+    screen.getByText(
+      "Where every layer on the map comes from, and the licence it's used under."
+    )
+  ).toBeTruthy();
+  expect(screen.getByText(/A source isn't used until/)).toBeTruthy();
+  expect(
+    screen
+      .getAllByRole('columnheader', { hidden: true })
+      .map(header => header.textContent)
+  ).toEqual(['Layer', 'Source', 'Licence', 'Checked']);
+
+  const items = screen.getAllByRole('listitem', { hidden: true });
+
+  expect(items).toHaveLength(2);
+  expect(within(items[0]).getByText('Checked 2026-10-19')).toBeTruthy();
+  expect(within(items[0]).getByText('Natural Earth land')).toBeTruthy();
+});
+
+it('is closed until open, and closes from the button', () => {
   const close = vi.fn();
+  const { rerender } = renderDialog(close, false);
 
-  render(<SourcesDialog onClose={close} sources={sources} />);
+  expect(
+    screen.getByRole('dialog', { hidden: true }).hasAttribute('open')
+  ).toBe(false);
+  rerender(<SourcesDialog onClose={close} open sources={sources} />);
   fireEvent.click(screen.getByRole('button', { name: 'Close' }));
-  fireEvent.keyDown(screen.getByRole('button', { name: 'Close' }), {
-    key: 'Escape',
-  });
-  fireEvent.keyDown(screen.getByRole('button', { name: 'Close' }), {
-    key: 'a',
-  });
-
-  expect(close).toHaveBeenCalledTimes(2);
-});
-
-it('focuses the close button, then returns focus to where it was', () => {
-  const opener = document.createElement('button');
-
-  document.body.append(opener);
-  opener.focus();
-
-  const { unmount } = render(
-    <SourcesDialog onClose={vi.fn()} sources={sources} />
-  );
-
-  expect(document.activeElement).toBe(
-    screen.getByRole('button', { name: 'Close' })
-  );
-  unmount();
-  expect(document.activeElement).toBe(opener);
-
-  // Nothing to return to when nothing had focus.
-  opener.remove();
-  vi.spyOn(document, 'activeElement', 'get').mockReturnValue(null);
-  render(<SourcesDialog onClose={vi.fn()} sources={sources} />).unmount();
-  vi.restoreAllMocks();
+  expect(close).toHaveBeenCalledTimes(1);
 });

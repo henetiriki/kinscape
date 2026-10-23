@@ -1,20 +1,31 @@
 import type { Metadata } from 'next';
 
 import { TextLink } from '@/app/components/TextLink';
+import { loadAppData } from '@/lib/boundaries/app-data';
 
 import { boardTitle } from '../boards';
 import styles from '../inputs/page.module.css';
 import kit from '../kit.module.css';
-import { Callouts, NoticeCards, ProgressBars, Surfaces } from './sections';
+import {
+  Callouts,
+  Dialogs,
+  NoticeCards,
+  ProgressBars,
+  SheetHeaders,
+  Surfaces,
+} from './sections';
 
 export const metadata: Metadata = { title: boardTitle('surfaces') };
 
 const OTHER_PART = {
   1: {
     href: '/design-kit/surfaces',
-    text: 'Part 1: surface, notice card, progress bar',
+    text: 'Part 1: surface, notice card, progress bar, dialog',
   },
-  2: { href: '/design-kit/surfaces?part=2', text: 'Part 2: callout' },
+  2: {
+    href: '/design-kit/surfaces?part=2',
+    text: 'Part 2: phone sheet headers, callout',
+  },
 } as const;
 
 /**
@@ -52,6 +63,8 @@ const SurfacesKit = async ({
       <Surfaces />
       <NoticeCards />
       <ProgressBars />
+      <Dialogs sources={loadAppData().sources} />
+      <SheetHeaders />
       <Callouts />
     </main>
   );

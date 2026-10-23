@@ -19,6 +19,17 @@
   position: relative;
 }
 
+.fill {
+  display: flex;
+  flex: 1;
+}
+
+.fill .tab {
+  flex: 1;
+  height: var(--size-touch);
+  justify-content: center;
+}
+
 .tab::before {
   content: '';
   height: var(--size-touch);

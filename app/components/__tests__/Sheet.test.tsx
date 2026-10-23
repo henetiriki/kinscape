@@ -1,79 +1,75 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, expect, it, vi } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import { Sheet } from '../Sheet';
 
-// jsdom has no showModal or close: stand in for them with the `open` attribute.
-beforeEach(() => {
-  HTMLDialogElement.prototype.showModal = () =>
-    document.querySelector('dialog')!.setAttribute('open', '');
-  HTMLDialogElement.prototype.close = () =>
-    document.querySelector('dialog')!.removeAttribute('open');
-});
-
 const sheet = () => screen.getByRole('dialog', { hidden: true });
 
-const renderSheet = (open: boolean, onClose = vi.fn()) =>
+const close = () => screen.getByRole('button', { hidden: true, name: 'Close' });
+
+// NFR-05
+it('has a title head: named by its title, with the children and a Close', () => {
+  const onClose = vi.fn();
+
   render(
-    <Sheet onClose={onClose} open={open} title='Menu'>
+    <Sheet onClose={onClose} open title='Menu'>
       <p>Content</p>
     </Sheet>
   );
-
-it('is a dialog named by its title and holds its children', () => {
-  renderSheet(true);
 
   expect(sheet().getAttribute('aria-labelledby')).toBe(
     screen.getByRole('heading', { hidden: true, name: 'Menu' }).id
   );
-  expect(screen.getByText('Content')).toBeTruthy();
-});
-
-it('stays closed until open is true, then opens and closes with it', () => {
-  const { rerender } = renderSheet(false);
-
-  expect(sheet().hasAttribute('open')).toBe(false);
-
-  rerender(
-    <Sheet onClose={vi.fn()} open title='Menu'>
-      <p>Content</p>
-    </Sheet>
-  );
   expect(sheet().hasAttribute('open')).toBe(true);
+  expect(screen.getByText('Content')).toBeTruthy();
+  fireEvent.click(close());
+  expect(onClose).toHaveBeenCalledTimes(1);
+});
 
-  rerender(
-    <Sheet onClose={vi.fn()} open={false} title='Menu'>
+it('has a title and subtitle head', () => {
+  const onClose = vi.fn();
+
+  render(
+    <Sheet onClose={onClose} open subtitle='Under it' title='Menu'>
       <p>Content</p>
     </Sheet>
   );
-  expect(sheet().hasAttribute('open')).toBe(false);
-});
 
-it('asks to close on the Close button', () => {
-  const onClose = vi.fn();
-
-  renderSheet(true, onClose);
-  fireEvent.click(screen.getByRole('button', { hidden: true, name: 'Close' }));
-
+  expect(screen.getByText('Under it')).toBeTruthy();
+  fireEvent.click(close());
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 
-it('asks to close on the scrim but not on its content', () => {
+it('has a tabs head named by the tabs, which switch by click and arrow key', () => {
+  const onSelect = vi.fn();
   const onClose = vi.fn();
 
-  renderSheet(true, onClose);
-  fireEvent.click(screen.getByText('Content'));
-  expect(onClose).not.toHaveBeenCalled();
+  render(
+    <Sheet
+      onClose={onClose}
+      open
+      tabs={{
+        label: 'Layers and filters',
+        onSelect,
+        selected: 'layers',
+        tabs: [
+          { label: 'Layers', value: 'layers' },
+          { label: 'Filters', value: 'filters' },
+        ],
+      }}>
+      <p>Content</p>
+    </Sheet>
+  );
 
-  fireEvent.click(sheet());
-  expect(onClose).toHaveBeenCalledTimes(1);
-});
-
-it('asks to close when the browser closes the dialog (Esc)', () => {
-  const onClose = vi.fn();
-
-  renderSheet(true, onClose);
-  fireEvent(sheet(), new Event('close'));
-
+  expect(sheet().getAttribute('aria-label')).toBe('Layers and filters');
+  expect(sheet().hasAttribute('aria-labelledby')).toBe(false);
+  expect(screen.queryByRole('heading', { hidden: true })).toBeNull();
+  fireEvent.click(screen.getByRole('tab', { hidden: true, name: 'Filters' }));
+  expect(onSelect).toHaveBeenLastCalledWith('filters');
+  fireEvent.keyDown(screen.getByRole('tab', { hidden: true, name: 'Layers' }), {
+    key: 'ArrowRight',
+  });
+  expect(onSelect).toHaveBeenCalledTimes(2);
+  fireEvent.click(close());
   expect(onClose).toHaveBeenCalledTimes(1);
 });

@@ -94,6 +94,44 @@
   padding: 0;
 }
 
+/* A dialog or sheet drawn whole, on the map colour (set inline); a scrim sits behind a dialog. */
+.scrimmed {
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 40px;
+  position: relative;
+}
+
+.scroller {
+  border-radius: var(--radius-panel);
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.scrim {
+  background: var(--scrim);
+  inset: 0;
+  position: absolute;
+}
+
+.over {
+  position: relative;
+}
+
+.phone {
+  max-width: 100%;
+  padding: 20px 0 0;
+  width: 390px;
+}
+
+.sheetText {
+  color: var(--ink-3);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  margin: 0;
+}
+
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .stage,
   .level,

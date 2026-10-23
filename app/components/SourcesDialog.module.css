@@ -1,62 +1,81 @@
-.scrim {
-  align-items: center;
-  background: var(--scrim);
-  display: flex;
-  inset: 0;
-  justify-content: center;
-  position: fixed;
-  z-index: 10;
-}
-
-.dialog {
-  background: var(--surface);
-  border-radius: var(--radius-panel);
-  box-shadow: var(--shadow-raised);
-  box-sizing: border-box;
-  max-height: 80dvh;
-  max-width: 720px;
-  overflow: auto;
-  padding: var(--space-24);
-  position: relative;
-  width: calc(100vw - 48px);
-}
-
-.title {
-  margin: 0 40px var(--space-16) 0;
-}
-
-.close {
-  background: none;
-  border: 0;
-  cursor: pointer;
-  font-size: 24px;
-  height: var(--size-touch);
-  position: absolute;
-  right: var(--space-8);
-  top: var(--space-8);
-  width: var(--size-touch);
-}
+/* Sources and attributions: a table in the centred Dialog, a list in the sheet (board 07) */
 
 .table {
   border-collapse: collapse;
   font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  table-layout: fixed;
   width: 100%;
+}
+
+.table col:first-child {
+  width: 170px;
+}
+
+.table col:nth-child(3) {
+  width: 150px;
+}
+
+.table col:last-child {
+  width: 120px;
 }
 
 .table th,
 .table td {
   border-bottom: 1px solid var(--line);
-  padding: var(--space-8) var(--space-8) var(--space-8) 0;
+  padding: var(--space-4) var(--space-12) var(--space-4) 0;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
+}
+
+.table thead th {
+  color: var(--ink-2);
+  padding-block: 10px;
+}
+
+.table tbody tr {
+  height: var(--size-touch);
+}
+
+.table tbody th {
+  font-weight: inherit;
 }
 
 .detail {
   color: var(--ink-3);
   display: block;
-  font-size: 12px;
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
 }
 
-.date {
-  white-space: nowrap;
+.list {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list li {
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-12) 0;
+}
+
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--type-small-size);
+  gap: var(--space-4) var(--space-12);
+  line-height: var(--type-small-line);
+}
+
+/* The Dialog's form decides, so the design kit can draw both on one screen. */
+:global([data-form='sheet']) .table {
+  display: none;
+}
+
+:global([data-form='sheet']) .list {
+  display: block;
 }

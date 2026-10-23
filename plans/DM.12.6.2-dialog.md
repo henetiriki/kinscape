@@ -79,11 +79,10 @@ Recommended: A, because a centred dialog is cramped below 500 tall.
 1. Modal, then Sheet on it, with tests.
 2. Tabs `fill`, the three heads, then Dialog.
 3. Sources dialog and MapShell.
-4. Kit sections, `screens.json` and e2e. Then the AGENTS.md checks and the design check.
+4. Kit sections, `screens.json`, e2e, then the checks.
 
 ## Risks
 
-- Needs DM.12.6.1 (#200: plan approved, not built). The build rebases on `main` once it merges.
 - The kit menu's Sheet head changes size, so `design-kit-menu-phone` may score differently. The PR shows both scores.
 
 ## Proof
@@ -98,3 +97,8 @@ Recommended: A, because a centred dialog is cramped below 500 tall.
 | Kit variants in order       | Page test of section and variant order; design check scores in the PR                       |
 | `screens.json` entry        | The design check runs it                                                                    |
 | Tests, e2e, build, coverage | Their output in the PR                                                                      |
+
+## Deviations
+
+- The form comes from a `matchMedia` hook; `data-form` also switches D2's table and list.
+- New: `ModalClose`, `sourcesWords.ts`; `vitest.setup.ts` stubs.

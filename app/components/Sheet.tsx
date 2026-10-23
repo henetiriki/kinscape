@@ -1,61 +1,83 @@
 'use client';
 
-import { type ReactNode, useEffect, useId, useRef } from 'react';
+import { type ComponentProps, type ReactNode, useId } from 'react';
 
-import { Icon } from './Icon';
-import { IconButton } from './IconButton';
+import { Modal, ModalClose } from './Modal';
 import styles from './Sheet.module.css';
+import { type Tab, Tabs } from './Tabs';
 import { Text } from './Text';
 
-type SheetProps = {
+type PanelProps = SheetHead & {
   children: ReactNode;
-  /** Called when the Close button, the scrim or Esc dismisses the sheet. */
-  onClose: () => void;
-  open: boolean;
-  title: string;
+  onClose?: () => void;
+  titleId: string;
 };
 
-/** A modal bottom sheet on a native `<dialog>`: the browser handles Esc, the inert page and focus return. */
-export const Sheet = ({ children, onClose, open, title }: SheetProps) => {
-  const dialog = useRef<HTMLDialogElement>(null);
-  const titleId = useId();
+type SheetHead =
+  | { subtitle?: string; tabs?: undefined; title: string }
+  | {
+      subtitle?: undefined;
+      tabs: {
+        /** The sheet's name, whichever tab is selected. */
+        label: string;
+        onSelect?: (value: string) => void;
+        selected: string;
+        tabs: Tab[];
+      };
+      title?: undefined;
+    };
 
-  useEffect(() => {
-    const element = dialog.current!;
-
-    if (open && !element.open) {
-      element.showModal();
-    } else if (!open && element.open) {
-      element.close();
-    }
-  }, [open]);
-
-  return (
-    // The dialog is filled by its content, so a click on the dialog itself is a click on the scrim.
-    // The scrim is a pointer shortcut: Esc and Close are the keyboard's.
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <dialog
-      aria-labelledby={titleId}
-      className={styles.sheet}
-      onClick={event => {
-        if (event.target === event.currentTarget) {
-          onClose();
-        }
-      }}
-      onClose={onClose}
-      ref={dialog}>
-      <div className={styles.content}>
-        <span aria-hidden='true' className={styles.handle} />
-        <div className={styles.head}>
+/** The handle, one of three heads (title, title and subtitle, or tabs) and the content. A Sheet puts it on a dialog. */
+export const SheetPanel = ({
+  children,
+  onClose,
+  subtitle,
+  tabs,
+  title,
+  titleId,
+}: PanelProps) => (
+  <div
+    className={styles.content}
+    data-head={tabs ? 'tabs' : subtitle ? 'subtitle' : 'title'}>
+    <span aria-hidden='true' className={styles.handle} />
+    <div className={styles.head}>
+      {tabs ? (
+        <Tabs fill {...tabs} />
+      ) : (
+        <div className={styles.titles}>
           <Text as='h2' id={titleId} variant='h2'>
             {title}
           </Text>
-          <IconButton label='Close' onClick={onClose}>
-            <Icon name='close' size={24} />
-          </IconButton>
+          {subtitle && <Text variant='body'>{subtitle}</Text>}
         </div>
+      )}
+      <ModalClose iconSize={20} onClick={onClose} />
+    </div>
+    {children}
+  </div>
+);
+
+type SheetProps = SheetHead &
+  Pick<ComponentProps<typeof SheetPanel>, 'children'> & {
+    /** Called when the Close button, the scrim or Esc dismisses the sheet. */
+    onClose: () => void;
+    open: boolean;
+  };
+
+/** A modal bottom sheet on a native `<dialog>`. */
+export const Sheet = ({ children, onClose, open, ...head }: SheetProps) => {
+  const titleId = useId();
+
+  return (
+    <Modal
+      aria-label={head.tabs?.label}
+      aria-labelledby={head.tabs ? undefined : titleId}
+      className={styles.sheet}
+      onClose={onClose}
+      open={open}>
+      <SheetPanel {...head} onClose={onClose} titleId={titleId}>
         {children}
-      </div>
-    </dialog>
+      </SheetPanel>
+    </Modal>
   );
 };

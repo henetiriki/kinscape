@@ -32,6 +32,16 @@ it('leaves out the badge when nothing is active', () => {
   expect(screen.getByRole('tab', { name: 'A' }).textContent).toBe('A');
 });
 
+it('shares the row between the tabs with fill', () => {
+  const { rerender } = render(
+    <Tabs label='Panels' selected='layers' tabs={tabs} />
+  );
+
+  expect(screen.getByRole('tablist').className).not.toContain('fill');
+  rerender(<Tabs fill label='Panels' selected='layers' tabs={tabs} />);
+  expect(screen.getByRole('tablist').className).toContain('fill');
+});
+
 it('keeps only the selected tab in the tab order', () => {
   render(<Tabs label='Panels' selected='filters' tabs={tabs} />);
 

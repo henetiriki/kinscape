@@ -33,13 +33,13 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 ## Which issue do I need?
 
-| I want to...                                  | Open a                                                     | Who approves                   | Starts as               |
-| --------------------------------------------- | ---------------------------------------------------------- | ------------------------------ | ----------------------- |
-| Start the next milestone                      | Nothing: the tech lead runs `/refine spec <Intent number>` | See _Spec_                     | n/a                     |
-| Add or change something not in a milestone    | **Intent**                                                 | PO                             | `status: draft`         |
-| Change [the requirements](requirements.md)    | **Intent** (the only route)                                | PO                             | `status: draft`         |
-| Report something broken                       | **Bug**                                                    | Nobody; the tech lead plans it | `status: ready-for-dev` |
-| Change tooling, CI, docs, process or settings | No issue: a [`chore:` pull request](building.md#chores)    | Tech lead                      | n/a                     |
+| I want to...                                  | Open a                                                                  | Who approves                   | Starts as               |
+| --------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------ | ----------------------- |
+| Start the next milestone                      | Nothing: the tech lead runs `/refine spec <Intent number>`              | See _Spec_                     | n/a                     |
+| Add or change something not in a milestone    | **Intent**                                                              | PO                             | `status: draft`         |
+| Change [the requirements](requirements.md)    | **Intent** (the only route)                                             | PO                             | `status: draft`         |
+| Report something broken                       | **Bug**                                                                 | Nobody; the tech lead plans it | `status: ready-for-dev` |
+| Change tooling, CI, docs, process or settings | **Chore** (tech lead), or no issue: a [`chore:` PR](building.md#chores) | Tech lead                      | `status: ready-for-dev` |
 
 ## Drafting with Claude
 
@@ -73,7 +73,7 @@ Answer with `D1: B` or `D1: other, <your option>`. On an issue, start the commen
 - **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns settings, secrets and `AGENTS.md` / `CLAUDE.md`.
 - **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing, and never merges or releases to production.
 
-Each issue has one **type** (`intent`, `spec`, `bug`) and one **status** label; the status tells you whose turn it is. A pull request the PO can try carries `status: ready-for-po`.
+Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status** label; the status tells you whose turn it is. A pull request the PO can try carries `status: ready-for-po`.
 
 | Label                     | Meaning                                                    | Ball is with                           |
 | ------------------------- | ---------------------------------------------------------- | -------------------------------------- |

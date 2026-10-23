@@ -15,6 +15,7 @@ label() { gh label create "$1" --repo "$REPO" --color "$2" --description "$3" --
 label "type: intent" "8B5CF6" "What the PO wants and why"
 label "type: spec"   "3B82F6" "Requirements and design for an accepted intent"
 label "type: bug"    "EF4444" "Something isn't working"
+label "type: chore"  "6B7280" "Tooling, CI, docs or process change filed by the tech lead"
 
 # Applied by Dependabot to its pull requests
 label "dependencies" "0366D6" "Dependency update"
@@ -28,7 +29,7 @@ label "status: blocked"         "7F1D1D" "Waiting on someone outside the team, o
 
 # Remove GitHub's default labels that overlap with ours, and our retired ones (ignore if already gone)
 for l in bug documentation duplicate enhancement "good first issue" "help wanted" invalid question wontfix \
-  "status: in-progress" "status: in-review" "type: chore"; do
+  "status: in-progress" "status: in-review"; do
   gh label delete "$l" --repo "$REPO" --yes 2>/dev/null || true
 done
 

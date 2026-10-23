@@ -90,7 +90,7 @@
         </nav>
       </header>
       <div
-        style="width: 1440px; box-sizing: border-box; padding: 64px 72px; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B; display: flex; flex-direction: column; gap: 56px">
+        style="width: 1440px; box-sizing: border-box; padding: 64px 72px; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B; display: flex; flex-direction: column; gap: 48px">
         <header
           style="display: flex; flex-direction: column; gap: 10px; max-width: 860px">
           <span
@@ -106,11 +106,17 @@
             The pieces that live on the map itself: the wordmark, search bar,
             map controls, event glyphs and the legend.
           </p>
+          <p
+            style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #4A544C">
+            States not drawn here follow board 04: hover tints, a 2px focus
+            ring, disabled colours. A tap target under 44 is marked "44 × 44 hit
+            area (proposed)".
+          </p>
         </header>
 
         <section
           aria-label="Wordmark"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 32px; border-top: 1px solid #C9CFC5">
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
           <div style="display: flex; flex-direction: column; gap: 6px">
             <h2
               style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
@@ -134,15 +140,15 @@
                     alt=""
                     style="width: 44px; height: 44px; border-radius: 11px; display: block; flex: none" />
                   <span
-                    style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; color: #18211B; letter-spacing: -0.01em">
+                    style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px; color: #18211B">
                     KinScape
                   </span>
                 </span>
               </div>
               <figcaption
                 style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Sign-in, desktop · icon 44 (radius 11), name Bricolage 24 / 700,
-                12 apart.
+                Sign-in, desktop · icon 44 (radius 11), name H2, Bricolage 24 /
+                32 · 700, 12 apart.
               </figcaption>
             </figure>
             <figure
@@ -151,13 +157,13 @@
                 <span
                   style="display: inline-flex; padding: 16px; border-radius: 12px; background: #C9D5D2">
                   <span
-                    style="display: inline-flex; align-items: center; gap: 10px">
+                    style="display: inline-flex; align-items: center; gap: 12px">
                     <img
                       src="../../app/icon0.svg"
                       alt=""
                       style="width: 36px; height: 36px; border-radius: 9px; display: block; flex: none" />
                     <span
-                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 20px; color: #18211B">
+                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; color: #18211B">
                       KinScape
                     </span>
                   </span>
@@ -165,28 +171,28 @@
               </div>
               <figcaption
                 style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Sign-in, phone · icon 36 (radius 9), name 20, 10 apart, over the
-                map strip.
+                Sign-in, phone · icon 36 (radius 9), name H3, 22 / 28, 12 apart,
+                over the map strip.
               </figcaption>
             </figure>
             <figure
               style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <span
-                  style="display: inline-flex; align-items: center; gap: 14px">
+                  style="display: inline-flex; align-items: center; gap: 12px">
                   <img
                     src="../../app/icon0.svg"
                     alt=""
                     style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
                   <span
-                    style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 19px; color: #18211B; letter-spacing: -0.01em">
+                    style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; color: #18211B">
                     KinScape
                   </span>
                 </span>
               </div>
               <figcaption
                 style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Map search bar · icon 32 (radius 8), name 19, 14 apart.
+                Map search bar · icon 32 (radius 8), name H3, 22 / 28, 12 apart.
               </figcaption>
             </figure>
             <figure
@@ -199,8 +205,7 @@
               </div>
               <figcaption
                 style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Icon only · the phone search pill: 32 (30 on the map-phone
-                screen), radius 8, alt "KinScape".
+                Icon only · the phone search pill: 32, radius 8, alt "KinScape".
               </figcaption>
             </figure>
           </div>
@@ -227,7 +232,8 @@
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    44, 36, 32: no token · 11, 9: no token · radius.control (8)
+                    44 = size.touch · 36, 32: no token · 11, 9: no token ·
+                    radius.control (8)
                   </span>
                 </div>
                 <div
@@ -235,24 +241,24 @@
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Name</span>
                   <span role="cell">
-                    "KinScape", capital S, Bricolage Grotesque 700 at 24 · 20 ·
-                    19; −0.01em at 24 and 19
+                    "KinScape", capital S, Bricolage Grotesque 700: H2 on
+                    desktop sign-in, H3 everywhere else
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.h2 (24, without its tracking) · 20, 19: no token
+                    type.h2 · type.h3
                   </span>
                 </div>
                 <div
                   role="row"
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Gap</span>
-                  <span role="cell">12 · 10 · 14</span>
+                  <span role="cell">12 between icon and name</span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    space.12 · 10, 14: no token
+                    space.12
                   </span>
                 </div>
                 <div
@@ -307,7 +313,7 @@
 
         <section
           aria-label="Search bar"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 32px; border-top: 1px solid #C9CFC5">
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
           <div style="display: flex; flex-direction: column; gap: 6px">
             <h2
               style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
@@ -327,19 +333,19 @@
                 <div
                   style="padding: 20px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
                   <div
-                    style="height: 52px; display: inline-flex; align-items: center; gap: 14px; padding: 0 8px 0 10px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+                    style="height: 52px; display: inline-flex; align-items: center; gap: 12px; padding: 0 8px 0 12px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
                     <img
                       src="../../app/icon0.svg"
                       alt=""
                       style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
                     <span
-                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.01em">
+                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
                       KinScape
                     </span>
                     <span
                       style="width: 1px; height: 28px; background: #E2E5DD"></span>
                     <span
-                      style="display: flex; align-items: center; gap: 10px; width: 340px; height: 44px; box-sizing: border-box; border: 0; padding: 0 10px; border-radius: 8px; background: #F4F5F0; color: #4A544C">
+                      style="display: flex; align-items: center; gap: 8px; width: 340px; height: 44px; box-sizing: border-box; border: 0; padding: 0 12px; border-radius: 8px; background: #F4F5F0; color: #4A544C">
                       <svg
                         width="18"
                         height="18"
@@ -353,11 +359,11 @@
                         <path d="M16 16l4.5 4.5"></path>
                       </svg>
                       <span
-                        style="flex: 1; min-width: 0; font-size: 15px; color: #4A544C; white-space: nowrap; overflow: hidden">
+                        style="flex: 1; min-width: 0; font-size: 15px; line-height: 22px; color: #4A544C; white-space: nowrap; overflow: hidden">
                         Search people and places
                       </span>
                       <span
-                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; padding: 2px 6px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">
                         /
                       </span>
                     </span>
@@ -376,19 +382,19 @@
                 <div
                   style="padding: 20px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
                   <div
-                    style="height: 52px; display: inline-flex; align-items: center; gap: 14px; padding: 0 8px 0 10px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+                    style="height: 52px; display: inline-flex; align-items: center; gap: 12px; padding: 0 8px 0 12px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
                     <img
                       src="../../app/icon0.svg"
                       alt=""
                       style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
                     <span
-                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.01em">
+                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
                       KinScape
                     </span>
                     <span
                       style="width: 1px; height: 28px; background: #E2E5DD"></span>
                     <span
-                      style="display: flex; align-items: center; gap: 10px; width: 340px; height: 44px; box-sizing: border-box; border: 2px solid #264F29; padding: 0 8px; border-radius: 8px; background: #F4F5F0; color: #4A544C">
+                      style="display: flex; align-items: center; gap: 8px; width: 340px; height: 44px; box-sizing: border-box; border: 0; padding: 0 12px; border-radius: 8px; background: #F4F5F0; color: #4A544C">
                       <svg
                         width="18"
                         height="18"
@@ -402,59 +408,11 @@
                         <path d="M16 16l4.5 4.5"></path>
                       </svg>
                       <span
-                        style="flex: 1; min-width: 0; font-size: 15px; color: #18211B; white-space: nowrap; overflow: hidden">
-                        Kimberl|
-                      </span>
-                      <span
-                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; padding: 2px 6px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">
-                        /
-                      </span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Desktop, focus (guessed).
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 20px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
-                  <div
-                    style="height: 52px; display: inline-flex; align-items: center; gap: 14px; padding: 0 8px 0 10px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-                    <img
-                      src="../../app/icon0.svg"
-                      alt=""
-                      style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
-                    <span
-                      style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.01em">
-                      KinScape
-                    </span>
-                    <span
-                      style="width: 1px; height: 28px; background: #E2E5DD"></span>
-                    <span
-                      style="display: flex; align-items: center; gap: 10px; width: 340px; height: 44px; box-sizing: border-box; border: 0; padding: 0 10px; border-radius: 8px; background: #F4F5F0; color: #4A544C">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        aria-hidden="true">
-                        <circle cx="11" cy="11" r="6.5"></circle>
-                        <path d="M16 16l4.5 4.5"></path>
-                      </svg>
-                      <span
-                        style="flex: 1; min-width: 0; font-size: 15px; color: #18211B; white-space: nowrap; overflow: hidden">
+                        style="flex: 1; min-width: 0; font-size: 15px; line-height: 22px; color: #18211B; white-space: nowrap; overflow: hidden">
                         Kimberley
                       </span>
                       <span
-                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; padding: 2px 6px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">
                         /
                       </span>
                     </span>
@@ -478,11 +436,11 @@
                       alt="KinScape"
                       style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
                     <span
-                      style="flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; font-size: 16px; color: #4A544C; white-space: nowrap; overflow: hidden">
+                      style="flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; font-size: 16px; line-height: 24px; color: #4A544C; white-space: nowrap; overflow: hidden">
                       Search people and places
                     </span>
                     <span
-                      style="flex: none; width: 44px; height: 44px; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">
+                      style="flex: none; width: 44px; height: 44px; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 24px; font-weight: 600; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
                       L
                     </span>
                   </div>
@@ -499,44 +457,17 @@
                 <div
                   style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
                   <div
-                    style="width: 358px; box-sizing: border-box; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); outline: 2px solid #264F29; outline-offset: -2px">
-                    <img
-                      src="../../app/icon0.svg"
-                      alt="KinScape"
-                      style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
-                    <span
-                      style="flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; font-size: 16px; color: #18211B; white-space: nowrap; overflow: hidden">
-                      Kimberl|
-                    </span>
-                    <span
-                      style="flex: none; width: 44px; height: 44px; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">
-                      L
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Phone pill, focus (guessed).
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
-                  <div
                     style="width: 358px; box-sizing: border-box; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
                     <img
                       src="../../app/icon0.svg"
                       alt="KinScape"
                       style="width: 32px; height: 32px; border-radius: 8px; display: block; flex: none" />
                     <span
-                      style="flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; font-size: 16px; color: #18211B; white-space: nowrap; overflow: hidden">
+                      style="flex: 1; min-width: 0; height: 44px; display: flex; align-items: center; font-size: 16px; line-height: 24px; color: #18211B; white-space: nowrap; overflow: hidden">
                       Kimberley
                     </span>
                     <span
-                      style="flex: none; width: 44px; height: 44px; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">
+                      style="flex: none; width: 44px; height: 44px; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 24px; font-weight: 600; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
                       L
                     </span>
                   </div>
@@ -567,13 +498,13 @@
                     Desktop bar
                   </span>
                   <span role="cell">
-                    52 tall, padding 0 8 0 10, gap 14, radius 12, raised; 24
+                    52 tall, padding 0 8 0 12, gap 12, radius 12, raised; 24
                     from the left and 20 from the top of the map
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    52, 10, 14: no token · space.8 · radius.panel ·
+                    52: proposed token · space.8 · space.12 · radius.panel ·
                     shadow.raised
                   </span>
                 </div>
@@ -585,7 +516,7 @@
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    colour.line · 28: no token
+                    colour.line · 28: component size, no token
                   </span>
                 </div>
                 <div
@@ -593,14 +524,14 @@
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Field</span>
                   <span role="cell">
-                    340 × 44, surface-2, radius 8, no border, padding 0 10, gap
-                    10; text 15; "/" key hint (board 06)
+                    340 × 44, surface-2, radius 8, no border, padding 0 12, gap
+                    8; text 15 / 22; "/" key hint (board 06)
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    size.field · colour.surface-2 · type.body · 340, 10: no
-                    token
+                    size.field · colour.surface-2 · type.body · space.12 ·
+                    space.8 · 340: component size, no token
                   </span>
                 </div>
                 <div
@@ -610,14 +541,14 @@
                     Phone pill
                   </span>
                   <span role="cell">
-                    52 tall, fully round (26), padding 0 4 0 12, gap 12, raised
-                    (0 6 20 / 0.14 on map-phone); 16 from the edges
+                    52 tall, fully round (26), padding 0 4 0 12, gap 12, raised;
+                    16 from the edges. The same on every phone screen
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    radius.full · space.4 · space.12 · size.gutter-phone · 52:
-                    no token
+                    52: proposed token · radius.full · space.4 · space.12 ·
+                    size.gutter-phone · shadow.raised
                   </span>
                 </div>
                 <div
@@ -639,11 +570,11 @@
                   role="row"
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Avatar</span>
-                  <span role="cell">44 round, brand (board 07)</span>
+                  <span role="cell">44 round, brand, raised (board 07)</span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    size.touch
+                    size.touch · shadow.raised
                   </span>
                 </div>
               </div>
@@ -689,9 +620,8 @@
                       style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
                       outline: none
                     </code>
-                    and show no focus. Drawn here: a 2px brand border on the
-                    field (desktop) and a 2px brand ring inside the pill
-                    (phone).
+                    and draw no focus, so it isn't drawn here; it follows board
+                    04.
                   </dd>
                 </div>
                 <div
@@ -708,7 +638,7 @@
 
         <section
           aria-label="Map controls"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 32px; border-top: 1px solid #C9CFC5">
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
           <div style="display: flex; flex-direction: column; gap: 6px">
             <h2
               style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
@@ -769,7 +699,7 @@
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="1.8"
+                        stroke-width="2"
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         aria-hidden="true">
@@ -798,7 +728,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.8"
+                      stroke-width="2"
                       stroke-linejoin="round"
                       aria-hidden="true">
                       <path d="M12 3l9 5-9 5-9-5 9-5z"></path>
@@ -880,7 +810,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.8"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       aria-hidden="true">
@@ -934,7 +864,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.8"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       aria-hidden="true">
@@ -988,7 +918,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.8"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       aria-hidden="true">
@@ -1042,7 +972,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.8"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       aria-hidden="true">
@@ -1096,7 +1026,7 @@
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.8"
+                      stroke-width="2"
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       aria-hidden="true">
@@ -1128,7 +1058,7 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.8"
+                    stroke-width="2"
                     stroke-linejoin="round"
                     aria-hidden="true">
                     <path d="M12 3l9 5-9 5-9-5 9-5z"></path>
@@ -1147,7 +1077,7 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.8"
+                    stroke-width="2"
                     stroke-linejoin="round"
                     aria-hidden="true">
                     <path d="M12 3l9 5-9 5-9-5 9-5z"></path>
@@ -1166,7 +1096,7 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.8"
+                    stroke-width="2"
                     stroke-linejoin="round"
                     aria-hidden="true">
                     <path d="M12 3l9 5-9 5-9-5 9-5z"></path>
@@ -1185,7 +1115,7 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.8"
+                    stroke-width="2"
                     stroke-linejoin="round"
                     aria-hidden="true">
                     <path d="M12 3l9 5-9 5-9-5 9-5z"></path>
@@ -1204,7 +1134,7 @@
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="1.8"
+                    stroke-width="2"
                     stroke-linejoin="round"
                     aria-hidden="true">
                     <path d="M12 3l9 5-9 5-9-5 9-5z"></path>
@@ -1235,7 +1165,7 @@
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    size.touch · 48: no token
+                    size.touch · 48: proposed token
                   </span>
                 </div>
                 <div
@@ -1258,7 +1188,7 @@
                     Layers button
                   </span>
                   <span role="cell">
-                    white, radius 12, raised (0 6 20 / 0.14 on map-phone)
+                    white, radius 12, raised on every phone screen
                   </span>
                   <span
                     role="cell"
@@ -1271,8 +1201,7 @@
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Icons</span>
                   <span role="cell">
-                    zoom in and out 18 at 2px · fit 18 at 1.8 · layers 22–24 at
-                    1.8, ink
+                    zoom in, zoom out and fit 18 · layers 24; all stroke 2, ink
                   </span>
                   <span
                     role="cell"
@@ -1351,7 +1280,7 @@
                       (overflow: hidden),
                     </code>
                     which would cut the outside focus ring; drawn here
-                    unclipped. See the reply.
+                    unclipped.
                   </dd>
                 </div>
                 <div
@@ -1368,7 +1297,7 @@
 
         <section
           aria-label="Event glyphs"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 32px; border-top: 1px solid #C9CFC5">
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
           <div style="display: flex; flex-direction: column; gap: 6px">
             <h2
               style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
@@ -1386,9 +1315,9 @@
               style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
-                  style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 10px; width: 1296px">
+                  style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 12px; width: 1296px">
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1399,7 +1328,7 @@
                     <span style="font-size: 13px; font-weight: 600">Birth</span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1412,7 +1341,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1425,7 +1354,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1438,7 +1367,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1449,7 +1378,7 @@
                     <span style="font-size: 13px; font-weight: 600">Death</span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1462,7 +1391,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1473,7 +1402,7 @@
                     <span style="font-size: 13px; font-weight: 600">Land</span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1486,7 +1415,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
+                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border-radius: 8px; background: #F4F5F0">
                     <span
                       style="display: flex; align-items: baseline; gap: 12px; color: #9A3B12"
                       aria-hidden="true">
@@ -1510,22 +1439,24 @@
                 <span
                   style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
                   <span
-                    style="display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid #264F29; background: #E6EEE4; color: #1D3E20; font-size: 13.5px; font-weight: 600">
+                    style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid #264F29; background: #E6EEE4; color: #1D3E20; font-size: 13.5px; line-height: 20px; font-weight: 600">
                     <span style="color: #9A3B12" aria-hidden="true">◆</span>
                     Marriage
                   </span>
-                  <span style="font-size: 13px; color: #2E3A33">
+                  <span
+                    style="font-size: 13px; line-height: 20px; color: #2E3A33">
                     <span style="color: #9A3B12" aria-hidden="true">●</span>
                     Birth
                   </span>
                   <span
-                    style="display: inline-flex; align-items: center; gap: 10px">
+                    style="display: inline-flex; align-items: center; gap: 12px">
                     <span
                       style="color: #9A3B12; font-size: 14px"
                       aria-hidden="true">
                       ◆
                     </span>
-                    <span style="font-size: 14px; font-weight: 600">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
                       Marriage
                     </span>
                   </span>
@@ -1641,7 +1572,7 @@
 
         <section
           aria-label="Legend"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 32px; border-top: 1px solid #C9CFC5">
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
           <div style="display: flex; flex-direction: column; gap: 6px">
             <h2
               style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
@@ -1660,86 +1591,7 @@
               style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
-                  style="width: 288px; box-sizing: border-box; padding: 14px; border-radius: 10px; background: #F4F5F0; display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: #2E3A33">
-                  <span
-                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                    Reading the map
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 10px">
-                    <svg width="32" height="12" aria-hidden="true">
-                      <path
-                        d="M1 6h30"
-                        stroke="#3B3A2F"
-                        stroke-width="1.6"></path>
-                    </svg>
-                    Border as recorded
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 10px">
-                    <svg width="32" height="12" aria-hidden="true">
-                      <path
-                        d="M1 6h30"
-                        stroke="#3B3A2F"
-                        stroke-width="1.6"
-                        stroke-dasharray="6 4"></path>
-                    </svg>
-                    Approximate border
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 10px">
-                    <span
-                      style="width: 32px; height: 16px; border-radius: 3px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.38) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>
-                    Contested claim
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 10px">
-                    <svg width="32" height="24" aria-hidden="true">
-                      <circle
-                        cx="16"
-                        cy="12"
-                        r="11"
-                        fill="#9A3B12"
-                        opacity="0.18"></circle>
-                      <circle
-                        cx="16"
-                        cy="12"
-                        r="5"
-                        fill="#9A3B12"
-                        fill-opacity="0.6"
-                        stroke="#FFFFFF"
-                        stroke-width="1.5"></circle>
-                    </svg>
-                    Uncertain date (ABT, BEF, AFT…)
-                  </span>
-                  <span
-                    style="display: flex; flex-wrap: wrap; gap: 4px 14px; padding-top: 4px; border-top: 1px solid #E2E5DD">
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">●</span>
-                      Birth
-                    </span>
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">■</span>
-                      Residence
-                    </span>
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">◆</span>
-                      Marriage
-                    </span>
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">✚</span>
-                      Death
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Desktop · bottom of the Layers tab, 288 wide (the panel less its
-                padding): padding 14, radius 10.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="width: 358px; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; background: #F4F5F0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  style="width: 288px; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; background: #F4F5F0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 20px; color: #2E3A33">
                   <span
                     style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
                     Reading the map
@@ -1749,7 +1601,7 @@
                       <path
                         d="M1 6h30"
                         stroke="#3B3A2F"
-                        stroke-width="1.6"></path>
+                        stroke-width="1.5"></path>
                     </svg>
                     Border as recorded
                   </span>
@@ -1758,14 +1610,14 @@
                       <path
                         d="M1 6h30"
                         stroke="#3B3A2F"
-                        stroke-width="1.6"
-                        stroke-dasharray="6 4"></path>
+                        stroke-width="1.5"
+                        stroke-dasharray="4 2.6"></path>
                     </svg>
                     Approximate border
                   </span>
                   <span style="display: flex; align-items: center; gap: 12px">
                     <span
-                      style="width: 32px; height: 16px; border-radius: 4px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.38) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>
+                      style="width: 32px; height: 16px; border-radius: 4px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.34) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>
                     Contested claim
                   </span>
                   <span style="display: flex; align-items: center; gap: 12px">
@@ -1775,7 +1627,7 @@
                         cy="12"
                         r="11"
                         fill="#9A3B12"
-                        opacity="0.18"></circle>
+                        opacity="0.24"></circle>
                       <circle
                         cx="16"
                         cy="12"
@@ -1810,8 +1662,87 @@
               </div>
               <figcaption
                 style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Phone · full width in the Layers sheet: padding 12 16, radius
-                12.
+                Desktop · bottom of the Layers tab, 288 wide (the panel less its
+                padding). Padding 12 16, radius 12, rows 8 apart: the same at
+                both widths.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              <div style="display: flex; align-items: flex-start">
+                <div
+                  style="width: 358px; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; background: #F4F5F0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Reading the map
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <svg width="32" height="12" aria-hidden="true">
+                      <path
+                        d="M1 6h30"
+                        stroke="#3B3A2F"
+                        stroke-width="1.5"></path>
+                    </svg>
+                    Border as recorded
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <svg width="32" height="12" aria-hidden="true">
+                      <path
+                        d="M1 6h30"
+                        stroke="#3B3A2F"
+                        stroke-width="1.5"
+                        stroke-dasharray="4 2.6"></path>
+                    </svg>
+                    Approximate border
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <span
+                      style="width: 32px; height: 16px; border-radius: 4px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.34) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>
+                    Contested claim
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <svg width="32" height="24" aria-hidden="true">
+                      <circle
+                        cx="16"
+                        cy="12"
+                        r="11"
+                        fill="#9A3B12"
+                        opacity="0.24"></circle>
+                      <circle
+                        cx="16"
+                        cy="12"
+                        r="5"
+                        fill="#9A3B12"
+                        fill-opacity="0.6"
+                        stroke="#FFFFFF"
+                        stroke-width="1.5"></circle>
+                    </svg>
+                    Uncertain date (ABT, BEF, AFT…)
+                  </span>
+                  <span
+                    style="display: flex; flex-wrap: wrap; gap: 4px 16px; padding-top: 4px; border-top: 1px solid #E2E5DD">
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">●</span>
+                      Birth
+                    </span>
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">■</span>
+                      Residence
+                    </span>
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">◆</span>
+                      Marriage
+                    </span>
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">✚</span>
+                      Death
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                Phone · full width in the Layers sheet.
               </figcaption>
             </figure>
           </div>
@@ -1832,12 +1763,14 @@
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Box</span>
                   <span role="cell">
-                    padding 14 · radius 10 · gap 10 · surface-2
+                    padding 12 16 · radius 12 · gap 8 · surface-2, at every
+                    width
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    14, 10: no token · colour.surface-2
+                    space.12 · space.16 · radius.panel · space.8 ·
+                    colour.surface-2
                   </span>
                 </div>
                 <div
@@ -1856,12 +1789,12 @@
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Rows</span>
                   <span role="cell">
-                    13 ink-2; swatch 32 wide, 10 to the words
+                    13 / 20 ink-2; swatch 32 wide, 12 to the words
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.small size · 10: no token
+                    type.small · space.12
                   </span>
                 </div>
                 <div
@@ -1871,13 +1804,13 @@
                     Line, dash
                   </span>
                   <span role="cell">
-                    border colour, 1.6 wide; the dash is 6 on, 4 off
+                    border colour, 1.5 wide; the dash is 4 on, 2.6 off, as on
+                    the map
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    map.border.colour · 1.6, 6 4: no token (map.border is 1.5,
-                    dash 4 / 2.6)
+                    map.border
                   </span>
                 </div>
                 <div
@@ -1885,14 +1818,13 @@
                   style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
                   <span role="rowheader" style="font-weight: 600">Hatch</span>
                   <span role="cell">
-                    32 × 16, 1px border colour, 45° stripes 3 in 9 at 0.38 over
-                    the Orange Free State fill
+                    32 × 16, radius 4, 1px border colour, 45° stripes 3 in 9 at
+                    0.34 over the Orange Free State fill
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    map.hatch.colour · map.polity.free-state · 0.38:
-                    map.hatch.opacity is 0.34
+                    map.hatch · map.polity.free-state
                   </span>
                 </div>
                 <div
@@ -1901,12 +1833,12 @@
                   <span role="rowheader" style="font-weight: 600">Halo</span>
                   <span role="cell">
                     pin circle r5 at 0.6 with a 1.5 white stroke, in an r11 halo
-                    at 0.18
+                    at 0.24
                   </span>
                   <span
                     role="cell"
                     style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    map.pin · 0.18: map.pin-halo.opacity is 0.24
+                    map.pin · map.pin-halo
                   </span>
                 </div>
                 <div
@@ -1964,421 +1896,6 @@
                   <dd style="margin: 0; color: #2E3A33">
                     Each meaning differs in form too: solid, dashed, striped,
                     haloed.
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label="New icons"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 32px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
-              New icons
-            </h2>
-            <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
-              Seven icons the screens use that the Foundations set didn't have
-              yet.
-            </p>
-          </div>
-          <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; width: 1296px">
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        aria-hidden="true">
-                        <path d="M5 12h14"></path></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        aria-hidden="true">
-                        <path d="M5 12h14"></path></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        aria-hidden="true">
-                        <path d="M5 12h14"></path>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">
-                      zoom out
-                    </span>
-                  </div>
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M9 5l7 7-7 7"></path></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M9 5l7 7-7 7"></path></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M9 5l7 7-7 7"></path>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">forward</span>
-                  </div>
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M6 9l6 6 6-6"></path></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M6 9l6 6 6-6"></path></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M6 9l6 6 6-6"></path>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">
-                      chevron down
-                    </span>
-                  </div>
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path>
-                        <circle cx="12" cy="12" r="3"></circle></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path>
-                        <circle cx="12" cy="12" r="3"></circle></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">eye</span>
-                  </div>
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M6.6 6.7C3.7 8.6 2 12 2 12s3.6 7 10 7c2 0 3.7-.7 5.1-1.6M10 5.2c.6-.1 1.3-.2 2-.2 6.4 0 10 7 10 7s-.9 1.8-2.6 3.6"></path>
-                        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-                        <path d="M3 3l18 18"></path></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M6.6 6.7C3.7 8.6 2 12 2 12s3.6 7 10 7c2 0 3.7-.7 5.1-1.6M10 5.2c.6-.1 1.3-.2 2-.2 6.4 0 10 7 10 7s-.9 1.8-2.6 3.6"></path>
-                        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-                        <path d="M3 3l18 18"></path></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M6.6 6.7C3.7 8.6 2 12 2 12s3.6 7 10 7c2 0 3.7-.7 5.1-1.6M10 5.2c.6-.1 1.3-.2 2-.2 6.4 0 10 7 10 7s-.9 1.8-2.6 3.6"></path>
-                        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
-                        <path d="M3 3l18 18"></path>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">eye off</span>
-                  </div>
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path
-                          d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">
-                      sign out
-                    </span>
-                  </div>
-                  <div
-                    style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 4px; border-radius: 8px; background: #F4F5F0; color: #18211B">
-                    <span style="display: flex; align-items: center; gap: 12px">
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M6 4h9l3 3v13H6z"></path>
-                        <path d="M9 11h6M9 15h6"></path></svg
-                      ><svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M6 4h9l3 3v13H6z"></path>
-                        <path d="M9 11h6M9 15h6"></path></svg
-                      ><svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <path d="M6 4h9l3 3v13H6z"></path>
-                        <path d="M9 11h6M9 15h6"></path>
-                      </svg>
-                    </span>
-                    <span style="font-size: 12px; color: #4A544C">
-                      document
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                At 24, 20 and 16. Drawn on the same 24px grid as the Foundations
-                set, round caps and joins, currentColor. Now on board 03 too.
-              </figcaption>
-            </figure>
-          </div>
-
-          <div
-            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Measurements
-              </h3>
-              <div
-                role="table"
-                aria-label="New icons measurements"
-                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Grid</span>
-                  <span role="cell">24 × 24, outline, currentColor</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    <span style="color: #4A544C">—</span>
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Stroke</span>
-                  <span role="cell">
-                    2 for zoom out and chevron down · 2.2 for forward, to mirror
-                    back · 1.8 for eye, eye off, sign out and document, as the
-                    screens draw them
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    <span style="font-style: italic; color: #4A544C">
-                      no token
-                    </span>
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Sizes</span>
-                  <span role="cell">16, 18 or 20 in the UI</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    <span style="font-style: italic; color: #4A544C">
-                      no token
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Accessibility
-              </h3>
-              <dl
-                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Hidden</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Always
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-hidden="true".
-                    </code>
-                    An icon-only button carries the name: "Zoom out", "Show
-                    password", "Hide password", "Sign out".
                   </dd>
                 </div>
               </dl>

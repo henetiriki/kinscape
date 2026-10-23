@@ -2,7 +2,7 @@
 
 - **Spec:** #197 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06, NFR-08
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,12 +23,16 @@ Board 07 adds a subtitle, a footnote and the column name "Checked".
 
 Recommended: A, because the board is the approved design.
 
+**Answer: A** (@henetiriki)
+
 **D2 · Table on desktop, list on a phone** · Decides: Tech lead
 
 - **A.** A `<table>` and a `<ul>`; CSS shows one. Each link is in the DOM twice.
 - **B.** One table that CSS restacks; on a phone it still reads as a table.
 
 Recommended: A, because each width gets the semantics board 07 asks for.
+
+**Answer: A** (@henetiriki)
 
 **D3 · Kit Dialog content** · Decides: Tech lead
 
@@ -37,6 +41,8 @@ Recommended: A, because each width gets the semantics board 07 asks for.
 
 Recommended: A, so the kit invents no layers. The design check differs only in row text.
 
+**Answer: A** (@henetiriki)
+
 **D4 · Name of a sheet with a Tabs header** · Decides: Tech lead
 
 - **A.** The Tabs' `label`, e.g. "Layers and filters".
@@ -44,12 +50,16 @@ Recommended: A, so the kit invents no layers. The design check differs only in r
 
 Recommended: A, because the name stays the same as tabs switch.
 
+**Answer: A** (@henetiriki)
+
 **D5 · Short, wide windows** · Decides: Tech lead
 
 - **A.** The sheet form applies below 640 wide or below 500 tall (the kit's phone rule, Intent 104). The Spec's Dialog line is reworded to say so.
 - **B.** Width only, as the Spec says.
 
 Recommended: A, because a centred dialog is cramped below 500 tall.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

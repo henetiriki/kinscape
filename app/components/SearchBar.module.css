@@ -1,0 +1,63 @@
+.bar,
+.pill {
+  align-items: center;
+  background: var(--surface);
+  box-shadow: var(--shadow-raised);
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-12);
+  height: var(--size-search);
+  margin: 0;
+}
+
+.bar {
+  border-radius: var(--radius-panel);
+  display: inline-flex;
+  padding: 0 var(--space-8) 0 var(--space-12);
+}
+
+.pill {
+  border-radius: var(--radius-full);
+  padding: 0 var(--space-4) 0 var(--space-12);
+  width: 100%;
+}
+
+.pill:focus-within {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.divider {
+  background: var(--line);
+  flex: none;
+  height: 28px;
+  width: 1px;
+}
+
+.field {
+  width: 340px;
+}
+
+/* The bare phone field: 16px so the browser doesn't zoom, 44 tall. */
+.input {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  flex: 1;
+  font-family: var(--type-body-l-font);
+  font-size: var(--type-body-l-size);
+  height: var(--size-field);
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+}
+
+.input::placeholder {
+  color: var(--ink-3);
+}
+
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration {
+  appearance: none;
+  display: none;
+}

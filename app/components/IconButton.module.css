@@ -16,21 +16,25 @@
 }
 
 @media (hover: hover) {
-  .iconBtn:hover:not(:disabled) {
+  .iconBtn:hover:not(:disabled, [aria-disabled='true']) {
     background: var(--surface-2);
   }
 }
 
-.iconBtn[data-state='hover']:not(:disabled) {
+.iconBtn[data-state='hover']:not(:disabled, [aria-disabled='true']) {
   background: var(--surface-2);
 }
 
-.iconBtn:is(:active:not(:disabled), [data-state='active']) {
+.iconBtn:is(
+  :active:not(:disabled, [aria-disabled='true']),
+  [data-state='active']
+) {
   background: var(--brand-tint);
   color: var(--brand-hover);
 }
 
-.iconBtn:disabled {
+/* aria-disabled stays in the Tab order, so it can say why it does nothing. */
+.iconBtn:is(:disabled, [aria-disabled='true']) {
   color: var(--icon-disabled);
   cursor: default;
 }

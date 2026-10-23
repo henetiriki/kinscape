@@ -66,6 +66,8 @@ export const TextField = ({
     const onKey = (event: KeyboardEvent) => {
       if (
         event.key !== shortcut ||
+        // Another field already took the key.
+        event.defaultPrevented ||
         event.altKey ||
         event.ctrlKey ||
         event.metaKey ||

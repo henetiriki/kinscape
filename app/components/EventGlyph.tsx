@@ -24,7 +24,7 @@ export const EventGlyph = ({
   size = 14,
 }: {
   event: EventType;
-  size?: 12 | 14 | 16;
+  size?: 12 | 13 | 14 | 16;
 }) => (
   <span
     aria-hidden='true'

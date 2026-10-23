@@ -72,6 +72,12 @@ The board draws 1.5; the map's pin halo is `map.pin.halo-width` (2).
 | 390px                         | e2e: pill and layers button ≥ 44; no sideways scroll                   |
 | Tests, e2e, build, coverage   | Their output in the PR                                                 |
 
+## Deviations
+
+- `EventGlyph` takes size 13 (the Legend's text size).
+- `TextField`'s "/" listener skips a key another handler already took, so the kit's first bar owns it.
+- The kit's zoom card is a live `ZoomDemo` on a stand-in zoom level, so e2e can reach the minimum.
+
 ## Out of scope
 
 - The map screen, MapLibre's zoom control, search results and wiring (Spec).

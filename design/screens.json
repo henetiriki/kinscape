@@ -142,6 +142,20 @@
       "width": 390
     },
     {
+      "height": 6246,
+      "mode": "report",
+      "name": "style-8-components-map-phone",
+      "route": "/design-kit/map-furniture",
+      "width": 390
+    },
+    {
+      "height": 4294,
+      "mode": "report",
+      "name": "style-8-components-map",
+      "route": "/design-kit/map-furniture",
+      "width": 1440
+    },
+    {
       "height": 4872,
       "mode": "report",
       "name": "map-style-phone",

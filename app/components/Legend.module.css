@@ -1,0 +1,71 @@
+/* The swatch values are CSS variables set from the map tokens by Legend.tsx. */
+.legend {
+  background: var(--surface-2);
+  border-radius: var(--radius-panel);
+  box-sizing: border-box;
+  color: var(--ink-2);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--type-small-size);
+  gap: var(--space-8);
+  line-height: var(--type-small-line);
+  padding: var(--space-12) var(--space-16);
+}
+
+.legend > h3 {
+  color: var(--ink-3);
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.line {
+  stroke: var(--legend-border);
+  stroke-width: var(--legend-border-width);
+}
+
+.dashed {
+  stroke-dasharray: var(--legend-dash);
+}
+
+.hatch {
+  background: repeating-linear-gradient(
+    45deg,
+    color-mix(
+        in srgb,
+        var(--legend-hatch) calc(var(--legend-hatch-opacity) * 100%),
+        transparent
+      )
+      0 3px,
+    var(--legend-fill) 3px 9px
+  );
+  border: 1px solid var(--legend-border);
+  border-radius: var(--radius-small);
+  box-sizing: border-box;
+  flex: none;
+  height: 16px;
+  width: 32px;
+}
+
+.halo {
+  fill: var(--legend-halo);
+  opacity: var(--legend-halo-opacity);
+}
+
+.pin {
+  fill: var(--legend-pin);
+  fill-opacity: var(--legend-pin-opacity);
+  stroke: var(--legend-pin-stroke);
+  stroke-width: var(--legend-pin-stroke-width);
+}
+
+.glyphs {
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-16);
+  padding-top: var(--space-4);
+}

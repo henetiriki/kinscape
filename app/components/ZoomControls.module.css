@@ -1,0 +1,28 @@
+/* Each button rounds its own corners, so the card needs no overflow: hidden and never cuts a focus ring. */
+.card {
+  background: var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: var(--size-touch);
+}
+
+.card button {
+  border: 0;
+  border-radius: 0;
+}
+
+.card button:first-child {
+  border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+}
+
+.card button:last-child {
+  border-radius: 0 0 var(--radius-panel) var(--radius-panel);
+}
+
+/* A focused button draws its ring over its neighbours. */
+.card button:is(:focus-visible, [data-state='focus']) {
+  z-index: 1;
+}

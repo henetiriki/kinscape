@@ -53,6 +53,13 @@ export const BOARDS = [
     title: 'Surfaces and overlays',
   },
   {
+    eyebrow: 'Style guide · 08',
+    label: 'Map furniture',
+    line: 'The wordmark, search bar, map controls, event glyphs and the legend.',
+    slug: 'map-furniture',
+    title: 'Map furniture',
+  },
+  {
     eyebrow: 'Map style',
     label: 'Map style',
     line: 'Every layer drawn on the map, bottom to top, with the paint values it uses.',

@@ -2,7 +2,7 @@
 
 - **Spec:** #180
 - **Requirement IDs:** none (process change)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,6 +19,8 @@ It says chores need no issue and the plan isn't committed. After this change, th
 
 Recommended: A, because otherwise two docs disagree about chore plans.
 
+**Answer: A** (@henetiriki)
+
 **D2 · Branch for a filed chore** · Decides: Tech lead
 Rule 3 names `spec/` and `bug/` branches; rule 4 says rule 3 applies to `C<n>` but gives no branch.
 
@@ -27,6 +29,8 @@ Rule 3 names `spec/` and `bug/` branches; rule 4 says rule 3 applies to `C<n>` b
 - **Other:** your own.
 
 Recommended: A, because otherwise rule 4 points at a rule with no branch for a chore.
+
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

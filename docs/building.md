@@ -21,7 +21,7 @@ A component's CSS goes in a `*.module.css` beside it, with camelCase class names
 
 ## Chores
 
-Tooling, CI, docs, process and settings need no issue. Claude plans in plan mode and the tech lead accepts the plan; it isn't committed, so the PR body says what changed and why. Open a `chore:` pull request from a branch off `origin/main`.
+Tooling, CI, docs, process and settings need no issue. Claude plans in plan mode and the tech lead accepts it; the PR body says what changed and why. A chore filed as an issue commits its plan ([rule 4](../plans/README.md)). Open a `chore:` PR from a branch off `origin/main`.
 
 ## Merging
 

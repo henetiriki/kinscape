@@ -1,0 +1,32 @@
+name: 🔧 Chore
+description: Tooling, CI, docs, process or settings. Only the tech lead files one.
+title: 'Chore: '
+labels: ['type: chore', 'status: ready-for-dev']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Only the tech lead files a chore. A chore that touches AGENTS.md, CLAUDE.md, settings, secrets or the agent's own workflows is handed back to a person.
+  - type: textarea
+    id: change
+    attributes:
+      label: What to change
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: How we'll know it's done
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: Optional. Anything the change must not touch or break.

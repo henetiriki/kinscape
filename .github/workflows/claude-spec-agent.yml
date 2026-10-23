@@ -52,6 +52,18 @@ permissions:
   issues: write
   actions: read
 
+env:
+  # Rules for both prompts, appended to each job's PROMPT by the `Run Claude Code` step.
+  RULES: >-
+    Create and change files with Write and Edit, not heredocs.
+    Read several files with `cat a b c` or Read, not `for` loops.
+    You start in the repo root; don't `cd`.
+    Use `npm run lint -- --fix`, `npm run format`, `npm run typecheck`, `npm run e2e -- <file> -g "<name>"`
+    and `npm test -- <path>`, not `npx`, `node -e`, `python3` or `bash -n`.
+    Pass PR and issue bodies as `--body-file - <<'EOF' … EOF`, never inline `--body`.
+    Run commands in the foreground and never end your turn to wait.
+    If a command is denied, name it in your comment.
+
 jobs:
   # Path 1: draft a plan. Runs when someone adds the "status: ready-for-agent" label to an open Spec
   # (not to a closed Spec or any other kind of issue) and that person isn't Claude's own bot.
@@ -81,9 +93,7 @@ jobs:
         Push before you stop, then comment on the Spec with a link to the plan PR.
         If you're blocked, comment on the Spec saying why,
         then swap its status label for `status: blocked`.
-        Run commands in the foreground and never end your turn to wait.
-        If a command is denied, name it in your comment.
-        Writes outside the repo are denied: pass a PR body inline, `gh pr edit <n> --body "<text>"`, not as a temp file.
+        Run `npm run words` once after drafting, not after every edit.
       MODEL_ARGS: --model opus --effort high
     # The steps below are shared: the `build` job reuses them as-is (`*steps`). The first one
     # downloads the repo's code; on a plan PR it takes that PR's branch.
@@ -137,11 +147,21 @@ jobs:
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
           bot_name: henetiriki-bot
           bot_id: '344434370'
-          prompt: ${{ env.PROMPT }}
+          prompt: ${{ env.PROMPT }} ${{ env.RULES }}
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
           # The allowed tools let Claude edit files and run npm scripts, git, and GitHub commands.
           claude_args: '${{ env.MODEL_ARGS }} --allowed-tools "Edit,Write,Bash(npm run:*),Bash(npm test:*),Bash(npm ci:*),Bash(npm install:*),Bash(npm i:*),Bash(npm view:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*),Bash(gh api:*),Bash(curl:*),Bash(sed:*),Bash(ls:*),Bash(cat:*),Bash(mkdir:*)"'
+
+      # The Actions log can stop at an image read and lose the final result; the full output survives here.
+      - name: Upload Claude's output
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: claude-execution-output
+          path: /home/runner/work/_temp/claude-execution-output.json
+          if-no-files-found: ignore
+          retention-days: 14
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
       # step failed. If Claude left no comment, post one pointing at the run, or at the PR it
@@ -207,15 +227,16 @@ jobs:
       THREAD: ${{ github.event.pull_request.number }}
       PROMPT: >-
         @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}. Build it. Follow plans/README.md.
+        Your first command is `gh pr view ${{ github.event.pull_request.number }} --json title,body,comments,reviews,headRefName`
+        (`--comments` can't be combined with `--json`).
         Answers to the plan's open decisions are in the review body and the PR comments,
-        as `D<n>: <option>` (older plans: free-form). Record each under its decision
-        in the plan in the approval commit.
+        as `D<n>: <option>` (older plans: free-form). Record the approval and the answers in the approval commit with
+        `npm run plan-approve -- <plan> ${{ github.event.review.user.login }} D1=A …`.
         If this is a Chore plan PR, hand it back as plans/README.md rule 4 says instead of building where it applies.
         If a decision is still unanswered, comment asking for it and stop without building.
+        While iterating, run only the affected test file; run the full `npm test` and `npm run e2e` once, before pushing.
+        When a test fails, read the error and fix it; don't add temporary debug output.
         Push before you stop. If you built, set the PR title and body to describe the work as it would merge now (plans/README.md rule 3).
         Then comment on the PR saying what you did or what blocked you.
-        Run commands in the foreground and never end your turn to wait.
-        If a command is denied, name it in your comment.
-        Writes outside the repo are denied: pass a PR body inline, `gh pr edit <n> --body "<text>"`, not as a temp file.
       MODEL_ARGS: --model sonnet
     steps: *steps

@@ -1,8 +1,8 @@
 ---
 name: refine
-description: Interview the user until both sides agree on what is wanted, then draft a KinScape Intent or the Specs for a milestone or Intent, each with a prefilled form link. Use `/refine intent` (product owner) or `/refine spec M<n>` / `/refine spec <intent issue number>` (tech lead).
+description: Interview the user until both sides agree on what is wanted, then draft a KinScape Intent, the Specs for a milestone or Intent, or a Chore, each with a prefilled form link. Use `/refine intent` (product owner) or `/refine spec M<n>` / `/refine spec <intent issue number>` / `/refine chore [idea]` (tech lead).
 disable-model-invocation: true
-argument-hint: intent [your idea] | spec <M<n> or intent issue number>
+argument-hint: intent [your idea] | spec <M<n> or intent issue number> | chore [your idea]
 ---
 
 # Refine
@@ -13,7 +13,8 @@ The argument picks the mode. Read the matching file and follow it, with the meth
 
 - `intent [idea]` → [intent.md](intent.md). For the product owner (PO), in plain language. Any text after `intent` is the PO's first description of the idea.
 - `spec <M<n> | number>` → [spec.md](spec.md). For the tech lead. Slices a milestone or an accepted Intent into Specs.
-- No argument, or anything else: ask which one they want.
+- `chore [idea]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue and warns if the agent would hand it back.
+- No argument, or anything else: ask which of the three they want.
 
 ## Method
 

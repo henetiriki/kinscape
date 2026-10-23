@@ -2,7 +2,7 @@
 
 - **Spec:** #214
 - **Requirement IDs:** NFR-05
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The mockup also differs in text: the nav says "Inputs", not "Inputs and actions"
 - **B.** Also copy the mockup's label and three lines into `boards.ts`.
 - **Other:** your own.
 
-Recommended: A, because the report names only the columns, and the current lines describe the built boards.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 
@@ -27,12 +27,14 @@ Recommended: A, because the report names only the columns, and the current lines
 
 ## Files that change
 
-| File                                     | New / changed | What                                          |
-| ---------------------------------------- | ------------- | --------------------------------------------- |
-| `app/design-kit/page.module.css`         | Changed       | Two-column grid; phone query keeps one column |
-| `app/design-kit/page.tsx`                | Changed       | `--rows` on the list                          |
-| `app/design-kit/__tests__/page.test.tsx` | Changed       | `--rows` is 5 for nine boards                 |
-| `e2e/design-kit.spec.ts`                 | Changed       | Column test at 1440 × 900 and 390 × 941       |
+| File                                       | New / changed | What                                          |
+| ------------------------------------------ | ------------- | --------------------------------------------- |
+| `app/design-kit/page.module.css`           | Changed       | Two-column grid; phone query keeps one column |
+| `app/design-kit/page.tsx`                  | Changed       | `--rows` on the list                          |
+| `app/design-kit/__tests__/page.test.tsx`   | Changed       | `--rows` is 5 for nine boards                 |
+| `e2e/design-kit.spec.ts`                   | Changed       | Column test at 1440 × 900 and 390 × 941       |
+| `app/design-kit/boards.ts`                 | Changed       | D1 B: nav label "Inputs"; lines for 06–08     |
+| `app/design-kit/__tests__/KitNav.test.tsx` | Changed       | Expects "Inputs"                              |
 
 ## Order of work
 
@@ -53,7 +55,3 @@ Recommended: A, because the report names only the columns, and the current lines
 | Phone stays one column                                | e2e at 390 × 941: every board shares one left edge                                                                   |
 | Matches the mockup                                    | Design check report for `design-kit` and `design-kit-phone` in the PR                                                |
 | Tests, e2e pass, 100% coverage                        | Their output in the PR                                                                                               |
-
-## Out of scope
-
-- The text differences in D1, unless the PO answers B.

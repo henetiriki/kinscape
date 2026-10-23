@@ -56,6 +56,7 @@ Write each PO or tech-lead decision like this:
 
 ```
 **D1 · <title>** · Decides: PO | Tech lead
+
 <question>
 - **A.** <option and what follows>
 - **B.** …

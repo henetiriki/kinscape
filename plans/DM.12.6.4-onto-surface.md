@@ -2,7 +2,7 @@
 
 - **Spec:** #199 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ The Banner is `--ink` with no shadow; every Surface level is white with a shadow
 - **C.** The Banner composes `base` for its radius and keeps its own background; the first check excludes its background. Which wins then depends on CSS order across modules.
 - **Other:** your own.
 
-Recommended: A, because Surface is "a white surface above the map" and the Banner isn't one.
+**Answer: A** (@henetiriki)
 
 **D2 · How a component is built on Surface** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ Recommended: A, because Surface is "a white surface above the map" and the Banne
 - **B.** Render `<Surface>`, which gains an `as` prop so the markup holds. Changes Surface's API.
 - **Other:** your own.
 
-Recommended: A, because it is how DM.12.6.1 meant levels to be used and needs no API change.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

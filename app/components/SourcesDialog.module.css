@@ -29,8 +29,12 @@
 }
 
 .table thead th {
-  color: var(--ink-2);
+  color: var(--ink-3);
   padding-block: 10px;
+}
+
+.date {
+  color: var(--ink-3);
 }
 
 .table tbody tr {

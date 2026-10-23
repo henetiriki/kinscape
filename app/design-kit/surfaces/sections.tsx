@@ -19,9 +19,11 @@ import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
 import {
+  Accessibility,
   type Column,
   Facts,
   Matrix,
+  Measurements,
   Section,
   stateOf,
   Variant,
@@ -317,8 +319,10 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
     lead="For a task or a long read that needs the whole screen's attention. Sources and attributions is the only one so far."
     part={1}
     title='Dialog'>
-    <Variants>
-      <Variant caption='Desktop · centred over the scrim, 760 wide. Title, subtitle, a scrolling body and a footnote.'>
+    <div className={styles.beside}>
+      <Variant
+        caption='Desktop · 1440 × 900 screen; the body scrolls under the head.'
+        desktop>
         <div
           aria-label='Desktop dialog, scrolls sideways'
           className={styles.scroller}
@@ -326,7 +330,9 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
           // A keyboard reaches the sideways scroll through the region's tab stop.
           // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
           tabIndex={0}>
-          <div className={styles.scrimmed} style={{ background: map.sea }}>
+          <div
+            className={`${styles.scrimmed} ${styles.screen}`}
+            style={{ background: map.sea }}>
             <span aria-hidden='true' className={styles.scrim} />
             <div className={styles.over}>
               <DialogPanel
@@ -339,9 +345,11 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
           </div>
         </div>
       </Variant>
-      <Variant caption='Phone · the same content as a bottom sheet over the scrim: handle, title and subtitle with Close, then stacked rows.'>
+      <Variant
+        caption='Phone · the same content as a bottom sheet over the scrim: handle, title and subtitle with Close, then stacked rows.'
+        phone>
         <div
-          className={`${styles.scrimmed} ${styles.phone}`}
+          className={`${styles.scrimmed} ${styles.phone} ${styles.dialogPhone}`}
           style={{ background: map.sea }}>
           <span aria-hidden='true' className={styles.scrim} />
           <div className={styles.over}>
@@ -351,44 +359,53 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
           </div>
         </div>
       </Variant>
-    </Variants>
-    <Facts
-      accessibility={[
-        [
-          'Role',
-          <>
-            {code('role="dialog"')} with {code('aria-modal="true"')}, labelled
-            by its title ({code('aria-labelledby')}). A native{' '}
-            {code('<dialog>')} opened with {code('showModal')} gives both.
-          </>,
-        ],
-        [
-          'Focus',
-          'Opening moves focus into the dialog (the Close button); Tab stays inside; closing returns focus to the link or menu item that opened it.',
-        ],
-        [
-          'Keyboard',
-          'Esc closes. Close is always there; the scrim closes too.',
-        ],
-        [
-          'Table',
-          <>
-            A real table on desktop (column headers); a list on a phone, where
-            each item reads layer, source, licence, checked.
-          </>,
-        ],
-      ]}
+      <div className={styles.aside}>
+        <Accessibility
+          accessibility={[
+            [
+              'Role',
+              <>
+                {code('role="dialog"')} with {code('aria-modal="true"')},
+                labelled by its title ({code('aria-labelledby')}). A native{' '}
+                {code('<dialog>')} opened with {code('showModal')} gives both.
+              </>,
+            ],
+            [
+              'Focus',
+              'Opening moves focus into the dialog (the Close button); Tab stays inside; closing returns focus to the link or menu item that opened it.',
+            ],
+            [
+              'Keyboard',
+              'Esc closes. Close is always there; the scrim closes too.',
+            ],
+            [
+              'Table',
+              <>
+                A real table on desktop (column headers); a list on a phone,
+                where each item reads layer, source, licence, checked.
+              </>,
+            ],
+          ]}
+        />
+      </div>
+    </div>
+    <Measurements
       label='Dialog'
       measurements={[
         [
           'Desktop',
-          '760 wide, padding 24 28 28, gap 16, radius 12, modal shadow, over the scrim',
-          '760: component size · 28: no token (32 would move it 4px) · space.24 · space.16 · radius.panel · shadow.modal · colour.scrim',
+          '760 wide, up to the screen less 80 tall; padding 24 28 28, gap 16, radius 12, modal shadow',
+          '760: component size · 28: no token · 80: 2 × space.40 · space.24 · space.16 · radius.panel · shadow.modal · colour.scrim',
+        ],
+        [
+          'Body',
+          'Scrolls under the title; a line-strong rule on top; table and footnote 16 apart',
+          'colour.line-strong · space.16',
         ],
         [
           'Phone',
-          'Full width from 56 below the top, padding 8 16 24, gap 12, top radius 18, modal shadow',
-          'radius.sheet · shadow.modal (other sheets use shadow.sheet)',
+          'Full width, up to 56 from the top; padding 8 16 24, gap 12, top radius 18, modal shadow',
+          'radius.sheet · shadow.modal (other sheets: shadow.sheet)',
         ],
         [
           'Title',
@@ -402,13 +419,23 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
         ],
         [
           'Table',
-          'Columns 170 / rest / 150 / 120, gap 12; header row overline; rows min 44; layer 14 / 600, the rest 13 / 20; Checked in mono 12',
-          'type.overline · size.touch · type.label · type.small · type.mono',
+          'Columns 170 / rest / 150 / 120, 12 after each; overline header; rows min 44, 4 above and below',
+          'type.overline · size.touch · space.12 · space.4',
+        ],
+        [
+          'Text',
+          'Layer 14 / 600; source 13 / 20 with its detail under it, 12.5 / 18 ink-3; Checked mono 12',
+          'type.label · type.small · type.caption · type.mono',
+        ],
+        [
+          'Licence',
+          "Board 04's Link at 13 / 20: brand, 500, 1px underline 3 below; opens in a new tab",
+          'colour.brand · radius.link · type.small',
         ],
         [
           'Phone rows',
-          'Layer 14 / 600; then source, licence and "Checked" with its date on one wrapping line, 13 / 20; 12 above and below',
-          'type.label · type.small · space.12',
+          'Layer; source, licence and "Checked" date on one wrapping line; detail; 12 around, 4 between',
+          'type.label · type.small · type.caption · space.12 · space.4',
         ],
         [
           'Handle',
@@ -416,6 +443,7 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
           '40 × 4: component size, no token · colour.line-strong',
         ],
       ]}
+      wide
     />
   </Section>
 );

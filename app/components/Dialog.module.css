@@ -114,6 +114,7 @@
   gap: var(--space-16);
   min-height: 0;
   overflow: auto;
+  scrollbar-width: thin;
 }
 
 .panel[data-form='sheet'] .body {

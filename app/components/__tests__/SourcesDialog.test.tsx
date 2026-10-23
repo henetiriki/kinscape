@@ -63,6 +63,20 @@ it('lists each source with its layer, licence link and date checked', () => {
   ).toBeTruthy();
 });
 
+// NFR-06
+it('draws every licence as a small Link that opens in a new tab', () => {
+  renderDialog();
+
+  const links = screen.getAllByRole('link', { hidden: true });
+
+  expect(links).toHaveLength(4);
+  for (const link of links) {
+    expect(link.dataset.size).toBe('small');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noreferrer');
+  }
+});
+
 it('says the board 07 words and has a list for a phone beside the table', () => {
   renderDialog();
 

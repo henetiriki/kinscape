@@ -8,18 +8,25 @@ import styles from './TextLink.module.css';
 export const TextLink = ({
   children,
   disabled,
+  size,
   state,
   ...rest
 }: {
   disabled?: boolean;
+  /** `small` is 13 / 20, for dense surfaces such as the Sources dialog. */
+  size?: 'small';
   state?: ControlState;
 } & Omit<ComponentProps<'a'>, 'className'>) =>
   disabled ? (
-    <span aria-disabled='true' className={styles.textLink}>
+    <span aria-disabled='true' className={styles.textLink} data-size={size}>
       {children}
     </span>
   ) : (
-    <a className={styles.textLink} data-state={state} {...rest}>
+    <a
+      className={styles.textLink}
+      data-size={size}
+      data-state={state}
+      {...rest}>
       {children}
     </a>
   );

@@ -6,6 +6,7 @@ import { Dialog } from './Dialog';
 import styles from './SourcesDialog.module.css';
 import { SOURCES_WORDS } from './sourcesWords';
 import { Text } from './Text';
+import { TextLink } from './TextLink';
 
 const COLUMNS = ['Layer', 'Source', 'Licence', 'Checked'];
 
@@ -13,9 +14,13 @@ const detail = (source: Source) =>
   `${source.author}${source.processing ? `. ${source.processing}` : ''}`;
 
 const Licence = ({ source }: { source: Source }) => (
-  <a href={source.licenceLink} rel='noreferrer' target='_blank'>
+  <TextLink
+    href={source.licenceLink}
+    rel='noreferrer'
+    size='small'
+    target='_blank'>
     {source.licence}
-  </a>
+  </TextLink>
 );
 
 /** Every source as layer, source, licence and date checked: a table in the centred Dialog, a list in the sheet. */
@@ -49,7 +54,7 @@ export const SourcesList = ({ sources }: { sources: Source[] }) => (
             <td>
               <Licence source={source} />
             </td>
-            <td>
+            <td className={styles.date}>
               <Text variant='mono'>{source.dateChecked}</Text>
             </td>
           </tr>
@@ -63,7 +68,9 @@ export const SourcesList = ({ sources }: { sources: Source[] }) => (
           <span className={styles.line}>
             <span>{source.title}</span>
             <Licence source={source} />
-            <Text variant='mono'>Checked {source.dateChecked}</Text>
+            <span className={styles.date}>
+              <Text variant='mono'>Checked {source.dateChecked}</Text>
+            </span>
           </span>
           <span className={styles.detail}>{detail(source)}</span>
         </li>

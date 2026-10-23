@@ -46,13 +46,19 @@ export const Variant = ({
   caption,
   children,
   desktop,
+  phone,
 }: {
   caption: string;
   children: ReactNode;
   /** Drawn on a desktop only: a phone shows the variants that have no flag. */
   desktop?: boolean;
+  /** Drawn on a phone only. */
+  phone?: boolean;
 }) => (
-  <figure className={styles.variant} data-desktop={desktop || undefined}>
+  <figure
+    className={styles.variant}
+    data-desktop={desktop || undefined}
+    data-phone={phone || undefined}>
     <div className={styles.sample}>{children}</div>
     <figcaption className={styles.caption}>{caption}</figcaption>
   </figure>
@@ -110,7 +116,57 @@ export const Matrix = ({
   </figure>
 );
 
-/** The Measurements table (name, value, token) and the Accessibility list beside it. */
+/** The Measurements table: name, value, token. `wide` draws it full width, with a wider token column. */
+export const Measurements = ({
+  label,
+  measurements,
+  wide,
+}: {
+  label: string;
+  measurements: [string, string, string][];
+  wide?: boolean;
+}) => (
+  <div className={styles.factsColumn}>
+    <h3 className={styles.h3}>Measurements</h3>
+    <div
+      aria-label={`${label} measurements`}
+      className={styles.table}
+      data-wide={wide || undefined}
+      role='table'>
+      {measurements.map(([name, value, token]) => (
+        <div className={styles.fact} key={name} role='row'>
+          <span className={styles.factName} role='rowheader'>
+            {name}
+          </span>
+          <span role='cell'>{value}</span>
+          <span className={styles.token} role='cell'>
+            {token}
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
+export const Accessibility = ({
+  accessibility,
+}: {
+  accessibility: [string, ReactNode][];
+}) => (
+  <div className={styles.factsColumn}>
+    <h3 className={styles.h3}>Accessibility</h3>
+    <dl className={styles.list}>
+      {accessibility.map(([name, text]) => (
+        <div className={styles.listRow} key={name}>
+          <dt className={styles.factName}>{name}</dt>
+          <dd className={styles.definition}>{text}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+);
+
+/** The Measurements table and the Accessibility list beside it. */
 export const Facts = ({
   accessibility,
   label,
@@ -121,35 +177,7 @@ export const Facts = ({
   measurements: [string, string, string][];
 }) => (
   <div className={styles.facts}>
-    <div className={styles.factsColumn}>
-      <h3 className={styles.h3}>Measurements</h3>
-      <div
-        aria-label={`${label} measurements`}
-        className={styles.table}
-        role='table'>
-        {measurements.map(([name, value, token]) => (
-          <div className={styles.fact} key={name} role='row'>
-            <span className={styles.factName} role='rowheader'>
-              {name}
-            </span>
-            <span role='cell'>{value}</span>
-            <span className={styles.token} role='cell'>
-              {token}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-    <div className={styles.factsColumn}>
-      <h3 className={styles.h3}>Accessibility</h3>
-      <dl className={styles.list}>
-        {accessibility.map(([name, text]) => (
-          <div className={styles.listRow} key={name}>
-            <dt className={styles.factName}>{name}</dt>
-            <dd className={styles.definition}>{text}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <Measurements label={label} measurements={measurements} />
+    <Accessibility accessibility={accessibility} />
   </div>
 );

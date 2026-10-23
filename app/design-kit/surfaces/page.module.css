@@ -191,6 +191,27 @@
   width: 390px;
 }
 
+/* The Dialog section: the sample beside its Accessibility list; a phone shows the sheet, then Measurements, then the list. */
+.beside {
+  align-items: flex-start;
+  display: flex;
+  gap: 40px;
+}
+
+.aside {
+  flex: 1;
+  min-width: 0;
+}
+
+/* A 1440 × 900 screen: the panel stops 40 short of its top and bottom, so the body scrolls. */
+.screen [data-form='centred'] {
+  max-height: 820px;
+}
+
+.dialogPhone {
+  padding-top: 48px;
+}
+
 .sheetText {
   color: var(--ink-3);
   font-size: var(--type-small-size);
@@ -199,6 +220,14 @@
 }
 
 @media (max-width: 639.98px), (max-height: 499.98px) {
+  .beside {
+    display: contents;
+  }
+
+  .aside {
+    order: 1;
+  }
+
   .stage,
   .level,
   .bars,

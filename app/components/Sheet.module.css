@@ -38,8 +38,17 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
-  padding: var(--space-12) var(--space-16) var(--space-32);
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-16) var(--space-16);
+}
+
+/* The title and subtitle sit further from the content, and a tabs head sits closer to the edge. */
+.content[data-head='subtitle'] {
+  gap: var(--space-12);
+}
+
+.content[data-head='tabs'] {
+  padding-bottom: var(--space-8);
 }
 
 .handle {
@@ -53,5 +62,40 @@
 .head {
   align-items: center;
   display: flex;
+  gap: var(--space-16);
   justify-content: space-between;
+}
+
+/* Close is pulled 8 into the gutter so its icon lines up with the text column. */
+.head > :last-child {
+  margin-right: calc(-1 * var(--space-8));
+}
+
+.content[data-head='subtitle'] .head {
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.content[data-head='subtitle'] .head > :last-child {
+  margin-top: calc(-1 * var(--space-4));
+}
+
+.content[data-head='tabs'] .head {
+  border-bottom: 1px solid var(--line);
+  gap: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+
+.content[data-head='tabs'] .head > :last-child {
+  margin-right: 0;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.titles p {
+  color: var(--ink-2);
 }

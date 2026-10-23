@@ -35,12 +35,11 @@ export const MapShell = ({ sources }: { sources: Source[] }) => {
           sources={sources}
         />
       </div>
-      {showSources && (
-        <SourcesDialog
-          onClose={() => setShowSources(false)}
-          sources={sources}
-        />
-      )}
+      <SourcesDialog
+        onClose={() => setShowSources(false)}
+        open={showSources}
+        sources={sources}
+      />
     </>
   );
 };

@@ -1,8 +1,14 @@
 import type { ReactNode } from 'react';
 
+import type { Source } from '@/lib/boundaries/model.mts';
+
 import { Callout, CalloutPointer } from '@/app/components/Callout';
+import { DialogPanel } from '@/app/components/Dialog';
 import { NoticeCard } from '@/app/components/NoticeCard';
 import { ProgressBar } from '@/app/components/ProgressBar';
+import { SheetPanel } from '@/app/components/Sheet';
+import { SourcesList } from '@/app/components/SourcesDialog';
+import { SOURCES_WORDS } from '@/app/components/sourcesWords';
 import { Surface, type SurfaceLevel } from '@/app/components/Surface';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
@@ -285,6 +291,215 @@ export const ProgressBars = () => (
           'Kind',
           'Determinate. There is no indeterminate form on any screen',
           '—',
+        ],
+      ]}
+    />
+  </Section>
+);
+
+export const Dialogs = ({ sources }: { sources: Source[] }) => (
+  <Section
+    lead="For a task or a long read that needs the whole screen's attention. Sources and attributions is the only one so far."
+    part={1}
+    title='Dialog'>
+    <Variants>
+      <Variant caption='Desktop · centred over the scrim, 760 wide. Title, subtitle, a scrolling body and a footnote.'>
+        <div
+          aria-label='Desktop dialog, scrolls sideways'
+          className={styles.scroller}
+          role='region'
+          // A keyboard reaches the sideways scroll through the region's tab stop.
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}>
+          <div className={styles.scrimmed} style={{ background: map.sea }}>
+            <span aria-hidden='true' className={styles.scrim} />
+            <div className={styles.over}>
+              <DialogPanel
+                form='centred'
+                {...SOURCES_WORDS}
+                titleId='dialog-centred'>
+                <SourcesList sources={sources} />
+              </DialogPanel>
+            </div>
+          </div>
+        </div>
+      </Variant>
+      <Variant caption='Phone · the same content as a bottom sheet over the scrim: handle, title and subtitle with Close, then stacked rows.'>
+        <div
+          className={`${styles.scrimmed} ${styles.phone}`}
+          style={{ background: map.sea }}>
+          <span aria-hidden='true' className={styles.scrim} />
+          <div className={styles.over}>
+            <DialogPanel form='sheet' {...SOURCES_WORDS} titleId='dialog-sheet'>
+              <SourcesList sources={sources} />
+            </DialogPanel>
+          </div>
+        </div>
+      </Variant>
+    </Variants>
+    <Facts
+      accessibility={[
+        [
+          'Role',
+          <>
+            {code('role="dialog"')} with {code('aria-modal="true"')}, labelled
+            by its title ({code('aria-labelledby')}). A native{' '}
+            {code('<dialog>')} opened with {code('showModal')} gives both.
+          </>,
+        ],
+        [
+          'Focus',
+          'Opening moves focus into the dialog (the Close button); Tab stays inside; closing returns focus to the link or menu item that opened it.',
+        ],
+        [
+          'Keyboard',
+          'Esc closes. Close is always there; the scrim closes too.',
+        ],
+        [
+          'Table',
+          <>
+            A real table on desktop (column headers); a list on a phone, where
+            each item reads layer, source, licence, checked.
+          </>,
+        ],
+      ]}
+      label='Dialog'
+      measurements={[
+        [
+          'Desktop',
+          '760 wide, padding 24 28 28, gap 16, radius 12, modal shadow, over the scrim',
+          '760: component size · 28: no token (32 would move it 4px) · space.24 · space.16 · radius.panel · shadow.modal · colour.scrim',
+        ],
+        [
+          'Phone',
+          'Full width from 56 below the top, padding 8 16 24, gap 12, top radius 18, modal shadow',
+          'radius.sheet · shadow.modal (other sheets use shadow.sheet)',
+        ],
+        [
+          'Title',
+          'H2: Bricolage 24 / 32 · 700; subtitle 15 / 22 ink-2, 4 below',
+          'type.h2 · type.body',
+        ],
+        [
+          'Close',
+          '44 × 44, fully round, ink-3; icon 18 desktop, 20 phone; pulled into the corner',
+          'size.touch · radius.full',
+        ],
+        [
+          'Table',
+          'Columns 170 / rest / 150 / 120, gap 12; header row overline; rows min 44; layer 14 / 600, the rest 13 / 20; Checked in mono 12',
+          'type.overline · size.touch · type.label · type.small · type.mono',
+        ],
+        [
+          'Phone rows',
+          'Layer 14 / 600; then source, licence and "Checked" with its date on one wrapping line, 13 / 20; 12 above and below',
+          'type.label · type.small · space.12',
+        ],
+        [
+          'Handle',
+          '40 × 4, radius 2, line-strong; 8 from the top',
+          '40 × 4: component size, no token · colour.line-strong',
+        ],
+      ]}
+    />
+  </Section>
+);
+
+const SHEET_CONTENT = (
+  <p className={styles.sheetText}>The sheet&rsquo;s content starts here.</p>
+);
+
+const TABS = [
+  { label: 'Layers', value: 'layers' },
+  { count: 1, label: 'Filters', value: 'filters' },
+];
+
+const SheetFrame = ({ children }: { children: ReactNode }) => (
+  <div
+    className={`${styles.scrimmed} ${styles.phone}`}
+    style={{ background: map.sea }}>
+    <Surface level='sheet'>{children}</Surface>
+  </div>
+);
+
+export const SheetHeaders = () => (
+  <Section
+    lead='The top of every phone bottom sheet: a handle, then one of three header rows.'
+    part={2}
+    title='Phone sheet header'>
+    <Variants>
+      <Variant caption="Title and Close · the design kit's Boards sheet. H2 24 / 32.">
+        <SheetFrame>
+          <SheetPanel title='Boards' titleId='head-title'>
+            {SHEET_CONTENT}
+          </SheetPanel>
+        </SheetFrame>
+      </Variant>
+      <Variant caption='Tabs and Close · Layers and filters. Tabs 44 tall share the row.'>
+        <SheetFrame>
+          <SheetPanel
+            tabs={{
+              label: 'Layers and filters',
+              selected: 'layers',
+              tabs: TABS,
+            }}
+            titleId='head-tabs'>
+            {SHEET_CONTENT}
+          </SheetPanel>
+        </SheetFrame>
+      </Variant>
+      <Variant caption='Title, subtitle and Close · Sources and attributions; its list is in the Dialog section.'>
+        <SheetFrame>
+          <SheetPanel
+            subtitle={SOURCES_WORDS.subtitle}
+            title={SOURCES_WORDS.title}
+            titleId='head-subtitle'>
+            {SHEET_CONTENT}
+          </SheetPanel>
+        </SheetFrame>
+      </Variant>
+    </Variants>
+    <Facts
+      accessibility={[
+        [
+          'Heading',
+          <>
+            The title is a real {code('h2')} and labels the sheet&rsquo;s
+            dialog.
+          </>,
+        ],
+        ['Close', <>{code('aria-label="Close"')}; Esc does the same.</>],
+        [
+          'Handle',
+          <>
+            Decoration on an open sheet ({code('aria-hidden')}). On the
+            collapsed date sheet it is a button, &ldquo;Expand the sheet&rdquo;,
+            which isn&rsquo;t covered here.
+          </>,
+        ],
+      ]}
+      label='Phone sheet header'
+      measurements={[
+        [
+          'Handle',
+          '40 × 4, radius 2, line-strong, centred, 8 from the top edge',
+          '40 × 4: component size, no token',
+        ],
+        [
+          'Padding',
+          '8 16 at the top; 8 (tabs) or 12 (title) from handle to header',
+          'space.8 · space.16 · space.12',
+        ],
+        ['Title', 'H2 24 / 32 · 700', 'type.h2'],
+        [
+          'Close',
+          '44 × 44 round, ink-3, 20px icon; its right edge pulled 8 into the gutter so the icon lines up with the text column',
+          'size.touch',
+        ],
+        [
+          'Tabs row',
+          'Tabs share the row, gap 8 to Close, 8 below, then a 1px line',
+          'space.8 · colour.line',
         ],
       ]}
     />

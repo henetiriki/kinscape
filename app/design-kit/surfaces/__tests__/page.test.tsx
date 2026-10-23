@@ -7,18 +7,28 @@ const show = async (part?: string | string[]) =>
   render(await SurfacesKit({ searchParams: Promise.resolve({ part }) }));
 
 // NFR-06
-it('shows the four sections in board order, each with Measurements and Accessibility', async () => {
+it('shows the six sections in board order, each with Measurements and Accessibility', async () => {
   await show();
 
   expect(
     screen.getByRole('heading', { level: 1, name: 'Surfaces and overlays' })
   ).toBeTruthy();
   expect(
-    screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent)
-  ).toEqual(['Surface', 'Notice card', 'Progress bar', 'Callout']);
+    // The Dialog and sheet samples carry their own titles, so only each section's own h2 counts.
+    [...document.querySelectorAll('section > div:first-child > h2')].map(
+      h => h.textContent
+    )
+  ).toEqual([
+    'Surface',
+    'Notice card',
+    'Progress bar',
+    'Dialog',
+    'Phone sheet header',
+    'Callout',
+  ]);
   expect(
     screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
-  ).toEqual(Array(4).fill(['Measurements', 'Accessibility']).flat());
+  ).toEqual(Array(6).fill(['Measurements', 'Accessibility']).flat());
 });
 
 it('draws every variant board 07 shows, in the order drawn', async () => {
@@ -56,6 +66,26 @@ it('draws every variant board 07 shows, in the order drawn', async () => {
     '100',
   ]);
 
+  const dialog = screen.getByRole('region', { name: 'Dialog' });
+
+  expect(
+    [...dialog.querySelectorAll('[data-form]')].map(panel =>
+      panel.getAttribute('data-form')
+    )
+  ).toEqual(['centred', 'sheet']);
+  // The kit lists the real sources, in the table and in the list.
+  expect(
+    within(dialog).getAllByRole('link', { name: 'Public domain' }).length
+  ).toBeGreaterThan(0);
+
+  const heads = screen.getByRole('region', { name: 'Phone sheet header' });
+
+  expect(
+    [...heads.querySelectorAll('[data-head]')].map(head =>
+      head.getAttribute('data-head')
+    )
+  ).toEqual(['title', 'tabs', 'subtitle']);
+
   const callouts = within(
     screen.getByRole('region', { name: 'Callout' })
   ).getAllByRole('alert');
@@ -71,7 +101,9 @@ it('splits into two parts on a phone, with a link to the other', async () => {
   await show();
   expect(screen.getByRole('main').getAttribute('data-part')).toBe('1');
   expect(
-    screen.getByRole('link', { name: 'Part 2: callout' }).getAttribute('href')
+    screen
+      .getByRole('link', { name: 'Part 2: phone sheet headers, callout' })
+      .getAttribute('href')
   ).toBe('/design-kit/surfaces?part=2');
   expect(
     screen.getByRole('region', { name: 'Callout' }).getAttribute('data-part')
@@ -85,7 +117,7 @@ it('shows part 2 for ?part=2 and part 1 for anything else', async () => {
   expect(
     screen
       .getByRole('link', {
-        name: 'Part 1: surface, notice card, progress bar',
+        name: 'Part 1: surface, notice card, progress bar, dialog',
       })
       .getAttribute('href')
   ).toBe('/design-kit/surfaces');

@@ -2,7 +2,7 @@
 
 - **Spec:** #184 (Intent #111)
 - **Requirement IDs:** NFR-06, NFR-05, EXP-03, MAP-05
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,33 +19,37 @@
 
 - **A.** The DESIGN.md character plus U+FE0E (never emoji), sized 12, 14 or 16px, as the board draws it.
 - **B.** An SVG per glyph: the same on every OS, but unlike the snapshot.
-- **Other:** your own.
 
 Recommended: A, because it matches the snapshot and DESIGN.md.
+
+Answer: A
 
 **D2 · The "/" shortcut** · Decides: Tech lead
 
 - **A.** A `shortcut` prop sets `aria-keyshortcuts` and focuses the field on "/" unless a text input has focus. The kit sets it on one field.
 - **B.** Attribute and hint only; screen Specs wire the key.
-- **Other:** your own.
 
 Recommended: A, because otherwise the attribute names a key that does nothing.
+
+Answer: A
 
 **D3 · What Enter adds to the token field** · Decides: Tech lead
 
 - **A.** The trimmed text; nothing if it is empty or already there (any case).
 - **B.** Whatever was typed.
-- **Other:** your own.
 
 Recommended: A, because a repeat filters nothing.
+
+Answer: A
 
 **D4 · Arrow keys at the last tab** · Decides: Tech lead
 
 - **A.** Wrap to the other end, as the ARIA practices do.
 - **B.** Stop.
-- **Other:** your own.
 
 Recommended: A, because screen reader users expect it.
+
+Answer: A
 
 ## Files that change
 

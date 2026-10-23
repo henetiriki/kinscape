@@ -39,7 +39,7 @@ it('links each board in order', () => {
     ['Foundations', '/design-kit/foundations'],
     ['Component states', '/design-kit/states'],
     ['Feedback', '/design-kit/feedback'],
-    ['Inputs and actions', '/design-kit/inputs'],
+    ['Inputs', '/design-kit/inputs'],
     ['Surfaces', '/design-kit/surfaces'],
     ['Map furniture', '/design-kit/map-furniture'],
     ['Map style', '/design-kit/map-style'],

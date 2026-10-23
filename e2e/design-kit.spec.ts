@@ -233,7 +233,7 @@ const BOARD_LINKS = [
   },
   {
     heading: 'Inputs and actions',
-    label: 'Inputs and actions',
+    label: 'Inputs',
     path: '/design-kit/inputs',
   },
   {
@@ -920,5 +920,45 @@ test.describe('the other boards on a phone', () => {
 
       expect(await top('Spacing')).toBe(await top('Corner radius'));
     });
+  });
+});
+
+// NFR-05: the index lists the boards in two columns on a desktop and one on a phone.
+test.describe('the boards index', () => {
+  const corners = async (page: Page) => {
+    await page.goto('/design-kit');
+
+    return page
+      .getByRole('main')
+      .getByRole('listitem')
+      .evaluateAll(items =>
+        items.map(item => {
+          const { left, top } = item.getBoundingClientRect();
+
+          return { left, top };
+        })
+      );
+  };
+
+  test('on a desktop fills the left column first, then the right', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+
+    const boxes = await corners(page);
+
+    expect(boxes[5].top).toBe(boxes[0].top);
+    expect(boxes[5].left).toBeGreaterThan(boxes[0].left);
+    expect(boxes[8].left).toBe(boxes[5].left);
+    expect(boxes[4].top).toBeGreaterThan(boxes[3].top);
+    expect(boxes[4].left).toBe(boxes[0].left);
+  });
+
+  test('on a phone is one column', async ({ page }) => {
+    await page.setViewportSize({ height: 941, width: 390 });
+
+    const boxes = await corners(page);
+
+    expect(new Set(boxes.map(box => box.left)).size).toBe(1);
   });
 });

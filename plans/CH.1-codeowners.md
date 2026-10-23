@@ -2,7 +2,7 @@
 
 - **Spec:** #179
 - **Requirement IDs:** none (process change)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,6 +16,8 @@ Its author must be neither the PO (who approves it) nor the tech lead (who must 
 - **A.** After applying the settings, the tech lead comments `@claude` on #179 asking for it. Claude opens a PR from `test/CH.1-code-owner` that adds one comment line to `AGENTS.md`. The PO approves; the tech lead runs `gh pr view <n> --json reviewDecision,mergeStateStatus` (expect `REVIEW_REQUIRED`, `BLOCKED`), then closes it unmerged.
 - **B.** Skip the live check and rely on GitHub's docs plus `check-github.sh`.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki).
 
 Recommended: A, because the Spec relies on this PR to prove that code-owner review works on this repo's plan.
 

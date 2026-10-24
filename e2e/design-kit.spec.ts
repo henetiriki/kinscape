@@ -569,7 +569,7 @@ test('each type sample has its style tokens', async ({ page }) => {
     })
   );
 
-  expect(samples).toHaveLength(14);
+  expect(samples).toHaveLength(22);
 
   for (const { actual, expected } of samples) {
     expect(actual).toEqual(expected);

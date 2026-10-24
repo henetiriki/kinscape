@@ -271,9 +271,6 @@ const TypeKit = () => (
           </span>
           <span className={styles.spec} role='cell'>
             {row.spec}
-            {row.variant === 'h1' && (
-              <span className={styles.phoneOnly}> (28 on phone)</span>
-            )}
           </span>
           <span role='cell'>
             {/* Display is a div and the header title a paragraph, so the H1 sample is the only h1. */}

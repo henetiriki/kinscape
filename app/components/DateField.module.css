@@ -22,6 +22,8 @@
   align-self: flex-start;
   background: none;
   border: 0;
+  font-size: var(--type-link-s-size);
+  line-height: var(--type-link-s-line);
   padding: 0;
 }
 

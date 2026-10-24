@@ -4,8 +4,8 @@
   background: var(--segment);
   border-radius: var(--radius-segment);
   display: inline-flex;
-  gap: 2px;
-  padding: 3px;
+  gap: var(--space-4);
+  padding: var(--space-4);
 }
 
 .segItem {

@@ -59,7 +59,7 @@
     },
     {
       "height": 3628,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-1-type-phone",
       "route": "/design-kit/type",
       "width": 390

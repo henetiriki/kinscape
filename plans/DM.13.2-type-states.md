@@ -74,8 +74,9 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 
 ## Deviations
 
-- `Button` now has 15px text and 18px side padding to match the snapshots (tech lead's call). It restyles every button; States scores 0.26% (desktop) and 0.39% (phone).
-- `design/source` and the Type JPGs are reverted to the canvas export. `style-1-type` is 0.30% (`blocking`); `style-1-type-phone` is 1.96%, so it stays `report` until the Design agent applies the polity label change (12.5 → 12) on the canvas and re-exports.
+- `Button` takes its text from the height (L 16/24, M 15/22, S and XS 14/20) with 16px side padding, 12 on XS, per the design handoff; this replaces the earlier 15px text and 18px padding. States score 0.27% (desktop) and 0.33% (phone).
+- The new snapshots (token pass) replace the canvas-export ones: `style-1-type` 0.07% and `style-1-type-phone` 0.19%, both now `blocking`.
+- The shared notes now use a 48px gap and 12px section gap (Type keeps 32 and 16), and the Segmented track uses 4px padding and gap, per the new snapshots.
 
 ## Out of scope
 

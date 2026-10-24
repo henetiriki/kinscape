@@ -70,6 +70,7 @@
   flex: 1;
   font-family: var(--type-body-l-font);
   font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
   min-width: 0;
   outline: 0;
   padding: 0;
@@ -79,6 +80,7 @@
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .input {
     font-size: var(--type-body-l-size);
+    line-height: var(--type-body-l-line);
   }
 }
 
@@ -99,6 +101,7 @@
   font-size: var(--type-mono-l-size);
   font-variant-ligatures: none;
   font-weight: var(--type-mono-l-weight);
+  line-height: var(--type-mono-l-line);
   text-align: center;
 }
 
@@ -112,13 +115,14 @@
   right: 9px;
 }
 
-/* The 48px sign-in size: 16px text. */
+/* The 48px sign-in size: 16 / 24 text. */
 .box[data-size='l'] {
   height: var(--size-field-l);
 }
 
 .box[data-size='l'] .input {
-  font-size: var(--type-button-size);
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
 }
 
 /* The search field sits on surface-2 with no visible border until it has focus. */

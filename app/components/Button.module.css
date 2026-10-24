@@ -5,14 +5,14 @@
   box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--type-button-s-font);
-  font-size: var(--type-body-size);
-  font-weight: var(--type-button-s-weight);
+  font-family: var(--type-control-font);
+  font-size: var(--type-control-size);
+  font-weight: var(--type-control-weight);
   gap: var(--space-8);
   height: var(--size-control);
   justify-content: center;
-  line-height: var(--type-button-s-line);
-  padding: 0 18px;
+  line-height: var(--type-control-line);
+  padding: 0 var(--space-16);
   position: relative;
   transition:
     background var(--motion-press),
@@ -24,6 +24,11 @@
   font-size: var(--type-button-size);
   height: var(--size-control-l);
   line-height: var(--type-button-line);
+}
+
+.btn:is([data-size='s'], [data-size='xs']) {
+  font-size: var(--type-button-s-size);
+  line-height: var(--type-button-s-line);
 }
 
 .btn[data-size='s'] {

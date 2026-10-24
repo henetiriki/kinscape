@@ -33,8 +33,9 @@
   font-size: var(--type-overline-size);
   font-weight: var(--type-overline-weight);
   letter-spacing: var(--type-overline-tracking);
+  line-height: var(--type-overline-line);
   min-height: 0;
-  padding: 10px 0;
+  padding: var(--space-12) 0;
   text-transform: uppercase;
 }
 
@@ -47,12 +48,13 @@
 .kitName > :first-child {
   font-size: var(--type-label-size);
   font-weight: var(--type-label-weight);
+  line-height: var(--type-label-line);
 }
 
 .kitHint {
   color: var(--ink-3);
   font-size: var(--type-caption-size);
-  line-height: 1.4;
+  line-height: var(--type-caption-line);
 }
 
 .kitField {
@@ -62,7 +64,7 @@
 .kitCell {
   align-items: center;
   display: inline-flex;
-  gap: 10px;
+  gap: var(--space-12);
   justify-self: start;
 }
 
@@ -104,7 +106,7 @@
     line-height: 18px;
   }
 
-  /* The 88px label column and the 12px gap: 90px plus the cell's 10px gap between controls puts the control at 100px. */
+  /* The 88px label column and the 12px gap put the control at 100px. */
   .kitCell {
     align-self: stretch;
     min-height: 52px;
@@ -119,6 +121,6 @@
     letter-spacing: var(--type-overline-tracking);
     line-height: var(--type-overline-line);
     text-transform: uppercase;
-    width: 90px;
+    width: 88px;
   }
 }

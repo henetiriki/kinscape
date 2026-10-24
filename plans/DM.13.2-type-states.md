@@ -2,7 +2,7 @@
 
 - **Spec:** #223 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ Differences, from the snapshot HTML:
 - **B.** Leave `TextField` alone. Desktop States keeps five fields' worth of difference, and DM.13.5 meets the same question.
 - **Other:** your own.
 
-Recommended: A, because it is what the design's own rule and the Inputs board say, and it keeps 16px where phones would zoom.
+**Answer: A** (@henetiriki)
 
 **D2 · Spaces around inline code** · Decides: Tech lead
 
@@ -37,7 +37,7 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 - **B.** Add the spaces in the app to match.
 - **Other:** your own.
 
-Recommended: A, because the spaces are an artefact of how the HTML is formatted, not a choice in the design.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

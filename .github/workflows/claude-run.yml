@@ -32,7 +32,7 @@ on:
         default: ''
         type: string
       playwright:
-        description: 'Install the test browser, for a run that builds and runs e2e.'
+        description: 'Install the test browser, for a run that runs e2e or design:check.'
         default: false
         type: boolean
       plan:
@@ -121,8 +121,8 @@ jobs:
           node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
-      # Install the test browser, but only on a build, when Claude runs the end-to-end tests.
-      # Plan runs don't build. The cache keeps the browser between runs.
+      # Install the test browser when the caller says Claude will run e2e or design:check (a build,
+      # or a plan for a UI Spec). The cache keeps the browser between runs.
       # The runner already has Chromium's system packages, so only the browser is installed.
       - name: Read Playwright version
         id: playwright

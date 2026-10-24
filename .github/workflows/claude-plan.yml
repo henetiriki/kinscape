@@ -49,6 +49,9 @@ jobs:
     with:
       thread: ${{ github.event.issue.number }}
       plan: true
+      # A plan for a UI Spec runs `npm run design:check` for its scores, which needs the browser.
+      # The cache keeps the download between runs.
+      playwright: true
       model_args: --model opus --effort high
       # The files in .github/agent/ that become the system prompt. The order matters:
       # rules.md first, build.md last (see the comment at the top of each file).

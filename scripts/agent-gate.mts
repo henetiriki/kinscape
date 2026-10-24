@@ -1,7 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-// Checks that run before a plan or build job spends a model run (see claude-spec-agent.yml):
+// Checks that run before a plan or build job spends a model run (see claude-run.yml):
+//   both:  stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
 //   build: stop if an issue the PR closes is blocked by an open issue
 // Usage: node scripts/agent-gate.mts plan|build <issue or PR number>, with GH_REPO set.
@@ -33,7 +34,52 @@ const openBlockers = (gh: Gh, repo: string, issue: number): number[] =>
     .filter(({ state }) => state === 'open')
     .map(({ number }) => number);
 
-const planReasons = (gh: Gh, repo: string, issue: number): string[] => {
+// A queued run's event may describe a label or title that has since changed (a second run waited
+// for the first). Read the issue or PR as it is now; the reason it no longer qualifies, if so.
+const staleReason = (
+  gh: Gh,
+  kind: Kind,
+  thread: number
+): string | undefined => {
+  if (kind === 'plan') {
+    const { labels, state } = json<{
+      labels: { name: string }[];
+      state: string;
+    }>(gh, ['issue', 'view', String(thread), '--json', 'state,labels']);
+
+    if (state !== 'OPEN') {
+      return 'the issue is closed';
+    }
+
+    return labels.some(({ name }) => name === 'status: ready-for-agent')
+      ? undefined
+      : 'the issue no longer has `status: ready-for-agent`';
+  }
+
+  const { isDraft, state, title } = json<{
+    isDraft: boolean;
+    state: string;
+    title: string;
+  }>(gh, ['pr', 'view', String(thread), '--json', 'state,isDraft,title']);
+
+  if (state !== 'OPEN') {
+    return 'the PR is not open';
+  }
+
+  return isDraft && title.endsWith('(plan)')
+    ? undefined
+    : 'the PR is no longer a draft plan PR';
+};
+
+const listOrNone = (numbers: number[]): string =>
+  numbers.length > 0 ? list(numbers) : 'none';
+
+const planReasons = (
+  gh: Gh,
+  repo: string,
+  issue: number,
+  notes: string[]
+): string[] => {
   const prs = json<({ number: number } & Closing)[]>(gh, [
     'pr',
     'list',
@@ -50,6 +96,11 @@ const planReasons = (gh: Gh, repo: string, issue: number): string[] => {
     .map(({ number }) => number);
   const blockers = openBlockers(gh, repo, issue);
 
+  notes.push(
+    `Open PRs that close #${issue}: ${listOrNone(prs)}.`,
+    `Open issues #${issue} is blocked by: ${listOrNone(blockers)}.`
+  );
+
   return [
     ...(prs.length > 0
       ? [
@@ -62,7 +113,12 @@ const planReasons = (gh: Gh, repo: string, issue: number): string[] => {
   ];
 };
 
-const buildReasons = (gh: Gh, repo: string, pr: number): string[] => {
+const buildReasons = (
+  gh: Gh,
+  repo: string,
+  pr: number,
+  notes: string[]
+): string[] => {
   const closes = json<Closing>(gh, [
     'pr',
     'view',
@@ -73,6 +129,13 @@ const buildReasons = (gh: Gh, repo: string, pr: number): string[] => {
   const blockers = [
     ...new Set(closes.flatMap(issue => openBlockers(gh, repo, issue))),
   ];
+
+  // A PR that closes nothing can't be checked. That is a gap, not a pass, so say so.
+  notes.push(
+    closes.length > 0
+      ? `Issues PR #${pr} closes: ${list(closes)}. Open issues they are blocked by: ${listOrNone(blockers)}.`
+      : `PR #${pr} closes no issue, so there is no Spec to check for blockers (a plan PR needs "Closes #<issue>" in its body).`
+  );
 
   return blockers.length > 0
     ? [`The Spec this PR closes is blocked by ${list(blockers)}, still open.`]
@@ -125,7 +188,8 @@ export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh,
-  write: (line: string) => void
+  write: (line: string) => void,
+  summary: (markdown: string) => void
 ): number => {
   const [kind, raw] = args;
   const repo = env.GH_REPO ?? '';
@@ -143,12 +207,44 @@ export const run = (
   }
 
   const thread = Number(raw);
+  const notes: string[] = [];
+  // What the gate checked and decided, in the log and on the run page: a pass otherwise looks
+  // the same as a skip.
+  const report = (verdict: string): void => {
+    const lines = [...notes, verdict];
+
+    lines.forEach(line => console.log(line));
+    summary(
+      [
+        `### Gate: ${kind} #${thread}`,
+        '',
+        ...lines.map(line => `- ${line}`),
+      ].join('\n')
+    );
+  };
+  const stale = staleReason(gh, kind, thread);
+
+  // Not an error: nothing to tell anyone, so no comment and no label change.
+  if (stale) {
+    write('go=false');
+    report(`Stopped quietly: ${stale}.`);
+
+    return 0;
+  }
+
+  notes.push(
+    kind === 'plan'
+      ? `#${thread} is open and has \`status: ready-for-agent\`.`
+      : `PR #${thread} is an open draft whose title ends "(plan)".`
+  );
+
   const reasons =
     kind === 'plan'
-      ? planReasons(gh, repo, thread)
-      : buildReasons(gh, repo, thread);
+      ? planReasons(gh, repo, thread, notes)
+      : buildReasons(gh, repo, thread, notes);
 
   write(`go=${reasons.length === 0}`);
+  report(reasons.length === 0 ? 'Go.' : `Stopped: ${reasons.join(' ')}`);
 
   if (reasons.length > 0) {
     // The run's own URL (from the workflow), when it looks like one, so the comment can point back.
@@ -166,9 +262,10 @@ export const run = (
   return 0;
 };
 
-/* v8 ignore next 15 -- only true when run directly with node, not when imported */
+/* v8 ignore next 17 -- only true when run directly with node, not when imported */
 if (import.meta.main) {
   const output = process.env.GITHUB_OUTPUT;
+  const page = process.env.GITHUB_STEP_SUMMARY;
 
   process.exitCode = run(
     process.argv.slice(2),
@@ -179,6 +276,7 @@ if (import.meta.main) {
         input,
         maxBuffer: 16 * 1024 * 1024,
       }),
-    line => (output ? appendFileSync(output, `${line}\n`) : console.log(line))
+    line => (output ? appendFileSync(output, `${line}\n`) : console.log(line)),
+    markdown => page && appendFileSync(page, `${markdown}\n`)
   );
 }

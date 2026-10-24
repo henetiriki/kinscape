@@ -30,6 +30,13 @@ permissions:
   issues: write
   actions: read
 
+# A second event for the same issue waits for the run in progress, gate included, so its gate then
+# sees what that run did (an open plan PR). The label is in the key so that adding another label
+# can't displace a waiting run. A run still queued behind a newer one is dropped; they are the same.
+concurrency:
+  group: plan-${{ github.event.issue.number }}-${{ github.event.label.name }}
+  cancel-in-progress: false
+
 jobs:
   # Runs when someone adds the "status: ready-for-agent" label to an open Spec, Bug or Chore (not
   # to a closed one or any other kind of issue) and that person isn't Claude's own bot. The shared
@@ -61,6 +68,7 @@ jobs:
         A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
         and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back as plans/README.md rule 4 says.
         Write each open choice as a decision in the format in docs/how-we-work.md.
+        Put `Closes #${{ github.event.issue.number }}` in the plan PR's body, so the gates and the safety net can find it.
         Push before you stop, then comment on the Spec with a link to the plan PR.
         If you're blocked, comment on the Spec saying why,
         then swap its status label for `status: blocked`.

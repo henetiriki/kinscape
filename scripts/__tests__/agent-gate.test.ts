@@ -9,19 +9,38 @@ type World = {
   blockers?: Record<number, { number: number; state: string }[]>;
   // PR number -> the issues it closes
   closes?: Record<number, number[]>;
+  // The issue or PR as it is now; a plan-ready open issue and an open draft plan PR by default.
+  issue?: { labels?: string[]; state?: string };
   openPrs?: { closingIssuesReferences: { number: number }[]; number: number }[];
+  pr?: { isDraft?: boolean; state?: string; title?: string };
 };
 
 describe('run', () => {
   let gh: ReturnType<typeof vi.fn<Gh>>;
   let write: ReturnType<typeof vi.fn<(line: string) => void>>;
+  let summary: ReturnType<typeof vi.fn<(markdown: string) => void>>;
 
-  const fakeGh = ({ blockers = {}, closes = {}, openPrs = [] }: World) => {
+  const fakeGh = ({
+    blockers = {},
+    closes = {},
+    issue = {},
+    openPrs = [],
+    pr = {},
+  }: World) => {
     gh = vi.fn<Gh>(args => {
       if (args[0] === 'api') {
-        const issue = Number(/issues\/(\d+)\//.exec(args[1])?.[1]);
+        const number = Number(/issues\/(\d+)\//.exec(args[1])?.[1]);
 
-        return JSON.stringify(blockers[issue] ?? []);
+        return JSON.stringify(blockers[number] ?? []);
+      }
+
+      if (args[0] === 'issue' && args[1] === 'view') {
+        return JSON.stringify({
+          labels: (issue.labels ?? ['status: ready-for-agent']).map(name => ({
+            name,
+          })),
+          state: issue.state ?? 'OPEN',
+        });
       }
 
       if (args[0] === 'pr' && args[1] === 'list') {
@@ -29,25 +48,32 @@ describe('run', () => {
       }
 
       if (args[0] === 'pr' && args[1] === 'view') {
-        return JSON.stringify({
-          closingIssuesReferences: (closes[Number(args[2])] ?? []).map(
-            number => ({ number })
-          ),
-        });
+        return args.includes('state,isDraft,title')
+          ? JSON.stringify({
+              isDraft: pr.isDraft ?? true,
+              state: pr.state ?? 'OPEN',
+              title: pr.title ?? 'DM.1: A plan (plan)',
+            })
+          : JSON.stringify({
+              closingIssuesReferences: (closes[Number(args[2])] ?? []).map(
+                number => ({ number })
+              ),
+            });
       }
 
       return '';
     });
   };
 
-  const posted = () =>
-    gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] !== 'edit');
+  const posted = () => gh.mock.calls.filter(([args]) => args[1] === 'comment');
   const edited = () =>
     gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] === 'edit');
 
   beforeEach(() => {
     write = vi.fn();
+    summary = vi.fn();
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
@@ -66,12 +92,160 @@ describe('run', () => {
     ])('rejects %j with env %j', (args, env) => {
       fakeGh({});
 
-      expect(run(args, env, gh, write)).toBe(1);
+      expect(run(args, env, gh, write, summary)).toBe(1);
       expect(console.error).toHaveBeenCalledWith(
         expect.stringContaining('Usage')
       );
       expect(gh).not.toHaveBeenCalled();
       expect(write).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('what it reports', () => {
+    const logged = () =>
+      vi.mocked(console.log).mock.calls.map(([line]) => String(line));
+
+    it('lists what a plan gate checked, in the log and on the run page', () => {
+      fakeGh({});
+      run(['plan', '5'], ENV, gh, write, summary);
+
+      expect(logged()).toEqual([
+        '#5 is open and has `status: ready-for-agent`.',
+        'Open PRs that close #5: none.',
+        'Open issues #5 is blocked by: none.',
+        'Go.',
+      ]);
+      expect(summary).toHaveBeenCalledTimes(1);
+      expect(summary.mock.calls[0][0]).toBe(
+        [
+          '### Gate: plan #5',
+          '',
+          '- #5 is open and has `status: ready-for-agent`.',
+          '- Open PRs that close #5: none.',
+          '- Open issues #5 is blocked by: none.',
+          '- Go.',
+        ].join('\n')
+      );
+    });
+
+    it('names the PRs and blockers that stopped a plan', () => {
+      fakeGh({
+        blockers: { 5: [{ number: 2, state: 'open' }] },
+        openPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 41 }],
+      });
+      run(['plan', '5'], ENV, gh, write, summary);
+
+      expect(logged()).toContain('Open PRs that close #5: #41.');
+      expect(logged()).toContain('Open issues #5 is blocked by: #2.');
+      expect(logged().at(-1)).toContain('Stopped: PR #41 is already open');
+    });
+
+    it('says what a build gate checked', () => {
+      fakeGh({
+        blockers: { 7: [{ number: 2, state: 'open' }] },
+        closes: { 50: [7] },
+      });
+      run(['build', '50'], ENV, gh, write, summary);
+
+      expect(logged()).toEqual([
+        'PR #50 is an open draft whose title ends "(plan)".',
+        'Issues PR #50 closes: #7. Open issues they are blocked by: #2.',
+        'Stopped: The Spec this PR closes is blocked by #2, still open.',
+      ]);
+    });
+
+    it('says plainly when a PR closes nothing, so nothing could be checked', () => {
+      fakeGh({ closes: { 50: [] } });
+
+      expect(run(['build', '50'], ENV, gh, write, summary)).toBe(0);
+      expect(write).toHaveBeenCalledWith('go=true');
+      expect(logged()).toContain(
+        'PR #50 closes no issue, so there is no Spec to check for blockers (a plan PR needs "Closes #<issue>" in its body).'
+      );
+    });
+
+    it('reports a quiet stop on the run page too', () => {
+      fakeGh({ issue: { state: 'CLOSED' } });
+      run(['plan', '5'], ENV, gh, write, summary);
+
+      expect(summary.mock.calls[0][0]).toContain(
+        '- Stopped quietly: the issue is closed.'
+      );
+    });
+
+    it('writes nothing for a usage error', () => {
+      fakeGh({});
+      run([], ENV, gh, write, summary);
+
+      expect(summary).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('a stale event', () => {
+    const quiet = (args: string[], world: World, reason: string) => {
+      fakeGh({
+        ...world,
+        blockers: { 5: [{ number: 2, state: 'open' }] },
+        openPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 41 }],
+      });
+
+      expect(run(args, ENV, gh, write, summary)).toBe(0);
+      expect(write).toHaveBeenCalledWith('go=false');
+      expect(console.log).toHaveBeenCalledWith(
+        expect.stringContaining(`Stopped quietly: ${reason}`)
+      );
+      // Nothing to tell anyone, and no reason to look further.
+      expect(posted()).toHaveLength(0);
+      expect(edited()).toHaveLength(0);
+      expect(gh.mock.calls.map(([call]) => call[0])).not.toContain('api');
+    };
+
+    it('stops a plan quietly when the issue is closed', () => {
+      quiet(
+        ['plan', '5'],
+        { issue: { state: 'CLOSED' } },
+        'the issue is closed'
+      );
+    });
+
+    it('stops a plan quietly when the label is gone', () => {
+      quiet(
+        ['plan', '5'],
+        { issue: { labels: ['type: spec', 'status: blocked'] } },
+        'the issue no longer has `status: ready-for-agent`'
+      );
+    });
+
+    it('stops a build quietly when the PR is not open', () => {
+      quiet(['build', '50'], { pr: { state: 'MERGED' } }, 'the PR is not open');
+    });
+
+    it.each([
+      ['no longer a draft', { isDraft: false }],
+      ['no longer a plan title', { title: 'DM.1: A plan' }],
+    ])('stops a build quietly when the PR is %s', (_label, pr) => {
+      quiet(['build', '50'], { pr }, 'the PR is no longer a draft plan PR');
+    });
+
+    it('reads the issue and the PR as they are now', () => {
+      fakeGh({});
+      run(['plan', '5'], ENV, gh, write, summary);
+      run(['build', '50'], ENV, gh, write, summary);
+
+      expect(gh).toHaveBeenCalledWith([
+        'issue',
+        'view',
+        '5',
+        '--json',
+        'state,labels',
+      ]);
+      expect(gh).toHaveBeenCalledWith([
+        'pr',
+        'view',
+        '50',
+        '--json',
+        'state,isDraft,title',
+      ]);
     });
   });
 
@@ -82,7 +256,7 @@ describe('run', () => {
         openPrs: [{ closingIssuesReferences: [{ number: 9 }], number: 40 }],
       });
 
-      expect(run(['plan', '5'], ENV, gh, write)).toBe(0);
+      expect(run(['plan', '5'], ENV, gh, write, summary)).toBe(0);
       expect(write).toHaveBeenCalledWith('go=true');
       expect(posted()).toHaveLength(0);
       expect(edited()).toHaveLength(0);
@@ -90,7 +264,7 @@ describe('run', () => {
 
     it('asks for the open PRs and the blockers of the issue', () => {
       fakeGh({});
-      run(['plan', '5'], ENV, gh, write);
+      run(['plan', '5'], ENV, gh, write, summary);
 
       expect(gh).toHaveBeenCalledWith([
         'pr',
@@ -116,7 +290,7 @@ describe('run', () => {
         ],
       });
 
-      expect(run(['plan', '5'], ENV, gh, write)).toBe(0);
+      expect(run(['plan', '5'], ENV, gh, write, summary)).toBe(0);
       expect(write).toHaveBeenCalledWith('go=false');
 
       const [args, input] = posted()[0];
@@ -138,7 +312,7 @@ describe('run', () => {
           ],
         },
       });
-      run(['plan', '5'], ENV, gh, write);
+      run(['plan', '5'], ENV, gh, write, summary);
 
       expect(write).toHaveBeenCalledWith('go=false');
       expect(posted()[0][1]).toContain('It is blocked by #2, #4, still open.');
@@ -158,7 +332,7 @@ describe('run', () => {
         blockers: { 5: [{ number: 2, state: 'open' }] },
         openPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 41 }],
       });
-      run(['plan', '5'], ENV, gh, write);
+      run(['plan', '5'], ENV, gh, write, summary);
 
       const input = posted()[0][1] as string;
 
@@ -175,7 +349,7 @@ describe('run', () => {
 
     it('ends the stop comment with a link to the run', () => {
       fakeGh(blocked);
-      run(['plan', '5'], { ...ENV, RUN_URL: RUN }, gh, write);
+      run(['plan', '5'], { ...ENV, RUN_URL: RUN }, gh, write, summary);
 
       expect((posted()[0][1] as string).endsWith(`\n\n[Run](${RUN})`)).toBe(
         true
@@ -186,7 +360,7 @@ describe('run', () => {
       'leaves the link out for RUN_URL %j',
       runUrl => {
         fakeGh(blocked);
-        run(['plan', '5'], { ...ENV, RUN_URL: runUrl }, gh, write);
+        run(['plan', '5'], { ...ENV, RUN_URL: runUrl }, gh, write, summary);
 
         expect(posted()[0][1]).not.toContain('[Run]');
       }
@@ -200,14 +374,14 @@ describe('run', () => {
         closes: { 50: [7] },
       });
 
-      expect(run(['build', '50'], ENV, gh, write)).toBe(0);
+      expect(run(['build', '50'], ENV, gh, write, summary)).toBe(0);
       expect(write).toHaveBeenCalledWith('go=true');
       expect(posted()).toHaveLength(0);
     });
 
     it('goes ahead when the PR closes no issue', () => {
       fakeGh({ closes: { 50: [] } });
-      run(['build', '50'], ENV, gh, write);
+      run(['build', '50'], ENV, gh, write, summary);
 
       expect(write).toHaveBeenCalledWith('go=true');
     });
@@ -223,7 +397,7 @@ describe('run', () => {
         },
         closes: { 50: [7, 8] },
       });
-      run(['build', '50'], ENV, gh, write);
+      run(['build', '50'], ENV, gh, write, summary);
 
       expect(write).toHaveBeenCalledWith('go=false');
 

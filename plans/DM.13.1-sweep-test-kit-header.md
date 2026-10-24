@@ -2,7 +2,7 @@
 
 - **Spec:** #156 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ Differences found by reading the CSS beside each snapshot:
 - **B.** Leave the Type board to DM.13.2. If the menu stays above 0.5%, it stays `report` until then, and an acceptance check changes.
 - **Other:** your own.
 
-Recommended: A, because it is two values, and the gap lowers every board's score.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

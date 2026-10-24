@@ -72,7 +72,7 @@ Differences found by reading the CSS beside each snapshot:
 
 - D1 A: also bottom padding 48, eyebrow line 16.
 - `.menu > button`: `.menu button` hit Close.
-- Menu stays `report`: `<dialog>` text renders differently.
+- D2 A: snapshot dialogs get `will-change`.
 
 ## Out of scope
 

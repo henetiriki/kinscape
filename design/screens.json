@@ -16,7 +16,7 @@
     },
     {
       "height": 844,
-      "mode": "report",
+      "mode": "blocking",
       "name": "design-kit-menu-phone",
       "route": "/design-kit/type",
       "state": "kit-menu-open",

@@ -46,11 +46,13 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 | Style guide 06: inputs and actions                   | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     | [style-6-components-inputs.html](source/style-6-components-inputs.html)                     |
 | Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         | [style-6-components-inputs-phone.html](source/style-6-components-inputs-phone.html)         |
 | Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     | [style-6-components-inputs-2-phone.html](source/style-6-components-inputs-2-phone.html)     |
-| Style guide 07: surfaces and overlays                | [style-7-components-surfaces.jpg](style-7-components-surfaces.jpg)                 | [style-7-components-surfaces.html](source/style-7-components-surfaces.html)                 |
+| Style guide 07: surfaces and overlays, part 1        | [style-7-components-surfaces.jpg](style-7-components-surfaces.jpg)                 | [style-7-components-surfaces.html](source/style-7-components-surfaces.html)                 |
+| Style guide 07: surfaces and overlays, part 2        | [style-7-components-surfaces-2.jpg](style-7-components-surfaces-2.jpg)             | [style-7-components-surfaces-2.html](source/style-7-components-surfaces-2.html)             |
 | Style guide 07: surfaces and overlays, phone, part 1 | [style-7-components-surfaces-phone.jpg](style-7-components-surfaces-phone.jpg)     | [style-7-components-surfaces-phone.html](source/style-7-components-surfaces-phone.html)     |
 | Style guide 07: surfaces and overlays, phone, part 2 | [style-7-components-surfaces-2-phone.jpg](style-7-components-surfaces-2-phone.jpg) | [style-7-components-surfaces-2-phone.html](source/style-7-components-surfaces-2-phone.html) |
 | Style guide 08: map furniture                        | [style-8-components-map.jpg](style-8-components-map.jpg)                           | [style-8-components-map.html](source/style-8-components-map.html)                           |
-| Style guide 08: map furniture, phone                 | [style-8-components-map-phone.jpg](style-8-components-map-phone.jpg)               | [style-8-components-map-phone.html](source/style-8-components-map-phone.html)               |
+| Style guide 08: map furniture, phone, part 1         | [style-8-components-map-phone.jpg](style-8-components-map-phone.jpg)               | [style-8-components-map-phone.html](source/style-8-components-map-phone.html)               |
+| Style guide 08: map furniture, phone, part 2         | [style-8-components-map-2-phone.jpg](style-8-components-map-2-phone.jpg)           | [style-8-components-map-2-phone.html](source/style-8-components-map-2-phone.html)           |
 | Design kit index                                     | [design-kit.jpg](design-kit.jpg)                                                   | [design-kit.html](source/design-kit.html)                                                   |
 | Design kit index, phone                              | [design-kit-phone.jpg](design-kit-phone.jpg)                                       | [design-kit-phone.html](source/design-kit-phone.html)                                       |
 | Design kit boards menu open, phone                   | [design-kit-menu-phone.jpg](design-kit-menu-phone.jpg)                             | [design-kit-menu-phone.html](source/design-kit-menu-phone.html)                             |
@@ -85,7 +87,8 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Style    | Font · size / line · weight                | Used for                       |
 | -------- | ------------------------------------------ | ------------------------------ |
 | Display  | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline               |
-| H1       | Bricolage 32 / 40 · 500 · −0.015em         | Page title (28 on phone)       |
+| H1       | Bricolage 32 / 40 · 500 · −0.015em         | Page title                     |
+| H1 phone | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone          |
 | H2       | Bricolage 24 / 32 · 700                    | Dialog and section titles      |
 | H3       | Bricolage 22 / 28 · 700                    | Place name in a popup, cards   |
 | Title    | Public Sans 15 / 22 · 600                  | Notice titles, row titles      |
@@ -95,11 +98,15 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Small    | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                    |
 | Caption  | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes             |
 | Overline | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings               |
-| Button   | Public Sans 16 or 14 · 600                 | Button labels                  |
+| Button   | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)         |
+| Control  | Public Sans 15 / 22 · 600                  | 44px buttons and controls      |
+| Button S | Public Sans 14 / 20 · 600                  | 40px and 36px buttons          |
 | Mono L   | JetBrains Mono 22 / 28 · 500               | Map date field                 |
 | Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
 
 Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line, and never set body text below 12.5px or map labels below 11px.
+
+The design kit's board titles, page padding and intro width are `kit.*` tokens; only kit pages use them.
 
 ## Colours
 
@@ -145,10 +152,11 @@ Shown with spacing and motion at `/design-kit/foundations`.
 
 ## Components
 
-- **Primary button:** `--brand` fill, white 16/600 text, 50px tall on sign-in, 40–44 elsewhere.
+- **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
+- **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
 - **Google sign-in (proposed):** not in the requirements yet, so it needs an Intent issue before it's built. Under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark from their branding kit, never a redrawn one; the mockup's dashed box marks the spot. Hide the button and the divider when Google sign-in is off.
-- **Text field:** 44px in the app, 48px on sign-in, 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
+- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
@@ -159,7 +167,7 @@ Shown with spacing and motion at `/design-kit/foundations`.
 - **Banner:** `--ink` background, white text, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.
 - **Dialog:** centred over a `--scrim`, radius 12, close button top right.
-- **Alert:** 1px system border, system background and text, a filled 20px icon, a 14/600 title and one line.
+- **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a 14/600 title and one line in `type.small`.
 - **Toast:** white, popup shadow, bottom centre above the dock. Success leaves after 4 seconds; errors stay and offer a retry.
 
 Every control has the five states in [style-4-states.jpg](style-4-states.jpg). Hover darkens or tints, pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls), and disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover. The controls are built in `/design-kit/states`; `/design-kit` lists the boards (the kit is a 404 in production).

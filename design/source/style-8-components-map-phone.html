@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>KinScape style guide — Map furniture (phone)</title>
+    <title>KinScape style guide — Map furniture (phone) — part 1 of 2</title>
     <link rel="stylesheet" href="fonts.css" />
 
     <style>
@@ -22,7 +22,7 @@
         <a
           href="design-kit-menu-phone.html"
           aria-haspopup="dialog"
-          style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; font-weight: 600; text-decoration: none">
+          style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; line-height: 22px; font-weight: 600; text-decoration: none">
           <svg
             width="18"
             height="18"
@@ -43,7 +43,7 @@
         <header style="display: flex; flex-direction: column; gap: 8px">
           <span
             style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-            Style guide · 08
+            Style guide · 08 · part 1 of 2
           </span>
           <h1
             style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 28px; line-height: 32px; letter-spacing: -0.015em">
@@ -52,14 +52,19 @@
           <p
             style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
             The pieces that live on the map itself: the wordmark, search bar,
-            map controls, event glyphs and the legend.
+            map controls, event glyphs, the legend and the date dock.
           </p>
           <p
             style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">
             States not drawn here follow board 04: hover tints, a 2px focus
-            ring, disabled colours. A tap target under 44 is marked "44 × 44 hit
-            area (proposed)".
+            ring, disabled colours. A tap target under 44 keeps a 44 × 44 hit
+            area.
           </p>
+          <a
+            href="style-8-components-map-2-phone.html"
+            style="display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; line-height: 22px; border-radius: 2px; color: #264F29; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
+            Part 2: event glyphs, legend, date dock
+          </a>
         </header>
 
         <section
@@ -71,7 +76,7 @@
               Wordmark
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               The icon, then "KinScape" in Bricolage Grotesque 700. Drop the
               name only where there is no room for it.
             </p>
@@ -169,7 +174,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Icon</span>
+                  <strong style="font-weight: 600; color: #18211B">Icon</strong>
                   · app/icon0.svg, never recoloured; corner radius 25% of its
                   size (11, 9, 8)
                 </span>
@@ -183,7 +188,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Name</span>
+                  <strong style="font-weight: 600; color: #18211B">Name</strong>
                   · "KinScape", capital S, Bricolage Grotesque 700: H2 on
                   desktop sign-in, H3 everywhere else
                 </span>
@@ -196,7 +201,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Gap</span>
+                  <strong style="font-weight: 600; color: #18211B">Gap</strong>
                   · 12 between icon and name
                 </span>
                 <span
@@ -208,7 +213,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Colour</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Colour
+                  </strong>
                   · ink
                 </span>
                 <span
@@ -227,23 +234,29 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Alt</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Alt
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   Beside the name the icon is decoration:
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     alt="".
                   </code>
                   Alone (the phone pill) it is
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     alt="KinScape".
                   </code>
                 </dd>
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Link</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Link
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   On the map the wordmark is not a link. If it becomes one, it
                   goes to the map at the current date and is named "KinScape,
@@ -263,7 +276,7 @@
               Search bar
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               Top left on desktop, a full-width pill on a phone. Finds people
               and places; results are designed later.
             </p>
@@ -337,15 +350,15 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Desktop bar
-                  </span>
+                  </strong>
                   · 52 tall, padding 0 8 0 12, gap 12, radius 12, raised; 24
                   from the left and 20 from the top of the map
                 </span>
                 <span
                   style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  52: proposed token · space.8 · space.12 · radius.panel ·
+                  size.search · space.8 · space.12 · radius.panel ·
                   shadow.raised
                 </span>
               </li>
@@ -353,7 +366,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Divider</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Divider
+                  </strong>
                   · 1 × 28, line
                 </span>
                 <span
@@ -365,7 +380,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Field</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Field
+                  </strong>
                   · 340 × 44, surface-2, radius 8, no border, padding 0 12, gap
                   8; text 15 / 22; "/" key hint (board 06)
                 </span>
@@ -379,15 +396,15 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Phone pill
-                  </span>
+                  </strong>
                   · 52 tall, fully round (26), padding 0 4 0 12, gap 12, raised;
                   16 from the edges. The same on every phone screen
                 </span>
                 <span
                   style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  52: proposed token · radius.full · space.4 · space.12 ·
+                  size.search · radius.full · space.4 · space.12 ·
                   size.gutter-phone · shadow.raised
                 </span>
               </li>
@@ -395,9 +412,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Phone field
-                  </span>
+                  </strong>
                   · Bare, 44 tall, 16 text so the browser doesn't zoom
                 </span>
                 <span
@@ -409,7 +426,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Avatar</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Avatar
+                  </strong>
                   · 44 round, brand, raised (board 07)
                 </span>
                 <span
@@ -428,16 +447,19 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Role</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   Wrap it in
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     role="search".
                   </code>
                   The input is
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     type="search",
                   </code>
                   named "Search people and places".
@@ -445,7 +467,8 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Keyboard
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
@@ -455,11 +478,14 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Focus</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Focus
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   The mockups set
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     outline: none
                   </code>
                   and draw no focus, so it isn't drawn here; it follows board
@@ -468,7 +494,8 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Results
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
@@ -488,7 +515,7 @@
               Map controls
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               Zoom and fit on desktop; on a phone, one button opens the layers.
               Pinch and drag do the rest.
             </p>
@@ -685,19 +712,21 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Buttons</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Buttons
+                  </strong>
                   · 44 × 44 in the card · layers button 48 × 48
                 </span>
                 <span
                   style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  size.touch · 48: proposed token
+                  size.touch · size.field-l
                 </span>
               </li>
               <li
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Card</span>
+                  <strong style="font-weight: 600; color: #18211B">Card</strong>
                   · white, radius 12, raised; 1px line between buttons
                 </span>
                 <span
@@ -709,9 +738,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Layers button
-                  </span>
+                  </strong>
                   · white, radius 12, raised on every phone screen
                 </span>
                 <span
@@ -723,7 +752,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Icons</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Icons
+                  </strong>
                   · zoom in, zoom out and fit 18 · layers 24; all stroke 2, ink
                 </span>
                 <span
@@ -735,7 +766,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">States</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    States
+                  </strong>
                   · As board 04's icon button: surface-2 hover, brand-tint
                   pressed, icon-disabled at the zoom limit
                 </span>
@@ -748,7 +781,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Place</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Place
+                  </strong>
                   · Desktop: 24 from the right, 88 from the top · phone: 16 from
                   the right, 80 from the top
                 </span>
@@ -768,25 +803,29 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Names</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Names
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   "Zoom in", "Zoom out", "Fit South Africa", "Layers and
                   filters". Icons are
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-hidden.
                   </code>
                 </dd>
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Disabled
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   At the zoom limit use
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-disabled="true"
                   </code>
                   so the button stays in the Tab order and says why.
@@ -794,616 +833,23 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Focus</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Focus
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
-                  The card clips its children
-                  <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                    (overflow: hidden),
-                  </code>
-                  which would cut the outside focus ring; drawn here unclipped.
+                  Each button rounds its own corners, so the card doesn't clip
+                  and the outside focus ring shows in full.
                 </dd>
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Keyboard
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   The map itself also takes + and −.
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </section>
-
-        <section
-          aria-label="Event glyphs"
-          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 4px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
-              Event glyphs
-            </h2>
-            <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
-              One shape per event type, used wherever an event appears: chips,
-              the legend, pin rows and the map.
-            </p>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 20px">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-              <div style="display: flex; align-items: flex-start; min-width: 0">
-                <ul
-                  aria-label="Event glyphs"
-                  style="list-style: none; margin: 0; padding: 0; width: 100%; border-top: 2px solid #18211B">
-                  <li
-                    aria-hidden="true"
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; padding: 8px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                    <span>Event</span>
-                    <span style="text-align: center">12</span>
-                    <span style="text-align: center">14</span>
-                    <span style="text-align: center">16</span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Birth</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ●
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ●
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ●
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Baptism</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ○
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ○
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ○
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Residence</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ■
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ■
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ■
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Marriage</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ◆
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ◆
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ◆
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Death</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ✚
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ✚
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ✚
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Burial</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ▼
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ▼
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ▼
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Land</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      □
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      □
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      □
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Occupation</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ▲
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ▲
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ▲
-                    </span>
-                  </li>
-                  <li
-                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD; font-size: 14px">
-                    <span style="font-weight: 600">Other</span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 12px; text-align: center">
-                      ✱
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 14px; text-align: center">
-                      ✱
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style="color: #9A3B12; font-size: 16px; text-align: center">
-                      ✱
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                All nine at 12, 14 and 16, in pin. Each event keeps its shape
-                everywhere, so colour never carries the meaning alone.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-              <div style="display: flex; align-items: flex-start; min-width: 0">
-                <span
-                  style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
-                  <span
-                    style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border-radius: 22px; border: 1px solid #264F29; background: #E6EEE4; color: #1D3E20; font-size: 13.5px; line-height: 20px; font-weight: 600">
-                    <span style="color: #9A3B12" aria-hidden="true">◆</span>
-                    Marriage
-                  </span>
-                  <span
-                    style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                    <span style="color: #9A3B12" aria-hidden="true">●</span>
-                    Birth
-                  </span>
-                  <span
-                    style="display: inline-flex; align-items: center; gap: 12px">
-                    <span
-                      style="color: #9A3B12; font-size: 14px"
-                      aria-hidden="true">
-                      ◆
-                    </span>
-                    <span
-                      style="font-size: 14px; line-height: 20px; font-weight: 600">
-                      Marriage
-                    </span>
-                  </span>
-                </span>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                In use · a chip (13.5), the legend (13), a pin row (14).
-              </figcaption>
-            </figure>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <h3
-              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-              Measurements
-            </h3>
-            <ul
-              aria-label="Event glyphs measurements"
-              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Colour</span>
-                  · pin, in every size
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  colour.pin
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Sizes</span>
-                  · 12 · 14 · 16; in running text they take the text size (13
-                  legend, 13.5 chips, 14 pin rows)
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  <span style="font-style: italic; color: #4A544C">
-                    no token
-                  </span>
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Font</span>
-                  · Unicode characters set in Public Sans; the browser falls
-                  back for ✚ ✱ ▼ ▲ where Public Sans lacks them
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  font.body
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
-                    On the map
-                  </span>
-                  · SDF icons in pin with a 2px white halo (map style board)
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  map.pin.colour · map.pin.halo-width
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <h3
-              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-              Accessibility
-            </h3>
-            <dl
-              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-              <div
-                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
-                  Hidden
-                </dt>
-                <dd style="margin: 0; min-width: 0; color: #2E3A33">
-                  Always
-                  <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                    aria-hidden="true";
-                  </code>
-                  the event name is always written next to it.
-                </dd>
-              </div>
-              <div
-                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
-                  Shapes
-                </dt>
-                <dd style="margin: 0; min-width: 0; color: #2E3A33">
-                  Filled and open pairs (● ○, ■ □) differ in shape, not only
-                  colour, so they hold up in greyscale (NFR-06).
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </section>
-
-        <section
-          aria-label="Legend"
-          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 4px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
-              Legend
-            </h2>
-            <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
-              "Reading the map": how borders, contested claims, uncertain dates
-              and event types are drawn. It lives at the foot of the Layers
-              panel.
-            </p>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 20px">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-              <div style="display: flex; align-items: flex-start; min-width: 0">
-                <div
-                  style="width: 100%; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; background: #F4F5F0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span
-                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                    Reading the map
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 12px">
-                    <svg width="32" height="12" aria-hidden="true">
-                      <path
-                        d="M1 6h30"
-                        stroke="#3B3A2F"
-                        stroke-width="1.5"></path>
-                    </svg>
-                    Border as recorded
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 12px">
-                    <svg width="32" height="12" aria-hidden="true">
-                      <path
-                        d="M1 6h30"
-                        stroke="#3B3A2F"
-                        stroke-width="1.5"
-                        stroke-dasharray="4 2.6"></path>
-                    </svg>
-                    Approximate border
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 12px">
-                    <span
-                      style="width: 32px; height: 16px; border-radius: 4px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.34) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>
-                    Contested claim
-                  </span>
-                  <span style="display: flex; align-items: center; gap: 12px">
-                    <svg width="32" height="24" aria-hidden="true">
-                      <circle
-                        cx="16"
-                        cy="12"
-                        r="11"
-                        fill="#9A3B12"
-                        opacity="0.24"></circle>
-                      <circle
-                        cx="16"
-                        cy="12"
-                        r="5"
-                        fill="#9A3B12"
-                        fill-opacity="0.6"
-                        stroke="#FFFFFF"
-                        stroke-width="1.5"></circle>
-                    </svg>
-                    Uncertain date (ABT, BEF, AFT…)
-                  </span>
-                  <span
-                    style="display: flex; flex-wrap: wrap; gap: 4px 16px; padding-top: 4px; border-top: 1px solid #E2E5DD">
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">●</span>
-                      Birth
-                    </span>
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">■</span>
-                      Residence
-                    </span>
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">◆</span>
-                      Marriage
-                    </span>
-                    <span>
-                      <span style="color: #9A3B12" aria-hidden="true">✚</span>
-                      Death
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                Phone · in the Layers sheet, full width. Padding 12 16, radius
-                12, rows 8 apart: the same at both widths.
-              </figcaption>
-            </figure>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <h3
-              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-              Measurements
-            </h3>
-            <ul
-              aria-label="Legend measurements"
-              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Box</span>
-                  · padding 12 16 · radius 12 · gap 8 · surface-2, at every
-                  width
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  space.12 · space.16 · radius.panel · space.8 ·
-                  colour.surface-2
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Heading</span>
-                  · Overline "Reading the map"
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  type.overline
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Rows</span>
-                  · 13 / 20 ink-2; swatch 32 wide, 12 to the words
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  type.small · space.12
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
-                    Line, dash
-                  </span>
-                  · border colour, 1.5 wide; the dash is 4 on, 2.6 off, as on
-                  the map
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  map.border
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Hatch</span>
-                  · 32 × 16, radius 4, 1px border colour, 45° stripes 3 in 9 at
-                  0.34 over the Orange Free State fill
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  map.hatch · map.polity.free-state
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Halo</span>
-                  · pin circle r5 at 0.6 with a 1.5 white stroke, in an r11 halo
-                  at 0.24
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  map.pin · map.pin-halo
-                </span>
-              </li>
-              <li
-                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-                <span
-                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
-                    Glyph row
-                  </span>
-                  · Birth, Residence, Marriage, Death only; a line above, 4
-                  above the glyphs
-                </span>
-                <span
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  colour.line · space.4
-                </span>
-              </li>
-            </ul>
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <h3
-              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-              Accessibility
-            </h3>
-            <dl
-              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-              <div
-                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
-                  Heading
-                </dt>
-                <dd style="margin: 0; min-width: 0; color: #2E3A33">
-                  The overline is a real
-                  <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                    h3
-                  </code>
-                  in the panel.
-                </dd>
-              </div>
-              <div
-                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
-                  Swatches
-                </dt>
-                <dd style="margin: 0; min-width: 0; color: #2E3A33">
-                  Decoration
-                  <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                    (aria-hidden);
-                  </code>
-                  the words say what each one means.
-                </dd>
-              </div>
-              <div
-                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
-                  Colour
-                </dt>
-                <dd style="margin: 0; min-width: 0; color: #2E3A33">
-                  Each meaning differs in form too: solid, dashed, striped,
-                  haloed.
                 </dd>
               </div>
             </dl>

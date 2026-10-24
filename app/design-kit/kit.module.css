@@ -66,8 +66,16 @@
   font-size: 13px;
 }
 
-/* A phone (Intent 104, D1): the 28px title and one-column notes */
+/* A phone (Intent 104, D1): a closer header, the 28px title and one-column notes */
 @media (max-width: 639.98px), (max-height: 499.98px) {
+  .kitHeader {
+    gap: var(--space-8);
+  }
+
+  .kitEyebrow {
+    line-height: var(--type-overline-line);
+  }
+
   .kitTitle {
     font-size: 28px;
     line-height: 32px;

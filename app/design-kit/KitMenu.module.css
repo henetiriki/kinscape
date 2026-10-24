@@ -11,22 +11,36 @@
   }
 }
 
+/* The "Boards" button: 15px text, a closer icon edge */
+.menu > button {
+  font-size: var(--type-control-size);
+  line-height: normal;
+  padding: 0 var(--space-16) 0 var(--space-12);
+}
+
 .buttonContent {
   align-items: center;
   display: inline-flex;
   gap: var(--space-8);
 }
 
+/* The sheet's own 16px bottom padding plus 8 makes the 24 under the last link. */
+.all {
+  display: flex;
+  padding-bottom: var(--space-8);
+}
+
 .all > a {
   align-items: center;
   display: inline-flex;
   min-height: var(--size-touch);
-  padding: 0 var(--space-8);
+  padding: 0 var(--space-12);
 }
 
 .rows {
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -42,8 +56,10 @@
   font-family: var(--font-body);
   font-size: var(--type-control-size);
   font-weight: 500;
-  min-height: var(--size-touch);
-  padding: var(--space-12) var(--space-8);
+  gap: 2px;
+  justify-content: center;
+  min-height: 60px;
+  padding: var(--space-8) var(--space-12);
   text-decoration: none;
 }
 
@@ -53,8 +69,10 @@
 
 .row[aria-current='page'] {
   background: var(--brand-tint);
+  color: var(--brand-hover);
+  font-weight: 600;
 }
 
 .rowTitle {
-  line-height: 24px;
+  line-height: var(--type-control-line);
 }

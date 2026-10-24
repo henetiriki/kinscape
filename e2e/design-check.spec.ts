@@ -37,6 +37,10 @@ if (unknown.length > 0) {
 const HIDE_MAP =
   '.maplibregl-canvas, svg[role="img"] { visibility: hidden !important; }';
 
+// A built <dialog> draws its text on its own layer, so letter edges differ
+// from a snapshot that draws the sheet in the page. Give the snapshot the same.
+const LAYER_DIALOGS = '[role="dialog"] { will-change: transform; }';
+
 const shoot = async (page: Page) => PNG.sync.read(await page.screenshot());
 
 /** The screenshot, and the pixels that change when the map is hidden. */
@@ -100,6 +104,7 @@ for (const screen of config.screens.filter(
       pathToFileURL(join(root, 'design/source', `${screen.name}.html`)).href
     );
     await page.evaluate(() => document.fonts.ready);
+    await page.addStyleTag({ content: LAYER_DIALOGS });
 
     const design = await shootWithMask(page);
     const score = compare(

@@ -2,28 +2,21 @@
   "screens": [
     {
       "height": 900,
-      "mode": "report",
-      "name": "map-desktop",
-      "route": "/",
-      "width": 1440
-    },
-    {
-      "height": 900,
-      "mode": "report",
+      "mode": "blocking",
       "name": "design-kit",
       "route": "/design-kit",
       "width": 1440
     },
     {
-      "height": 941,
-      "mode": "report",
+      "height": 1325,
+      "mode": "blocking",
       "name": "design-kit-phone",
       "route": "/design-kit",
       "width": 390
     },
     {
       "height": 844,
-      "mode": "report",
+      "mode": "blocking",
       "name": "design-kit-menu-phone",
       "route": "/design-kit/type",
       "state": "kit-menu-open",
@@ -65,28 +58,28 @@
       "width": 1440
     },
     {
-      "height": 1800,
+      "height": 2743,
       "mode": "report",
       "name": "style-1-type-phone",
       "route": "/design-kit/type",
       "width": 390
     },
     {
-      "height": 2400,
+      "height": 4126,
       "mode": "report",
       "name": "style-4-states-phone",
       "route": "/design-kit/states",
       "width": 390
     },
     {
-      "height": 3000,
+      "height": 4276,
       "mode": "report",
       "name": "style-5-feedback-phone",
       "route": "/design-kit/feedback",
       "width": 390
     },
     {
-      "height": 4552,
+      "height": 4554,
       "mode": "report",
       "name": "style-2-colour-phone",
       "route": "/design-kit/colour",
@@ -156,7 +149,7 @@
       "width": 1440
     },
     {
-      "height": 4872,
+      "height": 4854,
       "mode": "report",
       "name": "map-style-phone",
       "route": "/design-kit/map-style",

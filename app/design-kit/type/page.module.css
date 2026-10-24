@@ -92,7 +92,7 @@
   .kit {
     gap: var(--space-32);
     min-height: 0;
-    padding: var(--space-24) var(--size-gutter-phone);
+    padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
   }
 
   .columns {

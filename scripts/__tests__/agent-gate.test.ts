@@ -299,7 +299,16 @@ describe('run', () => {
       expect(input).toContain('Not planned yet:');
       expect(input).toContain('PR #41 is already open for this issue.');
       expect(input).not.toContain('#42');
-      expect(input).toContain('`status: blocked`');
+    });
+
+    it('keeps the label when only an open PR stops it, so a repeated label event does not mark a planned Spec blocked', () => {
+      fakeGh({
+        openPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 41 }],
+      });
+      run(['plan', '5'], ENV, gh, write, summary);
+
+      expect(edited()).toHaveLength(0);
+      expect(posted()[0][1]).not.toContain('`status: blocked`');
     });
 
     it('stops while an issue it is blocked by is open, and hands the Spec back', () => {
@@ -316,6 +325,7 @@ describe('run', () => {
 
       expect(write).toHaveBeenCalledWith('go=false');
       expect(posted()[0][1]).toContain('It is blocked by #2, #4, still open.');
+      expect(posted()[0][1]).toContain('The label is now `status: blocked`.');
       expect(edited()[0][0]).toEqual([
         'issue',
         'edit',
@@ -338,6 +348,8 @@ describe('run', () => {
 
       expect(input).toContain('- PR #41');
       expect(input).toContain('- It is blocked by #2');
+      // The blocker is a real reason to hand the Spec back.
+      expect(edited()).toHaveLength(1);
     });
   });
 

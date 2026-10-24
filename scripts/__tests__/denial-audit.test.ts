@@ -55,6 +55,10 @@ describe('patternOf', () => {
     [bash('git -C x push'), 'Bash: git'],
     [bash('git'), 'Bash: git'],
     [bash(''), 'Bash'],
+    [bash('DESIGN_SCREENS=a,b npm run design:check'), 'Bash: npm run'],
+    [bash('DESIGN_SCREENS=c https_proxy=x npm run e2e'), 'Bash: npm run'],
+    [bash('https_proxy=http://127.0.0.1:9 npm run build'), 'Bash: npm run'],
+    [bash('A=1'), 'Bash: A=1'],
     [{ detail: '/tmp/x', tool: 'Write' }, 'Write'],
   ])('%j is %s', (denial, pattern) => {
     expect(patternOf(denial)).toBe(pattern);
@@ -275,7 +279,7 @@ describe('run', () => {
     expect(gh).not.toHaveBeenCalled();
   });
 
-  it('lists each workflow, 100 runs at most', () => {
+  it('asks GitHub for the runs since the date, so skipped runs cannot crowd them out', () => {
     audit();
 
     for (const workflow of [
@@ -288,8 +292,10 @@ describe('run', () => {
         'list',
         '--workflow',
         workflow,
+        '--created',
+        '>=2026-10-17',
         '--limit',
-        '100',
+        '500',
         '--json',
         'databaseId,createdAt,conclusion',
       ]);

@@ -27,8 +27,15 @@ const listFiles = (root: string, dir: string): string[] =>
       )
     : [];
 
+// Blocks that `next dev` writes into AGENTS.md between BEGIN:nextjs-… and END:nextjs-… markers.
+// Next.js owns their text and rewrites it, so they don't count towards a budget.
+const MANAGED_BLOCK = /<!-- BEGIN:(nextjs-[\w-]+) -->[\s\S]*?<!-- END:\1 -->/g;
+
 export const countWords = (text: string): number =>
-  text.split(/\s+/).filter(token => /[\p{L}\p{N}]/u.test(token)).length;
+  text
+    .replace(MANAGED_BLOCK, '')
+    .split(/\s+/)
+    .filter(token => /[\p{L}\p{N}]/u.test(token)).length;
 
 export const budgetFor = (path: string): number | undefined =>
   BUDGETS.find(({ pattern }) => pattern.test(path))?.limit;

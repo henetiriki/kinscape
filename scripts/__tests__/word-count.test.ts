@@ -15,6 +15,22 @@ describe('countWords', () => {
   it('counts nothing in an empty file', () => {
     expect(countWords('')).toBe(0);
   });
+
+  it('skips each block that Next.js manages, and counts the text around them', () => {
+    const rules =
+      '<!-- BEGIN:nextjs-agent-rules -->\nskipped words\n<!-- END:nextjs-agent-rules -->';
+    const feedback =
+      '<!-- BEGIN:nextjs-agent-feedback -->\nskipped too\n<!-- END:nextjs-agent-feedback -->';
+
+    expect(countWords(`one\n${rules}\ntwo\n${feedback}\nthree`)).toBe(3);
+  });
+
+  it('counts a block whose markers do not match, or that is not Next.js', () => {
+    expect(
+      countWords('<!-- BEGIN:nextjs-a -->\nx\n<!-- END:nextjs-b -->')
+    ).toBe(3);
+    expect(countWords('<!-- BEGIN:other -->\nx\n<!-- END:other -->')).toBe(3);
+  });
 });
 
 describe('budgetFor', () => {

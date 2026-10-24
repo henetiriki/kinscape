@@ -23,144 +23,158 @@
       "width": 390
     },
     {
-      "height": 1851,
+      "height": 2568,
       "mode": "blocking",
       "name": "style-1-type",
       "route": "/design-kit/type",
       "width": 1440
     },
     {
-      "height": 2702,
+      "height": 2749,
       "mode": "report",
       "name": "style-2-colour",
       "route": "/design-kit/colour",
       "width": 1440
     },
     {
-      "height": 1248,
+      "height": 1594,
       "mode": "report",
       "name": "style-3-foundations",
       "route": "/design-kit/foundations",
       "width": 1440
     },
     {
-      "height": 1563,
+      "height": 1578,
       "mode": "blocking",
       "name": "style-4-states",
       "route": "/design-kit/states",
       "width": 1440
     },
     {
-      "height": 1923,
+      "height": 1967,
       "mode": "report",
       "name": "style-5-feedback",
       "route": "/design-kit/feedback",
       "width": 1440
     },
     {
-      "height": 2743,
-      "mode": "report",
+      "height": 3628,
+      "mode": "blocking",
       "name": "style-1-type-phone",
       "route": "/design-kit/type",
       "width": 390
     },
     {
-      "height": 4126,
+      "height": 4231,
       "mode": "blocking",
       "name": "style-4-states-phone",
       "route": "/design-kit/states",
       "width": 390
     },
     {
-      "height": 4276,
+      "height": 4283,
       "mode": "report",
       "name": "style-5-feedback-phone",
       "route": "/design-kit/feedback",
       "width": 390
     },
     {
-      "height": 4554,
+      "height": 4494,
       "mode": "report",
       "name": "style-2-colour-phone",
       "route": "/design-kit/colour",
       "width": 390
     },
     {
-      "height": 2671,
+      "height": 3132,
       "mode": "report",
       "name": "style-3-foundations-phone",
       "route": "/design-kit/foundations",
       "width": 390
     },
     {
-      "height": 7311,
+      "height": 7251,
       "mode": "report",
       "name": "style-6-components-inputs",
       "route": "/design-kit/inputs",
       "width": 1440
     },
     {
-      "height": 7922,
+      "height": 7705,
       "mode": "report",
       "name": "style-6-components-inputs-phone",
       "route": "/design-kit/inputs",
       "width": 390
     },
     {
-      "height": 6080,
+      "height": 6122,
       "mode": "report",
       "name": "style-6-components-inputs-2-phone",
       "route": "/design-kit/inputs?part=2",
       "width": 390
     },
     {
-      "height": 7332,
+      "height": 7362,
       "mode": "report",
       "name": "style-7-components-surfaces-phone",
       "route": "/design-kit/surfaces",
       "width": 390
     },
     {
-      "height": 7887,
+      "height": 4289,
       "mode": "report",
       "name": "style-7-components-surfaces",
       "route": "/design-kit/surfaces",
       "width": 1440
     },
     {
-      "height": 6712,
+      "height": 6845,
       "mode": "report",
       "name": "style-7-components-surfaces-2-phone",
       "route": "/design-kit/surfaces?part=2",
       "width": 390
     },
     {
-      "height": 6246,
+      "height": 3999,
       "mode": "report",
       "name": "style-8-components-map-phone",
       "route": "/design-kit/map-furniture",
       "width": 390
     },
     {
-      "height": 4294,
+      "height": 5856,
       "mode": "report",
       "name": "style-8-components-map",
       "route": "/design-kit/map-furniture",
       "width": 1440
     },
     {
-      "height": 4854,
+      "height": 4678,
       "mode": "report",
       "name": "map-style-phone",
       "route": "/design-kit/map-style",
       "width": 390
     },
     {
-      "height": 2067,
+      "height": 2170,
       "mode": "report",
       "name": "map-style",
       "route": "/design-kit/map-style",
       "width": 1440
+    },
+    {
+      "name": "style-7-components-surfaces-2",
+      "route": "/design-kit/surfaces?part=2",
+      "width": 1440,
+      "height": 4368,
+      "mode": "report"
+    },
+    {
+      "name": "style-8-components-map-2-phone",
+      "route": "/design-kit/map-furniture?part=2",
+      "width": 390,
+      "height": 4726,
+      "mode": "report"
     }
   ],
   "threshold": 0.5

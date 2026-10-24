@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape style guide — Map furniture (phone) — part 2 of 2</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 390px; box-sizing: border-box; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+      <header
+        style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 16px; border-bottom: 1px solid #E2E5DD; background: #FFFFFF">
+        <a
+          href="design-kit-phone.html"
+          style="display: inline-flex; align-items: center; min-height: 44px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; color: #18211B; text-decoration: none; border-radius: 2px">
+          KinScape design kit
+        </a>
+        <a
+          href="design-kit-menu-phone.html"
+          aria-haspopup="dialog"
+          style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; line-height: 22px; font-weight: 600; text-decoration: none">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+          Boards
+        </a>
+      </header>
+
+      <main
+        style="display: flex; flex-direction: column; gap: 40px; padding: 32px 16px 48px">
+        <header style="display: flex; flex-direction: column; gap: 8px">
+          <span
+            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+            Style guide · 08 · part 2 of 2
+          </span>
+          <h1
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 28px; line-height: 32px; letter-spacing: -0.015em">
+            Map furniture
+          </h1>
+          <p
+            style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
+            The pieces that live on the map itself: the wordmark, search bar,
+            map controls, event glyphs, the legend and the date dock.
+          </p>
+          <p
+            style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">
+            States not drawn here follow board 04: hover tints, a 2px focus
+            ring, disabled colours. A tap target under 44 keeps a 44 × 44 hit
+            area.
+          </p>
+          <a
+            href="style-8-components-map-phone.html"
+            style="display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; line-height: 22px; border-radius: 2px; color: #264F29; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
+            Part 1: wordmark, search bar, map controls
+          </a>
+        </header>
+
+        <section
+          aria-label="Event glyphs"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Event glyphs
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
+              One shape per event type, used wherever an event appears: chips,
+              the legend, pin rows and the map.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 20px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <ul
+                  aria-label="Event glyphs"
+                  style="list-style: none; margin: 0; padding: 0; width: 100%; border-top: 2px solid #18211B">
+                  <li
+                    aria-hidden="true"
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; padding: 8px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    <span>Event</span>
+                    <span style="text-align: center">12</span>
+                    <span style="text-align: center">14</span>
+                    <span style="text-align: center">16</span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Birth
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ●
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ●
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ●
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Baptism
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ○
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ○
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ○
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Residence
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ■
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ■
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ■
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Marriage
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ◆
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ◆
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ◆
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Death
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ✚
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ✚
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ✚
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Burial
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ▼
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ▼
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ▼
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Land
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      □
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      □
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      □
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Occupation
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ▲
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ▲
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ▲
+                    </span>
+                  </li>
+                  <li
+                    style="display: grid; grid-template-columns: minmax(0, 1fr) 36px 36px 36px; gap: 8px; align-items: center; min-height: 40px; border-bottom: 1px solid #E2E5DD">
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Other
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 12px; text-align: center">
+                      ✱
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 14px; text-align: center">
+                      ✱
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      style="color: #9A3B12; font-size: 16px; text-align: center">
+                      ✱
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                All nine at 12, 14 and 16, in pin. Each event keeps its shape
+                everywhere, so colour never carries the meaning alone.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <span
+                  style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+                  <span
+                    style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border-radius: 22px; border: 1px solid #264F29; background: #E6EEE4; color: #1D3E20; font-size: 13.5px; line-height: 20px; font-weight: 600">
+                    <span style="color: #9A3B12" aria-hidden="true">◆</span>
+                    Marriage
+                  </span>
+                  <span
+                    style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                    <span style="color: #9A3B12" aria-hidden="true">●</span>
+                    Birth
+                  </span>
+                  <span
+                    style="display: inline-flex; align-items: center; gap: 12px">
+                    <span
+                      style="color: #9A3B12; font-size: 14px"
+                      aria-hidden="true">
+                      ◆
+                    </span>
+                    <span
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Marriage
+                    </span>
+                  </span>
+                </span>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                In use · a chip (13.5), the legend (13), a pin row (14).
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Event glyphs measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Colour
+                  </strong>
+                  · pin, in every size
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.pin
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Sizes
+                  </strong>
+                  · 12 · 14 · 16; in running text they take the text size (13
+                  legend, 13.5 chips, 14 pin rows)
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  <span style="font-style: italic; color: #4A544C">
+                    no token
+                  </span>
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">Font</strong>
+                  · Unicode characters set in Public Sans; the browser falls
+                  back for ✚ ✱ ▼ ▲ where Public Sans lacks them
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  font.body
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    On the map
+                  </strong>
+                  · SDF icons in pin with a 2px white halo (map style board)
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  map.pin.colour · map.pin.halo-width
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Hidden
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Always
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    aria-hidden="true";
+                  </code>
+                  the event name is always written next to it.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Shapes
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Filled and open pairs (● ○, ■ □) differ in shape, not only
+                  colour, so they hold up in greyscale (NFR-06).
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Legend"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Legend
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
+              "Reading the map": how borders, contested claims, uncertain dates
+              and event types are drawn. It lives at the foot of the Layers
+              panel.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 20px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="width: 100%; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; background: #F4F5F0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Reading the map
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <svg width="32" height="12" aria-hidden="true">
+                      <path
+                        d="M1 6h30"
+                        stroke="#3B3A2F"
+                        stroke-width="1.5"></path>
+                    </svg>
+                    Border as recorded
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <svg width="32" height="12" aria-hidden="true">
+                      <path
+                        d="M1 6h30"
+                        stroke="#3B3A2F"
+                        stroke-width="1.5"
+                        stroke-dasharray="4 2.6"></path>
+                    </svg>
+                    Approximate border
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <span
+                      style="width: 32px; height: 16px; border-radius: 4px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.34) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>
+                    Contested claim
+                  </span>
+                  <span style="display: flex; align-items: center; gap: 12px">
+                    <svg width="32" height="24" aria-hidden="true">
+                      <circle
+                        cx="16"
+                        cy="12"
+                        r="11"
+                        fill="#9A3B12"
+                        opacity="0.24"></circle>
+                      <circle
+                        cx="16"
+                        cy="12"
+                        r="5"
+                        fill="#9A3B12"
+                        fill-opacity="0.6"
+                        stroke="#FFFFFF"
+                        stroke-width="2"></circle>
+                    </svg>
+                    Uncertain date (ABT, BEF, AFT…)
+                  </span>
+                  <span
+                    style="display: flex; flex-wrap: wrap; gap: 4px 16px; padding-top: 4px; border-top: 1px solid #E2E5DD">
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">●</span>
+                      Birth
+                    </span>
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">■</span>
+                      Residence
+                    </span>
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">◆</span>
+                      Marriage
+                    </span>
+                    <span>
+                      <span style="color: #9A3B12" aria-hidden="true">✚</span>
+                      Death
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Phone · in the Layers sheet, full width. Padding 12 16, radius
+                12, rows 8 apart: the same at both widths.
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Legend measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">Box</strong>
+                  · padding 12 16 · radius 12 · gap 8 · surface-2, at every
+                  width
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.12 · space.16 · radius.panel · space.8 ·
+                  colour.surface-2
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Heading
+                  </strong>
+                  · Overline "Reading the map"
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.overline
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">Rows</strong>
+                  · 13 / 20 ink-2; swatch 32 wide, 12 to the words
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.small · space.12
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Line, dash
+                  </strong>
+                  · border colour, 1.5 wide; the dash is 4 on, 2.6 off, as on
+                  the map
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  map.border
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Hatch
+                  </strong>
+                  · 32 × 16, radius 4, 1px border colour, 45° stripes 3 in 9 at
+                  0.34 over the Orange Free State fill
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  map.hatch · map.polity.free-state
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">Halo</strong>
+                  · pin circle r5 at 0.6 with a 2 white stroke, in an r11 halo
+                  at 0.24
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  map.pin · map.pin.halo-width · map.pin-halo
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Glyph row
+                  </strong>
+                  · Birth, Residence, Marriage, Death only; a line above, 4
+                  above the glyphs
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.line · space.4
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Heading
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  The overline is a real
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    h3
+                  </code>
+                  in the panel.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Swatches
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Decoration
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    (aria-hidden);
+                  </code>
+                  the words say what each one means.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Colour
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Each meaning differs in form too: solid, dashed, striped,
+                  haloed.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Date dock"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Date dock
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
+              Moves the map date: step, type, slide, jump to an epoch or play
+              through time. A dock on desktop, a sheet on a phone.
+            </p>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 20px">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; min-width: 0">
+                <div
+                  style="padding: 48px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 100%">
+                  <div
+                    role="group"
+                    aria-label="Map date"
+                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+                    <span
+                      aria-hidden="true"
+                      style="align-self: center; display: flex; align-items: center; justify-content: center; width: 64px; height: 20px; margin-bottom: -4px">
+                      <span
+                        style="width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+                    </span>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <span
+                        style="flex: none; width: 44px; height: 44px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M15 5l-7 7 7 7"></path>
+                        </svg>
+                      </span>
+                      <span
+                        style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; line-height: 28px; font-weight: 500; color: #18211B">
+                        1901
+                      </span>
+                      <span
+                        style="flex: none; width: 44px; height: 44px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                      <span
+                        style="flex: none; width: 44px; height: 44px; margin-left: 4px; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true">
+                          <path d="M7 4.5v15l12.5-7.5z"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <span
+                      style="font-size: 13px; line-height: 20px; color: #4A544C; text-align: center">
+                      Tap the map to see what a place was part of in 1901.
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                Phone · the collapsed date sheet: grabber, steps either side of
+                the field, round Play, one line of help. Tapping the map opens
+                the sheet with the look-up (board 07).
+              </figcaption>
+            </figure>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Date dock measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Desktop dock
+                  </strong>
+                  · 24 from the panel, the right edge and the bottom; padding 16
+                  20, rows 8 apart; raised
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.gutter · space.16 · space.20 · space.8 · radius.panel ·
+                  shadow.raised
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    First row
+                  </strong>
+                  · 44 tall; groups 16 apart; steps 44 × 44 secondary icon
+                  buttons, 4 from the 188 field
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.control · space.16 · space.4 · size.date-field
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Date field
+                  </strong>
+                  · Mono L 22 / 28 · 500, centred; 1px line-strong, radius 8
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.mono-l · colour.line-strong · radius.control
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Segmented
+                  </strong>
+                  · Track segment, padding 4, gap 4, radius 9; items 36 tall,
+                  radius 7, 13.5 / 20 · 600; selected white with the segment
+                  shadow. Precision items min 52, speed min 40
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.segment · space.4 · radius.segment · size.control-xs ·
+                  radius.segment-item · type.chip · shadow.segment
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Contested note
+                  </strong>
+                  · hatch swatch 18 × 14, 8 to the text, 13 / 20 ink-2
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  map.hatch · space.8 · type.small
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">Play</strong>
+                  · M 44 primary, fully round, 16 play icon; speed 12 to its
+                  right, "yr/s" caption
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.control · type.control · type.caption
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Slider
+                  </strong>
+                  · 44 tall: track 4 at 12 from the top, track colour; epoch
+                  ticks 2 × 12 ink-3; contested years hatched; thumb 26 brand
+                  with a 4 white ring and the thumb shadow; year labels mono 12
+                  / 16 ink-3
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.track · map.hatch · shadow.thumb · type.mono
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Jump to
+                  </strong>
+                  · Caption, then XS 36 epoch buttons: padding 12, radius 8, 1px
+                  track border, mono 12 / 16; the current epoch brand border and
+                  brand-hover text. 8 apart
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.control-xs · space.12 · type.mono · space.8
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Key hints
+                  </strong>
+                  · Right-aligned, board 06
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.caption
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Phone sheet
+                  </strong>
+                  · Full width, padding 8 16 20, gap 12, top radius 18, sheet
+                  shadow. Grabber 64 × 20 holding the 40 × 4 handle
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.8 · space.16 · space.20 · space.12 · radius.sheet ·
+                  shadow.sheet
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Phone row
+                  </strong>
+                  · Steps 44 · field fills the rest · Play 44 round, 4 further
+                  out; 8 apart. Help 13 / 20 ink-3, centred
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.control · space.8 · space.4 · type.small
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Group
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  The dock and the sheet are a region named "Map date".
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Field
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  The date field is the only date readout: the slider's thumb is
+                  named for the date it sits on. Invalid dates: board 05.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Slider
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Arrow keys step one unit at the chosen precision, Shift and an
+                  arrow ten. The thumb is a
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    role="slider"
+                  </code>
+                  with
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    aria-valuetext
+                  </code>
+                  set to the date.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Segmented
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Each item is a
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    button
+                  </code>
+                  with
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    aria-pressed;
+                  </code>
+                  the group is labelled "Date precision" or "Playback speed in
+                  years per second".
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Play
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  "Play through time", then "Pause through time" while it plays.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Grabber
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  A button named "Expand the sheet", with a 44 × 44 hit area.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

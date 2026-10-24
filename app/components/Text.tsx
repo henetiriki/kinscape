@@ -8,8 +8,16 @@ type Other =
   | 'body'
   | 'bodyL'
   | 'button'
+  | 'buttonS'
   | 'caption'
+  | 'chip'
+  | 'chipOff'
+  | 'control'
+  | 'credits'
+  | 'h1Phone'
   | 'label'
+  | 'link'
+  | 'linkS'
   | 'mono'
   | 'monoL'
   | 'overline'
@@ -24,8 +32,16 @@ const DEFAULT_TAG: Record<Other, Tag> = {
   body: 'p',
   bodyL: 'p',
   button: 'span',
+  buttonS: 'span',
   caption: 'span',
+  chip: 'span',
+  chipOff: 'span',
+  control: 'span',
+  credits: 'span',
+  h1Phone: 'span',
   label: 'span',
+  link: 'span',
+  linkS: 'span',
   mono: 'span',
   monoL: 'span',
   overline: 'span',

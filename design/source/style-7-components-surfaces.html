@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>KinScape style guide — Surfaces and overlays</title>
+    <title>KinScape style guide — Surfaces and overlays — part 1 of 2</title>
     <link rel="stylesheet" href="fonts.css" />
 
     <style>
@@ -92,51 +92,56 @@
       <div
         style="width: 1440px; box-sizing: border-box; padding: 64px 72px; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B; display: flex; flex-direction: column; gap: 48px">
         <header
-          style="display: flex; flex-direction: column; gap: 10px; max-width: 860px">
+          style="display: flex; flex-direction: column; gap: 12px; max-width: 780px">
           <span
-            style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-            Style guide · 07
+            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+            Style guide · 07 · part 1 of 2
           </span>
           <h1
-            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.1; letter-spacing: -0.02em">
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 44px; line-height: 48px; letter-spacing: -0.02em">
             Surfaces and overlays
           </h1>
           <p
-            style="margin: 0; font-size: 16px; line-height: 1.55; color: #2E3A33">
+            style="margin: 0; font-size: 16px; line-height: 24px; color: #2E3A33">
             The cards, dialogs, sheets, menu, popup and callout that sit above
             the map, from the panel up to the modal dialog.
           </p>
           <p
-            style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #4A544C">
+            style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">
             States not drawn here follow board 04: hover tints, a 2px focus
-            ring, disabled colours. A tap target under 44 is marked "44 × 44 hit
-            area (proposed)".
+            ring, disabled colours. A tap target under 44 keeps a 44 × 44 hit
+            area.
           </p>
+          <a
+            href="style-7-components-surfaces-2.html"
+            style="font-size: 15px; line-height: 22px; border-radius: 2px; color: #264F29; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
+            Part 2: phone sheet headers, menu, popup, callout
+          </a>
         </header>
 
         <section
           aria-label="Surface"
           style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
             <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
               Surface
             </h2>
             <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
               Everything that sits above the map is a white surface at one of
               four levels. The higher it sits, the more it interrupts.
             </p>
           </div>
           <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
+            style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; gap: 24px">
                   <div
-                    style="display: flex; flex-direction: column; gap: 6px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+                    style="display: flex; flex-direction: column; gap: 4px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
                     <span
                       style="font-size: 14px; line-height: 20px; font-weight: 600">
                       Raised
@@ -152,7 +157,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; gap: 6px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
+                    style="display: flex; flex-direction: column; gap: 4px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
                     <span
                       style="font-size: 14px; line-height: 20px; font-weight: 600">
                       Floating
@@ -167,7 +172,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; gap: 6px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3)">
+                    style="display: flex; flex-direction: column; gap: 4px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3)">
                     <span
                       style="font-size: 14px; line-height: 20px; font-weight: 600">
                       Modal
@@ -182,7 +187,7 @@
                     </span>
                   </div>
                   <div
-                    style="display: flex; flex-direction: column; gap: 6px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16)">
+                    style="display: flex; flex-direction: column; gap: 4px; width: 260px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16)">
                     <span
                       style="font-size: 14px; line-height: 20px; font-weight: 600">
                       Sheet
@@ -199,7 +204,7 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Each level on the map colour. All are white with radius 12;
                 sheets round only the top corners, 18.
               </figcaption>
@@ -219,79 +224,103 @@
                 style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Fill</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Fill
+                  </span>
                   <span role="cell">white</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     colour.surface
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Radius</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Radius
+                  </span>
                   <span role="cell">12 · phone sheets 18 on top</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     radius.panel · radius.sheet
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Raised</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Raised
+                  </span>
                   <span role="cell">
                     panels, dock, search bar and pill, avatar, notice cards, map
                     controls
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     shadow.raised
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
                     Floating
                   </span>
                   <span role="cell">popups, menus and the date callout</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     shadow.floating
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Modal</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Modal
+                  </span>
                   <span role="cell">dialogs, with the scrim behind</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     shadow.modal · colour.scrim
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Sheet</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Sheet
+                  </span>
                   <span role="cell">phone sheets</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     shadow.sheet
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
                     Off the scale
                   </span>
                   <span role="cell">
@@ -299,7 +328,7 @@
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     <span style="font-style: italic; color: #4A544C">
                       no token
                     </span>
@@ -315,21 +344,27 @@
               <dl
                 style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Contrast</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Contrast
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     Shadows separate surfaces but carry no meaning. Text on
                     white passes 4.5:1; borders are not needed for contrast.
                   </dd>
                 </div>
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Scrim</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Scrim
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     The modal level always comes with the scrim, which blocks
                     the map for pointer and screen reader alike
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       (aria-modal="true").
                     </code>
                   </dd>
@@ -342,21 +377,21 @@
         <section
           aria-label="Notice card"
           style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
             <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
               Notice card
             </h2>
             <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
               For empty and loading states on the map. Says what's going on in
               one line and offers at most two ways out.
             </p>
           </div>
           <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
+            style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
@@ -404,13 +439,13 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Icon and buttons · no pins on this date. Up to two buttons,
                 lined up with the text.
               </figcaption>
             </figure>
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="padding: 16px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
@@ -446,11 +481,11 @@
                     </div>
                     <div style="display: flex; gap: 8px; padding-left: 32px">
                       <span
-                        style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600; white-space: nowrap">
+                        style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 15px; line-height: 22px; font-weight: 600; white-space: nowrap">
                         Jump to 1898
                       </span>
                       <span
-                        style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; border: 1px solid #C9CFC5; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600; white-space: nowrap">
+                        style="display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; border: 1px solid #C9CFC5; background: #FFFFFF; color: #18211B; font-size: 15px; line-height: 22px; font-weight: 600; white-space: nowrap">
                         Clear filters
                       </span>
                     </div>
@@ -458,12 +493,12 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Phone width · the same card at full width, 44 buttons.
               </figcaption>
             </figure>
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
@@ -481,13 +516,13 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 No icon · title and one line. Not on a screen yet; built from
                 the same parts.
               </figcaption>
             </figure>
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
@@ -511,12 +546,12 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Loading · title, progress bar, one line. Only on first load.
               </figcaption>
             </figure>
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
@@ -549,7 +584,7 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Large · no pins in the tree: 28 icon on top, H3 title (22 / 28).
                 Sits in the middle of the map.
               </figcaption>
@@ -569,88 +604,116 @@
                 style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Width</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Width
+                  </span>
                   <span role="cell">
                     360 on desktop (380 for the large form) · full width less 16
                     gutters on a phone
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     360, 380: component size, no token · size.gutter-phone
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Padding</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Padding
+                  </span>
                   <span role="cell">16 · loading 16 20 · large 20</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     space.16 · space.20
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Gap</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Gap
+                  </span>
                   <span role="cell">
                     12 inside (8 in the large form); icon 20, 12 from the text;
                     buttons indent 32
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     space.12 · space.8 · space.32
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Title</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Title
+                  </span>
                   <span role="cell">
                     15 / 22 · 600 · large form H3, Bricolage 22 / 28 · 700
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     type.title · type.h3
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Line</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Line
+                  </span>
                   <span role="cell">15 / 22 ink-2 · loading 13 / 20 ink-3</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     type.body · type.small
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Buttons</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Buttons
+                  </span>
                   <span role="cell">
                     40 tall: primary then secondary, 8 apart
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     size.control-s · space.8
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Surface</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Surface
+                  </span>
                   <span role="cell">white, radius 12, raised shadow</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     colour.surface · radius.panel · shadow.raised
                   </span>
                 </div>
@@ -664,41 +727,53 @@
               <dl
                 style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Role</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Role
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       role="status",
                     </code>
                     so the change is announced politely. The loading card adds
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       aria-live="polite".
                     </code>
                   </dd>
                 </div>
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Icon</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Icon
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       aria-hidden.
                     </code>
                   </dd>
                 </div>
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Buttons</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Buttons
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     Real buttons in reading order after the text. Jump to moves
                     the map date; Clear filters clears every filter.
                   </dd>
                 </div>
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Focus</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Focus
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     The card never takes focus; it explains, and the buttons are
                     there to Tab to.
@@ -712,21 +787,21 @@
         <section
           aria-label="Progress bar"
           style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
             <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
               Progress bar
             </h2>
             <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
               Shows how much of the first load is done. Only ever inside the
               loading notice card.
             </p>
           </div>
           <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
+            style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <span
                   style="display: flex; flex-direction: column; gap: 16px; width: 320px">
@@ -769,7 +844,7 @@
                 </span>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Determinate, as the loading card shows it: the fill is 45% of
                 the track. Shown at 0, 45 and 100.
               </figcaption>
@@ -789,49 +864,65 @@
                 style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Track</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Track
+                  </span>
                   <span role="cell">6 tall, fully round (3), line</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     6, 3: component size, no token · colour.line
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Fill</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Fill
+                  </span>
                   <span role="cell">
                     brand, same height and radius; width is the share loaded
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     colour.brand
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Width</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Width
+                  </span>
                   <span role="cell">Fills the card</span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     <span style="color: #4A544C">—</span>
                   </span>
                 </div>
                 <div
                   role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Kind</span>
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Kind
+                  </span>
                   <span role="cell">
                     Determinate. There is no indeterminate form on any screen
                   </span>
                   <span
                     role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                     <span style="color: #4A544C">—</span>
                   </span>
                 </div>
@@ -845,24 +936,27 @@
               <dl
                 style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Role</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Role
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       role="progressbar"
                     </code>
                     with
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       aria-valuenow,
                     </code>
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       aria-valuemin="0",
                     </code>
                     <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                       aria-valuemax="100",
                     </code>
                     labelled by the card title "Loading the map". The mockup has
@@ -870,8 +964,11 @@
                   </dd>
                 </div>
                 <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Motion</dt>
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Motion
+                  </dt>
                   <dd style="margin: 0; color: #2E3A33">
                     Width changes without easing under prefers-reduced-motion.
                   </dd>
@@ -884,20 +981,20 @@
         <section
           aria-label="Dialog"
           style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
             <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
               Dialog
             </h2>
             <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
               For a task or a long read that needs the whole screen's attention.
               Sources and attributions is the only one so far.
             </p>
           </div>
           <div style="display: flex; gap: 40px; align-items: flex-start">
             <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start">
                 <div
                   style="position: relative; padding: 40px; border-radius: 12px; background: #C9D5D2; overflow: hidden">
@@ -905,7 +1002,7 @@
                     aria-hidden="true"
                     style="position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></span>
                   <div
-                    style="position: relative; width: 760px; box-sizing: border-box; padding: 24px 28px 28px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 16px; max-height: 820px">
+                    style="position: relative; width: 760px; box-sizing: border-box; padding: 24px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 16px; max-height: 820px">
                     <div
                       style="flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
                       <div
@@ -949,22 +1046,22 @@
                           <tr>
                             <th
                               scope="col"
-                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 10px; padding-bottom: 10px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 12px; padding-bottom: 12px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
                               Layer
                             </th>
                             <th
                               scope="col"
-                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 10px; padding-bottom: 10px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 12px; padding-bottom: 12px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
                               Source
                             </th>
                             <th
                               scope="col"
-                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 10px; padding-bottom: 10px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 12px; padding-bottom: 12px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
                               Licence
                             </th>
                             <th
                               scope="col"
-                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 10px; padding-bottom: 10px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                              style="padding: 4px 12px 4px 0; border-bottom: 1px solid #E2E5DD; text-align: left; vertical-align: middle; padding-top: 12px; padding-bottom: 12px; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
                               Checked
                             </th>
                           </tr>
@@ -1165,7 +1262,7 @@
                 </div>
               </div>
               <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
                 Desktop · 1440 × 900 screen; the body scrolls under the head.
               </figcaption>
             </figure>
@@ -1178,39 +1275,45 @@
                 <dl
                   style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
                   <div
-                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                    <dt style="font-weight: 600">Role</dt>
+                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                    <dt
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Role
+                    </dt>
                     <dd style="margin: 0; color: #2E3A33">
                       <code
-                        style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                         role="dialog"
                       </code>
                       with
                       <code
-                        style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                         aria-modal="true",
                       </code>
                       labelled by its title
                       <code
-                        style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                         (aria-labelledby).
                       </code>
                       A native
                       <code
-                        style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                         &lt;dialog&gt;
                       </code>
                       opened with
                       <code
-                        style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                         showModal
                       </code>
                       gives both.
                     </dd>
                   </div>
                   <div
-                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                    <dt style="font-weight: 600">Focus</dt>
+                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                    <dt
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Focus
+                    </dt>
                     <dd style="margin: 0; color: #2E3A33">
                       Opening moves focus into the dialog (the Close button);
                       Tab stays inside; closing returns focus to the link or
@@ -1218,15 +1321,21 @@
                     </dd>
                   </div>
                   <div
-                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                    <dt style="font-weight: 600">Keyboard</dt>
+                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                    <dt
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Keyboard
+                    </dt>
                     <dd style="margin: 0; color: #2E3A33">
                       Esc closes. Close is always there; the scrim closes too.
                     </dd>
                   </div>
                   <div
-                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                    <dt style="font-weight: 600">Table</dt>
+                    style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                    <dt
+                      style="font-size: 14px; line-height: 20px; font-weight: 600">
+                      Table
+                    </dt>
                     <dd style="margin: 0; color: #2E3A33">
                       A real table on desktop (column headers); a list on a
                       phone, where each item reads layer, source, licence,
@@ -1249,121 +1358,154 @@
               style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Desktop</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Desktop
+                </span>
                 <span role="cell">
-                  760 wide, up to the screen less 80 tall; padding 24 28 28, gap
-                  16, radius 12, modal shadow
+                  760 wide, up to the screen less 80 tall; padding 24, gap 16,
+                  radius 12, modal shadow
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                  760: component size · 28: no token · 80: 2 × space.40 ·
-                  space.24 · space.16 · radius.panel · shadow.modal ·
-                  colour.scrim
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  760: component size · 80: 2 × space.40 · space.24 · space.16 ·
+                  radius.panel · shadow.modal · colour.scrim
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Body</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Body
+                </span>
                 <span role="cell">
                   Scrolls under the title; a line-strong rule on top; table and
                   footnote 16 apart
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   colour.line-strong · space.16
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Phone</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Phone
+                </span>
                 <span role="cell">
                   Full width, up to 56 from the top; padding 8 16 24, gap 12,
                   top radius 18, modal shadow
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   radius.sheet · shadow.modal (other sheets: shadow.sheet)
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Title</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Title
+                </span>
                 <span role="cell">
                   H2: Bricolage 24 / 32 · 700; subtitle 15 / 22 ink-2, 4 below
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   type.h2 · type.body
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Close</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Close
+                </span>
                 <span role="cell">
                   44 × 44, fully round, ink-3; icon 18 desktop, 20 phone; pulled
                   into the corner
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   size.touch · radius.full
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Table</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Table
+                </span>
                 <span role="cell">
                   Columns 170 / rest / 150 / 120, 12 after each; overline
                   header; rows min 44, 4 above and below
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   type.overline · size.touch · space.12 · space.4
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Text</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Text
+                </span>
                 <span role="cell">
                   Layer 14 / 600; source 13 / 20 with its detail under it, 12.5
                   / 18 ink-3; Checked mono 12
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   type.label · type.small · type.caption · type.mono
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Licence</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Licence
+                </span>
                 <span role="cell">
                   Board 04's Link at 13 / 20: brand, 500, 1px underline 3 below;
                   opens in a new tab
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   colour.brand · radius.link · type.small
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
                   Phone rows
                 </span>
                 <span role="cell">
@@ -1372,1718 +1514,27 @@
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   type.label · type.small · type.caption · space.12 · space.4
                 </span>
               </div>
               <div
                 role="row"
-                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                <span role="rowheader" style="font-weight: 600">Handle</span>
+                style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 480px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <span
+                  role="rowheader"
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Handle
+                </span>
                 <span role="cell">
                   40 × 4, radius 2, line-strong; 8 from the top
                 </span>
                 <span
                   role="cell"
-                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
                   40 × 4: component size, no token · colour.line-strong
                 </span>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label="Phone sheet header"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
-              Phone sheet header
-            </h2>
-            <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
-              The top of every phone bottom sheet: a handle, then one of three
-              header rows.
-            </p>
-          </div>
-          <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 390px">
-                  <div
-                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
-                    <span
-                      aria-hidden="true"
-                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
-                    <div
-                      style="display: flex; align-items: center; justify-content: space-between; gap: 16px">
-                      <span
-                        style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">
-                        Boards
-                      </span>
-                      <span
-                        style="flex: none; width: 44px; height: 44px; margin: 0 -8px 0 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          aria-hidden="true">
-                          <path d="M6 6l12 12M18 6L6 18"></path>
-                        </svg>
-                      </span>
-                    </div>
-                    <span
-                      style="font-size: 13px; line-height: 20px; color: #4A544C">
-                      The sheet's content starts here.
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Title and Close · the design kit's Boards sheet. H2 24 / 32.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 390px">
-                  <div
-                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 8px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
-                    <span
-                      aria-hidden="true"
-                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
-                    <div
-                      style="display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #E2E5DD">
-                      <div style="flex: 1; display: flex; gap: 4px">
-                        <span
-                          style="flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 600; background: #E6EEE4; color: #1D3E20">
-                          Layers
-                        </span>
-                        <span
-                          style="flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 44px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #4A544C">
-                          Filters
-                          <span
-                            style="display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 10px; background: #264F29; color: #FFFFFF; font-size: 12px; margin-left: 8px">
-                            1
-                          </span>
-                        </span>
-                      </div>
-                      <span
-                        style="flex: none; width: 44px; height: 44px; margin: 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          aria-hidden="true">
-                          <path d="M6 6l12 12M18 6L6 18"></path>
-                        </svg>
-                      </span>
-                    </div>
-                    <span
-                      style="font-size: 13px; line-height: 20px; color: #4A544C">
-                      The sheet's content starts here.
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Tabs and Close · Layers and filters. Tabs 44 tall share the row.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 390px">
-                  <div
-                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 16px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
-                    <span
-                      aria-hidden="true"
-                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
-                    <div
-                      style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
-                      <div
-                        style="display: flex; flex-direction: column; gap: 4px">
-                        <span
-                          style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">
-                          Sources and attributions
-                        </span>
-                        <span
-                          style="font-size: 15px; line-height: 22px; color: #2E3A33">
-                          Where every layer on the map comes from, and the
-                          licence it's used under.
-                        </span>
-                      </div>
-                      <span
-                        style="flex: none; width: 44px; height: 44px; margin: -4px -8px 0 0; border-radius: 22px; color: #4A544C; display: flex; align-items: center; justify-content: center">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          aria-hidden="true">
-                          <path d="M6 6l12 12M18 6L6 18"></path>
-                        </svg>
-                      </span>
-                    </div>
-                    <span
-                      style="font-size: 13px; line-height: 20px; color: #4A544C">
-                      The sheet's content starts here.
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Title, subtitle and Close · Sources and attributions; its list
-                is in the Dialog section.
-              </figcaption>
-            </figure>
-          </div>
-
-          <div
-            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Measurements
-              </h3>
-              <div
-                role="table"
-                aria-label="Phone sheet header measurements"
-                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Handle</span>
-                  <span role="cell">
-                    40 × 4, radius 2, line-strong, centred, 8 from the top edge
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    40 × 4: component size, no token
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Padding</span>
-                  <span role="cell">
-                    8 16 at the top; 8 (tabs) or 12 (title) from handle to
-                    header
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    space.8 · space.16 · space.12
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Title</span>
-                  <span role="cell">H2 24 / 32 · 700</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.h2
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Close</span>
-                  <span role="cell">
-                    44 × 44 round, ink-3, 20px icon; its right edge pulled 8
-                    into the gutter so the icon lines up with the text column
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    size.touch
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">
-                    Tabs row
-                  </span>
-                  <span role="cell">
-                    Tabs share the row, gap 8 to Close, 8 below, then a 1px line
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    space.8 · colour.line
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Accessibility
-              </h3>
-              <dl
-                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Heading</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    The title is a real
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      h2
-                    </code>
-                    and labels the sheet's dialog.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Close</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-label="Close";
-                    </code>
-                    Esc does the same.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Handle</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Decoration on an open sheet
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      (aria-hidden).
-                    </code>
-                    On the collapsed date sheet it is a button, "Expand the
-                    sheet", which isn't covered here.
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label="Menu"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
-              Menu
-            </h2>
-            <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
-              A short list of actions behind a trigger. Today only the account
-              menu, opened from the avatar.
-            </p>
-          </div>
-          <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
-                  <div
-                    style="width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
-                    <div
-                      style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
-                      <span
-                        style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                        Signed in as
-                      </span>
-                      <span
-                        style="font-size: 14px; line-height: 20px; font-weight: 600">
-                        researcher@example.com
-                      </span>
-                    </div>
-                    <span
-                      style="display: block; height: 1px; background: #E2E5DD; margin: 0 8px 4px"></span>
-                    <span
-                      style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 284px">
-                      <span style="display: flex; color: #18211B">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          aria-hidden="true">
-                          <path
-                            d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
-                        </svg>
-                      </span>
-                      <span style="display: flex; flex-direction: column">
-                        <span
-                          style="font-size: 14px; line-height: 20px; font-weight: 600">
-                          Export all data
-                        </span>
-                        <span
-                          style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                          JSON and GeoJSON
-                        </span>
-                      </span>
-                    </span>
-                    <span
-                      style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 284px">
-                      <span style="display: flex; color: #18211B">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          aria-hidden="true">
-                          <path d="M6 4h9l3 3v13H6z"></path>
-                          <path d="M9 11h6M9 15h6"></path>
-                        </svg>
-                      </span>
-                      <span
-                        style="font-size: 14px; line-height: 20px; font-weight: 600">
-                        Sources and attributions
-                      </span>
-                    </span>
-                    <span
-                      style="display: block; height: 1px; background: #E2E5DD; margin: 4px 8px"></span>
-                    <span
-                      style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 284px">
-                      <span style="display: flex; color: #18211B">
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          aria-hidden="true">
-                          <path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path>
-                        </svg>
-                      </span>
-                      <span
-                        style="font-size: 14px; line-height: 20px; font-weight: 600">
-                        Sign out
-                      </span>
-                    </span>
-                    <span
-                      style="padding: 8px 12px; font-size: 12.5px; line-height: 18px; color: #4A544C">
-                      Last backup: today, 02:00
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Opened from the avatar, 296 wide; the same on desktop and phone.
-                "Export all data" is shown hovered.
-              </figcaption>
-            </figure>
-          </div>
-          <figure
-            aria-label="Menu item states"
-            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
-            <div
-              style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; padding: 10px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-              <span>Component</span>
-              <span>Default</span>
-              <span>Hover</span>
-              <span>Focus (keyboard)</span>
-              <span>Pressed</span>
-              <span>Disabled</span>
-            </div>
-            <div
-              style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; align-items: center; min-height: 80px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-              <span style="display: flex; flex-direction: column; gap: 2px">
-                <span style="font-size: 14px; font-weight: 600">Menu item</span>
-                <span
-                  style="font-size: 12.5px; line-height: 1.4; color: #4A544C">
-                  Icon and label
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 200px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M6 4h9l3 3v13H6z"></path>
-                      <path d="M9 11h6M9 15h6"></path>
-                    </svg>
-                  </span>
-                  <span
-                    style="font-size: 14px; line-height: 20px; font-weight: 600">
-                    Sources and attributions
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 200px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M6 4h9l3 3v13H6z"></path>
-                      <path d="M9 11h6M9 15h6"></path>
-                    </svg>
-                  </span>
-                  <span
-                    style="font-size: 14px; line-height: 20px; font-weight: 600">
-                    Sources and attributions
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 200px; outline: 2px solid #264F29; outline-offset: 2px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M6 4h9l3 3v13H6z"></path>
-                      <path d="M9 11h6M9 15h6"></path>
-                    </svg>
-                  </span>
-                  <span
-                    style="font-size: 14px; line-height: 20px; font-weight: 600">
-                    Sources and attributions
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #EEF0EA; color: #18211B; width: 200px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M6 4h9l3 3v13H6z"></path>
-                      <path d="M9 11h6M9 15h6"></path>
-                    </svg>
-                  </span>
-                  <span
-                    style="font-size: 14px; line-height: 20px; font-weight: 600">
-                    Sources and attributions
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #6E776F; width: 200px">
-                  <span style="display: flex; color: #A3AAA1">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M6 4h9l3 3v13H6z"></path>
-                      <path d="M9 11h6M9 15h6"></path>
-                    </svg>
-                  </span>
-                  <span
-                    style="font-size: 14px; line-height: 20px; font-weight: 600">
-                    Sources and attributions
-                  </span>
-                </span>
-              </span>
-            </div>
-            <div
-              style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; align-items: center; min-height: 80px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-              <span style="display: flex; flex-direction: column; gap: 2px">
-                <span style="font-size: 14px; font-weight: 600">
-                  Menu item, two lines
-                </span>
-                <span
-                  style="font-size: 12.5px; line-height: 1.4; color: #4A544C">
-                  Icon, label, second line
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 200px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
-                    </svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column">
-                    <span
-                      style="font-size: 14px; line-height: 20px; font-weight: 600">
-                      Export all data
-                    </span>
-                    <span
-                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                      JSON and GeoJSON
-                    </span>
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #18211B; width: 200px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
-                    </svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column">
-                    <span
-                      style="font-size: 14px; line-height: 20px; font-weight: 600">
-                      Export all data
-                    </span>
-                    <span
-                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                      JSON and GeoJSON
-                    </span>
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #18211B; width: 200px; outline: 2px solid #264F29; outline-offset: 2px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
-                    </svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column">
-                    <span
-                      style="font-size: 14px; line-height: 20px; font-weight: 600">
-                      Export all data
-                    </span>
-                    <span
-                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                      JSON and GeoJSON
-                    </span>
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: #EEF0EA; color: #18211B; width: 200px">
-                  <span style="display: flex; color: #18211B">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
-                    </svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column">
-                    <span
-                      style="font-size: 14px; line-height: 20px; font-weight: 600">
-                      Export all data
-                    </span>
-                    <span
-                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                      JSON and GeoJSON
-                    </span>
-                  </span>
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; box-sizing: border-box; border-radius: 8px; background: transparent; color: #6E776F; width: 200px">
-                  <span style="display: flex; color: #A3AAA1">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true">
-                      <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path>
-                    </svg>
-                  </span>
-                  <span style="display: flex; flex-direction: column">
-                    <span
-                      style="font-size: 14px; line-height: 20px; font-weight: 600">
-                      Export all data
-                    </span>
-                    <span
-                      style="font-size: 12.5px; line-height: 18px; color: #6E776F">
-                      JSON and GeoJSON
-                    </span>
-                  </span>
-                </span>
-              </span>
-            </div>
-          </figure>
-          <figure
-            aria-label="Avatar states"
-            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
-            <div
-              style="display: grid; grid-template-columns: 190px repeat(4, minmax(0, 1fr)); gap: 16px; padding: 10px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-              <span>Component</span>
-              <span>Default</span>
-              <span>Hover</span>
-              <span>Focus (keyboard)</span>
-              <span>Open</span>
-            </div>
-            <div
-              style="display: grid; grid-template-columns: 190px repeat(4, minmax(0, 1fr)); gap: 16px; align-items: center; min-height: 80px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
-              <span style="display: flex; flex-direction: column; gap: 2px">
-                <span style="font-size: 14px; font-weight: 600">Avatar</span>
-                <span
-                  style="font-size: 12.5px; line-height: 1.4; color: #4A544C">
-                  Desktop and phone alike: raised shadow, no border
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #264F29; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-                  L
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #1D3E20; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-                  L
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #264F29; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); outline: 2px solid #264F29; outline-offset: 2px">
-                  L
-                </span>
-              </span>
-              <span
-                aria-hidden="true"
-                style="display: inline-flex; align-items: center; gap: 10px; width: 100%; justify-self: start">
-                <span
-                  style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 22px; background: #163019; color: #FFFFFF; font-size: 16px; line-height: 24px; font-weight: 600; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-                  L
-                </span>
-              </span>
-            </div>
-          </figure>
-          <div
-            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Measurements
-              </h3>
-              <div
-                role="table"
-                aria-label="Menu measurements"
-                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Menu</span>
-                  <span role="cell">
-                    296 wide, white, radius 12, floating shadow; 4 inside
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    296: component size, no token · radius.panel ·
-                    shadow.floating · space.4
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Header</span>
-                  <span role="cell">
-                    "Signed in as" 12.5 / 18 ink-3, 4 above the email 14 / 600;
-                    padding 12
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.caption · type.label · space.4 · space.12
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Item</span>
-                  <span role="cell">
-                    min 44; padding 4 12; icon 18, 12 to the label; radius 8.
-                    The two-line item is 52 tall in the mockups
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    size.touch · space.12 · radius.control · 52: no token
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Label</span>
-                  <span role="cell">
-                    14 / 20 · 600; second line 12.5 / 18 ink-3
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.label · type.caption
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Hover</span>
-                  <span role="cell">surface-2 fill</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    colour.surface-2
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Divider</span>
-                  <span role="cell">
-                    1px line, 8 in from the sides, 4 above and below
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    colour.line · space.8 · space.4
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Footer</span>
-                  <span role="cell">
-                    Last backup, 12.5 / 18 ink-3, padding 8 12
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.caption
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Avatar</span>
-                  <span role="cell">
-                    44 round, brand, white initial 16 / 600, raised shadow, no
-                    border
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    size.touch · type.button · shadow.raised
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Accessibility
-              </h3>
-              <dl
-                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Trigger</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    The avatar is a
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      button
-                    </code>
-                    named "Account menu", with
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-haspopup="menu"
-                    </code>
-                    and
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-expanded.
-                    </code>
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Role</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      role="menu"
-                    </code>
-                    with
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      menuitem
-                    </code>
-                    children. The header and footer text sit outside the
-                    menuitems
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      (role="none"
-                    </code>
-                    or a labelled group) so arrow keys skip them.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Keyboard</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Opening moves focus to the first item. Up and Down move,
-                    Enter activates, Esc closes and returns focus to the avatar.
-                    Tab leaves and closes.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Name</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    The menu is labelled "Account". Icons are
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-hidden.
-                    </code>
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label="Popup"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
-              Popup
-            </h2>
-            <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
-              Answers "what was this spot part of on the map date?" where you
-              clicked: the Jurisdiction chain and the pins there.
-            </p>
-          </div>
-          <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap; padding-right: 40px">
-                  <div
-                    style="position: relative; width: 304px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); margin-right: 8px">
-                    <span
-                      style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: #FFFFFF; transform: rotate(45deg); border-radius: 2px"></span>
-                    <div
-                      style="position: relative; padding: 16px; display: flex; flex-direction: column; gap: 12px">
-                      <div
-                        style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
-                        <div
-                          style="display: flex; flex-direction: column; gap: 2px">
-                          <span
-                            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                            On this spot in 1901
-                          </span>
-                          <span
-                            style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
-                            Kimberley
-                          </span>
-                          <span
-                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #4A544C">
-                            28.738° S · 24.764° E
-                          </span>
-                        </div>
-                        <span
-                          style="flex: none; width: 36px; height: 36px; margin: -8px -8px 0 0; border-radius: 18px; color: #4A544C; display: flex; align-items: center; justify-content: center">
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            aria-hidden="true">
-                            <path d="M6 6l12 12M18 6L6 18"></path>
-                          </svg>
-                        </span>
-                      </div>
-                      <ol
-                        style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
-                        <li
-                          style="display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #E2E5DD">
-                          <span
-                            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                            District
-                          </span>
-                          <span
-                            style="font-size: 15px; line-height: 22px; font-weight: 600">
-                            Kimberley
-                          </span>
-                        </li>
-                        <li
-                          style="display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #E2E5DD">
-                          <span
-                            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                            Colony
-                          </span>
-                          <span style="display: flex; flex-direction: column">
-                            <span
-                              style="font-size: 15px; line-height: 22px; font-weight: 600">
-                              Cape Colony
-                            </span>
-                            <span
-                              style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                              Was Griqualand West until 1880
-                            </span>
-                          </span>
-                        </li>
-                      </ol>
-                      <div
-                        style="display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 8px; background: #F4F5F0">
-                        <span
-                          style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                          1 pin here
-                        </span>
-                        <span
-                          style="display: flex; align-items: center; gap: 8px; min-height: 32px; color: #18211B">
-                          <span
-                            style="color: #9A3B12; font-size: 14px"
-                            aria-hidden="true">
-                            ◆
-                          </span>
-                          <span
-                            style="flex: 1; display: flex; flex-direction: column">
-                            <span
-                              style="font-size: 14px; line-height: 20px; font-weight: 600">
-                              Marriage
-                            </span>
-                            <span
-                              style="font-size: 13px; line-height: 20px; color: #4A544C">
-                              J. Rossouw &amp; M. du Toit
-                            </span>
-                          </span>
-                          <span
-                            style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                            1901-03-14
-                          </span>
-                        </span>
-                      </div>
-                      <span
-                        style="align-self: flex-start; height: 36px; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linejoin="round"
-                          aria-hidden="true">
-                          <rect
-                            x="8"
-                            y="8"
-                            width="12"
-                            height="12"
-                            rx="2"></rect>
-                          <path
-                            d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path>
-                        </svg>
-                        Copy chain
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Desktop · 304 wide, floating, pointing at the clicked spot.
-                Overline, place name, coordinates, Close; the chain; the pins
-                here; Copy chain.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <span style="display: flex; flex-direction: column; gap: 12px">
-                  <span
-                    style="display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap">
-                    <span
-                      style="flex: none; width: 36px; height: 36px; border-radius: 18px; color: #4A544C; display: flex; align-items: center; justify-content: center; background: #F4F5F0">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        aria-hidden="true">
-                        <path d="M6 6l12 12M18 6L6 18"></path>
-                      </svg>
-                    </span>
-                    <span
-                      style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 4px; border: 1px dashed #4A544C; font-size: 12.5px; line-height: 18px; color: #2E3A33; white-space: nowrap">
-                      44 × 44 hit area (proposed)
-                    </span>
-                  </span>
-                  <span
-                    style="display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap">
-                    <span
-                      style="height: 36px; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600">
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linejoin="round"
-                        aria-hidden="true">
-                        <rect x="8" y="8" width="12" height="12" rx="2"></rect>
-                        <path
-                          d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path>
-                      </svg>
-                      Copy chain
-                    </span>
-                    <span
-                      style="display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 4px; border: 1px dashed #4A544C; font-size: 12.5px; line-height: 18px; color: #2E3A33; white-space: nowrap">
-                      44 × 44 hit area (proposed)
-                    </span>
-                  </span>
-                </span>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Close and Copy chain keep their 36 visual size, each with a hit
-                area of its own.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 20px 0 0; border-radius: 12px; background: #C9D5D2; overflow: hidden; width: 390px">
-                  <div
-                    style="width: 100%; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
-                    <span
-                      aria-hidden="true"
-                      style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
-                    <div
-                      style="display: flex; flex-direction: column; gap: 2px">
-                      <span
-                        style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                        On this spot in 1901
-                      </span>
-                      <div
-                        style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
-                        <span
-                          style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
-                          Kimberley
-                        </span>
-                        <span
-                          style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #4A544C">
-                          28.738° S · 24.764° E
-                        </span>
-                      </div>
-                    </div>
-                    <ol
-                      style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
-                      <li
-                        style="display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #E2E5DD">
-                        <span
-                          style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                          District
-                        </span>
-                        <span
-                          style="font-size: 15px; line-height: 22px; font-weight: 600">
-                          Kimberley
-                        </span>
-                      </li>
-                      <li
-                        style="display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD">
-                        <span
-                          style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                          Colony
-                        </span>
-                        <span style="display: flex; flex-direction: column">
-                          <span
-                            style="font-size: 15px; line-height: 22px; font-weight: 600">
-                            Cape Colony
-                          </span>
-                          <span
-                            style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                            Was Griqualand West until 1880
-                          </span>
-                        </span>
-                      </li>
-                    </ol>
-                    <span
-                      style="display: flex; align-items: center; gap: 8px; min-height: 44px; color: #18211B">
-                      <span
-                        style="color: #9A3B12; font-size: 14px"
-                        aria-hidden="true">
-                        ◆
-                      </span>
-                      <span
-                        style="flex: 1; display: flex; flex-direction: column">
-                        <span
-                          style="font-size: 14px; line-height: 20px; font-weight: 600">
-                          Marriage
-                        </span>
-                        <span
-                          style="font-size: 13px; line-height: 20px; color: #4A544C">
-                          J. Rossouw &amp; M. du Toit
-                        </span>
-                      </span>
-                      <span
-                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                        1901-03-14
-                      </span>
-                    </span>
-                    <span
-                      style="font-size: 12.5px; line-height: 18px; color: #4A544C">
-                      Look-up only on a phone. Add people and pins on a tablet
-                      or computer.
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Phone · the same look-up inside the bottom sheet, below the date
-                controls (not shown). No Copy chain, no inset box; coordinates
-                beside the name.
-              </figcaption>
-            </figure>
-          </div>
-
-          <div
-            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Measurements
-              </h3>
-              <div
-                role="table"
-                aria-label="Popup measurements"
-                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Popup</span>
-                  <span role="cell">
-                    304 wide, radius 12, floating shadow, padding 16, gap 12;
-                    pointer a 16 square turned 45°, radius 2
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    304: component size, no token · radius.panel ·
-                    shadow.floating · space.16 · space.12
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Header</span>
-                  <span role="cell">
-                    Overline "On this spot in {year}" · place name H3, Bricolage
-                    22 / 28 · 700 · coordinates mono 12 / 16 ink-3
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.overline · type.h3 · type.mono
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Close</span>
-                  <span role="cell">
-                    36 × 36 round, ink-3, 16px icon, pulled 8 up and 8 right; 44
-                    × 44 hit area (proposed)
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    36: proposed token
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">
-                    Chain rows
-                  </span>
-                  <span role="cell">
-                    Grid 76 / rest, gap 8; 8 above and below; 1px line between.
-                    Label overline; value 15 / 22 · 600; detail 12.5 / 18 ink-3
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.overline · type.title · type.caption · space.8
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">
-                    Pins here
-                  </span>
-                  <span role="cell">
-                    Inset: surface-2, radius 8, padding 12, gap 8; row min 32.
-                    Glyph 14 pin, 8 to the title 14 / 600, people 13 / 20 ink-3,
-                    date mono 12 ink-2
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    colour.surface-2 · type.label · type.small · type.mono · 32:
-                    no token
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">
-                    Copy chain
-                  </span>
-                  <span role="cell">
-                    Desktop: 36 secondary with the copy icon (board 06), 44 × 44
-                    hit area (proposed). The phone look-up has no Close and no
-                    Copy chain
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    36: proposed token
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Accessibility
-              </h3>
-              <dl
-                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Role</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Desktop: a non-modal
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      role="dialog"
-                    </code>
-                    named "Jurisdiction at this point". Phone: a region of the
-                    bottom sheet named by its overline.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Focus</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Opening a popup with the keyboard moves focus to it; Esc or
-                    Close returns focus to the map.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Chain</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    An ordered list
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      (&lt;ol&gt;),
-                    </code>
-                    smallest unit first. Each row reads level then name.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Pins</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Each pin is a link to its record. The glyph is
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-hidden;
-                    </code>
-                    the event name says what it is.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Copy chain</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Copies the chain as text and confirms with the "Jurisdiction
-                    chain copied." toast (board 05).
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label="Callout"
-          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
-          <div style="display: flex; flex-direction: column; gap: 6px">
-            <h2
-              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 26px">
-              Callout
-            </h2>
-            <p
-              style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #2E3A33; max-width: 860px">
-              A message that belongs to one control and has to point at it:
-              today, the error on the map date field in the dock.
-            </p>
-          </div>
-          <div
-            style="display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start">
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 24px 24px 32px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
-                  <div
-                    style="position: relative; width: 340px; box-sizing: border-box; padding: 12px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 13px; line-height: 20px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
-                    <strong style="font-weight: 600">
-                      February 1901 has 28 days.
-                    </strong>
-                    The map still shows 1901-02-28. Press Esc to go back to it.
-                    <span
-                      style="position: absolute; left: 136px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Pointer offset · desktop dock: the pointer sits over the date
-                field, 136 from the left edge.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 24px 24px 32px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
-                  <div
-                    style="position: relative; width: 340px; box-sizing: border-box; padding: 12px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 13px; line-height: 20px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
-                    <strong style="font-weight: 600">
-                      February 1901 has 28 days.
-                    </strong>
-                    The map still shows 1901-02-28. Press Esc to go back to it.
-                    <span
-                      style="position: absolute; left: 164px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Pointer centred · the same callout pointing at something
-                directly below its middle. In place above the dock: see board
-                05.
-              </figcaption>
-            </figure>
-            <figure
-              style="margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0">
-              <div style="display: flex; align-items: flex-start">
-                <div
-                  style="padding: 16px 16px 28px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap">
-                  <div
-                    style="position: relative; width: 358px; box-sizing: border-box; padding: 12px 16px 4px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 13px; line-height: 20px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); display: flex; flex-direction: column">
-                    <span>
-                      <strong style="font-weight: 600">
-                        February 1901 has 28 days.
-                      </strong>
-                      The map still shows 1901-02-28.
-                    </span>
-                    <span
-                      style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 600; color: #264F29; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
-                      Go to 1901-02-28
-                    </span>
-                    <span
-                      style="position: absolute; left: 149px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
-                  </div>
-                </div>
-              </div>
-              <figcaption
-                style="font-size: 12.5px; line-height: 1.45; color: #4A544C; max-width: 400px">
-                Phone · full width less the gutters, 14 / 20, with a "Go to"
-                link.
-              </figcaption>
-            </figure>
-          </div>
-
-          <div
-            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Measurements
-              </h3>
-              <div
-                role="table"
-                aria-label="Callout measurements"
-                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Box</span>
-                  <span role="cell">340 wide · padding 12 · radius 8</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    340: component size, no token · space.12 · radius.control
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Colours</span>
-                  <span role="cell">
-                    error-bg, 1px error-border, error text
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    colour.error-bg · colour.error-border · colour.error
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Text</span>
-                  <span role="cell">13 / 20; first sentence 600</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    type.small
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Pointer</span>
-                  <span role="cell">
-                    12 square turned 45°, error-bg with the box's border on its
-                    two outer sides, 7 below the box
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    12, 7: component size, no token
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Shadow</span>
-                  <span role="cell">floating, as a popup</span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    shadow.floating
-                  </span>
-                </div>
-                <div
-                  role="row"
-                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <span role="rowheader" style="font-weight: 600">Place</span>
-                  <span role="cell">
-                    Opens above the field it belongs to, so it isn't cut off at
-                    the bottom of the screen
-                  </span>
-                  <span
-                    role="cell"
-                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 1.6; color: #2E3A33">
-                    <span style="color: #4A544C">—</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 8px">
-              <h3
-                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-                Accessibility
-              </h3>
-              <dl
-                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Role</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      role="alert",
-                    </code>
-                    with an
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      id
-                    </code>
-                    the field points at through
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      aria-describedby.
-                    </code>
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Keyboard</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Esc restores the last good date and closes the callout.
-                  </dd>
-                </div>
-                <div
-                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 14px; padding: 6px 0; border-bottom: 1px solid #E2E5DD; font-size: 13.5px; line-height: 1.45">
-                  <dt style="font-weight: 600">Pointer</dt>
-                  <dd style="margin: 0; color: #2E3A33">
-                    Decoration (a styled
-                    <code
-                      style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
-                      span),
-                    </code>
-                    never read.
-                  </dd>
-                </div>
-              </dl>
             </div>
           </div>
         </section>

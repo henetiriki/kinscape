@@ -263,12 +263,13 @@ const StatesKit = () => (
             a 36px chip) sits inside a 44px hit area.
           </li>
           <li>
-            Buttons: 50px on sign-in, 44px in panels and the dock, 40px inside
-            cards.
+            Buttons by height: L 50 on sign-in (16 / 24), M 44 in panels and the
+            dock (15 / 22, padding 16), S 40 inside cards and XS 36 (14 / 20,
+            padding 16 and 12).
           </li>
           <li>
-            Fields: 44px in the app, 48px on sign-in. Field text 15px, 16px on
-            phones.
+            Fields: M 44 in the app, L 48 on sign-in. Field text 15 / 22, 16 /
+            24 on phones and on sign-in.
           </li>
         </ul>
       </section>

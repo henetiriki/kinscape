@@ -5,21 +5,9 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: var(--space-40);
   min-height: 1790px;
-  padding: var(--space-64) 72px;
-}
-
-.header {
-  max-width: 780px;
-}
-
-.kit .notes {
-  gap: var(--space-32);
-}
-
-.kit .notes section {
-  gap: 14px;
+  padding: var(--space-64) var(--kit-page);
 }
 
 .row [data-variant='overline'] {
@@ -28,10 +16,6 @@
 
 .row [data-variant='mono'] {
   color: var(--ink-2);
-}
-
-.phoneOnly {
-  display: none;
 }
 
 .scale {
@@ -48,7 +32,7 @@
   gap: var(--space-24);
   grid-template-columns: 150px 300px minmax(0, 1fr);
   min-height: 56px;
-  padding: 10px 0;
+  padding: var(--space-12) 0;
 }
 
 .columns {
@@ -57,6 +41,7 @@
   font-size: var(--type-overline-size);
   font-weight: var(--type-overline-weight);
   letter-spacing: var(--type-overline-tracking);
+  line-height: var(--type-overline-line);
   min-height: 0;
   text-transform: uppercase;
 }
@@ -70,32 +55,42 @@
 .name > :first-child {
   font-size: var(--type-label-size);
   font-weight: var(--type-label-weight);
+  line-height: var(--type-label-line);
 }
 
 .hint {
   color: var(--ink-3);
   font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
 }
 
 .spec {
   color: var(--ink-2);
   font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-mono-size);
+  line-height: var(--type-mono-line);
+}
+
+.kit .notes {
+  gap: var(--space-32);
+}
+
+.kit .notes section {
+  gap: var(--space-16);
 }
 
 .mapLabels {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
   padding: var(--space-24);
   border-radius: var(--radius-panel);
 }
 
 .note {
   color: var(--ink-2);
-  font-size: 13.5px;
-  line-height: 1.5;
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
   margin: 0;
 }
 
@@ -107,8 +102,8 @@
 
 .chip {
   align-self: flex-start;
-  border-radius: 6px;
-  padding: 6px 10px;
+  border-radius: var(--radius-small);
+  padding: var(--space-4) var(--space-8);
 }
 
 /* A phone (Intent 104, D1): one column inside 16px gutters, name and use on one line */
@@ -148,10 +143,6 @@
   .spec {
     font-variant-ligatures: none;
     line-height: 16px;
-  }
-
-  .phoneOnly {
-    display: inline;
   }
 
   .kit .notes section {

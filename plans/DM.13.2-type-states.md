@@ -74,8 +74,9 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 
 ## Deviations
 
-- `Button` now has 15px text and 18px side padding to match the snapshots (tech lead's call). It restyles every button; States scores 0.26% (desktop) and 0.39% (phone).
-- `design/source` and the Type JPGs are reverted to the canvas export. `style-1-type` is 0.30% (`blocking`); `style-1-type-phone` is 1.96%, so it stays `report` until the Design agent applies the polity label change (12.5 → 12) on the canvas and re-exports.
+- `Button` text follows the height (L 16/24, M 15/22, S and XS 14/20), side padding 16 (XS 12), per the handoff. States score 0.27% and 0.33%.
+- Token-pass snapshots: Type scores 0.07% and 0.19%, both `blocking`.
+- Shared notes gap 48/12 (Type keeps 32/16); Segmented padding and gap 4.
 
 ## Out of scope
 

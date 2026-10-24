@@ -8,7 +8,7 @@
   color: var(--tone-text);
   display: flex;
   gap: var(--space-12);
-  padding: var(--space-12) 14px;
+  padding: var(--space-12) var(--space-16);
 }
 
 .alert > svg {
@@ -49,11 +49,12 @@
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-line);
 }
 
 .line {
-  font-size: 13.5px;
-  line-height: 1.4;
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
 }

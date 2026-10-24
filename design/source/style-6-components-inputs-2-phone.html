@@ -24,7 +24,7 @@
         <a
           href="design-kit-menu-phone.html"
           aria-haspopup="dialog"
-          style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; font-weight: 600; text-decoration: none">
+          style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; line-height: 22px; font-weight: 600; text-decoration: none">
           <svg
             width="18"
             height="18"
@@ -59,8 +59,8 @@
           <p
             style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">
             States not drawn here follow board 04: hover tints, a 2px focus
-            ring, disabled colours. A tap target under 44 is marked "44 × 44 hit
-            area (proposed)".
+            ring, disabled colours. A tap target under 44 keeps a 44 × 44 hit
+            area.
           </p>
           <a
             href="style-6-components-inputs-phone.html"
@@ -78,7 +78,7 @@
               Tabs
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               Switch between the Layers and Filters panels. The badge counts the
               filters that are on.
             </p>
@@ -372,7 +372,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Height</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Height
+                  </strong>
                   · 44 on a phone, 40 in the desktop panel
                 </span>
                 <span
@@ -384,10 +386,12 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Width</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Width
+                  </strong>
                   · Equal: each tab takes half the row
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     (flex: 1)
                   </code>
                 </span>
@@ -400,7 +404,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Bar</span>
+                  <strong style="font-weight: 600; color: #18211B">Bar</strong>
                   · Desktop: padding 4, gap 4, 1px line under it · phone: 8
                   under the row, gap 8 to Close
                 </span>
@@ -413,7 +417,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Label</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Label
+                  </strong>
                   · 14 / 20 · 600; selected brand-hover on brand-tint, others
                   ink-3
                 </span>
@@ -426,7 +432,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Badge</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Badge
+                  </strong>
                   · 20 tall, min-width 20, fully round, brand, white 13.5 / 600;
                   8 after the label
                 </span>
@@ -439,7 +447,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Radius</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Radius
+                  </strong>
                   · 8
                 </span>
                 <span
@@ -451,7 +461,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Close</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Close
+                  </strong>
                   · 44 × 44, fully round, ink-3, 20px icon
                 </span>
                 <span
@@ -470,31 +482,34 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Role</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   A
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     tablist
                   </code>
                   holding two
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     tab
                   </code>
                   elements with
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-selected,
                   </code>
                   each controlling a
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     tabpanel.
                   </code>
                   The mockups use
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-pressed
                   </code>
                   buttons.
@@ -502,7 +517,10 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Name</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Name
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   The label plus the count: "Filters, 1 active". The badge alone
                   would read as "Filters 1".
@@ -510,7 +528,8 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Keyboard
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
@@ -520,10 +539,13 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Close</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Close
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-label="Close".
                   </code>
                   It closes the sheet and returns focus to the Layers button.
@@ -542,7 +564,7 @@
               Checkbox field
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               A checkbox with its name, and on layer rows a line of live detail.
               Sign-in uses the plain label form.
             </p>
@@ -1227,7 +1249,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Row</span>
+                  <strong style="font-weight: 600; color: #18211B">Row</strong>
                   · min-height 48; the whole row is the label, so all of it is
                   the hit area
                 </span>
@@ -1240,7 +1262,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Checkbox</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Checkbox
+                  </strong>
                   · 20 × 20 everywhere, radius 4, 1.5px field-border off, brand
                   fill on
                 </span>
@@ -1254,7 +1278,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Gap</span>
+                  <strong style="font-weight: 600; color: #18211B">Gap</strong>
                   · 12 between box and text
                 </span>
                 <span
@@ -1266,7 +1290,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Name</span>
+                  <strong style="font-weight: 600; color: #18211B">Name</strong>
                   · 14 / 20 · 600 ink
                 </span>
                 <span
@@ -1278,9 +1302,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Description
-                  </span>
+                  </strong>
                   · 13 / 20 ink-3; live facts, such as pins true on the date
                 </span>
                 <span
@@ -1292,9 +1316,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Label only
-                  </span>
+                  </strong>
                   · 15 / 22 ink-2
                 </span>
                 <span
@@ -1313,16 +1337,19 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Role</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   A native
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     input type="checkbox"
                   </code>
                   inside its
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     &lt;label&gt;,
                   </code>
                   so clicking the text toggles it.
@@ -1330,11 +1357,14 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Name</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Name
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   The name. Tie the description with
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-describedby
                   </code>
                   so it is read after the name.
@@ -1342,7 +1372,10 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Live</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Live
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   The description changes with the date ("8 of 214 true on this
                   date"); it is not a live region, so it is read when focused,
@@ -1351,7 +1384,8 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Keyboard
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
@@ -1371,7 +1405,7 @@
               Alerts
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               For a problem with one part of the screen. Use the untitled form
               when the one line says it all.
             </p>
@@ -1381,12 +1415,20 @@
               style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
               <div style="display: flex; align-items: flex-start; min-width: 0">
                 <div
-                  style="display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; width: 100%; box-sizing: border-box">
-                  <span
+                  style="display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; width: 100%; box-sizing: border-box">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
                     aria-hidden="true"
-                    style="flex: none; width: 20px; height: 20px; border-radius: 10px; background: #B4412F; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700">
-                    !
-                  </span>
+                    style="flex: none">
+                    <circle cx="10" cy="10" r="10" fill="#B4412F"></circle>
+                    <path
+                      d="M10 5.5v5.5M10 14.2v.01"
+                      stroke="#FFFFFF"
+                      stroke-width="2"
+                      stroke-linecap="round"></path>
+                  </svg>
                   <span style="font-size: 13px; line-height: 20px">
                     That email and password don't match. Check them and try
                     again.
@@ -1414,21 +1456,23 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Padding</span>
-                  · 12 · radius 8
+                  <strong style="font-weight: 600; color: #18211B">
+                    Padding
+                  </strong>
+                  · 12 16 · radius 8
                 </span>
                 <span
                   style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
-                  space.12 · radius.control
+                  space.12 · space.16 · radius.control
                 </span>
               </li>
               <li
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">
+                  <strong style="font-weight: 600; color: #18211B">
                     Border, fill, text
-                  </span>
+                  </strong>
                   · 1px error-border, error-bg, error text
                 </span>
                 <span
@@ -1440,7 +1484,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Icon</span>
+                  <strong style="font-weight: 600; color: #18211B">Icon</strong>
                   · 20 filled circle in error-border, white "!", 12 from the
                   text
                 </span>
@@ -1453,7 +1497,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Text</span>
+                  <strong style="font-weight: 600; color: #18211B">Text</strong>
                   · 13 / 20
                 </span>
                 <span
@@ -1472,10 +1516,13 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Role</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     role="alert":
                   </code>
                   a failed sign-in is an error. It is announced without moving
@@ -1484,13 +1531,14 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Fields
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   Both fields get
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-invalid="true"
                   </code>
                   and a 2px error-border. The password is cleared, with the
@@ -1499,10 +1547,13 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">Icon</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Icon
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-hidden;
                   </code>
                   the words carry the meaning.
@@ -1521,7 +1572,7 @@
               Dividers
             </h2>
             <p
-              style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
               Separate groups that sit close together. Use space first; reach
               for a line when space alone doesn't read.
             </p>
@@ -1588,7 +1639,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Line</span>
+                  <strong style="font-weight: 600; color: #18211B">Line</strong>
                   · 1px line
                 </span>
                 <span
@@ -1600,7 +1651,7 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">"or"</span>
+                  <strong style="font-weight: 600; color: #18211B">"or"</strong>
                   · 13 / 20 ink-3, 12 from each line
                 </span>
                 <span
@@ -1612,7 +1663,9 @@
                 style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
                 <span
                   style="font-size: 13px; line-height: 20px; color: #2E3A33">
-                  <span style="font-weight: 600; color: #18211B">Footnote</span>
+                  <strong style="font-weight: 600; color: #18211B">
+                    Footnote
+                  </strong>
                   · 20 between rule and text; 13 / 20 ink-3
                 </span>
                 <span
@@ -1631,23 +1684,24 @@
               style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
                   Hairline
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   Decoration: a
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     span
                   </code>
                   or an
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     hr
                   </code>
                   with
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-hidden,
                   </code>
                   so it isn't read.
@@ -1655,11 +1709,14 @@
               </div>
               <div
                 style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-                <dt style="flex: none; width: 72px; font-weight: 600">"or"</dt>
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  "or"
+                </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   The word is read; the two lines are
                   <code
-                    style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px">
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
                     aria-hidden.
                   </code>
                 </dd>
@@ -1676,7 +1733,7 @@
             Key hints
           </h2>
           <p
-            style="margin: 0; font-size: 14px; line-height: 20px; color: #2E3A33">
+            style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
             Desktop only: phones have no keyboard to hint at. See the desktop
             board.
           </p>

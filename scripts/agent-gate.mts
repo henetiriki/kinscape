@@ -1,7 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-// Checks that run before a plan or build job spends a model run (see claude-spec-agent.yml):
+// Checks that run before a plan or build job spends a model run (see claude-run.yml):
+//   both:  stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
 //   build: stop if an issue the PR closes is blocked by an open issue
 // Usage: node scripts/agent-gate.mts plan|build <issue or PR number>, with GH_REPO set.
@@ -32,6 +33,43 @@ const openBlockers = (gh: Gh, repo: string, issue: number): number[] =>
   ])
     .filter(({ state }) => state === 'open')
     .map(({ number }) => number);
+
+// A queued run's event may describe a label or title that has since changed (a second run waited
+// for the first). Read the issue or PR as it is now; the reason it no longer qualifies, if so.
+const staleReason = (
+  gh: Gh,
+  kind: Kind,
+  thread: number
+): string | undefined => {
+  if (kind === 'plan') {
+    const { labels, state } = json<{
+      labels: { name: string }[];
+      state: string;
+    }>(gh, ['issue', 'view', String(thread), '--json', 'state,labels']);
+
+    if (state !== 'OPEN') {
+      return 'the issue is closed';
+    }
+
+    return labels.some(({ name }) => name === 'status: ready-for-agent')
+      ? undefined
+      : 'the issue no longer has `status: ready-for-agent`';
+  }
+
+  const { isDraft, state, title } = json<{
+    isDraft: boolean;
+    state: string;
+    title: string;
+  }>(gh, ['pr', 'view', String(thread), '--json', 'state,isDraft,title']);
+
+  if (state !== 'OPEN') {
+    return 'the PR is not open';
+  }
+
+  return isDraft && title.endsWith('(plan)')
+    ? undefined
+    : 'the PR is no longer a draft plan PR';
+};
 
 const planReasons = (gh: Gh, repo: string, issue: number): string[] => {
   const prs = json<({ number: number } & Closing)[]>(gh, [
@@ -143,6 +181,16 @@ export const run = (
   }
 
   const thread = Number(raw);
+  const stale = staleReason(gh, kind, thread);
+
+  // Not an error: nothing to tell anyone, so no comment and no label change.
+  if (stale) {
+    write('go=false');
+    console.log(`Stopped quietly: ${stale}.`);
+
+    return 0;
+  }
+
   const reasons =
     kind === 'plan'
       ? planReasons(gh, repo, thread)

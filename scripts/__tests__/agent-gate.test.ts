@@ -9,19 +9,37 @@ type World = {
   blockers?: Record<number, { number: number; state: string }[]>;
   // PR number -> the issues it closes
   closes?: Record<number, number[]>;
+  // The issue or PR as it is now; a plan-ready open issue and an open draft plan PR by default.
+  issue?: { labels?: string[]; state?: string };
   openPrs?: { closingIssuesReferences: { number: number }[]; number: number }[];
+  pr?: { isDraft?: boolean; state?: string; title?: string };
 };
 
 describe('run', () => {
   let gh: ReturnType<typeof vi.fn<Gh>>;
   let write: ReturnType<typeof vi.fn<(line: string) => void>>;
 
-  const fakeGh = ({ blockers = {}, closes = {}, openPrs = [] }: World) => {
+  const fakeGh = ({
+    blockers = {},
+    closes = {},
+    issue = {},
+    openPrs = [],
+    pr = {},
+  }: World) => {
     gh = vi.fn<Gh>(args => {
       if (args[0] === 'api') {
-        const issue = Number(/issues\/(\d+)\//.exec(args[1])?.[1]);
+        const number = Number(/issues\/(\d+)\//.exec(args[1])?.[1]);
 
-        return JSON.stringify(blockers[issue] ?? []);
+        return JSON.stringify(blockers[number] ?? []);
+      }
+
+      if (args[0] === 'issue' && args[1] === 'view') {
+        return JSON.stringify({
+          labels: (issue.labels ?? ['status: ready-for-agent']).map(name => ({
+            name,
+          })),
+          state: issue.state ?? 'OPEN',
+        });
       }
 
       if (args[0] === 'pr' && args[1] === 'list') {
@@ -29,25 +47,31 @@ describe('run', () => {
       }
 
       if (args[0] === 'pr' && args[1] === 'view') {
-        return JSON.stringify({
-          closingIssuesReferences: (closes[Number(args[2])] ?? []).map(
-            number => ({ number })
-          ),
-        });
+        return args.includes('state,isDraft,title')
+          ? JSON.stringify({
+              isDraft: pr.isDraft ?? true,
+              state: pr.state ?? 'OPEN',
+              title: pr.title ?? 'DM.1: A plan (plan)',
+            })
+          : JSON.stringify({
+              closingIssuesReferences: (closes[Number(args[2])] ?? []).map(
+                number => ({ number })
+              ),
+            });
       }
 
       return '';
     });
   };
 
-  const posted = () =>
-    gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] !== 'edit');
+  const posted = () => gh.mock.calls.filter(([args]) => args[1] === 'comment');
   const edited = () =>
     gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] === 'edit');
 
   beforeEach(() => {
     write = vi.fn();
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
@@ -72,6 +96,74 @@ describe('run', () => {
       );
       expect(gh).not.toHaveBeenCalled();
       expect(write).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('a stale event', () => {
+    const quiet = (args: string[], world: World, reason: string) => {
+      fakeGh({
+        ...world,
+        blockers: { 5: [{ number: 2, state: 'open' }] },
+        openPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 41 }],
+      });
+
+      expect(run(args, ENV, gh, write)).toBe(0);
+      expect(write).toHaveBeenCalledWith('go=false');
+      expect(console.log).toHaveBeenCalledWith(
+        expect.stringContaining(`Stopped quietly: ${reason}`)
+      );
+      // Nothing to tell anyone, and no reason to look further.
+      expect(posted()).toHaveLength(0);
+      expect(edited()).toHaveLength(0);
+      expect(gh.mock.calls.map(([call]) => call[0])).not.toContain('api');
+    };
+
+    it('stops a plan quietly when the issue is closed', () => {
+      quiet(
+        ['plan', '5'],
+        { issue: { state: 'CLOSED' } },
+        'the issue is closed'
+      );
+    });
+
+    it('stops a plan quietly when the label is gone', () => {
+      quiet(
+        ['plan', '5'],
+        { issue: { labels: ['type: spec', 'status: blocked'] } },
+        'the issue no longer has `status: ready-for-agent`'
+      );
+    });
+
+    it('stops a build quietly when the PR is not open', () => {
+      quiet(['build', '50'], { pr: { state: 'MERGED' } }, 'the PR is not open');
+    });
+
+    it.each([
+      ['no longer a draft', { isDraft: false }],
+      ['no longer a plan title', { title: 'DM.1: A plan' }],
+    ])('stops a build quietly when the PR is %s', (_label, pr) => {
+      quiet(['build', '50'], { pr }, 'the PR is no longer a draft plan PR');
+    });
+
+    it('reads the issue and the PR as they are now', () => {
+      fakeGh({});
+      run(['plan', '5'], ENV, gh, write);
+      run(['build', '50'], ENV, gh, write);
+
+      expect(gh).toHaveBeenCalledWith([
+        'issue',
+        'view',
+        '5',
+        '--json',
+        'state,labels',
+      ]);
+      expect(gh).toHaveBeenCalledWith([
+        'pr',
+        'view',
+        '50',
+        '--json',
+        'state,isDraft,title',
+      ]);
     });
   });
 

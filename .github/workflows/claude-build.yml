@@ -28,6 +28,14 @@ permissions:
   issues: write
   actions: read
 
+# A second review on the same PR waits for the run in progress, gate included, so its gate then
+# reads the PR as that run left it. The reviewer and the review state are in the key so that a
+# comment or a bot's review can't displace a waiting approval. A run still queued behind a newer
+# one is dropped; they are the same.
+concurrency:
+  group: build-${{ github.event.pull_request.number }}-${{ github.event.review.user.login }}-${{ github.event.review.state }}
+  cancel-in-progress: false
+
 jobs:
   # Runs when the repo owner approves a review on a draft plan PR that Claude's bot opened. The bot
   # opens quick-chore PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md

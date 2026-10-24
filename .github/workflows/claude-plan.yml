@@ -36,6 +36,8 @@ jobs:
   # runner checks the plan can start, then Claude writes the plan and opens a draft PR and stops
   # to wait for the tech lead. The runner comes from main, like the agent files.
   plan:
+    # The Actions graph shows the runner's jobs under this name: "Plan / Gate", "Plan / Run Claude".
+    name: Plan
     if: |
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&

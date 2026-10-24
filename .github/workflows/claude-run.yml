@@ -1,0 +1,226 @@
+name: 'Claude: Run (shared)'
+
+# What both agent paths share: a gate that stops a blocked or duplicate run before any model
+# runs, then set up the repo, load the agent files, run Claude, keep its output, and leave a
+# comment if Claude left none. claude-plan.yml and claude-build.yml call this workflow; each
+# decides when to run and what to ask. It never runs on its own.
+#
+# The `github` context here is the caller's, so `github.event`, `github.run_id` and the rest are
+# those of the plan or build run.
+
+on:
+  workflow_call:
+    inputs:
+      thread:
+        description: 'The issue or PR number that gets a fallback comment if the agent leaves none.'
+        required: true
+        type: string
+      prompt:
+        description: 'What Claude is asked to do.'
+        required: true
+        type: string
+      model_args:
+        description: 'Claude CLI model flags, e.g. "--model sonnet".'
+        required: true
+        type: string
+      agent_files:
+        description: 'The files in .github/agent/ joined into the system prompt, space separated, in order.'
+        required: true
+        type: string
+      ref:
+        description: 'The branch to check out. Empty checks out the default branch.'
+        default: ''
+        type: string
+      playwright:
+        description: 'Install the test browser, for a run that builds and runs e2e.'
+        default: false
+        type: boolean
+      plan:
+        description: 'True on a plan run, where the thread is a Spec that is handed back as blocked if the agent goes quiet.'
+        default: false
+        type: boolean
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+      KINSCAPE_BOT_PAT:
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  # Checks that cost no model run (scripts/agent-gate.mts): a plan stops if an open PR already
+  # closes the issue or an issue it is "blocked by" is open; a build stops if the Spec its PR
+  # closes is blocked. On a stop it comments why, and `run` is skipped.
+  gate:
+    # The Actions graph shows this as "<caller job> / Gate".
+    name: Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      go: ${{ steps.gate.outputs.go }}
+    steps:
+      # The script comes from main, like the agent files. It uses only Node's own modules, so no `npm ci`.
+      - name: Check out the gate script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Check the run can start
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          KIND: ${{ inputs.plan && 'plan' || 'build' }}
+          NUMBER: ${{ inputs.thread }}
+          # The caller's run (the `github` context here is the caller's), linked in the stop comment.
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node scripts/agent-gate.mts "$KIND" "$NUMBER"
+
+  run:
+    # The Actions graph shows this as "<caller job> / Run Claude".
+    name: Run Claude
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
+    # One run per thread at a time, shared with claude.yml, so a revision and a build never overlap.
+    concurrency: thread-${{ inputs.thread }}
+    # A stuck agent stops here; the longest build so far took 17 minutes.
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    env:
+      THREAD: ${{ inputs.thread }}
+      AGENT_FILES: ${{ inputs.agent_files }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 1
+          # Otherwise git pushes with GITHUB_TOKEN, not the PAT, and the runs it triggers wait for approval.
+          persist-credentials: false
+
+      # Install the project's tools so Claude can run lint and tests.
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - name: Install dependencies
+        run: npm ci
+      # Install the test browser, but only on a build, when Claude runs the end-to-end tests.
+      # Plan runs don't build. The cache keeps the browser between runs.
+      # The runner already has Chromium's system packages, so only the browser is installed.
+      - name: Read Playwright version
+        id: playwright
+        if: inputs.playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browser
+        if: inputs.playwright
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+          path: ~/.cache/ms-playwright
+      # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
+      # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
+      - name: Install Playwright
+        if: inputs.playwright
+        continue-on-error: true
+        run: timeout 210 npm run e2e:install
+      # Note the start time, so the last step can tell whether Claude commented during this run.
+      - name: Note start time
+        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
+
+      # The agent files come from main, not the checked-out branch: a plan branch cut before a change
+      # still gets it, and a branch can't widen its own tools. claude.yml loads the same files.
+      - name: Load agent files
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/agent"
+          # Download settings.json and each file in AGENT_FILES as main has them (the raw file, not
+          # JSON). $AGENT_FILES is unquoted so it splits into one name per file.
+          for f in settings.json $AGENT_FILES; do
+            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
+          done
+          # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
+          # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.
+          : > "$RUNNER_TEMP/agent/system.md"
+          for f in $AGENT_FILES; do
+            { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
+          done
+
+      # Hand the job to Claude: the caller's prompt and model flags say what to do.
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@db77d4d3c98f3f6380e7cd45ffba2342a3dbde3c # v1.0.254
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
+          bot_name: henetiriki-bot
+          bot_id: '344434370'
+          prompt: ${{ inputs.prompt }}
+          # The repo is private; turn off once runs are reliable.
+          show_full_output: true
+          # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
+          settings: ${{ runner.temp }}/agent/settings.json
+          claude_args: '${{ inputs.model_args }} --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+
+      # The Actions log can stop at an image read and lose the final result; the full output survives here.
+      - name: Upload Claude's output
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: claude-execution-output
+          path: /home/runner/work/_temp/claude-execution-output.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+      # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
+      # step failed. If Claude left no comment, post one pointing at the run, or at the PR it
+      # opened. Only a run with neither hands the Spec back as blocked.
+      - name: Comment if Claude left none
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          OUTCOME: ${{ steps.claude.outcome }}
+          PLAN: ${{ inputs.plan }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # Count the bot's comments on this thread since the run started.
+          commented=$(gh issue view "$THREAD" --json comments \
+            --jq "[.comments[] | select(.author.login == \"henetiriki-bot\" and .createdAt >= \"$STARTED\")] | length")
+          # None means Claude went quiet. On a plan run (a Spec was labelled) it may still have
+          # opened the plan PR: find a bot PR from this run that closes the Spec.
+          if [ "$commented" = 0 ]; then
+            pr=""
+            if [ "$PLAN" = true ]; then
+              pr=$(gh pr list --state all --author henetiriki-bot --json number,createdAt,closingIssuesReferences \
+                --jq "[.[] | select(.createdAt >= \"$STARTED\" and any(.closingIssuesReferences[]; .number == $THREAD))][0].number // empty")
+            fi
+            if [ -n "$pr" ]; then
+              gh issue comment "$THREAD" --body "The agent opened #$pr but left no comment here. See the [run]($RUN_URL)."
+            else
+              gh issue comment "$THREAD" --body "The agent finished without commenting (step outcome: $OUTCOME). Check the [run]($RUN_URL) and the branch before re-triggering."
+              # If this was a plan run, the thread is the Spec itself:
+              # swap its "ready-for-agent" label for "blocked" to hand it back to a person.
+              if [ "$PLAN" = true ]; then
+                gh issue edit "$THREAD" --remove-label "status: ready-for-agent" --add-label "status: blocked"
+              fi
+            fi
+          fi

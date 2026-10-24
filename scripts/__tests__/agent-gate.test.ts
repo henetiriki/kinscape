@@ -167,6 +167,32 @@ describe('run', () => {
     });
   });
 
+  describe('the run link', () => {
+    const blocked: World = {
+      blockers: { 5: [{ number: 2, state: 'open' }] },
+    };
+    const RUN = 'https://github.com/owner/repo/actions/runs/123';
+
+    it('ends the stop comment with a link to the run', () => {
+      fakeGh(blocked);
+      run(['plan', '5'], { ...ENV, RUN_URL: RUN }, gh, write);
+
+      expect((posted()[0][1] as string).endsWith(`\n\n[Run](${RUN})`)).toBe(
+        true
+      );
+    });
+
+    it.each([undefined, '', 'not a url', 'http://example.com/run', `${RUN} x`])(
+      'leaves the link out for RUN_URL %j',
+      runUrl => {
+        fakeGh(blocked);
+        run(['plan', '5'], { ...ENV, RUN_URL: runUrl }, gh, write);
+
+        expect(posted()[0][1]).not.toContain('[Run]');
+      }
+    );
+  });
+
   describe('build', () => {
     it('goes ahead when the Spec it closes has no open blocker', () => {
       fakeGh({

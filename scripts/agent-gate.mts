@@ -5,6 +5,7 @@ import { appendFileSync } from 'node:fs';
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
 //   build: stop if an issue the PR closes is blocked by an open issue
 // Usage: node scripts/agent-gate.mts plan|build <issue or PR number>, with GH_REPO set.
+// An https RUN_URL, if set, is linked at the end of a stop comment.
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT. On a stop it comments why, and on a plan
 // it hands the Spec back as `status: blocked`.
 
@@ -16,6 +17,7 @@ type Kind = 'build' | 'plan';
 
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
+const RUN_URL = /^https:\/\/\S+$/;
 
 const json = <T,>(gh: Gh, args: string[]): T => JSON.parse(gh(args));
 
@@ -77,7 +79,13 @@ const buildReasons = (gh: Gh, repo: string, pr: number): string[] => {
     : [];
 };
 
-const stop = (gh: Gh, kind: Kind, thread: number, reasons: string[]): void => {
+const stop = (
+  gh: Gh,
+  kind: Kind,
+  thread: number,
+  reasons: string[],
+  footer: string[]
+): void => {
   const lines =
     kind === 'plan'
       ? [
@@ -97,7 +105,7 @@ const stop = (gh: Gh, kind: Kind, thread: number, reasons: string[]): void => {
 
   gh(
     ['issue', 'comment', String(thread), '--body-file', '-'],
-    lines.join('\n')
+    [...lines, ...footer].join('\n')
   );
 
   if (kind === 'plan') {
@@ -143,7 +151,16 @@ export const run = (
   write(`go=${reasons.length === 0}`);
 
   if (reasons.length > 0) {
-    stop(gh, kind, thread, reasons);
+    // The run's own URL (from the workflow), when it looks like one, so the comment can point back.
+    const runUrl = env.RUN_URL ?? '';
+
+    stop(
+      gh,
+      kind,
+      thread,
+      reasons,
+      RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : []
+    );
   }
 
   return 0;

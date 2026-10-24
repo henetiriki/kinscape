@@ -1,6 +1,10 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 
-import { parseTranscript, type Transcript } from './agent-transcript.mts';
+import {
+  inlineCode,
+  parseTranscript,
+  type Transcript,
+} from './agent-transcript.mts';
 
 // Writes a Claude run's summary page from its transcript. GitHub lists no steps for a job in a
 // called workflow, so this is what the run page shows.
@@ -26,8 +30,6 @@ const fence = (text: string): string =>
   '`'.repeat(
     Math.max(3, ...[...text.matchAll(/`+/g)].map(([run]) => run.length + 1))
   );
-
-const code = (text: string): string => `\`${text.replaceAll('`', "'")}\``;
 
 export const render = (transcript: Transcript | undefined): string => {
   if (!transcript) {
@@ -60,7 +62,8 @@ export const render = (transcript: Transcript | undefined): string => {
     '',
     `**Permission denials:** ${transcript.denials.length === 0 ? 'none' : transcript.denials.length}`,
     ...transcript.denials.map(
-      ({ detail, tool }) => `- ${code(detail ? `${tool}: ${detail}` : tool)}`
+      ({ detail, tool }) =>
+        `- ${inlineCode(detail ? `${tool}: ${detail}` : tool)}`
     ),
     '',
     `**Tools used:** ${tools || 'none'}`,

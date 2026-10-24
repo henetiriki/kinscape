@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseTranscript } from '../agent-transcript.mts';
+import { inlineCode, parseTranscript } from '../agent-transcript.mts';
 
 const init = { model: 'claude-opus-5-5', subtype: 'init', type: 'system' };
 
@@ -27,6 +27,13 @@ const result = (extra: Record<string, unknown> = {}) => ({
 });
 
 const parse = (events: unknown) => parseTranscript(JSON.stringify(events));
+
+describe('inlineCode', () => {
+  it('wraps text in backticks, turning any inside into quotes', () => {
+    expect(inlineCode('git log')).toBe('`git log`');
+    expect(inlineCode('echo `id`')).toBe("`echo 'id'`");
+  });
+});
 
 describe('parseTranscript', () => {
   it.each([['not json'], [''], ['{"type":"result"}'], ['null']])(

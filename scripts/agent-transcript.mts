@@ -41,6 +41,10 @@ const detailOf = (input: Record<string, unknown> | undefined): string => {
   return String(value).replace(/\s+/g, ' ').trim().slice(0, 200);
 };
 
+// Text as inline code in Markdown; a backtick inside it would end the span, so it becomes a quote.
+export const inlineCode = (text: string): string =>
+  `\`${text.replaceAll('`', "'")}\``;
+
 export const parseTranscript = (text: string): Transcript | undefined => {
   let events: unknown;
 

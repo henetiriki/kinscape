@@ -1,0 +1,68 @@
+name: 'Claude: Plan'
+
+# The title shown for each run in the Actions tab:
+#   "Plan: <title>"    - a Spec, Bug or Chore was marked ready for the agent, so Claude drafts a plan
+#   "Skipped: <title>" - anything else, so nothing runs
+# This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    github.event.issue.state == 'open' &&
+    github.event.label.name == 'status: ready-for-agent' &&
+    (contains(github.event.issue.labels.*.name, 'type: spec') ||
+      contains(github.event.issue.labels.*.name, 'type: bug') ||
+      contains(github.event.issue.labels.*.name, 'type: chore')) &&
+    github.actor != 'henetiriki-bot' &&
+    format('Plan: {0}', github.event.issue.title) ||
+    format('Skipped: {0}', github.event.issue.title)
+  }}
+
+# A ready-for-agent Spec, Bug or Chore gets a draft plan PR (plans/README.md); the tech lead's
+# approving review on that PR starts claude-build.yml. `@claude` comments on the plan PR are
+# handled by claude.yml.
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  # Runs when someone adds the "status: ready-for-agent" label to an open Spec, Bug or Chore (not
+  # to a closed one or any other kind of issue) and that person isn't Claude's own bot. The shared
+  # runner checks the plan can start, then Claude writes the plan and opens a draft PR and stops
+  # to wait for the tech lead. The runner comes from main, like the agent files.
+  plan:
+    if: |
+      github.event.issue.state == 'open' &&
+      github.event.label.name == 'status: ready-for-agent' &&
+      (contains(github.event.issue.labels.*.name, 'type: spec') ||
+        contains(github.event.issue.labels.*.name, 'type: bug') ||
+        contains(github.event.issue.labels.*.name, 'type: chore')) &&
+      github.actor != 'henetiriki-bot'
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@main
+    with:
+      thread: ${{ github.event.issue.number }}
+      plan: true
+      model_args: --model opus --effort high
+      # The files in .github/agent/ that become the system prompt. The order matters:
+      # rules.md first, build.md last (see the comment at the top of each file).
+      agent_files: rules.md
+      prompt: >-
+        Pick up Spec, Bug or Chore #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        A Spec's id is on the Spec (`M1.4`) and its branch is spec/<id>-<slug>.
+        A Bug's id is B${{ github.event.issue.number }}, its branch is bug/B${{ github.event.issue.number }}-<slug>
+        and its plan is plans/bugs/B${{ github.event.issue.number }}-<slug>.md.
+        A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
+        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back as plans/README.md rule 4 says.
+        Write each open choice as a decision in the format in docs/how-we-work.md.
+        Push before you stop, then comment on the Spec with a link to the plan PR.
+        If you're blocked, comment on the Spec saying why,
+        then swap its status label for `status: blocked`.
+        Run `npm run words` once after drafting, not after every edit.
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}

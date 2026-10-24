@@ -7,7 +7,7 @@ import {
 } from './agent-transcript.mts';
 
 // Writes a Claude run's summary page from its transcript. GitHub lists no steps for a job in a
-// called workflow, so this is what the run page shows.
+// called workflow, and claude.yml's log ends where Claude starts, so this is what the run page shows.
 // Usage: node scripts/run-summary.mts <claude-execution-output.json>
 // The Markdown goes to $GITHUB_STEP_SUMMARY, or to the terminal when that is not set.
 

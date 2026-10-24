@@ -146,38 +146,3 @@ jobs:
           path: /home/runner/work/_temp/claude-execution-output.json
           if-no-files-found: ignore
           retention-days: 14
-
-  # The log above shows only a count of permission denials, so this writes the run page from the
-  # transcript, as the `summary` job in claude-run.yml does. It is a separate job with no secrets
-  # that runs the script from main: this job's checkout can be a PR branch, and it holds the PAT.
-  summary:
-    needs: claude
-    # The `claude` job is skipped when nobody asked for Claude; then there is nothing to summarise.
-    if: always() && needs.claude.result != 'skipped'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - name: Check out the summary script
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: main
-          sparse-checkout: |
-            scripts
-            .nvmrc
-          persist-credentials: false
-      - name: Set up Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
-      # The artifact is missing if the run stopped before Claude started; the script says so.
-      - name: Download Claude's output
-        continue-on-error: true
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
-        with:
-          name: claude-execution-output
-          path: ${{ runner.temp }}/claude-output
-      - name: Write the summary
-        continue-on-error: true
-        run: node scripts/run-summary.mts "$RUNNER_TEMP/claude-output/claude-execution-output.json"

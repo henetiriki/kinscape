@@ -41,15 +41,15 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 
 ## Files that change
 
-| File                                          | New / changed | What                                                       |
-| --------------------------------------------- | ------------- | ---------------------------------------------------------- |
-| `app/design-kit/kit.module.css`               | Changed       | Phone title, lede and notes                                |
-| `app/design-kit/type/page.{tsx,module.css}`   | Changed       | Above; phone-only "(28 on phone)"                          |
-| `app/design-kit/states/page.{tsx,module.css}` | Changed       | Phone rows and labels; short "Focus" label                 |
-| `app/components/TextField.module.css`         | Changed       | D1 A only                                                  |
-| `app/design-kit/*/__tests__/page.test.tsx`    | Changed       | Phone label and H1 note                                    |
-| `design/source/style-1-type{,-phone}.html`    | Changed       | Polity 12.5 → 12; JPGs from the **Design agent shots** run |
-| `design/screens.json`                         | Changed       | Four entries `blocking`                                    |
+| File                                          | New / changed | What                                              |
+| --------------------------------------------- | ------------- | ------------------------------------------------- |
+| `app/design-kit/kit.module.css`               | Changed       | Phone title, lede and notes                       |
+| `app/design-kit/type/page.{tsx,module.css}`   | Changed       | Above; phone-only "(28 on phone)"                 |
+| `app/design-kit/states/page.{tsx,module.css}` | Changed       | Phone rows and labels; short "Focus" label        |
+| `app/components/TextField.module.css`         | Changed       | D1 A only                                         |
+| `app/design-kit/*/__tests__/page.test.tsx`    | Changed       | Phone label and H1 note                           |
+| `design/source/style-1-type{,-phone}.html`    | Unchanged     | Design agent owns `design/source`; see Deviations |
+| `design/screens.json`                         | Changed       | Three `blocking`; `style-1-type-phone` `report`   |
 
 ## Order of work
 
@@ -75,6 +75,7 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 ## Deviations
 
 - `Button` now has 15px text and 18px side padding to match the snapshots (tech lead's call). It restyles every button; States scores 0.26% (desktop) and 0.39% (phone).
+- `design/source` and the Type JPGs are reverted to the canvas export. `style-1-type` is 0.30% (`blocking`); `style-1-type-phone` is 1.96%, so it stays `report` until the Design agent applies the polity label change (12.5 → 12) on the canvas and re-exports.
 
 ## Out of scope
 

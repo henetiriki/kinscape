@@ -21,7 +21,8 @@ test('no request goes to a Google domain, and text renders in Public Sans', asyn
     await page.evaluate(async () => {
       await document.fonts.ready;
 
-      return document.fonts.check("15px 'Public Sans'");
+      // next/font names the family after its const.
+      return document.fonts.check("15px 'publicSans'");
     })
   ).toBe(true);
   await expect(page.locator('body')).toHaveCSS(

@@ -74,7 +74,7 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 
 ## Deviations
 
-- Only the two Type entries are `blocking`. States stay `report` at 0.52% (desktop) and 0.63% (phone): the rest is `Button` (snapshots 15px text and 18px side padding, app 14px and 16px). Changing `Button` alone brings both under 0.5% (0.26%, 0.39%) but restyles every button in the app; the tech lead decides.
+- `Button` now has 15px text and 18px side padding to match the snapshots (tech lead's call). It restyles every button; States scores 0.26% (desktop) and 0.39% (phone).
 
 ## Out of scope
 

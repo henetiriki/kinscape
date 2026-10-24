@@ -6,13 +6,13 @@
   cursor: pointer;
   display: inline-flex;
   font-family: var(--type-button-s-font);
-  font-size: var(--type-button-s-size);
+  font-size: var(--type-body-size);
   font-weight: var(--type-button-s-weight);
   gap: var(--space-8);
   height: var(--size-control);
   justify-content: center;
   line-height: var(--type-button-s-line);
-  padding: 0 var(--space-16);
+  padding: 0 18px;
   position: relative;
   transition:
     background var(--motion-press),

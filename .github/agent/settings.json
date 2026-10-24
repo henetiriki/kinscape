@@ -1,0 +1,43 @@
+{
+  "env": {
+    "BASH_DEFAULT_TIMEOUT_MS": "600000"
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Edit",
+      "Write",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm install:*)",
+      "Bash(npm i:*)",
+      "Bash(npm view:*)",
+      "Bash(git:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)",
+      "Bash(sed:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": [
+      "Agent",
+      "Monitor",
+      "Bash(run_in_background:true)",
+      "Bash(sleep *)",
+      "Bash(pgrep *)",
+      "Bash(cd *)",
+      "Bash(gh pr * --body *)",
+      "Bash(gh pr * --body=*)",
+      "Bash(gh pr * -b *)",
+      "Bash(gh issue * --body *)",
+      "Bash(gh issue * --body=*)",
+      "Bash(gh issue * -b *)"
+    ]
+  }
+}

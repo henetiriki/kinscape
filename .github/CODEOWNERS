@@ -5,3 +5,4 @@ scripts/setup-github.sh @henetiriki
 scripts/github/** @henetiriki
 .github/workflows/claude*.yml @henetiriki
 .github/CODEOWNERS @henetiriki
+.github/agent/** @henetiriki

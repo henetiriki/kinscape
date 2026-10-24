@@ -29,6 +29,7 @@ describe('budgetFor', () => {
     ['plans/TEMPLATE.md', 600],
     ['plans/bugs/B1-x.md', 600],
     ['plans/chores/C1-x.md', 300],
+    ['.github/agent/rules.md', 300],
     ['.claude/skills/refine/SKILL.md', 650],
     ['.claude/skills/refine/nested/deep.md', 650],
   ])('%s has a budget of %i', (path, budget) => {
@@ -43,6 +44,8 @@ describe('budgetFor', () => {
     'plans/sub/file.md',
     'plans/bugs/sub/file.md',
     'plans/chores/sub/file.md',
+    '.github/agent/sub/file.md',
+    '.github/agent/settings.json',
   ])('%s has no budget', path => {
     expect(budgetFor(path)).toBeUndefined();
   });
@@ -118,11 +121,12 @@ describe('checkFiles and run', () => {
     write('plans/b.md', words(601));
     write('plans/bugs/B1-x.md', words(601));
     write('plans/chores/C1-x.md', words(301));
+    write('.github/agent/rules.md', words(301));
     write('.claude/skills/x/SKILL.md', words(651));
     write('.claude/skills/x/NOTICE.md', words(5000));
 
     expect(run(root, [], '')).toBe(1);
-    expect(console.error).toHaveBeenCalledTimes(5);
+    expect(console.error).toHaveBeenCalledTimes(6);
     expect(console.error).toHaveBeenCalledWith(
       'CLAUDE.md: 151 words, budget 150'
     );

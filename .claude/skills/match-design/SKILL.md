@@ -12,7 +12,7 @@ Show the built screen next to its design and close the gap. Values come from the
 
 1. **Pick the screen.** The argument must be a `name` in `design/screens.json`. With no argument, list the names and ask. A snapshot in `design/source/` without a `screens.json` entry isn't checked yet: say so and stop. Its entry belongs to the Spec for that screen.
 2. **Stop any dev server on port 3000.** Playwright reuses it locally, and the Next.js badge then shows up as a difference.
-3. **Run** `DESIGN_SCREENS=<screen> npm run design:check`. It builds the app first, so the first run is slow.
+3. **Run** `npm run design:check -- -g "design: <screen>"`. It builds the app first, so the first run is slow.
 4. **Look** at `test-results/design/<screen>/side-by-side.png` with Read: built on the left, design in the middle, differences marked on the right. The map is masked, so differences inside it don't count. `built.png`, `design.png` and `diff.png` sit beside it for a closer look.
 5. **Read the result** in the terminal table: the share of unmasked pixels that differ, the threshold, and the screen's `mode`.
 

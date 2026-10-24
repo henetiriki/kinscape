@@ -13,6 +13,7 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 600, pattern: /^plans\/[^/]+\.md$/ },
   { limit: 600, pattern: /^plans\/bugs\/[^/]+\.md$/ },
   { limit: 300, pattern: /^plans\/chores\/[^/]+\.md$/ },
+  { limit: 300, pattern: /^\.github\/agent\/[^/]+\.md$/ },
   {
     limit: 650,
     pattern: /^\.claude\/skills\/(.+\/)?(?!NOTICE\.md$)[^/]+\.md$/,
@@ -76,6 +77,7 @@ export const run = (root: string, args: string[], stdin: string): number => {
           'docs/building.md',
           'docs/dependencies.md',
           ...listFiles(root, 'plans'),
+          ...listFiles(root, '.github/agent'),
           ...listFiles(root, '.claude/skills'),
         ];
   const errors = checkFiles(root, paths);

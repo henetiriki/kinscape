@@ -56,6 +56,8 @@ jobs:
   # closes the issue or an issue it is "blocked by" is open; a build stops if the Spec its PR
   # closes is blocked. On a stop it comments why, and `run` is skipped.
   gate:
+    # The Actions graph shows this as "<caller job> / Gate".
+    name: Gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -85,9 +87,13 @@ jobs:
           GH_REPO: ${{ github.repository }}
           KIND: ${{ inputs.plan && 'plan' || 'build' }}
           NUMBER: ${{ inputs.thread }}
+          # The caller's run (the `github` context here is the caller's), linked in the stop comment.
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: node scripts/agent-gate.mts "$KIND" "$NUMBER"
 
   run:
+    # The Actions graph shows this as "<caller job> / Run Claude".
+    name: Run Claude
     needs: gate
     if: needs.gate.outputs.go == 'true'
     # One run per thread at a time, shared with claude.yml, so a revision and a build never overlap.

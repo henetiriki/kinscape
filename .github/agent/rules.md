@@ -1,3 +1,5 @@
+<!-- Joined first: every agent gets this file, then respond.md (claude.yml only), then build.md. Each workflow's AGENT_FILES sets the order. -->
+
 # CI agent rules
 
 The run ends when your turn ends. Never stop to wait.

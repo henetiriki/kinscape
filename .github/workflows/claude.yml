@@ -75,7 +75,8 @@ jobs:
     timeout-minutes: 45
     runs-on: ubuntu-latest
     env:
-      # The files in .github/agent/ that become the system prompt, in order.
+      # The files in .github/agent/ that become the system prompt. The order matters: respond.md
+      # points to build.md "below", so build.md comes after it.
       AGENT_FILES: rules.md respond.md build.md
     permissions:
       contents: write
@@ -118,9 +119,13 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           mkdir -p "$RUNNER_TEMP/agent"
+          # Download settings.json and each file in AGENT_FILES as main has them (the raw file, not
+          # JSON). $AGENT_FILES is unquoted so it splits into one name per file.
           for f in settings.json $AGENT_FILES; do
             gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
           done
+          # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
+          # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.
           : > "$RUNNER_TEMP/agent/system.md"
           for f in $AGENT_FILES; do
             { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"

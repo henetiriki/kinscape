@@ -11,6 +11,12 @@
   }
 }
 
+/* The "Boards" button: 15px text, a closer icon edge */
+.menu button {
+  font-size: var(--type-control-size);
+  padding: 0 var(--space-16) 0 var(--space-12);
+}
+
 .buttonContent {
   align-items: center;
   display: inline-flex;

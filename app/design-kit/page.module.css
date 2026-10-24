@@ -27,15 +27,35 @@
   gap: var(--space-4);
 }
 
+.board > a {
+  line-height: var(--type-control-line);
+}
+
 /* The style guide number, quiet like each board's eyebrow */
+
 .board > :first-child {
   color: var(--ink-3);
 }
 
 /* A phone: one column */
 @media (max-width: 639.98px), (max-height: 499.98px) {
+  .index {
+    gap: var(--space-24);
+    padding: var(--space-32) var(--space-16) var(--space-48);
+  }
+
   .boards {
     display: flex;
     flex-direction: column;
+  }
+
+  .board {
+    gap: 0;
+  }
+
+  .board > a {
+    align-items: center;
+    display: inline-flex;
+    min-height: var(--size-touch);
   }
 }

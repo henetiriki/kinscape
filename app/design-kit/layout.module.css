@@ -1,7 +1,7 @@
 /* The banner above every design kit page: the kit's name and the board nav */
 
 .banner {
-  align-items: center;
+  align-items: baseline;
   border-bottom: 1px solid var(--line);
   box-sizing: border-box;
   display: flex;
@@ -17,6 +17,10 @@
   border-radius: var(--radius-link);
   color: var(--ink);
   text-decoration: none;
+}
+
+.nav a {
+  line-height: var(--type-control-line);
 }
 
 .nav ul {
@@ -38,9 +42,16 @@
 /* A phone (Intent 104, D1): the title and the "Boards" button replace the links. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .banner {
+    align-items: center;
     flex-wrap: nowrap;
     justify-content: space-between;
     padding: var(--space-8) var(--space-16);
+  }
+
+  .title {
+    align-items: center;
+    display: inline-flex;
+    min-height: var(--size-touch);
   }
 
   .nav {

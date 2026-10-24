@@ -1,0 +1,61 @@
+name: 'Claude: Build'
+
+# The title shown for each run in the Actions tab:
+#   "Build: <title>"   - the tech lead approved a draft plan PR, so Claude builds it
+#   "Skipped: <title>" - anything else, so nothing runs
+# This repeats the `if:` of the `build` job (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    github.event.review.state == 'approved' &&
+    github.event.review.author_association == 'OWNER' &&
+    github.event.pull_request.draft &&
+    github.event.pull_request.user.login == 'henetiriki-bot' &&
+    endsWith(github.event.pull_request.title, '(plan)') &&
+    format('Build: {0}', github.event.pull_request.title) ||
+    format('Skipped: {0}', github.event.pull_request.title)
+  }}
+
+# The tech lead's approving review on a draft plan PR starts the build (plans/README.md). Plans are
+# drafted by claude-plan.yml; `@claude` comments on the plan PR are handled by claude.yml.
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  # Runs when the repo owner approves a review on a draft plan PR that Claude's bot opened. The bot
+  # opens quick-chore PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md
+  # rule 3; the build drops the suffix). The shared runner checks the Spec isn't blocked, then
+  # Claude builds what the plan describes and comments on the PR with the result. The runner comes
+  # from main, like the agent files.
+  build:
+    # The Actions graph shows the runner's jobs under this name: "Build / Gate", "Build / Run Claude".
+    name: Build
+    if: |
+      github.event.review.state == 'approved' &&
+      github.event.review.author_association == 'OWNER' &&
+      github.event.pull_request.draft &&
+      github.event.pull_request.user.login == 'henetiriki-bot' &&
+      endsWith(github.event.pull_request.title, '(plan)')
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@main
+    with:
+      thread: ${{ github.event.pull_request.number }}
+      # Check out the plan PR's branch.
+      ref: ${{ github.event.pull_request.head.ref }}
+      playwright: true
+      model_args: --model sonnet
+      # The files in .github/agent/ that become the system prompt. The order matters:
+      # rules.md first, build.md last (see the comment at the top of each file).
+      agent_files: rules.md build.md
+      prompt: >-
+        @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}.
+        Build it: follow "Build a plan PR" in your instructions. The approver is ${{ github.event.review.user.login }}.
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}

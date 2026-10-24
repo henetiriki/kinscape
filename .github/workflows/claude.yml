@@ -6,7 +6,7 @@ name: 'Claude: Code'
 # The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude
 # will answer, and "Skipped: <title>" when it won't. Claude answers when all of these hold:
 #   - the author is not Claude's own bot account (so Claude never answers itself)
-#   - it is not the tech lead approving a draft plan PR (the spec agent handles those)
+#   - it is not the tech lead approving a draft plan PR (claude-build.yml handles those)
 #   - the text mentions "@claude"
 # This repeats the `if:` of the `claude` job below (run-name cannot see job results): change them together.
 run-name: >-
@@ -50,7 +50,7 @@ jobs:
         github.event_name == 'pull_request_review' && github.event.review.body ||
         github.event.comment.body,
         '@claude')
-    # Shared with the spec agent's jobs, so a revision and a build never overlap.
+    # Shared with the plan and build runs (claude-run.yml), so a revision and a build never overlap.
     concurrency: thread-${{ github.event.pull_request.number || github.event.issue.number }}
     timeout-minutes: 45
     runs-on: ubuntu-latest
@@ -92,7 +92,7 @@ jobs:
           path: ~/.cache/ms-playwright
 
       # The agent files come from main, not the checked-out branch: a plan branch cut before a change
-      # still gets it, and a branch can't widen its own tools. claude-spec-agent.yml loads the same files.
+      # still gets it, and a branch can't widen its own tools. claude-run.yml (the plan and build runs) loads the same files.
       - name: Load agent files
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}

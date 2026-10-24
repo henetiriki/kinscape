@@ -21,12 +21,12 @@ export const metadata: Metadata = { title: boardTitle('states') };
 // A column of the board: the state a control shows, or Disabled.
 type Column = 'default' | 'disabled' | ControlState;
 
-const COLUMNS: { column: Column; title: string }[] = [
-  { column: 'default', title: 'Default' },
-  { column: 'hover', title: 'Hover' },
-  { column: 'focus', title: 'Focus (keyboard)' },
-  { column: 'active', title: 'Pressed' },
-  { column: 'disabled', title: 'Disabled' },
+const COLUMNS: { column: Column; label: string; title: string }[] = [
+  { column: 'default', label: 'Default', title: 'Default' },
+  { column: 'hover', label: 'Hover', title: 'Hover' },
+  { column: 'focus', label: 'Focus', title: 'Focus (keyboard)' },
+  { column: 'active', label: 'Pressed', title: 'Pressed' },
+  { column: 'disabled', label: 'Disabled', title: 'Disabled' },
 ];
 
 const stateOf = (column: Column): ControlState | undefined =>
@@ -215,14 +215,14 @@ const StatesKit = () => (
             <span>{name}</span>
             <span className={styles.kitHint}>{hint}</span>
           </span>
-          {COLUMNS.map(({ column, title }) => (
+          {COLUMNS.map(({ column, label }) => (
             // Hover, Focus and Pressed are looks, not controls: inert keeps them out of the tab order and the accessibility tree.
             <span
               className={styles.kitCell}
               inert={stateOf(column) !== undefined}
               key={column}>
               <span aria-hidden='true' className={styles.kitStateLabel}>
-                {title}
+                {label}
               </span>
               {render?.(column)}
             </span>

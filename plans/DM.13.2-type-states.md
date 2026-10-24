@@ -72,6 +72,10 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 | Each ≤ 0.5%, other blocking pass | `npm run e2e` output; PR score table     |
 | Tests, e2e, validator, 100%      | Output in the PR                         |
 
+## Deviations
+
+- Only the two Type entries are `blocking`. States stay `report` at 0.52% (desktop) and 0.63% (phone): the rest is `Button` (snapshots 15px text and 18px side padding, app 14px and 16px). Changing `Button` alone brings both under 0.5% (0.26%, 0.39%) but restyles every button in the app; the tech lead decides.
+
 ## Out of scope
 
 The other boards' differences (DM.13.3 to DM.13.7); tokens for literal sizes such as 13.5 and 14.5.

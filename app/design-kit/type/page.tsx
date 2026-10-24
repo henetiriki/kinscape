@@ -191,7 +191,7 @@ const NOTE = `${LABELS.map(labelNote).join(' · ')}. All with a ${map['label-hal
 
 const TypeKit = () => (
   <main className={styles.kit}>
-    <header className={kit.kitHeader}>
+    <header className={`${kit.kitHeader} ${styles.header}`}>
       <span className={kit.kitEyebrow}>Style guide · 01</span>
       <p className={kit.kitTitle}>Typography and hierarchy</p>
       <p className={kit.kitLead}>
@@ -215,6 +215,9 @@ const TypeKit = () => (
           </span>
           <span className={styles.spec} role='cell'>
             {row.spec}
+            {row.variant === 'h1' && (
+              <span className={styles.phoneOnly}> (28 on phone)</span>
+            )}
           </span>
           <span role='cell'>
             {/* Display is a div and the header title a paragraph, so the H1 sample is the only h1. */}
@@ -235,7 +238,7 @@ const TypeKit = () => (
       ))}
     </div>
 
-    <div className={kit.kitNotes}>
+    <div className={`${kit.kitNotes} ${styles.notes}`}>
       <section>
         <h2>Map labels</h2>
         <div className={styles.mapLabels} style={{ background: map.land }}>

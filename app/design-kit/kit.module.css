@@ -78,11 +78,27 @@
 
   .kitTitle {
     font-size: 28px;
+    letter-spacing: -0.015em;
     line-height: 32px;
+  }
+
+  .kitLead {
+    font-size: var(--type-body-size);
+    line-height: 22px;
   }
 
   .kitNotes {
     gap: var(--space-32);
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kitNotes h2 {
+    line-height: 28px;
+  }
+
+  .kitNotes ul {
+    font-size: var(--type-label-size);
+    gap: var(--space-8);
+    line-height: 20px;
   }
 }

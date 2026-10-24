@@ -24,7 +24,7 @@
     },
     {
       "height": 1851,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-1-type",
       "route": "/design-kit/type",
       "width": 1440
@@ -59,7 +59,7 @@
     },
     {
       "height": 2743,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-1-type-phone",
       "route": "/design-kit/type",
       "width": 390

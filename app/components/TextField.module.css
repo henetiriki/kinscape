@@ -69,10 +69,17 @@
   color: inherit;
   flex: 1;
   font-family: var(--type-body-l-font);
-  font-size: var(--type-body-l-size);
+  font-size: var(--type-body-size);
   min-width: 0;
   outline: 0;
   padding: 0;
+}
+
+/* 16px on phones, so the browser doesn't zoom in. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .input {
+    font-size: var(--type-body-l-size);
+  }
 }
 
 .input::placeholder {

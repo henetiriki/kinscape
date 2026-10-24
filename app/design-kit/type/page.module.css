@@ -10,6 +10,30 @@
   padding: var(--space-64) 72px;
 }
 
+.header {
+  max-width: 780px;
+}
+
+.kit .notes {
+  gap: var(--space-32);
+}
+
+.kit .notes section {
+  gap: 14px;
+}
+
+.row [data-variant='overline'] {
+  color: var(--ink-3);
+}
+
+.row [data-variant='mono'] {
+  color: var(--ink-2);
+}
+
+.phoneOnly {
+  display: none;
+}
+
 .scale {
   border-top: 2px solid var(--ink);
   display: flex;
@@ -112,7 +136,44 @@
     justify-content: space-between;
   }
 
+  .name > :first-child {
+    line-height: 20px;
+  }
+
   .hint {
+    line-height: 18px;
     text-align: right;
+  }
+
+  .spec {
+    font-variant-ligatures: none;
+    line-height: 16px;
+  }
+
+  .phoneOnly {
+    display: inline;
+  }
+
+  .kit .notes section {
+    gap: var(--space-12);
+  }
+
+  .mapLabels {
+    gap: var(--space-12);
+    padding: var(--space-20);
+  }
+
+  .polity {
+    gap: var(--space-4);
+  }
+
+  .chip {
+    border-radius: var(--radius-small);
+    padding: var(--space-4) var(--space-8);
+  }
+
+  .note {
+    font-size: 13px;
+    line-height: 20px;
   }
 }

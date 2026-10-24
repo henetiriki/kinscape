@@ -2,7 +2,7 @@
 
 - **Spec:** #230
 - **Requirement IDs:** NFR-03
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@
 - **B.** Also load the `latin-ext` files with a second `localFont` call that declares their `unicode-range`.
 - ~~**Other:** your own.~~
 
-**Answer: B** (Tech lead)
+**Answer: B** (@henetiriki)
 
 **D2 · How the latin-ext faces join the font stack** · Decides: Tech lead
 
@@ -24,7 +24,7 @@
 - **B.** A separate `-ext` family with its own variable, listed _before_ the latin one, with `adjustFontFallback: false` so it adds no fallback face. `fontStack` in `lib/design/tokens.mts` emits both variables; `tokens.css` is regenerated.
 - **Other:** your own.
 
-Recommended: A, because it's one family, as the snapshots have, and changes no token code. If Turbopack ignores a custom `font-family`, I'll stop and ask.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

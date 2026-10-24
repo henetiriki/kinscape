@@ -72,12 +72,15 @@ jobs:
         '@claude')
     # Shared with the spec agent's jobs, so a revision and a build never overlap.
     concurrency: thread-${{ github.event.pull_request.number || github.event.issue.number }}
+    timeout-minutes: 45
     runs-on: ubuntu-latest
+    env:
+      # The files in .github/agent/ that become the system prompt, in order.
+      AGENT_FILES: rules.md respond.md build.md
     permissions:
       contents: write
       pull-requests: write
       issues: write
-      id-token: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
       - name: Checkout repository
@@ -97,7 +100,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
-      # see the system prompt below). The cache keeps the download between runs.
+      # see .github/agent/respond.md). The cache keeps the download between runs.
       - name: Read Playwright version
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -106,6 +109,22 @@ jobs:
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
+
+      # The agent files come from main, not the checked-out branch: a plan branch cut before a change
+      # still gets it, and a branch can't widen its own tools. claude-spec-agent.yml loads the same files.
+      - name: Load agent files
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/agent"
+          for f in settings.json $AGENT_FILES; do
+            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
+          done
+          : > "$RUNNER_TEMP/agent/system.md"
+          for f in $AGENT_FILES; do
+            { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
+          done
 
       - name: Run Claude Code
         id: claude
@@ -119,15 +138,20 @@ jobs:
             actions: read
           # The repo is private; turn off once runs are reliable.
           show_full_output: true
-          # Planning is the hard thinking, so a draft PR (a plan PR) gets the stronger Opus model and
-          # everything else gets the faster Sonnet model. The allowed tools limit Claude to npm scripts,
-          # git, and GitHub PR and issue commands. A denied part denies the whole command, so the
-          # system prompt tells Claude to run each command alone and pass a PR body inline.
+          # Same tools, denials and Bash timeout as the spec agent (settings.json); the rules and the
+          # respond and build instructions are the system prompt. Planning is the hard thinking, so a
+          # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.
+          settings: ${{ runner.temp }}/agent/settings.json
           claude_args: >-
-            ${{ (github.event.issue.draft || github.event.pull_request.draft) && '--model opus --effort high' || '--model sonnet' }}
-            --allowed-tools "Bash(npm run:*),Bash(npm test:*),Bash(git:*),Bash(gh pr:*),Bash(gh issue:*)"
-            --disallowed-tools "Agent"
-            --append-system-prompt "Run each allowed command on its own: no pipes, &&, heredocs or temp files.
-            Pass a PR body inline: gh pr edit <n> --body '<text>' (single quotes, so backticks stay literal).
-            If npm run e2e or npm run design:check fails because Chromium is missing,
-            run npm run e2e:install, then retry."
+            ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
+            --append-system-prompt-file ${{ runner.temp }}/agent/system.md
+
+      # The Actions log can stop at an image read and lose the final result; the full output survives here.
+      - name: Upload Claude's output
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: claude-execution-output
+          path: /home/runner/work/_temp/claude-execution-output.json
+          if-no-files-found: ignore
+          retention-days: 14

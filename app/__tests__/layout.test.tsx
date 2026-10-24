@@ -5,25 +5,26 @@ import tokens from '../../design/tokens.json';
 import { fontVariable } from '../../lib/design/tokens.mts';
 import RootLayout, { metadata } from '../layout';
 
-// next/font fetches from Google at build time, so the unit tests stand in for it.
-const { calls, font } = vi.hoisted(() => {
-  const recorded: { variable: string; weight: string | string[] }[] = [];
+interface FontOptions {
+  declarations?: { prop: string; value: string }[];
+  src: { path: string; style: string; weight: string }[];
+  variable?: string;
+}
 
-  return {
-    calls: recorded,
-    font: (options: { variable: string; weight: string | string[] }) => {
-      recorded.push(options);
+// next/font/local reads the files at build time, so the unit tests stand in for it.
+const { calls } = vi.hoisted(() => ({ calls: [] as FontOptions[] }));
 
-      return { variable: `class-${options.variable}` };
-    },
-  };
-});
+vi.mock('next/font/local', () => ({
+  default: (options: FontOptions) => {
+    calls.push(options);
 
-vi.mock('next/font/google', () => ({
-  Bricolage_Grotesque: font,
-  JetBrains_Mono: font,
-  Public_Sans: font,
+    return { variable: `class-${options.variable}` };
+  },
 }));
+
+const withVariable = () => calls.filter(options => options.variable);
+const declaration = (options: FontOptions, prop: string) =>
+  options.declarations?.find(d => d.prop === prop)?.value;
 
 it('wraps the children in an English document', () => {
   const html = renderToStaticMarkup(
@@ -43,7 +44,7 @@ it('asks search engines not to index or follow', () => {
 
 // NFR-03: the fonts are served by KinScape, under the names tokens.css expects.
 it('loads each font token with the next/font variable its stack starts with', () => {
-  const variables = calls.map(options => options.variable);
+  const variables = withVariable().map(options => options.variable);
   const expected = Object.values(tokens.font).map(stack =>
     fontVariable(stack.split(',')[0].replaceAll("'", ''))
   );
@@ -51,20 +52,61 @@ it('loads each font token with the next/font variable its stack starts with', ()
   expect(variables.toSorted()).toEqual(expected.toSorted());
 });
 
-it('loads the weights the style guide lists', () => {
-  const weights = Object.fromEntries(
-    calls.map(options => [options.variable, options.weight])
+it('loads the weights the style guide lists from the @fontsource files', () => {
+  const byVariable: Record<string, FontOptions['src']> = Object.fromEntries(
+    withVariable().map(options => [options.variable, options.src])
   );
 
-  expect(weights['--next-font-bricolage-grotesque']).toBe('variable');
-  expect(weights['--next-font-public-sans']).toEqual(['400', '500', '600']);
-  expect(weights['--next-font-jetbrains-mono']).toEqual(['400', '500']);
+  expect(
+    byVariable['--next-font-bricolage-grotesque'].map(f => f.weight)
+  ).toEqual(['200 800']);
+  expect(
+    byVariable['--next-font-public-sans'].map(f => [f.style, f.weight])
+  ).toEqual([
+    ['normal', '100 900'],
+    ['italic', '100 900'],
+  ]);
+  expect(byVariable['--next-font-jetbrains-mono'].map(f => f.weight)).toEqual([
+    '400',
+    '500',
+  ]);
+
+  for (const options of calls) {
+    for (const file of options.src) {
+      expect(file.path).toMatch(/node_modules\/@fontsource.*\.woff2$/);
+    }
+  }
+});
+
+// B230: latin-ext joins the latin family, so ő isn't drawn by the metric fallback.
+// next/font names the latin family after its const, so the ext call declares that name.
+it('adds a latin-ext face to the same family, with its own unicode-range', () => {
+  const latin = withVariable().filter(options => options.declarations);
+  const ext = calls.filter(options => !options.variable);
+
+  expect(latin).toHaveLength(2);
+  expect(ext.map(options => declaration(options, 'font-family'))).toEqual([
+    "'bricolage'",
+    "'publicSans'",
+  ]);
+
+  for (const options of latin) {
+    expect(options.src[0].path).toContain('-latin-wght-');
+    expect(declaration(options, 'unicode-range')).toContain('U+0000-00FF');
+  }
+
+  for (const options of ext) {
+    expect(options.src[0].path).toContain('-latin-ext-wght-');
+    expect(declaration(options, 'unicode-range')).toContain('U+0100-02BA');
+  }
+
+  expect(ext[1].src.map(f => f.style)).toEqual(['normal', 'italic']);
 });
 
 it('puts the font variables on <html>', () => {
   const html = renderToStaticMarkup(<RootLayout>{null}</RootLayout>);
 
-  for (const variable of calls.map(o => o.variable)) {
+  for (const { variable } of withVariable()) {
     expect(html).toContain(`class-${variable}`);
   }
 });

@@ -61,6 +61,10 @@
 | Design check text differences drop on every screen             | `npm run design:check` table before and after, in the PR                                         |
 | Lint, tests (100%), e2e pass                                   | Their output in the PR                                                                           |
 
+## Deviations
+
+- D2 A: Turbopack ignores a custom `font-family` for the variable, so the latin call keeps `next/font`'s name (`publicSans`, `bricolage`) and each latin-ext call declares that name; `e2e/design.spec.ts` checks `'publicSans'`. Both calls are literals (no helpers), and the ext results are assigned to consts, as `next/font` requires.
+
 ## Out of scope
 
 The canvas's Google Fonts; latin-ext in the snapshots; JetBrains Mono latin-ext.

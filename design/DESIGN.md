@@ -80,7 +80,7 @@ Each HTML snapshot in `source/` is the source of its JPG. It holds written value
 
 Components set these styles with `<Text variant>` (`app/components/Text.tsx`); `/design-kit/type` shows them.
 
-All three are on Google Fonts under the OFL. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](#map-style)).
+All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](#map-style)).
 
 | Style    | Font · size / line · weight                | Used for                       |
 | -------- | ------------------------------------------ | ------------------------------ |

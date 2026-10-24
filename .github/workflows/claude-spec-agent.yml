@@ -21,17 +21,7 @@ run-name: >-
     github.event.review.author_association == 'OWNER' &&
     github.event.pull_request.draft &&
     github.event.pull_request.user.login == 'henetiriki-bot' &&
-    (startsWith(github.event.pull_request.head.ref, 'spec/') ||
-      startsWith(github.event.pull_request.head.ref, 'bug/') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C1') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C2') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C3') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C4') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C5') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C6') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C7') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C8') ||
-      startsWith(github.event.pull_request.head.ref, 'chore/C9')) &&
+    endsWith(github.event.pull_request.title, '(plan)') &&
     format('Build: {0}', github.event.pull_request.title) ||
     format('Skipped: {0}', github.event.issue.title || github.event.pull_request.title)
   }}
@@ -217,24 +207,15 @@ jobs:
   # that Claude's bot opened from a branch starting with `spec/` (a plan PR). Claude then
   # builds what the plan describes and comments on the PR with the result.
   build:
-    # The bot opens quick-chore PRs too: only a draft on a spec/, bug/ or chore/C<n> branch is a plan PR.
+    # The bot opens quick-chore PRs too: only a draft whose title ends "(plan)" is a plan PR
+    # (plans/README.md rule 3; the build drops the suffix).
     if: |
       github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
       github.event.review.author_association == 'OWNER' &&
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == 'henetiriki-bot' &&
-      (startsWith(github.event.pull_request.head.ref, 'spec/') ||
-        startsWith(github.event.pull_request.head.ref, 'bug/') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C1') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C2') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C3') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C4') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C5') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C6') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C7') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C8') ||
-        startsWith(github.event.pull_request.head.ref, 'chore/C9'))
+      endsWith(github.event.pull_request.title, '(plan)')
     # Shared with claude.yml, so a plan revision finishes before the build starts.
     concurrency: thread-${{ github.event.pull_request.number }}
     timeout-minutes: 45

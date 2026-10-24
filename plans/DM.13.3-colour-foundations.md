@@ -2,7 +2,7 @@
 
 - **Spec:** #224 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ The Colour snapshots draw their four alerts differently from the Feedback snapsh
 - **B.** Add a `className` to `Alert` and give the Colour board's four the snapshot's spacing.
 - **Other:** your own.
 
-Recommended: A, because the board should show the alert the app uses.
+**Answer: A** (@henetiriki)
 
 **D2 · Literal text sizes on Foundations** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ The Foundations snapshots set the step and radius values in 12.5px mono, shadows
 - **B.** Keep the `Text` variants and ask the Design agent to re-export both snapshots with token sizes. Until then both screens stay `report`, and the first acceptance check changes.
 - **Other:** your own.
 
-Recommended: A, because these are specimen sizes, not component tokens.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

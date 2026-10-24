@@ -66,8 +66,8 @@ jobs:
       pull-requests: read
     outputs:
       go: ${{ steps.gate.outputs.go }}
-    steps:
-      &gate-steps # The script comes from main, like the agent files. It uses only Node's own modules, so no `npm ci`.
+    # The script comes from main, like the agent files. It uses only Node's own modules, so no `npm ci`.
+    steps: &gate-steps
       - name: Check out the gate script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

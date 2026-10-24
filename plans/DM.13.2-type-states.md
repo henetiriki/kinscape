@@ -74,9 +74,9 @@ The States snapshots render "( :focus-visible )" and "through `aria-pressed` or 
 
 ## Deviations
 
-- `Button` takes its text from the height (L 16/24, M 15/22, S and XS 14/20) with 16px side padding, 12 on XS, per the design handoff; this replaces the earlier 15px text and 18px padding. States score 0.27% (desktop) and 0.33% (phone).
-- The new snapshots (token pass) replace the canvas-export ones: `style-1-type` 0.07% and `style-1-type-phone` 0.19%, both now `blocking`.
-- The shared notes now use a 48px gap and 12px section gap (Type keeps 32 and 16), and the Segmented track uses 4px padding and gap, per the new snapshots.
+- `Button` text follows the height (L 16/24, M 15/22, S and XS 14/20), side padding 16 (XS 12), per the handoff. States score 0.27% and 0.33%.
+- Token-pass snapshots: Type scores 0.07% and 0.19%, both `blocking`.
+- Shared notes gap 48/12 (Type keeps 32/16); Segmented padding and gap 4.
 
 ## Out of scope
 

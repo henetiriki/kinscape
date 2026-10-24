@@ -1,8 +1,9 @@
 name: 'Claude: Run (shared)'
 
-# The steps both agent paths share: set up the repo, load the agent files, run Claude, keep its
-# output, and leave a comment if Claude left none. claude-plan.yml and claude-build.yml call this
-# workflow; each decides when to run and what to ask. It never runs on its own.
+# What both agent paths share: a gate that stops a blocked or duplicate run before any model
+# runs, then set up the repo, load the agent files, run Claude, keep its output, and leave a
+# comment if Claude left none. claude-plan.yml and claude-build.yml call this workflow; each
+# decides when to run and what to ask. It never runs on its own.
 #
 # The `github` context here is the caller's, so `github.event`, `github.run_id` and the rest are
 # those of the plan or build run.
@@ -51,7 +52,44 @@ permissions:
   actions: read
 
 jobs:
+  # Checks that cost no model run (scripts/agent-gate.mts): a plan stops if an open PR already
+  # closes the issue or an issue it is "blocked by" is open; a build stops if the Spec its PR
+  # closes is blocked. On a stop it comments why, and `run` is skipped.
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      go: ${{ steps.gate.outputs.go }}
+    steps:
+      # The script comes from main, like the agent files. It uses only Node's own modules, so no `npm ci`.
+      - name: Check out the gate script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Check the run can start
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          KIND: ${{ inputs.plan && 'plan' || 'build' }}
+          NUMBER: ${{ inputs.thread }}
+        run: node scripts/agent-gate.mts "$KIND" "$NUMBER"
+
   run:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
     # One run per thread at a time, shared with claude.yml, so a revision and a build never overlap.
     concurrency: thread-${{ inputs.thread }}
     # A stuck agent stops here; the longest build so far took 17 minutes.

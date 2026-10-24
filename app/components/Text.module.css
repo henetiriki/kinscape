@@ -131,6 +131,87 @@
   margin: 0;
 }
 
+.h1Phone {
+  font-family: var(--type-h1-phone-font);
+  font-size: var(--type-h1-phone-size);
+  font-weight: var(--type-h1-phone-weight);
+  letter-spacing: var(--type-h1-phone-tracking);
+  line-height: var(--type-h1-phone-line);
+  margin: 0;
+}
+
+.credits {
+  color: var(--credits);
+  font-family: var(--type-credits-font);
+  font-size: var(--type-credits-size);
+  font-weight: var(--type-credits-weight);
+  letter-spacing: var(--type-credits-tracking);
+  line-height: var(--type-credits-line);
+  margin: 0;
+}
+
+.control {
+  font-family: var(--type-control-font);
+  font-size: var(--type-control-size);
+  font-weight: var(--type-control-weight);
+  letter-spacing: var(--type-control-tracking);
+  line-height: var(--type-control-line);
+  margin: 0;
+}
+
+.buttonS {
+  font-family: var(--type-button-s-font);
+  font-size: var(--type-button-s-size);
+  font-weight: var(--type-button-s-weight);
+  letter-spacing: var(--type-button-s-tracking);
+  line-height: var(--type-button-s-line);
+  margin: 0;
+}
+
+.chip {
+  font-family: var(--type-chip-font);
+  font-size: var(--type-chip-size);
+  font-weight: var(--type-chip-weight);
+  letter-spacing: var(--type-chip-tracking);
+  line-height: var(--type-chip-line);
+  margin: 0;
+}
+
+.chipOff {
+  font-family: var(--type-chip-off-font);
+  font-size: var(--type-chip-off-size);
+  font-weight: var(--type-chip-off-weight);
+  letter-spacing: var(--type-chip-off-tracking);
+  line-height: var(--type-chip-off-line);
+  margin: 0;
+}
+
+.link {
+  color: var(--brand);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  font-family: var(--type-link-font);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+  letter-spacing: var(--type-link-tracking);
+  line-height: var(--type-link-line);
+  margin: 0;
+}
+
+.linkS {
+  color: var(--brand);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  font-family: var(--type-link-s-font);
+  font-size: var(--type-link-s-size);
+  font-weight: var(--type-link-s-weight);
+  letter-spacing: var(--type-link-s-tracking);
+  line-height: var(--type-link-s-line);
+  margin: 0;
+}
+
 /* A message's colour, after the styles so it wins over their own. */
 .error {
   color: var(--error);

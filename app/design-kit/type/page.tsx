@@ -43,6 +43,13 @@ const STYLES: Row[] = [
     variant: 'h1',
   },
   {
+    hint: 'Page title on a phone',
+    name: 'H1 phone',
+    sample: 'Sign in',
+    spec: 'Bricolage 28 / 32 · 500 · −0.015em',
+    variant: 'h1Phone',
+  },
+  {
     hint: 'Dialog, section',
     name: 'H2',
     sample: 'Sources and attributions',
@@ -94,11 +101,18 @@ const STYLES: Row[] = [
     variant: 'small',
   },
   {
-    hint: 'Credits, footnotes',
+    hint: 'Footnotes, hints',
     name: 'Caption',
     sample: 'Last backup: today, 02:00',
     spec: 'Public Sans 12.5 / 18 · 400 · ink-3',
     variant: 'caption',
+  },
+  {
+    hint: 'The credits line',
+    name: 'Credits',
+    sample: 'Boundaries: KinScape data, sources per layer',
+    spec: 'Public Sans 11 / 16 · 400 · credits',
+    variant: 'credits',
   },
   {
     hint: 'Section heading',
@@ -108,11 +122,53 @@ const STYLES: Row[] = [
     variant: 'overline',
   },
   {
-    hint: 'Button labels',
+    hint: 'L 50 buttons (sign-in)',
     name: 'Button',
-    sample: 'Continue with Google',
-    spec: 'Public Sans 16 or 14 · 600',
+    sample: 'Sign in',
+    spec: 'Public Sans 16 / 24 · 600',
     variant: 'button',
+  },
+  {
+    hint: 'M 44 buttons, tabs, controls',
+    name: 'Control',
+    sample: 'Clear filters',
+    spec: 'Public Sans 15 / 22 · 600',
+    variant: 'control',
+  },
+  {
+    hint: 'S 40 and XS 36 buttons',
+    name: 'Button S',
+    sample: 'Jump to 1898',
+    spec: 'Public Sans 14 / 20 · 600',
+    variant: 'buttonS',
+  },
+  {
+    hint: 'Chips on, segmented, badges',
+    name: 'Chip',
+    sample: 'Marriage',
+    spec: 'Public Sans 13.5 / 20 · 600',
+    variant: 'chip',
+  },
+  {
+    hint: 'Chips that are off',
+    name: 'Chip off',
+    sample: 'Burial',
+    spec: 'Public Sans 13.5 / 20 · 400',
+    variant: 'chipOff',
+  },
+  {
+    hint: 'Links',
+    name: 'Link',
+    sample: 'Attributions',
+    spec: 'Public Sans 15 / 22 · 500 · brand, underlined',
+    variant: 'link',
+  },
+  {
+    hint: 'Links in small text',
+    name: 'Link S',
+    sample: 'Public domain',
+    spec: 'Public Sans 13 / 20 · 500 · brand, underlined',
+    variant: 'linkS',
   },
   {
     hint: 'Map date field',
@@ -191,7 +247,7 @@ const NOTE = `${LABELS.map(labelNote).join(' · ')}. All with a ${map['label-hal
 
 const TypeKit = () => (
   <main className={styles.kit}>
-    <header className={`${kit.kitHeader} ${styles.header}`}>
+    <header className={kit.kitHeader}>
       <span className={kit.kitEyebrow}>Style guide · 01</span>
       <p className={kit.kitTitle}>Typography and hierarchy</p>
       <p className={kit.kitLead}>

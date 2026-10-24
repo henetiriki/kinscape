@@ -21,8 +21,8 @@ Differences, from the snapshot HTML:
 
 The snapshot still calls the 44 hit areas and the 36 token "proposed", which DM.12.5 built, so the app reworded those lines. A different line moves everything below it.
 
-- **A.** Copy the snapshot's words; the PO asks the Design agent to update the canvas, and the app follows the re-export.
-- **B.** Keep the app's words; the three screens stay `report` until a re-export, so two acceptance checks wait.
+- **A.** Copy the snapshot's words; the PO asks the Design agent to update the canvas.
+- **B.** Keep the app's words; the three screens stay `report` until a re-export.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -46,6 +46,10 @@ DM.13.2 gave every Button 15px text and 18px padding, as board 04 draws. Board 0
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
+
+## Deviations
+
+- **D3 A not applied.** Board 06 and `DESIGN.md` give M 15/22; only S and XS are 14/20, as built. Awaiting a new D3.
 
 ## Files that change
 

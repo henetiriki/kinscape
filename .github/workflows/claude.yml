@@ -115,6 +115,18 @@ jobs:
           for f in $AGENT_FILES; do
             { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
           done
+          # Show what Claude is told: a collapsed group in the log and a section on the run page.
+          # The files come from main and hold no secrets.
+          echo "::group::System prompt ($AGENT_FILES)"
+          cat "$RUNNER_TEMP/agent/system.md"
+          echo "::endgroup::"
+          {
+            echo "<details><summary>System prompt ($AGENT_FILES)</summary>"
+            echo
+            cat "$RUNNER_TEMP/agent/system.md"
+            echo
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run Claude Code
         id: claude
@@ -146,3 +158,37 @@ jobs:
           path: /home/runner/work/_temp/claude-execution-output.json
           if-no-files-found: ignore
           retention-days: 14
+
+  # With show_full_output off, the log above stops at the start of the run. This writes the run page
+  # from Claude's transcript (scripts/run-summary.mts, from main, so the checked-out branch can't
+  # change it), as claude-run.yml does for plan and build runs. It has no secrets and never fails the run.
+  summary:
+    needs: claude
+    if: always() && needs.claude.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the summary script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # The artifact is missing if the run stopped before Claude started; the script says so.
+      - name: Download Claude's output
+        continue-on-error: true
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: claude-execution-output
+          path: ${{ runner.temp }}/claude-output
+      - name: Write the summary
+        continue-on-error: true
+        run: node scripts/run-summary.mts "$RUNNER_TEMP/claude-output/claude-execution-output.json"

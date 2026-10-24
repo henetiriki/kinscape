@@ -163,6 +163,18 @@ jobs:
           for f in $AGENT_FILES; do
             { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
           done
+          # Show what Claude is told: a collapsed group in the log and a section on the run page.
+          # The files come from main and hold no secrets.
+          echo "::group::System prompt ($AGENT_FILES)"
+          cat "$RUNNER_TEMP/agent/system.md"
+          echo "::endgroup::"
+          {
+            echo "<details><summary>System prompt ($AGENT_FILES)</summary>"
+            echo
+            cat "$RUNNER_TEMP/agent/system.md"
+            echo
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # Hand the job to Claude: the caller's prompt and model flags say what to do.
       - name: Run Claude Code

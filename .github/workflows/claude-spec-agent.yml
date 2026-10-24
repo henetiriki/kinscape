@@ -4,7 +4,7 @@ name: 'Claude: Spec Agent - Plan/Build'
 #   "Plan: <title>"  - a Spec, Bug or Chore was marked ready for the agent, so Claude drafts a plan
 #   "Build: <title>" - the tech lead approved a draft plan PR, so Claude builds it
 #   "Skipped: <title>" - neither happened, so nothing runs
-# This repeats the `if:` of the `plan` and `build` jobs (run-name cannot see job results):
+# This repeats the `if:` of the `plan-gate` and `build-gate` jobs (run-name cannot see job results):
 # change them together.
 run-name: >-
   ${{
@@ -43,11 +43,13 @@ permissions:
   actions: read
 
 jobs:
-  # Path 1: draft a plan. Runs when someone adds the "status: ready-for-agent" label to an open Spec
-  # (not to a closed Spec or any other kind of issue) and that person isn't Claude's own bot.
-  # Claude writes the plan and opens a draft PR, then stops to wait for the tech lead.
-  plan:
-    # Only open Specs get a plan, whatever else carries the label.
+  # Path 1 gate: runs when someone adds the "status: ready-for-agent" label to an open Spec, Bug or
+  # Chore (not to a closed one or any other kind of issue) and that person isn't Claude's own bot.
+  # scripts/agent-gate.mts then stops the plan, with a comment, if an open PR already closes the
+  # issue or an issue it is "blocked by" is open. Costs a few seconds and no model run.
+  plan-gate:
+    # Only open Specs, Bugs and Chores get a plan, whatever else carries the label. The `plan`
+    # job is skipped with this one, so this is the only place the event is checked.
     if: |
       github.event_name == 'issues' &&
       github.event.issue.state == 'open' &&
@@ -56,6 +58,43 @@ jobs:
         contains(github.event.issue.labels.*.name, 'type: bug') ||
         contains(github.event.issue.labels.*.name, 'type: chore')) &&
       github.actor != 'henetiriki-bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      go: ${{ steps.gate.outputs.go }}
+    steps:
+      &gate-steps # The script comes from main, like the agent files. It uses only Node's own modules, so no `npm ci`.
+      - name: Check out the gate script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Check the run can start
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          KIND: ${{ github.event_name == 'issues' && 'plan' || 'build' }}
+          NUMBER: ${{ github.event.issue.number || github.event.pull_request.number }}
+        run: node scripts/agent-gate.mts "$KIND" "$NUMBER"
+
+  # Path 1: draft a plan. Claude writes the plan and opens a draft PR, then stops to wait for the
+  # tech lead.
+  plan:
+    needs: plan-gate
+    # The gate is skipped for any other event, which skips this job too.
+    if: needs.plan-gate.outputs.go == 'true'
     concurrency: thread-${{ github.event.issue.number }}
     # A stuck agent stops here; the longest build so far took 17 minutes.
     timeout-minutes: 45
@@ -203,12 +242,12 @@ jobs:
             fi
           fi
 
-  # Path 2: build the approved plan. Runs when the repo owner approves a review on a draft PR
-  # that Claude's bot opened from a branch starting with `spec/` (a plan PR). Claude then
-  # builds what the plan describes and comments on the PR with the result.
-  build:
+  # Path 2 gate: runs when the repo owner approves a review on a draft plan PR that Claude's bot
+  # opened. scripts/agent-gate.mts then stops the build, with a comment, if the Spec the PR closes
+  # is blocked by an open issue.
+  build-gate:
     # The bot opens quick-chore PRs too: only a draft whose title ends "(plan)" is a plan PR
-    # (plans/README.md rule 3; the build drops the suffix).
+    # (plans/README.md rule 3; the build drops the suffix). The `build` job is skipped with this one.
     if: |
       github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
@@ -216,6 +255,21 @@ jobs:
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == 'henetiriki-bot' &&
       endsWith(github.event.pull_request.title, '(plan)')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    outputs:
+      go: ${{ steps.gate.outputs.go }}
+    steps: *gate-steps
+
+  # Path 2: build the approved plan. Claude builds what the plan describes and comments on the PR
+  # with the result.
+  build:
+    needs: build-gate
+    if: needs.build-gate.outputs.go == 'true'
     # Shared with claude.yml, so a plan revision finishes before the build starts.
     concurrency: thread-${{ github.event.pull_request.number }}
     timeout-minutes: 45

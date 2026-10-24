@@ -2,7 +2,7 @@
 
 - **Spec:** #226 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ The snapshot still calls the 44 hit areas and the 36 token "proposed", which DM.
 - **B.** Keep the app's words; the three screens stay `report` until a re-export, so two acceptance checks wait.
 - **Other:** your own.
 
-Recommended: A, because B blocks this slice on the Design agent.
+**Answer: A** (@henetiriki)
 
 **D2 · The Google placeholder** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ Both part 1 snapshots draw a 50px "Continue with Google" box. `DESIGN.md` says t
 - **B.** Leave it out. Neither screen can reach 0.5%; the PO gets a design change.
 - **Other:** your own.
 
-Recommended: A, because it is a picture of the proposal, as the snapshot is.
+**Answer: A** (@henetiriki)
 
 **D3 · Button text** · Decides: Tech lead
 
@@ -45,7 +45,7 @@ DM.13.2 gave every Button 15px text and 18px padding, as board 04 draws. Board 0
 - **B.** Keep 15/18 on M. Board 06's 44px buttons, about 20 on phone part 1, keep the difference; a screen above 0.5% stays `report`.
 - **Other:** your own.
 
-Recommended: A, because the token and `DESIGN.md` agree with board 06.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

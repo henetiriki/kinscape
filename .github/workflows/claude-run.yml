@@ -174,8 +174,10 @@ jobs:
           bot_name: henetiriki-bot
           bot_id: '344434370'
           prompt: ${{ inputs.prompt }}
-          # The repo is private; turn off once runs are reliable.
-          show_full_output: true
+          # Off: the full output includes every screenshot Claude reads, as base64, and the log
+          # stopped at the first of them. The transcript is in the artifact, and the summary job
+          # writes the run page from it.
+          show_full_output: false
           # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
           settings: ${{ runner.temp }}/agent/settings.json
           claude_args: '${{ inputs.model_args }} --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
@@ -224,3 +226,38 @@ jobs:
               fi
             fi
           fi
+
+  # GitHub lists no steps for a job in a called workflow, so the run page would show nothing. This
+  # writes the summary shown on that page from Claude's transcript (scripts/run-summary.mts, from
+  # main). It runs even when `run` failed, has no secrets, and never fails the run.
+  summary:
+    name: Summary
+    needs: [gate, run]
+    if: always() && needs.gate.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the summary script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # The artifact is missing if the run stopped before Claude started; the script says so.
+      - name: Download Claude's output
+        continue-on-error: true
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: claude-execution-output
+          path: ${{ runner.temp }}/claude-output
+      - name: Write the summary
+        continue-on-error: true
+        run: node scripts/run-summary.mts "$RUNNER_TEMP/claude-output/claude-execution-output.json"

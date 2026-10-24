@@ -1,0 +1,37 @@
+name: 'Claude: Denial audit'
+
+# Claude's runs are limited by an allowlist and some denials (.github/agent/settings.json). Each
+# time Claude tries something denied, the run's transcript records it. Once a week this reads the
+# past week's transcripts and keeps one issue up to date with the denials that repeat, so the
+# allowlist and the rules follow what the agents really try. It does nothing when none repeats.
+
+on:
+  schedule:
+    # Every Monday at 07:00 UTC.
+    - cron: '0 7 * * 1'
+  # Lets a person run it by hand from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Reads the runs and downloads their transcripts.
+  actions: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # Run the audit (scripts/denial-audit.mts). GH_TOKEN lets it list runs, download their
+      # transcripts, and open or update the issue.
+      - name: Audit permission denials
+        run: node scripts/denial-audit.mts
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}

@@ -6,7 +6,8 @@ name: 'Claude: Code'
 # The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude
 # will answer, and "Skipped: <title>" when it won't. Claude answers when all of these hold:
 #   - the author is not Claude's own bot account (so Claude never answers itself)
-#   - it is not the tech lead approving a draft plan PR (claude-build.yml handles those)
+#   - it is not the repo owner approving a draft plan PR that the bot opened (claude-build.yml
+#     handles those; an approval from anyone else is answered here, as feedback)
 #   - the text mentions "@claude"
 # This repeats the `if:` of the `claude` job below (run-name cannot see job results): change them together.
 run-name: >-
@@ -14,7 +15,9 @@ run-name: >-
     github.actor != 'henetiriki-bot' &&
     !(github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
+      github.event.review.author_association == 'OWNER' &&
       github.event.pull_request.draft &&
+      github.event.pull_request.user.login == 'henetiriki-bot' &&
       endsWith(github.event.pull_request.title, '(plan)')) &&
     contains(
       github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
@@ -43,7 +46,9 @@ jobs:
       github.actor != 'henetiriki-bot' &&
       !(github.event_name == 'pull_request_review' &&
         github.event.review.state == 'approved' &&
+        github.event.review.author_association == 'OWNER' &&
         github.event.pull_request.draft &&
+        github.event.pull_request.user.login == 'henetiriki-bot' &&
         endsWith(github.event.pull_request.title, '(plan)')) &&
       contains(
         github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
@@ -121,8 +126,9 @@ jobs:
           bot_id: '344434370'
           additional_permissions: |
             actions: read
-          # The repo is private; turn off once runs are reliable.
-          show_full_output: true
+          # Off: the full output includes every screenshot Claude reads, as base64, and the log
+          # stopped at the first of them. The transcript is in the artifact below.
+          show_full_output: false
           # Same tools, denials and Bash timeout as the spec agent (settings.json); the rules and the
           # respond and build instructions are the system prompt. Planning is the hard thinking, so a
           # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.

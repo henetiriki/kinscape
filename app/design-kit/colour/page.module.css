@@ -13,25 +13,27 @@
 .group {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
 }
 
 .heading {
   align-items: baseline;
   display: flex;
-  gap: 14px;
+  gap: var(--space-16);
 }
 
 .h2 {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: var(--type-h3-size);
   font-weight: 700;
+  line-height: var(--type-h3-line);
   margin: 0;
 }
 
 .note {
   color: var(--ink-3);
-  font-size: 13.5px;
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
 }
 
 .swatches {
@@ -52,36 +54,39 @@
   height: 72px;
 }
 
-/* White has no edge on a white card, so its swatch is drawn as a ring, as on the board. */
-.ring {
+.edge {
   border-bottom: 1px solid var(--line);
+}
+
+/* The focus ring on dark is drawn as a ring, as on the board. */
+.ring {
   box-shadow: inset 0 0 0 3px var(--ink);
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 10px 12px 12px;
+  gap: var(--space-4);
+  padding: var(--space-12);
 }
 
 .name {
   font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 20px;
+  font-size: var(--type-mono-size);
+  line-height: var(--type-mono-line);
 }
 
 .value {
   color: var(--ink-2);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--type-mono-size);
+  line-height: var(--type-mono-line);
 }
 
 .use {
   color: var(--ink-3);
-  font-size: 12.5px;
-  line-height: 1.4;
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
 }
 
 .system {
@@ -93,7 +98,7 @@
 .tone {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 .lines {
@@ -101,35 +106,54 @@
   display: flex;
   flex-direction: column;
   font-family: var(--font-mono);
-  font-size: 12px;
-  gap: 4px;
+  font-size: var(--type-mono-size);
+  gap: var(--space-4);
+  line-height: var(--type-mono-line);
 }
 
 .footer {
   color: var(--ink-3);
-  font-size: 13.5px;
-  line-height: 1.5;
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
   margin: 0;
 }
 
 /* A phone (Intent 104, D1): two columns of swatches, system colours stacked */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .kit {
+    gap: var(--space-32);
     min-height: 0;
     padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
+  }
+
+  .group {
+    gap: var(--space-12);
   }
 
   .heading {
     align-items: flex-start;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-4);
   }
 
   .swatches {
+    gap: var(--space-12);
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .text {
+    padding: var(--space-8) var(--space-12) var(--space-12);
+  }
+
+  .name {
+    white-space: nowrap;
   }
 
   .system {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tone {
+    gap: var(--space-8);
   }
 }

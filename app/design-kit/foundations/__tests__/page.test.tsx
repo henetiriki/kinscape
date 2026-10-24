@@ -63,6 +63,17 @@ it('shows the five sections in board order, and the nineteen icons', async () =>
     )
   ).toBeTruthy();
   expect(screen.getByText('none')).toBeTruthy();
+  expect(screen.getByText('4000ms')).toBeTruthy();
+  expect(
+    within(screen.getByRole('region', { name: 'Corner radius' })).getByText(
+      'Segmented track'
+    )
+  ).toBeTruthy();
+  expect(
+    within(screen.getByRole('region', { name: 'Elevation' })).getByText(
+      '0 1px 2px rgb(24 33 27 / 0.18)'
+    )
+  ).toBeTruthy();
 });
 
 it('follows changed tokens', async () => {

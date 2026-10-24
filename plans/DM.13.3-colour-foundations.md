@@ -11,9 +11,9 @@ On `178a796` the scores are: `style-2-colour` 1.14%, `style-2-colour-phone` 24.7
 Differences, from the snapshot HTML:
 
 - **Colour, both:** the `--surface` and `--white` chips have a 1px `--line` bottom edge, like the focus ring chip.
-- **Colour, phone:** stack gap 32, section gap 12; heading stacked with gap 4, note 13/20; swatch gap 12; swatch text padding 8/12/12, gap 4, name 12px, value line 16, use 12.5/18; system colours gap 16, each tone gap 8, lines 16; footer 13/20.
-- **Foundations, desktop:** Elevation 18px lower (the snapshot puts it in the Corner radius section); text sizes per D2.
-- **Foundations, phone:** stack and column gaps 32, section gap 12; spacing rows 12 apart, bar 12 tall with radius 4 over its caption (gap 4); radius grid gap 16/12, boxes 88×64 border-box; elevation stacked, gap 16, padding 20, card gap 4; icons gap 8, tile gap 4, label 12; motion rows padding 12, title and value on one line, gap 4; notes 13/20.
+- **Colour, phone:** stack gap 32, section gap 12; heading stacked; swatch text padding 8/12/12; tone gap 8.
+- **Foundations, desktop:** Elevation 18px lower.
+- **Foundations, phone:** stack and column gaps 32, section gap 12; spacing bar 12 tall over its caption; radius grid gap 16/12, border-box boxes; elevation, icon and motion spacing per the snapshot.
 - **Foundations, both:** the Icons note takes the snapshot's newer copy ("Shown at 16, 18 or 20px (24 on the phone layers button). Always `aria-hidden`; …"), without the stray space before ";" (as DM.13.2 D2).
 
 ## Decisions
@@ -68,6 +68,11 @@ The Foundations snapshots set the step and radius values in 12.5px mono, shadows
 | Four entries `blocking`          | `screens.json`; `screens.test.ts` passes |
 | Each ≤ 0.5%, other blocking pass | `npm run e2e` output; PR score table     |
 | Tests, e2e, validator, 100%      | Output in the PR                         |
+
+## Deviations
+
+- The Design agent re-exported the four snapshots after the plan: D1 and D2 no longer apply (Alert and the `Text` variants already match), so `Alert` and `Text` are untouched.
+- Foundations now lists all eight radii, five shadows and the Toast motion row the snapshot shows (`values.ts`).
 
 ## Out of scope
 

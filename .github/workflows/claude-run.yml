@@ -174,8 +174,10 @@ jobs:
           bot_name: henetiriki-bot
           bot_id: '344434370'
           prompt: ${{ inputs.prompt }}
-          # The repo is private; turn off once runs are reliable.
-          show_full_output: true
+          # Off: the full output includes every screenshot Claude reads, as base64, and the log
+          # stopped at the first of them. The transcript is in the artifact, and the summary job
+          # writes the run page from it.
+          show_full_output: false
           # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
           settings: ${{ runner.temp }}/agent/settings.json
           claude_args: '${{ inputs.model_args }} --append-system-prompt-file ${{ runner.temp }}/agent/system.md'

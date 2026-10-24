@@ -19,7 +19,27 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
+}
+
+/* Corner radius and Elevation share a column; Elevation sits a further 16px down. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.elevation {
+  margin-top: var(--space-16);
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--type-mono-size);
+}
+
+.card > :last-child {
+  color: var(--ink-2);
 }
 
 .spaceRows {
@@ -37,15 +57,15 @@
 
 .bar {
   background: var(--brand);
-  border-radius: 3px;
+  border-radius: 4px;
   display: block;
   height: 14px;
 }
 
 .radii {
   display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-16);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .radius {
@@ -75,14 +95,14 @@
   border-radius: var(--radius-panel);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-4);
   padding: var(--space-16);
 }
 
 .icons {
   color: var(--ink);
   display: grid;
-  gap: 10px;
+  gap: var(--space-12);
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
@@ -92,7 +112,7 @@
   border-radius: var(--radius-control);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-8);
   padding: var(--space-12) var(--space-4);
 }
 
@@ -106,28 +126,54 @@
   align-items: center;
   border-bottom: 1px solid var(--line);
   display: grid;
-  gap: 14px;
+  gap: var(--space-16);
   grid-template-columns: 170px 150px minmax(0, 1fr);
   min-height: 44px;
-  padding: 6px 0;
+  padding: var(--space-8) 0;
 }
 
 /* A phone (Intent 104, D1): one column; icons four across; motion value beside its title */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .kit {
+    gap: var(--space-32);
     min-height: 0;
     padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
   }
 
   .columns {
-    gap: var(--space-40);
+    gap: var(--space-32);
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .section {
+    gap: var(--space-12);
+  }
+
+  .stack {
+    gap: var(--space-32);
+  }
+
+  .elevation {
+    margin-top: 0;
+  }
+
+  .bar {
+    height: 12px;
+  }
+
+  .spaceRows {
+    gap: var(--space-12);
+  }
+
   .spaceRow {
+    align-items: start;
     column-gap: var(--space-12);
     grid-template-columns: 48px minmax(0, 1fr);
     row-gap: var(--space-4);
+  }
+
+  .spaceRow > :first-child {
+    grid-row: 1 / span 2;
   }
 
   .spaceRow > :nth-child(3) {
@@ -135,16 +181,27 @@
   }
 
   .radii {
+    gap: var(--space-16) var(--space-12);
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .box {
+    box-sizing: border-box;
+  }
+
   .sea {
+    gap: var(--space-16);
     grid-template-columns: minmax(0, 1fr);
-    padding: var(--space-16);
+    padding: var(--space-20);
   }
 
   .icons {
+    gap: var(--space-8);
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .tile {
+    gap: var(--space-4);
   }
 
   .motionRow {

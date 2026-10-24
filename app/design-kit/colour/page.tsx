@@ -15,6 +15,13 @@ export const metadata: Metadata = { title: boardTitle('colour') };
 // Map tokens have no CSS variable, and the board shows hex and ratios, so it reads the tokens itself.
 const tokens = resolveTokens(rawTokens);
 
+// White chips have no edge on a white card, so they get a line like the focus ring chip.
+const EDGED = new Set([
+  'colour.focus-ring-on-dark',
+  'colour.surface',
+  'colour.white',
+]);
+
 const opacity = `${Math.round(tokens.map.hatch.opacity * 100)}%`;
 
 const ColourKit = () => (
@@ -40,7 +47,7 @@ const ColourKit = () => (
           {swatches.map(({ on, path, role, use }) => (
             <div className={styles.swatch} key={path}>
               <div
-                className={`${styles.chip} ${path === 'colour.focus-ring-on-dark' ? styles.ring : ''}`}
+                className={`${styles.chip} ${EDGED.has(path) ? styles.edge : ''} ${path === 'colour.focus-ring-on-dark' ? styles.ring : ''}`}
                 style={{ background: valueAt(tokens, path) }}
               />
               <div className={styles.text}>

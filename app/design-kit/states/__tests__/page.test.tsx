@@ -28,7 +28,7 @@ it('labels every cell with its state for a phone', () => {
       [...row.querySelectorAll('.kitStateLabel')].map(
         label => label.textContent
       )
-    ).toEqual(['Default', 'Hover', 'Focus (keyboard)', 'Pressed', 'Disabled']);
+    ).toEqual(['Default', 'Hover', 'Focus', 'Pressed', 'Disabled']);
   }
 });
 

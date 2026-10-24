@@ -56,7 +56,6 @@ Differences found by reading the CSS beside each snapshot:
 - **Banner fix moves every board.** The PR lists all 23 scores before and after; no board is `blocking` yet.
 - **New heights change five other boards' scores**, as they now compare the whole snapshot. They are `report`, but the numbers in DM.13.2 to DM.13.7 go stale.
 - **Sheet padding:** the Surfaces snapshots use 16 and 24, so I set it in `KitMenu`, not `Sheet`.
-- **Nothing measured yet:** the plan run has no browser. The build runs `/match-design`.
 
 ## Proof
 
@@ -68,6 +67,12 @@ Differences found by reading the CSS beside each snapshot:
 | Three screens `blocking`, ≤ 0.5%      | `npm run e2e` output; the PR's score table |
 | 8px move fails CI, names screen       | The linked failed run                      |
 | Tests, e2e, validator, 100%           | Output in the PR                           |
+
+## Deviations
+
+- D1 A: also bottom padding 48, eyebrow line 16.
+- `.menu > button`: `.menu button` hit Close.
+- Menu stays `report`: `<dialog>` text renders differently.
 
 ## Out of scope
 

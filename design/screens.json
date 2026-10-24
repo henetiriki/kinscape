@@ -2,14 +2,14 @@
   "screens": [
     {
       "height": 900,
-      "mode": "report",
+      "mode": "blocking",
       "name": "design-kit",
       "route": "/design-kit",
       "width": 1440
     },
     {
       "height": 1325,
-      "mode": "report",
+      "mode": "blocking",
       "name": "design-kit-phone",
       "route": "/design-kit",
       "width": 390

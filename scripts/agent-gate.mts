@@ -7,14 +7,18 @@ import { appendFileSync } from 'node:fs';
 //   build: stop if an issue the PR closes is blocked by an open issue
 // Usage: node scripts/agent-gate.mts plan|build <issue or PR number>, with GH_REPO set.
 // An https RUN_URL, if set, is linked at the end of a stop comment.
-// It writes `go=true` or `go=false` to $GITHUB_OUTPUT. On a stop it comments why, and on a plan
-// it hands the Spec back as `status: blocked`.
+// It writes `go=true` or `go=false` to $GITHUB_OUTPUT. On a stop it comments why. A plan stopped by
+// an open blocker also hands the Spec back as `status: blocked`; one stopped only by an open plan PR
+// keeps its label, so a repeated label event doesn't mark a planned Spec blocked.
 
 export type Gh = (args: string[], input?: string) => string;
 
 type Closing = { closingIssuesReferences: { number: number }[] };
 
 type Kind = 'build' | 'plan';
+
+// Why a run can't start. `handBack` is true when the Spec should be marked `status: blocked`.
+type Stop = { handBack: boolean; reasons: string[] };
 
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
@@ -79,7 +83,7 @@ const planReasons = (
   repo: string,
   issue: number,
   notes: string[]
-): string[] => {
+): Stop => {
   const prs = json<({ number: number } & Closing)[]>(gh, [
     'pr',
     'list',
@@ -101,16 +105,19 @@ const planReasons = (
     `Open issues #${issue} is blocked by: ${listOrNone(blockers)}.`
   );
 
-  return [
-    ...(prs.length > 0
-      ? [
-          `PR ${list(prs)} is already open for this issue. Close it first if you want a new plan.`,
-        ]
-      : []),
-    ...(blockers.length > 0
-      ? [`It is blocked by ${list(blockers)}, still open.`]
-      : []),
-  ];
+  return {
+    handBack: blockers.length > 0,
+    reasons: [
+      ...(prs.length > 0
+        ? [
+            `PR ${list(prs)} is already open for this issue. Close it first if you want a new plan.`,
+          ]
+        : []),
+      ...(blockers.length > 0
+        ? [`It is blocked by ${list(blockers)}, still open.`]
+        : []),
+    ],
+  };
 };
 
 const buildReasons = (
@@ -118,7 +125,7 @@ const buildReasons = (
   repo: string,
   pr: number,
   notes: string[]
-): string[] => {
+): Stop => {
   const closes = json<Closing>(gh, [
     'pr',
     'view',
@@ -137,16 +144,22 @@ const buildReasons = (
       : `PR #${pr} closes no issue, so there is no Spec to check for blockers (a plan PR needs "Closes #<issue>" in its body).`
   );
 
-  return blockers.length > 0
-    ? [`The Spec this PR closes is blocked by ${list(blockers)}, still open.`]
-    : [];
+  return {
+    handBack: false,
+    reasons:
+      blockers.length > 0
+        ? [
+            `The Spec this PR closes is blocked by ${list(blockers)}, still open.`,
+          ]
+        : [],
+  };
 };
 
 const stop = (
   gh: Gh,
   kind: Kind,
   thread: number,
-  reasons: string[],
+  { handBack, reasons }: Stop,
   footer: string[]
 ): void => {
   const lines =
@@ -155,8 +168,12 @@ const stop = (
           'Not planned yet:',
           '',
           ...reasons.map(reason => `- ${reason}`),
-          '',
-          'The label is now `status: blocked`. Set `status: ready-for-agent` again when this is resolved.',
+          ...(handBack
+            ? [
+                '',
+                'The label is now `status: blocked`. Set `status: ready-for-agent` again when this is resolved.',
+              ]
+            : []),
         ]
       : [
           'Not built yet:',
@@ -171,7 +188,7 @@ const stop = (
     [...lines, ...footer].join('\n')
   );
 
-  if (kind === 'plan') {
+  if (handBack) {
     gh([
       'issue',
       'edit',
@@ -238,15 +255,17 @@ export const run = (
       : `PR #${thread} is an open draft whose title ends "(plan)".`
   );
 
-  const reasons =
+  const why =
     kind === 'plan'
       ? planReasons(gh, repo, thread, notes)
       : buildReasons(gh, repo, thread, notes);
 
-  write(`go=${reasons.length === 0}`);
-  report(reasons.length === 0 ? 'Go.' : `Stopped: ${reasons.join(' ')}`);
+  write(`go=${why.reasons.length === 0}`);
+  report(
+    why.reasons.length === 0 ? 'Go.' : `Stopped: ${why.reasons.join(' ')}`
+  );
 
-  if (reasons.length > 0) {
+  if (why.reasons.length > 0) {
     // The run's own URL (from the workflow), when it looks like one, so the comment can point back.
     const runUrl = env.RUN_URL ?? '';
 
@@ -254,7 +273,7 @@ export const run = (
       gh,
       kind,
       thread,
-      reasons,
+      why,
       RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : []
     );
   }

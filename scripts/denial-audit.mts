@@ -52,7 +52,10 @@ const WITH_SUBCOMMAND = new Set(['docker', 'gh', 'git', 'npm', 'npx', 'pnpm']);
 
 // What was denied, coarsely: a Bash command by its program (and subcommand), anything else by its tool.
 export const patternOf = ({ detail, tool }: Denial): string => {
-  const [program, next] = detail.split(' ');
+  // `DESIGN_SCREENS=x npm run …` is `npm run`: the variable's value must not split a group.
+  const [program, next] = detail
+    .replace(/^(?:[A-Za-z_]\w*=\S* )+/, '')
+    .split(' ');
 
   if (tool !== 'Bash' || !program) {
     return tool;
@@ -88,6 +91,8 @@ export const artifactReader =
     }
   };
 
+// Most runs of these workflows are skipped (every comment, label and review starts one), so the
+// date is asked of GitHub, not left to a count of the newest runs that skipped ones would fill.
 const recentRunIds = (gh: Gh, workflow: string, since: Date): number[] =>
   JSON.parse(
     gh([
@@ -95,8 +100,10 @@ const recentRunIds = (gh: Gh, workflow: string, since: Date): number[] =>
       'list',
       '--workflow',
       workflow,
+      '--created',
+      `>=${since.toISOString().slice(0, 10)}`,
       '--limit',
-      '100',
+      '500',
       '--json',
       'databaseId,createdAt,conclusion',
     ])

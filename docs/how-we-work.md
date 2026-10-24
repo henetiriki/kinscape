@@ -83,4 +83,4 @@ Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status*
 | `status: ready-for-agent` | Starts Claude's plan; only the tech lead sets it           | Claude                                 |
 | `status: blocked`         | Waiting on someone outside the team, or a failed agent run | Whoever is named in the latest comment |
 
-An open decision is not `blocked`: the ball is with whoever decides it. A Spec's open "blocked by" issue stops its plan and build.
+An open decision is not `blocked`: the ball is with whoever decides it. An open "blocked by" stops its plan and build; closing it moves `blocked` to `ready-for-dev`.

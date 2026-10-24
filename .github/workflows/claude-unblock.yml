@@ -1,0 +1,37 @@
+name: 'Claude: Unblock'
+
+# The plan and build gates (claude-run.yml) stop while an issue is "blocked by" an open one. When
+# that issue closes, this tells the owner what it freed: an issue marked `status: blocked` becomes
+# `status: ready-for-dev`, and an open plan PR gets a comment so its build can be approved again.
+# It never starts a plan: only the tech lead sets `status: ready-for-agent`.
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  unblock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # Run the check (scripts/agent-unblock.mts). It does nothing when the closed issue was not
+      # blocking an open one.
+      - name: Tell what the closed issue freed
+        run: node scripts/agent-unblock.mts "$NUMBER"
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.issue.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

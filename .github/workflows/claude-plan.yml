@@ -73,6 +73,10 @@ jobs:
         If you're blocked, comment on the Spec saying why,
         then swap its status label for `status: blocked`.
         Run `npm run words` once after drafting, not after every edit.
+        If the plan can't be built until another Spec merges, record that first: read the other issue's id with
+        `gh api repos/${{ github.repository }}/issues/<other> --jq .id`, then run
+        `gh api -X POST repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/dependencies/blocked_by -F issue_id=<id>`
+        (the id, not the number). Say so in your comment.
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}

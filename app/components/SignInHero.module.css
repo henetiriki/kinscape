@@ -1,0 +1,136 @@
+/* The drawing's values are CSS variables set from the map tokens by SignInHero.tsx. */
+.hero {
+  box-sizing: border-box;
+  min-height: 100%;
+  position: relative;
+}
+
+.art {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.phone {
+  display: none;
+}
+
+.land {
+  fill: var(--hero-land);
+}
+
+.shade {
+  mix-blend-mode: multiply;
+  opacity: 0.28;
+}
+
+.rivers,
+.borders {
+  fill: none;
+  stroke-linejoin: round;
+}
+
+.rivers {
+  stroke: var(--hero-river);
+  stroke-linecap: round;
+  stroke-width: var(--hero-river-width);
+}
+
+.rivers path,
+.borders path {
+  vector-effect: non-scaling-stroke;
+}
+
+.borders {
+  stroke: var(--hero-border);
+  stroke-opacity: 0.42;
+  stroke-width: var(--hero-border-width);
+}
+
+.dashed {
+  stroke-dasharray: var(--hero-dash);
+}
+
+.halo {
+  fill: var(--hero-halo);
+  opacity: var(--hero-halo-opacity);
+}
+
+.pin {
+  fill: var(--hero-pin);
+  stroke: var(--hero-pin-stroke);
+  stroke-width: var(--hero-pin-stroke-width);
+  vector-effect: non-scaling-stroke;
+}
+
+.place,
+.dates {
+  fill: var(--hero-ink);
+  paint-order: stroke;
+  stroke: var(--hero-label-halo);
+  stroke-linejoin: round;
+  stroke-width: 3.5px;
+}
+
+.place {
+  font: 600 14px var(--font-body);
+}
+
+.dates {
+  fill: var(--hero-muted);
+  font: 12px var(--font-mono);
+}
+
+.copy {
+  color: var(--hero-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: var(--layout-sign-in-copy);
+  padding: var(--space-40) var(--space-48);
+  position: relative;
+}
+
+.copy > h2 {
+  margin: 0;
+}
+
+.copy > p {
+  color: var(--ink-2);
+  margin: 0;
+  max-width: var(--layout-sign-in-tagline);
+}
+
+.caption {
+  align-items: center;
+  bottom: var(--space-32);
+  color: var(--ink-2);
+  display: flex;
+  gap: 10px;
+  left: var(--space-48);
+  position: absolute;
+}
+
+.key {
+  border-top: 1.5px solid var(--hero-border);
+  display: inline-block;
+  width: 22px;
+}
+
+.dash {
+  border-top-style: dashed;
+  margin-left: 10px;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .wide,
+  .copy,
+  .caption {
+    display: none;
+  }
+
+  .phone {
+    display: block;
+  }
+}

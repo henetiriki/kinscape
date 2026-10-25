@@ -1,0 +1,67 @@
+.layout {
+  background: var(--surface-2);
+  color: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100vh;
+}
+
+.hero {
+  background: var(--auth-sea);
+  flex: 999 1 var(--layout-sign-in-hero);
+  min-height: var(--layout-sign-in-hero-min);
+  overflow: hidden;
+  position: relative;
+}
+
+.pane {
+  align-items: center;
+  background: var(--surface);
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 var(--layout-sign-in-pane);
+  justify-content: center;
+  padding: var(--layout-sign-in-pane-y) var(--layout-sign-in-pane-x);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  max-width: var(--layout-sign-in-form);
+  width: 100%;
+}
+
+.phoneMark {
+  display: none;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .layout {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .hero {
+    flex: none;
+    height: var(--layout-sign-in-hero-phone);
+    min-height: 0;
+  }
+
+  .phoneMark {
+    display: block;
+    left: var(--space-16);
+    position: absolute;
+    top: var(--space-16);
+  }
+
+  .deskMark {
+    display: none;
+  }
+
+  .pane {
+    align-items: stretch;
+    flex: 1;
+    padding: var(--space-24) var(--space-16) var(--space-20);
+  }
+}

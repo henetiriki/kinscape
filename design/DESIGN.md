@@ -139,6 +139,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 - Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`; a media query can't read a variable, so a test checks each against `breakpoint`.
 - The `Stage` places the search, account, zoom, panel, dock, credits and overlay slots (and, on a phone only, a Layers button) from those tokens; its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`) with the pointer on its right edge.
 - A notice centres in the free map area, not the window.
+- `AuthLayout` places the sign-in hero and form from `layout.sign-in`: hero left, form pane at least 440 wide holding a form of at most 360; on a phone a 188px hero with the wordmark over it, then the form. `SignInHero`'s coast and border lines are a hand-drawn sketch, traced from no dataset (NFR-08).
 - Pass MapLibre `padding` so the map centres in the space the panel and dock leave.
 
 ## Shape and depth

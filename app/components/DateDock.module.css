@@ -1,26 +1,47 @@
 .dock {
   composes: raised from './Surface.module.css';
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
   padding: var(--space-16) var(--space-20);
 }
 
 .row {
   align-items: center;
   display: flex;
-  gap: var(--space-12);
-  margin-bottom: var(--space-20);
+  gap: var(--space-16);
 }
 
-.field {
-  border: 1px solid var(--field-border);
-  border-radius: var(--radius-control);
-  box-sizing: border-box;
-  font-family: var(--type-mono-l-font);
-  font-size: var(--type-mono-l-size);
-  font-variant-ligatures: none;
-  font-weight: var(--type-mono-l-weight);
-  height: var(--size-field);
-  padding: 0 var(--space-12);
-  text-align: center;
-  white-space: nowrap;
-  width: var(--size-date-field);
+.play {
+  align-items: center;
+  display: flex;
+  gap: var(--space-12);
+  margin-left: auto;
+}
+
+.caption {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+}
+
+.footer {
+  align-items: center;
+  display: flex;
+  gap: var(--space-8);
+}
+
+.hints {
+  margin-left: auto;
+}
+
+.sheetRow {
+  align-items: center;
+  display: flex;
+  gap: var(--space-8);
+}
+
+.sheetRow > :first-child {
+  flex: 1;
+  min-width: 0;
 }

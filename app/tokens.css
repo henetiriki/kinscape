@@ -226,6 +226,7 @@
   --layout-phone-sheet-top: 76px;
   --layout-phone-overlay-top: 144px;
   --layout-phone-sheet-collapsed: 152px;
+  --layout-phone-sheet-expanded: 432px;
   --breakpoint-phone-width: 639.98px;
   --breakpoint-phone-height: 499.98px;
   --z-furniture: 1;

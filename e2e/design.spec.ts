@@ -49,24 +49,44 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
           ? active.parentElement!
           : active;
       const style = getComputedStyle(ringed);
+      const tag = active.tagName + '.' + active.className;
+
+      // A text field has no ring: its box takes a 2px brand border.
+      if (active instanceof HTMLInputElement && active.type === 'text') {
+        const box = getComputedStyle(active.parentElement!);
+
+        return {
+          mark: {
+            colour: box.borderTopColor,
+            outline: style.outlineStyle,
+            style: box.borderTopStyle,
+            width: box.borderTopWidth,
+          },
+          tag,
+        };
+      }
 
       return {
-        colour: style.outlineColor,
-        offset: style.outlineOffset,
-        tag:
-          document.activeElement!.tagName +
-          '.' +
-          document.activeElement!.className,
-        width: style.outlineWidth,
+        mark: {
+          colour: style.outlineColor,
+          offset: style.outlineOffset,
+          width: style.outlineWidth,
+        },
+        tag,
       };
     });
 
     if (!outline.tag.startsWith('BODY') && !outline.tag.includes('CANVAS')) {
-      expect(outline, outline.tag).toMatchObject({
-        colour: 'rgb(38, 79, 41)',
-        offset: '2px',
-        width: '2px',
-      });
+      expect(outline.mark, outline.tag).toEqual(
+        'offset' in outline.mark
+          ? { colour: 'rgb(38, 79, 41)', offset: '2px', width: '2px' }
+          : {
+              colour: 'rgb(38, 79, 41)',
+              outline: 'none',
+              style: 'solid',
+              width: '2px',
+            }
+      );
       seen.add(outline.tag);
     }
 

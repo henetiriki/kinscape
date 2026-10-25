@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 import { notFound } from 'next/navigation';
 
-import { Text } from '@/app/components/Text';
+import { Text } from '@/app/components/foundation/Text';
 
 import { KitMenu } from './KitMenu';
 import { KitNav, KitTitle } from './KitNav';

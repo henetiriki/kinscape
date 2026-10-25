@@ -38,6 +38,7 @@ export default defineConfig([
       ],
       '@typescript-eslint/no-unused-vars': 'error',
       'import/no-default-export': 'error',
+      'import/no-unresolved': ['error', { ignore: [String.raw`\.css$`] }],
       'no-restricted-syntax': [
         'error',
         {
@@ -64,6 +65,40 @@ export default defineConfig([
       'types/*.d.ts',
     ],
     rules: { 'import/no-default-export': 'off' },
+  },
+  {
+    // Import a component by its full path, so a move can't leave a stale relative one.
+    files: ['app/components/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../**'],
+              message: 'Import by full path: @/app/components/<folder>/<Name>.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['app/**/*.{ts,tsx}'],
+    ignores: ['app/components/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              message: 'Import by full path: @/app/components/<folder>/<Name>.',
+              regex: String.raw`^\.{1,2}/(.*/)?components/`,
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     ...packageJson.configs.recommended,

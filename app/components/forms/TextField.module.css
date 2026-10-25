@@ -1,0 +1,240 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* The box draws the border, so the icon can sit inside it; focus is a 2px brand border instead of the ring. */
+.box {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  height: var(--size-field);
+  padding: 0 var(--space-12);
+  position: relative;
+}
+
+@media (hover: hover) {
+  .box:not([data-mark], :focus-within):hover:not(:has(:disabled)) {
+    border-color: var(--ink-3);
+  }
+}
+
+.box:not([data-mark], :focus-within)[data-state='hover']:not(:has(:disabled)) {
+  border-color: var(--ink-3);
+}
+
+.box:is(:focus-within, [data-state='focus']) {
+  border: 2px solid var(--brand);
+  padding: 0 11px;
+}
+
+/* A pressed select is the open list: the focus border on surface-2. */
+.box:has(select)[data-state='active'] {
+  background: var(--surface-2);
+  border: 2px solid var(--brand);
+  padding: 0 11px;
+}
+
+.box[data-mark] {
+  border: 2px solid var(--error-border);
+  padding: 0 11px;
+}
+
+.box[data-mark='warning'] {
+  border-color: var(--warning-border);
+}
+
+.box:has(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink-disabled);
+}
+
+.box > svg {
+  flex: none;
+}
+
+.box[data-mark='error'] > svg {
+  color: var(--error-border);
+}
+
+.box[data-mark='warning'] > svg {
+  color: var(--warning-border);
+}
+
+/* The input fills the box and reaches over its 1px borders, so the whole field height is its target. */
+.input {
+  align-self: stretch;
+  background: transparent;
+  margin-block: -1px;
+  border: 0;
+  color: inherit;
+  flex: 1;
+  font-family: var(--type-body-l-font);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+}
+
+/* 16px on phones, so the browser doesn't zoom in. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .input {
+    font-size: var(--type-body-l-size);
+    line-height: var(--type-body-l-line);
+  }
+}
+
+.input::placeholder {
+  color: var(--ink-3);
+}
+
+.input:disabled {
+  cursor: default;
+}
+
+.date {
+  width: var(--size-date-field);
+}
+
+.date[data-fill] {
+  width: auto;
+}
+
+.date .input {
+  font-family: var(--type-mono-l-font);
+  font-size: var(--type-mono-l-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-l-weight);
+  line-height: var(--type-mono-l-line);
+  text-align: center;
+}
+
+/* Room for the icon, so a long date stays centred in what is left. */
+.date[data-mark] .input {
+  padding-right: var(--space-24);
+}
+
+.date > svg {
+  position: absolute;
+  right: 9px;
+}
+
+/* The 48px sign-in size: 16 / 24 text. */
+.box[data-size='l'] {
+  height: var(--size-field-l);
+}
+
+.box[data-size='l'] .input {
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-line);
+}
+
+/* The search field sits on surface-2 with no visible border until it has focus. */
+.box[data-type='search'] {
+  color: var(--ink-3);
+  gap: var(--space-8);
+}
+
+.box[data-type='search']:not([data-mark], :focus-within) {
+  background: var(--surface-2);
+  border-color: transparent;
+}
+
+.box[data-type='search'] .input {
+  color: var(--ink);
+}
+
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration {
+  appearance: none;
+  display: none;
+}
+
+/* The 44px eye button sits inside the 48px field, past the padding. */
+.eye {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-segment-item);
+  color: var(--ink-3);
+  cursor: pointer;
+  display: flex;
+  flex: none;
+  height: var(--size-touch);
+  justify-content: center;
+  margin: 0 -10px 0 auto;
+  padding: 0;
+  width: var(--size-touch);
+}
+
+.eye:disabled {
+  color: var(--ink-disabled);
+  cursor: default;
+}
+
+/* Select: the native control with its arrow hidden and our chevron drawn over it. */
+.select {
+  align-self: stretch;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  flex: 1;
+  font-family: var(--type-body-l-font);
+  font-size: var(--type-body-l-size);
+  margin-block: -1px;
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+}
+
+.select:disabled {
+  cursor: default;
+}
+
+.chevron {
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.box:has(:disabled) .chevron {
+  color: var(--ink-disabled);
+}
+
+/* Token field: chips and the input wrap inside one box. */
+.tokens {
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  height: auto;
+  min-height: var(--size-field);
+  padding-block: 0;
+}
+
+/* A token field sits in the panel: its helper is 12.5 / 18, and 13 / 20 on a phone. */
+.panelHelper {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .panelHelper {
+    font-size: var(--type-small-size);
+    line-height: var(--type-small-line);
+  }
+}
+
+/* A 44px input in a 42px row inside the 1px border, reaching over it like any field's input. */
+.tokens .input {
+  flex: 1 1 100px;
+  min-height: var(--size-touch);
+}

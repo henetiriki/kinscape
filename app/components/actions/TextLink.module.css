@@ -1,0 +1,41 @@
+.textLink {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  border-radius: var(--radius-link);
+  color: var(--brand);
+  cursor: pointer;
+  font-family: var(--type-link-font);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+  line-height: var(--type-link-line);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.textLink[data-size='small'] {
+  font-size: var(--type-link-s-size);
+  line-height: var(--type-link-s-line);
+}
+
+@media (hover: hover) {
+  .textLink:hover {
+    color: var(--brand-hover);
+    text-decoration-thickness: 2px;
+  }
+}
+
+.textLink[data-state='hover'] {
+  color: var(--brand-hover);
+  text-decoration-thickness: 2px;
+}
+
+.textLink:is(:active, [data-state='active']) {
+  color: var(--brand-pressed);
+  text-decoration-thickness: 2px;
+}
+
+.textLink[aria-disabled='true'] {
+  color: var(--ink-disabled);
+  cursor: default;
+  text-decoration: none;
+}

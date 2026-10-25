@@ -1,4 +1,4 @@
-import type { IconName } from '@/app/components/Icon';
+import type { IconName } from '@/app/components/foundation/Icon';
 
 /** The Foundations board's rows, in board order. Each is keyed by its token; the board reads the value. */
 export const SPACE = [

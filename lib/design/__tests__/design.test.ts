@@ -35,13 +35,14 @@ describe('the design snapshots', () => {
 const COLOUR_LITERAL = /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i;
 
 describe('colour literals', () => {
-  const components = readdirSync(join(root, 'app/components'))
-    .filter(name => name.endsWith('.tsx'))
-    .map(name => `app/components/${name}`);
+  const components = globSync('app/components/*/*.tsx', {
+    cwd: root,
+  }).toSorted();
 
   const modules = globSync('app/**/*.module.css', { cwd: root }).toSorted();
 
-  it('finds the CSS modules', () => {
+  it('finds the components and the CSS modules', () => {
+    expect(components).toHaveLength(55);
     expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 
@@ -67,7 +68,7 @@ it('has no controls.css and nothing imports it', () => {
 
 // The thumb is a pseudo-element the browser won't report, so check the source.
 it('colours the slider thumb with the brand token', () => {
-  const thumbs = read('app/components/DateSlider.module.css').match(
+  const thumbs = read('app/components/map/DateSlider.module.css').match(
     /::-(?:webkit|moz)-(?:slider|range)-thumb \{[^}]*\}/g
   );
 
@@ -90,7 +91,7 @@ describe('layout tokens', () => {
   });
 
   it('places the popup from popup-gap and popup-point-y, pointer on the right edge', () => {
-    const css = read('app/components/Popup.module.css');
+    const css = read('app/components/overlays/Popup.module.css');
 
     expect(css).toContain('-100% - var(--layout-popup-gap)');
     expect(css).toContain('calc(-1 * var(--layout-popup-point-y))');
@@ -101,16 +102,16 @@ describe('layout tokens', () => {
   });
 
   const literals: Record<string, string[]> = {
-    'Callout.module.css': ['z-index: 1;'],
-    'Dialog.module.css': ['760px', '56px'],
-    'LayersPanel.module.css': ['z-index: 1;'],
-    'MapShell.module.css': ['z-index: 1;'],
-    'Menu.module.css': ['296px', 'z-index: 10'],
-    'NoticeCard.module.css': ['360px', '380px'],
-    'Popup.module.css': ['304px'],
-    'SearchBar.module.css': ['340px'],
-    'Toast.module.css': ['80px', '164px'],
-    'ZoomControls.module.css': ['z-index: 1;'],
+    'feedback/Callout.module.css': ['z-index: 1;'],
+    'feedback/NoticeCard.module.css': ['360px', '380px'],
+    'feedback/Toast.module.css': ['80px', '164px'],
+    'map/LayersPanel.module.css': ['z-index: 1;'],
+    'map/MapShell.module.css': ['z-index: 1;'],
+    'map/SearchBar.module.css': ['340px'],
+    'map/ZoomControls.module.css': ['z-index: 1;'],
+    'overlays/Dialog.module.css': ['760px', '56px'],
+    'overlays/Menu.module.css': ['296px', 'z-index: 10'],
+    'overlays/Popup.module.css': ['304px'],
   };
 
   it.each(Object.entries(literals))(

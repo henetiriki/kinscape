@@ -1,0 +1,40 @@
+.iconBtn {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  height: var(--size-control);
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  width: var(--size-control);
+}
+
+@media (hover: hover) {
+  .iconBtn:hover:not(:disabled, [aria-disabled='true']) {
+    background: var(--surface-2);
+  }
+}
+
+.iconBtn[data-state='hover']:not(:disabled, [aria-disabled='true']) {
+  background: var(--surface-2);
+}
+
+.iconBtn:is(
+  :active:not(:disabled, [aria-disabled='true']),
+  [data-state='active']
+) {
+  background: var(--brand-tint);
+  color: var(--brand-hover);
+}
+
+/* aria-disabled stays in the Tab order, so it can say why it does nothing. */
+.iconBtn:is(:disabled, [aria-disabled='true']) {
+  color: var(--icon-disabled);
+  cursor: default;
+}

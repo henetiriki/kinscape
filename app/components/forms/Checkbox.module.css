@@ -1,0 +1,88 @@
+/* A 20px box with a 44px hit area */
+
+.checkbox {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  appearance: none;
+  background: var(--surface);
+  border: 1.5px solid var(--field-border);
+  border-radius: var(--radius-small);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-grid;
+  height: var(--size-checkbox);
+  margin: 0;
+  place-content: center;
+  position: relative;
+  width: var(--size-checkbox);
+}
+
+.checkbox::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: var(--size-touch);
+}
+
+.checkbox::after {
+  background: var(--white);
+  content: '';
+  height: 14px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
+    center / 100% no-repeat;
+  opacity: 0;
+  width: 14px;
+}
+
+.checkbox:checked {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.checkbox:checked::after {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .checkbox:hover:not(:disabled) {
+    background: var(--surface-2);
+    border-color: var(--brand);
+  }
+
+  .checkbox:checked:hover:not(:disabled) {
+    background: var(--brand-hover);
+    border-color: var(--brand-hover);
+  }
+}
+
+.checkbox[data-state='hover']:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--brand);
+}
+
+.checkbox:checked[data-state='hover']:not(:disabled) {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+}
+
+.checkbox:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+}
+
+.checkbox:checked:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-pressed);
+  border-color: var(--brand-pressed);
+}
+
+.checkbox:disabled {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+  cursor: default;
+}
+
+.checkbox:checked:disabled {
+  background: var(--line-strong);
+}

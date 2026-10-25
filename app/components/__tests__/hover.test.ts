@@ -1,8 +1,9 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { globSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 const DIR = join(__dirname, '..');
+const STYLESHEETS = globSync('**/*.module.css', { cwd: DIR });
 
 /** The selectors of `:hover` rules that are not inside `@media (hover: hover)`. */
 const looseHover = (css: string) => {
@@ -37,11 +38,16 @@ const looseHover = (css: string) => {
 
 // NFR-05: a tap on a touch screen must leave no hover tint.
 it('has every :hover rule inside @media (hover: hover)', () => {
-  for (const file of readdirSync(DIR).filter(f => f.endsWith('.module.css')))
+  for (const file of STYLESHEETS)
     expect([file, looseHover(readFileSync(join(DIR, file), 'utf8'))]).toEqual([
       file,
       [],
     ]);
+});
+
+// A scan that finds no files passes without checking anything.
+it('reads every component stylesheet', () => {
+  expect(STYLESHEETS).toHaveLength(49);
 });
 
 it('finds a :hover rule outside the media query, and not one inside it', () => {

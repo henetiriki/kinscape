@@ -1,16 +1,16 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import type { ControlState } from '@/app/components/controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Button } from '@/app/components/Button';
-import { Checkbox } from '@/app/components/Checkbox';
-import { Chip } from '@/app/components/Chip';
-import { IconButton } from '@/app/components/IconButton';
-import { Segmented } from '@/app/components/Segmented';
-import { Tabs } from '@/app/components/Tabs';
-import { TextField } from '@/app/components/TextField';
-import { TextLink } from '@/app/components/TextLink';
+import { Button } from '@/app/components/actions/Button';
+import { Chip } from '@/app/components/actions/Chip';
+import { IconButton } from '@/app/components/actions/IconButton';
+import { Segmented } from '@/app/components/actions/Segmented';
+import { Tabs } from '@/app/components/actions/Tabs';
+import { TextLink } from '@/app/components/actions/TextLink';
+import { Checkbox } from '@/app/components/forms/Checkbox';
+import { TextField } from '@/app/components/forms/TextField';
 
 import { boardTitle } from '../boards';
 import kit from '../kit.module.css';

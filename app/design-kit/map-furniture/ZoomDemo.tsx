@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import type { ControlState } from '@/app/components/controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { ZoomControls } from '@/app/components/ZoomControls';
+import { ZoomControls } from '@/app/components/map/ZoomControls';
 
 // Three zoom levels, so a click or two reaches a limit and the disabled look can be tried.
 const MIN = 0;

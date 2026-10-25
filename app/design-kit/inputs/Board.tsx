@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { ControlState } from '@/app/components/controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
 import styles from './page.module.css';
 

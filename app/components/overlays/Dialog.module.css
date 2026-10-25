@@ -1,0 +1,122 @@
+/* A modal Dialog: centred over the scrim, or a bottom sheet on a phone */
+
+/* The dialog element is a bare shell; the panel is the surface. */
+.dialog {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  max-height: none;
+  max-width: none;
+  overflow: visible;
+  padding: 0;
+}
+
+.dialog::backdrop {
+  background: var(--scrim);
+}
+
+.dialog[data-form='sheet'] {
+  margin: auto 0 0;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog[open][data-form='sheet'] {
+    animation: rise var(--motion-sheet);
+  }
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.panel {
+  composes: modal from '@/app/components/foundation/Surface.module.css';
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-24) 28px 28px;
+  width: var(--layout-dialog-width);
+}
+
+.panel[data-form='sheet'] {
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  gap: var(--space-12);
+  padding: var(--space-8) var(--space-16) var(--space-24);
+  width: 100%;
+}
+
+/* In a dialog the panel stops short of the screen's edge; the design kit draws it whole. */
+.dialog .panel {
+  max-height: calc(100dvh - 80px);
+}
+
+.dialog .panel[data-form='sheet'] {
+  max-height: calc(100dvh - var(--layout-phone-sources-top));
+}
+
+.handle {
+  align-self: center;
+  background: var(--line-strong);
+  border-radius: var(--radius-full);
+  display: none;
+  flex: none;
+  height: 4px;
+  width: 40px;
+}
+
+.panel[data-form='sheet'] .handle {
+  display: block;
+}
+
+.head {
+  align-items: flex-start;
+  display: flex;
+  flex: none;
+  gap: var(--space-16);
+  justify-content: space-between;
+}
+
+.panel[data-form='sheet'] .head {
+  gap: var(--space-12);
+}
+
+/* Close is pulled into the corner so its icon lines up with the text. */
+.head > :last-child {
+  margin: calc(-1 * var(--space-8)) calc(-1 * var(--space-8)) 0 0;
+}
+
+.panel[data-form='sheet'] .head > :last-child {
+  margin-top: calc(-1 * var(--space-4));
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.titles p {
+  color: var(--ink-2);
+}
+
+/* The head stays put while the body scrolls under it. */
+.body {
+  border-top: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.panel[data-form='sheet'] .body {
+  gap: var(--space-12);
+}

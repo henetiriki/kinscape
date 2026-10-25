@@ -1,19 +1,19 @@
 import type { ReactNode } from 'react';
 
-import type { EventType } from '@/app/components/EventGlyph';
+import type { EventType } from '@/app/components/map/EventGlyph';
 
-import { Alert } from '@/app/components/Alert';
-import { Button } from '@/app/components/Button';
-import { CheckboxField } from '@/app/components/CheckboxField';
-import { Chip, RemovableChip } from '@/app/components/Chip';
-import { Divider } from '@/app/components/Divider';
-import { KeyHint } from '@/app/components/KeyHint';
-import { SelectField } from '@/app/components/SelectField';
-import { SheetPanel } from '@/app/components/Sheet';
-import { Surface } from '@/app/components/Surface';
-import { type Tab, Tabs } from '@/app/components/Tabs';
-import { TextField } from '@/app/components/TextField';
-import { TokenField } from '@/app/components/TokenField';
+import { Button } from '@/app/components/actions/Button';
+import { Chip, RemovableChip } from '@/app/components/actions/Chip';
+import { KeyHint } from '@/app/components/actions/KeyHint';
+import { type Tab, Tabs } from '@/app/components/actions/Tabs';
+import { Alert } from '@/app/components/feedback/Alert';
+import { CheckboxField } from '@/app/components/forms/CheckboxField';
+import { SelectField } from '@/app/components/forms/SelectField';
+import { TextField } from '@/app/components/forms/TextField';
+import { TokenField } from '@/app/components/forms/TokenField';
+import { Divider } from '@/app/components/foundation/Divider';
+import { Surface } from '@/app/components/foundation/Surface';
+import { SheetPanel } from '@/app/components/overlays/Sheet';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 

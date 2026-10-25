@@ -13,7 +13,7 @@
 
 /* The kit's name is a link to the index that reads as a title. */
 .title {
-  composes: ring from '../components/focus.module.css';
+  composes: ring from '@/app/components/foundation/focus.module.css';
   border-radius: var(--radius-link);
   color: var(--ink);
   text-decoration: none;

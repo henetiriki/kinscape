@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import { Icon } from '@/app/components/Icon';
-import { Text } from '@/app/components/Text';
+import { Icon } from '@/app/components/foundation/Icon';
+import { Text } from '@/app/components/foundation/Text';
 
 import rawTokens from '../../../design/tokens.json';
 import { boardTitle } from '../boards';

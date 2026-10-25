@@ -122,7 +122,7 @@
 }
 
 .goTo {
-  composes: textLink from '../../components/TextLink.module.css';
+  composes: textLink from '@/app/components/actions/TextLink.module.css';
   background: none;
   align-self: flex-start;
   border: 0;

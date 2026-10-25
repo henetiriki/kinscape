@@ -1,0 +1,67 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: var(--space-4);
+  position: relative;
+}
+
+/* What the callout points at. */
+.anchor {
+  position: relative;
+}
+
+/* A text link that is a button: the fix for a date that is out of range. */
+.fix {
+  composes: textLink from '@/app/components/actions/TextLink.module.css';
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  font-size: var(--type-link-s-size);
+  line-height: var(--type-link-s-line);
+  padding: 0;
+}
+
+.anchor[data-fill] {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Opens over the row, from the first control to the last; the pointer sits on the field. */
+.callout {
+  bottom: calc(100% + var(--callout-lift, var(--space-12)));
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.pointer {
+  bottom: calc(100% + var(--callout-lift, var(--space-12)) - 7px);
+  left: 50%;
+}
+
+.phoneFix {
+  display: none;
+}
+
+/* A phone has no Esc key: the message offers the fix instead. `.row >` outranks Callout's own `padding`, whichever stylesheet loads last. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .row > .callout {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-12) var(--space-16);
+  }
+
+  .esc {
+    display: none;
+  }
+
+  .phoneFix {
+    display: block;
+  }
+}

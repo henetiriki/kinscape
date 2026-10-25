@@ -47,7 +47,7 @@
 }
 
 .row {
-  composes: ring from '../components/focus.module.css';
+  composes: ring from '@/app/components/foundation/focus.module.css';
   border-radius: var(--radius-control);
   box-sizing: border-box;
   color: var(--brand);

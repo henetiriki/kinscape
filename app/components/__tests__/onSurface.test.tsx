@@ -11,19 +11,23 @@ const rule = (file: string, selector: string) => {
 
 // NFR-06: Vitest doesn't resolve `composes:`, so the rules are read as text.
 it.each([
-  ['LayersPanel.module.css', '.panel', 'raised'],
-  ['DateDock.module.css', '.dock', 'raised'],
-  ['Toast.module.css', '.toast', 'floating'],
+  ['map/LayersPanel.module.css', '.panel', 'raised'],
+  ['map/DateDock.module.css', '.dock', 'raised'],
+  ['feedback/Toast.module.css', '.toast', 'floating'],
 ])(
   '%s sets %s at the %s level and draws no background, radius or shadow',
   (file, selector, level) => {
     const body = rule(file, selector);
 
-    expect(body).toContain(`composes: ${level} from './Surface.module.css'`);
+    expect(body).toContain(
+      `composes: ${level} from '@/app/components/foundation/Surface.module.css'`
+    );
     expect(body).not.toMatch(/background|border-radius|box-shadow/);
   }
 );
 
 it('keeps the shared Toast shape free of its own radius', () => {
-  expect(rule('Toast.module.css', '.shape')).not.toContain('border-radius');
+  expect(rule('feedback/Toast.module.css', '.shape')).not.toContain(
+    'border-radius'
+  );
 });

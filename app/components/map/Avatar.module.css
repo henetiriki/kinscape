@@ -1,0 +1,35 @@
+/* The account Menu's trigger: 44 round, brand, a white initial, the raised shadow and no border */
+.avatar {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  align-items: center;
+  background: var(--brand);
+  border: 0;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-raised);
+  box-sizing: border-box;
+  color: var(--white);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--type-button-font);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  height: var(--size-touch);
+  justify-content: center;
+  line-height: var(--type-button-line);
+  padding: 0;
+  width: var(--size-touch);
+}
+
+@media (hover: hover) {
+  .avatar:hover {
+    background: var(--brand-hover);
+  }
+}
+
+.avatar[data-state='hover'] {
+  background: var(--brand-hover);
+}
+
+.avatar:is(:active, [data-state='active'], [aria-expanded='true']) {
+  background: var(--brand-pressed);
+}

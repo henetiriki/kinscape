@@ -1,0 +1,30 @@
+/* The Close button of a Dialog or Sheet head: 44 round, ink-3 */
+
+.close {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  color: var(--ink-3);
+  cursor: pointer;
+  display: flex;
+  flex: none;
+  height: var(--size-touch);
+  justify-content: center;
+  padding: 0;
+  width: var(--size-touch);
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+}
+
+.close:active {
+  background: var(--segment);
+  color: var(--ink);
+}

@@ -1,0 +1,111 @@
+.tabs {
+  display: inline-flex;
+  gap: var(--space-4);
+}
+
+.tab {
+  composes: ring from '@/app/components/foundation/focus.module.css';
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-control);
+  color: var(--ink-3);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  height: var(--size-control-s);
+  line-height: var(--type-label-line);
+  padding: 0 var(--space-16);
+  position: relative;
+}
+
+.fill {
+  display: flex;
+  flex: 1;
+}
+
+.fill .tab {
+  flex: 1;
+  height: var(--size-touch);
+  justify-content: center;
+}
+
+.tab::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(100%, var(--size-touch));
+}
+
+.tab[aria-selected='true'] {
+  background: var(--brand-tint);
+  color: var(--brand-hover);
+}
+
+@media (hover: hover) {
+  .tab[aria-selected='false']:hover:not(:disabled) {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+}
+
+.tab[aria-selected='false'][data-state='hover']:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.tab[aria-selected='false']:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--segment);
+  color: var(--ink);
+}
+
+@media (hover: hover) {
+  .tab[aria-selected='true']:hover:not(:disabled) {
+    background: var(--brand-tint-hover);
+  }
+}
+
+.tab[aria-selected='true'][data-state='hover']:not(:disabled) {
+  background: var(--brand-tint-hover);
+}
+
+.tab[aria-selected='true']:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-tint-pressed);
+  color: var(--brand-pressed);
+}
+
+.tab:disabled {
+  color: var(--ink-disabled);
+  cursor: default;
+}
+
+.tab[aria-selected='true']:disabled {
+  background: var(--segment);
+}
+
+.tab:has(.count) {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--space-8);
+}
+
+.count {
+  background: var(--brand);
+  border-radius: var(--radius-full);
+  box-sizing: border-box;
+  color: var(--white);
+  font-family: var(--type-chip-font);
+  font-size: var(--type-chip-size);
+  font-weight: var(--type-chip-weight);
+  line-height: var(--type-chip-line);
+  min-width: 20px;
+  padding: 0 6px;
+  text-align: center;
+}
+
+.tab:disabled .count {
+  background: var(--ink-disabled);
+}

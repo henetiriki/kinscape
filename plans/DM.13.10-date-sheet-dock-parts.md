@@ -68,8 +68,10 @@ I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 The build changes 1012 lines, 376 of them tests.
 
 - **A.** Keep one PR.
-- **B.** Split off `DateSlider`'s ticks, hatch and labels.
-- **Other:** your own.
+- ~~**B.** Split off `DateSlider`'s ticks, hatch and labels.~~
+- ~~**Other:** your own.~~
+
+**Answer: A** (@henetiriki)
 
 ## Deviations
 
@@ -90,7 +92,7 @@ The build changes 1012 lines, 376 of them tests.
 ## Order of work
 
 1. Failing tests.
-2. Token; `hatch.ts`; the parts; `DateSlider`; `DateDock`; `DESIGN.md`.
+2. Token; `hatch.ts`; parts; `DateSlider`; `DateDock`; `DESIGN.md`.
 3. All checks.
 
 ## Risks
@@ -112,4 +114,4 @@ The build changes 1012 lines, 376 of them tests.
 
 ## Out of scope
 
-Passing the new props from `MapShell`; Play timers; Play's pause look; dragging the sheet; tablet.
+New props from `MapShell`; Play timers; Play's pause look; dragging the sheet; tablet.

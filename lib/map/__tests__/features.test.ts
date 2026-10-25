@@ -111,4 +111,36 @@ describe('polityCollection', () => {
       ['New', { coordinates: [51, 51], type: 'Point' }],
     ]);
   });
+
+  it('moves one name to each Boundary version it overlaps, dated to the overlap', () => {
+    const { features } = polityCollection(
+      data({
+        boundaries: [
+          version('a', 0, 10, [polygon(0, 0, 2)]),
+          version('a', 10, 30, [polygon(50, 50, 2)]),
+          version('a', 30, null, [polygon(70, 70, 2)]),
+        ],
+        names: [
+          { name: 'Same', polity: 'a', validFrom: 5, validTo: 40 },
+          { name: 'Open', polity: 'a', validFrom: 20, validTo: null },
+        ],
+      })
+    );
+    const labels = features.filter(f => f.properties.kind === 'label');
+
+    expect(
+      labels.map(f => [
+        f.properties.name,
+        f.properties.validFrom,
+        f.properties.validTo,
+        f.geometry,
+      ])
+    ).toEqual([
+      ['Same', 5, 10, { coordinates: [1, 1], type: 'Point' }],
+      ['Same', 10, 30, { coordinates: [51, 51], type: 'Point' }],
+      ['Same', 30, 40, { coordinates: [71, 71], type: 'Point' }],
+      ['Open', 20, 30, { coordinates: [51, 51], type: 'Point' }],
+      ['Open', 30, null, { coordinates: [71, 71], type: 'Point' }],
+    ]);
+  });
 });

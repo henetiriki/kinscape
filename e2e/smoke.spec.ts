@@ -94,7 +94,7 @@ test('the credits line opens the sources and attributions dialog', async ({
   const dialog = page.getByRole('dialog', { name: 'Sources and attributions' });
 
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('row')).toHaveCount(7);
+  await expect(dialog.getByRole('row')).toHaveCount(8);
   await expect(dialog).toContainText('Public domain');
   await expect(dialog).toContainText('SIL Open Font Licence 1.1');
   await page.keyboard.press('Escape');
@@ -107,16 +107,21 @@ test('the Polities route serves the 11 Polities and no other country', async ({
 }) => {
   const response = await request.get('/data/polities');
   const { features } = await response.json();
-  const names = features
-    .filter(
-      (f: { properties: { kind: string } }) => f.properties.kind === 'label'
-    )
-    .map((f: { properties: { name: string } }) => f.properties.name);
+  const of = (kind: string, key: 'name' | 'polity') =>
+    new Set(
+      features
+        .filter(
+          (f: { properties: { kind: string } }) => f.properties.kind === kind
+        )
+        .map((f: { properties: Record<string, string> }) => f.properties[key])
+    );
+  const names = of('label', 'name');
 
   expect(response.ok()).toBe(true);
-  expect(features).toHaveLength(22);
-  expect(names).toHaveLength(11);
+  expect(of('boundary', 'polity').size).toBe(11);
+  expect(of('label', 'polity').size).toBe(11);
   expect(names).toContain('Lesotho');
   expect(names).toContain('eSwatini');
+  expect(names).toContain('Swaziland');
   expect(names).not.toContain('Mozambique');
 });

@@ -97,9 +97,9 @@ describe('validateBoundaries', () => {
     expect(validateBoundaries(root)).toEqual([]);
   });
 
-  it('passes the shipped empty data files', () => {
+  it('passes the shipped data files', () => {
     expect(validateBoundaries('data')).toEqual([]);
-  });
+  }, 60_000);
 
   it('passes versions that meet end to start', () => {
     setup([

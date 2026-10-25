@@ -63,8 +63,8 @@ test('dragging to 1800 and back loads no more boundary data', async ({
   expect(polityRequests).toHaveLength(1);
 });
 
-// MAP-04: 2008-06-01 draws none and 2010-06-01 draws the eleven.
-test('draws no Polities before 2009-04-03 and eleven after', async ({
+// MAP-04, MAP-06: 1994-04-26 draws none; 1995-06-01, either side of the 2006 switch and 2010 draw the eleven.
+test('draws no Polities before 1994-04-27 and eleven from then', async ({
   page,
 }) => {
   await page.goto('/');
@@ -76,42 +76,63 @@ test('draws no Polities before 2009-04-03 and eleven after', async ({
   const epoch = Date.UTC(1652, 0, 1);
   const dayOf = (iso: string) => (Date.parse(iso) - epoch) / 86_400_000;
 
-  await input.fill(String(dayOf('2008-06-01')));
+  await input.fill(String(dayOf('1994-04-26')));
   await expect.poll(() => drawnPolities(page)).toBe(0);
-  await input.fill(String(dayOf('2010-06-01')));
-  await expect.poll(() => drawnPolities(page)).toBe(11);
+
+  for (const date of [
+    '1994-04-27',
+    '1995-06-01',
+    '2006-02-28',
+    '2006-03-01',
+    '2010-06-01',
+  ]) {
+    await input.fill(String(dayOf(date)));
+    await expect.poll(() => drawnPolities(page)).toBe(11);
+  }
 });
 
-// NFR-01: 20 steps across 2009-04-03, each redraw under 2500 ms (software WebGL on CI).
+// NFR-01: 20 steps across 1994-04-27 and across 2006-03-01, each redraw under 2500 ms (software WebGL on CI).
 test(
-  'each redraw across 2009-04-03 stays under 2500 ms',
+  'each redraw across 1994-04-27 and 2006-03-01 stays under 2500 ms',
   { tag: '@perf' },
   async ({ page }) => {
+    const polityRequests: string[] = [];
+
+    page.on('request', request => {
+      if (request.url().includes('/data/polities')) {
+        polityRequests.push(request.url());
+      }
+    });
     await page.goto('/');
     await page.getByRole('radio', { name: 'Day' }).click();
     await expect.poll(() => drawnPolities(page)).toBe(11);
 
     const input = slider(page);
     const epoch = Date.UTC(1652, 0, 1);
-    const start = (Date.parse('2009-03-24') - epoch) / 86_400_000;
     const times: number[] = [];
 
-    for (let step = 0; step < 20; step++) {
-      await input.fill(String(start + step));
-      await page.waitForFunction(
-        count =>
-          performance.getEntriesByName('map-date-redraw').length >= count,
-        times.length + 1
-      );
-      times.push(
-        await page.evaluate(
-          () => performance.getEntriesByName('map-date-redraw').at(-1)!.duration
-        )
-      );
+    for (const from of ['1994-04-17', '2006-02-19']) {
+      const start = (Date.parse(from) - epoch) / 86_400_000;
+
+      for (let step = 0; step < 20; step++) {
+        await input.fill(String(start + step));
+        await page.waitForFunction(
+          count =>
+            performance.getEntriesByName('map-date-redraw').length >= count,
+          times.length + 1
+        );
+        times.push(
+          await page.evaluate(
+            () =>
+              performance.getEntriesByName('map-date-redraw').at(-1)!.duration
+          )
+        );
+      }
     }
 
     console.log('redraw ms', times.map(t => Math.round(t)).join(' '));
     expect(Math.max(...times)).toBeLessThan(2500);
+    expect(polityRequests).toHaveLength(1);
   }
 );
 

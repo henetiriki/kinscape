@@ -41,8 +41,19 @@
       "layer": "Polity borders",
       "licence": "Public domain",
       "licenceLink": "https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md",
-      "processing": "Natural Earth 10m v5.1.2 admin-1. South Africa's provinces, Lesotho and eSwatini, each dissolved to one shape, clipped, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Start date 2009-04-03: Proclamation R. 20 of 2009, Government Gazette 32091, 2 April 2009 (Sixteenth Amendment). Natural Earth's lines may predate that amendment in places.",
+      "processing": "Natural Earth 10m v5.1.2 admin-1. South Africa's provinces, Lesotho and eSwatini, each dissolved to one shape, clipped, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Lesotho and eSwatini from 1994-04-27. Provinces from 2006-03-01 (Twelfth Amendment, Proclamation R. 8 of 2006, Government Gazette 28568), low confidence until 2009-04-03 (Sixteenth Amendment, Proclamation R. 20 of 2009, Government Gazette 32091), when Merafong moved to Gauteng. Natural Earth's lines may predate those amendments in places.",
       "title": "Natural Earth 10m admin-1 states and provinces"
+    },
+    {
+      "attribution": "Made with Natural Earth",
+      "author": "Tom Patterson, Nathaniel Vaughn Kelso and contributors",
+      "dateChecked": "2026-10-25",
+      "id": "natural-earth-admin-1-v4",
+      "layer": "Polity borders",
+      "licence": "Public domain",
+      "licenceLink": "https://github.com/nvkelso/natural-earth-vector/blob/v4.1.0/LICENSE.md",
+      "processing": "Natural Earth 10m v4.1.0 admin-1 (2018-05-21). South Africa's nine provinces, each dissolved to one shape, clipped to the v5.1.2 outline of South Africa, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1994-04-27 to 2006-03-01 (M1.3). Bushbuckridge is in Mpumalanga here, though it was in Northern Province until 2006. Natural Earth approximates the magisterial districts of Schedule 1 of the 1993 Constitution; low confidence.",
+      "title": "Natural Earth 10m admin-1 states and provinces, v4.1.0"
     },
     {
       "attribution": "Public Sans © The Public Sans Project Authors",

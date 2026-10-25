@@ -2,7 +2,7 @@
 
 - **Spec:** #260 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -37,7 +37,7 @@ New checks in `lib/design/__tests__/design.test.ts`: dock left = gutter + panel 
 - **B.** Rewrite it as `not all and ((max-width: 639.98px) or (max-height: 499.98px))`, so every query writes the same literal.
 - **Other:** your own.
 
-Recommended: A, because it leaves a `blocking` kit page alone.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

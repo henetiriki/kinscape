@@ -2,7 +2,7 @@
 
 - **Spec:** #264 (Intent #111)
 - **Requirement IDs:** none (a refactor)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ About 1,200 changed lines (`git diff -M`; renames count 0): ~600 path rewrites, 
 - **C.** Split by folder: this Spec moves `foundation`, `actions`, `forms` with lint and scans; a new Spec moves `feedback`, `overlays`, `map`, `auth` and writes the docs. ~600 each; between merges `app/components` holds folders and loose files.
 - **Other:** your own.
 
-Recommended: A, because nearly every line is a path or a moved case, and a split leaves the folder half-moved.
+**Answer: A** (@henetiriki)
 
 **D2 · Four more tests span folders** · Decides: Tech lead
 
@@ -33,7 +33,7 @@ Spec D5 names `Parts` and `Toggles`. Also: `Alert` (an `Icon` case), `Menu` (two
 - **B.** Move each whole to its main component's folder, importing across; the acceptance check then names eight tests that follow D5, not four.
 - **Other:** your own.
 
-Recommended: A, because the acceptance check puts each component's test beside it.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

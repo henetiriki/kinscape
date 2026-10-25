@@ -20,6 +20,16 @@ const PROVINCES_1910 = 'provinces_1910';
 const OUTLINE = 'south_africa_outline';
 const NEIGHBOURS = 'lesotho_eswatini';
 const NEIGHBOURS_1910 = 'lesotho_eswatini_1910';
+const FREE_STATE_1910 = 'free_state_1910';
+const WALVIS_BAY = 'walvis_bay';
+const EDGE = 'union_edge';
+
+/** Afrith's edge falls short of Natural Earth's outline by less than this; the buffer closes the gap, then the clip trims it. */
+const EDGE_BUFFER = '5km';
+
+/** Afrith's Cape part around Walvis Bay, which is outside Natural Earth's outline (M1.8 D2). */
+const WALVIS_BAY_TEST =
+  'this.centroidX < 16 && this.centroidY < -22 && this.centroidY > -24';
 
 /** afrith/historical-boundary-data, pinned (M1.4). */
 export const AFRITH_COMMIT = 'fbdf94d8a561814510f5d62ec552d6d67f3488e6';
@@ -79,6 +89,9 @@ export const BOUNDARY_SOURCE_1910 = 'afrith-provinces-1910';
 
 const FOREIGN = ['LSO', 'SWZ'];
 
+/** The Union's Free State takes Natural Earth's v4.1.0 shape (B289). */
+const FREE_STATE_KEY = 'Orange Free State';
+
 /** The names in the Act (South Africa Act 1909, s. 6) to Polity id. */
 export const UNION_IDS: Record<string, string> = {
   'Cape of Good Hope': 'cape-of-good-hope',
@@ -137,12 +150,25 @@ export const buildCommands = (): string =>
     `-dissolve target=${OUTLINE}`,
     `-clip ${OUTLINE} target=${PROVINCES_1994}`,
     `-filter '${FOREIGN.map(code => `key == "${code}"`).join(' || ')}' + name=${NEIGHBOURS} target=${PROVINCES}`,
+    `-filter 'key == "Free State"' + name=${FREE_STATE_1910} target=${PROVINCES_1994}`,
+    `-each 'key = "Orange Free State"' target=${FREE_STATE_1910}`,
     `-each 'key = name' target=${PROVINCES_1910}`,
     `-dissolve key target=${PROVINCES_1910}`,
-    `-erase ${NEIGHBOURS} target=${PROVINCES_1910}`,
+    `-filter 'key == "Cape of Good Hope"' + name=${WALVIS_BAY} target=${PROVINCES_1910}`,
+    `-explode target=${WALVIS_BAY}`,
+    `-filter '${WALVIS_BAY_TEST}' target=${WALVIS_BAY}`,
+    `-dissolve target=${WALVIS_BAY}`,
+    `-filter 'key != "Orange Free State"' target=${PROVINCES_1910}`,
+    `-buffer ${EDGE_BUFFER} topological target=${PROVINCES_1910}`,
+    `-erase ${FREE_STATE_1910} target=${PROVINCES_1910}`,
+    `-erase ${NEIGHBOURS} target=${PROVINCES_1910},${FREE_STATE_1910}`,
     `-clip ne_10m_land target=${PROVINCES_1910}`,
+    `-filter true + name=${EDGE} target=${OUTLINE}`,
+    `-merge-layers target=${EDGE},${WALVIS_BAY} name=${EDGE}`,
+    `-dissolve target=${EDGE}`,
+    `-clip ${EDGE} target=${PROVINCES_1910}`,
     `-filter true + name=${NEIGHBOURS_1910} target=${NEIGHBOURS}`,
-    `-merge-layers target=${PROVINCES_1910},${NEIGHBOURS_1910} name=${PROVINCES_1910}`,
+    `-merge-layers target=${PROVINCES_1910},${FREE_STATE_1910},${NEIGHBOURS_1910} name=${PROVINCES_1910}`,
     `-clean gap-fill-area=${GAP_FILL_AREA} target=${PROVINCES_1910}`,
     `-clip bbox=${BBOX} target=*`,
     `-simplify interval=${TOLERANCE} keep-shapes`,
@@ -312,7 +338,10 @@ export const boundaryVersions = (
       [...union].map(([key, geometry]) =>
         version(geometry, key, {
           confidence: 'low',
-          source: BOUNDARY_SOURCE_1910,
+          source:
+            key === FREE_STATE_KEY
+              ? BOUNDARY_SOURCE_1994
+              : BOUNDARY_SOURCE_1910,
           validFrom: UNION_DATE,
           validTo: FIRST_DATE,
         })

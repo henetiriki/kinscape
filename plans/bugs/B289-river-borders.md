@@ -63,6 +63,13 @@ Replaces M1.4's source for one Polity.
 | Free State version cites Natural Earth v4.1.0                   | Prepare script test                                       |
 | Lint, tests (100%), validator, e2e pass                         | Their output in the PR                                    |
 
+## Deviations
+
+- Sliver joining: `-buffer 5km topological` extends afrith's three provinces before the erases and outline clip.
+- Orange test: only vertices south of 29.7°S; the border near Kimberley isn't a river.
+- Outer-edge test: share within 0.5 km among vertices within 3 km, not counts.
+- Step 3: 110 shared Cape–Transvaal vertices, 6 near a basemap river (no Molopo).
+
 ## Out of scope
 
 - Moving Cape–Transvaal vertices; step 3 only counts them.

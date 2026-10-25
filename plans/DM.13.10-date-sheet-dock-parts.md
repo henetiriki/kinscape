@@ -2,7 +2,7 @@
 
 - **Spec:** #262 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06, MAP-03, MAP-08, MAP-09
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ The Spec says "pressed state"; `DESIGN.md` makes speed a Segmented control: radi
 - **B.** Three toggle buttons with `aria-pressed`, styled as `Segmented`.
 - **Other:** your own.
 
-Recommended: A, because it matches precision.
+**Answer: A** (@henetiriki)
 
 **D2 · Slider year labels** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ The snapshot labels 1652, 1700 to 1950 by 50 without 1900, and Today.
 - **B.** A `labels` prop; `DateDock` passes the snapshot's years.
 - **Other:** your own.
 
-Recommended: A, because no map screen is `blocking` yet.
+**Answer: A** (@henetiriki)
 
 **D3 · The slider in the collapsed sheet** · Decides: Tech lead
 
@@ -46,7 +46,7 @@ The collapsed snapshot has no slider; the expanded one has.
 - **B.** Always draw it; the caller hides it.
 - **Other:** your own.
 
-Recommended: A, because the dock owns the slider's precision.
+**Answer: A** (@henetiriki)
 
 **D4 · Shift ×10** · Decides: Tech lead
 
@@ -56,7 +56,7 @@ The hints promise Shift ×10; the native range steps by 1.
 - **B.** Leave it to the map screen Spec.
 - **Other:** your own.
 
-Recommended: A, so the hint is true.
+**Answer: A** (@henetiriki)
 
 **D5 · Size** · Decides: Tech lead
 
@@ -65,6 +65,8 @@ I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 - **A.** Build as one; stop and ask past 950.
 - **B.** Move `DateSlider`'s ticks, hatch and labels to a new Spec.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

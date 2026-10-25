@@ -2,8 +2,9 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
 
-import styles from './Button.module.css';
 import { Icon, type IconName } from '@/app/components/foundation/Icon';
+
+import styles from './Button.module.css';
 
 type Base = {
   /** Fills the width of its container. */

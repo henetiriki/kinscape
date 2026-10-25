@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 
 import { Alert } from '@/app/components/feedback/Alert';
 import { Banner } from '@/app/components/feedback/Banner';
-import { Text } from '@/app/components/foundation/Text';
-import { TextField } from '@/app/components/forms/TextField';
 import { Toast } from '@/app/components/feedback/Toast';
+import { TextField } from '@/app/components/forms/TextField';
+import { Text } from '@/app/components/foundation/Text';
 import { toDay } from '@/lib/boundaries/model.mts';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 

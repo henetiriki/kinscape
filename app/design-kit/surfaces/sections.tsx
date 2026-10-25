@@ -2,19 +2,22 @@ import type { ReactNode } from 'react';
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
-import { Avatar } from '@/app/components/map/Avatar';
 import { Button } from '@/app/components/actions/Button';
 import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
-import { DialogPanel } from '@/app/components/overlays/Dialog';
-import { Icon } from '@/app/components/foundation/Icon';
-import { MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
 import { NoticeCard } from '@/app/components/feedback/NoticeCard';
-import { Popup } from '@/app/components/overlays/Popup';
 import { ProgressBar } from '@/app/components/feedback/ProgressBar';
+import { Icon } from '@/app/components/foundation/Icon';
+import {
+  Surface,
+  type SurfaceLevel,
+} from '@/app/components/foundation/Surface';
+import { Avatar } from '@/app/components/map/Avatar';
+import { DialogPanel } from '@/app/components/overlays/Dialog';
+import { MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
+import { Popup } from '@/app/components/overlays/Popup';
 import { SheetPanel } from '@/app/components/overlays/Sheet';
 import { SourcesList } from '@/app/components/overlays/SourcesDialog';
 import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
-import { Surface, type SurfaceLevel } from '@/app/components/foundation/Surface';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 

@@ -11,9 +11,10 @@ import {
 
 import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Icon } from '@/app/components/foundation/Icon';
 import { KeyHint } from '@/app/components/actions/KeyHint';
+import { Icon } from '@/app/components/foundation/Icon';
 import { Text } from '@/app/components/foundation/Text';
+
 import styles from './TextField.module.css';
 
 // A key typed in these is text, not a shortcut.

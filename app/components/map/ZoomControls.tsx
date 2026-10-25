@@ -1,7 +1,8 @@
 import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Icon } from '@/app/components/foundation/Icon';
 import { IconButton } from '@/app/components/actions/IconButton';
+import { Icon } from '@/app/components/foundation/Icon';
+
 import styles from './ZoomControls.module.css';
 
 /**

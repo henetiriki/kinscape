@@ -1,11 +1,11 @@
 import type { CSSProperties } from 'react';
 
+import { Text } from '@/app/components/foundation/Text';
+import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
 import styles from './Legend.module.css';
-import { Text } from '@/app/components/foundation/Text';
 
 const { map } = resolveTokens(rawTokens);
 

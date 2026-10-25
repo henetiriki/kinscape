@@ -6,6 +6,7 @@ import type { ControlState } from '@/app/components/foundation/controls';
 
 import { RemovableChip } from '@/app/components/actions/Chip';
 import { Text } from '@/app/components/foundation/Text';
+
 import styles from './TextField.module.css';
 
 /** A field of removable chips with an input that adds the next one on Enter. */

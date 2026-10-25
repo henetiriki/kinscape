@@ -10,10 +10,11 @@ import {
 
 import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Avatar } from '@/app/components/map/Avatar';
 import { Icon, type IconName } from '@/app/components/foundation/Icon';
-import styles from './Menu.module.css';
 import { Surface } from '@/app/components/foundation/Surface';
+import { Avatar } from '@/app/components/map/Avatar';
+
+import styles from './Menu.module.css';
 
 export type MenuEntry = {
   detail?: string;

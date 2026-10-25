@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react';
 
+import { hatchStyle } from '@/app/components/map/hatch';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
 import {
   dayFromSlider,
@@ -11,7 +12,6 @@ import {
 } from '@/lib/map/map-date';
 
 import styles from './DateSlider.module.css';
-import { hatchStyle } from '@/app/components/map/hatch';
 
 const FIRST_YEAR = 1652;
 const LABEL_EVERY = 50;

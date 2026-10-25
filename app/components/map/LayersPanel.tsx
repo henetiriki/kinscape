@@ -1,8 +1,9 @@
 'use client';
 
 import { Checkbox } from '@/app/components/forms/Checkbox';
-import styles from './LayersPanel.module.css';
 import { Text } from '@/app/components/foundation/Text';
+
+import styles from './LayersPanel.module.css';
 
 export const LayersPanel = ({
   onShowPolitiesChange,

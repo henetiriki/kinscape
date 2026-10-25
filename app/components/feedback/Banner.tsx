@@ -1,4 +1,5 @@
 import { Icon, type IconName } from '@/app/components/foundation/Icon';
+
 import styles from './Toast.module.css';
 
 /** A problem with the app that doesn't stop the map, with one action. */

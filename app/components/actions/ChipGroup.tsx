@@ -1,6 +1,7 @@
 import type { EventType } from '@/app/components/map/EventGlyph';
 
 import { Chip } from '@/app/components/actions/Chip';
+
 import styles from './ChipGroup.module.css';
 
 export type ChipOption = {

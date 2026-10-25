@@ -4,10 +4,10 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 import { Button } from '@/app/components/actions/Button';
-import { Icon } from '@/app/components/foundation/Icon';
-import { Sheet } from '@/app/components/overlays/Sheet';
-import { Text } from '@/app/components/foundation/Text';
 import { TextLink } from '@/app/components/actions/TextLink';
+import { Icon } from '@/app/components/foundation/Icon';
+import { Text } from '@/app/components/foundation/Text';
+import { Sheet } from '@/app/components/overlays/Sheet';
 
 import { BOARDS } from './boards';
 import styles from './KitMenu.module.css';

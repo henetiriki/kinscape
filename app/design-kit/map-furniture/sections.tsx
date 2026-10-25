@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import { Avatar } from '@/app/components/map/Avatar';
 import { Chip } from '@/app/components/actions/Chip';
+import { Avatar } from '@/app/components/map/Avatar';
 import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
 import { LayersButton } from '@/app/components/map/LayersButton';
 import { Legend } from '@/app/components/map/Legend';

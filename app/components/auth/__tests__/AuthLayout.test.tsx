@@ -3,10 +3,9 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
+import { AuthLayout } from '@/app/components/auth/AuthLayout';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
-
-import { AuthLayout } from '@/app/components/auth/AuthLayout';
 
 const { breakpoint, layout, map } = resolveTokens(rawTokens);
 

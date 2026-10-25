@@ -4,14 +4,14 @@ import { useState } from 'react';
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
-import { todayDay } from '@/lib/map/map-date';
-
 import { Credits } from '@/app/components/map/Credits';
 import { DateDock } from '@/app/components/map/DateDock';
 import { LayersPanel } from '@/app/components/map/LayersPanel';
-import styles from './MapShell.module.css';
 import { MapView } from '@/app/components/map/MapView';
 import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
+import { todayDay } from '@/lib/map/map-date';
+
+import styles from './MapShell.module.css';
 
 export const MapShell = ({ sources }: { sources: Source[] }) => {
   // The Map date starts on today, which is also the last date.

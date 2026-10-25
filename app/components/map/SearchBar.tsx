@@ -2,9 +2,10 @@
 
 import type { ComponentProps, KeyboardEvent, ReactNode } from 'react';
 
-import styles from './SearchBar.module.css';
 import { TextField } from '@/app/components/forms/TextField';
 import { Wordmark } from '@/app/components/map/Wordmark';
+
+import styles from './SearchBar.module.css';
 
 const NAME = 'Search people and places';
 

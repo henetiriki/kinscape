@@ -1,11 +1,11 @@
 import { type CSSProperties, useId } from 'react';
 
+import { BORDERS, LAND, RIVERS } from '@/app/components/auth/signInHeroPaths';
+import { Text } from '@/app/components/foundation/Text';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
 import styles from './SignInHero.module.css';
-import { BORDERS, LAND, RIVERS } from '@/app/components/auth/signInHeroPaths';
-import { Text } from '@/app/components/foundation/Text';
 
 const { colour, map } = resolveTokens(rawTokens);
 

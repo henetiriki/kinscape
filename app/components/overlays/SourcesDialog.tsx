@@ -2,11 +2,12 @@
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
-import { Dialog } from '@/app/components/overlays/Dialog';
-import styles from './SourcesDialog.module.css';
-import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
-import { Text } from '@/app/components/foundation/Text';
 import { TextLink } from '@/app/components/actions/TextLink';
+import { Text } from '@/app/components/foundation/Text';
+import { Dialog } from '@/app/components/overlays/Dialog';
+import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
+
+import styles from './SourcesDialog.module.css';
 
 const COLUMNS = ['Layer', 'Source', 'Licence', 'Checked'];
 

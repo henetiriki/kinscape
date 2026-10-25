@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react';
 
+import {
+  FilledIcon,
+  type FilledIconName,
+} from '@/app/components/foundation/Icon';
+
 import styles from './Alert.module.css';
-import { FilledIcon, type FilledIconName } from '@/app/components/foundation/Icon';
 
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export const Alert = ({

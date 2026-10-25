@@ -1,4 +1,5 @@
 import { Text } from '@/app/components/foundation/Text';
+
 import styles from './Wordmark.module.css';
 
 const NAME = { 32: 'h3', 36: 'h3', 44: 'h2' } as const;

@@ -2,6 +2,18 @@
 
 import { useState } from 'react';
 
+import { IconButton } from '@/app/components/actions/IconButton';
+import { Segmented } from '@/app/components/actions/Segmented';
+import { DateField } from '@/app/components/forms/DateField';
+import { ContestedNote } from '@/app/components/map/ContestedNote';
+import { DateKeyHints } from '@/app/components/map/DateKeyHints';
+import {
+  type ContestedYears,
+  DateSlider,
+} from '@/app/components/map/DateSlider';
+import { type Epoch, JumpTo } from '@/app/components/map/JumpTo';
+import { PlayButton } from '@/app/components/map/PlayButton';
+import { BottomSheet } from '@/app/components/overlays/BottomSheet';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
 import {
   MIN_DAY,
@@ -10,16 +22,7 @@ import {
   stepDay,
 } from '@/lib/map/map-date';
 
-import { BottomSheet } from '@/app/components/overlays/BottomSheet';
-import { ContestedNote } from '@/app/components/map/ContestedNote';
 import styles from './DateDock.module.css';
-import { DateField } from '@/app/components/forms/DateField';
-import { DateKeyHints } from '@/app/components/map/DateKeyHints';
-import { type ContestedYears, DateSlider } from '@/app/components/map/DateSlider';
-import { IconButton } from '@/app/components/actions/IconButton';
-import { type Epoch, JumpTo } from '@/app/components/map/JumpTo';
-import { PlayButton } from '@/app/components/map/PlayButton';
-import { Segmented } from '@/app/components/actions/Segmented';
 
 const OPTIONS = PRECISIONS.map(precision => ({
   label: precision[0].toUpperCase() + precision.slice(1),

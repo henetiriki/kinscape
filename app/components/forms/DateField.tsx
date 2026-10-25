@@ -2,15 +2,15 @@
 
 import { type ComponentProps, type ReactNode, useId, useState } from 'react';
 
-import { checkDate, type Problem } from '@/lib/map/date-input';
-import { type Precision, shownDate } from '@/lib/map/map-date';
-
 import type { ControlState } from '@/app/components/foundation/controls';
 
 import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
-import styles from './DateField.module.css';
-import { Text, type Tone } from '@/app/components/foundation/Text';
 import { TextField } from '@/app/components/forms/TextField';
+import { Text, type Tone } from '@/app/components/foundation/Text';
+import { checkDate, type Problem } from '@/lib/map/date-input';
+import { type Precision, shownDate } from '@/lib/map/map-date';
+
+import styles from './DateField.module.css';
 
 type Notice = { text: string; tone: Extract<Tone, 'info' | 'warning'> };
 

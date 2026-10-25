@@ -3,6 +3,7 @@
 import { type ComponentProps, useEffect, useRef } from 'react';
 
 import { Icon } from '@/app/components/foundation/Icon';
+
 import styles from './Modal.module.css';
 
 type ModalProps = {

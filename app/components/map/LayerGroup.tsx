@@ -1,8 +1,9 @@
 import { type ComponentProps, type ReactNode, useId } from 'react';
 
 import { CheckboxField } from '@/app/components/forms/CheckboxField';
-import styles from './LayerGroup.module.css';
 import { Text } from '@/app/components/foundation/Text';
+
+import styles from './LayerGroup.module.css';
 
 export type LayerRow = {
   checked: boolean;

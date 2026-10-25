@@ -2,9 +2,10 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
 
-import styles from './Chip.module.css';
-import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
 import { Icon } from '@/app/components/foundation/Icon';
+import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
+
+import styles from './Chip.module.css';
 
 export const Chip = ({
   children,

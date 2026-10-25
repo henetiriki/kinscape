@@ -1,0 +1,114 @@
+name: 'Backlog: Inherit milestone'
+
+# A Spec takes its parent Intent's milestone; a PR takes the milestone of the Spec it closes.
+# Only empty milestones are filled. A manual run does this for every Spec, then every PR.
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  inherit:
+    # New issues: Specs only. Fork PRs are skipped: their token cannot write.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'type: spec')) ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy milestones
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const hasLabel = (issue, name) => issue.labels.some((l) => (l.name ?? l) === name);
+
+            // The milestone number a Spec should have: its parent Intent's, else the form answer.
+            let milestones;
+            async function specMilestone(spec) {
+              try {
+                const { data: parent } = await github.request(
+                  'GET /repos/{owner}/{repo}/issues/{issue_number}/parent',
+                  { owner, repo, issue_number: spec.number },
+                );
+                if (parent.milestone) return parent.milestone.number;
+              } catch (error) {
+                if (error.status !== 404) throw error;
+              }
+              const field = /### Intent or milestone\s+(.*)/.exec(spec.body ?? '');
+              const value = field ? field[1].trim() : '';
+              const milestone = /^M\d+$/.test(value);
+              if (milestone) {
+                milestones ??= await github.paginate(github.rest.issues.listMilestones, {
+                  owner,
+                  repo,
+                  state: 'all',
+                  per_page: 100,
+                });
+                const found = milestones.find(
+                  (m) => m.title === value || m.title.startsWith(`${value} `),
+                );
+                return found?.number;
+              }
+              const match = /^#?(\d+)$/.exec(value);
+              if (!match) return undefined;
+              const { data: intent } = await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number: Number(match[1]),
+              });
+              return !intent.pull_request && hasLabel(intent, 'type: intent')
+                ? intent.milestone?.number
+                : undefined;
+            }
+
+            async function fill(issue, milestone) {
+              if (issue.milestone || !milestone) return;
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: issue.number,
+                milestone,
+              });
+              core.info(`#${issue.number}: milestone ${milestone}`);
+            }
+
+            // The milestone a PR should have: the first Spec it closes that has one.
+            async function prMilestone(pr) {
+              for (const [, n] of (pr.body ?? '').matchAll(/\bcloses\s+#(\d+)/gi)) {
+                const { data: spec } = await github.rest.issues.get({
+                  owner,
+                  repo,
+                  issue_number: Number(n),
+                });
+                if (!spec.pull_request && hasLabel(spec, 'type: spec') && spec.milestone) {
+                  return spec.milestone.number;
+                }
+              }
+            }
+
+            const all = (route, params) =>
+              github.paginate(route, { owner, repo, state: 'all', per_page: 100, ...params });
+
+            if (context.eventName === 'issues') {
+              const spec = context.payload.issue;
+              await fill(spec, await specMilestone(spec));
+            } else if (context.eventName === 'pull_request') {
+              const pr = context.payload.pull_request;
+              await fill(pr, await prMilestone(pr));
+            } else {
+              const specs = await all(github.rest.issues.listForRepo, { labels: 'type: spec' });
+              for (const spec of specs.filter((s) => !s.pull_request)) {
+                await fill(spec, await specMilestone(spec));
+              }
+              for (const pr of await all(github.rest.pulls.list)) {
+                await fill(pr, await prMilestone(pr));
+              }
+            }

@@ -5,13 +5,13 @@
 
 ## Approach
 
-The review runs the stock `/code-review:code-review --comment` with no project context, and says "No issues" on most PRs. A new `.github/agent/review.md` joins the run as `--append-system-prompt-file`. It tells the reviewer to:
+The review runs the stock command with no project context, and says "No issues" on most PRs. A new `.github/agent/review.md` joins the run as `--append-system-prompt-file`. It tells the reviewer to:
 
-- check the diff against the PR's plan (Approach, Files, Proof), citing requirement IDs;
-- check `docs/security.md` and the AGENTS.md data rules, including pinned SHAs, minimal `permissions:` and API error handling in workflows;
+- check the diff against the PR's plan, citing requirement IDs;
+- check `docs/security.md` and the AGENTS.md data rules, including workflow pinning, permissions and API error handling;
 - label probable issues PLAUSIBLE, post at most five, and list what it checked before saying "No issues".
 
-`claude-code-review.yml` downloads the file from `main` as `claude-run.yml` does. The pinned command has no `--max-findings`, so `review.md` states the cap. It also overrides the command's "certain only" filters and its stop when Claude has already commented, so each push is reviewed again.
+`claude-code-review.yml` downloads the file from `main`. The pinned command has no `--max-findings`, so `review.md` states the cap. It also overrides the command's "certain only" filters and its stop when Claude has already commented, so each push is reviewed again.
 
 ## Decisions
 
@@ -31,8 +31,8 @@ The review runs the stock `/code-review:code-review --comment` with no project c
 
 **D3 · The command's filters and one-review stop** · Decides: Tech lead
 
-- **A.** `review.md` overrides both; if that fails, write our own prompt.
-- **B.** Write our own prompt now.
+- **A.** `review.md` overrides both; if that fails, our own prompt.
+- **B.** Our own prompt now.
 
 **Answer: A** (@henetiriki)
 
@@ -58,3 +58,7 @@ The review runs the stock `/code-review:code-review --comment` with no project c
 | Lint, format, words                 | Their output               |
 
 **Hand back:** both files are in `.github/CODEOWNERS`, so the tech lead builds this locally.
+
+## Deviations
+
+- The load step falls back to a one-line file, so this PR's own review runs.

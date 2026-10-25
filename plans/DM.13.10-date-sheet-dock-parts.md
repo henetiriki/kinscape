@@ -59,7 +59,7 @@ The hints promise Shift ×10; the native range steps by 1.
 I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 
 - **A.** Build as one; stop and ask past 950.
-- ~~**B.** Move `DateSlider`'s ticks, hatch and labels to a new Spec.~~
+- ~~**B.** Split off `DateSlider`'s ticks, hatch and labels.~~
 
 **Answer: A** (@henetiriki)
 
@@ -68,13 +68,14 @@ I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 The build changes 1012 lines, 376 of them tests.
 
 - **A.** Keep one PR.
-- **B.** Move `DateSlider`'s ticks, hatch and labels to a new Spec.
+- **B.** Split off `DateSlider`'s ticks, hatch and labels.
 - **Other:** your own.
 
 ## Deviations
 
 - `DateDock` takes `sheet={{ expanded, onExpandedChange }}`; Play, Jump to and the note show only when passed.
 - `e2e/design.spec.ts` takes a text field's 2px brand border, with no outline, as its focus mark.
+- `DateField.module.css`: `.row >` makes phone callout padding win.
 
 ## Files that change
 

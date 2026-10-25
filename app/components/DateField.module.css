@@ -49,13 +49,12 @@
   display: none;
 }
 
-/* A phone has no Esc key: the message offers the fix instead. */
+/* A phone has no Esc key: the message offers the fix instead. `.row >` outranks Callout's own `padding`, whichever stylesheet loads last. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
-  .callout {
+  .row > .callout {
     display: flex;
     flex-direction: column;
-    padding-bottom: var(--space-4);
-    padding-inline: var(--space-16);
+    padding: var(--space-12) var(--space-16);
   }
 
   .esc {

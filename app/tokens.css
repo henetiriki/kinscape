@@ -218,6 +218,15 @@
   --layout-credits-bottom: 6px;
   --layout-popup-gap: 14px;
   --layout-popup-point-y: 114px;
+  --layout-sign-in-hero: 560px;
+  --layout-sign-in-hero-min: 420px;
+  --layout-sign-in-hero-phone: 188px;
+  --layout-sign-in-pane: 440px;
+  --layout-sign-in-form: 360px;
+  --layout-sign-in-pane-y: var(--space-48);
+  --layout-sign-in-pane-x: var(--space-32);
+  --layout-sign-in-copy: 520px;
+  --layout-sign-in-tagline: 380px;
   --layout-phone-sources-top: 56px;
   --layout-phone-banner-top: 80px;
   --layout-phone-date-message-bottom: 164px;

@@ -31,7 +31,12 @@ jobs:
       - name: Copy milestones
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
+          retries: 3 # a transient 5xx would otherwise end a backfill; each write sets one value, so a repeat is harmless
           script: |
+            // Without this header GitHub serves 2022-11-28, which it sunsets on 2028-03-10.
+            github.hook.before('request', (o) => {
+              o.headers['x-github-api-version'] = '2026-03-10';
+            });
             const { owner, repo } = context.repo;
             const hasLabel = (issue, name) => issue.labels.some((l) => (l.name ?? l) === name);
             const all = (route, params) =>

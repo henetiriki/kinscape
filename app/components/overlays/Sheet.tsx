@@ -2,10 +2,10 @@
 
 import { type ComponentProps, type ReactNode, useId } from 'react';
 
-import { Modal, ModalClose } from './Modal';
+import { Modal, ModalClose } from '@/app/components/overlays/Modal';
 import styles from './Sheet.module.css';
-import { type Tab, Tabs } from './Tabs';
-import { Text } from './Text';
+import { type Tab, Tabs } from '@/app/components/actions/Tabs';
+import { Text } from '@/app/components/foundation/Text';
 
 type PanelProps = SheetHead & {
   children: ReactNode;

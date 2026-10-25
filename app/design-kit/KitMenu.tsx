@@ -3,11 +3,11 @@
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-import { Button } from '@/app/components/Button';
-import { Icon } from '@/app/components/Icon';
-import { Sheet } from '@/app/components/Sheet';
-import { Text } from '@/app/components/Text';
-import { TextLink } from '@/app/components/TextLink';
+import { Button } from '@/app/components/actions/Button';
+import { Icon } from '@/app/components/foundation/Icon';
+import { Sheet } from '@/app/components/overlays/Sheet';
+import { Text } from '@/app/components/foundation/Text';
+import { TextLink } from '@/app/components/actions/TextLink';
 
 import { BOARDS } from './boards';
 import styles from './KitMenu.module.css';

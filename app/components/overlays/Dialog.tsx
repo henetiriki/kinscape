@@ -2,10 +2,11 @@
 
 import { type ReactNode, useId, useSyncExternalStore } from 'react';
 
-import rawTokens from '../../design/tokens.json';
+import { Text } from '@/app/components/foundation/Text';
+import { Modal, ModalClose } from '@/app/components/overlays/Modal';
+import rawTokens from '@/design/tokens.json';
+
 import styles from './Dialog.module.css';
-import { Modal, ModalClose } from './Modal';
-import { Text } from './Text';
 
 export type DialogForm = 'centred' | 'sheet';
 

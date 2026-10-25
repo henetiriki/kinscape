@@ -159,7 +159,7 @@
 
 /* The 44px eye button sits inside the 48px field, past the padding. */
 .eye {
-  composes: ring from './focus.module.css';
+  composes: ring from '@/app/components/foundation/focus.module.css';
   align-items: center;
   background: transparent;
   border: 0;

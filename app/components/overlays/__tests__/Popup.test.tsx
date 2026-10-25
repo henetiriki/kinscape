@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import { chainText, PlacedPopup, Popup, PopupPointer } from '../Popup';
+import { chainText, PlacedPopup, Popup, PopupPointer } from '@/app/components/overlays/Popup';
 
 const CHAIN = [
   { level: 'District', name: 'Kimberley' },

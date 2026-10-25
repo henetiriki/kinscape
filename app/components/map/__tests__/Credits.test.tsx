@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import type { Source } from '@/lib/boundaries/model.mts';
 
-import { Credits, sourcesOnScreen } from '../Credits';
+import { Credits, sourcesOnScreen } from '@/app/components/map/Credits';
 
 const source = (id: string, layer: string, attribution: string): Source => ({
   attribution,

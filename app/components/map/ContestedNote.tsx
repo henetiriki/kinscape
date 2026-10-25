@@ -1,5 +1,5 @@
 import styles from './ContestedNote.module.css';
-import { hatchStyle } from './hatch';
+import { hatchStyle } from '@/app/components/map/hatch';
 
 /** How many claims on the Map date are contested, with the hatch swatch. Nothing at zero. */
 export const ContestedNote = ({ count }: { count: number }) =>

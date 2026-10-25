@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { LayersPanel } from '../LayersPanel';
+import { LayersPanel } from '@/app/components/map/LayersPanel';
 
 it('shows the Polity borders row, checked when the layer is on', () => {
   render(<LayersPanel onShowPolitiesChange={vi.fn()} showPolities />);

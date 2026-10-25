@@ -1,7 +1,7 @@
 import type { Precision } from '@/lib/map/map-date';
 
 import styles from './DateKeyHints.module.css';
-import { KeyHint } from './KeyHint';
+import { KeyHint } from '@/app/components/actions/KeyHint';
 
 /** What the arrow keys do on the slider. */
 export const DateKeyHints = ({ precision }: { precision: Precision }) => (

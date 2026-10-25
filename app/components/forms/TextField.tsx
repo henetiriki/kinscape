@@ -9,11 +9,11 @@ import {
   useState,
 } from 'react';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Icon } from './Icon';
-import { KeyHint } from './KeyHint';
-import { Text } from './Text';
+import { Icon } from '@/app/components/foundation/Icon';
+import { KeyHint } from '@/app/components/actions/KeyHint';
+import { Text } from '@/app/components/foundation/Text';
 import styles from './TextField.module.css';
 
 // A key typed in these is text, not a shortcut.

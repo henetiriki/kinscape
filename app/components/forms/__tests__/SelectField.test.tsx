@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { SelectField } from '../SelectField';
+import { SelectField } from '@/app/components/forms/SelectField';
 
 // EXP-03
 it('is a native select named by its label, with a state', () => {

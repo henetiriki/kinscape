@@ -11,7 +11,7 @@ import {
 } from '@/lib/map/map-date';
 
 import styles from './DateSlider.module.css';
-import { hatchStyle } from './hatch';
+import { hatchStyle } from '@/app/components/map/hatch';
 
 const FIRST_YEAR = 1652;
 const LABEL_EVERY = 50;

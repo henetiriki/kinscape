@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, useRef } from 'react';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
 import styles from './Tabs.module.css';
 

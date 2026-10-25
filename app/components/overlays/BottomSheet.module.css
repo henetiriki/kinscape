@@ -1,5 +1,5 @@
 .sheet {
-  composes: sheet from './Surface.module.css';
+  composes: sheet from '@/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   gap: var(--space-12);

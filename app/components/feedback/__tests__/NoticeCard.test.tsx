@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { NoticeCard } from '../NoticeCard';
+import { NoticeCard } from '@/app/components/feedback/NoticeCard';
 
 // NFR-06
 it('is a status that never takes focus, with its buttons in reading order', () => {

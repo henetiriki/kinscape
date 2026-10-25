@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Alert } from '../Alert';
-import { Banner } from '../Banner';
-import { FilledIcon, Icon } from '../Icon';
+import { Alert } from '@/app/components/feedback/Alert';
+import { Banner } from '@/app/components/feedback/Banner';
+import { FilledIcon, Icon } from '@/app/components/foundation/Icon';
 
 // NFR-06
 it('announces an error alert at once and the other tones politely', () => {

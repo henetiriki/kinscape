@@ -8,12 +8,12 @@ import {
   useState,
 } from 'react';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Avatar } from './Avatar';
-import { Icon, type IconName } from './Icon';
+import { Avatar } from '@/app/components/map/Avatar';
+import { Icon, type IconName } from '@/app/components/foundation/Icon';
 import styles from './Menu.module.css';
-import { Surface } from './Surface';
+import { Surface } from '@/app/components/foundation/Surface';
 
 export type MenuEntry = {
   detail?: string;

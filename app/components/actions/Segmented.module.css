@@ -9,7 +9,7 @@
 }
 
 .segItem {
-  composes: ringWithin from './focus.module.css';
+  composes: ringWithin from '@/app/components/foundation/focus.module.css';
   align-items: center;
   border-radius: var(--radius-segment-item);
   box-sizing: border-box;

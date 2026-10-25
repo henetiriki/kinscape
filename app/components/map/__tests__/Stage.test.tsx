@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { Stage } from '../Stage';
+import { Stage } from '@/app/components/map/Stage';
 
 const css = readFileSync(
   join(import.meta.dirname, '../Stage.module.css'),

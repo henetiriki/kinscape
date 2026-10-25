@@ -1,8 +1,8 @@
 import { type ComponentProps, type ReactNode, useId } from 'react';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Checkbox } from './Checkbox';
+import { Checkbox } from '@/app/components/forms/Checkbox';
 import styles from './CheckboxField.module.css';
 
 /** A checkbox with its label and, under it, an optional description the checkbox points to. */

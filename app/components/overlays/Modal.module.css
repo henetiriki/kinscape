@@ -1,7 +1,7 @@
 /* The Close button of a Dialog or Sheet head: 44 round, ink-3 */
 
 .close {
-  composes: ring from './focus.module.css';
+  composes: ring from '@/app/components/foundation/focus.module.css';
   align-items: center;
   background: transparent;
   border: 0;

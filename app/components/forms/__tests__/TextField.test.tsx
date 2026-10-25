@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { TextField } from '../TextField';
+import { TextField } from '@/app/components/forms/TextField';
 
 // NFR-06
 it('names the input by its label and links the helper text', () => {

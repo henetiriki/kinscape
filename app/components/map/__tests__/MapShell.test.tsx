@@ -7,7 +7,7 @@ import { dayOf } from '@/lib/map/filter';
 
 const mapView = vi.hoisted(() => vi.fn());
 
-vi.mock('../MapView', () => ({
+vi.mock('@/app/components/map/MapView', () => ({
   MapView: (props: { mapDay: number; showPolities: boolean }) => {
     mapView(props);
 
@@ -15,7 +15,7 @@ vi.mock('../MapView', () => ({
   },
 }));
 
-import { MapShell } from '../MapShell';
+import { MapShell } from '@/app/components/map/MapShell';
 
 const sources: Source[] = [
   {

@@ -3,8 +3,8 @@
 import type { ComponentProps, KeyboardEvent, ReactNode } from 'react';
 
 import styles from './SearchBar.module.css';
-import { TextField } from './TextField';
-import { Wordmark } from './Wordmark';
+import { TextField } from '@/app/components/forms/TextField';
+import { Wordmark } from '@/app/components/map/Wordmark';
 
 const NAME = 'Search people and places';
 

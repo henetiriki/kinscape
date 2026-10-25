@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { TextLink } from '@/app/components/TextLink';
+import { TextLink } from '@/app/components/actions/TextLink';
 
 import { boardTitle } from '../boards';
 import styles from '../inputs/page.module.css';

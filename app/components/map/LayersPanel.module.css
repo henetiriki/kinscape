@@ -1,5 +1,5 @@
 .panel {
-  composes: raised from './Surface.module.css';
+  composes: raised from '@/app/components/foundation/Surface.module.css';
   left: var(--size-gutter);
   padding: var(--space-16) var(--space-20);
   position: absolute;

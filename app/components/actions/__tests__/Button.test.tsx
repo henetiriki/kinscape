@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Button } from '../Button';
-import { IconButton } from '../IconButton';
+import { Button } from '@/app/components/actions/Button';
+import { IconButton } from '@/app/components/actions/IconButton';
 
 // NFR-06
 it('is a secondary button that does not submit a form unless asked', () => {

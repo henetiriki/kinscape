@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Avatar } from '../Avatar';
-import { Menu, MenuItem, MenuPanel } from '../Menu';
+import { Avatar } from '@/app/components/map/Avatar';
+import { Menu, MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
 
 const GROUPS = [
   [

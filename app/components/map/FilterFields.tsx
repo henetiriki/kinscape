@@ -1,8 +1,8 @@
-import { Button } from './Button';
-import { ChipGroup, type ChipOption } from './ChipGroup';
+import { Button } from '@/app/components/actions/Button';
+import { ChipGroup, type ChipOption } from '@/app/components/actions/ChipGroup';
 import styles from './FilterFields.module.css';
-import { SelectField } from './SelectField';
-import { TokenField } from './TokenField';
+import { SelectField } from '@/app/components/forms/SelectField';
+import { TokenField } from '@/app/components/forms/TokenField';
 
 type Choice = { label: string; value: string };
 

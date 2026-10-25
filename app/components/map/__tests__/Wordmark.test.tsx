@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Wordmark } from '../Wordmark';
+import { Wordmark } from '@/app/components/map/Wordmark';
 
 // NFR-06
 it('shows the icon as decoration beside the name', () => {

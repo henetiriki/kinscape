@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { ChipGroup } from '../ChipGroup';
-import { EVENT_GLYPHS, type EventType } from '../EventGlyph';
+import { ChipGroup } from '@/app/components/actions/ChipGroup';
+import { EVENT_GLYPHS, type EventType } from '@/app/components/map/EventGlyph';
 
 const OPTIONS = (Object.keys(EVENT_GLYPHS) as EventType[]).map(glyph => ({
   glyph,

@@ -1,5 +1,5 @@
 .card {
-  composes: raised from './Surface.module.css';
+  composes: raised from '@/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   gap: var(--space-12);

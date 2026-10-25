@@ -6,7 +6,7 @@ import { expect, it } from 'vitest';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import { HERO_VARS, SignInHero } from '../SignInHero';
+import { HERO_VARS, SignInHero } from '@/app/components/auth/SignInHero';
 
 const { breakpoint, map } = resolveTokens(rawTokens);
 

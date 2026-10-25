@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { LayersButton } from '../LayersButton';
-import { ZoomControls } from '../ZoomControls';
+import { LayersButton } from '@/app/components/map/LayersButton';
+import { ZoomControls } from '@/app/components/map/ZoomControls';
 
 // MAP-05
 it('names the three zoom buttons and calls their handlers', () => {

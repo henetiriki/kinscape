@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
 
-import { DateDock } from '../DateDock';
+import { DateDock } from '@/app/components/map/DateDock';
 
 const today = toDay('2026-10-21');
 

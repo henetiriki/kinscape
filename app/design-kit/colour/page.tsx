@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { Alert } from '@/app/components/Alert';
+import { Alert } from '@/app/components/feedback/Alert';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
 import rawTokens from '../../../design/tokens.json';

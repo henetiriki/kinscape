@@ -1,11 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { BottomSheet } from '../BottomSheet';
-import { ContestedNote } from '../ContestedNote';
-import { DateKeyHints } from '../DateKeyHints';
-import { JumpTo } from '../JumpTo';
-import { PlayButton } from '../PlayButton';
+import { BottomSheet } from '@/app/components/overlays/BottomSheet';
+import { ContestedNote } from '@/app/components/map/ContestedNote';
+import { DateKeyHints } from '@/app/components/map/DateKeyHints';
+import { JumpTo } from '@/app/components/map/JumpTo';
+import { PlayButton } from '@/app/components/map/PlayButton';
 
 // NFR-05
 it('expands the sheet from the grabber, and is not a dialog', () => {

@@ -4,7 +4,7 @@ import { expect, it, vi } from 'vitest';
 import { toDay } from '@/lib/boundaries/model.mts';
 import { MIN_DAY } from '@/lib/map/map-date';
 
-import { DateField } from '../DateField';
+import { DateField } from '@/app/components/forms/DateField';
 
 const TODAY = toDay('2026-10-21');
 const JUNE = toDay('1901-06-14');

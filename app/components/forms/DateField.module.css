@@ -18,7 +18,7 @@
 
 /* A text link that is a button: the fix for a date that is out of range. */
 .fix {
-  composes: textLink from './TextLink.module.css';
+  composes: textLink from '@/app/components/actions/TextLink.module.css';
   align-self: flex-start;
   background: none;
   border: 0;

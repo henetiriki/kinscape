@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 
-import { Text } from '@/app/components/Text';
-import { TextLink } from '@/app/components/TextLink';
+import { Text } from '@/app/components/foundation/Text';
+import { TextLink } from '@/app/components/actions/TextLink';
 
 import { BOARDS } from './boards';
 import styles from './page.module.css';

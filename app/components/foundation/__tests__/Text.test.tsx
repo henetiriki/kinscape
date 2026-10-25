@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Text } from '../Text';
+import { Text } from '@/app/components/foundation/Text';
 
 // NFR-06
 it('renders a heading style as the element it is given', () => {

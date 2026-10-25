@@ -2,8 +2,9 @@
 
 import { useEffect } from 'react';
 
-import rawTokens from '../../design/tokens.json';
-import { Icon } from './Icon';
+import { Icon } from '@/app/components/foundation/Icon';
+import rawTokens from '@/design/tokens.json';
+
 import styles from './Toast.module.css';
 
 const SUCCESS_MS = Number.parseInt(rawTokens.motion.toast, 10);

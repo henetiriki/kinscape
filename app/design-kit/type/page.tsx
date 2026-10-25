@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
-import type { TextVariant } from '@/app/components/Text';
+import type { TextVariant } from '@/app/components/foundation/Text';
 
-import { Text } from '@/app/components/Text';
+import { Text } from '@/app/components/foundation/Text';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
 import rawTokens from '../../../design/tokens.json';

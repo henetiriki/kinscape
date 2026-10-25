@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { LayerGroup } from '../LayerGroup';
+import { LayerGroup } from '@/app/components/map/LayerGroup';
 
 // MAP-05
 it('is a group named by its heading, with a described checkbox per row', () => {

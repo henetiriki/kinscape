@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import styles from './Panel.module.css';
-import { type Tab, Tabs } from './Tabs';
+import { type Tab, Tabs } from '@/app/components/actions/Tabs';
 
 /** The map's side panel: a tabs head, a body that scrolls, and a footer at the bottom. */
 export const Panel = ({

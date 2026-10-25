@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Callout, CalloutPointer } from '../Callout';
-import { ProgressBar } from '../ProgressBar';
-import { Surface } from '../Surface';
+import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
+import { ProgressBar } from '@/app/components/feedback/ProgressBar';
+import { Surface } from '@/app/components/foundation/Surface';
 
 // NFR-06
 it('draws each level with its own class and keeps a caller class', () => {

@@ -2,12 +2,12 @@
 
 import { type CSSProperties, useId } from 'react';
 
-import { Button } from './Button';
-import { EventGlyph, type EventType } from './EventGlyph';
-import { Icon } from './Icon';
+import { Button } from '@/app/components/actions/Button';
+import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
+import { Icon } from '@/app/components/foundation/Icon';
 import styles from './Popup.module.css';
-import { Text } from './Text';
-import { TextLink } from './TextLink';
+import { Text } from '@/app/components/foundation/Text';
+import { TextLink } from '@/app/components/actions/TextLink';
 
 /** One level of the Jurisdiction chain; `detail` says what the name was before. */
 export type ChainLevel = { detail?: string; level: string; name: string };

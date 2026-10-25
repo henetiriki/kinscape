@@ -1,6 +1,6 @@
 /* The Jurisdiction popup: 304 wide on a desktop, a region of the bottom sheet on a phone */
 .popup {
-  composes: floating from './Surface.module.css';
+  composes: floating from '@/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
@@ -77,7 +77,7 @@
 
 /* Close is 36 round, pulled 8 up and right; a 44 × 44 hit area sits over it. */
 .close {
-  composes: ring from './focus.module.css';
+  composes: ring from '@/app/components/foundation/focus.module.css';
   align-items: center;
   background: transparent;
   border: 0;

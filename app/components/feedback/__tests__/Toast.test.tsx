@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-import { Toast } from '../Toast';
+import { Toast } from '@/app/components/feedback/Toast';
 
 beforeEach(() => {
   vi.useFakeTimers();

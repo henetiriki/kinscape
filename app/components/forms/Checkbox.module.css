@@ -1,7 +1,7 @@
 /* A 20px box with a 44px hit area */
 
 .checkbox {
-  composes: ring from './focus.module.css';
+  composes: ring from '@/app/components/foundation/focus.module.css';
   appearance: none;
   background: var(--surface);
   border: 1.5px solid var(--field-border);

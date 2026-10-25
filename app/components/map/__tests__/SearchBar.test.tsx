@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { SearchBar } from '../SearchBar';
+import { SearchBar } from '@/app/components/map/SearchBar';
 
 // EXP-04
 it('wraps a search input named "Search people and places" in a search form', () => {

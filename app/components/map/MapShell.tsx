@@ -6,12 +6,12 @@ import type { Source } from '@/lib/boundaries/model.mts';
 
 import { todayDay } from '@/lib/map/map-date';
 
-import { Credits } from './Credits';
-import { DateDock } from './DateDock';
-import { LayersPanel } from './LayersPanel';
+import { Credits } from '@/app/components/map/Credits';
+import { DateDock } from '@/app/components/map/DateDock';
+import { LayersPanel } from '@/app/components/map/LayersPanel';
 import styles from './MapShell.module.css';
-import { MapView } from './MapView';
-import { SourcesDialog } from './SourcesDialog';
+import { MapView } from '@/app/components/map/MapView';
+import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
 
 export const MapShell = ({ sources }: { sources: Source[] }) => {
   // The Map date starts on today, which is also the last date.

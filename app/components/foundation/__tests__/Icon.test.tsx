@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { ICONS } from '../../design-kit/foundations/values';
-import { Icon, type IconSize } from '../Icon';
+import { Icon, type IconSize } from '@/app/components/foundation/Icon';
+import { ICONS } from '@/app/design-kit/foundations/values';
 
 const svgOf = (container: HTMLElement) => container.querySelector('svg')!;
 

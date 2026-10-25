@@ -6,7 +6,7 @@ import { expect, it } from 'vitest';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import { AuthLayout } from '../AuthLayout';
+import { AuthLayout } from '@/app/components/auth/AuthLayout';
 
 const { breakpoint, layout, map } = resolveTokens(rawTokens);
 

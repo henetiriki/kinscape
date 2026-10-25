@@ -1,9 +1,9 @@
 import { type ReactNode, useId } from 'react';
 
-import { Button } from './Button';
-import { Icon, type IconName } from './Icon';
+import { Button } from '@/app/components/actions/Button';
+import { Icon, type IconName } from '@/app/components/foundation/Icon';
 import styles from './NoticeCard.module.css';
-import { ProgressBar } from './ProgressBar';
+import { ProgressBar } from '@/app/components/feedback/ProgressBar';
 
 type Action = { label: string; onClick?: () => void };
 

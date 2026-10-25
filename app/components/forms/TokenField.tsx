@@ -2,10 +2,10 @@
 
 import { type ReactNode, useId, useRef, useState } from 'react';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { RemovableChip } from './Chip';
-import { Text } from './Text';
+import { RemovableChip } from '@/app/components/actions/Chip';
+import { Text } from '@/app/components/foundation/Text';
 import styles from './TextField.module.css';
 
 /** A field of removable chips with an input that adds the next one on Enter. */

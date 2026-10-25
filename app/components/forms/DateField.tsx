@@ -5,12 +5,12 @@ import { type ComponentProps, type ReactNode, useId, useState } from 'react';
 import { checkDate, type Problem } from '@/lib/map/date-input';
 import { type Precision, shownDate } from '@/lib/map/map-date';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Callout, CalloutPointer } from './Callout';
+import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
 import styles from './DateField.module.css';
-import { Text, type Tone } from './Text';
-import { TextField } from './TextField';
+import { Text, type Tone } from '@/app/components/foundation/Text';
+import { TextField } from '@/app/components/forms/TextField';
 
 type Notice = { text: string; tone: Extract<Tone, 'info' | 'warning'> };
 

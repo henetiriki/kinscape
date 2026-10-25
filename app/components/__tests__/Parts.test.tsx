@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Chip, RemovableChip } from '../Chip';
-import { Divider } from '../Divider';
-import { EVENT_GLYPHS, EventGlyph } from '../EventGlyph';
-import { KeyHint } from '../KeyHint';
+import { Chip, RemovableChip } from '@/app/components/actions/Chip';
+import { Divider } from '@/app/components/foundation/Divider';
+import { EVENT_GLYPHS, EventGlyph } from '@/app/components/map/EventGlyph';
+import { KeyHint } from '@/app/components/actions/KeyHint';
 
 // NFR-06
 it('draws a hairline separator, or one with a word between two lines', () => {

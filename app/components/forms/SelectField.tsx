@@ -1,9 +1,9 @@
 import { type ComponentProps, useId } from 'react';
 
-import type { ControlState } from './controls';
+import type { ControlState } from '@/app/components/foundation/controls';
 
-import { Icon } from './Icon';
-import { Text } from './Text';
+import { Icon } from '@/app/components/foundation/Icon';
+import { Text } from '@/app/components/foundation/Text';
 import styles from './TextField.module.css';
 
 /** A native select with its label and a drawn chevron. The open list is the browser's. */

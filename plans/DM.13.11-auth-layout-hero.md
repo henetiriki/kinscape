@@ -82,6 +82,10 @@ No page shows the hero until the sign-in screen Spec.
 | No cross-origin request           | D4                                                                            |
 | Tests, e2e, validator, 100%, 0.5% | Output in the PR                                                              |
 
+## Deviations
+
+- The path data sits in `signInHeroPaths.ts`, shared by both drawings.
+
 ## Out of scope
 
 The sign-in screen, its form and error; the Google button; tablet and other hero crops.

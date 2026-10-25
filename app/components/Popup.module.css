@@ -132,7 +132,8 @@
   padding: var(--space-8) 0;
 }
 
-.chain li + li {
+.chain li + li,
+.popup .chain li:first-child {
   border-top: 1px solid var(--line);
 }
 

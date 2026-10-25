@@ -3,9 +3,12 @@ import { expect, it } from 'vitest';
 
 import MapFurnitureKit from '../page';
 
+const show = async (part?: string | string[]) =>
+  render(await MapFurnitureKit({ searchParams: Promise.resolve({ part }) }));
+
 // NFR-06
-it('shows the five sections in board order, each with Measurements and Accessibility', () => {
-  render(<MapFurnitureKit />);
+it('shows the six sections in board order, each with Measurements and Accessibility', async () => {
+  await show();
 
   expect(
     screen.getByRole('heading', { level: 1, name: 'Map furniture' })
@@ -20,17 +23,18 @@ it('shows the five sections in board order, each with Measurements and Accessibi
     'Map controls',
     'Event glyphs',
     'Legend',
+    'Date dock',
   ]);
   expect(
     screen
       .getAllByRole('heading', { level: 3 })
       .map(h => h.textContent)
       .filter(text => text === 'Measurements' || text === 'Accessibility')
-  ).toEqual(Array(5).fill(['Measurements', 'Accessibility']).flat());
+  ).toEqual(Array(6).fill(['Measurements', 'Accessibility']).flat());
 });
 
-it('draws every variant board 08 shows, in the order drawn', () => {
-  render(<MapFurnitureKit />);
+it('draws every variant board 08 shows, in the order drawn', async () => {
+  await show();
 
   const captions = (name: string) =>
     [
@@ -58,10 +62,53 @@ it('draws every variant board 08 shows, in the order drawn', () => {
     'Desktop',
     'Phone',
   ]);
+  expect(captions('Date dock').map(text => text!.split(' · ')[0])).toEqual([
+    'Desktop',
+    'Phone',
+  ]);
 });
 
-it('names the Wordmark icons: decoration beside the name, "KinScape" alone', () => {
-  render(<MapFurnitureKit />);
+it('draws the Date dock and the collapsed sheet as regions named "Map date"', async () => {
+  await show();
+
+  const dock = within(screen.getByRole('region', { name: 'Date dock' }));
+
+  expect(dock.getAllByRole('group', { name: 'Map date' })).toHaveLength(2);
+  expect(dock.getAllByText('1901')).toHaveLength(2);
+  expect(dock.getByText('2 contested claims on this date')).toBeTruthy();
+  expect(
+    within(dock.getAllByRole('group', { name: 'Map date' })[0]).getByText(
+      'Jump to'
+    )
+  ).toBeTruthy();
+});
+
+it('pages the board on a phone: part 2 holds the glyphs, legend and dock, and links back to part 1', async () => {
+  await show('2');
+
+  expect(document.querySelector('main')?.getAttribute('data-part')).toBe('2');
+  expect(
+    [...document.querySelectorAll('section[data-part="2"] > div > h2')].map(
+      h => h.textContent
+    )
+  ).toEqual(['Event glyphs', 'Legend', 'Date dock']);
+  expect(
+    screen.getByRole('link', { name: /^Part 1: wordmark/ }).getAttribute('href')
+  ).toBe('/design-kit/map-furniture');
+});
+
+it('links part 1 to part 2', async () => {
+  await show();
+
+  expect(
+    screen
+      .getByRole('link', { name: /^Part 2: event glyphs/ })
+      .getAttribute('href')
+  ).toBe('/design-kit/map-furniture?part=2');
+});
+
+it('names the Wordmark icons: decoration beside the name, "KinScape" alone', async () => {
+  await show();
 
   const region = within(screen.getByRole('region', { name: 'Wordmark' }));
 
@@ -69,8 +116,8 @@ it('names the Wordmark icons: decoration beside the name, "KinScape" alone', () 
   expect(region.getAllByText('KinScape')).toHaveLength(3);
 });
 
-it('shows all nine Event glyphs at three sizes, and the four-glyph row in the Legend', () => {
-  render(<MapFurnitureKit />);
+it('shows all nine Event glyphs at three sizes, and the four-glyph row in the Legend', async () => {
+  await show();
 
   const glyphs = within(screen.getByRole('region', { name: 'Event glyphs' }));
 
@@ -88,8 +135,8 @@ it('shows all nine Event glyphs at three sizes, and the four-glyph row in the Le
 });
 
 // MAP-05
-it('lets the zoom card reach its limits, where Zoom out stays focusable and inert', () => {
-  render(<MapFurnitureKit />);
+it('lets the zoom card reach its limits, where Zoom out stays focusable and inert', async () => {
+  await show();
 
   const card = within(screen.getByRole('region', { name: 'Map controls' }));
   const [zoomOut] = card.getAllByRole('button', { name: 'Zoom out' });
@@ -115,8 +162,8 @@ it('lets the zoom card reach its limits, where Zoom out stays focusable and iner
   expect(zoomIn.getAttribute('aria-disabled')).toBeNull();
 });
 
-it('draws the Disabled column with Zoom in at its limit and the layers button disabled', () => {
-  render(<MapFurnitureKit />);
+it('draws the Disabled column with Zoom in at its limit and the layers button disabled', async () => {
+  await show();
 
   const matrix = within(
     screen.getByRole('figure', { name: 'Map control states' })

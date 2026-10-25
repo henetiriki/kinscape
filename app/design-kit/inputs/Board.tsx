@@ -40,6 +40,11 @@ export const DesktopOnly = ({ children }: { children: ReactNode }) => (
   <div className={styles.desktopOnly}>{children}</div>
 );
 
+/** Drawn on a phone only. */
+export const PhoneOnly = ({ children }: { children: ReactNode }) => (
+  <div className={styles.phoneOnly}>{children}</div>
+);
+
 /** One section of the board. Part 1 and part 2 are the two phone pages; a desktop shows both. */
 export const Section = ({
   children,

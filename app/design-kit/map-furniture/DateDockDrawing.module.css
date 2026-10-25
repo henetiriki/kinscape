@@ -1,0 +1,310 @@
+/* The Date dock as board 08 draws it: static, measured from the snapshot. */
+
+.dock {
+  background: var(--surface);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-20);
+  width: 1048px;
+}
+
+.firstRow {
+  align-items: center;
+  display: flex;
+  gap: var(--space-16);
+  height: var(--size-control);
+}
+
+.steps {
+  align-items: center;
+  display: flex;
+  gap: var(--space-4);
+}
+
+.step {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  flex: none;
+  height: var(--size-control);
+  justify-content: center;
+  width: var(--size-control);
+}
+
+.field {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  flex: none;
+  font-family: var(--type-mono-l-font);
+  font-size: var(--type-mono-l-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-l-weight);
+  height: var(--size-control);
+  justify-content: center;
+  line-height: var(--type-mono-l-line);
+  width: var(--size-date-field);
+}
+
+.fieldFill {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.pills {
+  background: var(--segment);
+  border-radius: var(--radius-segment);
+  display: inline-flex;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.pill {
+  align-items: center;
+  border-radius: var(--radius-segment-item);
+  box-sizing: border-box;
+  color: var(--ink-3);
+  display: inline-flex;
+  font-size: var(--type-chip-size);
+  font-weight: var(--type-chip-weight);
+  height: var(--size-control-xs);
+  justify-content: center;
+  line-height: var(--type-chip-line);
+  padding: 0 var(--space-12);
+}
+
+.pill[data-on] {
+  background: var(--surface);
+  box-shadow: var(--shadow-segment);
+  color: var(--ink);
+}
+
+.contested {
+  align-items: center;
+  color: var(--ink-2);
+  display: inline-flex;
+  font-size: var(--type-small-size);
+  gap: var(--space-8);
+  line-height: var(--type-small-line);
+}
+
+.swatch {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--hatch-line) 0 3px,
+    var(--hatch-fill) 3px 8px
+  );
+  border: 1px solid var(--ink-2);
+  border-radius: 2px;
+  box-sizing: border-box;
+  flex: none;
+  height: 14px;
+  width: 18px;
+}
+
+.play {
+  align-items: center;
+  display: flex;
+  gap: var(--space-12);
+  margin-left: auto;
+}
+
+.playButton {
+  align-items: center;
+  background: var(--brand);
+  border-radius: 22px;
+  box-sizing: border-box;
+  color: var(--white);
+  display: inline-flex;
+  font-size: 15px;
+  font-weight: 600;
+  gap: var(--space-8);
+  height: var(--size-control);
+  line-height: 22px;
+  padding: 0 var(--space-16) 0 var(--space-12);
+}
+
+.caption {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+}
+
+.slider {
+  height: var(--size-control);
+  position: relative;
+}
+
+.track {
+  background: var(--track);
+  border-radius: 2px;
+  height: 4px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 12px;
+}
+
+.contestedYears {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--hatch-line) 0 2px,
+    transparent 2px 4px
+  );
+  border-radius: 2px;
+  height: 12px;
+  left: 66.15%;
+  position: absolute;
+  top: 8px;
+  width: 0.53%;
+}
+
+.tick {
+  background: var(--ink-3);
+  height: 12px;
+  position: absolute;
+  top: 8px;
+  width: 2px;
+}
+
+.thumb {
+  background: var(--brand);
+  border: 4px solid var(--surface);
+  border-radius: 13px;
+  box-shadow: var(--shadow-thumb);
+  box-sizing: border-box;
+  height: 26px;
+  left: 65.3%;
+  position: absolute;
+  top: 1px;
+  width: 26px;
+}
+
+.years {
+  color: var(--ink-3);
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
+  font-variant-ligatures: none;
+  left: 0;
+  line-height: var(--type-mono-line);
+  position: absolute;
+  right: 0;
+  top: 24px;
+}
+
+.years > span {
+  position: absolute;
+}
+
+.jump {
+  align-items: center;
+  display: flex;
+  gap: var(--space-8);
+}
+
+.epoch {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--track);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink-2);
+  display: inline-flex;
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
+  font-variant-ligatures: none;
+  height: var(--size-control-xs);
+  line-height: var(--type-mono-line);
+  padding: 0 var(--space-12);
+}
+
+.epoch[data-on] {
+  border-color: var(--brand);
+  color: var(--brand-hover);
+}
+
+.hints {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--space-8);
+  margin-left: auto;
+}
+
+.key {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-small);
+  color: var(--ink-3);
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
+  font-variant-ligatures: none;
+  line-height: var(--type-mono-line);
+  padding: 2px var(--space-4);
+}
+
+.sheet {
+  background: var(--surface);
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  box-shadow: var(--shadow-sheet);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-8) var(--space-16) var(--space-20);
+  width: 100%;
+}
+
+.grabber {
+  align-items: center;
+  align-self: center;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  margin-bottom: -4px;
+  width: 64px;
+}
+
+.handle {
+  background: var(--line-strong);
+  border-radius: 2px;
+  height: 4px;
+  width: 40px;
+}
+
+.sheetRow {
+  align-items: center;
+  display: flex;
+  gap: var(--space-8);
+}
+
+.round {
+  align-items: center;
+  background: var(--brand);
+  border-radius: 22px;
+  color: var(--white);
+  display: flex;
+  flex: none;
+  height: var(--size-control);
+  justify-content: center;
+  margin-left: var(--space-4);
+  width: var(--size-control);
+}
+
+.help {
+  color: var(--ink-3);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+  text-align: center;
+}

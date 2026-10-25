@@ -129,4 +129,21 @@ test.describe('on a phone', () => {
       )
     ).toBe(true);
   });
+
+  test('part 2 holds the glyphs, legend and Date dock, and nothing scrolls sideways', async ({
+    page,
+  }) => {
+    await page.goto(`${ROUTE}?part=2`);
+
+    await expect(page.getByRole('region', { name: 'Date dock' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Wordmark' })).toBeHidden();
+    await expect(
+      page.getByRole('link', { name: /^Part 1: wordmark/ })
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth
+      )
+    ).toBe(true);
+  });
 });

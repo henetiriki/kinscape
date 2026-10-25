@@ -40,17 +40,26 @@ type Slot = (typeof SLOTS)[number];
 /**
  * The map screen's frame: the map is `children`, and each slot is a placed box over it.
  * Desktop and phone forms switch at `breakpoint`; every edge is a `layout` token.
+ * The `overlay` content centres unless `overlayAt` is `top`, which puts it at the slot's top edge.
  */
 export const Stage = ({
   children,
+  overlayAt,
   ...slots
-}: { children?: ReactNode } & Partial<Record<Slot, ReactNode>>) => (
+}: {
+  children?: ReactNode;
+  overlayAt?: 'top';
+} & Partial<Record<Slot, ReactNode>>) => (
   <div className={styles.stage}>
     {children}
     {SLOTS.map(
       slot =>
         slots[slot] && (
-          <div className={styles[slot]} data-slot={slot} key={slot}>
+          <div
+            className={styles[slot]}
+            data-at={slot === 'overlay' ? overlayAt : undefined}
+            data-slot={slot}
+            key={slot}>
             {slots[slot]}
           </div>
         )

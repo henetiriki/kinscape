@@ -366,3 +366,59 @@ describe('the precision note', () => {
     );
   });
 });
+
+describe('the no-borders warning', () => {
+  const hasBorders = (day: number) => day >= toDay('1910-05-31');
+  const text = 'No borders are mapped for 1750 yet.';
+
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  // MAP-03
+  const Bordered = () => {
+    const [day, setDay] = useState(today);
+
+    return (
+      <>
+        <p data-testid='day'>{fromDay(day)}</p>
+        <DateDock
+          day={day}
+          hasBorders={hasBorders}
+          lastDay={today}
+          onChange={setDay}
+        />
+      </>
+    );
+  };
+
+  it('shows as a warning, not an error, and moves the Map date', () => {
+    render(<Bordered />);
+    typeDate('1750');
+    expect(screen.getByTestId('day').textContent).toBe('1750-01-01');
+    expect(screen.getByRole('status').textContent).toBe(text);
+    expect(field().getAttribute('aria-invalid')).not.toBe('true');
+    act(() => vi.advanceTimersByTime(4000));
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('replaces the precision note and shows nothing for a date with borders', () => {
+    render(<Bordered />);
+    typeDate('1750-06');
+    expect(screen.getByRole('status').textContent).toBe(text);
+    typeDate('2000-06-01');
+    expect(screen.getByRole('status').textContent).toBe(
+      'Switched to day precision.'
+    );
+  });
+
+  it('is dropped when the Map date moves on', () => {
+    render(<Bordered />);
+    typeDate('1750');
+    expect(screen.getByRole('status').textContent).toBe(text);
+    fireEvent.change(screen.getByRole('slider', { name: 'Map date' }), {
+      target: { value: '248' },
+    });
+    expect(screen.getByTestId('day').textContent).toBe('1900-01-01');
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+});

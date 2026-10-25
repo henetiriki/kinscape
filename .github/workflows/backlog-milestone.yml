@@ -1,11 +1,11 @@
 name: 'Backlog: Inherit milestone'
 
-# A Spec takes its parent Intent's milestone; a PR takes the milestone of the Spec it closes.
+# A Spec takes its parent Intent's milestone; a PR takes the milestone of the Spec or Bug it closes.
 # Only empty milestones are filled. A manual run does this for every Spec, then every PR.
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
   pull_request:
     types: [opened, edited, reopened]
   workflow_dispatch:
@@ -14,9 +14,14 @@ permissions:
   issues: write
   pull-requests: write
 
+# One run per issue or PR at a time; a run for another one never replaces it while it waits.
+concurrency:
+  group: backlog-milestone-${{ github.event.issue.number || github.event.pull_request.number || 'backfill' }}
+  cancel-in-progress: false
+
 jobs:
   inherit:
-    # New issues: Specs only. Fork PRs are skipped: their token cannot write.
+    # New or edited issues: Specs only. Fork PRs are skipped: their token cannot write.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'type: spec')) ||
@@ -29,6 +34,19 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const hasLabel = (issue, name) => issue.labels.some((l) => (l.name ?? l) === name);
+            const all = (route, params) =>
+              github.paginate(route, { owner, repo, state: 'all', per_page: 100, ...params });
+
+            // An issue by number, or undefined with a warning when it does not exist.
+            async function getIssue(number, from) {
+              try {
+                const { data } = await github.rest.issues.get({ owner, repo, issue_number: number });
+                return data;
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                core.warning(`#${from}: #${number} not found`);
+              }
+            }
 
             // The milestone number a Spec should have: its parent Intent's, else the form answer.
             let milestones;
@@ -44,29 +62,26 @@ jobs:
               }
               const field = /### Intent or milestone\s+(.*)/.exec(spec.body ?? '');
               const value = field ? field[1].trim() : '';
-              const milestone = /^M\d+$/.test(value);
-              if (milestone) {
-                milestones ??= await github.paginate(github.rest.issues.listMilestones, {
-                  owner,
-                  repo,
-                  state: 'all',
-                  per_page: 100,
-                });
+              if (/^M\d+$/.test(value)) {
+                milestones ??= await all(github.rest.issues.listMilestones);
                 const found = milestones.find(
                   (m) => m.title === value || m.title.startsWith(`${value} `),
                 );
+                if (!found) core.warning(`#${spec.number}: no milestone is titled ${value}`);
                 return found?.number;
               }
               const match = /^#?(\d+)$/.exec(value);
-              if (!match) return undefined;
-              const { data: intent } = await github.rest.issues.get({
-                owner,
-                repo,
-                issue_number: Number(match[1]),
-              });
-              return !intent.pull_request && hasLabel(intent, 'type: intent')
-                ? intent.milestone?.number
-                : undefined;
+              if (!match) {
+                core.warning(`#${spec.number}: no parent Intent, and the form answer names none`);
+                return undefined;
+              }
+              const intent = await getIssue(Number(match[1]), spec.number);
+              if (!intent) return undefined;
+              if (intent.pull_request || !hasLabel(intent, 'type: intent')) {
+                core.warning(`#${spec.number}: #${intent.number} is not an Intent`);
+                return undefined;
+              }
+              return intent.milestone?.number;
             }
 
             async function fill(issue, milestone) {
@@ -80,22 +95,21 @@ jobs:
               core.info(`#${issue.number}: milestone ${milestone}`);
             }
 
-            // The milestone a PR should have: the first Spec it closes that has one.
+            // The milestone a PR should have: the first Spec or Bug it closes that has one.
+            const closing = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?\s+#(\d+)/gi;
             async function prMilestone(pr) {
-              for (const [, n] of (pr.body ?? '').matchAll(/\bcloses\s+#(\d+)/gi)) {
-                const { data: spec } = await github.rest.issues.get({
-                  owner,
-                  repo,
-                  issue_number: Number(n),
-                });
-                if (!spec.pull_request && hasLabel(spec, 'type: spec') && spec.milestone) {
-                  return spec.milestone.number;
+              for (const [, n] of (pr.body ?? '').matchAll(closing)) {
+                const issue = await getIssue(Number(n), pr.number);
+                if (
+                  issue &&
+                  !issue.pull_request &&
+                  (hasLabel(issue, 'type: spec') || hasLabel(issue, 'type: bug')) &&
+                  issue.milestone
+                ) {
+                  return issue.milestone.number;
                 }
               }
             }
-
-            const all = (route, params) =>
-              github.paginate(route, { owner, repo, state: 'all', per_page: 100, ...params });
 
             if (context.eventName === 'issues') {
               const spec = context.payload.issue;

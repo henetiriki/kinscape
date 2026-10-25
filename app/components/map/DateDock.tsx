@@ -95,12 +95,17 @@ export const DateDock = ({
   const field = (
     <DateField
       after={
-        <IconButton
-          disabled={day >= lastDay}
-          label='Forward'
-          onClick={() => onChange(stepDay(day, precision, 1, lastDay))}>
-          <Chevron path='M9 5l7 7-7 7' />
-        </IconButton>
+        <>
+          <IconButton
+            disabled={day >= lastDay}
+            label='Forward'
+            onClick={() => onChange(stepDay(day, precision, 1, lastDay))}>
+            <Chevron path='M9 5l7 7-7 7' />
+          </IconButton>
+          {sheet && onPlay && (
+            <PlayButton onClick={() => onPlay(Number(speed))} round />
+          )}
+        </>
       }
       before={
         <IconButton
@@ -144,10 +149,7 @@ export const DateDock = ({
       <BottomSheet
         expanded={sheet.expanded}
         onExpandedChange={sheet.onExpandedChange}>
-        <div className={styles.sheetRow}>
-          {field}
-          {onPlay && <PlayButton onClick={() => onPlay(Number(speed))} round />}
-        </div>
+        <div className={styles.sheetField}>{field}</div>
         {sheet.expanded && slider}
       </BottomSheet>
     );

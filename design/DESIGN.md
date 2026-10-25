@@ -220,7 +220,7 @@ Built in `/design-kit/feedback`. The field is 188px wide and accepts `1901`, `19
 
 1. Check on Enter or when focus leaves, never while typing.
 2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field, set `aria-invalid`, and link the message with `aria-describedby`.
-3. In the dock, the message opens above the field and points at it. Everywhere else it goes below.
+3. In the dock, the message opens 12px above the dock's top edge and points at the field: 340px wide from the Back button, or the sheet's full width on a phone, where it may cover the credits line. Everywhere else it goes below.
 4. The map, slider and URL stay on the last good date, and the message names it.
 5. Esc restores the last good date. The slider, step buttons and Jump to buttons also clear the error.
 6. A good date gets no success styling: the map moving is the confirmation.

@@ -2,7 +2,7 @@
 
 - **Spec:** #225 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ Main differences, from the snapshot HTML:
 - **B.** Keep the tokens. If either Feedback screen stays above 0.5%, it stays `report` and goes to the PO as a design change.
 - **Other:** your own.
 
-Recommended: A, because `Alert` already sets messages at 13.5/1.4, and a 44px fix is the phone touch target.
+**Answer: A** (@henetiriki)
 
 **D2 · The phone date sheet** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ On phones the snapshot replaces the dock sample with a date sheet: a grabber, th
 - **B.** Draw the sheet but keep the Esc hint, and that difference.
 - **Other:** your own.
 
-Recommended: A, because a phone has no Esc key.
+**Answer: A** (@henetiriki)
 
 **D3 · Form field size** · Decides: Tech lead
 
@@ -46,7 +46,7 @@ Both snapshots draw the two Email fields 48 tall with 16px text. `TextField` is 
 - **B.** Leave them at 44, as D1 B says.
 - **Other:** your own.
 
-Recommended: A, because `size='l'` already exists.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -38,6 +38,7 @@
   left: 0;
   position: absolute;
   right: 0;
+  width: var(--callout-width, auto);
 }
 
 .pointer {

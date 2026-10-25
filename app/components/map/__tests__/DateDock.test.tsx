@@ -208,6 +208,13 @@ it('shows the phone sheet collapsed without slider, precision, speed, Jump to or
   expect(field().value).toBe('2026');
   fireEvent.click(screen.getByRole('button', { name: 'Play through time' }));
   expect(onPlay).toHaveBeenCalledWith(5);
+  expect(
+    screen
+      .getByRole('button', { name: 'Back' })
+      .parentElement!.contains(
+        screen.getByRole('button', { name: 'Play through time' })
+      )
+  ).toBe(true);
   expect(screen.queryByRole('slider')).toBeNull();
   expect(screen.queryByRole('radiogroup')).toBeNull();
   expect(screen.queryByText('Jump to')).toBeNull();

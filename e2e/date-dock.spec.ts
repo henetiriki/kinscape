@@ -136,6 +136,31 @@ test('typing 1800 moves the slider and draws no Polities', async ({ page }) => {
   await expect.poll(() => drawnPolities(page)).toBe(0);
 });
 
+// MAP-03 (M1.5.4 D1 A): the error callout sits 12px above the dock, 340px wide from the Back button.
+test('an invalid date opens its callout above the dock, 340px wide', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const field = page.getByRole('textbox', { name: 'Date shown' });
+
+  await field.fill('1901-02-30');
+  await field.press('Enter');
+  await expect(field).toHaveAttribute('aria-invalid', 'true');
+
+  const callout = page.getByRole('alert').filter({ hasText: 'has 28 days' });
+  const dock = page.getByRole('region', { name: 'Map date' });
+  const calloutBox = (await callout.boundingBox())!;
+  const dockBox = (await dock.boundingBox())!;
+  const back = (await page
+    .getByRole('button', { name: 'Back' })
+    .boundingBox())!;
+
+  expect(calloutBox.y + calloutBox.height).toBeCloseTo(dockBox.y - 12, 0);
+  expect(calloutBox.x).toBeCloseTo(back.x, 0);
+  expect(calloutBox.width).toBeCloseTo(340, 0);
+});
+
 // MAP-03: typing a month on Year switches precision and says so.
 test('typing 1901-06 on Year switches to Month with a note', async ({
   page,

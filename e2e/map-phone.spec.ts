@@ -150,10 +150,16 @@ test.describe('phone, 390 × 844', () => {
   }) => {
     await typeDate(page, '1901-02-30');
 
-    const message = page.getByText('February 1901 has 28 days.');
+    const callout = page.getByRole('alert').filter({ hasText: 'has 28 days' });
 
-    await expect(message).toBeVisible();
-    expect((await box(message)).y).toBeLessThan((await box(sheet(page))).y);
+    await expect(callout).toBeVisible();
+
+    const calloutBox = await box(callout);
+    const sheetBox = await box(sheet(page));
+
+    expect(calloutBox.x).toBeGreaterThanOrEqual(0);
+    expect(calloutBox.x + calloutBox.width).toBeLessThanOrEqual(390);
+    expect(calloutBox.y + calloutBox.height).toBeCloseTo(sheetBox.y - 12, 0);
     await page.getByRole('button', { name: 'Go to 1901-02-28' }).click();
     await expect(field(page)).toHaveValue('1901');
   });

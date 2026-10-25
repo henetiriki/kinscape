@@ -48,10 +48,11 @@ test.describe('on a phone', () => {
     await page.goto('/design-kit/feedback');
 
     const callout = page.getByRole('alert').filter({ hasText: 'still shows' });
+    // On a phone the date sheet stands in for the dock.
     const field = page
-      .locator('div[class*="dock"]')
+      .locator('div[class*="sheet"]')
       .getByRole('textbox', { name: 'Date shown' });
-    const pointer = page.locator('div[class*="dock"] span[class*="pointer"]');
+    const pointer = page.locator('div[class*="sheet"] span[class*="pointer"]');
 
     await callout.scrollIntoViewIfNeeded();
 

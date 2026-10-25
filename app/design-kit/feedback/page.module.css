@@ -6,46 +6,43 @@
   display: flex;
   flex-direction: column;
   gap: 44px;
-  min-height: 1862px;
+  min-height: 1860px;
   padding: var(--space-64) 72px;
-}
-
-.header {
-  max-width: 860px;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-16);
 }
 
 .intro {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-4);
 }
 
 .h2 {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 700;
+  font-family: var(--type-h3-font);
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  line-height: var(--type-h3-line);
   margin: 0;
 }
 
 .h3 {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
+  font-size: var(--type-body-size);
+  font-weight: 600;
+  line-height: var(--type-body-line);
   margin: 0;
 }
 
 .lede {
   color: var(--ink-2);
-  font-size: 14.5px;
-  line-height: 1.5;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
   margin: 0;
-  max-width: 860px;
+  max-width: var(--kit-measure);
 }
 
 .cases {
@@ -60,7 +57,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
-  padding: 18px;
+  padding: var(--space-16);
 }
 
 .card > span:first-child {
@@ -84,7 +81,7 @@
 .split {
   align-items: start;
   display: grid;
-  gap: 48px;
+  gap: var(--space-48);
   grid-template-columns: 560px minmax(0, 1fr);
 }
 
@@ -95,7 +92,7 @@
 .column {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
 }
 
 /* The sea colour is set inline, from the map tokens. */
@@ -104,29 +101,47 @@
   padding: 96px var(--space-20) var(--space-20);
 }
 
+/* The board's callout is 330 wide, reaching past the row on both sides. */
+.sea {
+  --callout-lift: 26px;
+}
+
+.sea [role='alert'] {
+  left: calc(-1 * var(--space-20));
+  right: -26px;
+}
+
 .dock {
   align-items: center;
   background: var(--surface);
   border-radius: var(--radius-panel);
   display: flex;
-  gap: 14px;
-  padding: 14px var(--space-16);
+  gap: var(--space-16);
+  padding: var(--space-16) var(--space-20);
 }
 
 .behaviour {
   color: var(--ink-2);
   display: flex;
   flex-direction: column;
-  font-size: 14.5px;
-  gap: 10px;
-  line-height: 1.5;
+  font-size: var(--type-body-size);
+  gap: var(--space-8);
+  line-height: var(--type-body-line);
   margin: 0;
-  padding-left: 22px;
+  padding-left: var(--space-24);
 }
 
 .behaviour code {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--type-mono-size);
+}
+
+.dockColumn {
+  gap: var(--space-16);
+}
+
+.behaviourColumn {
+  gap: var(--space-12);
 }
 
 .pair {
@@ -135,28 +150,69 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.pair > div {
+  gap: var(--space-8);
+}
+
 .alerts {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
-/* The role label sits at the right of the alert, as the board draws it. */
+/* The role label sits at the right of the alert, centred on it; on a phone it joins the title line. */
 .alertRow {
-  display: grid;
-}
-
-.alertRow > * {
-  grid-area: 1 / 1;
+  position: relative;
 }
 
 .role {
-  align-self: center;
   color: var(--ink-3);
   font-family: var(--font-mono);
-  font-size: 11px;
-  justify-self: end;
-  margin-right: 14px;
+  font-size: var(--type-mono-size);
+  line-height: var(--type-mono-line);
+  position: absolute;
+  right: var(--space-16);
+  top: 50%;
+  translate: 0 -50%;
+}
+
+/* Wording that differs: a phone says "date sheet" where the desktop says "dock". */
+.phoneOnly {
+  display: none;
+}
+
+/* The phone date sheet, drawn over the map's sea. */
+.seaSheet {
+  --callout-lift: 90px;
+
+  border-radius: var(--radius-panel);
+  height: 296px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sheet {
+  background: var(--surface);
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  height: 144px;
+  left: 0;
+  padding: var(--space-8) var(--space-16) var(--space-20);
+  position: absolute;
+  right: 0;
+}
+
+.grabber {
+  align-self: center;
+  background: var(--line-strong);
+  border-radius: 2px;
+  height: 4px;
+  margin: var(--space-8) 0;
+  width: 40px;
 }
 
 .toasts {
@@ -169,25 +225,37 @@
 .example {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 .note {
   color: var(--ink-3);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+}
+
+.where code {
+  font-family: var(--font-mono);
+  font-size: var(--type-mono-size);
 }
 
 .where {
+  color: var(--ink-3);
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
   max-width: none;
 }
 
-/* A phone (Intent 104, D1): one column inside 16px gutters, the dock wraps under the field */
+/* A phone (Intent 104, D1): one column inside 16px gutters, the date sheet in place of the dock */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .kit {
-    gap: var(--space-32);
+    gap: 40px;
     min-height: 0;
-    padding: var(--space-24) var(--size-gutter-phone);
+    padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
+  }
+
+  .intro {
+    gap: var(--space-8);
   }
 
   .cases,
@@ -198,11 +266,63 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .split {
-    gap: var(--space-32);
+  .cases {
+    gap: var(--space-12);
   }
 
-  .dock {
-    flex-wrap: wrap;
+  .step {
+    width: var(--size-touch);
+  }
+
+  .split {
+    gap: 40px;
+  }
+
+  .h3 {
+    font-family: var(--type-h3-font);
+    font-size: var(--type-h3-size);
+    font-weight: var(--type-h3-weight);
+    line-height: var(--type-h3-line);
+  }
+
+  .dockColumn {
+    gap: var(--space-12);
+  }
+
+  .desktopOnly {
+    display: none;
+  }
+
+  .phoneOnly {
+    display: revert;
+  }
+
+  .behaviour {
+    padding-left: var(--space-20);
+  }
+
+  .pair {
+    gap: var(--space-16);
+  }
+
+  .pair span[data-size='l'] {
+    padding-inline: var(--space-16);
+  }
+
+  .alerts {
+    gap: var(--space-8);
+  }
+
+  .role {
+    position: static;
+    translate: none;
+  }
+
+  .toasts {
+    gap: var(--space-16);
+  }
+
+  .example {
+    gap: var(--space-8);
   }
 }

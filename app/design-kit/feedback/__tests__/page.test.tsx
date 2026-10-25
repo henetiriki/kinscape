@@ -79,23 +79,41 @@ it('holds the last good date a card is given', () => {
   expect(field.value).toBe('1902-03');
 });
 
+// The dock is the first sample; the phone date sheet follows it.
+const samples = () =>
+  screen
+    .getAllByRole('button', { name: 'Back one day' })
+    .map(button => button.parentElement!.parentElement!.parentElement!);
+
 it('shows the dock with the message above the field, naming the date the map shows', () => {
   render(<FeedbackKit />);
 
-  const dock = screen.getByRole('button', { name: 'Back one day' })
-    .parentElement!.parentElement!.parentElement!;
+  const [dock] = samples();
 
   expect(within(dock).getByRole('alert').textContent).toBe(
-    'February 1901 has 28 days. The map still shows 1901-02-28. Press Esc to go back to it.'
+    'February 1901 has 28 days. The map still shows 1901-02-28. Press Esc to go back to it.Go to 1901-02-28'
   );
   expect(within(dock).getByRole('radio', { name: 'Day' })).toBeTruthy();
+});
+
+it('shows the phone date sheet with the fix and a Play button', () => {
+  render(<FeedbackKit />);
+
+  const sheet = samples()[1].parentElement!;
+
+  expect(
+    within(sheet).getByRole('button', { name: 'Go to 1901-02-28' })
+  ).toBeTruthy();
+  expect(
+    within(sheet).getByRole('button', { name: 'Play through time' })
+  ).toBeTruthy();
+  expect(within(sheet).queryByRole('radio')).toBeNull();
 });
 
 it('steps the dock by a day', () => {
   render(<FeedbackKit />);
 
-  const dock = screen.getByRole('button', { name: 'Back one day' })
-    .parentElement!.parentElement!.parentElement!;
+  const [dock] = samples();
   const field = within(dock).getByRole('textbox') as HTMLInputElement;
 
   fireEvent.click(

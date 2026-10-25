@@ -8,13 +8,7 @@
 
 On `main` (`562d465`) the scores are: `style-5-feedback` 7.46%, `style-5-feedback-phone` 12.69%, `map-style` 8.80%, `map-style-phone` 16.47%. I fix each with `/match-design`, then set all four to `blocking`.
 
-Main differences, from the snapshot HTML:
-
-- **Feedback, desktop:** dock callout 330 wide, 13.5/1.4; column and section gaps 12 to 16; notes 13.5 in ink-3; D1, D3.
-- **Feedback, phone:** board gap 40; `h2` 22/28; cards padding 16, step buttons 44; Behaviour 14/20; the role label on the alert's title line; `Toast` gap 12, padding 8/8/8/16; "date sheet" wording in five places, as phone-only spans like the Type board's; D2.
-- **Map style, desktop:** columns 40/96/190/92/230/1fr/140, gap 16; rows 52 tall, padding 6, text 13.5; preview 80 wide; header text max-width 760; legend gap 18, swatch 14; the `polity-fill` preview uses the Western Cape tint.
-- **Map style, phone:** each row is number, preview and id over type, then the three fields at 104/1fr, gap 4/12; the legend wraps.
-- **Token kept:** the desktop eyebrow stays on the overline token (snapshot 12px, 0.12em); under 0.01% of the screen.
+Differences come from the snapshot HTML: spacing and type, the phone date sheet and "date sheet" wording, the alert role label on the title line, `Toast` sizes, and the Map style rows and previews.
 
 ## Decisions
 
@@ -78,6 +72,12 @@ Both snapshots draw the two Email fields 48 tall with 16px text. `TextField` is 
 | Four entries `blocking`          | `screens.json`; `screens.test.ts` passes |
 | Each ≤ 0.5%, other blocking pass | `npm run e2e` output; PR score table     |
 | Tests, e2e, validator, 100%      | Output in the PR                         |
+
+## Deviations
+
+- The snapshots and tokens were regenerated before the build, so the Approach lists are superseded; D1's text sizes already matched (13/20).
+- Also changed: `Alert` (`aside` prop for the role label), `TextField` (`date='fill'`), `DateField` (`fill`, phone fix link, `--callout-lift`), `Toast` (15px, 12 gap; 50 tall with border).
+- The map-style previews are rebuilt as token-coloured gradients to match the new snapshots.
 
 ## Out of scope
 

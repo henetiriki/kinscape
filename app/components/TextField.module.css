@@ -96,6 +96,10 @@
   width: var(--size-date-field);
 }
 
+.date[data-fill] {
+  width: auto;
+}
+
 .date .input {
   font-family: var(--type-mono-l-font);
   font-size: var(--type-mono-l-size);

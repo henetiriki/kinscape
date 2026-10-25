@@ -1,82 +1,12 @@
-/* Each preview is a 78 × 36 tile; token colours arrive as inline custom properties. */
+/* Each preview is an 80 × 36 tile; its look is set inline from the `map` tokens. */
 
 .box {
   align-items: center;
-  background: var(--fill);
   border-radius: 6px;
   box-sizing: border-box;
   display: flex;
-  font-size: 14px;
+  flex: none;
   height: 36px;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
-  width: 78px;
-}
-
-.hatch {
-  background:
-    repeating-linear-gradient(
-      135deg,
-      transparent 0 4px,
-      color-mix(
-          in srgb,
-          var(--hatch) calc(var(--hatch-opacity) * 100%),
-          transparent
-        )
-        4px 6px
-    ),
-    var(--fill);
-}
-
-.hillshade {
-  background: linear-gradient(
-    135deg,
-    var(--highlight),
-    var(--mid) 60%,
-    var(--shadow)
-  );
-  opacity: 0.8;
-}
-
-.coast {
-  background: linear-gradient(
-    to bottom,
-    var(--land) 0 55%,
-    var(--line) 55% calc(55% + var(--line-width)),
-    var(--fill) calc(55% + var(--line-width))
-  );
-}
-
-.stroke::before {
-  border-top: var(--line-width) var(--line-style) var(--line);
-  content: '';
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 50%;
-}
-
-.dot,
-.blur,
-.ring,
-.cluster {
-  border-radius: 50%;
-  box-sizing: border-box;
-}
-
-.blur {
-  height: 22px;
-  width: 22px;
-}
-
-.cluster {
-  align-items: center;
-  color: var(--white);
-  display: flex;
-  font-size: 12px;
-  font-weight: 600;
-  height: 24px;
-  justify-content: center;
-  width: 24px;
+  width: 80px;
 }

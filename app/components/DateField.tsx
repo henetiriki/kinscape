@@ -23,6 +23,7 @@ export const DateField = ({
   before,
   day,
   defaultText,
+  fill,
   max,
   min,
   notice,
@@ -39,6 +40,8 @@ export const DateField = ({
   day: number;
   /** Text to start with instead of the date; it is checked on the first render, unless `state` is `focus`. */
   defaultText?: string;
+  /** The field takes the width the row leaves, as in the phone date sheet. */
+  fill?: boolean;
   /** The last Map date: today. */
   max: number;
   /** The first Map date. */
@@ -107,10 +110,10 @@ export const DateField = ({
     <div className={styles.wrap}>
       <div className={styles.row}>
         {before}
-        <span className={styles.anchor}>
+        <span className={styles.anchor} data-fill={fill || undefined}>
           <TextField
             aria-describedby={problem || notice ? messageId : undefined}
-            date
+            date={fill ? 'fill' : true}
             hideLabel
             label='Date shown'
             mark={mark}
@@ -125,8 +128,18 @@ export const DateField = ({
         {after}
         {problem && above && (
           <Callout className={styles.callout} id={messageId}>
-            <strong>{problem.message}</strong> The map still shows {shown}.
-            Press Esc to go back to it.
+            <span>
+              <strong>{problem.message}</strong> The map still shows {shown}.
+              <span className={styles.esc}> Press Esc to go back to it.</span>
+            </span>
+            {problem.fix && (
+              <button
+                className={`${styles.fix} ${styles.phoneFix}`}
+                onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
+                type='button'>
+                {problem.fix.label}
+              </button>
+            )}
           </Callout>
         )}
       </div>

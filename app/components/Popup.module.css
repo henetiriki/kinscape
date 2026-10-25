@@ -5,7 +5,7 @@
   flex-direction: column;
   gap: var(--space-12);
   padding: var(--space-16);
-  width: 304px;
+  width: var(--layout-popup-width);
 }
 
 .popup > button {

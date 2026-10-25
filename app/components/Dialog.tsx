@@ -2,6 +2,7 @@
 
 import { type ReactNode, useId, useSyncExternalStore } from 'react';
 
+import rawTokens from '../../design/tokens.json';
 import styles from './Dialog.module.css';
 import { Modal, ModalClose } from './Modal';
 import { Text } from './Text';
@@ -9,7 +10,8 @@ import { Text } from './Text';
 export type DialogForm = 'centred' | 'sheet';
 
 // Below 640 wide or below 500 tall is a phone (Intent 104).
-const PHONE = '(max-width: 639.98px), (max-height: 499.98px)';
+const { 'phone-height': height, 'phone-width': width } = rawTokens.breakpoint;
+const PHONE = `(max-width: ${width}), (max-height: ${height})`;
 
 const subscribe = (notify: () => void) => {
   const query = window.matchMedia(PHONE);

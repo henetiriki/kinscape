@@ -8,7 +8,7 @@ import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
 import { TextField } from '@/app/components/forms/TextField';
 import { Text, type Tone } from '@/app/components/foundation/Text';
 import { checkDate, type Problem } from '@/lib/map/date-input';
-import { type Precision, shownDate } from '@/lib/map/map-date';
+import { finerPrecision, type Precision, shownDate } from '@/lib/map/map-date';
 
 import styles from './DateField.module.css';
 
@@ -86,7 +86,8 @@ export const DateField = ({
 
     const result = checkDate(text, min, max);
 
-    if (result.ok) goTo(result.day, result.precision);
+    if (result.ok)
+      goTo(result.day, finerPrecision(result.precision, precision));
     else setProblem(result.problem);
   };
 

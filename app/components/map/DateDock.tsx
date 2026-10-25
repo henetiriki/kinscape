@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { type ComponentProps, useEffect, useState } from 'react';
 
 import { IconButton } from '@/app/components/actions/IconButton';
 import { Segmented } from '@/app/components/actions/Segmented';
@@ -16,6 +16,7 @@ import { PlayButton } from '@/app/components/map/PlayButton';
 import { BottomSheet } from '@/app/components/overlays/BottomSheet';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
 import {
+  finerPrecision,
   MIN_DAY,
   type Precision,
   PRECISIONS,
@@ -28,6 +29,8 @@ const OPTIONS = PRECISIONS.map(precision => ({
   label: precision[0].toUpperCase() + precision.slice(1),
   value: precision,
 }));
+
+const NOTICE_MS = 4000;
 
 const SPEEDS = ['1', '5', '10'].map(speed => ({ label: speed, value: speed }));
 
@@ -77,6 +80,17 @@ export const DateDock = ({
 }) => {
   const [precision, setPrecision] = useState<Precision>('year');
   const [speed, setSpeed] = useState('5');
+  const [notice, setNotice] =
+    useState<ComponentProps<typeof DateField>['notice']>();
+
+  // Each switch shows its note for 4 seconds; a new switch restarts the timer.
+  useEffect(() => {
+    if (!notice) return;
+
+    const timer = setTimeout(() => setNotice(undefined), NOTICE_MS);
+
+    return () => clearTimeout(timer);
+  }, [notice]);
 
   const field = (
     <DateField
@@ -100,7 +114,12 @@ export const DateDock = ({
       fill={!!sheet}
       max={lastDay}
       min={MIN_DAY}
+      notice={notice}
       onChange={(to, at) => {
+        if (finerPrecision(at, precision) !== precision) {
+          setNotice({ text: `Switched to ${at} precision.`, tone: 'info' });
+        }
+
         setPrecision(at);
         onChange(to);
       }}

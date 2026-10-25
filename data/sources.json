@@ -41,7 +41,7 @@
       "layer": "Polity borders",
       "licence": "Public domain",
       "licenceLink": "https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md",
-      "processing": "Natural Earth 10m v5.1.2 admin-1. South Africa's provinces, Lesotho and eSwatini, each dissolved to one shape, clipped, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Lesotho and eSwatini from 1994-04-27. Provinces from 2006-03-01 (Twelfth Amendment, Proclamation R. 8 of 2006, Government Gazette 28568), low confidence until 2009-04-03 (Sixteenth Amendment, Proclamation R. 20 of 2009, Government Gazette 32091), when Merafong moved to Gauteng. Natural Earth's lines may predate those amendments in places.",
+      "processing": "Natural Earth 10m v5.1.2 admin-1. South Africa's provinces, Lesotho and eSwatini, each dissolved to one shape, clipped, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Lesotho and eSwatini from 1910-05-31, low confidence until 1994-04-27 (unverified). Provinces from 2006-03-01 (Twelfth Amendment, Proclamation R. 8 of 2006, Government Gazette 28568), low confidence until 2009-04-03 (Sixteenth Amendment, Proclamation R. 20 of 2009, Government Gazette 32091), when Merafong moved to Gauteng. Natural Earth's lines may predate those amendments in places.",
       "title": "Natural Earth 10m admin-1 states and provinces"
     },
     {
@@ -54,6 +54,17 @@
       "licenceLink": "https://github.com/nvkelso/natural-earth-vector/blob/v4.1.0/LICENSE.md",
       "processing": "Natural Earth 10m v4.1.0 admin-1 (2018-05-21). South Africa's nine provinces, each dissolved to one shape, clipped to the v5.1.2 outline of South Africa, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1994-04-27 to 2006-03-01 (M1.3). Bushbuckridge is in Mpumalanga here, though it was in Northern Province until 2006. Natural Earth approximates the magisterial districts of Schedule 1 of the 1993 Constitution; low confidence.",
       "title": "Natural Earth 10m admin-1 states and provinces, v4.1.0"
+    },
+    {
+      "attribution": "afrith/historical-boundary-data (CC0-1.0)",
+      "author": "afrith",
+      "dateChecked": "2026-10-25",
+      "id": "afrith-provinces-1910",
+      "layer": "Polity borders",
+      "licence": "CC0-1.0",
+      "licenceLink": "https://github.com/afrith/historical-boundary-data/blob/fbdf94d8a561814510f5d62ec552d6d67f3488e6/LICENSE",
+      "processing": "provinces-1910.geojson at commit fbdf94d (2022-04-23). Cape of Good Hope, Natal, Orange Free State and Transvaal, each dissolved to one shape, Natural Earth's Lesotho and eSwatini erased, clipped to Natural Earth land, the gaps up to 300 km² between them and Lesotho and eSwatini filled into the neighbouring shape (about 1,020 km² in all, so the 1910 Lesotho and eSwatini differ slightly from today's), simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1910-05-31 to 1994-04-27, low confidence. The author doesn't recall the sources: Free State and northern Natal equal current provincial lines, Cape–Natal current municipal ones, Cape–Transvaal probably from Trig Survey maps. Griqualand East is in the Cape though it moved to Natal in 1978, and Walvis Bay stays in the Cape eight weeks past 1994-03-01. Homelands are not drawn. The Free State differs from Natural Earth's by about 0.7%, so lines shift at 1994-04-27.",
+      "title": "Historical provinces of South Africa, 1910"
     },
     {
       "attribution": "Public Sans © The Public Sans Project Authors",

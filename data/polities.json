@@ -1,6 +1,12 @@
 {
   "names": [
     {
+      "name": "Cape of Good Hope",
+      "polity": "cape-of-good-hope",
+      "validFrom": 94382,
+      "validTo": 125029
+    },
+    {
       "name": "Eastern Cape",
       "polity": "eastern-cape",
       "validFrom": 125029,
@@ -9,7 +15,7 @@
     {
       "name": "Swaziland",
       "polity": "eswatini",
-      "validFrom": 125029,
+      "validFrom": 94382,
       "validTo": 133787
     },
     {
@@ -55,9 +61,15 @@
       "validTo": null
     },
     {
+      "name": "Basutoland",
+      "polity": "lesotho",
+      "validFrom": 94382,
+      "validTo": 114962
+    },
+    {
       "name": "Lesotho",
       "polity": "lesotho",
-      "validFrom": 125029,
+      "validFrom": 114962,
       "validTo": null
     },
     {
@@ -103,10 +115,28 @@
       "validTo": null
     },
     {
+      "name": "Natal",
+      "polity": "natal",
+      "validFrom": 94382,
+      "validTo": 125029
+    },
+    {
       "name": "Northern Cape",
       "polity": "northern-cape",
       "validFrom": 125029,
       "validTo": null
+    },
+    {
+      "name": "Orange Free State",
+      "polity": "orange-free-state",
+      "validFrom": 94382,
+      "validTo": 125029
+    },
+    {
+      "name": "Transvaal",
+      "polity": "transvaal",
+      "validFrom": 94382,
+      "validTo": 125029
     },
     {
       "name": "Western Cape",
@@ -116,6 +146,7 @@
     }
   ],
   "polities": [
+    { "id": "cape-of-good-hope" },
     { "id": "eastern-cape" },
     { "id": "eswatini" },
     { "id": "free-state" },
@@ -124,8 +155,11 @@
     { "id": "lesotho" },
     { "id": "limpopo" },
     { "id": "mpumalanga" },
+    { "id": "natal" },
     { "id": "north-west" },
     { "id": "northern-cape" },
+    { "id": "orange-free-state" },
+    { "id": "transvaal" },
     { "id": "western-cape" }
   ]
 }

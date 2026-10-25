@@ -94,7 +94,7 @@ test('the credits line opens the sources and attributions dialog', async ({
   const dialog = page.getByRole('dialog', { name: 'Sources and attributions' });
 
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('row')).toHaveCount(8);
+  await expect(dialog.getByRole('row')).toHaveCount(9);
   await expect(dialog).toContainText('Public domain');
   await expect(dialog).toContainText('SIL Open Font Licence 1.1');
   await page.keyboard.press('Escape');
@@ -102,7 +102,7 @@ test('the credits line opens the sources and attributions dialog', async ({
 });
 
 // BND-01
-test('the Polities route serves the 11 Polities and no other country', async ({
+test('the Polities route serves the 15 Polities and no other country', async ({
   request,
 }) => {
   const response = await request.get('/data/polities');
@@ -118,8 +118,9 @@ test('the Polities route serves the 11 Polities and no other country', async ({
   const names = of('label', 'name');
 
   expect(response.ok()).toBe(true);
-  expect(of('boundary', 'polity').size).toBe(11);
-  expect(of('label', 'polity').size).toBe(11);
+  expect(of('boundary', 'polity').size).toBe(15);
+  expect(of('label', 'polity').size).toBe(15);
+  expect(names).toContain('Basutoland');
   expect(names).toContain('Lesotho');
   expect(names).toContain('eSwatini');
   expect(names).toContain('Swaziland');

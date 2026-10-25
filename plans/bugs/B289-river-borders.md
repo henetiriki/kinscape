@@ -2,7 +2,7 @@
 
 - **Spec:** #289
 - **Requirement IDs:** BND-01, BND-06, BND-07, NFR-08
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Replaces M1.4's source for one Polity.
 - **B.** Keep afrith's and close the bug as a known departure in `processing`.
 - **Other:** your own.
 
-Recommended: A, because it fixes the measured borders with data already in the run.
+**Answer: A** (@henetiriki)
 
 **D2 · Outer edge on the Limpopo, lower Orange and Marico** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ Recommended: A, because it fixes the measured borders with data already in the r
 - **C.** As B, but Walvis Bay is dropped; reverses M1.8 D2.
 - **Other:** your own.
 
-Recommended: B, because the outer edge then matches 1994's and today's.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

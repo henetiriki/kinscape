@@ -1,6 +1,12 @@
 'use client';
 
-import { type ComponentProps, type ReactNode, useId, useState } from 'react';
+import {
+  type ComponentProps,
+  type ReactNode,
+  useEffect,
+  useId,
+  useState,
+} from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
 
@@ -68,6 +74,8 @@ export const DateField = ({
 
     return first && !first.ok ? first.problem : null;
   });
+  // A problem from a check, not from `defaultText`: only it listens for Esc on the page.
+  const [checked, setChecked] = useState(false);
   const [seen, setSeen] = useState(shown);
 
   // The date changed from outside the field (a step, the slider): drop what was typed and any problem.
@@ -75,12 +83,38 @@ export const DateField = ({
     setSeen(shown);
     setText(shown);
     setProblem(null);
+    setChecked(false);
   }
+
+  // Esc restores the last good date after focus has left the field, unless another control owns that Esc.
+  useEffect(() => {
+    if (!problem || !checked) return;
+
+    const onEsc = (event: KeyboardEvent) => {
+      if (
+        event.key !== 'Escape' ||
+        event.defaultPrevented ||
+        (event.target as Element).closest(
+          'dialog, [role=dialog], textarea, input:not([type=checkbox], [type=radio], [type=range])'
+        )
+      )
+        return;
+
+      setText(shown);
+      setProblem(null);
+      setChecked(false);
+    };
+
+    document.addEventListener('keydown', onEsc);
+
+    return () => document.removeEventListener('keydown', onEsc);
+  }, [problem, checked, shown]);
 
   const goTo = (to: number, wanted: Precision) => {
     const at = keepPrecision ? precision : wanted;
 
     setProblem(null);
+    setChecked(false);
     setText(shownDate(to, at));
 
     if (to !== day || at !== precision) onChange(to, at);
@@ -93,7 +127,10 @@ export const DateField = ({
 
     if (result.ok)
       goTo(result.day, finerPrecision(result.precision, precision));
-    else setProblem(result.problem);
+    else {
+      setProblem(result.problem);
+      setChecked(true);
+    }
   };
 
   const onKeyDown: ComponentProps<'input'>['onKeyDown'] = event => {
@@ -102,6 +139,7 @@ export const DateField = ({
     if (event.key === 'Escape') {
       setText(shown);
       setProblem(null);
+      setChecked(false);
     }
   };
 

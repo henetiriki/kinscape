@@ -163,6 +163,107 @@ it('puts the last good date back on Esc and clears the error', () => {
   expect(field.value).toBe('1901-06-14');
 });
 
+// B280, MAP-03, NFR-06
+const typeBad = (field: HTMLInputElement) => {
+  type(field, '1901-02-30');
+  fireEvent.blur(field);
+};
+
+it('puts the last good date back on Esc after focus has left the field', () => {
+  const { field, onChange } = setup();
+
+  typeBad(field);
+  expect(field.getAttribute('aria-invalid')).toBe('true');
+  fireEvent.keyDown(document.body, { key: 'Escape' });
+
+  expect(field.value).toBe('1901-06-14');
+  expect(field.getAttribute('aria-invalid')).toBeNull();
+  expect(onChange).not.toHaveBeenCalled();
+});
+
+it('stops listening for Esc once the problem is gone', () => {
+  const { field } = setup();
+
+  typeBad(field);
+  fireEvent.keyDown(document.body, { key: 'Escape' });
+  type(field, '1901-02-31');
+  fireEvent.keyDown(document.body, { key: 'Escape' });
+
+  expect(field.value).toBe('1901-02-31');
+});
+
+it('leaves an Esc another control took or is inside', () => {
+  const { field } = setup();
+
+  typeBad(field);
+
+  const taken = new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    key: 'Escape',
+  });
+
+  taken.preventDefault();
+  document.body.dispatchEvent(taken);
+
+  const dialog = document.createElement('dialog');
+  const other = document.createElement('input');
+
+  dialog.append(other);
+  document.body.append(dialog);
+  fireEvent.keyDown(other, { key: 'Escape' });
+  dialog.remove();
+
+  const role = document.createElement('div');
+
+  role.setAttribute('role', 'dialog');
+  document.body.append(role);
+  fireEvent.keyDown(role, { key: 'Escape' });
+  role.remove();
+
+  const search = document.createElement('input');
+
+  document.body.append(search);
+  fireEvent.keyDown(search, { key: 'Escape' });
+  search.remove();
+
+  expect(field.getAttribute('aria-invalid')).toBe('true');
+  expect(field.value).toBe('1901-02-30');
+});
+
+it('answers an Esc from a checkbox, radio or slider', () => {
+  const { field } = setup();
+
+  typeBad(field);
+
+  const radio = document.createElement('input');
+
+  radio.type = 'radio';
+  document.body.append(radio);
+  fireEvent.keyDown(radio, { key: 'Escape' });
+  radio.remove();
+
+  expect(field.getAttribute('aria-invalid')).toBeNull();
+});
+
+it('ignores other keys after focus has left the field', () => {
+  const { field } = setup();
+
+  typeBad(field);
+  fireEvent.keyDown(document.body, { key: 'a' });
+
+  expect(field.getAttribute('aria-invalid')).toBe('true');
+});
+
+it('does not listen for Esc on a problem from defaultText', () => {
+  const { field } = setup({ defaultText: '1901-02-30' });
+
+  expect(field.getAttribute('aria-invalid')).toBe('true');
+  fireEvent.keyDown(document.body, { key: 'Escape' });
+
+  expect(field.value).toBe('1901-02-30');
+});
+
 it('drops a problem when the date changes from outside', () => {
   const onChange = vi.fn();
   const { rerender } = render(

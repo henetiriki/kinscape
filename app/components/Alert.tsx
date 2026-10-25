@@ -5,10 +5,13 @@ import { FilledIcon, type FilledIconName } from './Icon';
 
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export const Alert = ({
+  aside,
   children,
   title,
   tone,
 }: {
+  /** A note at the right of the title line. */
+  aside?: ReactNode;
   children: ReactNode;
   title?: string;
   tone: FilledIconName;
@@ -18,7 +21,12 @@ export const Alert = ({
     role={tone === 'error' ? 'alert' : 'status'}>
     <FilledIcon name={tone} />
     <span className={styles.body}>
-      {title && <span className={styles.title}>{title}</span>}
+      {title && (
+        <span className={styles.titleRow}>
+          <span className={styles.title}>{title}</span>
+          {aside}
+        </span>
+      )}
       <span className={styles.line}>{children}</span>
     </span>
   </div>

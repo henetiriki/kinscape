@@ -193,7 +193,7 @@ it('starts with the date when its starting text is a good date', () => {
   expect(screen.queryByRole('alert')).toBeNull();
 });
 
-it('opens the message above the field, naming the date the map shows and with no fix', () => {
+it('opens the message above the field, naming the date the map shows, with the Esc hint and, for a phone, the fix', () => {
   setup({
     day: toDay('1901-02-28'),
     defaultText: '1901-02-30',
@@ -201,9 +201,30 @@ it('opens the message above the field, naming the date the map shows and with no
   });
 
   expect(screen.getByRole('alert').textContent).toBe(
-    'February 1901 has 28 days. The map still shows 1901-02-28. Press Esc to go back to it.'
+    'February 1901 has 28 days. The map still shows 1901-02-28. Press Esc to go back to it.Go to 1901-02-28'
   );
+
+  fireEvent.click(screen.getByRole('button', { name: 'Go to 1901-02-28' }));
+  expect(screen.queryByRole('alert')).toBeNull();
+});
+
+it('opens a message above the field with no fix when the date has none', () => {
+  setup({ defaultText: '14/06/1901', placement: 'above' });
+
+  expect(screen.getByRole('alert').textContent).toMatch(/Press Esc/);
   expect(screen.queryByRole('button')).toBeNull();
+});
+
+it('takes the width of its row when asked to fill it', () => {
+  const { field } = setup({ fill: true });
+
+  expect(field.closest('[data-fill]')).toBeTruthy();
+});
+
+it('keeps its own width unless asked to fill the row', () => {
+  const { field } = setup();
+
+  expect(field.closest('[data-fill]')).toBeNull();
 });
 
 it('shows a notice while it is passed, as a status', () => {

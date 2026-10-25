@@ -5,230 +5,158 @@ import { resolveTokens } from '@/lib/design/tokens.mts';
 import type { PreviewKind } from './layers';
 
 import rawTokens from '../../../design/tokens.json';
-import { type Label, labelStyle } from '../mapLabels';
 import styles from './Preview.module.css';
 
 const { map } = resolveTokens(rawTokens);
 
-type Vars = CSSProperties & Record<`--${string}`, number | string>;
+const BORDER_ROW = 17;
 
-const GLYPHS = ['●', '■', '◆', '✚'];
+/** Land with one horizontal stripe, `from` px down, `width` px thick. */
+const stripe = (colour: string, from: number, width: number) =>
+  `linear-gradient(to bottom, ${map.land} 0 ${from}px, ${colour} ${from}px ${from + width}px, ${map.land} ${from + width}px)`;
 
-const text = (label: Label) => ({
-  ...labelStyle(label),
-  textShadow: `0 0 ${map['label-halo'].width}px ${map['label-halo'].colour}`,
-});
+/** Round marks on land: the colour stops are `[colour, to]` pairs from the centre out. */
+const target = (...stops: [string, number][]) => {
+  let from = 0;
+  const list = stops.map(([colour, to]) => {
+    const stop = `${colour} ${from}px ${to}px`;
 
-const line = (colour: string, width: number, dash = false): Vars => ({
-  '--line': colour,
-  '--line-style': dash ? 'dashed' : 'solid',
-  '--line-width': `${width}px`,
-});
+    from = to;
 
-const base = (background: string): Vars => ({ '--fill': background });
+    return stop;
+  });
 
-const vars = (values: Vars): Vars => values;
+  return `radial-gradient(circle, ${list.join(', ')}, ${map.land} ${from}px)`;
+};
+
+const label = (
+  background: string,
+  font: string,
+  colour: string,
+  letterSpacing: number
+): CSSProperties => ({ background, color: colour, font, letterSpacing });
+
+const PREVIEWS: Record<
+  PreviewKind,
+  { content?: string; style: CSSProperties }
+> = {
+  background: { style: { background: map.sea } },
+  cluster: {
+    content: '3',
+    style: label(
+      target([map.pin.colour, 12], [map.pin.halo, 14]),
+      '600 12px var(--font-body)',
+      map.pin.halo,
+      0
+    ),
+  },
+  coastline: {
+    style: {
+      background: `linear-gradient(to bottom, ${map.land} 0 50%, ${map.sea} 50%)`,
+    },
+  },
+  contested: {
+    style: {
+      background: `repeating-linear-gradient(45deg, color-mix(in srgb, ${map.hatch.colour} ${map.hatch.opacity * 100}%, transparent) 0 3px, ${map.polity['free-state']} 3px 9px)`,
+    },
+  },
+  district: { style: { background: stripe(map.district.colour, 17, 1) } },
+  glyphs: {
+    content: '●■◆✚',
+    style: label(map.land, '16px var(--font-body)', map.pin.colour, 4),
+  },
+  halo: {
+    style: {
+      background: `radial-gradient(circle, color-mix(in srgb, ${map.pin.colour} 35%, transparent) 0, transparent 17px), ${map.land}`,
+    },
+  },
+  hillshade: {
+    style: {
+      background: `radial-gradient(circle at 30% 30%, var(--surface-2), ${map.hillshade.mid})`,
+    },
+  },
+  land: {
+    style: { background: map.land, border: '1px solid var(--track)' },
+  },
+  line: {
+    style: { background: stripe(map.border.colour, BORDER_ROW, 2) },
+  },
+  'line-approx': {
+    style: {
+      background: `repeating-linear-gradient(90deg, ${map.border.colour} 0 8px, transparent 8px 13px) 0 ${BORDER_ROW}px / 100% 2px no-repeat, ${map.land}`,
+    },
+  },
+  'line-changed': {
+    style: { background: stripe(map.changed.colour, 15, 5) },
+  },
+  'place-dot': {
+    style: {
+      background: target(
+        [map['place-dot'].colour, 3.5],
+        [map['place-dot'].stroke, 5]
+      ),
+    },
+  },
+  'place-label': {
+    content: 'Kimberley',
+    style: label(
+      map.land,
+      '500 12px var(--font-body)',
+      map['place-label'].colour,
+      0
+    ),
+  },
+  polity: { style: { background: map.polity['western-cape'] } },
+  'polity-label': {
+    content: 'NATAL',
+    style: label(
+      map.polity['free-state'],
+      '600 10px var(--font-body)',
+      map['polity-label'].colour,
+      1.2
+    ),
+  },
+  ring: {
+    style: {
+      background: target(
+        [map.land, 11],
+        [map.selected.colour, 13.5],
+        [map.pin.halo, 15]
+      ),
+    },
+  },
+  river: {
+    style: {
+      background: stripe(map.river.colour, 16, map.river['width-max']),
+    },
+  },
+  'river-label': {
+    content: 'Vaal',
+    style: label(
+      map.land,
+      'italic 12px var(--font-body)',
+      map['river-label'].colour,
+      0
+    ),
+  },
+  'water-label': {
+    content: 'OCEAN',
+    style: label(
+      map.sea,
+      'italic 11px var(--font-body)',
+      map['water-label'].colour,
+      1.5
+    ),
+  },
+};
 
 /** A layer drawn in CSS from the `map` tokens, as small as the board's "Looks like" column. */
 export const Preview = ({ kind }: { kind: PreviewKind }) => {
-  switch (kind) {
-    case 'background':
-      return <span className={styles.box} style={base(map.sea)} />;
-    case 'cluster':
-      return (
-        <span className={styles.box} style={base(map.land)}>
-          <span
-            className={styles.cluster}
-            style={{
-              background: map.pin.colour,
-              border: `2px solid ${map.pin.halo}`,
-            }}>
-            3
-          </span>
-        </span>
-      );
-    case 'coastline':
-      return (
-        <span
-          className={`${styles.box} ${styles.coast}`}
-          style={vars({
-            ...base(map.sea),
-            ...line(map.coastline.colour, map.coastline.width),
-            '--land': map.land,
-          })}
-        />
-      );
-    case 'contested':
-      return (
-        <span
-          className={`${styles.box} ${styles.hatch}`}
-          style={vars({
-            ...base(map.polity.default),
-            '--hatch': map.hatch.colour,
-            '--hatch-opacity': map.hatch.opacity,
-          })}
-        />
-      );
-    case 'district':
-      return (
-        <span
-          className={`${styles.box} ${styles.stroke}`}
-          style={{
-            ...base(map.land),
-            ...line(map.district.colour, map.district.width),
-          }}
-        />
-      );
-    case 'glyphs':
-      return (
-        <span
-          className={styles.box}
-          style={{ ...base(map.land), color: map.pin.colour, gap: 6 }}>
-          {GLYPHS.map(glyph => (
-            <span aria-hidden key={glyph}>
-              {glyph}
-            </span>
-          ))}
-        </span>
-      );
-    case 'halo':
-      return (
-        <span className={styles.box} style={base(map.land)}>
-          <span
-            className={styles.blur}
-            style={{
-              background: map['pin-halo'].colour,
-              filter: `blur(${map['pin-halo'].blur * 4}px)`,
-              opacity: map['pin-halo'].opacity * 2,
-            }}
-          />
-        </span>
-      );
-    case 'hillshade':
-      return (
-        <span
-          className={`${styles.box} ${styles.hillshade}`}
-          style={vars({
-            '--fill': map.land,
-            '--highlight': map.hillshade.highlight,
-            '--mid': map.hillshade.mid,
-            '--shadow': map.hillshade.shadow,
-          })}
-        />
-      );
-    case 'land':
-      return <span className={styles.box} style={base(map.land)} />;
-    case 'line':
-      return (
-        <span
-          className={`${styles.box} ${styles.stroke}`}
-          style={{
-            ...base(map.land),
-            ...line(map.border.colour, map.border.width),
-          }}
-        />
-      );
-    case 'line-approx':
-      return (
-        <span
-          className={`${styles.box} ${styles.stroke}`}
-          style={{
-            ...base(map.land),
-            ...line(map.border.colour, map.border.width, true),
-          }}
-        />
-      );
-    case 'line-changed':
-      return (
-        <span
-          className={`${styles.box} ${styles.stroke}`}
-          style={{
-            ...base(map.land),
-            ...line(map.changed.colour, map.changed.width),
-          }}
-        />
-      );
-    case 'place-dot':
-      return (
-        <span className={styles.box} style={base(map.land)}>
-          <span
-            className={styles.dot}
-            style={{
-              background: map['place-dot'].colour,
-              border: `${map['place-dot']['stroke-width']}px solid ${map['place-dot'].stroke}`,
-              height: map['place-dot'].radius * 2,
-              width: map['place-dot'].radius * 2,
-            }}
-          />
-        </span>
-      );
-    case 'place-label':
-      return (
-        <span className={styles.box} style={base(map.land)}>
-          <span style={text({ key: 'place-label', weight: 500 })}>
-            Kimberley
-          </span>
-        </span>
-      );
-    case 'polity':
-      return (
-        <span
-          className={styles.box}
-          style={{ ...base(map.polity['free-state']), opacity: 0.6 }}
-        />
-      );
-    case 'polity-label':
-      return (
-        <span className={styles.box} style={base(map.polity['free-state'])}>
-          <span style={text({ caps: true, key: 'polity-label', weight: 600 })}>
-            NATAL
-          </span>
-        </span>
-      );
-    case 'ring':
-      return (
-        <span className={styles.box} style={base(map.land)}>
-          <span
-            className={styles.ring}
-            style={{
-              border: `${map.selected.width}px solid ${map.selected.colour}`,
-              height: map.selected.radius * 2,
-              width: map.selected.radius * 2,
-            }}
-          />
-        </span>
-      );
-    case 'river':
-      return (
-        <span
-          className={`${styles.box} ${styles.stroke}`}
-          style={{
-            ...base(map.land),
-            ...line(map.river.colour, map.river['width-max'] - 1),
-          }}
-        />
-      );
-    case 'river-label':
-      return (
-        <span className={styles.box} style={base(map.land)}>
-          <span style={text({ italic: true, key: 'river-label', weight: 400 })}>
-            Vaal
-          </span>
-        </span>
-      );
-    case 'water-label':
-      return (
-        <span className={styles.box} style={base(map.sea)}>
-          <span
-            style={text({
-              caps: true,
-              italic: true,
-              key: 'water-label',
-              weight: 400,
-            })}>
-            OCEAN
-          </span>
-        </span>
-      );
-  }
+  const { content, style } = PREVIEWS[kind];
+
+  return (
+    <span aria-hidden='true' className={styles.box} style={style}>
+      {content}
+    </span>
+  );
 };

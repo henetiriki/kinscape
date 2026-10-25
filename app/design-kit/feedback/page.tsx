@@ -72,11 +72,19 @@ const CASES = [
   },
 ] as const;
 
+// The phone boards say "date sheet" and "under the search bar" where the desktop ones say "dock" and "top centre".
+const Wording = ({ desktop, phone }: { desktop: string; phone: string }) => (
+  <>
+    <span className={styles.desktopOnly}>{desktop}</span>
+    <span className={styles.phoneOnly}>{phone}</span>
+  </>
+);
+
 const BEHAVIOUR = [
   <>
     Keep what was typed. Mark the field with a 2px error border and an icon, set{' '}
-    <code>aria-invalid</code>, and link the message with{' '}
-    <code>aria-describedby</code>.
+    <code>aria-invalid</code> , and link the message with{' '}
+    <code>aria-describedby</code> .
   </>,
   <>
     One line that says what&apos;s wrong and how to fix it, with the fix in the
@@ -87,7 +95,10 @@ const BEHAVIOUR = [
   'Out of range offers the nearest good date as a one-click fix.',
   'A good date gets no success styling. The map moving is the confirmation.',
   'Typing more detail than the current precision (1901-06 while on Year) switches precision and says so for 4 seconds.',
-  'In the dock the message opens above the field, pointing at it, so it isn’t cut off at the bottom of the screen.',
+  <>
+    In the <Wording desktop='dock' phone='date sheet' /> the message opens above
+    the field, pointing at it, so it isn’t cut off at the bottom of the screen.
+  </>,
 ];
 
 const ALERTS = [
@@ -118,7 +129,7 @@ const ALERTS = [
 ] as const;
 const FeedbackKit = () => (
   <main className={styles.kit}>
-    <header className={`${kit.kitHeader} ${styles.header}`}>
+    <header className={kit.kitHeader}>
       <span className={kit.kitEyebrow}>Style guide · 05</span>
       <h1 className={kit.kitTitle}>Feedback and validation</h1>
       <p className={kit.kitLead}>
@@ -136,8 +147,9 @@ const FeedbackKit = () => (
         <p className={styles.lede}>
           Accepts 1901, 1901-06 or 1901-06-14 (single digits like 1901-6-4 are
           fine and get padded). It checks on Enter or when focus leaves, never
-          while you type. Shown here with its message below; in the dock the
-          message sits above the field.
+          while you type. Shown here with its message below; in the{' '}
+          <Wording desktop='dock' phone='date sheet' /> the message sits above
+          the field.
         </p>
       </div>
       <div className={styles.cases}>
@@ -152,9 +164,13 @@ const FeedbackKit = () => (
     </section>
 
     <section className={styles.split}>
-      <div className={styles.column}>
-        <h3 className={styles.h3}>In the dock</h3>
-        <div className={styles.sea} style={{ background: map.sea }}>
+      <div className={`${styles.column} ${styles.dockColumn}`}>
+        <h3 className={styles.h3}>
+          In the <Wording desktop='dock' phone='date sheet' />
+        </h3>
+        <div
+          className={`${styles.sea} ${styles.desktopOnly}`}
+          style={{ background: map.sea }}>
           <DateCase
             defaultText='1901-02-30'
             dock
@@ -162,8 +178,18 @@ const FeedbackKit = () => (
             placement='above'
           />
         </div>
+        <div
+          className={`${styles.seaSheet} ${styles.phoneOnly}`}
+          style={{ background: map.sea }}>
+          <DateCase
+            defaultText='1901-02-30'
+            initial={{ day: toDay('1901-02-28'), precision: 'day' }}
+            placement='above'
+            sheet
+          />
+        </div>
       </div>
-      <div className={styles.column}>
+      <div className={`${styles.column} ${styles.behaviourColumn}`}>
         <h3 className={styles.h3}>Behaviour</h3>
         <ol className={styles.behaviour}>
           {BEHAVIOUR.map((item, i) => (
@@ -181,14 +207,16 @@ const FeedbackKit = () => (
             defaultValue='researcher@example.com'
             helper='Helper text sits here in ink-3.'
             label='Email'
+            size='l'
           />
           <TextField
             defaultValue='researcher@example'
             error='Add the rest of the address, like name@example.com.'
             label='Email'
+            size='l'
           />
         </div>
-        <p className={styles.lede}>
+        <p className={`${styles.lede} ${styles.where}`}>
           Field errors go under the field and replace its helper text. When a
           submit fails for a reason that isn&apos;t one field (wrong password),
           use an error alert above the fields instead, as on the sign-in screen.
@@ -199,10 +227,12 @@ const FeedbackKit = () => (
         <div className={styles.alerts}>
           {ALERTS.map(({ role, text, title, tone }) => (
             <div className={styles.alertRow} key={tone}>
-              <Alert title={title} tone={tone}>
+              <Alert
+                aside={<code className={styles.role}>role={role}</code>}
+                title={title}
+                tone={tone}>
                 {text}
               </Alert>
-              <code className={styles.role}>role={role}</code>
             </div>
           ))}
         </div>
@@ -215,7 +245,8 @@ const FeedbackKit = () => (
         <div className={styles.example}>
           <Toast tone='success'>Jurisdiction chain copied.</Toast>
           <span className={styles.note}>
-            Success toast. Bottom centre, above the dock. Gone after 4 seconds;
+            Success toast. Bottom centre, above the{' '}
+            <Wording desktop='dock' phone='date sheet' />. Gone after 4 seconds;
             nothing to click.
           </span>
         </div>
@@ -232,8 +263,9 @@ const FeedbackKit = () => (
             Terrain didn&apos;t load.
           </Banner>
           <span className={styles.note}>
-            Banner. Top centre, for app-wide problems that don&apos;t stop the
-            map.
+            Banner.{' '}
+            <Wording desktop='Top centre' phone='Under the search bar' />, for
+            app-wide problems that don&apos;t stop the map.
           </span>
         </div>
       </div>
@@ -242,8 +274,8 @@ const FeedbackKit = () => (
         with one part of the screen goes in an alert in that part; the result of
         something you just did goes in a toast; something wrong with the app
         goes in a banner. Errors and failures use{' '}
-        <code>role=&quot;alert&quot;</code>; everything else uses{' '}
-        <code>role=&quot;status&quot;</code>.
+        <code>role=&quot;alert&quot;</code> ; everything else uses{' '}
+        <code>role=&quot;status&quot;</code> .
       </p>
     </section>
   </main>

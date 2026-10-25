@@ -33,8 +33,8 @@ export const TextField = ({
   type = 'text',
   ...rest
 }: {
-  /** The map date look: 188px wide, mono, centred. */
-  date?: boolean;
+  /** The map date look: 188px wide, mono, centred. `fill` takes the width of its container instead. */
+  date?: 'fill' | boolean;
   /** The problem, shown under the field in place of `helper`. Marks the field as in error. */
   error?: ReactNode;
   helper?: ReactNode;
@@ -92,6 +92,7 @@ export const TextField = ({
       )}
       <span
         className={date ? `${styles.box} ${styles.date}` : styles.box}
+        data-fill={date === 'fill' || undefined}
         data-mark={marked}
         data-size={size}
         data-state={state}

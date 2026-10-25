@@ -4,10 +4,11 @@
   box-sizing: border-box;
   display: flex;
   font-family: var(--font-body);
-  font-size: 14px;
-  gap: 10px;
+  font-size: var(--type-body-size);
+  gap: var(--space-12);
   height: 48px;
-  padding: 0 6px 0 var(--space-16);
+  line-height: var(--type-body-line);
+  padding: 0 var(--space-4) 0 var(--space-16);
 }
 
 .shape > svg {
@@ -27,15 +28,17 @@
   color: var(--ink);
   cursor: pointer;
   font-family: var(--font-body);
-  font-size: 13.5px;
+  font-size: var(--type-label-size);
   font-weight: 600;
   height: 36px;
+  line-height: var(--type-label-line);
   padding: 0 var(--space-12);
 }
 
 .toast {
   composes: floating from './Surface.module.css';
   border: 1px solid var(--line);
+  height: 50px;
 }
 
 /* A success toast has no button, so it keeps the left padding on both sides. */
@@ -93,11 +96,16 @@
   }
 
   .shape:has(.action) {
-    height: 60px;
+    height: auto;
+    min-height: 60px;
+    padding: var(--space-8) var(--space-8) var(--space-8) var(--space-16);
   }
 
   .action {
+    font-size: var(--type-body-size);
     height: var(--size-touch);
+    line-height: var(--type-body-line);
+    padding: 0 var(--space-16);
   }
 }
 

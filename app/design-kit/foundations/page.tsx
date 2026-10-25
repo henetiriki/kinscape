@@ -53,7 +53,7 @@ const FoundationsKit = () => (
         </div>
       </section>
 
-      <div className={styles.section}>
+      <div className={styles.stack}>
         <section aria-label='Corner radius' className={styles.section}>
           <Text as='h2' variant='h3'>
             Corner radius
@@ -74,7 +74,9 @@ const FoundationsKit = () => (
           </div>
         </section>
 
-        <section aria-label='Elevation' className={styles.section}>
+        <section
+          aria-label='Elevation'
+          className={`${styles.section} ${styles.elevation}`}>
           <Text as='h2' variant='h3'>
             Elevation
           </Text>
@@ -100,9 +102,12 @@ const FoundationsKit = () => (
           Icons
         </Text>
         <Text variant='small'>
-          Outline icons on a 24px grid, 2px stroke, round caps and joins, drawn
-          in currentColor. Shown at 16, 18, 20 or 24px. An icon-only button
-          always has an aria-label.
+          Outline icons on a 24px grid, 2px stroke for every icon, round caps
+          and joins, drawn in currentColor. Shown at 16, 18 or 20px (24 on the
+          phone layers button). Always{' '}
+          <code className={styles.code}>aria-hidden</code>; an icon-only button
+          carries the name, such as &quot;Zoom out&quot;, &quot;Show
+          password&quot;, &quot;Hide password&quot; or &quot;Sign out&quot;.
         </Text>
         <div className={styles.icons}>
           {ICONS.map(({ label, name }) => (

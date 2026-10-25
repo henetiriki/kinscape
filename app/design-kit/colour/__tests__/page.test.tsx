@@ -52,6 +52,19 @@ it('shows value, ratio and use, with opacity for the scrim and the hatch', async
   ).toBeTruthy();
 });
 
+it('draws an edge under the white chips only', async () => {
+  const { default: ColourKit } = await import('../page');
+
+  render(<ColourKit />);
+
+  const chip = (name: string) =>
+    screen.getByText(name).closest('div')!.previousElementSibling!.className;
+
+  expect(chip('--surface')).toMatch(/edge/);
+  expect(chip('--white')).toMatch(/edge/);
+  expect(chip('--surface-2')).not.toMatch(/edge/);
+});
+
 it('follows a changed token', async () => {
   vi.doMock('../../../../design/tokens.json', () => ({
     default: {

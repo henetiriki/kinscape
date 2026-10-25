@@ -15,8 +15,11 @@ export const SPACE = [
 ] as const;
 
 export const RADII = [
+  { name: 'link', use: 'Links, around the focus ring' },
   { name: 'small', use: 'Keyboard keys, checkboxes' },
-  { name: 'control', use: 'Buttons, fields, segments' },
+  { name: 'segment-item', use: 'Segmented items' },
+  { name: 'control', use: 'Buttons, fields' },
+  { name: 'segment', use: 'Segmented track' },
   { name: 'panel', use: 'Panels, dock, popups, dialogs' },
   { name: 'sheet', use: 'Top of phone sheet' },
   { name: 'full', use: 'Chips, Play, avatar, pins' },
@@ -26,6 +29,8 @@ export const SHADOWS = [
   { name: 'raised', title: 'Raised', use: 'Panels, dock, search, cards' },
   { name: 'floating', title: 'Floating', use: 'Popups, menus' },
   { name: 'modal', title: 'Modal', use: 'Dialogs, over a scrim' },
+  { name: 'sheet', title: 'Sheet', use: 'Phone bottom sheets' },
+  { name: 'segment', title: 'Segment', use: 'The selected segment' },
 ] as const;
 
 export const ICONS = [
@@ -62,6 +67,11 @@ export const MOTION = [
     name: 'changed-border',
     title: 'Changed border',
     use: 'MAP-11 highlight, then gone',
+  },
+  {
+    name: 'toast',
+    title: 'Toast',
+    use: 'A success toast leaves after 4 seconds; errors stay',
   },
 ] as const;
 

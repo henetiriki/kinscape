@@ -719,8 +719,8 @@ test.describe('the map style board', () => {
       rgb(map.sea)
     );
     await expect(preview(page, 'polity-line')).toHaveCSS(
-      '--line',
-      map.border.colour
+      'background-image',
+      new RegExp(rgb(map.border.colour).replace(/[()]/g, '\\$&'))
     );
   });
 });

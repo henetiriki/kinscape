@@ -27,15 +27,42 @@
   padding: 0;
 }
 
+.anchor[data-fill] {
+  flex: 1;
+  min-width: 0;
+}
+
 /* Opens over the row, from the first control to the last; the pointer sits on the field. */
 .callout {
-  bottom: calc(100% + var(--space-12));
+  bottom: calc(100% + var(--callout-lift, var(--space-12)));
   left: 0;
   position: absolute;
   right: 0;
 }
 
 .pointer {
-  bottom: calc(100% + 5px);
+  bottom: calc(100% + var(--callout-lift, var(--space-12)) - 7px);
   left: 50%;
+}
+
+.phoneFix {
+  display: none;
+}
+
+/* A phone has no Esc key: the message offers the fix instead. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .callout {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: var(--space-4);
+    padding-inline: var(--space-16);
+  }
+
+  .esc {
+    display: none;
+  }
+
+  .phoneFix {
+    display: block;
+  }
 }

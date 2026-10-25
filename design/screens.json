@@ -31,14 +31,14 @@
     },
     {
       "height": 2749,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-2-colour",
       "route": "/design-kit/colour",
       "width": 1440
     },
     {
       "height": 1594,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-3-foundations",
       "route": "/design-kit/foundations",
       "width": 1440
@@ -52,7 +52,7 @@
     },
     {
       "height": 1967,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-5-feedback",
       "route": "/design-kit/feedback",
       "width": 1440
@@ -73,21 +73,21 @@
     },
     {
       "height": 4283,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-5-feedback-phone",
       "route": "/design-kit/feedback",
       "width": 390
     },
     {
       "height": 4494,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-2-colour-phone",
       "route": "/design-kit/colour",
       "width": 390
     },
     {
       "height": 3132,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-3-foundations-phone",
       "route": "/design-kit/foundations",
       "width": 390
@@ -150,14 +150,14 @@
     },
     {
       "height": 4678,
-      "mode": "report",
+      "mode": "blocking",
       "name": "map-style-phone",
       "route": "/design-kit/map-style",
       "width": 390
     },
     {
       "height": 2170,
-      "mode": "report",
+      "mode": "blocking",
       "name": "map-style",
       "route": "/design-kit/map-style",
       "width": 1440

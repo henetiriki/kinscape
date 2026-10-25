@@ -2,7 +2,7 @@
 
 - **Spec:** #263 (Intent #111)
 - **Requirement IDs:** NFR-03, NFR-05, NFR-06, NFR-08
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ Two new parts in `app/components/`; no screen uses them yet (DM.13.8 D3=A).
 - **B.** `public/sign-in-hero.svg` in an `<img alt="">`. An SVG image can't load the app's fonts, so the label uses a system font.
 - **Other:** your own.
 
-Recommended: A, because it requests nothing and draws as the snapshot does.
+**Answer: A** (@henetiriki)
 
 **D2 · The phone crop** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ Recommended: A, because it requests nothing and draws as the snapshot does.
 - **B.** The desktop drawing at both widths, sliced on a phone; the phone hero differs from its snapshot.
 - **Other:** your own.
 
-Recommended: A, because the snapshot is the reference.
+**Answer: A** (@henetiriki)
 
 **D3 · Who places the wordmark** · Decides: Tech lead
 
@@ -40,7 +40,7 @@ The desktop wordmark heads the form; the phone one sits over the hero.
 - **B.** `AuthLayout` draws the phone one; the sign-in form holds the desktop one.
 - **Other:** your own.
 
-Recommended: A, because each form's wordmark stays in one part.
+**Answer: A** (@henetiriki)
 
 **D4 · Proving no cross-origin request** · Decides: Tech lead
 
@@ -50,7 +50,7 @@ No page shows the hero until the sign-in screen Spec.
 - **B.** An unlisted kit route mounting both parts, with an e2e that records requests.
 - **Other:** your own.
 
-Recommended: A, because B adds a page DM.13.8 D3 chose not to add.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 
@@ -68,7 +68,7 @@ Recommended: A, because B adds a page DM.13.8 D3 chose not to add.
 
 ## Risks
 
-- **Provenance (NFR-08):** the Spec's D1=A waits on the designer saying where the lines come from. The build starts once the Spec records it; if traced, the answer moves to C.
+- **Provenance (NFR-08):** the designer says the lines are a hand-drawn sketch, traced from no dataset; the tech lead accepted it. `DESIGN.md` records it.
 - **Duplicate SVG ids:** filter and clip ids come from `useId`.
 - **Placement unseen:** jsdom computes no CSS, so tests read the stylesheets; the sign-in screen Spec measures it.
 

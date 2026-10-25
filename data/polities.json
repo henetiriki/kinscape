@@ -3,67 +3,115 @@
     {
       "name": "Eastern Cape",
       "polity": "eastern-cape",
-      "validFrom": 130484,
+      "validFrom": 125029,
       "validTo": null
+    },
+    {
+      "name": "Swaziland",
+      "polity": "eswatini",
+      "validFrom": 125029,
+      "validTo": 133787
     },
     {
       "name": "eSwatini",
       "polity": "eswatini",
-      "validFrom": 130484,
+      "validFrom": 133787,
       "validTo": null
+    },
+    {
+      "name": "Orange Free State",
+      "polity": "free-state",
+      "validFrom": 125029,
+      "validTo": 125461
     },
     {
       "name": "Free State",
       "polity": "free-state",
-      "validFrom": 130484,
+      "validFrom": 125461,
       "validTo": null
+    },
+    {
+      "name": "Pretoria-Witwatersrand-Vereeniging",
+      "polity": "gauteng",
+      "validFrom": 125029,
+      "validTo": 125461
     },
     {
       "name": "Gauteng",
       "polity": "gauteng",
-      "validFrom": 130484,
+      "validFrom": 125461,
       "validTo": null
+    },
+    {
+      "name": "KwaZulu/Natal",
+      "polity": "kwazulu-natal",
+      "validFrom": 125029,
+      "validTo": 126043
     },
     {
       "name": "KwaZulu-Natal",
       "polity": "kwazulu-natal",
-      "validFrom": 130484,
+      "validFrom": 126043,
       "validTo": null
     },
     {
       "name": "Lesotho",
       "polity": "lesotho",
-      "validFrom": 130484,
+      "validFrom": 125029,
       "validTo": null
+    },
+    {
+      "name": "Northern Transvaal",
+      "polity": "limpopo",
+      "validFrom": 125029,
+      "validTo": 125461
+    },
+    {
+      "name": "Northern Province",
+      "polity": "limpopo",
+      "validFrom": 125461,
+      "validTo": 128391
     },
     {
       "name": "Limpopo",
       "polity": "limpopo",
-      "validFrom": 130484,
+      "validFrom": 128391,
       "validTo": null
+    },
+    {
+      "name": "Eastern Transvaal",
+      "polity": "mpumalanga",
+      "validFrom": 125029,
+      "validTo": 125540
     },
     {
       "name": "Mpumalanga",
       "polity": "mpumalanga",
-      "validFrom": 130484,
+      "validFrom": 125540,
       "validTo": null
+    },
+    {
+      "name": "North-West",
+      "polity": "north-west",
+      "validFrom": 125029,
+      "validTo": 126043
     },
     {
       "name": "North West",
       "polity": "north-west",
-      "validFrom": 130484,
+      "validFrom": 126043,
       "validTo": null
     },
     {
       "name": "Northern Cape",
       "polity": "northern-cape",
-      "validFrom": 130484,
+      "validFrom": 125029,
       "validTo": null
     },
     {
       "name": "Western Cape",
       "polity": "western-cape",
-      "validFrom": 130484,
+      "validFrom": 125029,
       "validTo": null
     }
   ],

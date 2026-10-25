@@ -55,31 +55,29 @@ export const polityCollection = (data: BoundaryData): PolityCollection => ({
       },
       type: 'Feature',
     })),
-    ...data.names.flatMap((row): PolityFeature[] => {
-      // The version the name starts under; M1.4 refines this when shapes change.
-      const version = data.boundaries.find(
-        candidate =>
-          candidate.polity === row.polity &&
-          candidate.validFrom < (row.validTo ?? Infinity) &&
-          row.validFrom < (candidate.validTo ?? Infinity)
-      );
-
-      return version
-        ? [
-            {
-              geometry: { coordinates: labelPoint(version), type: 'Point' },
-              properties: {
-                kind: 'label',
-                name: row.name,
-                polity: row.polity,
-                validFrom: row.validFrom,
-                validTo: row.validTo,
-              },
-              type: 'Feature',
-            },
-          ]
-        : [];
-    }),
+    ...data.names.flatMap((row): PolityFeature[] =>
+      data.boundaries
+        .filter(
+          version =>
+            version.polity === row.polity &&
+            version.validFrom < (row.validTo ?? Infinity) &&
+            row.validFrom < (version.validTo ?? Infinity)
+        )
+        .map((version): PolityFeature => ({
+          geometry: { coordinates: labelPoint(version), type: 'Point' },
+          properties: {
+            kind: 'label',
+            name: row.name,
+            polity: row.polity,
+            validFrom: Math.max(row.validFrom, version.validFrom),
+            validTo:
+              row.validTo === null || version.validTo === null
+                ? (row.validTo ?? version.validTo)
+                : Math.min(row.validTo, version.validTo),
+          },
+          type: 'Feature',
+        }))
+    ),
   ],
   type: 'FeatureCollection',
 });

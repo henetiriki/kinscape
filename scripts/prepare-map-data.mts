@@ -7,17 +7,34 @@ import { toDay } from '../lib/boundaries/model.mts';
 export const NATURAL_EARTH_TAG = 'v5.1.2';
 export const PUBLIC_SANS_TAG = 'v2.001';
 
-const NATURAL_EARTH_URL = `https://raw.githubusercontent.com/nvkelso/natural-earth-vector/${NATURAL_EARTH_TAG}`;
+/** Holds the lines from before the Twelfth Amendment: M1.3 chose it for 1994 to 2006. */
+export const NATURAL_EARTH_1994_TAG = 'v4.1.0';
+
+const NATURAL_EARTH_REPO =
+  'https://raw.githubusercontent.com/nvkelso/natural-earth-vector';
 const PUBLIC_SANS_URL = `https://raw.githubusercontent.com/uswds/public-sans/${PUBLIC_SANS_TAG}`;
 
-const LAYERS = [
-  { dir: '10m_physical', name: 'ne_10m_land' },
-  { dir: '10m_physical', name: 'ne_10m_coastline' },
-  { dir: '10m_physical', name: 'ne_10m_rivers_lake_centerlines' },
-  { dir: '10m_cultural', name: 'ne_10m_admin_1_states_provinces' },
-] as const;
-
 const PROVINCES = 'ne_10m_admin_1_states_provinces';
+const PROVINCES_1994 = 'ne_10m_admin_1_v4_1_0';
+const OUTLINE = 'south_africa_outline';
+
+/** `name` is the file in the repo; `layer` is its name in mapshaper. */
+const LAYERS = [
+  { dir: '10m_physical', layer: 'ne_10m_land', name: 'ne_10m_land' },
+  { dir: '10m_physical', layer: 'ne_10m_coastline', name: 'ne_10m_coastline' },
+  {
+    dir: '10m_physical',
+    layer: 'ne_10m_rivers_lake_centerlines',
+    name: 'ne_10m_rivers_lake_centerlines',
+  },
+  { dir: '10m_cultural', layer: PROVINCES, name: PROVINCES },
+  {
+    dir: '10m_cultural',
+    layer: PROVINCES_1994,
+    name: PROVINCES,
+    tag: NATURAL_EARTH_1994_TAG,
+  },
+] as const;
 
 /** West, south, east, north: `MAX_BOUNDS` in `MapView` plus a margin. */
 const BBOX = '5,-45,45,-10';
@@ -34,10 +51,19 @@ const GLYPH_RANGES = [
   [256, 511],
 ] as const;
 
+/** First day of the Interim Constitution's provinces, Lesotho and eSwatini. */
+const FIRST_DATE = '1994-04-27';
+
+/** Twelfth Amendment commencement (Proclamation R. 8 of 2006): today's lines apply. */
+const TWELFTH_DATE = '2006-03-01';
+
 /** Sixteenth Amendment commencement (Proclamation R. 20 of 2009). */
-const START_DATE = '2009-04-03';
+const SIXTEENTH_DATE = '2009-04-03';
 
 export const BOUNDARY_SOURCE = 'natural-earth-admin-1';
+export const BOUNDARY_SOURCE_1994 = 'natural-earth-admin-1-v4';
+
+const FOREIGN = ['LSO', 'SWZ'];
 
 /** Natural Earth admin-1 name (or country code) to Polity id. */
 export const POLITY_IDS: Record<string, string> = {
@@ -77,16 +103,22 @@ const SHAPE_PARTS = ['shp', 'dbf', 'prj'] as const;
 
 export const buildCommands = (): string =>
   [
-    `-i ${LAYERS.map(({ name }) => `${name}.shp`).join(' ')} combine-files`,
+    `-i ${LAYERS.map(({ layer }) => `${layer}.shp`).join(' ')} combine-files`,
     `-filter 'scalerank <= 7' target=ne_10m_rivers_lake_centerlines`,
     `-filter 'adm0_a3 == "ZAF" || adm0_a3 == "LSO" || adm0_a3 == "SWZ"' target=${PROVINCES}`,
     `-each 'key = adm0_a3 == "ZAF" ? name : adm0_a3' target=${PROVINCES}`,
     `-dissolve key target=${PROVINCES}`,
+    `-filter 'adm0_a3 == "ZAF"' target=${PROVINCES_1994}`,
+    `-each 'key = name' target=${PROVINCES_1994}`,
+    `-dissolve key target=${PROVINCES_1994}`,
+    `-filter '${FOREIGN.map(code => `key != "${code}"`).join(' && ')}' + name=${OUTLINE} target=${PROVINCES}`,
+    `-dissolve target=${OUTLINE}`,
+    `-clip ${OUTLINE} target=${PROVINCES_1994}`,
     `-clip bbox=${BBOX} target=*`,
     `-simplify interval=${TOLERANCE} keep-shapes`,
     ...LAYERS.map(
-      ({ name }) =>
-        `-o ${name}.json format=geojson precision=${PRECISION} target=${name}`
+      ({ layer }) =>
+        `-o ${layer}.json format=geojson precision=${PRECISION} target=${layer}`
     ),
   ].join(' ');
 
@@ -126,16 +158,15 @@ const asMultiPolygon = (geometry: Feature['geometry']) => ({
   type: 'MultiPolygon',
 });
 
-/** One Boundary version per Polity, valid from the Sixteenth Amendment to today. */
-export const boundaryVersions = (provinces: Feature[]) => {
+const geometries = (provinces: Feature[], expected: string[]) => {
   const found = new Map(
     provinces.map(({ geometry, properties }) => [
       String(properties.key),
       geometry,
     ])
   );
-  const missing = Object.keys(POLITY_IDS).filter(key => !found.has(key));
-  const unknown = [...found.keys()].filter(key => !(key in POLITY_IDS));
+  const missing = expected.filter(key => !found.has(key));
+  const unknown = [...found.keys()].filter(key => !expected.includes(key));
 
   if (missing.length > 0 || unknown.length > 0) {
     throw new Error(
@@ -143,25 +174,92 @@ export const boundaryVersions = (provinces: Feature[]) => {
     );
   }
 
+  return found;
+};
+
+type Range = {
+  confidence: 'high' | 'low';
+  source: string;
+  validFrom: string;
+  validTo: null | string;
+};
+
+const version = (geometry: Feature['geometry'], key: string, range: Range) => ({
+  geometry: asMultiPolygon(geometry),
+  properties: {
+    confidence: range.confidence,
+    contested: false,
+    level: 'polity',
+    polity: POLITY_IDS[key],
+    source: range.source,
+    validFrom: toDay(range.validFrom),
+    validTo: range.validTo === null ? null : toDay(range.validTo),
+  },
+  type: 'Feature',
+});
+
+const collection = (features: ReturnType<typeof version>[]) => ({
+  features: features.toSorted(
+    (a, b) =>
+      a.properties.polity.localeCompare(b.properties.polity) ||
+      a.properties.validFrom - b.properties.validFrom
+  ),
+  type: 'FeatureCollection',
+});
+
+/**
+ * `old` holds the v4.1.0 provinces to the Twelfth Amendment. `today` holds
+ * Lesotho and eSwatini from the first day, and today's provinces from the
+ * Twelfth Amendment, low confidence until the Sixteenth.
+ */
+export const boundaryVersions = (
+  provinces: Feature[],
+  provinces1994: Feature[]
+) => {
+  const today = geometries(provinces, Object.keys(POLITY_IDS));
+  const old = geometries(
+    provinces1994,
+    Object.keys(POLITY_IDS).filter(key => !FOREIGN.includes(key))
+  );
+
   return {
-    features: [...found]
-      .map(([key, geometry]) => ({
-        geometry: asMultiPolygon(geometry),
-        properties: {
-          confidence: 'high',
-          contested: false,
-          level: 'polity',
-          polity: POLITY_IDS[key],
-          source: BOUNDARY_SOURCE,
-          validFrom: toDay(START_DATE),
-          validTo: null,
-        },
-        type: 'Feature',
-      }))
-      .toSorted((a, b) =>
-        a.properties.polity.localeCompare(b.properties.polity)
-      ),
-    type: 'FeatureCollection',
+    old: collection(
+      [...old].map(([key, geometry]) =>
+        version(geometry, key, {
+          confidence: 'low',
+          source: BOUNDARY_SOURCE_1994,
+          validFrom: FIRST_DATE,
+          validTo: TWELFTH_DATE,
+        })
+      )
+    ),
+    today: collection(
+      [...today].flatMap(([key, geometry]) =>
+        FOREIGN.includes(key)
+          ? [
+              version(geometry, key, {
+                confidence: 'high',
+                source: BOUNDARY_SOURCE,
+                validFrom: FIRST_DATE,
+                validTo: null,
+              }),
+            ]
+          : [
+              version(geometry, key, {
+                confidence: 'low',
+                source: BOUNDARY_SOURCE,
+                validFrom: TWELFTH_DATE,
+                validTo: SIXTEENTH_DATE,
+              }),
+              version(geometry, key, {
+                confidence: 'high',
+                source: BOUNDARY_SOURCE,
+                validFrom: SIXTEENTH_DATE,
+                validTo: null,
+              }),
+            ]
+      )
+    ),
   };
 };
 
@@ -169,24 +267,28 @@ export const boundaryVersions = (provinces: Feature[]) => {
 export const prepare = async (root: string, deps: Deps): Promise<void> => {
   const input: Record<string, string | Uint8Array> = {};
 
-  for (const { dir, name } of LAYERS) {
+  for (const layer of LAYERS) {
+    const tag = 'tag' in layer ? layer.tag : NATURAL_EARTH_TAG;
+
     for (const part of SHAPE_PARTS) {
       const bytes = await deps.download(
-        `${NATURAL_EARTH_URL}/${dir}/${name}.${part}`
+        `${NATURAL_EARTH_REPO}/${tag}/${layer.dir}/${layer.name}.${part}`
       );
 
       // Mapshaper reads the projection file as text.
-      input[`${name}.${part}`] = part === 'prj' ? asText(bytes) : bytes;
+      input[`${layer.layer}.${part}`] = part === 'prj' ? asText(bytes) : bytes;
     }
   }
 
   const output = await deps.applyCommands(buildCommands(), input);
 
-  writeJson(
-    root,
-    'data/boundaries/today.geojson',
-    boundaryVersions(JSON.parse(readOutput(output, PROVINCES)).features)
+  const versions = boundaryVersions(
+    JSON.parse(readOutput(output, PROVINCES)).features,
+    JSON.parse(readOutput(output, PROVINCES_1994)).features
   );
+
+  writeJson(root, 'data/boundaries/1994.geojson', versions.old);
+  writeJson(root, 'data/boundaries/today.geojson', versions.today);
 
   for (const [file, name] of [
     ['land', 'ne_10m_land'],

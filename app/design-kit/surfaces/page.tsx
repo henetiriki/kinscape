@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 
 import { TextLink } from '@/app/components/actions/TextLink';
-import { loadAppData } from '@/lib/boundaries/app-data';
 
 import { boardTitle } from '../boards';
 import styles from '../inputs/page.module.css';
@@ -17,6 +16,7 @@ import {
   SheetHeaders,
   Surfaces,
 } from './sections';
+import { SAMPLE_SOURCES } from './sources';
 
 export const metadata: Metadata = { title: boardTitle('surfaces') };
 
@@ -42,7 +42,6 @@ const SurfacesKit = async ({
 }) => {
   const part = (await searchParams).part === '2' ? 2 : 1;
   const other = OTHER_PART[part === 1 ? 2 : 1];
-  const { sources } = loadAppData();
 
   return (
     <main className={`${styles.kit} ${local.paged}`} data-part={part}>
@@ -70,9 +69,9 @@ const SurfacesKit = async ({
       <Surfaces />
       <NoticeCards />
       <ProgressBars />
-      <Dialogs sources={sources} />
+      <Dialogs sources={SAMPLE_SOURCES} />
       <SheetHeaders />
-      <Menus sources={sources} />
+      <Menus sources={SAMPLE_SOURCES} />
       <Popups />
       <Callouts />
     </main>

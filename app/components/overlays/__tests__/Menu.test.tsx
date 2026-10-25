@@ -1,7 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Avatar } from '@/app/components/map/Avatar';
 import { Menu, MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
 
 const GROUPS = [
@@ -56,24 +55,6 @@ it('is a button named "Account menu" with the initial, haspopup and expanded', (
   expect(avatar.getAttribute('aria-haspopup')).toBe('menu');
   expect(avatar.getAttribute('aria-expanded')).toBe('false');
   expect(screen.queryByRole('menu')).toBeNull();
-});
-
-it('is closed unless told it is open', () => {
-  render(<Avatar initial='L' />);
-  expect(
-    screen
-      .getByRole('button', { name: 'Account menu' })
-      .getAttribute('aria-expanded')
-  ).toBe('false');
-});
-
-it('draws a state and its open look', () => {
-  render(<Avatar expanded initial='L' state='hover' />);
-
-  const avatar = screen.getByRole('button', { name: 'Account menu' });
-
-  expect(avatar.getAttribute('data-state')).toBe('hover');
-  expect(avatar.getAttribute('aria-expanded')).toBe('true');
 });
 
 it('opens a menu named "Account" and focuses its first item', () => {

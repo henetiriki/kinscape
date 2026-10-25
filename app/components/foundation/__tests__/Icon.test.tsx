@@ -1,7 +1,11 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Icon, type IconSize } from '@/app/components/foundation/Icon';
+import {
+  FilledIcon,
+  Icon,
+  type IconSize,
+} from '@/app/components/foundation/Icon';
 import { ICONS } from '@/app/design-kit/foundations/values';
 
 const svgOf = (container: HTMLElement) => container.querySelector('svg')!;
@@ -36,6 +40,23 @@ it.each(ICONS.map(icon => icon.name))('%s draws at stroke 2', name => {
   const svg = svgOf(render(<Icon name={name} />).container);
 
   expect(svg.getAttribute('stroke-width')).toBe('2');
+});
+
+it('draws a decorative icon in both forms', () => {
+  const { container } = render(
+    <>
+      <Icon name='success' />
+      <Icon name='info' />
+      <FilledIcon name='info' />
+    </>
+  );
+
+  const [success, info, filled] = Array.from(container.querySelectorAll('svg'));
+
+  expect(success.getAttribute('data-icon')).toBe('success');
+  expect(info.getAttribute('data-icon')).toBe('info');
+  expect(filled.getAttribute('height')).toBe('20');
+  expect(filled.getAttribute('aria-hidden')).toBe('true');
 });
 
 it('fills play with no stroke', () => {

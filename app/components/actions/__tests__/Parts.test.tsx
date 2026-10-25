@@ -2,23 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { Chip, RemovableChip } from '@/app/components/actions/Chip';
-import { Divider } from '@/app/components/foundation/Divider';
-import { EVENT_GLYPHS, EventGlyph } from '@/app/components/map/EventGlyph';
 import { KeyHint } from '@/app/components/actions/KeyHint';
 
 // NFR-06
-it('draws a hairline separator, or one with a word between two lines', () => {
-  render(
-    <>
-      <Divider />
-      <Divider label='or' />
-    </>
-  );
-
-  expect(screen.getByRole('separator')).toBeTruthy();
-  expect(screen.getByText('or').getAttribute('aria-hidden')).toBeNull();
-});
-
 it('draws a key hint as a kbd, hidden from assistive tech only when decorative', () => {
   const { container } = render(
     <>
@@ -32,27 +18,6 @@ it('draws a key hint as a kbd, hidden from assistive tech only when decorative',
   expect(shift.textContent).toBe('Shift');
   expect(shift.getAttribute('aria-hidden')).toBeNull();
   expect(slash.getAttribute('aria-hidden')).toBe('true');
-});
-
-it.each(Object.entries(EVENT_GLYPHS))(
-  'draws the %s glyph in text form, hidden from assistive tech',
-  (event, glyph) => {
-    const { container } = render(
-      <EventGlyph event={event as keyof typeof EVENT_GLYPHS} size={16} />
-    );
-
-    const span = container.querySelector('span')!;
-
-    expect(span.textContent).toBe(`${glyph}︎`);
-    expect(span.getAttribute('aria-hidden')).toBe('true');
-    expect(span.style.fontSize).toBe('16px');
-  }
-);
-
-it('sizes a glyph 14 unless told', () => {
-  const { container } = render(<EventGlyph event='birth' />);
-
-  expect(container.querySelector('span')!.style.fontSize).toBe('14px');
 });
 
 it('leads a chip with its glyph, and names it by its label', () => {

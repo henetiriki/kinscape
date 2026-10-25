@@ -1,9 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { toDay } from '@/lib/boundaries/model.mts';
-
 import { DateSlider } from '@/app/components/map/DateSlider';
+import { toDay } from '@/lib/boundaries/model.mts';
 
 const today = toDay('2026-10-21');
 

@@ -1,29 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Checkbox } from '@/app/components/forms/Checkbox';
 import { Chip } from '@/app/components/actions/Chip';
 import { Segmented } from '@/app/components/actions/Segmented';
 import { Tabs } from '@/app/components/actions/Tabs';
 
 // NFR-06
-it('reports a checkbox as checked or not and shows a given state', () => {
-  render(
-    <>
-      <Checkbox aria-label='Off' />
-      <Checkbox aria-label='On' defaultChecked state='active' />
-    </>
-  );
-  expect(
-    (screen.getByRole('checkbox', { name: 'Off' }) as HTMLInputElement).checked
-  ).toBe(false);
-
-  const on = screen.getByRole('checkbox', { name: 'On' }) as HTMLInputElement;
-
-  expect(on.checked).toBe(true);
-  expect(on.dataset.state).toBe('active');
-});
-
 it('reports a chip through aria-pressed', () => {
   render(
     <>

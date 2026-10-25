@@ -3,7 +3,6 @@ import { expect, it } from 'vitest';
 
 import { Alert } from '@/app/components/feedback/Alert';
 import { Banner } from '@/app/components/feedback/Banner';
-import { FilledIcon, Icon } from '@/app/components/foundation/Icon';
 
 // NFR-06
 it('announces an error alert at once and the other tones politely', () => {
@@ -68,21 +67,4 @@ it('marks a placed banner for its phone position', () => {
   );
 
   expect(screen.getByRole('alert').hasAttribute('data-placed')).toBe(true);
-});
-
-it('draws a decorative icon in both forms', () => {
-  const { container } = render(
-    <>
-      <Icon name='success' />
-      <Icon name='info' />
-      <FilledIcon name='info' />
-    </>
-  );
-
-  const [success, info, filled] = Array.from(container.querySelectorAll('svg'));
-
-  expect(success.getAttribute('data-icon')).toBe('success');
-  expect(info.getAttribute('data-icon')).toBe('info');
-  expect(filled.getAttribute('height')).toBe('20');
-  expect(filled.getAttribute('aria-hidden')).toBe('true');
 });

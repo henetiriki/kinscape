@@ -42,7 +42,7 @@ describe('colour literals', () => {
   const modules = globSync('app/**/*.module.css', { cwd: root }).toSorted();
 
   it('finds the components and the CSS modules', () => {
-    expect(components).toHaveLength(54);
+    expect(components).toHaveLength(55);
     expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { type Source, toDay } from '@/lib/boundaries/model.mts';
 import { dayOf } from '@/lib/map/filter';
@@ -15,6 +15,7 @@ vi.mock('@/app/components/map/MapView', () => ({
 }));
 
 import { MapShell } from '@/app/components/map/MapShell';
+import { freeArea } from '@/app/components/map/Stage';
 
 const sources: Source[] = [
   {
@@ -37,6 +38,7 @@ it('shows the map for today with Polity borders on', () => {
   expect(screen.getByTestId('map-view')).toBeTruthy();
   expect(lastProps()).toEqual({
     mapDay: dayOf(new Date()),
+    padding: freeArea(false),
     showPolities: true,
   });
 });
@@ -68,6 +70,64 @@ it('opens and closes the sources dialog from the credits line', () => {
   expect(screen.getByRole('dialog')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Close' }));
   expect(screen.queryByRole('dialog')).toBeNull();
+});
+
+describe('on a phone', () => {
+  const desktop = window.matchMedia;
+
+  beforeEach(() => {
+    window.matchMedia = (() => ({
+      addEventListener: () => {},
+      matches: true,
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+  });
+
+  afterEach(() => {
+    window.matchMedia = desktop;
+  });
+
+  // NFR-05
+  it('draws the date sheet, the Layers button and the credits, and no panel or dock', () => {
+    render(<MapShell sources={sources} />);
+
+    expect(screen.getByRole('region', { name: 'Map date' })).toBeTruthy();
+    expect(
+      screen.getByRole('button', { name: 'Layers and filters' })
+    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Attributions' })).toBeTruthy();
+    expect(screen.queryByRole('complementary', { name: 'Layers' })).toBeNull();
+    expect(screen.queryByRole('radiogroup')).toBeNull();
+    expect(lastProps().padding).toEqual(freeArea(true));
+  });
+
+  // MAP-03
+  it('expands the sheet to the slider, which moves the Map date', () => {
+    render(<MapShell sources={sources} />);
+    expect(screen.queryByRole('slider')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Expand the sheet' }));
+
+    const slider = screen.getByRole('slider', { name: 'Map date' });
+
+    fireEvent.keyDown(slider, { key: 'ArrowLeft', shiftKey: true });
+    expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
+  });
+
+  // MAP-02
+  it('opens Layers in a sheet, turns the Polities off and closes it', () => {
+    render(<MapShell sources={sources} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Layers and filters' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Polity borders/ }));
+    expect(lastProps().showPolities).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(
+      (
+        screen
+          .getByRole('heading', { hidden: true, name: 'Layers' })
+          .closest('dialog') as HTMLDialogElement
+      ).open
+    ).toBe(false);
+  });
 });
 
 const typeDate = (text: string) => {

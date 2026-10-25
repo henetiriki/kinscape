@@ -229,6 +229,24 @@ const typeDate = (text: string) => {
   fireEvent.keyDown(field(), { key: 'Enter' });
 };
 
+// MAP-03
+it('keeps the phone sheet on Year and shows no precision note', () => {
+  const onChange = vi.fn();
+
+  render(
+    <DateDock
+      day={toDay('1901-01-01')}
+      lastDay={today}
+      onChange={onChange}
+      sheet={{ expanded: false, onExpandedChange: vi.fn() }}
+    />
+  );
+  typeDate('1901-06');
+  expect(lastDate(onChange)).toBe('1901-06-01');
+  expect(field().value).toBe('1901');
+  expect(screen.queryByRole('status')).toBeNull();
+});
+
 const month = () => screen.getByRole('radio', { name: 'Month' });
 
 it('keeps Month when less detail is typed, even on the date it shows', () => {

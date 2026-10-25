@@ -1,11 +1,7 @@
+/* Placed by the Stage's panel slot. */
 .panel {
   composes: raised from '@/app/components/foundation/Surface.module.css';
-  left: var(--size-gutter);
   padding: var(--space-16) var(--space-20);
-  position: absolute;
-  top: var(--size-gutter);
-  width: var(--size-panel);
-  z-index: var(--z-furniture);
 }
 
 .heading {

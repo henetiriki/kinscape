@@ -23,6 +23,14 @@ body {
   outline-offset: var(--focus-offset);
 }
 
+/* A phone zooms by pinch: MapLibre's zoom buttons (top right) and scale (bottom left) would sit under the Layers button and the sheet. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .map .maplibregl-ctrl-top-right,
+  .map .maplibregl-ctrl-bottom-left {
+    display: none;
+  }
+}
+
 /* Sized, not positioned:MapLibre's own CSS sets the container's position. */
 .map {
   width: 100vw;

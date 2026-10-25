@@ -1,33 +1,14 @@
 'use client';
 
-import { type ReactNode, useId, useSyncExternalStore } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import { Text } from '@/app/components/foundation/Text';
+import { usePhone } from '@/app/components/foundation/usePhone';
 import { Modal, ModalClose } from '@/app/components/overlays/Modal';
-import rawTokens from '@/design/tokens.json';
 
 import styles from './Dialog.module.css';
 
 export type DialogForm = 'centred' | 'sheet';
-
-// Below 640 wide or below 500 tall is a phone (Intent 104).
-const { 'phone-height': height, 'phone-width': width } = rawTokens.breakpoint;
-const PHONE = `(max-width: ${width}), (max-height: ${height})`;
-
-const subscribe = (notify: () => void) => {
-  const query = window.matchMedia(PHONE);
-
-  query.addEventListener('change', notify);
-
-  return () => query.removeEventListener('change', notify);
-};
-
-const usePhone = () =>
-  useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia(PHONE).matches,
-    () => false
-  );
 
 type PanelProps = {
   children: ReactNode;

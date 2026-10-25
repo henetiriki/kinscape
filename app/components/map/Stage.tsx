@@ -1,6 +1,27 @@
 import type { ReactNode } from 'react';
 
+import rawTokens from '@/design/tokens.json';
+
 import styles from './Stage.module.css';
+
+const { layout, size } = rawTokens;
+const px = (value: string) => Number.parseFloat(value);
+
+/** The free map area as map padding: what the `overlay` slot leaves, from the same tokens. */
+export const freeArea = (phone: boolean) =>
+  phone
+    ? {
+        bottom: px(layout.phone['sheet-collapsed']),
+        left: px(size['gutter-phone']),
+        right: px(size['gutter-phone']),
+        top: px(layout.phone['overlay-top']),
+      }
+    : {
+        bottom: px(layout['furniture-bottom']) + px(layout['dock-height']),
+        left: px(layout['dock-left']),
+        right: px(size.gutter),
+        top: px(layout['furniture-top']),
+      };
 
 /** The slots, in the order they stack; a phone shows `layers` and hides `account`, `zoom` and `credits`. */
 const SLOTS = [

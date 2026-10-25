@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { Stage } from '@/app/components/map/Stage';
+import { freeArea, Stage } from '@/app/components/map/Stage';
 
 const css = readFileSync(
   join(import.meta.dirname, '../Stage.module.css'),
@@ -65,6 +65,27 @@ it('takes every edge from a layout or size token', () => {
   for (const [, value] of edges) {
     expect(value).toMatch(/^(?:0|auto|100%|calc\(|var\(--(?:layout|size)-)/);
   }
+});
+
+// NFR-05
+it('turns the overlay slot into map padding from the same tokens', () => {
+  expect(freeArea(false)).toEqual({
+    bottom: 28 + 176,
+    left: 368,
+    right: 24,
+    top: 88,
+  });
+  expect(freeArea(true)).toEqual({
+    bottom: 152,
+    left: 16,
+    right: 16,
+    top: 144,
+  });
+});
+
+it('puts the phone Layers button on the right and lets the dock grow', () => {
+  expect(media).toMatch(/\.layers \{[^}]*right: var\(--size-gutter-phone\)/);
+  expect(media).not.toMatch(/\.dock \{[^}]*height/);
 });
 
 it('positions the phone slots from the phone tokens', () => {

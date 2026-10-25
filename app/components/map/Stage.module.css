@@ -54,6 +54,8 @@
 
 .credits {
   bottom: var(--layout-credits-bottom);
+  display: flex;
+  flex-direction: column;
   left: var(--layout-dock-left);
   right: var(--size-gutter);
 }
@@ -83,7 +85,7 @@
 
   .layers {
     display: block;
-    left: var(--size-gutter-phone);
+    right: var(--size-gutter-phone);
     top: var(--layout-phone-layers-top);
   }
 
@@ -101,9 +103,11 @@
     width: auto;
   }
 
+  /* The sheet sets its own height; anything above it (the credits) stacks over it. */
   .dock {
     bottom: 0;
-    height: var(--layout-phone-sheet-collapsed);
+    display: flex;
+    flex-direction: column;
     left: 0;
     right: 0;
   }

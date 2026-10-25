@@ -11,7 +11,7 @@ The review runs the stock command with no project context, and says "No issues" 
 - check `docs/security.md` and the AGENTS.md data rules, including workflow pinning, permissions and API error handling;
 - label probable issues PLAUSIBLE, post at most five, and list what it checked before saying "No issues".
 
-`claude-code-review.yml` downloads the file from `main`. The pinned command has no `--max-findings`, so `review.md` states the cap. It also overrides the command's "certain only" filters and its stop when Claude has already commented, so each push is reviewed again.
+`claude-code-review.yml` downloads the file from `main`. The pinned command has no `--max-findings`, so `review.md` states the cap and overrides the command's "certain only" filters and its stop after one review.
 
 ## Decisions
 
@@ -61,4 +61,4 @@ The review runs the stock command with no project context, and says "No issues" 
 
 ## Deviations
 
-- The load step falls back to a one-line file, so this PR's own review runs.
+- The load step falls back to a one-line file on a 404, so this PR's own review runs; other failures fail the job.

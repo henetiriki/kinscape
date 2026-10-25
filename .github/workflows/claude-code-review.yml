@@ -31,14 +31,24 @@ jobs:
           fetch-depth: 1
 
       # The rules come from main, not the checked-out branch: a PR can't change its own reviewer.
-      # Until the file is on main the review runs without it.
+      # Until the file is on main (404) the review runs without it; any other failure retries, then fails the job.
       - name: Load review rules
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/review.md?ref=main" > "$RUNNER_TEMP/review.md" \
-            || { echo "::warning::Could not load review.md from main"; echo "No review rules on main." > "$RUNNER_TEMP/review.md"; }
+          for attempt in 1 2 3; do
+            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/review.md?ref=main" > "$RUNNER_TEMP/review.md" 2> "$RUNNER_TEMP/review.err" && exit 0
+            grep -q 'HTTP 404' "$RUNNER_TEMP/review.err" && break
+            sleep $((attempt * 5))
+          done
+          if grep -q 'HTTP 404' "$RUNNER_TEMP/review.err"; then
+            echo "::warning::review.md is not on main yet"
+            echo "No review rules on main." > "$RUNNER_TEMP/review.md"
+          else
+            cat "$RUNNER_TEMP/review.err" >&2
+            exit 1
+          fi
 
       - name: Run Claude Code Review
         id: claude-review

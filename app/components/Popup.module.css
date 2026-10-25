@@ -195,6 +195,15 @@
   flex: none;
 }
 
+/* At --x, --y: the popup's right edge sits popup-gap left of the point, which is popup-point-y down it. */
+.placed {
+  left: var(--x);
+  position: absolute;
+  top: var(--y);
+  translate: calc(-100% - var(--layout-popup-gap))
+    calc(-1 * var(--layout-popup-point-y));
+}
+
 /* A square turned 45°, 16 wide; the caller places it on the popup's edge. */
 .pointer {
   background: var(--surface);
@@ -204,4 +213,10 @@
   rotate: 45deg;
   translate: -50%;
   width: 16px;
+}
+
+.placedPointer {
+  left: 100%;
+  top: var(--layout-popup-point-y);
+  translate: -50% -50%;
 }

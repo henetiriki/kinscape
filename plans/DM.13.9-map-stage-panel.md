@@ -2,7 +2,7 @@
 
 - **Spec:** #261 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06, MAP-05, MAP-07, EXP-03
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ New parts in `app/components/`; no screen uses them yet.
 - **B.** `FilterFields` remounts the field with a new `key` on Clear.
 - **Other:** your own.
 
-Recommended: A, because the other fields are already driven by props.
+**Answer: A** (@henetiriki)
 
 **D2 · The phone's Layers button** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ The Spec's slots omit the Layers button its phone check places.
 - **B.** On a phone the `zoom` slot holds it.
 - **Other:** your own.
 
-Recommended: A, because each slot keeps one meaning.
+**Answer: A** (@henetiriki)
 
 **D3 · Panel tab height** · Decides: Tech lead
 
@@ -46,7 +46,7 @@ Recommended: A, because each slot keeps one meaning.
 - **B.** Keep 44.
 - **Other:** your own.
 
-Recommended: A, because the snapshot is the reference.
+**Answer: A** (@henetiriki)
 
 **D4 · Size** · Decides: Tech lead
 
@@ -56,7 +56,7 @@ I estimate 700 changed lines, 270 of them tests; the cap is about 600.
 - **B.** Move `ChipGroup` and `FilterFields` to a new Spec.
 - **Other:** your own.
 
-Recommended: A, because the parts share one test setup.
+**Answer: Other:** Complete in one PR (@henetiriki)
 
 ## Files that change
 
@@ -88,6 +88,12 @@ Recommended: A, because the parts share one test setup.
 | ChipGroup                            | `ChipGroup.test.tsx`, nine chips, Space                                     |
 | Popup placement                      | `Popup.test.tsx`: `--x`, `--y`, pointer; `design.test.ts`: translate tokens |
 | Tests, e2e, validator, 100%, 0.5%    | Output in the PR                                                            |
+
+## Deviations
+
+- The `px` check lives in `Stage.test.tsx`.
+- `ClearFilters` is exported for the Panel's footer.
+- Tests click; Space is native.
 
 ## Out of scope
 

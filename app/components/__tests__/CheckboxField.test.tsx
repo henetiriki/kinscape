@@ -39,6 +39,11 @@ it('can be disabled and shows a state', () => {
   expect(box.dataset.state).toBe('hover');
 });
 
+it('draws a 44 row with size m', () => {
+  render(<CheckboxField label='Pins' size='m' />);
+  expect(screen.getByRole('checkbox').parentElement!.dataset.size).toBe('m');
+});
+
 it('draws the plain sign-in form, still named by its label', () => {
   render(<CheckboxField label='Keep me signed in on this device' plain />);
 

@@ -1,0 +1,9 @@
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.group > h3 {
+  color: var(--ink-3);
+  margin: 0 0 var(--space-4);
+}

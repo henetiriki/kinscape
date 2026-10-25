@@ -40,6 +40,10 @@
 }
 
 /* The plain form, as sign-in uses it: a 44px row with a body-size label. */
+.row[data-size='m'] {
+  min-height: var(--size-touch);
+}
+
 .row[data-plain] {
   min-height: var(--size-touch);
 }

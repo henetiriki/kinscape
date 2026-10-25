@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import { chainText, Popup, PopupPointer } from '../Popup';
+import { chainText, PlacedPopup, Popup, PopupPointer } from '../Popup';
 
 const CHAIN = [
   { level: 'District', name: 'Kimberley' },
@@ -180,4 +180,27 @@ it('draws a pointer as decoration, with the caller’s class', () => {
   expect(container.firstElementChild!.className).toContain('mine');
   rerender(<PopupPointer />);
   expect(container.firstElementChild!.className).toBe('pointer');
+});
+
+// MAP-05
+it('places a popup at a point, with the pointer on its right edge', () => {
+  const { container } = render(
+    <PlacedPopup
+      chain={CHAIN}
+      coordinates='28.738° S · 24.764° E'
+      pins={[]}
+      place='Kimberley'
+      x={420}
+      y={300}
+      year={1901}
+    />
+  );
+
+  const placed = container.firstElementChild as HTMLElement;
+
+  expect(placed.style.getPropertyValue('--x')).toBe('420px');
+  expect(placed.style.getPropertyValue('--y')).toBe('300px');
+  expect(screen.getByRole('dialog')).toBeTruthy();
+  expect(placed.lastElementChild!.className).toContain('placedPointer');
+  expect(placed.lastElementChild!.getAttribute('aria-hidden')).toBe('true');
 });

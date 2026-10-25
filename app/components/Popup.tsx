@@ -1,6 +1,6 @@
 'use client';
 
-import { useId } from 'react';
+import { type CSSProperties, useId } from 'react';
 
 import { Button } from './Button';
 import { EventGlyph, type EventType } from './EventGlyph';
@@ -164,6 +164,23 @@ export const Popup = ({
     </div>
   );
 };
+
+/**
+ * The floating Popup at a map point, in pixels from the corner of the overlay area:
+ * left of the point, with its pointer on the right edge.
+ */
+export const PlacedPopup = ({
+  x,
+  y,
+  ...rest
+}: { x: number; y: number } & Omit<Parameters<typeof Popup>[0], 'form'>) => (
+  <div
+    className={styles.placed}
+    style={{ '--x': `${x}px`, '--y': `${y}px` } as CSSProperties}>
+    <Popup {...rest} form='floating' />
+    <PopupPointer className={styles.placedPointer} />
+  </div>
+);
 
 /** Decoration, never read: a square turned 45°. The caller sets `bottom` and `left` on `className`. */
 export const PopupPointer = ({ className }: { className?: string }) => (

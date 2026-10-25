@@ -2,7 +2,7 @@
 
 - **Spec:** #228 (Intent #111)
 - **Requirement IDs:** NFR-05, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

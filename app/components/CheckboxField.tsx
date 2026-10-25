@@ -10,6 +10,7 @@ export const CheckboxField = ({
   description,
   label,
   plain,
+  size,
   state,
   ...rest
 }: {
@@ -18,10 +19,12 @@ export const CheckboxField = ({
   label: ReactNode;
   /** The sign-in form: a 15 / 22 label in ink-2 and no description. */
   plain?: boolean;
+  /** `m` is a 44 row (Basemap and Pins); the default is 48 (Boundaries). */
+  size?: 'm';
   state?: ControlState;
 } & Omit<
   ComponentProps<'input'>,
-  'aria-describedby' | 'className' | 'id' | 'type'
+  'aria-describedby' | 'className' | 'id' | 'size' | 'type'
 >) => {
   const id = useId();
   const descriptionId = `${id}-description`;
@@ -30,7 +33,8 @@ export const CheckboxField = ({
     <div
       className={styles.row}
       data-disabled={rest.disabled || undefined}
-      data-plain={plain || undefined}>
+      data-plain={plain || undefined}
+      data-size={size}>
       <Checkbox
         {...rest}
         aria-describedby={description ? descriptionId : undefined}

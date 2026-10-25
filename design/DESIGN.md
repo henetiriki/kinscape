@@ -137,6 +137,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 - Desktop: search bar top left. The Layers / Filters panel sits below it, 320px wide. The date dock runs along the bottom, right of the panel. Account and zoom controls are top right. The credits line sits under the dock.
 - Phone: search pill on top, a layers button under it, and a bottom sheet. Collapsed, the sheet holds only the date stepper and Play. Tapping the map opens it with the look-up result. No editing on a phone.
 - Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`; a media query can't read a variable, so a test checks each against `breakpoint`.
+- The `Stage` places the search, account, zoom, panel, dock, credits and overlay slots (and, on a phone only, a Layers button) from those tokens; its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`) with the pointer on its right edge.
 - A notice centres in the free map area, not the window.
 - Pass MapLibre `padding` so the map centres in the space the panel and dock leave.
 

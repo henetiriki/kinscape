@@ -1,0 +1,117 @@
+/* The map screen's frame: each slot is a placed box; every edge is a layout token. */
+.stage {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.search,
+.account,
+.zoom,
+.layers,
+.panel,
+.dock,
+.credits,
+.overlay {
+  position: absolute;
+  z-index: var(--z-furniture);
+}
+
+.search {
+  left: var(--size-gutter);
+  top: var(--layout-search-top);
+}
+
+.account {
+  right: var(--size-gutter);
+  top: var(--layout-account-top);
+}
+
+.zoom {
+  right: var(--size-gutter);
+  top: var(--layout-furniture-top);
+}
+
+.layers {
+  display: none;
+}
+
+.panel {
+  bottom: var(--layout-furniture-bottom);
+  display: flex;
+  flex-direction: column;
+  left: var(--size-gutter);
+  top: var(--layout-furniture-top);
+  width: var(--size-panel);
+}
+
+.dock {
+  bottom: var(--layout-furniture-bottom);
+  left: var(--layout-dock-left);
+  right: var(--size-gutter);
+}
+
+.credits {
+  bottom: var(--layout-credits-bottom);
+  left: var(--layout-dock-left);
+  right: var(--size-gutter);
+}
+
+/* The free map area: right of the panel, between the top furniture and the dock. Its content centres. */
+.overlay {
+  align-items: center;
+  bottom: calc(var(--layout-furniture-bottom) + var(--layout-dock-height));
+  display: flex;
+  justify-content: center;
+  left: var(--layout-dock-left);
+  pointer-events: none;
+  right: var(--size-gutter);
+  top: var(--layout-furniture-top);
+}
+
+.overlay > * {
+  pointer-events: auto;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .search {
+    left: var(--size-gutter-phone);
+    right: var(--size-gutter-phone);
+    top: var(--layout-phone-pill-top);
+  }
+
+  .layers {
+    display: block;
+    left: var(--size-gutter-phone);
+    top: var(--layout-phone-layers-top);
+  }
+
+  .account,
+  .zoom,
+  .credits {
+    display: none;
+  }
+
+  .panel {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: var(--layout-phone-sheet-top);
+    width: auto;
+  }
+
+  .dock {
+    bottom: 0;
+    height: var(--layout-phone-sheet-collapsed);
+    left: 0;
+    right: 0;
+  }
+
+  .overlay {
+    bottom: var(--layout-phone-sheet-collapsed);
+    left: var(--size-gutter-phone);
+    right: var(--size-gutter-phone);
+    top: var(--layout-phone-overlay-top);
+  }
+}

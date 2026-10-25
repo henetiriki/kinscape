@@ -89,6 +89,17 @@ describe('layout tokens', () => {
     );
   });
 
+  it('places the popup from popup-gap and popup-point-y, pointer on the right edge', () => {
+    const css = read('app/components/Popup.module.css');
+
+    expect(css).toContain('-100% - var(--layout-popup-gap)');
+    expect(css).toContain('calc(-1 * var(--layout-popup-point-y))');
+    expect(css).toMatch(/\.placedPointer \{[^}]*left: 100%/);
+    expect(css).toMatch(
+      /\.placedPointer \{[^}]*top: var\(--layout-popup-point-y\)/
+    );
+  });
+
   const literals: Record<string, string[]> = {
     'Callout.module.css': ['z-index: 1;'],
     'Dialog.module.css': ['760px', '56px'],

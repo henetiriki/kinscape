@@ -73,6 +73,20 @@ it('removes the last chip on Backspace in an empty input only', () => {
   fireEvent.keyDown(input, { key: 'a' });
 });
 
+it('shows the values it is given and only reports changes', () => {
+  const onChange = vi.fn();
+  const { rerender } = render(
+    <TokenField label='Surname' onChange={onChange} values={['A', 'B']} />
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: 'Remove A' }));
+  expect(onChange).toHaveBeenCalledWith(['B']);
+  expect(chips()).toEqual(['Remove A', 'Remove B']);
+
+  rerender(<TokenField label='Surname' onChange={onChange} values={[]} />);
+  expect(screen.queryAllByRole('button')).toHaveLength(0);
+});
+
 it('disables the input and the ×, and shows a state and placeholder', () => {
   render(
     <TokenField

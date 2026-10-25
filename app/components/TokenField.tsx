@@ -17,6 +17,7 @@ export const TokenField = ({
   onChange,
   placeholder,
   state,
+  values: controlled,
 }: {
   defaultValues?: string[];
   disabled?: boolean;
@@ -25,10 +26,13 @@ export const TokenField = ({
   onChange?: (values: string[]) => void;
   placeholder?: string;
   state?: ControlState;
+  /** When given, the field shows these and only reports changes; the caller holds them. */
+  values?: string[];
 }) => {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
-  const [values, setValues] = useState(defaultValues);
+  const [own, setValues] = useState(defaultValues);
+  const values = controlled ?? own;
   const helperId = `${id}-helper`;
 
   const change = (next: string[]) => {

@@ -44,6 +44,7 @@ const Stage = ({
   compact,
   deep,
   fit,
+  side,
   tight,
 }: {
   children: ReactNode;
@@ -53,11 +54,14 @@ const Stage = ({
   deep?: boolean;
   /** As wide as its sample on a phone, not the full row. */
   fit?: boolean;
+  /** Padding 40 on the right: room for a pointer. */
+  side?: boolean;
   tight?: boolean;
 }) => (
   <div
     className={[
       styles.stage,
+      side && styles.side,
       tight && styles.tight,
       compact && styles.compact,
       deep && styles.deep,
@@ -722,7 +726,7 @@ export const Popups = () => (
       <Variant
         caption='Desktop · 304 wide, floating, pointing at the clicked spot. Overline, place name, coordinates, Close; the chain; the pins here; Copy chain.'
         desktop>
-        <Stage>
+        <Stage side>
           <CopyChainPopup />
         </Stage>
       </Variant>
@@ -737,11 +741,9 @@ export const Popups = () => (
             <span className={styles.hitNote}>{HIT_NOTE}</span>
           </span>
           <span className={styles.hit}>
-            <span className={styles.hitCopy}>
-              <Button icon='copy' size='xs' tabIndex={-1}>
-                Copy chain
-              </Button>
-            </span>
+            <Button icon='copy' size='xs' tabIndex={-1}>
+              Copy chain
+            </Button>
             <span className={styles.hitNote}>{HIT_NOTE}</span>
           </span>
         </div>
@@ -897,15 +899,17 @@ export const Callouts = () => (
       <Variant
         caption='Phone · full width less the gutters, 13 / 20, with a "Go to" link.'
         desktop>
-        <Stage tight>
+        <Stage deep>
           <div className={`${styles.callout} ${styles.phoneCallout}`}>
-            <Callout id='callout-phone'>
-              {MESSAGE}{' '}
+            <Callout className={styles.sheetCallout} id='callout-phone'>
+              <span>{MESSAGE}</span>
               <button className={styles.goTo} type='button'>
                 Go to 1901-02-28
               </button>
             </Callout>
-            <CalloutPointer className={`${styles.pointer} ${styles.centred}`} />
+            <CalloutPointer
+              className={`${styles.pointer} ${styles.sheetPointer}`}
+            />
           </div>
         </Stage>
       </Variant>

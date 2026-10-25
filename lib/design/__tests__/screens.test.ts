@@ -51,7 +51,7 @@ const jpeg = (width: number, height: number, ...before: number[][]) =>
 
 const screen = (name: string, width: number, height: number) => ({
   height,
-  mode: 'report',
+  mode: 'blocking',
   name,
   route: '/',
   width,
@@ -126,6 +126,17 @@ describe('sweepProblems', () => {
     expect(
       sweepProblems(config(screen('a-phone', 390, 1000)), images, ['b'])
     ).toEqual(['a-phone: sized 390x1000, snapshot is 390x500']);
+  });
+
+  // NFR-05
+  it('flags an entry that is not blocking', () => {
+    expect(
+      sweepProblems(
+        config({ ...screen('a-phone', 390, 500), mode: 'report' }),
+        images,
+        ['b']
+      )
+    ).toEqual(['a-phone: is not blocking']);
   });
 
   it('flags ignore areas and a threshold other than 0.5', () => {

@@ -82,13 +82,14 @@
 
 /* The callout and its pointer; the pointer is placed on the box's bottom edge. */
 .callout {
-  padding-bottom: var(--space-12);
+  padding-bottom: var(--space-8);
   position: relative;
   width: 340px;
 }
 
+/* 358: a phone's width less the gutters. */
 .phoneCallout {
-  width: 100%;
+  width: 358px;
 }
 
 /* The phone sheet's callout: the message, then the link under it; the pointer 149 from the left. */
@@ -109,7 +110,7 @@
 }
 
 .pointer {
-  bottom: 7px;
+  bottom: 3px;
 }
 
 .offset {
@@ -148,57 +149,68 @@
 }
 
 .popupHolder {
+  margin-right: var(--space-8);
   position: relative;
   width: 304px;
 }
 
+/* The board draws Copy chain 36 plus its 1px border. */
+.popupHolder [role='dialog'] > button:last-child {
+  box-sizing: content-box;
+}
+
+/* The popup points right, at the clicked spot; its stage leaves room for the pointer. */
+.side {
+  padding-right: 40px;
+}
+
 .popupPointer {
-  bottom: -8px;
-  left: 50%;
+  right: -8px;
+  top: 106px;
+  translate: none;
 }
 
 .hits {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-24);
+  flex-direction: column;
+  gap: var(--space-12);
 }
 
 .hit {
   align-items: center;
-  display: flex;
+  display: inline-flex;
+  flex-wrap: wrap;
   gap: var(--space-12);
 }
 
-.hitClose,
-.hitCopy {
-  align-items: center;
-  border: 1px dashed var(--field-border);
-  box-sizing: border-box;
-  display: inline-flex;
-  height: var(--size-touch);
-  justify-content: center;
+/* The Copy chain row is 36 plus its 1px border. */
+.hit:last-child {
+  min-height: 38px;
 }
 
 .hitClose {
-  width: var(--size-touch);
-}
-
-.hitClose > svg {
+  align-items: center;
   background: var(--surface-2);
   border-radius: var(--radius-full);
-  box-sizing: content-box;
   color: var(--ink-3);
-  padding: 10px;
-}
-
-.hitCopy {
-  padding: 0 1px;
+  display: flex;
+  flex: none;
+  height: var(--size-control-xs);
+  justify-content: center;
+  width: var(--size-control-xs);
 }
 
 .hitNote {
-  color: var(--ink-3);
+  align-items: center;
+  border: 1px dashed var(--ink-3);
+  border-radius: var(--radius-small);
+  color: var(--ink-2);
+  display: inline-flex;
   font-size: var(--type-caption-size);
+  height: 20px;
   line-height: var(--type-caption-line);
+  padding: 0 var(--space-8);
+  white-space: nowrap;
 }
 
 /* A dialog or sheet drawn whole, on the map colour (set inline); a scrim sits behind a dialog. */

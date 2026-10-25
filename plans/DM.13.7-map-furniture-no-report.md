@@ -69,6 +69,13 @@ The snapshots draw Play, speed, Jump to, epoch ticks, key hints, a contested not
 | No `report` in `DESIGN.md`             | The diff; `grep -n report design/DESIGN.md` |
 | Tests, e2e, validator, 100%            | Output in the PR                            |
 
+## Deviations
+
+- The Date dock drawing is two new files, `map-furniture/DateDockDrawing.tsx` and `.module.css`; `sections.tsx` holds only the section.
+- `Matrix` already had the `desktop` flag; no `Board.tsx` change but a `PhoneOnly` helper for the phone glyph table.
+- Surfaces part 2: the popup points right and its hit-area samples stack; the callout's fourth sample is the phone sheet's. `Popup.module.css` gains a top line on the first chain row, as the board draws it.
+- Phone pills and stages fit their content, as the snapshot draws them.
+
 ## Out of scope
 
 The other boards; removing `mode` or `ignore`; building Play, Jump to or the phone sheet; `EventGlyph`'s line height elsewhere.

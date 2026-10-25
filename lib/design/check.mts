@@ -7,7 +7,7 @@ export type Config = { screens: Screen[]; threshold: number };
 
 export type Known = { snapshots: string[]; states: string[] };
 
-export type Outcome = 'blocked' | 'matches' | 'reported';
+export type Outcome = 'blocked' | 'matches';
 
 export type Result = {
   differing: number;
@@ -21,7 +21,7 @@ export type Score = { diff: Uint8Array; differing: number; percent: number };
 export type Screen = {
   height: number;
   ignore: Area[];
-  mode: 'blocking' | 'report';
+  mode: 'blocking';
   name: string;
   route: string;
   state?: string;
@@ -60,8 +60,8 @@ const screenProblems = (raw: unknown, known: Known): string[] => {
     bad('width and height must be positive whole numbers');
   }
 
-  if (raw.mode !== 'blocking' && raw.mode !== 'report') {
-    bad('mode must be "blocking" or "report"');
+  if (raw.mode !== 'blocking') {
+    bad('mode must be "blocking"');
   }
 
   if (
@@ -180,20 +180,12 @@ export const compare = (
   };
 };
 
-export const outcomeFor = (
-  screen: Pick<Screen, 'mode'>,
-  percent: number,
-  threshold: number
-): Outcome => {
-  if (percent <= threshold) return 'matches';
-
-  return screen.mode === 'blocking' ? 'blocked' : 'reported';
-};
+export const outcomeFor = (percent: number, threshold: number): Outcome =>
+  percent <= threshold ? 'matches' : 'blocked';
 
 const LABEL: Record<Outcome, string> = {
   blocked: 'Fails (blocking)',
   matches: 'Matches',
-  reported: 'Differs (report)',
 };
 
 /** A Markdown table for the job summary. */
@@ -201,7 +193,7 @@ export const summarise = (results: Result[], threshold: number): string =>
   [
     '## Design check',
     '',
-    `A screen fails only when it is blocking and more than ${threshold}% of its unmasked pixels differ.`,
+    `A screen fails when more than ${threshold}% of its unmasked pixels differ.`,
     '',
     '| Screen | Differing pixels | Difference | Result |',
     '| --- | ---: | ---: | --- |',

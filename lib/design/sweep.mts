@@ -35,7 +35,7 @@ export const jpegSize = (bytes: Uint8Array): Size => {
 /**
  * Lists what stops `screens.json` covering every image: an image with no entry
  * and not in `notBuilt`, an entry that is also in `notBuilt` or has no image,
- * one that is not the snapshot's size, an `ignore` area, or a threshold other than 0.5.
+ * one that is not the snapshot's size, an `ignore` area, a mode other than `blocking`, or a threshold other than 0.5.
  */
 export const sweepProblems = (
   raw: unknown,
@@ -68,6 +68,8 @@ export const sweepProblems = (
     if (notBuilt.includes(name)) problems.push(`${name}: also in NOT_BUILT`);
 
     if (screen.ignore !== undefined) problems.push(`${name}: has ignore`);
+
+    if (screen.mode !== 'blocking') problems.push(`${name}: is not blocking`);
 
     if (image === undefined) {
       problems.push(`${name}: no image in design/`);

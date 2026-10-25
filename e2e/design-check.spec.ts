@@ -125,7 +125,7 @@ for (const screen of config.screens.filter(
       sideBySide([built.shown, design.shown, diff])
     );
 
-    const outcome = outcomeFor(screen, score.percent, config.threshold);
+    const outcome = outcomeFor(score.percent, config.threshold);
 
     testInfo.annotations.push({
       description: JSON.stringify({

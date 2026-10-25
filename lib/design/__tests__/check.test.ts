@@ -12,7 +12,7 @@ import {
 const known = { snapshots: ['map-desktop'], states: ['open'] };
 const screen = {
   height: 900,
-  mode: 'report',
+  mode: 'blocking',
   name: 'map-desktop',
   route: '/',
   width: 1440,
@@ -136,15 +136,11 @@ describe('compare', () => {
 
 describe('outcomeFor', () => {
   it('matches at or under the threshold', () => {
-    expect(outcomeFor({ mode: 'blocking' }, 0.5, 0.5)).toBe('matches');
+    expect(outcomeFor(0.5, 0.5)).toBe('matches');
   });
 
-  it('reports a report screen past the threshold', () => {
-    expect(outcomeFor({ mode: 'report' }, 9, 0.5)).toBe('reported');
-  });
-
-  it('blocks a blocking screen past the threshold', () => {
-    expect(outcomeFor({ mode: 'blocking' }, 9, 0.5)).toBe('blocked');
+  it('blocks a screen past the threshold', () => {
+    expect(outcomeFor(9, 0.5)).toBe('blocked');
   });
 });
 
@@ -152,19 +148,12 @@ describe('summarise', () => {
   it('lists each screen with its result', () => {
     const table = summarise(
       [
-        {
-          differing: 12,
-          name: 'map-desktop',
-          outcome: 'reported',
-          percent: 1.234,
-        },
         { differing: 0, name: 'sign-in', outcome: 'matches', percent: 0 },
         { differing: 5, name: 'map-phone', outcome: 'blocked', percent: 2 },
       ],
       0.5
     );
 
-    expect(table).toContain('| map-desktop | 12 | 1.23% | Differs (report) |');
     expect(table).toContain('| sign-in | 0 | 0.00% | Matches |');
     expect(table).toContain('| map-phone | 5 | 2.00% | Fails (blocking) |');
     expect(table).toContain('more than 0.5%');

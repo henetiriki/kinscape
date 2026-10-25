@@ -1,7 +1,7 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 /* The box draws the border, so the icon can sit inside it; focus is a 2px brand border instead of the ring. */
@@ -29,6 +29,13 @@
 }
 
 .box:is(:focus-within, [data-state='focus']) {
+  border: 2px solid var(--brand);
+  padding: 0 11px;
+}
+
+/* A pressed select is the open list: the focus border on surface-2. */
+.box:has(select)[data-state='active'] {
+  background: var(--surface-2);
   border: 2px solid var(--brand);
   padding: 0 11px;
 }
@@ -206,6 +213,20 @@
   height: auto;
   min-height: var(--size-field);
   padding-block: 0;
+}
+
+/* A token field sits in the panel: its helper is 12.5 / 18, and 13 / 20 on a phone. */
+.panelHelper {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .panelHelper {
+    font-size: var(--type-small-size);
+    line-height: var(--type-small-line);
+  }
 }
 
 /* A 44px input in a 42px row inside the 1px border, reaching over it like any field's input. */

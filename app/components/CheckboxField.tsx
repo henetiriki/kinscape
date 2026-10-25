@@ -9,12 +9,15 @@ import styles from './CheckboxField.module.css';
 export const CheckboxField = ({
   description,
   label,
+  plain,
   state,
   ...rest
 }: {
   /** Plain text under the label. It is not a live region. */
   description?: ReactNode;
   label: ReactNode;
+  /** The sign-in form: a 15 / 22 label in ink-2 and no description. */
+  plain?: boolean;
   state?: ControlState;
 } & Omit<
   ComponentProps<'input'>,
@@ -24,7 +27,10 @@ export const CheckboxField = ({
   const descriptionId = `${id}-description`;
 
   return (
-    <div className={styles.row} data-disabled={rest.disabled || undefined}>
+    <div
+      className={styles.row}
+      data-disabled={rest.disabled || undefined}
+      data-plain={plain || undefined}>
       <Checkbox
         {...rest}
         aria-describedby={description ? descriptionId : undefined}

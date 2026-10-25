@@ -38,7 +38,7 @@ export const RemovableChip = ({
 }: {
   disabled?: boolean;
   onRemove?: () => void;
-  /** `hover` or `focus` shows that state on the ×, the control inside. */
+  /** Shown on the ×, the control inside. */
   state?: ControlState;
   value: string;
 }) => (

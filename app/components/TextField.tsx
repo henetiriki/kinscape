@@ -22,6 +22,7 @@ const TYPES_TEXT = 'input, select, textarea, [contenteditable]';
 /** A single-line field with its label and, below it, helper text or an error that replaces it. */
 export const TextField = ({
   date,
+  defaultShown = false,
   error,
   helper,
   hideLabel,
@@ -35,6 +36,8 @@ export const TextField = ({
 }: {
   /** The map date look: 188px wide, mono, centred. */
   date?: boolean;
+  /** A password starts shown, as text. */
+  defaultShown?: boolean;
   /** The problem, shown under the field in place of `helper`. Marks the field as in error. */
   error?: ReactNode;
   helper?: ReactNode;
@@ -52,7 +55,7 @@ export const TextField = ({
 } & Omit<ComponentProps<'input'>, 'className' | 'id' | 'size' | 'type'>) => {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
-  const [shown, setShown] = useState(false);
+  const [shown, setShown] = useState(defaultShown);
   const messageId = `${id}-message`;
   const marked = error ? 'error' : mark;
   const message = error ?? helper;

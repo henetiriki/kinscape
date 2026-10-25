@@ -56,6 +56,7 @@ Both part 1 snapshots draw a 50px "Continue with Google" box. `DESIGN.md` says t
 | `app/design-kit/inputs/{page,Board}.tsx` | Changed       | Note; phone matrix   |
 | `app/design-kit/inputs/page.module.css`  | Changed       | Phone layout, matrix |
 | `app/components/Tabs.module.css`         | Changed       | Badge                |
+| `app/components/*` (see Deviations)      | Changed       | Board 06 values      |
 | `app/design-kit/inputs/__tests__/*`      | Changed       | New samples          |
 | `e2e/inputs.spec.ts`                     | Changed       | Sample names         |
 | `design/screens.json`                    | Changed       | Three `blocking`     |
@@ -77,6 +78,13 @@ Both part 1 snapshots draw a 50px "Continue with Google" box. `DESIGN.md` says t
 | Three entries `blocking`         | `screens.json`; `screens.test.ts` passes |
 | Each ≤ 0.5%, other blocking pass | `npm run e2e` output; PR score table     |
 | Tests, e2e, validator, 100%      | Output in the PR                         |
+
+## Deviations
+
+- #256 re-exported the snapshots: no Google box (D2 draws nothing), phone lead 15 / 22, and some phone-only words and samples; the board follows them.
+- Board 06's values, built into components: Tabs selected hover and pressed, disabled badge; CheckboxField 48 row, 12.5 / 18 description (13 / 20 phone) and `plain`; TextField label gap 8 and `defaultShown`; SelectField `hideLabel` and open look; TokenField helper 12.5 / 18; Chip glyph gap 8 and × pressed.
+- Phone chips (44, removable 36) are kit CSS only; the app's chips keep their desktop size.
+- `Board.tsx` and its CSS are shared, so boards 07 and 08 move too (still `report`).
 
 ## Out of scope
 

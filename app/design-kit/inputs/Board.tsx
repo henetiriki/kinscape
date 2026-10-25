@@ -7,12 +7,13 @@ import styles from './page.module.css';
 // A column of a state matrix: the state a control shows, or Disabled.
 export type Column = 'default' | 'disabled' | ControlState;
 
-type MatrixColumn = { column: Column; title: string };
+/** `phoneTitle` is the shorter label a phone shows above each cell. */
+type MatrixColumn = { column: Column; phoneTitle?: string; title: string };
 
 const COLUMNS: MatrixColumn[] = [
   { column: 'default', title: 'Default' },
   { column: 'hover', title: 'Hover' },
-  { column: 'focus', title: 'Focus (keyboard)' },
+  { column: 'focus', phoneTitle: 'Focus', title: 'Focus (keyboard)' },
   { column: 'active', title: 'Pressed' },
   { column: 'disabled', title: 'Disabled' },
 ];
@@ -20,22 +21,46 @@ const COLUMNS: MatrixColumn[] = [
 export const stateOf = (column: Column): ControlState | undefined =>
   column === 'default' || column === 'disabled' ? undefined : column;
 
+/** Draws `desktop` on a desktop and `phone` on a phone, where the board says or draws them differently. */
+export const ByViewport = ({
+  desktop,
+  phone,
+}: {
+  desktop: ReactNode;
+  phone: ReactNode;
+}) => (
+  <>
+    <span className={styles.desktopOnly}>{desktop}</span>
+    <span className={styles.phoneOnly}>{phone}</span>
+  </>
+);
+
+/** Drawn on a desktop only. */
+export const DesktopOnly = ({ children }: { children: ReactNode }) => (
+  <div className={styles.desktopOnly}>{children}</div>
+);
+
 /** One section of the board. Part 1 and part 2 are the two phone pages; a desktop shows both. */
 export const Section = ({
   children,
   lead,
   part,
+  phoneLead,
   title,
 }: {
   children: ReactNode;
   lead: string;
   part: 1 | 2;
+  /** The lead a phone shows instead. */
+  phoneLead?: string;
   title: string;
 }) => (
   <section aria-label={title} className={styles.section} data-part={part}>
     <div className={styles.intro}>
       <h2 className={styles.h2}>{title}</h2>
-      <p className={styles.lead}>{lead}</p>
+      <p className={styles.lead}>
+        {phoneLead ? <ByViewport desktop={lead} phone={phoneLead} /> : lead}
+      </p>
     </div>
     {children}
   </section>
@@ -48,7 +73,7 @@ export const Variant = ({
   desktop,
   phone,
 }: {
-  caption: string;
+  caption: ReactNode;
   children: ReactNode;
   /** Drawn on a desktop only: a phone shows the variants that have no flag. */
   desktop?: boolean;
@@ -76,10 +101,14 @@ export const Matrix = ({
   columns?: MatrixColumn[];
   label: string;
   rows: {
+    /** Drawn on a desktop only. */
+    desktop?: boolean;
     hint: string;
     /** Every cell is only drawn. */
     inert?: boolean;
     name: string;
+    /** The hint a phone shows instead. */
+    phoneHint?: string;
     render: (column: Column) => ReactNode;
   }[];
 }) => (
@@ -93,20 +122,25 @@ export const Matrix = ({
         <span key={title}>{title}</span>
       ))}
     </div>
-    {rows.map(({ hint, inert, name, render }) => (
-      <div className={styles.row} key={name}>
+    {rows.map(({ desktop, hint, inert, name, phoneHint, render }) => (
+      <div
+        className={styles.row}
+        data-desktop={desktop || undefined}
+        key={name}>
         <span className={styles.name}>
           <span>{name}</span>
-          <span className={styles.hint}>{hint}</span>
+          <span className={styles.hint}>
+            {phoneHint ? <ByViewport desktop={hint} phone={phoneHint} /> : hint}
+          </span>
         </span>
-        {columns.map(({ column, title }) => (
+        {columns.map(({ column, phoneTitle, title }) => (
           // Hover, Focus and Pressed are looks, not controls: inert keeps them out of the tab order and the accessibility tree.
           <span
             className={styles.cell}
             inert={inert || stateOf(column) !== undefined}
             key={column}>
             <span aria-hidden='true' className={styles.stateLabel}>
-              {title}
+              {phoneTitle ?? title}
             </span>
             {render(column)}
           </span>
@@ -116,14 +150,17 @@ export const Matrix = ({
   </figure>
 );
 
-/** The Measurements table: name, value, token. `wide` draws it full width, with a wider token column. */
+/** Name, value, token. */
+type Measurement = [string, ReactNode, ReactNode];
+
+/** The Measurements table: name, value, token. `wide` draws it full width, with a wider token column. A phone puts the token under "name · value". */
 export const Measurements = ({
   label,
   measurements,
   wide,
 }: {
   label: string;
-  measurements: [string, string, string][];
+  measurements: Measurement[];
   wide?: boolean;
 }) => (
   <div className={styles.factsColumn}>
@@ -174,7 +211,7 @@ export const Facts = ({
 }: {
   accessibility: [string, ReactNode][];
   label: string;
-  measurements: [string, string, string][];
+  measurements: Measurement[];
 }) => (
   <div className={styles.facts}>
     <Measurements label={label} measurements={measurements} />

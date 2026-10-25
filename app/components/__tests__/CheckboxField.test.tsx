@@ -38,3 +38,13 @@ it('can be disabled and shows a state', () => {
   expect(box.disabled).toBe(true);
   expect(box.dataset.state).toBe('hover');
 });
+
+it('draws the plain sign-in form, still named by its label', () => {
+  render(<CheckboxField label='Keep me signed in on this device' plain />);
+
+  const box = screen.getByRole('checkbox', {
+    name: 'Keep me signed in on this device',
+  });
+
+  expect(box.parentElement!.dataset.plain).toBe('true');
+});

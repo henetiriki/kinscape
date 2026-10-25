@@ -29,3 +29,16 @@ it('is a native select named by its label, with a state', () => {
   fireEvent.change(select, { target: { value: 'maria' } });
   expect(onChange).toHaveBeenCalledOnce();
 });
+
+it('names a select whose label is hidden', () => {
+  render(
+    <SelectField
+      hideLabel
+      label='Person, hover'
+      options={[{ label: 'Anyone', value: 'any' }]}
+    />
+  );
+
+  expect(screen.getByRole('combobox', { name: 'Person, hover' })).toBeTruthy();
+  expect(screen.queryByText('Person, hover')).toBeNull();
+});

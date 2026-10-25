@@ -177,6 +177,23 @@ test('typing 1901-06 on Year switches to Month with a note', async ({
   );
 });
 
+// B280, MAP-03, NFR-06: Esc restores the last good date after Tab leaves the field.
+test('Esc after Tab restores the date and clears the error', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const field = page.getByRole('textbox', { name: 'Date shown' });
+  const good = await field.inputValue();
+
+  await field.fill('1650');
+  await field.press('Tab');
+  await expect(field).toHaveAttribute('aria-invalid', 'true');
+  await page.keyboard.press('Escape');
+  await expect(field).toHaveValue(good);
+  await expect(field).not.toHaveAttribute('aria-invalid', 'true');
+});
+
 // NFR-06: Precision is one Tab stop and the arrow keys move the choice (DM.4.5 D2 A).
 test('keyboard: Space on the checkbox, Tab order, arrows in Precision', async ({
   page,

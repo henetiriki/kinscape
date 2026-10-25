@@ -190,12 +190,54 @@ test('typing 1901-06 on Year switches to Month with a note', async ({
 
   const field = page.getByRole('textbox', { name: 'Date shown' });
 
-  await field.fill('1901-06');
+  await field.fill('2001-06');
   await field.press('Enter');
   await expect(page.getByRole('radio', { name: 'Month' })).toBeChecked();
   await expect(page.getByRole('status')).toHaveText(
     'Switched to month precision.'
   );
+});
+
+const noBorders = (page: Page, year: string) =>
+  page.getByText(`No borders are mapped for ${year} yet`, { exact: true });
+
+// MAP-03 (M1.7): a typed date with no borders warns in the field and shows the card; Jump clears both.
+test('typing 1750 warns, shows the card and Jump to the first year draws Polities', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect.poll(() => drawnPolities(page)).toBe(11);
+
+  const field = page.getByRole('textbox', { name: 'Date shown' });
+
+  await field.fill('1750');
+  await field.press('Enter');
+  await expect(slider(page)).toHaveValue('98');
+  await expect(field).not.toHaveAttribute('aria-invalid', 'true');
+  await expect(
+    page.getByRole('status').filter({ hasText: /1750 yet\.$/ })
+  ).toBeVisible();
+  await expect(noBorders(page, '1750')).toBeVisible();
+
+  await page.getByRole('button', { name: /^Jump to \d{4}$/ }).click();
+  await expect(noBorders(page, '1750')).toBeHidden();
+  await expect(
+    page.getByText('No borders are mapped for 1750 yet.')
+  ).toBeHidden();
+  await expect.poll(() => drawnPolities(page)).toBeGreaterThan(0);
+});
+
+// MAP-03 (M1.7): the slider shows the card but no warning.
+test('dragging to 1900 shows the card and no date-field warning', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect.poll(() => drawnPolities(page)).toBe(11);
+  await slider(page).fill('248');
+  await expect(noBorders(page, '1900')).toBeVisible();
+  await expect(
+    page.getByText('No borders are mapped for 1900 yet.')
+  ).toBeHidden();
 });
 
 // B280, MAP-03, NFR-06: Esc restores the last good date after Tab leaves the field.

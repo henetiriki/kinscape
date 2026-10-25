@@ -59,6 +59,7 @@ export const DateDock = ({
   contestedYears,
   day,
   epochs,
+  hasBorders,
   lastDay,
   onChange,
   onPlay,
@@ -71,6 +72,8 @@ export const DateDock = ({
   day: number;
   /** Epochs for Jump to; they are also the slider's ticks. */
   epochs?: Epoch[];
+  /** Whether a Boundary version is valid on a day; a typed date without one shows the warning. */
+  hasBorders?: (day: number) => boolean;
   lastDay: number;
   onChange: (day: number) => void;
   /** Play pressed, with the speed in years per second. */
@@ -80,17 +83,21 @@ export const DateDock = ({
 }) => {
   const [precision, setPrecision] = useState<Precision>('year');
   const [speed, setSpeed] = useState('5');
-  const [notice, setNotice] =
-    useState<ComponentProps<typeof DateField>['notice']>();
+  // `forDay` ties the no-borders warning to the day it was set for.
+  const [note, setNote] = useState<
+    { forDay?: number } & ComponentProps<typeof DateField>['notice']
+  >();
+  const notice =
+    note?.forDay === undefined || note.forDay === day ? note : undefined;
 
   // Each switch shows its note for 4 seconds; a new switch restarts the timer.
   useEffect(() => {
-    if (!notice) return;
+    if (!note) return;
 
-    const timer = setTimeout(() => setNotice(undefined), NOTICE_MS);
+    const timer = setTimeout(() => setNote(undefined), NOTICE_MS);
 
     return () => clearTimeout(timer);
-  }, [notice]);
+  }, [note]);
 
   const field = (
     <DateField
@@ -122,8 +129,15 @@ export const DateDock = ({
       min={MIN_DAY}
       notice={notice}
       onChange={(to, at) => {
-        if (finerPrecision(at, precision) !== precision) {
-          setNotice({ text: `Switched to ${at} precision.`, tone: 'info' });
+        // The warning wins when a typed date needs both notes.
+        if (hasBorders && !hasBorders(to)) {
+          setNote({
+            forDay: to,
+            text: `No borders are mapped for ${fromDay(to).slice(0, 4)} yet.`,
+            tone: 'warning',
+          });
+        } else if (finerPrecision(at, precision) !== precision) {
+          setNote({ text: `Switched to ${at} precision.`, tone: 'info' });
         }
 
         setPrecision(at);

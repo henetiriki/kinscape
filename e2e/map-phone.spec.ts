@@ -144,6 +144,31 @@ test.describe('phone, 390 × 844', () => {
     await expect(field(page)).toHaveValue('1902');
   });
 
+  // MAP-03 (M1.7)
+  test('the no-borders card sits below the pill and Layers button, clear of the sheet', async ({
+    page,
+  }) => {
+    await typeDate(page, '1750');
+
+    const card = page
+      .getByRole('status')
+      .filter({ hasText: 'No borders are mapped for 1750 yet' })
+      .filter({ has: page.getByRole('button', { name: /^Jump to/ }) });
+
+    await expect(card).toBeVisible();
+
+    const cardBox = await box(card);
+    const layers = await box(
+      page.getByRole('button', { name: 'Layers and filters' })
+    );
+    const sheetBox = await box(sheet(page));
+
+    // The search pill isn't on the map yet; 144 is the top of the overlay slot, below its place.
+    expect(cardBox.y).toBeGreaterThanOrEqual(144);
+    expect(cardBox.y).toBeGreaterThanOrEqual(layers.y + layers.height);
+    expect(cardBox.y + cardBox.height).toBeLessThanOrEqual(sheetBox.y);
+  });
+
   // MAP-03
   test('an impossible date shows its message above the sheet, with the fix', async ({
     page,

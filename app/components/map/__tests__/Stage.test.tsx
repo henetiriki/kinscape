@@ -45,6 +45,21 @@ it('places each slot it is given, with the map as children', () => {
   ]);
 });
 
+it('top-aligns the overlay only when asked', () => {
+  const { container, rerender } = render(<Stage overlay='o' search='s' />);
+  const at = () =>
+    [...container.querySelectorAll('[data-slot]')].map(slot =>
+      slot.getAttribute('data-at')
+    );
+
+  expect(at()).toEqual([null, null]);
+  rerender(<Stage overlay='o' overlayAt='top' search='s' />);
+  expect(at()).toEqual([null, 'top']);
+  expect(css).toMatch(
+    /\.overlay\[data-at='top'\] \{[^}]*align-items: flex-start/
+  );
+});
+
 it('draws no box for a slot left empty', () => {
   const { container } = render(<Stage search='s' />);
 

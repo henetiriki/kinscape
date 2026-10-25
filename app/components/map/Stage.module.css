@@ -72,6 +72,10 @@
   top: var(--layout-furniture-top);
 }
 
+.overlay[data-at='top'] {
+  align-items: flex-start;
+}
+
 .overlay > * {
   pointer-events: auto;
 }

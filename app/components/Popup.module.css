@@ -62,6 +62,19 @@
   color: var(--ink-3);
 }
 
+/* The phone look-up: the coordinates at the right, a 72 label column, pin rows at least 44. */
+.sheet .place {
+  justify-content: space-between;
+}
+
+.sheet .chain li {
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+.sheet .pin {
+  min-height: var(--size-touch);
+}
+
 /* Close is 36 round, pulled 8 up and right; a 44 × 44 hit area sits over it. */
 .close {
   composes: ring from './focus.module.css';

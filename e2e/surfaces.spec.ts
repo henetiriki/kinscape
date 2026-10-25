@@ -60,7 +60,7 @@ test.describe('on a desktop', () => {
   test('the date callout shows board 07 padding and floating shadow', async ({
     page,
   }) => {
-    await page.goto('/design-kit/surfaces');
+    await page.goto('/design-kit/surfaces?part=2');
 
     const callout = page.getByRole('alert').first();
     const style = await callout.evaluate(node => {

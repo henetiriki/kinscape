@@ -6,6 +6,7 @@ import { loadAppData } from '@/lib/boundaries/app-data';
 import { boardTitle } from '../boards';
 import styles from '../inputs/page.module.css';
 import kit from '../kit.module.css';
+import local from './page.module.css';
 import {
   Callouts,
   Dialogs,
@@ -44,11 +45,14 @@ const SurfacesKit = async ({
   const { sources } = loadAppData();
 
   return (
-    <main className={styles.kit} data-part={part}>
+    <main className={`${styles.kit} ${local.paged}`} data-part={part}>
       <header className={kit.kitHeader}>
         <span className={kit.kitEyebrow}>
           Style guide · 07
-          <span className={styles.partOf}> · part {part} of 2</span>
+          <span className={`${styles.partOf} ${local.shown}`}>
+            {' '}
+            · part {part} of 2
+          </span>
         </span>
         <h1 className={kit.kitTitle}>Surfaces and overlays</h1>
         <p className={kit.kitLead}>
@@ -59,7 +63,7 @@ const SurfacesKit = async ({
           States not drawn here follow board 04: hover tints, a 2px focus ring,
           disabled colours. A tap target under 44 keeps a 44 × 44 hit area.
         </p>
-        <span className={styles.otherPart}>
+        <span className={`${styles.otherPart} ${local.shown}`}>
           <TextLink href={other.href}>{other.text}</TextLink>
         </span>
       </header>

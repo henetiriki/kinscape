@@ -20,6 +20,7 @@ import { resolveTokens } from '@/lib/design/tokens.mts';
 
 import {
   Accessibility,
+  ByViewport,
   type Column,
   Facts,
   Matrix,
@@ -40,13 +41,30 @@ const { map } = resolveTokens(rawTokens);
 
 const Stage = ({
   children,
+  compact,
+  deep,
+  fit,
   tight,
 }: {
   children: ReactNode;
+  /** Padding 16 on a phone. */
+  compact?: boolean;
+  /** Padding 16, 32 below: room for a pointer. */
+  deep?: boolean;
+  /** As wide as its sample on a phone, not the full row. */
+  fit?: boolean;
   tight?: boolean;
 }) => (
   <div
-    className={tight ? `${styles.stage} ${styles.tight}` : styles.stage}
+    className={[
+      styles.stage,
+      tight && styles.tight,
+      compact && styles.compact,
+      deep && styles.deep,
+      fit && styles.fit,
+    ]
+      .filter(Boolean)
+      .join(' ')}
     style={{ background: map.sea }}>
     {children}
   </div>
@@ -155,13 +173,15 @@ export const NoticeCards = () => (
     title='Notice card'>
     <Variants>
       <Variant caption='Icon and buttons · no pins on this date. Up to two buttons, lined up with the text.'>
-        <Stage>
+        <Stage compact>
           <NoticeCard actions={[...JUMP]} icon='place' title='No pins in 1901'>
             Nobody in your filters is pinned to this date.
           </NoticeCard>
         </Stage>
       </Variant>
-      <Variant caption='Phone width · the same card at full width, 44 buttons.'>
+      <Variant
+        caption='Phone width · the same card at full width, 44 buttons.'
+        desktop>
         <Stage tight>
           <NoticeCard
             actions={[...JUMP]}
@@ -173,14 +193,14 @@ export const NoticeCards = () => (
         </Stage>
       </Variant>
       <Variant caption='No icon · title and one line. Not on a screen yet; built from the same parts.'>
-        <Stage>
+        <Stage compact>
           <NoticeCard title='No pins in 1901'>
             Nobody in your filters is pinned to this date.
           </NoticeCard>
         </Stage>
       </Variant>
       <Variant caption='Loading · title, progress bar, one line. Only on first load.'>
-        <Stage>
+        <Stage compact>
           <NoticeCard progress={45} title='Loading the map'>
             Every border from 1652 to today loads once, up front, so the slider
             never has to wait.
@@ -188,7 +208,7 @@ export const NoticeCards = () => (
         </Stage>
       </Variant>
       <Variant caption='Large · no pins in the tree: 28 icon on top, H3 title (22 / 28). Sits in the middle of the map.'>
-        <Stage>
+        <Stage compact>
           <NoticeCard icon='place' size='large' title='No pins yet'>
             Pins show up here on the dates they were true. Until then the map
             works as an atlas: move the date and watch the borders change.
@@ -279,9 +299,10 @@ export const ProgressBars = () => (
         [
           'Role',
           <>
-            {code('role="progressbar"')} with {code('aria-valuenow')},{' '}
-            {code('aria-valuemin="0"')}, {code('aria-valuemax="100"')}, labelled
-            by the card title &ldquo;Loading the map&rdquo;.
+            {code('role="progressbar" ')}with {code('aria-valuenow, ')}
+            {code('aria-valuemin="0", ')}
+            {code('aria-valuemax="100", ')}labelled by the card title
+            &ldquo;Loading the map&rdquo;. The mockup has none of these yet.
           </>,
         ],
         [
@@ -449,7 +470,7 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
 );
 
 const SHEET_CONTENT = (
-  <p className={styles.sheetText}>The sheet&rsquo;s content starts here.</p>
+  <p className={styles.sheetText}>The sheet&apos;s content starts here.</p>
 );
 
 const TABS = [
@@ -507,17 +528,16 @@ export const SheetHeaders = () => (
         [
           'Heading',
           <>
-            The title is a real {code('h2')} and labels the sheet&rsquo;s
-            dialog.
+            The title is a real {code('h2 ')}and labels the sheet&apos;s dialog.
           </>,
         ],
-        ['Close', <>{code('aria-label="Close"')}; Esc does the same.</>],
+        ['Close', <>{code('aria-label="Close"; ')}Esc does the same.</>],
         [
           'Handle',
           <>
-            Decoration on an open sheet ({code('aria-hidden')}). On the
-            collapsed date sheet it is a button, &ldquo;Expand the sheet&rdquo;,
-            which isn&rsquo;t covered here.
+            Decoration on an open sheet {code('(aria-hidden). ')}On the
+            collapsed date sheet it is a button, &quot;Expand the sheet&quot;,
+            which isn&apos;t covered here.
           </>,
         ],
       ]}
@@ -573,12 +593,13 @@ const ITEM_ROWS = [
   ),
 }));
 
-const AVATAR_COLUMNS: { column: Column; title: string }[] = [
-  { column: 'default', title: 'Default' },
-  { column: 'hover', title: 'Hover' },
-  { column: 'focus', title: 'Focus (keyboard)' },
-  { column: 'active', title: 'Open' },
-];
+const AVATAR_COLUMNS: { column: Column; phoneTitle?: string; title: string }[] =
+  [
+    { column: 'default', title: 'Default' },
+    { column: 'hover', title: 'Hover' },
+    { column: 'focus', phoneTitle: 'Focus', title: 'Focus (keyboard)' },
+    { column: 'active', title: 'Open' },
+  ];
 
 export const Menus = ({ sources }: { sources: Source[] }) => (
   <Section
@@ -587,7 +608,7 @@ export const Menus = ({ sources }: { sources: Source[] }) => (
     title='Menu'>
     <Variants>
       <Variant caption='Opened from the avatar, 296 wide; the same on desktop and phone. "Export all data" is shown hovered.'>
-        <Stage>
+        <Stage compact fit>
           <MenuPanel
             {...MENU_WORDS}
             groups={MENU_GROUPS}
@@ -623,28 +644,27 @@ export const Menus = ({ sources }: { sources: Source[] }) => (
         [
           'Trigger',
           <>
-            The avatar is a {code('button')} named &ldquo;Account menu&rdquo;,
-            with {code('aria-haspopup="menu"')} and {code('aria-expanded')}.
+            The avatar is a {code('button ')}named &quot;Account menu&quot;,
+            with {code('aria-haspopup="menu" ')}and {code('aria-expanded.')}
           </>,
         ],
         [
           'Role',
           <>
-            {code('role="menu"')} with {code('menuitem')} children. The header
-            and footer text sit outside the menuitems, so arrow keys skip them.
-            A disabled item is {code('aria-disabled')} and keeps its place in
-            the arrow-key order.
+            {code('role="menu" ')}with {code('menuitem ')}children. The header
+            and footer text sit outside the menuitems {code('(role="none" ')}or
+            a labelled group) so arrow keys skip them.
           </>,
         ],
         [
           'Keyboard',
-          'Opening moves focus to the first item. Up and Down move and wrap, Enter activates, Esc closes and returns focus to the avatar. Tab leaves and closes. Inside a dialog, Esc closes the menu first.',
+          'Opening moves focus to the first item. Up and Down move, Enter activates, Esc closes and returns focus to the avatar. Tab leaves and closes.',
         ],
         [
           'Name',
           <>
-            The menu is labelled &ldquo;Account&rdquo;. Icons are{' '}
-            {code('aria-hidden')}.
+            The menu is labelled &quot;Account&quot;. Icons are{' '}
+            {code('aria-hidden.')}
           </>,
         ],
       ]}
@@ -652,8 +672,8 @@ export const Menus = ({ sources }: { sources: Source[] }) => (
       measurements={[
         [
           'Menu',
-          '296 wide, white, radius 12, floating shadow; 4 inside; 8 below the avatar, right-aligned',
-          '296: component size, no token · radius.panel · shadow.floating · space.4 · space.8',
+          '296 wide, white, radius 12, floating shadow; 4 inside',
+          '296: component size, no token · radius.panel · shadow.floating · space.4',
         ],
         [
           'Header',
@@ -662,8 +682,8 @@ export const Menus = ({ sources }: { sources: Source[] }) => (
         ],
         [
           'Item',
-          'min 44; padding 4 12; icon 18, 12 to the label; radius 8. The two-line item is 52 tall in the mockups',
-          'size.touch · space.12 · radius.control · 52: no token',
+          'min 44; padding 4 12; icon 18, 12 to the label; radius 8. The two-line item is 52 tall',
+          'size.touch · size.row-l · space.12 · radius.control',
         ],
         [
           'Label',
@@ -691,7 +711,7 @@ export const Menus = ({ sources }: { sources: Source[] }) => (
   </Section>
 );
 
-const HIT_NOTE = '44 × 44 hit area (proposed)';
+const HIT_NOTE = '44 × 44 hit area';
 
 export const Popups = () => (
   <Section
@@ -744,8 +764,8 @@ export const Popups = () => (
         [
           'Role',
           <>
-            Desktop: a non-modal {code('role="dialog"')} named
-            &ldquo;Jurisdiction at this point&rdquo;. Phone: a region of the
+            Desktop: a non-modal {code('role="dialog" ')}named
+            &quot;Jurisdiction at this point&quot;. Phone: a region of the
             bottom sheet named by its overline.
           </>,
         ],
@@ -756,20 +776,20 @@ export const Popups = () => (
         [
           'Chain',
           <>
-            An ordered list ({code('<ol>')}), smallest unit first. Each row
+            An ordered list {code('(<ol>), ')}smallest unit first. Each row
             reads level then name.
           </>,
         ],
         [
           'Pins',
           <>
-            A pin with a record is a link to it; one without is plain text. The
-            glyph is {code('aria-hidden')}; the event name says what it is.
+            Each pin is a link to its record. The glyph is{' '}
+            {code('aria-hidden; ')}the event name says what it is.
           </>,
         ],
         [
           'Copy chain',
-          'Copies a line per level, smallest first, and confirms with the "Jurisdiction chain copied." toast (board 05). If the browser refuses, an error toast says "Couldn\'t copy the chain." and offers Try again.',
+          'Copies the chain as text and confirms with the "Jurisdiction chain copied." toast (board 05).',
         ],
       ]}
       label='Popup'
@@ -786,22 +806,34 @@ export const Popups = () => (
         ],
         [
           'Close',
-          '36 × 36 round, ink-3, 16px icon, pulled 8 up and 8 right; 44 × 44 hit area (proposed)',
+          '36 × 36 round, ink-3, 16px icon, pulled 8 up and 8 right; 44 × 44 hit area',
           'size.control-xs',
         ],
         [
           'Chain rows',
-          'Grid 76 / rest, gap 8; 8 above and below; 1px line between. Label overline; value 15 / 22 · 600; detail 12.5 / 18 ink-3',
+          <ByViewport
+            desktop='Grid 76 / rest, gap 8; 8 above and below; 1px line between. Label overline; value 15 / 22 · 600; detail 12.5 / 18 ink-3'
+            key='grid'
+            phone='Grid 72 / rest, gap 8; 8 above and below; 1px line between. Label overline; value 15 / 22 · 600; detail 12.5 / 18 ink-3'
+          />,
           'type.overline · type.title · type.caption · space.8',
         ],
         [
           'Pins here',
-          'Inset: surface-2, radius 8, padding 12, gap 8; row min 32. Glyph 14 pin, 8 to the title 14 / 600, people 13 / 20 ink-3, date mono 12 ink-2. No pins, no inset',
-          'colour.surface-2 · type.label · type.small · type.mono · 32: no token',
+          <ByViewport
+            desktop='Inset: surface-2, radius 8, padding 12, gap 8; row min 32. Glyph 14 pin, 8 to the title 14 / 600, people 13 / 20 ink-3, date mono 12 ink-2'
+            key='pins'
+            phone='Row min 44, no inset. Glyph 14 pin, 8 to the title 14 / 600, people 13 / 20 ink-3, date mono 12 ink-2'
+          />,
+          <ByViewport
+            desktop='colour.surface-2 · type.label · type.small · type.mono · 32: no token'
+            key='pins-token'
+            phone='colour.surface-2 · type.label · type.small · type.mono'
+          />,
         ],
         [
           'Copy chain',
-          'Desktop: 36 secondary with the copy icon (board 06), 44 × 44 hit area (proposed). The phone look-up has no Close and no Copy chain',
+          'Desktop: 36 secondary with the copy icon (board 06), 44 × 44 hit area. The phone look-up has no Close and no Copy chain',
           'size.control-xs',
         ],
       ]}
@@ -821,7 +853,9 @@ export const Callouts = () => (
     part={2}
     title='Callout'>
     <Variants>
-      <Variant caption='Pointer offset · desktop dock: the pointer sits over the date field, 136 from the left edge.'>
+      <Variant
+        caption='Pointer offset · desktop dock: the pointer sits over the date field, 136 from the left edge.'
+        desktop>
         <Stage>
           <div className={styles.callout}>
             <Callout id='callout-offset'>
@@ -831,7 +865,9 @@ export const Callouts = () => (
           </div>
         </Stage>
       </Variant>
-      <Variant caption='Pointer centred · the same callout pointing at something directly below its middle. In place above the dock: see board 05.'>
+      <Variant
+        caption='Pointer centred · the same callout pointing at something directly below its middle. In place above the dock: see board 05.'
+        desktop>
         <Stage>
           <div className={styles.callout}>
             <Callout id='callout-centred'>
@@ -841,7 +877,26 @@ export const Callouts = () => (
           </div>
         </Stage>
       </Variant>
-      <Variant caption='Phone · full width less the gutters, 14 / 20, with a "Go to" link.'>
+      <Variant
+        caption='Phone · full width over the date sheet, with a "Go to 1901-02-28" link; pointer 149 from the left. The 28-days example in place is on board 05.'
+        phone>
+        <Stage deep>
+          <div className={`${styles.callout} ${styles.phoneCallout}`}>
+            <Callout className={styles.sheetCallout} id='callout-sheet'>
+              <span>{MESSAGE}</span>
+              <button className={styles.goTo} type='button'>
+                Go to 1901-02-28
+              </button>
+            </Callout>
+            <CalloutPointer
+              className={`${styles.pointer} ${styles.sheetPointer}`}
+            />
+          </div>
+        </Stage>
+      </Variant>
+      <Variant
+        caption='Phone · full width less the gutters, 13 / 20, with a "Go to" link.'
+        desktop>
         <Stage tight>
           <div className={`${styles.callout} ${styles.phoneCallout}`}>
             <Callout id='callout-phone'>
@@ -860,19 +915,34 @@ export const Callouts = () => (
         [
           'Role',
           <>
-            {code('role="alert"')} with an {code('id')} the field points at
-            through {code('aria-describedby')}.
+            {code('role="alert", ')}with an {code('id ')}the field points at
+            through {code('aria-describedby.')}
           </>,
         ],
-        ['Keyboard', 'Esc restores the last good date and closes the callout.'],
-        ['Pointer', <>Decoration (a styled {code('span')}), never read.</>],
+        [
+          'Keyboard',
+          <ByViewport
+            desktop='Esc restores the last good date and closes the callout.'
+            key='keyboard'
+            phone='Esc restores the last good date and closes the callout, and the Go to link offers the same fix to touch.'
+          />,
+        ],
+        ['Pointer', <>Decoration (a styled {code('span), ')}never read.</>],
       ]}
       label='Callout'
       measurements={[
         [
           'Box',
-          '340 wide · padding 12 · radius 8',
-          '340: component size, no token · space.12 · radius.control',
+          <ByViewport
+            desktop='340 wide · padding 12 · radius 8'
+            key='box'
+            phone='Full width less 16 gutters · padding 12 16 · radius 8'
+          />,
+          <ByViewport
+            desktop='340: component size, no token · space.12 · radius.control'
+            key='box-token'
+            phone='size.gutter-phone · space.12 · space.16 · radius.control'
+          />,
         ],
         [
           'Colours',
@@ -880,6 +950,11 @@ export const Callouts = () => (
           'colour.error-bg · colour.error-border · colour.error',
         ],
         ['Text', '13 / 20; first sentence 600', 'type.small'],
+        [
+          'Fix link',
+          'Phone: "Go to" the last good date, 4 below the text, as a Link at 13 / 20. It sits in the message, so it keeps its text height (DM.12.2 D3)',
+          'type.link-s',
+        ],
         [
           'Pointer',
           "12 square turned 45°, error-bg with the box's border on its two outer sides, 7 below the box",

@@ -150,6 +150,7 @@ it('draws every variant board 07 shows, in the order drawn', async () => {
   expect(callouts.map(callout => callout.id)).toEqual([
     'callout-offset',
     'callout-centred',
+    'callout-sheet',
     'callout-phone',
   ]);
 });

@@ -21,7 +21,7 @@ test.describe('on a desktop', () => {
   test('Down then Enter activates the second item; Esc returns focus to the Avatar', async ({
     page,
   }) => {
-    await page.goto('/design-kit/surfaces');
+    await page.goto('/design-kit/surfaces?part=2');
     await avatar(page).click();
     await expect(menu(page).getByRole('menuitem').first()).toBeFocused();
 
@@ -40,7 +40,7 @@ test.describe('on a desktop', () => {
   });
 
   test('Esc closes the Menu and puts focus on the Avatar', async ({ page }) => {
-    await page.goto('/design-kit/surfaces');
+    await page.goto('/design-kit/surfaces?part=2');
     await avatar(page).click();
     await expect(menu(page)).toBeVisible();
     await page.keyboard.press('Escape');
@@ -49,7 +49,7 @@ test.describe('on a desktop', () => {
   });
 
   test('Tab leaves the Menu and closes it', async ({ page }) => {
-    await page.goto('/design-kit/surfaces');
+    await page.goto('/design-kit/surfaces?part=2');
     await avatar(page).click();
     await expect(menu(page)).toBeVisible();
     await page.keyboard.press('Tab');
@@ -64,7 +64,7 @@ test.describe('on a desktop', () => {
     page,
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-    await page.goto('/design-kit/surfaces');
+    await page.goto('/design-kit/surfaces?part=2');
     await page.getByRole('button', { name: 'Copy chain' }).first().click();
 
     await expect(
@@ -76,7 +76,7 @@ test.describe('on a desktop', () => {
   });
 
   test('Close and Copy chain keep a 44 × 44 hit area', async ({ page }) => {
-    await page.goto('/design-kit/surfaces');
+    await page.goto('/design-kit/surfaces?part=2');
 
     const popup = page.getByRole('dialog', {
       name: 'Jurisdiction at this point',

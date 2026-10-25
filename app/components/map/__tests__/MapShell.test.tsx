@@ -1,8 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/boundaries/model.mts';
-
+import { type Source, toDay } from '@/lib/boundaries/model.mts';
 import { dayOf } from '@/lib/map/filter';
 
 const mapView = vi.hoisted(() => vi.fn());
@@ -69,4 +68,38 @@ it('opens and closes the sources dialog from the credits line', () => {
   expect(screen.getByRole('dialog')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Close' }));
   expect(screen.queryByRole('dialog')).toBeNull();
+});
+
+const typeDate = (text: string) => {
+  const field = screen.getByRole('textbox', { name: 'Date shown' });
+
+  fireEvent.change(field, { target: { value: text } });
+  fireEvent.keyDown(field, { key: 'Enter' });
+};
+
+// MAP-03
+it('moves the Map date, slider and map to a typed day', () => {
+  render(<MapShell sources={sources} />);
+  fireEvent.click(screen.getByRole('radio', { name: 'Day' }));
+  typeDate('1995-06-15');
+  expect(lastProps().mapDay).toBe(toDay('1995-06-15'));
+  expect(
+    (screen.getByRole('slider', { name: 'Map date' }) as HTMLInputElement).value
+  ).toBe(String(toDay('1995-06-15')));
+});
+
+it('keeps an impossible day in the field and the map where it was', () => {
+  render(<MapShell sources={sources} />);
+  fireEvent.click(screen.getByRole('radio', { name: 'Day' }));
+  typeDate('1901-02-28');
+
+  const before = lastProps().mapDay;
+
+  typeDate('1901-02-30');
+  expect(screen.getByText('February 1901 has 28 days.')).toBeTruthy();
+  expect(
+    (screen.getByRole('textbox', { name: 'Date shown' }) as HTMLInputElement)
+      .value
+  ).toBe('1901-02-30');
+  expect(lastProps().mapDay).toBe(before);
 });

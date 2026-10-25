@@ -123,6 +123,35 @@ test('the step buttons stop at today', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Forward' })).toBeEnabled();
 });
 
+// MAP-03: typing 1800 moves the slider there and no Polities are drawn.
+test('typing 1800 moves the slider and draws no Polities', async ({ page }) => {
+  await page.goto('/');
+  await expect.poll(() => drawnPolities(page)).toBe(11);
+
+  const field = page.getByRole('textbox', { name: 'Date shown' });
+
+  await field.fill('1800');
+  await field.press('Enter');
+  await expect(slider(page)).toHaveValue('148');
+  await expect.poll(() => drawnPolities(page)).toBe(0);
+});
+
+// MAP-03: typing a month on Year switches precision and says so.
+test('typing 1901-06 on Year switches to Month with a note', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  const field = page.getByRole('textbox', { name: 'Date shown' });
+
+  await field.fill('1901-06');
+  await field.press('Enter');
+  await expect(page.getByRole('radio', { name: 'Month' })).toBeChecked();
+  await expect(page.getByRole('status')).toHaveText(
+    'Switched to month precision.'
+  );
+});
+
 // NFR-06: Precision is one Tab stop and the arrow keys move the choice (DM.4.5 D2 A).
 test('keyboard: Space on the checkbox, Tab order, arrows in Precision', async ({
   page,

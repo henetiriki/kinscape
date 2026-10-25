@@ -5,6 +5,10 @@ export type Precision = 'day' | 'month' | 'year';
 
 export const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 
+/** The finer of two precisions: day over month over year. */
+export const finerPrecision = (a: Precision, b: Precision): Precision =>
+  PRECISIONS[Math.max(PRECISIONS.indexOf(a), PRECISIONS.indexOf(b))];
+
 /** The first Map date: 1652-01-01. */
 export const MIN_DAY = 0;
 

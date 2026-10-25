@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { fromDay, toDay } from '../../boundaries/model.mts';
 import {
   dayFromSlider,
+  finerPrecision,
   MIN_DAY,
   shownDate,
   sliderMax,
@@ -12,6 +13,14 @@ import {
 } from '../map-date';
 
 const today = toDay('2026-10-21');
+
+describe('finerPrecision', () => {
+  it('returns the finer of two precisions', () => {
+    expect(finerPrecision('year', 'month')).toBe('month');
+    expect(finerPrecision('day', 'month')).toBe('day');
+    expect(finerPrecision('year', 'year')).toBe('year');
+  });
+});
 
 describe('stepDay', () => {
   // MAP-03

@@ -6,8 +6,9 @@
   padding: var(--space-16) var(--space-20);
 }
 
+/* Top-aligned, so the field's note grows only the dock, not the other controls' place. */
 .row {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   gap: var(--space-16);
 }

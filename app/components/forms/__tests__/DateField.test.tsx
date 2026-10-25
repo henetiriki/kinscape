@@ -115,7 +115,26 @@ it('checks when focus leaves, and not again if nothing changed', () => {
 
   type(field, '1901');
   fireEvent.blur(field);
-  expect(onChange).toHaveBeenCalledWith(toDay('1901-01-01'), 'year');
+  expect(onChange).toHaveBeenCalledWith(toDay('1901-01-01'), 'day');
+});
+
+it('keeps a finer precision when less detail is typed', () => {
+  const { field, onChange } = setup({ day: toDay('1901-01-01') });
+
+  type(field, '1901');
+  fireEvent.keyDown(field, { key: 'Enter' });
+
+  expect(onChange).not.toHaveBeenCalled();
+  expect(field.value).toBe('1901-01-01');
+});
+
+it('takes the typed precision when it is finer', () => {
+  const { field, onChange } = setup({ precision: 'year' });
+
+  type(field, '1901-06');
+  fireEvent.keyDown(field, { key: 'Enter' });
+
+  expect(onChange).toHaveBeenCalledWith(toDay('1901-06-01'), 'month');
 });
 
 it('does not report a date it already shows', () => {

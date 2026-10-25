@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { DateDock } from '@/app/components/map/DateDock';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
@@ -221,4 +222,122 @@ it('draws the slider in the expanded phone sheet', () => {
   expect(
     screen.queryByRole('button', { name: 'Play through time' })
   ).toBeNull();
+});
+
+const typeDate = (text: string) => {
+  fireEvent.change(field(), { target: { value: text } });
+  fireEvent.keyDown(field(), { key: 'Enter' });
+};
+
+const month = () => screen.getByRole('radio', { name: 'Month' });
+
+it('keeps Month when less detail is typed, even on the date it shows', () => {
+  const onChange = setup(toDay('1901-01-01'));
+
+  fireEvent.click(month());
+  typeDate('1901');
+  expect(field().value).toBe('1901-01');
+  expect((month() as HTMLInputElement).checked).toBe(true);
+  expect(onChange).not.toHaveBeenCalled();
+
+  typeDate('1905');
+  expect(lastDate(onChange)).toBe('1905-01-01');
+  expect(field().value).toBe('1905-01');
+  expect(screen.queryByRole('status')).toBeNull();
+});
+
+it('goes to the first day of a typed year or month at Year precision', () => {
+  const onChange = setup(today);
+
+  typeDate('1901');
+  expect(lastDate(onChange)).toBe('1901-01-01');
+  typeDate('1901-06');
+  expect(lastDate(onChange)).toBe('1901-06-01');
+});
+
+it('says each bad date once and leaves the Map date alone', () => {
+  const onChange = setup(today);
+
+  for (const [text, message] of [
+    ['1651-12-31', 'Dates run from 1652 to today.'],
+    ['abc', 'Use 1901, 1901-06 or 1901-06-14.'],
+    ['14/06/1901', 'Use 1901, 1901-06 or 1901-06-14.'],
+    ['2026-12', "That's after today."],
+  ]) {
+    typeDate(text);
+    expect(screen.getByText(message)).toBeTruthy();
+    expect(field().value).toBe(text);
+  }
+
+  expect(onChange).not.toHaveBeenCalled();
+});
+
+const Host = () => {
+  const [day, setDay] = useState(toDay('2020-03-15'));
+
+  return <DateDock day={day} lastDay={today} onChange={setDay} />;
+};
+
+it('clears the error on Esc and the slider', () => {
+  render(<Host />);
+
+  typeDate('abc');
+  expect(screen.getByText(/The map still shows/)).toBeTruthy();
+  fireEvent.keyDown(field(), { key: 'Escape' });
+  expect(screen.queryByText(/The map still shows/)).toBeNull();
+  expect(field().value).toBe('2020');
+
+  typeDate('abc');
+  fireEvent.change(screen.getByRole('slider', { name: 'Map date' }), {
+    target: { value: '10' },
+  });
+  expect(screen.queryByText(/The map still shows/)).toBeNull();
+});
+
+it('clears the error when a step button moves the date', () => {
+  render(<Host />);
+  typeDate('abc');
+  fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+  expect(screen.queryByText(/The map still shows/)).toBeNull();
+  expect(field().value).toBe('2019');
+});
+
+describe('the precision note', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it('shows for 4 seconds when typing switches to a finer precision', () => {
+    setup(today);
+    typeDate('1901-06');
+
+    expect(screen.getByRole('status').textContent).toBe(
+      'Switched to month precision.'
+    );
+    act(() => vi.advanceTimersByTime(3999));
+    expect(screen.getByRole('status')).toBeTruthy();
+    act(() => vi.advanceTimersByTime(1));
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('restarts the timer on a new switch', () => {
+    setup(today);
+    typeDate('1901-06');
+    act(() => vi.advanceTimersByTime(3000));
+    typeDate('1901-06-14');
+    act(() => vi.advanceTimersByTime(3000));
+    expect(screen.getByRole('status').textContent).toBe(
+      'Switched to day precision.'
+    );
+    act(() => vi.advanceTimersByTime(1000));
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('also shows after a fix to a finer precision', () => {
+    setup(today);
+    typeDate('2031');
+    fireEvent.click(screen.getByRole('button', { name: 'Go to today' }));
+    expect(screen.getByRole('status').textContent).toBe(
+      'Switched to day precision.'
+    );
+  });
 });

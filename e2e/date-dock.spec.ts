@@ -63,8 +63,8 @@ test('dragging to 1800 and back loads no more boundary data', async ({
   expect(polityRequests).toHaveLength(1);
 });
 
-// MAP-04, MAP-06: 1994-04-26 draws none; 1995-06-01, either side of the 2006 switch and 2010 draw the eleven.
-test('draws no Polities before 1994-04-27 and eleven from then', async ({
+// MAP-04, MAP-06: 1910-05-30 draws none; 1910-05-31 to 1994-04-26 draw six; 1994-04-27, 1995-06-01, either side of the 2006 switch and 2010 draw the eleven.
+test('draws none before 1910-05-31, six to 1994-04-26 and eleven from then', async ({
   page,
 }) => {
   await page.goto('/');
@@ -76,8 +76,13 @@ test('draws no Polities before 1994-04-27 and eleven from then', async ({
   const epoch = Date.UTC(1652, 0, 1);
   const dayOf = (iso: string) => (Date.parse(iso) - epoch) / 86_400_000;
 
-  await input.fill(String(dayOf('1994-04-26')));
+  await input.fill(String(dayOf('1910-05-30')));
   await expect.poll(() => drawnPolities(page)).toBe(0);
+
+  for (const date of ['1910-05-31', '1950-01-01', '1994-04-26']) {
+    await input.fill(String(dayOf(date)));
+    await expect.poll(() => drawnPolities(page)).toBe(6);
+  }
 
   for (const date of [
     '1994-04-27',
@@ -91,9 +96,9 @@ test('draws no Polities before 1994-04-27 and eleven from then', async ({
   }
 });
 
-// NFR-01: 20 steps across 1994-04-27 and across 2006-03-01, each redraw under 2500 ms (software WebGL on CI).
+// NFR-01: 20 steps across 1910-05-31, across 1994-04-27 and across 2006-03-01, each redraw under 2500 ms (software WebGL on CI).
 test(
-  'each redraw across 1994-04-27 and 2006-03-01 stays under 2500 ms',
+  'each redraw across 1910-05-31, 1994-04-27 and 2006-03-01 stays under 2500 ms',
   { tag: '@perf' },
   async ({ page }) => {
     const polityRequests: string[] = [];
@@ -111,7 +116,7 @@ test(
     const epoch = Date.UTC(1652, 0, 1);
     const times: number[] = [];
 
-    for (const from of ['1994-04-17', '2006-02-19']) {
+    for (const from of ['1910-05-21', '1994-04-17', '2006-02-19']) {
       const start = (Date.parse(from) - epoch) / 86_400_000;
 
       for (let step = 0; step < 20; step++) {

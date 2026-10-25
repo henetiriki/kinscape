@@ -9,6 +9,7 @@ import {
   type Deps,
   POLITY_IDS,
   prepare,
+  UNION_IDS,
 } from '../prepare-map-data.mts';
 
 const ring = [
@@ -37,13 +38,20 @@ const oldProvinces = () =>
     ({ properties }) => properties.key !== 'LSO' && properties.key !== 'SWZ'
   );
 
+const unionProvinces = () =>
+  Object.keys(UNION_IDS).map((key, index) =>
+    province(key, index % 2 === 0 ? 'Polygon' : 'MultiPolygon')
+  );
+
 describe('buildCommands', () => {
-  it('imports the five layers and simplifies them in one run', () => {
+  it('imports the six layers and simplifies them in one run', () => {
     const commands = buildCommands();
 
     expect(commands).toContain(
-      '-i ne_10m_land.shp ne_10m_coastline.shp ne_10m_rivers_lake_centerlines.shp ne_10m_admin_1_states_provinces.shp ne_10m_admin_1_v4_1_0.shp combine-files'
+      '-i ne_10m_land.shp ne_10m_coastline.shp ne_10m_rivers_lake_centerlines.shp ne_10m_admin_1_states_provinces.shp ne_10m_admin_1_v4_1_0.shp provinces_1910.geojson combine-files'
     );
+    expect(commands).toContain('-erase lesotho_eswatini target=provinces_1910');
+    expect(commands).toContain('-clip ne_10m_land target=provinces_1910');
     expect(commands).toContain("'scalerank <= 7'");
     expect(commands).toContain('-clip bbox=5,-45,45,-10 target=*');
     expect(commands).toContain(
@@ -52,13 +60,42 @@ describe('buildCommands', () => {
     expect(commands.match(/-simplify interval=500 keep-shapes/g)).toHaveLength(
       1
     );
-    expect(commands.match(/precision=0\.0001/g)).toHaveLength(5);
+    expect(commands.match(/precision=0\.0001/g)).toHaveLength(6);
   });
 });
 
 describe('boundaryVersions', () => {
+  it('makes the Union provinces low confidence from 1910-05-31 to 1994-04-27', () => {
+    const { union } = boundaryVersions(
+      allProvinces(),
+      oldProvinces(),
+      unionProvinces()
+    );
+
+    expect(union.features.map(f => f.properties.polity)).toEqual([
+      'cape-of-good-hope',
+      'natal',
+      'orange-free-state',
+      'transvaal',
+    ]);
+    expect(union.features[0].geometry.coordinates).toEqual([[ring]]);
+    expect(union.features[0].properties).toEqual({
+      confidence: 'low',
+      contested: false,
+      level: 'polity',
+      polity: 'cape-of-good-hope',
+      source: 'afrith-provinces-1910',
+      validFrom: 94_382,
+      validTo: 125_029,
+    });
+  });
+
   it('makes the 1994 provinces low confidence from 1994-04-27 to 2006-03-01', () => {
-    const { old } = boundaryVersions(allProvinces(), oldProvinces());
+    const { old } = boundaryVersions(
+      allProvinces(),
+      oldProvinces(),
+      unionProvinces()
+    );
 
     expect(old.features).toHaveLength(9);
     expect(old.features.map(f => f.properties.polity)).not.toContain('lesotho');
@@ -74,8 +111,12 @@ describe('boundaryVersions', () => {
     });
   });
 
-  it('splits today at 2006-03-01 and 2009-04-03, with Lesotho and eSwatini from 1994', () => {
-    const { today } = boundaryVersions(allProvinces(), oldProvinces());
+  it('splits today at 2006-03-01 and 2009-04-03, with Lesotho and eSwatini low until 1994', () => {
+    const { today } = boundaryVersions(
+      allProvinces(),
+      oldProvinces(),
+      unionProvinces()
+    );
     const range = (polity: string) =>
       today.features
         .filter(f => f.properties.polity === polity)
@@ -85,7 +126,7 @@ describe('boundaryVersions', () => {
           f.properties.validTo,
         ]);
 
-    expect(today.features).toHaveLength(20);
+    expect(today.features).toHaveLength(22);
     expect(today.features.every(f => f.geometry.type === 'MultiPolygon')).toBe(
       true
     );
@@ -93,20 +134,37 @@ describe('boundaryVersions', () => {
       ['low', 129_355, 130_484],
       ['high', 130_484, null],
     ]);
-    expect(range('lesotho')).toEqual([['high', 125_029, null]]);
-    expect(range('eswatini')).toEqual([['high', 125_029, null]]);
+    for (const polity of ['lesotho', 'eswatini']) {
+      expect(range(polity)).toEqual([
+        ['low', 94_382, 125_029],
+        ['high', 125_029, null],
+      ]);
+    }
   });
 
-  it('stops when Natural Earth names differ from the expected Polities', () => {
+  it('stops when the source names differ from the expected Polities', () => {
     expect(() =>
       boundaryVersions(
         [...allProvinces().slice(1), province('Atlantis')],
-        oldProvinces()
+        oldProvinces(),
+        unionProvinces()
       )
     ).toThrow('missing [Eastern Cape], unexpected [Atlantis]');
     expect(() =>
-      boundaryVersions(allProvinces(), [...oldProvinces(), province('LSO')])
+      boundaryVersions(
+        allProvinces(),
+        [...oldProvinces(), province('LSO')],
+        unionProvinces()
+      )
     ).toThrow('unexpected [LSO]');
+    expect(() =>
+      boundaryVersions(allProvinces(), oldProvinces(), [
+        ...unionProvinces().slice(1),
+        province('Griqualand'),
+      ])
+    ).toThrow(
+      'afrith provinces-1910 names differ from UNION_IDS: missing [Cape of Good Hope], unexpected [Griqualand]'
+    );
   });
 });
 
@@ -123,6 +181,7 @@ describe('prepare', () => {
     'ne_10m_coastline.json': new TextEncoder().encode('coast'),
     'ne_10m_land.json': 'land',
     'ne_10m_rivers_lake_centerlines.json': 'rivers',
+    'provinces_1910.json': JSON.stringify({ features: unionProvinces() }),
   });
 
   const deps = (output = outputs()): Deps => ({
@@ -148,7 +207,7 @@ describe('prepare', () => {
 
     const urls = vi.mocked(fake.download).mock.calls.map(([url]) => url);
 
-    expect(urls).toHaveLength(17);
+    expect(urls).toHaveLength(18);
     expect(urls[0]).toBe(
       'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/10m_physical/ne_10m_land.shp'
     );
@@ -159,13 +218,17 @@ describe('prepare', () => {
       'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v4.1.0/10m_cultural/ne_10m_admin_1_states_provinces.shp'
     );
     expect(urls).toContain(
+      'https://raw.githubusercontent.com/afrith/historical-boundary-data/fbdf94d8a561814510f5d62ec552d6d67f3488e6/provinces-1910.geojson'
+    );
+    expect(urls).toContain(
       'https://raw.githubusercontent.com/uswds/public-sans/v2.001/fonts/ttf/PublicSans-SemiBold.ttf'
     );
 
     const [commands, input] = vi.mocked(fake.applyCommands).mock.calls[0];
 
     expect(commands).toBe(buildCommands());
-    expect(Object.keys(input)).toHaveLength(15);
+    expect(Object.keys(input)).toHaveLength(16);
+    expect(typeof input['provinces_1910.geojson']).toBe('string');
     expect(typeof input['ne_10m_admin_1_v4_1_0.dbf']).toBe('object');
     expect(typeof input['ne_10m_land.prj']).toBe('string');
     expect(typeof input['ne_10m_land.shp']).toBe('object');
@@ -184,7 +247,10 @@ describe('prepare', () => {
     );
     expect(
       JSON.parse(read('data/boundaries/today.geojson')).features
-    ).toHaveLength(20);
+    ).toHaveLength(22);
+    expect(
+      JSON.parse(read('data/boundaries/1910.geojson')).features
+    ).toHaveLength(4);
     expect(
       JSON.parse(read('data/boundaries/1994.geojson')).features
     ).toHaveLength(9);

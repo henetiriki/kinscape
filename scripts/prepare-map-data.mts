@@ -16,7 +16,13 @@ const PUBLIC_SANS_URL = `https://raw.githubusercontent.com/uswds/public-sans/${P
 
 const PROVINCES = 'ne_10m_admin_1_states_provinces';
 const PROVINCES_1994 = 'ne_10m_admin_1_v4_1_0';
+const PROVINCES_1910 = 'provinces_1910';
 const OUTLINE = 'south_africa_outline';
+const NEIGHBOURS = 'lesotho_eswatini';
+
+/** afrith/historical-boundary-data, pinned (M1.4). */
+export const AFRITH_COMMIT = 'fbdf94d8a561814510f5d62ec552d6d67f3488e6';
+const AFRITH_URL = `https://raw.githubusercontent.com/afrith/historical-boundary-data/${AFRITH_COMMIT}/provinces-1910.geojson`;
 
 /** `name` is the file in the repo; `layer` is its name in mapshaper. */
 const LAYERS = [
@@ -51,8 +57,11 @@ const GLYPH_RANGES = [
   [256, 511],
 ] as const;
 
-/** First day of the Interim Constitution's provinces, Lesotho and eSwatini. */
+/** First day of the Interim Constitution's provinces; the Union provinces end on it. */
 const FIRST_DATE = '1994-04-27';
+
+/** First day of the Union provinces (proclamation of 2 December 1909), Lesotho and eSwatini. */
+const UNION_DATE = '1910-05-31';
 
 /** Twelfth Amendment commencement (Proclamation R. 8 of 2006): today's lines apply. */
 const TWELFTH_DATE = '2006-03-01';
@@ -62,8 +71,17 @@ const SIXTEENTH_DATE = '2009-04-03';
 
 export const BOUNDARY_SOURCE = 'natural-earth-admin-1';
 export const BOUNDARY_SOURCE_1994 = 'natural-earth-admin-1-v4';
+export const BOUNDARY_SOURCE_1910 = 'afrith-provinces-1910';
 
 const FOREIGN = ['LSO', 'SWZ'];
+
+/** The names in the Act (South Africa Act 1909, s. 6) to Polity id. */
+export const UNION_IDS: Record<string, string> = {
+  'Cape of Good Hope': 'cape-of-good-hope',
+  Natal: 'natal',
+  'Orange Free State': 'orange-free-state',
+  Transvaal: 'transvaal',
+};
 
 /** Natural Earth admin-1 name (or country code) to Polity id. */
 export const POLITY_IDS: Record<string, string> = {
@@ -103,7 +121,7 @@ const SHAPE_PARTS = ['shp', 'dbf', 'prj'] as const;
 
 export const buildCommands = (): string =>
   [
-    `-i ${LAYERS.map(({ layer }) => `${layer}.shp`).join(' ')} combine-files`,
+    `-i ${[...LAYERS.map(({ layer }) => `${layer}.shp`), `${PROVINCES_1910}.geojson`].join(' ')} combine-files`,
     `-filter 'scalerank <= 7' target=ne_10m_rivers_lake_centerlines`,
     `-filter 'adm0_a3 == "ZAF" || adm0_a3 == "LSO" || adm0_a3 == "SWZ"' target=${PROVINCES}`,
     `-each 'key = adm0_a3 == "ZAF" ? name : adm0_a3' target=${PROVINCES}`,
@@ -114,10 +132,15 @@ export const buildCommands = (): string =>
     `-filter '${FOREIGN.map(code => `key != "${code}"`).join(' && ')}' + name=${OUTLINE} target=${PROVINCES}`,
     `-dissolve target=${OUTLINE}`,
     `-clip ${OUTLINE} target=${PROVINCES_1994}`,
+    `-filter '${FOREIGN.map(code => `key == "${code}"`).join(' || ')}' + name=${NEIGHBOURS} target=${PROVINCES}`,
+    `-each 'key = name' target=${PROVINCES_1910}`,
+    `-dissolve key target=${PROVINCES_1910}`,
+    `-erase ${NEIGHBOURS} target=${PROVINCES_1910}`,
+    `-clip ne_10m_land target=${PROVINCES_1910}`,
     `-clip bbox=${BBOX} target=*`,
     `-simplify interval=${TOLERANCE} keep-shapes`,
-    ...LAYERS.map(
-      ({ layer }) =>
+    ...[...LAYERS.map(({ layer }) => layer), PROVINCES_1910].map(
+      layer =>
         `-o ${layer}.json format=geojson precision=${PRECISION} target=${layer}`
     ),
   ].join(' ');
@@ -158,7 +181,11 @@ const asMultiPolygon = (geometry: Feature['geometry']) => ({
   type: 'MultiPolygon',
 });
 
-const geometries = (provinces: Feature[], expected: string[]) => {
+const geometries = (
+  provinces: Feature[],
+  expected: string[],
+  label = 'Natural Earth admin-1 keys differ from POLITY_IDS'
+) => {
   const found = new Map(
     provinces.map(({ geometry, properties }) => [
       String(properties.key),
@@ -169,9 +196,7 @@ const geometries = (provinces: Feature[], expected: string[]) => {
   const unknown = [...found.keys()].filter(key => !expected.includes(key));
 
   if (missing.length > 0 || unknown.length > 0) {
-    throw new Error(
-      `Natural Earth admin-1 keys differ from POLITY_IDS: missing [${missing}], unexpected [${unknown}]`
-    );
+    throw new Error(`${label}: missing [${missing}], unexpected [${unknown}]`);
   }
 
   return found;
@@ -190,7 +215,7 @@ const version = (geometry: Feature['geometry'], key: string, range: Range) => ({
     confidence: range.confidence,
     contested: false,
     level: 'polity',
-    polity: POLITY_IDS[key],
+    polity: POLITY_IDS[key] ?? UNION_IDS[key],
     source: range.source,
     validFrom: toDay(range.validFrom),
     validTo: range.validTo === null ? null : toDay(range.validTo),
@@ -208,18 +233,26 @@ const collection = (features: ReturnType<typeof version>[]) => ({
 });
 
 /**
- * `old` holds the v4.1.0 provinces to the Twelfth Amendment. `today` holds
- * Lesotho and eSwatini from the first day, and today's provinces from the
- * Twelfth Amendment, low confidence until the Sixteenth.
+ * `union` holds the four Union provinces to the Interim Constitution. `old`
+ * holds the v4.1.0 provinces to the Twelfth Amendment. `today` holds Lesotho
+ * and eSwatini from the Union (low confidence until the first day of the
+ * Interim Constitution), and today's provinces from the Twelfth Amendment, low
+ * confidence until the Sixteenth.
  */
 export const boundaryVersions = (
   provinces: Feature[],
-  provinces1994: Feature[]
+  provinces1994: Feature[],
+  provinces1910: Feature[]
 ) => {
   const today = geometries(provinces, Object.keys(POLITY_IDS));
   const old = geometries(
     provinces1994,
     Object.keys(POLITY_IDS).filter(key => !FOREIGN.includes(key))
+  );
+  const union = geometries(
+    provinces1910,
+    Object.keys(UNION_IDS),
+    'afrith provinces-1910 names differ from UNION_IDS'
   );
 
   return {
@@ -237,6 +270,12 @@ export const boundaryVersions = (
       [...today].flatMap(([key, geometry]) =>
         FOREIGN.includes(key)
           ? [
+              version(geometry, key, {
+                confidence: 'low',
+                source: BOUNDARY_SOURCE,
+                validFrom: UNION_DATE,
+                validTo: FIRST_DATE,
+              }),
               version(geometry, key, {
                 confidence: 'high',
                 source: BOUNDARY_SOURCE,
@@ -260,10 +299,20 @@ export const boundaryVersions = (
             ]
       )
     ),
+    union: collection(
+      [...union].map(([key, geometry]) =>
+        version(geometry, key, {
+          confidence: 'low',
+          source: BOUNDARY_SOURCE_1910,
+          validFrom: UNION_DATE,
+          validTo: FIRST_DATE,
+        })
+      )
+    ),
   };
 };
 
-/** Downloads Natural Earth and Public Sans, then writes the committed map data under `root`. */
+/** Downloads Natural Earth, afrith's 1910 provinces and Public Sans, then writes the committed map data under `root`. */
 export const prepare = async (root: string, deps: Deps): Promise<void> => {
   const input: Record<string, string | Uint8Array> = {};
 
@@ -280,13 +329,18 @@ export const prepare = async (root: string, deps: Deps): Promise<void> => {
     }
   }
 
+  // GeoJSON is read as text, like the projection files.
+  input[`${PROVINCES_1910}.geojson`] = asText(await deps.download(AFRITH_URL));
+
   const output = await deps.applyCommands(buildCommands(), input);
 
   const versions = boundaryVersions(
     JSON.parse(readOutput(output, PROVINCES)).features,
-    JSON.parse(readOutput(output, PROVINCES_1994)).features
+    JSON.parse(readOutput(output, PROVINCES_1994)).features,
+    JSON.parse(readOutput(output, PROVINCES_1910)).features
   );
 
+  writeJson(root, 'data/boundaries/1910.geojson', versions.union);
   writeJson(root, 'data/boundaries/1994.geojson', versions.old);
   writeJson(root, 'data/boundaries/today.geojson', versions.today);
 

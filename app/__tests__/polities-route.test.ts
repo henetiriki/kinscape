@@ -15,6 +15,13 @@ type Feature = {
   };
 };
 
+const UNION_ONLY = [
+  'cape-of-good-hope',
+  'natal',
+  'orange-free-state',
+  'transvaal',
+];
+
 const featuresOn = async (kind: string, isoDate: string) => {
   const { features } = (await GET().json()) as { features: Feature[] };
 
@@ -33,7 +40,9 @@ it('is built once at deploy time', () => {
 
 // MAP-01, MAP-05, BND-01
 it('serves the 11 Polities and their names, and no other country', async () => {
-  const ids = loadAppData().polities.map(row => row.id);
+  const ids = loadAppData()
+    .polities.map(row => row.id)
+    .filter(id => !UNION_ONLY.includes(id));
 
   expect(
     (await featuresOn('boundary', '2020-01-01'))
@@ -81,10 +90,55 @@ it('calls it Swaziland in 2015 and eSwatini in 2020', async () => {
 });
 
 // MAP-06, BND-02
-it('draws no Polity before 1994-04-27', async () => {
-  expect(await featuresOn('boundary', '1994-04-26')).toHaveLength(0);
-  expect(await featuresOn('label', '1994-04-26')).toHaveLength(0);
+it('draws no Polity before 1910-05-31', async () => {
+  expect(await featuresOn('boundary', '1910-05-30')).toHaveLength(0);
+  expect(await featuresOn('label', '1910-05-30')).toHaveLength(0);
+  expect(await featuresOn('boundary', '1910-05-31')).toHaveLength(6);
+  expect(await namesOn('1910-05-31')).toEqual([
+    'Basutoland',
+    'Cape of Good Hope',
+    'Natal',
+    'Orange Free State',
+    'Swaziland',
+    'Transvaal',
+  ]);
+});
+
+// MAP-06, BND-02
+it('draws the four Union provinces with Basutoland and Swaziland in 1950', async () => {
+  expect(await namesOn('1950-01-01')).toEqual([
+    'Basutoland',
+    'Cape of Good Hope',
+    'Natal',
+    'Orange Free State',
+    'Swaziland',
+    'Transvaal',
+  ]);
+  expect(await featuresOn('boundary', '1950-01-01')).toHaveLength(6);
+});
+
+// MAP-06
+it('calls it Basutoland until 1966-10-03 and Lesotho from 1966-10-04', async () => {
+  expect(await namesOn('1966-10-03')).toContain('Basutoland');
+  expect(await namesOn('1966-10-03')).not.toContain('Lesotho');
+  expect(await namesOn('1966-10-04')).toContain('Lesotho');
+  expect(await namesOn('1970-01-01')).toContain('Lesotho');
+  expect(await namesOn('1970-01-01')).not.toContain('Basutoland');
+});
+
+// MAP-06, BND-02
+it('gives way to the 1994 provinces on 1994-04-27 with no gap or overlap', async () => {
+  expect(await featuresOn('boundary', '1994-04-26')).toHaveLength(6);
+  expect(await namesOn('1994-04-26')).toEqual([
+    'Cape of Good Hope',
+    'Lesotho',
+    'Natal',
+    'Orange Free State',
+    'Swaziland',
+    'Transvaal',
+  ]);
   expect(await featuresOn('boundary', '1994-04-27')).toHaveLength(11);
+  expect(await featuresOn('label', '1994-04-27')).toHaveLength(11);
 });
 
 // MAP-06, BND-02
@@ -128,7 +182,7 @@ it('dates every feature inside the data and never past today', async () => {
   const { features } = (await GET().json()) as { features: Feature[] };
 
   for (const { properties } of features) {
-    expect(properties.validFrom).toBeGreaterThanOrEqual(toDay('1994-04-27'));
+    expect(properties.validFrom).toBeGreaterThanOrEqual(toDay('1910-05-31'));
     expect(properties.validTo ?? Infinity).toBeGreaterThan(
       properties.validFrom
     );

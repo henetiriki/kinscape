@@ -136,6 +136,8 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text c
 - Desktop first. The map fills the window and everything else floats on it with a 24px gutter.
 - Desktop: search bar top left. The Layers / Filters panel sits below it, 320px wide. The date dock runs along the bottom, right of the panel. Account and zoom controls are top right. The credits line sits under the dock.
 - Phone: search pill on top, a layers button under it, and a bottom sheet. Collapsed, the sheet holds only the date stepper and Play. Tapping the map opens it with the look-up result. No editing on a phone.
+- Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`; a media query can't read a variable, so a test checks each against `breakpoint`.
+- A notice centres in the free map area, not the window.
 - Pass MapLibre `padding` so the map centres in the space the panel and dock leave.
 
 ## Shape and depth

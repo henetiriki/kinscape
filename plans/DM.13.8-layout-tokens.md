@@ -73,6 +73,10 @@ New checks in `lib/design/__tests__/design.test.ts`: dock left = gutter + panel 
 | Blocking screens ≤ 0.5%                | `npm run e2e`; output in the PR                 |
 | Tests, e2e, validator, 100%            | Output in the PR                                |
 
+## Deviations
+
+- `layout.dock-left` (368px, the snapshot value) and `layout.dialog-top` (120px) are written, unused; `MapShell` keeps 392px.
+
 ## Out of scope
 
 Board 03; tablet; `MapShell`'s `left`; the Stage, sheet, Date dock and auth parts (DM.13.9 to DM.13.11).

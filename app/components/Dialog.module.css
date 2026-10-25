@@ -42,7 +42,7 @@
   flex-direction: column;
   gap: var(--space-16);
   padding: var(--space-24) 28px 28px;
-  width: 760px;
+  width: var(--layout-dialog-width);
 }
 
 .panel[data-form='sheet'] {
@@ -58,7 +58,7 @@
 }
 
 .dialog .panel[data-form='sheet'] {
-  max-height: calc(100dvh - 56px);
+  max-height: calc(100dvh - var(--layout-phone-sources-top));
 }
 
 .handle {

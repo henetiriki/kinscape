@@ -35,7 +35,7 @@
 }
 
 .field {
-  width: 340px;
+  width: var(--layout-search-width);
 }
 
 /* The bare phone field: 16px so the browser doesn't zoom, 44 tall. */

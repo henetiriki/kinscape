@@ -7,5 +7,5 @@
   left: 392px;
   position: absolute;
   right: var(--size-gutter);
-  z-index: 1;
+  z-index: var(--z-furniture);
 }

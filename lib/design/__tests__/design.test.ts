@@ -77,6 +77,68 @@ it('colours the slider thumb with the brand token', () => {
   );
 });
 
+// DM.13.8: layout values live in tokens.json, not in the screens that use them.
+describe('layout tokens', () => {
+  const px = (value: string) => Number.parseFloat(value);
+
+  it('puts the dock left of the gutter, the panel and a gutter', () => {
+    const { layout, size } = tokens;
+
+    expect(px(layout['dock-left'])).toBe(
+      px(size.gutter) + px(size.panel) + px(size.gutter)
+    );
+  });
+
+  const literals: Record<string, string[]> = {
+    'Callout.module.css': ['z-index: 1;'],
+    'Dialog.module.css': ['760px', '56px'],
+    'LayersPanel.module.css': ['z-index: 1;'],
+    'MapShell.module.css': ['z-index: 1;'],
+    'Menu.module.css': ['296px', 'z-index: 10'],
+    'NoticeCard.module.css': ['360px', '380px'],
+    'Popup.module.css': ['304px'],
+    'SearchBar.module.css': ['340px'],
+    'Toast.module.css': ['80px', '164px'],
+    'ZoomControls.module.css': ['z-index: 1;'],
+  };
+
+  it.each(Object.entries(literals))(
+    '%s holds no layout literal',
+    (name, list) => {
+      const css = read(`app/components/${name}`);
+
+      for (const literal of list) {
+        expect(css).not.toContain(literal);
+      }
+    }
+  );
+
+  // A media query can't read var(), so each one must match breakpoint (the desktop side is + 0.02px).
+  it('writes every media query size from breakpoint', () => {
+    const allowed = new Map([
+      ['max-height', px(tokens.breakpoint['phone-height'])],
+      ['max-width', px(tokens.breakpoint['phone-width'])],
+      ['min-height', px(tokens.breakpoint['phone-height']) + 0.02],
+      ['min-width', px(tokens.breakpoint['phone-width']) + 0.02],
+    ]);
+    const found: string[] = [];
+
+    for (const path of globSync('app/**/*.css', { cwd: root })) {
+      for (const [, feature, value] of read(path)
+        .matchAll(/@media[^{]*/g)
+        .flatMap(([query]) => [
+          ...query.matchAll(/\((m(?:in|ax)-(?:width|height)):\s*([\d.]+)px\)/g),
+        ])) {
+        if (Math.abs(Number(value) - (allowed.get(feature) ?? NaN)) > 0.001) {
+          found.push(`${path}: ${feature}: ${value}px`);
+        }
+      }
+    }
+
+    expect(found).toEqual([]);
+  });
+});
+
 describe('tokens.json', () => {
   it('keys the map polity tints by the ids in data/polities.json, plus default', () => {
     const ids = JSON.parse(read('data/polities.json')).names.map(

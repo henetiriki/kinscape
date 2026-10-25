@@ -7,14 +7,14 @@
 .drop {
   position: absolute;
   right: 0;
-  top: calc(100% + var(--space-8));
-  z-index: 10;
+  top: calc(100% + var(--layout-menu-offset));
+  z-index: var(--z-menu);
 }
 
 .panel {
   padding: var(--space-4);
   text-align: left;
-  width: 296px;
+  width: var(--layout-menu-width);
 }
 
 .header {

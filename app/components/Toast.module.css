@@ -88,11 +88,11 @@
   }
 
   .banner[data-placed] {
-    top: 80px;
+    top: var(--layout-phone-banner-top);
   }
 
   .toast[data-placed] {
-    bottom: 164px;
+    bottom: var(--layout-phone-date-message-bottom);
   }
 
   .shape:has(.action) {

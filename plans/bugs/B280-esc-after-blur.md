@@ -2,7 +2,7 @@
 
 - **Spec:** #280
 - **Requirement IDs:** MAP-03, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@
 - **B.** Only inside the field's row (the step buttons and the fix): an `onKeyDown` on the field's wrapper. Esc after clicking the map does nothing.
 - **Other:** your own.
 
-Recommended: A, because the bug and `DESIGN.md` (Map date field, rule 5) expect Esc to work whether or not the field has focus.
+**Answer: A** (@henetiriki)
 
 **D2 · An Esc another control also uses** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ The Sources dialog (native `<dialog>`) and the Popup close on Esc without `preve
 - **B.** Also skip an Esc from inside a `dialog`, `[role=dialog]` or another text box. One Esc does one thing, as the Menu's comment asks ("innermost first").
 - **Other:** your own.
 
-Recommended: B, because it keeps the Menu's rule without changing the other overlays.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

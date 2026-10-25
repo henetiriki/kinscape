@@ -1,7 +1,7 @@
 # Plan: C266: Inherit milestones from Intent to Spec to PR
 
 - **Spec:** #266
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ Both start on `opened`; the parent link may not exist yet.
 - **B.** Trigger on `workflow_run` of the link workflow; its payload lacks the issue number, so find the Spec by title.
 - **Other:** your own.
 
-Recommended: A: same result, no fragile title lookup.
+**Answer: A** (@henetiriki)
 
 **D2 · PRs from forks** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ Recommended: A: same result, no fragile title lookup.
 - **B.** `pull_request_target`, which also fills fork PRs without checking out their code.
 - **Other:** your own.
 
-Recommended: A: all our PRs come from this repo, and it avoids `pull_request_target`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

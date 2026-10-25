@@ -9,7 +9,11 @@ import {
 import { useEffect, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+import { PHONE } from '@/app/components/foundation/usePhone';
+import { freeArea } from '@/app/components/map/Stage';
 import { buildStyle, POLITY_LAYERS, polityFilters } from '@/lib/map/style';
+
+type Padding = ReturnType<typeof freeArea>;
 
 // MapLibre looks for its worker next to its own module, which the bundle moves.
 setWorkerUrl(
@@ -22,14 +26,6 @@ export const FIRST_VIEW: [[number, number], [number, number]] = [
   [33.5, -21.5],
 ];
 
-/** Room for the Layers panel on the left and the date dock below. */
-export const FIRST_VIEW_PADDING = {
-  bottom: 160,
-  left: 392,
-  right: 24,
-  top: 24,
-};
-
 /** Panning stops at the edge of this box, so the map can't be lost. */
 export const MAX_BOUNDS: [[number, number], [number, number]] = [
   [8, -42],
@@ -41,9 +37,12 @@ export const MAX_ZOOM = 10;
 
 export const MapView = ({
   mapDay,
+  padding,
   showPolities,
 }: {
   mapDay: number;
+  /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
+  padding: Padding;
   showPolities: boolean;
 }) => {
   const container = useRef<HTMLDivElement>(null);
@@ -61,7 +60,10 @@ export const MapView = ({
       attributionControl: false,
       bounds: FIRST_VIEW,
       container: container.current,
-      fitBoundsOptions: { padding: FIRST_VIEW_PADDING },
+      // The server renders the desktop form, so the first padding asks the screen.
+      fitBoundsOptions: {
+        padding: freeArea(window.matchMedia(PHONE).matches),
+      },
       maxBounds: MAX_BOUNDS,
       maxZoom: MAX_ZOOM,
       minZoom: MIN_ZOOM,
@@ -83,6 +85,16 @@ export const MapView = ({
 
     return () => created.remove();
   }, []);
+
+  const { bottom, left, right, top } = padding;
+
+  useEffect(() => {
+    // The form changed (a rotation, a resize): keep the centre in the free area.
+    /* v8 ignore next -- the effect above has created the map by now; the guard only narrows the type */
+    if (!map.current) return;
+
+    map.current.setPadding({ bottom, left, right, top });
+  }, [bottom, left, right, top]);
 
   useEffect(() => {
     const current = map.current;

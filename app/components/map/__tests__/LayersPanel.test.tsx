@@ -1,7 +1,20 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { LayersPanel } from '@/app/components/map/LayersPanel';
+import { LayersPanel, LayersRow } from '@/app/components/map/LayersPanel';
+
+it('draws the row alone for the phone Layers sheet', () => {
+  render(<LayersRow onShowPolitiesChange={vi.fn()} showPolities={false} />);
+
+  expect(screen.queryByRole('heading')).toBeNull();
+  expect(
+    (
+      screen.getByRole('checkbox', {
+        name: /Polity borders/,
+      }) as HTMLInputElement
+    ).checked
+  ).toBe(false);
+});
 
 it('shows the Polity borders row, checked when the layer is on', () => {
   render(<LayersPanel onShowPolitiesChange={vi.fn()} showPolities />);

@@ -12,6 +12,7 @@ const maplibre = vi.hoisted(() => {
     remove: vi.fn(),
     setFilter: vi.fn(),
     setLayoutProperty: vi.fn(),
+    setPadding: vi.fn(),
   };
 
   return {
@@ -24,6 +25,7 @@ const maplibre = vi.hoisted(() => {
         remove = map.remove;
         setFilter = map.setFilter;
         setLayoutProperty = map.setLayoutProperty;
+        setPadding = map.setPadding;
       }
     ),
     map,
@@ -37,6 +39,9 @@ vi.mock('maplibre-gl', () => maplibre);
 vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
 import { FIRST_VIEW, MapView, MAX_BOUNDS } from '@/app/components/map/MapView';
+import { freeArea } from '@/app/components/map/Stage';
+
+const padding = freeArea(false);
 
 // Recorded at import time, before any test can clear the mock.
 const [workerUrl] = maplibre.setWorkerUrl.mock.calls[0];
@@ -53,7 +58,9 @@ describe('MapView', () => {
   });
 
   it('opens on South Africa, Lesotho and eSwatini and keeps panning bounded', () => {
-    const { container } = render(<MapView mapDay={5} showPolities />);
+    const { container } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
 
     expect(maplibre.Map).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -73,7 +80,7 @@ describe('MapView', () => {
   });
 
   it('builds the style for the Map date and layer state it first renders with', () => {
-    render(<MapView mapDay={5} showPolities={false} />);
+    render(<MapView mapDay={5} padding={padding} showPolities={false} />);
 
     const [[options]] = maplibre.Map.mock.calls as unknown as [
       [{ style: ReturnType<typeof buildStyle> }],
@@ -88,8 +95,42 @@ describe('MapView', () => {
     });
   });
 
+  // NFR-05
+  it('fits the first view into the free area of the screen it is on', () => {
+    render(<MapView mapDay={5} padding={padding} showPolities />);
+
+    expect(maplibre.Map).toHaveBeenCalledWith(
+      expect.objectContaining({ fitBoundsOptions: { padding } })
+    );
+
+    const query = window.matchMedia;
+
+    window.matchMedia = (() => ({
+      matches: true,
+    })) as unknown as typeof window.matchMedia;
+    maplibre.Map.mockClear();
+    render(<MapView mapDay={5} padding={freeArea(true)} showPolities />);
+    window.matchMedia = query;
+
+    expect(maplibre.Map).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fitBoundsOptions: { padding: freeArea(true) },
+      })
+    );
+  });
+
+  it('moves the padding when the free area changes', () => {
+    const { rerender } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
+
+    expect(maplibre.map.setPadding).toHaveBeenLastCalledWith(padding);
+    rerender(<MapView mapDay={5} padding={freeArea(true)} showPolities />);
+    expect(maplibre.map.setPadding).toHaveBeenLastCalledWith(freeArea(true));
+  });
+
   it('adds the navigation and scale controls', () => {
-    render(<MapView mapDay={5} showPolities />);
+    render(<MapView mapDay={5} padding={padding} showPolities />);
 
     expect(maplibre.map.addControl).toHaveBeenCalledTimes(2);
     expect(maplibre.NavigationControl).toHaveBeenCalledOnce();
@@ -97,7 +138,7 @@ describe('MapView', () => {
   });
 
   it('shows all the polity layers together', () => {
-    render(<MapView mapDay={5} showPolities />);
+    render(<MapView mapDay={5} padding={padding} showPolities />);
 
     expect(maplibre.map.setLayoutProperty.mock.calls).toEqual(
       POLITY_LAYERS.map(id => [id, 'visibility', 'visible'])
@@ -105,14 +146,16 @@ describe('MapView', () => {
   });
 
   it('hides all the polity layers together, then restores them', () => {
-    const { rerender } = render(<MapView mapDay={5} showPolities={false} />);
+    const { rerender } = render(
+      <MapView mapDay={5} padding={padding} showPolities={false} />
+    );
 
     expect(maplibre.map.setLayoutProperty.mock.calls).toEqual(
       POLITY_LAYERS.map(id => [id, 'visibility', 'none'])
     );
 
     maplibre.map.setLayoutProperty.mockClear();
-    rerender(<MapView mapDay={5} showPolities />);
+    rerender(<MapView mapDay={5} padding={padding} showPolities />);
 
     expect(maplibre.map.setLayoutProperty.mock.calls).toEqual(
       POLITY_LAYERS.map(id => [id, 'visibility', 'visible'])
@@ -120,10 +163,12 @@ describe('MapView', () => {
   });
 
   it('refilters every polity layer when the Map date changes', () => {
-    const { rerender } = render(<MapView mapDay={5} showPolities />);
+    const { rerender } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
 
     maplibre.map.setFilter.mockClear();
-    rerender(<MapView mapDay={9} showPolities />);
+    rerender(<MapView mapDay={9} padding={padding} showPolities />);
 
     expect(maplibre.map.setFilter.mock.calls).toEqual(
       POLITY_LAYERS.map(id => [id, polityFilters(9)[id]])
@@ -133,7 +178,9 @@ describe('MapView', () => {
   it('waits for the style to load before changing layers', () => {
     maplibre.map.isStyleLoaded.mockReturnValue(false);
 
-    const { unmount } = render(<MapView mapDay={5} showPolities />);
+    const { unmount } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
 
     expect(maplibre.map.setFilter).not.toHaveBeenCalled();
     expect(maplibre.map.once).toHaveBeenCalledWith(
@@ -157,14 +204,16 @@ describe('MapView', () => {
   it('applies a Map date change while tiles reload after the first load', () => {
     maplibre.map.isStyleLoaded.mockReturnValue(false);
 
-    const { rerender } = render(<MapView mapDay={5} showPolities />);
+    const { rerender } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
 
     for (const [event, onLoad] of maplibre.map.once.mock.calls) {
       if (event === 'load') onLoad();
     }
 
     maplibre.map.setFilter.mockClear();
-    rerender(<MapView mapDay={9} showPolities />);
+    rerender(<MapView mapDay={9} padding={padding} showPolities />);
 
     expect(maplibre.map.setFilter.mock.calls).toEqual(
       POLITY_LAYERS.map(id => [id, polityFilters(9)[id]])
@@ -175,7 +224,7 @@ describe('MapView', () => {
   it('times each Map date change until the map is idle', () => {
     const measure = vi.spyOn(performance, 'measure');
 
-    render(<MapView mapDay={5} showPolities />);
+    render(<MapView mapDay={5} padding={padding} showPolities />);
 
     expect(maplibre.map.once).toHaveBeenCalledWith(
       'idle',
@@ -193,20 +242,24 @@ describe('MapView', () => {
   });
 
   it('puts the map on window only in browser-test builds', () => {
-    const { unmount } = render(<MapView mapDay={5} showPolities />);
+    const { unmount } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
 
     expect('kinscapeMap' in window).toBe(false);
     unmount();
 
     vi.stubEnv('NEXT_PUBLIC_E2E', '1');
-    render(<MapView mapDay={5} showPolities />);
+    render(<MapView mapDay={5} padding={padding} showPolities />);
     expect('kinscapeMap' in window).toBe(true);
     vi.unstubAllEnvs();
     delete (window as unknown as { kinscapeMap?: unknown }).kinscapeMap;
   });
 
   it('removes the map on unmount', () => {
-    const { unmount } = render(<MapView mapDay={5} showPolities />);
+    const { unmount } = render(
+      <MapView mapDay={5} padding={padding} showPolities />
+    );
 
     expect(maplibre.map.remove).not.toHaveBeenCalled();
     unmount();

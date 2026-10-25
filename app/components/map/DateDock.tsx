@@ -112,6 +112,7 @@ export const DateDock = ({
       }
       day={day}
       fill={!!sheet}
+      keepPrecision={!!sheet}
       max={lastDay}
       min={MIN_DAY}
       notice={notice}

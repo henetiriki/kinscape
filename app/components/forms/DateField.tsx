@@ -24,6 +24,7 @@ export const DateField = ({
   day,
   defaultText,
   fill,
+  keepPrecision,
   max,
   min,
   notice,
@@ -42,6 +43,8 @@ export const DateField = ({
   defaultText?: string;
   /** The field takes the width the row leaves, as in the phone date sheet. */
   fill?: boolean;
+  /** A typed date or a fix commits at the field's precision, never a finer one. */
+  keepPrecision?: boolean;
   /** The last Map date: today. */
   max: number;
   /** The first Map date. */
@@ -74,7 +77,9 @@ export const DateField = ({
     setProblem(null);
   }
 
-  const goTo = (to: number, at: Precision) => {
+  const goTo = (to: number, wanted: Precision) => {
+    const at = keepPrecision ? precision : wanted;
+
     setProblem(null);
     setText(shownDate(to, at));
 

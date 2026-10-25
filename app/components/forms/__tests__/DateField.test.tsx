@@ -257,6 +257,36 @@ it('shows a notice while it is passed, as a status', () => {
   expect(screen.getByRole('textbox').getAttribute('aria-invalid')).toBeNull();
 });
 
+// MAP-03
+it('commits a typed date at its own precision with keepPrecision', () => {
+  const { field, onChange } = setup({
+    day: toDay('1901-01-01'),
+    keepPrecision: true,
+    precision: 'year',
+  });
+
+  type(field, '1901-06');
+  fireEvent.keyDown(field, { key: 'Enter' });
+
+  expect(onChange).toHaveBeenCalledWith(toDay('1901-06-01'), 'year');
+  expect(field.value).toBe('1901');
+});
+
+it('applies a fix at its own precision with keepPrecision', () => {
+  const { field, onChange } = setup({
+    keepPrecision: true,
+    placement: 'above',
+    precision: 'year',
+  });
+
+  type(field, '1901-02-30');
+  fireEvent.keyDown(field, { key: 'Enter' });
+  fireEvent.click(screen.getByRole('button', { name: 'Go to 1901-02-28' }));
+
+  expect(onChange).toHaveBeenCalledWith(toDay('1901-02-28'), 'year');
+  expect(field.value).toBe('1901');
+});
+
 it('marks a warning without blocking', () => {
   const { field } = setup({
     notice: { text: 'No borders are mapped for 1750 yet.', tone: 'warning' },

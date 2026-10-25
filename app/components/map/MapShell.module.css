@@ -1,11 +1,5 @@
-/* The dock and the credits line under it, right of the Layers panel. */
-.bottom {
-  bottom: var(--size-gutter);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  left: 392px;
-  position: absolute;
-  right: var(--size-gutter);
-  z-index: var(--z-furniture);
+/* The credits line above the phone sheet, inside the dock slot. */
+.credits {
+  padding: 0 var(--size-gutter-phone) var(--space-4);
+  text-align: right;
 }

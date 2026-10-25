@@ -86,9 +86,9 @@ export const TokenField = ({
         />
       </span>
       {helper && (
-        <Text id={helperId} variant='small'>
+        <span className={styles.panelHelper} id={helperId}>
           {helper}
-        </Text>
+        </span>
       )}
     </div>
   );

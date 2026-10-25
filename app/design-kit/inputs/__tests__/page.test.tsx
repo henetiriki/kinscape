@@ -46,20 +46,13 @@ it('draws each interactive component in five states, in the order drawn', async 
     'Play',
     'Play, icon only',
   ]);
-  expect(names('Field states')).toEqual([
-    'Password',
-    'Select',
-    'Search',
-    'Token field',
-  ]);
-  expect(names('Chip states')).toEqual([
-    'Event chip, off',
-    'Event chip, on',
-    'Removable chip',
-  ]);
-  expect(names('Tab states')).toEqual(['Tab with count']);
+  expect(names('Field states')).toEqual(['Password', 'Select']);
+  expect(names('Chip states')).toEqual(['Event chip, off', 'Event chip, on']);
+  expect(names('Removable chip states')).toEqual(['Removable chip']);
+  expect(names('Tab states')).toEqual(['Tab with badge', 'Tab with badge, on']);
   expect(names('Checkbox field states')).toEqual([
-    'With description',
+    'Layer row, off',
+    'Layer row, on',
     'Label only',
   ]);
 
@@ -67,6 +60,40 @@ it('draws each interactive component in five states, in the order drawn', async 
 
   expect(matrix.querySelectorAll('.cell')).toHaveLength(20);
   expect(matrix.querySelectorAll('.cell[inert]')).toHaveLength(12);
+  // A phone draws Play only icon-only, and labels Focus without "(keyboard)".
+  expect(
+    [
+      ...matrix.querySelectorAll('.row[data-desktop] > .name > :first-child'),
+    ].map(name => name.textContent)
+  ).toEqual(['Play']);
+  expect(
+    [...matrix.querySelectorAll('.stateLabel')]
+      .slice(0, 5)
+      .map(l => l.textContent)
+  ).toEqual(['Default', 'Hover', 'Focus', 'Pressed', 'Disabled']);
+  expect(
+    within(
+      screen.getByRole('figure', { name: 'Removable chip states' })
+    ).queryByText('Disabled')
+  ).toBeNull();
+});
+
+it('draws both words where a phone reads differently, each hidden on the other', async () => {
+  await show();
+
+  const keyHints = screen.getByRole('region', { name: 'Key hints' });
+
+  expect(within(keyHints).getByText(/See the desktop board\.$/).className).toBe(
+    'phoneOnly'
+  );
+  expect(
+    within(keyHints).getByText(/^Show a keyboard shortcut/).className
+  ).toBe('desktopOnly');
+  expect(
+    within(screen.getByRole('figure', { name: 'Tab states' })).getByText(
+      'Filters, not selected'
+    ).className
+  ).toBe('phoneOnly');
 });
 
 it('shows every button form, field form and chip', async () => {
@@ -86,9 +113,12 @@ it('shows every button form, field form and chip', async () => {
 
   const fields = within(screen.getByRole('region', { name: 'Text fields' }));
 
-  // One in the variants and one in each of the five states.
+  // Hidden: one in the variants and four in the states; shown: one in each, Pressed in the states.
   expect(fields.getAllByRole('button', { name: 'Show password' })).toHaveLength(
-    6
+    5
+  );
+  expect(fields.getAllByRole('button', { name: 'Hide password' })).toHaveLength(
+    2
   );
   expect(fields.getAllByRole('combobox').length).toBeGreaterThan(1);
   expect(fields.getAllByRole('searchbox').length).toBeGreaterThan(0);
@@ -103,10 +133,16 @@ it('shows every button form, field form and chip', async () => {
   expect(chips.getAllByRole('button', { pressed: false })).toHaveLength(10);
 
   expect(
-    within(screen.getByRole('region', { name: 'Tabs' })).getByRole('tab', {
+    within(screen.getByRole('region', { name: 'Tabs' })).getAllByRole('tab', {
       name: 'Filters, 1 active',
-    })
-  ).toBeTruthy();
+    }).length
+  ).toBeGreaterThan(0);
+  expect(
+    within(screen.getByRole('region', { name: 'Checkbox field' })).getAllByRole(
+      'checkbox',
+      { name: 'Keep me signed in on this device' }
+    ).length
+  ).toBeGreaterThan(0);
   expect(
     within(screen.getByRole('region', { name: 'Alerts' })).getAllByRole('alert')
   ).toHaveLength(1);

@@ -62,6 +62,21 @@
   color: var(--ink);
 }
 
+@media (hover: hover) {
+  .tab[aria-selected='true']:hover:not(:disabled) {
+    background: var(--brand-tint-hover);
+  }
+}
+
+.tab[aria-selected='true'][data-state='hover']:not(:disabled) {
+  background: var(--brand-tint-hover);
+}
+
+.tab[aria-selected='true']:is(:active:not(:disabled), [data-state='active']) {
+  background: var(--brand-tint-pressed);
+  color: var(--brand-pressed);
+}
+
 .tab:disabled {
   color: var(--ink-disabled);
   cursor: default;
@@ -82,14 +97,15 @@
   border-radius: var(--radius-full);
   box-sizing: border-box;
   color: var(--white);
-  font-size: var(--type-overline-size);
+  font-family: var(--type-chip-font);
+  font-size: var(--type-chip-size);
   font-weight: var(--type-chip-weight);
-  line-height: 20px;
+  line-height: var(--type-chip-line);
   min-width: 20px;
   padding: 0 6px;
   text-align: center;
 }
 
 .tab:disabled .count {
-  background: var(--line-strong);
+  background: var(--ink-disabled);
 }

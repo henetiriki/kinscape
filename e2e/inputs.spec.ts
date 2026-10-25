@@ -131,6 +131,30 @@ test.describe('on a desktop', () => {
 test.describe('on a phone', () => {
   test.use({ viewport: { height: 844, width: 390 } });
 
+  test('card buttons and event chips are 44 tall, a removable chip 36', async ({
+    page,
+  }) => {
+    await page.goto('/design-kit/inputs');
+
+    const chips = section(page, 'Chips');
+
+    expect(
+      await heightOf(
+        section(page, 'Buttons')
+          .getByRole('button', { exact: true, name: 'Jump to 1898' })
+          .first()
+      )
+    ).toBe(44);
+    expect(
+      await heightOf(chips.getByRole('button', { name: 'Birth' }).first())
+    ).toBe(44);
+    expect(
+      await heightOf(
+        chips.getByRole('button', { name: 'Remove Rossouw' }).first()
+      )
+    ).toBe(36);
+  });
+
   for (const [part, url, first, other] of [
     [1, '/design-kit/inputs', 'Buttons', 'Key hints'],
     [2, '/design-kit/inputs?part=2', 'Tabs', 'Buttons'],

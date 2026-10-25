@@ -5,20 +5,21 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 44px;
-  padding: var(--space-64) 72px;
+  gap: var(--space-48);
+  padding: var(--space-64) var(--kit-page);
 }
 
 .note {
   color: var(--ink-3);
-  font-size: 14.5px;
-  line-height: 1.5;
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
   margin: 0;
 }
 
 /* Only a phone shows one part at a time. */
 .partOf,
-.otherPart {
+.otherPart,
+.phoneOnly {
   display: none;
 }
 
@@ -33,35 +34,36 @@
 .intro {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-4);
 }
 
 .h2 {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: 700;
+  font-family: var(--type-h3-font);
+  font-size: var(--type-h3-size);
+  font-weight: var(--type-h3-weight);
+  line-height: var(--type-h3-line);
   margin: 0;
 }
 
 .lead {
   color: var(--ink-2);
-  font-size: 14.5px;
-  line-height: 1.5;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
   margin: 0;
-  max-width: 860px;
+  max-width: var(--kit-measure);
 }
 
 .variants {
   align-items: flex-start;
   display: flex;
   flex-wrap: wrap;
-  gap: 28px 40px;
+  gap: var(--space-32) var(--space-40);
 }
 
 .variant {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-8);
   margin: 0;
   min-width: 0;
 }
@@ -78,7 +80,7 @@
 .caption {
   color: var(--ink-3);
   font-size: var(--type-caption-size);
-  line-height: 1.45;
+  line-height: var(--type-caption-line);
   max-width: 400px;
 }
 
@@ -90,10 +92,45 @@
   align-items: flex-start;
   display: inline-flex;
   flex-wrap: wrap;
-  gap: var(--space-8) var(--space-20);
+  gap: var(--space-20);
+}
+
+.buttons {
+  display: inline-flex;
+  gap: var(--space-8);
+}
+
+/* A sample with the "44 × 44 hit area" tag beside it. */
+.tagged {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+
+.hitTag {
+  align-items: center;
+  border: 1px dashed var(--ink-3);
+  border-radius: var(--radius-small);
+  color: var(--ink-2);
+  display: inline-flex;
+  font-size: var(--type-caption-size);
+  height: 20px;
+  line-height: var(--type-caption-line);
+  padding: 0 var(--space-8);
+  white-space: nowrap;
 }
 
 .field {
+  width: 260px;
+}
+
+.fieldM {
+  width: 200px;
+}
+
+/* The box is 260; the helper or error under it runs as wide as it needs. */
+.messageField span:has(> input) {
   width: 260px;
 }
 
@@ -112,26 +149,81 @@
   max-width: 660px;
 }
 
-.glyphs {
+/* Tabs drawn on the map colour (set inline). */
+.stage {
+  align-items: flex-start;
+  border-radius: var(--radius-panel);
   display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-24);
+  padding: var(--space-20);
 }
 
-.glyphRow {
+.stage[data-sheet] {
+  justify-content: center;
+  padding: var(--space-20) var(--space-16) 0;
+}
+
+/* The top of the desktop panel: equal tabs on a padded bar with a line under it. */
+.panelBar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+  box-sizing: border-box;
+  padding: var(--space-4);
+  width: var(--size-panel);
+}
+
+.panelBar [role='tablist'] {
   display: flex;
-  gap: var(--space-12);
+}
+
+.panelBar [role='tab'] {
+  flex: 1;
+  justify-content: center;
+}
+
+.stage[data-sheet] > * {
+  width: 358px;
+}
+
+/* The head only: the sheet ends at the line under it. */
+.stage [data-head] {
+  padding-bottom: 0;
+}
+
+.checkboxRow {
+  width: 280px;
 }
 
 .alert {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
   width: 360px;
 }
 
 .divider {
-  width: 300px;
+  width: 360px;
+}
+
+/* The hairline, centred in a 44 row. */
+.divider:has(> hr) {
+  align-items: center;
+  display: flex;
+  height: var(--size-touch);
+}
+
+.divider > hr {
+  flex: 1;
+}
+
+.footnote {
+  color: var(--ink-3);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--type-small-size);
+  gap: var(--space-20);
+  line-height: var(--type-small-line);
+  margin: 0;
+  width: 360px;
 }
 
 .hintLine {
@@ -140,7 +232,7 @@
   display: inline-flex;
   font-size: var(--type-caption-size);
   gap: var(--space-8);
-  line-height: 18px;
+  line-height: var(--type-caption-line);
 }
 
 .matrix {
@@ -166,8 +258,9 @@
   font-size: var(--type-overline-size);
   font-weight: var(--type-overline-weight);
   letter-spacing: var(--type-overline-tracking);
+  line-height: var(--type-overline-line);
   min-height: 0;
-  padding: 10px 0;
+  padding: var(--space-12) 0;
   text-transform: uppercase;
 }
 
@@ -180,26 +273,33 @@
 .name > :first-child {
   font-size: var(--type-label-size);
   font-weight: var(--type-label-weight);
+  line-height: var(--type-label-line);
 }
 
 .hint {
   color: var(--ink-3);
   font-size: var(--type-caption-size);
-  line-height: 1.4;
+  line-height: var(--type-caption-line);
 }
 
 .cell {
   align-items: center;
   display: inline-flex;
-  gap: 10px;
+  gap: var(--space-8);
   justify-self: start;
   min-width: 0;
   width: 100%;
 }
 
 .cellField {
+  flex: none;
   min-width: 0;
   width: 190px;
+}
+
+.cellCheckbox {
+  flex: none;
+  width: 310px;
 }
 
 .stateLabel {
@@ -209,7 +309,7 @@
 .facts {
   align-items: start;
   display: grid;
-  gap: 48px;
+  gap: var(--space-48);
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
 }
 
@@ -224,7 +324,7 @@
   font-size: var(--type-overline-size);
   font-weight: var(--type-overline-weight);
   letter-spacing: var(--type-overline-tracking);
-  line-height: 16px;
+  line-height: var(--type-overline-line);
   margin: 0;
   text-transform: uppercase;
 }
@@ -241,14 +341,14 @@
 .listRow {
   border-bottom: 1px solid var(--line);
   display: grid;
-  font-size: 13.5px;
-  gap: 14px;
-  line-height: 1.45;
-  padding: 6px 0;
+  font-size: var(--type-small-size);
+  gap: var(--space-16);
+  line-height: var(--type-small-line);
+  padding: var(--space-8) 0;
 }
 
 .fact {
-  grid-template-columns: 110px minmax(0, 1fr) 210px;
+  grid-template-columns: 150px minmax(0, 1fr) 210px;
 }
 
 .listRow {
@@ -256,7 +356,9 @@
 }
 
 .factName {
-  font-weight: 600;
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-line);
 }
 
 .table[data-wide] .fact {
@@ -270,22 +372,27 @@
 
 .token {
   color: var(--ink-2);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
   font-variant-ligatures: none;
-  line-height: 1.6;
+  line-height: var(--type-mono-line);
 }
 
-.definition code {
-  font-family: var(--font-mono);
-  font-size: 12.5px;
+.noToken {
+  color: var(--ink-3);
+}
+
+.definition code,
+.fact code {
+  font-family: var(--type-mono-font);
+  font-size: var(--type-mono-size);
 }
 
 /* A phone (Intent 104, D1): one part at a time inside 16px gutters, a link to the other, and one column */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .kit {
-    gap: var(--space-32);
-    padding: var(--space-24) var(--size-gutter-phone);
+    gap: var(--space-40);
+    padding: var(--space-32) var(--size-gutter-phone) var(--space-48);
   }
 
   .partOf {
@@ -294,7 +401,24 @@
 
   .otherPart {
     display: inline-flex;
+  }
+
+  /* The link itself is the 44px row, its text centred in it. */
+  .otherPart > * {
+    align-items: center;
+    display: inline-flex;
     min-height: var(--size-touch);
+  }
+
+  .phoneOnly {
+    display: revert;
+  }
+
+  .desktopOnly,
+  .row.columns,
+  .row[data-desktop],
+  .variant[data-desktop] {
+    display: none;
   }
 
   .kit[data-part='1'] .section[data-part='2'],
@@ -302,20 +426,53 @@
     display: none;
   }
 
+  .section {
+    gap: var(--space-20);
+  }
+
+  .variants {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: var(--space-20);
+  }
+
+  .variant[data-phone] {
+    display: flex;
+  }
+
+  .variant,
+  .sample {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .caption {
+    max-width: none;
+  }
+
   .wide,
-  .field,
   .search,
   .tokens,
   .alert,
-  .divider {
+  .divider,
+  .footnote,
+  .stage[data-sheet] > * {
     max-width: 100%;
     width: 100%;
   }
 
-  .wide,
-  .variant,
-  .sample {
-    min-width: 0;
+  .pair {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  /* Selects fill the row, one above the other. */
+  .pair:has(select) {
+    gap: var(--space-16);
+    width: 100%;
+  }
+
+  .pair:has(select) .fieldM {
     width: 100%;
   }
 
@@ -323,53 +480,102 @@
     max-width: 100%;
   }
 
-  .columns,
-  .variant[data-desktop] {
-    display: none;
+  .stage[data-sheet] {
+    padding: var(--space-20) 0 0;
+    width: 100%;
   }
 
-  .variant[data-phone] {
-    display: flex;
+  /* A card's buttons are 44 tall on a phone, with the 15 / 22 label. */
+  .cardButton button[data-size] {
+    font-size: var(--type-control-size);
+    height: var(--size-control);
+    line-height: var(--type-control-line);
   }
 
-  .table[data-wide] .fact {
-    grid-template-columns: minmax(0, 1fr);
+  /* With 36 chips the field is 46 tall, as drawn. */
+  .phoneChips [role='group'] {
+    padding-block: 1px;
   }
 
+  /* A matrix row: the name, then each state under its label, wrapping. */
   .row {
-    gap: var(--space-8);
-    grid-template-columns: minmax(0, 1fr);
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-16);
+    min-height: 0;
     padding: var(--space-16) 0;
   }
 
-  .cell {
-    gap: var(--space-12);
+  .name {
+    flex-basis: 100%;
+    margin-bottom: calc(var(--space-4) * -1);
   }
 
-  .cellField {
+  .name > :first-child {
+    font-size: var(--type-title-size);
+    line-height: var(--type-title-line);
+  }
+
+  .cell {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
     max-width: 100%;
+    width: auto;
+  }
+
+  .cellField,
+  .cellCheckbox {
+    max-width: 100%;
+    width: 170px;
   }
 
   .stateLabel {
     color: var(--ink-3);
-    display: inline;
-    flex: none;
-    font-size: var(--type-caption-size);
-    width: 64px;
+    display: block;
+    font-size: var(--type-overline-size);
+    font-weight: var(--type-overline-weight);
+    letter-spacing: var(--type-overline-tracking);
+    line-height: var(--type-overline-line);
+    text-transform: uppercase;
   }
 
   .facts {
-    gap: var(--space-24);
+    gap: var(--space-20);
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .fact {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
+  /* Measurements: "name · value", the token under it. */
+  .fact,
+  .table[data-wide] .fact {
+    color: var(--ink-2);
+    display: block;
   }
 
-  .pair {
-    flex-direction: column;
-    width: 100%;
+  .fact > * {
+    display: inline;
+  }
+
+  .fact > .factName {
+    color: var(--ink);
+    font-size: var(--type-small-size);
+    line-height: var(--type-small-line);
+  }
+
+  .fact > .factName::after {
+    color: var(--ink-2);
+    content: ' · ';
+    font-weight: var(--type-small-weight);
+  }
+
+  .fact > .token {
+    display: block;
+    margin-top: var(--space-4);
+  }
+
+  .listRow {
+    gap: var(--space-8);
+    grid-template-columns: 80px minmax(0, 1fr);
   }
 }

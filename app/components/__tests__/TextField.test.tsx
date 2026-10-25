@@ -84,6 +84,25 @@ it('switches a password field between hidden and shown', () => {
   expect(input.type).toBe('password');
 });
 
+it('starts a password shown when asked', () => {
+  render(
+    <TextField
+      defaultShown
+      defaultValue='field-notes-1901'
+      label='Password'
+      type='password'
+    />
+  );
+
+  expect((screen.getByLabelText('Password') as HTMLInputElement).type).toBe(
+    'text'
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Hide password' }));
+  expect((screen.getByLabelText('Password') as HTMLInputElement).type).toBe(
+    'password'
+  );
+});
+
 it('disables the eye with the password field', () => {
   render(<TextField disabled label='Password' type='password' />);
 

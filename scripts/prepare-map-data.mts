@@ -19,6 +19,7 @@ const PROVINCES_1994 = 'ne_10m_admin_1_v4_1_0';
 const PROVINCES_1910 = 'provinces_1910';
 const OUTLINE = 'south_africa_outline';
 const NEIGHBOURS = 'lesotho_eswatini';
+const NEIGHBOURS_1910 = 'lesotho_eswatini_1910';
 
 /** afrith/historical-boundary-data, pinned (M1.4). */
 export const AFRITH_COMMIT = 'fbdf94d8a561814510f5d62ec552d6d67f3488e6';
@@ -47,6 +48,9 @@ const BBOX = '5,-45,45,-10';
 
 /** Metres. Every layer is simplified in one run so shared edges stay identical. */
 const TOLERANCE = 500;
+
+/** The largest gap between afrith's cut-outs and Natural Earth's Lesotho and eSwatini is about 215 km². */
+const GAP_FILL_AREA = '300km2';
 
 /** Four decimals is about 11 m. */
 const PRECISION = 0.0001;
@@ -137,6 +141,9 @@ export const buildCommands = (): string =>
     `-dissolve key target=${PROVINCES_1910}`,
     `-erase ${NEIGHBOURS} target=${PROVINCES_1910}`,
     `-clip ne_10m_land target=${PROVINCES_1910}`,
+    `-filter true + name=${NEIGHBOURS_1910} target=${NEIGHBOURS}`,
+    `-merge-layers target=${PROVINCES_1910},${NEIGHBOURS_1910} name=${PROVINCES_1910}`,
+    `-clean gap-fill-area=${GAP_FILL_AREA} target=${PROVINCES_1910}`,
     `-clip bbox=${BBOX} target=*`,
     `-simplify interval=${TOLERANCE} keep-shapes`,
     ...[...LAYERS.map(({ layer }) => layer), PROVINCES_1910].map(
@@ -233,11 +240,12 @@ const collection = (features: ReturnType<typeof version>[]) => ({
 });
 
 /**
- * `union` holds the four Union provinces to the Interim Constitution. `old`
- * holds the v4.1.0 provinces to the Twelfth Amendment. `today` holds Lesotho
- * and eSwatini from the Union (low confidence until the first day of the
- * Interim Constitution), and today's provinces from the Twelfth Amendment, low
- * confidence until the Sixteenth.
+ * `provinces1910` holds the four Union provinces, Lesotho and eSwatini, gap
+ * filled together so they meet. `union` holds the four provinces to the Interim
+ * Constitution. `old` holds the v4.1.0 provinces to the Twelfth Amendment.
+ * `today` holds Lesotho and eSwatini from the Union (the 1910 shapes, low
+ * confidence, until the first day of the Interim Constitution), and today's
+ * provinces from the Twelfth Amendment, low confidence until the Sixteenth.
  */
 export const boundaryVersions = (
   provinces: Feature[],
@@ -249,11 +257,12 @@ export const boundaryVersions = (
     provinces1994,
     Object.keys(POLITY_IDS).filter(key => !FOREIGN.includes(key))
   );
-  const union = geometries(
+  const joined = geometries(
     provinces1910,
-    Object.keys(UNION_IDS),
+    [...Object.keys(UNION_IDS), ...FOREIGN],
     'afrith provinces-1910 names differ from UNION_IDS'
   );
+  const union = new Map([...joined].filter(([key]) => !FOREIGN.includes(key)));
 
   return {
     old: collection(
@@ -270,7 +279,7 @@ export const boundaryVersions = (
       [...today].flatMap(([key, geometry]) =>
         FOREIGN.includes(key)
           ? [
-              version(geometry, key, {
+              version(joined.get(key) as Feature['geometry'], key, {
                 confidence: 'low',
                 source: BOUNDARY_SOURCE,
                 validFrom: UNION_DATE,

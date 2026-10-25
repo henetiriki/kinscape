@@ -39,7 +39,7 @@ const oldProvinces = () =>
   );
 
 const unionProvinces = () =>
-  Object.keys(UNION_IDS).map((key, index) =>
+  [...Object.keys(UNION_IDS), 'LSO', 'SWZ'].map((key, index) =>
     province(key, index % 2 === 0 ? 'Polygon' : 'MultiPolygon')
   );
 
@@ -52,6 +52,9 @@ describe('buildCommands', () => {
     );
     expect(commands).toContain('-erase lesotho_eswatini target=provinces_1910');
     expect(commands).toContain('-clip ne_10m_land target=provinces_1910');
+    expect(commands).toContain(
+      '-merge-layers target=provinces_1910,lesotho_eswatini_1910 name=provinces_1910 -clean gap-fill-area=300km2 target=provinces_1910'
+    );
     expect(commands).toContain("'scalerank <= 7'");
     expect(commands).toContain('-clip bbox=5,-45,45,-10 target=*');
     expect(commands).toContain(
@@ -140,6 +143,35 @@ describe('boundaryVersions', () => {
         ['high', 125_029, null],
       ]);
     }
+  });
+
+  it('draws Lesotho and eSwatini before 1994 from the gap-filled 1910 layer', () => {
+    const filled = [
+      [2, 2],
+      [3, 2],
+      [3, 3],
+      [2, 2],
+    ];
+    const { today, union } = boundaryVersions(
+      allProvinces(),
+      oldProvinces(),
+      unionProvinces().map(feature =>
+        feature.properties.key === 'LSO'
+          ? { ...feature, geometry: { coordinates: [filled], type: 'Polygon' } }
+          : feature
+      )
+    );
+    const lesotho = today.features.filter(
+      f => f.properties.polity === 'lesotho'
+    );
+
+    expect(lesotho.map(f => f.geometry.coordinates)).toEqual([
+      [[filled]],
+      [[ring]],
+    ]);
+    expect(union.features.map(f => f.properties.polity)).not.toContain(
+      'lesotho'
+    );
   });
 
   it('stops when the source names differ from the expected Polities', () => {

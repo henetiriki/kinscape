@@ -492,22 +492,6 @@
     line-height: var(--type-control-line);
   }
 
-  /* Event chips are 44 tall on a phone; a removable chip and its × are 36. */
-  .phoneChips button[aria-pressed] {
-    border-radius: var(--radius-full);
-    height: var(--size-touch);
-  }
-
-  .phoneChips span:has(> button[aria-label^='Remove']) {
-    height: var(--size-chip);
-    padding-right: 0;
-  }
-
-  .phoneChips button[aria-label^='Remove'] {
-    height: var(--size-chip);
-    width: var(--size-chip);
-  }
-
   /* With 36 chips the field is 46 tall, as drawn. */
   .phoneChips [role='group'] {
     padding-block: 1px;

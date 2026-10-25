@@ -1,4 +1,4 @@
-/* A 36px pill with a 44px hit area */
+/* A 36px pill with a 44px hit area; 44px on a phone */
 
 .chip {
   composes: ring from './focus.module.css';
@@ -152,4 +152,21 @@
 
 .remove:disabled {
   cursor: default;
+}
+
+/* On a phone a chip is 44 tall; a removable chip and its × are 36. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .chip {
+    height: var(--size-touch);
+  }
+
+  .removable {
+    height: var(--size-chip);
+    padding-right: 0;
+  }
+
+  .remove {
+    height: var(--size-chip);
+    width: var(--size-chip);
+  }
 }

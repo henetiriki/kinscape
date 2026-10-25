@@ -68,6 +68,11 @@ I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 
 **Answer: A** (@henetiriki)
 
+## Deviations
+
+- `DateDock` takes `sheet={{ expanded, onExpandedChange }}`; Play, Jump to and the note show only when passed.
+- `e2e/design.spec.ts` accepts a text field's brand border as its focus mark.
+
 ## Files that change
 
 | File                                                                               | What                   |
@@ -86,8 +91,8 @@ I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 
 ## Risks
 
-- **The app's dock changes:** `MapShell` gets the new field and slider; e2e covers them. No `blocking` screen renders either.
-- **Marks off the thumb:** jsdom computes no CSS; tests read each mark's `--f`.
+- **The app's dock changes:** `MapShell` gets the field and slider; e2e covers them.
+- **Marks off the thumb:** jsdom has no CSS; tests read each mark's `--f`.
 
 ## Proof
 
@@ -103,4 +108,4 @@ I estimate 850 changed lines, 320 of them tests; the cap is about 600.
 
 ## Out of scope
 
-Wiring into `MapShell`; Play timers, epochs and contested counts; Play's pause look; dragging the sheet; board 08's drawing; tablet.
+Wiring into `MapShell`; Play timers, epochs, contested counts; Play's pause look; dragging the sheet; tablet.

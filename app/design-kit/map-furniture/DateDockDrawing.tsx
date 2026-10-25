@@ -1,11 +1,8 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { hatchStyle } from '@/app/components/hatch';
 
 import styles from './DateDockDrawing.module.css';
-
-const { map } = resolveTokens(rawTokens);
 
 const EPOCHS = [
   '1652',
@@ -87,12 +84,7 @@ export const DockDrawing = () => (
     aria-label='Map date'
     className={styles.dock}
     role='group'
-    style={
-      {
-        '--hatch-fill': map.polity['free-state'],
-        '--hatch-line': `color-mix(in srgb, ${map.hatch.colour} ${map.hatch.opacity * 100}%, transparent)`,
-      } as CSSProperties
-    }>
+    style={hatchStyle}>
     <div className={styles.firstRow}>
       <span className={styles.steps}>
         <Step path='M15 5l-7 7 7 7' />

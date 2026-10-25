@@ -49,15 +49,20 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
           ? active.parentElement!
           : active;
       const style = getComputedStyle(ringed);
+      // A text field has no ring: its box takes a 2px brand border.
+      const box =
+        active instanceof HTMLInputElement && active.type === 'text'
+          ? getComputedStyle(active.parentElement!)
+          : null;
 
       return {
-        colour: style.outlineColor,
-        offset: style.outlineOffset,
+        colour: box ? box.borderTopColor : style.outlineColor,
+        offset: box ? '2px' : style.outlineOffset,
         tag:
           document.activeElement!.tagName +
           '.' +
           document.activeElement!.className,
-        width: style.outlineWidth,
+        width: box ? box.borderTopWidth : style.outlineWidth,
       };
     });
 

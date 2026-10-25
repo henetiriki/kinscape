@@ -1,0 +1,8 @@
+.hints {
+  align-items: center;
+  color: var(--ink-3);
+  display: inline-flex;
+  font-size: var(--type-caption-size);
+  gap: var(--space-8);
+  line-height: var(--type-caption-line);
+}

@@ -1,0 +1,22 @@
+.note {
+  align-items: center;
+  color: var(--ink-2);
+  display: inline-flex;
+  font-size: var(--type-small-size);
+  gap: var(--space-8);
+  line-height: var(--type-small-line);
+}
+
+.swatch {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--hatch-line) 0 3px,
+    var(--hatch-fill) 3px 8px
+  );
+  border: 1px solid var(--ink-2);
+  border-radius: 2px;
+  box-sizing: border-box;
+  flex: none;
+  height: 14px;
+  width: 18px;
+}

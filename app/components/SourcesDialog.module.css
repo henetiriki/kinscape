@@ -67,6 +67,10 @@
   padding: var(--space-12) 0;
 }
 
+.line .date {
+  line-height: var(--type-mono-line);
+}
+
 .line {
   display: flex;
   flex-wrap: wrap;

@@ -115,21 +115,21 @@
     },
     {
       "height": 7362,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-7-components-surfaces-phone",
       "route": "/design-kit/surfaces",
       "width": 390
     },
     {
       "height": 4289,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-7-components-surfaces",
       "route": "/design-kit/surfaces",
       "width": 1440
     },
     {
       "height": 6845,
-      "mode": "report",
+      "mode": "blocking",
       "name": "style-7-components-surfaces-2-phone",
       "route": "/design-kit/surfaces?part=2",
       "width": 390

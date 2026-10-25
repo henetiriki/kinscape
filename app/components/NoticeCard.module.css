@@ -36,6 +36,7 @@
 }
 
 .card[data-size='large'] .icon {
+  color: var(--brand);
   margin-top: 0;
 }
 
@@ -44,6 +45,10 @@
   flex: 1;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+.card[data-size='large'] .text {
+  gap: var(--space-8);
 }
 
 .card[data-progress] .text {
@@ -91,7 +96,9 @@
 }
 
 .card[data-phone] .actions > button {
+  font-size: var(--type-control-size);
   height: var(--size-touch);
+  line-height: var(--type-control-line);
 }
 
 @media (max-width: 639.98px), (max-height: 499.98px) {
@@ -101,6 +108,8 @@
   }
 
   .card .actions > button {
+    font-size: var(--type-control-size);
     height: var(--size-touch);
+    line-height: var(--type-control-line);
   }
 }

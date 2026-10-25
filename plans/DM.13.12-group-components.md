@@ -62,6 +62,10 @@ Spec D5 names `Parts` and `Toggles`. Also: `Alert` (an `Icon` case), `Menu` (two
 - **`plans/README.md` (600 words):** at about 490, the rule stays under 110.
 - **`AGENTS.md`** is a CODEOWNERS path, so it needs the tech lead's review.
 
+## Deviations
+
+- The `design.test.ts` count is 55, not 54: the plan miscounted the `.tsx` components. The `composes` alias built without a fallback.
+
 ## Proof
 
 | Acceptance check                             | Proven by                                                    |

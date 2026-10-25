@@ -13,6 +13,14 @@ Leave out any section that would only say "none".
 
 <!-- 3–6 sentences: how the change will be made and why this way. -->
 
+## Components
+
+<!-- A screen plan only. Each part of the screen, and the existing component (with its folder) or "missing". -->
+
+| Part | Component |
+| ---- | --------- |
+|      |           |
+
 ## Decisions
 
 <!-- Each choice for the tech lead, in the format in docs/how-we-work.md › Decisions. -->

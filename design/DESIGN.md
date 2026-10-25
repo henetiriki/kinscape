@@ -80,7 +80,7 @@ Each HTML snapshot in `source/` is the source of its JPG. It holds written value
 | Public Sans         | 400, 500, 600, italic 400 and 500 | All UI text and every map label                         |
 | JetBrains Mono      | 400, 500                          | Dates, coordinates, keyboard hints, code. Ligatures off |
 
-Components set these styles with `<Text variant>` (`app/components/Text.tsx`); `/design-kit/type` shows them.
+Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`); `/design-kit/type` shows them.
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](#map-style)).
 
@@ -155,6 +155,20 @@ Shown with spacing and motion at `/design-kit/foundations`.
 | Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead                      |
 
 ## Components
+
+Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@/app/components/<folder>/<Name>`:
+
+| Folder       | Holds                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| `foundation` | Text, Icon, Surface, Divider, focus, controls                                                         |
+| `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint                               |
+| `forms`      | TextField, DateField, SelectField, TokenField, Checkbox, CheckboxField                                |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                |
+| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup, SourcesDialog                                         |
+| `map`        | What only the map uses: MapShell, DateDock, LayersPanel, Legend, Stage, Panel, Avatar, Wordmark, etc. |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero                                                        |
+
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.

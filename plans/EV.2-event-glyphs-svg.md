@@ -32,6 +32,9 @@
 | `app/design-kit/map-style/Preview.tsx`              | changed           | glyphs sample: Birth, Residence, Marriage, Death SVGs, 16px, `map.pin` fill and halo           |
 | `app/components/**/__tests__/*`                     | changed           | see Proof                                                                                      |
 | `design/DESIGN.md` › Event glyphs                   | changed           | each Event type with its SVG file, in order                                                    |
+| `design/source/*.html` (30), `design/*.jpg` (25)    | changed           | the Design agent's snapshots and rendered baselines for the 30 screens; not edited by hand     |
+| `design/source/kse-*.svg` (10)                      | new               | the Design agent's glyph files; Land and Occupation are the two beyond the Spec's eight        |
+| `design/screens.json`                               | changed           | sizes of the three screens whose snapshot height changed                                       |
 | `e2e/*.spec.ts`                                     | changed if needed | any counts or glyph text that break                                                            |
 
 The Spec issue body changes "eight" to "ten" and records D4 (`gh issue edit`).
@@ -70,4 +73,4 @@ The Spec issue body changes "eight" to "ten" and records D4 (`gh issue edit`).
 ## Deviations
 
 - 1em and `--pin` are proven by a unit test on the CSS module only; no e2e computed-style check.
-- The map-furniture "Facts" text and `design/screens.json` heights follow the new snapshots.
+- The map-furniture "Facts" text follows the new snapshots.

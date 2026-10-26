@@ -35,3 +35,8 @@ The audit's first line says, both labelled estimates at API prices: the cost of 
 ## Risks
 
 `modelUsage` and `cache_creation` are checked against run 40306375255's artifact before building; if absent, the fallbacks above apply.
+
+## Deviations
+
+- The artifact couldn't be downloaded in the build, so the `modelUsage` and `cache_creation` shapes are unchecked; the fallbacks cover their absence.
+- Both cost figures sit in a second paragraph after the first line, not in it.

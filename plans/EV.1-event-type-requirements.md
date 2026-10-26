@@ -2,7 +2,7 @@
 
 - **Spec:** #305 (Intent #302)
 - **Requirement IDs:** PIN-03, EXP-01, EXP-09
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The answers restore EXP-01, whose range pins name "land ownership", and say #304
 - **B.** Ten types: A's eight, plus land ownership and occupation after burial, where they were before #300. #302's check that neither is a type, and its Out of scope line, are reworded. #304 needs two more SVGs.
 - **Other:** your own.
 
-Recommended: B, because it matches "add back the two removed glyphs", and EXP-01 then names only real types.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

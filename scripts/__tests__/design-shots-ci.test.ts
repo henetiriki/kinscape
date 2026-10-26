@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { DesignShotsCiDeps } from '../types.ts';
+
 import {
   check,
-  type Deps,
   guard,
   parseStatus,
   run,
@@ -12,8 +13,8 @@ import {
 const status = (...entries: string[]) => entries.join('\0') + '\0';
 
 const deps = (porcelain: string) => ({
-  append: vi.fn<Deps['append']>(),
-  git: vi.fn<Deps['git']>(() => porcelain),
+  append: vi.fn<DesignShotsCiDeps['append']>(),
+  git: vi.fn<DesignShotsCiDeps['git']>(() => porcelain),
 });
 
 afterEach(() => {

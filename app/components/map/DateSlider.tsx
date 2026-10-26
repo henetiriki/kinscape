@@ -2,14 +2,13 @@
 
 import type { CSSProperties } from 'react';
 
+import type { Precision } from '@/lib/map/types';
+
 import { hatchStyle } from '@/app/components/map/hatch';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
-import {
-  dayFromSlider,
-  type Precision,
-  sliderMax,
-  sliderValue,
-} from '@/lib/map/map-date';
+import { dayFromSlider, sliderMax, sliderValue } from '@/lib/map/map-date';
+
+import type { ContestedYears } from './types';
 
 import styles from './DateSlider.module.css';
 
@@ -18,8 +17,6 @@ const LABEL_EVERY = 50;
 /** A year label closer than this to the end gives way to "Today". */
 const LABEL_GAP = 0.05;
 const SHIFT_STEPS = 10;
-
-export type ContestedYears = { from: number; to: number };
 
 /** Where a mark sits along the slider, 0 to 1, as the thumb would. */
 const at = (year: number, precision: Precision, lastDay: number): number => {

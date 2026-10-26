@@ -1,14 +1,11 @@
-import { toDay } from '../boundaries/model.mts';
-import { type Precision, shownDate } from './map-date';
+import type { Fix, Precision, Problem } from './types';
 
-export type Check =
+import { toDay } from '../boundaries/model.mts';
+import { shownDate } from './map-date';
+
+type Check =
   | { day: number; ok: true; precision: Precision }
   | { ok: false; problem: Problem };
-
-/** A one-click way out of a problem: the day to go to, shown at `precision`. */
-export type Fix = { day: number; label: string; precision: Precision };
-
-export type Problem = { fix?: Fix; message: string };
 
 const FORMAT = /^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?$/;
 

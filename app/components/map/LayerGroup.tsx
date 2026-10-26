@@ -1,11 +1,13 @@
-import { type ComponentProps, type ReactNode, useId } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
+
+import { useId } from 'react';
 
 import { CheckboxField } from '@/app/components/forms/CheckboxField';
 import { Text } from '@/app/components/foundation/Text';
 
 import styles from './LayerGroup.module.css';
 
-export type LayerRow = {
+type LayerRow = {
   checked: boolean;
   description?: ReactNode;
   disabled?: boolean;

@@ -1,16 +1,14 @@
 import type { ReactNode } from 'react';
 
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { SurfaceLevel } from '@/app/components/foundation/types';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 import { Button } from '@/app/components/actions/Button';
 import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
 import { NoticeCard } from '@/app/components/feedback/NoticeCard';
 import { ProgressBar } from '@/app/components/feedback/ProgressBar';
 import { Icon } from '@/app/components/foundation/Icon';
-import {
-  Surface,
-  type SurfaceLevel,
-} from '@/app/components/foundation/Surface';
+import { Surface } from '@/app/components/foundation/Surface';
 import { Avatar } from '@/app/components/map/Avatar';
 import { DialogPanel } from '@/app/components/overlays/Dialog';
 import { MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
@@ -21,10 +19,11 @@ import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import type { Column } from '../inputs/types';
+
 import {
   Accessibility,
   ByViewport,
-  type Column,
   Facts,
   Matrix,
   Measurements,

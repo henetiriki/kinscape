@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 
-import type { TextVariant } from '@/app/components/foundation/Text';
+import type { TextVariant } from '@/app/components/foundation/types';
 
 import { Text } from '@/app/components/foundation/Text';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import type { Label } from '../types';
+
 import rawTokens from '../../../design/tokens.json';
 import { boardTitle } from '../boards';
 import kit from '../kit.module.css';
-import { type Label, labelStyle } from '../mapLabels';
+import { labelStyle } from '../mapLabels';
 import styles from './page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('type') };

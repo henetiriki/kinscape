@@ -1,6 +1,8 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
+import type { Gh } from './types.ts';
+
 // Checks that run before a plan or build job spends a model run (see claude-run.yml):
 //   both:  stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
@@ -10,8 +12,6 @@ import { appendFileSync } from 'node:fs';
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT. On a stop it comments why. A plan stopped by
 // an open blocker also hands the Spec back as `status: blocked`; one stopped only by an open plan PR
 // keeps its label, so a repeated label event doesn't mark a planned Spec blocked.
-
-export type Gh = (args: string[], input?: string) => string;
 
 type Closing = { closingIssuesReferences: { number: number }[] };
 

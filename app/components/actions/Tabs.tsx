@@ -1,20 +1,12 @@
 'use client';
 
-import { type KeyboardEvent, useRef } from 'react';
+import type { KeyboardEvent } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import { useRef } from 'react';
+
+import type { Tab } from './types';
 
 import styles from './Tabs.module.css';
-
-export type Tab = {
-  /** The id of the tabpanel this tab shows; the panel belongs to the screen. */
-  controls?: string;
-  /** How many choices are active in the panel; shown as a badge when above 0. */
-  count?: number;
-  label: string;
-  state?: ControlState;
-  value: string;
-};
 
 export const Tabs = ({
   disabled,

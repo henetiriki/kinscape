@@ -7,6 +7,17 @@ import packageJson from 'eslint-plugin-package-json';
 import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
+const ARROW_FUNCTIONS = [
+  {
+    message: 'Use an arrow function assigned to a const.',
+    selector: 'FunctionDeclaration',
+  },
+  {
+    message: 'Use an arrow function.',
+    selector: 'FunctionExpression',
+  },
+];
+
 export default defineConfig([
   globalIgnores([
     '.claude-pr/**',
@@ -36,22 +47,38 @@ export default defineConfig([
           prev: ['const', 'let', 'var'],
         },
       ],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { fixStyle: 'separate-type-imports' },
+      ],
       '@typescript-eslint/no-unused-vars': 'error',
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'import/no-default-export': 'error',
       'import/no-unresolved': ['error', { ignore: [String.raw`\.css$`] }],
-      'no-restricted-syntax': [
-        'error',
-        {
-          message: 'Use an arrow function assigned to a const.',
-          selector: 'FunctionDeclaration',
-        },
-        {
-          message: 'Use an arrow function.',
-          selector: 'FunctionExpression',
-        },
-      ],
       'prefer-arrow-callback': 'error',
     },
+  },
+  {
+    files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
+    ignores: ['**/types.ts', 'types/*.d.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        ...ARROW_FUNCTIONS,
+        {
+          message: 'Export types from the folder’s types.ts.',
+          selector: 'ExportNamedDeclaration > TSTypeAliasDeclaration',
+        },
+        {
+          message: 'Export types from the folder’s types.ts.',
+          selector: 'ExportNamedDeclaration > TSInterfaceDeclaration',
+        },
+      ],
+    },
+  },
+  {
+    files: ['**/types.ts', 'types/*.d.ts'],
+    rules: { 'no-restricted-syntax': ['error', ...ARROW_FUNCTIONS] },
   },
   {
     // Next.js, Playwright and tool config loaders require a default export here, and

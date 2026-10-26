@@ -3,8 +3,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { Gh } from '../types.ts';
+
 import {
-  type Gh,
   ISSUE_TITLE,
   issueBody,
   readPin,

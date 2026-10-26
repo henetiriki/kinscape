@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  type BoundaryData,
-  boundaryOn,
-  fromDay,
-  nameOn,
-  toDay,
-} from '../model.mts';
+import type { BoundaryData } from '../types.ts';
+
+import { boundaryOn, fromDay, nameOn, toDay } from '../model.mts';
 
 const geometry = {
   coordinates: [

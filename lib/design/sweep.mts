@@ -1,7 +1,7 @@
 /** The design sweep: holds `design/screens.json` to one entry per built snapshot image. */
 import { shotFor } from './shots.mts';
 
-export type Size = { height: number; width: number };
+type Size = { height: number; width: number };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);

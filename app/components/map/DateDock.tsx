@@ -1,24 +1,25 @@
 'use client';
 
-import { type ComponentProps, useEffect, useState } from 'react';
+import type { ComponentProps } from 'react';
+
+import { useEffect, useState } from 'react';
+
+import type { ContestedYears, Epoch } from '@/app/components/map/types';
+import type { Precision } from '@/lib/map/types';
 
 import { IconButton } from '@/app/components/actions/IconButton';
 import { Segmented } from '@/app/components/actions/Segmented';
 import { DateField } from '@/app/components/forms/DateField';
 import { ContestedNote } from '@/app/components/map/ContestedNote';
 import { DateKeyHints } from '@/app/components/map/DateKeyHints';
-import {
-  type ContestedYears,
-  DateSlider,
-} from '@/app/components/map/DateSlider';
-import { type Epoch, JumpTo } from '@/app/components/map/JumpTo';
+import { DateSlider } from '@/app/components/map/DateSlider';
+import { JumpTo } from '@/app/components/map/JumpTo';
 import { PlayButton } from '@/app/components/map/PlayButton';
 import { BottomSheet } from '@/app/components/overlays/BottomSheet';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
 import {
   finerPrecision,
   MIN_DAY,
-  type Precision,
   PRECISIONS,
   stepDay,
 } from '@/lib/map/map-date';

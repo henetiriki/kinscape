@@ -1,17 +1,17 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import {
-  type BoundaryData,
-  type BoundaryVersion,
-  fromDay,
-  type Polity,
-  type PolityName,
-  type Source,
-  toDay,
-} from './model.mts';
+import type {
+  BoundaryData,
+  BoundaryVersion,
+  Polity,
+  PolityName,
+  Source,
+} from './types.ts';
 
-export type LoadResult = { data: BoundaryData; errors: string[] };
+import { fromDay, toDay } from './model.mts';
+
+type LoadResult = { data: BoundaryData; errors: string[] };
 
 type Row = Record<string, unknown>;
 

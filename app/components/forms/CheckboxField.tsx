@@ -1,6 +1,8 @@
-import { type ComponentProps, type ReactNode, useId } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import { useId } from 'react';
+
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { Checkbox } from '@/app/components/forms/Checkbox';
 

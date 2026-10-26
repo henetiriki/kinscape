@@ -2,8 +2,10 @@ import type { Reporter, TestCase } from '@playwright/test/reporter';
 
 import { appendFileSync } from 'node:fs';
 
+import type { Result } from '../lib/design/types.ts';
+
 import config from '../design/screens.json' with { type: 'json' };
-import { type Result, summarise } from '../lib/design/check.mts';
+import { summarise } from '../lib/design/check.mts';
 
 /** Writes the design check table to the job summary (and the terminal). */
 export default class DesignReporter implements Reporter {

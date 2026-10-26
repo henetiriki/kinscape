@@ -1,10 +1,8 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 
-import {
-  inlineCode,
-  parseTranscript,
-  type Transcript,
-} from './agent-transcript.mts';
+import type { Transcript } from './types.ts';
+
+import { inlineCode, parseTranscript } from './agent-transcript.mts';
 
 // Writes a Claude run's summary page from its transcript. GitHub lists no steps for a job in a
 // called workflow, and claude.yml's log ends where Claude starts, so this is what the run page shows.

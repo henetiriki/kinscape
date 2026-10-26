@@ -1,8 +1,10 @@
 'use client';
 
-import { type ReactNode, useId, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import { useId, useRef, useState } from 'react';
+
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { RemovableChip } from '@/app/components/actions/Chip';
 import { Text } from '@/app/components/foundation/Text';

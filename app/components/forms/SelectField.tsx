@@ -1,6 +1,8 @@
-import { type ComponentProps, useId } from 'react';
+import type { ComponentProps } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import { useId } from 'react';
+
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { Icon } from '@/app/components/foundation/Icon';
 import { Text } from '@/app/components/foundation/Text';

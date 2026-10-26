@@ -1,21 +1,8 @@
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import type { Label } from './types';
+
 import rawTokens from '../../design/tokens.json';
-
-export type Label = {
-  caps?: boolean;
-  italic?: boolean;
-  key: LabelKey;
-  weight: 400 | 500 | 600;
-};
-
-export type LabelKey =
-  | 'contested-label'
-  | 'context-label'
-  | 'place-label'
-  | 'polity-label'
-  | 'river-label'
-  | 'water-label';
 
 const { map } = resolveTokens(rawTokens);
 

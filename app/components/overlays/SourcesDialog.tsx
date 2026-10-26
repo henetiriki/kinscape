@@ -1,6 +1,6 @@
 'use client';
 
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 import { TextLink } from '@/app/components/actions/TextLink';
 import { Text } from '@/app/components/foundation/Text';

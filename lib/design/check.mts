@@ -1,24 +1,17 @@
 /** The design check: validates `design/screens.json`, compares pixels outside the mask, summarises. */
 import pixelmatch from 'pixelmatch';
 
-export type Area = { height: number; width: number; x: number; y: number };
+import type { Outcome, Result } from './types.ts';
 
-export type Config = { screens: Screen[]; threshold: number };
+type Area = { height: number; width: number; x: number; y: number };
 
-export type Known = { snapshots: string[]; states: string[] };
+type Config = { screens: Screen[]; threshold: number };
 
-export type Outcome = 'blocked' | 'matches';
+type Known = { snapshots: string[]; states: string[] };
 
-export type Result = {
-  differing: number;
-  name: string;
-  outcome: Outcome;
-  percent: number;
-};
+type Score = { diff: Uint8Array; differing: number; percent: number };
 
-export type Score = { diff: Uint8Array; differing: number; percent: number };
-
-export type Screen = {
+type Screen = {
   height: number;
   ignore: Area[];
   mode: 'blocking';

@@ -1,4 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
+
+import { expect, test } from '@playwright/test';
 
 test('the page loads and the map canvas renders', async ({ page }) => {
   const errors: Error[] = [];

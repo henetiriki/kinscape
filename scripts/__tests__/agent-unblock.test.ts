@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { type Gh, run } from '../agent-unblock.mts';
+import type { Gh } from '../types.ts';
+
+import { run } from '../agent-unblock.mts';
 
 const ENV = { GH_OWNER: 'tech-lead', GH_REPO: 'owner/repo' };
 

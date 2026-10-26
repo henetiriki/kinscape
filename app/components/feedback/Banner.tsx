@@ -1,4 +1,6 @@
-import { Icon, type IconName } from '@/app/components/foundation/Icon';
+import type { IconName } from '@/app/components/foundation/types';
+
+import { Icon } from '@/app/components/foundation/Icon';
 
 import styles from './Toast.module.css';
 

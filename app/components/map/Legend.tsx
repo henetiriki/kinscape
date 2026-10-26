@@ -1,7 +1,9 @@
 import type { CSSProperties } from 'react';
 
+import type { EventType } from '@/app/components/map/types';
+
 import { Text } from '@/app/components/foundation/Text';
-import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
+import { EventGlyph } from '@/app/components/map/EventGlyph';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 

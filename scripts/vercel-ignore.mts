@@ -18,7 +18,7 @@ const INVISIBLE = [
   /^(?:vitest\.config\.mts|vitest\.setup\.ts|playwright\.config\.ts|codecov\.yml)$/,
 ];
 
-export type Get = (
+type Get = (
   url: string,
   init: { headers: Record<string, string> }
 ) => Promise<{ json: () => Promise<unknown>; ok: boolean; status: number }>;

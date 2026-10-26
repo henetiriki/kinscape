@@ -1,10 +1,8 @@
 'use client';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { Segment } from './types';
 
 import styles from './Segmented.module.css';
-
-export type Segment = { label: string; state?: ControlState; value: string };
 
 /** One choice from a few, as radios: the arrow keys move the choice. */
 export const Segmented = ({

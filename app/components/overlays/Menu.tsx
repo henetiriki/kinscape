@@ -1,29 +1,18 @@
 'use client';
 
-import {
-  type KeyboardEvent,
-  type Ref,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import type { KeyboardEvent, Ref } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import { useEffect, useRef, useState } from 'react';
 
-import { Icon, type IconName } from '@/app/components/foundation/Icon';
+import type { ControlState } from '@/app/components/foundation/types';
+
+import { Icon } from '@/app/components/foundation/Icon';
 import { Surface } from '@/app/components/foundation/Surface';
 import { Avatar } from '@/app/components/map/Avatar';
 
-import styles from './Menu.module.css';
+import type { MenuEntry } from './types';
 
-export type MenuEntry = {
-  detail?: string;
-  /** Stays in the arrow-key order but does nothing. */
-  disabled?: boolean;
-  icon: IconName;
-  id: string;
-  label: string;
-};
+import styles from './Menu.module.css';
 
 /** One row: an icon and a label, with a second line if `detail` is set. A look when `state` is. */
 export const MenuItem = ({

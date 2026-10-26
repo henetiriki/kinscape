@@ -1,6 +1,6 @@
 import { join } from 'node:path';
 
-import type { BoundaryData } from './model.mts';
+import type { BoundaryData } from './types.ts';
 
 import { loadBoundaryData } from './load.mts';
 

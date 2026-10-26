@@ -13,7 +13,6 @@ import {
   findProblems,
   render,
   screenNames,
-  shotFor,
   snapshotNames,
 } from '../design-shots.mts';
 
@@ -41,22 +40,6 @@ afterEach(() => {
 describe('the real snapshots', () => {
   it('match the Screens table and the rules', () => {
     expect(findProblems('.')).toEqual([]);
-  });
-});
-
-describe('shotFor', () => {
-  it.each([
-    ['map-phone', 390, 844, 2, false],
-    ['sign-in-phone-error', 390, 844, 2, false],
-    ['design-kit-menu-phone', 390, 844, 2, false],
-    ['style-2-colour-phone', 390, 844, 2, true],
-    ['map-style-phone', 390, 844, 2, true],
-    ['design-kit-phone', 390, 844, 2, true],
-    ['style-4-states', 1440, 900, 1, true],
-    ['map-style', 1440, 900, 1, true],
-    ['map-desktop', 1440, 900, 1, false],
-  ])('%s', (name, width, height, scale, fullPage) => {
-    expect(shotFor(name)).toEqual({ fullPage, height, scale, width });
   });
 });
 

@@ -31,7 +31,8 @@ The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so 
 
 **D4 · Finding files** · Decides: Tech lead
 
-- **A.** Use `git ls-files -co --exclude-standard '<glob>'`, allowed by `Bash(git:*)`.- ~~**B.** Allow `find`, deny `-exec`, `-delete`, `-fprint*`.~~
+- **A.** Use `git ls-files -co --exclude-standard '<glob>'`, allowed by `Bash(git:*)`.
+- ~~**B.** Allow `find`, deny `-exec`, `-delete`, `-fprint*`.~~
 
 **Answer: A** (@henetiriki)
 

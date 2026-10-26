@@ -2,7 +2,7 @@
 
 - **Spec:** #297
 - **Requirement IDs:** PIN-03, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ PIN-03 lists land ownership and occupation and no divorce. Requirements change o
 - **B.** This Bug does all of it: eight Event types, and the kit's "nine" becomes "eight". You file an Intent for PIN-03 alongside, and the PR waits for it.
 - **Other:** your own.
 
-Recommended: A, because it fixes the glyphs now without changing a requirement outside an Intent.
+**Answer: B** (@henetiriki)
 
 **D2 · Residence glyph** · Decides: PO
 
@@ -28,7 +28,7 @@ The issue says to keep `▪` U+25AA, but today's glyph is `■` U+25A0.
 - **B.** Keep `■` U+25A0.
 - **Other:** your own.
 
-Recommended: A, because the issue gives `▪` and U+25AA every time, and the small square matches the weight of the new text glyphs.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 
@@ -65,6 +65,11 @@ Recommended: A, because the issue gives `▪` and U+25AA every time, and the sma
 | Kit boards match their snapshots             | `npm run design:check`                                     |
 | `/design-kit/map-furniture` shows the glyphs | Preview check by the PO; desktop and phone shots in the PR |
 | Lint, tests (100%), validator and e2e pass   | Their output in the PR                                     |
+
+## Deviations
+
+- `map-furniture/page.module.css`: the glyph grid has 8 columns, not 9.
+- The kit's chip row has three on, not four, since Land (on) is gone.
 
 ## Out of scope
 

@@ -53,9 +53,8 @@ const NAMES: Record<EventType, string> = {
   birth: 'Birth',
   burial: 'Burial',
   death: 'Death',
-  land: 'Land',
+  divorce: 'Divorce',
   marriage: 'Marriage',
-  occupation: 'Occupation',
   other: 'Other',
   residence: 'Residence',
 };
@@ -329,10 +328,9 @@ const BOARD_ORDER: EventType[] = [
   'baptism',
   'residence',
   'marriage',
+  'divorce',
   'death',
   'burial',
-  'land',
-  'occupation',
   'other',
 ];
 
@@ -342,7 +340,7 @@ export const EventGlyphs = () => (
     part={2}
     title='Event glyphs'>
     <Variants>
-      <Variant caption='All nine at 12, 14 and 16, in pin. Each event keeps its shape everywhere, so colour never carries the meaning alone.'>
+      <Variant caption='All eight at 12, 14 and 16, in pin. Each event keeps its shape everywhere, so colour never carries the meaning alone.'>
         <DesktopOnly>
           <div className={styles.glyphGrid}>
             {BOARD_ORDER.map(type => (
@@ -404,7 +402,7 @@ export const EventGlyphs = () => (
         ],
         [
           'Shapes',
-          'Filled and open pairs (● ○, ■ □) differ in shape, not only colour, so they hold up in greyscale (NFR-06).',
+          'Each event has its own character (* ∞ % † ~ ⚰ ▪ •), so meaning never rests on colour alone and holds up in greyscale (NFR-06).',
         ],
       ]}
       label='Event glyphs'
@@ -417,7 +415,7 @@ export const EventGlyphs = () => (
         ],
         [
           'Font',
-          'Unicode characters set in Public Sans; the browser falls back for ✚ ✱ ▼ ▲ where Public Sans lacks them',
+          'Unicode characters set in Public Sans; the browser falls back for ∞ † ⚰ ▪ where Public Sans lacks them',
           'font.body',
         ],
         [

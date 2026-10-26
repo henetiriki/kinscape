@@ -13,7 +13,7 @@ const OPTIONS = (Object.keys(EVENT_GLYPHS) as EventType[]).map(glyph => ({
 }));
 
 // EXP-03
-it('is a group of nine toggle chips, each with its glyph and aria-pressed', () => {
+it('is a group of eight toggle chips, each with its glyph and aria-pressed', () => {
   const onToggle = vi.fn();
 
   render(
@@ -28,7 +28,7 @@ it('is a group of nine toggle chips, each with its glyph and aria-pressed', () =
 
   const chips = screen.getAllByRole('button');
 
-  expect(chips).toHaveLength(9);
+  expect(chips).toHaveLength(8);
   expect(chips.map(chip => chip.getAttribute('aria-pressed'))).toEqual(
     OPTIONS.map(({ value }) => String(value === 'birth'))
   );

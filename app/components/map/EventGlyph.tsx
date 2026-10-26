@@ -4,18 +4,17 @@ import styles from './EventGlyph.module.css';
 
 /** The character for each Event type (DESIGN.md › Event glyphs). */
 export const EVENT_GLYPHS = {
-  baptism: '○',
-  birth: '●',
-  burial: '▼',
-  death: '✚',
-  land: '□',
-  marriage: '◆',
-  occupation: '▲',
-  other: '✱',
-  residence: '■',
+  baptism: '~',
+  birth: '*',
+  burial: '⚰',
+  death: '†',
+  divorce: '%',
+  marriage: '∞',
+  other: '•',
+  residence: '▪',
 } as const;
 
-// U+FE0E asks for the text form, so ✚ and ✱ never draw as emoji.
+// U+FE0E asks for the text form, so ⚰ and ▪ never draw as emoji.
 const TEXT_FORM = '︎';
 
 /** An Event type's glyph in `--pin`. Decorative: the Event's name sits beside it. */

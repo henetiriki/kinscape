@@ -116,16 +116,16 @@ it('names the Wordmark icons: decoration beside the name, "KinScape" alone', asy
   expect(region.getAllByText('KinScape')).toHaveLength(3);
 });
 
-it('shows all nine Event glyphs at three sizes, and the four-glyph row in the Legend', async () => {
+it('shows all eight Event glyphs at three sizes, and the four-glyph row in the Legend', async () => {
   await show();
 
   const glyphs = within(screen.getByRole('region', { name: 'Event glyphs' }));
 
   expect(
     glyphs.getAllByText(
-      /^(Baptism|Birth|Burial|Death|Land|Marriage|Occupation|Other|Residence)$/
+      /^(Baptism|Birth|Burial|Death|Divorce|Marriage|Other|Residence)$/
     ).length
-  ).toBeGreaterThanOrEqual(9);
+  ).toBeGreaterThanOrEqual(8);
   expect(
     within(screen.getByRole('region', { name: 'Legend' })).getAllByRole(
       'heading',

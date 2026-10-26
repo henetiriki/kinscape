@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Transcript } from '../agent-transcript.mts';
+import type { Transcript } from '../types.ts';
 
 import { formatDuration, render, run } from '../run-summary.mts';
 

@@ -1,5 +1,7 @@
 import { execFileSync } from 'node:child_process';
 
+import type { Gh } from './types.ts';
+
 // Runs when an issue closes (claude-unblock.yml). For each issue it was blocking (GitHub's "blocked
 // by" links) that has no other open blocker left:
 //   - labelled `status: blocked`: say so, mention the repo owner, and swap the label for
@@ -7,8 +9,6 @@ import { execFileSync } from 'node:child_process';
 //   - with an open PR that closes it (a plan PR whose build the gate stopped): comment on the PR
 // Usage: node scripts/agent-unblock.mts <closed issue number>, with GH_REPO and GH_OWNER set.
 // An https RUN_URL, if set, is linked at the end of each comment.
-
-export type Gh = (args: string[], input?: string) => string;
 
 type Linked = { labels?: { name: string }[]; number: number; state: string };
 

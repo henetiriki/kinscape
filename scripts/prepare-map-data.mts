@@ -1,6 +1,8 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
+import type { PrepareMapDataDeps } from './types.ts';
+
 import { toDay } from '../lib/boundaries/model.mts';
 
 // Pinned releases: bump the tag, run `npm run map:prepare`, review the diff.
@@ -113,19 +115,6 @@ export const POLITY_IDS: Record<string, string> = {
   'North West': 'north-west',
   SWZ: 'eswatini',
   'Western Cape': 'western-cape',
-};
-
-export type Deps = {
-  applyCommands: (
-    commands: string,
-    input: Record<string, string | Uint8Array>
-  ) => Promise<Record<string, string | Uint8Array>>;
-  download: (url: string) => Promise<Uint8Array>;
-  glyphRange: (
-    font: Uint8Array,
-    start: number,
-    end: number
-  ) => Promise<Uint8Array>;
 };
 
 type Feature = {
@@ -351,7 +340,10 @@ export const boundaryVersions = (
 };
 
 /** Downloads Natural Earth, afrith's 1910 provinces and Public Sans, then writes the committed map data under `root`. */
-export const prepare = async (root: string, deps: Deps): Promise<void> => {
+export const prepare = async (
+  root: string,
+  deps: PrepareMapDataDeps
+): Promise<void> => {
   const input: Record<string, string | Uint8Array> = {};
 
   for (const layer of LAYERS) {

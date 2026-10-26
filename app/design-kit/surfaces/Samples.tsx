@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 import { Toast } from '@/app/components/feedback/Toast';
 import { Menu } from '@/app/components/overlays/Menu';

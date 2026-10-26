@@ -7,11 +7,11 @@ import type {
   Polity,
   PolityName,
   Source,
-} from './model.mts';
+} from './types.ts';
 
 import { fromDay, toDay } from './model.mts';
 
-export type LoadResult = { data: BoundaryData; errors: string[] };
+type LoadResult = { data: BoundaryData; errors: string[] };
 
 type Row = Record<string, unknown>;
 

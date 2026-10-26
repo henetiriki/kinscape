@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from 'react';
 
-import type { Precision } from '@/lib/map/map-date';
+import type { Precision } from '@/lib/map/types';
 
 import { hatchStyle } from '@/app/components/map/hatch';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';

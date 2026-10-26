@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
 

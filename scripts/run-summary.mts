@@ -1,6 +1,6 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 
-import type { Transcript } from './agent-transcript.mts';
+import type { Transcript } from './types.ts';
 
 import { inlineCode, parseTranscript } from './agent-transcript.mts';
 

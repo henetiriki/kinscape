@@ -1,11 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-export type Deps = {
-  append: (file: string, text: string) => void;
-  /** Runs git with the given arguments and returns its output. */
-  git: (args: string[]) => string;
-};
+import type { DesignShotsCiDeps } from './types.ts';
 
 type Env = Record<string, string | undefined>;
 
@@ -57,7 +53,7 @@ export const summary = (jpgs: string[]): string =>
  * Fails when anything but `design/*.jpg` changed. Writes the summary to `SUMMARY_FILE` and
  * `changed=<count>` to `OUTPUT_FILE`, when set.
  */
-export const check = (env: Env, deps: Deps): number => {
+export const check = (env: Env, deps: DesignShotsCiDeps): number => {
   const { jpgs, other } = parseStatus(
     deps.git(['status', '--porcelain', '-z', '--untracked-files=all'])
   );
@@ -80,7 +76,11 @@ export const check = (env: Env, deps: Deps): number => {
 };
 
 /** Runs `guard` (on `REF`) or `check`; returns the exit code. */
-export const run = (command: string, env: Env, deps: Deps): number => {
+export const run = (
+  command: string,
+  env: Env,
+  deps: DesignShotsCiDeps
+): number => {
   if (command === 'check') {
     return check(env, deps);
   }

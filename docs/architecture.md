@@ -38,7 +38,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 
 ## Enforcement
 
-- **Lint** (`eslint.config.mjs`): arrow functions only, no default exports outside Next.js files, sorted keys and imports, accessibility rules, full-path imports of components, type imports on their own `import type` line.
+- **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, full-path imports of components, type imports on their own `import type` line.
 - **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
 - **Not enforced:** which layer may import which. `app/components/{map,forms,overlays,auth}` import `lib/`, and `../` imports are allowed outside components.
 

@@ -1,9 +1,7 @@
-import type { BoundaryData } from '../boundaries/model.mts';
+import type { BoundaryData } from '../boundaries/types.ts';
+import type { Span } from './types';
 
 import { isCurrentOn } from '../boundaries/model.mts';
-
-/** A run of days with a Boundary version. `validTo` is exclusive; null = still current. */
-export type Span = { validFrom: number; validTo: null | number };
 
 /** The days that have a Boundary version, as sorted spans that touch or overlap merged. */
 export const boundaryCoverage = (data: BoundaryData): Span[] => {

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh } from '../agent-gate.mts';
+import type { Gh } from '../types.ts';
 
 import { run } from '../agent-gate.mts';
 

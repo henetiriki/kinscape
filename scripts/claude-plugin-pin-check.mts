@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-export type Gh = (args: string[]) => string;
+import type { Gh } from './types.ts';
 
 type Commit = { date: string; message: string; sha: string };
 

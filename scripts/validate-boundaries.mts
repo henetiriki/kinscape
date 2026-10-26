@@ -3,10 +3,7 @@ import { featureCollection, multiPolygon } from '@turf/helpers';
 import { intersect } from '@turf/intersect';
 import { kinks } from '@turf/kinks';
 
-import type {
-  BoundaryData,
-  BoundaryVersion,
-} from '../lib/boundaries/model.mts';
+import type { BoundaryData, BoundaryVersion } from '../lib/boundaries/types.ts';
 
 import { loadBoundaryData } from '../lib/boundaries/load.mts';
 import { fromDay } from '../lib/boundaries/model.mts';

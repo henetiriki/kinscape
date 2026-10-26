@@ -2,8 +2,7 @@ import { existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Transcript } from '../agent-transcript.mts';
-import type { Gh } from '../denial-audit.mts';
+import type { Gh, Transcript } from '../types.ts';
 
 import {
   artifactReader,

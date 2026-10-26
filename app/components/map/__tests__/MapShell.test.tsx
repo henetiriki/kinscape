@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 import { toDay } from '@/lib/boundaries/model.mts';
 import { dayOf } from '@/lib/map/filter';

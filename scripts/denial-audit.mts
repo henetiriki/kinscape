@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { Denial, Transcript } from './agent-transcript.mts';
+import type { Denial, Gh, Transcript } from './types.ts';
 
 import { inlineCode, parseTranscript } from './agent-transcript.mts';
 
@@ -11,8 +11,6 @@ import { inlineCode, parseTranscript } from './agent-transcript.mts';
 // date with the permission denials that repeat, so the allowlist and the rules follow what the
 // agents really try. Does nothing when no denial repeats. Run weekly by claude-denial-audit.yml.
 // Usage: node scripts/denial-audit.mts, with GH_REPO set.
-
-export type Gh = (args: string[], input?: string) => string;
 
 type Deps = {
   gh: Gh;

@@ -1,7 +1,7 @@
 # Plan: C294: Enforce `import type` for type imports and document where types live
 
 - **Spec:** #294
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Add both rules at `error` to the existing `**/*.{js,jsx,mjs,mts,ts,tsx}` block; 
 - **B.** `types.mts` in `.mts` folders, `types.ts` elsewhere.
 - **Other:** your own.
 
-Recommended: A, because one name is easier to find and lint.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -62,7 +62,7 @@ const PREVIEWS: Record<
   },
   district: { style: { background: stripe(map.district.colour, 17, 1) } },
   glyphs: {
-    content: '●■◆✚',
+    content: '*▪∞†',
     style: label(map.land, '16px var(--font-body)', map.pin.colour, 4),
   },
   halo: {

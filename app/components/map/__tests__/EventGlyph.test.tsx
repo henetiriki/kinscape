@@ -1,46 +1,62 @@
 import { render } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { EVENT_GLYPHS, EventGlyph } from '@/app/components/map/EventGlyph';
+import {
+  EVENT_ORDER,
+  EVENT_PATHS,
+  EventGlyph,
+} from '@/app/components/map/EventGlyph';
+
+const css = readFileSync(
+  join(import.meta.dirname, '../EventGlyph.module.css'),
+  'utf8'
+);
 
 // NFR-06
-it.each(Object.entries(EVENT_GLYPHS))(
-  'draws the %s glyph in text form, hidden from assistive tech',
-  (event, glyph) => {
-    const { container } = render(
-      <EventGlyph event={event as keyof typeof EVENT_GLYPHS} size={16} />
+it.each(EVENT_ORDER)(
+  'draws the %s glyph as one currentColor path in a 24 by 24 box, hidden from assistive tech',
+  event => {
+    const { container } = render(<EventGlyph event={event} />);
+    const svg = container.querySelector('svg')!;
+
+    expect(svg.getAttribute('viewBox')).toBe('0 0 24 24');
+    expect(svg.getAttribute('fill')).toBe('currentColor');
+    expect(svg.getAttribute('aria-hidden')).toBe('true');
+    expect(svg.dataset.event).toBe(event);
+    expect(svg.querySelectorAll('path')).toHaveLength(1);
+    expect(svg.querySelector('path')!.getAttribute('d')).toBe(
+      EVENT_PATHS[event]
     );
-
-    const span = container.querySelector('span')!;
-
-    expect(span.textContent).toBe(`${glyph}︎`);
-    expect(span.getAttribute('aria-hidden')).toBe('true');
-    expect(span.style.fontSize).toBe('16px');
+    expect(container.textContent).toBe('');
   }
 );
 
-it('uses the code points the design lists for each Event type', () => {
-  expect(
-    Object.fromEntries(
-      Object.entries(EVENT_GLYPHS).map(([event, glyph]) => [
-        event,
-        glyph.codePointAt(0),
-      ])
-    )
-  ).toEqual({
-    baptism: 0x7e,
-    birth: 0x2a,
-    burial: 0x26b0,
-    death: 0x2020,
-    divorce: 0x25,
-    marriage: 0x221e,
-    other: 0x2022,
-    residence: 0x25aa,
-  });
+it('lists every Event type once, in the order the design draws them', () => {
+  expect(EVENT_ORDER).toEqual([
+    'birth',
+    'baptism',
+    'residence',
+    'marriage',
+    'divorce',
+    'death',
+    'burial',
+    'land',
+    'occupation',
+    'other',
+  ]);
+  expect([...EVENT_ORDER].sort()).toEqual(Object.keys(EVENT_PATHS).sort());
 });
 
-it('sizes a glyph 14 unless told', () => {
-  const { container } = render(<EventGlyph event='birth' />);
+it('sizes a glyph 1em square in --pin, so it follows the text around it', () => {
+  const rule = css.slice(css.indexOf('.glyph'));
 
-  expect(container.querySelector('span')!.style.fontSize).toBe('14px');
+  expect(rule).toContain('color: var(--pin)');
+  expect(rule).toContain('height: 1em');
+  expect(rule).toContain('width: 1em');
+  expect(
+    render(<EventGlyph event='birth' />).container.querySelector('svg')!
+      .classList
+  ).toContain('glyph');
 });

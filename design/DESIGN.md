@@ -245,13 +245,20 @@ NFR-08 requires every source to be credited in the app. The design fixes the for
 
 ## Event glyphs
 
-| Event     | Glyph | Event      | Glyph |
-| --------- | ----- | ---------- | ----- |
-| Birth     | \*    | Death      | †     |
-| Marriage  | ∞     | Baptism    | ~     |
-| Divorce   | %     | Burial     | ⚰     |
-| Residence | ▪     | Other      | •     |
-| Land      | □     | Occupation | ▲     |
+Each Event type is one 24 × 24 path in `design/source/`, filled `currentColor` (`--pin`), 1em square, in this order everywhere. `EventGlyph` copies the paths; a test keeps them in step.
+
+| Event      | SVG                           |
+| ---------- | ----------------------------- |
+| Birth      | `kse-birth.svg`               |
+| Baptism    | `kse-baptism-christening.svg` |
+| Residence  | `kse-residence.svg`           |
+| Marriage   | `kse-marriage.svg`            |
+| Divorce    | `kse-divorce.svg`             |
+| Death      | `kse-death.svg`               |
+| Burial     | `kse-burial.svg`              |
+| Land       | `kse-land.svg`                |
+| Occupation | `kse-occupation.svg`          |
+| Other      | `kse-other.svg`               |
 
 On the map these are SDF icons in `--pin`, with a 2px white halo.
 

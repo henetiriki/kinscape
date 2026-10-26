@@ -128,9 +128,9 @@ it('shows every button form, field form and chip', async () => {
 
   const chips = within(screen.getByRole('region', { name: 'Chips' }));
 
-  // Eight event chips (three on) plus one chip in each of the five states.
+  // Ten event chips (three on) plus one chip in each of the five states.
   expect(chips.getAllByRole('button', { pressed: true })).toHaveLength(8);
-  expect(chips.getAllByRole('button', { pressed: false })).toHaveLength(10);
+  expect(chips.getAllByRole('button', { pressed: false })).toHaveLength(12);
 
   expect(
     within(screen.getByRole('region', { name: 'Tabs' })).getAllByRole('tab', {

@@ -29,7 +29,8 @@ it('leads a chip with its glyph, and names it by its label', () => {
 
   const chip = screen.getByRole('button', { name: 'Death' });
 
-  expect(chip.querySelector('[data-event="death"]')).toBeTruthy();
+  expect(chip.firstElementChild?.getAttribute('data-event')).toBe('death');
+  expect(chip.textContent).toBe('Death');
 });
 
 it('removes a chip with a × named for it', () => {

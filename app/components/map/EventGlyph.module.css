@@ -1,6 +1,8 @@
 .glyph {
   color: var(--pin);
+  display: inline-block;
   flex: none;
-  font-family: var(--font-body);
-  line-height: 1;
+  height: 1em;
+  vertical-align: -0.125em;
+  width: 1em;
 }

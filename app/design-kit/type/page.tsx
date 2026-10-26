@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import type { TextVariant } from '@/app/components/foundation/Text';
+import type { TextVariant } from '@/app/components/foundation/types';
 
 import { Text } from '@/app/components/foundation/Text';
 import { resolveTokens } from '@/lib/design/tokens.mts';

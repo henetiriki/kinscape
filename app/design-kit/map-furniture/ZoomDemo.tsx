@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { ZoomControls } from '@/app/components/map/ZoomControls';
 

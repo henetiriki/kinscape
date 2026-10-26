@@ -4,7 +4,7 @@ import type { KeyboardEvent } from 'react';
 
 import { useRef } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { ControlState } from '@/app/components/foundation/types';
 
 import styles from './Tabs.module.css';
 

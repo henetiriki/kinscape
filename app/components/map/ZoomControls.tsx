@@ -1,4 +1,4 @@
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { IconButton } from '@/app/components/actions/IconButton';
 import { Icon } from '@/app/components/foundation/Icon';

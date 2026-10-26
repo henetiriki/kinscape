@@ -1,5 +1,7 @@
+import type { FilledIconName, IconName, IconSize } from './types';
+
 // The board icons are copied from design/source/style-3-foundations.html.
-const PATHS = {
+export const PATHS = {
   alert: (
     <>
       <circle cx='12' cy='12' r='9' />
@@ -96,17 +98,12 @@ const PATHS = {
 };
 
 // The white mark on a filled disc; a warning is a disc too, as on the Alerts board.
-const MARKS = {
+export const MARKS = {
   error: 'M12 6.5v6.5M12 16.5v.01',
   info: 'M12 11v6M12 7.5v.01',
   success: 'M7.5 12.5l3 3 6-6.5',
   warning: 'M12 6.5v6.5M12 16.5v.01',
 };
-
-export type FilledIconName = keyof typeof MARKS;
-export type IconName = keyof typeof PATHS;
-
-export type IconSize = 14 | 16 | 18 | 20 | 24 | 28;
 
 /** A decorative icon (18px unless sized) in the current colour; the words beside it carry the meaning. */
 export const Icon = ({

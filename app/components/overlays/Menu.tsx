@@ -4,8 +4,7 @@ import type { KeyboardEvent, Ref } from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
-import type { IconName } from '@/app/components/foundation/Icon';
+import type { ControlState, IconName } from '@/app/components/foundation/types';
 
 import { Icon } from '@/app/components/foundation/Icon';
 import { Surface } from '@/app/components/foundation/Surface';

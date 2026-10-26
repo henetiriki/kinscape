@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { FilledIconName } from '@/app/components/foundation/Icon';
+import type { FilledIconName } from '@/app/components/foundation/types';
 
 import { FilledIcon } from '@/app/components/foundation/Icon';
 

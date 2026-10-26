@@ -1,6 +1,6 @@
 'use client';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { ControlState } from '@/app/components/foundation/types';
 
 import styles from './Segmented.module.css';
 

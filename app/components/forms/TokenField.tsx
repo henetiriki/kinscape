@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 
 import { useId, useRef, useState } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { RemovableChip } from '@/app/components/actions/Chip';
 import { Text } from '@/app/components/foundation/Text';

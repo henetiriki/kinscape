@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { SurfaceLevel } from '@/app/components/foundation/Surface';
+import type { SurfaceLevel } from '@/app/components/foundation/types';
 import type { Source } from '@/lib/boundaries/model.mts';
 
 import { Button } from '@/app/components/actions/Button';

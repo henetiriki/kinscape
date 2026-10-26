@@ -4,7 +4,7 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useEffect, useId, useRef, useState } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
+import type { ControlState } from '@/app/components/foundation/types';
 
 import { KeyHint } from '@/app/components/actions/KeyHint';
 import { Icon } from '@/app/components/foundation/Icon';

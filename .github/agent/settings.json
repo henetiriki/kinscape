@@ -5,8 +5,6 @@
   "permissions": {
     "allow": [
       "Read",
-      "Grep",
-      "Glob",
       "Edit",
       "Write",
       "Bash(npm run:*)",

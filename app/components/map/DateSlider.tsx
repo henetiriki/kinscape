@@ -2,14 +2,11 @@
 
 import type { CSSProperties } from 'react';
 
+import type { Precision } from '@/lib/map/map-date';
+
 import { hatchStyle } from '@/app/components/map/hatch';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
-import {
-  dayFromSlider,
-  type Precision,
-  sliderMax,
-  sliderValue,
-} from '@/lib/map/map-date';
+import { dayFromSlider, sliderMax, sliderValue } from '@/lib/map/map-date';
 
 import styles from './DateSlider.module.css';
 

@@ -1,8 +1,9 @@
 import type { ComponentProps, ReactNode } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
+import type { IconName } from '@/app/components/foundation/Icon';
 
-import { Icon, type IconName } from '@/app/components/foundation/Icon';
+import { Icon } from '@/app/components/foundation/Icon';
 
 import styles from './Button.module.css';
 

@@ -3,12 +3,9 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import {
-  type Denial,
-  inlineCode,
-  parseTranscript,
-  type Transcript,
-} from './agent-transcript.mts';
+import type { Denial, Transcript } from './agent-transcript.mts';
+
+import { inlineCode, parseTranscript } from './agent-transcript.mts';
 
 // Reads the transcripts of the past week's plan, build and @claude runs and keeps one issue up to
 // date with the permission denials that repeat, so the allowlist and the rules follow what the

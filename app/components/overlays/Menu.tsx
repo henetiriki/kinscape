@@ -1,16 +1,13 @@
 'use client';
 
-import {
-  type KeyboardEvent,
-  type Ref,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import type { KeyboardEvent, Ref } from 'react';
+
+import { useEffect, useRef, useState } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
+import type { IconName } from '@/app/components/foundation/Icon';
 
-import { Icon, type IconName } from '@/app/components/foundation/Icon';
+import { Icon } from '@/app/components/foundation/Icon';
 import { Surface } from '@/app/components/foundation/Surface';
 import { Avatar } from '@/app/components/map/Avatar';
 

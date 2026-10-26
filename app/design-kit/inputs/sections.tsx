@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 
+import type { Tab } from '@/app/components/actions/Tabs';
 import type { EventType } from '@/app/components/map/EventGlyph';
 
 import { Button } from '@/app/components/actions/Button';
 import { Chip, RemovableChip } from '@/app/components/actions/Chip';
 import { KeyHint } from '@/app/components/actions/KeyHint';
-import { type Tab, Tabs } from '@/app/components/actions/Tabs';
+import { Tabs } from '@/app/components/actions/Tabs';
 import { Alert } from '@/app/components/feedback/Alert';
 import { CheckboxField } from '@/app/components/forms/CheckboxField';
 import { SelectField } from '@/app/components/forms/SelectField';
@@ -17,9 +18,10 @@ import { SheetPanel } from '@/app/components/overlays/Sheet';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import type { Column } from './Board';
+
 import {
   ByViewport,
-  type Column,
   DesktopOnly,
   Facts,
   Matrix,

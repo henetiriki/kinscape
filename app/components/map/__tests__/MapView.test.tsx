@@ -1,7 +1,9 @@
 import { render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildStyle, POLITY_LAYERS, polityFilters } from '@/lib/map/style';
+import type { buildStyle } from '@/lib/map/style';
+
+import { POLITY_LAYERS, polityFilters } from '@/lib/map/style';
 
 const maplibre = vi.hoisted(() => {
   const map = {

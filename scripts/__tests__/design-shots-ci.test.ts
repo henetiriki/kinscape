@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { Deps } from '../design-shots-ci.mts';
+
 import {
   check,
-  type Deps,
   guard,
   parseStatus,
   run,

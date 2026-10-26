@@ -1,5 +1,7 @@
+import type { ChipOption } from '@/app/components/actions/ChipGroup';
+
 import { Button } from '@/app/components/actions/Button';
-import { ChipGroup, type ChipOption } from '@/app/components/actions/ChipGroup';
+import { ChipGroup } from '@/app/components/actions/ChipGroup';
 import { SelectField } from '@/app/components/forms/SelectField';
 import { TokenField } from '@/app/components/forms/TokenField';
 

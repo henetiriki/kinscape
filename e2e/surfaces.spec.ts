@@ -1,4 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
+
+import { expect, test } from '@playwright/test';
 
 // NFR-05, NFR-06: board 07, the surfaces components.
 

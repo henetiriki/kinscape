@@ -1,4 +1,6 @@
-import { type CSSProperties, useId } from 'react';
+import type { CSSProperties } from 'react';
+
+import { useId } from 'react';
 
 import { BORDERS, LAND, RIVERS } from '@/app/components/auth/signInHeroPaths';
 import { Text } from '@/app/components/foundation/Text';

@@ -1,4 +1,6 @@
-import { type BoundaryData, isCurrentOn } from '../boundaries/model.mts';
+import type { BoundaryData } from '../boundaries/model.mts';
+
+import { isCurrentOn } from '../boundaries/model.mts';
 
 /** A run of days with a Boundary version. `validTo` is exclusive; null = still current. */
 export type Span = { validFrom: number; validTo: null | number };

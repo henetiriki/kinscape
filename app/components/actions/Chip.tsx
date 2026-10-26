@@ -1,9 +1,10 @@
 import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
+import type { EventType } from '@/app/components/map/EventGlyph';
 
 import { Icon } from '@/app/components/foundation/Icon';
-import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
+import { EventGlyph } from '@/app/components/map/EventGlyph';
 
 import styles from './Chip.module.css';
 

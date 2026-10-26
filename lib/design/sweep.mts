@@ -1,5 +1,5 @@
 /** The design sweep: holds `design/screens.json` to one entry per built snapshot image. */
-import { shotFor } from '../../scripts/design-shots.mts';
+import { shotFor } from './shots.mts';
 
 export type Size = { height: number; width: number };
 

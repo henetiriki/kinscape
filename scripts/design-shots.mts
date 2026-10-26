@@ -2,40 +2,14 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { type Shot, shotFor } from '../lib/design/shots.mts';
+
 export type Deps = {
   /** Renders the page at `url` to JPG bytes; rejects on any non-`file:` request. */
   shoot: (url: string, shot: Shot) => Promise<Uint8Array>;
 };
 
-export type Shot = {
-  fullPage: boolean;
-  height: number;
-  scale: number;
-  width: number;
-};
-
 const SOURCE_DIR = 'design/source';
-
-/** The phone boards are long pages; every other phone file is one screen. */
-const PHONE_BOARD = /^(?:style-\d.*|map-style|design-kit)-phone$/;
-
-/** Phone screens, style guide boards and the map style board each have their own size. */
-export const shotFor = (name: string): Shot => {
-  if (name.includes('phone')) {
-    return {
-      fullPage: PHONE_BOARD.test(name),
-      height: 844,
-      scale: 2,
-      width: 390,
-    };
-  }
-
-  if (name.startsWith('style-') || name === 'map-style') {
-    return { fullPage: true, height: 900, scale: 1, width: 1440 };
-  }
-
-  return { fullPage: false, height: 900, scale: 1, width: 1440 };
-};
 
 export const snapshotNames = (root: string): string[] =>
   readdirSync(join(root, SOURCE_DIR))

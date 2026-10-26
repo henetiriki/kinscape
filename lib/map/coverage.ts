@@ -1,4 +1,4 @@
-import type { BoundaryData } from '../boundaries/model.mts';
+import type { BoundaryData } from '../boundaries/types.ts';
 
 import { isCurrentOn } from '../boundaries/model.mts';
 

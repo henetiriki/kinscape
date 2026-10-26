@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import type { BoundaryData, BoundaryVersion } from '../../boundaries/model.mts';
+import type { BoundaryData, BoundaryVersion } from '../../boundaries/types.ts';
 
 import { toDay } from '../../boundaries/model.mts';
 import { boundaryCoverage, hasBorders } from '../coverage';

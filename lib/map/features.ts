@@ -1,6 +1,6 @@
 import polylabel from 'polylabel';
 
-import type { BoundaryData, BoundaryVersion } from '../boundaries/model.mts';
+import type { BoundaryData, BoundaryVersion } from '../boundaries/types.ts';
 
 export type PolityCollection = {
   features: PolityFeature[];

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 import type { Span } from '@/lib/map/coverage';
 
 import { NoticeCard } from '@/app/components/feedback/NoticeCard';

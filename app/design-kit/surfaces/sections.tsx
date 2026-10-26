@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import type { SurfaceLevel } from '@/app/components/foundation/types';
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 import { Button } from '@/app/components/actions/Button';
 import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';

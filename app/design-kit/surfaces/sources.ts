@@ -1,4 +1,4 @@
-import type { Source } from '@/lib/boundaries/model.mts';
+import type { Source } from '@/lib/boundaries/types.ts';
 
 const NATURAL_EARTH = {
   attribution: 'Made with Natural Earth',

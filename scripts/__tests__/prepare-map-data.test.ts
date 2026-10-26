@@ -50,10 +50,26 @@ describe('buildCommands', () => {
     expect(commands).toContain(
       '-i ne_10m_land.shp ne_10m_coastline.shp ne_10m_rivers_lake_centerlines.shp ne_10m_admin_1_states_provinces.shp ne_10m_admin_1_v4_1_0.shp provinces_1910.geojson combine-files'
     );
-    expect(commands).toContain('-erase lesotho_eswatini target=provinces_1910');
+    expect(commands).toContain(
+      '-erase lesotho_eswatini target=provinces_1910,free_state_1910'
+    );
     expect(commands).toContain('-clip ne_10m_land target=provinces_1910');
     expect(commands).toContain(
-      '-merge-layers target=provinces_1910,lesotho_eswatini_1910 name=provinces_1910 -clean gap-fill-area=300km2 target=provinces_1910'
+      '-merge-layers target=provinces_1910,free_state_1910,lesotho_eswatini_1910 name=provinces_1910 -clean gap-fill-area=300km2 target=provinces_1910'
+    );
+  });
+
+  it("takes the 1910 Free State from Natural Earth v4.1.0 and keeps Walvis Bay and the outline's edge", () => {
+    const commands = buildCommands();
+
+    expect(commands).toContain(
+      `-filter 'key == "Free State"' + name=free_state_1910 target=ne_10m_admin_1_v4_1_0`
+    );
+    expect(commands).toContain(
+      `-filter 'key != "Orange Free State"' target=provinces_1910 -buffer 5km topological target=provinces_1910 -erase free_state_1910 target=provinces_1910`
+    );
+    expect(commands).toContain(
+      '-merge-layers target=union_edge,walvis_bay name=union_edge -dissolve target=union_edge -clip union_edge target=provinces_1910'
     );
     expect(commands).toContain("'scalerank <= 7'");
     expect(commands).toContain('-clip bbox=5,-45,45,-10 target=*');
@@ -91,6 +107,23 @@ describe('boundaryVersions', () => {
       validFrom: 94_382,
       validTo: 125_029,
     });
+  });
+
+  it('cites Natural Earth v4.1.0 for the Orange Free State only', () => {
+    const { union } = boundaryVersions(
+      allProvinces(),
+      oldProvinces(),
+      unionProvinces()
+    );
+
+    expect(
+      union.features.map(f => [f.properties.polity, f.properties.source])
+    ).toEqual([
+      ['cape-of-good-hope', 'afrith-provinces-1910'],
+      ['natal', 'afrith-provinces-1910'],
+      ['orange-free-state', 'natural-earth-admin-1-v4'],
+      ['transvaal', 'afrith-provinces-1910'],
+    ]);
   });
 
   it('makes the 1994 provinces low confidence from 1994-04-27 to 2006-03-01', () => {

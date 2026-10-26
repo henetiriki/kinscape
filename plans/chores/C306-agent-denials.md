@@ -5,7 +5,7 @@
 
 ## Approach
 
-The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so only the gaps are fixed: deleting a tracked file (`rm`), WebSearch, and a third found in a run transcript. Claude Code 2.1.304 in CI has no Grep or Glob tool, so `rules.md` named tools that don't exist and the `grep` fallback was denied (10 times).
+The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so only the gaps are fixed: deleting a tracked file (`rm`), WebSearch, and a third found in a run transcript. Claude Code 2.1.304 in CI has no Grep or Glob tool, so `rules.md` named tools that don't exist and its `grep` fallback was denied.
 
 ## Decisions
 
@@ -18,7 +18,7 @@ The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so 
 
 **D2 · WebSearch (2 denials)** · Decides: Tech lead
 
-- **A.** Leave it denied. `rules.md`: with no web access, ask in your comment.
+- **A.** Leave it denied. `rules.md`: WebSearch and WebFetch are off, so ask in your comment; `curl` isn't for lookups.
 - ~~**B.** Allow `WebSearch`.~~
 
 **Answer: A** (@henetiriki)
@@ -31,23 +31,23 @@ The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so 
 
 **D4 · Finding files** · Decides: Tech lead
 
-- **A.** Use `git ls-files '<glob>'` and `ls`, both allowed. No `find`.
+- **A.** Use `git ls-files -co --exclude-standard '<glob>'`, allowed by `Bash(git:*)`. No `find`; bash's `ls` can't recurse.
 - ~~**B.** Allow `find`, deny `-exec`, `-delete`, `-fprint*`.~~
 
 **Answer: A** (@henetiriki)
 
 ## Files that change
 
-| File                                 | New / changed | What                                |
-| ------------------------------------ | ------------- | ----------------------------------- |
-| `.github/agent/rules.md`             | Changed       | D1, D2; D3 and D4 replace Grep line |
-| `.github/agent/settings.json`        | Changed       | `Bash(grep:*)`                      |
-| `plans/chores/C306-agent-denials.md` | New           | This plan                           |
+| File                                 | New / changed | What                                     |
+| ------------------------------------ | ------------- | ---------------------------------------- |
+| `.github/agent/rules.md`             | Changed       | D1, D2; D3 and D4 reword the search line |
+| `.github/agent/settings.json`        | Changed       | Add `Bash(grep:*)`; drop `Grep`, `Glob`  |
+| `plans/chores/C306-agent-denials.md` | New           | This plan                                |
 
 ## Order of work
 
 1. Commit this plan first: `plan(C306): approved by @henetiriki`.
-2. Edit both files; run lint, format check, `npm run words`, tests, boundary validator, e2e.
+2. Edit both files; run the checks in `AGENTS.md`.
 3. Open the PR `C.306: Agent permission denials` with `Closes #306`.
 
 ## Proof

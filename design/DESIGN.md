@@ -245,12 +245,13 @@ NFR-08 requires every source to be credited in the app. The design fixes the for
 
 ## Event glyphs
 
-| Event     | Glyph | Event   | Glyph |
-| --------- | ----- | ------- | ----- |
-| Birth     | \*    | Death   | †     |
-| Marriage  | ∞     | Baptism | ~     |
-| Divorce   | %     | Burial  | ⚰     |
-| Residence | ▪     | Other   | •     |
+| Event     | Glyph | Event      | Glyph |
+| --------- | ----- | ---------- | ----- |
+| Birth     | \*    | Death      | †     |
+| Marriage  | ∞     | Baptism    | ~     |
+| Divorce   | %     | Burial     | ⚰     |
+| Residence | ▪     | Other      | •     |
+| Land      | □     | Occupation | ▲     |
 
 On the map these are SDF icons in `--pin`, with a 2px white halo.
 

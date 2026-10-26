@@ -1,7 +1,7 @@
 # Plan: C310: The denial audit's cost is an API-price estimate
 
 - **Spec:** #310
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The audit's first line says, both labelled estimates at API prices: the cost of 
 - **B.** Yes: add the next turn, which usually retries or rewords.
 - **Other:** your own.
 
-Recommended: A, because the next turn often does work the run needed anyway, and a lower bound can't overstate the cost.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

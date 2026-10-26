@@ -2,13 +2,13 @@
 
 Claude writes most drafts and code; people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**. The **product owner** (PO) decides what the user sees; the **tech lead** decides how it is built and merges it.
 
-More detail: [Building and shipping](building.md), [Dependencies](dependencies.md), [Repository settings](repo-settings.md), [Security rules](security.md), [Design](../design/DESIGN.md).
+More detail: [Architecture](architecture.md), [Building and shipping](building.md), [Dependencies](dependencies.md), [Repository settings](repo-settings.md), [Security rules](security.md), [Design](../design/DESIGN.md).
 
 ## Intent, Spec, Plan
 
-- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, filed already approved. M0 predates this and has none.
+- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, filed already approved. M0 has none.
 - **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one. Its id is the milestone and a sequence (`M1.4`); an Intent outside the milestones gets a short prefix (`DM.1`).
-- A Spec filed with an Intent number becomes a sub-issue of that Intent automatically. File it with the Intent's number, not `M<n>` (except for M0), or it isn't linked. When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`; the PO checks the outcome and closes it.
+- A Spec filed with an Intent number becomes its sub-issue automatically; file it with that number, not `M<n>` (except M0), or it isn't linked. When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`; the PO checks the outcome and closes it.
 - **Bug:** takes the same path as a Spec, with the id `B<issue number>`.
 - **Plan:** how a Spec is built: files, order of work, risks and proof. Committed with the code as `plans/M0.1-hello-vercel.md` ([rules](../plans/README.md)).
 

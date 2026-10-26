@@ -6,10 +6,11 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 
 ## Source of truth
 
-- `docs/requirements.md`: the baseline requirements. Every requirement has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
-- **Intents:** each milestone in `requirements.md` (M1–M6) has its own Intent issue, filed already approved. New ideas and changes to the requirements arrive as `type: intent` issues.
-- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead approves engineering-only ones.
-- `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule, with mockups. If a screen isn't designed, list it under **Flagged concerns**; don't invent the UI.
+- `docs/requirements.md`: the baseline requirements; each has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
+- **Intents:** one per milestone (M1–M6), filed already approved. New ideas and requirement changes arrive as `type: intent` issues.
+- **Specs:** `type: spec` issues, one per slice of an Intent. The PO approves user-visible slices; the tech lead, engineering-only ones.
+- `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen isn't designed, list it under **Flagged concerns**; don't invent the UI.
+- `docs/architecture.md`: where changes go and the patterns to follow; read before planning. `docs/architecture-target.md` is proposed, not a rule.
 - `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 
@@ -20,7 +21,7 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 - Before you change anything, check that the change belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
 - Never choose silently. Write each PO or tech-lead decision in the [decision format](docs/how-we-work.md#decisions) (Spec: **Decisions**; Intent: _Open questions_; plan: `## Decisions`); risks go under **Flagged concerns**. When a Spec decision is answered, update the issue body as it says.
 - Never use `--no-verify`. If a hook fails, fix the code.
-- Set status labels as the workflow says: `ready-for-po` when the PO must act, including when a PR for a user-visible change is ready to try.
+- Set status labels as the workflow says: `ready-for-po` when the PO must act, including a ready-to-try PR for a user-visible change.
 
 ## Plans
 

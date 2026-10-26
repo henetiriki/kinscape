@@ -6,21 +6,25 @@ Why: M2 adds sign-in, a database, an API and Tree-scoped data ([NFR-09](requirem
 
 ## Layers
 
-```
-design tokens → components (no domain knowledge) → features/<name> → app/ routes (thin)
-lib/domain (pure) ← server/ (I/O, `server-only`)
-```
+| Layer             | Holds                                   | May import                                                  |
+| ----------------- | --------------------------------------- | ----------------------------------------------------------- |
+| `design`          | tokens, `resolveTokens`                 | nothing                                                     |
+| `lib/domain`      | pure logic and types                    | itself                                                      |
+| `server/`         | file and database access, `server-only` | `lib/domain`                                                |
+| `app/components`  | the shared UI kit                       | `design`, itself                                            |
+| `features/<name>` | that feature's UI, queries and actions  | `design`, `lib/domain`, `server/`, `app/components`, itself |
+| `app/` routes     | thin pages                              | `app/components`, a feature's `index.ts`                    |
 
-A lower layer never imports a higher one. A lint rule and a fitness test, in the style of `vercel-imports.test.ts`, enforce it.
+Today's breaks, which the lint rule lists as an allowlist and the work below empties: `app/components/map` and `lib/map/style.ts`, `filter.ts` (move to `features/map`); `forms/DateField` (imports `lib/map`); `overlays/SourcesDialog` (imports `lib/boundaries`); `lib/boundaries/load.mts` and `app-data.ts` (file I/O; move to `server/`).
 
 ## Before the database
 
-1. **Layer rules and tidy-ups.** `@/` imports everywhere; a written rule for `.mts`; `lib/design` split into runtime (`tokens.mts`) and tooling.
+1. **Layer rules and tidy-ups.** Enforce the table with a lint rule and a fitness test in the style of `vercel-imports.test.ts`. `@/` imports everywhere; a written rule for `.mts`; `lib/design` split into runtime (`tokens.mts`) and tooling.
 2. **Feature slices.** `features/map`, then `people` and `pins`: each with `components/`, domain code, `queries`, `actions`, tests and an `index.ts` as its public API. `app/components` stays the shared kit.
 3. **State ownership.** URL (shareable, MAP-10), then server, then a feature store, then local `useState`. `useMapState` reads `searchParams` through a schema.
 4. **Map layer registry.** A layer is one file exporting `{ id, sources, layers, filters(day), legendRow, toggle }`; `MapView` iterates the registry, and visibility is `Record<LayerId, boolean>`.
 5. **Schema-first validation.** One schema gives the type and the parser for the loader, route handlers, server actions and forms. Needs a validation library: the tech lead decides which ([dependencies](dependencies.md)).
-6. **Domain primitives.** Branded ids (`PersonId`, `TreeId`), `Day`, a `FuzzyDate` value object, and an as-of helper built on `isCurrentOn`.
+6. **Domain primitives.** Branded ids (`PersonId`, `TreeId`), `Day`, a `FuzzyDate` value object, and an as-of helper built on `isCurrentOn`, with a test that `dateFilter` agrees with it.
 
 ## With the database and API
 
@@ -36,4 +40,4 @@ A lower layer never imports a higher one. A lint rule and a fitness test, in the
 13. **Recipe skills:** add a component, add a map layer, add a Tree-scoped entity; each a checklist of files, tests and requirement IDs.
 14. **Nested `AGENTS.md`** of a few lines in `features/`, `lib/domain` and `server/`.
 15. **ADRs** in `docs/decisions/` for choices that outlive one plan.
-16. **A naming test** that fails on synonyms for Key concepts terms, such as `User` or `Marker`.
+16. **A naming test** that fails when the repo declares a type, function or component named for a synonym of a Key concepts term (`User` for Account, `Marker` for Pin). It scans declarations only, so MapLibre's `Marker` and a sign-in library's `User` pass.

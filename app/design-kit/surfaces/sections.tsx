@@ -19,7 +19,7 @@ import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { Column } from '../inputs/Board';
+import type { Column } from '../inputs/types';
 
 import {
   Accessibility,

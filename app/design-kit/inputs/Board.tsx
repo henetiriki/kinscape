@@ -2,10 +2,9 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/types';
 
-import styles from './page.module.css';
+import type { Column } from './types';
 
-// A column of a state matrix: the state a control shows, or Disabled.
-export type Column = 'default' | 'disabled' | ControlState;
+import styles from './page.module.css';
 
 /** `phoneTitle` is the shorter label a phone shows above each cell. */
 type MatrixColumn = { column: Column; phoneTitle?: string; title: string };

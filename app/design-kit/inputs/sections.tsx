@@ -18,7 +18,7 @@ import { SheetPanel } from '@/app/components/overlays/Sheet';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { Column } from './Board';
+import type { Column } from './types';
 
 import {
   ByViewport,

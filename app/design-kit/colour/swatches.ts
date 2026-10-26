@@ -1,30 +1,6 @@
 /** What the colour board shows, in board order. Values come from `design/tokens.json`; the page resolves them. */
 
-export type Group = {
-  note: string;
-  swatches: Swatch[];
-  title: string;
-};
-
-/** A colour and what it is measured on: a token path and the name the board gives it. */
-export type On = readonly [path: string, label: string];
-
-export type Role =
-  | 'border'
-  | 'decorative'
-  | 'disabled'
-  | 'fill only'
-  | 'map only'
-  | 'overlay'
-  | 'text';
-
-export type Swatch = {
-  /** Set when the measured ratio is not on `colour.surface`. */
-  on?: On;
-  path: string;
-  role: Role;
-  use: string;
-};
+import type { Group, On, Role, System, SystemLine } from './types';
 
 const BRAND: On = ['colour.brand', 'brand'];
 const INK: On = ['colour.ink', 'ink'];
@@ -195,21 +171,6 @@ export const GROUPS: Group[] = [
     title: 'Third party',
   },
 ];
-
-export type System = {
-  lines: SystemLine[];
-  text: string;
-  title: string;
-  tone: 'error' | 'info' | 'success' | 'warning';
-};
-
-/** One line under a system colour: `plain` shows the value only, `note` its use instead of a ratio. */
-export type SystemLine = {
-  on?: On;
-  path: string;
-  role: 'border' | 'note' | 'plain' | 'text';
-  use?: string;
-};
 
 const line = (
   tone: System['tone'],

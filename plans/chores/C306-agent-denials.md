@@ -25,14 +25,13 @@ The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so 
 
 **D3 · Searching contents** · Decides: Tech lead
 
-- **A.** Allow `Bash(grep:*)`; `rules.md` says to use it.
+- **A.** Use `git grep` (allowed by `Bash(git:*)`), not `grep -r`, which scans ignored files.
 
 **Answer: A** (@henetiriki)
 
 **D4 · Finding files** · Decides: Tech lead
 
-- **A.** Use `git ls-files -co --exclude-standard '<glob>'`, allowed by `Bash(git:*)`. No `find`; bash's `ls` can't recurse.
-- ~~**B.** Allow `find`, deny `-exec`, `-delete`, `-fprint*`.~~
+- **A.** Use `git ls-files -co --exclude-standard '<glob>'`, allowed by `Bash(git:*)`.- ~~**B.** Allow `find`, deny `-exec`, `-delete`, `-fprint*`.~~
 
 **Answer: A** (@henetiriki)
 
@@ -41,7 +40,7 @@ The audit found 89 denials in 68 runs. Most came before C277's rules (#286), so 
 | File                                 | New / changed | What                                     |
 | ------------------------------------ | ------------- | ---------------------------------------- |
 | `.github/agent/rules.md`             | Changed       | D1, D2; D3 and D4 reword the search line |
-| `.github/agent/settings.json`        | Changed       | Add `Bash(grep:*)`; drop `Grep`, `Glob`  |
+| `.github/agent/settings.json`        | Changed       | Drop `Grep`, `Glob`                      |
 | `plans/chores/C306-agent-denials.md` | New           | This plan                                |
 
 ## Order of work

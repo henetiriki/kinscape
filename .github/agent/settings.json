@@ -19,7 +19,6 @@
       "Bash(gh api:*)",
       "Bash(curl:*)",
       "Bash(sed:*)",
-      "Bash(grep:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
       "Bash(mkdir:*)"

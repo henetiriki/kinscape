@@ -1,4 +1,10 @@
-export type Denial = { detail: string; tool: string };
+export type Denial = {
+  // An estimate at API prices of the cost of the turn that made the call; unknown if the
+  // transcript doesn't link the denial to a turn.
+  costUsd?: number;
+  detail: string;
+  tool: string;
+};
 
 export type DesignShotsCiDeps = {
   append: (file: string, text: string) => void;

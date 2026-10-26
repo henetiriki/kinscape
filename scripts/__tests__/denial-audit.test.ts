@@ -104,9 +104,52 @@ describe('summarise', () => {
     ]);
 
     expect(report.groups).toEqual([
-      { count: 3, example: 'Bash: a b c', pattern: 'Bash: a', runs: [1, 2] },
-      { count: 2, example: 'Bash: x y', pattern: 'Bash: x', runs: [1, 2] },
+      {
+        costUsd: 0,
+        count: 3,
+        example: 'Bash: a b c',
+        pattern: 'Bash: a',
+        runs: [1, 2],
+      },
+      {
+        costUsd: 0,
+        count: 2,
+        example: 'Bash: x y',
+        pattern: 'Bash: x',
+        runs: [1, 2],
+      },
     ]);
+  });
+
+  it('sums the cost of denied calls per group and in all, against the runs that had denials', () => {
+    const costly = (detail: string, costUsd: number) => ({
+      costUsd,
+      detail,
+      tool: 'Bash',
+    });
+    const report = summarise([
+      {
+        id: 1,
+        transcript: transcript([costly('a x', 0.25), costly('a y', 0.5)], {
+          costUsd: 3,
+        }),
+      },
+      {
+        id: 2,
+        transcript: transcript([costly('a z', 0.25), bash('b')], {
+          costUsd: 2,
+        }),
+      },
+      { id: 3, transcript: transcript([], { costUsd: 10 }) },
+      { id: 4, transcript: transcript([bash('c')], { costUsd: undefined }) },
+    ]);
+
+    expect(report).toMatchObject({
+      costUsd: 15,
+      deniedCostUsd: 1,
+      deniedRunsCostUsd: 5,
+    });
+    expect(report.groups[0].costUsd).toBe(1);
   });
 
   it('names a denial with no detail by its tool', () => {
@@ -141,6 +184,7 @@ describe('summarise', () => {
 
 describe('issueBody', () => {
   const group = {
+    costUsd: 0.756,
     count: 4,
     example: 'Bash: cat a | tail',
     pattern: 'Bash: cat a',
@@ -149,16 +193,27 @@ describe('issueBody', () => {
 
   it('gives the totals, the table and what to do', () => {
     const body = issueBody(
-      { costUsd: 4.567, denials: 6, groups: [group], runs: 3, turns: 100 },
+      {
+        costUsd: 4.567,
+        denials: 6,
+        deniedCostUsd: 0.9,
+        deniedRunsCostUsd: 3,
+        groups: [group],
+        runs: 3,
+        turns: 100,
+      },
       'owner/repo',
       new Date('2026-10-17T07:00:00Z')
     );
 
     expect(body).toContain(
-      'since 2026-10-17: 3 runs read, 6 denials, $4.57 in all, 33 turns on average.'
+      'since 2026-10-17: 3 runs read, 6 denials, 33 turns on average.'
     );
     expect(body).toContain(
-      '| `Bash: cat a` | 4 | [11](https://github.com/owner/repo/actions/runs/11), [12](https://github.com/owner/repo/actions/runs/12) | `Bash: cat a \\| tail` |'
+      'Cost, estimated at API prices: $4.57 for all runs read. The turns that made a denied call cost $0.90, 30% of the $3.00 the runs with denials cost. That is a lower bound'
+    );
+    expect(body).toContain(
+      '| `Bash: cat a` | 4 | $0.76 | [11](https://github.com/owner/repo/actions/runs/11), [12](https://github.com/owner/repo/actions/runs/12) | `Bash: cat a \\| tail` |'
     );
     expect(body).toContain('`.github/agent/settings.json`');
   });
@@ -166,11 +221,19 @@ describe('issueBody', () => {
   it('does not divide by zero with no runs', () => {
     expect(
       issueBody(
-        { costUsd: 0, denials: 0, groups: [], runs: 0, turns: 0 },
+        {
+          costUsd: 0,
+          denials: 0,
+          deniedCostUsd: 0,
+          deniedRunsCostUsd: 0,
+          groups: [],
+          runs: 0,
+          turns: 0,
+        },
         'o/r',
         new Date('2026-10-17T00:00:00Z')
       )
-    ).toContain('0 turns on average');
+    ).toMatch(/0 turns on average.*0% of the \$0\.00/s);
   });
 });
 
@@ -335,7 +398,7 @@ describe('run', () => {
       '--body-file',
       '-',
     ]);
-    expect(body).toContain('| `Bash: cat` | 2 |');
+    expect(body).toContain('| `Bash: cat` | 2 | $0.00 |');
     expect(calls('edit')).toHaveLength(0);
   });
 
@@ -357,7 +420,7 @@ describe('run', () => {
       '--body-file',
       '-',
     ]);
-    expect(calls('edit')[0][1]).toContain('| `Bash: cat` | 2 |');
+    expect(calls('edit')[0][1]).toContain('| `Bash: cat` | 2 | $0.00 |');
   });
 
   it('ignores skipped, unfinished and older runs', () => {

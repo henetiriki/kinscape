@@ -128,6 +128,140 @@ describe('parseTranscript', () => {
     expect(transcript?.denials[0].detail).toHaveLength(200);
   });
 
+  describe('denial cost', () => {
+    // A turn weighs 5 per output token.
+    const turn = (
+      id: string,
+      calls: string[],
+      usage: Record<string, unknown> = { output_tokens: 10 },
+      model = 'm1'
+    ) => ({
+      message: {
+        content: calls.map(call => ({
+          id: call,
+          name: 'Bash',
+          type: 'tool_use',
+        })),
+        id,
+        model,
+        usage,
+      },
+      type: 'assistant',
+    });
+
+    const denied = (...ids: (string | undefined)[]) =>
+      ids.map(tool_use_id => ({ tool_name: 'Bash', tool_use_id }));
+
+    const costs = (events: unknown[]) =>
+      parse(events)?.denials.map(({ costUsd }) => costUsd);
+
+    it("splits each model's cost among that model's turns, counting a repeated turn once", () => {
+      expect(
+        costs([
+          turn('a', ['t1']),
+          turn('b', ['t2'], { output_tokens: 30 }),
+          turn('b', ['t2b'], { output_tokens: 30 }),
+          turn('c', ['t3'], { output_tokens: 10 }, 'm2'),
+          result({
+            modelUsage: { m1: { costUSD: 4 }, m2: { costUSD: 1 } },
+            permission_denials: denied('t2b', 't3'),
+          }),
+        ])
+      ).toEqual([3, 1]);
+    });
+
+    it("splits the run's cost when there is no cost per model, or none for the turn's model", () => {
+      const events = [
+        turn('a', ['t1']),
+        turn('b', ['t2'], { output_tokens: 30 }),
+      ];
+
+      expect(
+        costs([
+          ...events,
+          result({ permission_denials: denied('t1'), total_cost_usd: 2 }),
+        ])
+      ).toEqual([0.5]);
+      expect(
+        costs([
+          ...events,
+          result({
+            modelUsage: { other: { costUSD: 9 } },
+            permission_denials: denied('t2'),
+            total_cost_usd: 2,
+          }),
+        ])
+      ).toEqual([1.5]);
+    });
+
+    it('shares a turn between its denied calls', () => {
+      expect(
+        costs([
+          turn('a', ['t1']),
+          turn('b', ['t2', 't3'], { output_tokens: 30 }),
+          result({ permission_denials: denied('t2', 't3'), total_cost_usd: 2 }),
+        ])
+      ).toEqual([0.75, 0.75]);
+    });
+
+    it('weighs input 1, cache write 1.25 (1-hour 2), cache read 0.1 and output 5', () => {
+      const [first, second] =
+        costs([
+          turn('a', ['t1'], {
+            cache_creation: {
+              ephemeral_1h_input_tokens: 100,
+              ephemeral_5m_input_tokens: 100,
+            },
+            cache_read_input_tokens: 1000,
+            input_tokens: 100,
+            output_tokens: 20,
+          }),
+          turn('b', ['t2'], { cache_creation_input_tokens: 80 }),
+          result({
+            permission_denials: denied('t1', 't2'),
+            total_cost_usd: 7.25,
+          }),
+        ]) ?? [];
+
+      expect(first).toBeCloseTo(6.25);
+      expect(second).toBeCloseTo(1);
+    });
+
+    it('has no cost for a denial it cannot place, and none for a turn it cannot price', () => {
+      expect(
+        costs([
+          turn('a', ['t1'], {}),
+          turn('h', [], { cache_creation: { ephemeral_1h_input_tokens: 5 } }),
+          {
+            message: {
+              content: [{ type: 'text' }, { type: 'tool_use' }],
+              id: 'n',
+            },
+            type: 'assistant',
+          },
+          {
+            message: { content: [], usage: { output_tokens: 9 } },
+            type: 'assistant',
+          },
+          { message: { id: 'z' }, type: 'assistant' },
+          result({
+            permission_denials: denied(undefined, 'unknown', 't1'),
+            total_cost_usd: 2,
+          }),
+        ])
+      ).toEqual([undefined, undefined, 0]);
+      expect(
+        costs([
+          turn('a', ['t1']),
+          result({
+            permission_denials: denied('t1'),
+            total_cost_usd: undefined,
+          }),
+        ])
+      ).toEqual([0]);
+    });
+  });
+
   it('describes a run that stopped before a result', () => {
     expect(parse([assistant(toolUse('Read'))])).toEqual({
       costUsd: undefined,

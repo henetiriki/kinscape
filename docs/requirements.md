@@ -115,7 +115,7 @@ A pin says "this person was here, at this time, and this is how the user knows";
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | PIN-01 | Create a pin by clicking the map, searching a known place, or typing coordinates; then choose the person, date and event type                                                                                           | Must     |
 | PIN-02 | Pin fields: person, place, address as recorded (verbatim), precision (street address, building, erf, farm, suburb, town or city, district, province, approximate), event type, fuzzy date or date range, sources, notes | Must     |
-| PIN-03 | Event types: birth, baptism, residence, marriage, divorce, death, burial, other                                                                                                                                         | Must     |
+| PIN-03 | Event types: birth, baptism or christening, residence (census, voters roll, will), marriage, divorce, death, burial, land ownership, occupation, other                                                                  | Must     |
 | PIN-04 | Fuzzy dates follow GEDCOM conventions: exact, ABT, BEF, AFT, BET…AND, FROM…TO, plus EST (estimated) and CAL (calculated); precision is day (YYYYMMDD), month (YYYYMM) or year (YYYY)                                    | Must     |
 | PIN-05 | On save, the jurisdiction chain at the pin's date is computed and shown; it is recomputed when boundary data changes                                                                                                    | Must     |
 | PIN-06 | Many pins can share one place (a family farm across generations)                                                                                                                                                        | Must     |
@@ -137,17 +137,16 @@ A pin says "this person was here, at this time, and this is how the user knows";
 
 The map date drives everything: only pins true on that date are shown, and uncertainty is visible rather than hidden.
 
-| ID     | Requirement                                                                                             | Priority |
-| ------ | ------------------------------------------------------------------------------------------------------- | -------- |
-| EXP-01 | Point events (birth, marriage, death) show within a configurable window around their date               | Must     |
-| EXP-02 | Fuzzy pins render faded or with a halo that grows with their uncertainty                                | Must     |
-| EXP-03 | Filter pins by person, surname, event type, or branch (ancestors or descendants of a chosen person)     | Must     |
-| EXP-04 | Search people and places; picking a person moves the map to their first pin and sets the map date to it | Must     |
-| EXP-05 | Person panel: their pins in date order, each with the jurisdiction chain on that date                   | Should   |
-| EXP-06 | Life trail: draw a person's pins as a dated path                                                        | Should   |
-| EXP-07 | Migration view: trails for all descendants of a chosen person, coloured by generation                   | Should   |
-| EXP-08 | Cluster dense pins (e.g. Cape Town) and expand on zoom                                                  | Could    |
-| EXP-09 | Range pins (residence, land ownership) show while the map date falls inside their range                 | Could    |
+| ID     | Requirement                                                                                                                                                                        | Priority |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| EXP-01 | Range pins (residence, land ownership) show while the map date falls inside their range; point events (birth, marriage, death) show within a configurable window around their date | Must     |
+| EXP-02 | Fuzzy pins render faded or with a halo that grows with their uncertainty                                                                                                           | Must     |
+| EXP-03 | Filter pins by person, surname, event type, or branch (ancestors or descendants of a chosen person)                                                                                | Must     |
+| EXP-04 | Search people and places; picking a person moves the map to their first pin and sets the map date to it                                                                            | Must     |
+| EXP-05 | Person panel: their pins in date order, each with the jurisdiction chain on that date                                                                                              | Should   |
+| EXP-06 | Life trail: draw a person's pins as a dated path                                                                                                                                   | Should   |
+| EXP-07 | Migration view: trails for all descendants of a chosen person, coloured by generation                                                                                              | Should   |
+| EXP-08 | Cluster dense pins (e.g. Cape Town) and expand on zoom                                                                                                                             | Could    |
 
 **Acceptance checks**
 

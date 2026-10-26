@@ -35,6 +35,8 @@ type Report = {
   groups: Group[];
   runs: number;
   turns: number;
+  // Denials that couldn't be linked to a turn, so have no cost.
+  unlinked: number;
 };
 
 export const ISSUE_TITLE = 'Agent permission denials';
@@ -172,6 +174,13 @@ export const summarise = (
       (sum, { transcript }) => sum + (transcript.turns ?? 0),
       0
     ),
+    unlinked: transcripts.reduce(
+      (sum, { transcript }) =>
+        sum +
+        transcript.denials.filter(({ costUsd }) => costUsd === undefined)
+          .length,
+      0
+    ),
   };
 };
 
@@ -194,7 +203,7 @@ export const issueBody = (
   return [
     `Permission denials in Claude runs since ${since.toISOString().slice(0, 10)}: ${report.runs} runs read, ${report.denials} denials, ${average} turns on average.`,
     '',
-    `Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read. The turns that made a denied call cost $${report.deniedCostUsd.toFixed(2)}, ${share}% of the $${report.deniedRunsCostUsd.toFixed(2)} the runs with denials cost. That is a lower bound: the turn after a denial is not counted.`,
+    `Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read. The turns that made a denied call cost $${report.deniedCostUsd.toFixed(2)}, ${share}% of the $${report.deniedRunsCostUsd.toFixed(2)} the runs with denials cost. That is a lower bound: the turn after a denial is not counted.${report.unlinked > 0 ? ` ${report.unlinked} of ${report.denials} denials could not be linked to a turn and have no cost.` : ''}`,
     '',
     `These were denied in ${REPEAT_RUNS} or more runs, or ${REPEAT_COUNT} or more times:`,
     '',

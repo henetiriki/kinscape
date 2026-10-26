@@ -14,7 +14,7 @@ The audit's first line says, both labelled estimates at API prices: the cost of 
 **D1 · Count the turn after each denial?** · Decides: Tech lead
 
 - **A.** No: only the turn that made the denied call; the line says it is a lower bound.
-- **B.** Yes: add the next turn, which usually retries or rewords.
+- **B.** Yes: add the next turn, which usually retries.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -29,14 +29,15 @@ The audit's first line says, both labelled estimates at API prices: the cost of 
 
 ## Order of work
 
-1. Commit this plan: `plan(C310): approved by @henetiriki`.
-2. Transcript allocation with tests, then the audit; lint, `npm test`, `npm run words`.
+1. Commit this plan.
+2. Transcript allocation with tests, then the audit.
 
 ## Risks
 
-`modelUsage` and `cache_creation` are checked against run 40306375255's artifact before building; if absent, the fallbacks above apply.
+`modelUsage` and `cache_creation` are checked against run 40306375255's artifact; if absent, the fallbacks apply.
 
 ## Deviations
 
-- The artifact couldn't be downloaded in the build, so the `modelUsage` and `cache_creation` shapes are unchecked; the fallbacks cover their absence.
-- Both cost figures sit in a second paragraph after the first line, not in it.
+- The artifact couldn't be downloaded, so `modelUsage`, `cache_creation`, `tool_use_id` and whether a turn's first event carries its final `usage` are unchecked. Fallbacks cover the first two.
+- Without `tool_use_id` no denial has a cost, so the issue states how many denials couldn't be linked.
+- Both cost figures sit in a second paragraph, not the first line.

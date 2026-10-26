@@ -148,6 +148,7 @@ describe('summarise', () => {
       costUsd: 15,
       deniedCostUsd: 1,
       deniedRunsCostUsd: 5,
+      unlinked: 2,
     });
     expect(report.groups[0].costUsd).toBe(1);
   });
@@ -201,6 +202,7 @@ describe('issueBody', () => {
         groups: [group],
         runs: 3,
         turns: 100,
+        unlinked: 2,
       },
       'owner/repo',
       new Date('2026-10-17T07:00:00Z')
@@ -211,6 +213,9 @@ describe('issueBody', () => {
     );
     expect(body).toContain(
       'Cost, estimated at API prices: $4.57 for all runs read. The turns that made a denied call cost $0.90, 30% of the $3.00 the runs with denials cost. That is a lower bound'
+    );
+    expect(body).toContain(
+      '2 of 6 denials could not be linked to a turn and have no cost.'
     );
     expect(body).toContain(
       '| `Bash: cat a` | 4 | $0.76 | [11](https://github.com/owner/repo/actions/runs/11), [12](https://github.com/owner/repo/actions/runs/12) | `Bash: cat a \\| tail` |'
@@ -229,6 +234,7 @@ describe('issueBody', () => {
           groups: [],
           runs: 0,
           turns: 0,
+          unlinked: 0,
         },
         'o/r',
         new Date('2026-10-17T00:00:00Z')

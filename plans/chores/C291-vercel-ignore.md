@@ -5,17 +5,26 @@
 
 ## Approach
 
-`vercel.json` sets `ignoreCommand` to `node scripts/vercel-ignore.mts`. It runs before `npm ci`, so it imports only `node:` modules. It exports `invisible(path)` and `run(env, git)`, shaped like `design-shots-ci.mts`: 1 on `po-preview`; otherwise diff `HEAD^ HEAD` on `main`, or `origin/main...HEAD` (fetching `main` if missing); 0 only for a non-empty, all-invisible diff. Any git error gives 1.
+`vercel.json` runs `node scripts/vercel-ignore.mts`, built-ins only (it runs before `npm ci`). It exports `invisible(path)` and `run(env, get)`: 1 on `po-preview`; else it lists changed files via the GitHub API with `KINSCAPE_GIT_READ_TOKEN`: the commit on `main`, `compare/main...<sha>` elsewhere, renames counting both paths. 0 only for 1–299 files, all invisible; no token or any HTTP error gives 1. The token goes only in the `Authorization` header.
 
-The import test resolves relative and `@/` imports in non-test `app/`, `lib/` and `types/` files, failing on any `invisible` path.
+The import test resolves imports in non-test `app/`, `lib/` and `types/` files, failing on any `invisible` path.
 
 ## Decisions
 
 **D1 · `lib/design/sweep.mts` imports `scripts/design-shots.mts`** · Decides: Tech lead
-The import test would fail on it. Only a test uses `sweep.mts`.
+The import test would fail on it.
 
-- **A.** Move `shotFor` and `Shot` to `lib/design/shots.mts`; both import from there.
-- **B.** The import test skips `sweep.mts`, with the reason.
+- **A.** Move `shotFor` and `Shot` to `lib/design/shots.mts`.
+- **B.** Skip `sweep.mts` in the import test.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D2 · How the script reads the diff** · Decides: Tech lead
+Vercel's clone has no `origin` and is shallow.
+
+- **A.** GitHub API: GitHub finds the merge base.
+- **B.** `git fetch` by URL, then `git diff`; may lack a merge base.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -26,25 +35,21 @@ The import test would fail on it. Only a test uses `sweep.mts`.
 | ------------------------------------------------------- | ------------- | ------------- |
 | `vercel.json`, `scripts/vercel-ignore.mts`              | New           | The rule      |
 | `scripts/__tests__/vercel-{ignore,imports}.test.ts`     | New           | Both tests    |
-| `lib/design/shots.mts`, `sweep.mts`, `design-shots.mts` | New, changed  | D1 A only     |
-| `docs/repo-settings.md`, `docs/building.md`             | Changed       | Table, _Live_ |
+| `lib/design/shots.mts`, `sweep.mts`, `design-shots.mts` | New, changed  | D1 A          |
+| `docs/repo-settings.md`, `docs/building.md`             | Changed       | Token, _Live_ |
 
 ## Order of work
 
-1. Commit this plan: `plan(C291): approved by @henetiriki`.
-2. Probe: push `chore/C291-probe`, whose `ignoreCommand` exits 0 only if `git fetch origin main` and `git merge-base` succeed; read Vercel's status with `gh api`; delete the branch. Needs a token: hand back.
+1. Commit this plan; reword #291's _Diff_ and token lines.
+2. Tech lead adds the token. Probe prints the compare call's status; delete the branch.
 3. Tests, script, D1, docs.
 4. Tech lead empties the dashboard's Ignored Build Step.
 
-## Risks
-
-- `main` unreachable: every branch push deploys, not only the first; docs say so.
-
 ## Proof
 
-| Acceptance check                     | Proven by                                                                     |
-| ------------------------------------ | ----------------------------------------------------------------------------- |
-| Skips and deploys per rule           | Unit tests; after merge, Vercel status on the next docs-only PR and its merge |
-| Build without listed paths identical | `.next` hashes, build ID masked, against a full build                         |
-| Import test fails                    | A run with a planted import                                                   |
-| Lint, tests, validator, e2e          | Their output                                                                  |
+| Acceptance check                     | Proven by                                                 |
+| ------------------------------------ | --------------------------------------------------------- |
+| Skips and deploys per rule           | Unit tests; Vercel status on a docs-only PR and its merge |
+| Build without listed paths identical | `.next` hashes against a full build                       |
+| Import test fails                    | A run with a planted import                               |
+| Lint, tests, validator, e2e          | Their output                                              |

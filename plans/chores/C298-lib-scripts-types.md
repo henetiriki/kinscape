@@ -1,7 +1,7 @@
 # Plan: C298: Move `lib/` and `scripts/` exported types into per-folder `types.ts` and lint for it
 
 - **Spec:** #298
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ The lint rule bans `ExportNamedDeclaration > TSTypeAliasDeclaration` and `> TSIn
 - **B.** A second `GhRead` in `scripts/types.ts`.
 - **Other:** your own.
 
-Recommended: A, because a one-argument function satisfies `Gh`, so no runtime code changes.
+**Answer: A** (@henetiriki)
 
 **D2 · Nothing imports `design-shots.mts`'s `Deps`** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because a one-argument function satisfies `Gh`, so no runtime co
 - **B.** Move it as `DesignShotsDeps`, like the other two.
 - **Other:** your own.
 
-Recommended: A, because that is the rule for unimported types.
+**Answer: A** (@henetiriki)
 
 ## Order of work
 

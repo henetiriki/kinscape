@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/types';
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { EventType } from '@/app/components/map/types';
 
 import { Icon } from '@/app/components/foundation/Icon';
 import { EventGlyph } from '@/app/components/map/EventGlyph';

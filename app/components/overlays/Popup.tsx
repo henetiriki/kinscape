@@ -4,28 +4,15 @@ import type { CSSProperties } from 'react';
 
 import { useId } from 'react';
 
-import type { EventType } from '@/app/components/map/EventGlyph';
-
 import { Button } from '@/app/components/actions/Button';
 import { TextLink } from '@/app/components/actions/TextLink';
 import { Icon } from '@/app/components/foundation/Icon';
 import { Text } from '@/app/components/foundation/Text';
 import { EventGlyph } from '@/app/components/map/EventGlyph';
 
+import type { ChainLevel, PopupPin } from './types';
+
 import styles from './Popup.module.css';
-
-/** One level of the Jurisdiction chain; `detail` says what the name was before. */
-export type ChainLevel = { detail?: string; level: string; name: string };
-
-export type PopupPin = {
-  date: string;
-  event: EventType;
-  /** The pin's record; a pin without one is plain text. */
-  href?: string;
-  id: string;
-  people: string;
-  title: string;
-};
 
 /** What Copy chain copies: a line per level, smallest first, as `Colony: Cape Colony (Was … until 1880)`. */
 export const chainText = (chain: ChainLevel[]) =>

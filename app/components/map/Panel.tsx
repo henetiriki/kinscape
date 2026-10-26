@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { Tab } from '@/app/components/actions/Tabs';
+import type { Tab } from '@/app/components/actions/types';
 
 import { Tabs } from '@/app/components/actions/Tabs';
 

@@ -10,7 +10,7 @@ import { Modal, ModalClose } from '@/app/components/overlays/Modal';
 
 import styles from './Dialog.module.css';
 
-export type DialogForm = 'centred' | 'sheet';
+type DialogForm = 'centred' | 'sheet';
 
 type PanelProps = {
   children: ReactNode;

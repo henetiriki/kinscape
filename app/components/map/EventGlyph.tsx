@@ -1,3 +1,5 @@
+import type { EventType } from './types';
+
 import styles from './EventGlyph.module.css';
 
 /** The character for each Event type (DESIGN.md › Event glyphs). */
@@ -12,8 +14,6 @@ export const EVENT_GLYPHS = {
   other: '✱',
   residence: '■',
 } as const;
-
-export type EventType = keyof typeof EVENT_GLYPHS;
 
 // U+FE0E asks for the text form, so ✚ and ✱ never draw as emoji.
 const TEXT_FORM = '︎';

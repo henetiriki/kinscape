@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { EventType } from '@/app/components/map/types';
 
 import { Text } from '@/app/components/foundation/Text';
 import { EventGlyph } from '@/app/components/map/EventGlyph';

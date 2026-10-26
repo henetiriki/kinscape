@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { EventType } from '@/app/components/map/types';
 
 import { Chip } from '@/app/components/actions/Chip';
 import { Avatar } from '@/app/components/map/Avatar';

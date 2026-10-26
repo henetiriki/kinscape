@@ -1,7 +1,7 @@
 # Plan: C296: Move `app/` exported types into per-folder `types.ts`
 
 - **Spec:** #296
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Cut each type into its folder's `types.ts` unchanged, then repoint importers: `@
 - **B.** Move both exported: 28 move, 2 unexported.
 - **Other:** your own.
 
-Recommended: A, because they stay unexported and their only user moves.
+**Answer: A** (@henetiriki)
 
 **D2 · `TextVariant` is built from unexported `Heading` and `Other`** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ Recommended: A, because they stay unexported and their only user moves.
 - **B.** Same, renamed `HeadingVariant` and `BodyVariant`.
 - **Other:** your own.
 
-Recommended: A, because no type changes.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

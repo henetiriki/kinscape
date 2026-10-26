@@ -7,7 +7,7 @@ import { Text } from '@/app/components/foundation/Text';
 
 import styles from './LayerGroup.module.css';
 
-export type LayerRow = {
+type LayerRow = {
   checked: boolean;
   description?: ReactNode;
   disabled?: boolean;

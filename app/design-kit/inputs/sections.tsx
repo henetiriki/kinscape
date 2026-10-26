@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import type { Tab } from '@/app/components/actions/Tabs';
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { Tab } from '@/app/components/actions/types';
+import type { EventType } from '@/app/components/map/types';
 
 import { Button } from '@/app/components/actions/Button';
 import { Chip, RemovableChip } from '@/app/components/actions/Chip';

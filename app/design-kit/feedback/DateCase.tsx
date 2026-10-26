@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react';
 
 import { useState } from 'react';
 
-import type { Precision } from '@/lib/map/map-date';
+import type { Precision } from '@/lib/map/types';
 
 import { Button } from '@/app/components/actions/Button';
 import { IconButton } from '@/app/components/actions/IconButton';

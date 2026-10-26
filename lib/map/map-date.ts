@@ -1,7 +1,7 @@
+import type { Precision } from './types';
+
 import { fromDay, toDay } from '../boundaries/model.mts';
 import { dayOf } from './filter';
-
-export type Precision = 'day' | 'month' | 'year';
 
 export const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 

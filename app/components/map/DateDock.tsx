@@ -5,7 +5,7 @@ import type { ComponentProps } from 'react';
 import { useEffect, useState } from 'react';
 
 import type { ContestedYears, Epoch } from '@/app/components/map/types';
-import type { Precision } from '@/lib/map/map-date';
+import type { Precision } from '@/lib/map/types';
 
 import { IconButton } from '@/app/components/actions/IconButton';
 import { Segmented } from '@/app/components/actions/Segmented';

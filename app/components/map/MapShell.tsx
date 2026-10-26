@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import type { Source } from '@/lib/boundaries/types.ts';
-import type { Span } from '@/lib/map/coverage';
+import type { Span } from '@/lib/map/types';
 
 import { NoticeCard } from '@/app/components/feedback/NoticeCard';
 import { usePhone } from '@/app/components/foundation/usePhone';

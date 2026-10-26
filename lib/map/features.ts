@@ -2,12 +2,12 @@ import polylabel from 'polylabel';
 
 import type { BoundaryData, BoundaryVersion } from '../boundaries/types.ts';
 
-export type PolityCollection = {
+type PolityCollection = {
   features: PolityFeature[];
   type: 'FeatureCollection';
 };
 
-export type PolityFeature = {
+type PolityFeature = {
   geometry:
     { coordinates: number[]; type: 'Point' } | BoundaryVersion['geometry'];
   properties: Record<string, boolean | null | number | string>;

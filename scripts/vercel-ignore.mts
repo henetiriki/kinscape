@@ -8,7 +8,7 @@ const API = 'https://api.github.com/repos/henetiriki/kinscape/';
 /** GitHub lists at most 300 files without paging; a list that long may be cut short. */
 const LIMIT = 300;
 
-// Paths no user can see. Keep in step with docs/repo-settings.md.
+// Paths no user can see. Every other path deploys, so an unlisted one costs a redundant build, never a missed one.
 const INVISIBLE = [
   /^(?:docs|plans|\.github|\.claude|\.husky|\.idea|e2e|scripts|design\/source)\//,
   /^[^/]+\.md$/,

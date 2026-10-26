@@ -34,4 +34,4 @@ When a user-visible pull request is ready to try, Claude sets `status: ready-for
 
 ## Live
 
-Merging to `main` deploys production on Vercel; there is no separate release. To undo a bad one, the tech lead uses Instant Rollback in the Vercel dashboard, then merges a revert pull request so `main` matches production. Claude never deploys.
+Merging to `main` deploys production on Vercel unless nothing visible changed ([rule](repo-settings.md#vercel)); no separate release. To undo a bad one, the tech lead uses Instant Rollback in the Vercel dashboard, then merges a revert pull request so `main` matches production.

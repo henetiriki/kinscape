@@ -6,11 +6,11 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 
 ## Source of truth
 
-- `docs/requirements.md`: the baseline requirements; each has an ID (e.g. `MAP-03`). Cite IDs in plans, commits and PRs.
+- `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
 - **Intents:** one per milestone (M1–M6), filed already approved. New ideas and requirement changes arrive as `type: intent` issues.
-- **Specs:** `type: spec` issues, one per slice of an Intent. The PO approves user-visible slices; the tech lead, engineering-only ones.
+- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead, engineering-only ones.
 - `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen isn't designed, list it under **Flagged concerns**; don't invent the UI.
-- `docs/architecture.md`: where changes go and the patterns to follow; read before planning. `docs/architecture-target.md` is proposed, not a rule.
+- [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) is proposed, not a rule.
 - `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
 
@@ -25,7 +25,7 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 
 ## Plans
 
-One plan per Spec or Bug, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md).
+One plan per Spec or Bug, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md) and [`docs/architecture.md`](docs/architecture.md).
 
 ## Data rules
 

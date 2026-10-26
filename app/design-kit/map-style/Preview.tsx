@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { PreviewKind } from './layers';
+import type { PreviewKind } from './types';
 
 import rawTokens from '../../../design/tokens.json';
 import styles from './Preview.module.css';

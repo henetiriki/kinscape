@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import { useId } from 'react';
 
-import type { IconName } from '@/app/components/foundation/Icon';
+import type { IconName } from '@/app/components/foundation/types';
 
 import { Button } from '@/app/components/actions/Button';
 import { ProgressBar } from '@/app/components/feedback/ProgressBar';

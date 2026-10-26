@@ -4,8 +4,7 @@ import type { ComponentProps } from 'react';
 
 import { useEffect, useState } from 'react';
 
-import type { ContestedYears } from '@/app/components/map/DateSlider';
-import type { Epoch } from '@/app/components/map/JumpTo';
+import type { ContestedYears, Epoch } from '@/app/components/map/types';
 import type { Precision } from '@/lib/map/map-date';
 
 import { IconButton } from '@/app/components/actions/IconButton';

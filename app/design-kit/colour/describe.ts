@@ -4,7 +4,7 @@ import {
   formatRatio,
 } from '@/lib/design/contrast.mts';
 
-import type { On, Role, SystemLine } from './swatches';
+import type { On, Role, SystemLine } from './types';
 
 type Tree = { [key: string]: number | string | Tree };
 

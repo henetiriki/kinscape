@@ -1,3 +1,5 @@
+import type { Board } from './types';
+
 /**
  * The built design kit boards, in style guide order; each is at `/design-kit/<slug>`.
  * `title` is the landing page link and the board's heading; `label` is the short name for the menu bar.
@@ -67,8 +69,6 @@ export const BOARDS = [
     title: 'MapLibre layer stack',
   },
 ] as const;
-
-export type Board = (typeof BOARDS)[number];
 
 export const boardTitle = (slug: Board['slug']) =>
   BOARDS.find(board => board.slug === slug)!.title;

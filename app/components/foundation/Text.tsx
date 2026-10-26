@@ -1,28 +1,8 @@
 import type { ComponentProps } from 'react';
 
-import styles from './Text.module.css';
+import type { Heading, Other, Tone } from './types';
 
-export type TextVariant = Heading | Other;
-type Heading = 'display' | 'h1' | 'h2' | 'h3';
-type Other =
-  | 'body'
-  | 'bodyL'
-  | 'button'
-  | 'buttonS'
-  | 'caption'
-  | 'chip'
-  | 'chipOff'
-  | 'control'
-  | 'credits'
-  | 'h1Phone'
-  | 'label'
-  | 'link'
-  | 'linkS'
-  | 'mono'
-  | 'monoL'
-  | 'overline'
-  | 'small'
-  | 'title';
+import styles from './Text.module.css';
 
 type Tag =
   'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'label' | 'p' | 'span';
@@ -48,8 +28,6 @@ const DEFAULT_TAG: Record<Other, Tag> = {
   small: 'span',
   title: 'span',
 };
-
-export type Tone = 'error' | 'info' | 'warning';
 
 type Props = {
   /** For `as='label'`. */

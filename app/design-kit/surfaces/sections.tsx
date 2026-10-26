@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { SurfaceLevel } from '@/app/components/foundation/Surface';
+import type { SurfaceLevel } from '@/app/components/foundation/types';
 import type { Source } from '@/lib/boundaries/model.mts';
 
 import { Button } from '@/app/components/actions/Button';
@@ -19,7 +19,7 @@ import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { Column } from '../inputs/Board';
+import type { Column } from '../inputs/types';
 
 import {
   Accessibility,

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { EventType } from '@/app/components/map/types';
 
 import { ChipGroup } from '@/app/components/actions/ChipGroup';
 import { EVENT_GLYPHS } from '@/app/components/map/EventGlyph';

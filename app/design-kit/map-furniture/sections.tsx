@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { EventType } from '@/app/components/map/types';
 
 import { Chip } from '@/app/components/actions/Chip';
 import { Avatar } from '@/app/components/map/Avatar';
@@ -12,7 +12,7 @@ import { Wordmark } from '@/app/components/map/Wordmark';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { Column } from '../inputs/Board';
+import type { Column } from '../inputs/types';
 
 import {
   ByViewport,

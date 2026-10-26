@@ -1,5 +1,8 @@
-import type { MenuEntry } from '@/app/components/overlays/Menu';
-import type { ChainLevel, PopupPin } from '@/app/components/overlays/Popup';
+import type {
+  ChainLevel,
+  MenuEntry,
+  PopupPin,
+} from '@/app/components/overlays/types';
 
 export const MENU_GROUPS: MenuEntry[][] = [
   [

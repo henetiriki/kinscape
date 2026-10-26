@@ -1,41 +1,12 @@
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import type { Layer } from './types';
+
 import rawTokens from '../../../design/tokens.json';
 
 const { colour, map } = resolveTokens(rawTokens);
 
 const hex = (value: string) => value.toUpperCase();
-
-export type Layer = {
-  covers: string[];
-  filter: string;
-  id: string;
-  preview: PreviewKind;
-  properties: string;
-  type: string;
-};
-
-export type PreviewKind =
-  | 'background'
-  | 'cluster'
-  | 'coastline'
-  | 'contested'
-  | 'district'
-  | 'glyphs'
-  | 'halo'
-  | 'hillshade'
-  | 'land'
-  | 'line-approx'
-  | 'line-changed'
-  | 'line'
-  | 'place-dot'
-  | 'place-label'
-  | 'polity-label'
-  | 'polity'
-  | 'ring'
-  | 'river-label'
-  | 'river'
-  | 'water-label';
 
 // Values the tokens lack (opacity 0.6, illumination 315°, cluster radius 40) are text, as designed.
 export const LAYERS: Layer[] = [

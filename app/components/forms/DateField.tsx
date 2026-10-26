@@ -4,8 +4,7 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useEffect, useId, useState } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/controls';
-import type { Tone } from '@/app/components/foundation/Text';
+import type { ControlState, Tone } from '@/app/components/foundation/types';
 import type { Problem } from '@/lib/map/date-input';
 import type { Precision } from '@/lib/map/map-date';
 

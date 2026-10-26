@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
-import styles from './Surface.module.css';
+import type { SurfaceLevel } from './types';
 
-export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
+import styles from './Surface.module.css';
 
 /** A white surface above the map; the higher the level, the more it interrupts. */
 export const Surface = ({

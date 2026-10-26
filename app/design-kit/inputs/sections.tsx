@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
-import type { Tab } from '@/app/components/actions/Tabs';
-import type { EventType } from '@/app/components/map/EventGlyph';
+import type { Tab } from '@/app/components/actions/types';
+import type { EventType } from '@/app/components/map/types';
 
 import { Button } from '@/app/components/actions/Button';
 import { Chip, RemovableChip } from '@/app/components/actions/Chip';
@@ -18,7 +18,7 @@ import { SheetPanel } from '@/app/components/overlays/Sheet';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { Column } from './Board';
+import type { Column } from './types';
 
 import {
   ByViewport,

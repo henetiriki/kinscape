@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 
-import type { TextVariant } from '@/app/components/foundation/Text';
+import type { TextVariant } from '@/app/components/foundation/types';
 
 import { Text } from '@/app/components/foundation/Text';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import type { Label } from '../mapLabels';
+import type { Label } from '../types';
 
 import rawTokens from '../../../design/tokens.json';
 import { boardTitle } from '../boards';

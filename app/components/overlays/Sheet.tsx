@@ -4,7 +4,7 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useId } from 'react';
 
-import type { Tab } from '@/app/components/actions/Tabs';
+import type { Tab } from '@/app/components/actions/types';
 
 import { Tabs } from '@/app/components/actions/Tabs';
 import { Text } from '@/app/components/foundation/Text';

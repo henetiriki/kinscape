@@ -1,4 +1,4 @@
-import type { ChipOption } from '@/app/components/actions/ChipGroup';
+import type { ChipOption } from '@/app/components/actions/types';
 
 import { Button } from '@/app/components/actions/Button';
 import { ChipGroup } from '@/app/components/actions/ChipGroup';

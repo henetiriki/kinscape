@@ -2,7 +2,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import type { Shot } from '../lib/design/shots.mts';
+import type { Shot } from '../lib/design/types.ts';
 
 import { shotFor } from '../lib/design/shots.mts';
 

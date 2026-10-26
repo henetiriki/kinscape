@@ -1,21 +1,7 @@
 // Reads the transcript claude-code-action leaves in claude-execution-output.json: a JSON array of
 // events. Shared by the run summary and the weekly denial audit.
 
-export type Denial = { detail: string; tool: string };
-
-export type Transcript = {
-  costUsd: number | undefined;
-  denials: Denial[];
-  durationMs: number | undefined;
-  finalText: string;
-  model: string | undefined;
-  // The result event's subtype ("success", "error_max_turns", ...), or "no result" if the run
-  // stopped before one.
-  outcome: string;
-  // Tool calls by name; a Bash call is counted by the command it starts with (`Bash:npm`).
-  tools: Record<string, number>;
-  turns: number | undefined;
-};
+import type { Transcript } from './types.ts';
 
 type Block = { input?: Record<string, unknown>; name?: string; type?: string };
 

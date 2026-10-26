@@ -6,7 +6,7 @@ import type { Shot } from '../lib/design/types.ts';
 
 import { shotFor } from '../lib/design/shots.mts';
 
-export type Deps = {
+type Deps = {
   /** Renders the page at `url` to JPG bytes; rejects on any non-`file:` request. */
   shoot: (url: string, shot: Shot) => Promise<Uint8Array>;
 };

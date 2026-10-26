@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Deps } from '../prepare-map-data.mts';
+import type { PrepareMapDataDeps } from '../types.ts';
 
 import {
   boundaryVersions,
@@ -250,7 +250,7 @@ describe('prepare', () => {
     'provinces_1910.json': JSON.stringify({ features: unionProvinces() }),
   });
 
-  const deps = (output = outputs()): Deps => ({
+  const deps = (output = outputs()): PrepareMapDataDeps => ({
     applyCommands: vi.fn(async () => output),
     download: vi.fn(async (url: string) => new TextEncoder().encode(url)),
     glyphRange: vi.fn(async (_font, start, end) =>

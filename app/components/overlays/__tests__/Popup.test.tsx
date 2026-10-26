@@ -58,6 +58,17 @@ it('is a non-modal dialog with the overline, name and coordinates', () => {
   expect(screen.getByText('28.738° S · 24.764° E')).toBeTruthy();
 });
 
+// NFR-06
+it("draws a pin row's Event glyph before its title, with no glyph character", () => {
+  const { container } = show();
+  const glyph = container.querySelector('[data-event="marriage"]')!;
+
+  expect(glyph.tagName.toLowerCase()).toBe('svg');
+  expect(glyph.getAttribute('aria-hidden')).toBe('true');
+  expect(glyph.nextElementSibling?.textContent).toContain('Marriage');
+  expect(glyph.parentElement?.textContent).not.toMatch(/[*▪∞†~%•⚰]|︎/);
+});
+
 it('lists the chain as an ordered list, smallest unit first, with the detail', () => {
   show();
 

@@ -4,7 +4,7 @@ import type { EventType } from '@/app/components/map/types';
 
 import { Chip } from '@/app/components/actions/Chip';
 import { Avatar } from '@/app/components/map/Avatar';
-import { EventGlyph } from '@/app/components/map/EventGlyph';
+import { EVENT_ORDER, EventGlyph } from '@/app/components/map/EventGlyph';
 import { LayersButton } from '@/app/components/map/LayersButton';
 import { Legend } from '@/app/components/map/Legend';
 import { SearchBar } from '@/app/components/map/SearchBar';
@@ -54,7 +54,9 @@ const NAMES: Record<EventType, string> = {
   burial: 'Burial',
   death: 'Death',
   divorce: 'Divorce',
+  land: 'Land',
   marriage: 'Marriage',
+  occupation: 'Occupation',
   other: 'Other',
   residence: 'Residence',
 };
@@ -322,32 +324,22 @@ export const MapControls = () => (
 
 const SIZES = [12, 14, 16] as const;
 
-// The order board 08 draws them in.
-const BOARD_ORDER: EventType[] = [
-  'birth',
-  'baptism',
-  'residence',
-  'marriage',
-  'divorce',
-  'death',
-  'burial',
-  'other',
-];
-
 export const EventGlyphs = () => (
   <Section
     lead='One shape per event type, used wherever an event appears: chips, the legend, pin rows and the map.'
     part={2}
     title='Event glyphs'>
     <Variants>
-      <Variant caption='All eight at 12, 14 and 16, in pin. Each event keeps its shape everywhere, so colour never carries the meaning alone.'>
+      <Variant caption='All ten at 12, 14 and 16, in pin. Each event keeps its shape everywhere, so colour never carries the meaning alone.'>
         <DesktopOnly>
           <div className={styles.glyphGrid}>
-            {BOARD_ORDER.map(type => (
+            {EVENT_ORDER.map(type => (
               <div className={styles.glyphCard} key={type}>
                 <span className={styles.glyphSizes}>
                   {SIZES.map(size => (
-                    <EventGlyph event={type} key={size} size={size} />
+                    <span key={size} style={{ fontSize: size }}>
+                      <EventGlyph event={type} />
+                    </span>
                   ))}
                 </span>
                 <span className={styles.glyphName}>{NAMES[type]}</span>
@@ -363,12 +355,14 @@ export const EventGlyphs = () => (
                 <span key={size}>{size}</span>
               ))}
             </li>
-            {BOARD_ORDER.map(type => (
+            {EVENT_ORDER.map(type => (
               <li className={styles.glyphRow} key={type}>
                 <span className={styles.glyphName}>{NAMES[type]}</span>
                 {SIZES.map(size => (
                   <span className={styles.glyphCell} key={size}>
-                    <EventGlyph event={type} size={size} />
+                    <span style={{ fontSize: size }}>
+                      <EventGlyph event={type} />
+                    </span>
                   </span>
                 ))}
               </li>
@@ -382,10 +376,10 @@ export const EventGlyphs = () => (
             Marriage
           </Chip>
           <span className={styles.legendRow}>
-            <EventGlyph event='birth' size={13} /> Birth
+            <EventGlyph event='birth' /> Birth
           </span>
           <span className={styles.pinRow}>
-            <EventGlyph event='marriage' size={14} />
+            <EventGlyph event='marriage' />
             <span>Marriage</span>
           </span>
         </span>
@@ -402,7 +396,7 @@ export const EventGlyphs = () => (
         ],
         [
           'Shapes',
-          'Each event has its own character (* ∞ % † ~ ⚰ ▪ •), so meaning never rests on colour alone and holds up in greyscale (NFR-06).',
+          'Each event has its own shape, so meaning never rests on colour alone and holds up in greyscale (NFR-06).',
         ],
       ]}
       label='Event glyphs'
@@ -414,13 +408,13 @@ export const EventGlyphs = () => (
           'no token',
         ],
         [
-          'Font',
-          'Unicode characters set in Public Sans; the browser falls back for ∞ † ⚰ ▪ where Public Sans lacks them',
-          'font.body',
+          'Drawing',
+          'The kse-*.svg icons in design/source: 24 × 24, filled in currentColor, inline at 1em',
+          'no token',
         ],
         [
           'On the map',
-          'SDF icons in pin with a 2px white halo (map style board)',
+          'SDF icons made from the same SVGs, in pin with a 2px white halo (map style board)',
           'map.pin.colour · map.pin.halo-width',
         ],
       ]}

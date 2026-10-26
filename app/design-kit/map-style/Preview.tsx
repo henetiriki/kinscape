@@ -1,5 +1,6 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
+import { EVENT_PATHS } from '@/app/components/map/EventGlyph';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
 import type { PreviewKind } from './types';
@@ -29,6 +30,26 @@ const target = (...stops: [string, number][]) => {
   return `radial-gradient(circle, ${list.join(', ')}, ${map.land} ${from}px)`;
 };
 
+const GLYPH_SAMPLE = ['birth', 'residence', 'marriage', 'death'] as const;
+
+/** Pin icons as the map draws them: `--pin` with a white halo. The stroke is twice the halo, half of it hidden under the fill. */
+const glyphs = GLYPH_SAMPLE.map(event => (
+  <svg
+    aria-hidden='true'
+    fill={map.pin.colour}
+    height='16'
+    key={event}
+    paintOrder='stroke'
+    stroke={map.pin.halo}
+    strokeLinejoin='round'
+    strokeWidth={map.pin['halo-width'] * 2}
+    vectorEffect='non-scaling-stroke'
+    viewBox='0 0 24 24'
+    width='16'>
+    <path d={EVENT_PATHS[event]} />
+  </svg>
+));
+
 const label = (
   background: string,
   font: string,
@@ -38,7 +59,7 @@ const label = (
 
 const PREVIEWS: Record<
   PreviewKind,
-  { content?: string; style: CSSProperties }
+  { content?: ReactNode; style: CSSProperties }
 > = {
   background: { style: { background: map.sea } },
   cluster: {
@@ -62,8 +83,8 @@ const PREVIEWS: Record<
   },
   district: { style: { background: stripe(map.district.colour, 17, 1) } },
   glyphs: {
-    content: '*▪∞†',
-    style: label(map.land, '16px var(--font-body)', map.pin.colour, 4),
+    content: glyphs,
+    style: { background: map.land, gap: 4 },
   },
   halo: {
     style: {

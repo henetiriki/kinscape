@@ -66,7 +66,7 @@ export const Legend = () => (
     <span className={styles.glyphs}>
       {GLYPHS.map(([event, name]) => (
         <span key={event}>
-          <EventGlyph event={event} size={13} /> {name}
+          <EventGlyph event={event} /> {name}
         </span>
       ))}
     </span>

@@ -495,6 +495,8 @@ const EVENTS: { label: string; on: boolean; type: EventType }[] = [
   { label: 'Divorce', on: false, type: 'divorce' },
   { label: 'Death', on: false, type: 'death' },
   { label: 'Burial', on: false, type: 'burial' },
+  { label: 'Land', on: false, type: 'land' },
+  { label: 'Occupation', on: false, type: 'occupation' },
   { label: 'Other', on: false, type: 'other' },
 ];
 
@@ -507,8 +509,8 @@ export const Chips = () => (
       <Variant
         caption={
           <ByViewport
-            desktop='All eight event types, some on and some off. 36 tall in the desktop panel, with a 44 hit area.'
-            phone='All eight event types, some on and some off. 44 tall on a phone.'
+            desktop='All ten event types, some on and some off. 36 tall in the desktop panel, with a 44 hit area.'
+            phone='All ten event types, some on and some off. 44 tall on a phone.'
           />
         }>
         <span className={`${styles.chips} ${styles.phoneChips}`}>

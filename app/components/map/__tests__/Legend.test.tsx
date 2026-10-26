@@ -33,10 +33,29 @@ it('names its heading and the four meanings, then the four Event glyphs', () => 
   ).toEqual(['birth', 'residence', 'marriage', 'death']);
 });
 
+// NFR-06
+it('draws each Event glyph before its name, with no glyph character', () => {
+  const { container } = render(<Legend />);
+  const rows = [...container.querySelectorAll('[data-event]')].map(
+    glyph => glyph.parentElement!
+  );
+
+  expect(rows.map(row => row.textContent?.trim())).toEqual([
+    'Birth',
+    'Residence',
+    'Marriage',
+    'Death',
+  ]);
+  expect(
+    rows.every(row => row.firstElementChild?.tagName.toLowerCase() === 'svg')
+  ).toBe(true);
+  expect(container.textContent).not.toMatch(/[*▪∞†]|\uFE0E/);
+});
+
 it('hides every swatch from assistive tech', () => {
   const { container } = render(<Legend />);
 
-  expect(container.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(3);
+  expect(container.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(7);
   expect(container.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 });
 

@@ -100,7 +100,7 @@
       "width": 1440
     },
     {
-      "height": 7705,
+      "height": 7739,
       "mode": "blocking",
       "name": "style-6-components-inputs-phone",
       "route": "/design-kit/inputs",
@@ -142,7 +142,7 @@
       "width": 390
     },
     {
-      "height": 5856,
+      "height": 5834,
       "mode": "blocking",
       "name": "style-8-components-map",
       "route": "/design-kit/map-furniture",
@@ -173,7 +173,7 @@
       "name": "style-8-components-map-2-phone",
       "route": "/design-kit/map-furniture?part=2",
       "width": 390,
-      "height": 4726,
+      "height": 4767,
       "mode": "blocking"
     }
   ],

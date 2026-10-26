@@ -66,3 +66,8 @@ The Spec issue body changes "eight" to "ten" and records D4 (`gh issue edit`).
 
 - Map pin SDF icons, their halo and the fuzzy fade (EXP-02).
 - The Filters screen (`map-*-filters`): not built yet.
+
+## Deviations
+
+- 1em and `--pin` are proven by a unit test on the CSS module only; no e2e computed-style check.
+- The map-furniture "Facts" text and `design/screens.json` heights follow the new snapshots.

@@ -70,8 +70,9 @@ The issue says to keep `▪` U+25AA, but today's glyph is `■` U+25A0.
 
 - `map-furniture/page.module.css`: the glyph grid has 8 columns, not 9.
 - The kit's chip row has three on, not four, since Land (on) is gone.
+- `docs/requirements.md` changed at @henetiriki's request, with Intent #302 for @starforms to review: PIN-03 lists the eight Event types; the range-pin text moves from EXP-01 to a new EXP-09 (Could), which EXP-01 no longer carries.
+- EXP-09 keeps "land ownership": @henetiriki will add it back if it becomes a requirement. Its milestone is open for #302.
 
 ## Out of scope
 
-- Changing PIN-03 or EXP-01 (an Intent).
 - Map pin SDF icons.

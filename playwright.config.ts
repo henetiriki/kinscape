@@ -1,4 +1,6 @@
-import { defineConfig, type PlaywrightWorkerOptions } from '@playwright/test';
+import type { PlaywrightWorkerOptions } from '@playwright/test';
+
+import { defineConfig } from '@playwright/test';
 
 // How the browser is launched. Every project below uses this one object, so
 // all of them run the same Chromium the same way. The top-level `use` further down

@@ -1,20 +1,19 @@
 'use client';
 
-import {
-  type ComponentProps,
-  type ReactNode,
-  useEffect,
-  useId,
-  useState,
-} from 'react';
+import type { ComponentProps, ReactNode } from 'react';
+
+import { useEffect, useId, useState } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
+import type { Tone } from '@/app/components/foundation/Text';
+import type { Problem } from '@/lib/map/date-input';
+import type { Precision } from '@/lib/map/map-date';
 
 import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
 import { TextField } from '@/app/components/forms/TextField';
-import { Text, type Tone } from '@/app/components/foundation/Text';
-import { checkDate, type Problem } from '@/lib/map/date-input';
-import { finerPrecision, type Precision, shownDate } from '@/lib/map/map-date';
+import { Text } from '@/app/components/foundation/Text';
+import { checkDate } from '@/lib/map/date-input';
+import { finerPrecision, shownDate } from '@/lib/map/map-date';
 
 import styles from './DateField.module.css';
 

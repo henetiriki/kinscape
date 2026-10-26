@@ -1,8 +1,12 @@
-import { type ReactNode, useId } from 'react';
+import type { ReactNode } from 'react';
+
+import { useId } from 'react';
+
+import type { IconName } from '@/app/components/foundation/Icon';
 
 import { Button } from '@/app/components/actions/Button';
 import { ProgressBar } from '@/app/components/feedback/ProgressBar';
-import { Icon, type IconName } from '@/app/components/foundation/Icon';
+import { Icon } from '@/app/components/foundation/Icon';
 
 import styles from './NoticeCard.module.css';
 

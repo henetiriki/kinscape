@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import tokens from '../../../../design/tokens.json';
+import type tokens from '../../../../design/tokens.json';
 
 vi.mock('../../../../design/tokens.json', async importOriginal => {
   const original = await importOriginal<{ default: typeof tokens }>();

@@ -1,4 +1,6 @@
-import { expect, type Page, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
+
+import { expect, test } from '@playwright/test';
 
 // The map is on window only in builds made with NEXT_PUBLIC_E2E=1 (playwright.config.ts).
 type TestWindow = {

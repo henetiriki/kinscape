@@ -2,7 +2,9 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { type Shot, shotFor } from '../lib/design/shots.mts';
+import type { Shot } from '../lib/design/shots.mts';
+
+import { shotFor } from '../lib/design/shots.mts';
 
 export type Deps = {
   /** Renders the page at `url` to JPG bytes; rejects on any non-`file:` request. */

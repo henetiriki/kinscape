@@ -3,10 +3,11 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { Deps } from '../prepare-map-data.mts';
+
 import {
   boundaryVersions,
   buildCommands,
-  type Deps,
   POLITY_IDS,
   prepare,
   UNION_IDS,

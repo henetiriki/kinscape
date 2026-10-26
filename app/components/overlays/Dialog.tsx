@@ -1,6 +1,8 @@
 'use client';
 
-import { type ReactNode, useId } from 'react';
+import type { ReactNode } from 'react';
+
+import { useId } from 'react';
 
 import { Text } from '@/app/components/foundation/Text';
 import { usePhone } from '@/app/components/foundation/usePhone';

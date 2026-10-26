@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 
-import { type Tab, Tabs } from '@/app/components/actions/Tabs';
+import type { Tab } from '@/app/components/actions/Tabs';
+
+import { Tabs } from '@/app/components/actions/Tabs';
 
 import styles from './Panel.module.css';
 

@@ -1,8 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
 
+import type { EventType } from '@/app/components/map/EventGlyph';
+
 import { Chip } from '@/app/components/actions/Chip';
 import { Avatar } from '@/app/components/map/Avatar';
-import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
+import { EventGlyph } from '@/app/components/map/EventGlyph';
 import { LayersButton } from '@/app/components/map/LayersButton';
 import { Legend } from '@/app/components/map/Legend';
 import { SearchBar } from '@/app/components/map/SearchBar';
@@ -10,9 +12,10 @@ import { Wordmark } from '@/app/components/map/Wordmark';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
+import type { Column } from '../inputs/Board';
+
 import {
   ByViewport,
-  type Column,
   DesktopOnly,
   Facts,
   Matrix,

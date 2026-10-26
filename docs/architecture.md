@@ -16,6 +16,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                               |
 | A tool, check or CI helper      | `scripts/`, with its test beside it                                                                           |
 | A browser test                  | `e2e/`                                                                                                        |
+| A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`      |
 
 `.mts` marks a module that Node scripts import, such as `lib/boundaries/model.mts`. This is a habit, not enforced.
 
@@ -37,7 +38,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 
 ## Enforcement
 
-- **Lint** (`eslint.config.mjs`): arrow functions only, no default exports outside Next.js files, sorted keys and imports, accessibility rules, full-path imports of components.
+- **Lint** (`eslint.config.mjs`): arrow functions only, no default exports outside Next.js files, sorted keys and imports, accessibility rules, full-path imports of components, type imports on their own `import type` line.
 - **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
 - **Not enforced:** which layer may import which. `app/components/{map,forms,overlays,auth}` import `lib/`, and `../` imports are allowed outside components.
 

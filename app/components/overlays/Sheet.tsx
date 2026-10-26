@@ -1,8 +1,12 @@
 'use client';
 
-import { type ComponentProps, type ReactNode, useId } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
-import { type Tab, Tabs } from '@/app/components/actions/Tabs';
+import { useId } from 'react';
+
+import type { Tab } from '@/app/components/actions/Tabs';
+
+import { Tabs } from '@/app/components/actions/Tabs';
 import { Text } from '@/app/components/foundation/Text';
 import { Modal, ModalClose } from '@/app/components/overlays/Modal';
 

@@ -1,5 +1,7 @@
+import type { Precision } from './map-date';
+
 import { toDay } from '../boundaries/model.mts';
-import { type Precision, shownDate } from './map-date';
+import { shownDate } from './map-date';
 
 export type Check =
   | { day: number; ok: true; precision: Precision }

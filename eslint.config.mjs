@@ -36,7 +36,12 @@ export default defineConfig([
           prev: ['const', 'let', 'var'],
         },
       ],
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { fixStyle: 'separate-type-imports' },
+      ],
       '@typescript-eslint/no-unused-vars': 'error',
+      'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
       'import/no-default-export': 'error',
       'import/no-unresolved': ['error', { ignore: [String.raw`\.css$`] }],
       'no-restricted-syntax': [

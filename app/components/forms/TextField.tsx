@@ -1,13 +1,8 @@
 'use client';
 
-import {
-  type ComponentProps,
-  type ReactNode,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from 'react';
+import type { ComponentProps, ReactNode } from 'react';
+
+import { useEffect, useId, useRef, useState } from 'react';
 
 import type { ControlState } from '@/app/components/foundation/controls';
 

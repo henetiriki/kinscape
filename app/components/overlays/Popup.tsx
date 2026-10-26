@@ -1,12 +1,16 @@
 'use client';
 
-import { type CSSProperties, useId } from 'react';
+import type { CSSProperties } from 'react';
+
+import { useId } from 'react';
+
+import type { EventType } from '@/app/components/map/EventGlyph';
 
 import { Button } from '@/app/components/actions/Button';
 import { TextLink } from '@/app/components/actions/TextLink';
 import { Icon } from '@/app/components/foundation/Icon';
 import { Text } from '@/app/components/foundation/Text';
-import { EventGlyph, type EventType } from '@/app/components/map/EventGlyph';
+import { EventGlyph } from '@/app/components/map/EventGlyph';
 
 import styles from './Popup.module.css';
 

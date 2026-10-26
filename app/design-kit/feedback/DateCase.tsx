@@ -1,12 +1,16 @@
 'use client';
 
-import { type ComponentProps, useState } from 'react';
+import type { ComponentProps } from 'react';
+
+import { useState } from 'react';
+
+import type { Precision } from '@/lib/map/map-date';
 
 import { Button } from '@/app/components/actions/Button';
 import { IconButton } from '@/app/components/actions/IconButton';
 import { Segmented } from '@/app/components/actions/Segmented';
 import { DateField } from '@/app/components/forms/DateField';
-import { MIN_DAY, type Precision, stepDay, todayDay } from '@/lib/map/map-date';
+import { MIN_DAY, stepDay, todayDay } from '@/lib/map/map-date';
 
 import styles from './page.module.css';
 

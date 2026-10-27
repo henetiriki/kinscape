@@ -11,6 +11,11 @@ on:
       - 'docs/**'
       - 'plans/**'
 
+# One review per PR: a new push cancels the older, now-stale review.
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   claude-review:
     # Dependabot pull requests get no Actions secrets, so the review cannot run.

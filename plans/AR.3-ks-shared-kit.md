@@ -2,7 +2,7 @@
 
 - **Spec:** #316
 - **Requirement IDs:** none (engineering-only)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ Its table holds `map/LayersPanel`, `map/DateDock` (staying on `@/`) and `feedbac
 - **C.** Convert the two map `composes` lines now. That changes the Spec's scope.
 - **Other:** your own.
 
-Recommended: A, because the assertion stays exact.
+**Answer: A** (@henetiriki)
 
 **D2 · Prettier rewraps `Button.tsx:3`** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ The import is 80 characters now and becomes 82, so `npm run format` splits it ov
 - **B.** Add `// prettier-ignore` above it.
 - **Other:** your own.
 
-Recommended: A, because a formatter exception would outlast the rename.
+**Answer: A** (@henetiriki)
 
 **D3 · Stale facts in the Spec** · Decides: Tech lead
 
@@ -45,7 +45,7 @@ The Spec says the rename includes `vi.mock` strings (there are none) and gives a
 - **B.** Leave the Spec as it is, and the plan's Proof explains the gaps.
 - **Other:** your own.
 
-Recommended: A, because the Spec then describes what merges.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

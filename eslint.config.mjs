@@ -21,6 +21,22 @@ const ARROW_FUNCTIONS = [
   },
 ];
 
+// A skip, focus or placeholder needs an `eslint-disable-next-line` with its reason, so review sees it.
+const TEST_MODIFIERS = [
+  {
+    message:
+      'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
+    selector:
+      'MemberExpression[property.name=/^(only|skip|skipIf|runIf|todo|fixme|fail|fails)$/]:matches([object.name=/^(describe|it|suite|test)$/], [object.property.name=/^(describe|concurrent|sequential|shuffle|serial|parallel|step)$/])',
+  },
+  {
+    message:
+      'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
+    selector:
+      'CallExpression:matches([callee.name=/^(describe|it|suite|test)$/], [callee.object.name=/^(describe|it|suite|test)$/], [callee.object.object.name=/^(describe|it|suite|test)$/], [callee.callee.object.name=/^(describe|it|suite|test)$/], [callee.callee.object.object.name=/^(describe|it|suite|test)$/]) > ObjectExpression > Property[key.name=/^(only|skip|todo|fails)$/]',
+  },
+];
+
 export default defineConfig([
   globalIgnores([
     '.claude-pr/**',
@@ -76,6 +92,7 @@ export default defineConfig([
       'no-restricted-syntax': [
         'error',
         ...ARROW_FUNCTIONS,
+        ...TEST_MODIFIERS,
         {
           message: 'Export types from the folder’s types.ts.',
           selector: 'ExportNamedDeclaration > TSTypeAliasDeclaration',

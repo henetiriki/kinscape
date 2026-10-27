@@ -14,6 +14,8 @@ const use: Partial<PlaywrightWorkerOptions> = {
 };
 
 export default defineConfig({
+  // A stray `test.only` fails the run in CI instead of quietly running one test.
+  forbidOnly: !!process.env.CI,
   // Run the tests inside one file side by side too, not only different files.
   fullyParallel: true,
   // A project is a named group of tests. Each picks its tests with a filter, and all

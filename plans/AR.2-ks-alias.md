@@ -2,7 +2,7 @@
 
 - **Spec:** #315
 - **Requirement IDs:** none (engineering-only)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@
 - **B.** A second local rule beside `layers/imports`, reusing its import walker, so those calls are checked too: about 40 more lines plus `RuleTester` cases.
 - **Other:** your own.
 
-Recommended: A, because it adds no code to maintain.
+**Answer: A** (@henetiriki)
 
 **D2 · Proving `composes … from '@ks/…'` under Vitest** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Vitest doesn't process `composes` (see `app/components/__tests__/onSurface.test.
 - **B.** Turn on `css.include` for CSS modules in Vitest. Every component test then runs real CSS, and class names may change, which edits existing tests.
 - **Other:** your own.
 
-Recommended: A, because a missing file already fails `next build`, and B edits tests outside this slice.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

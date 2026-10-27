@@ -12,7 +12,7 @@ Find the PR's plan: a file under `plans/` changed in the PR; else the plan in th
 
 Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken.
 
-Check changed tests against `plans/README.md` rule 10: flag a changed, skipped or deleted test or assertion that the plan doesn't list, and a new `v8 ignore` with no reason.
+Flag a test change `plans/README.md` rule 10 doesn't allow, and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
 In workflows, also check:
 

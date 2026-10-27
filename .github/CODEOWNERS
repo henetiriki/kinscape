@@ -1,5 +1,7 @@
 AGENTS.md @henetiriki
 CLAUDE.md @henetiriki
+docs/security.md @henetiriki
+plans/README.md @henetiriki
 .claude/settings*.json @henetiriki
 scripts/setup-github.sh @henetiriki
 scripts/github/** @henetiriki

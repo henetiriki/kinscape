@@ -7,7 +7,10 @@ import { describe, expect, it } from 'vitest';
 import {
   ALLOWLIST,
   covers,
+  entryOf,
+  fileBreak,
   importsRule,
+  isBuiltin,
   layerBreak,
   layerOf,
   listed,
@@ -81,12 +84,18 @@ const problems = (
       entry =>
         !broken.some(
           ({ path, specifier }) =>
-            covers(entry, path) && listed(path, specifier, allowlist)
+            entryOf(path, allowlist) === entry &&
+            listed(path, specifier, allowlist)
         )
     )
     .map(entry => `${entry}: no longer breaks a layer rule; delete the entry.`);
+  const misplaced = Object.keys(files).flatMap(path => {
+    const message = fileBreak(path);
 
-  return [...unlisted, ...stale];
+    return message === undefined ? [] : [`${path}: ${message}`];
+  });
+
+  return [...misplaced, ...unlisted, ...stale];
 };
 
 const sources = (): Record<string, string> =>
@@ -201,6 +210,113 @@ describe('problems', () => {
       'app/components/forms/X.tsx: no longer breaks a layer rule; delete the entry.',
     ]);
   });
+
+  it('names a file directly in features/', () => {
+    expect(problems({ 'features/index.ts': 'export {};' }, {})).toEqual([
+      'features/index.ts: Layer rule: features/ holds only feature folders.',
+    ]);
+  });
+
+  describe('with a folder entry and a file entry inside it', () => {
+    const overlap = {
+      'app/components/map': 'features/map',
+      'app/components/map/X.tsx': 'server/',
+    };
+
+    it('passes when each entry excuses a break of its own', () => {
+      expect(
+        problems(
+          {
+            'app/components/map/X.tsx': "import { a } from '@/lib/map/a';",
+            'app/components/map/Y.tsx': "import { b } from '@/features/map/b';",
+          },
+          overlap
+        )
+      ).toEqual([]);
+    });
+
+    it('judges the file against its own entry, so a break only the folder would excuse is named', () => {
+      expect(
+        problems(
+          {
+            'app/components/map/X.tsx': "import { a } from '@/features/map/a';",
+          },
+          overlap
+        )
+      ).toEqual([
+        'app/components/map/X.tsx: Layer rule: app/components may not import features/map.',
+        'app/components/map: no longer breaks a layer rule; delete the entry.',
+        'app/components/map/X.tsx: no longer breaks a layer rule; delete the entry.',
+      ]);
+    });
+  });
+});
+
+describe('entryOf', () => {
+  const allowlist = {
+    'app/components/map': 'features/map',
+    'app/components/map/X.tsx': 'server/',
+  };
+
+  it('picks the most specific entry that covers the file', () => {
+    expect(entryOf('app/components/map/X.tsx', allowlist)).toBe(
+      'app/components/map/X.tsx'
+    );
+    expect(entryOf('app/components/map/Y.tsx', allowlist)).toBe(
+      'app/components/map'
+    );
+  });
+
+  it('is undefined when no entry covers the file', () => {
+    expect(entryOf('app/components/forms/X.tsx', allowlist)).toBeUndefined();
+    expect(covers('app/components/map', 'app/components/mapper/X.tsx')).toBe(
+      false
+    );
+  });
+});
+
+describe('fileBreak', () => {
+  it.each(['features/index.ts', 'features/types.mts'])('fires on %s', file => {
+    expect(fileBreak(file)).toBe(
+      'Layer rule: features/ holds only feature folders.'
+    );
+  });
+
+  it.each([
+    'features/map/A.tsx',
+    'features/map.test.ts',
+    'features/__tests__/a.ts',
+    'lib/map/a.ts',
+  ])('passes %s', file => {
+    expect(fileBreak(file)).toBeUndefined();
+  });
+});
+
+describe('isBuiltin', () => {
+  it.each(['node:fs', 'fs', 'fs/promises', 'events', 'util'])(
+    'is true for %s',
+    specifier => {
+      expect(isBuiltin(specifier)).toBe(true);
+    }
+  );
+
+  it.each(['react', 'maplibre-gl', 'fs-extra', 'next/image'])(
+    'is false for %s',
+    specifier => {
+      expect(isBuiltin(specifier)).toBe(false);
+    }
+  );
+
+  it('is false for a built-in name that package.json lists', () => {
+    expect(isBuiltin('events', ['events'])).toBe(false);
+    expect(isBuiltin('events/index.js', ['events'])).toBe(false);
+    expect(isBuiltin('fs/promises', ['fs'])).toBe(false);
+  });
+
+  it('is still true for node: and for other built-ins when package.json lists a package', () => {
+    expect(isBuiltin('node:events', ['events'])).toBe(true);
+    expect(isBuiltin('util', ['events'])).toBe(true);
+  });
 });
 
 describe('layerOf', () => {
@@ -256,6 +372,12 @@ describe('layerBreak', () => {
       'lib/map/a.ts',
       'fs/promises',
       'lib/domain may not import fs/promises',
+    ],
+    [
+      'lib/domain',
+      'lib/map/a.ts',
+      'events',
+      'lib/domain may not import events',
     ],
     [
       'app/components',
@@ -406,6 +528,11 @@ describe('the lint rule', () => {
           code: "vi.mock('@/lib/map/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
+        {
+          code: 'export const a = 1;',
+          errors: [{ message: /features\/ holds only feature folders/ }],
+          filename: `${process.cwd()}/features/index.ts`,
         },
       ],
       valid: [

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { builtinModules } from 'node:module';
 import { join, posix, relative, sep } from 'node:path';
 
@@ -25,8 +26,25 @@ export const SOURCE_EXTENSION = /\.[cm]?[jt]sx?$/;
 export const MODULE_CALL =
   /^(?:require|vi\.(?:doMock|importActual|importMock|mock))$/;
 
-const isBuiltin = (specifier: string): boolean =>
-  specifier.startsWith('node:') || builtinModules.includes(specifier);
+const manifest = JSON.parse(
+  readFileSync(join(ROOT, 'package.json'), 'utf8')
+) as {
+  dependencies: Record<string, string>;
+  devDependencies: Record<string, string>;
+};
+const PACKAGES = Object.keys({
+  ...manifest.dependencies,
+  ...manifest.devDependencies,
+});
+
+/** A `node:` specifier, or a bare built-in name that no package in package.json shares. */
+export const isBuiltin = (
+  specifier: string,
+  packages: string[] = PACKAGES
+): boolean =>
+  specifier.startsWith('node:') ||
+  (builtinModules.includes(specifier) &&
+    !packages.includes(specifier.split('/')[0]));
 
 const MAY_IMPORT: Record<string, string[]> = {
   design: [],
@@ -144,9 +162,24 @@ export const layerBreak = (
       : pathBreak(from, path, layerOf(path));
 };
 
+/** The rule a file breaks by where it sits: `features/` holds only feature folders. Tests are outside the map. */
+export const fileBreak = (file: string): string | undefined =>
+  /^features\/[^/]+$/.test(file) && !TEST_FILE.test(file)
+    ? 'Layer rule: features/ holds only feature folders.'
+    : undefined;
+
 /** Whether an allowlist entry covers a file. */
 export const covers = (entry: string, file: string): boolean =>
   file === entry || file.startsWith(`${entry}/`);
+
+/** The allowlist entry that covers a file: the most specific one, so a file entry beats the folder around it. */
+export const entryOf = (
+  file: string,
+  allowlist: Record<string, string> = ALLOWLIST
+): string | undefined =>
+  Object.keys(allowlist)
+    .filter(e => covers(e, file))
+    .sort((a, b) => b.length - a.length)[0];
 
 /** Whether the allowlist lists this break: its file is covered and the import is fine in the layer the entry moves to. */
 export const listed = (
@@ -154,7 +187,7 @@ export const listed = (
   specifier: string,
   allowlist: Record<string, string> = ALLOWLIST
 ): boolean => {
-  const entry = Object.keys(allowlist).find(e => covers(e, file));
+  const entry = entryOf(file, allowlist);
 
   return (
     entry !== undefined &&
@@ -215,6 +248,13 @@ export const importsRule = {
       ExportNamedDeclaration: check,
       ImportDeclaration: check,
       ImportExpression: check,
+      Program: (node: unknown) => {
+        const message = fileBreak(file);
+
+        if (message !== undefined) {
+          context.report({ message, node });
+        }
+      },
       // import x = require('…')
       TSImportEqualsDeclaration: (node: {
         moduleReference: { expression?: Source };

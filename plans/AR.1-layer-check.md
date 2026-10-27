@@ -6,7 +6,7 @@
 
 ## Approach
 
-`scripts/layers.mts` holds the layer map, the allowlist and `layerBreak(file, specifier)`, which names the rule an import breaks. A file's layer comes from its path, so `features/`, `server/` and `lib/domain` are covered before they exist. `eslint.config.mjs` loads a local rule, `layers/imports`, from that module; Node 24 strips the types. The fitness test scans `app`, `lib`, `features` and `server` and checks that the breaks found match the allowlist exactly. Test files, `app/design-kit`, `scripts`, `e2e` and `lib/design` tooling are outside the map.
+`scripts/layers.mts` holds the layer map, the allowlist and `layerBreak(file, specifier)`, which names the rule an import breaks. A file's layer comes from its path, so `features/`, `server/` and `lib/domain` are covered before they exist. `eslint.config.mjs` loads a local rule, `layers/imports`, from that module. The fitness test scans `app`, `lib`, `features` and `server` and checks the breaks match the allowlist exactly. Test files, `app/design-kit`, `scripts`, `e2e` and `lib/design` tooling are outside the map.
 
 ## Decisions
 
@@ -14,8 +14,8 @@
 
 Which ESLint mechanism reads the layer map?
 
-- **A.** A local rule that checks each import against the map. Feature-to-feature works for any name, and `no-restricted-imports` is untouched, so the component rules can't be overridden.
-- **B.** `no-restricted-imports` blocks built from the map and merged with the component patterns. A feature needs a block of its own, so the map lists feature names.
+- **A.** A local rule that checks each import against the map. Any feature name works, and `no-restricted-imports` is untouched.
+- **B.** `no-restricted-imports` blocks built from the map. Each feature needs its own block.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -42,26 +42,28 @@ The table doesn't say whether `server/` may import itself, or where `app/compone
 
 ## Files that change
 
-| File                               | New / changed | What                                                                                                |
-| ---------------------------------- | ------------- | --------------------------------------------------------------------------------------------------- |
-| `scripts/layers.mts`               | New           | Layer map, allowlist (path → where it moves), `layerOf`, `layerBreak`, the ESLint rule              |
-| `scripts/__tests__/layers.test.ts` | New           | Fitness test, fixtures per layer, `RuleTester` cases, and `ESLint.lintText` against the real config |
-| `eslint.config.mjs`                | Changed       | Register `layers/imports` for `app`, `lib`, `features`, `server`                                    |
-| `docs/architecture.md`             | Changed       | Layer table and rule; replace "Not enforced"; link the allowlist                                    |
-| `docs/architecture-target.md`      | Changed       | Remove _Layers_ and the breaks paragraph; item 1 keeps the tidy-ups                                 |
+| File                                      | New / changed | What                                                                                   |
+| ----------------------------------------- | ------------- | -------------------------------------------------------------------------------------- |
+| `scripts/layers.mts`                      | New           | Layer map, allowlist (path → where it moves), `layerOf`, `layerBreak`, the ESLint rule |
+| `scripts/__tests__/layers.test.ts`        | New           | Fitness test, fixtures per layer, `RuleTester` cases                                   |
+| `scripts/__tests__/layers-config.test.ts` | New           | `ESLint.lintText` against the real config                                              |
+| `types/modules.d.ts`                      | Changed       | Types the `eslint.config.mjs` import                                                   |
+| `eslint.config.mjs`                       | Changed       | Register `layers/imports` for `app`, `lib`, `features`, `server`                       |
+| `docs/architecture.md`                    | Changed       | Layer table and rule; replace "Not enforced"; link the allowlist                       |
+| `docs/architecture-target.md`             | Changed       | Remove _Layers_ and the breaks paragraph; item 1 keeps the tidy-ups                    |
 
 Allowlist: `app/components/map`, `lib/map/style.ts`, `lib/map/filter.ts`, `forms/DateField.tsx`, `overlays/SourcesDialog.tsx` (to `features/map`); `lib/boundaries/load.mts`, `app-data.ts` (to `server/`).
 
 ## Order of work
 
-1. `layers.mts` with unit tests and fixtures.
+1. `layers.mts` with unit tests.
 2. Fitness test against the repo.
 3. ESLint rule and config, with `RuleTester` and `lintText` tests.
 4. Docs.
 
 ## Risks
 
-- ESLint can't import `.mts`: fall back to `layers.mjs` with JSDoc types.
+- ESLint can't import `.mts`: fall back to `layers.mjs`.
 - The fitness test reads TypeScript imports only; CSS `composes` stays unchecked.
 
 ## Proof
@@ -79,10 +81,9 @@ Allowlist: `app/components/map`, `lib/map/style.ts`, `lib/map/filter.ts`, `forms
 
 ## Deviations
 
-- The `lintText` tests sit in `scripts/__tests__/layers-config.test.ts` and import `eslint.config.mjs`: a second, native copy of `layers.mts` corrupts its coverage.
-
-- `types/modules.d.ts` types it.
-- An allowlist entry excuses only imports that are fine in the layer it moves to; mapped code may not import dev-only code.
+- The `lintText` tests import `eslint.config.mjs` (typed in `types/modules.d.ts`): ESLint's own loader would load a second copy of `layers.mts` and corrupt its coverage.
+- Lint and the fitness test also check `require()`, `vi.mock()`, `import x = require()`, `import('…').T` and all JS and TS extensions.
+- An allowlist entry excuses only imports fine in the layer it moves to; mapped code may not import dev-only code.
 
 ## Out of scope
 

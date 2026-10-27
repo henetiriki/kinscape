@@ -11,23 +11,43 @@ import {
   layerBreak,
   layerOf,
   listed,
+  MODULE_CALL,
+  SOURCE_EXTENSION,
 } from '../layers.mts';
 
-// NFR-09. Same file types as the lint rule's globs in eslint.config.mjs.
+// NFR-09. The same file types as the lint rule's globs in eslint.config.mjs.
 const ROOTS = ['app', 'lib', 'features', 'server'];
-const SOURCE = /\.(?:tsx?|mts)$/;
 
-/** The specifiers a source imports, re-exports or dynamically imports, read from the syntax tree. */
+/** The module a node names, if it is an import, re-export, `import()`, `import('…').T`, `import x = require()`, `require()` or `vi.mock()`. */
+const moduleOf = (node: ts.Node): ts.Node | undefined => {
+  if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
+    return node.moduleSpecifier;
+  }
+
+  if (ts.isCallExpression(node)) {
+    return node.expression.kind === ts.SyntaxKind.ImportKeyword ||
+      MODULE_CALL.test(node.expression.getText())
+      ? node.arguments[0]
+      : undefined;
+  }
+
+  if (ts.isImportTypeNode(node)) {
+    return ts.isLiteralTypeNode(node.argument)
+      ? node.argument.literal
+      : undefined;
+  }
+
+  return ts.isImportEqualsDeclaration(node) &&
+    ts.isExternalModuleReference(node.moduleReference)
+    ? node.moduleReference.expression
+    : undefined;
+};
+
+/** The specifiers a source names, read from the syntax tree. */
 const specifiersOf = (path: string, source: string): string[] => {
   const found: string[] = [];
   const visit = (node: ts.Node): void => {
-    const target =
-      ts.isImportDeclaration(node) || ts.isExportDeclaration(node)
-        ? node.moduleSpecifier
-        : ts.isCallExpression(node) &&
-            node.expression.kind === ts.SyntaxKind.ImportKeyword
-          ? node.arguments[0]
-          : undefined;
+    const target = moduleOf(node);
 
     if (target !== undefined && ts.isStringLiteralLike(target)) {
       found.push(target.text);
@@ -74,7 +94,7 @@ const sources = (): Record<string, string> =>
     ROOTS.filter(dir => existsSync(dir)).flatMap(dir =>
       readdirSync(dir, { recursive: true })
         .map(name => `${dir}/${String(name).split(sep).join('/')}`)
-        .filter(path => SOURCE.test(path))
+        .filter(path => SOURCE_EXTENSION.test(path))
         .map(path => [path, readFileSync(path, 'utf8')])
     )
   );
@@ -140,6 +160,35 @@ describe('problems', () => {
       'app/components/forms/X.tsx: Layer rule: app/components may not import server.',
       'app/components/forms/X.tsx: Layer rule: app/components may not import lib/domain.',
     ]);
+  });
+
+  it.each([
+    ['import(…).T', "export type R = import('@/server/db').Row;"],
+    ['typeof import(…)', "export type R = typeof import('@/server/db');"],
+    ['import x = require(…)', "import x = require('@/server/db');"],
+    ['require()', "const x = require('@/server/db');"],
+    ['vi.mock()', "vi.mock('@/server/db');"],
+  ])('finds %s', (_form, source) => {
+    expect(problems({ 'app/components/forms/X.tsx': source }, {})).toEqual([
+      'app/components/forms/X.tsx: Layer rule: app/components may not import server.',
+    ]);
+  });
+
+  it('ignores calls and type imports that name no module', () => {
+    expect(
+      problems(
+        {
+          'app/components/forms/X.tsx': [
+            'import Y = Z.Y;',
+            "type T = import('@/design/tokens.json').T;",
+            'type U = typeof import(name);',
+            'const a = require();',
+            'const b = other();',
+          ].join('\n'),
+        },
+        {}
+      )
+    ).toEqual([]);
   });
 
   it('tells you to delete a listed break that is fixed', () => {
@@ -218,6 +267,12 @@ describe('layerBreak', () => {
       'app/components',
       'app/components/forms/X.tsx',
       '@/lib',
+      'app/components may not import lib/domain',
+    ],
+    [
+      'app/components',
+      'app/components/forms/X.tsx',
+      '@/design/../lib/map/a',
       'app/components may not import lib/domain',
     ],
     [
@@ -302,6 +357,7 @@ describe('layerBreak', () => {
     ['app/ routes', 'app/page.tsx', '@/lib/boundaries/app-data'],
     ['a test file', 'lib/__tests__/a.test.ts', '@/server/db'],
     ['a path outside the repo', 'lib/map/a.ts', '../../../x'],
+    ['a path above the root', 'lib/map/a.ts', '@/../x'],
     ['a path outside the map', 'lib/map/a.ts', '@/types/modules'],
   ])('passes in %s', (_layer, file, specifier) => {
     expect(layerBreak(file, specifier)).toBeUndefined();
@@ -341,8 +397,22 @@ describe('the lint rule', () => {
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
+        {
+          code: "const a = require('@/lib/map/a');",
+          errors: 1,
+          filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
+        {
+          code: "vi.mock('@/lib/map/a');",
+          errors: 1,
+          filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
       ],
       valid: [
+        {
+          code: 'const a = require(); const b = other(); vi.spy(name);',
+          filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
         {
           code: 'const a = import(`@/lib/${name}`);',
           filename: `${process.cwd()}/app/components/forms/X.tsx`,

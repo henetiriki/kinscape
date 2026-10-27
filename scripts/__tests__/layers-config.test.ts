@@ -38,6 +38,24 @@ describe('the real lint config', () => {
     ).toEqual([expect.stringContaining('features never import each other')]);
   });
 
+  it.each([
+    [
+      'app/components/forms/X.tsx',
+      "export type R = import('@/server/db').Row;",
+    ],
+    [
+      'app/components/forms/X.tsx',
+      "export type R = typeof import('@/server/db');",
+    ],
+    ['app/components/forms/X.tsx', "import x = require('@/server/db');"],
+    ['app/components/forms/x.js', "const x = require('@/server/db');"],
+    ['app/components/forms/x.mjs', "import x from '@/server/db';"],
+  ])('fails %s containing %s', async (path, code) => {
+    expect(await lint(path, `${code}\n`)).toEqual([
+      expect.stringContaining('app/components may not import server'),
+    ]);
+  });
+
   it('keeps the component import rules', async () => {
     expect(
       await lint(

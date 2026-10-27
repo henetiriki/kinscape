@@ -19,7 +19,11 @@ const ROOT = join(import.meta.dirname, '..');
 const MAPLIBRE = /^maplibre-gl(?:\/|$)/;
 const TEST_FILE = /(?:^|\/)__tests__\/|\.(?:test|spec)\./;
 const DEV_ONLY = /^(?:scripts|e2e|lib\/design)\/|^app\/design-kit\//;
-const SOURCE_EXTENSION = /\.[cm]?[jt]sx?$/;
+
+export const SOURCE_EXTENSION = /\.[cm]?[jt]sx?$/;
+/** Calls whose first argument is a module path, matched on the callee's source text. */
+export const MODULE_CALL =
+  /^(?:require|vi\.(?:doMock|importActual|importMock|mock))$/;
 
 const isBuiltin = (specifier: string): boolean =>
   specifier.startsWith('node:') || builtinModules.includes(specifier);
@@ -78,15 +82,18 @@ export const layerOf = (path: string): string | undefined => {
 
 /** The repo path an import points at, or undefined for a package or built-in. */
 const targetOf = (file: string, specifier: string): string | undefined => {
-  if (specifier.startsWith('@/')) {
-    return specifier.slice(2);
-  }
+  const joined = specifier.startsWith('@/')
+    ? specifier.slice(2)
+    : specifier.startsWith('.')
+      ? posix.join(posix.dirname(file), specifier)
+      : undefined;
 
-  if (!specifier.startsWith('.')) {
+  if (joined === undefined) {
     return undefined;
   }
 
-  const path = posix.join(posix.dirname(file), specifier);
+  // Normalised, so `@/design/../lib/a` is judged as lib/a.
+  const path = posix.normalize(joined);
 
   return path.startsWith('..') ? undefined : path;
 };
@@ -155,24 +162,28 @@ export const listed = (
   );
 };
 
+/** The part of an AST node that names a module: a string literal, or a template literal. */
+interface Source {
+  expressions?: unknown[];
+  quasis?: { value: { cooked?: null | string } }[];
+  type?: string;
+  value?: unknown;
+}
+
 /** The ESLint rule `layers/imports`. */
 export const importsRule = {
   create: (context: {
     filename: string;
     report: (problem: { message: string; node: unknown }) => void;
+    sourceCode: { getText: (node: unknown) => string };
   }) => {
     // Relative to the repo root, not the directory ESLint runs from.
     const file = relative(ROOT, context.filename).split(sep).join('/');
 
-    const check = (node: {
-      source?: {
-        expressions?: unknown[];
-        quasis?: { value: { cooked?: null | string } }[];
-        type?: string;
-        value?: unknown;
-      } | null;
-    }): void => {
-      const source = node.source;
+    const checkSource = (
+      source: null | Source | undefined,
+      node: unknown
+    ): void => {
       // A template literal with no substitutions, as in import(`@/server/db`).
       const specifier =
         source?.type === 'TemplateLiteral' && source.expressions?.length === 0
@@ -190,11 +201,28 @@ export const importsRule = {
       }
     };
 
+    const check = (node: { source?: null | Source }): void => {
+      checkSource(node.source, node);
+    };
+
     return {
+      CallExpression: (node: { arguments: Source[]; callee: unknown }) => {
+        if (MODULE_CALL.test(context.sourceCode.getText(node.callee))) {
+          checkSource(node.arguments[0], node);
+        }
+      },
       ExportAllDeclaration: check,
       ExportNamedDeclaration: check,
       ImportDeclaration: check,
       ImportExpression: check,
+      // import x = require('…')
+      TSImportEqualsDeclaration: (node: {
+        moduleReference: { expression?: Source };
+      }) => {
+        checkSource(node.moduleReference.expression, node);
+      },
+      // import('…').T and typeof import('…'), from the TypeScript parser.
+      TSImportType: check,
     };
   },
   meta: {

@@ -14,6 +14,8 @@ Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quo
 
 Flag a test change `plans/README.md` rule 10 doesn't allow, and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
+Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
+
 In workflows, also check:
 
 - each action pinned to a full commit SHA;

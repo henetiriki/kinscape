@@ -9,10 +9,10 @@ on:
 permissions:
   contents: read
 
-# One run per PR or branch; a new push cancels the PR's older run. Runs on main always finish.
+# One group per PR, so a new push cancels the PR's older run. Each run on main gets its own group, so it always finishes.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 # The automated checks that every change must pass.
 # Drafts are mostly plan PRs: only format and words run on them. Every job runs on a push to main.

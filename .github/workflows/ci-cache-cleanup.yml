@@ -1,0 +1,34 @@
+name: 'CI: Delete PR caches'
+
+# A closed PR's caches can never be restored again, but they count toward the repo's cache limit
+# and push out the caches that main uses. This deletes them when the PR closes, merged or not.
+# Fork PRs are skipped: their token cannot delete caches.
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  actions: write
+
+jobs:
+  delete:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      # A PR run caches under the PR's merge ref; a push to its branch caches under the branch ref.
+      - name: Delete caches
+        run: |
+          status=0
+          for ref in "refs/pull/$PR/merge" "refs/heads/$HEAD_REF"; do
+            ids=$(gh cache list --ref "$ref" --limit 1000 --json id --jq '.[].id') || { status=1; continue; }
+            for id in $ids; do
+              gh cache delete "$id" || status=1
+            done
+          done
+          exit $status
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}

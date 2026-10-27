@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
+import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
 
 // NFR-06
 it('renders a callout as an alert with its id, and a hidden pointer', () => {

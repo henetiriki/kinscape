@@ -1,5 +1,5 @@
-import type { IconName } from '@/app/components/foundation/types';
-import type { EventType } from '@/app/components/map/types';
+import type { IconName } from '@ks/app/components/foundation/types';
+import type { EventType } from '@ks/app/components/map/types';
 
 /** One level of the Jurisdiction chain; `detail` says what the name was before. */
 export type ChainLevel = { detail?: string; level: string; name: string };

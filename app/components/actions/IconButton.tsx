@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
 import styles from './IconButton.module.css';
 

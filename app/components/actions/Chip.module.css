@@ -1,7 +1,7 @@
 /* A 36px pill with a 44px hit area; 44px on a phone */
 
 .chip {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--line-strong);
@@ -111,7 +111,7 @@
 }
 
 .remove {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
   background: transparent;
   border: 0;

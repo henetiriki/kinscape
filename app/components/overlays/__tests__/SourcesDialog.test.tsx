@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/boundaries/types.ts';
+import type { Source } from '@ks/lib/boundaries/types.ts';
 
-import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
+import { SourcesDialog } from '@ks/app/components/overlays/SourcesDialog';
 
 const sources: Source[] = [
   {

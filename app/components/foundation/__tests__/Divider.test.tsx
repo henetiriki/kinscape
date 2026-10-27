@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Divider } from '@/app/components/foundation/Divider';
+import { Divider } from '@ks/app/components/foundation/Divider';
 
 // NFR-06
 it('draws a hairline separator, or one with a word between two lines', () => {

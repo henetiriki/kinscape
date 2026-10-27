@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { ChipGroup } from '@/app/components/actions/ChipGroup';
-import { EVENT_ORDER } from '@/app/components/map/EventGlyph';
+import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
+import { EVENT_ORDER } from '@ks/app/components/map/EventGlyph';
 
 const OPTIONS = EVENT_ORDER.map(glyph => ({
   glyph,

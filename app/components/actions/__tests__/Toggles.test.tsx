@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Chip } from '@/app/components/actions/Chip';
-import { Segmented } from '@/app/components/actions/Segmented';
-import { Tabs } from '@/app/components/actions/Tabs';
+import { Chip } from '@ks/app/components/actions/Chip';
+import { Segmented } from '@ks/app/components/actions/Segmented';
+import { Tabs } from '@ks/app/components/actions/Tabs';
 
 // NFR-06
 it('reports a chip through aria-pressed', () => {

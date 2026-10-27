@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { CheckboxField } from '@/app/components/forms/CheckboxField';
+import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
 
 // NFR-06
 it('describes the checkbox by its description, which is not a live region', () => {

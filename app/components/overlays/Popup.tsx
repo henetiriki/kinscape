@@ -4,11 +4,11 @@ import type { CSSProperties } from 'react';
 
 import { useId } from 'react';
 
-import { Button } from '@/app/components/actions/Button';
-import { TextLink } from '@/app/components/actions/TextLink';
-import { Icon } from '@/app/components/foundation/Icon';
-import { Text } from '@/app/components/foundation/Text';
-import { EventGlyph } from '@/app/components/map/EventGlyph';
+import { Button } from '@ks/app/components/actions/Button';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import { Text } from '@ks/app/components/foundation/Text';
+import { EventGlyph } from '@ks/app/components/map/EventGlyph';
 
 import type { ChainLevel, PopupPin } from './types';
 

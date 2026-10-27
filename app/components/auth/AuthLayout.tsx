@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import { Wordmark } from '@/app/components/map/Wordmark';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { Wordmark } from '@ks/app/components/map/Wordmark';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
 import styles from './AuthLayout.module.css';
 

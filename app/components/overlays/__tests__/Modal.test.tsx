@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Modal, ModalClose } from '@/app/components/overlays/Modal';
+import { Modal, ModalClose } from '@ks/app/components/overlays/Modal';
 
 const renderModal = (open: boolean, onClose = vi.fn()) =>
   render(

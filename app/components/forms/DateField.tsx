@@ -4,14 +4,14 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useEffect, useId, useState } from 'react';
 
-import type { ControlState, Tone } from '@/app/components/foundation/types';
-import type { Precision, Problem } from '@/lib/map/types';
+import type { ControlState, Tone } from '@ks/app/components/foundation/types';
+import type { Precision, Problem } from '@ks/lib/map/types';
 
-import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
-import { TextField } from '@/app/components/forms/TextField';
-import { Text } from '@/app/components/foundation/Text';
-import { checkDate } from '@/lib/map/date-input';
-import { finerPrecision, shownDate } from '@/lib/map/map-date';
+import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
+import { TextField } from '@ks/app/components/forms/TextField';
+import { Text } from '@ks/app/components/foundation/Text';
+import { checkDate } from '@ks/lib/map/date-input';
+import { finerPrecision, shownDate } from '@ks/lib/map/map-date';
 
 import styles from './DateField.module.css';
 

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Sheet } from '@/app/components/overlays/Sheet';
+import { Sheet } from '@ks/app/components/overlays/Sheet';
 
 const sheet = () => screen.getByRole('dialog', { hidden: true });
 

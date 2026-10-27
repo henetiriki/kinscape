@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import { Dialog, DialogPanel } from '@/app/components/overlays/Dialog';
+import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 
 const setup = window.matchMedia;
 

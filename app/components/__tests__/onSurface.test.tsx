@@ -11,16 +11,16 @@ const rule = (file: string, selector: string) => {
 
 // NFR-06: Vitest doesn't resolve `composes:`, so the rules are read as text.
 it.each([
-  ['map/LayersPanel.module.css', '.panel', 'raised'],
-  ['map/DateDock.module.css', '.dock', 'raised'],
-  ['feedback/Toast.module.css', '.toast', 'floating'],
+  ['map/LayersPanel.module.css', '.panel', 'raised', '@/'],
+  ['map/DateDock.module.css', '.dock', 'raised', '@/'],
+  ['feedback/Toast.module.css', '.toast', 'floating', '@ks/'],
 ])(
   '%s sets %s at the %s level and draws no background, radius or shadow',
-  (file, selector, level) => {
+  (file, selector, level, alias) => {
     const body = rule(file, selector);
 
     expect(body).toContain(
-      `composes: ${level} from '@/app/components/foundation/Surface.module.css'`
+      `composes: ${level} from '${alias}app/components/foundation/Surface.module.css'`
     );
     expect(body).not.toMatch(/background|border-radius|box-shadow/);
   }

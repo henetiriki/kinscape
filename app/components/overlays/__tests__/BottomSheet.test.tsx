@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { BottomSheet } from '@/app/components/overlays/BottomSheet';
+import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 
 // NFR-05
 it('expands the sheet from the grabber, and is not a dialog', () => {

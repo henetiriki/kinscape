@@ -1,4 +1,4 @@
-import { Chip } from '@/app/components/actions/Chip';
+import { Chip } from '@ks/app/components/actions/Chip';
 
 import type { ChipOption } from './types';
 

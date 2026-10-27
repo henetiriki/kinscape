@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Surface } from '@/app/components/foundation/Surface';
+import { Surface } from '@ks/app/components/foundation/Surface';
 
 // NFR-06
 it('draws each level with its own class and keeps a caller class', () => {

@@ -73,4 +73,16 @@ describe('the real lint config', () => {
       await lint('app/route/page.tsx', "import { a } from './components/A';\n")
     ).toEqual([expect.stringContaining('no-restricted-imports')]);
   });
+
+  it('names @ks/ in the component import messages', async () => {
+    expect(
+      await lint(
+        'app/components/forms/X.tsx',
+        "import { a } from '../actions/Button';\n"
+      )
+    ).toEqual([expect.stringContaining('@ks/app/components/<folder>/<Name>')]);
+    expect(
+      await lint('app/route/page.tsx', "import { a } from './components/A';\n")
+    ).toEqual([expect.stringContaining('@ks/app/components/<folder>/<Name>')]);
+  });
 });

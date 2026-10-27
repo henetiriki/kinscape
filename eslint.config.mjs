@@ -131,7 +131,8 @@ export default defineConfig([
           patterns: [
             {
               group: ['../**'],
-              message: 'Import by full path: @/app/components/<folder>/<Name>.',
+              message:
+                'Import by full path: @ks/app/components/<folder>/<Name>.',
             },
           ],
         },
@@ -147,7 +148,8 @@ export default defineConfig([
         {
           patterns: [
             {
-              message: 'Import by full path: @/app/components/<folder>/<Name>.',
+              message:
+                'Import by full path: @ks/app/components/<folder>/<Name>.',
               regex: String.raw`^\.{1,2}/(.*/)?components/`,
             },
           ],

@@ -4,7 +4,7 @@
 }
 
 .tab {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   background: transparent;
   border: 0;
   border-radius: var(--radius-control);

@@ -2,11 +2,11 @@ import type { ReactNode } from 'react';
 
 import { useId } from 'react';
 
-import type { IconName } from '@/app/components/foundation/types';
+import type { IconName } from '@ks/app/components/foundation/types';
 
-import { Button } from '@/app/components/actions/Button';
-import { ProgressBar } from '@/app/components/feedback/ProgressBar';
-import { Icon } from '@/app/components/foundation/Icon';
+import { Button } from '@ks/app/components/actions/Button';
+import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
+import { Icon } from '@ks/app/components/foundation/Icon';
 
 import styles from './NoticeCard.module.css';
 

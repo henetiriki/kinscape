@@ -77,3 +77,10 @@ jobs:
           path: /home/runner/work/_temp/claude-execution-output.json
           if-no-files-found: ignore
           retention-days: 14
+
+      # The action runs only as main has this file, so on a PR that changes it Claude never starts.
+      - name: Fail if Claude didn't review
+        if: steps.claude-review.outputs.conclusion == ''
+        run: |
+          echo "::error::No review: Claude didn't start. A PR that changes claude-code-review.yml is reviewed only after it merges; otherwise see the step above."
+          exit 1

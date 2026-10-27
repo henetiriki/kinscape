@@ -18,7 +18,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | A browser test                  | `e2e/`                                                                                                        |
 | A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`      |
 
-`.mts` marks a module that Node scripts import, such as `lib/boundaries/model.mts`. This is a habit, not enforced.
+Import repo paths through `@ks/`; `@/` is legacy until AR.11 (#324). Node loads every `.mts`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through either alias there; `import type` may use it.
 
 ## Patterns
 

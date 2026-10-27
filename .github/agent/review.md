@@ -10,7 +10,11 @@ Find the PR's plan: a file under `plans/` changed in the PR; else the plan in th
 
 ## The rules
 
-Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In workflows, also check:
+Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken.
+
+Flag a test change `plans/README.md` rule 10 doesn't allow, and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
+
+In workflows, also check:
 
 - each action pinned to a full commit SHA;
 - the fewest `permissions:`;

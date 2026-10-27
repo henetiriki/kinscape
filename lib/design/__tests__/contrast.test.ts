@@ -5,7 +5,7 @@ import {
   formatColour,
   formatRatio,
   parseColour,
-} from '../contrast.mts';
+} from '@ks/lib/design/contrast.mts';
 
 // NFR-06
 describe('parseColour', () => {

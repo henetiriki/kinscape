@@ -1,7 +1,7 @@
-import type { Precision } from './types';
+import type { Precision } from '@ks/lib/map/types';
 
-import { fromDay, toDay } from '../boundaries/model.mts';
-import { dayOf } from './filter';
+import { fromDay, toDay } from '@ks/lib/boundaries/model.mts';
+import { dayOf } from '@ks/lib/map/filter';
 
 export const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 

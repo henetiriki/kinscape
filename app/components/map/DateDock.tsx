@@ -24,7 +24,7 @@ import {
   stepDay,
 } from '@/lib/map/map-date';
 
-import styles from './DateDock.module.css';
+import styles from '@ks/app/components/map/DateDock.module.css';
 
 const OPTIONS = PRECISIONS.map(precision => ({
   label: precision[0].toUpperCase() + precision.slice(1),

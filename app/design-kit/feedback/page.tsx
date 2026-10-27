@@ -1,18 +1,19 @@
 import type { Metadata } from 'next';
 
-import { Alert } from '@/app/components/feedback/Alert';
-import { Banner } from '@/app/components/feedback/Banner';
-import { Toast } from '@/app/components/feedback/Toast';
-import { TextField } from '@/app/components/forms/TextField';
-import { Text } from '@/app/components/foundation/Text';
-import { toDay } from '@/lib/boundaries/model.mts';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { Alert } from '@ks/app/components/feedback/Alert';
+import { Banner } from '@ks/app/components/feedback/Banner';
+import { Toast } from '@ks/app/components/feedback/Toast';
+import { TextField } from '@ks/app/components/forms/TextField';
+import { Text } from '@ks/app/components/foundation/Text';
+import { boardTitle } from '@ks/app/design-kit/boards';
+import { DateCase } from '@ks/app/design-kit/feedback/DateCase';
+import rawTokens from '@ks/design/tokens.json';
+import { toDay } from '@ks/lib/boundaries/model.mts';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
-import rawTokens from '../../../design/tokens.json';
-import { boardTitle } from '../boards';
-import kit from '../kit.module.css';
-import { DateCase } from './DateCase';
-import styles from './page.module.css';
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/feedback/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('feedback') };
 

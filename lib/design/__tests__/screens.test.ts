@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { jpegSize, sweepProblems } from '../sweep.mts';
+import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 
 /** Images in `design/` with no `screens.json` entry yet. Remove a name when its slice adds the entry. */
 const NOT_BUILT = [

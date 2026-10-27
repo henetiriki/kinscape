@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import SurfacesKit from '../page';
+import SurfacesKit from '@ks/app/design-kit/surfaces/page';
 
 const show = async (part?: string | string[]) =>
   render(await SurfacesKit({ searchParams: Promise.resolve({ part }) }));

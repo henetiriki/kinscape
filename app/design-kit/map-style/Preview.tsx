@@ -1,12 +1,12 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import { EVENT_PATHS } from '@/app/components/map/EventGlyph';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import type { PreviewKind } from '@ks/app/design-kit/map-style/types';
 
-import type { PreviewKind } from './types';
+import { EVENT_PATHS } from '@ks/app/components/map/EventGlyph';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
-import rawTokens from '../../../design/tokens.json';
-import styles from './Preview.module.css';
+import styles from '@ks/app/design-kit/map-style/Preview.module.css';
 
 const { map } = resolveTokens(rawTokens);
 

@@ -6,7 +6,7 @@ import type { ControlState } from '@ks/app/components/foundation/types';
 
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 
-import styles from './CheckboxField.module.css';
+import styles from '@ks/app/components/forms/CheckboxField.module.css';
 
 /** A checkbox with its label and, under it, an optional description the checkbox points to. */
 export const CheckboxField = ({

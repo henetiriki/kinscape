@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
-import { hatchStyle } from '@/app/components/map/hatch';
+import { hatchStyle } from '@ks/app/components/map/hatch';
 
-import styles from './DateDockDrawing.module.css';
+import styles from '@ks/app/design-kit/map-furniture/DateDockDrawing.module.css';
 
 const EPOCHS = [
   '1652',

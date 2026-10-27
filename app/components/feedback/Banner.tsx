@@ -2,7 +2,7 @@ import type { IconName } from '@ks/app/components/foundation/types';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
 
-import styles from './Toast.module.css';
+import styles from '@ks/app/components/feedback/Toast.module.css';
 
 /** A problem with the app that doesn't stop the map, with one action. */
 export const Banner = ({

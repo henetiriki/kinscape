@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import MapFurnitureKit from '../page';
+import MapFurnitureKit from '@ks/app/design-kit/map-furniture/page';
 
 const show = async (part?: string | string[]) =>
   render(await MapFurnitureKit({ searchParams: Promise.resolve({ part }) }));

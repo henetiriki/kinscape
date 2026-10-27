@@ -1,10 +1,10 @@
+import type { On, Role, SystemLine } from '@ks/app/design-kit/colour/types';
+
 import {
   contrastRatio,
   formatColour,
   formatRatio,
-} from '@/lib/design/contrast.mts';
-
-import type { On, Role, SystemLine } from './types';
+} from '@ks/lib/design/contrast.mts';
 
 type Tree = { [key: string]: number | string | Tree };
 

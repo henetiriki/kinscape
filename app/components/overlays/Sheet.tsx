@@ -10,7 +10,7 @@ import { Tabs } from '@ks/app/components/actions/Tabs';
 import { Text } from '@ks/app/components/foundation/Text';
 import { Modal, ModalClose } from '@ks/app/components/overlays/Modal';
 
-import styles from './Sheet.module.css';
+import styles from '@ks/app/components/overlays/Sheet.module.css';
 
 type PanelProps = SheetHead & {
   children: ReactNode;

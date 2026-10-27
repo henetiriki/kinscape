@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 
 import localFont from 'next/font/local';
 
-import './tokens.css';
-import './globals.css';
+import '@ks/app/tokens.css';
+import '@ks/app/globals.css';
 
 // The @fontsource files design/source/fonts.css uses, served by KinScape (NFR-03).
 // Each variable is the one tokens.css starts that font's stack with.

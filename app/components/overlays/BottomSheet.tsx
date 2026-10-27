@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 
-import styles from './BottomSheet.module.css';
+import styles from '@ks/app/components/overlays/BottomSheet.module.css';
 
 /** The phone's non-modal date sheet: the map stays usable behind it. Collapsed or expanded; the grabber toggles it. */
 export const BottomSheet = ({

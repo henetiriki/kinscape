@@ -7,7 +7,7 @@ import type { ControlState } from '@ks/app/components/foundation/types';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
-import styles from './TextField.module.css';
+import styles from '@ks/app/components/forms/TextField.module.css';
 
 /** A native select with its label and a drawn chevron. The open list is the browser's. */
 export const SelectField = ({

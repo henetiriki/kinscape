@@ -1,10 +1,10 @@
 import type { CSSProperties } from 'react';
 
-import { TextLink } from '@/app/components/actions/TextLink';
-import { Text } from '@/app/components/foundation/Text';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { Text } from '@ks/app/components/foundation/Text';
+import { BOARDS } from '@ks/app/design-kit/boards';
 
-import { BOARDS } from './boards';
-import styles from './page.module.css';
+import styles from '@ks/app/design-kit/page.module.css';
 
 const DesignKitIndex = () => (
   <main className={styles.index}>

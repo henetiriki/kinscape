@@ -4,15 +4,15 @@ import type { CSSProperties } from 'react';
 
 import { useId } from 'react';
 
+import type { ChainLevel, PopupPin } from '@ks/app/components/overlays/types';
+
 import { Button } from '@ks/app/components/actions/Button';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 import { EventGlyph } from '@ks/app/components/map/EventGlyph';
 
-import type { ChainLevel, PopupPin } from './types';
-
-import styles from './Popup.module.css';
+import styles from '@ks/app/components/overlays/Popup.module.css';
 
 /** What Copy chain copies: a line per level, smallest first, as `Colony: Cape Colony (Was … until 1880)`. */
 export const chainText = (chain: ChainLevel[]) =>

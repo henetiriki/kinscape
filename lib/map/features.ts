@@ -1,6 +1,9 @@
 import polylabel from 'polylabel';
 
-import type { BoundaryData, BoundaryVersion } from '../boundaries/types.ts';
+import type {
+  BoundaryData,
+  BoundaryVersion,
+} from '@ks/lib/boundaries/types.ts';
 
 type PolityCollection = {
   features: PolityFeature[];

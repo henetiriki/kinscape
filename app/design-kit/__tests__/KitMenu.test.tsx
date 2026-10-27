@@ -5,7 +5,7 @@ const pathname = vi.hoisted(() => ({ current: '/design-kit/type' }));
 
 vi.mock('next/navigation', () => ({ usePathname: () => pathname.current }));
 
-import { KitMenu } from '../KitMenu';
+import { KitMenu } from '@ks/app/design-kit/KitMenu';
 
 // jsdom has no showModal or close: stand in for them with the `open` attribute.
 beforeEach(() => {

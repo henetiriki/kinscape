@@ -1,4 +1,4 @@
-/* The focus ring every control shares; a control takes it with `composes: ring from './focus.module.css'`. */
+/* The focus ring every control shares; a control takes it with `composes: ring from '@ks/app/components/foundation/focus.module.css'`. */
 
 .ring:is(:focus-visible, [data-state='focus']) {
   outline: var(--focus-width) solid var(--focus-ring);

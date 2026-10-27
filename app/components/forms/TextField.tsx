@@ -10,7 +10,7 @@ import { KeyHint } from '@ks/app/components/actions/KeyHint';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
-import styles from './TextField.module.css';
+import styles from '@ks/app/components/forms/TextField.module.css';
 
 // A key typed in these is text, not a shortcut.
 const TYPES_TEXT = 'input, select, textarea, [contenteditable]';

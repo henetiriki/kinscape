@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 
-import { Alert } from '@/app/components/feedback/Alert';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { Alert } from '@ks/app/components/feedback/Alert';
+import { boardTitle } from '@ks/app/design-kit/boards';
+import { describe, nameOf, valueAt } from '@ks/app/design-kit/colour/describe';
+import { GROUPS, SYSTEM } from '@ks/app/design-kit/colour/swatches';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
-import rawTokens from '../../../design/tokens.json';
-import { boardTitle } from '../boards';
-import kit from '../kit.module.css';
-import { describe, nameOf, valueAt } from './describe';
-import styles from './page.module.css';
-import { GROUPS, SYSTEM } from './swatches';
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/colour/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('colour') };
 

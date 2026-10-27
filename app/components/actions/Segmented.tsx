@@ -1,8 +1,8 @@
 'use client';
 
-import type { Segment } from './types';
+import type { Segment } from '@ks/app/components/actions/types';
 
-import styles from './Segmented.module.css';
+import styles from '@ks/app/components/actions/Segmented.module.css';
 
 /** One choice from a few, as radios: the arrow keys move the choice. */
 export const Segmented = ({

@@ -1,7 +1,13 @@
 import { expect, it } from 'vitest';
 
-import tokens from '../../../../design/tokens.json';
-import { ICONS, MOTION, RADII, SHADOWS, SPACE } from '../values';
+import {
+  ICONS,
+  MOTION,
+  RADII,
+  SHADOWS,
+  SPACE,
+} from '@ks/app/design-kit/foundations/values';
+import tokens from '@ks/design/tokens.json';
 
 // NFR-06: every row is a token the board reads.
 it('names a token for each row', () => {

@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
 
-import styles from './Modal.module.css';
+import styles from '@ks/app/components/overlays/Modal.module.css';
 
 type ModalProps = {
   /** Called when the scrim or Esc dismisses the modal. */

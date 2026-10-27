@@ -1,26 +1,22 @@
 import type { ReactNode } from 'react';
 
-import type { SurfaceLevel } from '@/app/components/foundation/types';
-import type { Source } from '@/lib/boundaries/types.ts';
+import type { SurfaceLevel } from '@ks/app/components/foundation/types';
+import type { Column } from '@ks/app/design-kit/inputs/types';
+import type { Source } from '@ks/lib/boundaries/types.ts';
 
-import { Button } from '@/app/components/actions/Button';
-import { Callout, CalloutPointer } from '@/app/components/feedback/Callout';
-import { NoticeCard } from '@/app/components/feedback/NoticeCard';
-import { ProgressBar } from '@/app/components/feedback/ProgressBar';
-import { Icon } from '@/app/components/foundation/Icon';
-import { Surface } from '@/app/components/foundation/Surface';
-import { Avatar } from '@/app/components/map/Avatar';
-import { DialogPanel } from '@/app/components/overlays/Dialog';
-import { MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
-import { Popup } from '@/app/components/overlays/Popup';
-import { SheetPanel } from '@/app/components/overlays/Sheet';
-import { SourcesList } from '@/app/components/overlays/SourcesDialog';
-import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
-
-import type { Column } from '../inputs/types';
-
+import { Button } from '@ks/app/components/actions/Button';
+import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
+import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
+import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import { Surface } from '@ks/app/components/foundation/Surface';
+import { Avatar } from '@ks/app/components/map/Avatar';
+import { DialogPanel } from '@ks/app/components/overlays/Dialog';
+import { MenuItem, MenuPanel } from '@ks/app/components/overlays/Menu';
+import { Popup } from '@ks/app/components/overlays/Popup';
+import { SheetPanel } from '@ks/app/components/overlays/Sheet';
+import { SourcesList } from '@ks/app/components/overlays/SourcesDialog';
+import { SOURCES_WORDS } from '@ks/app/components/overlays/sourcesWords';
 import {
   Accessibility,
   ByViewport,
@@ -31,10 +27,21 @@ import {
   stateOf,
   Variant,
   Variants,
-} from '../inputs/Board';
-import { CHAIN, MENU_GROUPS, MENU_WORDS, PINS } from './data';
-import styles from './page.module.css';
-import { AccountMenu, CopyChainPopup } from './Samples';
+} from '@ks/app/design-kit/inputs/Board';
+import {
+  CHAIN,
+  MENU_GROUPS,
+  MENU_WORDS,
+  PINS,
+} from '@ks/app/design-kit/surfaces/data';
+import {
+  AccountMenu,
+  CopyChainPopup,
+} from '@ks/app/design-kit/surfaces/Samples';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
+
+import styles from '@ks/app/design-kit/surfaces/page.module.css';
 
 const code = (text: string) => <code>{text}</code>;
 

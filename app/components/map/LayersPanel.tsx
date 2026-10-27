@@ -3,7 +3,7 @@
 import { Checkbox } from '@/app/components/forms/Checkbox';
 import { Text } from '@/app/components/foundation/Text';
 
-import styles from './LayersPanel.module.css';
+import styles from '@ks/app/components/map/LayersPanel.module.css';
 
 type LayerProps = {
   onShowPolitiesChange: (show: boolean) => void;

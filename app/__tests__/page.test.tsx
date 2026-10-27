@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 const shell = vi.hoisted(() => vi.fn());
 
-vi.mock('@/app/components/map/MapShell', () => ({
+vi.mock('@ks/app/components/map/MapShell', () => ({
   MapShell: (props: { coverage: unknown[]; sources: unknown[] }) => {
     shell(props);
 
@@ -11,7 +11,7 @@ vi.mock('@/app/components/map/MapShell', () => ({
   },
 }));
 
-import Home from '../page';
+import Home from '@ks/app/page';
 
 it('renders the map with the sources and coverage from the data folder', () => {
   const { getByTestId } = render(<Home />);

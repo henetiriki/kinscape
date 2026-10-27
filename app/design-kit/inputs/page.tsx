@@ -1,10 +1,7 @@
 import type { Metadata } from 'next';
 
-import { TextLink } from '@/app/components/actions/TextLink';
-
-import { boardTitle } from '../boards';
-import kit from '../kit.module.css';
-import styles from './page.module.css';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { boardTitle } from '@ks/app/design-kit/boards';
 import {
   Alerts,
   Buttons,
@@ -14,7 +11,11 @@ import {
   KeyHints,
   TabsSection,
   TextFields,
-} from './sections';
+} from '@ks/app/design-kit/inputs/sections';
+
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/inputs/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('inputs') };
 

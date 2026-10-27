@@ -2,10 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 
-import { TextLink } from '@/app/components/actions/TextLink';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { BOARDS } from '@ks/app/design-kit/boards';
 
-import { BOARDS } from './boards';
-import styles from './layout.module.css';
+import styles from '@ks/app/design-kit/layout.module.css';
 
 /** The kit's name, linking to the index; the index is marked as the current page on it. */
 export const KitTitle = () => {

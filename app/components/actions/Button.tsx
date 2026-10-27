@@ -7,7 +7,7 @@ import type {
 
 import { Icon } from '@ks/app/components/foundation/Icon';
 
-import styles from './Button.module.css';
+import styles from '@ks/app/components/actions/Button.module.css';
 
 type Base = {
   /** Fills the width of its container. */

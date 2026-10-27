@@ -1,7 +1,7 @@
-import type { Fix, Precision, Problem } from './types';
+import type { Fix, Precision, Problem } from '@ks/lib/map/types';
 
-import { toDay } from '../boundaries/model.mts';
-import { shownDate } from './map-date';
+import { toDay } from '@ks/lib/boundaries/model.mts';
+import { shownDate } from '@ks/lib/map/map-date';
 
 type Check =
   | { day: number; ok: true; precision: Precision }

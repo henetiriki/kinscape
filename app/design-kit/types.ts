@@ -1,4 +1,4 @@
-import type { BOARDS } from './boards';
+import type { BOARDS } from '@ks/app/design-kit/boards';
 
 export type Board = (typeof BOARDS)[number];
 

@@ -7,7 +7,7 @@ import { Text } from '@ks/app/components/foundation/Text';
 import { Dialog } from '@ks/app/components/overlays/Dialog';
 import { SOURCES_WORDS } from '@ks/app/components/overlays/sourcesWords';
 
-import styles from './SourcesDialog.module.css';
+import styles from '@ks/app/components/overlays/SourcesDialog.module.css';
 
 const COLUMNS = ['Layer', 'Source', 'Licence', 'Checked'];
 

@@ -7,7 +7,7 @@ import {
   parseConfig,
   summarise,
   unionMask,
-} from '../check.mts';
+} from '@ks/lib/design/check.mts';
 
 const known = { snapshots: ['map-desktop'], states: ['open'] };
 const screen = {

@@ -1,8 +1,8 @@
 import { render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { BOARDS } from '../boards';
-import DesignKitIndex from '../page';
+import { BOARDS } from '@ks/app/design-kit/boards';
+import DesignKitIndex from '@ks/app/design-kit/page';
 
 // NFR-06
 it('lists each board with its link and line', () => {

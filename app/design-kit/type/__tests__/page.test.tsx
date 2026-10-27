@@ -1,9 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import type tokens from '../../../../design/tokens.json';
+import type tokens from '@ks/design/tokens.json';
 
-vi.mock('../../../../design/tokens.json', async importOriginal => {
+vi.mock('@ks/design/tokens.json', async importOriginal => {
   const original = await importOriginal<{ default: typeof tokens }>();
 
   return {
@@ -20,7 +20,7 @@ vi.mock('../../../../design/tokens.json', async importOriginal => {
   };
 });
 
-const { default: TypeKit } = await import('../page');
+const { default: TypeKit } = await import('@ks/app/design-kit/type/page');
 
 // NFR-06
 it('shows the five map labels and a note built from the tokens', () => {

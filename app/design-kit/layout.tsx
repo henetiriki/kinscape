@@ -3,11 +3,11 @@ import type { ReactNode } from 'react';
 
 import { notFound } from 'next/navigation';
 
-import { Text } from '@/app/components/foundation/Text';
+import { Text } from '@ks/app/components/foundation/Text';
+import { KitMenu } from '@ks/app/design-kit/KitMenu';
+import { KitNav, KitTitle } from '@ks/app/design-kit/KitNav';
 
-import { KitMenu } from './KitMenu';
-import { KitNav, KitTitle } from './KitNav';
-import styles from './layout.module.css';
+import styles from '@ks/app/design-kit/layout.module.css';
 
 export const metadata: Metadata = {
   title: {

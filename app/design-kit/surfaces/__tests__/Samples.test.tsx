@@ -1,7 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import { AccountMenu, CopyChainPopup } from '../Samples';
+import {
+  AccountMenu,
+  CopyChainPopup,
+} from '@ks/app/design-kit/surfaces/Samples';
 
 afterEach(() => {
   vi.unstubAllGlobals();

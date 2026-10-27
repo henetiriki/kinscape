@@ -6,14 +6,14 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PNG } from 'pngjs';
 
+import { states } from '@ks/e2e/design-states';
 import {
   changedPixels,
   compare,
   outcomeFor,
   parseConfig,
   unionMask,
-} from '../lib/design/check.mts';
-import { states } from './design-states';
+} from '@ks/lib/design/check.mts';
 
 const root = process.cwd();
 const config = parseConfig(

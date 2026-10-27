@@ -8,7 +8,7 @@ import {
   renderCss,
   resolveTokens,
   strayColours,
-} from '../tokens.mts';
+} from '@ks/lib/design/tokens.mts';
 
 describe('resolveTokens', () => {
   it('replaces references, including a chain of them, with the value', () => {

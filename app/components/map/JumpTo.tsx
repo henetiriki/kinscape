@@ -1,8 +1,8 @@
 'use client';
 
-import type { Epoch } from './types';
+import type { Epoch } from '@ks/app/components/map/types';
 
-import styles from './JumpTo.module.css';
+import styles from '@ks/app/components/map/JumpTo.module.css';
 
 /** A row of epochs to jump to. The epoch the Map date is in is outlined and marked current. */
 export const JumpTo = ({

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { fromDay, toDay } from '../../boundaries/model.mts';
+import { fromDay, toDay } from '@ks/lib/boundaries/model.mts';
 import {
   dayFromSlider,
   finerPrecision,
@@ -10,7 +10,7 @@ import {
   sliderValue,
   stepDay,
   todayDay,
-} from '../map-date';
+} from '@ks/lib/map/map-date';
 
 const today = toDay('2026-10-21');
 

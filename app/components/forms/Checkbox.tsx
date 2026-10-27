@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 
-import styles from './Checkbox.module.css';
+import styles from '@ks/app/components/forms/Checkbox.module.css';
 
 export const Checkbox = ({
   state,

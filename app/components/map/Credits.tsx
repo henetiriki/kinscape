@@ -2,7 +2,7 @@
 
 import type { Source } from '@/lib/boundaries/types.ts';
 
-import styles from './Credits.module.css';
+import styles from '@ks/app/components/map/Credits.module.css';
 
 /** Layers whose sources are credited only while that layer is on. */
 export const POLITY_LAYER = 'Polity borders';

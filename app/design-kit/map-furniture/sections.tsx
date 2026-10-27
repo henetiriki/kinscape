@@ -1,19 +1,15 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { EventType } from '@/app/components/map/types';
+import type { EventType } from '@ks/app/components/map/types';
+import type { Column } from '@ks/app/design-kit/inputs/types';
 
-import { Chip } from '@/app/components/actions/Chip';
-import { Avatar } from '@/app/components/map/Avatar';
-import { EVENT_ORDER, EventGlyph } from '@/app/components/map/EventGlyph';
-import { LayersButton } from '@/app/components/map/LayersButton';
-import { Legend } from '@/app/components/map/Legend';
-import { SearchBar } from '@/app/components/map/SearchBar';
-import { Wordmark } from '@/app/components/map/Wordmark';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
-
-import type { Column } from '../inputs/types';
-
+import { Chip } from '@ks/app/components/actions/Chip';
+import { Avatar } from '@ks/app/components/map/Avatar';
+import { EVENT_ORDER, EventGlyph } from '@ks/app/components/map/EventGlyph';
+import { LayersButton } from '@ks/app/components/map/LayersButton';
+import { Legend } from '@ks/app/components/map/Legend';
+import { SearchBar } from '@ks/app/components/map/SearchBar';
+import { Wordmark } from '@ks/app/components/map/Wordmark';
 import {
   ByViewport,
   DesktopOnly,
@@ -24,10 +20,16 @@ import {
   stateOf,
   Variant,
   Variants,
-} from '../inputs/Board';
-import { DockDrawing, SheetDrawing } from './DateDockDrawing';
-import styles from './page.module.css';
-import { ZoomDemo } from './ZoomDemo';
+} from '@ks/app/design-kit/inputs/Board';
+import {
+  DockDrawing,
+  SheetDrawing,
+} from '@ks/app/design-kit/map-furniture/DateDockDrawing';
+import { ZoomDemo } from '@ks/app/design-kit/map-furniture/ZoomDemo';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
+
+import styles from '@ks/app/design-kit/map-furniture/page.module.css';
 
 const code = (text: string) => <code>{text}</code>;
 

@@ -6,7 +6,7 @@ import type { EventType } from '@ks/app/components/map/types';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { EventGlyph } from '@ks/app/components/map/EventGlyph';
 
-import styles from './Chip.module.css';
+import styles from '@ks/app/components/actions/Chip.module.css';
 
 export const Chip = ({
   children,

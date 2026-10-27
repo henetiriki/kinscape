@@ -1,8 +1,8 @@
 import { join } from 'node:path';
 
-import type { BoundaryData } from './types.ts';
+import type { BoundaryData } from '@ks/lib/boundaries/types.ts';
 
-import { loadBoundaryData } from './load.mts';
+import { loadBoundaryData } from '@ks/lib/boundaries/load.mts';
 
 /** The repo's `data/` folder, read on the server. A bad file stops the build. */
 export const loadAppData = (): BoundaryData => {

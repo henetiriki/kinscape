@@ -39,6 +39,7 @@ describe('nodeLoadedFiles', () => {
     expect(files).toEqual(
       expect.arrayContaining([
         '**/*.mts',
+        '**/*.mjs',
         'scripts/**',
         'lib/boundaries/types.ts',
         'scripts/types.ts',
@@ -58,6 +59,7 @@ describe('nodeLoadedFiles', () => {
 
     expect(nodeLoadedFiles(root)).toEqual([
       '**/*.mts',
+      '**/*.mjs',
       'scripts/**',
       'src/types.ts',
     ]);
@@ -100,6 +102,23 @@ describe('the import sorter in the real lint config', () => {
         sorter
       )
     ).toEqual([]);
+  });
+
+  it('keeps stylesheets last, the kit’s before a board’s', async () => {
+    expect(
+      await lint(
+        'app/design-kit/colour/page.tsx',
+        "import { a } from '@ks/lib/a';\n\nimport kit from '@ks/app/design-kit/kit.module.css';\n\nimport styles from '@ks/app/design-kit/colour/page.module.css';\n",
+        sorter
+      )
+    ).toEqual([]);
+    expect(
+      await lint(
+        'app/design-kit/colour/page.tsx',
+        "import styles from '@ks/app/design-kit/colour/page.module.css';\nimport kit from '@ks/app/design-kit/kit.module.css';\n",
+        sorter
+      )
+    ).not.toEqual([]);
   });
 
   it('fails an @ks/ import sorted among the packages', async () => {

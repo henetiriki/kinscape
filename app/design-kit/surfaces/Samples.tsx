@@ -2,19 +2,24 @@
 
 import { useState } from 'react';
 
-import type { Source } from '@/lib/boundaries/types.ts';
+import type { Source } from '@ks/lib/boundaries/types.ts';
 
-import { Toast } from '@/app/components/feedback/Toast';
-import { Menu } from '@/app/components/overlays/Menu';
+import { Toast } from '@ks/app/components/feedback/Toast';
+import { Menu } from '@ks/app/components/overlays/Menu';
 import {
   chainText,
   Popup,
   PopupPointer,
-} from '@/app/components/overlays/Popup';
-import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
+} from '@ks/app/components/overlays/Popup';
+import { SourcesDialog } from '@ks/app/components/overlays/SourcesDialog';
+import {
+  CHAIN,
+  MENU_GROUPS,
+  MENU_WORDS,
+  PINS,
+} from '@ks/app/design-kit/surfaces/data';
 
-import { CHAIN, MENU_GROUPS, MENU_WORDS, PINS } from './data';
-import styles from './page.module.css';
+import styles from '@ks/app/design-kit/surfaces/page.module.css';
 
 /** A live account Menu: Sources and attributions opens the Sources dialog, the other items only close. */
 export const AccountMenu = ({ sources }: { sources: Source[] }) => {

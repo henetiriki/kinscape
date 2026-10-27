@@ -2,8 +2,8 @@ import { existsSync, globSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { generate } from '../../../scripts/tokens.mts';
-import { strayColours } from '../tokens.mts';
+import { strayColours } from '@ks/lib/design/tokens.mts';
+import { generate } from '@ks/scripts/tokens.mts';
 
 const root = join(import.meta.dirname, '../../..');
 const read = (path: string) => readFileSync(join(root, path), 'utf8');

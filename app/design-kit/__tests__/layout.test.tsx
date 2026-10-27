@@ -12,7 +12,7 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/design-kit/type',
 }));
 
-import DesignKitLayout, { metadata } from '../layout';
+import DesignKitLayout, { metadata } from '@ks/app/design-kit/layout';
 
 afterEach(() => vi.unstubAllEnvs());
 

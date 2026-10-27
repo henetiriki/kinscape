@@ -7,6 +7,7 @@ import {
   setWorkerUrl,
 } from 'maplibre-gl';
 import { useEffect, useRef } from 'react';
+
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { PHONE } from '@/app/components/foundation/usePhone';

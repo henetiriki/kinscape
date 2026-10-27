@@ -9,7 +9,7 @@ import type { ControlState } from '@ks/app/components/foundation/types';
 import { RemovableChip } from '@ks/app/components/actions/Chip';
 import { Text } from '@ks/app/components/foundation/Text';
 
-import styles from './TextField.module.css';
+import styles from '@ks/app/components/forms/TextField.module.css';
 
 /** A field of removable chips with an input that adds the next one on Enter. */
 export const TokenField = ({

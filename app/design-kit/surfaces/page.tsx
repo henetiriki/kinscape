@@ -1,11 +1,7 @@
 import type { Metadata } from 'next';
 
-import { TextLink } from '@/app/components/actions/TextLink';
-
-import { boardTitle } from '../boards';
-import styles from '../inputs/page.module.css';
-import kit from '../kit.module.css';
-import local from './page.module.css';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { boardTitle } from '@ks/app/design-kit/boards';
 import {
   Callouts,
   Dialogs,
@@ -15,8 +11,13 @@ import {
   ProgressBars,
   SheetHeaders,
   Surfaces,
-} from './sections';
-import { SAMPLE_SOURCES } from './sources';
+} from '@ks/app/design-kit/surfaces/sections';
+import { SAMPLE_SOURCES } from '@ks/app/design-kit/surfaces/sources';
+
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/inputs/page.module.css';
+import local from '@ks/app/design-kit/surfaces/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('surfaces') };
 

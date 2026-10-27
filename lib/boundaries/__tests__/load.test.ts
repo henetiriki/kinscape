@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { loadBoundaryData } from '../load.mts';
+import { loadBoundaryData } from '@ks/lib/boundaries/load.mts';
 
 const square = {
   coordinates: [

@@ -1,4 +1,4 @@
-import styles from './Divider.module.css';
+import styles from '@ks/app/components/foundation/Divider.module.css';
 
 /** A hairline; with `label` it reads as "or" between two choices. */
 export const Divider = ({ label }: { label?: string }) =>

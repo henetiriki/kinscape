@@ -13,7 +13,7 @@ import { Text } from '@ks/app/components/foundation/Text';
 import { checkDate } from '@ks/lib/map/date-input';
 import { finerPrecision, shownDate } from '@ks/lib/map/map-date';
 
-import styles from './DateField.module.css';
+import styles from '@ks/app/components/forms/DateField.module.css';
 
 type Notice = { text: string; tone: Extract<Tone, 'info' | 'warning'> };
 

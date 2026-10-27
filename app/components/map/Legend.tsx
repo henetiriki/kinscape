@@ -7,7 +7,7 @@ import { EventGlyph } from '@/app/components/map/EventGlyph';
 import rawTokens from '@/design/tokens.json';
 import { resolveTokens } from '@/lib/design/tokens.mts';
 
-import styles from './Legend.module.css';
+import styles from '@ks/app/components/map/Legend.module.css';
 
 const { map } = resolveTokens(rawTokens);
 

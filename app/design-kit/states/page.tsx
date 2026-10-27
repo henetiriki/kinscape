@@ -1,20 +1,21 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import { Button } from '@/app/components/actions/Button';
-import { Chip } from '@/app/components/actions/Chip';
-import { IconButton } from '@/app/components/actions/IconButton';
-import { Segmented } from '@/app/components/actions/Segmented';
-import { Tabs } from '@/app/components/actions/Tabs';
-import { TextLink } from '@/app/components/actions/TextLink';
-import { Checkbox } from '@/app/components/forms/Checkbox';
-import { TextField } from '@/app/components/forms/TextField';
+import { Button } from '@ks/app/components/actions/Button';
+import { Chip } from '@ks/app/components/actions/Chip';
+import { IconButton } from '@ks/app/components/actions/IconButton';
+import { Segmented } from '@ks/app/components/actions/Segmented';
+import { Tabs } from '@ks/app/components/actions/Tabs';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { Checkbox } from '@ks/app/components/forms/Checkbox';
+import { TextField } from '@ks/app/components/forms/TextField';
+import { boardTitle } from '@ks/app/design-kit/boards';
 
-import { boardTitle } from '../boards';
-import kit from '../kit.module.css';
-import styles from './page.module.css';
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/states/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('states') };
 

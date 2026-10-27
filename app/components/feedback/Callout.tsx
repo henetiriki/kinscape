@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import styles from './Callout.module.css';
+import styles from '@ks/app/components/feedback/Callout.module.css';
 
 /** The error box of one control; the control points at it with `aria-describedby={id}`. */
 export const Callout = ({

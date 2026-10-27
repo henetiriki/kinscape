@@ -3,14 +3,14 @@
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-import { Button } from '@/app/components/actions/Button';
-import { TextLink } from '@/app/components/actions/TextLink';
-import { Icon } from '@/app/components/foundation/Icon';
-import { Text } from '@/app/components/foundation/Text';
-import { Sheet } from '@/app/components/overlays/Sheet';
+import { Button } from '@ks/app/components/actions/Button';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import { Text } from '@ks/app/components/foundation/Text';
+import { Sheet } from '@ks/app/components/overlays/Sheet';
+import { BOARDS } from '@ks/app/design-kit/boards';
 
-import { BOARDS } from './boards';
-import styles from './KitMenu.module.css';
+import styles from '@ks/app/design-kit/KitMenu.module.css';
 
 /** On a phone, a "Boards" button that opens the boards as a bottom sheet. */
 export const KitMenu = () => {

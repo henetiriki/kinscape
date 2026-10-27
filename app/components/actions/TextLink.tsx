@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 
-import styles from './TextLink.module.css';
+import styles from '@ks/app/components/actions/TextLink.module.css';
 
 /** An anchor has no disabled state, so a disabled link is plain text that says so. */
 export const TextLink = ({

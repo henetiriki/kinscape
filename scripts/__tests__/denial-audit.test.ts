@@ -221,6 +221,9 @@ describe('issueBody', () => {
       '| `Bash: cat a` | 4 | $0.76 | [11](https://github.com/owner/repo/actions/runs/11), [12](https://github.com/owner/repo/actions/runs/12) | `Bash: cat a \\| tail` |'
     );
     expect(body).toContain('`.github/agent/settings.json`');
+    expect(body).toContain(
+      'For the code review, edit `--allowedTools` in `claude-code-review.yml` or `.github/agent/review.md`.'
+    );
   });
 
   it('does not divide by zero with no runs', () => {
@@ -321,7 +324,12 @@ describe('run', () => {
     gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] === verb);
 
   beforeEach(() => {
-    runs = { 'claude-build.yml': [], 'claude-plan.yml': [], 'claude.yml': [] };
+    runs = {
+      'claude-build.yml': [],
+      'claude-code-review.yml': [],
+      'claude-plan.yml': [],
+      'claude.yml': [],
+    };
     artifacts = {};
     open = [];
     gh = vi.fn<Gh>(args => {
@@ -354,6 +362,7 @@ describe('run', () => {
       'claude-plan.yml',
       'claude-build.yml',
       'claude.yml',
+      'claude-code-review.yml',
     ]) {
       expect(gh).toHaveBeenCalledWith([
         'run',
@@ -406,6 +415,15 @@ describe('run', () => {
     ]);
     expect(body).toContain('| `Bash: cat` | 2 | $0.00 |');
     expect(calls('edit')).toHaveLength(0);
+  });
+
+  it('reads the code review runs too', () => {
+    runs['claude-code-review.yml'] = [make(1), make(2)];
+    artifacts[1] = artifact('cat a | tail');
+    artifacts[2] = artifact('cat b | head');
+
+    expect(audit()).toBe(0);
+    expect(calls('create')[0][1]).toContain('| `Bash: cat` | 2 | $0.00 |');
   });
 
   it('rewrites the open issue instead of opening another', () => {

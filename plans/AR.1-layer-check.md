@@ -79,7 +79,10 @@ Allowlist: `app/components/map`, `lib/map/style.ts`, `lib/map/filter.ts`, `forms
 
 ## Deviations
 
-- The `lintText` tests sit in `scripts/__tests__/layers-config.test.ts` and import `eslint.config.mjs`, so `layers.mts` loads once: a second, native copy corrupts its coverage.
+- The `lintText` tests sit in `scripts/__tests__/layers-config.test.ts` and import `eslint.config.mjs`: a second, native copy of `layers.mts` corrupts its coverage.
+
+- `types/modules.d.ts` types it.
+- An allowlist entry excuses only imports that are fine in the layer it moves to; mapped code may not import dev-only code.
 
 ## Out of scope
 

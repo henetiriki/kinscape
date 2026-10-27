@@ -1,38 +1,69 @@
 import { RuleTester } from 'eslint';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { sep } from 'node:path';
+import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
-import { ALLOWLIST, importsRule, layerBreak, layerOf } from '../layers.mts';
+import {
+  ALLOWLIST,
+  covers,
+  importsRule,
+  layerBreak,
+  layerOf,
+  listed,
+} from '../layers.mts';
 
-// NFR-09
+// NFR-09. Same file types as the lint rule's globs in eslint.config.mjs.
 const ROOTS = ['app', 'lib', 'features', 'server'];
-const SOURCE = /\.(?:[cm]?[jt]sx?)$/;
-const SPECIFIERS = [
-  /\bfrom\s+['"]([^'"]+)['"]/g,
-  /\bimport\s*\(\s*['"]([^'"]+)['"]/g,
-  /^\s*import\s+['"]([^'"]+)['"]/gm,
-];
+const SOURCE = /\.(?:tsx?|mts)$/;
 
-const covers = (entry: string, file: string): boolean =>
-  file === entry || file.startsWith(`${entry}/`);
+/** The specifiers a source imports, re-exports or dynamically imports, read from the syntax tree. */
+const specifiersOf = (path: string, source: string): string[] => {
+  const found: string[] = [];
+  const visit = (node: ts.Node): void => {
+    const target =
+      ts.isImportDeclaration(node) || ts.isExportDeclaration(node)
+        ? node.moduleSpecifier
+        : ts.isCallExpression(node) &&
+            node.expression.kind === ts.SyntaxKind.ImportKeyword
+          ? node.arguments[0]
+          : undefined;
 
-/** Each `file: message` break in the sources, minus those the allowlist covers. */
+    if (target !== undefined && ts.isStringLiteralLike(target)) {
+      found.push(target.text);
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true));
+
+  return found;
+};
+
+/** Each `file: message` break in the sources, minus those the allowlist lists. */
 const problems = (
   files: Record<string, string>,
   allowlist: Record<string, string>
 ): string[] => {
   const broken = Object.entries(files).flatMap(([path, source]) =>
-    SPECIFIERS.flatMap(pattern => [...source.matchAll(pattern)])
-      .map(match => layerBreak(path, match[1]))
-      .filter(message => message !== undefined)
-      .map(message => ({ message, path }))
+    specifiersOf(path, source).flatMap(specifier => {
+      const message = layerBreak(path, specifier);
+
+      return message === undefined ? [] : [{ message, path, specifier }];
+    })
   );
   const unlisted = broken
-    .filter(({ path }) => !Object.keys(allowlist).some(e => covers(e, path)))
+    .filter(({ path, specifier }) => !listed(path, specifier, allowlist))
     .map(({ message, path }) => `${path}: ${message}`);
   const stale = Object.keys(allowlist)
-    .filter(entry => !broken.some(({ path }) => covers(entry, path)))
+    .filter(
+      entry =>
+        !broken.some(
+          ({ path, specifier }) =>
+            covers(entry, path) && listed(path, specifier, allowlist)
+        )
+    )
     .map(entry => `${entry}: no longer breaks a layer rule; delete the entry.`);
 
   return [...unlisted, ...stale];
@@ -76,6 +107,41 @@ describe('problems', () => {
     );
   });
 
+  it('names a new break inside a listed path', () => {
+    expect(
+      problems(
+        {
+          'app/components/map/X.tsx':
+            "import { a } from '@/lib/map/a';\nimport { b } from '@/features/pins/b';",
+        },
+        { 'app/components/map': 'features/map' }
+      )
+    ).toEqual([
+      'app/components/map/X.tsx: Layer rule: app/components may not import features/pins.',
+    ]);
+  });
+
+  it('reads imports from the syntax, not the text', () => {
+    expect(
+      problems(
+        {
+          'app/components/forms/X.tsx': [
+            "// import { a } from '@/lib/map/a';",
+            'const s = "import { a } from \'@/lib/map/a\'";',
+            'import {',
+            '  a,',
+            "} from '@/server/db';",
+            'const c = import(`@/lib/map/c`);',
+          ].join('\n'),
+        },
+        {}
+      )
+    ).toEqual([
+      'app/components/forms/X.tsx: Layer rule: app/components may not import server.',
+      'app/components/forms/X.tsx: Layer rule: app/components may not import lib/domain.',
+    ]);
+  });
+
   it('tells you to delete a listed break that is fixed', () => {
     expect(
       problems(
@@ -97,6 +163,9 @@ describe('layerOf', () => {
     ['app/components/forms/X.tsx', 'kit'],
     ['features/map/A.tsx', 'features/map'],
     ['app/page.tsx', 'routes'],
+    ['lib/design/tokens', 'design'],
+    ['server', 'server'],
+    ['features', undefined],
     ['lib/design/check.mts', undefined],
     ['app/design-kit/page.tsx', undefined],
     ['app/__tests__/page.test.tsx', undefined],
@@ -131,6 +200,61 @@ describe('layerBreak', () => {
       'lib/map/a.ts',
       'maplibre-gl',
       'lib/domain may not import maplibre-gl',
+    ],
+    ['lib/domain', 'lib/map/a.ts', 'fs', 'lib/domain may not import fs'],
+    [
+      'lib/domain',
+      'lib/map/a.ts',
+      'fs/promises',
+      'lib/domain may not import fs/promises',
+    ],
+    [
+      'app/components',
+      'app/components/forms/X.tsx',
+      '@/server',
+      'app/components may not import server',
+    ],
+    [
+      'app/components',
+      'app/components/forms/X.tsx',
+      '@/lib',
+      'app/components may not import lib/domain',
+    ],
+    [
+      'lib/domain',
+      'lib/map/a.ts',
+      '@/lib/design/tokens',
+      'lib/domain may not import design',
+    ],
+    [
+      'lib/domain',
+      'lib/map/a.ts',
+      '@/scripts/layers.mts',
+      'lib/domain may not import dev-only code',
+    ],
+    [
+      'app/ routes',
+      'app/page.tsx',
+      '@/e2e/a',
+      'routes may not import dev-only code',
+    ],
+    [
+      'app/ routes',
+      'app/page.tsx',
+      '@/app/design-kit/a',
+      'may not import dev-only code',
+    ],
+    [
+      'lib/domain',
+      'lib/map/a.ts',
+      '@/lib/design/check.mts',
+      'may not import dev-only code',
+    ],
+    [
+      'lib/domain',
+      'lib/map/a.ts',
+      '@/lib/map/__tests__/a',
+      'may not import dev-only code',
     ],
     [
       'server',
@@ -171,7 +295,6 @@ describe('layerBreak', () => {
       'app/components/forms/X.tsx',
       '@/app/components/foundation/Text',
     ],
-    ['app/components', 'app/components/forms/X.tsx', '@/app/design-kit/a'],
     ['features', 'features/map/a.ts', '@/server/db'],
     ['features', 'features/map/a.ts', '@/app/components/forms/X'],
     ['features', 'features/map/a.ts', './b'],
@@ -179,6 +302,7 @@ describe('layerBreak', () => {
     ['app/ routes', 'app/page.tsx', '@/lib/boundaries/app-data'],
     ['a test file', 'lib/__tests__/a.test.ts', '@/server/db'],
     ['a path outside the repo', 'lib/map/a.ts', '../../../x'],
+    ['a path outside the map', 'lib/map/a.ts', '@/types/modules'],
   ])('passes in %s', (_layer, file, specifier) => {
     expect(layerBreak(file, specifier)).toBeUndefined();
   });

@@ -1,4 +1,5 @@
-import { posix, relative, sep } from 'node:path';
+import { builtinModules } from 'node:module';
+import { join, posix, relative, sep } from 'node:path';
 
 // The layer map from docs/architecture.md. ESLint and the fitness test both read it.
 // Test files, app/design-kit, scripts, e2e and lib/design tooling are outside the map.
@@ -14,8 +15,14 @@ export const ALLOWLIST: Record<string, string> = {
   'lib/map/style.ts': 'features/map',
 };
 
-const DOMAIN_FORBIDDEN_PACKAGES = /^(?:node:|maplibre-gl(?:\/|$))/;
+const ROOT = join(import.meta.dirname, '..');
+const MAPLIBRE = /^maplibre-gl(?:\/|$)/;
 const TEST_FILE = /(?:^|\/)__tests__\/|\.(?:test|spec)\./;
+const DEV_ONLY = /^(?:scripts|e2e|lib\/design)\/|^app\/design-kit\//;
+const SOURCE_EXTENSION = /\.[cm]?[jt]sx?$/;
+
+const isBuiltin = (specifier: string): boolean =>
+  specifier.startsWith('node:') || builtinModules.includes(specifier);
 
 const MAY_IMPORT: Record<string, string[]> = {
   design: [],
@@ -32,35 +39,41 @@ export const layerOf = (path: string): string | undefined => {
     return undefined;
   }
 
-  if (path.startsWith('design/') || path === 'lib/design/tokens.mts') {
+  // Without the extension or trailing slash, so `@/server` and `@/lib/design/tokens` resolve.
+  const stem = path.replace(SOURCE_EXTENSION, '').replace(/\/$/, '');
+  const dir = `${stem}/`;
+
+  if (dir.startsWith('design/') || stem === 'lib/design/tokens') {
     return 'design';
   }
 
-  if (path.startsWith('lib/design/')) {
+  if (dir.startsWith('lib/design/')) {
     return undefined;
   }
 
-  if (path.startsWith('lib/')) {
+  if (dir.startsWith('lib/')) {
     return 'domain';
   }
 
-  if (path.startsWith('server/')) {
+  if (dir.startsWith('server/')) {
     return 'server';
   }
 
-  if (path.startsWith('features/')) {
-    return path.split('/').slice(0, 2).join('/');
+  if (dir.startsWith('features/')) {
+    const name = dir.split('/')[1];
+
+    return name === '' ? undefined : `features/${name}`;
   }
 
-  if (path.startsWith('app/components/')) {
+  if (dir.startsWith('app/components/')) {
     return 'kit';
   }
 
-  if (path.startsWith('app/design-kit/')) {
+  if (dir.startsWith('app/design-kit/')) {
     return undefined;
   }
 
-  return path.startsWith('app/') ? 'routes' : undefined;
+  return dir.startsWith('app/') ? 'routes' : undefined;
 };
 
 /** The repo path an import points at, or undefined for a package or built-in. */
@@ -89,39 +102,58 @@ const named = (layer: string): string =>
       : layer;
 
 const packageBreak = (from: string, specifier: string): string | undefined =>
-  from === 'domain' && DOMAIN_FORBIDDEN_PACKAGES.test(specifier)
+  from === 'domain' && (isBuiltin(specifier) || MAPLIBRE.test(specifier))
     ? `Layer rule: lib/domain may not import ${specifier}.`
     : undefined;
 
-const pathBreak = (from: string, to: string | undefined): string | undefined =>
-  to === undefined ||
-  to === from ||
-  MAY_IMPORT[kindOf(from)].includes(kindOf(to))
-    ? undefined
-    : kindOf(from) === 'feature' && kindOf(to) === 'feature'
-      ? `Layer rule: features never import each other (${from} → ${to}).`
-      : `Layer rule: ${named(from)} may not import ${named(to)}.`;
+const pathBreak = (
+  from: string,
+  path: string,
+  to: string | undefined
+): string | undefined =>
+  to === undefined
+    ? DEV_ONLY.test(`${path}/`) || TEST_FILE.test(path)
+      ? `Layer rule: ${named(from)} may not import dev-only code (${path}).`
+      : undefined
+    : to === from || MAY_IMPORT[kindOf(from)].includes(kindOf(to))
+      ? undefined
+      : kindOf(from) === 'feature' && kindOf(to) === 'feature'
+        ? `Layer rule: features never import each other (${from} → ${to}).`
+        : `Layer rule: ${named(from)} may not import ${named(to)}.`;
 
-/** The layer rule an import breaks, or undefined if it is allowed. */
+/** The layer rule an import breaks, or undefined if it is allowed. `as` judges the file as if it sat in another layer. */
 export const layerBreak = (
   file: string,
-  specifier: string
+  specifier: string,
+  as?: string
 ): string | undefined => {
-  const from = layerOf(file);
+  const from = as ?? layerOf(file);
   const path = targetOf(file, specifier);
 
   return from === undefined
     ? undefined
     : path === undefined
       ? packageBreak(from, specifier)
-      : pathBreak(from, layerOf(path));
+      : pathBreak(from, path, layerOf(path));
 };
 
-/** Whether the allowlist covers a file. */
-export const allowed = (file: string): boolean =>
-  Object.keys(ALLOWLIST).some(
-    entry => file === entry || file.startsWith(`${entry}/`)
+/** Whether an allowlist entry covers a file. */
+export const covers = (entry: string, file: string): boolean =>
+  file === entry || file.startsWith(`${entry}/`);
+
+/** Whether the allowlist lists this break: its file is covered and the import is fine in the layer the entry moves to. */
+export const listed = (
+  file: string,
+  specifier: string,
+  allowlist: Record<string, string> = ALLOWLIST
+): boolean => {
+  const entry = Object.keys(allowlist).find(e => covers(e, file));
+
+  return (
+    entry !== undefined &&
+    layerBreak(file, specifier, layerOf(allowlist[entry])) === undefined
   );
+};
 
 /** The ESLint rule `layers/imports`. */
 export const importsRule = {
@@ -129,18 +161,19 @@ export const importsRule = {
     filename: string;
     report: (problem: { message: string; node: unknown }) => void;
   }) => {
-    const file = relative(process.cwd(), context.filename).split(sep).join('/');
+    // Relative to the repo root, not the directory ESLint runs from.
+    const file = relative(ROOT, context.filename).split(sep).join('/');
 
     const check = (node: { source?: { value?: unknown } | null }): void => {
       const specifier = node.source?.value;
 
-      if (typeof specifier !== 'string' || allowed(file)) {
+      if (typeof specifier !== 'string') {
         return;
       }
 
       const message = layerBreak(file, specifier);
 
-      if (message !== undefined) {
+      if (message !== undefined && !listed(file, specifier)) {
         context.report({ message, node });
       }
     };

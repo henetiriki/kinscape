@@ -132,10 +132,10 @@ export default defineConfig([
   {
     // The layer map in docs/architecture.md; its allowlist lives in scripts/layers.mts.
     files: [
-      'app/**/*.{ts,tsx}',
-      'lib/**/*.{ts,mts}',
-      'features/**/*.{ts,tsx}',
-      'server/**/*.{ts,tsx}',
+      'app/**/*.{ts,tsx,mts}',
+      'lib/**/*.{ts,tsx,mts}',
+      'features/**/*.{ts,tsx,mts}',
+      'server/**/*.{ts,tsx,mts}',
     ],
     plugins: { layers },
     rules: { 'layers/imports': 'error' },

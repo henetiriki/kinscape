@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 // ESLint applies the Node rule to them (eslint.config.mjs); the tests read `NODE_MESSAGE`.
 
 export const NODE_MESSAGE =
-  'Node loads this file without the alias: import by relative path. `import type` may use the alias.';
+  'Node loads this file and ignores path aliases: use a relative import (`import type` may use an alias).';
 
 const IGNORED = [
   '.claude-pr/**',

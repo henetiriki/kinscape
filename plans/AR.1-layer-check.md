@@ -77,6 +77,10 @@ Allowlist: `app/components/map`, `lib/map/style.ts`, `lib/map/filter.ts`, `forms
 | Component rules unchanged                                 | `lintText`: `../` in a component, `./components/` in a route |
 | Suite passes, no old test edited                          | `npm test`, lint, validator, `design:check`, `npm run e2e`   |
 
+## Deviations
+
+- The `lintText` tests sit in `scripts/__tests__/layers-config.test.ts` and import `eslint.config.mjs`, so `layers.mts` loads once: a second, native copy corrupts its coverage.
+
 ## Out of scope
 
 `@ks/` and `.mts` lint rules (AR.2); moving files (AR.8, AR.10, AR.11); database layers (M2).

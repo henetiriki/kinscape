@@ -40,6 +40,16 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, full-path imports of components, type imports on their own `import type` line.
 - **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
-- **Not enforced:** which layer may import which. `app/components/{map,forms,overlays,auth}` import `lib/`, and `../` imports are allowed outside components.
+- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import `node:` modules or `maplibre-gl`. Today's breaks are the `ALLOWLIST` in `scripts/layers.mts`, each with where it moves; the fitness test fails on a new break and on a listed one that is fixed. Tests, `app/design-kit`, `scripts`, `e2e` and `lib/design` tooling are outside the map. `app/components/map` counts as the kit until it moves.
+- **Not enforced:** `../` imports outside components.
+
+| Layer             | Holds                                  | May import                                                                         |
+| ----------------- | -------------------------------------- | ---------------------------------------------------------------------------------- |
+| `design`          | `design/`, `lib/design/tokens.mts`     | nothing                                                                            |
+| `lib/domain`      | pure logic and types (`lib/`)          | itself                                                                             |
+| `server/`         | file and database access               | `lib/domain`, itself                                                               |
+| `app/components`  | the shared UI kit                      | `design`, itself                                                                   |
+| `features/<name>` | that feature's UI, queries and actions | `design`, `lib/domain`, `server/`, `app/components`, itself; never another feature |
+| `app/` routes     | pages, route handlers, server actions  | everything above                                                                   |
 
 Tests, hooks and word budgets: [AGENTS.md](../AGENTS.md). Security: [security.md](security.md). Workflow: [how-we-work.md](how-we-work.md).

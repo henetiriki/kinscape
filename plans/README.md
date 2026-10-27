@@ -11,3 +11,4 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
 7. **Too big:** if the plan won't fit its word budget, or the diff will pass the line cap in `/refine spec` › Step 1, stop, commit what works and ask the tech lead to split the Spec.
 8. The tech lead's PR approval signs off the code and the final plan together.
 9. **Missing components.** A screen plan has a `## Components` table (see the template). Build a missing component in the same Spec, in its own commit with its test, if the diff fits the size cap in rule 7. Otherwise stop: file a Spec for the component, set the screen Spec to `status: blocked` with "blocked by #<n>", and build no stand-in.
+10. **Failing tests.** Fix the code, not the test. Change, skip or delete a test, or loosen an assertion, only where the plan changes the behaviour it checks, and list that test under Files that change. If a test looks wrong otherwise, that's a big departure (rule 6).

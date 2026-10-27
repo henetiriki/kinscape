@@ -12,6 +12,7 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 200, pattern: /^docs\/dependencies\.md$/ },
   { limit: 800, pattern: /^docs\/architecture\.md$/ },
   { limit: 650, pattern: /^docs\/architecture-target\.md$/ },
+  { limit: 700, pattern: /^plans\/README\.md$/ },
   { limit: 600, pattern: /^plans\/[^/]+\.md$/ },
   { limit: 600, pattern: /^plans\/bugs\/[^/]+\.md$/ },
   { limit: 300, pattern: /^plans\/chores\/[^/]+\.md$/ },

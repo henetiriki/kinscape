@@ -19,6 +19,7 @@ type Deps = {
 };
 
 type Group = {
+  costUsd: number;
   count: number;
   example: string;
   pattern: string;
@@ -28,9 +29,14 @@ type Group = {
 type Report = {
   costUsd: number;
   denials: number;
+  // The estimated cost of the turns that made a denied call, and the cost of the runs that had one.
+  deniedCostUsd: number;
+  deniedRunsCostUsd: number;
   groups: Group[];
   runs: number;
   turns: number;
+  // Denials that couldn't be linked to a turn, so have no cost.
+  unlinked: number;
 };
 
 export const ISSUE_TITLE = 'Agent permission denials';
@@ -120,6 +126,7 @@ export const summarise = (
     for (const denial of transcript.denials) {
       const pattern = patternOf(denial);
       const group = groups.get(pattern) ?? {
+        costUsd: 0,
         count: 0,
         example: `${denial.tool}: ${denial.detail}`.replace(/: $/, ''),
         pattern,
@@ -127,6 +134,7 @@ export const summarise = (
       };
 
       group.count += 1;
+      group.costUsd += denial.costUsd ?? 0;
 
       if (!group.runs.includes(id)) {
         group.runs.push(id);
@@ -145,6 +153,17 @@ export const summarise = (
       (sum, { transcript }) => sum + transcript.denials.length,
       0
     ),
+    deniedCostUsd: transcripts.reduce(
+      (sum, { transcript }) =>
+        transcript.denials.reduce(
+          (all, { costUsd }) => all + (costUsd ?? 0),
+          sum
+        ),
+      0
+    ),
+    deniedRunsCostUsd: transcripts
+      .filter(({ transcript }) => transcript.denials.length > 0)
+      .reduce((sum, { transcript }) => sum + (transcript.costUsd ?? 0), 0),
     groups: [...groups.values()]
       .filter(
         ({ count, runs }) => runs.length >= REPEAT_RUNS || count >= REPEAT_COUNT
@@ -153,6 +172,13 @@ export const summarise = (
     runs: transcripts.length,
     turns: transcripts.reduce(
       (sum, { transcript }) => sum + (transcript.turns ?? 0),
+      0
+    ),
+    unlinked: transcripts.reduce(
+      (sum, { transcript }) =>
+        sum +
+        transcript.denials.filter(({ costUsd }) => costUsd === undefined)
+          .length,
       0
     ),
   };
@@ -167,19 +193,25 @@ export const issueBody = (
 ): string => {
   const average =
     report.runs === 0 ? 0 : Math.round(report.turns / report.runs);
+  const share =
+    report.deniedRunsCostUsd === 0
+      ? 0
+      : Math.round((report.deniedCostUsd / report.deniedRunsCostUsd) * 100);
   const link = (id: number): string =>
     `[${id}](https://github.com/${repo}/actions/runs/${id})`;
 
   return [
-    `Permission denials in Claude runs since ${since.toISOString().slice(0, 10)}: ${report.runs} runs read, ${report.denials} denials, $${report.costUsd.toFixed(2)} in all, ${average} turns on average.`,
+    `Permission denials in Claude runs since ${since.toISOString().slice(0, 10)}: ${report.runs} runs read, ${report.denials} denials, ${average} turns on average.`,
+    '',
+    `Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read. The turns that made a denied call cost $${report.deniedCostUsd.toFixed(2)}, ${share}% of the $${report.deniedRunsCostUsd.toFixed(2)} the runs with denials cost. That is a lower bound: the turn after a denial is not counted.${report.unlinked > 0 ? ` ${report.unlinked} of ${report.denials} denials could not be linked to a turn and have no cost.` : ''}`,
     '',
     `These were denied in ${REPEAT_RUNS} or more runs, or ${REPEAT_COUNT} or more times:`,
     '',
-    '| Denied | Times | Runs | Example |',
-    '| --- | ---: | --- | --- |',
+    '| Denied | Times | Cost | Runs | Example |',
+    '| --- | ---: | ---: | --- | --- |',
     ...report.groups.map(
-      ({ count, example, pattern, runs }) =>
-        `| ${cell(pattern)} | ${count} | ${runs.map(link).join(', ')} | ${cell(example)} |`
+      ({ costUsd, count, example, pattern, runs }) =>
+        `| ${cell(pattern)} | ${count} | $${costUsd.toFixed(2)} | ${runs.map(link).join(', ')} | ${cell(example)} |`
     ),
     '',
     'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. The weekly audit rewrites this issue while it stays open; close it when it is handled.',

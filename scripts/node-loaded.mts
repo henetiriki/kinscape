@@ -16,7 +16,9 @@ const IGNORED = [
 ];
 
 /** The globs of the files Node loads: every `.mts`, `scripts/`, and the `types.ts` beside an `.mts`. */
-export const nodeLoadedFiles = (root: string = process.cwd()): string[] => {
+export const nodeLoadedFiles = (
+  root: string = join(import.meta.dirname, '..')
+): string[] => {
   const mts = globSync('**/*.mts', { cwd: root, exclude: IGNORED });
   const folders = [...new Set(mts.map(file => dirname(file)))];
 

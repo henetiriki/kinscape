@@ -21,6 +21,6 @@ Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quo
 
 - Ignore the command's "only if certain" and "don't flag what depends on inputs" filters. Report probable problems too.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
-- Post at most five, most severe first, one comment each. Skip style nits and what a linter catches.
+- Post up to ten, one comment each: code defects and rule breaks first (at most eight, most severe first), then plan departures (at most two). Skip style nits and what a linter catches.
 - Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a comment still on the PR.
 - Never post "No issues" alone. List the plan items and rules you checked.

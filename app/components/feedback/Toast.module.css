@@ -20,7 +20,7 @@
 }
 
 .action {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   background: var(--surface);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-control);
@@ -36,7 +36,7 @@
 }
 
 .toast {
-  composes: floating from '@/app/components/foundation/Surface.module.css';
+  composes: floating from '@ks/app/components/foundation/Surface.module.css';
   border: 1px solid var(--line);
   height: 50px;
 }
@@ -66,7 +66,7 @@
 }
 
 .bannerAction {
-  composes: ringOnDark from '@/app/components/foundation/focus.module.css';
+  composes: ringOnDark from '@ks/app/components/foundation/focus.module.css';
   background: transparent;
   border-color: color-mix(in srgb, var(--white) 45%, transparent);
   color: var(--white);

@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 
-import { Icon } from '@/app/components/foundation/Icon';
-import rawTokens from '@/design/tokens.json';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import rawTokens from '@ks/design/tokens.json';
 
 import styles from './Toast.module.css';
 

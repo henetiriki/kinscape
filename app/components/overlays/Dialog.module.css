@@ -37,7 +37,7 @@
 }
 
 .panel {
-  composes: modal from '@/app/components/foundation/Surface.module.css';
+  composes: modal from '@ks/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   gap: var(--space-16);

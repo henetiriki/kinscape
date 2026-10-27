@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Chip, RemovableChip } from '@/app/components/actions/Chip';
-import { KeyHint } from '@/app/components/actions/KeyHint';
+import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
+import { KeyHint } from '@ks/app/components/actions/KeyHint';
 
 // NFR-06
 it('draws a key hint as a kbd, hidden from assistive tech only when decorative', () => {

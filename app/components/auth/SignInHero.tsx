@@ -2,10 +2,10 @@ import type { CSSProperties } from 'react';
 
 import { useId } from 'react';
 
-import { BORDERS, LAND, RIVERS } from '@/app/components/auth/signInHeroPaths';
-import { Text } from '@/app/components/foundation/Text';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { BORDERS, LAND, RIVERS } from '@ks/app/components/auth/signInHeroPaths';
+import { Text } from '@ks/app/components/foundation/Text';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
 import styles from './SignInHero.module.css';
 

@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Menu, MenuItem, MenuPanel } from '@/app/components/overlays/Menu';
+import { Menu, MenuItem, MenuPanel } from '@ks/app/components/overlays/Menu';
 
 const GROUPS = [
   [

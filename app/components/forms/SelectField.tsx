@@ -2,10 +2,10 @@ import type { ComponentProps } from 'react';
 
 import { useId } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import { Icon } from '@/app/components/foundation/Icon';
-import { Text } from '@/app/components/foundation/Text';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from './TextField.module.css';
 

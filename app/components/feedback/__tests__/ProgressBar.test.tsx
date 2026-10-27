@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { ProgressBar } from '@/app/components/feedback/ProgressBar';
+import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
 
 // NFR-06
 it('clamps the progress bar to 0 to 100 and names it', () => {

@@ -6,7 +6,7 @@ import {
   PlacedPopup,
   Popup,
   PopupPointer,
-} from '@/app/components/overlays/Popup';
+} from '@ks/app/components/overlays/Popup';
 
 const CHAIN = [
   { level: 'District', name: 'Kimberley' },

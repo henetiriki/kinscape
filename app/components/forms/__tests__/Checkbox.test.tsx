@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Checkbox } from '@/app/components/forms/Checkbox';
+import { Checkbox } from '@ks/app/components/forms/Checkbox';
 
 // NFR-06
 it('reports a checkbox as checked or not and shows a given state', () => {

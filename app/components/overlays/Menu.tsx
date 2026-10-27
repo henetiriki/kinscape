@@ -4,11 +4,11 @@ import type { KeyboardEvent, Ref } from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import { Icon } from '@/app/components/foundation/Icon';
-import { Surface } from '@/app/components/foundation/Surface';
-import { Avatar } from '@/app/components/map/Avatar';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import { Surface } from '@ks/app/components/foundation/Surface';
+import { Avatar } from '@ks/app/components/map/Avatar';
 
 import type { MenuEntry } from './types';
 

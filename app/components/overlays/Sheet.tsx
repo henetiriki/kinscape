@@ -4,11 +4,11 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useId } from 'react';
 
-import type { Tab } from '@/app/components/actions/types';
+import type { Tab } from '@ks/app/components/actions/types';
 
-import { Tabs } from '@/app/components/actions/Tabs';
-import { Text } from '@/app/components/foundation/Text';
-import { Modal, ModalClose } from '@/app/components/overlays/Modal';
+import { Tabs } from '@ks/app/components/actions/Tabs';
+import { Text } from '@ks/app/components/foundation/Text';
+import { Modal, ModalClose } from '@ks/app/components/overlays/Modal';
 
 import styles from './Sheet.module.css';
 

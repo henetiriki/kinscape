@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react';
 
 import { useEffect, useRef } from 'react';
 
-import { Icon } from '@/app/components/foundation/Icon';
+import { Icon } from '@ks/app/components/foundation/Icon';
 
 import styles from './Modal.module.css';
 

@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { DateField } from '@/app/components/forms/DateField';
-import { toDay } from '@/lib/boundaries/model.mts';
-import { MIN_DAY } from '@/lib/map/map-date';
+import { DateField } from '@ks/app/components/forms/DateField';
+import { toDay } from '@ks/lib/boundaries/model.mts';
+import { MIN_DAY } from '@ks/lib/map/map-date';
 
 const TODAY = toDay('2026-10-21');
 const JUNE = toDay('1901-06-14');

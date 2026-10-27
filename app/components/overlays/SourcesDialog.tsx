@@ -1,11 +1,11 @@
 'use client';
 
-import type { Source } from '@/lib/boundaries/types.ts';
+import type { Source } from '@ks/lib/boundaries/types.ts';
 
-import { TextLink } from '@/app/components/actions/TextLink';
-import { Text } from '@/app/components/foundation/Text';
-import { Dialog } from '@/app/components/overlays/Dialog';
-import { SOURCES_WORDS } from '@/app/components/overlays/sourcesWords';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { Text } from '@ks/app/components/foundation/Text';
+import { Dialog } from '@ks/app/components/overlays/Dialog';
+import { SOURCES_WORDS } from '@ks/app/components/overlays/sourcesWords';
 
 import styles from './SourcesDialog.module.css';
 

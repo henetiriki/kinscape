@@ -2,9 +2,9 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useId } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import { Checkbox } from '@/app/components/forms/Checkbox';
+import { Checkbox } from '@ks/app/components/forms/Checkbox';
 
 import styles from './CheckboxField.module.css';
 

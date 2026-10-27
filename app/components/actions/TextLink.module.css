@@ -1,5 +1,5 @@
 .textLink {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   border-radius: var(--radius-link);
   color: var(--brand);
   cursor: pointer;

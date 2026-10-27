@@ -156,7 +156,7 @@ Shown with spacing and motion at `/design-kit/foundations`.
 
 ## Components
 
-Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@/app/components/<folder>/<Name>`:
+Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>`:
 
 | Folder       | Holds                                                                                                 |
 | ------------ | ----------------------------------------------------------------------------------------------------- |

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
-import type { FilledIconName } from '@/app/components/foundation/types';
+import type { FilledIconName } from '@ks/app/components/foundation/types';
 
-import { FilledIcon } from '@/app/components/foundation/Icon';
+import { FilledIcon } from '@ks/app/components/foundation/Icon';
 
 import styles from './Alert.module.css';
 

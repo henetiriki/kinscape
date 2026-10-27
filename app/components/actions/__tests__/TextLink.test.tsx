@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { TextLink } from '@/app/components/actions/TextLink';
+import { TextLink } from '@ks/app/components/actions/TextLink';
 
 // NFR-06
 it('is a link with a given state', () => {

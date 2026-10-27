@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { TokenField } from '@/app/components/forms/TokenField';
+import { TokenField } from '@ks/app/components/forms/TokenField';
 
 const chips = () =>
   screen

@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { HERO_VARS, SignInHero } from '@/app/components/auth/SignInHero';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { HERO_VARS, SignInHero } from '@ks/app/components/auth/SignInHero';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
 const { breakpoint, map } = resolveTokens(rawTokens);
 

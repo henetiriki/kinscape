@@ -1,5 +1,5 @@
-import type { ControlState } from '@/app/components/foundation/types';
-import type { EventType } from '@/app/components/map/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
+import type { EventType } from '@ks/app/components/map/types';
 
 export type ChipOption = {
   /** The Event type this chip filters on; its glyph leads the label. */

@@ -1,8 +1,11 @@
 import type { ComponentProps, ReactNode } from 'react';
 
-import type { ControlState, IconName } from '@/app/components/foundation/types';
+import type {
+  ControlState,
+  IconName,
+} from '@ks/app/components/foundation/types';
 
-import { Icon } from '@/app/components/foundation/Icon';
+import { Icon } from '@ks/app/components/foundation/Icon';
 
 import styles from './Button.module.css';
 

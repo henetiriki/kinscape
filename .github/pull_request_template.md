@@ -19,7 +19,7 @@ Closes #<!-- spec issue -->
 
 ## Evidence
 
-<!-- Paste test / lint / build output, and screenshots for UI changes. -->
+<!-- Paste test / lint / build output (for new logic, the failing line from plans/README.md rule 12), and screenshots for UI changes. -->
 
 ## For the PO
 

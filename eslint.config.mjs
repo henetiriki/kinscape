@@ -8,6 +8,7 @@ import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 import { plugin as layers } from './scripts/layers.mts';
+import { NODE_MESSAGE, nodeLoadedFiles } from './scripts/node-loaded.mts';
 
 const ARROW_FUNCTIONS = [
   {
@@ -34,6 +35,14 @@ export default defineConfig([
   ...coreWebVitals,
   ...typescript,
   perfectionist.configs['recommended-alphabetical'],
+  {
+    rules: {
+      'perfectionist/sort-imports': [
+        'error',
+        { internalPattern: ['^~/.+', '^@/.+', '^@ks/.+'] },
+      ],
+    },
+  },
   {
     files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
     plugins: { '@stylistic': stylistic },
@@ -139,6 +148,24 @@ export default defineConfig([
     ],
     plugins: { layers },
     rules: { 'layers/imports': 'error' },
+  },
+  {
+    files: nodeLoadedFiles(),
+    ignores: ['**/__tests__/**'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              allowTypeImports: true,
+              group: ['@/**', '@ks/**'],
+              message: NODE_MESSAGE,
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     ...packageJson.configs.recommended,

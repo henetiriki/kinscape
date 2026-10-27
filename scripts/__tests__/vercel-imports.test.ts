@@ -1,7 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { posix, sep } from 'node:path';
+import { sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
+import { targetOf } from '../layers.mts';
 import { invisible } from '../vercel-ignore.mts';
 
 // Vercel skips a deployment when only invisible paths change, so shipped code
@@ -28,17 +29,6 @@ const SUFFIXES = [
   '/index.tsx',
 ];
 
-/** The repo path an import points at, or undefined for a package or built-in. */
-const target = (from: string, specifier: string): string | undefined => {
-  if (specifier.startsWith('@/')) {
-    return specifier.slice(2);
-  }
-
-  return specifier.startsWith('.')
-    ? posix.join(posix.dirname(from), specifier)
-    : undefined;
-};
-
 /** Each `file: import` pair where non-test code imports an invisible path. */
 const violations = (files: Record<string, string>): string[] =>
   Object.entries(files)
@@ -47,7 +37,7 @@ const violations = (files: Record<string, string>): string[] =>
       SPECIFIERS.flatMap(pattern => [...source.matchAll(pattern)])
         .map(match => match[1])
         .filter(specifier => {
-          const imported = target(path, specifier);
+          const imported = targetOf(path, specifier);
 
           return (
             imported !== undefined &&
@@ -82,6 +72,7 @@ describe('violations', () => {
   it.each([
     ['a relative import', 'lib/a.mts', "import { x } from '../scripts/s.mts';"],
     ['an alias import', 'app/a.tsx', "import { x } from '@/e2e/helper';"],
+    ['a @ks/ import', 'app/a.tsx', "import { x } from '@ks/e2e/helper';"],
     [
       'a dynamic import',
       'app/a.tsx',

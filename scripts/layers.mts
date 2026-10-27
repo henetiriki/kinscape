@@ -99,12 +99,17 @@ export const layerOf = (path: string): string | undefined => {
 };
 
 /** The repo path an import points at, or undefined for a package or built-in. */
-const targetOf = (file: string, specifier: string): string | undefined => {
+export const targetOf = (
+  file: string,
+  specifier: string
+): string | undefined => {
   const joined = specifier.startsWith('@/')
     ? specifier.slice(2)
-    : specifier.startsWith('.')
-      ? posix.join(posix.dirname(file), specifier)
-      : undefined;
+    : specifier.startsWith('@ks/')
+      ? specifier.slice(4)
+      : specifier.startsWith('.')
+        ? posix.join(posix.dirname(file), specifier)
+        : undefined;
 
   if (joined === undefined) {
     return undefined;

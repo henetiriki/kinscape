@@ -355,6 +355,12 @@ describe('layerBreak', () => {
       'lib/domain may not import server',
     ],
     [
+      'lib/domain via @ks/',
+      'lib/map/a.ts',
+      '@ks/server/db',
+      'lib/domain may not import server',
+    ],
+    [
       'lib/domain',
       'lib/map/a.ts',
       'node:fs',
@@ -466,6 +472,7 @@ describe('layerBreak', () => {
     ['lib/domain', 'lib/map/a.ts', '../boundaries/model.mts'],
     ['lib/domain', 'lib/map/a.ts', 'react'],
     ['server', 'server/a.ts', '@/lib/map/a'],
+    ['server via @ks/', 'server/a.ts', '@ks/lib/map/a'],
     ['app/components', 'app/components/forms/X.tsx', '@/design/tokens.json'],
     [
       'app/components',

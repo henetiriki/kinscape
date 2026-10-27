@@ -1,5 +1,5 @@
 .btn {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
   border-radius: var(--radius-control);
   box-sizing: border-box;

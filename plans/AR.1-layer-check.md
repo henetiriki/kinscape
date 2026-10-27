@@ -2,7 +2,7 @@
 
 - **Spec:** #314
 - **Requirement IDs:** NFR-09
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Which ESLint mechanism reads the layer map?
 - **B.** `no-restricted-imports` blocks built from the map and merged with the component patterns. A feature needs a block of its own, so the map lists feature names.
 - **Other:** your own.
 
-Recommended: A, because it rules out the override the Spec flags and needs no list of features.
+**Answer: A** (@henetiriki)
 
 **D2 · Package imports** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because it rules out the override the Spec flags and needs no li
 - **B.** Each layer lists the packages it may import.
 - **Other:** your own.
 
-Recommended: A, because it makes exactly the target doc's breaks fail and adds no upkeep.
+**Answer: A** (@henetiriki)
 
 **D3 · Gaps in the table** · Decides: Tech lead
 
@@ -38,7 +38,7 @@ The table doesn't say whether `server/` may import itself, or where `app/compone
 - **B.** As A, but `app/components/map` counts as `features/map` now: five more allowlist entries.
 - **Other:** your own.
 
-Recommended: A, because layers follow paths, as the Spec does for `lib/map`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

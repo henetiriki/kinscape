@@ -4,9 +4,9 @@ import type { KeyboardEvent } from 'react';
 
 import { useRef } from 'react';
 
-import type { Tab } from './types';
+import type { Tab } from '@ks/app/components/actions/types';
 
-import styles from './Tabs.module.css';
+import styles from '@ks/app/components/actions/Tabs.module.css';
 
 export const Tabs = ({
   disabled,

@@ -24,7 +24,7 @@ describe('the real lint config', () => {
     expect(
       await lint(
         'app/components/forms/X.tsx',
-        "import { a } from '@/lib/map/a';\n"
+        "import { a } from '@ks/lib/map/a';\n"
       )
     ).toEqual([expect.stringContaining('layers/imports: Layer rule')]);
   });
@@ -33,7 +33,7 @@ describe('the real lint config', () => {
     expect(
       await lint(
         'features/map/A.tsx',
-        "import { a } from '@/features/pins/a';\n"
+        "import { a } from '@ks/features/pins/a';\n"
       )
     ).toEqual([expect.stringContaining('features never import each other')]);
   });
@@ -47,15 +47,15 @@ describe('the real lint config', () => {
   it.each([
     [
       'app/components/forms/X.tsx',
-      "export type R = import('@/server/db').Row;",
+      "export type R = import('@ks/server/db').Row;",
     ],
     [
       'app/components/forms/X.tsx',
-      "export type R = typeof import('@/server/db');",
+      "export type R = typeof import('@ks/server/db');",
     ],
-    ['app/components/forms/X.tsx', "import x = require('@/server/db');"],
-    ['app/components/forms/x.js', "const x = require('@/server/db');"],
-    ['app/components/forms/x.mjs', "import x from '@/server/db';"],
+    ['app/components/forms/X.tsx', "import x = require('@ks/server/db');"],
+    ['app/components/forms/x.js', "const x = require('@ks/server/db');"],
+    ['app/components/forms/x.mjs', "import x from '@ks/server/db';"],
   ])('fails %s containing %s', async (path, code) => {
     expect(await lint(path, `${code}\n`)).toEqual([
       expect.stringContaining('app/components may not import server'),
@@ -84,5 +84,40 @@ describe('the real lint config', () => {
     expect(
       await lint('app/route/page.tsx', "import { a } from './components/A';\n")
     ).toEqual([expect.stringContaining('@ks/app/components/<folder>/<Name>')]);
+  });
+
+  it('bans @/ outside the map folder and allows it inside', async () => {
+    expect(await lint('app/x.tsx', "import { a } from '@/lib/a';\n")).toEqual([
+      expect.stringContaining('use @ks/'),
+    ]);
+    expect(
+      await lint('app/components/map/X.tsx', "import { a } from '@/lib/a';\n")
+    ).toEqual([]);
+  });
+
+  it.each([
+    ['lib/map/a.ts', "import { a } from './b';"],
+    ['lib/map/a.ts', "import { a } from '../b';"],
+  ])('fails a relative import in %s: %s', async (path, code) => {
+    expect(await lint(path, `${code}\n`)).toEqual([
+      expect.stringContaining('Import by full path through @ks/'),
+    ]);
+  });
+
+  it.each([
+    ['lib/boundaries/x.mts', "import { a } from './b.mts';"],
+    ['scripts/x.ts', "import { a } from '../b';"],
+    ['x/y.mjs', "import { a } from './b.mjs';"],
+  ])('passes a relative import in %s: %s', async (path, code) => {
+    expect(await lint(path, `${code}\n`)).toEqual([]);
+  });
+
+  it('lints eslint.config.mjs with its relative imports', async () => {
+    expect(
+      await lint(
+        'eslint.config.mjs',
+        "import { a } from './scripts/a.mts';\nimport { b } from '../b';\n"
+      )
+    ).toEqual([]);
   });
 });

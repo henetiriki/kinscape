@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import InputsKit from '../page';
+import InputsKit from '@ks/app/design-kit/inputs/page';
 
 const show = async (part?: string | string[]) =>
   render(await InputsKit({ searchParams: Promise.resolve({ part }) }));

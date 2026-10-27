@@ -7,7 +7,7 @@ import { Text } from '@ks/app/components/foundation/Text';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
-import styles from './SignInHero.module.css';
+import styles from '@ks/app/components/auth/SignInHero.module.css';
 
 const { colour, map } = resolveTokens(rawTokens);
 

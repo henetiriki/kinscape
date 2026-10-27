@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import type { BoundaryData, BoundaryVersion } from '../../boundaries/types.ts';
+import type {
+  BoundaryData,
+  BoundaryVersion,
+} from '@ks/lib/boundaries/types.ts';
 
-import { toDay } from '../../boundaries/model.mts';
-import { boundaryCoverage, hasBorders } from '../coverage';
+import { toDay } from '@ks/lib/boundaries/model.mts';
+import { boundaryCoverage, hasBorders } from '@ks/lib/map/coverage';
 
 const version = (from: string, to: null | string): BoundaryVersion => ({
   confidence: 'high',

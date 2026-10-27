@@ -1,16 +1,16 @@
 import { render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import rawTokens from '../../../../design/tokens.json';
+import rawTokens from '@ks/design/tokens.json';
 
 afterEach(() => {
   vi.resetModules();
-  vi.doUnmock('../../../../design/tokens.json');
+  vi.doUnmock('@ks/design/tokens.json');
 });
 
 // NFR-06
 it('shows six groups in board order, then the system colours', async () => {
-  const { default: ColourKit } = await import('../page');
+  const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
   render(<ColourKit />);
 
@@ -36,7 +36,7 @@ it('shows six groups in board order, then the system colours', async () => {
 });
 
 it('shows value, ratio and use, with opacity for the scrim and the hatch', async () => {
-  const { default: ColourKit } = await import('../page');
+  const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
   render(<ColourKit />);
 
@@ -53,7 +53,7 @@ it('shows value, ratio and use, with opacity for the scrim and the hatch', async
 });
 
 it('draws an edge under the white chips only', async () => {
-  const { default: ColourKit } = await import('../page');
+  const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
   render(<ColourKit />);
 
@@ -66,14 +66,14 @@ it('draws an edge under the white chips only', async () => {
 });
 
 it('follows a changed token', async () => {
-  vi.doMock('../../../../design/tokens.json', () => ({
+  vi.doMock('@ks/design/tokens.json', () => ({
     default: {
       ...rawTokens,
       colour: { ...rawTokens.colour, 'ink-3': '#000000' },
     },
   }));
 
-  const { default: ColourKit } = await import('../page');
+  const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
   render(<ColourKit />);
 

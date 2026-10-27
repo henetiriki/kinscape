@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { toDay } from '../../boundaries/model.mts';
-import { dateFilter, dayOf } from '../filter';
+import { toDay } from '@ks/lib/boundaries/model.mts';
+import { dateFilter, dayOf } from '@ks/lib/map/filter';
 
 describe('dayOf', () => {
   it('counts UTC days since 1652-01-01', () => {

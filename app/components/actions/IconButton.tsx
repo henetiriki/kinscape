@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 
-import styles from './IconButton.module.css';
+import styles from '@ks/app/components/actions/IconButton.module.css';
 
 export const IconButton = ({
   label,

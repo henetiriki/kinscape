@@ -5,7 +5,7 @@ import { useId } from 'react';
 import { CheckboxField } from '@/app/components/forms/CheckboxField';
 import { Text } from '@/app/components/foundation/Text';
 
-import styles from './LayerGroup.module.css';
+import styles from '@ks/app/components/map/LayerGroup.module.css';
 
 type LayerRow = {
   checked: boolean;

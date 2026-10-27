@@ -1,6 +1,6 @@
 import type { ExpressionSpecification } from 'maplibre-gl';
 
-import { toDay } from '../boundaries/model.mts';
+import { toDay } from '@ks/lib/boundaries/model.mts';
 
 /** Days since 1652-01-01 for the calendar day of `date`, in UTC. */
 export const dayOf = (date: Date): number =>

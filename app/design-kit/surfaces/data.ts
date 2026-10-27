@@ -2,7 +2,7 @@ import type {
   ChainLevel,
   MenuEntry,
   PopupPin,
-} from '@/app/components/overlays/types';
+} from '@ks/app/components/overlays/types';
 
 export const MENU_GROUPS: MenuEntry[][] = [
   [

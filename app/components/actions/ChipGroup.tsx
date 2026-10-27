@@ -1,8 +1,8 @@
+import type { ChipOption } from '@ks/app/components/actions/types';
+
 import { Chip } from '@ks/app/components/actions/Chip';
 
-import type { ChipOption } from './types';
-
-import styles from './ChipGroup.module.css';
+import styles from '@ks/app/components/actions/ChipGroup.module.css';
 
 /** A labelled set of toggle chips that wraps. */
 export const ChipGroup = ({

@@ -1,8 +1,8 @@
 import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
-import rawTokens from '../../design/tokens.json';
-import { resolveTokens } from '../design/tokens.mts';
-import { dateFilter } from './filter';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { dateFilter } from '@ks/lib/map/filter';
 
 /** The layers the "Polity borders" row shows and hides together. */
 export const POLITY_LAYERS = [

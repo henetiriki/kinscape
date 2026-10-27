@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { shotFor } from '../shots.mts';
+import { shotFor } from '@ks/lib/design/shots.mts';
 
 describe('shotFor', () => {
   it.each([

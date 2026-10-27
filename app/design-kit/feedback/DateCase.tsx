@@ -4,15 +4,15 @@ import type { ComponentProps } from 'react';
 
 import { useState } from 'react';
 
-import type { Precision } from '@/lib/map/types';
+import type { Precision } from '@ks/lib/map/types';
 
-import { Button } from '@/app/components/actions/Button';
-import { IconButton } from '@/app/components/actions/IconButton';
-import { Segmented } from '@/app/components/actions/Segmented';
-import { DateField } from '@/app/components/forms/DateField';
-import { MIN_DAY, stepDay, todayDay } from '@/lib/map/map-date';
+import { Button } from '@ks/app/components/actions/Button';
+import { IconButton } from '@ks/app/components/actions/IconButton';
+import { Segmented } from '@ks/app/components/actions/Segmented';
+import { DateField } from '@ks/app/components/forms/DateField';
+import { MIN_DAY, stepDay, todayDay } from '@ks/lib/map/map-date';
 
-import styles from './page.module.css';
+import styles from '@ks/app/design-kit/feedback/page.module.css';
 
 const BACK = 'M15 5l-7 7 7 7';
 const FORWARD = 'M9 5l7 7-7 7';

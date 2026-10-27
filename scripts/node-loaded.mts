@@ -15,7 +15,7 @@ const IGNORED = [
   'node_modules/**',
 ];
 
-/** The globs of the files Node loads: every `.mts`, `scripts/`, and the `types.ts` beside an `.mts`. */
+/** The globs of the files Node loads: every `.mts` and `.mjs`, `scripts/`, and the `types.ts` beside an `.mts`. */
 export const nodeLoadedFiles = (
   root: string = join(import.meta.dirname, '..')
 ): string[] => {
@@ -24,6 +24,7 @@ export const nodeLoadedFiles = (
 
   return [
     '**/*.mts',
+    '**/*.mjs',
     'scripts/**',
     ...folders.map(folder => join(folder, 'types.ts').split('\\').join('/')),
   ];

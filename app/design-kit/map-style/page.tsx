@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 
-import { Text } from '@/app/components/foundation/Text';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { Text } from '@ks/app/components/foundation/Text';
+import { boardTitle } from '@ks/app/design-kit/boards';
+import { LAYERS, LEGEND } from '@ks/app/design-kit/map-style/layers';
+import { Preview } from '@ks/app/design-kit/map-style/Preview';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
-import rawTokens from '../../../design/tokens.json';
-import { boardTitle } from '../boards';
-import kit from '../kit.module.css';
-import { LAYERS, LEGEND } from './layers';
-import styles from './page.module.css';
-import { Preview } from './Preview';
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/map-style/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('map-style') };
 

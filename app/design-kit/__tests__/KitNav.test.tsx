@@ -5,7 +5,7 @@ const pathname = vi.hoisted(() => ({ current: '/design-kit' }));
 
 vi.mock('next/navigation', () => ({ usePathname: () => pathname.current }));
 
-import { KitNav, KitTitle } from '../KitNav';
+import { KitNav, KitTitle } from '@ks/app/design-kit/KitNav';
 
 // NFR-06
 it.each([

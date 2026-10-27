@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { LAYERS } from '../layers';
+import { LAYERS } from '@ks/app/design-kit/map-style/layers';
 
 // NFR-06
 it('lists the 20 layers in board order with unique ids', () => {

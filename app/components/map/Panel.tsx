@@ -4,7 +4,7 @@ import type { Tab } from '@/app/components/actions/types';
 
 import { Tabs } from '@/app/components/actions/Tabs';
 
-import styles from './Panel.module.css';
+import styles from '@ks/app/components/map/Panel.module.css';
 
 /** The map's side panel: a tabs head, a body that scrolls, and a footer at the bottom. */
 export const Panel = ({

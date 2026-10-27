@@ -1,16 +1,17 @@
 import { render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
-import rawTokens from '../../../../design/tokens.json';
+import rawTokens from '@ks/design/tokens.json';
 
 afterEach(() => {
   vi.resetModules();
-  vi.doUnmock('../../../../design/tokens.json');
+  vi.doUnmock('@ks/design/tokens.json');
 });
 
 // NFR-06
 it('shows the five sections in board order, and the nineteen icons', async () => {
-  const { default: FoundationsKit } = await import('../page');
+  const { default: FoundationsKit } =
+    await import('@ks/app/design-kit/foundations/page');
 
   render(<FoundationsKit />);
 
@@ -77,7 +78,7 @@ it('shows the five sections in board order, and the nineteen icons', async () =>
 });
 
 it('follows changed tokens', async () => {
-  vi.doMock('../../../../design/tokens.json', () => ({
+  vi.doMock('@ks/design/tokens.json', () => ({
     default: {
       ...rawTokens,
       motion: { ...rawTokens.motion, press: '90ms linear' },
@@ -87,7 +88,8 @@ it('follows changed tokens', async () => {
     },
   }));
 
-  const { default: FoundationsKit } = await import('../page');
+  const { default: FoundationsKit } =
+    await import('@ks/app/design-kit/foundations/page');
 
   render(<FoundationsKit />);
 

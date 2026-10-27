@@ -51,6 +51,10 @@ The only other `.mjs`, `.claude/skills/refine/scripts/form-link.mjs`, has no rel
 3. The rewrites, then the comment in `focus.module.css`, `lint --fix` and `format`.
 4. Docs.
 
+## Deviations
+
+- The sorter's `groups` put stylesheets last, `kit.module.css` first; alphabetical order reordered the cascade (surfaces-2-phone 1.76%). Test in `node-loaded.test.ts`.
+
 ## Risks
 
 - A wrong path fails `npm run typecheck`. A `vi.mock` path that stops matching leaves the real tokens in place, so its assertions fail.

@@ -10,6 +10,17 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import { plugin as layers } from './scripts/layers.mts';
 import { NODE_MESSAGE, nodeLoadedFiles } from './scripts/node-loaded.mts';
 
+const LEGACY_ALIAS = {
+  group: ['@/**'],
+  message: '@/ is legacy: use @ks/.',
+};
+
+const RELATIVE = {
+  message:
+    'Import by full path through @ks/, as in @ks/app/components/<folder>/<Name>.',
+  regex: String.raw`^\.{1,2}/`,
+};
+
 const ARROW_FUNCTIONS = [
   {
     message: 'Use an arrow function assigned to a const.',
@@ -55,7 +66,29 @@ export default defineConfig([
     rules: {
       'perfectionist/sort-imports': [
         'error',
-        { internalPattern: ['^~/.+', '^@/.+', '^@ks/.+'] },
+        {
+          // A module's own stylesheet loads after the ones of what it imports, and the kit's
+          // `kit.module.css` before a board's, so a later rule keeps winning the cascade.
+          customGroups: [
+            {
+              elementNamePattern: String.raw`design-kit/kit\.module\.css$`,
+              groupName: 'kit-style',
+            },
+          ],
+          groups: [
+            'type-import',
+            ['value-builtin', 'value-external'],
+            'type-internal',
+            'value-internal',
+            ['type-parent', 'type-sibling', 'type-index'],
+            ['value-parent', 'value-sibling', 'value-index'],
+            'kit-style',
+            'style',
+            'ts-equals-import',
+            'unknown',
+          ],
+          internalPattern: ['^~/.+', '^@/.+', '^@ks/.+'],
+        },
       ],
     },
   },
@@ -122,40 +155,20 @@ export default defineConfig([
     rules: { 'import/no-default-export': 'off' },
   },
   {
-    // Import a component by its full path, so a move can't leave a stale relative one.
-    files: ['app/components/**/*.{ts,tsx}'],
+    // Import by full path, so a move can't leave a stale relative one. Each block replaces
+    // the rule's options, so each lists every pattern that applies to its files.
+    files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          patterns: [
-            {
-              group: ['../**'],
-              message:
-                'Import by full path: @ks/app/components/<folder>/<Name>.',
-            },
-          ],
-        },
+        { patterns: [LEGACY_ALIAS, RELATIVE] },
       ],
     },
   },
   {
-    files: ['app/**/*.{ts,tsx}'],
-    ignores: ['app/components/**'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              message:
-                'Import by full path: @ks/app/components/<folder>/<Name>.',
-              regex: String.raw`^\.{1,2}/(.*/)?components/`,
-            },
-          ],
-        },
-      ],
-    },
+    // The map folder keeps `@/` until AR.11 (#324).
+    files: ['app/components/map/**'],
+    rules: { 'no-restricted-imports': ['error', { patterns: [RELATIVE] }] },
   },
   {
     // The layer map in docs/architecture.md; its allowlist lives in scripts/layers.mts.
@@ -167,6 +180,11 @@ export default defineConfig([
     ],
     plugins: { layers },
     rules: { 'layers/imports': 'error' },
+  },
+  {
+    // Node loads these files without aliases, so they import relatively.
+    files: nodeLoadedFiles(),
+    rules: { 'no-restricted-imports': ['error', { patterns: [LEGACY_ALIAS] }] },
   },
   {
     files: nodeLoadedFiles(),

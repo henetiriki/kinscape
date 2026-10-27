@@ -1,12 +1,8 @@
 import type { Metadata } from 'next';
 
-import { Icon } from '@/app/components/foundation/Icon';
-import { Text } from '@/app/components/foundation/Text';
-
-import rawTokens from '../../../design/tokens.json';
-import { boardTitle } from '../boards';
-import kit from '../kit.module.css';
-import styles from './page.module.css';
+import { Icon } from '@ks/app/components/foundation/Icon';
+import { Text } from '@ks/app/components/foundation/Text';
+import { boardTitle } from '@ks/app/design-kit/boards';
 import {
   ICONS,
   MAP_DATE_CHANGE,
@@ -14,7 +10,12 @@ import {
   RADII,
   SHADOWS,
   SPACE,
-} from './values';
+} from '@ks/app/design-kit/foundations/values';
+import rawTokens from '@ks/design/tokens.json';
+
+import kit from '@ks/app/design-kit/kit.module.css';
+
+import styles from '@ks/app/design-kit/foundations/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('foundations') };
 

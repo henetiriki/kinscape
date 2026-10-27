@@ -4,7 +4,7 @@ import type { FilledIconName } from '@ks/app/components/foundation/types';
 
 import { FilledIcon } from '@ks/app/components/foundation/Icon';
 
-import styles from './Alert.module.css';
+import styles from '@ks/app/components/feedback/Alert.module.css';
 
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export const Alert = ({

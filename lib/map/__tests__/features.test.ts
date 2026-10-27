@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import type { BoundaryData, BoundaryVersion } from '../../boundaries/types.ts';
+import type {
+  BoundaryData,
+  BoundaryVersion,
+} from '@ks/lib/boundaries/types.ts';
 
-import { polityCollection } from '../features';
+import { polityCollection } from '@ks/lib/map/features';
 
 const polygon = (x: number, y: number, size: number) => [
   [

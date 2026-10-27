@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import rawTokens from '@ks/design/tokens.json';
 
-import styles from './Toast.module.css';
+import styles from '@ks/app/components/feedback/Toast.module.css';
 
 const SUCCESS_MS = Number.parseInt(rawTokens.motion.toast, 10);
 

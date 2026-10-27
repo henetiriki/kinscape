@@ -1,4 +1,4 @@
-import styles from './ProgressBar.module.css';
+import styles from '@ks/app/components/feedback/ProgressBar.module.css';
 
 /** How much is done, 0 to 100. Determinate only; `labelledBy` is the id of the text that names it. */
 export const ProgressBar = ({

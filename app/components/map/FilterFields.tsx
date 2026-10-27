@@ -5,7 +5,7 @@ import { ChipGroup } from '@/app/components/actions/ChipGroup';
 import { SelectField } from '@/app/components/forms/SelectField';
 import { TokenField } from '@/app/components/forms/TokenField';
 
-import styles from './FilterFields.module.css';
+import styles from '@ks/app/components/map/FilterFields.module.css';
 
 type Choice = { label: string; value: string };
 

@@ -1,25 +1,21 @@
 import type { ReactNode } from 'react';
 
-import type { Tab } from '@/app/components/actions/types';
-import type { EventType } from '@/app/components/map/types';
+import type { Tab } from '@ks/app/components/actions/types';
+import type { EventType } from '@ks/app/components/map/types';
+import type { Column } from '@ks/app/design-kit/inputs/types';
 
-import { Button } from '@/app/components/actions/Button';
-import { Chip, RemovableChip } from '@/app/components/actions/Chip';
-import { KeyHint } from '@/app/components/actions/KeyHint';
-import { Tabs } from '@/app/components/actions/Tabs';
-import { Alert } from '@/app/components/feedback/Alert';
-import { CheckboxField } from '@/app/components/forms/CheckboxField';
-import { SelectField } from '@/app/components/forms/SelectField';
-import { TextField } from '@/app/components/forms/TextField';
-import { TokenField } from '@/app/components/forms/TokenField';
-import { Divider } from '@/app/components/foundation/Divider';
-import { Surface } from '@/app/components/foundation/Surface';
-import { SheetPanel } from '@/app/components/overlays/Sheet';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
-
-import type { Column } from './types';
-
+import { Button } from '@ks/app/components/actions/Button';
+import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
+import { KeyHint } from '@ks/app/components/actions/KeyHint';
+import { Tabs } from '@ks/app/components/actions/Tabs';
+import { Alert } from '@ks/app/components/feedback/Alert';
+import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
+import { SelectField } from '@ks/app/components/forms/SelectField';
+import { TextField } from '@ks/app/components/forms/TextField';
+import { TokenField } from '@ks/app/components/forms/TokenField';
+import { Divider } from '@ks/app/components/foundation/Divider';
+import { Surface } from '@ks/app/components/foundation/Surface';
+import { SheetPanel } from '@ks/app/components/overlays/Sheet';
 import {
   ByViewport,
   DesktopOnly,
@@ -29,8 +25,11 @@ import {
   stateOf,
   Variant,
   Variants,
-} from './Board';
-import styles from './page.module.css';
+} from '@ks/app/design-kit/inputs/Board';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
+
+import styles from '@ks/app/design-kit/inputs/page.module.css';
 
 // The board keeps the space after a code inside it, so the space is set in mono too.
 const code = (text: string) => <code>{`${text} `}</code>;

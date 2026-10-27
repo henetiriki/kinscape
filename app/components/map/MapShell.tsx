@@ -19,7 +19,7 @@ import { fromDay } from '@/lib/boundaries/model.mts';
 import { hasBorders } from '@/lib/map/coverage';
 import { todayDay } from '@/lib/map/map-date';
 
-import styles from './MapShell.module.css';
+import styles from '@ks/app/components/map/MapShell.module.css';
 
 export const MapShell = ({
   coverage,

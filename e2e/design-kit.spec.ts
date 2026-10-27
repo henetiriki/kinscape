@@ -2,8 +2,8 @@ import type { Locator, Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
-import tokens from '../design/tokens.json';
-import { resolveTokens } from '../lib/design/tokens.mts';
+import tokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
 // NFR-06: the design kit's controls, with the keyboard and by name.
 

@@ -4,7 +4,7 @@ import { Wordmark } from '@ks/app/components/map/Wordmark';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
-import styles from './AuthLayout.module.css';
+import styles from '@ks/app/components/auth/AuthLayout.module.css';
 
 const { map } = resolveTokens(rawTokens);
 

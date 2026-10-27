@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import FeedbackKit from '../page';
+import FeedbackKit from '@ks/app/design-kit/feedback/page';
 
 // MAP-03, NFR-06
 it('shows the eight cases, each a live field with its message', () => {

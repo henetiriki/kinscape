@@ -5,7 +5,7 @@ import type { ComponentProps, KeyboardEvent, ReactNode } from 'react';
 import { TextField } from '@/app/components/forms/TextField';
 import { Wordmark } from '@/app/components/map/Wordmark';
 
-import styles from './SearchBar.module.css';
+import styles from '@ks/app/components/map/SearchBar.module.css';
 
 const NAME = 'Search people and places';
 

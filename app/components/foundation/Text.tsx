@@ -1,8 +1,8 @@
 import type { ComponentProps } from 'react';
 
-import type { Heading, Other, Tone } from './types';
+import type { Heading, Other, Tone } from '@ks/app/components/foundation/types';
 
-import styles from './Text.module.css';
+import styles from '@ks/app/components/foundation/Text.module.css';
 
 type Tag =
   'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'label' | 'p' | 'span';

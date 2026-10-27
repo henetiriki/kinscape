@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import StatesKit from '../page';
+import StatesKit from '@ks/app/design-kit/states/page';
 
 // NFR-06
 it('shows every control in five states', () => {

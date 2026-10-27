@@ -3,14 +3,13 @@
 import type { CSSProperties } from 'react';
 
 import type { Precision } from '@/lib/map/types';
+import type { ContestedYears } from '@ks/app/components/map/types';
 
 import { hatchStyle } from '@/app/components/map/hatch';
 import { fromDay, toDay } from '@/lib/boundaries/model.mts';
 import { dayFromSlider, sliderMax, sliderValue } from '@/lib/map/map-date';
 
-import type { ContestedYears } from './types';
-
-import styles from './DateSlider.module.css';
+import styles from '@ks/app/components/map/DateSlider.module.css';
 
 const FIRST_YEAR = 1652;
 const LABEL_EVERY = 50;

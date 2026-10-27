@@ -1,4 +1,4 @@
-import type { EVENT_PATHS } from './EventGlyph';
+import type { EVENT_PATHS } from '@ks/app/components/map/EventGlyph';
 
 export type ContestedYears = { from: number; to: number };
 

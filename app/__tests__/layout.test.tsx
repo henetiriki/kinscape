@@ -1,9 +1,9 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, it, vi } from 'vitest';
 
-import tokens from '../../design/tokens.json';
-import { fontVariable } from '../../lib/design/tokens.mts';
-import RootLayout, { metadata } from '../layout';
+import RootLayout, { metadata } from '@ks/app/layout';
+import tokens from '@ks/design/tokens.json';
+import { fontVariable } from '@ks/lib/design/tokens.mts';
 
 interface FontOptions {
   declarations?: { prop: string; value: string }[];

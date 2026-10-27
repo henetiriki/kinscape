@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import rawTokens from '@/design/tokens.json';
 
-import styles from './Stage.module.css';
+import styles from '@ks/app/components/map/Stage.module.css';
 
 const { layout, size } = rawTokens;
 const px = (value: string) => Number.parseFloat(value);

@@ -1,6 +1,12 @@
 /** What the colour board shows, in board order. Values come from `design/tokens.json`; the page resolves them. */
 
-import type { Group, On, Role, System, SystemLine } from './types';
+import type {
+  Group,
+  On,
+  Role,
+  System,
+  SystemLine,
+} from '@ks/app/design-kit/colour/types';
 
 const BRAND: On = ['colour.brand', 'brand'];
 const INK: On = ['colour.ink', 'ink'];

@@ -4,7 +4,7 @@ import type { ControlState } from '@/app/components/foundation/types';
 
 import { Icon } from '@/app/components/foundation/Icon';
 
-import styles from './LayersButton.module.css';
+import styles from '@ks/app/components/map/LayersButton.module.css';
 
 /** The phone's one 48px button that opens Layers and filters. */
 export const LayersButton = ({

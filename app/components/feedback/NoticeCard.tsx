@@ -8,7 +8,7 @@ import { Button } from '@ks/app/components/actions/Button';
 import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
 import { Icon } from '@ks/app/components/foundation/Icon';
 
-import styles from './NoticeCard.module.css';
+import styles from '@ks/app/components/feedback/NoticeCard.module.css';
 
 type Action = { label: string; onClick?: () => void };
 

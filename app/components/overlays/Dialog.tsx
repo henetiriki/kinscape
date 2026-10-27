@@ -8,7 +8,7 @@ import { Text } from '@ks/app/components/foundation/Text';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { Modal, ModalClose } from '@ks/app/components/overlays/Modal';
 
-import styles from './Dialog.module.css';
+import styles from '@ks/app/components/overlays/Dialog.module.css';
 
 type DialogForm = 'centred' | 'sheet';
 

@@ -1,10 +1,9 @@
 import { expect, it } from 'vitest';
 
-import { resolveTokens } from '@/lib/design/tokens.mts';
-
-import rawTokens from '../../../../design/tokens.json';
-import { ratioOf, valueAt } from '../describe';
-import { GROUPS, MINIMUM, SYSTEM } from '../swatches';
+import { ratioOf, valueAt } from '@ks/app/design-kit/colour/describe';
+import { GROUPS, MINIMUM, SYSTEM } from '@ks/app/design-kit/colour/swatches';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
 
 const tokens = resolveTokens(rawTokens);
 

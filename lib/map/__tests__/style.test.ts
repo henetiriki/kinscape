@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import tokens from '../../../design/tokens.json';
-import { resolveTokens } from '../../design/tokens.mts';
-import { dateFilter } from '../filter';
-import { buildStyle, POLITY_LAYERS, polityFilters } from '../style';
+import tokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { dateFilter } from '@ks/lib/map/filter';
+import { buildStyle, POLITY_LAYERS, polityFilters } from '@ks/lib/map/style';
 
 describe('polityFilters', () => {
   it('applies the Map date to every polity layer', () => {

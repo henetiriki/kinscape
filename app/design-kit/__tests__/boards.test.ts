@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 
-import screens from '../../../design/screens.json';
-import { BOARDS } from '../boards';
+import { BOARDS } from '@ks/app/design-kit/boards';
+import screens from '@ks/design/screens.json';
 
 // NFR-06: a board checked against its snapshot is listed in the kit's nav and index.
 it('has a row for each /design-kit/* route in screens.json', () => {

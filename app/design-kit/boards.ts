@@ -1,4 +1,4 @@
-import type { Board } from './types';
+import type { Board } from '@ks/app/design-kit/types';
 
 /**
  * The built design kit boards, in style guide order; each is at `/design-kit/<slug>`.

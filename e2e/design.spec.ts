@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import tokens from '../design/tokens.json' with { type: 'json' };
+import tokens from '@ks/design/tokens.json' with { type: 'json' };
 
 // NFR-03: fonts are fetched at build time, so no browser request leaves KinScape.
 test('no request goes to a Google domain, and text renders in Public Sans', async ({

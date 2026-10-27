@@ -5,14 +5,13 @@ import type { KeyboardEvent, Ref } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
+import type { MenuEntry } from '@ks/app/components/overlays/types';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { Avatar } from '@ks/app/components/map/Avatar';
 
-import type { MenuEntry } from './types';
-
-import styles from './Menu.module.css';
+import styles from '@ks/app/components/overlays/Menu.module.css';
 
 /** One row: an icon and a label, with a second line if `detail` is set. A look when `state` is. */
 export const MenuItem = ({

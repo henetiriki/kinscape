@@ -77,9 +77,17 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-      # The action runs only as main has this file, so on a PR that changes it Claude never starts.
-      - name: Fail if Claude didn't review
+      # The action runs only a workflow identical to main's, so on a PR that changes this file Claude never starts.
+      # That known cause warns (the PR needs a human review); any other missing review fails the job.
+      - name: Report a missing review
         if: steps.claude-review.outputs.conclusion == ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
-          echo "::error::No review: Claude didn't start. A PR that changes claude-code-review.yml is reviewed only after it merges; otherwise see the step above."
-          exit 1
+          gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/workflows/claude-code-review.yml?ref=main" > "$RUNNER_TEMP/main-workflow.yml"
+          if cmp -s "$RUNNER_TEMP/main-workflow.yml" .github/workflows/claude-code-review.yml; then
+            echo "::error::No review: Claude didn't start. See the step above."
+            exit 1
+          fi
+          echo "::warning::No Claude review: this PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs."

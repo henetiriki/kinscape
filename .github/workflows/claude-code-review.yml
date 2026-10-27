@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: write
       issues: read
       id-token: write
 
@@ -78,16 +78,19 @@ jobs:
           retention-days: 14
 
       # The action runs only a workflow identical to main's, so on a PR that changes this file Claude never starts.
-      # That known cause warns (the PR needs a human review); any other missing review fails the job.
+      # That known cause comments on the PR (it needs a human review); any other missing review fails the job.
       - name: Report a missing review
         if: steps.claude-review.outputs.conclusion == ''
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/workflows/claude-code-review.yml?ref=main" > "$RUNNER_TEMP/main-workflow.yml"
           if cmp -s "$RUNNER_TEMP/main-workflow.yml" .github/workflows/claude-code-review.yml; then
             echo "::error::No review: Claude didn't start. See the step above."
             exit 1
           fi
-          echo "::warning::No Claude review: this PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs."
+          msg="No Claude review: this PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs."
+          # Each push updates the one comment. A read-only token (fork PR) falls back to a warning.
+          gh pr comment "$PR_NUMBER" --edit-last --create-if-none --body "$msg" || echo "::warning::$msg"

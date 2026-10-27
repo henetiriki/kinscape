@@ -19,7 +19,7 @@ Closes #<!-- spec issue -->
 
 ## Evidence
 
-<!-- Paste test / lint / build output, and screenshots for UI changes. -->
+<!-- Paste test / lint / build output (for a new unit test, its first failing run), and screenshots for UI changes. -->
 
 ## For the PO
 

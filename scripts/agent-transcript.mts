@@ -14,7 +14,7 @@ type Event = {
   duration_ms?: number;
   message?: { content?: Block[]; id?: string; model?: string; usage?: Usage };
   model?: string;
-  modelUsage?: Record<string, { costUSD?: number }>;
+  modelUsage?: Record<string, { costUSD?: number; outputTokens?: number }>;
   num_turns?: number;
   permission_denials?: {
     tool_input?: Record<string, unknown>;
@@ -25,9 +25,10 @@ type Event = {
   subtype?: string;
   total_cost_usd?: number;
   type?: string;
+  usage?: Usage;
 };
 
-type Turn = { calls: Set<string>; model: string; weight: number };
+type Turn = { calls: Set<string>; model: string; usage: Usage };
 
 type Usage = {
   cache_creation?: {
@@ -42,7 +43,8 @@ type Usage = {
 
 // A turn's weight is its tokens times the API price ratios: input 1, cache write 1.25 (1-hour
 // writes 2), cache read 0.1, output 5. Only the ratios matter: they split a run's real cost.
-const weightOf = (usage: Usage = {}): number => {
+// `outputScale` corrects the event's `output_tokens`, which is a snapshot taken as the turn began.
+const weightOf = (usage: Usage, outputScale: number): number => {
   const hour = usage.cache_creation?.ephemeral_1h_input_tokens ?? 0;
   const write = usage.cache_creation
     ? (usage.cache_creation.ephemeral_5m_input_tokens ?? 0)
@@ -53,7 +55,7 @@ const weightOf = (usage: Usage = {}): number => {
     write * 1.25 +
     hour * 2 +
     (usage.cache_read_input_tokens ?? 0) * 0.1 +
-    (usage.output_tokens ?? 0) * 5
+    (usage.output_tokens ?? 0) * outputScale * 5
   );
 };
 
@@ -70,7 +72,7 @@ const turnsOf = (events: Event[]): Turn[] => {
     const turn = turns.get(message.id) ?? {
       calls: new Set<string>(),
       model: message.model ?? '',
-      weight: weightOf(message.usage),
+      usage: message.usage ?? {},
     };
 
     for (const block of message.content ?? []) {
@@ -85,17 +87,32 @@ const turnsOf = (events: Event[]): Turn[] => {
   return [...turns.values()];
 };
 
-// What each turn cost: its share of its model's cost in `modelUsage`, else of the run's total.
+// What each turn cost: its share of its model's cost in `modelUsage`, else of the run's total. The
+// events' `output_tokens` are scaled so the turns sum to the output tokens the result reports.
 const turnCosts = (turns: Turn[], result: Event | undefined): number[] =>
   turns.map(turn => {
-    const modelCost = result?.modelUsage?.[turn.model]?.costUSD;
-    const [cost, peers] =
-      modelCost === undefined
-        ? [result?.total_cost_usd, turns]
-        : [modelCost, turns.filter(({ model }) => model === turn.model)];
-    const total = peers.reduce((sum, { weight }) => sum + weight, 0);
+    const used = result?.modelUsage?.[turn.model];
+    const [cost, output, peers] =
+      used?.costUSD === undefined
+        ? [result?.total_cost_usd, result?.usage?.output_tokens, turns]
+        : [
+            used.costUSD,
+            used.outputTokens,
+            turns.filter(({ model }) => model === turn.model),
+          ];
+    const seen = peers.reduce(
+      (sum, { usage }) => sum + (usage.output_tokens ?? 0),
+      0
+    );
+    const scale = output === undefined || seen === 0 ? 1 : output / seen;
+    const total = peers.reduce(
+      (sum, { usage }) => sum + weightOf(usage, scale),
+      0
+    );
 
-    return total === 0 || cost === undefined ? 0 : (cost * turn.weight) / total;
+    return total === 0 || cost === undefined
+      ? 0
+      : (cost * weightOf(turn.usage, scale)) / total;
   });
 
 // Each denial's cost: its turn's share, split between that turn's denied calls.

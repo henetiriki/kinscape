@@ -227,6 +227,57 @@ describe('parseTranscript', () => {
       expect(second).toBeCloseTo(1);
     });
 
+    it("scales the events' output tokens to the total the result reports", () => {
+      // An event's output_tokens is a snapshot from the start of the turn: the turns weigh 50 and
+      // 100 as read, 100 each once the 10 seen are scaled to the 20 reported.
+      const events = [
+        turn('a', ['t1'], { output_tokens: 10 }),
+        turn('b', ['t2'], { input_tokens: 100 }),
+      ];
+
+      expect(
+        costs([
+          ...events,
+          result({
+            modelUsage: { m1: { costUSD: 4, outputTokens: 20 } },
+            permission_denials: denied('t1'),
+          }),
+        ])
+      ).toEqual([2]);
+      expect(
+        costs([
+          ...events,
+          result({
+            permission_denials: denied('t1'),
+            total_cost_usd: 4,
+            usage: { output_tokens: 20 },
+          }),
+        ])
+      ).toEqual([2]);
+    });
+
+    it('reads the output tokens as they are when the result gives no total, or none was seen', () => {
+      expect(
+        costs([
+          turn('a', ['t1'], { output_tokens: 10 }),
+          turn('b', ['t2'], { input_tokens: 100 }),
+          result({
+            modelUsage: { m1: { costUSD: 3 } },
+            permission_denials: denied('t1'),
+          }),
+        ])
+      ).toEqual([1]);
+      expect(
+        costs([
+          turn('a', ['t1'], { input_tokens: 100 }),
+          result({
+            modelUsage: { m1: { costUSD: 3, outputTokens: 5 } },
+            permission_denials: denied('t1'),
+          }),
+        ])
+      ).toEqual([3]);
+    });
+
     it('has no cost for a denial it cannot place, and none for a turn it cannot price', () => {
       expect(
         costs([

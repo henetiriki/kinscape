@@ -19,8 +19,10 @@ jobs:
       # A PR run caches under the PR's merge ref; a push to its branch caches under the branch ref.
       - name: Delete caches
         run: |
-          gh cache delete --all --ref "refs/pull/$PR/merge" --succeed-on-no-caches
-          gh cache delete --all --ref "refs/heads/$HEAD_REF" --succeed-on-no-caches
+          status=0
+          gh cache delete --all --ref "refs/pull/$PR/merge" --succeed-on-no-caches || status=1
+          gh cache delete --all --ref "refs/heads/$HEAD_REF" --succeed-on-no-caches || status=1
+          exit $status
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

@@ -26,13 +26,13 @@ const TEST_MODIFIERS = [
     message:
       'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
     selector:
-      'MemberExpression[property.name=/^(only|skip|skipIf|runIf|todo|fixme|fail|fails)$/]:matches([object.name=/^(describe|it|test)$/], [object.property.name=/^(describe|concurrent|sequential|shuffle|serial|parallel)$/])',
+      'MemberExpression[property.name=/^(only|skip|skipIf|runIf|todo|fixme|fail|fails)$/]:matches([object.name=/^(describe|it|test)$/], [object.property.name=/^(describe|concurrent|sequential|shuffle|serial|parallel|step)$/])',
   },
   {
     message:
       'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
     selector:
-      'CallExpression[callee.name=/^(describe|it|test)$/] > ObjectExpression > Property[key.name=/^(only|skip|todo|fails)$/]',
+      'CallExpression:matches([callee.name=/^(describe|it|test)$/], [callee.object.name=/^(describe|it|test)$/], [callee.object.object.name=/^(describe|it|test)$/], [callee.callee.object.name=/^(describe|it|test)$/]) > ObjectExpression > Property[key.name=/^(only|skip|todo|fails)$/]',
   },
 ];
 

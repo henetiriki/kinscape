@@ -34,6 +34,10 @@ describe('the test modifier lint rule', () => {
     "describe('a', { only: true }, () => {});",
     "it('a', { todo: true }, () => {});",
     "it('a', { fails: true }, () => {});",
+    "test.step.skip('a', async () => {});",
+    "it.concurrent('a', { skip: true }, () => {});",
+    "describe.sequential('a', { skip: true }, () => {});",
+    "it.each([1])('a', { only: true }, () => {});",
   ])('flags %s', async code => {
     expect(await lint(code)).toEqual([
       expect.stringContaining('skipped, focused or unfinished'),
@@ -47,6 +51,8 @@ describe('the test modifier lint rule', () => {
     "test.step('a', async () => {});",
     "it.concurrent('a', () => {});",
     "it('a', { timeout: 5 }, () => {});",
+    "test.describe.configure({ mode: 'serial' });",
+    'test.extend({ page: 1 });',
     "it('a', () => { expect({ skip: true }).toBeDefined(); });",
   ])('allows %s', async code => {
     expect(await lint(code)).toEqual([]);

@@ -20,6 +20,16 @@ const ARROW_FUNCTIONS = [
   },
 ];
 
+// A skip, focus or placeholder needs an `eslint-disable-next-line` with its reason, so review sees it.
+const TEST_MODIFIERS = [
+  {
+    message:
+      'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
+    selector:
+      'MemberExpression[property.name=/^(only|skip|todo|fixme|fail|fails)$/]:matches([object.name=/^(describe|it|test)$/], [object.property.name="describe"])',
+  },
+];
+
 export default defineConfig([
   globalIgnores([
     '.claude-pr/**',
@@ -67,6 +77,7 @@ export default defineConfig([
       'no-restricted-syntax': [
         'error',
         ...ARROW_FUNCTIONS,
+        ...TEST_MODIFIERS,
         {
           message: 'Export types from the folder’s types.ts.',
           selector: 'ExportNamedDeclaration > TSTypeAliasDeclaration',

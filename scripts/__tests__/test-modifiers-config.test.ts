@@ -40,6 +40,9 @@ describe('the test modifier lint rule', () => {
     "it.each([1])('a', { only: true }, () => {});",
     "it.concurrent.each([1])('a', { skip: true }, () => {});",
     "describe.sequential.for([1])('a', { only: true }, () => {});",
+    "suite.only('a', () => {});",
+    "suite.skip('a', () => {});",
+    "suite('a', { skip: true }, () => {});",
   ])('flags %s', async code => {
     expect(await lint(code)).toEqual([
       expect.stringContaining('skipped, focused or unfinished'),

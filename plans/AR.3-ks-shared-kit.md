@@ -79,6 +79,10 @@ The Spec says the rename includes `vi.mock` strings (there are none) and gives a
 | Suite passes                             | `npm test`, lint, validator, `npm run build`, `design:check`, `npm run e2e`                                                     |
 | Docs name `@ks/`                         | The diff of `DESIGN.md` and `architecture.md`                                                                                   |
 
+## Deviations
+
+`DateField.tsx` shows in the read-back diff as an artifact (its blank line between import groups matches in the ignored hunk), not a rewrap.
+
 ## Out of scope
 
 `app/components/map` (AR.10 #323, AR.11 #324); the design kit, routes, other tests, relative imports and the `@/` ban (AR.4 #317).

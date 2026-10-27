@@ -2,7 +2,7 @@
 
 - **Spec:** #317
 - **Requirement IDs:** none (engineering-only)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ The PR body records the rewrite commands. `'@/` becomes `'@ks/` through one `fin
 - **B.** Convert them; leave the Spec as it is.
 - **Other:** your own.
 
-Recommended: A, so the Spec's counts match the diff.
+**Answer: A** (@henetiriki)
 
 **D2 · Which `.mjs` files count as Node-loaded** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ The only other `.mjs`, `.claude/skills/refine/scripts/form-link.mjs`, has no rel
 - **B.** `**/*.mjs`, and the Spec's flagged concern is reworded.
 - **Other:** your own.
 
-Recommended: A: it matches the Spec, and no app code is `.mjs`.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

@@ -20,8 +20,12 @@ jobs:
       - name: Delete caches
         run: |
           status=0
-          gh cache delete --all --ref "refs/pull/$PR/merge" --succeed-on-no-caches || status=1
-          gh cache delete --all --ref "refs/heads/$HEAD_REF" --succeed-on-no-caches || status=1
+          for ref in "refs/pull/$PR/merge" "refs/heads/$HEAD_REF"; do
+            ids=$(gh cache list --ref "$ref" --limit 1000 --json id --jq '.[].id') || { status=1; continue; }
+            for id in $ids; do
+              gh cache delete "$id" || status=1
+            done
+          done
           exit $status
         env:
           GH_TOKEN: ${{ github.token }}

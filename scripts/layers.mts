@@ -164,8 +164,20 @@ export const importsRule = {
     // Relative to the repo root, not the directory ESLint runs from.
     const file = relative(ROOT, context.filename).split(sep).join('/');
 
-    const check = (node: { source?: { value?: unknown } | null }): void => {
-      const specifier = node.source?.value;
+    const check = (node: {
+      source?: {
+        expressions?: unknown[];
+        quasis?: { value: { cooked?: null | string } }[];
+        type?: string;
+        value?: unknown;
+      } | null;
+    }): void => {
+      const source = node.source;
+      // A template literal with no substitutions, as in import(`@/server/db`).
+      const specifier =
+        source?.type === 'TemplateLiteral' && source.expressions?.length === 0
+          ? source.quasis?.[0].value.cooked
+          : source?.value;
 
       if (typeof specifier !== 'string') {
         return;

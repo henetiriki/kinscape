@@ -336,8 +336,17 @@ describe('the lint rule', () => {
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
+        {
+          code: 'const a = import(`@/lib/map/a`);',
+          errors: 1,
+          filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
       ],
       valid: [
+        {
+          code: 'const a = import(`@/lib/${name}`);',
+          filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
         {
           code: "import { a } from '@/app/components/foundation/Text';",
           filename: `${process.cwd()}/app/components/forms/X.tsx`,

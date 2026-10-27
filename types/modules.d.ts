@@ -1,5 +1,13 @@
 // These packages ship no types. Only the parts KinScape calls are declared.
 
+declare module '*/eslint.config.mjs' {
+  import type { Linter } from 'eslint';
+
+  const config: Linter.Config[];
+
+  export default config;
+}
+
 declare module 'fontnik' {
   const fontnik: {
     range: (

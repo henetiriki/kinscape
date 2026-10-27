@@ -7,6 +7,8 @@ import packageJson from 'eslint-plugin-package-json';
 import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
+import { plugin as layers } from './scripts/layers.mts';
+
 const ARROW_FUNCTIONS = [
   {
     message: 'Use an arrow function assigned to a const.',
@@ -126,6 +128,17 @@ export default defineConfig([
         },
       ],
     },
+  },
+  {
+    // The layer map in docs/architecture.md; its allowlist lives in scripts/layers.mts.
+    files: [
+      'app/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
+      'lib/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
+      'features/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
+      'server/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
+    ],
+    plugins: { layers },
+    rules: { 'layers/imports': 'error' },
   },
   {
     ...packageJson.configs.recommended,

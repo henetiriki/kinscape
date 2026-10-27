@@ -38,6 +38,12 @@ describe('the real lint config', () => {
     ).toEqual([expect.stringContaining('features never import each other')]);
   });
 
+  it('fails a file directly in features/', async () => {
+    expect(await lint('features/index.ts', 'export const a = 1;\n')).toEqual([
+      'layers/imports: Layer rule: features/ holds only feature folders.',
+    ]);
+  });
+
   it.each([
     [
       'app/components/forms/X.tsx',

@@ -6,7 +6,7 @@
 
 ## Approach
 
-`scripts/layers.mts` holds the layer map, the allowlist and `layerBreak(file, specifier)`, which names the rule an import breaks. A file's layer comes from its path, so `features/`, `server/` and `lib/domain` are covered before they exist. `eslint.config.mjs` loads a local rule, `layers/imports`, from that module. The fitness test scans `app`, `lib`, `features` and `server` and checks the breaks match the allowlist exactly. Test files, `app/design-kit`, `scripts`, `e2e` and `lib/design` tooling are outside the map.
+`scripts/layers.mts` holds the layer map, the allowlist and `layerBreak(file, specifier)`, which names the rule an import breaks. A file's layer comes from its path, so `features/`, `server/` and `lib/domain` are covered before they exist. `eslint.config.mjs` loads a local rule, `layers/imports`, from that module. The fitness test scans `app`, `lib`, `features` and `server` and checks the breaks match the allowlist exactly.
 
 ## Decisions
 
@@ -83,7 +83,8 @@ Allowlist: `app/components/map`, `lib/map/style.ts`, `lib/map/filter.ts`, `forms
 
 - The `lintText` tests import `eslint.config.mjs` (typed in `types/modules.d.ts`): ESLint's own loader would load a second copy of `layers.mts` and corrupt its coverage.
 - Lint and the fitness test also check `require()`, `vi.mock()`, `import x = require()`, `import('…').T` and all JS and TS extensions.
-- An allowlist entry excuses only imports fine in the layer it moves to; mapped code may not import dev-only code.
+- An allowlist entry excuses only imports fine where it moves to, and the most specific entry wins; mapped code may not import dev-only code.
+- A bare name isn't a built-in if `package.json` lists it; `features/` holds only folders.
 
 ## Out of scope
 

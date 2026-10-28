@@ -38,6 +38,10 @@ on:
   pull_request_review:
     types: [submitted]
 
+# The npm cache path shared with the container jobs (see ci.yml).
+env:
+  npm_config_cache: /tmp/npm-cache
+
 jobs:
   # Let Claude read the request, work in the repo and reply. A run that fails any of the checks
   # in the `run-name` comment above skips this job, so the Actions tab shows the skipped icon.

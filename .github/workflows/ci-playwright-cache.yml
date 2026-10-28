@@ -21,6 +21,10 @@ on:
 permissions:
   contents: read
 
+# The npm cache path shared with the container jobs (see ci.yml).
+env:
+  npm_config_cache: /tmp/npm-cache
+
 concurrency:
   group: ci-playwright-cache
   cancel-in-progress: false

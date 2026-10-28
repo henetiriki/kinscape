@@ -10,13 +10,11 @@ import { useEffect, useRef } from 'react';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+import type { Layer } from '@ks/features/map/types';
+
 import { PHONE } from '@ks/app/components/foundation/usePhone';
 import { freeArea } from '@ks/features/map/components/Stage';
-import {
-  buildStyle,
-  POLITY_LAYERS,
-  polityFilters,
-} from '@ks/features/map/style';
+import { buildStyle } from '@ks/features/map/style';
 
 type Padding = ReturnType<typeof freeArea>;
 
@@ -41,10 +39,13 @@ export const MIN_ZOOM = 3;
 export const MAX_ZOOM = 10;
 
 export const MapView = ({
+  layers,
   mapDay,
   padding,
   showPolities,
 }: {
+  /** The layers the map draws; the Map date filters each and `showPolities` shows or hides them. */
+  layers: Layer[];
   mapDay: number;
   /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
   padding: Padding;
@@ -53,7 +54,7 @@ export const MapView = ({
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   // The first style uses the values from the first render; later changes go through the effect below.
-  const initial = useRef({ mapDay, showPolities });
+  const initial = useRef({ layers, mapDay, showPolities });
   // `load` fires once. After it, isStyleLoaded() is false while tiles reload, so it can't gate later changes.
   const loaded = useRef(false);
 
@@ -72,7 +73,11 @@ export const MapView = ({
       maxBounds: MAX_BOUNDS,
       maxZoom: MAX_ZOOM,
       minZoom: MIN_ZOOM,
-      style: buildStyle(initial.current.mapDay, initial.current.showPolities),
+      style: buildStyle(
+        initial.current.mapDay,
+        initial.current.layers,
+        initial.current.showPolities
+      ),
     });
 
     created.addControl(new NavigationControl());
@@ -114,15 +119,17 @@ export const MapView = ({
         performance.measure('map-date-redraw', 'map-date-change');
       });
 
-      const filters = polityFilters(mapDay);
+      for (const layer of layers) {
+        const filters = layer.filters(mapDay);
 
-      for (const id of POLITY_LAYERS) {
-        current.setFilter(id, filters[id]);
-        current.setLayoutProperty(
-          id,
-          'visibility',
-          showPolities ? 'visible' : 'none'
-        );
+        for (const { id } of layer.layers) {
+          current.setFilter(id, filters[id] ?? null);
+          current.setLayoutProperty(
+            id,
+            'visibility',
+            showPolities ? 'visible' : 'none'
+          );
+        }
       }
     };
 
@@ -137,7 +144,7 @@ export const MapView = ({
     return () => {
       current.off('load', apply);
     };
-  }, [mapDay, showPolities]);
+  }, [layers, mapDay, showPolities]);
 
   return <div className='map' ref={container} />;
 };

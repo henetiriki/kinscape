@@ -1,0 +1,348 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`buildStyle > builds the same style as before the Layer contract 1`] = `
+{
+  "glyphs": "/glyphs/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "paint": {
+        "background-color": "#c9d5d2",
+      },
+      "type": "background",
+    },
+    {
+      "id": "land",
+      "paint": {
+        "fill-color": "#e9ebe2",
+      },
+      "source": "land",
+      "type": "fill",
+    },
+    {
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kind",
+          ],
+          "boundary",
+        ],
+        [
+          "<=",
+          [
+            "get",
+            "validFrom",
+          ],
+          7,
+        ],
+        [
+          "any",
+          [
+            "==",
+            [
+              "get",
+              "validTo",
+            ],
+            null,
+          ],
+          [
+            "<",
+            7,
+            [
+              "get",
+              "validTo",
+            ],
+          ],
+        ],
+      ],
+      "id": "polity-fills",
+      "layout": {
+        "visibility": "visible",
+      },
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "polity",
+          ],
+          "cape-of-good-hope",
+          "#d8d1b8",
+          "eastern-cape",
+          "#d9d3bc",
+          "eswatini",
+          "#cbd6da",
+          "free-state",
+          "#e3d2b2",
+          "gauteng",
+          "#d6ccba",
+          "kwazulu-natal",
+          "#dcd3bd",
+          "lesotho",
+          "#d9cfd9",
+          "limpopo",
+          "#d4d9c0",
+          "mpumalanga",
+          "#dad0b6",
+          "natal",
+          "#dccfbc",
+          "north-west",
+          "#d9cfba",
+          "northern-cape",
+          "#ddd6be",
+          "orange-free-state",
+          "#e1d3b6",
+          "transvaal",
+          "#d5d6bf",
+          "western-cape",
+          "#d3dcc4",
+          "#dcd3bd",
+        ],
+      },
+      "source": "polities",
+      "type": "fill",
+    },
+    {
+      "id": "rivers",
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round",
+      },
+      "paint": {
+        "line-color": "#6e99a3",
+        "line-width": [
+          "interpolate",
+          [
+            "linear",
+          ],
+          [
+            "zoom",
+          ],
+          3,
+          1,
+          8,
+          3,
+        ],
+      },
+      "source": "rivers",
+      "type": "line",
+    },
+    {
+      "id": "coastline",
+      "paint": {
+        "line-color": "#7e9a98",
+        "line-width": 0.9,
+      },
+      "source": "coastline",
+      "type": "line",
+    },
+    {
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kind",
+          ],
+          "boundary",
+        ],
+        [
+          "<=",
+          [
+            "get",
+            "validFrom",
+          ],
+          7,
+        ],
+        [
+          "any",
+          [
+            "==",
+            [
+              "get",
+              "validTo",
+            ],
+            null,
+          ],
+          [
+            "<",
+            7,
+            [
+              "get",
+              "validTo",
+            ],
+          ],
+        ],
+        [
+          "!",
+          [
+            "==",
+            [
+              "get",
+              "confidence",
+            ],
+            "low",
+          ],
+        ],
+      ],
+      "id": "polity-borders",
+      "layout": {
+        "visibility": "visible",
+      },
+      "paint": {
+        "line-color": "#3b3a2f",
+        "line-width": 1.5,
+      },
+      "source": "polities",
+      "type": "line",
+    },
+    {
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kind",
+          ],
+          "boundary",
+        ],
+        [
+          "<=",
+          [
+            "get",
+            "validFrom",
+          ],
+          7,
+        ],
+        [
+          "any",
+          [
+            "==",
+            [
+              "get",
+              "validTo",
+            ],
+            null,
+          ],
+          [
+            "<",
+            7,
+            [
+              "get",
+              "validTo",
+            ],
+          ],
+        ],
+        [
+          "==",
+          [
+            "get",
+            "confidence",
+          ],
+          "low",
+        ],
+      ],
+      "id": "polity-borders-low",
+      "layout": {
+        "visibility": "visible",
+      },
+      "paint": {
+        "line-color": "#3b3a2f",
+        "line-dasharray": [
+          4,
+          2.6,
+        ],
+        "line-width": 1.5,
+      },
+      "source": "polities",
+      "type": "line",
+    },
+    {
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kind",
+          ],
+          "label",
+        ],
+        [
+          "<=",
+          [
+            "get",
+            "validFrom",
+          ],
+          7,
+        ],
+        [
+          "any",
+          [
+            "==",
+            [
+              "get",
+              "validTo",
+            ],
+            null,
+          ],
+          [
+            "<",
+            7,
+            [
+              "get",
+              "validTo",
+            ],
+          ],
+        ],
+      ],
+      "id": "polity-labels",
+      "layout": {
+        "text-field": [
+          "get",
+          "name",
+        ],
+        "text-font": [
+          "Public Sans SemiBold",
+        ],
+        "text-letter-spacing": 0.15,
+        "text-max-width": 6,
+        "text-size": 12,
+        "text-transform": "uppercase",
+        "visibility": "visible",
+      },
+      "paint": {
+        "text-color": "#2e2c22",
+        "text-halo-color": "#e9ebe2",
+        "text-halo-width": 1.5,
+      },
+      "source": "polities",
+      "type": "symbol",
+    },
+  ],
+  "sources": {
+    "coastline": {
+      "data": "/map/coastline.geojson",
+      "type": "geojson",
+    },
+    "land": {
+      "data": "/map/land.geojson",
+      "type": "geojson",
+    },
+    "polities": {
+      "data": "/data/polities",
+      "type": "geojson",
+    },
+    "rivers": {
+      "data": "/map/rivers.geojson",
+      "type": "geojson",
+    },
+  },
+  "version": 8,
+}
+`;

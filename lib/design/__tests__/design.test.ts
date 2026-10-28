@@ -55,6 +55,7 @@ describe('colour literals', () => {
   it.each([
     'app/globals.css',
     'features/map/style.ts',
+    ...globSync('features/map/layers/*.ts', { cwd: root }).toSorted(),
     ...components,
     ...modules,
   ])('%s has none', path => {

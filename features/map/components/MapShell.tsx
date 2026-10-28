@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import type { Layer } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 import type { Span } from '@ks/lib/domain/map/types';
 
@@ -26,10 +27,13 @@ import styles from '@ks/features/map/components/MapShell.module.css';
 
 export const MapShell = ({
   coverage,
+  layers,
   sources,
 }: {
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
   coverage: Span[];
+  /** The layers the map draws. */
+  layers: Layer[];
   sources: Source[];
 }) => {
   const phone = usePhone();
@@ -48,7 +52,7 @@ export const MapShell = ({
       sources={sources}
     />
   );
-  const layers = {
+  const layerProps = {
     onShowPolitiesChange: setShowPolities,
     showPolities,
   };
@@ -106,8 +110,9 @@ export const MapShell = ({
           ) : undefined
         }
         overlayAt='top'
-        panel={phone ? undefined : <LayersPanel {...layers} />}>
+        panel={phone ? undefined : <LayersPanel {...layerProps} />}>
         <MapView
+          layers={layers}
           mapDay={mapDay}
           padding={freeArea(phone)}
           showPolities={showPolities}
@@ -118,7 +123,7 @@ export const MapShell = ({
           onClose={() => setShowLayers(false)}
           open={showLayers}
           title='Layers'>
-          <LayersRow {...layers} />
+          <LayersRow {...layerProps} />
         </Sheet>
       )}
       <SourcesDialog

@@ -2,7 +2,7 @@
 
 - **Spec:** #324
 - **Requirement IDs:** NFR-01, NFR-09
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ The Spec lets `design` import `ui`, while `ui` imports `design`: the cycle the S
 - **B.** As the Spec says: `design: ['ui']`.
 - **Other:** your own.
 
-Recommended: A, because the layer map stays one-way.
+**Answer: A** (@henetiriki)
 
 **D2 · Acceptance check 1 and binary files** · Decides: Tech lead
 
@@ -34,7 +34,7 @@ Recommended: A, because the layer map stays one-way.
 - **B.** Exclude `design/*.jpg` with a pathspec.
 - **Other:** your own.
 
-Recommended: A, because a new snapshot can't break it.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

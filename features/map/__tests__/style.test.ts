@@ -87,6 +87,10 @@ describe('buildStyle', () => {
       'stale',
     ]);
     expect(style.layers.some(layer => 'before' in layer)).toBe(false);
+    // A drawing layer without a filter gets no `filter` key, which MapLibre would reject.
+    expect(style.layers.some(layer => 'filter' in layer && !layer.filter)).toBe(
+      false
+    );
   });
 
   it('labels in Public Sans SemiBold', () => {

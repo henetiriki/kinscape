@@ -63,7 +63,7 @@ export const buildStyle = (
     for (const { before, ...layer } of drawing) {
       const placed = {
         ...layer,
-        filter: filter[layer.id],
+        ...(filter[layer.id] && { filter: filter[layer.id] }),
         layout: {
           ...layer.layout,
           visibility: visible ? 'visible' : 'none',

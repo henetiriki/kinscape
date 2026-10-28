@@ -51,9 +51,9 @@ import { freeArea } from '@ks/features/map/components/Stage';
 const padding = freeArea(false);
 const layers = [polityLayer];
 const POLITY_IDS = [
+  'polity-fills',
   'polity-borders',
   'polity-borders-low',
-  'polity-fills',
   'polity-labels',
 ];
 
@@ -245,6 +245,30 @@ describe('MapView', () => {
     expect(maplibre.map.setFilter.mock.calls).toEqual([
       ['test-fills', filter(9)],
     ]);
+  });
+
+  it('shows and hides a drawing layer that has no filter, without setting one', () => {
+    const bare: Layer = {
+      filters: () => ({}),
+      layers: [{ id: 'bare-fills', source: 'bare', type: 'fill' }],
+      sources: { bare: { data: '/bare.geojson', type: 'geojson' } },
+    };
+
+    render(
+      <MapView
+        layers={[bare]}
+        mapDay={5}
+        padding={padding}
+        showPolities={false}
+      />
+    );
+
+    expect(maplibre.map.setFilter).not.toHaveBeenCalled();
+    expect(maplibre.map.setLayoutProperty).toHaveBeenCalledWith(
+      'bare-fills',
+      'visibility',
+      'none'
+    );
   });
 
   it('waits for the style to load before changing layers', () => {

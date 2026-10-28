@@ -57,13 +57,16 @@ jobs:
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1.0.262
+        # A run ends with its turn, which kills background sub-agents and posts nothing (run 40684788102).
+        env:
+          CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # The plugin is pinned to a commit in this marketplace. Dependabot doesn't track it: bump the sha by hand.
           plugin_marketplaces: './.github/claude-plugins'
           plugins: 'code-review@kinscape-ci'
           prompt: '/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
-          claude_args: '--model opus --effort high --allowedTools "mcp__github_inline_comment__create_inline_comment" --append-system-prompt-file ${{ runner.temp }}/review.md'
+          claude_args: '--model opus --effort high --allowedTools "mcp__github_inline_comment__create_inline_comment" --disallowedTools "WebSearch WebFetch" --append-system-prompt-file ${{ runner.temp }}/review.md'
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 

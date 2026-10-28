@@ -14,7 +14,7 @@ Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quo
 
 Flag a test change `plans/README.md` rule 10 doesn't allow (never suggest `## Deviations` alone as the fix), and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
-When the diff moves code to a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
+When the diff moves or adds code in a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
 
 Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 

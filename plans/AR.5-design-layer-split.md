@@ -65,11 +65,15 @@
 - `css.mts` and `scripts/tokens.mts` run under Node, so a wrong relative path fails `npm run tokens`.
 - A gap in the moved tests fails the 100% threshold, which proves they count.
 
+## Deviations
+
+- Check 1 can't be empty: the two `layerOf` Ratchet rows must name `lib/design/tokens` to assert it is outside the map.
+
 ## Proof
 
 | Acceptance check                     | Proven by                                                                                                  |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| No importer of `lib/design/tokens`   | `git grep "lib/design/tokens"` (D3) is empty                                                               |
+| No importer of `lib/design/tokens`   | `git grep "lib/design/tokens" -- ':!plans'` (D3) finds only the two `layerOf` Ratchet rows                 |
 | `app/tokens.css` byte-identical      | `npm run tokens`, then `git diff --exit-code app/tokens.css`                                               |
 | Component importing `design/` passes | `npm run lint`; the fitness test; D2 row                                                                   |
 | Component importing `css.mts` fails  | D2 row (`dev-only code`)                                                                                   |

@@ -7,7 +7,7 @@ import { invisible } from '../vercel-ignore.mts';
 
 // Vercel skips a deployment when only invisible paths change, so shipped code
 // must not depend on one (C291).
-const ROOTS = ['app', 'design', 'lib', 'server', 'types'];
+const ROOTS = ['app', 'design', 'features', 'lib', 'server', 'types'];
 const SOURCE = /\.(?:[cm]?[jt]sx?|css)$/;
 const TEST_FILE = /(?:^|\/)__tests__\/|\.(?:test|spec)\./;
 const SPECIFIERS = [

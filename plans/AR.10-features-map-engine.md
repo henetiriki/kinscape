@@ -82,6 +82,10 @@ The Spec says `./filter`, but ESLint rejects relative imports outside Node-loade
 | `window.kinscapeMap` unchanged          | `MapView.tsx` diff is imports only; e2e specs that wait for it pass                                    |
 | Lint, design check, validator unchanged | `npm run lint`, `npm run design:check`, `npm run validate:boundaries`, no test edits beyond this table |
 
+## Deviations
+
+- `app/components/__tests__/hover.test.ts` also globs `features/*/components`, so `MapShell.module.css` keeps its hover check (count stays 49).
+
 ## Out of scope
 
 `lib/map/` sample paths in `node-loaded.test.ts`, `test-modifiers-config.test.ts` and `vercel-imports.test.ts:110` stay: they name no file and still pass.

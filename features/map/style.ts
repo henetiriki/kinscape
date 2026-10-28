@@ -2,7 +2,7 @@ import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
-import { dateFilter } from '@ks/lib/map/filter';
+import { dateFilter } from '@ks/features/map/filter';
 
 /** The layers the "Polity borders" row shows and hides together. */
 export const POLITY_LAYERS = [

@@ -3,8 +3,8 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
+import { dateFilter } from '@ks/features/map/filter';
 import { isCurrentOn } from '@ks/lib/domain/boundaries/model.mts';
-import { dateFilter } from '@ks/lib/map/filter';
 
 const keeps = (day: number, properties: Record<string, unknown>): boolean =>
   featureFilter(dateFilter(day, 'boundary'), 'filter').filter(

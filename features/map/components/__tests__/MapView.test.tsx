@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { buildStyle } from '@/lib/map/style';
+import type { buildStyle } from '@ks/features/map/style';
 
-import { POLITY_LAYERS, polityFilters } from '@/lib/map/style';
+import { POLITY_LAYERS, polityFilters } from '@ks/features/map/style';
 
 const maplibre = vi.hoisted(() => {
   const map = {
@@ -40,8 +40,12 @@ const maplibre = vi.hoisted(() => {
 vi.mock('maplibre-gl', () => maplibre);
 vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
-import { FIRST_VIEW, MapView, MAX_BOUNDS } from '@/app/components/map/MapView';
-import { freeArea } from '@/app/components/map/Stage';
+import { freeArea } from '@ks/app/components/map/Stage';
+import {
+  FIRST_VIEW,
+  MapView,
+  MAX_BOUNDS,
+} from '@ks/features/map/components/MapView';
 
 const padding = freeArea(false);
 

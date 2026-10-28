@@ -22,6 +22,9 @@ jobs:
     if: github.actor != 'dependabot[bot]' && !github.event.pull_request.draft
 
     runs-on: ubuntu-latest
+    env:
+      # A run ends with its turn, which kills background sub-agents and posts nothing.
+      CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     permissions:
       contents: read
       pull-requests: write
@@ -57,9 +60,6 @@ jobs:
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1.0.262
-        # A run ends with its turn, which kills background sub-agents and posts nothing (run 40684788102).
-        env:
-          CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # The plugin is pinned to a commit in this marketplace. Dependabot doesn't track it: bump the sha by hand.

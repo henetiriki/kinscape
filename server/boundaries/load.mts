@@ -3,9 +3,17 @@ import type { z } from 'zod';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { BoundaryData, BoundaryVersion } from './types.ts';
+import type {
+  BoundaryData,
+  BoundaryVersion,
+} from '../../lib/domain/boundaries/types.ts';
 
-import { boundaryFeature, nameRow, polityRow, sourceRow } from './schemas.mts';
+import {
+  boundaryFeature,
+  nameRow,
+  polityRow,
+  sourceRow,
+} from '../../lib/domain/boundaries/schemas.mts';
 
 type LoadResult = { data: BoundaryData; errors: string[] };
 

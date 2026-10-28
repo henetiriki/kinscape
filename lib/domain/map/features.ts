@@ -3,7 +3,7 @@ import polylabel from 'polylabel';
 import type {
   BoundaryData,
   BoundaryVersion,
-} from '@ks/lib/boundaries/types.ts';
+} from '@ks/lib/domain/boundaries/types.ts';
 
 type PolityCollection = {
   features: PolityFeature[];

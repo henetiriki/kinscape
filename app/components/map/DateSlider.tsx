@@ -2,12 +2,16 @@
 
 import type { CSSProperties } from 'react';
 
-import type { Precision } from '@/lib/map/types';
+import type { Precision } from '@/lib/domain/map/types';
 import type { ContestedYears } from '@ks/app/components/map/types';
 
 import { hatchStyle } from '@/app/components/map/hatch';
-import { fromDay, toDay } from '@/lib/boundaries/model.mts';
-import { dayFromSlider, sliderMax, sliderValue } from '@/lib/map/map-date';
+import { fromDay, toDay } from '@/lib/domain/boundaries/model.mts';
+import {
+  dayFromSlider,
+  sliderMax,
+  sliderValue,
+} from '@/lib/domain/map/map-date';
 
 import styles from '@ks/app/components/map/DateSlider.module.css';
 

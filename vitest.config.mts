@@ -6,6 +6,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('.', import.meta.url)),
       '@ks': fileURLToPath(new URL('.', import.meta.url)),
+      // The real package throws outside Next's server build.
+      'server-only': fileURLToPath(
+        new URL('./node_modules/server-only/empty.js', import.meta.url)
+      ),
     },
   },
   test: {
@@ -16,7 +20,7 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         '**/*.d.ts',
       ],
-      include: ['{app,design,lib,scripts}/**/*.{ts,tsx,js,mjs,mts}'],
+      include: ['{app,design,lib,scripts,server}/**/*.{ts,tsx,js,mjs,mts}'],
       provider: 'v8',
       reporter: ['text', 'lcov'],
       thresholds: {
@@ -28,7 +32,9 @@ export default defineConfig({
     },
     css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',
-    include: ['{app,design,lib,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
+    include: [
+      '{app,design,lib,scripts,server}/**/__tests__/**/*.test.{ts,tsx}',
+    ],
     setupFiles: ['./vitest.setup.ts'],
   },
 });

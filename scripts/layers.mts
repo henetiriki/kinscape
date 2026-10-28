@@ -10,8 +10,6 @@ export const ALLOWLIST: Record<string, string> = {
   'app/components/forms/DateField.tsx': 'features/map',
   'app/components/map': 'features/map',
   'app/components/overlays/SourcesDialog.tsx': 'features/map',
-  'lib/boundaries/app-data.ts': 'server/',
-  'lib/boundaries/load.mts': 'server/',
   'lib/map/filter.ts': 'features/map',
   'lib/map/style.ts': 'features/map',
 };
@@ -73,7 +71,8 @@ export const layerOf = (path: string): string | undefined => {
     return undefined;
   }
 
-  if (dir.startsWith('lib/')) {
+  // `lib/map/` holds only the MapLibre files until AR.10 (#323).
+  if (dir.startsWith('lib/domain/') || dir.startsWith('lib/map/')) {
     return 'domain';
   }
 

@@ -68,3 +68,4 @@ Move files with `git mv` so history follows, then repoint imports. Pure code goe
 
 - Four `lib/map` test files move, not five; `dayOf`'s cases move inside `map-date.test.ts`.
 - `docs/architecture-target.md` names none of the moved paths, so it doesn't change.
+- `layers.test.ts`: the bare `@/lib` case becomes `@/lib/domain`, since a bare `lib` is now outside the map (the narrowing this plan makes).

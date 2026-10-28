@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { DateDock } from '@/app/components/map/DateDock';
-import { fromDay, toDay } from '@/lib/boundaries/model.mts';
+import { fromDay, toDay } from '@/lib/domain/boundaries/model.mts';
 
 const today = toDay('2026-10-21');
 

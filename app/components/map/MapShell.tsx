@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import type { Source } from '@/lib/boundaries/types.ts';
-import type { Span } from '@/lib/map/types';
+import type { Source } from '@/lib/domain/boundaries/types.ts';
+import type { Span } from '@/lib/domain/map/types';
 
 import { NoticeCard } from '@/app/components/feedback/NoticeCard';
 import { usePhone } from '@/app/components/foundation/usePhone';
@@ -15,9 +15,9 @@ import { MapView } from '@/app/components/map/MapView';
 import { freeArea, Stage } from '@/app/components/map/Stage';
 import { Sheet } from '@/app/components/overlays/Sheet';
 import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
-import { fromDay } from '@/lib/boundaries/model.mts';
-import { hasBorders } from '@/lib/map/coverage';
-import { todayDay } from '@/lib/map/map-date';
+import { fromDay } from '@/lib/domain/boundaries/model.mts';
+import { hasBorders } from '@/lib/domain/map/coverage';
+import { todayDay } from '@/lib/domain/map/map-date';
 
 import styles from '@ks/app/components/map/MapShell.module.css';
 

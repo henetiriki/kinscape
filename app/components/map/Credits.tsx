@@ -1,6 +1,6 @@
 'use client';
 
-import type { Source } from '@/lib/boundaries/types.ts';
+import type { Source } from '@/lib/domain/boundaries/types.ts';
 
 import styles from '@ks/app/components/map/Credits.module.css';
 

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import type { SurfaceLevel } from '@ks/app/components/foundation/types';
 import type { Column } from '@ks/app/design-kit/inputs/types';
-import type { Source } from '@ks/lib/boundaries/types.ts';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';

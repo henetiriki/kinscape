@@ -1,6 +1,6 @@
 import { MapShell } from '@ks/app/components/map/MapShell';
-import { loadAppData } from '@ks/lib/boundaries/app-data';
-import { boundaryCoverage } from '@ks/lib/map/coverage';
+import { boundaryCoverage } from '@ks/lib/domain/map/coverage';
+import { loadAppData } from '@ks/server/boundaries/app-data';
 
 const Home = () => {
   const data = loadAppData();

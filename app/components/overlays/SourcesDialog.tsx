@@ -1,6 +1,6 @@
 'use client';
 
-import type { Source } from '@ks/lib/boundaries/types.ts';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Text } from '@ks/app/components/foundation/Text';

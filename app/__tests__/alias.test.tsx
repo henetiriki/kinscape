@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { Button } from '@ks/app/components/actions/Button';
-import { toDay } from '@ks/lib/boundaries/model.mts';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 describe('the @ks/ alias', () => {
   it('resolves a component', () => {

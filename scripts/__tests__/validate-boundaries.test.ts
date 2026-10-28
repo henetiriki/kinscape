@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { toDay } from '../../lib/boundaries/model.mts';
+import { toDay } from '../../lib/domain/boundaries/model.mts';
 import { run, validateBoundaries } from '../validate-boundaries.mts';
 
 const D1950 = toDay('1950-01-01');

@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 
 import type { PrepareMapDataDeps } from './types.ts';
 
-import { toDay } from '../lib/boundaries/model.mts';
+import { toDay } from '../lib/domain/boundaries/model.mts';
 
 // Pinned releases: bump the tag, run `npm run map:prepare`, review the diff.
 export const NATURAL_EARTH_TAG = 'v5.1.2';

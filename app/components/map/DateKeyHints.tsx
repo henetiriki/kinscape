@@ -1,4 +1,4 @@
-import type { Precision } from '@/lib/map/types';
+import type { Precision } from '@/lib/domain/map/types';
 
 import { KeyHint } from '@/app/components/actions/KeyHint';
 

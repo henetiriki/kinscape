@@ -123,7 +123,7 @@ export const MapView = ({
         const filters = layer.filters(mapDay);
 
         for (const { id } of layer.layers) {
-          if (filters[id]) current.setFilter(id, filters[id]);
+          current.setFilter(id, filters[id] ?? null);
           current.setLayoutProperty(
             id,
             'visibility',

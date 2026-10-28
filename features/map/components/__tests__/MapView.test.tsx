@@ -247,7 +247,7 @@ describe('MapView', () => {
     ]);
   });
 
-  it('shows and hides a drawing layer that has no filter, without setting one', () => {
+  it('shows and hides a drawing layer that has no filter, and clears any earlier one', () => {
     const bare: Layer = {
       filters: () => ({}),
       layers: [{ id: 'bare-fills', source: 'bare', type: 'fill' }],
@@ -263,7 +263,7 @@ describe('MapView', () => {
       />
     );
 
-    expect(maplibre.map.setFilter).not.toHaveBeenCalled();
+    expect(maplibre.map.setFilter.mock.calls).toEqual([['bare-fills', null]]);
     expect(maplibre.map.setLayoutProperty).toHaveBeenCalledWith(
       'bare-fills',
       'visibility',

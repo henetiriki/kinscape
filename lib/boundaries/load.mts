@@ -1,15 +1,11 @@
+import type { z } from 'zod';
+
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type {
-  BoundaryData,
-  BoundaryVersion,
-  Polity,
-  PolityName,
-  Source,
-} from './types.ts';
+import type { BoundaryData, BoundaryVersion } from './types.ts';
 
-import { fromDay, toDay } from './model.mts';
+import { nameRow, polityRow, sourceRow } from './schemas.mts';
 
 type LoadResult = { data: BoundaryData; errors: string[] };
 
@@ -25,17 +21,6 @@ const isDay = (value: unknown): value is number => Number.isInteger(value);
 
 const isEndDay = (value: unknown): value is null | number =>
   value === null || isDay(value);
-
-const SOURCE_FIELDS = [
-  'attribution',
-  'author',
-  'dateChecked',
-  'id',
-  'layer',
-  'licence',
-  'licenceLink',
-  'title',
-] as const;
 
 /** Reads a JSON file; a missing file reads as undefined. */
 const readJson = (path: string): { error: string } | { json: unknown } => {
@@ -54,7 +39,7 @@ const readRows = <T,>(
   path: string,
   json: unknown,
   key: string,
-  parse: (row: Row) => T | undefined
+  schema: z.ZodType<T>
 ): { errors: string[]; rows: T[] } => {
   if (json === undefined) {
     return { errors: [], rows: [] };
@@ -70,56 +55,16 @@ const readRows = <T,>(
   const errors: string[] = [];
 
   list.forEach((item, index) => {
-    const row = isRecord(item) ? parse(item) : undefined;
+    const parsed = schema.safeParse(item);
 
-    if (row) {
-      rows.push(row);
+    if (parsed.success) {
+      rows.push(parsed.data);
     } else {
       errors.push(`${path}: ${key}[${index}] is not a valid row`);
     }
   });
 
   return { errors, rows };
-};
-
-const parsePolity = (row: Row): Polity | undefined =>
-  isText(row.id) ? { id: row.id } : undefined;
-
-const parseName = (row: Row): PolityName | undefined =>
-  isText(row.name) &&
-  isText(row.polity) &&
-  isDay(row.validFrom) &&
-  isEndDay(row.validTo)
-    ? {
-        name: row.name,
-        polity: row.polity,
-        validFrom: row.validFrom,
-        validTo: row.validTo,
-      }
-    : undefined;
-
-const isIsoDate = (value: unknown): boolean => {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return false;
-  }
-
-  return (
-    !Number.isNaN(Date.parse(`${value}T00:00:00Z`)) &&
-    fromDay(toDay(value)) === value
-  );
-};
-
-const parseSource = (row: Row): Source | undefined => {
-  const fields = SOURCE_FIELDS.every(field => isText(row[field]));
-  const processing = row.processing === undefined || isText(row.processing);
-
-  return fields && processing && isIsoDate(row.dateChecked)
-    ? (Object.fromEntries(
-        [...SOURCE_FIELDS, 'processing']
-          .filter(field => row[field] !== undefined)
-          .map(field => [field, row[field]])
-      ) as Source)
-    : undefined;
 };
 
 const isMultiPolygon = (
@@ -223,17 +168,17 @@ export const loadBoundaryData = (root: string): LoadResult => {
     sources: [],
   };
 
-  for (const [read, path, key, parse, target] of [
-    [politiesRead, politiesPath, 'polities', parsePolity, 'polities'],
-    [politiesRead, politiesPath, 'names', parseName, 'names'],
-    [sourcesRead, sourcesPath, 'sources', parseSource, 'sources'],
+  for (const [read, path, key, schema, target] of [
+    [politiesRead, politiesPath, 'polities', polityRow, 'polities'],
+    [politiesRead, politiesPath, 'names', nameRow, 'names'],
+    [sourcesRead, sourcesPath, 'sources', sourceRow, 'sources'],
   ] as const) {
     if ('error' in read) {
       if (!errors.includes(read.error)) {
         errors.push(read.error);
       }
     } else {
-      const rows = readRows(path, read.json, key, parse as never);
+      const rows = readRows(path, read.json, key, schema as never);
 
       errors.push(...rows.errors);
       (data[target] as unknown[]).push(...rows.rows);

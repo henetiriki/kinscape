@@ -12,8 +12,7 @@ Layers are enforced: see [architecture.md](architecture.md#enforcement). The wor
 2. **Feature slices.** `features/map`, then `people` and `pins`: each with `components/`, domain code, `queries`, `actions`, tests and an `index.ts` as its public API. `app/components` stays the shared kit.
 3. **State ownership.** URL (shareable, MAP-10), then server, then a feature store, then local `useState`. `useMapState` reads `searchParams` through a schema.
 4. **Map layer registry.** A layer is one file exporting `{ id, sources, layers, filters(day), legendRow, toggle }`; `MapView` iterates the layers it is given, the route passes in each feature's layer, and visibility is `Record<LayerId, boolean>`.
-5. **Schema-first validation.** One schema gives the type and the parser for the loader, route handlers, server actions and forms. Needs a validation library: the tech lead decides which ([dependencies](dependencies.md)).
-6. **Domain primitives.** Branded ids (`PersonId`, `TreeId`), `Day`, a `FuzzyDate` value object, and an as-of helper built on `isCurrentOn`, with a test that `dateFilter` agrees with it.
+5. **Domain primitives.** Branded ids (`PersonId`, `TreeId`), `Day`, a `FuzzyDate` value object, and an as-of helper built on `isCurrentOn`, with a test that `dateFilter` agrees with it.
 
 ## With the database and API
 

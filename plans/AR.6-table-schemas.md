@@ -68,6 +68,11 @@ Zod 4's `.int()` takes only safe integers (up to 2^53); today's `Number.isIntege
 | Schema file imports only Zod and relative paths  | `vercel-imports.test.ts`, layer check (`lib/` is `lib/domain`) |
 | Suite passes, no load test changed               | `npm test`, lint, `design:check`, `npm run e2e`                |
 
+## Deviations
+
+- `docs/architecture.md` line 3: dropped "Every rule below is in the code;" to stay within the 800-word budget.
+- `docs/architecture.md` line 21: dropped "; `import type` may use it." for the same reason; the ESLint message in `scripts/node-loaded.mts` still says it.
+
 ## Out of scope
 
 Boundary GeoJSON schemas (AR.7, #320); moving the loader to `server/` (AR.8, #321); richer messages and form schemas (M2).

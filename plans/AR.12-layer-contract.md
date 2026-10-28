@@ -2,7 +2,7 @@
 
 - **Spec:** #325
 - **Requirement IDs:** MAP-04, NFR-01
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ A snapshot of today's `buildStyle(7, true)` is committed first, so the refactor 
 - **C.** `MapShell` imports `polityLayer`; the page is unchanged. Simplest, but the page no longer picks the layers; rewords the Spec's page line.
 - **Other:** your own.
 
-Recommended: A, because it keeps the Spec's contract and page line, and React allows a `'use client'` module's exports as props.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

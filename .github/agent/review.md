@@ -6,13 +6,13 @@ Where these rules and the review command disagree, these win.
 
 ## The plan
 
-Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body (a chore with no issue); else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it. For each Approach item, Files-that-change row and Proof row, check that the diff does it. Report a missing or extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). A changed test belongs under **Files that change** (rule 10); never suggest `## Deviations` alone. Cite requirement IDs (e.g. `MAP-03`) where the plan does.
+Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body (a chore with no issue); else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it. For each Approach item, Files-that-change row and Proof row, check that the diff does it. Report a missing or extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs (e.g. `MAP-03`) where the plan does.
 
 ## The rules
 
 Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken.
 
-Flag a test change `plans/README.md` rule 10 doesn't allow, and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
+Flag a test change `plans/README.md` rule 10 doesn't allow (never suggest `## Deviations` alone as the fix), and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
 When the diff moves code to a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
 

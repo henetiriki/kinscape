@@ -4,6 +4,7 @@ import type { BoundaryData } from '@ks/lib/domain/boundaries/types.ts';
 
 import {
   boundaryOn,
+  current,
   fromDay,
   nameOn,
   toDay,
@@ -57,6 +58,22 @@ describe('day conversion', () => {
   it('round-trips', () => {
     expect(fromDay(toDay('1950-01-01'))).toBe('1950-01-01');
     expect(fromDay(0)).toBe('1652-01-01');
+  });
+});
+
+describe('current', () => {
+  const rows = [
+    { id: 'a', validFrom: 0, validTo: 10 },
+    { id: 'b', validFrom: 5, validTo: null },
+  ];
+
+  it('returns the rows whose range holds the day', () => {
+    expect(current(rows, 7).map(row => row.id)).toEqual(['a', 'b']);
+    expect(current(rows, 10).map(row => row.id)).toEqual(['b']);
+  });
+
+  it('returns nothing before every range', () => {
+    expect(current(rows, -1)).toEqual([]);
   });
 });
 

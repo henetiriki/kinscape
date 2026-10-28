@@ -1,7 +1,7 @@
-import type { BoundaryData } from '@ks/lib/domain/boundaries/types.ts';
+import type { BoundaryData, Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Span } from '@ks/lib/domain/map/types';
 
-import { isCurrentOn } from '@ks/lib/domain/boundaries/model.mts';
+import { current } from '@ks/lib/domain/boundaries/model.mts';
 
 /** The days that have a Boundary version, as sorted spans that touch or overlap merged. */
 export const boundaryCoverage = (data: BoundaryData): Span[] => {
@@ -25,5 +25,5 @@ export const boundaryCoverage = (data: BoundaryData): Span[] => {
 };
 
 /** Whether a Boundary version is valid on `day`. */
-export const hasBorders = (coverage: Span[], day: number): boolean =>
-  coverage.some(span => isCurrentOn(span, day));
+export const hasBorders = (coverage: Span[], day: Day): boolean =>
+  current(coverage, day).length > 0;

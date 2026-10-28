@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import type { BoundaryData, BoundaryVersion } from './types.ts';
 
-import { nameRow, polityRow, sourceRow } from './schemas.mts';
+import { boundaryFeature, nameRow, polityRow, sourceRow } from './schemas.mts';
 
 type LoadResult = { data: BoundaryData; errors: string[] };
 
@@ -13,14 +13,6 @@ type Row = Record<string, unknown>;
 
 const isRecord = (value: unknown): value is Row =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const isText = (value: unknown): value is string =>
-  typeof value === 'string' && value !== '';
-
-const isDay = (value: unknown): value is number => Number.isInteger(value);
-
-const isEndDay = (value: unknown): value is null | number =>
-  value === null || isDay(value);
 
 /** Reads a JSON file; a missing file reads as undefined. */
 const readJson = (path: string): { error: string } | { json: unknown } => {
@@ -67,53 +59,31 @@ const readRows = <T,>(
   return { errors, rows };
 };
 
-const isMultiPolygon = (
-  geometry: unknown
-): geometry is BoundaryVersion['geometry'] =>
-  isRecord(geometry) &&
-  geometry.type === 'MultiPolygon' &&
-  Array.isArray(geometry.coordinates);
-
 const parseFeature = (
   path: string,
   feature: unknown,
   index: number
 ): BoundaryVersion | string => {
   const label = `${path}: features[${index}]`;
+  const parsed = boundaryFeature.safeParse(feature);
 
-  if (!isRecord(feature) || feature.type !== 'Feature') {
-    return `${label} must be a "Feature"`;
-  }
+  if (!parsed.success) {
+    const roots = parsed.error.issues.map(({ path: [root] }) => root);
 
-  const props = isRecord(feature.properties) ? feature.properties : {};
+    if (roots.some(root => root === undefined || root === 'type')) {
+      return `${label} must be a "Feature"`;
+    }
 
-  if (
-    !isText(props.polity) ||
-    !isText(props.source) ||
-    !isDay(props.validFrom) ||
-    !isEndDay(props.validTo) ||
-    (props.level !== 'polity' && props.level !== 'district') ||
-    (props.confidence !== 'high' && props.confidence !== 'low') ||
-    typeof props.contested !== 'boolean'
-  ) {
-    return `${label} has invalid properties`;
-  }
+    if (roots.includes('properties')) {
+      return `${label} has invalid properties`;
+    }
 
-  if (!isMultiPolygon(feature.geometry)) {
     return `${label} geometry must be a MultiPolygon`;
   }
 
-  return {
-    confidence: props.confidence,
-    contested: props.contested,
-    file: path,
-    geometry: feature.geometry,
-    level: props.level,
-    polity: props.polity,
-    source: props.source,
-    validFrom: props.validFrom,
-    validTo: props.validTo,
-  };
+  const { geometry, properties } = parsed.data;
+
+  return { ...properties, file: path, geometry };
 };
 
 const readBoundaryFile = (

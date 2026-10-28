@@ -1,4 +1,10 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -208,6 +214,45 @@ describe('loadBoundaryData', () => {
         `${notArray}: features must be an array`,
       ].toSorted()
     );
+  });
+
+  it('loads each shipped feature as its properties, file and geometry', () => {
+    const { data, errors } = loadBoundaryData(join(process.cwd(), 'data'));
+    const expected = ['1910', '1994', 'today'].flatMap(name => {
+      const file = join(process.cwd(), 'data', 'boundaries', `${name}.geojson`);
+      const json = JSON.parse(readFileSync(file, 'utf8')) as {
+        features: {
+          geometry: unknown;
+          properties: {
+            confidence: string;
+            contested: boolean;
+            level: string;
+            polity: string;
+            source: string;
+            validFrom: number;
+            validTo: null | number;
+          };
+        }[];
+      };
+
+      return json.features.map(({ geometry, properties }) => ({
+        confidence: properties.confidence,
+        contested: properties.contested,
+        file,
+        geometry,
+        level: properties.level,
+        polity: properties.polity,
+        source: properties.source,
+        validFrom: properties.validFrom,
+        validTo: properties.validTo,
+      }));
+    });
+
+    expect(errors).toEqual([]);
+    expect(expected.length).toBeGreaterThan(0);
+    expect(
+      data.boundaries.toSorted((a, b) => a.file.localeCompare(b.file))
+    ).toEqual(expected);
   });
 
   it('reports each bad feature', () => {

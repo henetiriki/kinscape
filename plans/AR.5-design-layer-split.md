@@ -68,6 +68,8 @@
 ## Deviations
 
 - Check 1 can't be empty: the two `layerOf` Ratchet rows must name `lib/design/tokens` to assert it is outside the map.
+- `scripts/__tests__/vercel-imports.test.ts` also changes: `'design'` joins `ROOTS`, so the C291 guard scans `resolveTokens`, which now ships from `design/`.
+- Spec #318 checks 1 and 8 reworded for D1 A, D2 A and D3 A.
 
 ## Proof
 

@@ -113,7 +113,7 @@ describe('the repo', () => {
     const files = sources();
 
     expect(Object.keys(files)).toEqual(
-      expect.arrayContaining(['app/layout.tsx', 'lib/map/style.ts'])
+      expect.arrayContaining(['app/layout.tsx', 'features/map/style.ts'])
     );
     expect(problems(files, ALLOWLIST)).toEqual([]);
   });
@@ -121,7 +121,7 @@ describe('the repo', () => {
 
 describe('problems', () => {
   const kit = {
-    'app/components/forms/X.tsx': "import { a } from '@/lib/map/a';",
+    'app/components/forms/X.tsx': "import { a } from '@/lib/domain/a';",
   };
 
   it('names a new break that is not on the allowlist', () => {
@@ -141,7 +141,7 @@ describe('problems', () => {
       problems(
         {
           'app/components/map/X.tsx':
-            "import { a } from '@/lib/map/a';\nimport { b } from '@/features/pins/b';",
+            "import { a } from '@/lib/domain/a';\nimport { b } from '@/features/pins/b';",
         },
         { 'app/components/map': 'features/map' }
       )
@@ -155,12 +155,12 @@ describe('problems', () => {
       problems(
         {
           'app/components/forms/X.tsx': [
-            "// import { a } from '@/lib/map/a';",
-            'const s = "import { a } from \'@/lib/map/a\'";',
+            "// import { a } from '@/lib/domain/a';",
+            'const s = "import { a } from \'@/lib/domain/a\'";',
             'import {',
             '  a,',
             "} from '@/server/db';",
-            'const c = import(`@/lib/map/c`);',
+            'const c = import(`@/lib/domain/c`);',
           ].join('\n'),
         },
         {}
@@ -227,7 +227,7 @@ describe('problems', () => {
       expect(
         problems(
           {
-            'app/components/map/X.tsx': "import { a } from '@/lib/map/a';",
+            'app/components/map/X.tsx': "import { a } from '@/lib/domain/a';",
             'app/components/map/Y.tsx': "import { b } from '@/features/map/b';",
           },
           overlap
@@ -286,7 +286,7 @@ describe('fileBreak', () => {
     'features/map/A.tsx',
     'features/map.test.ts',
     'features/__tests__/a.ts',
-    'lib/map/a.ts',
+    'lib/domain/a.ts',
   ])('passes %s', file => {
     expect(fileBreak(file)).toBeUndefined();
   });
@@ -324,7 +324,6 @@ describe('layerOf', () => {
     ['design/tokens.json', 'design'],
     ['design/tokens.mts', 'design'],
     ['lib/design/tokens.mts', undefined],
-    ['lib/map/style.ts', 'domain'],
     ['lib/domain/map/map-date.ts', 'domain'],
     ['lib/domain/boundaries/model.mts', 'domain'],
     ['lib/domain', 'domain'],
@@ -351,43 +350,43 @@ describe('layerBreak', () => {
     [
       'design',
       'design/a.ts',
-      '@/lib/map/a',
+      '@/lib/domain/a',
       'design may not import lib/domain',
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       '@/server/db',
       'lib/domain may not import server',
     ],
     [
       'lib/domain via @ks/',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       '@ks/server/db',
       'lib/domain may not import server',
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       'node:fs',
       'lib/domain may not import node:fs',
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       'maplibre-gl',
       'lib/domain may not import maplibre-gl',
     ],
-    ['lib/domain', 'lib/map/a.ts', 'fs', 'lib/domain may not import fs'],
+    ['lib/domain', 'lib/domain/a.ts', 'fs', 'lib/domain may not import fs'],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       'fs/promises',
       'lib/domain may not import fs/promises',
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       'events',
       'lib/domain may not import events',
     ],
@@ -412,12 +411,12 @@ describe('layerBreak', () => {
     [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/design/../lib/map/a',
+      '@/design/../lib/domain/a',
       'app/components may not import lib/domain',
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       '@ks/design/tokens.mts',
       'lib/domain may not import design',
     ],
@@ -429,7 +428,7 @@ describe('layerBreak', () => {
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       '@/scripts/layers.mts',
       'lib/domain may not import dev-only code',
     ],
@@ -447,14 +446,14 @@ describe('layerBreak', () => {
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
+      'lib/domain/a.ts',
       '@/lib/design/check.mts',
       'may not import dev-only code',
     ],
     [
       'lib/domain',
-      'lib/map/a.ts',
-      '@/lib/map/__tests__/a',
+      'lib/domain/a.ts',
+      '@/lib/domain/__tests__/a',
       'may not import dev-only code',
     ],
     [
@@ -466,7 +465,7 @@ describe('layerBreak', () => {
     [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/lib/map/a',
+      '@/lib/domain/a',
       'app/components may not import lib/domain',
     ],
     [
@@ -481,16 +480,28 @@ describe('layerBreak', () => {
       '@/app/page',
       'features/map may not import routes',
     ],
+    [
+      'a route importing below a feature',
+      'app/page.tsx',
+      '@/features/map/components/MapView',
+      'Layer rule: import features/map through its index.ts.',
+    ],
+    [
+      'a route importing a feature file',
+      'app/page.tsx',
+      '@ks/features/map/style',
+      'Layer rule: import features/map through its index.ts.',
+    ],
   ])('fires in %s', (_layer, file, specifier, text) => {
     expect(layerBreak(file, specifier)).toContain(text);
   });
 
   it.each([
     ['design', 'design/a.ts', './b'],
-    ['lib/domain', 'lib/map/a.ts', '../boundaries/model.mts'],
-    ['lib/domain', 'lib/map/a.ts', 'react'],
-    ['server', 'server/a.ts', '@/lib/map/a'],
-    ['server via @ks/', 'server/a.ts', '@ks/lib/map/a'],
+    ['lib/domain', 'lib/domain/a.ts', '../boundaries/model.mts'],
+    ['lib/domain', 'lib/domain/a.ts', 'react'],
+    ['server', 'server/a.ts', '@/lib/domain/a'],
+    ['server via @ks/', 'server/a.ts', '@ks/lib/domain/a'],
     ['app/components', 'app/components/forms/X.tsx', '@/design/tokens.json'],
     ['app/components', 'app/components/forms/X.tsx', '@ks/design/tokens.mts'],
     [
@@ -501,12 +512,20 @@ describe('layerBreak', () => {
     ['features', 'features/map/a.ts', '@/server/db'],
     ['features', 'features/map/a.ts', '@/app/components/forms/X'],
     ['features', 'features/map/a.ts', './b'],
-    ['app/ routes', 'app/page.tsx', '@/features/map/a'],
+    ['app/ routes', 'app/page.tsx', '@/features/map'],
+    ['app/ routes', 'app/page.tsx', '@/features/map/index'],
+    ['app/ routes', 'app/page.tsx', '@/features/map/'],
     ['app/ routes', 'app/page.tsx', '@/server/boundaries/app-data'],
+    [
+      'a feature importing its own files',
+      'features/map/a.ts',
+      '@/features/map/b',
+    ],
+    ['a feature test', 'features/map/__tests__/a.test.ts', '@/features/map/b'],
     ['a test file', 'lib/__tests__/a.test.ts', '@/server/db'],
-    ['a path outside the repo', 'lib/map/a.ts', '../../../x'],
-    ['a path above the root', 'lib/map/a.ts', '@/../x'],
-    ['a path outside the map', 'lib/map/a.ts', '@/types/modules'],
+    ['a path outside the repo', 'lib/domain/a.ts', '../../../x'],
+    ['a path above the root', 'lib/domain/a.ts', '@/../x'],
+    ['a path outside the map', 'lib/domain/a.ts', '@/types/modules'],
   ])('passes in %s', (_layer, file, specifier) => {
     expect(layerBreak(file, specifier)).toBeUndefined();
   });
@@ -521,37 +540,37 @@ describe('the lint rule', () => {
     tester.run('layers/imports', importsRule as never, {
       invalid: [
         {
-          code: "import { a } from '@/lib/map/a';",
+          code: "import { a } from '@/lib/domain/a';",
           errors: [{ message: /app\/components may not import lib\/domain/ }],
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "export { a } from '@/lib/map/a';",
+          code: "export { a } from '@/lib/domain/a';",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "export * from '@/lib/map/a';",
+          code: "export * from '@/lib/domain/a';",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "const a = import('@/lib/map/a');",
+          code: "const a = import('@/lib/domain/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: 'const a = import(`@/lib/map/a`);',
+          code: 'const a = import(`@/lib/domain/a`);',
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "const a = require('@/lib/map/a');",
+          code: "const a = require('@/lib/domain/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "vi.mock('@/lib/map/a');",
+          code: "vi.mock('@/lib/domain/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
@@ -575,7 +594,7 @@ describe('the lint rule', () => {
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "import { a } from '@/lib/map/a';",
+          code: "import { a } from '@/lib/domain/a';",
           filename: `${process.cwd()}/app/components/map/X.tsx`,
         },
         {

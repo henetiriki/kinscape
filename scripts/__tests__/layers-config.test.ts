@@ -24,9 +24,23 @@ describe('the real lint config', () => {
     expect(
       await lint(
         'app/components/forms/X.tsx',
-        "import { a } from '@ks/lib/map/a';\n"
+        "import { a } from '@ks/lib/domain/a';\n"
       )
     ).toEqual([expect.stringContaining('layers/imports: Layer rule')]);
+  });
+
+  it('fails a route importing below features/map/ and passes its index', async () => {
+    expect(
+      await lint(
+        'app/page.tsx',
+        "import { a } from '@ks/features/map/components/MapView';\n"
+      )
+    ).toEqual([
+      'layers/imports: Layer rule: import features/map through its index.ts.',
+    ]);
+    expect(
+      await lint('app/page.tsx', "import { a } from '@ks/features/map';\n")
+    ).toEqual([]);
   });
 
   it('fails features/map importing features/pins', async () => {

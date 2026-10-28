@@ -1,14 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/domain/boundaries/types.ts';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
-import { toDay } from '@/lib/domain/boundaries/model.mts';
-import { dayOf } from '@/lib/domain/map/map-date';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { dayOf } from '@ks/lib/domain/map/map-date';
 
 const mapView = vi.hoisted(() => vi.fn());
 
-vi.mock('@/app/components/map/MapView', () => ({
+vi.mock('@ks/features/map/components/MapView', () => ({
   MapView: (props: { mapDay: number; showPolities: boolean }) => {
     mapView(props);
 
@@ -16,8 +16,8 @@ vi.mock('@/app/components/map/MapView', () => ({
   },
 }));
 
-import { MapShell } from '@/app/components/map/MapShell';
-import { freeArea } from '@/app/components/map/Stage';
+import { freeArea } from '@ks/app/components/map/Stage';
+import { MapShell } from '@ks/features/map/components/MapShell';
 
 const sources: Source[] = [
   {

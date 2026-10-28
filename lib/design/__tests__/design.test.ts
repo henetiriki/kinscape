@@ -35,28 +35,36 @@ describe('the design snapshots', () => {
 const COLOUR_LITERAL = /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i;
 
 describe('colour literals', () => {
-  const components = globSync('app/components/*/*.tsx', {
-    cwd: root,
-  }).toSorted();
+  const components = globSync(
+    ['app/components/*/*.tsx', 'features/*/components/*.tsx'],
+    { cwd: root }
+  ).toSorted();
 
-  const modules = globSync('app/**/*.module.css', { cwd: root }).toSorted();
+  const modules = globSync(
+    ['app/**/*.module.css', 'features/**/*.module.css'],
+    {
+      cwd: root,
+    }
+  ).toSorted();
 
   it('finds the components and the CSS modules', () => {
     expect(components).toHaveLength(55);
     expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 
-  it.each(['app/globals.css', 'lib/map/style.ts', ...components, ...modules])(
-    '%s has none',
-    path => {
-      expect(read(path)).not.toMatch(COLOUR_LITERAL);
-    }
-  );
+  it.each([
+    'app/globals.css',
+    'features/map/style.ts',
+    ...components,
+    ...modules,
+  ])('%s has none', path => {
+    expect(read(path)).not.toMatch(COLOUR_LITERAL);
+  });
 });
 
 // DM.4.3: every control lives in a module, so the shared sheet is gone.
 it('has no controls.css and nothing imports it', () => {
-  const sources = globSync('{app,lib,e2e}/**/*.{ts,tsx,css}', {
+  const sources = globSync('{app,features,lib,e2e}/**/*.{ts,tsx,css}', {
     cwd: root,
   }).filter(path => !path.endsWith('design.test.ts'));
 
@@ -102,22 +110,22 @@ describe('layout tokens', () => {
   });
 
   const literals: Record<string, string[]> = {
-    'feedback/Callout.module.css': ['z-index: 1;'],
-    'feedback/NoticeCard.module.css': ['360px', '380px'],
-    'feedback/Toast.module.css': ['80px', '164px'],
-    'map/LayersPanel.module.css': ['z-index: 1;'],
-    'map/MapShell.module.css': ['z-index: 1;'],
-    'map/SearchBar.module.css': ['340px'],
-    'map/ZoomControls.module.css': ['z-index: 1;'],
-    'overlays/Dialog.module.css': ['760px', '56px'],
-    'overlays/Menu.module.css': ['296px', 'z-index: 10'],
-    'overlays/Popup.module.css': ['304px'],
+    'app/components/feedback/Callout.module.css': ['z-index: 1;'],
+    'app/components/feedback/NoticeCard.module.css': ['360px', '380px'],
+    'app/components/feedback/Toast.module.css': ['80px', '164px'],
+    'app/components/map/LayersPanel.module.css': ['z-index: 1;'],
+    'app/components/map/SearchBar.module.css': ['340px'],
+    'app/components/map/ZoomControls.module.css': ['z-index: 1;'],
+    'app/components/overlays/Dialog.module.css': ['760px', '56px'],
+    'app/components/overlays/Menu.module.css': ['296px', 'z-index: 10'],
+    'app/components/overlays/Popup.module.css': ['304px'],
+    'features/map/components/MapShell.module.css': ['z-index: 1;'],
   };
 
   it.each(Object.entries(literals))(
     '%s holds no layout literal',
     (name, list) => {
-      const css = read(`app/components/${name}`);
+      const css = read(name);
 
       for (const literal of list) {
         expect(css).not.toContain(literal);
@@ -135,7 +143,9 @@ describe('layout tokens', () => {
     ]);
     const found: string[] = [];
 
-    for (const path of globSync('app/**/*.css', { cwd: root })) {
+    for (const path of globSync(['app/**/*.css', 'features/**/*.css'], {
+      cwd: root,
+    })) {
       for (const [, feature, value] of read(path)
         .matchAll(/@media[^{]*/g)
         .flatMap(([query]) => [

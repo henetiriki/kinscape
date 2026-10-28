@@ -10,9 +10,13 @@ import { useEffect, useRef } from 'react';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-import { PHONE } from '@/app/components/foundation/usePhone';
-import { freeArea } from '@/app/components/map/Stage';
-import { buildStyle, POLITY_LAYERS, polityFilters } from '@/lib/map/style';
+import { PHONE } from '@ks/app/components/foundation/usePhone';
+import { freeArea } from '@ks/app/components/map/Stage';
+import {
+  buildStyle,
+  POLITY_LAYERS,
+  polityFilters,
+} from '@ks/features/map/style';
 
 type Padding = ReturnType<typeof freeArea>;
 

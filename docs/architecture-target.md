@@ -9,7 +9,7 @@ Layers are enforced: see [architecture.md](architecture.md#enforcement). The wor
 ## Before the database
 
 1. **Tidy-ups.** `@/` imports everywhere; a written rule for `.mts`.
-2. **Feature slices.** `features/map`, then `people` and `pins`: each with `components/`, domain code, `queries`, `actions`, tests and an `index.ts` as its public API. `app/components` stays the shared kit.
+2. **Feature slices.** `people` and `pins`, each with `components/`, domain code, `queries`, `actions` and tests, per [architecture.md](architecture.md#where-does-x-go).
 3. **State ownership.** URL (shareable, MAP-10), then server, then a feature store, then local `useState`. `useMapState` reads `searchParams` through a schema.
 4. **Map layer registry.** A layer is one file exporting `{ id, sources, layers, filters(day), legendRow, toggle }`; `MapView` iterates the layers it is given, the route passes in each feature's layer, and visibility is `Record<LayerId, boolean>`.
 5. **Domain primitives.** Branded ids (`PersonId`, `TreeId`), `Day`, a `FuzzyDate` value object, and an as-of helper built on `isCurrentOn`, with a test that `dateFilter` agrees with it.

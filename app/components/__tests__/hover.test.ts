@@ -2,8 +2,11 @@ import { globSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-const DIR = join(__dirname, '..');
-const STYLESHEETS = globSync('**/*.module.css', { cwd: DIR });
+const ROOT = join(__dirname, '../../..');
+const STYLESHEETS = globSync(
+  ['app/components/**/*.module.css', 'features/*/components/**/*.module.css'],
+  { cwd: ROOT }
+);
 
 /** The selectors of `:hover` rules that are not inside `@media (hover: hover)`. */
 const looseHover = (css: string) => {
@@ -39,7 +42,7 @@ const looseHover = (css: string) => {
 // NFR-05: a tap on a touch screen must leave no hover tint.
 it('has every :hover rule inside @media (hover: hover)', () => {
   for (const file of STYLESHEETS)
-    expect([file, looseHover(readFileSync(join(DIR, file), 'utf8'))]).toEqual([
+    expect([file, looseHover(readFileSync(join(ROOT, file), 'utf8'))]).toEqual([
       file,
       [],
     ]);

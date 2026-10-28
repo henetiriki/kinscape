@@ -2,24 +2,24 @@
 
 import { useState } from 'react';
 
-import type { Source } from '@/lib/domain/boundaries/types.ts';
-import type { Span } from '@/lib/domain/map/types';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
+import type { Span } from '@ks/lib/domain/map/types';
 
-import { NoticeCard } from '@/app/components/feedback/NoticeCard';
-import { usePhone } from '@/app/components/foundation/usePhone';
-import { Credits } from '@/app/components/map/Credits';
-import { DateDock } from '@/app/components/map/DateDock';
-import { LayersButton } from '@/app/components/map/LayersButton';
-import { LayersPanel, LayersRow } from '@/app/components/map/LayersPanel';
-import { MapView } from '@/app/components/map/MapView';
-import { freeArea, Stage } from '@/app/components/map/Stage';
-import { Sheet } from '@/app/components/overlays/Sheet';
-import { SourcesDialog } from '@/app/components/overlays/SourcesDialog';
-import { fromDay } from '@/lib/domain/boundaries/model.mts';
-import { hasBorders } from '@/lib/domain/map/coverage';
-import { todayDay } from '@/lib/domain/map/map-date';
+import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
+import { usePhone } from '@ks/app/components/foundation/usePhone';
+import { Credits } from '@ks/app/components/map/Credits';
+import { DateDock } from '@ks/app/components/map/DateDock';
+import { LayersButton } from '@ks/app/components/map/LayersButton';
+import { LayersPanel, LayersRow } from '@ks/app/components/map/LayersPanel';
+import { freeArea, Stage } from '@ks/app/components/map/Stage';
+import { Sheet } from '@ks/app/components/overlays/Sheet';
+import { SourcesDialog } from '@ks/app/components/overlays/SourcesDialog';
+import { MapView } from '@ks/features/map/components/MapView';
+import { fromDay } from '@ks/lib/domain/boundaries/model.mts';
+import { hasBorders } from '@ks/lib/domain/map/coverage';
+import { todayDay } from '@ks/lib/domain/map/map-date';
 
-import styles from '@ks/app/components/map/MapShell.module.css';
+import styles from '@ks/features/map/components/MapShell.module.css';
 
 export const MapShell = ({
   coverage,

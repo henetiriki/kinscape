@@ -11,8 +11,6 @@ export const ALLOWLIST: Record<string, string> = {
   'app/components/forms/DateField.tsx': 'features/map',
   'app/components/map': 'features/map',
   'app/components/overlays/SourcesDialog.tsx': 'features/map',
-  'lib/map/filter.ts': 'features/map',
-  'lib/map/style.ts': 'features/map',
 };
 
 const ROOT = join(import.meta.dirname, '..');
@@ -72,8 +70,7 @@ export const layerOf = (path: string): string | undefined => {
     return undefined;
   }
 
-  // `lib/map/` holds only the MapLibre files until AR.10 (#323).
-  if (dir.startsWith('lib/domain/') || dir.startsWith('lib/map/')) {
+  if (dir.startsWith('lib/domain/')) {
     return 'domain';
   }
 
@@ -136,6 +133,12 @@ const packageBreak = (from: string, specifier: string): string | undefined =>
     ? `Layer rule: lib/domain may not import ${specifier}.`
     : undefined;
 
+/** An import from outside a feature that reaches below its `index`. */
+const deepBreak = (path: string, to: string): string | undefined =>
+  /^[^/]+\/[^/]+(?:\/index(?:\.[cm]?[jt]sx?)?)?\/?$/.test(path)
+    ? undefined
+    : `Layer rule: import ${to} through its index.ts.`;
+
 const pathBreak = (
   from: string,
   path: string,
@@ -145,11 +148,15 @@ const pathBreak = (
     ? DEV_ONLY.test(`${path}/`) || TEST_FILE.test(path)
       ? `Layer rule: ${named(from)} may not import dev-only code (${path}).`
       : undefined
-    : to === from || MAY_IMPORT[kindOf(from)].includes(kindOf(to))
+    : to === from
       ? undefined
-      : kindOf(from) === 'feature' && kindOf(to) === 'feature'
-        ? `Layer rule: features never import each other (${from} → ${to}).`
-        : `Layer rule: ${named(from)} may not import ${named(to)}.`;
+      : MAY_IMPORT[kindOf(from)].includes(kindOf(to))
+        ? kindOf(to) === 'feature'
+          ? deepBreak(path, to)
+          : undefined
+        : kindOf(from) === 'feature' && kindOf(to) === 'feature'
+          ? `Layer rule: features never import each other (${from} → ${to}).`
+          : `Layer rule: ${named(from)} may not import ${named(to)}.`;
 
 /** The layer rule an import breaks, or undefined if it is allowed. `as` judges the file as if it sat in another layer. */
 export const layerBreak = (

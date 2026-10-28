@@ -1,4 +1,4 @@
-import { MapShell } from '@ks/app/components/map/MapShell';
+import { MapShell } from '@ks/features/map';
 import { boundaryCoverage } from '@ks/lib/domain/map/coverage';
 import { loadAppData } from '@ks/server/boundaries/app-data';
 

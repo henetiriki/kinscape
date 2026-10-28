@@ -2,7 +2,7 @@
 
 - **Spec:** #323
 - **Requirement IDs:** NFR-01
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ The Spec's D1, answered here. Today a route may import `@ks/features/map/compone
 - **B.** AR.12 (#325): drop acceptance check 1 and the "Nothing else reaches" bullet from the Spec.
 - **Other:** your own.
 
-Recommended: A, because this is the first feature folder, and acceptance check 1 is written for this Spec.
+**Answer: A** (@henetiriki)
 
 **D2 · How `style.ts` imports the filter** · Decides: Tech lead
 
@@ -34,7 +34,7 @@ The Spec says `./filter`, but ESLint rejects relative imports outside Node-loade
 - **B.** Allow relative imports inside `features/**`: an ESLint block, a test and an architecture.md line.
 - **Other:** your own.
 
-Recommended: A, because it keeps one import rule.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

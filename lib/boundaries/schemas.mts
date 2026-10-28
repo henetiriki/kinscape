@@ -19,6 +19,28 @@ const day = z.number().int();
 
 const isoDate = text.refine(isIsoDate);
 
+export const boundaryProperties = z.object({
+  confidence: z.enum(['high', 'low']),
+  contested: z.boolean(),
+  level: z.enum(['district', 'polity']),
+  polity: text,
+  source: text,
+  validFrom: day,
+  validTo: day.nullable(),
+});
+
+/** Only the outer array is checked; `validate-boundaries.mts` walks the coordinates. */
+export const multiPolygon = z.object({
+  coordinates: z.custom<number[][][][]>(Array.isArray),
+  type: z.literal('MultiPolygon'),
+});
+
+export const boundaryFeature = z.object({
+  geometry: multiPolygon,
+  properties: boundaryProperties,
+  type: z.literal('Feature'),
+});
+
 export const polityRow = z.object({ id: text });
 
 export const nameRow = z.object({

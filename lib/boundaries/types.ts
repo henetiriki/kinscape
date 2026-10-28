@@ -1,6 +1,11 @@
 import type { z } from 'zod';
 
-import type { nameRow, polityRow, sourceRow } from './schemas.mts';
+import type {
+  boundaryFeature,
+  nameRow,
+  polityRow,
+  sourceRow,
+} from './schemas.mts';
 
 export type BoundaryData = {
   boundaries: BoundaryVersion[];
@@ -9,17 +14,11 @@ export type BoundaryData = {
   sources: Source[];
 };
 
-export type BoundaryVersion = {
-  confidence: Confidence;
-  contested: boolean;
-  file: string;
-  geometry: { coordinates: number[][][][]; type: 'MultiPolygon' };
-  level: Level;
-  polity: string;
-  source: string;
-  validFrom: number;
-  validTo: null | number;
-};
+export type BoundaryVersion = { file: string } & Pick<
+  z.output<typeof boundaryFeature>,
+  'geometry'
+> &
+  z.output<typeof boundaryFeature>['properties'];
 
 export type Polity = z.output<typeof polityRow>;
 
@@ -28,7 +27,3 @@ export type PolityName = z.output<typeof nameRow>;
 
 /** `processing` is what was done to the data, such as clipping and simplifying. */
 export type Source = z.output<typeof sourceRow>;
-
-type Confidence = 'high' | 'low';
-
-type Level = 'district' | 'polity';

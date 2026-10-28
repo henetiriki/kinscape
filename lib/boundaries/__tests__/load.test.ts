@@ -108,6 +108,28 @@ describe('loadBoundaryData', () => {
     expect(data.sources[0].processing).toBe('Simplified to 500 m.');
   });
 
+  it('drops unknown fields from each row type', () => {
+    write('polities.json', {
+      names: [{ extra: 1, name: 'N', polity: 'p1', validFrom: 0, validTo: 5 }],
+      polities: [{ extra: 1, id: 'p1' }],
+    });
+    write('sources.json', { sources: [{ ...source, extra: 1 }] });
+
+    const { data, errors } = loadBoundaryData(root);
+
+    expect(errors).toEqual([]);
+    expect(Object.keys(data.polities[0])).toEqual(['id']);
+    expect(Object.keys(data.names[0]).toSorted()).toEqual([
+      'name',
+      'polity',
+      'validFrom',
+      'validTo',
+    ]);
+    expect(Object.keys(data.sources[0]).toSorted()).toEqual(
+      Object.keys(source).toSorted()
+    );
+  });
+
   it.each([
     ['not a date', 'soon'],
     ['not a real day', '2026-02-30'],

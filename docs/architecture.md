@@ -1,6 +1,6 @@
 # Architecture
 
-How the code is built today: Next.js App Router, React, strict TypeScript, MapLibre. Every rule below is in the code; the _Enforced by_ column says what stops a break. Where the code is headed is in [architecture-target.md](architecture-target.md), which is proposed, not a rule.
+How the code is built today: Next.js App Router, React, strict TypeScript, MapLibre. The _Enforced by_ column says what stops a break. [architecture-target.md](architecture-target.md) is proposed, not a rule.
 
 ## Where does X go
 
@@ -18,7 +18,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | A browser test                  | `e2e/`                                                                                                        |
 | A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`      |
 
-Import repo paths through `@ks/`; `@/` stays in `app/components/map` until AR.11 (#324); relative imports only in Node-loaded files. Node loads every `.mts` and `.mjs`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through an alias there; `import type` may use it.
+Import repo paths through `@ks/`; `@/` stays in `app/components/map` until AR.11 (#324); relative imports only in Node-loaded files. Node loads every `.mts` and `.mjs`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through an alias there.
 
 ## Patterns
 
@@ -33,6 +33,7 @@ Import repo paths through `@ks/`; `@/` stays in `app/components/map` until AR.11
 | **Temporal validity.** A date is an integer day since 1652-01-01; a range is half-open `[validFrom, validTo)`, null meaning current. `isCurrentOn` applies it in code; `dateFilter` repeats it as a MapLibre expression.                                          | `lib/boundaries/model.mts`, `lib/map/filter.ts`                                       | Unit tests of each; none checks that the two agree                                     |
 | **Load once, filter by expression.** All Boundary versions load once; a Map date change sets layer filters and fetches nothing (NFR-01).                                                                                                                          | `lib/map/filter.ts`, `style.ts`, `MapView.tsx`                                        | `@perf` e2e tests                                                                      |
 | **Reference data is files, validated.** `loadAppData` throws on bad data, which stops the build; `/data/polities` is built once at deploy.                                                                                                                        | `data/`, `lib/boundaries/app-data.ts`, `app/data/polities/route.ts`                   | `npm run validate:boundaries` in CI                                                    |
+| **Schema first.** A Zod schema is the parser; the type is derived from it in `types.ts`.                                                                                                                                                                          | `lib/boundaries/schemas.mts`, `types.ts`, `load.mts`                                  | `npm run typecheck`; `lib/boundaries/__tests__/load.test.ts`                           |
 | **Living style guide.** `/design-kit` shows every component and is a 404 in production; `design/screens.json` pairs built screens with snapshots.                                                                                                                 | `app/design-kit/`, `e2e/design-check.spec.ts`                                         | `npm run design:check`; `/match-design`                                                |
 | **Traceability.** Tests carry `// MAP-03` style tags; plans and PRs cite IDs; code uses the Key concepts terms.                                                                                                                                                   | `docs/requirements.md`, `plans/`                                                      | Review                                                                                 |
 

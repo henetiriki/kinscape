@@ -3,7 +3,7 @@ import { builtinModules } from 'node:module';
 import { join, posix, relative, sep } from 'node:path';
 
 // The layer map from docs/architecture.md. ESLint and the fitness test both read it.
-// Test files, app/design-kit, scripts, e2e and lib/design tooling are outside the map.
+// Test files, app/design-kit, scripts, e2e, lib/design tooling and any other lib/ folder are outside the map.
 
 /** Today's breaks, each with where the code moves. A path covers the folder under it. Delete an entry when its break is fixed. */
 export const ALLOWLIST: Record<string, string> = {

@@ -2,7 +2,7 @@
 
 - **Spec:** #320
 - **Requirement IDs:** BND-01, BND-07, NFR-09
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ A bad feature must give one of three messages, in today's order.
 - **B.** Three parses in today's order: the feature's `type`, then `boundaryProperties`, then `multiPolygon`.
 - **Other:** your own.
 
-Recommended: A, because one schema describes the whole feature, as the Spec says, and the type derives from it.
+**Answer: A** (@henetiriki)
 
 **D2 · Extra keys on a geometry** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Today a geometry's extra keys (a GeoJSON `bbox`, say) are kept. The shipped file
 - **B.** Keep them (`z.looseObject`), exactly as today.
 - **Other:** your own.
 
-Recommended: A, because the loaded data then matches its type.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

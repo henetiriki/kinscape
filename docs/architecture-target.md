@@ -4,11 +4,11 @@
 
 Why: M2 adds sign-in, a database, an API and Tree-scoped data ([NFR-09](requirements.md#non-functional-requirements)). Today nothing enforces layering, `MapShell` holds all state, and adding a map layer edits three files.
 
-Layers are enforced: see [architecture.md](architecture.md#enforcement). The work below empties the allowlist. Features don't import each other: a route passes one feature's output to another (for example, the map takes its layers as props).
+Layers are enforced: see [architecture.md](architecture.md#enforcement). Features don't import each other: a route passes one feature's output to another (for example, the map takes its layers as props).
 
 ## Before the database
 
-1. **Tidy-ups.** `@/` imports everywhere; a written rule for `.mts`.
+1. **Tidy-ups.** A written rule for `.mts`.
 2. **Feature slices.** `people` and `pins`, each with `components/`, domain code, `queries`, `actions` and tests, per [architecture.md](architecture.md#where-does-x-go).
 3. **State ownership.** URL (shareable, MAP-10), then server, then a feature store, then local `useState`. `useMapState` reads `searchParams` through a schema.
 4. **Map layer registry.** A layer is one file exporting `{ id, sources, layers, filters(day), legendRow, toggle }`; `MapView` iterates the layers it is given, the route passes in each feature's layer, and visibility is `Record<LayerId, boolean>`.

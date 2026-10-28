@@ -36,12 +36,12 @@ const COLOUR_LITERAL = /#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i;
 
 describe('colour literals', () => {
   const components = globSync(
-    ['app/components/*/*.tsx', 'features/*/components/*.tsx'],
+    ['app/components/*/*.tsx', 'features/*/components/*.tsx', 'lib/ui/*.tsx'],
     { cwd: root }
   ).toSorted();
 
   const modules = globSync(
-    ['app/**/*.module.css', 'features/**/*.module.css'],
+    ['app/**/*.module.css', 'features/**/*.module.css', 'lib/ui/*.module.css'],
     {
       cwd: root,
     }
@@ -76,7 +76,7 @@ it('has no controls.css and nothing imports it', () => {
 
 // The thumb is a pseudo-element the browser won't report, so check the source.
 it('colours the slider thumb with the brand token', () => {
-  const thumbs = read('app/components/map/DateSlider.module.css').match(
+  const thumbs = read('features/map/components/DateSlider.module.css').match(
     /::-(?:webkit|moz)-(?:slider|range)-thumb \{[^}]*\}/g
   );
 
@@ -113,13 +113,13 @@ describe('layout tokens', () => {
     'app/components/feedback/Callout.module.css': ['z-index: 1;'],
     'app/components/feedback/NoticeCard.module.css': ['360px', '380px'],
     'app/components/feedback/Toast.module.css': ['80px', '164px'],
-    'app/components/map/LayersPanel.module.css': ['z-index: 1;'],
-    'app/components/map/SearchBar.module.css': ['340px'],
-    'app/components/map/ZoomControls.module.css': ['z-index: 1;'],
     'app/components/overlays/Dialog.module.css': ['760px', '56px'],
     'app/components/overlays/Menu.module.css': ['296px', 'z-index: 10'],
     'app/components/overlays/Popup.module.css': ['304px'],
+    'features/map/components/LayersPanel.module.css': ['z-index: 1;'],
     'features/map/components/MapShell.module.css': ['z-index: 1;'],
+    'features/map/components/SearchBar.module.css': ['340px'],
+    'features/map/components/ZoomControls.module.css': ['z-index: 1;'],
   };
 
   it.each(Object.entries(literals))(
@@ -143,9 +143,10 @@ describe('layout tokens', () => {
     ]);
     const found: string[] = [];
 
-    for (const path of globSync(['app/**/*.css', 'features/**/*.css'], {
-      cwd: root,
-    })) {
+    for (const path of globSync(
+      ['app/**/*.css', 'features/**/*.css', 'lib/ui/**/*.css'],
+      { cwd: root }
+    )) {
       for (const [, feature, value] of read(path)
         .matchAll(/@media[^{]*/g)
         .flatMap(([query]) => [

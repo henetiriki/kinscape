@@ -9,7 +9,7 @@ import type { Precision } from '@ks/lib/domain/map/types';
 import { Button } from '@ks/app/components/actions/Button';
 import { IconButton } from '@ks/app/components/actions/IconButton';
 import { Segmented } from '@ks/app/components/actions/Segmented';
-import { DateField } from '@ks/app/components/forms/DateField';
+import { DateField } from '@ks/features/map/components/DateField';
 import { MIN_DAY, stepDay, todayDay } from '@ks/lib/domain/map/map-date';
 
 import styles from '@ks/app/design-kit/feedback/page.module.css';

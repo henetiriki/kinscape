@@ -71,7 +71,6 @@ describe('the shipped code', () => {
 describe('violations', () => {
   it.each([
     ['a relative import', 'lib/a.mts', "import { x } from '../scripts/s.mts';"],
-    ['an alias import', 'app/a.tsx', "import { x } from '@/e2e/helper';"],
     ['a @ks/ import', 'app/a.tsx', "import { x } from '@ks/e2e/helper';"],
     [
       'a dynamic import',
@@ -106,7 +105,7 @@ describe('violations', () => {
     expect(
       violations({
         'app/a.tsx': [
-          "import tokens from '@/design/tokens.json';",
+          "import tokens from '@ks/design/tokens.json';",
           "import { s } from '../lib/map/style';",
           "import { useState } from 'react';",
           "import { readFileSync } from 'node:fs';",

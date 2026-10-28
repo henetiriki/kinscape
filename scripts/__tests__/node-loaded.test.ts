@@ -69,11 +69,8 @@ describe('nodeLoadedFiles', () => {
 describe('the Node rule in the real lint config', () => {
   it.each([
     ['lib/domain/boundaries/x.mts', "import { a } from '@ks/lib/map/a';"],
-    ['lib/domain/boundaries/x.mts', "import { a } from '@/lib/map/a';"],
     ['lib/domain/boundaries/types.ts', "import { a } from '@ks/lib/map/a';"],
-    ['lib/domain/boundaries/types.ts', "import { a } from '@/lib/map/a';"],
     ['scripts/x.ts', "import { a } from '@ks/lib/map/a';"],
-    ['scripts/x.ts', "import { a } from '@/lib/map/a';"],
   ])('fails a value import in %s: %s', async (path, code) => {
     expect(await lint(path, `${code}\n`, NODE_RULE)).toEqual([
       expect.stringContaining(NODE_MESSAGE),
@@ -87,7 +84,7 @@ describe('the Node rule in the real lint config', () => {
     ],
     [
       'lib/domain/boundaries/types.ts',
-      "import type { A } from '@/lib/domain/map/types';",
+      "import type { A } from '@ks/lib/domain/map/types';",
     ],
     ['scripts/x.ts', "import type { A } from '@ks/lib/domain/map/types';"],
     ['lib/map/a.ts', "import { a } from '@ks/lib/map/b';"],

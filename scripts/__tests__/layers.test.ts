@@ -5,17 +5,14 @@ import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 import {
-  ALLOWLIST,
-  covers,
-  entryOf,
   fileBreak,
   importsRule,
   isBuiltin,
   layerBreak,
   layerOf,
-  listed,
   MODULE_CALL,
   SOURCE_EXTENSION,
+  targetOf,
 } from '../layers.mts';
 
 // NFR-09. The same file types as the lint rule's globs in eslint.config.mjs.
@@ -64,38 +61,22 @@ const specifiersOf = (path: string, source: string): string[] => {
   return found;
 };
 
-/** Each `file: message` break in the sources, minus those the allowlist lists. */
-const problems = (
-  files: Record<string, string>,
-  allowlist: Record<string, string>
-): string[] => {
+/** Each `file: message` break in the sources. */
+const problems = (files: Record<string, string>): string[] => {
   const broken = Object.entries(files).flatMap(([path, source]) =>
     specifiersOf(path, source).flatMap(specifier => {
       const message = layerBreak(path, specifier);
 
-      return message === undefined ? [] : [{ message, path, specifier }];
+      return message === undefined ? [] : [`${path}: ${message}`];
     })
   );
-  const unlisted = broken
-    .filter(({ path, specifier }) => !listed(path, specifier, allowlist))
-    .map(({ message, path }) => `${path}: ${message}`);
-  const stale = Object.keys(allowlist)
-    .filter(
-      entry =>
-        !broken.some(
-          ({ path, specifier }) =>
-            entryOf(path, allowlist) === entry &&
-            listed(path, specifier, allowlist)
-        )
-    )
-    .map(entry => `${entry}: no longer breaks a layer rule; delete the entry.`);
   const misplaced = Object.keys(files).flatMap(path => {
     const message = fileBreak(path);
 
     return message === undefined ? [] : [`${path}: ${message}`];
   });
 
-  return [...misplaced, ...unlisted, ...stale];
+  return [...misplaced, ...broken];
 };
 
 const sources = (): Record<string, string> =>
@@ -109,62 +90,39 @@ const sources = (): Record<string, string> =>
   );
 
 describe('the repo', () => {
-  it('breaks exactly the layer rules on the allowlist', () => {
+  it('breaks no layer rule', () => {
     const files = sources();
 
     expect(Object.keys(files)).toEqual(
       expect.arrayContaining(['app/layout.tsx', 'features/map/style.ts'])
     );
-    expect(problems(files, ALLOWLIST)).toEqual([]);
+    expect(problems(files)).toEqual([]);
   });
 });
 
 describe('problems', () => {
   const kit = {
-    'app/components/forms/X.tsx': "import { a } from '@/lib/domain/a';",
+    'app/components/forms/X.tsx': "import { a } from '@ks/lib/domain/a';",
   };
 
-  it('names a new break that is not on the allowlist', () => {
-    expect(problems(kit, {})).toEqual([
+  it('names a break', () => {
+    expect(problems(kit)).toEqual([
       'app/components/forms/X.tsx: Layer rule: app/components may not import lib/domain.',
-    ]);
-  });
-
-  it('passes a listed break', () => {
-    expect(problems(kit, { 'app/components/forms': 'features/map' })).toEqual(
-      []
-    );
-  });
-
-  it('names a new break inside a listed path', () => {
-    expect(
-      problems(
-        {
-          'app/components/map/X.tsx':
-            "import { a } from '@/lib/domain/a';\nimport { b } from '@/features/pins/b';",
-        },
-        { 'app/components/map': 'features/map' }
-      )
-    ).toEqual([
-      'app/components/map/X.tsx: Layer rule: app/components may not import features/pins.',
     ]);
   });
 
   it('reads imports from the syntax, not the text', () => {
     expect(
-      problems(
-        {
-          'app/components/forms/X.tsx': [
-            "// import { a } from '@/lib/domain/a';",
-            'const s = "import { a } from \'@/lib/domain/a\'";',
-            'import {',
-            '  a,',
-            "} from '@/server/db';",
-            'const c = import(`@/lib/domain/c`);',
-          ].join('\n'),
-        },
-        {}
-      )
+      problems({
+        'app/components/forms/X.tsx': [
+          "// import { a } from '@ks/lib/domain/a';",
+          'const s = "import { a } from \'@ks/lib/domain/a\'";',
+          'import {',
+          '  a,',
+          "} from '@ks/server/db';",
+          'const c = import(`@ks/lib/domain/c`);',
+        ].join('\n'),
+      })
     ).toEqual([
       'app/components/forms/X.tsx: Layer rule: app/components may not import server.',
       'app/components/forms/X.tsx: Layer rule: app/components may not import lib/domain.',
@@ -172,106 +130,46 @@ describe('problems', () => {
   });
 
   it.each([
-    ['import(…).T', "export type R = import('@/server/db').Row;"],
-    ['typeof import(…)', "export type R = typeof import('@/server/db');"],
-    ['import x = require(…)', "import x = require('@/server/db');"],
-    ['require()', "const x = require('@/server/db');"],
-    ['vi.mock()', "vi.mock('@/server/db');"],
+    ['import(…).T', "export type R = import('@ks/server/db').Row;"],
+    ['typeof import(…)', "export type R = typeof import('@ks/server/db');"],
+    ['import x = require(…)', "import x = require('@ks/server/db');"],
+    ['require()', "const x = require('@ks/server/db');"],
+    ['vi.mock()', "vi.mock('@ks/server/db');"],
   ])('finds %s', (_form, source) => {
-    expect(problems({ 'app/components/forms/X.tsx': source }, {})).toEqual([
+    expect(problems({ 'app/components/forms/X.tsx': source })).toEqual([
       'app/components/forms/X.tsx: Layer rule: app/components may not import server.',
     ]);
   });
 
   it('ignores calls and type imports that name no module', () => {
     expect(
-      problems(
-        {
-          'app/components/forms/X.tsx': [
-            'import Y = Z.Y;',
-            "type T = import('@/design/tokens.json').T;",
-            'type U = typeof import(name);',
-            'const a = require();',
-            'const b = other();',
-          ].join('\n'),
-        },
-        {}
-      )
+      problems({
+        'app/components/forms/X.tsx': [
+          'import Y = Z.Y;',
+          "type T = import('@ks/design/tokens.json').T;",
+          'type U = typeof import(name);',
+          'const a = require();',
+          'const b = other();',
+        ].join('\n'),
+      })
     ).toEqual([]);
   });
 
-  it('tells you to delete a listed break that is fixed', () => {
-    expect(
-      problems(
-        { 'app/components/forms/X.tsx': "import { a } from './Y';" },
-        { 'app/components/forms/X.tsx': 'features/map' }
-      )
-    ).toEqual([
-      'app/components/forms/X.tsx: no longer breaks a layer rule; delete the entry.',
-    ]);
-  });
-
   it('names a file directly in features/', () => {
-    expect(problems({ 'features/index.ts': 'export {};' }, {})).toEqual([
+    expect(problems({ 'features/index.ts': 'export {};' })).toEqual([
       'features/index.ts: Layer rule: features/ holds only feature folders.',
     ]);
   });
 
-  describe('with a folder entry and a file entry inside it', () => {
-    const overlap = {
-      'app/components/map': 'features/map',
-      'app/components/map/X.tsx': 'server/',
-    };
-
-    it('passes when each entry excuses a break of its own', () => {
-      expect(
-        problems(
-          {
-            'app/components/map/X.tsx': "import { a } from '@/lib/domain/a';",
-            'app/components/map/Y.tsx': "import { b } from '@/features/map/b';",
-          },
-          overlap
-        )
-      ).toEqual([]);
-    });
-
-    it('judges the file against its own entry, so a break only the folder would excuse is named', () => {
-      expect(
-        problems(
-          {
-            'app/components/map/X.tsx': "import { a } from '@/features/map/a';",
-          },
-          overlap
-        )
-      ).toEqual([
-        'app/components/map/X.tsx: Layer rule: app/components may not import features/map.',
-        'app/components/map: no longer breaks a layer rule; delete the entry.',
-        'app/components/map/X.tsx: no longer breaks a layer rule; delete the entry.',
-      ]);
-    });
-  });
-});
-
-describe('entryOf', () => {
-  const allowlist = {
-    'app/components/map': 'features/map',
-    'app/components/map/X.tsx': 'server/',
-  };
-
-  it('picks the most specific entry that covers the file', () => {
-    expect(entryOf('app/components/map/X.tsx', allowlist)).toBe(
-      'app/components/map/X.tsx'
-    );
-    expect(entryOf('app/components/map/Y.tsx', allowlist)).toBe(
-      'app/components/map'
-    );
-  });
-
-  it('is undefined when no entry covers the file', () => {
-    expect(entryOf('app/components/forms/X.tsx', allowlist)).toBeUndefined();
-    expect(covers('app/components/map', 'app/components/mapper/X.tsx')).toBe(
-      false
-    );
+  it('names a lib/ui file that imports the kit', () => {
+    expect(
+      problems({
+        'lib/ui/X.tsx':
+          "import { Text } from '@ks/app/components/foundation/Text';",
+      })
+    ).toEqual([
+      'lib/ui/X.tsx: Layer rule: lib/ui may not import app/components.',
+    ]);
   });
 });
 
@@ -327,6 +225,9 @@ describe('layerOf', () => {
     ['lib/domain/map/map-date.ts', 'domain'],
     ['lib/domain/boundaries/model.mts', 'domain'],
     ['lib/domain', 'domain'],
+    ['lib/ui/EventGlyph.tsx', 'ui'],
+    ['lib/ui', 'ui'],
+    ['lib/uikit/a.ts', undefined],
     ['lib/other/a.ts', undefined],
     ['lib/mapping/a.ts', undefined],
     ['server/db.ts', 'server'],
@@ -339,9 +240,23 @@ describe('layerOf', () => {
     ['lib/design/check.mts', undefined],
     ['app/design-kit/page.tsx', undefined],
     ['app/__tests__/page.test.tsx', undefined],
+    ['lib/ui/__tests__/a.test.ts', undefined],
     ['scripts/a.mts', undefined],
   ])('puts %s in %s', (path, layer) => {
     expect(layerOf(path)).toBe(layer);
+  });
+});
+
+describe('targetOf', () => {
+  it('reads @ks/ and relative specifiers as repo paths', () => {
+    expect(targetOf('lib/domain/a.ts', '@ks/server/db')).toBe('server/db');
+    expect(targetOf('lib/domain/a.ts', './b')).toBe('lib/domain/b');
+  });
+
+  it('is undefined for a package, a path above the root and the retired @/ alias', () => {
+    expect(targetOf('lib/domain/a.ts', 'react')).toBeUndefined();
+    expect(targetOf('lib/domain/a.ts', '../../../x')).toBeUndefined();
+    expect(targetOf('lib/domain/a.ts', `@/server/db`)).toBeUndefined();
   });
 });
 
@@ -350,17 +265,17 @@ describe('layerBreak', () => {
     [
       'design',
       'design/a.ts',
-      '@/lib/domain/a',
+      '@ks/lib/domain/a',
       'design may not import lib/domain',
     ],
     [
-      'lib/domain',
-      'lib/domain/a.ts',
-      '@/server/db',
-      'lib/domain may not import server',
+      'design importing lib/ui',
+      'design/a.ts',
+      '@ks/lib/ui/types',
+      'design may not import lib/ui',
     ],
     [
-      'lib/domain via @ks/',
+      'lib/domain',
       'lib/domain/a.ts',
       '@ks/server/db',
       'lib/domain may not import server',
@@ -391,9 +306,33 @@ describe('layerBreak', () => {
       'lib/domain may not import events',
     ],
     [
+      'lib/domain importing lib/ui',
+      'lib/domain/a.ts',
+      '@ks/lib/ui/types',
+      'lib/domain may not import lib/ui',
+    ],
+    [
+      'lib/ui importing the kit',
+      'lib/ui/EventGlyph.tsx',
+      '@ks/app/components/foundation/Text',
+      'lib/ui may not import app/components',
+    ],
+    [
+      'lib/ui importing lib/domain',
+      'lib/ui/a.ts',
+      '@ks/lib/domain/a',
+      'lib/ui may not import lib/domain',
+    ],
+    [
+      'lib/ui importing a feature',
+      'lib/ui/a.ts',
+      '@ks/features/map/a',
+      'lib/ui may not import features/map',
+    ],
+    [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/server',
+      '@ks/server',
       'app/components may not import server',
     ],
     [
@@ -405,13 +344,13 @@ describe('layerBreak', () => {
     [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/lib/domain',
+      '@ks/lib/domain',
       'app/components may not import lib/domain',
     ],
     [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/design/../lib/domain/a',
+      '@ks/design/../lib/domain/a',
       'app/components may not import lib/domain',
     ],
     [
@@ -429,61 +368,61 @@ describe('layerBreak', () => {
     [
       'lib/domain',
       'lib/domain/a.ts',
-      '@/scripts/layers.mts',
+      '@ks/scripts/layers.mts',
       'lib/domain may not import dev-only code',
     ],
     [
       'app/ routes',
       'app/page.tsx',
-      '@/e2e/a',
+      '@ks/e2e/a',
       'routes may not import dev-only code',
     ],
     [
       'app/ routes',
       'app/page.tsx',
-      '@/app/design-kit/a',
+      '@ks/app/design-kit/a',
       'may not import dev-only code',
     ],
     [
       'lib/domain',
       'lib/domain/a.ts',
-      '@/lib/design/check.mts',
+      '@ks/lib/design/check.mts',
       'may not import dev-only code',
     ],
     [
       'lib/domain',
       'lib/domain/a.ts',
-      '@/lib/domain/__tests__/a',
+      '@ks/lib/domain/__tests__/a',
       'may not import dev-only code',
     ],
     [
       'server',
       'server/a.ts',
-      '@/features/map/a',
+      '@ks/features/map/a',
       'server may not import features/map',
     ],
     [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/lib/domain/a',
+      '@ks/lib/domain/a',
       'app/components may not import lib/domain',
     ],
     [
       'features',
       'features/map/a.ts',
-      '@/features/pins/a',
+      '@ks/features/pins/a',
       'features never import each other',
     ],
     [
       'features',
       'features/map/a.ts',
-      '@/app/page',
+      '@ks/app/page',
       'features/map may not import routes',
     ],
     [
       'a route importing below a feature',
       'app/page.tsx',
-      '@/features/map/components/MapView',
+      '@ks/features/map/components/MapView',
       'Layer rule: import features/map through its index.ts.',
     ],
     [
@@ -500,32 +439,45 @@ describe('layerBreak', () => {
     ['design', 'design/a.ts', './b'],
     ['lib/domain', 'lib/domain/a.ts', '../boundaries/model.mts'],
     ['lib/domain', 'lib/domain/a.ts', 'react'],
-    ['server', 'server/a.ts', '@/lib/domain/a'],
-    ['server via @ks/', 'server/a.ts', '@ks/lib/domain/a'],
-    ['app/components', 'app/components/forms/X.tsx', '@/design/tokens.json'],
+    ['server', 'server/a.ts', '@ks/lib/domain/a'],
+    ['app/components', 'app/components/forms/X.tsx', '@ks/design/tokens.json'],
     ['app/components', 'app/components/forms/X.tsx', '@ks/design/tokens.mts'],
     [
       'app/components',
       'app/components/forms/X.tsx',
-      '@/app/components/foundation/Text',
+      '@ks/app/components/foundation/Text',
     ],
-    ['features', 'features/map/a.ts', '@/server/db'],
-    ['features', 'features/map/a.ts', '@/app/components/forms/X'],
+    [
+      'app/components importing lib/ui',
+      'app/components/a/X.tsx',
+      '@ks/lib/ui/types',
+    ],
+    ['lib/ui importing design', 'lib/ui/hatch.ts', '@ks/design/tokens.json'],
+    ['lib/ui importing itself', 'lib/ui/a.ts', '@ks/lib/ui/types'],
+    ['features importing lib/ui', 'features/map/a.ts', '@ks/lib/ui/types'],
+    ['app/ routes importing lib/ui', 'app/page.tsx', '@ks/lib/ui/types'],
+    ['features', 'features/map/a.ts', '@ks/server/db'],
+    ['features', 'features/map/a.ts', '@ks/app/components/forms/X'],
     ['features', 'features/map/a.ts', './b'],
-    ['app/ routes', 'app/page.tsx', '@/features/map'],
-    ['app/ routes', 'app/page.tsx', '@/features/map/index'],
-    ['app/ routes', 'app/page.tsx', '@/features/map/'],
-    ['app/ routes', 'app/page.tsx', '@/server/boundaries/app-data'],
+    ['app/ routes', 'app/page.tsx', '@ks/features/map'],
+    ['app/ routes', 'app/page.tsx', '@ks/features/map/index'],
+    ['app/ routes', 'app/page.tsx', '@ks/features/map/'],
+    ['app/ routes', 'app/page.tsx', '@ks/server/boundaries/app-data'],
     [
       'a feature importing its own files',
       'features/map/a.ts',
-      '@/features/map/b',
+      '@ks/features/map/b',
     ],
-    ['a feature test', 'features/map/__tests__/a.test.ts', '@/features/map/b'],
-    ['a test file', 'lib/__tests__/a.test.ts', '@/server/db'],
+    [
+      'a feature test',
+      'features/map/__tests__/a.test.ts',
+      '@ks/features/map/b',
+    ],
+    ['a test file', 'lib/__tests__/a.test.ts', '@ks/server/db'],
     ['a path outside the repo', 'lib/domain/a.ts', '../../../x'],
-    ['a path above the root', 'lib/domain/a.ts', '@/../x'],
-    ['a path outside the map', 'lib/domain/a.ts', '@/types/modules'],
+    ['a path above the root', 'lib/domain/a.ts', '@ks/../x'],
+    ['a path outside the map', 'lib/domain/a.ts', '@ks/types/modules'],
+    ['the retired @/ alias', 'app/components/forms/X.tsx', `@/lib/domain/a`],
   ])('passes in %s', (_layer, file, specifier) => {
     expect(layerBreak(file, specifier)).toBeUndefined();
   });
@@ -540,39 +492,44 @@ describe('the lint rule', () => {
     tester.run('layers/imports', importsRule as never, {
       invalid: [
         {
-          code: "import { a } from '@/lib/domain/a';",
+          code: "import { a } from '@ks/lib/domain/a';",
           errors: [{ message: /app\/components may not import lib\/domain/ }],
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "export { a } from '@/lib/domain/a';",
+          code: "export { a } from '@ks/lib/domain/a';",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "export * from '@/lib/domain/a';",
+          code: "export * from '@ks/lib/domain/a';",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "const a = import('@/lib/domain/a');",
+          code: "const a = import('@ks/lib/domain/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: 'const a = import(`@/lib/domain/a`);',
+          code: 'const a = import(`@ks/lib/domain/a`);',
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "const a = require('@/lib/domain/a');",
+          code: "const a = require('@ks/lib/domain/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "vi.mock('@/lib/domain/a');",
+          code: "vi.mock('@ks/lib/domain/a');",
           errors: 1,
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
+        },
+        {
+          code: "import { a } from '@ks/app/components/foundation/Text';",
+          errors: [{ message: /lib\/ui may not import app\/components/ }],
+          filename: `${process.cwd()}/lib/ui/X.tsx`,
         },
         {
           code: 'export const a = 1;',
@@ -586,16 +543,16 @@ describe('the lint rule', () => {
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: 'const a = import(`@/lib/${name}`);',
+          code: 'const a = import(`@ks/lib/${name}`);',
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "import { a } from '@/app/components/foundation/Text';",
+          code: "import { a } from '@ks/app/components/foundation/Text';",
           filename: `${process.cwd()}/app/components/forms/X.tsx`,
         },
         {
-          code: "import { a } from '@/lib/domain/a';",
-          filename: `${process.cwd()}/app/components/map/X.tsx`,
+          code: "import { a } from '@ks/lib/ui/EventGlyph';",
+          filename: `${process.cwd()}/app/components/actions/X.tsx`,
         },
         {
           code: 'const a = import(name); export const b = 1; export {};',

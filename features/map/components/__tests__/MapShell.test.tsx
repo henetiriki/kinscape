@@ -16,8 +16,8 @@ vi.mock('@ks/features/map/components/MapView', () => ({
   },
 }));
 
-import { freeArea } from '@ks/app/components/map/Stage';
 import { MapShell } from '@ks/features/map/components/MapShell';
+import { freeArea } from '@ks/features/map/components/Stage';
 
 const sources: Source[] = [
   {

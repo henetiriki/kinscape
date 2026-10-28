@@ -4,7 +4,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('.', import.meta.url)),
       '@ks': fileURLToPath(new URL('.', import.meta.url)),
       // The real package throws outside Next's server build.
       'server-only': fileURLToPath(

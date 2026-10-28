@@ -100,12 +100,20 @@ describe('the real lint config', () => {
     ).toEqual([expect.stringContaining('@ks/app/components/<folder>/<Name>')]);
   });
 
-  it('bans @/ outside the map folder and allows it inside', async () => {
-    expect(await lint('app/x.tsx', "import { a } from '@/lib/a';\n")).toEqual([
-      expect.stringContaining('use @ks/'),
+  it('fails lib/ui importing the kit and passes the kit importing lib/ui', async () => {
+    expect(
+      await lint(
+        'lib/ui/X.tsx',
+        "import { a } from '@ks/app/components/foundation/Text';\n"
+      )
+    ).toEqual([
+      expect.stringContaining('lib/ui may not import app/components'),
     ]);
     expect(
-      await lint('app/components/map/X.tsx', "import { a } from '@/lib/a';\n")
+      await lint(
+        'app/components/actions/X.tsx',
+        "import { a } from '@ks/lib/ui/EventGlyph';\n"
+      )
     ).toEqual([]);
   });
 

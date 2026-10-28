@@ -1,0 +1,39 @@
+/* The side panel: 320 wide, tabs on top, a scrolling body, the footer last. */
+.panel {
+  composes: raised from '@ks/app/components/foundation/Surface.module.css';
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  width: 100%;
+}
+
+.head {
+  display: flex;
+  padding: var(--space-8) var(--space-8) 0;
+}
+
+/* The snapshots draw these tabs 40 tall; the hit area stays 44. */
+.panel .head [role='tab'] {
+  height: var(--size-control-s);
+}
+
+.body {
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  gap: var(--space-20);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-16);
+}
+
+.body[data-gap='14'] {
+  gap: 14px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+  padding: var(--space-12) var(--space-16);
+}

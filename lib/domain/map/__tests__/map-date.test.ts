@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { fromDay, toDay } from '@ks/lib/boundaries/model.mts';
+import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import {
   dayFromSlider,
+  dayOf,
   finerPrecision,
   MIN_DAY,
   shownDate,
@@ -10,9 +11,16 @@ import {
   sliderValue,
   stepDay,
   todayDay,
-} from '@ks/lib/map/map-date';
+} from '@ks/lib/domain/map/map-date';
 
 const today = toDay('2026-10-21');
+
+describe('dayOf', () => {
+  it('counts UTC days since 1652-01-01', () => {
+    expect(dayOf(new Date('2009-04-03T23:59:59Z'))).toBe(toDay('2009-04-03'));
+    expect(dayOf(new Date('1652-01-01T00:00:00Z'))).toBe(0);
+  });
+});
 
 describe('finerPrecision', () => {
   it('returns the finer of two precisions', () => {

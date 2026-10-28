@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest';
 import type {
   BoundaryData,
   BoundaryVersion,
-} from '@ks/lib/boundaries/types.ts';
+} from '@ks/lib/domain/boundaries/types.ts';
 
-import { toDay } from '@ks/lib/boundaries/model.mts';
-import { boundaryCoverage, hasBorders } from '@ks/lib/map/coverage';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { boundaryCoverage, hasBorders } from '@ks/lib/domain/map/coverage';
 
 const version = (from: string, to: null | string): BoundaryVersion => ({
   confidence: 'high',

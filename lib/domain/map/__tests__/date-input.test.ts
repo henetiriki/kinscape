@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest';
 
-import { toDay } from '@ks/lib/boundaries/model.mts';
-import { checkDate } from '@ks/lib/map/date-input';
-import { MIN_DAY } from '@ks/lib/map/map-date';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { checkDate } from '@ks/lib/domain/map/date-input';
+import { MIN_DAY } from '@ks/lib/domain/map/map-date';
 
 const TODAY = toDay('2026-10-21');
 const check = (text: string) => checkDate(text, MIN_DAY, TODAY);

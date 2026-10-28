@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
-import type { BoundaryData } from '@ks/lib/boundaries/types.ts';
+import type { BoundaryData } from '@ks/lib/domain/boundaries/types.ts';
 
 import {
   boundaryOn,
   fromDay,
   nameOn,
   toDay,
-} from '@ks/lib/boundaries/model.mts';
+} from '@ks/lib/domain/boundaries/model.mts';
 
 const geometry = {
   coordinates: [

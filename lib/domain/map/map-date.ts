@@ -1,7 +1,6 @@
-import type { Precision } from '@ks/lib/map/types';
+import type { Precision } from '@ks/lib/domain/map/types';
 
-import { fromDay, toDay } from '@ks/lib/boundaries/model.mts';
-import { dayOf } from '@ks/lib/map/filter';
+import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 export const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 
@@ -13,6 +12,10 @@ export const finerPrecision = (a: Precision, b: Precision): Precision =>
 export const MIN_DAY = 0;
 
 const FIRST_YEAR = 1652;
+
+/** Days since 1652-01-01 for the calendar day of `date`, in UTC. */
+export const dayOf = (date: Date): number =>
+  toDay(date.toISOString().slice(0, 10));
 
 /** The last Map date: today, in UTC. */
 export const todayDay = (): number => dayOf(new Date());

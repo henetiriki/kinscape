@@ -41,11 +41,11 @@ describe('nodeLoadedFiles', () => {
         '**/*.mts',
         '**/*.mjs',
         'scripts/**',
-        'lib/boundaries/types.ts',
+        'lib/domain/boundaries/types.ts',
         'scripts/types.ts',
       ])
     );
-    expect(files).not.toContain('lib/map/types.ts');
+    expect(files).not.toContain('lib/domain/map/types.ts');
   });
 
   it('skips node_modules and other ignored folders', () => {
@@ -68,10 +68,10 @@ describe('nodeLoadedFiles', () => {
 
 describe('the Node rule in the real lint config', () => {
   it.each([
-    ['lib/boundaries/x.mts', "import { a } from '@ks/lib/map/a';"],
-    ['lib/boundaries/x.mts', "import { a } from '@/lib/map/a';"],
-    ['lib/boundaries/types.ts', "import { a } from '@ks/lib/map/a';"],
-    ['lib/boundaries/types.ts', "import { a } from '@/lib/map/a';"],
+    ['lib/domain/boundaries/x.mts', "import { a } from '@ks/lib/map/a';"],
+    ['lib/domain/boundaries/x.mts', "import { a } from '@/lib/map/a';"],
+    ['lib/domain/boundaries/types.ts', "import { a } from '@ks/lib/map/a';"],
+    ['lib/domain/boundaries/types.ts', "import { a } from '@/lib/map/a';"],
     ['scripts/x.ts', "import { a } from '@ks/lib/map/a';"],
     ['scripts/x.ts', "import { a } from '@/lib/map/a';"],
   ])('fails a value import in %s: %s', async (path, code) => {
@@ -81,9 +81,15 @@ describe('the Node rule in the real lint config', () => {
   });
 
   it.each([
-    ['lib/boundaries/x.mts', "import type { A } from '@ks/lib/map/types';"],
-    ['lib/boundaries/types.ts', "import type { A } from '@/lib/map/types';"],
-    ['scripts/x.ts', "import type { A } from '@ks/lib/map/types';"],
+    [
+      'lib/domain/boundaries/x.mts',
+      "import type { A } from '@ks/lib/domain/map/types';",
+    ],
+    [
+      'lib/domain/boundaries/types.ts',
+      "import type { A } from '@/lib/domain/map/types';",
+    ],
+    ['scripts/x.ts', "import type { A } from '@ks/lib/domain/map/types';"],
     ['lib/map/a.ts', "import { a } from '@ks/lib/map/b';"],
     ['scripts/__tests__/x.test.ts', "import { a } from '@ks/lib/map/b';"],
   ])('passes %s: %s', async (path, code) => {

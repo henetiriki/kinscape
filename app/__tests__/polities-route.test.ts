@@ -1,8 +1,8 @@
 import { expect, it } from 'vitest';
 
 import { dynamic, GET } from '@ks/app/data/polities/route';
-import { loadAppData } from '@ks/lib/boundaries/app-data';
-import { isCurrentOn, toDay } from '@ks/lib/boundaries/model.mts';
+import { isCurrentOn, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { loadAppData } from '@ks/server/boundaries/app-data';
 
 type Feature = {
   properties: {

@@ -3,15 +3,14 @@ import { builtinModules } from 'node:module';
 import { join, posix, relative, sep } from 'node:path';
 
 // The layer map from docs/architecture.md. ESLint and the fitness test both read it.
-// Test files, app/design-kit, scripts, e2e and lib/design tooling are outside the map.
+// Test files, app/design-kit, scripts, e2e and lib/design tooling are outside the map, and mapped code may not import them.
+// Any other lib/ folder is outside the map and unchecked.
 
 /** Today's breaks, each with where the code moves. A path covers the folder under it. Delete an entry when its break is fixed. */
 export const ALLOWLIST: Record<string, string> = {
   'app/components/forms/DateField.tsx': 'features/map',
   'app/components/map': 'features/map',
   'app/components/overlays/SourcesDialog.tsx': 'features/map',
-  'lib/boundaries/app-data.ts': 'server/',
-  'lib/boundaries/load.mts': 'server/',
   'lib/map/filter.ts': 'features/map',
   'lib/map/style.ts': 'features/map',
 };
@@ -73,7 +72,8 @@ export const layerOf = (path: string): string | undefined => {
     return undefined;
   }
 
-  if (dir.startsWith('lib/')) {
+  // `lib/map/` holds only the MapLibre files until AR.10 (#323).
+  if (dir.startsWith('lib/domain/') || dir.startsWith('lib/map/')) {
     return 'domain';
   }
 

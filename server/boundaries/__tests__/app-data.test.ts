@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { loadAppData } from '@ks/lib/boundaries/app-data';
+import { loadAppData } from '@ks/server/boundaries/app-data';
 
 describe('loadAppData', () => {
   afterEach(() => {

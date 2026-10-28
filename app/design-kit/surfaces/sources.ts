@@ -1,4 +1,4 @@
-import type { Source } from '@ks/lib/boundaries/types.ts';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
 const NATURAL_EARTH = {
   attribution: 'Made with Natural Earth',

@@ -9,7 +9,7 @@ import { boardTitle } from '@ks/app/design-kit/boards';
 import { DateCase } from '@ks/app/design-kit/feedback/DateCase';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
-import { toDay } from '@ks/lib/boundaries/model.mts';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 

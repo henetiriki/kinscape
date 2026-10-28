@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/boundaries/types.ts';
+import type { Source } from '@/lib/domain/boundaries/types.ts';
 
-import { toDay } from '@/lib/boundaries/model.mts';
-import { dayOf } from '@/lib/map/filter';
+import { toDay } from '@/lib/domain/boundaries/model.mts';
+import { dayOf } from '@/lib/domain/map/map-date';
 
 const mapView = vi.hoisted(() => vi.fn());
 

@@ -105,7 +105,7 @@ describe('the real lint config', () => {
   });
 
   it.each([
-    ['lib/boundaries/x.mts', "import { a } from './b.mts';"],
+    ['lib/domain/boundaries/x.mts', "import { a } from './b.mts';"],
     ['scripts/x.ts', "import { a } from '../b';"],
     ['x/y.mjs', "import { a } from './b.mjs';"],
   ])('passes a relative import in %s: %s', async (path, code) => {

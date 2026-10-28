@@ -2,7 +2,7 @@
 
 - **Spec:** #318
 - **Requirement IDs:** NFR-01
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@
 - **B.** Leave both. Nothing checks `design/` until a later Spec.
 - **Other:** your own.
 
-Recommended: A, because `lib/design/tokens.mts` is checked today, and B drops that check.
+**Answer: A** (@henetiriki)
 
 **D2 · Proving checks 3 and 4** · Decides: Tech lead
 
@@ -24,7 +24,7 @@ Recommended: A, because `lib/design/tokens.mts` is checked today, and B drops th
 - **B.** Lint a throwaway component once and paste the output under Evidence. No test is added.
 - **Other:** your own.
 
-Recommended: A, because the rows keep failing if either rule regresses.
+**Answer: A** (@henetiriki)
 
 **D3 · Old plans that name `lib/design/tokens`** · Decides: Tech lead
 
@@ -34,7 +34,7 @@ Recommended: A, because the rows keep failing if either rule regresses.
 - **B.** Edit both plans to the new paths.
 - **Other:** your own.
 
-Recommended: A, because a plan describes the code as it was when merged.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -2,7 +2,7 @@
 
 - **Spec:** #322
 - **Requirement IDs:** BND-01, NFR-01
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@
 - **B.** The test only: a lone `maplibre-gl` bump fails CI, and the tech lead bumps the pair by hand.
 - **Other:** your own.
 
-Recommended: A, because the group makes the pair one routine PR and the test catches anything the group misses.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

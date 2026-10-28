@@ -32,6 +32,10 @@ describe('buildStyle', () => {
   const layers = (day: number, show: boolean) =>
     new Map(buildStyle(day, show).layers.map(layer => [layer.id, layer]));
 
+  it('builds the same style as before the Layer contract', () => {
+    expect(buildStyle(7, true)).toMatchSnapshot();
+  });
+
   it('draws the sea, land, coast and rivers from local files', () => {
     const style = buildStyle(0, true);
 

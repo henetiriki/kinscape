@@ -15,6 +15,14 @@ describe('polityLayer', () => {
     expect(filters['polity-labels']).toEqual(dateFilter(42, 'label'));
   });
 
+  it('names its panel row and keeps the ids the row has always had', () => {
+    expect(polityLayer.label).toBe('Polity borders');
+    expect(polityLayer.description).toBe(
+      'Fills, borders and names of the Polities on the Map date.'
+    );
+    expect(polityLayer.id).toBe('polity-borders');
+  });
+
   it('splits solid and dashed borders by confidence', () => {
     const filters = polityLayer.filters(1);
 

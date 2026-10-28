@@ -17,10 +17,9 @@ const POLITY_IDS = [
 describe('buildStyle', () => {
   const layers = (day: number, show: boolean) =>
     new Map(
-      buildStyle(day, [polityLayer], show).layers.map(layer => [
-        layer.id,
-        layer,
-      ])
+      buildStyle(day, [polityLayer], {
+        [polityLayer.id]: show,
+      }).layers.map(layer => [layer.id, layer])
     );
 
   it('builds the same style as before the Layer contract', () => {
@@ -67,8 +66,10 @@ describe('buildStyle', () => {
 
   it('places a layer ahead of its `before` layer or at the end, and strips `before`', () => {
     const extra = (id: string, before?: string): Layer => ({
+      description: 'd',
       filters: () => ({}),
       id,
+      label: id,
       layers: [{ before, id, source: 'x', type: 'fill' }],
       sources: { x: { data: '/x.geojson', type: 'geojson' } },
     });

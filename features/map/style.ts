@@ -1,6 +1,6 @@
 import type { LayerSpecification, StyleSpecification } from 'maplibre-gl';
 
-import type { Layer } from '@ks/features/map/types';
+import type { Layer, LayerId } from '@ks/features/map/types';
 
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
@@ -53,11 +53,11 @@ const BASEMAP: LayerSpecification[] = [
 export const buildStyle = (
   day: number,
   layers: Layer[],
-  visible = true
+  visible: Partial<Record<LayerId, boolean>> = {}
 ): StyleSpecification => {
   const stack = [...BASEMAP];
 
-  for (const { filters, layers: drawing } of layers) {
+  for (const { filters, id, layers: drawing } of layers) {
     const filter = filters(day);
 
     for (const { before, ...layer } of drawing) {
@@ -66,7 +66,7 @@ export const buildStyle = (
         ...(filter[layer.id] && { filter: filter[layer.id] }),
         layout: {
           ...layer.layout,
-          visibility: visible ? 'visible' : 'none',
+          visibility: visible[id] === false ? 'none' : 'visible',
         },
       } as LayerSpecification;
       const at =

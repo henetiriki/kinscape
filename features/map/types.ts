@@ -12,9 +12,16 @@ export type DrawingLayer = {
 
 /** A set of drawing layers the map shows, hides and filters together. */
 export type Layer = {
+  /** The help text under the layer's row in the Layers panel. */
+  description: string;
   /** The filter for each drawing layer id on `day`. */
   filters: (day: number) => Record<string, ExpressionSpecification>;
-  id: string;
+  id: LayerId;
+  /** The name on the layer's row in the Layers panel. */
+  label: string;
   layers: DrawingLayer[];
   sources: Record<string, SourceSpecification>;
 };
+
+/** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
+export type LayerId = string;

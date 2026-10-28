@@ -29,13 +29,15 @@ const fillColour = [
 
 /** The "Polity borders" row: the fills, borders and labels the Map date filters. */
 export const polityLayer: Layer = {
+  description: 'Fills, borders and names of the Polities on the Map date.',
   filters: day => ({
     'polity-borders': dateFilter(day, 'boundary', ['!', LOW_CONFIDENCE]),
     'polity-borders-low': dateFilter(day, 'boundary', LOW_CONFIDENCE),
     'polity-fills': dateFilter(day, 'boundary'),
     'polity-labels': dateFilter(day, 'label'),
   }),
-  id: 'polities',
+  id: 'polity-borders',
+  label: 'Polity borders',
   layers: [
     {
       before: 'rivers',

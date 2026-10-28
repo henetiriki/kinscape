@@ -10,15 +10,17 @@ import { dayOf } from '@ks/lib/domain/map/map-date';
 const mapView = vi.hoisted(() => vi.fn());
 
 vi.mock('@ks/features/map/components/MapView', () => ({
-  MapView: (props: { mapDay: number; showPolities: boolean }) => {
+  MapView: (props: { mapDay: number; visible: Record<string, boolean> }) => {
     mapView(props);
 
     return <div data-testid='map-view' />;
   },
 }));
 
+import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { MapShell } from '@ks/features/map/components/MapShell';
 import { freeArea } from '@ks/features/map/components/Stage';
+import { polityLayer } from '@ks/features/map/layers/polities';
 
 const sources: Source[] = [
   {
@@ -34,7 +36,7 @@ const sources: Source[] = [
 ];
 
 const coverage = [{ validFrom: toDay('1994-04-27'), validTo: null }];
-const layers: Layer[] = [];
+const layers: Layer[] = [polityLayer];
 
 const lastProps = () => mapView.mock.calls.at(-1)?.[0];
 
@@ -46,8 +48,27 @@ it('shows the map for today with Polity borders on', () => {
     layers,
     mapDay: dayOf(new Date()),
     padding: freeArea(false),
-    showPolities: true,
+    visible: { [polityLayer.id]: true },
   });
+});
+
+// MAP-05: a layer is one file and one line in the list.
+it('gives a second layer its own row and toggle', () => {
+  render(
+    <MapShell
+      coverage={coverage}
+      layers={[polityLayer, testLayer]}
+      sources={sources}
+    />
+  );
+
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Test layer' }));
+  expect(lastProps().visible).toEqual({
+    [polityLayer.id]: true,
+    [testLayer.id]: false,
+  });
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Test layer' }));
+  expect(lastProps().visible[testLayer.id]).toBe(true);
 });
 
 // MAP-03
@@ -64,9 +85,9 @@ it('hides and restores the Polity borders from the Layers panel', () => {
   const row = screen.getByRole('checkbox', { name: /Polity borders/ });
 
   fireEvent.click(row);
-  expect(lastProps().showPolities).toBe(false);
+  expect(lastProps().visible[polityLayer.id]).toBe(false);
   fireEvent.click(row);
-  expect(lastProps().showPolities).toBe(true);
+  expect(lastProps().visible[polityLayer.id]).toBe(true);
 });
 
 it('opens and closes the sources dialog from the credits line', () => {
@@ -125,7 +146,7 @@ describe('on a phone', () => {
     render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
     fireEvent.click(screen.getByRole('button', { name: 'Layers and filters' }));
     fireEvent.click(screen.getByRole('checkbox', { name: /Polity borders/ }));
-    expect(lastProps().showPolities).toBe(false);
+    expect(lastProps().visible[polityLayer.id]).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(
       (

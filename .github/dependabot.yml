@@ -34,6 +34,10 @@ updates:
         patterns:
           - vitest
           - '@vitest/*'
+      maplibre:
+        patterns:
+          - maplibre-gl
+          - '@maplibre/maplibre-gl-style-spec'
       production:
         dependency-type: production
         update-types:

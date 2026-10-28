@@ -1,3 +1,4 @@
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types';
 
 import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
@@ -9,31 +10,31 @@ export const finerPrecision = (a: Precision, b: Precision): Precision =>
   PRECISIONS[Math.max(PRECISIONS.indexOf(a), PRECISIONS.indexOf(b))];
 
 /** The first Map date: 1652-01-01. */
-export const MIN_DAY = 0;
+export const MIN_DAY: Day = 0;
 
 const FIRST_YEAR = 1652;
 
 /** Days since 1652-01-01 for the calendar day of `date`, in UTC. */
-export const dayOf = (date: Date): number =>
+export const dayOf = (date: Date): Day =>
   toDay(date.toISOString().slice(0, 10));
 
 /** The last Map date: today, in UTC. */
-export const todayDay = (): number => dayOf(new Date());
+export const todayDay = (): Day => dayOf(new Date());
 
-const clamp = (day: number, max: number): number =>
+const clamp = (day: Day, max: Day): Day =>
   Math.min(Math.max(day, MIN_DAY), max);
 
 const pad = (n: number, width: number): string =>
   String(n).padStart(width, '0');
 
-const parts = (day: number): [number, number, number] => {
+const parts = (day: Day): [number, number, number] => {
   const [year, month, date] = fromDay(day).split('-').map(Number);
 
   return [year, month, date];
 };
 
 /** The day for a year and month (which may run past 1–12), keeping `date` or the month's last day. */
-const build = (year: number, month: number, date: number): number => {
+const build = (year: number, month: number, date: number): Day => {
   const index = year * 12 + (month - 1);
   const y = Math.floor(index / 12);
   const m = (index % 12) + 1;
@@ -46,11 +47,11 @@ const build = (year: number, month: number, date: number): number => {
 
 /** `day` moved by `count` steps of `precision`, kept between 1652-01-01 and `max`. */
 export const stepDay = (
-  day: number,
+  day: Day,
   precision: Precision,
   count: number,
-  max: number
-): number => {
+  max: Day
+): Day => {
   if (precision === 'day') return clamp(day + count, max);
 
   const [year, month, date] = parts(day);
@@ -64,7 +65,7 @@ export const stepDay = (
 };
 
 /** The slider's value for `day`, in steps of `precision` from 1652-01-01. */
-export const sliderValue = (day: number, precision: Precision): number => {
+export const sliderValue = (day: Day, precision: Precision): number => {
   const [year, month] = parts(day);
 
   if (precision === 'day') return day;
@@ -75,16 +76,16 @@ export const sliderValue = (day: number, precision: Precision): number => {
 };
 
 /** The slider's last value: the steps from 1652-01-01 to `max`. */
-export const sliderMax = (precision: Precision, max: number): number =>
+export const sliderMax = (precision: Precision, max: Day): number =>
   sliderValue(max, precision);
 
 /** The Map date for slider `value`, keeping the month and day of `day` where the precision allows. */
 export const dayFromSlider = (
   value: number,
-  day: number,
+  day: Day,
   precision: Precision,
-  max: number
-): number => {
+  max: Day
+): Day => {
   if (precision === 'day') return clamp(value, max);
 
   const [, month, date] = parts(day);
@@ -100,5 +101,5 @@ export const dayFromSlider = (
 /** The full date over the slider thumb. */
 
 /** The date in the field: `2026`, `2026-10` or `2026-10-21`. */
-export const shownDate = (day: number, precision: Precision): string =>
+export const shownDate = (day: Day, precision: Precision): string =>
   fromDay(day).slice(0, { day: 10, month: 7, year: 4 }[precision]);

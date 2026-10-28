@@ -10,7 +10,7 @@ import { useEffect, useRef } from 'react';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-import type { Layer } from '@ks/features/map/types';
+import type { Layer, LayerId } from '@ks/features/map/types';
 
 import { PHONE } from '@ks/app/components/foundation/usePhone';
 import { freeArea } from '@ks/features/map/components/Stage';
@@ -42,19 +42,20 @@ export const MapView = ({
   layers,
   mapDay,
   padding,
-  showPolities,
+  visible,
 }: {
-  /** The layers the map draws; the Map date filters each and `showPolities` shows or hides them. */
+  /** The layers the map draws; the Map date filters each and `visible` shows or hides them. */
   layers: Layer[];
   mapDay: number;
   /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
   padding: Padding;
-  showPolities: boolean;
+  /** Each layer is on unless its entry is `false`. */
+  visible: Partial<Record<LayerId, boolean>>;
 }) => {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   // The first style uses the values from the first render; later changes go through the effect below.
-  const initial = useRef({ layers, mapDay, showPolities });
+  const initial = useRef({ layers, mapDay, visible });
   // `load` fires once. After it, isStyleLoaded() is false while tiles reload, so it can't gate later changes.
   const loaded = useRef(false);
 
@@ -76,7 +77,7 @@ export const MapView = ({
       style: buildStyle(
         initial.current.mapDay,
         initial.current.layers,
-        initial.current.showPolities
+        initial.current.visible
       ),
     });
 
@@ -127,7 +128,7 @@ export const MapView = ({
           current.setLayoutProperty(
             id,
             'visibility',
-            showPolities ? 'visible' : 'none'
+            visible[layer.id] === false ? 'none' : 'visible'
           );
         }
       }
@@ -144,7 +145,7 @@ export const MapView = ({
     return () => {
       current.off('load', apply);
     };
-  }, [layers, mapDay, showPolities]);
+  }, [layers, mapDay, visible]);
 
   return <div className='map' ref={container} />;
 };

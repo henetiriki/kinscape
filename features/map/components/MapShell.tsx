@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import type { Layer } from '@ks/features/map/types';
+import type { Layer, LayerId } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 import type { Span } from '@ks/lib/domain/map/types';
 
@@ -13,12 +13,13 @@ import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
 import {
+  LayersList,
   LayersPanel,
-  LayersRow,
 } from '@ks/features/map/components/LayersPanel';
 import { MapView } from '@ks/features/map/components/MapView';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 import { freeArea, Stage } from '@ks/features/map/components/Stage';
+import { polityLayer } from '@ks/features/map/layers/polities';
 import { fromDay } from '@ks/lib/domain/boundaries/model.mts';
 import { hasBorders } from '@ks/lib/domain/map/coverage';
 import { todayDay } from '@ks/lib/domain/map/map-date';
@@ -40,7 +41,10 @@ export const MapShell = ({
   // The Map date starts on today, which is also the last date.
   const [lastDay] = useState(todayDay);
   const [mapDay, setMapDay] = useState(lastDay);
-  const [showPolities, setShowPolities] = useState(true);
+  const [visible, setVisible] = useState<Partial<Record<LayerId, boolean>>>(
+    () => Object.fromEntries(layers.map(layer => [layer.id, true]))
+  );
+  const showPolities = visible[polityLayer.id] !== false;
   const [showSources, setShowSources] = useState(false);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [showLayers, setShowLayers] = useState(false);
@@ -53,8 +57,10 @@ export const MapShell = ({
     />
   );
   const layerProps = {
-    onShowPolitiesChange: setShowPolities,
-    showPolities,
+    layers,
+    onChange: (id: LayerId, show: boolean) =>
+      setVisible(current => ({ ...current, [id]: show })),
+    visible,
   };
   const borders = (day: number) => hasBorders(coverage, day);
   const first = coverage.at(0)?.validFrom;
@@ -115,7 +121,7 @@ export const MapShell = ({
           layers={layers}
           mapDay={mapDay}
           padding={freeArea(phone)}
-          showPolities={showPolities}
+          visible={visible}
         />
       </Stage>
       {phone && (
@@ -123,7 +129,7 @@ export const MapShell = ({
           onClose={() => setShowLayers(false)}
           open={showLayers}
           title='Layers'>
-          <LayersRow {...layerProps} />
+          <LayersList {...layerProps} />
         </Sheet>
       )}
       <SourcesDialog

@@ -1,47 +1,67 @@
 'use client';
 
+import type { Layer, LayerId } from '@ks/features/map/types';
+
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/features/map/components/LayersPanel.module.css';
 
-type LayerProps = {
-  onShowPolitiesChange: (show: boolean) => void;
-  showPolities: boolean;
+type ListProps = {
+  layers: Layer[];
+  onChange: (id: LayerId, show: boolean) => void;
+  /** Each layer is on unless its entry is `false`. */
+  visible: Partial<Record<LayerId, boolean>>;
 };
 
-/** The Polity borders row: the panel's body on a desktop, the whole content of the Layers sheet on a phone. */
-export const LayersRow = ({
-  onShowPolitiesChange,
-  showPolities,
-}: LayerProps) => (
+/** One layer's row: its label, its help text and a toggle. */
+const LayersRow = ({
+  checked,
+  layer: { description, id, label },
+  onChange,
+}: {
+  checked: boolean;
+  layer: Layer;
+  onChange: (show: boolean) => void;
+}) => (
   <div className={styles.row}>
     <span className={styles.checkbox}>
       <Checkbox
-        aria-describedby='polity-borders-help'
-        checked={showPolities}
-        id='polity-borders'
-        onChange={event => onShowPolitiesChange(event.target.checked)}
+        aria-describedby={`${id}-help`}
+        checked={checked}
+        id={id}
+        onChange={event => onChange(event.target.checked)}
       />
     </span>
     <div className={styles.text}>
-      <Text as='label' htmlFor='polity-borders' variant='label'>
-        Polity borders
+      <Text as='label' htmlFor={id} variant='label'>
+        {label}
       </Text>
-      <Text id='polity-borders-help' variant='small'>
-        Fills, borders and names of the Polities on the Map date.
+      <Text id={`${id}-help`} variant='small'>
+        {description}
       </Text>
     </div>
   </div>
 );
 
-export const LayersPanel = (props: LayerProps) => (
+/** A row per layer: the panel's body on a desktop, the whole content of the Layers sheet on a phone. */
+export const LayersList = ({ layers, onChange, visible }: ListProps) =>
+  layers.map(layer => (
+    <LayersRow
+      checked={visible[layer.id] !== false}
+      key={layer.id}
+      layer={layer}
+      onChange={show => onChange(layer.id, show)}
+    />
+  ));
+
+export const LayersPanel = (props: ListProps) => (
   <aside aria-label='Layers' className={styles.panel}>
     <div className={styles.heading}>
       <Text as='h2' variant='overline'>
         Layers
       </Text>
     </div>
-    <LayersRow {...props} />
+    <LayersList {...props} />
   </aside>
 );

@@ -2,7 +2,7 @@
 
 - **Spec:** #326
 - **Requirement IDs:** MAP-05, NFR-01
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@
 - **C.** `Layer` gains a `rowId`. This adds a field the Spec doesn't list.
 - **Other:** your own.
 
-Recommended: A, because the one unique key serves `visible` and the DOM.
+**Answer: A** (@henetiriki)
 
 **D2 · How the fixture layer is proven** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ Recommended: A, because the one unique key serves `visible` and the DOM.
 - **B.** Also run it in e2e behind `NEXT_PUBLIC_E2E`. That adds shipped code for a test.
 - **Other:** your own.
 
-Recommended: A, because the real panel, shell and map code all run, and nothing ships.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

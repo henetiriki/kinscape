@@ -108,6 +108,8 @@ jobs:
     env:
       THREAD: ${{ inputs.thread }}
       AGENT_FILES: ${{ inputs.agent_files }}
+      # A run ends with its turn, which kills any background work.
+      CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     steps:
       - name: Check out code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

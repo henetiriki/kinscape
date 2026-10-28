@@ -67,6 +67,8 @@ jobs:
       # The files in .github/agent/ that become the system prompt. The order matters: respond.md
       # points to build.md "below", so build.md comes after it.
       AGENT_FILES: rules.md respond.md build.md
+      # A run ends with its turn, which kills any background work.
+      CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     permissions:
       contents: write
       pull-requests: write

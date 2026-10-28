@@ -55,6 +55,7 @@ describe('colour literals', () => {
   it.each([
     'app/globals.css',
     'features/map/style.ts',
+    'features/map/layers/polities.ts',
     ...components,
     ...modules,
   ])('%s has none', path => {

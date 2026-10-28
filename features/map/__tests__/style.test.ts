@@ -1,47 +1,42 @@
 import { describe, expect, it } from 'vitest';
 
+import type { Layer } from '@ks/features/map/types';
+
 import tokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
-import { dateFilter } from '@ks/features/map/filter';
-import {
-  buildStyle,
-  POLITY_LAYERS,
-  polityFilters,
-} from '@ks/features/map/style';
+import { polityLayer } from '@ks/features/map/layers/polities';
+import { buildStyle } from '@ks/features/map/style';
 
-describe('polityFilters', () => {
-  it('applies the Map date to every polity layer', () => {
-    const filters = polityFilters(42);
-
-    expect(Object.keys(filters).toSorted()).toEqual(
-      [...POLITY_LAYERS].toSorted()
-    );
-    expect(filters['polity-fills']).toEqual(dateFilter(42, 'boundary'));
-    expect(filters['polity-labels']).toEqual(dateFilter(42, 'label'));
-  });
-
-  it('splits solid and dashed borders by confidence', () => {
-    const filters = polityFilters(1);
-
-    expect(JSON.stringify(filters['polity-borders'])).toContain('"!"');
-    expect(JSON.stringify(filters['polity-borders-low'])).not.toContain('"!"');
-  });
-});
+const POLITY_IDS = [
+  'polity-borders',
+  'polity-borders-low',
+  'polity-fills',
+  'polity-labels',
+];
 
 describe('buildStyle', () => {
   const layers = (day: number, show: boolean) =>
-    new Map(buildStyle(day, show).layers.map(layer => [layer.id, layer]));
+    new Map(
+      buildStyle(day, [polityLayer], show).layers.map(layer => [
+        layer.id,
+        layer,
+      ])
+    );
 
   it('builds the same style as before the Layer contract', () => {
-    expect(buildStyle(7, true)).toMatchSnapshot();
+    expect(buildStyle(7, [polityLayer])).toMatchSnapshot();
   });
 
   it('draws the sea, land, coast and rivers from local files', () => {
-    const style = buildStyle(0, true);
+    const style = buildStyle(0, [polityLayer]);
 
     expect(style.glyphs).toBe('/glyphs/{fontstack}/{range}.pbf');
-    expect(style.sources.land.data).toBe('/map/land.geojson');
-    expect(style.sources.polities.data).toBe('/data/polities');
+    expect((style.sources.land as { data: string }).data).toBe(
+      '/map/land.geojson'
+    );
+    expect((style.sources.polities as { data: string }).data).toBe(
+      '/data/polities'
+    );
     expect(style.layers.map(layer => layer.id)).toEqual([
       'background',
       'land',
@@ -61,13 +56,37 @@ describe('buildStyle', () => {
     ] as const) {
       const built = layers(7, show);
 
-      for (const id of POLITY_LAYERS) {
+      for (const id of POLITY_IDS) {
         expect(built.get(id)).toMatchObject({
-          filter: polityFilters(7)[id],
+          filter: polityLayer.filters(7)[id],
           layout: { visibility: expected },
         });
       }
     }
+  });
+
+  it('places a layer ahead of its `before` layer or at the end, and strips `before`', () => {
+    const extra = (id: string, before?: string): Layer => ({
+      filters: () => ({}),
+      layers: [{ before, id, source: 'x', type: 'fill' }],
+      sources: { x: { data: '/x.geojson', type: 'geojson' } },
+    });
+    const style = buildStyle(0, [
+      extra('first', 'land'),
+      extra('last'),
+      extra('stale', 'missing'),
+    ]);
+
+    expect(style.layers.map(layer => layer.id)).toEqual([
+      'background',
+      'first',
+      'land',
+      'rivers',
+      'coastline',
+      'last',
+      'stale',
+    ]);
+    expect(style.layers.some(layer => 'before' in layer)).toBe(false);
   });
 
   it('labels in Public Sans SemiBold', () => {

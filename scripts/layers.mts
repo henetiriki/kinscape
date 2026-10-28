@@ -135,7 +135,7 @@ const packageBreak = (from: string, specifier: string): string | undefined =>
 
 /** An import from outside a feature that reaches below its `index`. */
 const deepBreak = (path: string, to: string): string | undefined =>
-  /^[^/]+\/[^/]+(?:\/index(?:\.[cm]?[jt]sx?)?)?$/.test(path)
+  /^[^/]+\/[^/]+(?:\/index(?:\.[cm]?[jt]sx?)?)?\/?$/.test(path)
     ? undefined
     : `Layer rule: import ${to} through its index.ts.`;
 

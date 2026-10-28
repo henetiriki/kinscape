@@ -12,7 +12,7 @@ One commit `git mv`s the files so history follows; the next fixes imports to `@k
 - `design.test.ts` globs gain `features/`, so the moved files keep their colour, media-query and `controls.css` checks.
 - `vercel-imports.test.ts` `ROOTS` and the `ci.yml` build-cache key gain `features`.
 
-The architecture-target "Feature slices" item moves into architecture.md as a "Where does X go" row.
+The architecture-target "Feature slices" item keeps `people` and `pins`; the rest becomes a "Where does X go" row.
 
 ## Decisions
 
@@ -54,7 +54,8 @@ The Spec says `./filter`, but ESLint rejects relative imports outside Node-loade
 | `.github/workflows/ci.yml`                                                                                              | changed       | `features/**` in the Next.js cache key                                                                                                               |
 | `docs/architecture.md`                                                                                                  | changed       | the Spec's rows and lines; a `features/<name>/` row                                                                                                  |
 | `docs/architecture-target.md`                                                                                           | changed       | item 2 keeps `people` and `pins`                                                                                                                     |
-| `design/DESIGN.md`                                                                                                      | changed       | `MapShell` leaves the `map` row; line 159 names `features/<name>/components/`                                                                        |
+| `design/DESIGN.md`                                                                                                      | changed       | `MapShell` leaves the `map` row; line 159 links architecture.md for feature components                                                               |
+| `app/components/__tests__/hover.test.ts`                                                                                | changed       | globs `features/*/components`; count stays 49                                                                                                        |
 
 ## Order of work
 
@@ -68,8 +69,8 @@ The Spec says `./filter`, but ESLint rejects relative imports outside Node-loade
 
 ## Risks
 
-- `page.tsx` is a server component importing a `'use client'` component through `index.ts`. The boundary stays at `MapShell.tsx`; `npm run build` and e2e prove it.
-- The move could change the client bundle split; the `@perf` tests measure the redraw.
+- `page.tsx` imports a `'use client'` component through `index.ts`; the boundary stays at `MapShell.tsx`. `npm run build` and e2e prove it.
+- The move could change the bundle split; `@perf` tests measure the redraw.
 
 ## Proof
 
@@ -84,7 +85,7 @@ The Spec says `./filter`, but ESLint rejects relative imports outside Node-loade
 
 ## Deviations
 
-- `app/components/__tests__/hover.test.ts` also globs `features/*/components`, so `MapShell.module.css` keeps its hover check (count stays 49).
+- `docs/architecture.md` drops "(the only runtime I/O)" and "imported through its `index.ts`" to fit 800 words.
 
 ## Out of scope
 

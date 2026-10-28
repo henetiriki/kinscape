@@ -514,6 +514,7 @@ describe('layerBreak', () => {
     ['features', 'features/map/a.ts', './b'],
     ['app/ routes', 'app/page.tsx', '@/features/map'],
     ['app/ routes', 'app/page.tsx', '@/features/map/index'],
+    ['app/ routes', 'app/page.tsx', '@/features/map/'],
     ['app/ routes', 'app/page.tsx', '@/server/boundaries/app-data'],
     [
       'a feature importing its own files',

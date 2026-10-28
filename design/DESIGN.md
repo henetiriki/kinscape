@@ -156,7 +156,7 @@ Shown with spacing and motion at `/design-kit/foundations`.
 
 ## Components
 
-Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>`. A feature's own components live in `features/<name>/components/`:
+Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>` (a feature's own components: [architecture.md](../docs/architecture.md#where-does-x-go)):
 
 | Folder       | Holds                                                                                       |
 | ------------ | ------------------------------------------------------------------------------------------- |

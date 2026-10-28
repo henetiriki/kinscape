@@ -40,3 +40,35 @@ describe('the Playwright container image', () => {
     ).not.toContain('mcr.microsoft.com/playwright');
   });
 });
+
+// The Claude runs can't write main's cache, so ci-playwright-cache.yml saves the browser there.
+// A run restores it only if its key and path match the seed's exactly.
+describe('the Playwright browser cache', () => {
+  const SEED = 'ci-playwright-cache.yml';
+  const keyAndPath = (file: string) => {
+    try {
+      return read(`.github/workflows/${file}`)
+        .match(
+          /name: Cache Playwright browser\n[\s\S]*?key: (.+)\n\s*path: (.+)/
+        )
+        ?.slice(1);
+    } catch {
+      return undefined;
+    }
+  };
+  const reference = keyAndPath('claude-run.yml');
+
+  it('is cached by claude-run.yml', () => {
+    expect(reference).toBeDefined();
+  });
+
+  it.each(['claude.yml', SEED])(
+    'is cached by %s under the same key and path as claude-run.yml',
+    file => {
+      expect(
+        keyAndPath(file),
+        `${file} needs a "Cache Playwright browser" step with the key and path of claude-run.yml`
+      ).toEqual(reference);
+    }
+  );
+});

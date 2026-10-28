@@ -1,0 +1,56 @@
+name: 'CI: Playwright cache'
+
+# Claude runs started by an issue or a comment can't write main's cache (their cache token is
+# read-only), so each downloaded the browser again, and a PR's own run kept a copy until it closed.
+# This saves the browser on main, where every run can restore it. It uses the key and path of
+# claude-run.yml and claude.yml; scripts/__tests__/playwright-image.test.ts checks they match.
+
+on:
+  push:
+    branches: [main]
+    # A new @playwright/test version is a new key.
+    paths:
+      - package-lock.json
+      - .github/workflows/ci-playwright-cache.yml
+  schedule:
+    # Mondays and Thursdays at 05:00 UTC: an entry unused for 7 days is deleted, and this restores it.
+    - cron: '0 5 * * 1,4'
+  # Lets a person run it by hand from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-playwright-cache
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - name: Install dependencies
+        run: npm ci
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Playwright browser
+        id: cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+          path: ~/.cache/ms-playwright
+      # No continue-on-error: a failed install fails the job, so no partial browser is saved.
+      - name: Install Playwright
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm run e2e:install

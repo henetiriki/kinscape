@@ -51,6 +51,10 @@ permissions:
   issues: write
   actions: read
 
+# The npm cache path shared with the container jobs (see ci.yml).
+env:
+  npm_config_cache: /tmp/npm-cache
+
 jobs:
   # Checks that cost no model run (scripts/agent-gate.mts): a plan stops if an open PR already
   # closes the issue or an issue it is "blocked by" is open; a build stops if the Spec its PR

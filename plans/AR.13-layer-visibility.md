@@ -74,6 +74,10 @@
 | `@perf` and NFR-01                         | `npm run e2e`                                                                     |
 | Tests, lint, validator pass                | `npm test`, `npm run lint`, `npm run validate:boundaries`; tests edited as listed |
 
+## Deviations
+
+- `docs/architecture.md`: two sentences cut elsewhere (the _Enforced by_ note, the fitness-test line) to stay within the 800-word budget.
+
 ## Out of scope
 
 A legend row per layer and pins: the first Spec that adds a second layer (M2). A district layer: M4.

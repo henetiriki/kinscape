@@ -143,9 +143,10 @@ describe('layout tokens', () => {
     ]);
     const found: string[] = [];
 
-    for (const path of globSync(['app/**/*.css', 'features/**/*.css'], {
-      cwd: root,
-    })) {
+    for (const path of globSync(
+      ['app/**/*.css', 'features/**/*.css', 'lib/ui/**/*.css'],
+      { cwd: root }
+    )) {
       for (const [, feature, value] of read(path)
         .matchAll(/@media[^{]*/g)
         .flatMap(([query]) => [

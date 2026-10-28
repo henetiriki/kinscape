@@ -9,7 +9,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | A screen or route               | `app/<route>/page.tsx`: composes components, no CSS of its own (`app/design-kit`, dev-only, is the exception) |
 | Shared UI                       | `app/components/<role>/`: `foundation`, `actions`, `forms`, `feedback`, `overlays`                            |
 | UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                            |
-| UI the kit and features share   | `lib/ui/` (`EventGlyph`, `hatch`, Event types); it imports only `design`                                      |
+| UI the kit and features share   | `lib/ui/` (`EventGlyph`, `hatch`, Event types)                                                                |
 | A feature's UI and engine       | `features/<name>/`                                                                                            |
 | Pure logic with no I/O          | `lib/domain/`, with tests in `__tests__/`                                                                     |
 | Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                                |

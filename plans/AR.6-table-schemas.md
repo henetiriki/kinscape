@@ -2,7 +2,7 @@
 
 - **Spec:** #319
 - **Requirement IDs:** NFR-09
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Zod 4.6.7 is the latest release and already sits in the lockfile as a dev-only d
 - **B.** `devDependencies`: enough while only the build and the validator use it; it moves in M2.
 - **Other:** your own.
 
-Recommended: A, because M2 moves it there anyway, and Vercel installs both lists.
+**Answer: A** (@henetiriki)
 
 **D2 · Whole-number days** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Zod 4's `.int()` takes only safe integers (up to 2^53); today's `Number.isIntege
 - **B.** `z.number().refine(Number.isInteger)`: exactly today's rule.
 - **Other:** your own.
 
-Recommended: A, because no real date is that far off and no message changes.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

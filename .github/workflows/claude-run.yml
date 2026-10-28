@@ -134,6 +134,15 @@ jobs:
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
+      # Start the build from the cache that ci.yml's e2e job saves on main. Restore only: a run
+      # started by an issue or a comment can't save to main's cache. The key is the e2e job's
+      # restore-keys prefix (scripts/__tests__/next-build-cache.test.ts keeps them equal).
+      - name: Restore Next.js build cache
+        if: inputs.playwright
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+          path: .next/cache
       # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
       # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
       - name: Install Playwright

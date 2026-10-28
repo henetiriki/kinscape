@@ -14,6 +14,7 @@ export type DrawingLayer = {
 export type Layer = {
   /** The filter for each drawing layer id on `day`. */
   filters: (day: number) => Record<string, ExpressionSpecification>;
+  id: string;
   layers: DrawingLayer[];
   sources: Record<string, SourceSpecification>;
 };

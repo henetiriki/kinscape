@@ -230,6 +230,7 @@ describe('MapView', () => {
     const filter = (day: number) => ['==', ['literal', day], 9];
     const test: Layer = {
       filters: day => ({ 'test-fills': filter(day) as never }),
+      id: 'test',
       layers: [{ id: 'test-fills', source: 'test', type: 'fill' }],
       sources: { test: { data: '/test.geojson', type: 'geojson' } },
     };
@@ -250,6 +251,7 @@ describe('MapView', () => {
   it('shows and hides a drawing layer that has no filter, and clears any earlier one', () => {
     const bare: Layer = {
       filters: () => ({}),
+      id: 'bare',
       layers: [{ id: 'bare-fills', source: 'bare', type: 'fill' }],
       sources: { bare: { data: '/bare.geojson', type: 'geojson' } },
     };

@@ -35,6 +35,7 @@ export const polityLayer: Layer = {
     'polity-fills': dateFilter(day, 'boundary'),
     'polity-labels': dateFilter(day, 'label'),
   }),
+  id: 'polities',
   layers: [
     {
       before: 'rivers',

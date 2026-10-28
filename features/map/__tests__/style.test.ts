@@ -68,6 +68,7 @@ describe('buildStyle', () => {
   it('places a layer ahead of its `before` layer or at the end, and strips `before`', () => {
     const extra = (id: string, before?: string): Layer => ({
       filters: () => ({}),
+      id,
       layers: [{ before, id, source: 'x', type: 'fill' }],
       sources: { x: { data: '/x.geojson', type: 'geojson' } },
     });

@@ -58,6 +58,11 @@
 | A broken edge fails the test               | step 5's failing line in the PR's Evidence                                |
 | Everything else passes                     | `npm test`, lint, typecheck, `design:check`, `npm run e2e`                |
 
+## Deviations
+
+- The D3 test resolves from `node_modules/maplibre-gl/package.json`, because `maplibre-gl`'s `exports` has no CommonJS entry to resolve from.
+- `featureFilter` requires a `rootKey` argument, so the test passes `'filter'`.
+
 ## Out of scope
 
 Branded ids, branded `Day` and `FuzzyDate` (M2). `Span` keeps `number`: the Spec doesn't name it. Moving `dateFilter` (AR.10, #323).

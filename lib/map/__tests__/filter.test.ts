@@ -29,8 +29,9 @@ describe('dateFilter agrees with isCurrentOn', () => {
     'on day %i of a range with no end, null or missing',
     day => {
       const open = { validFrom: 1000, validTo: null };
-      const expected = isCurrentOn(open, day);
+      const expected = day >= open.validFrom;
 
+      expect(isCurrentOn(open, day)).toBe(expected);
       expect(keeps(day, { ...open, kind: 'boundary' })).toBe(expected);
       expect(keeps(day, { kind: 'boundary', validFrom: 1000 })).toBe(expected);
     }

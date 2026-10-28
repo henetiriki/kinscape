@@ -5,9 +5,9 @@ import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Text } from '@ks/app/components/foundation/Text';
 import { Dialog } from '@ks/app/components/overlays/Dialog';
-import { SOURCES_WORDS } from '@ks/app/components/overlays/sourcesWords';
+import { SOURCES_WORDS } from '@ks/features/map/components/sourcesWords';
 
-import styles from '@ks/app/components/overlays/SourcesDialog.module.css';
+import styles from '@ks/features/map/components/SourcesDialog.module.css';
 
 const COLUMNS = ['Layer', 'Source', 'Licence', 'Checked'];
 

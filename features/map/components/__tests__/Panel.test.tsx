@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { Panel } from '@/app/components/map/Panel';
+import { Panel } from '@ks/features/map/components/Panel';
 
 const TABS = [
   { controls: 'body', label: 'Layers', value: 'layers' },

@@ -1,6 +1,6 @@
 /* A raised 48px icon button; its looks are board 04's icon button. */
 .button {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
   background: var(--surface);
   border: 0;

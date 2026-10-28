@@ -7,14 +7,17 @@ import type { Span } from '@ks/lib/domain/map/types';
 
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
-import { Credits } from '@ks/app/components/map/Credits';
-import { DateDock } from '@ks/app/components/map/DateDock';
-import { LayersButton } from '@ks/app/components/map/LayersButton';
-import { LayersPanel, LayersRow } from '@ks/app/components/map/LayersPanel';
-import { freeArea, Stage } from '@ks/app/components/map/Stage';
 import { Sheet } from '@ks/app/components/overlays/Sheet';
-import { SourcesDialog } from '@ks/app/components/overlays/SourcesDialog';
+import { Credits } from '@ks/features/map/components/Credits';
+import { DateDock } from '@ks/features/map/components/DateDock';
+import { LayersButton } from '@ks/features/map/components/LayersButton';
+import {
+  LayersPanel,
+  LayersRow,
+} from '@ks/features/map/components/LayersPanel';
 import { MapView } from '@ks/features/map/components/MapView';
+import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
+import { freeArea, Stage } from '@ks/features/map/components/Stage';
 import { fromDay } from '@ks/lib/domain/boundaries/model.mts';
 import { hasBorders } from '@ks/lib/domain/map/coverage';
 import { todayDay } from '@ks/lib/domain/map/map-date';

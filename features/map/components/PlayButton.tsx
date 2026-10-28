@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 
-import { Button } from '@/app/components/actions/Button';
+import { Button } from '@ks/app/components/actions/Button';
 
 type Props = Omit<
   ComponentProps<typeof Button>,

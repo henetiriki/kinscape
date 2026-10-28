@@ -14,6 +14,11 @@ One commit `git mv`s every file (D1, D2 of the Spec) so history follows; the nex
 - `node-loaded.test.ts` and `vercel-imports.test.ts` fixtures use `@/`; the `@/` copy of the `@ks/` case goes.
 - The target doc has no layer table; it drops "empties the allowlist" and "`@/` imports everywhere".
 
+## Deviations
+
+- `layerBreak` loses its `as` parameter, which only `listed` used.
+- The two `@/` test fixtures are template literals, so `git grep -I "'@/"` finds nothing outside `plans/`.
+
 ## Decisions
 
 **D1 · Whether `design` may import `ui`** · Decides: Tech lead

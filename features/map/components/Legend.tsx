@@ -1,13 +1,13 @@
 import type { CSSProperties } from 'react';
 
-import type { EventType } from '@/app/components/map/types';
+import type { EventType } from '@ks/lib/ui/types';
 
-import { Text } from '@/app/components/foundation/Text';
-import { EventGlyph } from '@/app/components/map/EventGlyph';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/design/tokens.mts';
+import { Text } from '@ks/app/components/foundation/Text';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/design/tokens.mts';
+import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 
-import styles from '@ks/app/components/map/Legend.module.css';
+import styles from '@ks/features/map/components/Legend.module.css';
 
 const { map } = resolveTokens(rawTokens);
 

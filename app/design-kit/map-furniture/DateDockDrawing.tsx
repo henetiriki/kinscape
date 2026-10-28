@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { hatchStyle } from '@ks/app/components/map/hatch';
+import { hatchStyle } from '@ks/lib/ui/hatch';
 
 import styles from '@ks/app/design-kit/map-furniture/DateDockDrawing.module.css';
 

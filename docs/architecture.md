@@ -8,7 +8,8 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | A screen or route               | `app/<route>/page.tsx`: composes components, no CSS of its own (`app/design-kit`, dev-only, is the exception) |
 | Shared UI                       | `app/components/<role>/`: `foundation`, `actions`, `forms`, `feedback`, `overlays`                            |
-| UI only the map or sign-in uses | `app/components/map/`, `app/components/auth/`                                                                 |
+| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                            |
+| UI the kit and features share   | `lib/ui/` (`EventGlyph`, `hatch`, Event types); it imports only `design`                                      |
 | A feature's UI and engine       | `features/<name>/`                                                                                            |
 | Pure logic with no I/O          | `lib/domain/`, with tests in `__tests__/`                                                                     |
 | Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                                |
@@ -19,7 +20,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | A browser test                  | `e2e/`                                                                                                        |
 | A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`      |
 
-Import repo paths through `@ks/`; `@/` stays in `app/components/map` until AR.11 (#324); relative imports only in Node-loaded files. Node loads every `.mts` and `.mjs`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through an alias there.
+Import repo paths through `@ks/`; relative imports only in Node-loaded files. Node loads every `.mts` and `.mjs`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through an alias there.
 
 ## Patterns
 
@@ -28,7 +29,7 @@ Import repo paths through `@ks/`; `@/` stays in `app/components/map` until AR.11
 | **Tokens are the one source.** CSS variables, MapLibre paint values and map padding all read `design/tokens.json`.                                                                                                                         | `design/tokens.mts`, `lib/design/css.mts`, `features/map/style.ts`, `Stage.tsx` `freeArea` | `lib/design/__tests__/design.test.ts` fails if the generated `app/tokens.css` is stale |
 | **Components by role.** One folder per role, holding its components, their `.module.css` where they have styles, and a `__tests__/` folder.                                                                                                | `app/components/`                                                                          | ESLint `no-restricted-imports`; [DESIGN.md](../design/DESIGN.md#components)            |
 | **Variants are data attributes.** `data-size`, `data-state`, `data-form` and the like select the look in the component's CSS module; a rule several components share goes in its own module and is taken with `composes`.                  | `Button.tsx`, `foundation/focus.module.css`                                                | Review                                                                                 |
-| **Slots.** A frame places named boxes over the map and switches between desktop and phone forms.                                                                                                                                           | `app/components/map/Stage.tsx`                                                             | Review                                                                                 |
+| **Slots.** A frame places named boxes over the map and switches between desktop and phone forms.                                                                                                                                           | `features/map/components/Stage.tsx`                                                        | Review                                                                                 |
 | **State in the shell, controlled children.** `MapShell` owns the Map date and layer toggles; children take a value and `onChange`. `usePhone` picks the form; the server renders desktop.                                                  | `features/map/components/MapShell.tsx`, `foundation/usePhone.ts`                           | Review                                                                                 |
 | **Functional core, imperative shell.** Pure functions in `lib/domain`; `MapView` is the only code that creates or drives the map; `features/map/style.ts` and `filter.ts` build MapLibre styles and expressions, importing only its types. | `lib/domain/`, `features/map/components/MapView.tsx`                                       | Tests (100% coverage)                                                                  |
 | **Temporal validity.** A date is an integer day since 1652-01-01; a range is half-open `[validFrom, validTo)`, null meaning current. `isCurrentOn` applies it in code; `dateFilter` repeats it as a MapLibre expression.                   | `lib/domain/boundaries/model.mts`, `features/map/filter.ts`                                | Unit tests of each; `filter.test.ts` checks that the two agree                         |
@@ -42,15 +43,16 @@ Import repo paths through `@ks/`; `@/` stays in `app/components/map` until AR.11
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, `@ks/` imports only, stylesheets last, type imports on their own `import type` line.
 - **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
-- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import Node built-ins (a bare name counts unless `package.json` lists a package of that name) or `maplibre-gl`. `features/` holds only feature folders; outside code imports a feature only through `index.ts`. Today's breaks are the `ALLOWLIST` in `scripts/layers.mts`, each with where it moves; it excuses only imports that would be fine in that layer; a file takes the most specific entry. The fitness test fails on a new break or a fixed listed one. Tests, `app/design-kit`, `scripts`, `e2e`, `lib/design` tooling are outside the map, and mapped code may not import them. Other `lib/` folders are unchecked. `app/components/map` counts as the kit until it moves.
+- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import Node built-ins (a bare name counts unless `package.json` lists a package of that name) or `maplibre-gl`. `features/` holds only feature folders; outside code imports a feature only through `index.ts`. The fitness test fails on any break. Tests, `app/design-kit`, `scripts`, `e2e`, `lib/design` tooling are outside the map, and mapped code may not import them. Other `lib/` folders are unchecked.
 
-| Layer             | Holds                                  | May import                                                                         |
-| ----------------- | -------------------------------------- | ---------------------------------------------------------------------------------- |
-| `design`          | `design/`                              | nothing                                                                            |
-| `lib/domain`      | pure logic and types (`lib/domain/`)   | itself                                                                             |
-| `server/`         | file and database access               | `lib/domain`, itself                                                               |
-| `app/components`  | the shared UI kit                      | `design`, itself                                                                   |
-| `features/<name>` | that feature's UI, queries and actions | `design`, `lib/domain`, `server/`, `app/components`, itself; never another feature |
-| `app/` routes     | pages, route handlers, server actions  | everything above                                                                   |
+| Layer             | Holds                                  | May import                                                                                   |
+| ----------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `design`          | `design/`                              | nothing                                                                                      |
+| `lib/domain`      | pure logic and types (`lib/domain/`)   | itself                                                                                       |
+| `server/`         | file and database access               | `lib/domain`, itself                                                                         |
+| `lib/ui`          | UI the kit and features share          | `design`, itself                                                                             |
+| `app/components`  | the shared UI kit                      | `design`, `lib/ui`, itself                                                                   |
+| `features/<name>` | that feature's UI, queries and actions | `design`, `lib/domain`, `server/`, `app/components`, `lib/ui`, itself; never another feature |
+| `app/` routes     | pages, route handlers, server actions  | everything above                                                                             |
 
 Tests, hooks and word budgets: [AGENTS.md](../AGENTS.md). Security: [security.md](security.md). Workflow: [how-we-work.md](how-we-work.md).

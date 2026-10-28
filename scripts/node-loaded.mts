@@ -1,7 +1,7 @@
 import { globSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
-// Node loads these files without a bundler, so an `@/` or `@ks/` value import fails there.
+// Node loads these files without a bundler, so an `@ks/` value import fails there.
 // ESLint applies the Node rule to them (eslint.config.mjs); the tests read `NODE_MESSAGE`.
 
 export const NODE_MESSAGE =

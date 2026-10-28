@@ -1,15 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { EventType } from '@ks/app/components/map/types';
 import type { Column } from '@ks/app/design-kit/inputs/types';
+import type { EventType } from '@ks/lib/ui/types';
 
 import { Chip } from '@ks/app/components/actions/Chip';
-import { Avatar } from '@ks/app/components/map/Avatar';
-import { EVENT_ORDER, EventGlyph } from '@ks/app/components/map/EventGlyph';
-import { LayersButton } from '@ks/app/components/map/LayersButton';
-import { Legend } from '@ks/app/components/map/Legend';
-import { SearchBar } from '@ks/app/components/map/SearchBar';
-import { Wordmark } from '@ks/app/components/map/Wordmark';
+import { Avatar } from '@ks/app/components/foundation/Avatar';
+import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 import {
   ByViewport,
   DesktopOnly,
@@ -28,6 +24,10 @@ import {
 import { ZoomDemo } from '@ks/app/design-kit/map-furniture/ZoomDemo';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { LayersButton } from '@ks/features/map/components/LayersButton';
+import { Legend } from '@ks/features/map/components/Legend';
+import { SearchBar } from '@ks/features/map/components/SearchBar';
+import { EVENT_ORDER, EventGlyph } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/design-kit/map-furniture/page.module.css';
 

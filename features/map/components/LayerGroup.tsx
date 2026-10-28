@@ -2,10 +2,10 @@ import type { ComponentProps, ReactNode } from 'react';
 
 import { useId } from 'react';
 
-import { CheckboxField } from '@/app/components/forms/CheckboxField';
-import { Text } from '@/app/components/foundation/Text';
+import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
+import { Text } from '@ks/app/components/foundation/Text';
 
-import styles from '@ks/app/components/map/LayerGroup.module.css';
+import styles from '@ks/features/map/components/LayerGroup.module.css';
 
 type LayerRow = {
   checked: boolean;

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
-import { Wordmark } from '@ks/app/components/map/Wordmark';
+import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 

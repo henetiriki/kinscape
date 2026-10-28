@@ -1,9 +1,9 @@
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import { IconButton } from '@/app/components/actions/IconButton';
-import { Icon } from '@/app/components/foundation/Icon';
+import { IconButton } from '@ks/app/components/actions/IconButton';
+import { Icon } from '@ks/app/components/foundation/Icon';
 
-import styles from '@ks/app/components/map/ZoomControls.module.css';
+import styles from '@ks/features/map/components/ZoomControls.module.css';
 
 /**
  * The card of Zoom in, Zoom out and Fit South Africa. At a limit a button is `aria-disabled`, stays in

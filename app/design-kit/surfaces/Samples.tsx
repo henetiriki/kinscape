@@ -11,13 +11,13 @@ import {
   Popup,
   PopupPointer,
 } from '@ks/app/components/overlays/Popup';
-import { SourcesDialog } from '@ks/app/components/overlays/SourcesDialog';
 import {
   CHAIN,
   MENU_GROUPS,
   MENU_WORDS,
   PINS,
 } from '@ks/app/design-kit/surfaces/data';
+import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 
 import styles from '@ks/app/design-kit/surfaces/page.module.css';
 

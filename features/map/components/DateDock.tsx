@@ -4,27 +4,27 @@ import type { ComponentProps } from 'react';
 
 import { useEffect, useState } from 'react';
 
-import type { ContestedYears, Epoch } from '@/app/components/map/types';
-import type { Precision } from '@/lib/domain/map/types';
+import type { Precision } from '@ks/lib/domain/map/types';
+import type { ContestedYears, Epoch } from '@ks/lib/ui/types';
 
-import { IconButton } from '@/app/components/actions/IconButton';
-import { Segmented } from '@/app/components/actions/Segmented';
-import { DateField } from '@/app/components/forms/DateField';
-import { ContestedNote } from '@/app/components/map/ContestedNote';
-import { DateKeyHints } from '@/app/components/map/DateKeyHints';
-import { DateSlider } from '@/app/components/map/DateSlider';
-import { JumpTo } from '@/app/components/map/JumpTo';
-import { PlayButton } from '@/app/components/map/PlayButton';
-import { BottomSheet } from '@/app/components/overlays/BottomSheet';
-import { fromDay, toDay } from '@/lib/domain/boundaries/model.mts';
+import { IconButton } from '@ks/app/components/actions/IconButton';
+import { Segmented } from '@ks/app/components/actions/Segmented';
+import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
+import { ContestedNote } from '@ks/features/map/components/ContestedNote';
+import { DateField } from '@ks/features/map/components/DateField';
+import { DateKeyHints } from '@ks/features/map/components/DateKeyHints';
+import { DateSlider } from '@ks/features/map/components/DateSlider';
+import { JumpTo } from '@ks/features/map/components/JumpTo';
+import { PlayButton } from '@ks/features/map/components/PlayButton';
+import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import {
   finerPrecision,
   MIN_DAY,
   PRECISIONS,
   stepDay,
-} from '@/lib/domain/map/map-date';
+} from '@ks/lib/domain/map/map-date';
 
-import styles from '@ks/app/components/map/DateDock.module.css';
+import styles from '@ks/features/map/components/DateDock.module.css';
 
 const OPTIONS = PRECISIONS.map(precision => ({
   label: precision[0].toUpperCase() + precision.slice(1),

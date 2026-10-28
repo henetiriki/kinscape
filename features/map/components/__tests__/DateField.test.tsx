@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { DateField } from '@ks/app/components/forms/DateField';
+import { DateField } from '@ks/features/map/components/DateField';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date';
 

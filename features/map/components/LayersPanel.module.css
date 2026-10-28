@@ -1,6 +1,6 @@
 /* Placed by the Stage's panel slot. */
 .panel {
-  composes: raised from '@/app/components/foundation/Surface.module.css';
+  composes: raised from '@ks/app/components/foundation/Surface.module.css';
   padding: var(--space-16) var(--space-20);
 }
 

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 const rule = (file: string, selector: string) => {
-  const css = `\n${readFileSync(join(process.cwd(), 'app/components', file), 'utf8')}`;
+  const css = `\n${readFileSync(join(process.cwd(), file), 'utf8')}`;
   const start = css.indexOf(`\n${selector} {`);
 
   return css.slice(start, css.indexOf('}', start));
@@ -11,23 +11,23 @@ const rule = (file: string, selector: string) => {
 
 // NFR-06: Vitest doesn't resolve `composes:`, so the rules are read as text.
 it.each([
-  ['map/LayersPanel.module.css', '.panel', 'raised', '@/'],
-  ['map/DateDock.module.css', '.dock', 'raised', '@/'],
-  ['feedback/Toast.module.css', '.toast', 'floating', '@ks/'],
+  ['features/map/components/LayersPanel.module.css', '.panel', 'raised'],
+  ['features/map/components/DateDock.module.css', '.dock', 'raised'],
+  ['app/components/feedback/Toast.module.css', '.toast', 'floating'],
 ])(
   '%s sets %s at the %s level and draws no background, radius or shadow',
-  (file, selector, level, alias) => {
+  (file, selector, level) => {
     const body = rule(file, selector);
 
     expect(body).toContain(
-      `composes: ${level} from '${alias}app/components/foundation/Surface.module.css'`
+      `composes: ${level} from '@ks/app/components/foundation/Surface.module.css'`
     );
     expect(body).not.toMatch(/background|border-radius|box-shadow/);
   }
 );
 
 it('keeps the shared Toast shape free of its own radius', () => {
-  expect(rule('feedback/Toast.module.css', '.shape')).not.toContain(
-    'border-radius'
-  );
+  expect(
+    rule('app/components/feedback/Toast.module.css', '.shape')
+  ).not.toContain('border-radius');
 });

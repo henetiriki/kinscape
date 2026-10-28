@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import type { Source } from '@/lib/domain/boundaries/types.ts';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
-import { Credits, sourcesOnScreen } from '@/app/components/map/Credits';
+import { Credits, sourcesOnScreen } from '@ks/features/map/components/Credits';
 
 const source = (id: string, layer: string, attribution: string): Source => ({
   attribution,

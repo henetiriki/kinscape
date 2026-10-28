@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Legend } from '@/app/components/map/Legend';
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/design/tokens.mts';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/design/tokens.mts';
+import { Legend } from '@ks/features/map/components/Legend';
 
 const { map } = resolveTokens(rawTokens);
 

@@ -1,8 +1,8 @@
 import type { ComponentProps } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import styles from '@ks/app/components/map/Avatar.module.css';
+import styles from '@ks/app/components/foundation/Avatar.module.css';
 
 /** The 44 round button that opens the account Menu; `expanded` is its open look. */
 export const Avatar = ({

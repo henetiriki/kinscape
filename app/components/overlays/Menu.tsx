@@ -7,9 +7,9 @@ import { useEffect, useRef, useState } from 'react';
 import type { ControlState } from '@ks/app/components/foundation/types';
 import type { MenuEntry } from '@ks/app/components/overlays/types';
 
+import { Avatar } from '@ks/app/components/foundation/Avatar';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
-import { Avatar } from '@ks/app/components/map/Avatar';
 
 import styles from '@ks/app/components/overlays/Menu.module.css';
 

@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
-import { SourcesDialog } from '@ks/app/components/overlays/SourcesDialog';
+import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 
 const sources: Source[] = [
   {

@@ -1,6 +1,6 @@
 /* The account Menu's trigger: 44 round, brand, a white initial, the raised shadow and no border */
 .avatar {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
   background: var(--brand);
   border: 0;

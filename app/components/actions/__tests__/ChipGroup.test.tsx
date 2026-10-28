@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
-import { EVENT_ORDER } from '@ks/app/components/map/EventGlyph';
+import { EVENT_ORDER } from '@ks/lib/ui/EventGlyph';
 
 const OPTIONS = EVENT_ORDER.map(glyph => ({
   glyph,

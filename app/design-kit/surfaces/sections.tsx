@@ -8,15 +8,13 @@ import { Button } from '@ks/app/components/actions/Button';
 import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
+import { Avatar } from '@ks/app/components/foundation/Avatar';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
-import { Avatar } from '@ks/app/components/map/Avatar';
 import { DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { MenuItem, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { SheetPanel } from '@ks/app/components/overlays/Sheet';
-import { SourcesList } from '@ks/app/components/overlays/SourcesDialog';
-import { SOURCES_WORDS } from '@ks/app/components/overlays/sourcesWords';
 import {
   Accessibility,
   ByViewport,
@@ -40,6 +38,8 @@ import {
 } from '@ks/app/design-kit/surfaces/Samples';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { SourcesList } from '@ks/features/map/components/SourcesDialog';
+import { SOURCES_WORDS } from '@ks/features/map/components/sourcesWords';
 
 import styles from '@ks/app/design-kit/surfaces/page.module.css';
 

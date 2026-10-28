@@ -2,8 +2,8 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DateDock } from '@/app/components/map/DateDock';
-import { fromDay, toDay } from '@/lib/domain/boundaries/model.mts';
+import { DateDock } from '@ks/features/map/components/DateDock';
+import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 const today = toDay('2026-10-21');
 

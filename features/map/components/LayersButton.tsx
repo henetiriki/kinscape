@@ -1,10 +1,10 @@
 import type { ComponentProps } from 'react';
 
-import type { ControlState } from '@/app/components/foundation/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
 
-import { Icon } from '@/app/components/foundation/Icon';
+import { Icon } from '@ks/app/components/foundation/Icon';
 
-import styles from '@ks/app/components/map/LayersButton.module.css';
+import styles from '@ks/features/map/components/LayersButton.module.css';
 
 /** The phone's one 48px button that opens Layers and filters. */
 export const LayersButton = ({

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { Avatar } from '@/app/components/map/Avatar';
+import { Avatar } from '@ks/app/components/foundation/Avatar';
 
 // NFR-05, NFR-06
 it('is closed unless told it is open', () => {

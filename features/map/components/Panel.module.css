@@ -1,6 +1,6 @@
 /* The side panel: 320 wide, tabs on top, a scrolling body, the footer last. */
 .panel {
-  composes: raised from '@/app/components/foundation/Surface.module.css';
+  composes: raised from '@ks/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -18,7 +18,7 @@
 }
 
 .body {
-  composes: ring from '@/app/components/foundation/focus.module.css';
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
   display: flex;
   flex: 0 1 auto;
   flex-direction: column;

@@ -3,11 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import {
-  EVENT_ORDER,
-  EVENT_PATHS,
-  EventGlyph,
-} from '@/app/components/map/EventGlyph';
+import { EVENT_ORDER, EVENT_PATHS, EventGlyph } from '@ks/lib/ui/EventGlyph';
 
 const css = readFileSync(
   join(import.meta.dirname, '../EventGlyph.module.css'),

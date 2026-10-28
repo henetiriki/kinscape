@@ -2,9 +2,9 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import type { PreviewKind } from '@ks/app/design-kit/map-style/types';
 
-import { EVENT_PATHS } from '@ks/app/components/map/EventGlyph';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { EVENT_PATHS } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/design-kit/map-style/Preview.module.css';
 

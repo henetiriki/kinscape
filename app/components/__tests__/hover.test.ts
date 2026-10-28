@@ -4,7 +4,11 @@ import { expect, it } from 'vitest';
 
 const ROOT = join(__dirname, '../../..');
 const STYLESHEETS = globSync(
-  ['app/components/**/*.module.css', 'features/*/components/**/*.module.css'],
+  [
+    'app/components/**/*.module.css',
+    'features/*/components/**/*.module.css',
+    'lib/ui/**/*.module.css',
+  ],
   { cwd: ROOT }
 );
 

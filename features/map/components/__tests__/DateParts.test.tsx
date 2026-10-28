@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { ContestedNote } from '@/app/components/map/ContestedNote';
-import { DateKeyHints } from '@/app/components/map/DateKeyHints';
-import { JumpTo } from '@/app/components/map/JumpTo';
-import { PlayButton } from '@/app/components/map/PlayButton';
+import { ContestedNote } from '@ks/features/map/components/ContestedNote';
+import { DateKeyHints } from '@ks/features/map/components/DateKeyHints';
+import { JumpTo } from '@ks/features/map/components/JumpTo';
+import { PlayButton } from '@ks/features/map/components/PlayButton';
 
 // NFR-06
 it('names the pill and the round Play the same', () => {

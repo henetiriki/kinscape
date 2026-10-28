@@ -1,9 +1,9 @@
 'use client';
 
-import { Checkbox } from '@/app/components/forms/Checkbox';
-import { Text } from '@/app/components/foundation/Text';
+import { Checkbox } from '@ks/app/components/forms/Checkbox';
+import { Text } from '@ks/app/components/foundation/Text';
 
-import styles from '@ks/app/components/map/LayersPanel.module.css';
+import styles from '@ks/features/map/components/LayersPanel.module.css';
 
 type LayerProps = {
   onShowPolitiesChange: (show: boolean) => void;

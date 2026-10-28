@@ -1,6 +1,6 @@
-import type { EventType } from '@ks/app/components/map/types';
+import type { EventType } from '@ks/lib/ui/types';
 
-import styles from '@ks/app/components/map/EventGlyph.module.css';
+import styles from '@ks/lib/ui/EventGlyph.module.css';
 
 /** Each Event type's path, copied from design/source/kse-*.svg (DESIGN.md › Event glyphs). A test keeps them in step. */
 export const EVENT_PATHS = {

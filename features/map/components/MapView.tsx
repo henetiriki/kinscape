@@ -11,7 +11,7 @@ import { useEffect, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import { PHONE } from '@ks/app/components/foundation/usePhone';
-import { freeArea } from '@ks/app/components/map/Stage';
+import { freeArea } from '@ks/features/map/components/Stage';
 import {
   buildStyle,
   POLITY_LAYERS,

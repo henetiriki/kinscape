@@ -1,11 +1,11 @@
-import type { ChipOption } from '@/app/components/actions/types';
+import type { ChipOption } from '@ks/app/components/actions/types';
 
-import { Button } from '@/app/components/actions/Button';
-import { ChipGroup } from '@/app/components/actions/ChipGroup';
-import { SelectField } from '@/app/components/forms/SelectField';
-import { TokenField } from '@/app/components/forms/TokenField';
+import { Button } from '@ks/app/components/actions/Button';
+import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
+import { SelectField } from '@ks/app/components/forms/SelectField';
+import { TokenField } from '@ks/app/components/forms/TokenField';
 
-import styles from '@ks/app/components/map/FilterFields.module.css';
+import styles from '@ks/features/map/components/FilterFields.module.css';
 
 type Choice = { label: string; value: string };
 

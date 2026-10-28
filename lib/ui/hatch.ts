@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 
-import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/design/tokens.mts';
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 const { map } = resolveTokens(rawTokens);
 

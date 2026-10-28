@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { freeArea, Stage } from '@/app/components/map/Stage';
+import { freeArea, Stage } from '@ks/features/map/components/Stage';
 
 const css = readFileSync(
   join(import.meta.dirname, '../Stage.module.css'),

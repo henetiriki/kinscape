@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { ClearFilters, FilterFields } from '@/app/components/map/FilterFields';
+import {
+  ClearFilters,
+  FilterFields,
+} from '@ks/features/map/components/FilterFields';
 
 const CHOICES = [
   { label: 'Anyone', value: '' },

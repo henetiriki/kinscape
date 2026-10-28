@@ -2,11 +2,11 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import type { EventType } from '@/app/components/map/types';
+import type { EventType } from '@ks/lib/ui/types';
 
-import { EVENT_PATHS } from '@/app/components/map/EventGlyph';
+import { EVENT_PATHS } from '@ks/lib/ui/EventGlyph';
 
-const SOURCE = join(import.meta.dirname, '../../../../design/source');
+const SOURCE = join(import.meta.dirname, '../../../design/source');
 
 // Baptism's file carries both names the design uses.
 const FILE_FOR: Record<EventType, string> = {

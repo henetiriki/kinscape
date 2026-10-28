@@ -158,15 +158,14 @@ Shown with spacing and motion at `/design-kit/foundations`.
 
 Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>` (a feature's own components: [architecture.md](../docs/architecture.md#where-does-x-go)):
 
-| Folder       | Holds                                                                                       |
-| ------------ | ------------------------------------------------------------------------------------------- |
-| `foundation` | Text, Icon, Surface, Divider, focus, controls                                               |
-| `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint                     |
-| `forms`      | TextField, DateField, SelectField, TokenField, Checkbox, CheckboxField                      |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                      |
-| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup, SourcesDialog                               |
-| `map`        | What only the map uses: DateDock, LayersPanel, Legend, Stage, Panel, Avatar, Wordmark, etc. |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero                                              |
+| Folder       | Holds                                                                   |
+| ------------ | ----------------------------------------------------------------------- |
+| `foundation` | Text, Icon, Surface, Divider, focus, controls, Avatar, Wordmark         |
+| `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint |
+| `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField             |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                  |
+| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero                          |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page.
 

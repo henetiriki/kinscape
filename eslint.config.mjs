@@ -10,11 +10,6 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import { plugin as layers } from './scripts/layers.mts';
 import { NODE_MESSAGE, nodeLoadedFiles } from './scripts/node-loaded.mts';
 
-const LEGACY_ALIAS = {
-  group: ['@/**'],
-  message: '@/ is legacy: use @ks/.',
-};
-
 const RELATIVE = {
   message:
     'Import by full path through @ks/, as in @ks/app/components/<folder>/<Name>.',
@@ -87,7 +82,7 @@ export default defineConfig([
             'ts-equals-import',
             'unknown',
           ],
-          internalPattern: ['^~/.+', '^@/.+', '^@ks/.+'],
+          internalPattern: ['^~/.+', '^@ks/.+'],
         },
       ],
     },
@@ -158,20 +153,10 @@ export default defineConfig([
     // Import by full path, so a move can't leave a stale relative one. Each block replaces
     // the rule's options, so each lists every pattern that applies to its files.
     files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        { patterns: [LEGACY_ALIAS, RELATIVE] },
-      ],
-    },
-  },
-  {
-    // The map folder keeps `@/` until AR.11 (#324).
-    files: ['app/components/map/**'],
     rules: { 'no-restricted-imports': ['error', { patterns: [RELATIVE] }] },
   },
   {
-    // The layer map in docs/architecture.md; its allowlist lives in scripts/layers.mts.
+    // The layer map in docs/architecture.md, read from scripts/layers.mts.
     files: [
       'app/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
       'design/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
@@ -185,7 +170,7 @@ export default defineConfig([
   {
     // Node loads these files without aliases, so they import relatively.
     files: nodeLoadedFiles(),
-    rules: { 'no-restricted-imports': ['error', { patterns: [LEGACY_ALIAS] }] },
+    rules: { 'no-restricted-imports': 'off' },
   },
   {
     files: nodeLoadedFiles(),
@@ -197,7 +182,7 @@ export default defineConfig([
           patterns: [
             {
               allowTypeImports: true,
-              group: ['@/**', '@ks/**'],
+              group: ['@ks/**'],
               message: NODE_MESSAGE,
             },
           ],

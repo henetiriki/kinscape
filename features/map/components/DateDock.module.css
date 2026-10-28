@@ -1,5 +1,5 @@
 .dock {
-  composes: raised from '@/app/components/foundation/Surface.module.css';
+  composes: raised from '@ks/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   gap: var(--space-8);

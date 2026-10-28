@@ -1,6 +1,6 @@
-import { hatchStyle } from '@/app/components/map/hatch';
+import { hatchStyle } from '@ks/lib/ui/hatch';
 
-import styles from '@ks/app/components/map/ContestedNote.module.css';
+import styles from '@ks/features/map/components/ContestedNote.module.css';
 
 /** How many claims on the Map date are contested, with the hatch swatch. Nothing at zero. */
 export const ContestedNote = ({ count }: { count: number }) =>

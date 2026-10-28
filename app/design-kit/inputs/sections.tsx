@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
 import type { Tab } from '@ks/app/components/actions/types';
-import type { EventType } from '@ks/app/components/map/types';
 import type { Column } from '@ks/app/design-kit/inputs/types';
+import type { EventType } from '@ks/lib/ui/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';

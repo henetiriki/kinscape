@@ -10,7 +10,7 @@ import { Button } from '@ks/app/components/actions/Button';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
-import { EventGlyph } from '@ks/app/components/map/EventGlyph';
+import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/components/overlays/Popup.module.css';
 

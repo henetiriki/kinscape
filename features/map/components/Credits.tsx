@@ -1,8 +1,8 @@
 'use client';
 
-import type { Source } from '@/lib/domain/boundaries/types.ts';
+import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
-import styles from '@ks/app/components/map/Credits.module.css';
+import styles from '@ks/features/map/components/Credits.module.css';
 
 /** Layers whose sources are credited only while that layer is on. */
 export const POLITY_LAYER = 'Polity borders';

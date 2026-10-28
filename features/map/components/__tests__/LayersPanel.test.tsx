@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
-import { LayersPanel, LayersRow } from '@/app/components/map/LayersPanel';
+import {
+  LayersPanel,
+  LayersRow,
+} from '@ks/features/map/components/LayersPanel';
 
 it('draws the row alone for the phone Layers sheet', () => {
   render(<LayersRow onShowPolitiesChange={vi.fn()} showPolities={false} />);

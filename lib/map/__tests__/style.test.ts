@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import tokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 import { dateFilter } from '@ks/lib/map/filter';
 import { buildStyle, POLITY_LAYERS, polityFilters } from '@ks/lib/map/style';
 

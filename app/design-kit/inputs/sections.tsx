@@ -27,7 +27,7 @@ import {
   Variants,
 } from '@ks/app/design-kit/inputs/Board';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import styles from '@ks/app/design-kit/inputs/page.module.css';
 

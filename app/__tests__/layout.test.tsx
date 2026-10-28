@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import RootLayout, { metadata } from '@ks/app/layout';
 import tokens from '@ks/design/tokens.json';
-import { fontVariable } from '@ks/lib/design/tokens.mts';
+import { fontVariable } from '@ks/lib/design/css.mts';
 
 interface FontOptions {
   declarations?: { prop: string; value: string }[];

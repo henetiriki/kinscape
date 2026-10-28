@@ -39,7 +39,7 @@ import {
   CopyChainPopup,
 } from '@ks/app/design-kit/surfaces/Samples';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import styles from '@ks/app/design-kit/surfaces/page.module.css';
 

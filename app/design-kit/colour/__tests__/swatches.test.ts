@@ -3,7 +3,7 @@ import { expect, it } from 'vitest';
 import { ratioOf, valueAt } from '@ks/app/design-kit/colour/describe';
 import { GROUPS, MINIMUM, SYSTEM } from '@ks/app/design-kit/colour/swatches';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 const tokens = resolveTokens(rawTokens);
 

@@ -2,7 +2,7 @@ import { existsSync, globSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { strayColours } from '@ks/lib/design/tokens.mts';
+import { strayColours } from '@ks/lib/design/css.mts';
 import { generate } from '@ks/scripts/tokens.mts';
 
 const root = join(import.meta.dirname, '../../..');

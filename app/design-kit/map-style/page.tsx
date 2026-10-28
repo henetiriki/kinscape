@@ -5,7 +5,7 @@ import { boardTitle } from '@ks/app/design-kit/boards';
 import { LAYERS, LEGEND } from '@ks/app/design-kit/map-style/layers';
 import { Preview } from '@ks/app/design-kit/map-style/Preview';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 

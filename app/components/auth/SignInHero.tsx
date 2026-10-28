@@ -5,7 +5,7 @@ import { useId } from 'react';
 import { BORDERS, LAND, RIVERS } from '@ks/app/components/auth/signInHeroPaths';
 import { Text } from '@ks/app/components/foundation/Text';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import styles from '@ks/app/components/auth/SignInHero.module.css';
 

@@ -174,6 +174,7 @@ export default defineConfig([
     // The layer map in docs/architecture.md; its allowlist lives in scripts/layers.mts.
     files: [
       'app/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
+      'design/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
       'lib/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
       'features/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
       'server/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',

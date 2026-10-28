@@ -1,7 +1,7 @@
 import type { Layer } from '@ks/app/design-kit/map-style/types';
 
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 const { colour, map } = resolveTokens(rawTokens);
 

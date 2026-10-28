@@ -6,35 +6,8 @@ import {
   cssVariables,
   fontVariable,
   renderCss,
-  resolveTokens,
   strayColours,
-} from '@ks/lib/design/tokens.mts';
-
-describe('resolveTokens', () => {
-  it('replaces references, including a chain of them, with the value', () => {
-    const tokens = {
-      colour: { brand: '#264f29', focus: '{colour.brand}' },
-      map: { selected: { colour: '{colour.focus}', width: 2.5 } },
-    };
-
-    expect(resolveTokens(tokens).map).toEqual({
-      selected: { colour: '#264f29', width: 2.5 },
-    });
-  });
-
-  it('rejects a reference to nothing', () => {
-    expect(() => resolveTokens({ a: '{b.c}' })).toThrow(
-      'Unknown token reference {b.c}'
-    );
-    expect(() => resolveTokens({ a: '{a.b}' })).toThrow('{a.b}');
-  });
-
-  it('rejects a cycle', () => {
-    expect(() => resolveTokens({ a: '{b}', b: '{a}' })).toThrow(
-      'Token reference cycle'
-    );
-  });
-});
+} from '@ks/lib/design/css.mts';
 
 describe('cssName', () => {
   it('leaves colours unprefixed and prefixes every other group', () => {

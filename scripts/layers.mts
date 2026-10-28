@@ -61,11 +61,11 @@ export const layerOf = (path: string): string | undefined => {
     return undefined;
   }
 
-  // Without the extension or trailing slash, so `@/server` and `@/lib/design/tokens` resolve.
+  // Without the extension or trailing slash, so `@/server` resolves.
   const stem = path.replace(SOURCE_EXTENSION, '').replace(/\/$/, '');
   const dir = `${stem}/`;
 
-  if (dir.startsWith('design/') || stem === 'lib/design/tokens') {
+  if (dir.startsWith('design/')) {
     return 'design';
   }
 

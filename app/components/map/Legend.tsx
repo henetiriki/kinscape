@@ -5,7 +5,7 @@ import type { EventType } from '@/app/components/map/types';
 import { Text } from '@/app/components/foundation/Text';
 import { EventGlyph } from '@/app/components/map/EventGlyph';
 import rawTokens from '@/design/tokens.json';
-import { resolveTokens } from '@/lib/design/tokens.mts';
+import { resolveTokens } from '@/design/tokens.mts';
 
 import styles from '@ks/app/components/map/Legend.module.css';
 

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { renderCss } from '../lib/design/tokens.mts';
+import { renderCss } from '../lib/design/css.mts';
 
 /** Reads `design/tokens.json` under `root` and returns the CSS that `app/tokens.css` must hold. */
 export const generate = (root: string): string =>

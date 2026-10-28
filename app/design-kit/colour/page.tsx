@@ -5,7 +5,7 @@ import { boardTitle } from '@ks/app/design-kit/boards';
 import { describe, nameOf, valueAt } from '@ks/app/design-kit/colour/describe';
 import { GROUPS, SYSTEM } from '@ks/app/design-kit/colour/swatches';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 

@@ -1,60 +1,11 @@
-/** Design tokens: `design/tokens.json` resolved for the map and written as CSS custom properties. */
+/** Design tokens as CSS: `design/tokens.json` written as custom properties, plus the stray-colour check. */
+
+import type { Tree } from '../../design/types.ts';
+
+import { isTree, REFERENCE } from '../../design/tokens.mts';
 
 export const GENERATED_HEADER =
   '/* Generated from design/tokens.json by `npm run tokens`. Do not edit. */';
-
-const REFERENCE = /^\{([^{}]+)\}$/;
-
-type Tree = { [key: string]: number | string | Tree };
-
-const isTree = (value: unknown): value is Tree =>
-  typeof value === 'object' && value !== null;
-
-const lookup = (tokens: Tree, path: string): number | string | Tree => {
-  let node: number | string | Tree = tokens;
-
-  for (const key of path.split('.')) {
-    if (!isTree(node) || !(key in node)) {
-      throw new Error(`Unknown token reference {${path}}`);
-    }
-
-    node = node[key];
-  }
-
-  return node;
-};
-
-const resolveValue = (
-  tokens: Tree,
-  value: number | string | Tree,
-  seen: string[]
-): number | string | Tree => {
-  if (isTree(value)) {
-    return Object.fromEntries(
-      Object.entries(value).map(([key, child]) => [
-        key,
-        resolveValue(tokens, child, seen),
-      ])
-    );
-  }
-
-  const path =
-    typeof value === 'string' ? REFERENCE.exec(value)?.[1] : undefined;
-
-  if (path === undefined) {
-    return value;
-  }
-
-  if (seen.includes(path)) {
-    throw new Error(`Token reference cycle at {${path}}`);
-  }
-
-  return resolveValue(tokens, lookup(tokens, path), [...seen, path]);
-};
-
-/** Replaces every `{group.name}` reference with the value it points at. */
-export const resolveTokens = <T extends Tree>(tokens: T): T =>
-  resolveValue(tokens, tokens, []) as T;
 
 /** The custom property for a token: colours are unprefixed, other groups keep their group. */
 export const cssName = (path: string[]): string =>

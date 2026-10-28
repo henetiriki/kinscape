@@ -27,7 +27,7 @@ import {
 } from '@ks/app/design-kit/map-furniture/DateDockDrawing';
 import { ZoomDemo } from '@ks/app/design-kit/map-furniture/ZoomDemo';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import styles from '@ks/app/design-kit/map-furniture/page.module.css';
 

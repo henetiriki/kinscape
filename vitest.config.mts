@@ -16,7 +16,7 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         '**/*.d.ts',
       ],
-      include: ['{app,lib,scripts}/**/*.{ts,tsx,js,mjs,mts}'],
+      include: ['{app,design,lib,scripts}/**/*.{ts,tsx,js,mjs,mts}'],
       provider: 'v8',
       reporter: ['text', 'lcov'],
       thresholds: {
@@ -28,7 +28,7 @@ export default defineConfig({
     },
     css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',
-    include: ['{app,lib,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
+    include: ['{app,design,lib,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],
   },
 });

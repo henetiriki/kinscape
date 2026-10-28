@@ -5,7 +5,7 @@ import { expect, it } from 'vitest';
 
 import { AuthLayout } from '@ks/app/components/auth/AuthLayout';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 const { breakpoint, layout, map } = resolveTokens(rawTokens);
 

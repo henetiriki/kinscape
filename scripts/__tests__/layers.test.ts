@@ -19,7 +19,7 @@ import {
 } from '../layers.mts';
 
 // NFR-09. The same file types as the lint rule's globs in eslint.config.mjs.
-const ROOTS = ['app', 'lib', 'features', 'server'];
+const ROOTS = ['app', 'design', 'lib', 'features', 'server'];
 
 /** The module a node names, if it is an import, re-export, `import()`, `import('…').T`, `import x = require()`, `require()` or `vi.mock()`. */
 const moduleOf = (node: ts.Node): ts.Node | undefined => {
@@ -322,13 +322,14 @@ describe('isBuiltin', () => {
 describe('layerOf', () => {
   it.each([
     ['design/tokens.json', 'design'],
-    ['lib/design/tokens.mts', 'design'],
+    ['design/tokens.mts', 'design'],
+    ['lib/design/tokens.mts', undefined],
     ['lib/map/style.ts', 'domain'],
     ['server/db.ts', 'server'],
     ['app/components/forms/X.tsx', 'kit'],
     ['features/map/A.tsx', 'features/map'],
     ['app/page.tsx', 'routes'],
-    ['lib/design/tokens', 'design'],
+    ['lib/design/tokens', undefined],
     ['server', 'server'],
     ['features', undefined],
     ['lib/design/check.mts', undefined],
@@ -406,8 +407,14 @@ describe('layerBreak', () => {
     [
       'lib/domain',
       'lib/map/a.ts',
-      '@/lib/design/tokens',
+      '@ks/design/tokens.mts',
       'lib/domain may not import design',
+    ],
+    [
+      'app/components importing the CSS half',
+      'app/components/forms/X.tsx',
+      '@ks/lib/design/css.mts',
+      'app/components may not import dev-only code',
     ],
     [
       'lib/domain',
@@ -474,6 +481,7 @@ describe('layerBreak', () => {
     ['server', 'server/a.ts', '@/lib/map/a'],
     ['server via @ks/', 'server/a.ts', '@ks/lib/map/a'],
     ['app/components', 'app/components/forms/X.tsx', '@/design/tokens.json'],
+    ['app/components', 'app/components/forms/X.tsx', '@ks/design/tokens.mts'],
     [
       'app/components',
       'app/components/forms/X.tsx',

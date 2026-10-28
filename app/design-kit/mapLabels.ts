@@ -1,7 +1,7 @@
 import type { Label } from '@ks/app/design-kit/types';
 
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 const { map } = resolveTokens(rawTokens);
 

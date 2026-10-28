@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { Wordmark } from '@ks/app/components/map/Wordmark';
 import rawTokens from '@ks/design/tokens.json';
-import { resolveTokens } from '@ks/lib/design/tokens.mts';
+import { resolveTokens } from '@ks/design/tokens.mts';
 
 import styles from '@ks/app/components/auth/AuthLayout.module.css';
 

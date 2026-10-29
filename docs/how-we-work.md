@@ -27,8 +27,8 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 | **Spec**         | Claude slices the Intent and flags decisions; an undesigned screen is a Flagged concern                                                                                  | PO or tech lead (see _Spec_)  |
 | **Plan**         | Claude plans each Spec                                                                                                                                                   | Tech lead                     |
 | **Build & test** | Claude writes code and tests; done only when checks pass                                                                                                                 | Tech lead reviews             |
-| **Preview**      | Each pull request gets a preview link to try against the acceptance checks                                                                                               | One approval, PO or tech lead |
-| **Live**         | Merging to `main` deploys production; [rollback](building.md#live)                                                                                                       | Tech lead merges              |
+| **Preview**      | A visible change gets a preview link to try against the acceptance checks                                                                                                | One approval, PO or tech lead |
+| **Live**         | Merging to `main` deploys production, unless nothing visible changed ([Vercel](repo-settings.md#vercel)); [rollback](building.md#live)                                   | Tech lead merges              |
 | **Feedback**     | Bugs and ideas become issues                                                                                                                                             | PO prioritises                |
 
 ## Which issue do I need?

@@ -28,7 +28,7 @@ Tooling, CI, docs, process and settings.
 
 ## Merging
 
-Squash only. A pull request needs one approval, from the PO or the tech lead, resolved review conversations and green required checks; CODEOWNERS paths need the tech lead ([list](repo-settings.md)). A new push dismisses earlier approvals. The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
+Merge rules are in [repo settings](repo-settings.md#whats-set-and-why). The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
 
 When a user-visible pull request is ready to try, Claude sets `status: ready-for-po` on it and writes what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](repo-settings.md#vercel)).
 

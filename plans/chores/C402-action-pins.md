@@ -50,3 +50,7 @@ Recommended: A, because a major needs reading anyway, and B bundles every action
 | Pin test fails on a tag                   | Step 2's failing line                              |
 | Dependabot lists each actions directory   | Tech lead, Dependabot page after merge             |
 | `claude-execution-output` artifact        | Next plan or build run and next review after merge |
+
+## Deviations
+
+- Added a test that the pin test sees `setup-workspace`'s steps.

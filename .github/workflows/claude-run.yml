@@ -110,8 +110,9 @@ jobs:
       # A run ends with its turn, which kills any background work.
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     steps:
-      # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a build,
-      # or a plan for a UI Spec), the Playwright and Next.js caches: see .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
+      # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a
+      # build, or a plan for a UI Spec), the Playwright and Next.js caches: see
+      # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
       - name: Set up the workspace
         uses: henetiriki/kinscape/.github/actions/setup-workspace@main
         with:
@@ -145,8 +146,9 @@ jobs:
           id=$(gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$VERB… [View run]($RUN_URL)" --jq .id)
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
-      # Loads the agent files, runs Claude Code and uploads its output: see .github/actions/run-claude/action.yml.
-      # It runs from main, like claude.yml's copy of this step. The caller's prompt and model flags say what to do.
+      # Loads the agent files, runs Claude Code and uploads its output: see
+      # .github/actions/run-claude/action.yml. It runs from main, like claude.yml's copy of this
+      # step. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
         uses: henetiriki/kinscape/.github/actions/run-claude@main

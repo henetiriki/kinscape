@@ -3,6 +3,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -178,8 +179,8 @@ describe('the run-claude action', () => {
     }
   );
 
-  // Dependabot doesn't scan .github/actions/, so a bump of either pin in the review workflow
-  // fails this until the action follows.
+  // Dependabot's `actions` group takes minor and patch, so a major bump of either pin arrives as
+  // two PRs, one per file. This fails until both carry it.
   it.each(['anthropics/claude-code-action', 'actions/upload-artifact'])(
     'pins %s to the commit claude-code-review.yml pins',
     name => {
@@ -187,6 +188,48 @@ describe('the run-claude action', () => {
 
       expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
       expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
+    }
+  );
+});
+
+// A runner's temp directory isn't always /home/runner/work/_temp. A path that misses the file
+// uploads nothing, and `if-no-files-found: ignore` hides it: the run summary has no transcript.
+describe('the transcript upload', () => {
+  const OUTPUT = '${{ runner.temp }}/claude-execution-output.json';
+
+  it('takes the file from runner.temp in run-claude', () => {
+    expect(stepUsing('actions/upload-artifact')?.with?.path).toBe(OUTPUT);
+  });
+
+  it('takes the file from runner.temp in claude-code-review.yml', () => {
+    expect(read('claude-code-review.yml')).toContain(`path: ${OUTPUT}`);
+  });
+});
+
+// A tag or branch can be moved to other code, and these actions run `npm ci` with the bot PAT.
+// Dependabot bumps a SHA with its tag in the comment. Our own actions are called at `@main`.
+describe('the composite actions', () => {
+  const ACTIONS = join(root, '.github/actions');
+  const thirdParty = (name: string) =>
+    (
+      parse(readFileSync(join(ACTIONS, name, 'action.yml'), 'utf8')) as {
+        runs: { steps: Step[] };
+      }
+    ).runs.steps
+      .flatMap(step => (step.uses ? [step.uses] : []))
+      .filter(uses => !uses.startsWith('henetiriki/kinscape/'));
+
+  it('checks the third-party steps of setup-workspace', () => {
+    expect(thirdParty('setup-workspace').length).toBeGreaterThan(0);
+  });
+
+  it.each(readdirSync(ACTIONS))(
+    'pins every third-party step in %s to a commit SHA',
+    name => {
+      expect(
+        thirdParty(name).filter(uses => !/@[0-9a-f]{40}$/.test(uses)),
+        `${name} uses an action that is not pinned to a 40-character SHA`
+      ).toEqual([]);
     }
   );
 });

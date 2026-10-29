@@ -19,8 +19,10 @@ const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
 
 // Callers name the action by repo and `@main`: see .github/actions/load-agent-files/action.yml.
+// Only the review calls it itself; claude.yml and claude-run.yml reach it through run-claude.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files@main';
-const CALLERS = ['claude.yml', 'claude-run.yml', 'claude-code-review.yml'];
+const CALLERS = ['claude-code-review.yml'];
+const RUN_CLAUDE_CALLERS = ['claude.yml', 'claude-run.yml'];
 const action = () =>
   readFileSync(
     join(root, '.github/actions/load-agent-files/action.yml'),
@@ -29,20 +31,19 @@ const action = () =>
 
 describe('the load-agent-files action', () => {
   // A review that got settings.json would run with the build agent's tools. The step after the
-  // action must read the file the action wrote, or Claude runs without them.
-  it.each([
-    ['claude.yml', 'settings.json'],
-    ['claude-run.yml', 'settings.json'],
-    ['claude-code-review.yml', 'review-settings.json'],
-  ])('is given the settings file %s needs: %s', (file, settings) => {
-    const workflow = read(file);
+  // action must read the file the action wrote, or Claude runs without them. (The run-claude
+  // action does the same for claude.yml and claude-run.yml: see its tests below.)
+  it('is given the settings file the review needs: review-settings.json', () => {
+    const workflow = read('claude-code-review.yml');
 
     expect(workflow.split('\n').map(line => line.trim())).toContain(
-      `settings: ${settings}`
+      'settings: review-settings.json'
     );
-    expect(existsSync(join(root, '.github/agent', settings))).toBe(true);
+    expect(existsSync(join(root, '.github/agent/review-settings.json'))).toBe(
+      true
+    );
     expect(workflow, 'the settings Claude reads').toContain(
-      `settings: \${{ runner.temp }}/agent/${settings}`
+      'settings: ${{ runner.temp }}/agent/review-settings.json'
     );
     expect(workflow, 'the system prompt Claude reads').toContain(
       '--append-system-prompt-file ${{ runner.temp }}/agent/system.md'
@@ -84,12 +85,15 @@ describe('the load-agent-files action', () => {
     expect(uses, `${file} needs one "uses: ${ACTION}" step`).toEqual([ACTION]);
   });
 
-  it.each(CALLERS)('is the only place %s loads the agent files', file => {
-    expect(
-      read(file),
-      `${file} should call the action, not download .github/agent/ itself`
-    ).not.toContain('contents/.github/agent');
-  });
+  it.each([...RUN_CLAUDE_CALLERS, ...CALLERS])(
+    'is the only place %s loads the agent files',
+    file => {
+      expect(
+        read(file),
+        `${file} should call the action, not download .github/agent/ itself`
+      ).not.toContain('contents/.github/agent');
+    }
+  );
 });
 
 // The run-summary action writes the result section of every Claude run page. Like load-agent-files,
@@ -113,6 +117,8 @@ describe('the run-summary action', () => {
 
 // The run-claude action holds the steps claude.yml and claude-run.yml share. It loads the settings
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
+const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude@main';
+
 type Step = { uses?: string; with?: Record<string, string> };
 const runClaudeSteps = () =>
   (
@@ -137,6 +143,7 @@ describe('the run-claude action', () => {
       files: '${{ inputs.files }}',
       settings: 'settings.json',
     });
+    expect(existsSync(join(root, '.github/agent/settings.json'))).toBe(true);
   });
 
   it('has Claude read the settings and system prompt it loaded', () => {
@@ -148,16 +155,38 @@ describe('the run-claude action', () => {
     );
   });
 
-  // Dependabot doesn't scan .github/actions/, so a bump of either pin in the workflows fails
-  // this until the action follows.
+  it.each(RUN_CLAUDE_CALLERS)('is used from main, once, by %s', file => {
+    const uses = [
+      ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*run-claude\S*)/gm),
+    ].map(match => match[1]);
+
+    expect(uses, `${file} needs one "uses: ${RUN_CLAUDE}" step`).toEqual([
+      RUN_CLAUDE,
+    ]);
+  });
+
+  // The action is the one place the model call lives; a pin left in a caller would be a second.
+  it.each(RUN_CLAUDE_CALLERS)(
+    'leaves the model call and upload to it in %s',
+    file => {
+      for (const name of [
+        'anthropics/claude-code-action',
+        'actions/upload-artifact',
+      ]) {
+        expect(pins(read(file), name), `${file} pins ${name}`).toEqual([]);
+      }
+    }
+  );
+
+  // Dependabot doesn't scan .github/actions/, so a bump of either pin in the review workflow
+  // fails this until the action follows.
   it.each(['anthropics/claude-code-action', 'actions/upload-artifact'])(
-    'pins %s to the commit claude.yml and claude-run.yml pin',
+    'pins %s to the commit claude-code-review.yml pins',
     name => {
       const pin = stepUsing(name)?.uses?.split('@')[1];
 
       expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
-      expect(pins(read('claude.yml'), name)).toEqual([pin]);
-      expect(pins(read('claude-run.yml'), name)).toEqual([pin]);
+      expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
     }
   );
 });

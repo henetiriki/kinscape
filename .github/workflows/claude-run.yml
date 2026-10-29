@@ -130,14 +130,6 @@ jobs:
       - name: Note start time
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
-      # From main, not this branch (see the action). claude.yml loads the same files.
-      - name: Load agent files
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@main
-        with:
-          files: ${{ inputs.agent_files }}
-          settings: settings.json
-          token: ${{ secrets.KINSCAPE_BOT_PAT }}
-
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
       # "Planning"/"Building" comment is deleted when the run ends. Neither is worth failing the run for.
       - name: Show that the run started
@@ -153,33 +145,17 @@ jobs:
           id=$(gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$VERB… [View run]($RUN_URL)" --jq .id)
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
-      # Hand the job to Claude: the caller's prompt and model flags say what to do.
+      # Loads the agent files, runs Claude Code and uploads its output: see .github/actions/run-claude/action.yml.
+      # It runs from main, like claude.yml's copy of this step. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1.0.262
+        uses: henetiriki/kinscape/.github/actions/run-claude@main
         with:
+          files: ${{ inputs.agent_files }}
+          prompt: ${{ inputs.prompt }}
+          model_args: ${{ inputs.model_args }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
-          bot_name: henetiriki-bot
-          bot_id: '344434370'
-          prompt: ${{ inputs.prompt }}
-          # Off: the full output includes every screenshot Claude reads, as base64, and the log
-          # stopped at the first of them. The transcript is in the artifact, and the summary job
-          # writes the run page from it.
-          show_full_output: false
-          # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
-          settings: ${{ runner.temp }}/agent/settings.json
-          claude_args: '${{ inputs.model_args }} --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
-
-      # The Actions log can stop at an image read and lose the final result; the full output survives here.
-      - name: Upload Claude's output
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: claude-execution-output
-          path: /home/runner/work/_temp/claude-execution-output.json
-          if-no-files-found: ignore
-          retention-days: 14
 
       # Before the safety net, which counts the bot's comments and would take this one for Claude's.
       - name: Remove the working comment

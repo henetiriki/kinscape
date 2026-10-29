@@ -85,46 +85,23 @@ jobs:
           persist-credentials: 'true'
           playwright: 'true'
 
-      # From main, not this branch (see the action). claude-run.yml, the plan and build runs, loads the same files.
-      - name: Load agent files
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@main
+      # Loads the agent files, runs Claude Code and uploads its output: see .github/actions/run-claude/action.yml.
+      # It runs from main, like claude-run.yml's copy of this step, so the checked-out branch can't change it.
+      - name: Run Claude Code
+        id: claude
+        uses: henetiriki/kinscape/.github/actions/run-claude@main
         with:
           # The files in .github/agent/ that become the system prompt. The order matters: respond.md
           # points to build.md "below", so build.md comes after it.
           files: rules.md respond.md build.md
-          settings: settings.json
-          token: ${{ secrets.KINSCAPE_BOT_PAT }}
-
-      - name: Run Claude Code
-        id: claude
-        uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1.0.262
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
-          bot_name: henetiriki-bot
-          bot_id: '344434370'
-          additional_permissions: |
-            actions: read
-          # Off: the full output includes every screenshot Claude reads, as base64, and the log
-          # stopped at the first of them. The transcript is in the artifact below.
-          show_full_output: false
           # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules and the
           # respond and build instructions are the system prompt. Planning is the hard thinking, so a
           # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.
-          settings: ${{ runner.temp }}/agent/settings.json
-          claude_args: >-
+          model_args: >-
             ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
-            --append-system-prompt-file ${{ runner.temp }}/agent/system.md
-
-      # The Actions log can stop at an image read and lose the final result; the full output survives here.
-      - name: Upload Claude's output
-        if: always()
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: claude-execution-output
-          path: /home/runner/work/_temp/claude-execution-output.json
-          if-no-files-found: ignore
-          retention-days: 14
+          additional_permissions: 'actions: read'
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
   # With show_full_output off, the log above stops at the start of the run. This writes the run page
   # from Claude's transcript (the run-summary action, from main, so the checked-out branch can't

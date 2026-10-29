@@ -24,7 +24,8 @@
 | `.github/agent/review.md`                    | SHA-pin bullet states D1; lead-in says these rules live only here; delete line 1's comment |
 | `docs/security.md`                           | Workflow bullet → link to `review.md#the-rules`                                            |
 | `.github/agent/{rules,respond,build}.md`     | Delete line 1's comment                                                                    |
-| `scripts/__tests__/load-agent-files.test.ts` | Stub rejects a wrong call; reads `action.yml` as YAML                                      |
+| `.github/workflows/claude-{plan,build}.yml`  | Comment points to the test, not the deleted line-1 comments                                |
+| `scripts/__tests__/load-agent-files.test.ts` | Stub rejects a wrong call; reads `action.yml` as YAML; `GH_REPO` is `github.repository`    |
 
 ## Order of work
 
@@ -50,7 +51,5 @@ An agent editing a workflow sees only the link; it names the section.
 `claude-code-review.yml`, `action.yml`, other review rules.
 
 ## Deviations
-
-`respond.md`, `build.md`, `review.md` lose their line-1 comments (debug aids; tech lead's call).
 
 The test parses `action.yml` with `yaml` (new devDependency) instead of the one-`run:` test; the stub also checks header and file name.

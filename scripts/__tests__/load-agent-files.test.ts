@@ -28,6 +28,11 @@ const action = () =>
   );
 
 describe('the load-agent-files action', () => {
+  // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.
+  it("takes the repo from this run's repository", () => {
+    expect(action()).toContain('GH_REPO: ${{ github.repository }}');
+  });
+
   it.each(CALLERS)('is used from main, once, by %s', file => {
     const uses = [
       ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*load-agent-files\S*)/gm),

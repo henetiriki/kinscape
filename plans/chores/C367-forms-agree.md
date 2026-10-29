@@ -5,7 +5,7 @@
 
 ## Approach
 
-Reword the six files below; who approves what stays only in `how-we-work.md` › Roles and labels, linked by its full GitHub URL from the forms. `/refine spec M<n>` finds its Intent with `gh issue list --label "type: intent" --state all --search "M<n> in:title"`. Field ids and labels stay (`backlog-spec-link.yml` reads `### Intent or milestone`).
+Reword the seven files below; who approves what stays only in `how-we-work.md` › Roles and labels, linked by its full GitHub URL from the forms. `/refine spec M<n>` finds its Intent with `gh issue list --label "type: intent" --state all --search "M<n> in:title"`. Field ids and labels stay (`backlog-spec-link.yml` reads `### Intent or milestone`).
 
 ## Decisions
 
@@ -28,7 +28,7 @@ They say the tech lead sets `status: ready-for-agent`, outside #367's file list.
 | `.github/ISSUE_TEMPLATE/4-chore.yml`  | Hand-back list: "a path in `.github/CODEOWNERS`, a secret, or too big"                                |
 | `.github/pull_request_template.md`    | Deviations: leave the line out if none; no "None"                                                     |
 | `.claude/skills/refine/spec.md`       | Step 1 looks up the Intent number (M0 excepted); Intent box `#57`; Hand-over → one sentence plus link |
-| `.claude/skills/refine/intent.md`     | Hand-over step 2 gains the link                                                                       |
+| `.claude/skills/refine/intent.md`     | Hand-over gains the link                                                                              |
 | `.claude/skills/refine/chore.md`      | Screen: rule 4's list; Hand-over → one sentence plus link                                             |
 
 ## Order of work

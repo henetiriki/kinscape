@@ -1,5 +1,3 @@
-:bangbang: Hand back: `.github/actions/setup-workspace/action.yml`
-
 # Plan: C387: Add a setup-workspace action
 
 - **Spec:** #387

@@ -6,7 +6,7 @@ description: >-
 
 inputs:
   ref:
-    description: 'The branch to check out. Empty checks out the default branch.'
+    description: "The ref to check out. Empty checks out the triggering event's ref, as actions/checkout does."
     default: ''
   token:
     description: 'The token checkout fetches with, and persists when persist-credentials is true.'

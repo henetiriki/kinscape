@@ -96,6 +96,7 @@ const load = (files: string) => {
         GH_REPO: 'owner/repo',
         GH_TOKEN: 'token',
         GITHUB_STEP_SUMMARY: join(dir, 'summary.md'),
+        NODE_ENV: 'test',
         PATH: `${join(dir, 'bin')}:${process.env.PATH}`,
         RUNNER_TEMP: dir,
         STUB_ROOT: root,

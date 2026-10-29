@@ -48,6 +48,20 @@ jobs:
           settings: review-settings.json
           token: ${{ github.token }}
 
+      # Agent mode posts nothing until Claude does, so mark the PR as picked up: :eyes: stays, the
+      # "Working" comment is deleted when the run ends. Neither is worth failing the run for.
+      - name: Show that the review started
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh api "repos/$GH_REPO/issues/$PR_NUMBER/reactions" -f content=eyes --silent
+          id=$(gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" -f body="Reviewing… [View run]($RUN_URL)" --jq .id)
+          echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1.0.262
@@ -74,6 +88,15 @@ jobs:
           path: /home/runner/work/_temp/claude-execution-output.json
           if-no-files-found: ignore
           retention-days: 14
+
+      # Before the step below, whose `gh pr comment --edit-last` would otherwise edit this comment.
+      - name: Remove the working comment
+        if: always() && env.WORKING_COMMENT_ID != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh api -X DELETE "repos/$GH_REPO/issues/comments/$WORKING_COMMENT_ID"
 
       # The action runs only a workflow identical to main's, so on a PR that changes this file Claude never starts.
       # That known cause comments on the PR (it needs a human review); any other missing review fails the job.

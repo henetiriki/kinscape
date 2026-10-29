@@ -28,14 +28,35 @@ const action = () =>
   );
 
 describe('the load-agent-files action', () => {
-  // A review that got settings.json would run with the build agent's tools.
+  // A review that got settings.json would run with the build agent's tools. The step after the
+  // action must read the file the action wrote, or Claude runs without them.
   it.each([
     ['claude.yml', 'settings.json'],
     ['claude-run.yml', 'settings.json'],
     ['claude-code-review.yml', 'review-settings.json'],
   ])('is given the settings file %s needs: %s', (file, settings) => {
-    expect(read(file)).toMatch(new RegExp(`^\\s*settings: ${settings}$`, 'm'));
+    const workflow = read(file);
+
+    expect(workflow.split('\n').map(line => line.trim())).toContain(
+      `settings: ${settings}`
+    );
     expect(existsSync(join(root, '.github/agent', settings))).toBe(true);
+    expect(workflow, 'the settings Claude reads').toContain(
+      `settings: \${{ runner.temp }}/agent/${settings}`
+    );
+    expect(workflow, 'the system prompt Claude reads').toContain(
+      '--append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+    );
+  });
+
+  // GitHub doesn't enforce `required` on a composite action's inputs. A branch cut before this
+  // input existed calls the action at `@main` without it, so it falls back to settings.json.
+  it('defaults the settings file, for a caller that predates the input', () => {
+    const { inputs } = parse(action()) as {
+      inputs: { settings: { default?: string } };
+    };
+
+    expect(inputs.settings.default).toBe('settings.json');
   });
 
   it('is told by the review to load review.md', () => {

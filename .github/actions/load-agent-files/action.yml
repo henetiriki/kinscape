@@ -8,8 +8,8 @@ inputs:
     description: 'The files in .github/agent/ that become the system prompt, space separated, in order.'
     required: true
   settings:
-    description: "The file in .github/agent/ that is Claude's settings: settings.json, or review-settings.json for the review. Each caller names its own, so none gets another agent's tools."
-    required: true
+    description: "The file in .github/agent/ that is Claude's settings: settings.json, or review-settings.json for the review. Each caller names its own (a test checks), so none gets another agent's tools. The default is for a branch cut before this input existed."
+    default: settings.json
   token:
     description: 'A token that can read the repo.'
     required: true

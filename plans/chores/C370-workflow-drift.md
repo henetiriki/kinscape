@@ -48,5 +48,5 @@ Checking `claude-plan.yml`'s `run-name` against its `if:`.
 
 ## Deviations
 
-- `claude-code-review.yml`: the "No Claude review" comment starts with two `:heavy_exclamation_mark:` (tech lead's request).
+- `claude-code-review.yml`: the "No Claude review" comment is a `:rotating_light:` heading (tech lead's request).
 - `ci.yml` hashes `design/tokens.*`, not `design/**`: the rest is snapshots the app never imports.

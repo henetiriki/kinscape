@@ -1,7 +1,7 @@
 # Plan: C368: Read the required checks from the ruleset file
 
 - **Spec:** #368
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The script needs only `gh` today, and `gh --jq` can't read a local file.
 - **B.** The `jq` binary, reusing the live query's filter. The tech lead must install `jq`.
 - **Other:** your own.
 
-Recommended: A, because it adds no tool.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

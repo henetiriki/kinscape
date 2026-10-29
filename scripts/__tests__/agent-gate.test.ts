@@ -120,7 +120,7 @@ describe('run', () => {
       expect(summary).toHaveBeenCalledTimes(1);
       expect(summary.mock.calls[0][0]).toBe(
         [
-          '### Gate: go',
+          '### Gate: go (plan #5)',
           '',
           '- #5 is open and has `status: ready-for-agent`.',
           '- Open PRs that close #5: none.',
@@ -135,7 +135,7 @@ describe('run', () => {
 
       const page = summary.mock.calls[0][0];
 
-      expect(page).toMatch(/^### Gate: stopped\n/);
+      expect(page).toMatch(/^### Gate: stopped \(plan #5\)\n/);
       expect(page).toContain('- Stopped: It is blocked by #2, still open.');
       expect(page).not.toContain('Go.');
     });
@@ -182,6 +182,15 @@ describe('run', () => {
 
       expect(summary.mock.calls[0][0]).toContain(
         '- Stopped quietly: the issue is closed.'
+      );
+    });
+
+    it('names a build and its PR in the heading, even on a quiet stop', () => {
+      fakeGh({ pr: { state: 'CLOSED' } });
+      run(['build', '50'], ENV, gh, write, summary);
+
+      expect(summary.mock.calls[0][0]).toMatch(
+        /^### Gate: stopped \(build #50\)\n/
       );
     });
 

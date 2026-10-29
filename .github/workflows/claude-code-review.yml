@@ -116,11 +116,12 @@ jobs:
 
   # With show_full_output off, the log above stops at the start of the review. This writes the run
   # page from Claude's transcript (the run-summary action, from main), as claude-run.yml does for
-  # plan and build runs. It has no secrets and never fails the run.
+  # plan and build runs. It has no secrets, and its script step never fails the job. A review
+  # cancelled by a newer push (concurrency) gets no summary, so `!cancelled()`, not `always()`.
   summary:
     name: Result
     needs: claude-review
-    if: always() && needs.claude-review.result != 'skipped'
+    if: "!cancelled() && needs.claude-review.result != 'skipped'"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

@@ -231,7 +231,7 @@ export const run = (
     [...notes, verdict].forEach(line => console.log(line));
     summary(
       [
-        `### Gate: ${go ? 'go' : 'stopped'}`,
+        `### Gate: ${go ? 'go' : 'stopped'} (${kind} #${thread})`,
         '',
         ...[...notes, ...(go ? [] : [verdict])].map(line => `- ${line}`),
       ].join('\n')

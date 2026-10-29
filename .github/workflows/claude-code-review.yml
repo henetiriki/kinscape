@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   claude-review:
+    name: Run Claude
     # Dependabot pull requests get no Actions secrets, so the review cannot run.
     # Drafts are reviewed when marked ready for review.
     if: github.actor != 'dependabot[bot]' && !github.event.pull_request.draft
@@ -53,6 +54,18 @@ jobs:
             cat "$RUNNER_TEMP/$f.err" >&2
             exit 1
           done
+          # Show what Claude is told, as load-agent-files does: a collapsed group in the log and a
+          # section on the run page. The files come from main and hold no secrets.
+          echo "::group::System prompt (review.md)"
+          cat "$RUNNER_TEMP/review.md"
+          echo "::endgroup::"
+          {
+            echo "<details><summary>System prompt (review.md)</summary>"
+            echo
+            cat "$RUNNER_TEMP/review.md"
+            echo
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run Claude Code Review
         id: claude-review
@@ -100,3 +113,19 @@ jobs:
           msg=$'## :rotating_light: No Claude review\n\nThis PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs.'
           # Each push updates the one comment. A read-only token (fork PR) falls back to a warning.
           gh pr comment "$PR_NUMBER" --edit-last --create-if-none --body "$msg" || echo "::warning::$msg"
+
+  # With show_full_output off, the log above stops at the start of the review. This writes the run
+  # page from Claude's transcript (the run-summary action, from main), as claude-run.yml does for
+  # plan and build runs. It has no secrets, and its script step never fails the job. A review
+  # cancelled by a newer push (concurrency) gets no summary, so `!cancelled()`, not `always()`.
+  summary:
+    name: Result
+    needs: claude-review
+    if: "!cancelled() && needs.claude-review.result != 'skipped'"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Write the result
+        uses: henetiriki/kinscape/.github/actions/run-summary@main

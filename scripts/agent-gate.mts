@@ -226,16 +226,14 @@ export const run = (
   const thread = Number(raw);
   const notes: string[] = [];
   // What the gate checked and decided, in the log and on the run page: a pass otherwise looks
-  // the same as a skip.
-  const report = (verdict: string): void => {
-    const lines = [...notes, verdict];
-
-    lines.forEach(line => console.log(line));
+  // the same as a skip. The page's heading carries the verdict, so a pass adds no line for it.
+  const report = (go: boolean, verdict: string): void => {
+    [...notes, verdict].forEach(line => console.log(line));
     summary(
       [
-        `### Gate: ${kind} #${thread}`,
+        `### Gate: ${go ? 'go' : 'stopped'} (${kind} #${thread})`,
         '',
-        ...lines.map(line => `- ${line}`),
+        ...[...notes, ...(go ? [] : [verdict])].map(line => `- ${line}`),
       ].join('\n')
     );
   };
@@ -244,7 +242,7 @@ export const run = (
   // Not an error: nothing to tell anyone, so no comment and no label change.
   if (stale) {
     write('go=false');
-    report(`Stopped quietly: ${stale}.`);
+    report(false, `Stopped quietly: ${stale}.`);
 
     return 0;
   }
@@ -260,12 +258,12 @@ export const run = (
       ? planReasons(gh, repo, thread, notes)
       : buildReasons(gh, repo, thread, notes);
 
-  write(`go=${why.reasons.length === 0}`);
-  report(
-    why.reasons.length === 0 ? 'Go.' : `Stopped: ${why.reasons.join(' ')}`
-  );
+  const go = why.reasons.length === 0;
 
-  if (why.reasons.length > 0) {
+  write(`go=${go}`);
+  report(go, go ? 'Go.' : `Stopped: ${why.reasons.join(' ')}`);
+
+  if (!go) {
     // The run's own URL (from the workflow), when it looks like one, so the comment can point back.
     const runUrl = env.RUN_URL ?? '';
 

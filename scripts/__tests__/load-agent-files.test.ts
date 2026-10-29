@@ -57,6 +57,25 @@ describe('the load-agent-files action', () => {
   });
 });
 
+// The run-summary action writes the result section of every Claude run page. Like load-agent-files,
+// callers name it by repo and `@main`, so a branch can't change the script that reports on it.
+const SUMMARY_ACTION = 'henetiriki/kinscape/.github/actions/run-summary@main';
+
+describe('the run-summary action', () => {
+  it.each(['claude.yml', 'claude-run.yml', 'claude-code-review.yml'])(
+    'is used from main, once, by %s',
+    file => {
+      const uses = [
+        ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*run-summary\S*)/gm),
+      ].map(match => match[1]);
+
+      expect(uses, `${file} needs one "uses: ${SUMMARY_ACTION}" step`).toEqual([
+        SUMMARY_ACTION,
+      ]);
+    }
+  );
+});
+
 // Each list is a space-separated set of files in .github/agent/ that become the system prompt.
 // A typo is a 404 on the first live run; the order is the order Claude reads them, with
 // rules.md first and build.md last (respond.md points to build.md "below").

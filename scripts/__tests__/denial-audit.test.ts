@@ -306,6 +306,9 @@ describe('run', () => {
   let artifacts: Record<number, string | undefined>;
   let open: { number: number; title: string }[];
   let gh: ReturnType<typeof vi.fn<Gh>>;
+  let summary: ReturnType<typeof vi.fn<(markdown: string) => void>>;
+  // What `gh issue create` prints.
+  let created: string;
 
   const make = (
     id: number,
@@ -318,7 +321,7 @@ describe('run', () => {
   });
 
   const audit = () =>
-    run({ gh, now: NOW, readArtifact: id => artifacts[id] }, ENV);
+    run({ gh, now: NOW, readArtifact: id => artifacts[id], summary }, ENV);
 
   const calls = (verb: string) =>
     gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] === verb);
@@ -332,7 +335,13 @@ describe('run', () => {
     };
     artifacts = {};
     open = [];
+    created = '';
+    summary = vi.fn();
     gh = vi.fn<Gh>(args => {
+      if (args[1] === 'create') {
+        return created;
+      }
+
       if (args[0] === 'run') {
         return JSON.stringify(runs[args[args.indexOf('--workflow') + 1]]);
       }
@@ -348,7 +357,9 @@ describe('run', () => {
   });
 
   it('needs GH_REPO', () => {
-    expect(run({ gh, now: NOW, readArtifact: () => undefined }, {})).toBe(1);
+    expect(
+      run({ gh, now: NOW, readArtifact: () => undefined, summary }, {})
+    ).toBe(1);
     expect(console.error).toHaveBeenCalledWith(
       expect.stringContaining('Usage')
     );
@@ -389,6 +400,58 @@ describe('run', () => {
     );
     expect(calls('list')).toHaveLength(0);
     expect(calls('create')).toHaveLength(0);
+  });
+
+  it('shows the run page what it found, with cost, when no denial repeats', () => {
+    runs['claude-plan.yml'] = [make(1)];
+    artifacts[1] = artifact('rm a');
+    audit();
+
+    expect(summary).toHaveBeenCalledTimes(1);
+    expect(summary.mock.calls[0][0]).toBe(
+      [
+        '### Denial audit',
+        '',
+        'No denial repeated in 1 runs since 2026-10-17. 1 denials in all. Cost, estimated at API prices: $2.00 for all runs read.',
+      ].join('\n')
+    );
+  });
+
+  it('shows the run page the issue body and the new issue', () => {
+    runs['claude.yml'] = [make(1), make(2)];
+    artifacts[1] = artifact('cat a');
+    artifacts[2] = artifact('cat b');
+    created = 'https://github.com/o/r/issues/9\n';
+    audit();
+
+    const [page] = summary.mock.calls[0];
+
+    expect(page).toMatch(
+      /^### Denial audit\n\nPermission denials in Claude runs/
+    );
+    expect(page).toContain('| `Bash: cat` | 2 | $0.00 |');
+    expect(page).toMatch(
+      /\nOpened issue https:\/\/github\.com\/o\/r\/issues\/9\.$/
+    );
+  });
+
+  it('shows the run page the issue it updated', () => {
+    runs['claude.yml'] = [make(1), make(2)];
+    artifacts[1] = artifact('cat a');
+    artifacts[2] = artifact('cat b');
+    open = [{ number: 9, title: ISSUE_TITLE }];
+    audit();
+
+    expect(summary.mock.calls[0][0]).toMatch(/\nUpdated issue #9\.$/);
+  });
+
+  it('still says it opened an issue when gh prints no URL', () => {
+    runs['claude.yml'] = [make(1), make(2)];
+    artifacts[1] = artifact('cat a');
+    artifacts[2] = artifact('cat b');
+    audit();
+
+    expect(summary.mock.calls[0][0]).toMatch(/\nOpened an issue\.$/);
   });
 
   it('opens one issue for denials that repeat', () => {

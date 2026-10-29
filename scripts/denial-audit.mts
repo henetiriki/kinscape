@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { appendFileSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -9,13 +9,16 @@ import { inlineCode, parseTranscript } from './agent-transcript.mts';
 
 // Reads the transcripts of the past week's plan, build and @claude runs and keeps one issue up to
 // date with the permission denials that repeat, so the allowlist and the rules follow what the
-// agents really try. Does nothing when no denial repeats. Run weekly by claude-denial-audit.yml.
+// agents really try. Opens no issue when no denial repeats. Run weekly by claude-denial-audit.yml,
+// which shows the result on the run page ($GITHUB_STEP_SUMMARY) as well as in the log.
 // Usage: node scripts/denial-audit.mts, with GH_REPO set.
 
 type Deps = {
   gh: Gh;
   now: Date;
   readArtifact: (runId: number) => string | undefined;
+  // Appends Markdown to the run page.
+  summary: (markdown: string) => void;
 };
 
 type Group = {
@@ -224,7 +227,7 @@ export const issueBody = (
 };
 
 export const run = (
-  { gh, now, readArtifact }: Deps,
+  { gh, now, readArtifact, summary }: Deps,
   env: Record<string, string | undefined>
 ): number => {
   const repo = env.GH_REPO ?? '';
@@ -247,8 +250,15 @@ export const run = (
   const report = summarise(transcripts);
 
   if (report.groups.length === 0) {
-    console.log(
-      `No denial repeated in ${report.runs} runs since ${since.toISOString().slice(0, 10)}.`
+    const none = `No denial repeated in ${report.runs} runs since ${since.toISOString().slice(0, 10)}.`;
+
+    console.log(none);
+    summary(
+      [
+        '### Denial audit',
+        '',
+        `${none} ${report.denials} denials in all. Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read.`,
+      ].join('\n')
     );
 
     return 0;
@@ -268,12 +278,14 @@ export const run = (
     ])
   );
   const existing = open.find(({ title }) => title === ISSUE_TITLE);
+  let done: string;
 
   if (existing) {
     gh(['issue', 'edit', String(existing.number), '--body-file', '-'], body);
-    console.log(`Updated issue #${existing.number}.`);
+    done = `Updated issue #${existing.number}.`;
   } else {
-    gh(
+    // `gh issue create` prints the new issue's URL.
+    const url = gh(
       [
         'issue',
         'create',
@@ -287,14 +299,18 @@ export const run = (
         '-',
       ],
       body
-    );
-    console.log('Opened an issue.');
+    ).trim();
+
+    done = url ? `Opened issue ${url}.` : 'Opened an issue.';
   }
+
+  console.log(done);
+  summary(['### Denial audit', '', body, '', done].join('\n'));
 
   return 0;
 };
 
-/* v8 ignore next 13 -- only true when run directly with node, not when imported */
+/* v8 ignore next 17 -- only true when run directly with node, not when imported */
 if (import.meta.main) {
   const gh: Gh = (args, input) =>
     execFileSync('gh', args, {
@@ -303,8 +319,15 @@ if (import.meta.main) {
       maxBuffer: 16 * 1024 * 1024,
     });
 
+  const page = process.env.GITHUB_STEP_SUMMARY;
+
   process.exitCode = run(
-    { gh, now: new Date(), readArtifact: artifactReader(gh) },
+    {
+      gh,
+      now: new Date(),
+      readArtifact: artifactReader(gh),
+      summary: markdown => page && appendFileSync(page, `${markdown}\n`),
+    },
     process.env
   );
 }

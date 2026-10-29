@@ -27,11 +27,11 @@ Item 5: `id-token: write` stays (the review's token comes by OIDC); a comment sa
 
 ## Order of work
 
-Each test first: break what it guards, see it fail, revert. PR 1, then PR 2.
+Each test first: break what it guards, see it fail, revert.
 
 ## Risks
 
-- PR 2: a fault in the action fails every Claude run. A stub-`gh` test runs its script; revert PR 2 if the first live run fails.
+- PR 2: an action fault fails every Claude run. A stub-`gh` test runs its script; revert if the first live run fails.
 
 ## Proof
 
@@ -44,7 +44,8 @@ Each test first: break what it guards, see it fail, revert. PR 1, then PR 2.
 
 ## Deviations
 
-- The "No Claude review" comment is a `:rotating_light:` heading (tech lead's request).
-- `ci.yml` hashes `design/tokens.*`, not `design/**`: the rest is snapshots.
-- `@main`, not a SHA pin: the issue prescribes it. `docs/security.md` now says so.
-- `rules.md` line 1 changes the prompt on that line only.
+- The "No Claude review" comment is a `:rotating_light:` heading (tech lead's ask).
+- `ci.yml` hashes `design/tokens.*` only; the rest is snapshots.
+- `@main`, not a SHA pin, as the issue says; `docs/security.md` allows it.
+- The `claude-plan.yml` plan-start check, out of scope when approved, is in PR 2.
+- `rules.md` line 1 changes the prompt there only.

@@ -15,9 +15,11 @@ const PLAN_PR =
 // claude.yml's two copies also share the bot check and the `@claude` mention around it.
 const WHOLE = /github\.actor != 'henetiriki-bot'[\s\S]*?'@claude'\)/g;
 
-// claude-plan.yml's `run-name` and plan job's `if:` share the label check and the owner check.
+// claude-plan.yml's `run-name` and plan job's `if:` share the label check and the owner check, and
+// each ends there: `format('Plan…` follows in the `run-name`, `uses:` in the job. A trailing `||`
+// leaves fewer than two matches.
 const START =
-  /github\.event\.issue\.state == 'open'[\s\S]*?github\.actor == github\.repository_owner/g;
+  /github\.event\.issue\.state == 'open'[\s\S]*?github\.actor == github\.repository_owner(?=\s*(?:&&\s*format\('Plan|uses:))/g;
 
 const copies = (file: string, pattern: RegExp) =>
   (read(file).match(pattern) ?? []).map(copy => copy.replace(/\s+/g, ' '));

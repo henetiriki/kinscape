@@ -14,7 +14,7 @@ Flag a test change `plans/README.md` rule 10 doesn't allow (never suggest `## De
 
 When the diff moves or adds code in a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
 
-Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the owning file, and link to it from the other (`AGENTS.md` Writing).
+Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 
 In workflows, also check (these live only here, loaded from `main`, so a PR can't weaken them):
 

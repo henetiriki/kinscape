@@ -5,7 +5,7 @@
 
 ## Approach
 
-`review.md` becomes the one home of the workflow security rules: the review loads it from `main`, so a PR can't weaken it. Its SHA-pin bullet names the two paths that may use `@main`; `docs/security.md` links there. The stub `gh` rejects any call but `repos/owner/repo/contents/.github/agent/<file>?ref=main`, so a wrong ref or repo fails the tests; a new test pins `action.yml` to one `run:` step.
+`review.md` becomes the one home of the workflow security rules: the review loads it from `main`, so a PR can't weaken it. Its SHA-pin bullet names the two paths that may use `@main`; `docs/security.md` links there. The stub `gh` rejects any call but `repos/owner/repo/contents/.github/agent/<file>?ref=main`, so a wrong ref or repo fails the tests.
 
 ## Decisions
 
@@ -24,14 +24,13 @@
 | `.github/agent/review.md`                    | SHA-pin bullet states D1; lead-in says these rules live only here; delete line 1's comment |
 | `docs/security.md`                           | Workflow bullet → link to `review.md#the-rules`                                            |
 | `.github/agent/{rules,respond,build}.md`     | Delete line 1's comment                                                                    |
-| `scripts/__tests__/load-agent-files.test.ts` | Stub rejects a wrong call; new one-`run:` test                                             |
+| `scripts/__tests__/load-agent-files.test.ts` | Stub rejects a wrong call; reads `action.yml` as YAML                                      |
 
 ## Order of work
 
 1. Change the stub; with `?ref=main` → `?ref=$GITHUB_REF` in `action.yml`, see the tests fail, then revert.
-2. Add the one-step test; see it fail with a second step added, then revert.
-3. Edit the docs.
-4. Run lint, tests, words, format:check, the boundary validator and e2e.
+2. Edit the docs.
+3. Run lint, tests, words, format:check, the boundary validator and e2e.
 
 ## Risks
 
@@ -43,8 +42,8 @@ An agent editing a workflow sees only the link; it names the section.
 | ------------------------------------------------------- | ------------------------------------------------------------------------ |
 | No CODEOWNERS-based exception; two paths named          | `git grep -n CODEOWNERS docs/security.md .github/agent/review.md` output |
 | Workflow bullets only in `review.md`                    | The diff                                                                 |
-| Wrong ref and second step fail                          | Steps 1–2's failing lines in Evidence                                    |
-| `rules.md` starts `# CI agent rules`; words and CI pass | Step 4 output, CI                                                        |
+| Wrong ref fails                                         | Step 1's failing lines in Evidence                                       |
+| `rules.md` starts `# CI agent rules`; words and CI pass | Step 3 output, CI                                                        |
 
 ## Out of scope
 
@@ -53,3 +52,5 @@ An agent editing a workflow sees only the link; it names the section.
 ## Deviations
 
 `respond.md`, `build.md`, `review.md` lose their line-1 comments (debug aids; tech lead's call).
+
+The test parses `action.yml` with `yaml` (new devDependency) instead of the one-`run:` test; the stub also checks header and file name.

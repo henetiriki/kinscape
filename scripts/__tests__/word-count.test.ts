@@ -43,7 +43,7 @@ describe('budgetFor', () => {
     ['docs/dependencies.md', 200],
     ['docs/architecture.md', 800],
     ['docs/architecture-target.md', 650],
-    ['plans/README.md', 700],
+    ['plans/README.md', 750],
     ['plans/M0.1-hello-vercel.md', 600],
     ['plans/TEMPLATE.md', 600],
     ['plans/bugs/B1-x.md', 600],

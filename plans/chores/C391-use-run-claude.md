@@ -1,7 +1,7 @@
 # Plan: C391: Switch both workflows to run-claude
 
 - **Spec:** #391
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -14,10 +14,10 @@ In `claude.yml` and `claude-run.yml`, one `run-claude@main` step with `id: claud
 After the switch, neither workflow pins `claude-code-action` or `upload-artifact`, so the C390 pins test fails.
 
 - **A.** The action's pins equal `claude-code-review.yml`'s; a Dependabot bump there fails the test until the action follows.
-- **B.** Drop the test and add `/.github/actions/*` to Dependabot's `directories`.
-- **Other:** your own.
+- ~~**B.** Drop the test and add `/.github/actions/*` to Dependabot's `directories`.~~
+- ~~**Other:** your own.~~
 
-Recommended: A: it keeps the guard, in scope.
+**Answer: A** (Tech lead)
 
 ## Files that change
 

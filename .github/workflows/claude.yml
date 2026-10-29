@@ -73,7 +73,7 @@ jobs:
       issues: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
-      # Checkout, Node, `npm ci` and the Playwright and Next.js caches: see .github/actions/setup-workspace/action.yml. It runs from main, like load-agent-files below.
+      # Checkout, Node, `npm ci` and the Playwright and Next.js caches: see .github/actions/setup-workspace/action.yml. It runs from main, like run-claude below.
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
       # see .github/agent/respond.md); the cache keeps the download between runs.
       - name: Set up the workspace

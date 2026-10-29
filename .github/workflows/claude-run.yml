@@ -111,7 +111,7 @@ jobs:
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     steps:
       # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a build,
-      # or a plan for a UI Spec), the Playwright and Next.js caches: see .github/actions/setup-workspace/action.yml. It runs from main, like load-agent-files.
+      # or a plan for a UI Spec), the Playwright and Next.js caches: see .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
       - name: Set up the workspace
         uses: henetiriki/kinscape/.github/actions/setup-workspace@main
         with:

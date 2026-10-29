@@ -21,12 +21,13 @@ After the switch, neither workflow pins `claude-code-action` or `upload-artifact
 
 ## Files that change
 
-| File                                         | What                                                                                                                                                                              |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/workflows/claude.yml`               | Three steps → `run-claude`                                                                                                                                                        |
-| `.github/workflows/claude-run.yml`           | Same; step order                                                                                                                                                                  |
-| `.github/actions/run-claude/action.yml`      | Description no longer says nothing calls it                                                                                                                                       |
-| `scripts/__tests__/load-agent-files.test.ts` | Settings-file and "used from main" checks: the action file for the two workflows, the review unchanged; both workflows use `run-claude@main` once and pin neither action; D1 pins |
+| File                                          | What                                                                                                                                                                              |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.github/workflows/claude.yml`                | Three steps → `run-claude`                                                                                                                                                        |
+| `.github/workflows/claude-run.yml`            | Same; step order                                                                                                                                                                  |
+| `.github/actions/run-claude/action.yml`       | Description no longer says nothing calls it                                                                                                                                       |
+| `.github/actions/load-agent-files/action.yml` | Description names its current callers                                                                                                                                             |
+| `scripts/__tests__/load-agent-files.test.ts`  | Settings-file and "used from main" checks: the action file for the two workflows, the review unchanged; both workflows use `run-claude@main` once and pin neither action; D1 pins |
 
 ## Order of work
 

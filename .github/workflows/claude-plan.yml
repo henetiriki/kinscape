@@ -71,7 +71,7 @@ jobs:
         A Bug's id is B${{ github.event.issue.number }}, its branch is bug/B${{ github.event.issue.number }}-<slug>
         and its plan is plans/bugs/B${{ github.event.issue.number }}-<slug>.md.
         A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
-        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back at plan time only as plans/README.md rule 13 says; plan a CODEOWNERS path as usual, the build hands it back.
+        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back at plan time as plans/README.md rule 13 says.
         If the plan's Files that change lists a path in .github/CODEOWNERS, make `:bangbang: Hand back: <path>. Approving this plan does not build it; the build hands it back to you.`
         the first line of both the plan and the plan PR's body.
         Write each open choice as a decision in the format in docs/how-we-work.md.

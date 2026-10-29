@@ -47,7 +47,7 @@ describe('the Playwright browser cache', () => {
   const SEED = 'ci-playwright-cache.yml';
   const keyAndPath = (file: string) => {
     try {
-      return read(`.github/workflows/${file}`)
+      return read(file)
         .match(
           /name: Cache Playwright browser\n[\s\S]*?key: (.+)\n\s*path: (.+)/
         )
@@ -56,19 +56,20 @@ describe('the Playwright browser cache', () => {
       return undefined;
     }
   };
-  const reference = keyAndPath('claude-run.yml');
+  const reference = keyAndPath(`.github/workflows/claude-run.yml`);
 
   it('is cached by claude-run.yml', () => {
     expect(reference).toBeDefined();
   });
 
-  it.each(['claude.yml', SEED])(
-    'is cached by %s under the same key and path as claude-run.yml',
-    file => {
-      expect(
-        keyAndPath(file),
-        `${file} needs a "Cache Playwright browser" step with the key and path of claude-run.yml`
-      ).toEqual(reference);
-    }
-  );
+  it.each([
+    '.github/workflows/claude.yml',
+    `.github/workflows/${SEED}`,
+    '.github/actions/setup-workspace/action.yml',
+  ])('is cached by %s under the same key and path as claude-run.yml', file => {
+    expect(
+      keyAndPath(file),
+      `${file} needs a "Cache Playwright browser" step with the key and path of claude-run.yml`
+    ).toEqual(reference);
+  });
 });

@@ -1,12 +1,15 @@
 name: Load agent files
 description: >-
-  Download settings.json and the given files from .github/agent/ as main has them, and join the
-  files into one system prompt. claude.yml and claude-run.yml call this action.
+  Download a settings file and the given files from .github/agent/ as main has them, and join the
+  files into one system prompt. claude.yml, claude-run.yml and claude-code-review.yml call this action.
 
 inputs:
   files:
     description: 'The files in .github/agent/ that become the system prompt, space separated, in order.'
     required: true
+  settings:
+    description: "The file in .github/agent/ that is Claude's settings: settings.json, or review-settings.json for the review. Each caller names its own (a test checks), so none gets another agent's tools. The default is for a branch cut before this input existed."
+    default: settings.json
   token:
     description: 'A token that can read the repo.'
     required: true
@@ -22,14 +25,21 @@ runs:
       shell: bash
       env:
         AGENT_FILES: ${{ inputs.files }}
+        SETTINGS_FILE: ${{ inputs.settings }}
         GH_TOKEN: ${{ inputs.token }}
         GH_REPO: ${{ github.repository }}
       run: |
         mkdir -p "$RUNNER_TEMP/agent"
-        # Download settings.json and each file in AGENT_FILES as main has them (the raw file, not
-        # JSON). $AGENT_FILES is unquoted so it splits into one name per file.
-        for f in settings.json $AGENT_FILES; do
-          gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
+        # Download the settings file and each file in AGENT_FILES as main has them (the raw file,
+        # not JSON). $AGENT_FILES is unquoted so it splits into one name per file. A failed
+        # download is tried 3 times, then fails the step.
+        for f in "$SETTINGS_FILE" $AGENT_FILES; do
+          for attempt in 1 2 3; do
+            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f" 2> "$RUNNER_TEMP/agent.err" && continue 2
+            if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
+          done
+          cat "$RUNNER_TEMP/agent.err" >&2
+          exit 1
         done
         # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
         # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.

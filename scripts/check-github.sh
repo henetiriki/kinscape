@@ -3,7 +3,15 @@
 # Read-only. Exits non-zero if anything has drifted.
 set -uo pipefail
 REPO="${1:-henetiriki/kinscape}"
+DIR="$(cd "$(dirname "$0")" && pwd)"
 fail=0
+
+# Required checks come from the ruleset file; an unreadable file gives "", which fails the check.
+expected_checks=$(node -e '
+  const rules = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")).rules;
+  const contexts = rules.filter((r) => r.type === "required_status_checks").flatMap((r) => r.parameters.required_status_checks.map((c) => c.context));
+  console.log(contexts.sort().join(","));
+' "$DIR/github/ruleset-main.json" 2>/dev/null)
 
 check() { # description, actual, expected
   if [ "$2" == "$3" ]; then echo "✅ $1"; else echo "❌ $1: is '$2', expected '$3'"; fail=1; fi
@@ -41,7 +49,7 @@ else
   check "Code-owner review required"        "$(q "$pr | .require_code_owner_review")" "true"
   check "Conversations must be resolved"   "$(q "$pr | .required_review_thread_resolution")" "true"
   check "Squash only in ruleset"            "$(q "$pr | .allowed_merge_methods | join(\",\")")" "squash"
-  check "Required checks" "$(q '[.rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context] | sort | join(",")')" "boundaries,codecov/patch,codecov/project,e2e,format,lint,test,words"
+  check "Required checks" "$(q '[.rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context] | sort | join(",")')" "$expected_checks"
   check "Bypass: admin, via PR only"        "$(q '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "RepositoryRole:5:pull_request"
 fi
 

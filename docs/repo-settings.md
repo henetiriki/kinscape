@@ -21,7 +21,7 @@ GitHub settings live outside git, so we keep them **as code** instead:
 | Required approvals                       | 1, stale approvals dismissed, conversations resolved    | One approval from the PO or the tech lead is enough for now                                           |
 | Code-owner review                        | Required, for the paths in `.github/CODEOWNERS`         | A PO approval alone can't merge a change to agent-sensitive paths. The tech lead's bypass still works |
 | Bypass                                   | Repository admin, **via PR only**                       | The tech lead can merge chore PRs (you can't approve your own PR). Every bypass is logged             |
-| Required status checks                   | lint, format, test, e2e, boundaries, words, Codecov     | Nothing merges with a red check. Names match the CI job names and Codecov's statuses                  |
+| Required status checks                   | The contexts in `scripts/github/ruleset-main.json`      | Nothing merges with a red check                                                                       |
 | Dependabot alerts and security fixes     | On                                                      | Free on private repos                                                                                 |
 | Actions token                            | Read-only; can't approve PRs                            | Least privilege; an agent's workflow can't approve its own PR                                         |
 

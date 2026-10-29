@@ -1,7 +1,7 @@
 name: Load agent files
 description: >-
   Download a settings file and the given files from .github/agent/ as main has them, and join the
-  files into one system prompt. claude.yml, claude-run.yml and claude-code-review.yml call this action.
+  files into one system prompt. claude-code-review.yml and the run-claude action call this action.
 
 inputs:
   files:

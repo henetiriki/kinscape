@@ -24,7 +24,7 @@ Item 5: `id-token: write` stays (the review's token comes by OIDC); a comment sa
 | `scripts/__tests__/load-agent-files.test.ts`  | 2    | `uses:` at `@main`; listed files exist; stub-`gh` run                 |
 | `.github/agent/rules.md`                      | 2    | Line 1 names the `files:` lists, not `AGENT_FILES`                    |
 | `docs/security.md`                            | 2    | SHA-pin exception for this repo's `@main` actions                     |
-| `.github/agent/review.md`                     | 2    | Drop the workflow bullets that repeat `docs/security.md`              |
+| `.github/agent/review.md`                     | 2    | SHA-pin bullet: except where `docs/security.md` allows `@main`        |
 
 ## Order of work
 

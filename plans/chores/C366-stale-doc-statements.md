@@ -1,7 +1,7 @@
 # Plan: C366: Fix stale statements in the process and architecture docs
 
 - **Spec:** #366
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -34,6 +34,10 @@ Reword each statement #366 names to match the file it describes, adding no new r
 | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Each statement matches its file      | Cited in the PR: `claude-run.yml:223-255`, ruleset code-owner review, `scripts/vercel-ignore.mts`, `app/components/foundation/`, `app/page.tsx` |
 | Words, format and lint pass; budgets | Their output                                                                                                                                    |
+
+## Deviations
+
+- `architecture.md` "A map layer" omits "the route passes layers to `MapShell`": it would pass the 800-word budget.
 
 ## Out of scope
 

@@ -160,7 +160,7 @@ Each component, its `.module.css` and its test live in one folder of `app/compon
 
 | Folder       | Holds                                                                   |
 | ------------ | ----------------------------------------------------------------------- |
-| `foundation` | Text, Icon, Surface, Divider, focus, controls, Avatar, Wordmark         |
+| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark                   |
 | `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint |
 | `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField             |
 | `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                  |

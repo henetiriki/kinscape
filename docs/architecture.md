@@ -11,7 +11,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                            |
 | UI the kit and features share   | `lib/ui/` (`EventGlyph`, `hatch`, Event types)                                                                |
 | A feature's UI and engine       | `features/<name>/`                                                                                            |
-| A map layer                     | `features/map/layers/<name>.ts`                                                                               |
+| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts` (polity: `features/map/layers/`)                  |
 | Pure logic with no I/O          | `lib/domain/`, with tests in `__tests__/`                                                                     |
 | Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                                |
 | Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is `design/tokens.mts`                                  |

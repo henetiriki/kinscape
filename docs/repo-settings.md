@@ -41,8 +41,8 @@ Vercel has no settings-as-code here: the tech lead sets these by hand in the Ver
 
 ## Accounts and access
 
-| Who                       | Access               | Notes                                                                                                                                                           |
-| ------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tech lead (@henetiriki)   | Owner                | Applies settings; merges                                                                                                                                        |
-| Product owner             | Collaborator (write) | Personal repos can't grant less than write; the ruleset stops direct pushes to `main`                                                                           |
-| Claude (`henetiriki-bot`) | Bot account          | Runs the Spec agent and `@claude` in GitHub Actions, using the `CLAUDE_CODE_OAUTH_TOKEN` and `KINSCAPE_BOT_PAT` secrets. The Claude GitHub App is not installed |
+| Who                       | Access               | Notes                                                                                                                                                         |
+| ------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tech lead (@henetiriki)   | Owner                | Applies settings; merges                                                                                                                                      |
+| Product owner             | Collaborator (write) | Personal repos can't grant less than write; the ruleset stops direct pushes to `main`                                                                         |
+| Claude (`henetiriki-bot`) | Bot account          | Runs the CI agent and `@claude` in GitHub Actions, using the `CLAUDE_CODE_OAUTH_TOKEN` and `KINSCAPE_BOT_PAT` secrets. The Claude GitHub App is not installed |

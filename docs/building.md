@@ -13,7 +13,7 @@ A Bug takes the same path; below, "Spec" means both. The branch is `spec/<id>-<s
 
 ### If a run stalls
 
-A plan run that ends without a comment gets a safety-net comment linking the run, and the Spec becomes `status: blocked`. Check the run, then swap `blocked` for `ready-for-agent`. A stalled build: re-run it from the Actions tab.
+A silent run gets a comment linking it; with no plan PR either, the Spec becomes `status: blocked`: check the run, then swap it for `ready-for-agent`. Stalled build: re-run it from Actions.
 
 ## Styles
 
@@ -24,11 +24,11 @@ A component's CSS goes in a `*.module.css` beside it, with camelCase class names
 Tooling, CI, docs, process and settings.
 
 - **Quick, no issue:** Claude plans in plan mode, the tech lead accepts; the PR body says what changed and why. Open a `chore:` PR from a branch off `origin/main`.
-- **Filed as a Chore issue:** the tech lead sets `status: ready-for-agent` and the Spec Agent follows the Specs path above on `chore/C<n>-<slug>`, handing back what it can't build ([rule 4](../plans/README.md)).
+- **Filed as a Chore issue:** the tech lead sets `status: ready-for-agent` and the CI agent follows the Specs path above on `chore/C<n>-<slug>`, handing back what it can't build ([rule 4](../plans/README.md)).
 
 ## Merging
 
-Squash only. A pull request needs one approval, from the PO or the tech lead, resolved review conversations and green required checks ([list](repo-settings.md)). A new push dismisses earlier approvals. The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
+Squash only. A pull request needs one approval, from the PO or the tech lead, resolved review conversations and green required checks; CODEOWNERS paths need the tech lead ([list](repo-settings.md)). A new push dismisses earlier approvals. The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
 
 When a user-visible pull request is ready to try, Claude sets `status: ready-for-po` on it and writes what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](repo-settings.md#vercel)).
 

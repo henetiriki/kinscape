@@ -56,20 +56,16 @@ describe('the Playwright browser cache', () => {
       return undefined;
     }
   };
-  const reference = keyAndPath(`.github/workflows/claude-run.yml`);
+  const reference = keyAndPath('.github/actions/setup-workspace/action.yml');
 
-  it('is cached by claude-run.yml', () => {
+  it('is cached by setup-workspace', () => {
     expect(reference).toBeDefined();
   });
 
-  it.each([
-    '.github/workflows/claude.yml',
-    `.github/workflows/${SEED}`,
-    '.github/actions/setup-workspace/action.yml',
-  ])('is cached by %s under the same key and path as claude-run.yml', file => {
+  it(`is cached by ${SEED} under the same key and path as setup-workspace`, () => {
     expect(
-      keyAndPath(file),
-      `${file} needs a "Cache Playwright browser" step with the key and path of claude-run.yml`
+      keyAndPath(`.github/workflows/${SEED}`),
+      `${SEED} needs a "Cache Playwright browser" step with the key and path of setup-workspace`
     ).toEqual(reference);
   });
 });

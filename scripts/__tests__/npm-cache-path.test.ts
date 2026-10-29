@@ -13,7 +13,10 @@ const PATH = '/tmp/npm-cache';
 
 describe('the npm cache path', () => {
   const files = readdirSync(join(root, '.github/workflows')).filter(
-    file => file.endsWith('.yml') && read(file).includes('cache: npm')
+    file =>
+      file.endsWith('.yml') &&
+      (read(file).includes('cache: npm') ||
+        read(file).includes('setup-workspace@'))
   );
 
   it('is set by the workflows that cache npm', () => {

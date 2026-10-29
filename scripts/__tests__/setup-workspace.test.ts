@@ -19,7 +19,7 @@ const steps = (file: string, job: string) =>
     ) as Workflow
   ).jobs[job].steps;
 
-// Callers name the action by repo and `@main`: see .github/actions/setup-workspace/action.yml.
+// Callers name the action by repo and `@main`, which runs the action from main: see .github/actions/load-agent-files/action.yml.
 const ACTION = 'henetiriki/kinscape/.github/actions/setup-workspace@main';
 
 // The inputs are strings: `persist-credentials` keeps the PAT for the push that starts CI.

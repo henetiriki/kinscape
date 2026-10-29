@@ -3,7 +3,7 @@ name: 'CI: Playwright cache'
 # Claude runs started by an issue or a comment can't write main's cache (their cache token is
 # read-only), so each downloaded the browser again, and a PR's own run kept a copy until it closed.
 # This saves the browser on main, where every run can restore it. It uses the key and path of
-# claude-run.yml and claude.yml; scripts/__tests__/playwright-image.test.ts checks they match.
+# .github/actions/setup-workspace/action.yml; scripts/__tests__/playwright-image.test.ts checks they match.
 
 on:
   push:

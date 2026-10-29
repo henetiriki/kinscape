@@ -15,9 +15,9 @@ The cache tests read the steps this removes. What replaces them?
 
 - **A.** New `setup-workspace.test.ts`: each job calls the action once from `@main` with the inputs above, and neither file has `npm ci`, `ms-playwright` or `.next/cache`. The cache tests check the action alone.
 - **B.** Only drop the workflow cases from the cache tests.
-- **Other:** your own.
+- **Other.**
 
-Recommended: A, because nothing else catches a lost `persist-credentials: 'true'` before merge.
+Recommended: A; nothing else catches a lost `persist-credentials: 'true'`.
 
 **Answer: A** (@henetiriki)
 
@@ -30,12 +30,14 @@ Recommended: A, because nothing else catches a lost `persist-credentials: 'true'
 | `scripts/__tests__/next-build-cache.test.ts` | Drop the workflow cases                                   |
 | `scripts/__tests__/playwright-image.test.ts` | Drop the workflow cases; the action becomes the reference |
 | `scripts/__tests__/setup-workspace.test.ts`  | New, if D1 is A                                           |
+| `scripts/__tests__/npm-cache-path.test.ts`   | Also select callers of the action                         |
+| `.github/workflows/ci-playwright-cache.yml`  | Header names the action                                   |
 
 ## Order of work
 
 1. Change the tests; see the new test fail on today's workflows.
 2. Switch both jobs.
-3. Run lint, tests, format:check, words and e2e.
+3. Run lint, tests, format:check and words.
 
 ## Risks
 

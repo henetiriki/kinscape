@@ -3,6 +3,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -178,8 +179,8 @@ describe('the run-claude action', () => {
     }
   );
 
-  // Dependabot doesn't scan .github/actions/, so a bump of either pin in the review workflow
-  // fails this until the action follows.
+  // Dependabot's `actions` group takes minor and patch, so a major bump of either pin arrives as
+  // two PRs, one per file. This fails until both carry it.
   it.each(['anthropics/claude-code-action', 'actions/upload-artifact'])(
     'pins %s to the commit claude-code-review.yml pins',
     name => {
@@ -187,6 +188,69 @@ describe('the run-claude action', () => {
 
       expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
       expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
+    }
+  );
+});
+
+// A runner's temp directory isn't always /home/runner/work/_temp. A path that misses the file
+// uploads nothing, and `if-no-files-found: ignore` hides it: the run summary has no transcript.
+describe('the transcript upload', () => {
+  const OUTPUT = '${{ runner.temp }}/claude-execution-output.json';
+  const isTranscript = (step: Step) =>
+    step.uses?.startsWith('actions/upload-artifact@') &&
+    step.with?.name === 'claude-execution-output';
+
+  it('takes the file from runner.temp in run-claude', () => {
+    expect(runClaudeSteps().find(isTranscript)?.with?.path).toBe(OUTPUT);
+  });
+
+  it('takes the file from runner.temp in claude-code-review.yml', () => {
+    const { jobs } = parse(read('claude-code-review.yml')) as {
+      jobs: Record<string, { steps?: Step[] }>;
+    };
+    const uploads = Object.values(jobs)
+      .flatMap(job => job.steps ?? [])
+      .filter(isTranscript);
+
+    expect(uploads.map(step => step.with?.path)).toEqual([OUTPUT]);
+  });
+});
+
+// A tag or branch can be moved to other code, and these actions run `npm ci` with the bot PAT.
+// Dependabot bumps a SHA with its tag in the comment. Our own actions are called at `@main`.
+describe('the composite actions', () => {
+  const ACTIONS = join(root, '.github/actions');
+  const OWN = 'henetiriki/kinscape/';
+  const actions = readdirSync(ACTIONS, { withFileTypes: true })
+    .filter(entry => entry.isDirectory())
+    .map(entry => entry.name);
+  // Every `uses:` in an action's steps, except a local `./` action.
+  const used = (name: string) =>
+    (
+      parse(readFileSync(join(ACTIONS, name, 'action.yml'), 'utf8')) as {
+        runs: { steps?: Step[] };
+      }
+    ).runs.steps
+      ?.flatMap(step => (step.uses ? [step.uses] : []))
+      .filter(uses => !uses.startsWith('./')) ?? [];
+  const unpinned = (uses: string) =>
+    uses.startsWith(OWN)
+      ? !uses.endsWith('@main')
+      : !/@[0-9a-f]{40}$/.test(uses);
+
+  it('checks the third-party steps of setup-workspace', () => {
+    expect(
+      used('setup-workspace').filter(uses => !uses.startsWith(OWN)).length
+    ).toBeGreaterThan(0);
+  });
+
+  it.each(actions)(
+    'pins every step in %s: third-party to a 40-character SHA, ours to @main',
+    name => {
+      expect(
+        used(name).filter(unpinned),
+        `${name} uses an action with another ref`
+      ).toEqual([]);
     }
   );
 });

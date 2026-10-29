@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: claude-execution-output
-          path: /home/runner/work/_temp/claude-execution-output.json
+          path: ${{ runner.temp }}/claude-execution-output.json
           if-no-files-found: ignore
           retention-days: 14
 

@@ -110,45 +110,16 @@ jobs:
       # A run ends with its turn, which kills any background work.
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     steps:
-      - name: Check out code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a build,
+      # or a plan for a UI Spec), the Playwright and Next.js caches: see the action, which runs from main.
+      - name: Set up the workspace
+        uses: henetiriki/kinscape/.github/actions/setup-workspace@main
         with:
           ref: ${{ inputs.ref }}
-          fetch-depth: 1
           # Otherwise git pushes with GITHUB_TOKEN, not the PAT, and the runs it triggers wait for approval.
-          persist-credentials: false
-
-      # Install the project's tools so Claude can run lint and tests.
-      - name: Set up Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          cache: npm
-          node-version-file: .nvmrc
-      - name: Install dependencies
-        run: npm ci
-      # Install the test browser when the caller says Claude will run e2e or design:check (a build,
-      # or a plan for a UI Spec). The cache keeps the browser between runs.
+          persist-credentials: 'false'
+          playwright: ${{ inputs.playwright }}
       # The runner already has Chromium's system packages, so only the browser is installed.
-      - name: Read Playwright version
-        id: playwright
-        if: inputs.playwright
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - name: Cache Playwright browser
-        if: inputs.playwright
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
-          path: ~/.cache/ms-playwright
-      # Start the build from the cache that ci.yml's e2e job saves on main. Restore only: a run started
-      # by an issue or a comment has a read-only cache token (`Cache mode: read` in its log),
-      # whatever the job's token permissions, so it can't save to main's cache. The key is the
-      # e2e job's restore-keys prefix (scripts/__tests__/next-build-cache.test.ts keeps them equal).
-      - name: Restore Next.js build cache
-        if: inputs.playwright
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
-          path: .next/cache
       # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
       # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
       - name: Install Playwright

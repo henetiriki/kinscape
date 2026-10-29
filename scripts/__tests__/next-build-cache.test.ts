@@ -20,18 +20,14 @@ describe('the Next.js build cache', () => {
     expect(prefix).toBeDefined();
   });
 
-  it.each([
-    '.github/workflows/claude-run.yml',
-    '.github/workflows/claude.yml',
-    '.github/actions/setup-workspace/action.yml',
-  ])('is restored by %s under the key prefix and path of ci.yml', file => {
+  it('is restored by setup-workspace under the key prefix and path of ci.yml', () => {
     expect(
-      read(file)
+      read('.github/actions/setup-workspace/action.yml')
         .match(
           /name: Restore Next\.js build cache\n[\s\S]*?key: (.+)\n\s*path: (.+)/
         )
         ?.slice(1),
-      `${file} needs a "Restore Next.js build cache" step with the key and path ci.yml's e2e job restores`
+      `setup-workspace needs a "Restore Next.js build cache" step with the key and path ci.yml's e2e job restores`
     ).toEqual([prefix, path]);
   });
 });

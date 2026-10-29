@@ -1,0 +1,62 @@
+name: Run Claude
+description: >-
+  Load the agent files, run Claude Code with them, and keep its output. The steps claude.yml and
+  claude-run.yml share; nothing calls this action yet.
+
+inputs:
+  files:
+    description: 'The files in .github/agent/ that become the system prompt, space separated, in order.'
+    required: true
+  model_args:
+    description: 'Claude CLI model flags, e.g. "--model sonnet".'
+    required: true
+  prompt:
+    description: 'What Claude is asked to do. Empty keeps tag mode, where the triggering comment is the prompt.'
+    default: ''
+  additional_permissions:
+    description: "GitHub permissions claude-code-action requests beyond its defaults, e.g. 'actions: read'."
+    default: ''
+  claude_code_oauth_token:
+    description: "Claude's OAuth token."
+    required: true
+  github_token:
+    description: "The bot's token, which claude-code-action uses to read and write the repo."
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # From main, not this branch (see load-agent-files). settings.json is the build agent's tools.
+    - name: Load agent files
+      uses: henetiriki/kinscape/.github/actions/load-agent-files@main
+      with:
+        files: ${{ inputs.files }}
+        settings: settings.json
+        token: ${{ inputs.github_token }}
+
+    - name: Run Claude Code
+      uses: anthropics/claude-code-action@925afb53776cf1a2b738c6bdbed37b4d4000ef13 # v1.0.262
+      with:
+        claude_code_oauth_token: ${{ inputs.claude_code_oauth_token }}
+        github_token: ${{ inputs.github_token }}
+        bot_name: henetiriki-bot
+        bot_id: '344434370'
+        prompt: ${{ inputs.prompt }}
+        additional_permissions: ${{ inputs.additional_permissions }}
+        # Off: the full output includes every screenshot Claude reads, as base64, and the log
+        # stopped at the first of them. The transcript is in the artifact, and the summary job
+        # writes the run page from it.
+        show_full_output: false
+        # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
+        settings: ${{ runner.temp }}/agent/settings.json
+        claude_args: '${{ inputs.model_args }} --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+
+    # The Actions log can stop at an image read and lose the final result; the full output survives here.
+    - name: Upload Claude's output
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      with:
+        name: claude-execution-output
+        path: /home/runner/work/_temp/claude-execution-output.json
+        if-no-files-found: ignore
+        retention-days: 14

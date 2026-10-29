@@ -111,6 +111,57 @@ describe('the run-summary action', () => {
   );
 });
 
+// The run-claude action holds the steps claude.yml and claude-run.yml share. It loads the settings
+// file Claude then reads, so a wrong one would run a build with another agent's tools.
+type Step = { uses?: string; with?: Record<string, string> };
+const runClaudeSteps = () =>
+  (
+    parse(
+      readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8')
+    ) as { runs: { steps: Step[] } }
+  ).runs.steps;
+const stepUsing = (name: string) =>
+  runClaudeSteps().find(step => step.uses?.startsWith(`${name}@`));
+// Every ref a file pins `name` at, e.g. the commit SHA after `anthropics/claude-code-action@`.
+const pins = (text: string, name: string) =>
+  [...text.matchAll(new RegExp(`uses:\\s*${name}@(\\S+)`, 'g'))].map(
+    match => match[1]
+  );
+
+describe('the run-claude action', () => {
+  it('loads the agent files from main, with settings.json', () => {
+    const loader = stepUsing(ACTION.split('@')[0]);
+
+    expect(loader?.uses).toBe(ACTION);
+    expect(loader?.with).toMatchObject({
+      files: '${{ inputs.files }}',
+      settings: 'settings.json',
+    });
+  });
+
+  it('has Claude read the settings and system prompt it loaded', () => {
+    const claude = stepUsing('anthropics/claude-code-action')?.with;
+
+    expect(claude?.settings).toBe('${{ runner.temp }}/agent/settings.json');
+    expect(claude?.claude_args).toContain(
+      '--append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+    );
+  });
+
+  // Dependabot doesn't scan .github/actions/, so a bump of either pin in the workflows fails
+  // this until the action follows.
+  it.each(['anthropics/claude-code-action', 'actions/upload-artifact'])(
+    'pins %s to the commit claude.yml and claude-run.yml pin',
+    name => {
+      const pin = stepUsing(name)?.uses?.split('@')[1];
+
+      expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
+      expect(pins(read('claude.yml'), name)).toEqual([pin]);
+      expect(pins(read('claude-run.yml'), name)).toEqual([pin]);
+    }
+  );
+});
+
 // Each list is a space-separated set of files in .github/agent/ that become the system prompt.
 // A typo is a 404 on the first live run; the order is the order Claude reads them, with
 // rules.md first and build.md last (respond.md points to build.md "below").

@@ -1,5 +1,3 @@
-<!-- Appended to the system prompt of claude-code-review.yml, loaded from main. -->
-
 # Review rules
 
 Where these rules and the review command disagree, these win.

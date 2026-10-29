@@ -5,7 +5,7 @@
 
 ## Approach
 
-`review.md` becomes the one home of the workflow security rules: the review loads it from `main`, so a PR can't weaken it. Its SHA-pin bullet names the two paths that may use `@main`; `docs/security.md` links there. The stub `gh` rejects any call that isn't `repos/owner/repo/contents/.github/agent/<file>?ref=main`, so a wrong ref or repo fails the script tests. A new test pins `action.yml` to one `run:` step.
+`review.md` becomes the one home of the workflow security rules: the review loads it from `main`, so a PR can't weaken it. Its SHA-pin bullet names the two paths that may use `@main`; `docs/security.md` links there. The stub `gh` rejects any call but `repos/owner/repo/contents/.github/agent/<file>?ref=main`, so a wrong ref or repo fails the tests; a new test pins `action.yml` to one `run:` step.
 
 ## Decisions
 
@@ -19,18 +19,18 @@
 
 ## Files that change
 
-| File                                         | What                                                                                                          |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `.github/agent/review.md`                    | _In workflows_: the SHA-pin bullet states D1; the lead-in says these rules live only here, loaded from `main` |
-| `docs/security.md`                           | Workflow bullet → "Workflows follow _In workflows_ in [review.md](../.github/agent/review.md#the-rules)"      |
-| `.github/agent/rules.md`                     | Delete line 1's comment                                                                                       |
-| `scripts/__tests__/load-agent-files.test.ts` | Stub rejects a wrong call; new one-`run:` test                                                                |
+| File                                         | What                                                                                       |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `.github/agent/review.md`                    | SHA-pin bullet states D1; lead-in says these rules live only here; delete line 1's comment |
+| `docs/security.md`                           | Workflow bullet → link to `review.md#the-rules`                                            |
+| `.github/agent/{rules,respond,build}.md`     | Delete line 1's comment                                                                    |
+| `scripts/__tests__/load-agent-files.test.ts` | Stub rejects a wrong call; new one-`run:` test                                             |
 
 ## Order of work
 
 1. Change the stub; with `?ref=main` → `?ref=$GITHUB_REF` in `action.yml`, see the tests fail, then revert.
 2. Add the one-step test; see it fail with a second step added, then revert.
-3. Edit the three docs.
+3. Edit the docs.
 4. Run lint, tests, words, format:check, the boundary validator and e2e.
 
 ## Risks
@@ -49,3 +49,7 @@ An agent editing a workflow sees only the link; it names the section.
 ## Out of scope
 
 `claude-code-review.yml`, `action.yml`, other review rules.
+
+## Deviations
+
+`respond.md`, `build.md`, `review.md` lose their line-1 comments (debug aids; tech lead's call).

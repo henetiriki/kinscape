@@ -20,7 +20,7 @@ const agent = (file: string) =>
 
 // Callers name the action by repo and `@main`: see .github/actions/load-agent-files/action.yml.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files@main';
-const CALLERS = ['claude.yml', 'claude-run.yml'];
+const CALLERS = ['claude.yml', 'claude-run.yml', 'claude-code-review.yml'];
 const action = () =>
   readFileSync(
     join(root, '.github/actions/load-agent-files/action.yml'),
@@ -28,6 +28,20 @@ const action = () =>
   );
 
 describe('the load-agent-files action', () => {
+  // A review that got settings.json would run with the build agent's tools.
+  it.each([
+    ['claude.yml', 'settings.json'],
+    ['claude-run.yml', 'settings.json'],
+    ['claude-code-review.yml', 'review-settings.json'],
+  ])('is given the settings file %s needs: %s', (file, settings) => {
+    expect(read(file)).toMatch(new RegExp(`^\\s*settings: ${settings}$`, 'm'));
+    expect(existsSync(join(root, '.github/agent', settings))).toBe(true);
+  });
+
+  it('is told by the review to load review.md', () => {
+    expect(read('claude-code-review.yml')).toMatch(/^\s*files: review\.md$/m);
+  });
+
   // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.
   it("takes the repo from this run's repository", () => {
     expect(action()).toContain('GH_REPO: ${{ github.repository }}');
@@ -105,7 +119,8 @@ describe('the agent files a workflow loads', () => {
 
 // A stand-in for `gh api -H "Accept: application/vnd.github.raw"
 // "repos/owner/repo/contents/.github/agent/<file>?ref=main"`: fails for any other arguments, prints
-// the local file, and fails for one that is not there, as the API does with a 404.
+// the local file, and fails for one that is not there, as the API does with a 404. With
+// STUB_FAIL_FIRST=n, the first n calls fail like a server error.
 const GH = `#!/bin/bash
 if [ "$#" -ne 4 ] || [ "$1" != api ] || [ "$2" != -H ] || [ "$3" != "Accept: application/vnd.github.raw" ]; then
   echo "unexpected gh call: $*" >&2; exit 1
@@ -114,6 +129,12 @@ case "$4" in
   repos/owner/repo/contents/.github/agent/*\\?ref=main) ;;
   *) echo "unexpected gh call: $*" >&2; exit 1 ;;
 esac
+if [ -n "$STUB_FAIL_FIRST" ]; then
+  failed=$(cat "$RUNNER_TEMP/gh-failed" 2>/dev/null || echo 0)
+  if [ "$failed" -lt "$STUB_FAIL_FIRST" ]; then
+    echo $((failed + 1)) > "$RUNNER_TEMP/gh-failed"; echo "HTTP 502" >&2; exit 1
+  fi
+fi
 name="\${4#repos/owner/repo/contents/.github/agent/}"
 name="\${name%\\?ref=main}"
 case "$name" in
@@ -130,12 +151,20 @@ const script = () => {
 };
 
 // Runs the script with `gh` stubbed and reads what it left behind.
-const load = (files: string, edit = (run: string) => run) => {
+const load = (
+  files: string,
+  edit = (run: string) => run,
+  extra: Record<string, string> = {}
+) => {
+  const settingsFile = extra.SETTINGS_FILE ?? 'settings.json';
+
   const dir = mkdtempSync(join(tmpdir(), 'load-agent-files-'));
 
   try {
     mkdirSync(join(dir, 'bin'));
     writeFileSync(join(dir, 'bin/gh'), GH, { mode: 0o755 });
+    // The retries wait between tries; the tests don't.
+    writeFileSync(join(dir, 'bin/sleep'), '#!/bin/bash\n', { mode: 0o755 });
     const log = execFileSync(
       'bash',
       ['-e', '-o', 'pipefail', '-c', edit(script())],
@@ -144,6 +173,8 @@ const load = (files: string, edit = (run: string) => run) => {
         env: {
           AGENT_FILES: files,
           GH_REPO: 'owner/repo',
+          SETTINGS_FILE: settingsFile,
+          ...extra,
           GH_TOKEN: 'token',
           GITHUB_STEP_SUMMARY: join(dir, 'summary.md'),
           NODE_ENV: 'test',
@@ -158,7 +189,7 @@ const load = (files: string, edit = (run: string) => run) => {
 
     return {
       log,
-      settings: out('agent/settings.json'),
+      settings: out(`agent/${settingsFile}`),
       summary: out('summary.md'),
       system: out('agent/system.md'),
     };
@@ -190,6 +221,22 @@ describe('the load-agent-files script', () => {
     expect(summary).toContain(
       `<details><summary>System prompt (${files})</summary>\n\n${system}`
     );
+  });
+
+  it('downloads the settings file it is told to, and loads review.md alone', () => {
+    const { settings, system } = load('review.md', undefined, {
+      SETTINGS_FILE: 'review-settings.json',
+    });
+
+    expect(settings).toBe(agent('review-settings.json'));
+    expect(system).toBe(`${agent('review.md')}\n`);
+  });
+
+  it('retries a download that fails, up to three tries', () => {
+    expect(load(files, undefined, { STUB_FAIL_FIRST: '2' }).system).toContain(
+      agent('rules.md')
+    );
+    expect(() => load(files, undefined, { STUB_FAIL_FIRST: '3' })).toThrow();
   });
 
   it('fails on a file that is not in .github/agent/', () => {

@@ -164,6 +164,7 @@ jobs:
         uses: henetiriki/kinscape/.github/actions/load-agent-files@main
         with:
           files: ${{ inputs.agent_files }}
+          settings: settings.json
           token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       # Hand the job to Claude: the caller's prompt and model flags say what to do.

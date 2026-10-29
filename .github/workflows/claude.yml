@@ -116,6 +116,7 @@ jobs:
           # The files in .github/agent/ that become the system prompt. The order matters: respond.md
           # points to build.md "below", so build.md comes after it.
           files: rules.md respond.md build.md
+          settings: settings.json
           token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       - name: Run Claude Code

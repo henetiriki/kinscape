@@ -34,18 +34,27 @@ for l in bug documentation duplicate enhancement "good first issue" "help wanted
 done
 
 echo "== Milestones"
-existing=$(gh api "repos/$REPO/milestones?state=all" --jq '.[].title')
+existing=$(gh api "repos/$REPO/milestones?state=all" --jq '.[] | "\(.number)|\(.title)"')
 while IFS='|' read -r title desc; do
-  grep -qxF "$title" <<<"$existing" && continue
-  gh api "repos/$REPO/milestones" -f title="$title" -f description="$desc" >/dev/null
-  echo "milestone: $title"
+  # Match a live milestone on its M<n> prefix, so a changed title renames it.
+  number="" current=""
+  while IFS='|' read -r n t; do
+    [ "${t%% *}" = "${title%% *}" ] && { number=$n; current=$t; break; }
+  done <<<"$existing"
+  if [ -z "$number" ]; then
+    gh api "repos/$REPO/milestones" -f title="$title" -f description="$desc" >/dev/null
+    echo "milestone: $title"
+  elif [ "$current" != "$title" ]; then
+    gh api -X PATCH "repos/$REPO/milestones/$number" -f title="$title" >/dev/null
+    echo "milestone renamed: $current -> $title"
+  fi
 done <<'EOF'
 M0 Foundations|Repo, CLAUDE.md, stack scaffold, CI, blank map deployed
 M1 Time-aware map|Boundary model and date control with three easy epochs
 M2 People and pins|People, relationships, pins, persistence and sign-in
 M3 Jurisdiction and exploring|Jurisdiction lookup, filters, search, backups
 M4 Pre-Union boundaries|Polity layer 1652-1910 and first district layers
-M5 Homelands and richer views|Homeland layers, epochs, playback, trails, sources
+M5 Apartheid-era homelands and richer views|Homeland layers, epochs, playback, trails, sources
 M6 Hardening|Remaining Should/Could items, accessibility, offline
 EOF
 

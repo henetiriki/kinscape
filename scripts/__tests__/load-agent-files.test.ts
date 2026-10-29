@@ -196,13 +196,23 @@ describe('the run-claude action', () => {
 // uploads nothing, and `if-no-files-found: ignore` hides it: the run summary has no transcript.
 describe('the transcript upload', () => {
   const OUTPUT = '${{ runner.temp }}/claude-execution-output.json';
+  const isTranscript = (step: Step) =>
+    step.uses?.startsWith('actions/upload-artifact@') &&
+    step.with?.name === 'claude-execution-output';
 
   it('takes the file from runner.temp in run-claude', () => {
-    expect(stepUsing('actions/upload-artifact')?.with?.path).toBe(OUTPUT);
+    expect(runClaudeSteps().find(isTranscript)?.with?.path).toBe(OUTPUT);
   });
 
   it('takes the file from runner.temp in claude-code-review.yml', () => {
-    expect(read('claude-code-review.yml')).toContain(`path: ${OUTPUT}`);
+    const { jobs } = parse(read('claude-code-review.yml')) as {
+      jobs: Record<string, { steps?: Step[] }>;
+    };
+    const uploads = Object.values(jobs)
+      .flatMap(job => job.steps ?? [])
+      .filter(isTranscript);
+
+    expect(uploads.map(step => step.with?.path)).toEqual([OUTPUT]);
   });
 });
 
@@ -210,25 +220,36 @@ describe('the transcript upload', () => {
 // Dependabot bumps a SHA with its tag in the comment. Our own actions are called at `@main`.
 describe('the composite actions', () => {
   const ACTIONS = join(root, '.github/actions');
-  const thirdParty = (name: string) =>
+  const OWN = 'henetiriki/kinscape/';
+  const actions = readdirSync(ACTIONS, { withFileTypes: true })
+    .filter(entry => entry.isDirectory())
+    .map(entry => entry.name);
+  // Every `uses:` in an action's steps, except a local `./` action.
+  const used = (name: string) =>
     (
       parse(readFileSync(join(ACTIONS, name, 'action.yml'), 'utf8')) as {
-        runs: { steps: Step[] };
+        runs: { steps?: Step[] };
       }
     ).runs.steps
-      .flatMap(step => (step.uses ? [step.uses] : []))
-      .filter(uses => !uses.startsWith('henetiriki/kinscape/'));
+      ?.flatMap(step => (step.uses ? [step.uses] : []))
+      .filter(uses => !uses.startsWith('./')) ?? [];
+  const unpinned = (uses: string) =>
+    uses.startsWith(OWN)
+      ? !uses.endsWith('@main')
+      : !/@[0-9a-f]{40}$/.test(uses);
 
   it('checks the third-party steps of setup-workspace', () => {
-    expect(thirdParty('setup-workspace').length).toBeGreaterThan(0);
+    expect(
+      used('setup-workspace').filter(uses => !uses.startsWith(OWN)).length
+    ).toBeGreaterThan(0);
   });
 
-  it.each(readdirSync(ACTIONS))(
-    'pins every third-party step in %s to a commit SHA',
+  it.each(actions)(
+    'pins every step in %s: third-party to a 40-character SHA, ours to @main',
     name => {
       expect(
-        thirdParty(name).filter(uses => !/@[0-9a-f]{40}$/.test(uses)),
-        `${name} uses an action that is not pinned to a 40-character SHA`
+        used(name).filter(unpinned),
+        `${name} uses an action with another ref`
       ).toEqual([]);
     }
   );

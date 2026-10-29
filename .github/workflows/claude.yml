@@ -103,6 +103,7 @@ jobs:
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
           bot_name: henetiriki-bot
           bot_id: '344434370'
+          prompt: ''
           additional_permissions: |
             actions: read
           # Off: the full output includes every screenshot Claude reads, as base64, and the log

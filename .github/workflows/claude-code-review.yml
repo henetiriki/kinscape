@@ -29,6 +29,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: read
+      # Needed: this step passes no github_token, so the action gets its token by an OIDC exchange.
       id-token: write
 
     steps:
@@ -96,6 +97,6 @@ jobs:
             echo "::error::No review: Claude didn't start. See the step above."
             exit 1
           fi
-          msg="No Claude review: this PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs."
+          msg=$'## :rotating_light: No Claude review\n\nThis PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs.'
           # Each push updates the one comment. A read-only token (fork PR) falls back to a warning.
           gh pr comment "$PR_NUMBER" --edit-last --create-if-none --body "$msg" || echo "::warning::$msg"

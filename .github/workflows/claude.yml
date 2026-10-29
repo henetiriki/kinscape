@@ -156,7 +156,7 @@ jobs:
           # Off: the full output includes every screenshot Claude reads, as base64, and the log
           # stopped at the first of them. The transcript is in the artifact below.
           show_full_output: false
-          # Same tools, denials and Bash timeout as the spec agent (settings.json); the rules and the
+          # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules and the
           # respond and build instructions are the system prompt. Planning is the hard thinking, so a
           # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.
           settings: ${{ runner.temp }}/agent/settings.json

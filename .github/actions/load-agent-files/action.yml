@@ -1,0 +1,49 @@
+name: Load agent files
+description: >-
+  Download settings.json and the given files from .github/agent/ as main has them, and join the
+  files into one system prompt. claude.yml and claude-run.yml call this action.
+
+inputs:
+  files:
+    description: 'The files in .github/agent/ that become the system prompt, space separated, in order.'
+    required: true
+  token:
+    description: 'A token that can read the repo.'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # The files come from main, not the checked-out branch: a plan branch cut before a change
+    # still gets it, and a branch can't widen its own tools.
+    - name: Load agent files
+      shell: bash
+      env:
+        AGENT_FILES: ${{ inputs.files }}
+        GH_TOKEN: ${{ inputs.token }}
+        GH_REPO: ${{ github.repository }}
+      run: |
+        mkdir -p "$RUNNER_TEMP/agent"
+        # Download settings.json and each file in AGENT_FILES as main has them (the raw file, not
+        # JSON). $AGENT_FILES is unquoted so it splits into one name per file.
+        for f in settings.json $AGENT_FILES; do
+          gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
+        done
+        # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
+        # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.
+        : > "$RUNNER_TEMP/agent/system.md"
+        for f in $AGENT_FILES; do
+          { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
+        done
+        # Show what Claude is told: a collapsed group in the log and a section on the run page.
+        # The files come from main and hold no secrets.
+        echo "::group::System prompt ($AGENT_FILES)"
+        cat "$RUNNER_TEMP/agent/system.md"
+        echo "::endgroup::"
+        {
+          echo "<details><summary>System prompt ($AGENT_FILES)</summary>"
+          echo
+          cat "$RUNNER_TEMP/agent/system.md"
+          echo
+          echo "</details>"
+        } >> "$GITHUB_STEP_SUMMARY"

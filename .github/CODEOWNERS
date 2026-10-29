@@ -8,5 +8,6 @@ scripts/github/** @henetiriki
 .github/workflows/claude*.yml @henetiriki
 .github/CODEOWNERS @henetiriki
 .github/agent/** @henetiriki
+.github/actions/** @henetiriki
 server/** @henetiriki
 scripts/layers.mts @henetiriki

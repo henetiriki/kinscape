@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Only the tech lead files a chore. A chore that touches AGENTS.md, CLAUDE.md, settings, secrets or the agent's own workflows is handed back to a person.
+        Only the tech lead files a chore. A chore that edits a path in `.github/CODEOWNERS`, needs a secret, or is too big is handed back to a person.
   - type: textarea
     id: change
     attributes:

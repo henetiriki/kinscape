@@ -1,7 +1,7 @@
 # Plan: C367: Make the issue forms, PR template and /refine skills agree with the workflow docs
 
 - **Spec:** #367
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ They say the tech lead sets `status: ready-for-agent`, outside #367's file list.
 - **B.** Shorten them in this PR.
 - **Other:** your own.
 
-Recommended: A, because each is a step, not the approval flow.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

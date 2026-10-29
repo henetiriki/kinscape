@@ -1,5 +1,5 @@
 name: 📐 Spec
-description: One slice of a milestone or an accepted Intent. Drafted by Claude, approved by the PO or the tech lead.
+description: One slice of a milestone or an accepted Intent. Drafted by Claude.
 title: 'Spec: '
 labels: ['type: spec', 'status: draft']
 body:
@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         A **spec** says what one slice of a milestone or Intent will change, and how we'll know it works. How it's built goes in the plan.
-        If it changes what the user sees, set `status: ready-for-po`: the PO answers the **Decisions** first, then approves by setting `status: ready-for-dev`. If it is engineering-only, the tech lead approves by setting `status: ready-for-dev`. Then the tech lead sets `status: ready-for-agent` to have Claude plan it.
+        Next, set the status label for whoever acts: see [Roles and labels](https://github.com/henetiriki/kinscape/blob/main/docs/how-we-work.md#roles-and-labels-whose-turn-is-it).
   - type: input
     id: intent
     attributes:

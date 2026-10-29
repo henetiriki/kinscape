@@ -1,8 +1,9 @@
 name: 'Claude: Plan'
 
 # The title shown for each run in the Actions tab:
-#   "Plan: <title>"    - a Spec, Bug or Chore was marked ready for the agent, so Claude drafts a plan
-#   "Skipped: <title>" - anything else, so nothing runs
+#   "Plan: <title>"    - the repo owner (the tech lead) marked a Spec, Bug or Chore ready for the agent,
+#                        so Claude drafts a plan
+#   "Skipped: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
 run-name: >-
   ${{
@@ -11,7 +12,7 @@ run-name: >-
     (contains(github.event.issue.labels.*.name, 'type: spec') ||
       contains(github.event.issue.labels.*.name, 'type: bug') ||
       contains(github.event.issue.labels.*.name, 'type: chore')) &&
-    github.actor != 'henetiriki-bot' &&
+    github.actor == github.repository_owner &&
     format('Plan: {0}', github.event.issue.title) ||
     format('Skipped: {0}', github.event.issue.title)
   }}
@@ -39,7 +40,8 @@ concurrency:
 
 jobs:
   # Runs when someone adds the "status: ready-for-agent" label to an open Spec, Bug or Chore (not
-  # to a closed one or any other kind of issue) and that person isn't Claude's own bot. The shared
+  # to a closed one or any other kind of issue) and that person is the repo owner: only the tech lead
+  # sets that label (how-we-work.md), and the PO's write access would otherwise start a run. The shared
   # runner checks the plan can start, then Claude writes the plan and opens a draft PR and stops
   # to wait for the tech lead. The runner comes from main, like the agent files.
   plan:
@@ -51,7 +53,7 @@ jobs:
       (contains(github.event.issue.labels.*.name, 'type: spec') ||
         contains(github.event.issue.labels.*.name, 'type: bug') ||
         contains(github.event.issue.labels.*.name, 'type: chore')) &&
-      github.actor != 'henetiriki-bot'
+      github.actor == github.repository_owner
     uses: henetiriki/kinscape/.github/workflows/claude-run.yml@main
     with:
       thread: ${{ github.event.issue.number }}

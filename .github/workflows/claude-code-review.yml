@@ -29,6 +29,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: read
+      # Needed: this step passes no github_token, so the action gets its token by an OIDC exchange.
       id-token: write
 
     steps:

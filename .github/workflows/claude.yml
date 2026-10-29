@@ -64,9 +64,6 @@ jobs:
     timeout-minutes: 45
     runs-on: ubuntu-latest
     env:
-      # The files in .github/agent/ that become the system prompt. The order matters: respond.md
-      # points to build.md "below", so build.md comes after it.
-      AGENT_FILES: rules.md respond.md build.md
       # A run ends with its turn, which kills any background work.
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     permissions:
@@ -111,37 +108,14 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
           path: .next/cache
 
-      # The agent files come from main, not the checked-out branch: a plan branch cut before a change
-      # still gets it, and a branch can't widen its own tools. claude-run.yml (the plan and build runs) loads the same files.
+      # From main, not this branch (see the action). claude-run.yml, the plan and build runs, loads the same files.
       - name: Load agent files
-        env:
-          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          mkdir -p "$RUNNER_TEMP/agent"
-          # Download settings.json and each file in AGENT_FILES as main has them (the raw file, not
-          # JSON). $AGENT_FILES is unquoted so it splits into one name per file.
-          for f in settings.json $AGENT_FILES; do
-            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
-          done
-          # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
-          # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.
-          : > "$RUNNER_TEMP/agent/system.md"
-          for f in $AGENT_FILES; do
-            { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
-          done
-          # Show what Claude is told: a collapsed group in the log and a section on the run page.
-          # The files come from main and hold no secrets.
-          echo "::group::System prompt ($AGENT_FILES)"
-          cat "$RUNNER_TEMP/agent/system.md"
-          echo "::endgroup::"
-          {
-            echo "<details><summary>System prompt ($AGENT_FILES)</summary>"
-            echo
-            cat "$RUNNER_TEMP/agent/system.md"
-            echo
-            echo "</details>"
-          } >> "$GITHUB_STEP_SUMMARY"
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@main
+        with:
+          # The files in .github/agent/ that become the system prompt. The order matters: respond.md
+          # points to build.md "below", so build.md comes after it.
+          files: rules.md respond.md build.md
+          token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       - name: Run Claude Code
         id: claude

@@ -1,4 +1,4 @@
-<!-- Joined first: every agent gets this file, then respond.md (claude.yml only), then build.md. Each workflow's AGENT_FILES sets the order. -->
+<!-- Joined first: every agent gets this file, then respond.md (claude.yml only), then build.md. Each workflow's list sets the order (`files:` in claude.yml, `agent_files:` in claude-plan.yml and claude-build.yml). -->
 
 # CI agent rules
 

@@ -107,7 +107,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       THREAD: ${{ inputs.thread }}
-      AGENT_FILES: ${{ inputs.agent_files }}
       # A run ends with its turn, which kills any background work.
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     steps:
@@ -161,36 +160,13 @@ jobs:
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
       # The agent files come from main, not the checked-out branch: a plan branch cut before a change
-      # still gets it, and a branch can't widen its own tools. claude.yml loads the same files.
+      # still gets it, and a branch can't widen its own tools. The action is named by repo and `@main`
+      # for the same reason: a `./` path would run the branch's copy. claude.yml loads the same files.
       - name: Load agent files
-        env:
-          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          mkdir -p "$RUNNER_TEMP/agent"
-          # Download settings.json and each file in AGENT_FILES as main has them (the raw file, not
-          # JSON). $AGENT_FILES is unquoted so it splits into one name per file.
-          for f in settings.json $AGENT_FILES; do
-            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f"
-          done
-          # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
-          # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.
-          : > "$RUNNER_TEMP/agent/system.md"
-          for f in $AGENT_FILES; do
-            { cat "$RUNNER_TEMP/agent/$f"; echo; } >> "$RUNNER_TEMP/agent/system.md"
-          done
-          # Show what Claude is told: a collapsed group in the log and a section on the run page.
-          # The files come from main and hold no secrets.
-          echo "::group::System prompt ($AGENT_FILES)"
-          cat "$RUNNER_TEMP/agent/system.md"
-          echo "::endgroup::"
-          {
-            echo "<details><summary>System prompt ($AGENT_FILES)</summary>"
-            echo
-            cat "$RUNNER_TEMP/agent/system.md"
-            echo
-            echo "</details>"
-          } >> "$GITHUB_STEP_SUMMARY"
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@main
+        with:
+          files: ${{ inputs.agent_files }}
+          token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       # Hand the job to Claude: the caller's prompt and model flags say what to do.
       - name: Run Claude Code

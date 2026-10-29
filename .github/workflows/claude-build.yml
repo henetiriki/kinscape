@@ -43,7 +43,7 @@ jobs:
   # Claude builds what the plan describes and comments on the PR with the result. The runner comes
   # from main, like the agent files.
   build:
-    # The Actions graph shows the runner's jobs under this name: "Build / Gate", "Build / Run Claude".
+    # The Actions graph shows the runner's jobs under this name: "Build / Gate", "Build / Run Claude", "Build / Result".
     name: Build
     if: |
       github.event.review.state == 'approved' &&

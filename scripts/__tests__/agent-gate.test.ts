@@ -120,14 +120,24 @@ describe('run', () => {
       expect(summary).toHaveBeenCalledTimes(1);
       expect(summary.mock.calls[0][0]).toBe(
         [
-          '### Gate: plan #5',
+          '### Gate: go',
           '',
           '- #5 is open and has `status: ready-for-agent`.',
           '- Open PRs that close #5: none.',
           '- Open issues #5 is blocked by: none.',
-          '- Go.',
         ].join('\n')
       );
+    });
+
+    it('puts the stop reason on the run page under a stopped heading', () => {
+      fakeGh({ blockers: { 5: [{ number: 2, state: 'open' }] } });
+      run(['plan', '5'], ENV, gh, write, summary);
+
+      const page = summary.mock.calls[0][0];
+
+      expect(page).toMatch(/^### Gate: stopped\n/);
+      expect(page).toContain('- Stopped: It is blocked by #2, still open.');
+      expect(page).not.toContain('Go.');
     });
 
     it('names the PRs and blockers that stopped a plan', () => {

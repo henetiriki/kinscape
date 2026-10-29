@@ -1,7 +1,7 @@
 # Plan: C402: Keep the composite actions' pins current and upload the transcript from runner.temp
 
 - **Spec:** #402
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -14,10 +14,12 @@ Both uploads take `${{ runner.temp }}/claude-execution-output.json`, with a test
 The `actions` group takes minor and patch only, so a major bump of `claude-code-action` or `upload-artifact` arrives outside it and the pin-equality test fails until both files carry it.
 
 - **A.** Keep the group as it is; merge a major's pair of PRs together.
-- **B.** Drop `update-types` from the group, so majors join it too.
-- **Other:** your own.
+- ~~**B.** Drop `update-types` from the group, so majors join it too.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because a major needs reading anyway, and B bundles every action's major into one PR.
+
+**Answer: A** (Tech lead)
 
 ## Files that change
 

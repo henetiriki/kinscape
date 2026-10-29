@@ -59,7 +59,7 @@ jobs:
       playwright: true
       model_args: --model sonnet
       # The files in .github/agent/ that become the system prompt. The order matters:
-      # rules.md first, build.md last (see the comment at the top of each file).
+      # rules.md first, build.md last (scripts/__tests__/load-agent-files.test.ts checks it).
       agent_files: rules.md build.md
       prompt: >-
         @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}.

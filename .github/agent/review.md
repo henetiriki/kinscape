@@ -1,5 +1,3 @@
-<!-- Appended to the system prompt of claude-code-review.yml, loaded from main. -->
-
 # Review rules
 
 Where these rules and the review command disagree, these win.
@@ -18,9 +16,9 @@ When the diff moves or adds code in a new top-level folder, check that the guard
 
 Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 
-In workflows, also check (these stay here, loaded from `main`, so a PR can't weaken them in its own `docs/security.md`):
+In workflows, also check (these live only here, loaded from `main`, so a PR can't weaken them):
 
-- each action pinned to a full commit SHA, except where `docs/security.md` allows `@main`;
+- each action and reusable workflow pinned to a full commit SHA, except this repo's own `.github/actions/**` and `.github/workflows/claude*.yml`, used as `henetiriki/kinscape/<path>@main`;
 - the fewest `permissions:`;
 - `${{ github.event.* }}` text passed through `env:`;
 - API calls that can fail (404, rate limit) are caught, and one failure can't abort a loop over many items.

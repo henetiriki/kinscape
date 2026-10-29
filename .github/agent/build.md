@@ -1,5 +1,3 @@
-<!-- Joined last: respond.md refers to this section as "Build a plan PR" below. The build job loads it after rules.md; claude.yml after respond.md. -->
-
 # Build a plan PR
 
 The caller names the PR and who approved or asked. Follow plans/README.md.

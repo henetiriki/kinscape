@@ -10,6 +10,7 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { parse } from 'yaml';
 
 const root = process.cwd();
 const read = (file: string) =>
@@ -20,8 +21,26 @@ const agent = (file: string) =>
 // Callers name the action by repo and `@main`: see .github/actions/load-agent-files/action.yml.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files@main';
 const CALLERS = ['claude.yml', 'claude-run.yml'];
+const action = () =>
+  readFileSync(
+    join(root, '.github/actions/load-agent-files/action.yml'),
+    'utf8'
+  );
 
 describe('the load-agent-files action', () => {
+  // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.
+  it("takes the repo from this run's repository", () => {
+    expect(action()).toContain('GH_REPO: ${{ github.repository }}');
+  });
+
+  // The tests run only the first step's script, so a second step would go untested.
+  it('has one step, and it runs a script', () => {
+    const { runs } = parse(action()) as { runs: { steps: { run?: string }[] } };
+
+    expect(runs.steps, 'steps').toHaveLength(1);
+    expect(runs.steps[0].run, 'the step has a run:').toBeTypeOf('string');
+  });
+
   it.each(CALLERS)('is used from main, once, by %s', file => {
     const uses = [
       ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*load-agent-files\S*)/gm),
@@ -65,44 +84,57 @@ describe('the agent files a workflow loads', () => {
   );
 });
 
-// A stand-in for `gh api -H ... "repos/<repo>/contents/.github/agent/<file>?ref=main"`: prints
+// A stand-in for `gh api -H "Accept: application/vnd.github.raw"
+// "repos/owner/repo/contents/.github/agent/<file>?ref=main"`: fails for any other arguments, prints
 // the local file, and fails for one that is not there, as the API does with a 404.
 const GH = `#!/bin/bash
-path="\${@: -1}"
-name="\${path##*/.github/agent/}"
-cat "$STUB_ROOT/.github/agent/\${name%%\\?*}"
+if [ "$#" -ne 4 ] || [ "$1" != api ] || [ "$2" != -H ] || [ "$3" != "Accept: application/vnd.github.raw" ]; then
+  echo "unexpected gh call: $*" >&2; exit 1
+fi
+case "$4" in
+  repos/owner/repo/contents/.github/agent/*\\?ref=main) ;;
+  *) echo "unexpected gh call: $*" >&2; exit 1 ;;
+esac
+name="\${4#repos/owner/repo/contents/.github/agent/}"
+name="\${name%\\?ref=main}"
+case "$name" in
+  */*|*\\?*) echo "unexpected gh call: $*" >&2; exit 1 ;;
+esac
+cat "$STUB_ROOT/.github/agent/$name"
 `;
 
-// The action's script, as the runner sees it: the `run: |` block, without its indent.
-const script = () =>
-  readFileSync(
-    join(root, '.github/actions/load-agent-files/action.yml'),
-    'utf8'
-  )
-    .match(/^ {6}run: \|\n([\s\S]*)$/m)?.[1]
-    .replace(/^ {8}/gm, '') ?? '';
+// The action's script, as the runner sees it: the run block of its one step.
+const script = () => {
+  const { runs } = parse(action()) as { runs: { steps: { run: string }[] } };
+
+  return runs.steps[0].run;
+};
 
 // Runs the script with `gh` stubbed and reads what it left behind.
-const load = (files: string) => {
+const load = (files: string, edit = (run: string) => run) => {
   const dir = mkdtempSync(join(tmpdir(), 'load-agent-files-'));
 
   try {
     mkdirSync(join(dir, 'bin'));
     writeFileSync(join(dir, 'bin/gh'), GH, { mode: 0o755 });
-    const log = execFileSync('bash', ['-e', '-o', 'pipefail', '-c', script()], {
-      encoding: 'utf8',
-      env: {
-        AGENT_FILES: files,
-        GH_REPO: 'owner/repo',
-        GH_TOKEN: 'token',
-        GITHUB_STEP_SUMMARY: join(dir, 'summary.md'),
-        NODE_ENV: 'test',
-        PATH: `${join(dir, 'bin')}:${process.env.PATH}`,
-        RUNNER_TEMP: dir,
-        STUB_ROOT: root,
-      },
-      stdio: ['ignore', 'pipe', 'pipe'],
-    });
+    const log = execFileSync(
+      'bash',
+      ['-e', '-o', 'pipefail', '-c', edit(script())],
+      {
+        encoding: 'utf8',
+        env: {
+          AGENT_FILES: files,
+          GH_REPO: 'owner/repo',
+          GH_TOKEN: 'token',
+          GITHUB_STEP_SUMMARY: join(dir, 'summary.md'),
+          NODE_ENV: 'test',
+          PATH: `${join(dir, 'bin')}:${process.env.PATH}`,
+          RUNNER_TEMP: dir,
+          STUB_ROOT: root,
+        },
+        stdio: ['ignore', 'pipe', 'pipe'],
+      }
+    );
     const out = (file: string) => readFileSync(join(dir, file), 'utf8');
 
     return {
@@ -143,5 +175,23 @@ describe('the load-agent-files script', () => {
 
   it('fails on a file that is not in .github/agent/', () => {
     expect(() => load('rules.md typo.md')).toThrow();
+  });
+
+  // The stub fails on anything but the one call above, so each change here must fail the script.
+  // An edit that matched nothing would leave the script as it is and the test would not throw.
+  it.each([
+    ['another ref', '?ref=main', '?ref=$GITHUB_REF'],
+    ['another repo', 'repos/$GH_REPO', 'repos/other/repo'],
+    ['no raw header', '-H "Accept: application/vnd.github.raw" ', ''],
+    [
+      'a path outside .github/agent/',
+      '.github/agent/$f',
+      '.github/agent/../$f',
+    ],
+  ])('fails on %s', (_, from, to) => {
+    expect(script(), 'the script has the text the edit replaces').toContain(
+      from
+    );
+    expect(() => load(files, run => run.replace(from, to))).toThrow();
   });
 });

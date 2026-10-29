@@ -25,6 +25,8 @@ What does a caller that passes no token get?
 | -------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `.github/actions/setup-workspace/action.yml` | New: inputs `ref`, `token`, `persist-credentials`, `playwright`, and the steps above |
 | `scripts/__tests__/next-build-cache.test.ts` | `read` takes a path from the repo root, and the action joins the restore cases       |
+| `scripts/__tests__/playwright-image.test.ts` | `keyAndPath` takes a path from the repo root; the action joins its cases             |
+| `plans/README.md`                            | Rule 13: the hand-back line goes in the PR body only (73b173f)                       |
 
 ## Order of work
 
@@ -34,7 +36,7 @@ What does a caller that passes no token get?
 
 ## Risks
 
-Nothing calls the action until a later chore switches the workflows to it, so a mistake shows up only then. Step 2 and the step-by-step comparison in Evidence lower that risk.
+Nothing calls the action until a later chore switches the workflows to it, so a mistake shows up only then. Step 2 and the Evidence comparison lower that risk.
 
 ## Proof
 
@@ -48,7 +50,3 @@ Nothing calls the action until a later chore switches the workflows to it, so a 
 ## Out of scope
 
 Switching `claude.yml` and `claude-run.yml` to call the action.
-
-## Deviations
-
-Only add `:bangbang:` warning to the PR body, not the Plan.

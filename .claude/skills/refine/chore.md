@@ -21,7 +21,7 @@ Ask every open choice, so none reach the plan: a Chore has no decisions box.
 
 Once the change is known, and again before drafting, read `plans/README.md` rule 4 (and rule 7, which it links) and `.github/CODEOWNERS`. Don't copy them here.
 
-If the agent would hand the chore back (a path in CODEOWNERS, a secret, token or connection string, or too big), name the path or reason and keep drafting. Tell the tech lead to keep `status: ready-for-dev` and either do it themselves or open a quick `chore:` PR, not to set `status: ready-for-agent`.
+If the agent would hand the chore back (a path in `.github/CODEOWNERS`, a secret, or too big), name the path or reason and keep drafting: the tech lead does it themselves.
 
 ## The draft
 
@@ -43,4 +43,4 @@ The box ids are `title`, `change`, `why`, `done` and `constraints`.
 
 Give **one link** for form `4-chore.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. If a link doesn't work: **Issues → New issue → Chore**, and copy each block into the box with the same name.
 
-The tech lead files it. Unless it would be handed back, they then set `status: ready-for-agent` to start planning. Stop there.
+The tech lead files it and sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.

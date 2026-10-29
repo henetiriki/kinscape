@@ -7,8 +7,8 @@ body:
     attributes:
       value: |
         An **intent** says *what* you want and *why*. It doesn't say *how*.
-        Write it the way you'd explain it to a friend. Claude can help you draft it, and will turn it into a Spec once you accept it.
-        When you're happy with it, swap the label `status: draft` for `status: ready-for-dev`.
+        Write it the way you'd explain it to a friend. Claude can help you draft it.
+        When you're happy with it, swap the label `status: draft` for `status: ready-for-dev`. What happens next: [Roles and labels](https://github.com/henetiriki/kinscape/blob/main/docs/how-we-work.md#roles-and-labels-whose-turn-is-it).
   - type: textarea
     id: problem
     attributes:

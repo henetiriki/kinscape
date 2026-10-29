@@ -46,4 +46,6 @@ Then give **one link** for form `1-intent.yml`, as _Prefilled links_ in [SKILL.m
 2. Press **Submit new issue**. It starts as `status: draft`; when you're happy, change the label to `status: ready-for-dev`.
 3. If the link didn't work: **Issues → New issue → Intent**, and copy each block into the box with the same name.
 
+What happens next: [Roles and labels](https://github.com/henetiriki/kinscape/blob/main/docs/how-we-work.md#roles-and-labels-whose-turn-is-it).
+
 Don't file the issue or start on a Spec.

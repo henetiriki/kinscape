@@ -3,7 +3,7 @@
 # Plan: C387: Add a setup-workspace action
 
 - **Spec:** #387
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ What does a caller that passes no token get?
 - **B.** Nothing: `token` is required, and every caller must pass one.
 - **Other:** your own.
 
-Recommended: A, because `claude-run.yml` then calls the action without a token, as its checkout works today.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

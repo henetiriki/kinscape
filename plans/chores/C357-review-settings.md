@@ -56,4 +56,4 @@ Add `.github/agent/review-settings.json`, loaded from `main` like `review.md`, s
 ## Deviations
 
 - The inline-comment tool stays in `--allowedTools`: the action starts its MCP server only if `claude_args` names it.
-- "Report a missing review" runs with `always()`.
+- "Report a missing review" runs with `!cancelled()`.

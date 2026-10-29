@@ -82,9 +82,10 @@ jobs:
 
       # The action runs only a workflow identical to main's, so on a PR that changes this file Claude never starts.
       # That known cause comments on the PR (it needs a human review); any other missing review fails the job.
-      # always(): a failed load step above also lands here, as when this file changes before review-settings.json is on main.
+      # !cancelled(): a failed load step above also lands here, as when this file changes before review-settings.json
+      # is on main; a run cancelled by a newer push (concurrency) does not.
       - name: Report a missing review
-        if: always() && steps.claude-review.outputs.conclusion == ''
+        if: "!cancelled() && steps.claude-review.outputs.conclusion == ''"
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

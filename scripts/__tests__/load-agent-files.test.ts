@@ -33,6 +33,14 @@ describe('the load-agent-files action', () => {
     expect(action()).toContain('GH_REPO: ${{ github.repository }}');
   });
 
+  // The tests run only the first step's script, so a second step would go untested.
+  it('has one step, and it runs a script', () => {
+    const { runs } = parse(action()) as { runs: { steps: { run?: string }[] } };
+
+    expect(runs.steps, 'steps').toHaveLength(1);
+    expect(runs.steps[0].run, 'the step has a run:').toBeTypeOf('string');
+  });
+
   it.each(CALLERS)('is used from main, once, by %s', file => {
     const uses = [
       ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*load-agent-files\S*)/gm),

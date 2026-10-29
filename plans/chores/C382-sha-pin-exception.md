@@ -44,6 +44,7 @@ An agent editing a workflow sees only the link; it names the section.
 | No CODEOWNERS-based exception; two paths named          | `git grep -n CODEOWNERS docs/security.md .github/agent/review.md` output |
 | Workflow bullets only in `review.md`                    | The diff                                                                 |
 | Wrong ref fails                                         | Step 1's failing lines in Evidence                                       |
+| A second `run:` step fails                              | The one-step test's failing line                                         |
 | `rules.md` starts `# CI agent rules`; words and CI pass | Step 3 output, CI                                                        |
 
 ## Out of scope
@@ -52,4 +53,4 @@ An agent editing a workflow sees only the link; it names the section.
 
 ## Deviations
 
-The test parses `action.yml` with `yaml` (new devDependency) instead of the one-`run:` test; the stub also checks header and file name.
+New devDependency `yaml` (tech lead's call); `review.md`'s duplicate-rule bullet is reworded.

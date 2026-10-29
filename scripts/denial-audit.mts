@@ -219,7 +219,7 @@ export const issueBody = (
         `| ${cell(pattern)} | ${count} | $${costUsd.toFixed(2)} | ${runs.map(link).join(', ')} | ${cell(example)} |`
     ),
     '',
-    'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. For the code review, edit `--allowedTools` in `claude-code-review.yml` or `.github/agent/review.md`. The weekly audit rewrites this issue while it stays open; close it when it is handled.',
+    'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`. The weekly audit rewrites this issue while it stays open; close it when it is handled.',
   ].join('\n');
 };
 

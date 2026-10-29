@@ -222,7 +222,7 @@ describe('issueBody', () => {
     );
     expect(body).toContain('`.github/agent/settings.json`');
     expect(body).toContain(
-      'For the code review, edit `--allowedTools` in `claude-code-review.yml` or `.github/agent/review.md`.'
+      'For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`.'
     );
   });
 

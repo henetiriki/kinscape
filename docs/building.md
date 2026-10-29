@@ -13,7 +13,7 @@ A Bug takes the same path; below, "Spec" means both. The branch is `spec/<id>-<s
 
 ### If a run stalls
 
-A silent run gets a comment linking it; with no plan PR either, the Spec becomes `status: blocked`: check the run, then swap it for `ready-for-agent`. Stalled build: re-run it from Actions.
+A silent run gets a linking comment; a plan run with no plan PR sets `status: blocked`: check the run, then swap it for `ready-for-agent`. Stalled build: re-run it.
 
 ## Styles
 

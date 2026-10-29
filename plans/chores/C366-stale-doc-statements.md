@@ -37,7 +37,8 @@ Reword each statement #366 names to match the file it describes, adding no new r
 
 ## Deviations
 
-- `architecture.md` "A map layer" omits "the route passes layers to `MapShell`": it would pass the 800-word budget.
+- `architecture.md` "A map layer" omits "the polity layer stays in `features/map/layers/`" (`<name>` = `map`): it would pass the 800-word budget.
+- `repo-settings.md` Vercel Project row also reworded to match the Preview and Live rows.
 
 ## Out of scope
 

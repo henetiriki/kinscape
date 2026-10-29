@@ -45,3 +45,7 @@ All but the last row are checked after merge: label and comment events run main'
 ## Out of scope
 
 Checking `claude-plan.yml`'s `run-name` against its `if:`.
+
+## Deviations
+
+- `claude-code-review.yml`: the "No Claude review" comment starts with two `:heavy_exclamation_mark:`, as the tech lead asked, so it is easy to see.

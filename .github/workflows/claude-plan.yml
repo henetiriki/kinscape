@@ -71,7 +71,7 @@ jobs:
         A Bug's id is B${{ github.event.issue.number }}, its branch is bug/B${{ github.event.issue.number }}-<slug>
         and its plan is plans/bugs/B${{ github.event.issue.number }}-<slug>.md.
         A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
-        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back as plans/README.md rule 4 says.
+        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. Hand it back at plan time only as plans/README.md rule 13 says; plan a CODEOWNERS path as usual, the build hands it back.
         Write each open choice as a decision in the format in docs/how-we-work.md.
         Put `Closes #${{ github.event.issue.number }}` in the plan PR's body, so the gates and the safety net can find it.
         Push before you stop, then comment on the Spec with a link to the plan PR.

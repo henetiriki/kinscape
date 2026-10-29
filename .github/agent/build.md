@@ -7,7 +7,7 @@ Your first command is `gh pr view <n> --json title,body,comments,reviews,headRef
 If the plan's `Status` is `draft`, the answers to its open decisions are in the review body and the PR comments, as `D<n>: <option>` (older plans: free-form). Record the approval and the answers in the approval commit with `npm run plan-approve -- <plan> <approver> D1=A "D2=other: <text>" …`. If a decision is still unanswered, comment asking for it and stop without building.
 If it is `approved`, the approval is recorded: don't run `plan-approve` again.
 
-If this is a Chore plan PR, hand it back as plans/README.md rule 4 says instead of building where it applies.
+After recording the approval, if the plan's Files that change lists a path in `.github/CODEOWNERS`, hand it back as plans/README.md rule 13 says instead of building.
 
 While iterating, write each unit test for logic first and keep its failing line for Evidence (plans/README.md rule 12), and run only the affected test file. Run the full `npm test` and `npm run e2e` once, before pushing. When a test fails, read the error and follow plans/README.md rule 10; don't add temporary debug output.
 

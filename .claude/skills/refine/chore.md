@@ -19,7 +19,7 @@ Ask every open choice, so none reach the plan: a Chore has no decisions box.
 
 ## Screen
 
-Once the change is known, and again before drafting, read `plans/README.md` rule 4 (and rule 7, which it links) and `.github/CODEOWNERS`. Don't copy them here.
+Once the change is known, and again before drafting, read `plans/README.md` rules 4 and 13 (and rule 7, which 13 links) and `.github/CODEOWNERS`. Don't copy them here.
 
 If the agent would hand the chore back (a path in `.github/CODEOWNERS`, a secret, or too big), name the path or reason and keep drafting: the tech lead does it themselves.
 

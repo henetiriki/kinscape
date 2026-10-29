@@ -168,17 +168,18 @@ jobs:
           token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
-      # "Working" comment is deleted when the run ends. Neither is worth failing the run for.
+      # "Planning"/"Building" comment is deleted when the run ends. Neither is worth failing the run for.
       - name: Show that the run started
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
           GH_REPO: ${{ github.repository }}
           THREAD: ${{ inputs.thread }}
+          VERB: ${{ inputs.plan && 'Planning' || 'Building' }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh api "repos/$GH_REPO/issues/$THREAD/reactions" -f content=eyes --silent
-          id=$(gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="Working… [View run]($RUN_URL)" --jq .id)
+          id=$(gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$VERB… [View run]($RUN_URL)" --jq .id)
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
       # Hand the job to Claude: the caller's prompt and model flags say what to do.

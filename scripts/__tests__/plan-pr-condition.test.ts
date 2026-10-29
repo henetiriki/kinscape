@@ -15,6 +15,10 @@ const PLAN_PR =
 // claude.yml's two copies also share the bot check and the `@claude` mention around it.
 const WHOLE = /github\.actor != 'henetiriki-bot'[\s\S]*?'@claude'\)/g;
 
+// claude-plan.yml's `run-name` and plan job's `if:` share the label check and the owner check.
+const START =
+  /github\.event\.issue\.state == 'open'[\s\S]*?github\.actor == github\.repository_owner/g;
+
 const copies = (file: string, pattern: RegExp) =>
   (read(file).match(pattern) ?? []).map(copy => copy.replace(/\s+/g, ' '));
 
@@ -42,6 +46,18 @@ describe('the plan-PR condition', () => {
     expect(
       copies('claude.yml', WHOLE),
       'claude.yml needs the run-name and the job `if:` to share one condition, from the bot check to `@claude`'
+    ).toHaveLength(2);
+    expect(job).toBe(runName);
+  });
+});
+
+describe('the plan-start condition', () => {
+  it('is the same in the run-name and the job of claude-plan.yml, and ends with the owner check', () => {
+    const [runName, job] = copies('claude-plan.yml', START);
+
+    expect(
+      copies('claude-plan.yml', START),
+      'claude-plan.yml needs the run-name and the plan job `if:` to share one condition, ending with `github.actor == github.repository_owner`'
     ).toHaveLength(2);
     expect(job).toBe(runName);
   });

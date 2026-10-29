@@ -159,9 +159,7 @@ jobs:
       - name: Note start time
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
-      # The agent files come from main, not the checked-out branch: a plan branch cut before a change
-      # still gets it, and a branch can't widen its own tools. The action is named by repo and `@main`
-      # for the same reason: a `./` path would run the branch's copy. claude.yml loads the same files.
+      # From main, not this branch (see the action). claude.yml loads the same files.
       - name: Load agent files
         uses: henetiriki/kinscape/.github/actions/load-agent-files@main
         with:

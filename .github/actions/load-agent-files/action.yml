@@ -15,7 +15,9 @@ runs:
   using: composite
   steps:
     # The files come from main, not the checked-out branch: a plan branch cut before a change
-    # still gets it, and a branch can't widen its own tools.
+    # still gets it, and a branch can't widen its own tools. For the same reason the callers name
+    # this action by repo and `@main`, never a `./` path, which would run the branch's copy
+    # (scripts/__tests__/load-agent-files.test.ts checks both).
     - name: Load agent files
       shell: bash
       env:

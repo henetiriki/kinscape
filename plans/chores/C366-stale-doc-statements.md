@@ -38,7 +38,8 @@ Reword each statement #366 names to match the file it describes, adding no new r
 ## Deviations
 
 - `architecture.md` "A map layer" omits "the polity layer stays in `features/map/layers/`" (`<name>` = `map`): it would pass the 800-word budget.
-- `repo-settings.md` Vercel Project row also reworded to match the Preview and Live rows.
+- `repo-settings.md` Vercel Project row also reworded: it points to the Deploy rule instead of restating it.
+- To stay inside the word budgets, `architecture.md` rewords "A screen or route" and "Pure logic, no I/O", and `building.md` drops "from the Actions tab".
 
 ## Out of scope
 

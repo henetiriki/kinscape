@@ -14,7 +14,7 @@ Item 5: `id-token: write` stays (the review's token comes by OIDC); a comment sa
 | File                                          | PR   | What                                                                  |
 | --------------------------------------------- | ---- | --------------------------------------------------------------------- |
 | `.github/workflows/claude-plan.yml`           | 1    | `github.actor == github.repository_owner` in `run-name` and `if:`     |
-| `.github/actions/load-agent-files/action.yml` | 1    | Composite: the unchanged script                                       |
+| `.github/actions/load-agent-files/action.yml` | 1, 2 | Composite: the unchanged script; then the `@main` comment             |
 | `.github/CODEOWNERS`                          | 1    | Add `.github/actions/**`                                              |
 | `scripts/__tests__/plan-pr-condition.test.ts` | 1, 2 | The plan-PR, `claude.yml` and `claude-plan.yml` conditions stay equal |
 | `.github/workflows/ci.yml`                    | 1    | `'design/tokens.*'` in the Next.js cache key                          |
@@ -24,6 +24,7 @@ Item 5: `id-token: write` stays (the review's token comes by OIDC); a comment sa
 | `scripts/__tests__/load-agent-files.test.ts`  | 2    | `uses:` at `@main`; listed files exist; stub-`gh` run                 |
 | `.github/agent/rules.md`                      | 2    | Line 1 names the `files:` lists, not `AGENT_FILES`                    |
 | `docs/security.md`                            | 2    | SHA-pin exception for this repo's `@main` actions                     |
+| `.github/agent/review.md`                     | 2    | Drop the workflow bullets that repeat `docs/security.md`              |
 
 ## Order of work
 
@@ -31,7 +32,7 @@ Each test first: break what it guards, see it fail, revert.
 
 ## Risks
 
-- PR 2: an action fault fails every Claude run. A stub-`gh` test runs its script; revert if the first live run fails.
+- PR 2: an action fault fails every Claude run; revert if the first live run fails.
 
 ## Proof
 
@@ -44,8 +45,7 @@ Each test first: break what it guards, see it fail, revert.
 
 ## Deviations
 
-- The "No Claude review" comment is a `:rotating_light:` heading (tech lead's ask).
+- The "No Claude review" comment is a `:rotating_light:` heading.
 - `ci.yml` hashes `design/tokens.*` only; the rest is snapshots.
-- `@main`, not a SHA pin, as the issue says; `docs/security.md` allows it.
+- `@main`, not a SHA pin; `docs/security.md` allows it.
 - The `claude-plan.yml` plan-start check, out of scope when approved, is in PR 2.
-- `rules.md` line 1 changes the prompt there only.

@@ -18,12 +18,7 @@ When the diff moves or adds code in a new top-level folder, check that the guard
 
 Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 
-In workflows, also check:
-
-- each action pinned to a full commit SHA;
-- the fewest `permissions:`;
-- `${{ github.event.* }}` text passed through `env:`;
-- API calls that can fail (404, rate limit) are caught, and one failure can't abort a loop over many items.
+In workflows, also check that API calls that can fail (404, rate limit) are caught, and one failure can't abort a loop over many items.
 
 ## Findings
 

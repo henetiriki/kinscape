@@ -5,7 +5,7 @@
 
 ## Approach
 
-Add `.github/agent/review-settings.json`, loaded from `main` like `review.md`, so a PR can't change its own reviewer (C270 D1). The `--allowedTools` and `--disallowedTools` flags come out. `Agent` stays allowed.
+Add `.github/agent/review-settings.json`, loaded from `main` like `review.md`, so a PR can't change its own reviewer (C270 D1). The `--disallowedTools` flag comes out. `Agent` stays allowed.
 
 ## Decisions
 
@@ -28,7 +28,7 @@ Add `.github/agent/review-settings.json`, loaded from `main` like `review.md`, s
 | File                                       | New / changed | What                                       |
 | ------------------------------------------ | ------------- | ------------------------------------------ |
 | `.github/agent/review-settings.json`       | New           | D1                                         |
-| `.github/workflows/claude-code-review.yml` | Changed       | D2; `settings:` input; flags removed       |
+| `.github/workflows/claude-code-review.yml` | Changed       | D2; `settings:` input; flag removed        |
 | `scripts/denial-audit.mts`                 | Changed       | Line 222 names `review-settings.json`      |
 | `scripts/__tests__/denial-audit.test.ts`   | Changed       | Line 225 expects the new wording (rule 10) |
 | `plans/chores/C357-review-settings.md`     | New           | This plan                                  |
@@ -38,7 +38,6 @@ Add `.github/agent/review-settings.json`, loaded from `main` like `review.md`, s
 1. Commit this plan first: `plan(C357): approved by @<tech-lead>`.
 2. Change the test, see it fail, then change `denial-audit.mts`.
 3. Add the settings file, edit the workflow, run the checks in `AGENTS.md`.
-4. Open the PR `C.357: The code review reads its own settings file` with `Closes #357`.
 
 ## Proof
 
@@ -50,6 +49,11 @@ Add `.github/agent/review-settings.json`, loaded from `main` like `review.md`, s
 
 ## Risks
 
-The action runs only the workflow as on `main`, so this PR gets no Claude review and a draft PR can't test it. The first PR after merge proves it and may need a follow-up.
+`review-settings.json` isn't on `main` until merge, so this PR's review fails at the load step and "Report a missing review" says why. The first PR after merge proves the change, including that inline comments post.
 
 **Hand back:** both paths are in CODEOWNERS, so the tech lead builds this locally.
+
+## Deviations
+
+- The inline-comment tool stays in `--allowedTools`: the action starts its MCP server only if `claude_args` names it.
+- "Report a missing review" runs with `always()`.

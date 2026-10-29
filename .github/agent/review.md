@@ -6,7 +6,7 @@ Where these rules and the review command disagree, these win.
 
 ## The plan
 
-Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body (a chore with no issue); else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it. For each Approach item, Files-that-change row and Proof row, check that the diff does it. Report a missing or extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs (e.g. `MAP-03`) where the plan does.
+Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body (a chore with no issue); else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it. For each Approach item, Files-that-change row and Proof row, check that the diff does it. Report a missing or extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs (`MAP-03`) where the plan does.
 
 ## The rules
 
@@ -16,11 +16,11 @@ Flag a test change `plans/README.md` rule 10 doesn't allow (never suggest `## De
 
 When the diff moves or adds code in a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
 
-Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
+Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the owning file, and link to it from the other (`AGENTS.md` Writing).
 
-In workflows, also check (these stay here, loaded from `main`, so a PR can't weaken them in its own `docs/security.md`):
+In workflows, also check (these live only here, loaded from `main`, so a PR can't weaken them):
 
-- each action pinned to a full commit SHA, except where `docs/security.md` allows `@main`;
+- each action and reusable workflow pinned to a full commit SHA, except this repo's own `.github/actions/**` and `.github/workflows/claude*.yml`, used as `henetiriki/kinscape/<path>@main`;
 - the fewest `permissions:`;
 - `${{ github.event.* }}` text passed through `env:`;
 - API calls that can fail (404, rate limit) are caught, and one failure can't abort a loop over many items.

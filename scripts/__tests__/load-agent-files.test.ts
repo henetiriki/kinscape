@@ -20,8 +20,19 @@ const agent = (file: string) =>
 // Callers name the action by repo and `@main`: see .github/actions/load-agent-files/action.yml.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files@main';
 const CALLERS = ['claude.yml', 'claude-run.yml'];
+const action = () =>
+  readFileSync(
+    join(root, '.github/actions/load-agent-files/action.yml'),
+    'utf8'
+  );
 
 describe('the load-agent-files action', () => {
+  // script() below takes everything after the first `run: |`, so a later step would become shell.
+  it('has one step, with one run block', () => {
+    expect(action().match(/^ {4}- /gm), 'steps').toHaveLength(1);
+    expect(action().match(/^\s*run:/gm), 'run blocks').toHaveLength(1);
+  });
+
   it.each(CALLERS)('is used from main, once, by %s', file => {
     const uses = [
       ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*load-agent-files\S*)/gm),
@@ -65,20 +76,22 @@ describe('the agent files a workflow loads', () => {
   );
 });
 
-// A stand-in for `gh api -H ... "repos/<repo>/contents/.github/agent/<file>?ref=main"`: prints
-// the local file, and fails for one that is not there, as the API does with a 404.
+// A stand-in for `gh api -H ... "repos/owner/repo/contents/.github/agent/<file>?ref=main"`: fails
+// for any other repo, path or ref, prints the local file, and fails for one that is not there, as
+// the API does with a 404.
 const GH = `#!/bin/bash
 path="\${@: -1}"
+case "$path" in
+  "repos/owner/repo/contents/.github/agent/"*"?ref=main") ;;
+  *) echo "unexpected gh call: $*" >&2; exit 1 ;;
+esac
 name="\${path##*/.github/agent/}"
 cat "$STUB_ROOT/.github/agent/\${name%%\\?*}"
 `;
 
 // The action's script, as the runner sees it: the `run: |` block, without its indent.
 const script = () =>
-  readFileSync(
-    join(root, '.github/actions/load-agent-files/action.yml'),
-    'utf8'
-  )
+  action()
     .match(/^ {6}run: \|\n([\s\S]*)$/m)?.[1]
     .replace(/^ {8}/gm, '') ?? '';
 

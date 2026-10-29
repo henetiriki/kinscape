@@ -21,7 +21,7 @@ Ask every open choice, so none reach the plan: a Chore has no decisions box.
 
 Once the change is known, and again before drafting, read `plans/README.md` rule 13 (and rule 7, which it links) and `.github/CODEOWNERS`. Don't copy them here.
 
-If the chore edits a path in `.github/CODEOWNERS`, name the path and keep drafting: the agent plans it and hands it back at build. If it needs a secret or is too big, name the reason and keep drafting: the tech lead does it themselves.
+If rule 13 would hand the chore back, name the path or reason and keep drafting.
 
 ## The draft
 

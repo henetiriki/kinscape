@@ -1,7 +1,7 @@
 # Plan: C388: Switch both workflows to setup-workspace
 
 - **Spec:** #388
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,6 +18,8 @@ The cache tests read the steps this removes. What replaces them?
 - **Other:** your own.
 
 Recommended: A, because nothing else catches a lost `persist-credentials: 'true'` before merge.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

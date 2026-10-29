@@ -2,7 +2,7 @@
 
 **Status: proposed. None of this is a rule yet.** [architecture.md](architecture.md) says what the code does today. When an item below is built, move it there and delete it here. Each item ships as its own Spec or chore; the tech lead approves its plan.
 
-Why: M2 adds sign-in, a database, an API and Tree-scoped data ([NFR-09](requirements.md#non-functional-requirements)). Still missing: a database, a feature slice for people and pins, and state ownership (`MapShell` holds all state).
+Why: M2 adds sign-in, a database, an API and Tree-scoped data ([NFR-09](requirements.md#non-functional-requirements)). Today `MapShell` holds all state.
 
 Layers are enforced: see [architecture.md](architecture.md#enforcement). Features don't import each other: a route passes one feature's output to another (for example, the map takes its layers as props).
 

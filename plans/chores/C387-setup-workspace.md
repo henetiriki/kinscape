@@ -48,3 +48,7 @@ Nothing calls the action until a later chore switches the workflows to it, so a 
 ## Out of scope
 
 Switching `claude.yml` and `claude-run.yml` to call the action.
+
+## Deviations
+
+Only add `:bangbang:` warning to the PR body, not the Plan.

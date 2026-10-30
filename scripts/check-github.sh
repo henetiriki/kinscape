@@ -30,6 +30,10 @@ check "Issues on"                      "$(r .has_issues)" "true"
 check "Wiki off"                       "$(r .has_wiki)" "false"
 check "Projects off"                   "$(r .has_projects)" "false"
 check "Discussions off"                "$(r .has_discussions)" "false"
+policies=$(gh api graphql -f query='{ repository(owner: "'"${REPO%/*}"'", name: "'"${REPO#*/}"'") { issueCreationPolicy pullRequestCreationPolicy } }' \
+  --jq '.data.repository | "\(.issueCreationPolicy) \(.pullRequestCreationPolicy)"' 2>/dev/null)
+check "Issue creation: collaborators"  "${policies% *}" "COLLABORATORS_ONLY"
+check "PR creation: collaborators"     "${policies#* }" "COLLABORATORS_ONLY"
 
 ids=$(gh api "repos/$REPO/rulesets" --jq '.[] | select(.name=="Protect main") | .id')
 id=$(printf '%s\n' "$ids" | head -n1)
@@ -46,12 +50,26 @@ else
   check "Linear history"                    "$(q '[.rules[].type] | index("required_linear_history") != null')" "true"
   check "PR required, 1 approval"           "$(q "$pr | .required_approving_review_count")" "1"
   check "Stale approvals dismissed"         "$(q "$pr | .dismiss_stale_reviews_on_push")" "true"
+  check "Last push needs approval"          "$(q "$pr | .require_last_push_approval")" "true"
+  check "Branches must be up to date"       "$(q '.rules[] | select(.type=="required_status_checks") | .parameters.strict_required_status_checks_policy')" "true"
   check "Code-owner review required"        "$(q "$pr | .require_code_owner_review")" "true"
   check "Conversations must be resolved"   "$(q "$pr | .required_review_thread_resolution")" "true"
   check "Squash only in ruleset"            "$(q "$pr | .allowed_merge_methods | join(\",\")")" "squash"
   check "Required checks" "$(q '[.rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[].context] | sort | join(",")')" "$expected_checks"
   check "Bypass: admin, via PR only"        "$(q '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "RepositoryRole:5:pull_request"
 fi
+
+# The smaller rulesets: active, and enforcing the rule types in their JSON file.
+check_ruleset() { # name, file
+  local rid want
+  rid=$(gh api "repos/$REPO/rulesets" --jq ".[] | select(.name==\"$1\") | .id" | head -n1)
+  if [ -z "$rid" ]; then echo "❌ Ruleset '$1' missing"; fail=1; return; fi
+  want=$(node -e 'console.log(JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")).rules.map((r) => r.type).sort().join(","))' "$DIR/github/$2" 2>/dev/null)
+  check "Ruleset '$1' active"  "$(gh api "repos/$REPO/rulesets/$rid" --jq .enforcement)" "active"
+  check "Ruleset '$1' rules"   "$(gh api "repos/$REPO/rulesets/$rid" --jq '[.rules[].type] | sort | join(",")')" "$want"
+}
+check_ruleset "Protect po-preview" ruleset-po-preview.json
+check_ruleset "Protect tags" ruleset-tags.json
 
 if gh api "repos/$REPO/vulnerability-alerts" --silent 2>/dev/null; then va=true; else va=false; fi
 check "Dependabot alerts"              "$va" "true"
@@ -63,6 +81,10 @@ check "Secret scanning"                "$(r .security_and_analysis.secret_scanni
 check "Push protection"                "$(r .security_and_analysis.secret_scanning_push_protection.status)" "enabled"
 check "Private vulnerability reporting" "$(gh api "repos/$REPO/private-vulnerability-reporting" --jq .enabled 2>/dev/null)" "true"
 check "Actions pinned to a full SHA"   "$(gh api "repos/$REPO/actions/permissions" --jq .sha_pinning_required)" "true"
+check "Only selected actions allowed"  "$(gh api "repos/$REPO/actions/permissions" --jq .allowed_actions)" "selected"
+check "Allowed actions list" "$(gh api "repos/$REPO/actions/permissions/selected-actions" --jq '"\(.github_owned_allowed) \(.verified_allowed) \(.patterns_allowed | sort | join(","))"')" \
+  "true false anthropics/claude-code-action@*,codecov/codecov-action@*,henetiriki/kinscape/*,oven-sh/setup-bun@*"
+check "Code scanning (CodeQL default)" "$(gh api "repos/$REPO/code-scanning/default-setup" --jq .state 2>/dev/null)" "configured"
 check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --jq .approval_policy)" "all_external_contributors"
 
 exit $fail

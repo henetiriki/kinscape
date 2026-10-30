@@ -22,6 +22,43 @@ A time-travelling landscape for your kin. Drag the slider from 1652 to today and
 
 Built as an experiment in the [AI-native SDLC](https://claude.com/resources/articles/the-ai-native-sdlc-playbook).
 
+## How we work
+
+Who acts at each stage, the `status:` label that hands it on, and the workflow (⚙) that runs. Detail: [how we work](docs/how-we-work.md). Every workflow: [workflows](.github/workflows/README.md).
+
+```mermaid
+flowchart TD
+  subgraph PO [Product owner]
+    intent["Intent<br>files the Intent"]
+    design["Design<br>designs the screens in Claude Design"]
+    approveSpec["approves a user-visible Spec"]
+    preview["Preview<br>tries the change against the acceptance checks"]
+    feedback["Feedback<br>checks the outcome, closes the Intent"]
+  end
+  subgraph TL [Tech lead]
+    spec["Spec<br>slices the Intent with /refine spec"]
+    agent["sets status: ready-for-agent"]
+    approvePlan["Plan<br>approves the plan PR"]
+    merge["Live<br>reviews and merges"]
+  end
+  subgraph AI [Claude]
+    plan["drafts the plan PR<br>⚙ Claude: Plan"]
+    build["Build & test<br>⚙ Claude: Build, CI, Claude: Code Review"]
+    respond["answers @claude comments<br>⚙ Claude: Code"]
+  end
+  intent --> design --> spec
+  spec -->|"user-visible<br>status: ready-for-po"| approveSpec
+  approveSpec -->|"status: ready-for-dev"| agent
+  spec -->|"engineering-only<br>status: ready-for-dev"| agent
+  agent --> plan --> approvePlan
+  approvePlan -.->|"@claude"| respond -.->|revises| plan
+  approvePlan -->|approving review| build
+  build -->|"visible change<br>status: ready-for-po"| preview --> merge
+  build -->|nothing visible| merge
+  merge -->|"last Spec closes: status: ready-for-po<br>⚙ Backlog: Intent ready for PO"| feedback
+  feedback -->|"new Intent or Bug"| intent
+```
+
 ## Contributions
 
 This repo is a showcase: it takes no issues or pull requests from outside the team. To report a vulnerability, see [SECURITY.md](SECURITY.md).

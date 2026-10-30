@@ -14,5 +14,7 @@ scripts/github/** @henetiriki
 scripts/agent-*.mts @henetiriki
 scripts/run-summary.mts @henetiriki
 scripts/denial-audit.mts @henetiriki
+scripts/scan-summary.sh @henetiriki
+scripts/claude-plugin-pin-check.mts @henetiriki
 server/** @henetiriki
 scripts/layers.mts @henetiriki

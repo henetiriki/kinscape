@@ -5,17 +5,17 @@
 
 ## Approach
 
-Widen CODEOWNERS so a PO-only approval can't change workflows, skills or agent scripts. Move the three workflow rules from `review.md` into `security.md`, replacing its link to `review.md#the-rules`. Make the three `AGENTS.md` edits in the wording below, which nets about +6 words on today's 690.
+Widen CODEOWNERS so a PO-only approval can't change workflows, skills or agent scripts. Move the three workflow rules from `review.md` into `security.md`, replacing its link to `review.md#the-rules`. Make the three `AGENTS.md` edits below.
 
 ## Files that change
 
-| File                                    | New / changed | What                                                                                                                                                                                                                                                  |
-| --------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/CODEOWNERS`                    | Changed       | `.github/workflows/**` replaces `claude*.yml`; add the five paths the chore lists                                                                                                                                                                     |
-| `docs/security.md`                      | Changed       | Line 10 becomes: "In workflows: pin each action and reusable workflow to a full commit SHA, this repo's own included (`actions-pin-update.yml` moves those pins); grant the fewest `permissions:`; pass `${{ github.event.* }}` text through `env:`." |
-| `.github/agent/review.md`               | Changed       | Lines 19–23 become "Check workflows against `docs/security.md`"; the API-failure bullet stays                                                                                                                                                         |
-| `AGENTS.md`                             | Changed       | Line 47 adds "A required form box may say "None"."; line 50 "PR body 250 words" → "PR body per its template"; line 58 "Run lint, `format:check`, `words`, tests, `validate:boundaries` and `e2e` …"                                                   |
-| `plans/chores/C371-codeowners-rules.md` | New           | This plan                                                                                                                                                                                                                                             |
+| File                                    | New / changed | What                                                                                                                                                                                                |
+| --------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.github/CODEOWNERS`                    | Changed       | `.github/workflows/**` replaces `claude*.yml`; add the five paths the chore lists                                                                                                                   |
+| `docs/security.md`                      | Changed       | Line 10 states the three workflow rules (SHA pins, fewest `permissions:`, `env:`), replacing the `review.md` link                                                                                   |
+| `.github/agent/review.md`               | Changed       | Lines 19–23 become "Check workflows against `docs/security.md`"; the API-failure bullet stays                                                                                                       |
+| `AGENTS.md`                             | Changed       | Line 47 adds "A required form box may say "None"."; line 50 "PR body 250 words" → "PR body per its template"; line 58 "Run lint, `format:check`, `words`, tests, `validate:boundaries` and `e2e` …" |
+| `plans/chores/C371-codeowners-rules.md` | New           | This plan                                                                                                                                                                                           |
 
 ## Order of work
 
@@ -24,12 +24,14 @@ Widen CODEOWNERS so a PO-only approval can't change workflows, skills or agent s
 
 ## Risks
 
-- `review.md` loads from `main`; `security.md` is read from the PR branch, so a PR could weaken the workflow rules and be reviewed against its own copy. CODEOWNERS on `security.md` still requires the tech lead's review.
+- `review.md` loads from `main`; `security.md` is read from the PR branch, so a PR could weaken the workflow rules and be reviewed against its own copy. CODEOWNERS still requires the tech lead's review.
 - CODEOWNERS is read from the base branch, so this PR's own reviewers don't change.
 
 ## Deviations
 
-- Tech lead authorised building ([rule 13](../README.md)); CODEOWNERS adds six paths, not five (the issue lists `scripts/denial-audit.mts` too).
+- Tech lead authorised building ([rule 13](../README.md)).
+- CODEOWNERS adds eight paths, not five: the issue's six, plus `scripts/scan-summary.sh` and `scripts/claude-plugin-pin-check.mts` (workflows run both).
+- Proof: the grep excludes this plan (`-- ':!plans'`); the tech lead pastes the `check-github.sh` output.
 
 ## Proof
 

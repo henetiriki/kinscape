@@ -1,7 +1,7 @@
 # Plan: C371: Close the CODEOWNERS gap and state each rule once
 
 - **Spec:** #371
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

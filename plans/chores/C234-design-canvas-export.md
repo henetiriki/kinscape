@@ -57,6 +57,11 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 | `export.json` matches Screens table and `source/` | Unit test                 |
 | `test`, `lint`, `format:check`, `words`, `e2e`    | Output in the PR          |
 
+## Deviations
+
+- Types in `scripts/types.ts`, as lint requires.
+- `export.json` also holds the icon path and the `Kit-menu-phone.dc.html` link.
+
 ## Out of scope
 
 - CI export and `DESIGN.md` handoff text: #235.

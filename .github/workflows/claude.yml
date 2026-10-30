@@ -5,7 +5,8 @@ name: 'Claude: Code'
 #
 # The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude
 # will answer, and "Skipped: <title>" when it won't. Claude answers when all of these hold:
-#   - the author is not Claude's own bot account (so Claude never answers itself)
+#   - the bot variable KINSCAPE_BOT_LOGIN is set, and the author is not that account (so Claude never
+#     answers itself, and an unset variable lets nobody through)
 #   - the issue, review or comment is by the owner, a member or a collaborator (outsiders trigger nothing)
 #   - it is not the repo owner approving a draft plan PR that the bot opened (claude-build.yml
 #     handles those; an approval from anyone else is answered here, as feedback)
@@ -13,7 +14,7 @@ name: 'Claude: Code'
 # This repeats the `if:` of the `claude` job below (run-name cannot see job results): change them together.
 run-name: >-
   ${{
-    github.actor != 'henetiriki-bot' &&
+    vars.KINSCAPE_BOT_LOGIN != '' && github.actor != vars.KINSCAPE_BOT_LOGIN &&
     contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
       github.event_name == 'issues' && github.event.issue.author_association ||
       github.event_name == 'pull_request_review' && github.event.review.author_association ||
@@ -22,7 +23,7 @@ run-name: >-
       github.event.review.state == 'approved' &&
       github.event.review.author_association == 'OWNER' &&
       github.event.pull_request.draft &&
-      github.event.pull_request.user.login == 'henetiriki-bot' &&
+      github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
       endsWith(github.event.pull_request.title, '(plan)')) &&
     contains(
       github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
@@ -53,7 +54,7 @@ jobs:
   claude:
     name: Run Claude
     if: >-
-      github.actor != 'henetiriki-bot' &&
+      vars.KINSCAPE_BOT_LOGIN != '' && github.actor != vars.KINSCAPE_BOT_LOGIN &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
         github.event_name == 'issues' && github.event.issue.author_association ||
         github.event_name == 'pull_request_review' && github.event.review.author_association ||
@@ -62,7 +63,7 @@ jobs:
         github.event.review.state == 'approved' &&
         github.event.review.author_association == 'OWNER' &&
         github.event.pull_request.draft &&
-        github.event.pull_request.user.login == 'henetiriki-bot' &&
+        github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
         endsWith(github.event.pull_request.title, '(plan)')) &&
       contains(
         github.event_name == 'issues' && format('{0} {1}', github.event.issue.title, github.event.issue.body) ||
@@ -113,6 +114,8 @@ jobs:
           additional_permissions: 'actions: read'
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
+          bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
+          bot_id: ${{ vars.KINSCAPE_BOT_ID }}
 
   # With show_full_output off, the log above stops at the start of the run. This writes the run page
   # from the summary of Claude's transcript (the run-summary action, from main, so the checked-out branch can't

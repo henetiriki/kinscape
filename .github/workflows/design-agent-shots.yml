@@ -108,10 +108,12 @@ jobs:
         run: node scripts/design-shots-ci.mts check
       - name: Commit and push
         run: |
-          git config user.name henetiriki-bot
-          git config user.email 344434370+henetiriki-bot@users.noreply.github.com
+          git config user.name "$BOT_LOGIN"
+          git config user.email "$BOT_ID+$BOT_LOGIN@users.noreply.github.com"
           git add -- 'design/*.jpg' 'design/source/*.html'
           git commit -m 'chore: export and render design snapshots'
           git push origin "HEAD:$REF"
         env:
+          BOT_ID: ${{ vars.KINSCAPE_BOT_ID }}
+          BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
           REF: ${{ github.ref }}

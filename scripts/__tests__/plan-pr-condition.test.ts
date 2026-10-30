@@ -12,8 +12,10 @@ const read = (file: string) =>
 const PLAN_PR =
   /github\.event\.review\.state == 'approved'[\s\S]*?endsWith\(github\.event\.pull_request\.title, '\(plan\)'\)/g;
 
-// claude.yml's two copies also share the bot check and the `@claude` mention around it.
-const WHOLE = /github\.actor != 'henetiriki-bot'[\s\S]*?'@claude'\)/g;
+// claude.yml's two copies also share the bot check (which fails closed while the bot variable is
+// unset) and the `@claude` mention around it.
+const WHOLE =
+  /vars\.KINSCAPE_BOT_LOGIN != ''[\s\S]*?github\.actor != vars\.KINSCAPE_BOT_LOGIN[\s\S]*?'@claude'\)/g;
 
 // claude-plan.yml's `run-name` and plan job's `if:` share the label check and the owner check, and
 // each ends there: `format('Plan…` follows in the `run-name`, `uses:` in the job. A trailing `||`

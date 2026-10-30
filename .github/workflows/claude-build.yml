@@ -9,7 +9,7 @@ run-name: >-
     github.event.review.state == 'approved' &&
     github.event.review.author_association == 'OWNER' &&
     github.event.pull_request.draft &&
-    github.event.pull_request.user.login == 'henetiriki-bot' &&
+    github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
     endsWith(github.event.pull_request.title, '(plan)') &&
     format('Build: {0}', github.event.pull_request.title) ||
     format('Skipped: {0}', github.event.pull_request.title)
@@ -49,7 +49,7 @@ jobs:
       github.event.review.state == 'approved' &&
       github.event.review.author_association == 'OWNER' &&
       github.event.pull_request.draft &&
-      github.event.pull_request.user.login == 'henetiriki-bot' &&
+      github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
       endsWith(github.event.pull_request.title, '(plan)')
     uses: henetiriki/kinscape/.github/workflows/claude-run.yml@f346a952f82e2a162df04548235bee4739f44296
     with:

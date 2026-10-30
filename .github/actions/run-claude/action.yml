@@ -22,6 +22,12 @@ inputs:
   github_token:
     description: "The bot's token, which claude-code-action uses to read and write the repo."
     required: true
+  bot_login:
+    description: "The bot account's login, from vars.KINSCAPE_BOT_LOGIN."
+    required: true
+  bot_id:
+    description: "The bot account's numeric id, from vars.KINSCAPE_BOT_ID."
+    required: true
 
 runs:
   using: composite
@@ -39,8 +45,8 @@ runs:
       with:
         claude_code_oauth_token: ${{ inputs.claude_code_oauth_token }}
         github_token: ${{ inputs.github_token }}
-        bot_name: henetiriki-bot
-        bot_id: '344434370'
+        bot_name: ${{ inputs.bot_login }}
+        bot_id: ${{ inputs.bot_id }}
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
         # Off: the full output includes every screenshot Claude reads, as base64, and the log

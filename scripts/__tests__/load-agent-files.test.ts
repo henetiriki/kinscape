@@ -174,6 +174,19 @@ describe('the run-claude action', () => {
     );
   });
 
+  // The bot's name and id are repo variables (scripts/setup-github.sh), not literals in the action.
+  it('runs Claude as the bot its callers name', () => {
+    expect(stepUsing('anthropics/claude-code-action')?.with).toMatchObject({
+      bot_id: '${{ inputs.bot_id }}',
+      bot_name: '${{ inputs.bot_login }}',
+    });
+  });
+
+  it.each(RUN_CLAUDE_CALLERS)('passes the bot variables to it in %s', file => {
+    expect(read(file)).toContain('bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}');
+    expect(read(file)).toContain('bot_id: ${{ vars.KINSCAPE_BOT_ID }}');
+  });
+
   it.each(RUN_CLAUDE_CALLERS)(
     'is used from a pinned main commit, once, by %s',
     file => {

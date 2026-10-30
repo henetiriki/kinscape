@@ -2,9 +2,8 @@
  * Vercel's Ignored Build Step (`vercel.json`): exit 0 skips the deployment, 1 builds it.
  * Skips only when every changed file is on the invisible list; anything unclear deploys.
  * It runs before `npm ci`, so it uses built-ins only. Plan: plans/chores/C291-vercel-ignore.md.
+ * `KINSCAPE_REPO_SLUG` (`owner/name`) names the repo to ask; without it every push deploys.
  */
-const API = 'https://api.github.com/repos/henetiriki/kinscape/';
-
 /** GitHub lists at most 300 files without paging; a list that long may be cut short. */
 const LIMIT = 300;
 
@@ -68,18 +67,21 @@ export const run = async (
   const ref = env.VERCEL_GIT_COMMIT_REF;
   const sha = env.VERCEL_GIT_COMMIT_SHA;
   const token = env.KINSCAPE_GIT_READ_TOKEN;
+  const slug = env.KINSCAPE_REPO_SLUG;
 
   if (ref === 'po-preview') {
     return deploy('po-preview always deploys');
   }
 
-  if (!ref || !sha || !token) {
-    return deploy('no branch, commit or token');
+  if (!ref || !sha || !token || !slug) {
+    return deploy('no branch, commit, token or repo');
   }
+
+  const api = `https://api.github.com/repos/${slug}/`;
 
   try {
     const response = await get(
-      ref === 'main' ? `${API}commits/${sha}` : `${API}compare/main...${sha}`,
+      ref === 'main' ? `${api}commits/${sha}` : `${api}compare/main...${sha}`,
       {
         headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'kinscape' },
       }

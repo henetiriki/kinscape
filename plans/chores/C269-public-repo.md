@@ -1,7 +1,7 @@
 # Plan: C269: Prepare repo for switching from private to public
 
 - **Spec:** #269
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -14,19 +14,23 @@ Add the licence and policy files. Gate people-triggered workflows on `author_ass
 The new setting may block the `@main` refs C382 allows, stopping the Claude workflows.
 
 - **A.** Turn it on; after setup, the tech lead checks a `@claude` run starts, else turns it off and reopens #269.
-- **B.** Leave it out of this chore.
-- **Other:** your own.
+- ~~**B.** Leave it out of this chore.~~
+- ~~**Other:** your own.~~
 
 Recommended: A, because the issue asks for it and a check shows at once whether it works.
+
+**Answer: A** (Tech lead)
 
 **D2 · Who runs the history secret scan** · Decides: Tech lead
 
 The agent can't install gitleaks.
 
 - **A.** The tech lead runs `gitleaks git` before the flip and pastes the summary in the PR.
-- **Other:** your own.
+- ~~**Other:** your own.~~
 
 Recommended: A.
+
+**Answer: A** (Tech lead)
 
 ## Files that change
 

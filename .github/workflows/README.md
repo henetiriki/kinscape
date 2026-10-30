@@ -25,7 +25,7 @@ flowchart LR
   subgraph g_CI [CI]
     ci_cache_cleanup["CI: Delete PR caches<br>ci-cache-cleanup.yml<br>delete"]
     ci_playwright_cache["CI: Playwright cache<br>ci-playwright-cache.yml<br>seed"]
-    ci["CI<br>ci.yml<br>lint · format · test · boundaries · words · image · e2e"]
+    ci["CI<br>ci.yml<br>lint · typecheck · format · test · boundaries · words · image · e2e"]
   end
   subgraph g_Claude [Claude]
     claude_build["Claude: Build<br>claude-build.yml<br>build"]

@@ -110,7 +110,7 @@ jobs:
           # Read-only permissions from main (.github/agent/review-settings.json).
           settings: ${{ runner.temp }}/agent/review-settings.json
           # The inline-comment tool stays a flag: the action starts its MCP server only if claude_args names it.
-          claude_args: '--effort high --allowedTools "mcp__github_inline_comment__create_inline_comment" --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+          claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment" --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 

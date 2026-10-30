@@ -40,7 +40,7 @@ Each push reran the full review, hunting new gaps: #405 had six. A new step in `
 ## Risks
 
 - A merge from `main` widens the diff; the both-diffs rule filters it.
-- Without Opus the main agent may miss plan or rule breaks; the proof PR plants one.
+- Without Opus or high effort, plan or rule breaks may slip; the proof PR plants one.
 - Unchanged code's defects that earlier rounds missed go unflagged (#405's last run: one of three).
 
 ## Proof
@@ -52,9 +52,8 @@ Each push reran the full review, hunting new gaps: #405 had six. A new step in `
 | A planted plan departure is still found | The same PR                |
 | Lint, format, words                     | Their output               |
 
-**Hand back:** both files are code-owned; the tech lead builds this.
-
 ## Deviations
 
 - The job gains `actions: read` for `gh run list`.
+- `--effort high` goes too (@henetiriki).
 - `review.md` drops its style-nit line (the command has one) for its budget.

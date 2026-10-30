@@ -1,0 +1,490 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-19T10:20:00Z"
+  },
+  "title": "KinScape design kit",
+  "launch": {
+    "view": "canvas",
+    "page": "sign-in"
+  },
+  "pages": [
+    {
+      "id": "sign-in",
+      "name": "Sign in"
+    },
+    {
+      "id": "map",
+      "name": "Map"
+    },
+    {
+      "id": "states",
+      "name": "Map states"
+    },
+    {
+      "id": "map-style",
+      "name": "Map style"
+    },
+    {
+      "id": "style-guide",
+      "name": "Style guide"
+    }
+  ],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Sign in — desktop",
+      "expand": "fill",
+      "page": "sign-in"
+    },
+    "Sign-in-phone-default.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Sign in — phone",
+      "page": "sign-in"
+    },
+    "Sign-in-phone.dc.html": {
+      "x": 1990,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Sign in — phone, error state",
+      "page": "sign-in"
+    },
+    "Map.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Map — desktop · 1901 · clicked Kimberley",
+      "is_interactive": true,
+      "page": "map"
+    },
+    "Map-phone.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Map — phone, read-only lookup",
+      "page": "map"
+    },
+    "Map-phone-collapsed.dc.html": {
+      "x": 1990,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Map — phone, sheet collapsed",
+      "page": "map"
+    },
+    "Map-phone-states.dc.html": {
+      "x": 2460,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Map — phone, Layers open",
+      "page": "map"
+    },
+    "Map-phone-filters.dc.html": {
+      "x": 2930,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "Map — phone, Filters open",
+      "page": "map"
+    },
+    "Map-loading.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "State — first load",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-loading.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "State — first load, phone",
+      "page": "states"
+    },
+    "Map-empty-tree.dc.html": {
+      "x": 0,
+      "y": 1020,
+      "w": 1440,
+      "h": 900,
+      "title": "State — no pins in the tree",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-empty-tree.dc.html": {
+      "x": 1520,
+      "y": 1020,
+      "w": 390,
+      "h": 844,
+      "title": "State — no pins in the tree, phone",
+      "page": "states"
+    },
+    "Map-empty-date.dc.html": {
+      "x": 0,
+      "y": 2040,
+      "w": 1440,
+      "h": 900,
+      "title": "State — no pins on this date",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-empty-date.dc.html": {
+      "x": 1520,
+      "y": 2040,
+      "w": 390,
+      "h": 844,
+      "title": "State — no pins on this date, phone",
+      "page": "states"
+    },
+    "Map-districts.dc.html": {
+      "x": 0,
+      "y": 3060,
+      "w": 1440,
+      "h": 900,
+      "title": "State — districts on",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-districts.dc.html": {
+      "x": 1520,
+      "y": 3060,
+      "w": 390,
+      "h": 844,
+      "title": "State — districts on, phone",
+      "page": "states"
+    },
+    "Map-offline.dc.html": {
+      "x": 0,
+      "y": 4080,
+      "w": 1440,
+      "h": 900,
+      "title": "State — terrain failed to load",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-offline.dc.html": {
+      "x": 1520,
+      "y": 4080,
+      "w": 390,
+      "h": 844,
+      "title": "State — terrain failed to load, phone",
+      "page": "states"
+    },
+    "Map-account.dc.html": {
+      "x": 0,
+      "y": 5100,
+      "w": 1440,
+      "h": 900,
+      "title": "Account menu",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-account.dc.html": {
+      "x": 1520,
+      "y": 5100,
+      "w": 390,
+      "h": 844,
+      "title": "Account menu, phone",
+      "page": "states"
+    },
+    "Map-sources.dc.html": {
+      "x": 0,
+      "y": 6120,
+      "w": 1440,
+      "h": 900,
+      "title": "Sources and attributions",
+      "page": "states"
+    },
+    "Map-phone-sources.dc.html": {
+      "x": 1520,
+      "y": 6120,
+      "w": 390,
+      "h": 844,
+      "title": "Sources and attributions, phone",
+      "page": "states"
+    },
+    "Map-date-invalid.dc.html": {
+      "x": 0,
+      "y": 7140,
+      "w": 1440,
+      "h": 900,
+      "title": "State — invalid date typed",
+      "is_interactive": true,
+      "page": "states"
+    },
+    "Map-phone-date-invalid.dc.html": {
+      "x": 1520,
+      "y": 7140,
+      "w": 390,
+      "h": 844,
+      "title": "State — invalid date typed, phone",
+      "page": "states"
+    },
+    "Map-style.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 2081,
+      "title": "Map style — MapLibre layer stack",
+      "page": "map-style"
+    },
+    "Map-style-phone.dc.html": {
+      "w": 390,
+      "h": 4934,
+      "title": "Map style — MapLibre layer stack, phone",
+      "x": 1520,
+      "y": 0,
+      "page": "map-style"
+    },
+    "Kit-index.dc.html": {
+      "w": 1440,
+      "h": 900,
+      "title": "Design kit — landing",
+      "x": 0,
+      "y": 0,
+      "page": "style-guide"
+    },
+    "Kit-index-phone.dc.html": {
+      "w": 390,
+      "h": 1325,
+      "title": "Design kit — landing, phone",
+      "x": 1520,
+      "y": 0,
+      "page": "style-guide"
+    },
+    "Kit-menu-phone.dc.html": {
+      "w": 390,
+      "h": 844,
+      "title": "Design kit — Boards menu open, phone",
+      "x": 1990,
+      "y": 0,
+      "page": "style-guide"
+    },
+    "SG-Type.dc.html": {
+      "x": 0,
+      "y": 1445,
+      "w": 1440,
+      "h": 2568,
+      "title": "Style guide 01 — Typography",
+      "page": "style-guide"
+    },
+    "SG-Type-phone.dc.html": {
+      "x": 1520,
+      "y": 1445,
+      "w": 390,
+      "h": 3637,
+      "title": "Style guide 01 — Typography, phone",
+      "page": "style-guide"
+    },
+    "SG-Colour.dc.html": {
+      "x": 0,
+      "y": 5202,
+      "w": 1440,
+      "h": 2767,
+      "title": "Style guide 02 — Colour",
+      "page": "style-guide"
+    },
+    "SG-Colour-phone.dc.html": {
+      "x": 1520,
+      "y": 5202,
+      "w": 390,
+      "h": 4528,
+      "title": "Style guide 02 — Colour, phone",
+      "page": "style-guide"
+    },
+    "SG-Foundations.dc.html": {
+      "x": 0,
+      "y": 9850,
+      "w": 1440,
+      "h": 1594,
+      "title": "Style guide 03 — Foundations",
+      "page": "style-guide"
+    },
+    "SG-Foundations-phone.dc.html": {
+      "x": 1520,
+      "y": 9850,
+      "w": 390,
+      "h": 3154,
+      "title": "Style guide 03 — Foundations, phone",
+      "page": "style-guide"
+    },
+    "SG-Controls.dc.html": {
+      "x": 0,
+      "y": 13124,
+      "w": 1440,
+      "h": 1578,
+      "title": "Style guide 04 — Component states",
+      "page": "style-guide"
+    },
+    "SG-Controls-phone.dc.html": {
+      "x": 1520,
+      "y": 13124,
+      "w": 390,
+      "h": 4230,
+      "title": "Style guide 04 — Component states, phone",
+      "page": "style-guide"
+    },
+    "SG-Feedback.dc.html": {
+      "x": 0,
+      "y": 17474,
+      "w": 1440,
+      "h": 1968,
+      "title": "Style guide 05 — Feedback and validation",
+      "page": "style-guide"
+    },
+    "SG-Feedback-phone.dc.html": {
+      "x": 1520,
+      "y": 17474,
+      "w": 390,
+      "h": 4305,
+      "title": "Style guide 05 — Feedback and validation, phone",
+      "page": "style-guide"
+    },
+    "SG-Inputs.dc.html": {
+      "x": 0,
+      "y": 21899,
+      "w": 1440,
+      "h": 7580,
+      "title": "Style guide 06 — Inputs and actions",
+      "page": "style-guide"
+    },
+    "SG-Inputs-phone.dc.html": {
+      "x": 1520,
+      "y": 21899,
+      "w": 390,
+      "h": 7869,
+      "title": "Style guide 06 — Inputs and actions, phone (part 1 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Inputs-phone-2.dc.html": {
+      "x": 1990,
+      "y": 21899,
+      "w": 390,
+      "h": 6175,
+      "title": "Style guide 06 — Inputs and actions, phone (part 2 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Surfaces.dc.html": {
+      "x": 0,
+      "y": 29888,
+      "w": 1440,
+      "h": 4309,
+      "title": "Style guide 07 — Surfaces and overlays (part 1 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Surfaces-phone.dc.html": {
+      "x": 1520,
+      "y": 29888,
+      "w": 390,
+      "h": 7408,
+      "title": "Style guide 07 — Surfaces and overlays, phone (part 1 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Surfaces-phone-2.dc.html": {
+      "x": 1990,
+      "y": 29888,
+      "w": 390,
+      "h": 7019,
+      "title": "Style guide 07 — Surfaces and overlays, phone (part 2 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Furniture.dc.html": {
+      "x": 0,
+      "y": 37416,
+      "w": 1440,
+      "h": 5893,
+      "title": "Style guide 08 — Map furniture",
+      "page": "style-guide"
+    },
+    "SG-Furniture-phone.dc.html": {
+      "x": 1520,
+      "y": 37416,
+      "w": 390,
+      "h": 4100,
+      "title": "Style guide 08 — Map furniture, phone (part 1 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Surfaces-2.dc.html": {
+      "x": 2460,
+      "y": 29888,
+      "w": 1440,
+      "h": 4384,
+      "title": "Style guide 07 — Surfaces and overlays (part 2 of 2)",
+      "page": "style-guide"
+    },
+    "SG-Furniture-phone-2.dc.html": {
+      "x": 1990,
+      "y": 37416,
+      "w": 390,
+      "h": 4784,
+      "title": "Style guide 08 — Map furniture, phone (part 2 of 2)",
+      "page": "style-guide"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Sign-in-phone-default.dc.html",
+    "Sign-in-phone.dc.html",
+    "Map.dc.html",
+    "Map-phone.dc.html",
+    "Map-phone-collapsed.dc.html",
+    "Map-phone-states.dc.html",
+    "Map-phone-filters.dc.html",
+    "Map-loading.dc.html",
+    "Map-phone-loading.dc.html",
+    "Map-empty-tree.dc.html",
+    "Map-phone-empty-tree.dc.html",
+    "Map-empty-date.dc.html",
+    "Map-phone-empty-date.dc.html",
+    "Map-districts.dc.html",
+    "Map-phone-districts.dc.html",
+    "Map-offline.dc.html",
+    "Map-phone-offline.dc.html",
+    "Map-account.dc.html",
+    "Map-phone-account.dc.html",
+    "Map-sources.dc.html",
+    "Map-phone-sources.dc.html",
+    "Map-date-invalid.dc.html",
+    "Map-phone-date-invalid.dc.html",
+    "Map-style.dc.html",
+    "Map-style-phone.dc.html",
+    "Kit-index.dc.html",
+    "Kit-index-phone.dc.html",
+    "Kit-menu-phone.dc.html",
+    "SG-Type.dc.html",
+    "SG-Type-phone.dc.html",
+    "SG-Colour.dc.html",
+    "SG-Colour-phone.dc.html",
+    "SG-Foundations.dc.html",
+    "SG-Foundations-phone.dc.html",
+    "SG-Controls.dc.html",
+    "SG-Controls-phone.dc.html",
+    "SG-Feedback.dc.html",
+    "SG-Feedback-phone.dc.html",
+    "SG-Inputs.dc.html",
+    "SG-Inputs-phone.dc.html",
+    "SG-Inputs-phone-2.dc.html",
+    "SG-Surfaces.dc.html",
+    "SG-Surfaces-phone.dc.html",
+    "SG-Surfaces-phone-2.dc.html",
+    "SG-Surfaces-2.dc.html",
+    "SG-Furniture.dc.html",
+    "SG-Furniture-phone.dc.html",
+    "SG-Furniture-phone-2.dc.html"
+  ],
+  "notes": {},
+  "designSystems": []
+}

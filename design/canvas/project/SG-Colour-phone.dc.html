@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape style guide — Colour (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; box-sizing: border-box; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 16px; border-bottom: 1px solid #E2E5DD; background: #FFFFFF">
+    <a href="Kit-index-phone.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; color: #18211B; text-decoration: none; border-radius: 2px">KinScape design kit</a>
+    <a href="Kit-menu-phone.dc.html" aria-haspopup="dialog" style="flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px 0 12px; box-sizing: border-box; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 15px; line-height: 22px; font-weight: 600; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>Boards</a>
+  </header>
+
+  <main style="display: flex; flex-direction: column; gap: 32px; padding: 32px 16px 48px">
+    <header style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Style guide · 02</span>
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 28px; line-height: 32px; letter-spacing: -0.015em">Colour</h1>
+      <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">Forest green carries the brand and every interactive thing. Burnt sienna is only for pins. Ratios are WCAG contrast, measured on white unless noted: 4.5 for text, 3 for borders, icons and focus rings. Each name is the token you type.</p>
+    </header>
+
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="4">
+      <section style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">{{g.title}}</h2>
+          <span style="font-size: 13px; line-height: 20px; color: #4A544C">{{g.note}}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <sc-for list="{{g.items}}" as="c" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; border: 1px solid #E2E5DD; border-radius: 12px; overflow: hidden">
+              <div style="{{c.chip}}">{{c.sample}}</div>
+              <div style="padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 4px">
+                <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #18211B; white-space: nowrap">{{c.name}}</code>
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #2E3A33">{{c.hex}} · {{c.ratio}}</span>
+                <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{c.use}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+
+    <section style="display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">System colours</h2>
+        <span style="font-size: 13px; line-height: 20px; color: #4A544C">Each comes as text, border-and-icon, and background. Always paired with an icon and words.</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <sc-for list="{{semantic}}" as="s" hint-placeholder-count="4">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div style="{{s.alert}}">
+              <span aria-hidden="true" style="{{s.icon}}">{{s.mark}}</span>
+              <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">{{s.title}}</span><span style="font-size: 13px; line-height: 20px">{{s.text}}</span></span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #2E3A33">
+              <sc-for list="{{s.lines}}" as="l" hint-placeholder-count="3"><span>{{l}}</span></sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">The other map colours (sea, land, polity tints, rivers) are on the Map style board. They're MapLibre paint values under map in tokens.json, not custom properties.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":4528}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const lum = (h) => {
+      const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((x) => (x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4)));
+      return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+    };
+    const cr = (a, b) => { const x = lum(a), y = lum(b); return ((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)).toFixed(1) + ':1'; };
+    const sw = (name, hex, use, opts) => {
+      const o = opts || {};
+      const dark = o.dark ?? lum(hex) < 0.2;
+      return {
+        name: name, hex: hex, use: use,
+        ratio: o.ratio || cr(hex, '#FFFFFF'),
+        sample: o.sample || '',
+        chip: 'height: 72px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; background: ' + (o.bg || hex) + '; color: ' + (dark ? '#FFFFFF' : '#18211B') + (hex === '#FFFFFF' ? '; border-bottom: 1px solid #E2E5DD' : '') + (o.chipExtra || '')
+      };
+    };
+    const groups = [
+      { title: 'Brand', note: 'Primary actions, links, selection and focus.', items: [
+        sw('--brand-pressed', '#163019', 'Pressed buttons and links'),
+        sw('--brand-hover', '#1D3E20', 'Hover on buttons and links; a link underline thickens to 2px'),
+        sw('--brand', '#264F29', 'Primary buttons, links (underlined 1px, offset 3px), selected point, app icon background'),
+        sw('--brand-tint', '#E6EEE4', 'Selected tab, chip on, pressed secondary', { ratio: 'fill only' }),
+        sw('--brand-tint-hover', '#D9E6D6', 'Hover on a chip that is on', { ratio: 'fill only' }),
+        sw('--brand-tint-pressed', '#CCDDC8', 'Pressing a chip that is on', { ratio: 'fill only' })
+      ] },
+      { title: 'Accent', note: 'Only for pins and things that mean "a person was here".', items: [
+        sw('--pin', '#9A3B12', 'Pins, clusters, event glyphs'),
+        sw('map.hatch.colour', '#8B4A1C', 'Contested hatch, at map.hatch.opacity (34%). A MapLibre paint value, not a custom property', { ratio: 'map only' })
+      ] },
+      { title: 'Neutrals', note: 'Text, borders and surfaces.', items: [
+        sw('--ink', '#18211B', 'Main text, dark banners'),
+        sw('--ink-2', '#2E3A33', 'Secondary text'),
+        sw('--ink-3', '#4A544C', 'Helper text, overlines'),
+        sw('--ink-disabled', '#6E776F', 'Disabled text and icons'),
+        sw('--icon-disabled', '#A3AAA1', 'The glyph in a disabled icon button', { ratio: cr('#A3AAA1', '#FFFFFF') + ', disabled' }),
+        sw('--field-border', '#8E978C', 'Field and checkbox borders (meets 3:1)'),
+        sw('--line-strong', '#C9CFC5', 'Secondary button borders', { ratio: 'decorative' }),
+        sw('--line', '#E2E5DD', 'Dividers, disabled primary buttons', { ratio: 'decorative' }),
+        sw('--track', '#D6DAD2', 'Date slider track, unselected year buttons', { ratio: 'decorative' }),
+        sw('--segment', '#EEF0EA', 'Segmented control track', { ratio: 'fill only' }),
+        sw('--surface-2', '#F4F5F0', 'Insets, hover fills, sign-in page', { ratio: 'fill only' }),
+        sw('--surface', '#FFFFFF', 'Panels, dock, popups, dialogs', { ratio: 'fill only' }),
+        sw('--white', '#FFFFFF', 'Text and icons on --brand and --ink', { ratio: cr('#FFFFFF', '#264F29') + ' on brand' })
+      ] },
+      { title: 'Focus', note: 'One colour family, so anything green can be clicked.', items: [
+        sw('--focus-ring', '#264F29', 'Same value as --brand. 2px outline, 2px offset, on every focusable thing'),
+        sw('--focus-ring-on-dark', '#FFFFFF', 'Same value as --white. Focus ring inside dark banners', { ratio: cr('#FFFFFF', '#18211B') + ' on ink', chipExtra: '; box-shadow: inset 0 0 0 3px #18211B' })
+      ] },
+      { title: 'Over the map', note: 'Drawn on top of the map rather than on a panel.', items: [
+        sw('--scrim', 'rgb(24 33 27 / 0.45)', 'Behind dialogs and phone sheets', { bg: 'rgba(24,33,27,0.45)', dark: true, ratio: 'overlay' }),
+        sw('--credits', '#24302B', 'Credits line under the date dock', { ratio: cr('#24302B', '#E9EBE2') + ' on land' })
+      ] },
+      { title: 'Third party', note: "Google's own colours, for its sign-in button and nothing else.", items: [
+        sw('--google-text', '#1F1F1F', 'Google button label'),
+        sw('--google-border', '#747775', 'Google button border'),
+        sw('--google-mark', '#5F6368', 'The placeholder G mark in the mockups')
+      ] }
+    ];
+    const lines = (k, fg, border, bg) => ['--' + k + ' ' + fg + ' · ' + cr(fg, bg) + ' on bg', '--' + k + '-border ' + border + ' · ' + cr(border, '#FFFFFF'), '--' + k + '-bg ' + bg].concat(k === 'error' ? ['--error-border-soft #E7B9B0 · sign-in alert border'] : []);
+    const sem = [
+      ['Error', '#7E2316', '#B4412F', '#FBEDEA', '!', "That date doesn't exist."],
+      ['Warning', '#6B4A00', '#B7791F', '#FDF3DD', '!', 'No borders are mapped for 1750 yet.'],
+      ['Success', '#1E5E32', '#2F7D46', '#EAF4EC', '✓', 'Jurisdiction chain copied.'],
+      ['Info', '#1E4E6B', '#3E7FA6', '#E8F1F7', 'i', 'Switched to month precision.']
+    ];
+    return {
+      groups: groups,
+      semantic: sem.map((s) => ({
+        title: s[0], text: s[5], fg: s[1], border: s[2], bg: s[3], mark: s[4], lines: lines(s[0].toLowerCase(), s[1], s[2], s[3]),
+        fgRatio: cr(s[1], s[3]), borderRatio: cr(s[2], '#FFFFFF'),
+        alert: 'display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-radius: 8px; border: 1px solid ' + s[2] + '; background: ' + s[3] + '; color: ' + s[1] + '; min-height: 64px; box-sizing: border-box',
+        icon: 'flex: none; width: 20px; height: 20px; border-radius: 10px; background: ' + s[2] + '; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600'
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

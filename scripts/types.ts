@@ -1,9 +1,32 @@
+/** `design/canvas/export.json`: how `npm run design:export` turns artboards into snapshots. */
+export type CanvasExport = {
+  /** The canvas's path for the app icon; snapshots use `app/icon0.svg`. */
+  icon: string;
+  /** Artboards with no plain snapshot of their own, and the snapshot a link to one opens. */
+  links: Record<string, string>;
+  snapshots: CanvasSnapshot[];
+};
+
+export type CanvasSnapshot = {
+  /** The artboard in `design/canvas/project/`. */
+  file: string;
+  name: string;
+  props?: Record<string, unknown>;
+  state?: Record<string, unknown>;
+  viewport: { height: number; width: number };
+};
+
 export type Denial = {
   // An estimate at API prices of the cost of the turn that made the call; unknown if the
   // transcript doesn't link the denial to a turn.
   costUsd?: number;
   detail: string;
   tool: string;
+};
+
+export type DesignExportDeps = {
+  /** Loads the prepared artboard in Chromium, fills its template and returns the page's HTML. */
+  render: (html: string, snapshot: CanvasSnapshot) => Promise<string>;
 };
 
 export type DesignShotsCiDeps = {

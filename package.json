@@ -4,6 +4,7 @@
   "scripts": {
     "build": "next build",
     "design:check": "playwright test --project=design",
+    "design:export": "node scripts/design-export.mts",
     "design:shots": "node scripts/design-shots.mts",
     "dev": "next dev",
     "e2e": "playwright test",

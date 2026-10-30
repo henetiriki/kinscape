@@ -1,0 +1,277 @@
+{
+  "icon": "/_blob/69f4c36dd58bda2b1955e1fd070cdfee",
+  "links": { "Kit-menu-phone.dc.html": "design-kit-menu-phone" },
+  "snapshots": [
+    {
+      "file": "Main.dc.html",
+      "name": "sign-in-desktop",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Sign-in-phone.dc.html",
+      "name": "sign-in-phone-error",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Sign-in-phone-default.dc.html",
+      "name": "sign-in-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-desktop",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-desktop-filters",
+      "state": { "tab": "filters" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-loading",
+      "props": { "variant": "loading" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-empty-tree",
+      "props": { "variant": "empty-tree" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-empty-date",
+      "props": { "variant": "empty-date" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-districts",
+      "props": { "variant": "districts" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-offline",
+      "props": { "variant": "offline" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-sources",
+      "props": { "variant": "sources" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-date-invalid",
+      "props": { "variant": "date-invalid" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-account-menu",
+      "props": { "variant": "account" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-phone.dc.html",
+      "name": "map-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone.dc.html",
+      "name": "map-phone-collapsed",
+      "props": { "variant": "collapsed" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-phone-layers",
+      "props": { "variant": "layers" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-phone-filters",
+      "props": { "variant": "filters" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-loading-phone",
+      "props": { "variant": "loading" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-empty-tree-phone",
+      "props": { "variant": "empty-tree" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-empty-date-phone",
+      "props": { "variant": "empty-date" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-districts-phone",
+      "props": { "variant": "districts" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-offline-phone",
+      "props": { "variant": "offline" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-sources-phone",
+      "props": { "variant": "sources" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-date-invalid-phone",
+      "props": { "variant": "date-invalid" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-account-menu-phone",
+      "props": { "variant": "account" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-style.dc.html",
+      "name": "map-style",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-style-phone.dc.html",
+      "name": "map-style-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Kit-index.dc.html",
+      "name": "design-kit",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Kit-index-phone.dc.html",
+      "name": "design-kit-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Type-phone.dc.html",
+      "name": "design-kit-menu-phone",
+      "props": { "menu": true },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Type.dc.html",
+      "name": "style-1-type",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Type-phone.dc.html",
+      "name": "style-1-type-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Colour.dc.html",
+      "name": "style-2-colour",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Colour-phone.dc.html",
+      "name": "style-2-colour-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Foundations.dc.html",
+      "name": "style-3-foundations",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Foundations-phone.dc.html",
+      "name": "style-3-foundations-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Controls.dc.html",
+      "name": "style-4-states",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Controls-phone.dc.html",
+      "name": "style-4-states-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Feedback.dc.html",
+      "name": "style-5-feedback",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Feedback-phone.dc.html",
+      "name": "style-5-feedback-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Inputs.dc.html",
+      "name": "style-6-components-inputs",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Inputs-phone.dc.html",
+      "name": "style-6-components-inputs-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Inputs-phone-2.dc.html",
+      "name": "style-6-components-inputs-2-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Surfaces.dc.html",
+      "name": "style-7-components-surfaces",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Surfaces-phone.dc.html",
+      "name": "style-7-components-surfaces-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Surfaces-2.dc.html",
+      "name": "style-7-components-surfaces-2",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Surfaces-phone-2.dc.html",
+      "name": "style-7-components-surfaces-2-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Furniture.dc.html",
+      "name": "style-8-components-map",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "SG-Furniture-phone.dc.html",
+      "name": "style-8-components-map-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Furniture-phone-2.dc.html",
+      "name": "style-8-components-map-2-phone",
+      "viewport": { "height": 844, "width": 390 }
+    }
+  ]
+}

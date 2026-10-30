@@ -40,7 +40,8 @@ Each push reruns the full review, which hunts for new hypothetical gaps (`review
 ## Risks
 
 - A merge from `main` widens the compare; the both-diffs rule filters it out.
-- Without Opus the main agent may miss plan or rule breaks; the proof PR includes one.
+- Without Opus the main agent may miss plan or rule breaks; the proof PR plants one.
+- Unchanged code's defects that earlier rounds missed go unflagged (#405's last run: one of three).
 
 ## Proof
 
@@ -51,4 +52,4 @@ Each push reruns the full review, which hunts for new hypothetical gaps (`review
 | A planted plan departure is still found | The same PR                |
 | Lint, format, words                     | Their output               |
 
-**Hand back:** both files are in `.github/CODEOWNERS`; the tech lead builds this locally.
+**Hand back:** both files are code-owned; the tech lead builds this.

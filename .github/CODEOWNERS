@@ -5,9 +5,14 @@ plans/README.md @henetiriki
 .claude/settings*.json @henetiriki
 scripts/setup-github.sh @henetiriki
 scripts/github/** @henetiriki
-.github/workflows/claude*.yml @henetiriki
+.github/workflows/** @henetiriki
 .github/CODEOWNERS @henetiriki
 .github/agent/** @henetiriki
 .github/actions/** @henetiriki
+.github/claude-plugins/** @henetiriki
+.claude/skills/** @henetiriki
+scripts/agent-*.mts @henetiriki
+scripts/run-summary.mts @henetiriki
+scripts/denial-audit.mts @henetiriki
 server/** @henetiriki
 scripts/layers.mts @henetiriki

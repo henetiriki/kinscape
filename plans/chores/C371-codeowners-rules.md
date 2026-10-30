@@ -27,6 +27,10 @@ Widen CODEOWNERS so a PO-only approval can't change workflows, skills or agent s
 - `review.md` loads from `main`; `security.md` is read from the PR branch, so a PR could weaken the workflow rules and be reviewed against its own copy. CODEOWNERS on `security.md` still requires the tech lead's review.
 - CODEOWNERS is read from the base branch, so this PR's own reviewers don't change.
 
+## Deviations
+
+- Tech lead authorised building ([rule 13](../README.md)); CODEOWNERS adds six paths, not five (the issue lists `scripts/denial-audit.mts` too).
+
 ## Proof
 
 | Acceptance check                                      | Proven by                                                                       |

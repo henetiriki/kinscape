@@ -16,5 +16,6 @@ scripts/run-summary.mts @henetiriki
 scripts/denial-audit.mts @henetiriki
 scripts/scan-summary.sh @henetiriki
 scripts/claude-plugin-pin-check.mts @henetiriki
+scripts/design-shots-ci.mts @henetiriki
 server/** @henetiriki
 scripts/layers.mts @henetiriki

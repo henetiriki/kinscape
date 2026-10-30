@@ -135,6 +135,7 @@ type Step = {
   if?: string;
   name?: string;
   run?: string;
+  shell?: string;
   uses?: string;
   with?: Record<string, unknown>;
 };

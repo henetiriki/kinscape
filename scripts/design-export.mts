@@ -49,12 +49,13 @@ const COLOUR_KEYWORDS = new Set(
 
 /**
  * Everything the browser reads as CSS or attributes, not page text: the values in `style`
- * attributes and `<style>` blocks, and every other attribute. Chromium writes every attribute
- * double-quoted.
+ * attributes and `<style>` blocks, and every other attribute. Either quote: Chromium writes
+ * double quotes, but Prettier switches to single quotes where the value holds more of them.
  */
-const MARKUP = /\s([\w:-]+)="([^"]*)"|<style[^>]*>([\s\S]*?)<\/style>/gi;
-/** A `<style>` block's declarations: the text in its innermost braces, not its selectors. */
-const DECLARATIONS = /\{([^{}]*)\}/g;
+const MARKUP =
+  /\s([\w:-]+)=(?:"([^"]*)"|'([^']*)')|<style[^>]*>([\s\S]*?)<\/style>/gi;
+/** The text between braces (and the end of a block). */
+const BRACE_RUNS = /([^{}]*)([{}]?)/g;
 const CSS_VALUE = /[a-z-]+\s*:([^;{}]*)/gi;
 /** Attributes that hold text or a reference, never a colour. Any other is read, so one missing here can only fail the export. */
 const TEXT_ATTRIBUTE =
@@ -64,18 +65,26 @@ const cssValues = (css: string): string[] =>
   [...css.matchAll(CSS_VALUE)].map(([, value]) => String(value));
 
 const markupValues = (html: string): string[] =>
-  [...html.matchAll(MARKUP)].flatMap(([, name, value, block]) => {
+  [...html.matchAll(MARKUP)].flatMap(([, name, double, single, block]) => {
     if (block !== undefined) {
-      return [...block.matchAll(DECLARATIONS)].flatMap(([, declarations]) =>
-        cssValues(String(declarations))
-      );
+      // A run before `{` is a selector, except any declarations before its last `;`
+      // (those sit beside a nested rule).
+      return [...block.matchAll(BRACE_RUNS)].flatMap(([, run, brace]) => {
+        const text = String(run);
+
+        return cssValues(
+          brace === '{' ? text.slice(0, text.lastIndexOf(';') + 1) : text
+        );
+      });
     }
+
+    const value = String(double ?? single);
 
     if (name === 'style') {
-      return cssValues(String(value));
+      return cssValues(value);
     }
 
-    return TEXT_ATTRIBUTE.test(String(name)) ? [] : [String(value)];
+    return TEXT_ATTRIBUTE.test(String(name)) ? [] : [value];
   });
 
 /**
@@ -85,12 +94,12 @@ const markupValues = (html: string): string[] =>
  */
 const COLOUR_ATTRIBUTES: [RegExp, RegExp, Set<string>][] = [
   [
-    /\s(?:fill|stroke|stop-color|flood-color|lighting-color)="([^"]*)"/gi,
+    /\s(?:fill|stroke|stop-color|flood-color|lighting-color)=(?:"([^"]*)"|'([^']*)')/gi,
     /^\s*(?:url\(#[\w-]+\)\s*)?(?:#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})|rgba?\([^)]*\)|([\w-]+))?\s*$/i,
     new Set(['currentcolor', 'inherit', 'none', 'transparent']),
   ],
   [
-    /\s(?:alink|bgcolor|bordercolor|color|link|text|vlink)="([^"]*)"/gi,
+    /\s(?:alink|bgcolor|bordercolor|color|link|text|vlink)=(?:"([^"]*)"|'([^']*)')/gi,
     /^\s*(?:#(?:[0-9a-f]{6}|[0-9a-f]{3})|([\w-]+))\s*$/i,
     new Set(['transparent']),
   ],
@@ -99,8 +108,8 @@ const COLOUR_ATTRIBUTES: [RegExp, RegExp, Set<string>][] = [
 const unreadableColours = (html: string): string[] =>
   COLOUR_ATTRIBUTES.flatMap(([attribute, readable, plain]) =>
     [...html.matchAll(attribute)]
-      .filter(([, value]) => {
-        const match = readable.exec(String(value));
+      .filter(([, double, single]) => {
+        const match = readable.exec(String(double ?? single));
         const word = match?.[1]?.toLowerCase();
 
         return (
@@ -546,12 +555,19 @@ if (import.meta.main) {
           }
         );
         await page.goto(pathToFileURL(file).href);
-        await page.evaluate(fillTemplate, { props, state });
-        await page.evaluate(() => document.fonts.ready);
 
-        const snapshot = await page.evaluate(pageHtml);
+        let snapshot = '';
 
-        await page.close();
+        try {
+          await page.evaluate(fillTemplate, { props, state });
+          await page.evaluate(() => document.fonts.ready);
+          snapshot = await page.evaluate(pageHtml);
+        } catch (error) {
+          // A script error reaches `pageerror`, not `evaluate`; report both, with the name.
+          errors.push(String((error as Error).message));
+        } finally {
+          await page.close();
+        }
 
         if (errors.length > 0) {
           throw new Error(`${name}: ${errors.join('; ')}`);

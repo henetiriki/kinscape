@@ -340,6 +340,31 @@ describe('tokenColours and snapshotProblems', () => {
     ]);
   });
 
+  it('reads single-quoted attributes, as Prettier writes them', () => {
+    expect(
+      snapshotProblems(
+        `<i style='font-family: "A"; color: red'></i><i fill='teal'></i><i bgcolor='none'></i><i title='red'></i>`,
+        tokens
+      )
+    ).toEqual([
+      "bgcolor='none' cannot be read as a colour",
+      'red is not in design/tokens.json',
+      'teal is not in design/tokens.json',
+    ]);
+  });
+
+  it('reads declarations beside a nested rule', () => {
+    expect(
+      snapshotProblems(
+        '<style>.a{color: red; &:hover{color: #264f29} background: oklch(1 0 0)}</style>',
+        tokens
+      )
+    ).toEqual([
+      'red is not in design/tokens.json',
+      'uses oklch(), which the colour check cannot read',
+    ]);
+  });
+
   it('reports a CSS escape, which can spell a colour', () => {
     expect(snapshotProblems('<i style="color: r\\65 d"></i>', tokens)).toEqual([
       'r\\65 d uses a CSS escape, which the colour check cannot read',

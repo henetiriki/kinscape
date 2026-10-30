@@ -9,13 +9,13 @@ Widen CODEOWNERS so a PO-only approval can't change workflows, skills or agent s
 
 ## Files that change
 
-| File                                    | New / changed | What                                                                                                                                                                                                |
-| --------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/CODEOWNERS`                    | Changed       | `.github/workflows/**` replaces `claude*.yml`; add the five paths the chore lists                                                                                                                   |
-| `docs/security.md`                      | Changed       | Line 10 states the three workflow rules (SHA pins, fewest `permissions:`, `env:`), replacing the `review.md` link                                                                                   |
-| `.github/agent/review.md`               | Changed       | Lines 19–23 become "Check workflows against `docs/security.md`"; the API-failure bullet stays                                                                                                       |
-| `AGENTS.md`                             | Changed       | Line 47 adds "A required form box may say "None"."; line 50 "PR body 250 words" → "PR body per its template"; line 58 "Run lint, `format:check`, `words`, tests, `validate:boundaries` and `e2e` …" |
-| `plans/chores/C371-codeowners-rules.md` | New           | This plan                                                                                                                                                                                           |
+| File                                    | New / changed | What                                                                                                                                      |
+| --------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `.github/CODEOWNERS`                    | Changed       | `.github/workflows/**` replaces `claude*.yml`; add the five paths the chore lists                                                         |
+| `docs/security.md`                      | Changed       | Line 10 states the three workflow rules (SHA pins, fewest `permissions:`, `env:`), replacing the `review.md` link                         |
+| `.github/agent/review.md`               | Changed       | Lines 19–23 become "Check workflows against `docs/security.md`"; the API-failure bullet stays                                             |
+| `AGENTS.md`                             | Changed       | Line 47 allows "None" in a required form box; line 50 points the PR-body budget to its template; line 58 lists `format:check` and `words` |
+| `plans/chores/C371-codeowners-rules.md` | New           | This plan                                                                                                                                 |
 
 ## Order of work
 
@@ -24,13 +24,14 @@ Widen CODEOWNERS so a PO-only approval can't change workflows, skills or agent s
 
 ## Risks
 
-- `review.md` loads from `main`; `security.md` is read from the PR branch, so a PR could weaken the workflow rules and be reviewed against its own copy. CODEOWNERS still requires the tech lead's review.
+- `security.md` is read from the PR branch, so a PR could weaken the workflow rules it is reviewed against (see Deviations); CODEOWNERS still requires the tech lead's review.
 - CODEOWNERS is read from the base branch, so this PR's own reviewers don't change.
 
 ## Deviations
 
 - Tech lead authorised building ([rule 13](../README.md)).
 - CODEOWNERS adds eight paths, not five: the issue's six, plus `scripts/scan-summary.sh` and `scripts/claude-plugin-pin-check.mts` (workflows run both).
+- `review.md` reads `security.md` as `main` has it via the diff's removed lines (review finding); loading it from `main` needs its own chore.
 - Proof: the grep excludes this plan (`-- ':!plans'`); the tech lead pastes the `check-github.sh` output.
 
 ## Proof

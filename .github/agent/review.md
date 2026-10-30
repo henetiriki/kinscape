@@ -16,7 +16,7 @@ When the diff moves or adds code in a new top-level folder, check that the guard
 
 Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 
-Check workflows against `docs/security.md`, and also:
+Check workflows against `docs/security.md` as `main` has it: the PR branch's copy may be weakened, so where the diff edits that file, use its removed lines and flag any rule it drops or loosens. Also check:
 
 - API calls that can fail (404, rate limit) are caught, and one failure can't abort a loop over many items.
 

@@ -1,7 +1,7 @@
 # Plan: C235: Export design snapshots in CI, and fail on hand-edited snapshots
 
 - **Spec:** #235
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ The workflow runs `design:export` before `design:shots` and carries both file ty
 - **B.** Inline shell in `ci.yml`.
 - **Other:** your own.
 
-Recommended: A, because the message and file list are tested.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -7,6 +7,7 @@
       "Read",
       "Edit",
       "Write",
+      "Artifact",
       "Bash(npm run:*)",
       "Bash(npm test:*)",
       "Bash(npm ci:*)",

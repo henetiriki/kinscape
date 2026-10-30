@@ -27,6 +27,10 @@ The copy is about 1.2 MB (roughly 350k tokens).
 | `design/DESIGN.md`                    | Line 66, first sentence: "…from its artboard in `canvas/`, the copy `/sync-canvas` makes, and…" |
 | `.github/agent/settings.json`         | `Artifact` allowed                                                                              |
 
+## Deviations
+
+The skill checks each board name (no `/` or `..`) before writing, and on a pass-2 failure also runs `git clean -fd design/canvas` so new files don't linger.
+
 ## Risks
 
 - `Artifact` may be unavailable headless, or the OAuth account may lack canvas access; the post-merge run shows it.

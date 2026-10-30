@@ -1,6 +1,6 @@
 # KinScape design
 
-The look of KinScape: fonts, colours, components and the map style. The screenshots in this folder are the reference mockups, designed with Claude Design on the [design canvas](https://claude.ai/artifact/1MyZCdZRhzfvXXxma2Zrie). Behaviour lives in [`docs/requirements.md`](../docs/requirements.md); this file only covers how things look.
+The look of KinScape: fonts, colours, components and the map style. The screenshots in this folder are the reference mockups, designed with Claude Design on the design canvas, whose link is line 1 of [`canvas/VERSION`](canvas/VERSION). Behaviour lives in [`docs/requirements.md`](../docs/requirements.md); this file only covers how things look.
 
 ## Screens
 
@@ -63,7 +63,7 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 `npm run design:check` renders each screen in `screens.json` beside its HTML snapshot, ignoring the map, and writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold.
 
-Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing an artboard, push the branch and run the **Design agent shots** workflow on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. Agents never edit these files ([`AGENTS.md`](../AGENTS.md#source-of-truth)), so each one always matches its source. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
+Each HTML snapshot in `source/` is exported from its artboard in `canvas/`, the copy `/sync-canvas` makes, and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing an artboard, push the branch and run the **Design agent shots** workflow on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. Agents never edit these files ([`AGENTS.md`](../AGENTS.md#source-of-truth)), so each one always matches its source. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
 
 ## Brand
 

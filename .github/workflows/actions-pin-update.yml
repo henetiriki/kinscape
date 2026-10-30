@@ -1,0 +1,79 @@
+name: 'Actions: Update repo action pins'
+
+# After repo-owned action code lands on main, open one PR that moves every caller
+# to that exact commit. This keeps the action code immutable under SHA pinning.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/actions/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: actions-pin-update
+  cancel-in-progress: false
+
+jobs:
+  update-pins:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Pin repo-owned actions to the triggering commit
+        env:
+          ACTION_SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          import re
+
+          actions = "load-agent-files|setup-workspace|run-claude|run-summary"
+          pattern = re.compile(
+              rf"(henetiriki/kinscape/\.github/actions/(?:{actions})@)[^\s]+"
+          )
+          sha = os.environ["ACTION_SHA"]
+          for root in (Path(".github/workflows"), Path(".github/actions")):
+              for path in root.rglob("*.yml"):
+                  original = path.read_text()
+                  updated = pattern.sub(rf"\g<1>{sha}", original)
+                  if updated != original:
+                      path.write_text(updated)
+          PY
+
+      - name: Open or update the pin PR
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: bot/update-action-pins
+        run: |
+          git config user.name 'kinscape-bot'
+          git config user.email 'kinscape-bot@users.noreply.github.com'
+          if git diff --quiet; then
+            echo 'All repo-owned action references already point to this commit.'
+            exit 0
+          fi
+          git add .github/workflows .github/actions
+          git commit -m 'chore: update repo action pins'
+          gh auth setup-git
+          git push --force origin "HEAD:refs/heads/$BRANCH"
+          if gh pr view "$BRANCH" --repo "$GH_REPO" >/dev/null 2>&1; then
+            echo 'Updated the existing action pin PR.'
+          else
+            gh pr create \
+              --repo "$GH_REPO" \
+              --head "$BRANCH" \
+              --base main \
+              --title 'chore: update repo action pins' \
+              --body 'Pin repo-owned composite actions to the commit that most recently changed action code on main.' \
+              --label dependencies
+          fi

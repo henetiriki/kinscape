@@ -17,8 +17,6 @@ The new setting may block the `@main` refs C382 allows, stopping the Claude work
 - ~~**B.** Leave it out of this chore.~~
 - ~~**Other:** your own.~~
 
-Recommended: A, because the issue asks for it and a check shows at once whether it works.
-
 **Answer: A** (Tech lead)
 
 **D2 · Who runs the history secret scan** · Decides: Tech lead
@@ -27,8 +25,6 @@ The agent can't install gitleaks.
 
 - **A.** The tech lead runs `gitleaks git` before the flip and pastes the summary in the PR.
 - ~~**Other:** your own.~~
-
-Recommended: A.
 
 **Answer: A** (Tech lead)
 
@@ -43,6 +39,7 @@ Recommended: A.
 | `.github/workflows/backlog-{intent-ready,spec-link,milestone}.yml`, `claude-unblock.yml` | Issue's association: form labels reach outsiders' issues |
 | `scripts/{setup,check}-github.sh`                                                        | Five settings                                            |
 | `docs/repo-settings.md`                                                                  | Dependabot row; new rows                                 |
+| `.github/workflows/actions-pin-update.yml`                                               | Open pin-update PR after repo action changes on `main`   |
 
 ## Order of work
 
@@ -70,3 +67,4 @@ Recommended: A.
 ## Deviations
 
 `package-lock.json` also gets the licence.
+`actions-pin-update.yml` updates repo-action SHAs after main changes.

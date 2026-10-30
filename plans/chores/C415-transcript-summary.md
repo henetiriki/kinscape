@@ -37,7 +37,7 @@ Old artifacts last 14 days; callers run the old `run-claude` until its pin PR me
 | ----------------------------------------------------------------------------------- | --------------------------------------- |
 | `scripts/{agent-transcript,run-summary,denial-audit}.mts`, their tests              | CLI, `readSummary`; readers use it      |
 | `.github/actions/run-claude/action.yml`, `.github/workflows/claude-code-review.yml` | Summarise, scan, upload 7 days; comment |
-| `.github/agent/settings.json`                                                       | Deny rules                              |
+| `.github/agent/{settings,review-settings}.json`                                     | Deny rules                              |
 | `scripts/__tests__/load-agent-files.test.ts`                                        | Upload steps                            |
 | `scripts/__tests__/agent-settings.test.ts`                                          | New: deny rules                         |
 
@@ -54,7 +54,3 @@ Old artifacts last 14 days; callers run the old `run-claude` until its pin PR me
 | Only a clean scan uploads        | `load-agent-files.test.ts`                                                      |
 | Deny rules kept                  | `agent-settings.test.ts`                                                        |
 | Checks pass                      | Lint, format, tests, boundaries                                                 |
-
-## Out of scope
-
-`review-settings.json`: the issue names `settings.json` only.

@@ -1,6 +1,7 @@
 {
   "name": "kinscape",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "build": "next build",
     "design:check": "playwright test --project=design",

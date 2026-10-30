@@ -6,6 +6,7 @@ name: 'Claude: Code'
 # The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude
 # will answer, and "Skipped: <title>" when it won't. Claude answers when all of these hold:
 #   - the author is not Claude's own bot account (so Claude never answers itself)
+#   - the issue, review or comment is by the owner, a member or a collaborator (outsiders trigger nothing)
 #   - it is not the repo owner approving a draft plan PR that the bot opened (claude-build.yml
 #     handles those; an approval from anyone else is answered here, as feedback)
 #   - the text mentions "@claude"
@@ -13,6 +14,10 @@ name: 'Claude: Code'
 run-name: >-
   ${{
     github.actor != 'henetiriki-bot' &&
+    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
+      github.event_name == 'issues' && github.event.issue.author_association ||
+      github.event_name == 'pull_request_review' && github.event.review.author_association ||
+      github.event.comment.author_association) &&
     !(github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved' &&
       github.event.review.author_association == 'OWNER' &&
@@ -49,6 +54,10 @@ jobs:
     name: Run Claude
     if: >-
       github.actor != 'henetiriki-bot' &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
+        github.event_name == 'issues' && github.event.issue.author_association ||
+        github.event_name == 'pull_request_review' && github.event.review.author_association ||
+        github.event.comment.author_association) &&
       !(github.event_name == 'pull_request_review' &&
         github.event.review.state == 'approved' &&
         github.event.review.author_association == 'OWNER' &&
@@ -78,7 +87,7 @@ jobs:
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
       # see .github/agent/respond.md); the cache keeps the download between runs.
       - name: Set up the workspace
-        uses: henetiriki/kinscape/.github/actions/setup-workspace@main
+        uses: henetiriki/kinscape/.github/actions/setup-workspace@90b8105edc4bfba72baf6a52cd736509ff935c54
         with:
           # Persist the PAT, not GITHUB_TOKEN: claude-code-action fetches the PR branch before it sets up git auth,
           # and runs triggered by a GITHUB_TOKEN push wait for approval.
@@ -91,7 +100,7 @@ jobs:
       # step, so the checked-out branch can't change it.
       - name: Run Claude Code
         id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@main
+        uses: henetiriki/kinscape/.github/actions/run-claude@4d67e840469e35f8bab61ffbcd3fe3e5d067313a
         with:
           # The files in .github/agent/ that become the system prompt. The order matters: respond.md
           # points to build.md "below", so build.md comes after it.
@@ -118,4 +127,4 @@ jobs:
       contents: read
     steps:
       - name: Write the result
-        uses: henetiriki/kinscape/.github/actions/run-summary@main
+        uses: henetiriki/kinscape/.github/actions/run-summary@7170e6911a46f3bd2a898d3e21fdad5b27ed0078

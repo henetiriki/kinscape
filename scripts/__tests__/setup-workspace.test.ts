@@ -19,8 +19,9 @@ const steps = (file: string, job: string) =>
     ) as Workflow
   ).jobs[job].steps;
 
-// Callers name the action by repo and `@main`, which runs the action from main: see .github/actions/load-agent-files/action.yml.
-const ACTION = 'henetiriki/kinscape/.github/actions/setup-workspace@main';
+// Callers name the action by repo, pinned to a full SHA of a main commit: see .github/actions/load-agent-files/action.yml.
+const ACTION = 'henetiriki/kinscape/.github/actions/setup-workspace';
+const PINNED = new RegExp(`^${ACTION.replaceAll('.', '\\.')}@[0-9a-f]{40}$`);
 
 // The inputs are strings: `persist-credentials` keeps the PAT for the push that starts CI.
 const CALLERS = [
@@ -48,9 +49,13 @@ describe('the setup-workspace action', () => {
   it.each(CALLERS)(
     'is called once by %s (%s) with its inputs',
     (file, job, inputs) => {
-      const calls = steps(file, job).filter(step => step.uses === ACTION);
+      const calls = steps(file, job).filter(step =>
+        PINNED.test(step.uses ?? '')
+      );
 
-      expect(calls, `${file} needs one call to ${ACTION}`).toHaveLength(1);
+      expect(calls, `${file} needs one call to ${ACTION}@<SHA>`).toHaveLength(
+        1
+      );
       expect(calls[0].with).toEqual(inputs);
     }
   );

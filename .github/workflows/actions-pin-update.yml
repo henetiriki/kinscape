@@ -1,0 +1,94 @@
+name: 'Actions: Update repo action pins'
+
+# GitHub requires every action and reusable workflow to be pinned to a full SHA, ours included.
+# When an action or workflow changes on main, open one PR that pins each
+# `henetiriki/kinscape/<path>@…` to the last main commit that changed <path>. Any workflow, not
+# only the ones pinned to, so a new or wrong ref in a caller is fixed too. Merging a pin PR starts
+# this again, one level up the call chain; a run that changes nothing opens no PR, so it stops.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/actions/**'
+      - '.github/workflows/**'
+  # Lets a person run it by hand from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: actions-pin-update
+  cancel-in-progress: false
+
+jobs:
+  update-pins:
+    runs-on: ubuntu-latest
+    steps:
+      # The full history, to find the last commit that changed each path.
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Pin repo-owned actions and workflows
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import subprocess
+
+          pattern = re.compile(
+              r"(henetiriki/kinscape/(\.github/(?:actions/[\w-]+|workflows/[\w-]+\.yml))@)\S+"
+          )
+          last = {}
+
+          def pin(match):
+              path = match.group(2)
+              if path not in last:
+                  sha = subprocess.run(
+                      ["git", "log", "-1", "--format=%H", "HEAD", "--", path],
+                      check=True, capture_output=True, text=True,
+                  ).stdout.strip()
+                  if not sha:
+                      raise SystemExit(f"No commit on main changes {path}")
+                  last[path] = sha
+              return match.group(1) + last[path]
+
+          for root in (Path(".github/workflows"), Path(".github/actions")):
+              for path in root.rglob("*.yml"):
+                  original = path.read_text()
+                  updated = pattern.sub(pin, original)
+                  if updated != original:
+                      path.write_text(updated)
+          PY
+
+      # The bot's PAT, not the Actions token: a PR opened with that token starts no workflows.
+      - name: Open or update the pin PR
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: bot/update-action-pins
+        run: |
+          if git diff --quiet; then
+            echo 'Every repo-owned reference is already pinned to its last change.'
+            exit 0
+          fi
+          git config user.name 'henetiriki-bot'
+          git config user.email '344434370+henetiriki-bot@users.noreply.github.com'
+          git add .github/workflows .github/actions
+          git commit -m 'chore: update repo action pins'
+          gh auth setup-git
+          git push --force origin "HEAD:refs/heads/$BRANCH"
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            echo 'Updated the open pin PR.'
+          else
+            gh pr create \
+              --head "$BRANCH" \
+              --base main \
+              --title 'chore: update repo action pins' \
+              --body 'Pins each repo-owned action and reusable workflow to the last main commit that changed it (actions-pin-update.yml).' \
+              --label dependencies
+          fi

@@ -59,5 +59,10 @@ check "Dependabot security fixes"      "$(gh api "repos/$REPO/automated-security
 w() { gh api "repos/$REPO/actions/permissions/workflow" --jq "$1"; }
 check "Actions token read-only"        "$(w .default_workflow_permissions)" "read"
 check "Actions can't approve PRs"      "$(w .can_approve_pull_request_reviews)" "false"
+check "Secret scanning"                "$(r .security_and_analysis.secret_scanning.status)" "enabled"
+check "Push protection"                "$(r .security_and_analysis.secret_scanning_push_protection.status)" "enabled"
+check "Private vulnerability reporting" "$(gh api "repos/$REPO/private-vulnerability-reporting" --jq .enabled 2>/dev/null)" "true"
+check "Actions pinned to a full SHA"   "$(gh api "repos/$REPO/actions/permissions" --jq .sha_pinning_required)" "true"
+check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --jq .approval_policy)" "all_external_contributors"
 
 exit $fail

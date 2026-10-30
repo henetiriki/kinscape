@@ -18,7 +18,7 @@ Flag a rule or fact the diff adds to a `.md` file that another doc or prompt alr
 
 In workflows, also check (these live only here, loaded from `main`, so a PR can't weaken them):
 
-- each action and reusable workflow pinned to a full commit SHA, except this repo's own `.github/actions/**` and `.github/workflows/claude*.yml`, used as `henetiriki/kinscape/<path>@main`;
+- each action and reusable workflow pinned to a full commit SHA, this repo's own included (`actions-pin-update.yml` moves those pins);
 - the fewest `permissions:`;
 - `${{ github.event.* }}` text passed through `env:`;
 - API calls that can fail (404, rate limit) are caught, and one failure can't abort a loop over many items.

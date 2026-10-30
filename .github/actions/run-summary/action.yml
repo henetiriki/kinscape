@@ -7,8 +7,8 @@ description: >-
 runs:
   using: composite
   steps:
-    # The script comes from main, so the checked-out branch can't change it. Callers name this
-    # action by repo and `@main`, for the same reason (scripts/__tests__/load-agent-files.test.ts).
+    # The script comes from main, so the checked-out branch can't change it. Callers pin this
+    # action to a main commit, for the same reason (scripts/__tests__/load-agent-files.test.ts).
     - name: Check out the summary script
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:

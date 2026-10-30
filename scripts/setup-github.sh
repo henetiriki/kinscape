@@ -78,5 +78,13 @@ gh api -X PUT "repos/$REPO/vulnerability-alerts" >/dev/null
 gh api -X PUT "repos/$REPO/automated-security-fixes" >/dev/null
 gh api -X PUT "repos/$REPO/actions/permissions/workflow" \
   -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false >/dev/null
+# Secret scanning and private vulnerability reporting need a public repo.
+gh api -X PATCH "repos/$REPO" \
+  -f 'security_and_analysis[secret_scanning][status]=enabled' \
+  -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled' >/dev/null
+gh api -X PUT "repos/$REPO/private-vulnerability-reporting" >/dev/null
+gh api -X PUT "repos/$REPO/actions/permissions" -F enabled=true -F sha_pinning_required=true >/dev/null
+gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" \
+  -f approval_policy=all_external_contributors >/dev/null
 
 echo "Done. Verify with: ./scripts/check-github.sh"

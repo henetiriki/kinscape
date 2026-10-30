@@ -19,9 +19,15 @@ const read = (file: string) =>
 const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
 
-// Callers name the action by repo and `@main`: see .github/actions/load-agent-files/action.yml.
+// Callers name our actions by repo, pinned to a full SHA of a main commit (actions-pin-update.yml
+// moves the pins): see .github/actions/load-agent-files/action.yml.
+const OWN_PIN =
+  /^henetiriki\/kinscape\/\.github\/actions\/[\w-]+@[0-9a-f]{40}$/;
+// The action a `uses:` names when it pins one of ours that way; any other ref as it is.
+const own = (uses = '') => (OWN_PIN.test(uses) ? uses.split('@')[0] : uses);
+
 // Only the review calls it itself; claude.yml and claude-run.yml reach it through run-claude.
-const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files@main';
+const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files';
 const CALLERS = ['claude-code-review.yml'];
 const RUN_CLAUDE_CALLERS = ['claude.yml', 'claude-run.yml'];
 const action = () =>
@@ -51,8 +57,8 @@ describe('the load-agent-files action', () => {
     );
   });
 
-  // GitHub doesn't enforce `required` on a composite action's inputs. A branch cut before this
-  // input existed calls the action at `@main` without it, so it falls back to settings.json.
+  // GitHub doesn't enforce `required` on a composite action's inputs. A caller that predates this
+  // input calls the action without it, so it falls back to settings.json.
   it('defaults the settings file, for a caller that predates the input', () => {
     const { inputs } = parse(action()) as {
       inputs: { settings: { default?: string } };
@@ -78,12 +84,14 @@ describe('the load-agent-files action', () => {
     expect(runs.steps[0].run, 'the step has a run:').toBeTypeOf('string');
   });
 
-  it.each(CALLERS)('is used from main, once, by %s', file => {
+  it.each(CALLERS)('is used from a pinned main commit, once, by %s', file => {
     const uses = [
       ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*load-agent-files\S*)/gm),
-    ].map(match => match[1]);
+    ].map(match => own(match[1]));
 
-    expect(uses, `${file} needs one "uses: ${ACTION}" step`).toEqual([ACTION]);
+    expect(uses, `${file} needs one "uses: ${ACTION}@<SHA>" step`).toEqual([
+      ACTION,
+    ]);
   });
 
   it.each([...RUN_CLAUDE_CALLERS, ...CALLERS])(
@@ -98,27 +106,28 @@ describe('the load-agent-files action', () => {
 });
 
 // The run-summary action writes the result section of every Claude run page. Like load-agent-files,
-// callers name it by repo and `@main`, so a branch can't change the script that reports on it.
-const SUMMARY_ACTION = 'henetiriki/kinscape/.github/actions/run-summary@main';
+// callers pin it to a main commit, so a branch can't change the script that reports on it.
+const SUMMARY_ACTION = 'henetiriki/kinscape/.github/actions/run-summary';
 
 describe('the run-summary action', () => {
   it.each(['claude.yml', 'claude-run.yml', 'claude-code-review.yml'])(
-    'is used from main, once, by %s',
+    'is used from a pinned main commit, once, by %s',
     file => {
       const uses = [
         ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*run-summary\S*)/gm),
-      ].map(match => match[1]);
+      ].map(match => own(match[1]));
 
-      expect(uses, `${file} needs one "uses: ${SUMMARY_ACTION}" step`).toEqual([
-        SUMMARY_ACTION,
-      ]);
+      expect(
+        uses,
+        `${file} needs one "uses: ${SUMMARY_ACTION}@<SHA>" step`
+      ).toEqual([SUMMARY_ACTION]);
     }
   );
 });
 
 // The run-claude action holds the steps claude.yml and claude-run.yml share. It loads the settings
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
-const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude@main';
+const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 
 type Step = { uses?: string; with?: Record<string, string> };
 const runClaudeSteps = () =>
@@ -136,10 +145,10 @@ const pins = (text: string, name: string) =>
   );
 
 describe('the run-claude action', () => {
-  it('loads the agent files from main, with settings.json', () => {
-    const loader = stepUsing(ACTION.split('@')[0]);
+  it('loads the agent files from a pinned main commit, with settings.json', () => {
+    const loader = stepUsing(ACTION);
 
-    expect(loader?.uses).toBe(ACTION);
+    expect(own(loader?.uses)).toBe(ACTION);
     expect(loader?.with).toMatchObject({
       files: '${{ inputs.files }}',
       settings: 'settings.json',
@@ -156,15 +165,19 @@ describe('the run-claude action', () => {
     );
   });
 
-  it.each(RUN_CLAUDE_CALLERS)('is used from main, once, by %s', file => {
-    const uses = [
-      ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*run-claude\S*)/gm),
-    ].map(match => match[1]);
+  it.each(RUN_CLAUDE_CALLERS)(
+    'is used from a pinned main commit, once, by %s',
+    file => {
+      const uses = [
+        ...read(file).matchAll(/^\s*(?:-\s+)?uses:\s*(\S*run-claude\S*)/gm),
+      ].map(match => own(match[1]));
 
-    expect(uses, `${file} needs one "uses: ${RUN_CLAUDE}" step`).toEqual([
-      RUN_CLAUDE,
-    ]);
-  });
+      expect(
+        uses,
+        `${file} needs one "uses: ${RUN_CLAUDE}@<SHA>" step`
+      ).toEqual([RUN_CLAUDE]);
+    }
+  );
 
   // The action is the one place the model call lives; a pin left in a caller would be a second.
   it.each(RUN_CLAUDE_CALLERS)(
@@ -217,7 +230,7 @@ describe('the transcript upload', () => {
 });
 
 // A tag or branch can be moved to other code, and these actions run `npm ci` with the bot PAT.
-// Dependabot bumps a SHA with its tag in the comment. Our own actions are called at `@main`.
+// Dependabot bumps a SHA with its tag in the comment; actions-pin-update.yml moves our own.
 describe('the composite actions', () => {
   const ACTIONS = join(root, '.github/actions');
   const OWN = 'henetiriki/kinscape/';
@@ -233,10 +246,7 @@ describe('the composite actions', () => {
     ).runs.steps
       ?.flatMap(step => (step.uses ? [step.uses] : []))
       .filter(uses => !uses.startsWith('./')) ?? [];
-  const unpinned = (uses: string) =>
-    uses.startsWith(OWN)
-      ? !uses.endsWith('@main')
-      : !/@[0-9a-f]{40}$/.test(uses);
+  const unpinned = (uses: string) => !/@[0-9a-f]{40}$/.test(uses);
 
   it('checks the third-party steps of setup-workspace', () => {
     expect(
@@ -245,7 +255,7 @@ describe('the composite actions', () => {
   });
 
   it.each(actions)(
-    'pins every step in %s: third-party to a 40-character SHA, ours to @main',
+    'pins every step in %s to a 40-character SHA, ours included',
     name => {
       expect(
         used(name).filter(unpinned),

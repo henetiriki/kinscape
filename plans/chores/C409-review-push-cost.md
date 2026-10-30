@@ -5,7 +5,7 @@
 
 ## Approach
 
-Each push reruns the full review, which hunts for new hypothetical gaps (`review.md` line 28): #405 had six. A new step in `claude-code-review.yml` writes `gh api compare <sha>...<head>` into the checkout, `<sha>` being the head of the PR's last successful review run. `review.md` `## Findings`: when that file exists, report defects only on lines in both it and `gh pr diff`; check the plan against the whole PR. Gaps no committed file's input reaches go in one summary comment. `claude_args` drops `--model opus`.
+Each push reran the full review, hunting new gaps: #405 had six. A new step in `claude-code-review.yml` writes the diff since the head of the PR's last successful review run into the checkout. `review.md` then flags defects only on lines in both it and `gh pr diff`, and lists gaps no committed file reaches in one comment. `claude_args` drops `--model opus`.
 
 ## Decisions
 
@@ -39,7 +39,7 @@ Each push reruns the full review, which hunts for new hypothetical gaps (`review
 
 ## Risks
 
-- A merge from `main` widens the compare; the both-diffs rule filters it out.
+- A merge from `main` widens the diff; the both-diffs rule filters it.
 - Without Opus the main agent may miss plan or rule breaks; the proof PR plants one.
 - Unchanged code's defects that earlier rounds missed go unflagged (#405's last run: one of three).
 
@@ -53,3 +53,8 @@ Each push reruns the full review, which hunts for new hypothetical gaps (`review
 | Lint, format, words                     | Their output               |
 
 **Hand back:** both files are code-owned; the tech lead builds this.
+
+## Deviations
+
+- The job gains `actions: read` for `gh run list`.
+- `review.md` drops its style-nit line (the command has one) for its budget.

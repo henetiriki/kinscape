@@ -27,10 +27,16 @@ const FORBIDDEN = [
   'http://',
   'https://',
   '.dc.html',
+  'hsl(',
+  'hsla(',
+  'hwb(',
+  'lab(',
+  'lch(',
+  'color-mix(',
 ];
 
 const COLOUR =
-  /#([0-9a-f]{6}|[0-9a-f]{3})\b|rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)[^)]*\)/gi;
+  /#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})\b|rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)[^)]*\)/gi;
 
 export const readCanvasExport = (root: string): CanvasExport =>
   JSON.parse(readFileSync(join(root, EXPORT_FILE), 'utf8')) as CanvasExport;
@@ -80,7 +86,8 @@ export const finish = (
 
 const colours = (text: string) =>
   [...text.matchAll(COLOUR)].map(([match, hex, red, green, blue]) => {
-    const full = hex?.length === 3 ? hex.replace(/./g, '$&$&') : hex;
+    const digits = hex?.length === 4 ? hex.slice(0, 3) : hex?.slice(0, 6);
+    const full = digits?.length === 3 ? digits.replace(/./g, '$&$&') : digits;
     const rgb = full
       ? [0, 2, 4].map(at => parseInt(full.slice(at, at + 2), 16))
       : [red, green, blue].map(Number);

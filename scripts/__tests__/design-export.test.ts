@@ -170,6 +170,18 @@ describe('tokenColours and snapshotProblems', () => {
     ]);
   });
 
+  it('checks 4- and 8-digit hex on their colour digits, ignoring alpha', () => {
+    expect(
+      snapshotProblems(
+        '<i fill="#264f2980"></i><i fill="#fffa"></i><i fill="#12345678"></i><i fill="#1234"></i>',
+        tokens
+      )
+    ).toEqual([
+      '#12345678 is not in design/tokens.json',
+      '#1234 is not in design/tokens.json',
+    ]);
+  });
+
   it.each([
     ['var(', '<i style="color: var(--x)">'],
     ['calc(', '<i style="width: calc(1px + 2px)">'],
@@ -179,6 +191,9 @@ describe('tokenColours and snapshotProblems', () => {
     ['http://', '<a href="http://x.test">'],
     ['https://', '<a href="https://x.test">'],
     ['.dc.html', '<a href="A.dc.html">'],
+    ['hsl(', '<i style="color: hsl(0 0% 0%)">'],
+    ['hwb(', '<i style="color: hwb(0 0% 0%)">'],
+    ['lch(', '<i style="color: oklch(0.5 0.1 20)">'],
   ])('rejects %s', (label, html) => {
     expect(snapshotProblems(html, tokens)).toEqual([`contains ${label}`]);
   });

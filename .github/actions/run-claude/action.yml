@@ -32,6 +32,18 @@ inputs:
 runs:
   using: composite
   steps:
+    # An empty input replaces claude-code-action's default, leaving git with no name for commits.
+    - name: Check the bot variables are set
+      shell: bash
+      env:
+        BOT_LOGIN: ${{ inputs.bot_login }}
+        BOT_ID: ${{ inputs.bot_id }}
+      run: |
+        if [ -z "$BOT_LOGIN" ] || [ -z "$BOT_ID" ]; then
+          echo '::error::KINSCAPE_BOT_LOGIN or KINSCAPE_BOT_ID is unset: run scripts/setup-github.sh, then re-run this workflow'
+          exit 1
+        fi
+
     # From main, not this branch (see load-agent-files). settings.json is the build agent's tools.
     - name: Load agent files
       uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210

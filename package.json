@@ -21,7 +21,8 @@
     "tokens": "node scripts/tokens.mts",
     "typecheck": "next typegen && tsc --noEmit",
     "validate:boundaries": "node scripts/validate-boundaries.mts",
-    "words": "node scripts/word-count.mts"
+    "words": "node scripts/word-count.mts",
+    "workflows:diagram": "node scripts/workflows-diagram.mts"
   },
   "engines": {
     "node": "24.x"

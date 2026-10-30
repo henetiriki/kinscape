@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Map (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#264F29}a:hover{color:#1D3E20}
+button,input,select{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #264F29;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+  <svg viewBox="531 323 279 603" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map around Kimberley in 1901">
+    <defs>
+      <filter id="hsS" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" seed="11"></feTurbulence>
+        <feDiffuseLighting surfaceScale="3" lighting-color="#ffffff" diffuseConstant="1.1"><feDistantLight azimuth="315" elevation="38"></feDistantLight></feDiffuseLighting>
+      </filter>
+      <filter id="haloS" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+      <pattern id="hatchS" patternUnits="userSpaceOnUse" width="6.5" height="6.5" patternTransform="rotate(45)"><rect width="2.2" height="6.5" fill="#8B4A1C" fill-opacity="0.34"></rect></pattern>
+      <path id="rvs-vaal" d="M691 445 L714 429 L770 389 L808 381"></path>
+      <clipPath id="landClipS"><path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z"></path></clipPath>
+    </defs>
+    <rect x="500" y="300" width="360" height="660" fill="#C9D5D2"></rect>
+    <g style="display: {{d.base}}">
+      <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z" fill="#E9EBE2"></path>
+      <path d="M234 488 L283 495 L325 504 L368 507 L399 486 L420 474 L420 256 L441 306 L456 383 L515 372 L567 330 L620 306 L672 318 L714 312 L703 366 L690 414 L691 445 L694 472 L684 500 L634 547 L665 575 L706 608 L733 600 L772 611 L798 603 L808 600 L840 611 L877 594 L903 567 L924 594 L955 635 L945 645 L921 668 L892 699 L866 726 L835 751 L814 765 L782 786 L761 795 L722 798 L714 808 L682 809 L674 822 L640 817 L598 813 L580 815 L557 812 L532 821 L504 833 L478 834 L446 837 L420 860 Z" fill="#D3DCC4"></path>
+      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z" fill="#E3D2B2"></path>
+      <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z" fill="#D9CFBA"></path>
+      <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534 L903 567 L877 594 L840 611 L808 600 L788 582 Z" fill="#D9CFD9"></path>
+      <g fill="url(#hatchS)">
+        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+        <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z"></path>
+      </g>
+      <g clip-path="url(#landClipS)" style="display: {{d.terrain}}"><rect x="500" y="300" width="360" height="660" filter="url(#hsS)" style="mix-blend-mode: multiply" opacity="0.28"></rect></g>
+      <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699" fill="none" stroke="#7E9A98" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+      <g fill="none" stroke="#6E99A3" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M887 516 L877 546 L861 576 L835 600 L798 603 L772 611 L733 600 L706 608 L665 575 L634 547 L625 514 L598 534 L564 550 L525 504"></path>
+        <path d="M950 369 L929 381 L905 387 L872 378 L836 370 L808 381 L770 389 L714 429 L691 445 L662 483 L625 514"></path>
+      </g>
+      <g fill="none" stroke="#6F7263" stroke-width="0.8" vector-effect="non-scaling-stroke" style="display: {{d.districts}}">
+        <path d="M470 760 L560 730 L640 760 L682 809"></path>
+        <path d="M560 730 L600 640 L700 620 L760 700 L761 795"></path>
+        <path d="M600 640 L540 560 L470 600 L420 700"></path>
+        <path d="M760 700 L840 650 L866 726"></path>
+        <path d="M540 560 L560 440 L640 420 L662 483"></path>
+      </g>
+      <g fill="none" stroke="#3B3A2F" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round">
+        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+        <path d="M690 414 L703 366 L714 312"></path>
+        <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534"></path>
+      </g>
+      <g font-family="Public Sans, sans-serif" stroke="#E9EBE2" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke">
+        <g font-size="8" font-style="italic" fill="#3F646C">
+          <text dy="-3"><textPath href="#rvs-vaal" startOffset="55%" text-anchor="middle">Vaal</textPath></text>
+        </g>
+        <g fill="#2E2C22" font-weight="600" font-size="8.6" style="letter-spacing: 1.2px">
+          <text x="742" y="452" text-anchor="middle">ORANGE FREE STATE</text>
+          <text x="585" y="600" text-anchor="middle">CAPE COLONY</text>
+        </g>
+        <text x="742" y="463" text-anchor="middle" fill="#6B3412" font-style="italic" font-size="7.9">contested · Orange River Colony</text>
+        <g fill="#18211B" font-size="9.3" font-weight="500">
+          <text x="680" y="511">Kimberley</text>
+          <text x="738" y="534" text-anchor="end">Bloemfontein</text>
+        </g>
+        <circle cx="746" cy="517" r="2.4" fill="#18211B" stroke="#ffffff" stroke-width="1.2"></circle>
+      </g>
+    </g>
+    <g style="display: {{d.pins}}">
+      <circle cx="746" cy="517" r="30" fill="#9A3B12" opacity="0.24" filter="url(#haloS)"></circle>
+      <path transform="translate(738 509) scale(0.6667)" d="M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z" fill="#9A3B12" opacity="0.6" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
+      <path transform="translate(662 486) scale(0.6667)" d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
+    </g>
+  </svg>
+
+  <div style="position: absolute; left: 16px; right: 16px; top: 16px; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+    <img src="/_blob/69f4c36dd58bda2b1955e1fd070cdfee" alt="KinScape" style="width: 32px; height: 32px; border-radius: 8px; display: block">
+    <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; height: 44px; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent">
+    <button type="button" aria-label="Account menu" style="width: 44px; height: 44px; border-radius: 22px; border: 0; background: #264F29; color: #FFFFFF; font-weight: 600; font-size: 16px; line-height: 24px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">L</button>
+  </div>
+
+  <button type="button" aria-label="Layers and filters" style="position: absolute; right: 16px; top: {{layersTop}}; width: 48px; height: 48px; border-radius: 12px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg>
+  </button>
+
+  <sc-if value="{{v.offline}}" hint-placeholder-val="{{ false }}">
+    <div role="alert" style="position: absolute; left: 16px; right: 16px; top: 80px; min-height: 60px; box-sizing: border-box; padding: 8px 8px 8px 16px; background: #18211B; color: #FFFFFF; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 20px rgba(24,33,27,0.2)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none"><path d="M3 3l18 18M8.5 8.6A5.5 5.5 0 0 0 6.5 18H17M17.6 12.2A4 4 0 0 1 20.5 16"></path></svg>
+      <span style="flex: 1; font-size: 14px; line-height: 20px">Terrain didn't load. Borders and pins still work.</span>
+      <button type="button" style="flex: none; height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.45); border-radius: 8px; background: transparent; color: #FFFFFF; font-size: 14px; font-weight: 600">Retry</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{v.emptyDate}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; top: 144px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; gap: 12px; align-items: flex-start">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A3B12" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <span style="font-size: 15px; line-height: 22px; font-weight: 600">No pins in 1901</span>
+          <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Nobody in your filters is pinned to this date.</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; padding-left: 32px">
+        <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600">Jump to 1898</button>
+        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600">Clear filters</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{v.emptyTree}}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position: absolute; left: 16px; right: 16px; top: 260px; box-sizing: border-box; padding: 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#264F29" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">No pins yet</span>
+      <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{v.loading}}" hint-placeholder-val="{{ false }}">
+    <div role="status" aria-live="polite" style="position: absolute; left: 16px; right: 16px; top: 300px; box-sizing: border-box; padding: 16px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
+      <span style="font-size: 15px; line-height: 22px; font-weight: 600">Loading the map</span>
+      <span style="display: block; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden"><span style="display: block; width: 45%; height: 100%; border-radius: 3px; background: #264F29"></span></span>
+      <span style="font-size: 13px; line-height: 20px; color: #4A544C">Every border from 1652 to today loads once, up front, so the slider never has to wait.</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{v.dateError}}" hint-placeholder-val="{{ false }}">
+    <div id="date-msg-phone" role="alert" style="position: absolute; left: 16px; right: 16px; bottom: 164px; box-sizing: border-box; padding: 12px 16px 4px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 13px; line-height: 20px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); display: flex; flex-direction: column">
+      <span><strong style="font-weight: 600">February 1901 has 28 days.</strong> The map still shows 1901-02-28.</span>
+      <a href="#" style="align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; font-weight: 600; color: #264F29; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">Go to 1901-02-28</a>
+      <span style="position: absolute; left: 149px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
+    </div>
+  </sc-if>
+
+  <section aria-label="Map date" style="position: absolute; left: 0; right: 0; bottom: 0; height: 152px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+    <button type="button" aria-label="Expand the sheet" style="align-self: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center"><span style="width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span></button>
+    <div style="display: flex; align-items: center; gap: 6px">
+      <button type="button" aria-label="Back one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+      <span style="position: relative; flex: 1; min-width: 0; display: flex">
+        <input aria-label="Map date" aria-invalid="{{v.dateError}}" aria-describedby="date-msg-phone" value="{{dateValue}}" readonly style="{{dateFieldStyle}}">
+        <sc-if value="{{v.dateError}}" hint-placeholder-val="{{ false }}"><svg style="position: absolute; right: 10px; top: 13px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4412F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.01"></path></svg></sc-if>
+      </span>
+      <button type="button" aria-label="Forward one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"></path></svg></button>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: #4A544C; text-align: center">{{sheetHint}}</p>
+  </section>
+
+  <sc-if value="{{v.scrim}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></div>
+  </sc-if>
+
+  <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
+    <div role="menu" aria-label="Account" style="position: absolute; right: 16px; top: 76px; width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
+      <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">Signed in as</span>
+        <span style="font-size: 14px; line-height: 20px; font-weight: 600">researcher@example.com</span>
+      </div>
+      <span style="height: 1px; background: #E2E5DD; margin: 0 8px 4px"></span>
+      <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 4px 12px; border: 0; border-radius: 8px; background: #F4F5F0; color: #18211B; text-align: left">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"></path></svg>
+        <span style="display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Export all data</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">JSON and GeoJSON</span></span>
+      </button>
+      <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; border: 0; border-radius: 8px; background: transparent; color: #18211B; text-align: left; font-size: 14px; font-weight: 600">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 4h9l3 3v13H6z"></path><path d="M9 11h6M9 15h6"></path></svg>
+        Sources and attributions
+      </button>
+      <span style="height: 1px; background: #E2E5DD; margin: 4px 8px"></span>
+      <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; border: 0; border-radius: 8px; background: transparent; color: #18211B; text-align: left; font-size: 14px; font-weight: 600">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path></svg>
+        Sign out
+      </button>
+      <span style="padding: 8px 12px; font-size: 12.5px; line-height: 18px; color: #4A544C">Last backup: today, 02:00</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{v.panel}}" hint-placeholder-val="{{ false }}">
+    <section role="dialog" aria-label="Layers and filters" style="position: absolute; left: 0; right: 0; top: 76px; bottom: 0; box-sizing: border-box; padding: 8px 16px 0; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
+      <span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+      <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #E2E5DD">
+        <div style="flex: 1; display: flex; gap: 4px">
+          <button type="button" aria-pressed="{{tabs.layersOn}}" style="{{tabs.layersStyle}}">Layers</button>
+          <button type="button" aria-pressed="{{tabs.filtersOn}}" style="{{tabs.filtersStyle}}">Filters <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 10px; background: #264F29; color: #FFFFFF; font-size: 13.5px; line-height: 20px; font-weight: 600; margin-left: 8px">1</span></button>
+        </div>
+        <button type="button" aria-label="Close" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 22px; background: transparent; color: #4A544C; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+
+      <sc-if value="{{tabs.layersOn}}" hint-placeholder-val="{{ true }}">
+        <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 12px; padding-bottom: 16px">
+          <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column">
+              <h3 style="margin: 4px 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">{{g.title}}</h3>
+              <sc-for list="{{g.rows}}" as="item" hint-placeholder-count="2">
+                <label style="display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer">
+                  <input type="checkbox" checked="{{item.on}}" style="width: 20px; height: 20px; margin: 0; accent-color: #264F29; flex: none">
+                  <span style="display: flex; flex-direction: column; flex: 1"><span style="font-size: 14px; line-height: 20px; font-weight: 600">{{item.label}}</span><span style="font-size: 13px; line-height: 20px; color: #4A544C">{{item.sub}}</span></span>
+                </label>
+              </sc-for>
+            </div>
+          </sc-for>
+          <div style="padding: 12px 16px; border-radius: 12px; background: #F4F5F0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 20px; color: #2E3A33">
+            <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Reading the map</h3>
+            <div style="display: flex; align-items: center; gap: 12px"><svg width="32" height="12" aria-hidden="true"><path d="M1 6h30" stroke="#3B3A2F" stroke-width="1.5"></path></svg>Border as recorded</div>
+            <div style="display: flex; align-items: center; gap: 12px"><svg width="32" height="12" aria-hidden="true"><path d="M1 6h30" stroke="#3B3A2F" stroke-width="1.5" stroke-dasharray="4 2.6"></path></svg>Approximate border</div>
+            <div style="display: flex; align-items: center; gap: 12px"><span style="width: 32px; height: 16px; border-radius: 4px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.34) 0 3px, #E3D2B2 3px 9px); box-sizing: border-box; flex: none"></span>Contested claim</div>
+            <div style="display: flex; align-items: center; gap: 12px"><svg width="32" height="24" aria-hidden="true"><circle cx="16" cy="12" r="11" fill="#9A3B12" opacity="0.24"></circle><circle cx="16" cy="12" r="5" fill="#9A3B12" fill-opacity="0.6" stroke="#fff" stroke-width="1.5"></circle></svg>Uncertain date (ABT, BEF, AFT…)</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 4px 16px; padding-top: 4px; border-top: 1px solid #E2E5DD">
+              <span><span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z"></path></svg></span> Birth</span>
+              <span><span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M6 18V6H18V18Z"></path></svg></span> Residence</span>
+              <span><span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z"></path></svg></span> Marriage</span>
+              <span><span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M11.01 22V8.64H7.31V6.87H11.01V2H12.99V6.87H16.69V8.64H12.99V22Z"></path></svg></span> Death</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{tabs.filtersOn}}" hint-placeholder-val="{{ false }}">
+        <div style="flex: 1; overflow: hidden; padding: 8px 0 16px; display: flex; flex-direction: column; gap: 20px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="pf-person" style="font-size: 14px; line-height: 20px; font-weight: 600">Person</label>
+            <select id="pf-person" style="height: 44px; padding: 0 12px; border: 1px solid #8E978C; border-radius: 8px; background: #FFFFFF; font-size: 16px; color: #18211B"><option>Anyone</option></select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="pf-surname" style="font-size: 14px; line-height: 20px; font-weight: 600">Surname</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 44px; padding: 4px 8px; border: 1px solid #8E978C; border-radius: 8px; box-sizing: border-box">
+              <span style="display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 0 0 12px; border-radius: 18px; background: #E6EEE4; color: #1D3E20; font-size: 13.5px; line-height: 20px; font-weight: 600">Rossouw<button type="button" aria-label="Remove Rossouw" style="width: 36px; height: 36px; border: 0; background: transparent; color: #1D3E20; border-radius: 18px">×</button></span>
+              <input id="pf-surname" placeholder="Add a surname" style="flex: 1; min-width: 100px; height: 36px; border: 0; font-size: 16px; outline: none">
+            </div>
+            <span style="font-size: 13px; line-height: 20px; color: #4A544C">Matches spelling variants too (Rossouw, Rossau)</span>
+          </div>
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
+            <legend style="font-size: 14px; line-height: 20px; font-weight: 600; padding: 0; margin-bottom: 8px">Event type</legend>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px">
+              <sc-for list="{{events}}" as="ev" hint-placeholder-count="9">
+                <button type="button" aria-pressed="true" style="height: 44px; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px; border-radius: 22px; font-size: 13.5px; border: 1px solid #264F29; background: #E6EEE4; color: #1D3E20; font-weight: 600"><span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="{{ev.d}}"></path></svg></span>{{ev.label}}</button>
+              </sc-for>
+            </div>
+          </fieldset>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <label for="pf-branch" style="font-size: 14px; line-height: 20px; font-weight: 600">Branch</label>
+            <select id="pf-branch" style="height: 44px; padding: 0 12px; border: 1px solid #8E978C; border-radius: 8px; background: #FFFFFF; font-size: 16px; color: #18211B"><option>Everyone</option><option>Ancestors of…</option><option>Descendants of…</option></select>
+          </div>
+          <button type="button" style="align-self: flex-start; height: 44px; padding: 0 16px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600">Clear filters</button>
+        </div>
+      </sc-if>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">
+    <section role="dialog" aria-label="Sources and attributions" style="will-change: transform; position: absolute; left: 0; right: 0; top: 56px; bottom: 0; box-sizing: border-box; padding: 8px 16px 24px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 12px">
+      <span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px; line-height: 32px">Sources and attributions</h2>
+          <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">Where every layer on the map comes from, and the licence it's used under.</p>
+        </div>
+        <button type="button" aria-label="Close" style="flex: none; width: 44px; height: 44px; margin: -4px -8px 0 0; border: 0; border-radius: 22px; background: transparent; color: #4A544C; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+      <ul aria-label="Sources" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+        <sc-for list="{{sources}}" as="src" hint-placeholder-count="7">
+          <li style="display: flex; flex-direction: column; gap: 4px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+            <span style="font-size: 14px; line-height: 20px; font-weight: 600">{{src.layer}}</span>
+            <span style="display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 20px"><span style="{{src.style}}">{{src.source}}</span><span style="{{src.style}}">{{src.licence}}</span><span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #4A544C">Checked {{src.checked}}</span></span>
+          </li>
+        </sc-for>
+      </ul>
+      <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">The line under the date control is built from this list. A source isn't used until its licence has been checked.</p>
+    </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["layers","filters","loading","empty-tree","empty-date","districts","offline","account","sources","date-invalid"],"default":"layers"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const GLYPH = { birth: 'M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z', baptism: 'M2.5 16.18V12.8Q2.5 10.49 3.77 9.15Q5.04 7.81 7.26 7.81Q8.84 7.81 9.91 8.47Q10.97 9.12 11.78 10.07Q12.59 11.02 13.31 11.99Q14.03 12.96 14.89 13.61Q15.75 14.26 16.96 14.26Q18.13 14.26 18.79 13.45Q19.44 12.64 19.44 11.2V7.82H21.5V11.2Q21.5 13.56 20.3 14.87Q19.09 16.19 16.96 16.19Q15.33 16.19 14.23 15.53Q13.12 14.88 12.31 13.91Q11.5 12.94 10.78 11.99Q10.05 11.04 9.24 10.39Q8.43 9.74 7.26 9.74Q6 9.74 5.28 10.55Q4.56 11.36 4.56 12.8V16.18Z', residence: 'M6 18V6H18V18Z', marriage: 'M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z', divorce: 'M4.05 21.86 17.69 2.14H19.95L6.31 21.86ZM15.98 22Q14.21 22 13.17 21.01Q12.13 20.03 12.13 18.35V16.59Q12.11 14.92 13.16 13.93Q14.21 12.95 15.98 12.95Q17.76 12.95 18.8 13.93Q19.84 14.92 19.84 16.59V18.35Q19.84 20.03 18.8 21.01Q17.76 22 15.98 22ZM15.99 20Q16.73 20 17.17 19.56Q17.61 19.12 17.61 18.35V16.59Q17.61 15.82 17.17 15.37Q16.73 14.92 15.96 14.92Q15.24 14.92 14.8 15.37Q14.36 15.82 14.35 16.59V18.35Q14.33 19.12 14.78 19.56Q15.22 20 15.99 20ZM7.99 11.05Q6.21 11.05 5.17 10.07Q4.13 9.08 4.16 7.41V5.65Q4.13 3.97 5.18 2.99Q6.22 2 7.99 2Q9.77 2 10.81 2.99Q11.85 3.97 11.87 5.65V7.41Q11.87 9.08 10.83 10.07Q9.79 11.05 7.99 11.05ZM8.01 9.08Q8.76 9.08 9.2 8.63Q9.64 8.18 9.65 7.41V5.65Q9.65 4.87 9.21 4.42Q8.77 3.97 8.02 3.97Q7.28 3.97 6.84 4.42Q6.4 4.87 6.39 5.65V7.41Q6.39 8.18 6.82 8.63Q7.26 9.08 8.01 9.08Z', death: 'M11.01 22V8.64H7.31V6.87H11.01V2H12.99V6.87H16.69V8.64H12.99V22Z', burial: 'M9 2 L15 2 L18 7.40 L15.36 22 L8.64 22 L6 7.40 Z', land: 'M5 5H19V19H5ZM7 7V17H17V7Z', occupation: 'M4 20.37 12 4.63 20 20.37Z', other: 'M12 19Q8.97 19 6.98 17.02Q5 15.03 5 12Q5 8.91 6.98 6.95Q8.97 5 12 5Q15.09 5 17.05 6.95Q19 8.91 19 12Q19 15.03 17.05 17.02Q15.09 19 12 19Z' };
+    const variant = this.props.variant ?? 'layers';
+    const is = (v) => variant === v;
+    const show = (b) => (b ? 'inline' : 'none');
+    const loading = is('loading');
+    const noPins = loading || is('empty-tree') || is('empty-date');
+    const dateError = is('date-invalid');
+    const tab = (on) => 'flex: 1; height: 44px; border: 0; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; ' + (on ? 'background: #E6EEE4; color: #1D3E20' : 'background: transparent; color: #4A544C');
+    const ph = 'font-family: JetBrains Mono, monospace; font-size: 12px; line-height: 16px; color: #4A544C';
+    const row = (label, sub, on) => ({ label: label, sub: sub, on: on });
+    return {
+      v: {
+        panel: is('layers') || is('filters'), scrim: is('layers') || is('filters') || is('sources'),
+        loading: loading, emptyTree: is('empty-tree'), emptyDate: is('empty-date'), offline: is('offline'),
+        account: is('account'), sources: is('sources'), dateError: dateError
+      },
+      d: {
+        base: show(!loading), terrain: show(!is('offline')), districts: show(is('districts')), pins: show(!noPins)
+      },
+      layersTop: is('offline') ? '156px' : '80px',
+      tabs: { layersOn: !is('filters'), filtersOn: is('filters'), layersStyle: tab(!is('filters')), filtersStyle: tab(is('filters')) },
+      groups: [
+        { title: 'Boundaries', rows: [row('Polities', 'Colonies, republics, provinces, homelands', true), row('Districts', 'Drostdy and magisterial districts', false)] },
+        { title: 'Basemap', rows: [row('Place names', 'As they were on the map date', true), row('Rivers', 'Many early borders follow them', true), row('Terrain', 'Hillshade, no modern borders', true)] },
+        { title: 'Pins', rows: [row('Pins', '8 of 214 true on this date', true), row('Uncertainty halos', 'Grow with the date range', true)] }
+      ],
+      events: [['Birth', GLYPH.birth], ['Baptism', GLYPH.baptism], ['Residence', GLYPH.residence], ['Marriage', GLYPH.marriage], ['Divorce', GLYPH.divorce], ['Death', GLYPH.death], ['Burial', GLYPH.burial], ['Land', GLYPH.land], ['Occupation', GLYPH.occupation], ['Other', GLYPH.other]].map((e) => ({ label: e[0], d: e[1] })),
+      sources: [
+        ['Polity borders', '[Source]', '[Licence]', ph], ['District borders', '[Source]', '[Licence]', ph], ['Place names', '[Source]', '[Licence]', ph],
+        ['Coast and land', '[Source]', '[Licence]', ph], ['Rivers', '[Source]', '[Licence]', ph], ['Terrain', '[DEM source]', '[Licence]', ph],
+        ['Map library', 'MapLibre GL JS', 'BSD-3-Clause', 'color: #18211B']
+      ].map((s) => ({ layer: s[0], source: s[1], licence: s[2], checked: '—', style: s[3] })),
+      dateValue: dateError ? '1901-02-30' : '1901',
+      precisionWord: dateError ? 'day' : 'year',
+      dateFieldStyle: "flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: #18211B; background: #FFFFFF; " + (dateError ? 'border: 2px solid #B4412F; padding: 0 32px 0 8px' : 'border: 1px solid #C9CFC5'),
+      sheetHint: 'Tap the map to see what a place was part of in 1901.'
+    };
+  }
+}
+</script>
+</body>
+</html>

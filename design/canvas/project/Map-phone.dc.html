@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Map (phone)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#264F29}a:hover{color:#1D3E20}
+button,input{font:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+  <svg viewBox="531 323 279 603" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map around Kimberley in 1901">
+    <defs>
+      <filter id="hsP" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" seed="11"></feTurbulence>
+        <feDiffuseLighting surfaceScale="3" lighting-color="#ffffff" diffuseConstant="1.1"><feDistantLight azimuth="315" elevation="38"></feDistantLight></feDiffuseLighting>
+      </filter>
+      <filter id="haloP" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+      <pattern id="hatchP" patternUnits="userSpaceOnUse" width="6.5" height="6.5" patternTransform="rotate(45)"><rect width="2.2" height="6.5" fill="#8B4A1C" fill-opacity="0.34"></rect></pattern>
+      <path id="rvp-vaal" d="M691 445 L714 429 L770 389 L808 381"></path>
+      <path id="rvp-orange" d="M564 550 L598 534 L625 514"></path>
+    </defs>
+    <rect x="500" y="300" width="360" height="660" fill="#C9D5D2"></rect>
+    <path id="landP" d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z" fill="#E9EBE2"></path>
+    <clipPath id="landClipP"><path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z"></path></clipPath>
+    <path d="M234 488 L283 495 L325 504 L368 507 L399 486 L420 474 L420 256 L441 306 L456 383 L515 372 L567 330 L620 306 L672 318 L714 312 L703 366 L690 414 L691 445 L694 472 L684 500 L634 547 L665 575 L706 608 L733 600 L772 611 L798 603 L808 600 L840 611 L877 594 L903 567 L924 594 L955 635 L945 645 L921 668 L892 699 L866 726 L835 751 L814 765 L782 786 L761 795 L722 798 L714 808 L682 809 L674 822 L640 817 L598 813 L580 815 L557 812 L532 821 L504 833 L478 834 L446 837 L420 860 Z" fill="#D3DCC4"></path>
+    <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z" fill="#E3D2B2"></path>
+    <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z" fill="#D9CFBA"></path>
+    <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534 L903 567 L877 594 L840 611 L808 600 L788 582 Z" fill="#D9CFD9"></path>
+    <g fill="url(#hatchP)">
+      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+      <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z"></path>
+    </g>
+    <g clip-path="url(#landClipP)"><rect x="500" y="300" width="360" height="660" filter="url(#hsP)" style="mix-blend-mode: multiply" opacity="0.28"></rect></g>
+    <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699" fill="none" stroke="#7E9A98" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+    <g fill="none" stroke="#6E99A3" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M887 516 L877 546 L861 576 L835 600 L798 603 L772 611 L733 600 L706 608 L665 575 L634 547 L625 514 L598 534 L564 550 L525 504"></path>
+      <path d="M950 369 L929 381 L905 387 L872 378 L836 370 L808 381 L770 389 L714 429 L691 445 L662 483 L625 514"></path>
+    </g>
+    <g fill="none" stroke="#3B3A2F" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round">
+      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+      <path d="M690 414 L703 366 L714 312"></path>
+      <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534"></path>
+    </g>
+    <g font-family="Public Sans, sans-serif" stroke="#E9EBE2" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke">
+      <g font-size="8" font-style="italic" fill="#3F646C">
+        <text dy="-3"><textPath href="#rvp-vaal" startOffset="55%" text-anchor="middle">Vaal</textPath></text>
+      </g>
+      <g fill="#2E2C22" font-weight="600" font-size="8.6" style="letter-spacing: 1.2px">
+        <text x="742" y="452" text-anchor="middle">ORANGE FREE STATE</text>
+        <text x="585" y="600" text-anchor="middle">CAPE COLONY</text>
+      </g>
+      <text x="742" y="463" text-anchor="middle" fill="#6B3412" font-style="italic" font-size="7.9">contested · Orange River Colony</text>
+      <g fill="#18211B" font-size="9.3" font-weight="500">
+        <text x="680" y="511">Kimberley</text>
+        <text x="738" y="534" text-anchor="end">Bloemfontein</text>
+      </g>
+      <circle cx="746" cy="517" r="2.4" fill="#18211B" stroke="#ffffff" stroke-width="1.2"></circle>
+    </g>
+    <circle cx="746" cy="517" r="30" fill="#9A3B12" opacity="0.24" filter="url(#haloP)"></circle>
+    <path transform="translate(738 509) scale(0.6667)" d="M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z" fill="#9A3B12" opacity="0.6" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
+    <path transform="translate(662 486) scale(0.6667)" d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
+    <g style="display: {{ringDisplay}}">
+    <circle cx="670" cy="494" r="12" fill="none" stroke="#264F29" stroke-width="2.5" vector-effect="non-scaling-stroke"></circle>
+    <circle cx="670" cy="494" r="15.5" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
+    </g>
+  </svg>
+
+  <div style="position: absolute; left: 16px; right: 16px; top: 16px; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+    <img src="/_blob/69f4c36dd58bda2b1955e1fd070cdfee" alt="KinScape" style="width: 32px; height: 32px; border-radius: 8px; display: block">
+    <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; height: 44px; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent">
+    <button type="button" aria-label="Account menu" style="width: 44px; height: 44px; border-radius: 22px; border: 0; background: #264F29; color: #FFFFFF; font-weight: 600; font-size: 16px; line-height: 24px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">L</button>
+  </div>
+
+  <button type="button" aria-label="Layers and filters" style="position: absolute; right: 16px; top: 80px; width: 48px; height: 48px; border-radius: 12px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg>
+  </button>
+
+  <sc-if value="{{expanded}}" hint-placeholder-val="{{ true }}">
+  <section aria-label="Map date and lookup" style="position: absolute; left: 0; right: 0; bottom: 0; height: 432px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+    <span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+
+    <div style="display: flex; align-items: center; gap: 6px">
+      <button type="button" aria-label="Back one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+      <input aria-label="Map date" value="1901" readonly style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B">
+      <button type="button" aria-label="Forward one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"></path></svg></button>
+    </div>
+
+    <div style="position: relative; height: 34px">
+      <span style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: #D6DAD2"></span>
+      <button type="button" aria-label="Map date slider, 1901" style="position: absolute; left: calc(66.4% - 13px); top: 1px; width: 26px; height: 26px; padding: 0; border-radius: 13px; border: 4px solid #FFFFFF; background: #264F29; box-shadow: 0 0 0 1px #264F29, 0 2px 6px rgba(24,33,27,0.3)"></button>
+      <span style="position: absolute; left: 0; top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4A544C">1652</span>
+      <span style="position: absolute; right: 0; top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4A544C">Today</span>
+    </div>
+
+    <div style="height: 1px; background: #E2E5DD"></div>
+
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">On this spot in 1901</span>
+      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">Kimberley</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #4A544C">28.738° S · 24.764° E</span>
+      </div>
+    </div>
+
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+      <li style="display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #E2E5DD">
+        <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">District</span>
+        <span style="font-size: 15px; line-height: 22px; font-weight: 600">Kimberley</span>
+      </li>
+      <li style="display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD">
+        <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Colony</span>
+        <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 22px; font-weight: 600">Cape Colony</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">Was Griqualand West until 1880</span></span>
+      </li>
+    </ol>
+
+    <a href="#" style="display: flex; align-items: center; gap: 8px; min-height: 44px; color: #18211B; text-decoration: none">
+      <span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z"></path></svg></span>
+      <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Marriage</span><span style="font-size: 13px; line-height: 20px; color: #4A544C">J. Rossouw &amp; M. du Toit</span></span>
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #2E3A33">1901-03-14</span>
+    </a>
+
+    <p style="margin: auto 0 0; font-size: 12.5px; color: #4A544C">Look-up only on a phone. Add people and pins on a tablet or computer.</p>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{collapsed}}" hint-placeholder-val="{{ false }}">
+  <section aria-label="Map date" style="position: absolute; left: 0; right: 0; bottom: 0; height: 152px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+    <button type="button" aria-label="Expand the sheet" style="align-self: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer"><span style="width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span></button>
+    <div style="display: flex; align-items: center; gap: 6px">
+      <button type="button" aria-label="Back one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+      <input aria-label="Map date" value="1901" readonly style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B">
+      <button type="button" aria-label="Forward one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"></path></svg></button>
+    </div>
+    <p style="margin: 0; font-size: 13px; color: #4A544C; text-align: center">Tap the map to see what a place was part of in 1901.</p>
+  </section>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["lookup","collapsed"],"default":"lookup"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const collapsed = (this.props.variant ?? 'lookup') === 'collapsed';
+    return { collapsed: collapsed, expanded: !collapsed, ringDisplay: collapsed ? 'none' : 'inline' };
+  }
+}
+</script>
+</body>
+</html>

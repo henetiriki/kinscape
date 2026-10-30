@@ -46,7 +46,7 @@ jobs:
       # The rules and settings come from main, not the checked-out branch: a PR can't change its own
       # reviewer. The action retries a failed download, then fails the job, and shows review.md.
       - name: Load review rules and settings
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@3a66f4e4c9a754349814431f7901dc2e1ba7f11f
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
         with:
           files: review.md
           settings: review-settings.json
@@ -238,4 +238,4 @@ jobs:
       contents: read
     steps:
       - name: Write the result
-        uses: henetiriki/kinscape/.github/actions/run-summary@3a66f4e4c9a754349814431f7901dc2e1ba7f11f
+        uses: henetiriki/kinscape/.github/actions/run-summary@48a0be9d9003af15eb5eef513e79fa73715c4210

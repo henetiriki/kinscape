@@ -141,9 +141,12 @@ jobs:
           THREAD: ${{ inputs.thread }}
           VERB: ${{ inputs.plan && 'Planning' || 'Building' }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SPINNER_URL: ${{ github.server_url }}/${{ github.repository }}/raw/main/.github/clauding.gif
         run: |
           gh api "repos/$GH_REPO/issues/$THREAD/reactions" -f content=eyes --silent
-          id=$(gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$VERB… [View run]($RUN_URL)" --jq .id)
+          id=$(gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$VERB… <img src='$SPINNER_URL' width='14' height='14' alt=''>
+
+          [View run]($RUN_URL)" --jq .id)
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
       # Loads the agent files, runs Claude Code and uploads its output: see

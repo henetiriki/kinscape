@@ -57,9 +57,12 @@ jobs:
           GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SPINNER_URL: ${{ github.server_url }}/${{ github.repository }}/raw/main/.github/clauding.gif
         run: |
           gh api "repos/$GH_REPO/issues/$PR_NUMBER/reactions" -f content=eyes --silent
-          id=$(gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" -f body="Reviewing… [View run]($RUN_URL)" --jq .id)
+          id=$(gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" -f body="Reviewing… <img src='$SPINNER_URL' width='14' height='14' alt=''>
+
+          [View run]($RUN_URL)" --jq .id)
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
       - name: Run Claude Code Review

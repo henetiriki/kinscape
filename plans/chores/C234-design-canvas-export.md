@@ -60,7 +60,7 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 
 - Types in `scripts/types.ts`, as lint requires.
 - `export.json` also holds the icon path and the `Kit-menu-phone.dc.html` link.
-- Colour keywords are checked in any `style` declaration and SVG colour attribute. Other colour functions and non-integer `rgb()` fail.
+- Colour and system-colour keywords are checked in `style` declarations and colour attributes. Other colour functions and non-integer `rgb()` fail.
 
 ## Out of scope
 

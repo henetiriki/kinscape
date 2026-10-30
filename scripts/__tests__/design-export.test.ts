@@ -215,6 +215,32 @@ describe('tokenColours and snapshotProblems', () => {
     ]);
   });
 
+  it('names the SVG color and HTML bgcolor attributes', () => {
+    expect(
+      snapshotProblems(
+        '<svg color="red"><path fill="currentColor"></path></svg><table bgcolor="Teal"></table>',
+        tokens
+      )
+    ).toEqual([
+      'red is not in design/tokens.json',
+      'Teal is not in design/tokens.json',
+    ]);
+  });
+
+  it('names CSS system colours', () => {
+    expect(
+      snapshotProblems(
+        '<i style="color: CanvasText; background: Canvas; border-color: LinkText"></i><b fill="Highlight"></b>',
+        tokens
+      )
+    ).toEqual([
+      'CanvasText is not in design/tokens.json',
+      'Canvas is not in design/tokens.json',
+      'LinkText is not in design/tokens.json',
+      'Highlight is not in design/tokens.json',
+    ]);
+  });
+
   it('does not read page text as CSS', () => {
     expect(
       snapshotProblems('<p>Primary: brand, white text. Note: red</p>', tokens)

@@ -1,7 +1,7 @@
 # Plan: C419: Add a typecheck job to CI
 
 - **Spec:** #419
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

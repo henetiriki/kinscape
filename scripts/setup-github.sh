@@ -64,26 +64,48 @@ gh api -X PATCH "repos/$REPO" \
   -f squash_merge_commit_title=PR_TITLE -f squash_merge_commit_message=COMMIT_MESSAGES \
   -F delete_branch_on_merge=true -F allow_update_branch=true -F allow_auto_merge=true \
   -F has_issues=true -F has_wiki=false -F has_projects=false -F has_discussions=false >/dev/null
+# Only collaborators open issues and PRs. REST has no issue field, so use GraphQL.
+gh api graphql -f id="$(gh api "repos/$REPO" --jq .node_id)" -f query='
+  mutation($id: ID!) {
+    updateRepository(input: {repositoryId: $id, issueCreationPolicy: COLLABORATORS_ONLY, pullRequestCreationPolicy: COLLABORATORS_ONLY}) {
+      clientMutationId
+    }
+  }' >/dev/null
 
-echo "== Ruleset: Protect main"
-id=$(gh api "repos/$REPO/rulesets" --jq '[.[] | select(.name=="Protect main") | .id] | first // empty')
-if [ -n "$id" ]; then
-  gh api -X PUT "repos/$REPO/rulesets/$id" --input "$DIR/github/ruleset-main.json" >/dev/null
-else
-  gh api -X POST "repos/$REPO/rulesets" --input "$DIR/github/ruleset-main.json" >/dev/null
-fi
+# Create or update the ruleset named $1 from the JSON file $2.
+ruleset() {
+  echo "== Ruleset: $1"
+  local id
+  id=$(gh api "repos/$REPO/rulesets" --jq "[.[] | select(.name==\"$1\") | .id] | first // empty")
+  if [ -n "$id" ]; then
+    gh api -X PUT "repos/$REPO/rulesets/$id" --input "$DIR/github/$2" >/dev/null
+  else
+    gh api -X POST "repos/$REPO/rulesets" --input "$DIR/github/$2" >/dev/null
+  fi
+}
+ruleset "Protect main" ruleset-main.json
+ruleset "Protect po-preview" ruleset-po-preview.json
+ruleset "Protect tags" ruleset-tags.json
 
 echo "== Security and Actions"
 gh api -X PUT "repos/$REPO/vulnerability-alerts" >/dev/null
 gh api -X PUT "repos/$REPO/automated-security-fixes" >/dev/null
 gh api -X PUT "repos/$REPO/actions/permissions/workflow" \
   -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false >/dev/null
-# Secret scanning and private vulnerability reporting need a public repo.
+# Secret scanning, private vulnerability reporting and code scanning are free on a public repo.
 gh api -X PATCH "repos/$REPO" \
   -f 'security_and_analysis[secret_scanning][status]=enabled' \
   -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled' >/dev/null
 gh api -X PUT "repos/$REPO/private-vulnerability-reporting" >/dev/null
-gh api -X PUT "repos/$REPO/actions/permissions" -F enabled=true -F sha_pinning_required=true >/dev/null
+gh api -X PATCH "repos/$REPO/code-scanning/default-setup" -f state=configured -f query_suite=default >/dev/null
+# Allowed actions: GitHub's own, this repo's, and the two third-party actions the workflows use.
+gh api -X PUT "repos/$REPO/actions/permissions" \
+  -F enabled=true -F sha_pinning_required=true -f allowed_actions=selected >/dev/null
+gh api -X PUT "repos/$REPO/actions/permissions/selected-actions" \
+  -F github_owned_allowed=true -F verified_allowed=false \
+  -f 'patterns_allowed[]=henetiriki/kinscape/*' \
+  -f 'patterns_allowed[]=anthropics/claude-code-action@*' \
+  -f 'patterns_allowed[]=codecov/codecov-action@*' >/dev/null
 gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" \
   -f approval_policy=all_external_contributors >/dev/null
 

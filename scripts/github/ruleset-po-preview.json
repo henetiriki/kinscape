@@ -1,0 +1,10 @@
+{
+  "name": "Protect po-preview",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": { "include": ["refs/heads/po-preview"], "exclude": [] }
+  },
+  "bypass_actors": [],
+  "rules": [{ "type": "deletion" }]
+}

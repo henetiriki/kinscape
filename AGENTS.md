@@ -44,10 +44,10 @@ For chat replies, plans, PRs, issues and docs:
 - Say each fact once, in one file, and link to it from elsewhere.
 - Instructions say what to do. History belongs in the PR; give a reason only where the rule would be misapplied without it.
 - One line per deviation.
-- Leave out any section that would only say "none".
+- Leave out any section that would only say "none". A required form box may say "None".
 - Prefer deleting text to adding it.
 
-Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforced in CI. Review rules, not enforced: chat replies short with detail on request; PR body 250 words; chore plan 300.
+Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforced in CI. Review rules, not enforced: chat replies short with detail on request; PR body per its template; chore plan 300.
 
 ## Commands
 
@@ -55,7 +55,7 @@ Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `n
 
 ## Verifying your work
 
-Run lint, tests, the boundary validator and `npm run e2e` before reporting done, and paste the output. If a test fails, follow `plans/README.md` rule 10.
+Run lint, `format:check`, `words`, tests, `validate:boundaries` and `e2e` before reporting done, and paste the output. If a test fails, follow `plans/README.md` rule 10.
 
 ## Known mistakes
 

@@ -1,7 +1,13 @@
 // Reads the transcript claude-code-action leaves in claude-execution-output.json: a JSON array of
 // events. Its summary is what a run uploads, and what the run summary and weekly denial audit read.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname } from 'node:path';
 
 import type { Transcript } from './types.ts';
@@ -235,13 +241,19 @@ export const readSummary = (text: string): Transcript | undefined => {
     finalText: value.finalText,
     model: typeof value.model === 'string' ? value.model : undefined,
     outcome: value.outcome,
-    tools: value.tools as Record<string, number>,
+    tools: Object.fromEntries(
+      Object.entries(value.tools).filter(
+        (entry): entry is [string, number] => typeof entry[1] === 'number'
+      )
+    ),
     turns: numberOrUndefined(value.turns),
   };
 };
 
 // Writes the transcript's summary, the only part of a run that is uploaded: the transcript holds
-// every tool result, so any token a command printed. No transcript writes nothing.
+// every tool result, so any token a command printed. No transcript writes nothing, and removes a
+// file already there. The summary is scanned before upload, so it has one field per line, and no
+// `gitleaks:allow`, which makes gitleaks skip its line.
 // Usage: node scripts/agent-transcript.mts <claude-execution-output.json> <summary.json>
 export const run = (args: string[]): number => {
   const [input, output] = args;
@@ -258,9 +270,17 @@ export const run = (args: string[]): number => {
     ? parseTranscript(readFileSync(input, 'utf8'))
     : undefined;
 
+  rmSync(output, { force: true });
+
   if (transcript) {
     mkdirSync(dirname(output), { recursive: true });
-    writeFileSync(output, JSON.stringify(transcript));
+    writeFileSync(
+      output,
+      JSON.stringify(transcript, null, 2).replaceAll(
+        'gitleaks:allow',
+        'gitleaks-allow'
+      )
+    );
   }
 
   return 0;

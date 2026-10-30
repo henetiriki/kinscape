@@ -41,6 +41,17 @@ runs:
           cat "$RUNNER_TEMP/agent.err" >&2
           exit 1
         done
+        # The settings deny Read on a GitHub-hosted runner's temp folder, which holds checkout's
+        # credentials and Claude's transcript. Deny this runner's too, wherever it is.
+        node -e '
+          const fs = require("node:fs");
+          const [file, temp] = process.argv.slice(1);
+          const settings = JSON.parse(fs.readFileSync(file, "utf8"));
+          const deny = ((settings.permissions ??= {}).deny ??= []);
+          const rule = `Read(/${temp}/**)`;
+          if (!deny.includes(rule)) deny.push(rule);
+          fs.writeFileSync(file, JSON.stringify(settings, null, 2));
+        ' "$RUNNER_TEMP/agent/$SETTINGS_FILE" "$RUNNER_TEMP"
         # Build system.md: empty it (`:` does nothing, `>` truncates), then append each file in
         # AGENT_FILES order, with a newline after each. That order is the order Claude reads them.
         : > "$RUNNER_TEMP/agent/system.md"

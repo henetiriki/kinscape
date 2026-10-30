@@ -53,7 +53,8 @@ runs:
 
     # Claude's transcript holds every tool result, so any token a command printed. Only its summary
     # is uploaded, written by the script from main, so the checked-out branch can't change what is
-    # kept. The summary steps never fail the job: with no summary, nothing is uploaded.
+    # kept. The summary steps never fail the job: with no summary, nothing is uploaded. Node is the
+    # caller's, from setup-workspace.
     - name: Check out the summary script
       if: always()
       continue-on-error: true
@@ -61,16 +62,8 @@ runs:
       with:
         ref: main
         path: .claude-summary-script
-        sparse-checkout: |
-          scripts
-          .nvmrc
+        sparse-checkout: scripts
         persist-credentials: false
-    - name: Set up Node for the summary
-      if: always()
-      continue-on-error: true
-      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-      with:
-        node-version-file: .claude-summary-script/.nvmrc
     - name: Summarise Claude's output
       if: always()
       continue-on-error: true
@@ -80,7 +73,6 @@ runs:
     # Claude's final message or a denied command can still hold a secret. Only a clean scan uploads;
     # a hit or a failed scan comments on the thread instead (plans/chores/C415-transcript-summary.md,
     # D3). github.token comments, as claude-run.yml's safety net counts only the bot's comments.
-    # claude-code-review.yml runs the same step: change them together.
     - name: Scan the summary for secrets
       id: scan
       if: always()
@@ -93,38 +85,7 @@ runs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         GITLEAKS_VERSION: 8.30.1
         GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
-      run: |
-        summary="$RUNNER_TEMP/claude-summary"
-        if [ ! -f "$summary/claude-execution-output.json" ]; then
-          echo "No summary: nothing to scan or upload."
-          exit 0
-        fi
-        bin="$RUNNER_TEMP/gitleaks"
-        mkdir -p "$bin"
-        code=0
-        if curl -fsSL --retry 3 -o "$bin/gitleaks.tar.gz" \
-          "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" &&
-          echo "$GITLEAKS_SHA256  $bin/gitleaks.tar.gz" | sha256sum --check --quiet &&
-          tar -xzf "$bin/gitleaks.tar.gz" -C "$bin" gitleaks; then
-          # Exit code 2 is a finding, so any other failure is a failed scan.
-          "$bin/gitleaks" dir "$summary" --no-banner --redact --exit-code 2 || code=$?
-        else
-          code=1
-        fi
-        if [ "$code" = 0 ]; then
-          echo "clean=true" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
-        rm -f "$summary/claude-execution-output.json"
-        if [ "$code" = 2 ]; then
-          why="gitleaks found a possible secret in Claude's output"
-        else
-          why="The secret scan of Claude's output failed"
-        fi
-        msg="## :rotating_light: Claude's output not kept
-
-        $why, so [the run]($RUN_URL) uploaded no summary. Its log shows any finding, redacted. If it is a secret, rotate it and look for it in this thread."
-        gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$msg" --silent || echo "::warning::$why: no summary uploaded."
+      run: bash .claude-summary-script/scripts/scan-summary.sh
 
     - name: Upload Claude's output
       if: always() && steps.scan.outputs.clean == 'true'

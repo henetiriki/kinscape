@@ -5,7 +5,7 @@
 
 ## Approach
 
-`agent-transcript.mts` gains a CLI that writes `parseTranscript`'s result, and `readSummary`, which `run-summary.mts` and `denial-audit.mts` call. After Claude runs, `run-claude` and `claude-code-review.yml` sparse-check out main's `scripts`, write the summary as `claude-execution-output.json` in its own folder, scan it with gitleaks, and upload it for 7 days if clean. No transcript writes nothing: the since-last-review check still works.
+`agent-transcript.mts` gains a CLI that writes `parseTranscript`'s result, and `readSummary`, which `run-summary.mts` and `denial-audit.mts` call. After Claude runs, `run-claude` and `claude-code-review.yml` sparse-check out main's `scripts`, write the summary as `claude-execution-output.json` in its own folder, scan it with gitleaks, and upload it for 7 days if clean.
 
 ## Decisions
 
@@ -21,7 +21,7 @@ Old artifacts last 14 days; callers run the old `run-claude` until its pin PR me
 
 **D2 · Paths outside the workspace** · Decides: Tech lead
 
-- **A.** `//proc/**`, `//sys/**`, `//etc/**`, `//home/runner/work/_temp/**` (runner temp), `~/.gitconfig`, `~/.config/**`.
+- **A.** `//proc/**`, `//sys/**`, `//etc/**`, `//home/runner/work/_temp/**`, `~/.gitconfig`, `~/.config/**`.
 - ~~**B.** `//proc/**` and the runner temp only.~~
 - **Other:** your own.
 
@@ -29,13 +29,13 @@ Old artifacts last 14 days; callers run the old `run-claude` until its pin PR me
 
 **D3 · A gitleaks hit or error** · Decides: Tech lead
 
-**Answer:** no upload; `github.token` comments a :rotating_light: warning on the thread. The job's result stands.
+**Answer:** no upload; `github.token` comments a :rotating_light: warning on the thread.
 
 ## Files that change
 
 | File                                                                                | What                                    |
 | ----------------------------------------------------------------------------------- | --------------------------------------- |
-| `scripts/{agent-transcript,run-summary,denial-audit}.mts`, their tests              | CLI, `readSummary`; readers use it      |
+| `scripts/{agent-transcript,run-summary,denial-audit}.mts`, `scan-summary.sh`, tests | CLI, `readSummary`; readers use it      |
 | `.github/actions/run-claude/action.yml`, `.github/workflows/claude-code-review.yml` | Summarise, scan, upload 7 days; comment |
 | `.github/agent/{settings,review-settings}.json`                                     | Deny rules                              |
 | `scripts/__tests__/load-agent-files.test.ts`                                        | Upload steps                            |
@@ -47,10 +47,16 @@ Old artifacts last 14 days; callers run the old `run-claude` until its pin PR me
 
 ## Proof
 
-| Acceptance check                 | Proven by                                                                       |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| Upload holds only summary fields | `agent-transcript.test.ts`: only `Transcript` keys; a `tool_result`'s text gone |
-| Readers use the summary          | `run-summary`, `denial-audit` tests                                             |
-| Only a clean scan uploads        | `load-agent-files.test.ts`                                                      |
-| Deny rules kept                  | `agent-settings.test.ts`                                                        |
-| Checks pass                      | Lint, format, tests, boundaries                                                 |
+| Acceptance check                 | Proven by                                               |
+| -------------------------------- | ------------------------------------------------------- |
+| Upload holds only summary fields | `agent-transcript.test.ts`: a `tool_result`'s text gone |
+| Readers use the summary          | `run-summary`, `denial-audit` tests                     |
+| Only a clean scan uploads        | `load-agent-files.test.ts`                              |
+| Deny rules kept                  | `agent-settings.test.ts`                                |
+| Checks pass                      | Lint, format, tests, boundaries                         |
+
+## Deviations
+
+- Scan in `scripts/scan-summary.sh` (from main), on a copy without ignore files.
+- `load-agent-files` also denies this runner's temp.
+- "No Claude review" comment found by heading, not `--edit-last`.

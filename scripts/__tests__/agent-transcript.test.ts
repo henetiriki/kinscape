@@ -1,5 +1,6 @@
 import {
   existsSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   rmSync,
@@ -391,6 +392,19 @@ describe('readSummary', () => {
     });
   });
 
+  it('drops tool counts that are not numbers', () => {
+    expect(
+      readSummary(
+        JSON.stringify({
+          denials: [],
+          finalText: '',
+          outcome: 'success',
+          tools: { Bash: '3', Read: 2, Write: {} },
+        })
+      )?.tools
+    ).toEqual({ Read: 2 });
+  });
+
   // A transcript array is what runs before the change uploaded: plan decision D1 skips them.
   it.each([
     ['not json'],
@@ -462,19 +476,43 @@ describe('run', () => {
     expect(readSummary(text)?.tools).toEqual({ 'Bash:cat': 1 });
   });
 
-  // No file is no review: the since-last-review check looks for the artifact.
-  it.each([
-    ['is missing', undefined],
-    ['is not a transcript', 'half a fi'],
-  ])('writes nothing when the transcript %s', (_, text) => {
+  // gitleaks skips any line holding its allow marker, so the marker in Claude's final message must
+  // not hide a secret elsewhere in the summary.
+  it('writes one field per line, without gitleaks allow markers', () => {
     const input = join(dir, 'claude-execution-output.json');
     const output = join(dir, 'summary', 'claude-execution-output.json');
 
-    if (text !== undefined) {
-      writeFileSync(input, text);
-    }
+    writeFileSync(
+      input,
+      JSON.stringify([init, result({ result: 'Skip it: gitleaks:allow' })])
+    );
+    run([input, output]);
 
-    expect(run([input, output])).toBe(0);
-    expect(existsSync(output)).toBe(false);
+    const text = readFileSync(output, 'utf8');
+
+    expect(text).not.toContain('gitleaks:allow');
+    expect(text).toContain('\n  "finalText": "Skip it: gitleaks-allow",\n');
   });
+
+  // No file is no review: the since-last-review check looks for the artifact. A file already there,
+  // which the agent could have written, is no summary of this run.
+  it.each([
+    ['is missing', undefined],
+    ['is not a transcript', 'half a fi'],
+  ])(
+    'writes nothing, and removes any earlier file, when the transcript %s',
+    (_, text) => {
+      const input = join(dir, 'claude-execution-output.json');
+      const output = join(dir, 'summary', 'claude-execution-output.json');
+
+      if (text !== undefined) {
+        writeFileSync(input, text);
+      }
+      mkdirSync(join(dir, 'summary'));
+      writeFileSync(output, '{"planted":true}');
+
+      expect(run([input, output])).toBe(0);
+      expect(existsSync(output)).toBe(false);
+    }
+  );
 });

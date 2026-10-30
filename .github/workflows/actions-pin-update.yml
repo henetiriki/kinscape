@@ -1,15 +1,16 @@
 name: 'Actions: Update repo action pins'
 
 # GitHub requires every action and reusable workflow to be pinned to a full SHA, ours included.
-# When one of ours changes on main, open one PR that pins each `henetiriki/kinscape/<path>@…` to
-# the last main commit that changed <path>. Merging a pin PR that changes an action or
-# claude-run.yml starts this again, one level up the call chain; a run that changes nothing stops.
+# When an action or workflow changes on main, open one PR that pins each
+# `henetiriki/kinscape/<path>@…` to the last main commit that changed <path>. Any workflow, not
+# only the ones pinned to, so a new or wrong ref in a caller is fixed too. Merging a pin PR starts
+# this again, one level up the call chain; a run that changes nothing opens no PR, so it stops.
 on:
   push:
     branches: [main]
     paths:
       - '.github/actions/**'
-      - '.github/workflows/claude-run.yml'
+      - '.github/workflows/**'
   # Lets a person run it by hand from the Actions tab.
   workflow_dispatch:
 

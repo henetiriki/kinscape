@@ -82,8 +82,8 @@ jobs:
           git commit -m 'chore: update repo action pins'
           gh auth setup-git
           git push --force origin "HEAD:refs/heads/$BRANCH"
-          # Open only: `gh pr view` also finds a merged PR from this branch, and then no new PR opens.
-          open=$(gh pr list --head "$BRANCH" --state open --json number --jq length)
+          # Open, same-repo only: `gh pr view` also finds a merged PR from this branch, and a fork PR with this branch name must not count.
+          open=$(gh pr list --head "$BRANCH" --state open --json isCrossRepository --jq 'map(select(.isCrossRepository | not)) | length')
           if [ "$open" -gt 0 ]; then
             echo 'Updated the open pin PR.'
           else

@@ -43,8 +43,21 @@ const COLOUR_KEYWORDS = new Set(
   )
 );
 
-const COLOUR_DECLARATION =
-  /(?:^|[\s;"'{])(?:color|background(?:-color)?|border(?:-(?:top|right|bottom|left))?(?:-color)?|outline(?:-color)?|fill|stroke|stop-color|flood-color|caret-color|box-shadow|text-shadow)\s*[:=]\s*"?([^;"}]*)/gi;
+/** CSS where a colour can sit: `style` attributes and `<style>` blocks, whatever the property; page text is not CSS. */
+const CSS_REGION = /\bstyle="([^"]*)"|<style[^>]*>([\s\S]*?)<\/style>/gi;
+const CSS_VALUE = /[a-z-]+\s*:([^;{}]*)/gi;
+/** SVG presentation attributes that take a colour. */
+const COLOUR_ATTRIBUTE =
+  /\s(?:fill|stroke|stop-color|flood-color|lighting-color)="([^"]*)"/gi;
+
+const colourValues = (html: string): string[] => [
+  ...[...html.matchAll(CSS_REGION)].flatMap(([, attribute, block]) =>
+    [...String(attribute ?? block).matchAll(CSS_VALUE)].map(([, value]) =>
+      String(value)
+    )
+  ),
+  ...[...html.matchAll(COLOUR_ATTRIBUTE)].map(([, value]) => String(value)),
+];
 
 const RGB_FUNCTION = /rgba?\([^)]*\)/gi;
 const RGB_INTEGERS = /^rgba?\(\s*\d+[ ,]+\d+[ ,]+\d+[^)]*\)$/i;
@@ -129,9 +142,9 @@ export const snapshotProblems = (
     ...colours(html)
       .filter(({ rgb }) => !tokens.has(rgb))
       .map(({ text }) => `${text} is not in design/tokens.json`),
-    ...[...html.matchAll(COLOUR_DECLARATION)]
-      .flatMap(([, value]) =>
-        [...String(value).matchAll(/(?<![\w#.%-])[a-z]+(?![\w(-])/gi)].map(
+    ...colourValues(html)
+      .flatMap(value =>
+        [...value.matchAll(/(?<![\w#.%-])[a-z]+(?![\w(-])/gi)].map(
           ([word]) => word
         )
       )

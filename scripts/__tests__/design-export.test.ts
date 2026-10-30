@@ -194,6 +194,33 @@ describe('tokenColours and snapshotProblems', () => {
     ]);
   });
 
+  it('names colour keywords in any declaration, whatever the property', () => {
+    expect(
+      snapshotProblems(
+        '<i style="accent-color: green; text-decoration: underline red; background-image: linear-gradient(white, #264F29); column-rule: 1px solid gold; scrollbar-color: navy tan; -webkit-text-fill-color: pink"></i><style>b{border-image: linear-gradient(plum, plum) 1}</style><b stop-color="Ivory" flood-color="snow" lighting-color="peru"></b>',
+        tokens
+      )
+    ).toEqual([
+      'green is not in design/tokens.json',
+      'red is not in design/tokens.json',
+      'white is not in design/tokens.json',
+      'gold is not in design/tokens.json',
+      'navy is not in design/tokens.json',
+      'tan is not in design/tokens.json',
+      'pink is not in design/tokens.json',
+      'plum is not in design/tokens.json',
+      'Ivory is not in design/tokens.json',
+      'snow is not in design/tokens.json',
+      'peru is not in design/tokens.json',
+    ]);
+  });
+
+  it('does not read page text as CSS', () => {
+    expect(
+      snapshotProblems('<p>Primary: brand, white text. Note: red</p>', tokens)
+    ).toEqual([]);
+  });
+
   it('names colour keywords in style declarations and fill/stroke, not none or currentColor', () => {
     expect(
       snapshotProblems(

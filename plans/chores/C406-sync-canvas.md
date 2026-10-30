@@ -1,7 +1,7 @@
 # Plan: C406: Add /sync-canvas to copy the design canvas into the repo
 
 - **Spec:** #406
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The copy is about 1.2 MB (roughly 350k tokens).
 - **B.** Read every file, then write them all, holding the whole copy in context at once.
 - **Other:** your own.
 
-Recommended: A, because it bounds context and compaction can't corrupt a file held for minutes.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

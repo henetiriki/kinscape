@@ -3,10 +3,8 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 
 type Trigger = {
-  branches?: string[];
   cron?: string;
-  types?: string[];
-};
+} & Partial<Record<(typeof FILTERS)[number], string[]>>;
 
 type Workflow = {
   calls: string[];
@@ -30,16 +28,39 @@ const id = (text: string) => text.replace(/\.ya?ml$/, '').replace(/\W/g, '_');
 const escape = (text: string) =>
   text.replace(/"/g, '#quot;').replace(/</g, '#lt;').replace(/>/g, '#gt;');
 
-// The types, branches or schedule that narrow a trigger, as its edge label.
+// Types and branches are shown bare; the other filters carry their key.
+const FILTERS = [
+  'types',
+  'branches',
+  'branches-ignore',
+  'tags',
+  'tags-ignore',
+  'paths',
+  'paths-ignore',
+] as const;
+
+// Every filter or schedule that narrows a trigger, as its edge label.
 const narrowing = (config: unknown): string | undefined => {
   if (Array.isArray(config)) {
     return config.map((entry: Trigger) => entry.cron).join(', ');
   }
 
-  const { branches, types } = (config ?? {}) as Trigger;
-  const list = types ?? branches;
+  const trigger = (config ?? {}) as Trigger;
+  const parts = FILTERS.flatMap(key => {
+    const list = trigger[key];
 
-  return list?.join(', ');
+    if (!list) {
+      return [];
+    }
+
+    return [
+      key === 'types' || key === 'branches'
+        ? list.join(', ')
+        : `${key}: ${list.join(', ')}`,
+    ];
+  });
+
+  return parts.length ? parts.join(' · ') : undefined;
 };
 
 const read = (root: string, file: string): Workflow => {

@@ -40,7 +40,7 @@ flowchart LR
   subgraph g_Design [Design]
     design_agent_shots["Design agent shots<br>design-agent-shots.yml<br>setup · render · commit"]
   end
-  on_push -->|"main"| actions_pin_update
+  on_push -->|"main · paths: .github/actions/**, .github/workflows/**"| actions_pin_update
   on_workflow_dispatch --> actions_pin_update
   on_issues -->|"closed"| backlog_intent_ready
   on_issues -->|"opened, edited"| backlog_milestone
@@ -48,13 +48,13 @@ flowchart LR
   on_workflow_dispatch --> backlog_milestone
   on_issues -->|"opened"| backlog_spec_link
   on_pull_request -->|"closed"| ci_cache_cleanup
-  on_push -->|"main"| ci_playwright_cache
+  on_push -->|"main · paths: package-lock.json, .github/workflows/ci-playwright-cache.yml"| ci_playwright_cache
   on_schedule -->|"0 5 * * 1,4"| ci_playwright_cache
   on_workflow_dispatch --> ci_playwright_cache
   on_pull_request -->|"opened, synchronize, reopened, ready_for_review"| ci
   on_push -->|"main"| ci
   on_pull_request_review -->|"submitted"| claude_build
-  on_pull_request -->|"opened, synchronize, ready_for_review, reopened"| claude_code_review
+  on_pull_request -->|"opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**"| claude_code_review
   on_schedule -->|"0 7 * * 1"| claude_denial_audit
   on_workflow_dispatch --> claude_denial_audit
   on_issues -->|"labeled"| claude_plan

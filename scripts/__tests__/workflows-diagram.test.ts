@@ -82,6 +82,34 @@ describe('generate', () => {
     expect(diagram).toContain('on_issues --> b');
   });
 
+  it('joins every filter on a trigger into its label', () => {
+    workflow(
+      'f.yml',
+      [
+        'name: F',
+        'on:',
+        '  pull_request:',
+        '    types: [opened]',
+        '    branches: [main]',
+        '    paths-ignore: ["plans/**"]',
+        '  push:',
+        '    tags: ["v*"]',
+        '    paths: [package-lock.json, .github/workflows/f.yml]',
+        'jobs:',
+        '  one: {}',
+      ].join('\n')
+    );
+
+    const diagram = generate(root);
+
+    expect(diagram).toContain(
+      'on_pull_request -->|"opened · main · paths-ignore: plans/**"| f'
+    );
+    expect(diagram).toContain(
+      'on_push -->|"tags: v* · paths: package-lock.json, .github/workflows/f.yml"| f'
+    );
+  });
+
   it('draws a call to a reusable workflow instead of its workflow_call trigger', () => {
     workflow(
       'caller.yml',

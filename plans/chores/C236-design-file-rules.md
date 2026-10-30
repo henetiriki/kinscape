@@ -5,7 +5,7 @@
 
 ## Approach
 
-One bullet after the `design/DESIGN.md` line in `AGENTS.md` holds both rules, linking to `DESIGN.md` › Screens for how the workflow works:
+One `AGENTS.md` bullet after the `design/DESIGN.md` line holds both rules:
 
 > - Only the design agent edits `design/canvas/`; a [workflow](design/DESIGN.md#screens) makes `design/source/` and `design/*.jpg` from it. Edit none of them. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
 
@@ -31,7 +31,7 @@ Recommended: A, because every agent loads `AGENTS.md`, while a build agent reads
 - ~~**B.** Leave the skill as it is.~~
 - ~~**Other:** your own.~~
 
-Recommended: A, so the rule lives in one place and the two can't disagree.
+Recommended: A, so the rule lives in one place.
 
 **Answer: A** (Tech lead)
 
@@ -43,9 +43,14 @@ Recommended: A, so the rule lives in one place and the two can't disagree.
 | `scripts/word-count.mts`, its test     | `AGENTS.md` budget 700 (D1 A)        |
 | `.claude/skills/match-design/SKILL.md` | Line 31 points to `AGENTS.md` (D2 A) |
 
+## Deviations
+
+- `DESIGN.md` and the skill link to `AGENTS.md`, not repeat it.
+- `Refs #236`: Proof row 2 follows later.
+
 ## Risks
 
-- The rule also bars editing `design/source/fonts.css` and `kse-*.svg`, which aren't exported; font changes (as in B230) go to the design agent.
+- The rule also bars editing unexported `design/source/fonts.css` and `kse-*.svg`; font changes go to the design agent.
 
 ## Proof
 

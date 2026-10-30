@@ -1,7 +1,7 @@
 # Plan: C234: Commit the design canvas and its exporter
 
 - **Spec:** #234
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 - **B.** Move `export.json` to `design/export.json`.
 - **Other:** your own.
 
-Recommended: A, as the issue lays out.
+**Answer: A** (@henetiriki)
 
 **D2 · Covering the Chromium step** · Decides: Tech lead
 
@@ -25,7 +25,7 @@ Recommended: A, as the issue lays out.
 - **B.** An e2e test exports into a temp folder and diffs it.
 - **Other:** your own.
 
-Recommended: A, because #235 runs the export in CI.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

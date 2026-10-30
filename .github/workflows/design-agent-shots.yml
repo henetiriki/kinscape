@@ -1,9 +1,10 @@
 name: Design agent shots
 
-# Renders every design snapshot (design/*.jpg) in the Playwright image that the design check
-# runs in, and commits the JPGs that changed to the branch it was run on. Run it by hand from the
-# Actions tab (or `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a snapshot,
-# or when the design check fails on text edges. Nobody renders snapshots locally.
+# Exports the HTML snapshots (design/source/*.html) from design/canvas/, renders every JPG
+# (design/*.jpg) in the Playwright image that the design check runs in, and commits the files that
+# changed to the branch it was run on. Run it by hand from the Actions tab (or
+# `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a canvas artboard,
+# or when the design check fails on text edges. Nobody exports or renders snapshots locally.
 #
 # The commit is pushed with the bot's token, so CI runs on it. A push never starts this workflow,
 # so it cannot loop. A run on a branch that has moved since is rejected, never forced.
@@ -44,7 +45,8 @@ jobs:
         id: pin
         run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
 
-  # Renders the snapshots and fails if anything but design/*.jpg changed. Holds no token that can push.
+  # Exports and renders the snapshots; fails if anything but design/source/*.html and design/*.jpg
+  # changed. Holds no token that can push.
   render:
     needs: setup
     runs-on: ubuntu-latest
@@ -65,9 +67,11 @@ jobs:
           node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
+      - name: Export the HTML snapshots
+        run: npm run design:export
       - name: Render the snapshots
         run: npm run design:shots
-      # Lists the JPGs that changed in the job summary.
+      # Lists the HTML snapshots and JPGs that changed in the job summary.
       - name: Check what changed
         id: check
         run: OUTPUT_FILE="$GITHUB_OUTPUT" SUMMARY_FILE="$GITHUB_STEP_SUMMARY" node scripts/design-shots-ci.mts check
@@ -76,9 +80,11 @@ jobs:
         if: ${{ steps.check.outputs.changed != '0' }}
         with:
           name: design-snapshots
-          path: design/*.jpg
+          path: |
+            design/*.jpg
+            design/source/*.html
 
-  # Commits the changed JPGs as the bot. Its token starts CI on the new commit.
+  # Commits the changed snapshots as the bot. Its token starts CI on the new commit.
   commit:
     needs: render
     if: ${{ needs.render.outputs.changed != '0' }}
@@ -104,8 +110,8 @@ jobs:
         run: |
           git config user.name henetiriki-bot
           git config user.email 344434370+henetiriki-bot@users.noreply.github.com
-          git add -- 'design/*.jpg'
-          git commit -m 'chore: render design snapshots'
+          git add -- 'design/*.jpg' 'design/source/*.html'
+          git commit -m 'chore: export and render design snapshots'
           git push origin "HEAD:$REF"
         env:
           REF: ${{ github.ref }}

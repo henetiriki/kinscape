@@ -7,6 +7,7 @@ import {
   guard,
   parseStatus,
   run,
+  source as sourceCheck,
   summary,
 } from '../design-shots-ci.mts';
 
@@ -51,31 +52,86 @@ describe('parseStatus', () => {
         )
       )
     ).toEqual({
+      html: [],
       jpgs: ['design/map-desktop.jpg', 'design/new.jpg'],
       other: ['design/DESIGN.md', 'design/source/new.jpg', 'package.json'],
     });
   });
 
+  it('separates HTML snapshots, sorted', () => {
+    expect(
+      parseStatus(
+        status(
+          ' M design/source/b.html',
+          '?? design/source/a.html',
+          ' M design/source/fonts.css',
+          ' M design/other.html'
+        )
+      )
+    ).toEqual({
+      html: ['design/source/a.html', 'design/source/b.html'],
+      jpgs: [],
+      other: ['design/other.html', 'design/source/fonts.css'],
+    });
+  });
+
   it('finds nothing in a clean tree', () => {
-    expect(parseStatus('')).toEqual({ jpgs: [], other: [] });
+    expect(parseStatus('')).toEqual({ html: [], jpgs: [], other: [] });
   });
 });
 
 describe('summary', () => {
   it('says when nothing changed', () => {
-    expect(summary([])).toBe('## Design snapshots\n\nNo changes.\n');
+    expect(summary([], [])).toBe('## Design snapshots\n\nNo changes.\n');
   });
 
   it('counts one JPG', () => {
-    expect(summary(['design/a.jpg'])).toBe(
+    expect(summary(['design/a.jpg'], [])).toBe(
       '## Design snapshots\n\n1 JPG changed:\n\n- `design/a.jpg`\n'
     );
   });
 
   it('lists several JPGs', () => {
-    expect(summary(['design/a.jpg', 'design/b.jpg'])).toBe(
+    expect(summary(['design/a.jpg', 'design/b.jpg'], [])).toBe(
       '## Design snapshots\n\n2 JPGs changed:\n\n- `design/a.jpg`\n- `design/b.jpg`\n'
     );
+  });
+
+  it('lists HTML snapshots before JPGs', () => {
+    expect(summary(['design/a.jpg'], ['design/source/a.html'])).toBe(
+      '## Design snapshots\n\n1 HTML snapshot changed:\n\n- `design/source/a.html`\n\n1 JPG changed:\n\n- `design/a.jpg`\n'
+    );
+  });
+
+  it('counts several HTML snapshots', () => {
+    expect(summary([], ['design/source/a.html', 'design/source/b.html'])).toBe(
+      '## Design snapshots\n\n2 HTML snapshots changed:\n\n- `design/source/a.html`\n- `design/source/b.html`\n'
+    );
+  });
+});
+
+describe('source', () => {
+  it('passes when nothing under design/source changed', () => {
+    expect(sourceCheck(deps(status(' M design/a.jpg')))).toBe(0);
+  });
+
+  it('names every changed file under design/source', () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const d = deps(
+      status(
+        ' M design/source/b.html',
+        '?? design/source/a.html',
+        ' M design/source/kse-birth.svg',
+        ' M design/other.jpg'
+      )
+    );
+
+    expect(sourceCheck(d)).toBe(1);
+    expect(log.mock.calls.map(call => call[0])).toEqual([
+      '::error file=design/source/a.html::Hand-edited or stale: run the Design agent shots workflow on this branch.',
+      '::error file=design/source/b.html::Hand-edited or stale: run the Design agent shots workflow on this branch.',
+      '::error file=design/source/kse-birth.svg::Hand-edited or stale: run the Design agent shots workflow on this branch.',
+    ]);
   });
 });
 
@@ -94,21 +150,23 @@ describe('check', () => {
   });
 
   it('writes the summary and the count when the files are set', () => {
-    const d = deps(status(' M design/a.jpg', ' M design/b.jpg'));
+    const d = deps(
+      status(' M design/a.jpg', ' M design/b.jpg', ' M design/source/a.html')
+    );
 
     expect(check({ OUTPUT_FILE: 'out', SUMMARY_FILE: 'sum' }, d)).toBe(0);
     expect(d.append).toHaveBeenCalledWith(
       'sum',
-      summary(['design/a.jpg', 'design/b.jpg'])
+      summary(['design/a.jpg', 'design/b.jpg'], ['design/source/a.html'])
     );
-    expect(d.append).toHaveBeenCalledWith('out', 'changed=2\n');
+    expect(d.append).toHaveBeenCalledWith('out', 'changed=3\n');
   });
 
   it('reports no changes with a count of 0', () => {
     const d = deps('');
 
     expect(check({ OUTPUT_FILE: 'out', SUMMARY_FILE: 'sum' }, d)).toBe(0);
-    expect(d.append).toHaveBeenCalledWith('sum', summary([]));
+    expect(d.append).toHaveBeenCalledWith('sum', summary([], []));
     expect(d.append).toHaveBeenCalledWith('out', 'changed=0\n');
   });
 
@@ -119,13 +177,15 @@ describe('check', () => {
     expect(d.append).not.toHaveBeenCalled();
   });
 
-  it('fails, writing nothing, when anything but a snapshot JPG changed', () => {
+  it('fails, writing nothing, when anything but a snapshot changed', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const d = deps(status(' M design/a.jpg', ' M package.json'));
+    const d = deps(
+      status(' M design/a.jpg', ' M design/source/a.html', ' M package.json')
+    );
 
     expect(check({ OUTPUT_FILE: 'out', SUMMARY_FILE: 'sum' }, d)).toBe(1);
     expect(error).toHaveBeenCalledWith(
-      'Changed outside design/*.jpg: package.json'
+      'Changed outside design/*.jpg and design/source/*.html: package.json'
     );
     expect(d.append).not.toHaveBeenCalled();
   });
@@ -134,6 +194,10 @@ describe('check', () => {
 describe('run', () => {
   it('checks', () => {
     expect(run('check', {}, deps(''))).toBe(0);
+  });
+
+  it('checks the source', () => {
+    expect(run('source', {}, deps(''))).toBe(0);
   });
 
   it('lets a branch through the guard', () => {

@@ -143,6 +143,9 @@ jobs:
           node-version-file: .nvmrc
       - name: Install dependencies
         run: npm ci
+      # Fails, naming the file, when a design/source snapshot differs from its design/canvas artboard.
+      - name: Check the HTML snapshots match the canvas
+        run: npm run design:export && node scripts/design-shots-ci.mts source
       # Keep Next.js's build cache. A source change still restores the last build for the same lockfile.
       - name: Cache Next.js build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

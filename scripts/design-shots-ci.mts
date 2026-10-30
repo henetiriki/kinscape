@@ -9,6 +9,10 @@ const PROTECTED = 'refs/heads/main';
 
 const SNAPSHOT = /^design\/[^/]+\.jpg$/;
 
+const HTML_SNAPSHOT = /^design\/source\/[^/]+\.html$/;
+
+const STATUS = ['status', '--porcelain', '-z', '--untracked-files=all'];
+
 /** The reason the design-shots workflow must not run on `ref`; undefined when it may. */
 export const guard = (ref: string): string | undefined => {
   if (!ref.startsWith('refs/heads/')) {
@@ -22,7 +26,7 @@ export const guard = (ref: string): string | undefined => {
   return undefined;
 };
 
-/** Splits `git status --porcelain -z` output into snapshot JPGs and everything else. */
+/** Splits `git status --porcelain -z` output into HTML snapshots, snapshot JPGs and everything else. */
 export const parseStatus = (porcelain: string) => {
   const paths = porcelain
     .split('\0')
@@ -30,52 +34,78 @@ export const parseStatus = (porcelain: string) => {
     .map(entry => entry.slice(3));
 
   return {
+    html: paths.filter(path => HTML_SNAPSHOT.test(path)).toSorted(),
     jpgs: paths.filter(path => SNAPSHOT.test(path)).toSorted(),
-    other: paths.filter(path => !SNAPSHOT.test(path)).toSorted(),
+    other: paths
+      .filter(path => !SNAPSHOT.test(path) && !HTML_SNAPSHOT.test(path))
+      .toSorted(),
   };
 };
 
-export const summary = (jpgs: string[]): string =>
+const section = (label: string, paths: string[]): string[] =>
+  paths.length === 0
+    ? []
+    : [
+        '',
+        `${paths.length} ${label}${paths.length === 1 ? '' : 's'} changed:`,
+        '',
+        ...paths.map(path => `- \`${path}\``),
+      ];
+
+export const summary = (jpgs: string[], html: string[]): string =>
   [
     '## Design snapshots',
-    '',
-    jpgs.length === 0
-      ? 'No changes.'
-      : `${jpgs.length} ${jpgs.length === 1 ? 'JPG' : 'JPGs'} changed:`,
-    '',
-    ...jpgs.map(path => `- \`${path}\``),
+    ...(jpgs.length + html.length === 0 ? ['', 'No changes.'] : []),
+    ...section('HTML snapshot', html),
+    ...section('JPG', jpgs),
   ]
     .join('\n')
-    .trimEnd()
     .concat('\n');
 
 /**
- * Fails when anything but `design/*.jpg` changed. Writes the summary to `SUMMARY_FILE` and
- * `changed=<count>` to `OUTPUT_FILE`, when set.
+ * Fails when anything but `design/source/*.html` and `design/*.jpg` changed. Writes the summary
+ * to `SUMMARY_FILE` and `changed=<count>` to `OUTPUT_FILE`, when set.
  */
 export const check = (env: Env, deps: DesignShotsCiDeps): number => {
-  const { jpgs, other } = parseStatus(
-    deps.git(['status', '--porcelain', '-z', '--untracked-files=all'])
-  );
+  const { html, jpgs, other } = parseStatus(deps.git(STATUS));
 
   if (other.length > 0) {
-    console.error(`Changed outside design/*.jpg: ${other.join(', ')}`);
+    console.error(
+      `Changed outside design/*.jpg and design/source/*.html: ${other.join(', ')}`
+    );
 
     return 1;
   }
 
   if (env.SUMMARY_FILE) {
-    deps.append(env.SUMMARY_FILE, summary(jpgs));
+    deps.append(env.SUMMARY_FILE, summary(jpgs, html));
   }
 
   if (env.OUTPUT_FILE) {
-    deps.append(env.OUTPUT_FILE, `changed=${jpgs.length}\n`);
+    deps.append(env.OUTPUT_FILE, `changed=${jpgs.length + html.length}\n`);
   }
 
   return 0;
 };
 
-/** Runs `guard` (on `REF`) or `check`; returns the exit code. */
+/** Fails, with one error annotation per file, when anything under `design/source` changed. */
+export const source = (deps: DesignShotsCiDeps): number => {
+  const { html, other } = parseStatus(deps.git(STATUS));
+  const changed = [
+    ...html,
+    ...other.filter(path => path.startsWith('design/source/')),
+  ].toSorted();
+
+  for (const path of changed) {
+    console.log(
+      `::error file=${path}::Hand-edited or stale: run the Design agent shots workflow on this branch.`
+    );
+  }
+
+  return changed.length > 0 ? 1 : 0;
+};
+
+/** Runs `guard` (on `REF`), `check` or `source`; returns the exit code. */
 export const run = (
   command: string,
   env: Env,
@@ -83,6 +113,10 @@ export const run = (
 ): number => {
   if (command === 'check') {
     return check(env, deps);
+  }
+
+  if (command === 'source') {
+    return source(deps);
   }
 
   if (command === 'guard') {
@@ -95,7 +129,7 @@ export const run = (
     return problem ? 1 : 0;
   }
 
-  console.error('Usage: design-shots-ci.mts guard | check');
+  console.error('Usage: design-shots-ci.mts guard | check | source');
 
   return 2;
 };

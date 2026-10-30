@@ -182,7 +182,33 @@ describe('tokenColours and snapshotProblems', () => {
     ]);
   });
 
+  it('reports rgb() colours it cannot read as integers', () => {
+    expect(
+      snapshotProblems(
+        '<i style="color: rgb(100% 0% 0%); fill: rgba(255.5, 0, 0, 1); stroke: rgb(24 33 27)">',
+        tokens
+      )
+    ).toEqual([
+      'rgb(100% 0% 0%) cannot be read as a colour',
+      'rgba(255.5, 0, 0, 1) cannot be read as a colour',
+    ]);
+  });
+
+  it('names colour keywords in style declarations and fill/stroke, not none or currentColor', () => {
+    expect(
+      snapshotProblems(
+        '<i style="color: red; border: 1px solid White; background: url(a.svg)"><b fill="none" stroke="currentColor"></b><b fill="Teal"></b><b style="background: transparent; border-bottom: 1px solid #264F29"></b></i>',
+        tokens
+      )
+    ).toEqual([
+      'red is not in design/tokens.json',
+      'White is not in design/tokens.json',
+      'Teal is not in design/tokens.json',
+    ]);
+  });
+
   it.each([
+    ['color(', '<i style="color: color(srgb 1 0 0)">'],
     ['var(', '<i style="color: var(--x)">'],
     ['calc(', '<i style="width: calc(1px + 2px)">'],
     ['<script', '<script>x</script>'],

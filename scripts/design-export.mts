@@ -33,7 +33,21 @@ const FORBIDDEN = [
   'lab(',
   'lch(',
   'color-mix(',
+  'color(',
 ];
+
+/** CSS colour keywords; `none`, `transparent` and `currentColor` carry no colour of their own. */
+const COLOUR_KEYWORDS = new Set(
+  `aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen`.split(
+    ' '
+  )
+);
+
+const COLOUR_DECLARATION =
+  /(?:^|[\s;"'{])(?:color|background(?:-color)?|border(?:-(?:top|right|bottom|left))?(?:-color)?|outline(?:-color)?|fill|stroke|stop-color|flood-color|caret-color|box-shadow|text-shadow)\s*[:=]\s*"?([^;"}]*)/gi;
+
+const RGB_FUNCTION = /rgba?\([^)]*\)/gi;
+const RGB_INTEGERS = /^rgba?\(\s*\d+[ ,]+\d+[ ,]+\d+[^)]*\)$/i;
 
 const COLOUR =
   /#([0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{4}|[0-9a-f]{3})\b|rgba?\(\s*(\d+)[ ,]+(\d+)[ ,]+(\d+)[^)]*\)/gi;
@@ -107,11 +121,23 @@ export const snapshotProblems = (
   ...FORBIDDEN.filter(text => html.includes(text)).map(
     text => `contains ${text}`
   ),
-  ...new Set(
-    colours(html)
+  ...new Set([
+    ...[...html.matchAll(RGB_FUNCTION)]
+      .map(([text]) => text)
+      .filter(text => !RGB_INTEGERS.test(text))
+      .map(text => `${text} cannot be read as a colour`),
+    ...colours(html)
       .filter(({ rgb }) => !tokens.has(rgb))
-      .map(({ text }) => `${text} is not in design/tokens.json`)
-  ),
+      .map(({ text }) => `${text} is not in design/tokens.json`),
+    ...[...html.matchAll(COLOUR_DECLARATION)]
+      .flatMap(([, value]) =>
+        [...String(value).matchAll(/(?<![\w#.%-])[a-z]+(?![\w(-])/gi)].map(
+          ([word]) => word
+        )
+      )
+      .filter(word => COLOUR_KEYWORDS.has(word.toLowerCase()))
+      .map(word => `${word} is not in design/tokens.json`),
+  ]),
 ];
 
 type Component = new (props: Scope) => {

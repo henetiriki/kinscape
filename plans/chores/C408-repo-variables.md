@@ -55,3 +55,7 @@ Workflows read `vars.KINSCAPE_BOT_LOGIN` and `vars.KINSCAPE_BOT_ID`; `run-claude
 | Grep finds only the allowed lines                 | `repo-names.test.ts`  |
 | Lint, format, tests, boundaries, e2e, `words`     | Output in the PR      |
 | Setup, check, `@claude` reply, bot comment, build | Tech lead, post-merge |
+
+## Deviations
+
+- `run-claude` stops first on empty bot inputs, which covers `claude-plan.yml`.

@@ -32,15 +32,16 @@ inputs:
 runs:
   using: composite
   steps:
-    # An empty input replaces claude-code-action's default, leaving git with no name for commits.
-    - name: Check the bot variables are set
+    # An input given as an empty string replaces claude-code-action's default bot, so a run before
+    # setup-github.sh has set the variables would commit with no name. Stop with the reason instead.
+    - name: Check the bot variables
       shell: bash
       env:
         BOT_LOGIN: ${{ inputs.bot_login }}
         BOT_ID: ${{ inputs.bot_id }}
       run: |
         if [ -z "$BOT_LOGIN" ] || [ -z "$BOT_ID" ]; then
-          echo '::error::KINSCAPE_BOT_LOGIN or KINSCAPE_BOT_ID is unset: run scripts/setup-github.sh, then re-run this workflow'
+          echo '::error::The repo variables KINSCAPE_BOT_LOGIN and KINSCAPE_BOT_ID are not set. Run scripts/setup-github.sh.'
           exit 1
         fi
 

@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import {
   existsSync,
   mkdirSync,
@@ -179,6 +179,41 @@ describe('the run-claude action', () => {
     expect(stepUsing('anthropics/claude-code-action')?.with).toMatchObject({
       bot_id: '${{ inputs.bot_id }}',
       bot_name: '${{ inputs.bot_login }}',
+    });
+  });
+
+  // An empty input would replace claude-code-action's default bot, so the action stops first.
+  describe('the bot variables check', () => {
+    const check = runClaudeSteps()[0];
+    const runCheck = (env: Record<string, string>) =>
+      spawnSync('bash', ['-c', check.run ?? ''], {
+        encoding: 'utf8',
+        env: { ...process.env, ...env },
+      });
+
+    it('comes first and reads the bot inputs', () => {
+      expect(check.name).toBe('Check the bot variables');
+      expect(check.env).toEqual({
+        BOT_ID: '${{ inputs.bot_id }}',
+        BOT_LOGIN: '${{ inputs.bot_login }}',
+      });
+    });
+
+    it('passes when both are set', () => {
+      expect(runCheck({ BOT_ID: '1', BOT_LOGIN: 'a-bot' })).toMatchObject({
+        status: 0,
+        stdout: '',
+      });
+    });
+
+    it.each([
+      ['no login', { BOT_ID: '1', BOT_LOGIN: '' }],
+      ['no id', { BOT_ID: '', BOT_LOGIN: 'a-bot' }],
+    ])('stops with %s, naming the variables', (_name, env) => {
+      const { status, stdout } = runCheck(env);
+
+      expect(status).toBe(1);
+      expect(stdout).toMatch(/KINSCAPE_BOT_LOGIN and KINSCAPE_BOT_ID/);
     });
   });
 

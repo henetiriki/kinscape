@@ -45,7 +45,7 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 
 ## Risks
 
-- The repo's Prettier or Chromium may differ from the design agent's by a byte: I'll stop and ask, changing no snapshot.
+- The repo's Prettier or Chromium may differ by a byte: stop and ask, changing no snapshot.
 
 ## Proof
 
@@ -60,7 +60,7 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 
 - Types in `scripts/types.ts`, as lint requires.
 - `export.json` also holds the icon path and the `Kit-menu-phone.dc.html` link.
-- Colour and system-colour keywords are checked in `style` declarations and colour attributes. Other colour functions and non-integer `rgb()` fail.
+- The colour check fails on anything it can't read, and checks keywords in CSS and non-text attributes. It can't see browser default colours.
 
 ## Out of scope
 

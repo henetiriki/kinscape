@@ -27,37 +27,89 @@ const FORBIDDEN = [
   'http://',
   'https://',
   '.dc.html',
-  'hsl(',
-  'hsla(',
-  'hwb(',
-  'lab(',
-  'lch(',
-  'color-mix(',
-  'color(',
+  '@import',
 ];
 
-/** CSS colour keywords and system colours (`background` and `menu` left out: they are property names too); `none`, `transparent` and `currentColor` carry no colour of their own. */
-const COLOUR_KEYWORDS = new Set(
-  `aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen accentcolor accentcolortext activetext buttonborder buttonface buttontext canvas canvastext field fieldtext graytext highlight highlighttext linktext mark marktext selecteditem selecteditemtext visitedtext activeborder activecaption appworkspace buttonhighlight buttonshadow captiontext inactiveborder inactivecaption inactivecaptiontext infobackground infotext menutext scrollbar threeddarkshadow threedface threedhighlight threedlightshadow threedshadow window windowframe windowtext`.split(
+/**
+ * Functions the colour check can read. Any other in CSS or an attribute fails, so a colour
+ * syntax missing from this file (`hsl()`, `color-mix()`, `url()` to a file) can't pass.
+ */
+const FUNCTIONS = new Set(
+  'linear-gradient minmax radial-gradient repeat repeating-linear-gradient rgb rgba rotate scale translate translatex translatey'.split(
     ' '
   )
 );
 
-/** CSS where a colour can sit: `style` attributes and `<style>` blocks, whatever the property; page text is not CSS. */
-const CSS_REGION = /\bstyle="([^"]*)"|<style[^>]*>([\s\S]*?)<\/style>/gi;
-const CSS_VALUE = /[a-z-]+\s*:([^;{}]*)/gi;
-/** Attributes that take a colour: SVG presentation attributes and HTML `bgcolor`. */
-const COLOUR_ATTRIBUTE =
-  /\s(?:fill|stroke|color|bgcolor|stop-color|flood-color|lighting-color)="([^"]*)"/gi;
+/** CSS colour keywords, system colours and Chromium's `-webkit-` colours. */
+const COLOUR_KEYWORDS = new Set(
+  `aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen accentcolor accentcolortext activetext buttonborder buttonface buttontext canvas canvastext field fieldtext graytext highlight highlighttext linktext mark marktext selecteditem selecteditemtext visitedtext activeborder activecaption appworkspace buttonhighlight buttonshadow captiontext inactiveborder inactivecaption inactivecaptiontext infobackground infotext menutext scrollbar threeddarkshadow threedface threedhighlight threedlightshadow threedshadow window windowframe windowtext background menu -webkit-activelink -webkit-focus-ring-color -webkit-link -webkit-text`.split(
+    ' '
+  )
+);
 
-const colourValues = (html: string): string[] => [
-  ...[...html.matchAll(CSS_REGION)].flatMap(([, attribute, block]) =>
-    [...String(attribute ?? block).matchAll(CSS_VALUE)].map(([, value]) =>
-      String(value)
-    )
-  ),
-  ...[...html.matchAll(COLOUR_ATTRIBUTE)].map(([, value]) => String(value)),
+/**
+ * Everything the browser reads as CSS or attributes, not page text: the values in `style`
+ * attributes and `<style>` blocks, and every other attribute. Chromium writes every attribute
+ * double-quoted.
+ */
+const MARKUP = /\s([\w:-]+)="([^"]*)"|<style[^>]*>([\s\S]*?)<\/style>/gi;
+/** A `<style>` block's declarations: the text in its innermost braces, not its selectors. */
+const DECLARATIONS = /\{([^{}]*)\}/g;
+const CSS_VALUE = /[a-z-]+\s*:([^;{}]*)/gi;
+/** Attributes that hold text or a reference, never a colour. Any other is read, so one missing here can only fail the export. */
+const TEXT_ATTRIBUTE =
+  /^(?:aria-[\w-]+|data-[\w-]+|alt|class|content|for|href|id|label|lang|name|placeholder|role|title|type|value)$/;
+
+const cssValues = (css: string): string[] =>
+  [...css.matchAll(CSS_VALUE)].map(([, value]) => String(value));
+
+const markupValues = (html: string): string[] =>
+  [...html.matchAll(MARKUP)].flatMap(([, name, value, block]) => {
+    if (block !== undefined) {
+      return [...block.matchAll(DECLARATIONS)].flatMap(([, declarations]) =>
+        cssValues(String(declarations))
+      );
+    }
+
+    if (name === 'style') {
+      return cssValues(String(value));
+    }
+
+    return TEXT_ATTRIBUTE.test(String(name)) ? [] : [String(value)];
+  });
+
+/**
+ * Attributes the browser reads as a colour, the values the check can read in each, and the
+ * words that add no colour. SVG attributes take CSS colours. The legacy HTML ones (and SVG
+ * `color`, to be safe) make a colour of any other text, such as `none`, `rgb()` or 8-digit hex.
+ */
+const COLOUR_ATTRIBUTES: [RegExp, RegExp, Set<string>][] = [
+  [
+    /\s(?:fill|stroke|stop-color|flood-color|lighting-color)="([^"]*)"/gi,
+    /^\s*(?:url\(#[\w-]+\)\s*)?(?:#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})|rgba?\([^)]*\)|([\w-]+))?\s*$/i,
+    new Set(['currentcolor', 'inherit', 'none', 'transparent']),
+  ],
+  [
+    /\s(?:alink|bgcolor|bordercolor|color|link|text|vlink)="([^"]*)"/gi,
+    /^\s*(?:#(?:[0-9a-f]{6}|[0-9a-f]{3})|([\w-]+))\s*$/i,
+    new Set(['transparent']),
+  ],
 ];
+
+const unreadableColours = (html: string): string[] =>
+  COLOUR_ATTRIBUTES.flatMap(([attribute, readable, plain]) =>
+    [...html.matchAll(attribute)]
+      .filter(([, value]) => {
+        const match = readable.exec(String(value));
+        const word = match?.[1]?.toLowerCase();
+
+        return (
+          !match ||
+          (word !== undefined && !plain.has(word) && !COLOUR_KEYWORDS.has(word))
+        );
+      })
+      .map(([text]) => `${text.trim()} cannot be read as a colour`)
+  );
 
 const RGB_FUNCTION = /rgba?\([^)]*\)/gi;
 const RGB_INTEGERS = /^rgba?\(\s*\d+[ ,]+\d+[ ,]+\d+[^)]*\)$/i;
@@ -139,17 +191,30 @@ export const snapshotProblems = (
       .map(([text]) => text)
       .filter(text => !RGB_INTEGERS.test(text))
       .map(text => `${text} cannot be read as a colour`),
+    ...unreadableColours(html),
     ...colours(html)
       .filter(({ rgb }) => !tokens.has(rgb))
       .map(({ text }) => `${text} is not in design/tokens.json`),
-    ...colourValues(html)
-      .flatMap(value =>
-        [...value.matchAll(/(?<![\w#.%-])[a-z]+(?![\w(-])/gi)].map(
-          ([word]) => word
+    ...markupValues(html).flatMap(value => [
+      ...[...value.matchAll(/url\(#|([a-z-][\w-]*)\(/gi)]
+        .map(([, name]) => name)
+        .filter(
+          name =>
+            name !== undefined &&
+            !FUNCTIONS.has(name.toLowerCase()) &&
+            !FORBIDDEN.includes(`${name}(`)
         )
-      )
-      .filter(word => COLOUR_KEYWORDS.has(word.toLowerCase()))
-      .map(word => `${word} is not in design/tokens.json`),
+        .map(name => `uses ${name}(), which the colour check cannot read`),
+      ...[...value.matchAll(/(?<![\w#.%-])-?[a-z][\w-]*(?![\w(-])/gi)]
+        .map(([word]) => word)
+        .filter(word => COLOUR_KEYWORDS.has(word.toLowerCase()))
+        .map(word => `${word} is not in design/tokens.json`),
+      ...(value.includes('\\')
+        ? [
+            `${value.trim()} uses a CSS escape, which the colour check cannot read`,
+          ]
+        : []),
+    ]),
   ]),
 ];
 

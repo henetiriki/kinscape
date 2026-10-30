@@ -247,6 +247,15 @@ describe('tokenColours and snapshotProblems', () => {
     ).toEqual([]);
   });
 
+  it('does not read text and reference attributes', () => {
+    expect(
+      snapshotProblems(
+        '<nav aria-label="Orange menu" role="menu" id="red" data-note="white text"><input type="text" title="White" value="Orange Free State"></nav>',
+        tokens
+      )
+    ).toEqual([]);
+  });
+
   it('names colour keywords in style declarations and fill/stroke, not none or currentColor', () => {
     expect(
       snapshotProblems(
@@ -256,12 +265,88 @@ describe('tokenColours and snapshotProblems', () => {
     ).toEqual([
       'red is not in design/tokens.json',
       'White is not in design/tokens.json',
+      'uses url(), which the colour check cannot read',
       'Teal is not in design/tokens.json',
     ]);
   });
 
+  it('names any function it cannot read, in CSS or an attribute, but passes url(#id)', () => {
+    expect(
+      snapshotProblems(
+        '<i style="color: hsl(0 0% 0%); fill: url(#a); background: light-dark(#fff, #fff)"></i><b fill="url(#b) none" stroke="color-mix(in srgb, #fff, #264f29)"></b><style>b{color: oklch(0.5 0.1 20)}</style>',
+        tokens
+      )
+    ).toEqual([
+      'stroke="color-mix(in srgb, #fff, #264f29)" cannot be read as a colour',
+      'uses hsl(), which the colour check cannot read',
+      'uses light-dark(), which the colour check cannot read',
+      'uses color-mix(), which the colour check cannot read',
+      'uses oklch(), which the colour check cannot read',
+    ]);
+  });
+
+  it('reports a colour attribute whose value it cannot read, as legacy HTML makes a colour of any text', () => {
+    expect(
+      snapshotProblems(
+        '<body text="chucknorris" link="ff0000"><table bordercolor="#12345"></table><i fill="#264f29" vlink="Navy"></i></body>',
+        tokens
+      )
+    ).toEqual([
+      'text="chucknorris" cannot be read as a colour',
+      'link="ff0000" cannot be read as a colour',
+      'bordercolor="#12345" cannot be read as a colour',
+      'Navy is not in design/tokens.json',
+    ]);
+  });
+
+  it('names colour keywords in any attribute, Background, Menu and -webkit- colours', () => {
+    expect(
+      snapshotProblems(
+        '<animate to="red" values="#264f29;blue"></animate><i style="color: Background; border-color: -webkit-link"></i><b fill="Menu"></b>',
+        tokens
+      )
+    ).toEqual([
+      'red is not in design/tokens.json',
+      'blue is not in design/tokens.json',
+      'Background is not in design/tokens.json',
+      '-webkit-link is not in design/tokens.json',
+      'Menu is not in design/tokens.json',
+    ]);
+  });
+
+  it('reads legacy HTML colour attributes as legacy HTML does', () => {
+    expect(
+      snapshotProblems(
+        '<body bgcolor="#264F29" text="transparent"><td bgcolor="none"></td><td bgcolor="rgb(38, 79, 41)"></td><font color="#264f2980"></font><path fill="inherit"></path></body>',
+        tokens
+      )
+    ).toEqual([
+      'bgcolor="none" cannot be read as a colour',
+      'bgcolor="rgb(38, 79, 41)" cannot be read as a colour',
+      'color="#264f2980" cannot be read as a colour',
+    ]);
+  });
+
+  it('reads style-block declarations, not selectors, and rejects @import', () => {
+    expect(
+      snapshotProblems(
+        '<style>@import "a.css"; li:nth-child(2) mark{color: #264f29}@media (min-width: 1px){a:hover{color: red; transform: translate3d(0, 0, 0)}}</style>',
+        tokens
+      )
+    ).toEqual([
+      'contains @import',
+      'red is not in design/tokens.json',
+      'uses translate3d(), which the colour check cannot read',
+    ]);
+  });
+
+  it('reports a CSS escape, which can spell a colour', () => {
+    expect(snapshotProblems('<i style="color: r\\65 d"></i>', tokens)).toEqual([
+      'r\\65 d uses a CSS escape, which the colour check cannot read',
+    ]);
+  });
+
   it.each([
-    ['color(', '<i style="color: color(srgb 1 0 0)">'],
     ['var(', '<i style="color: var(--x)">'],
     ['calc(', '<i style="width: calc(1px + 2px)">'],
     ['<script', '<script>x</script>'],
@@ -270,9 +355,6 @@ describe('tokenColours and snapshotProblems', () => {
     ['http://', '<a href="http://x.test">'],
     ['https://', '<a href="https://x.test">'],
     ['.dc.html', '<a href="A.dc.html">'],
-    ['hsl(', '<i style="color: hsl(0 0% 0%)">'],
-    ['hwb(', '<i style="color: hwb(0 0% 0%)">'],
-    ['lch(', '<i style="color: oklch(0.5 0.1 20)">'],
   ])('rejects %s', (label, html) => {
     expect(snapshotProblems(html, tokens)).toEqual([`contains ${label}`]);
   });

@@ -69,8 +69,9 @@ jobs:
 
       # After a review, a push is reviewed for what changed since (review.md › Findings): the diff from
       # the head of the PR's last review. With no review, on a re-run, or on any failure, no file is
-      # written and the whole PR is reviewed.
+      # written and the whole PR is reviewed. Only a written diff sets `scope=since`.
       - name: Write the changes since the last review
+        id: since
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -108,6 +109,7 @@ jobs:
           fi
           gh api -H "Accept: application/vnd.github.diff" "repos/$GH_REPO/compare/$last...$HEAD_SHA" > "$RUNNER_TEMP/since.diff"
           mv "$RUNNER_TEMP/since.diff" "$diff"
+          echo "scope=since" >> "$GITHUB_OUTPUT"
           echo "Reviewing the changes since $last."
 
       - name: Run Claude Code Review
@@ -123,7 +125,9 @@ jobs:
           # Read-only permissions from main (.github/agent/review-settings.json).
           settings: ${{ runner.temp }}/agent/review-settings.json
           # The inline-comment tool stays a flag: the action starts its MCP server only if claude_args names it.
-          claude_args: '--allowedTools "mcp__github_inline_comment__create_inline_comment" --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+          # A full review runs on Opus at high effort: the main agent reviews alone, without the plugin's agents.
+          # A review of the changes since the last one is small, so it keeps the default model.
+          claude_args: '${{ steps.since.outputs.scope != ''since'' && ''--model opus --effort high '' || '''' }}--allowedTools "mcp__github_inline_comment__create_inline_comment" --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 

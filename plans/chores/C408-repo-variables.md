@@ -1,7 +1,7 @@
 # Plan: C408: Name the repo and bot through variables, not literals
 
 - **Spec:** #408
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -9,23 +9,18 @@ Workflows read `vars.KINSCAPE_BOT_LOGIN` and `vars.KINSCAPE_BOT_ID`; `run-claude
 
 ## Decisions
 
-**D1 · Where `vercel-ignore.mts` reads the repo** · Decides: Tech lead
+**D1 · Where `vercel-ignore.mts` reads the repo** · Decides: Tech lead · **Answer: Other** (tech lead)
 
-- **A.** `KINSCAPE_REPO`, as the chore says.
-- **B.** Vercel's `VERCEL_GIT_REPO_OWNER` and `VERCEL_GIT_REPO_SLUG`, exposed like `VERCEL_GIT_COMMIT_SHA`.
-- **Other:** your own.
+`KINSCAPE_REPO_SLUG`, an `owner/name` Vercel env var. Unset, every push deploys.
 
-Recommended: B, because it follows the connected repo, with no setting.
+- ~~**A.** `KINSCAPE_REPO`, as the chore says.~~
+- ~~**B.** Vercel's `VERCEL_GIT_REPO_OWNER` and `VERCEL_GIT_REPO_SLUG`.~~
 
-**D2 · Variables not yet set** · Decides: Tech lead
+**D2 · Variables not yet set** · Decides: Tech lead · **Answer: A** (tech lead)
 
-Unset, `github.actor != ''` lets a bot comment mentioning `@claude` start Claude.
+`claude.yml` also requires `vars.KINSCAPE_BOT_LOGIN != ''`, so it fails closed.
 
-- **A.** `claude.yml` also requires `vars.KINSCAPE_BOT_LOGIN != ''`.
-- **B.** The tech lead runs this branch's `setup-github.sh` before merging.
-- **Other:** your own.
-
-Recommended: A, because it fails closed.
+- ~~**B.** The tech lead runs this branch's `setup-github.sh` before merging.~~
 
 ## Files that change
 
@@ -35,7 +30,7 @@ Recommended: A, because it fails closed.
 | `claude.yml`, `claude-build.yml`                     | `run-name` and `if:`; inputs         |
 | `claude-run.yml`                                     | Inputs; safety-net author filter     |
 | `design-agent-shots.yml`, `actions-pin-update.yml`   | Git identity; pin regex and comment  |
-| `scripts/vercel-ignore.mts` and its test             | Repo from env (D1)                   |
+| `scripts/vercel-ignore.mts` and its test             | Repo from `KINSCAPE_REPO_SLUG` (D1)  |
 | `scripts/setup-github.sh`, `scripts/check-github.sh` | Default repo, `$REPO/*`, variables   |
 | `docs/repo-settings.md`                              | The variables and the Vercel env var |
 | `scripts/__tests__/plan-pr-condition.test.ts`        | `WHOLE` starts at the bot variable   |

@@ -7,6 +7,10 @@ coverage
 playwright-report
 test-results
 
+# Copied from the design canvas; nothing edits them
+design/canvas/**/*.dc.html
+design/canvas/**/canvas.json
+
 # Written by npm run tokens
 app/tokens.css
 

@@ -49,6 +49,7 @@ export default defineConfig([
     '.claude/worktrees/**',
     '.next/**',
     'coverage/**',
+    'design/canvas/**/canvas.json',
     'node_modules/**',
     'next-env.d.ts',
     'playwright-report/**',

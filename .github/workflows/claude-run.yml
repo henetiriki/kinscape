@@ -161,6 +161,8 @@ jobs:
           model_args: ${{ inputs.model_args }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
+          bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
+          bot_id: ${{ vars.KINSCAPE_BOT_ID }}
 
       # Before the safety net, which counts the bot's comments and would take this one for Claude's.
       - name: Remove the working comment
@@ -179,19 +181,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
           GH_REPO: ${{ github.repository }}
+          BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
           OUTCOME: ${{ steps.claude.outcome }}
           PLAN: ${{ inputs.plan }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           # Count the bot's comments on this thread since the run started.
           commented=$(gh issue view "$THREAD" --json comments \
-            --jq "[.comments[] | select(.author.login == \"henetiriki-bot\" and .createdAt >= \"$STARTED\")] | length")
+            --jq "[.comments[] | select(.author.login == \$ENV.BOT_LOGIN and .createdAt >= \"$STARTED\")] | length")
           # None means Claude went quiet. On a plan run (a Spec was labelled) it may still have
           # opened the plan PR: find a bot PR from this run that closes the Spec.
           if [ "$commented" = 0 ]; then
             pr=""
             if [ "$PLAN" = true ]; then
-              pr=$(gh pr list --state all --author henetiriki-bot --json number,createdAt,closingIssuesReferences \
+              pr=$(gh pr list --state all --author "$BOT_LOGIN" --json number,createdAt,closingIssuesReferences \
                 --jq "[.[] | select(.createdAt >= \"$STARTED\" and any(.closingIssuesReferences[]; .number == $THREAD))][0].number // empty")
             fi
             if [ -n "$pr" ]; then

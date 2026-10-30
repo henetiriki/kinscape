@@ -5,7 +5,10 @@
 # Safe to re-run. To change a setting, change it here in a PR, merge, then re-run.
 # Verify with: ./scripts/check-github.sh
 set -euo pipefail
-REPO="${1:-henetiriki/kinscape}"
+REPO="${1:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
+# The bot account the CI agent runs as, set below as repo variables. The one place its values are written.
+BOT_LOGIN=henetiriki-bot
+BOT_ID=344434370
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "== Labels"
@@ -58,6 +61,10 @@ M5 Apartheid-era homelands and richer views|Homeland layers, epochs, playback, t
 M6 Hardening|Remaining Should/Could items, accessibility, offline
 EOF
 
+echo "== Variables"
+gh variable set KINSCAPE_BOT_LOGIN --repo "$REPO" --body "$BOT_LOGIN"
+gh variable set KINSCAPE_BOT_ID --repo "$REPO" --body "$BOT_ID"
+
 echo "== Repository settings"
 gh api -X PATCH "repos/$REPO" \
   -F allow_squash_merge=true -F allow_merge_commit=false -F allow_rebase_merge=false \
@@ -104,7 +111,7 @@ gh api -X PUT "repos/$REPO/actions/permissions" \
   -F enabled=true -F sha_pinning_required=true -f allowed_actions=selected >/dev/null
 gh api -X PUT "repos/$REPO/actions/permissions/selected-actions" \
   -F github_owned_allowed=true -F verified_allowed=false \
-  -f 'patterns_allowed[]=henetiriki/kinscape/*' \
+  -f "patterns_allowed[]=$REPO/*" \
   -f 'patterns_allowed[]=anthropics/claude-code-action@*' \
   -f 'patterns_allowed[]=codecov/codecov-action@*' \
   -f 'patterns_allowed[]=oven-sh/setup-bun@*' >/dev/null

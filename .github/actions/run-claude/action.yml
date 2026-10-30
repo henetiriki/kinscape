@@ -22,10 +22,29 @@ inputs:
   github_token:
     description: "The bot's token, which claude-code-action uses to read and write the repo."
     required: true
+  bot_login:
+    description: "The bot account's login, from vars.KINSCAPE_BOT_LOGIN."
+    required: true
+  bot_id:
+    description: "The bot account's numeric id, from vars.KINSCAPE_BOT_ID."
+    required: true
 
 runs:
   using: composite
   steps:
+    # An input given as an empty string replaces claude-code-action's default bot, so a run before
+    # setup-github.sh has set the variables would commit with no name. Stop with the reason instead.
+    - name: Check the bot variables
+      shell: bash
+      env:
+        BOT_LOGIN: ${{ inputs.bot_login }}
+        BOT_ID: ${{ inputs.bot_id }}
+      run: |
+        if [ -z "$BOT_LOGIN" ] || [ -z "$BOT_ID" ]; then
+          echo '::error::The repo variables KINSCAPE_BOT_LOGIN and KINSCAPE_BOT_ID are not set. Run scripts/setup-github.sh.'
+          exit 1
+        fi
+
     # From main, not this branch (see load-agent-files). settings.json is the build agent's tools.
     - name: Load agent files
       uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
@@ -39,8 +58,8 @@ runs:
       with:
         claude_code_oauth_token: ${{ inputs.claude_code_oauth_token }}
         github_token: ${{ inputs.github_token }}
-        bot_name: henetiriki-bot
-        bot_id: '344434370'
+        bot_name: ${{ inputs.bot_login }}
+        bot_id: ${{ inputs.bot_id }}
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
         # Off: the full output includes every screenshot Claude reads, as base64, and the log

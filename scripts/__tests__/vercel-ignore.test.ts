@@ -3,9 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { invisible, run } from '../vercel-ignore.mts';
 
 const TOKEN = 'github_pat_synthetic_not_a_real_token';
+const SLUG = 'example-owner/example-repo';
 
 const env = (ref: string, extra: Record<string, string> = {}) => ({
   KINSCAPE_GIT_READ_TOKEN: TOKEN,
+  KINSCAPE_REPO_SLUG: SLUG,
   VERCEL_GIT_COMMIT_REF: ref,
   VERCEL_GIT_COMMIT_SHA: 'abc123',
   ...extra,
@@ -98,6 +100,7 @@ describe('run', () => {
 
   it.each([
     ['no token', { KINSCAPE_GIT_READ_TOKEN: '' }],
+    ['no repo', { KINSCAPE_REPO_SLUG: '' }],
     ['no commit', { VERCEL_GIT_COMMIT_SHA: '' }],
     ['no branch', { VERCEL_GIT_COMMIT_REF: '' }],
   ])('deploys with %s, without calling GitHub', async (_name, extra) => {
@@ -114,8 +117,8 @@ describe('run', () => {
     await run(env('chore/C1-x'), get);
 
     expect(get.mock.calls.map(call => call[0])).toEqual([
-      'https://api.github.com/repos/henetiriki/kinscape/commits/abc123',
-      'https://api.github.com/repos/henetiriki/kinscape/compare/main...abc123',
+      `https://api.github.com/repos/${SLUG}/commits/abc123`,
+      `https://api.github.com/repos/${SLUG}/compare/main...abc123`,
     ]);
   });
 

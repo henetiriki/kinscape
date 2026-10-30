@@ -2,7 +2,7 @@
 # Check that GitHub's live settings match what scripts/setup-github.sh applies.
 # Read-only. Exits non-zero if anything has drifted.
 set -uo pipefail
-REPO="${1:-henetiriki/kinscape}"
+REPO="${1:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 fail=0
 
@@ -82,9 +82,18 @@ check "Push protection"                "$(r .security_and_analysis.secret_scanni
 check "Private vulnerability reporting" "$(gh api "repos/$REPO/private-vulnerability-reporting" --jq .enabled 2>/dev/null)" "true"
 check "Actions pinned to a full SHA"   "$(gh api "repos/$REPO/actions/permissions" --jq .sha_pinning_required)" "true"
 check "Only selected actions allowed"  "$(gh api "repos/$REPO/actions/permissions" --jq .allowed_actions)" "selected"
+allowed=$(printf '%s\n' 'anthropics/claude-code-action@*' 'codecov/codecov-action@*' "$REPO/*" 'oven-sh/setup-bun@*' | LC_ALL=C sort | paste -sd, -)
 check "Allowed actions list" "$(gh api "repos/$REPO/actions/permissions/selected-actions" --jq '"\(.github_owned_allowed) \(.verified_allowed) \(.patterns_allowed | sort | join(","))"')" \
-  "true false anthropics/claude-code-action@*,codecov/codecov-action@*,henetiriki/kinscape/*,oven-sh/setup-bun@*"
+  "true false $allowed"
 check "Code scanning (CodeQL default)" "$(gh api "repos/$REPO/code-scanning/default-setup" --jq .state 2>/dev/null)" "configured"
 check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --jq .approval_policy)" "all_external_contributors"
+
+# The bot variables the workflows read. The values are in setup-github.sh; here the login must be
+# set and the id must be GitHub's for that login.
+bot_login=$(gh variable get KINSCAPE_BOT_LOGIN --repo "$REPO" 2>/dev/null)
+bot_id=$(gh variable get KINSCAPE_BOT_ID --repo "$REPO" 2>/dev/null)
+check "Bot login variable set"         "$([ -n "$bot_login" ] && echo true || echo false)" "true"
+real_id=$([ -n "$bot_login" ] && gh api "users/$bot_login" --jq .id 2>/dev/null)
+check "Bot id variable is the login's" "$bot_id" "${real_id:-no id for '$bot_login'}"
 
 exit $fail

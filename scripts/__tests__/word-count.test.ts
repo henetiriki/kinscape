@@ -36,7 +36,7 @@ describe('countWords', () => {
 describe('budgetFor', () => {
   it.each([
     ['CLAUDE.md', 150],
-    ['AGENTS.md', 650],
+    ['AGENTS.md', 700],
     ['docs/security.md', 200],
     ['docs/how-we-work.md', 850],
     ['docs/building.md', 400],

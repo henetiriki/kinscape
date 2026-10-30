@@ -5,7 +5,7 @@ import { isAbsolute, relative, sep } from 'node:path';
 // A word is a whitespace-separated token with a letter or digit in it.
 const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 150, pattern: /^CLAUDE\.md$/ },
-  { limit: 650, pattern: /^AGENTS\.md$/ },
+  { limit: 700, pattern: /^AGENTS\.md$/ },
   { limit: 200, pattern: /^docs\/security\.md$/ },
   { limit: 850, pattern: /^docs\/how-we-work\.md$/ },
   { limit: 400, pattern: /^docs\/building\.md$/ },

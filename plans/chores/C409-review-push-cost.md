@@ -41,7 +41,7 @@ Each push reran the full review, hunting new gaps: #405 had six. A new step in `
 
 - A merge from `main` widens the diff; the both-diffs rule filters it.
 - Without Opus or high effort, plan or rule breaks may slip; the proof PR plants one.
-- Unchanged code's defects that earlier rounds missed go unflagged (#405's last run: one of three).
+- Defects earlier rounds missed go unflagged (#405's last run: one of three).
 
 ## Proof
 
@@ -54,6 +54,7 @@ Each push reran the full review, hunting new gaps: #405 had six. A new step in `
 
 ## Deviations
 
-- The job gains `actions: read` for `gh run list`.
+- The job gains `actions: read`.
 - `--effort high` goes too (@henetiriki).
-- `review.md` drops its style-nit line (the command has one) for its budget.
+- Only a run with Claude's transcript counts; a re-run reviews everything.
+- `review.md` hands the review agents the diff; its budget is 450 (@henetiriki).

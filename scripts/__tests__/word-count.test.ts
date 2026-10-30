@@ -49,7 +49,7 @@ describe('budgetFor', () => {
     ['plans/bugs/B1-x.md', 600],
     ['plans/chores/C1-x.md', 300],
     ['.github/agent/rules.md', 300],
-    ['.github/agent/review.md', 400],
+    ['.github/agent/review.md', 450],
     ['.claude/skills/refine/SKILL.md', 650],
     ['.claude/skills/refine/nested/deep.md', 650],
   ])('%s has a budget of %i', (path, budget) => {

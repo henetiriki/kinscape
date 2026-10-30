@@ -4,7 +4,7 @@ Where these rules and the review command disagree, these win.
 
 ## The plan
 
-Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body (a chore with no issue); else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it. For each Approach item, Files-that-change row and Proof row, check that the diff does it. Report a missing or extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs where the plan does.
+Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body (a chore with no issue); else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it. For each Approach item, Files-that-change row and Proof row, check that the diff does it. Report a missing or extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs (e.g. `MAP-03`) where the plan does.
 
 ## The rules
 
@@ -16,7 +16,7 @@ When the diff moves or adds code in a new top-level folder, check that the guard
 
 Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 
-In workflows, also check (kept here, on `main`, so a PR can't weaken them):
+In workflows, also check (these live only here, loaded from `main`, so a PR can't weaken them):
 
 - each action and reusable workflow pinned to a full commit SHA, except this repo's own `.github/actions/**` and `.github/workflows/claude*.yml`, used as `henetiriki/kinscape/<path>@main`;
 - the fewest `permissions:`;
@@ -25,9 +25,9 @@ In workflows, also check (kept here, on `main`, so a PR can't weaken them):
 
 ## Findings
 
-- Ignore the command's "only if certain" and input-dependence filters: report probable problems, but list gaps no committed file reaches in one `gh pr comment`.
-- If `.since-last-review.diff` exists, flag defects only on its lines that `gh pr diff` also has.
+- Ignore the command's "only if certain" and "don't flag what depends on inputs" filters. Report probable problems too, but list gaps no committed file's input reaches in one `gh pr comment`, not inline.
+- If `.since-last-review.diff` exists (the changes since the last review), give it to the review agents instead of `gh pr diff`, and flag defects only on its lines `gh pr diff` also has. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
-- Post up to ten, one comment each: code defects and rule breaks first (at most eight, most severe first), then plan departures (at most two).
-- Ignore the command's stop after Claude comments: review every push, never repeating a comment still on the PR.
+- Post up to ten, one comment each: code defects and rule breaks first (at most eight, most severe first), then plan departures (at most two). Skip style nits and what a linter catches.
+- Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a finding still on the PR.
 - Never post "No issues" alone. List the plan items and rules you checked.

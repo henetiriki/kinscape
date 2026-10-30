@@ -68,8 +68,8 @@ jobs:
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
       # After a review, a push is reviewed for what changed since (review.md › Findings): the diff from
-      # the head of the PR's last successful review run. With no such run, or on any failure, no file
-      # is written and the whole PR is reviewed.
+      # the head of the PR's last review. With no review, on a re-run, or on any failure, no file is
+      # written and the whole PR is reviewed.
       - name: Write the changes since the last review
         continue-on-error: true
         env:
@@ -80,10 +80,23 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           diff="$GITHUB_WORKSPACE/.since-last-review.diff"
-          # The branch could commit a file by this name: only this step may write it.
-          rm -f "$diff" "$diff.tmp"
-          last=$(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request --status success \
-            --json headSha --jq '[.[].headSha | select(. != env.HEAD_SHA)][0] // empty')
+          # The branch could commit a file or folder by this name: only this step may write it.
+          rm -rf "$diff"
+          if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
+            echo "A re-run: reviewing the whole PR."
+            exit 0
+          fi
+          # Successful runs, newest first. One counts as a review only if it uploaded Claude's transcript
+          # (kept 14 days): a run where Claude didn't start, as on a PR changing this file, succeeds too.
+          last=""
+          for run in $(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request --status success \
+            --json databaseId,headSha --jq '.[] | select(.headSha != env.HEAD_SHA) | "\(.databaseId):\(.headSha)"'); do
+            if [ -n "$(gh api "repos/$GH_REPO/actions/runs/${run%%:*}/artifacts" \
+              --jq '.artifacts[] | select(.name == "claude-execution-output" and (.expired | not)) | .id')" ]; then
+              last="${run#*:}"
+              break
+            fi
+          done
           if ! [[ "$last" =~ ^[0-9a-f]{40}$ ]]; then
             echo "No earlier review: reviewing the whole PR."
             exit 0
@@ -93,8 +106,8 @@ jobs:
             echo "$last is no longer in the PR: reviewing the whole PR."
             exit 0
           fi
-          gh api -H "Accept: application/vnd.github.diff" "repos/$GH_REPO/compare/$last...$HEAD_SHA" > "$diff.tmp"
-          mv "$diff.tmp" "$diff"
+          gh api -H "Accept: application/vnd.github.diff" "repos/$GH_REPO/compare/$last...$HEAD_SHA" > "$RUNNER_TEMP/since.diff"
+          mv "$RUNNER_TEMP/since.diff" "$diff"
           echo "Reviewing the changes since $last."
 
       - name: Run Claude Code Review

@@ -28,7 +28,7 @@ Then fix the code with tokens (`var(--…)` from `app/tokens.css`), never with n
 
 ## Rules
 
-- **Never change the design to pass.** Don't edit `design/source/`, `design/tokens.json` or the JPGs to make a screen match. If the design looks wrong, follow `AGENTS.md`.
+- **Never change the design to pass.** Don't edit `design/tokens.json` to make a screen match; for other design files and a design that looks wrong, follow `AGENTS.md`.
 - **A token that seems wrong is a question, not a fix.** Ask before editing `tokens.json`.
 - **Don't widen the check.** Adding an `ignore` area or raising the threshold needs the screen's Spec to allow it. Propose it under Flagged concerns instead.
 - **Leave `mode` alone** unless the screen's Spec says it is done; then set it to `blocking`.

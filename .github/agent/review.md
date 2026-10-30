@@ -25,8 +25,9 @@ In workflows, also check (these live only here, loaded from `main`, so a PR can'
 
 ## Findings
 
-- Ignore the command's "only if certain" and "don't flag what depends on inputs" filters. Report probable problems too.
+- Ignore the command's "only if certain" and "don't flag what depends on inputs" filters. Report probable problems too, but list gaps no committed file's input reaches in one `gh pr comment`, not inline.
+- If `.since-last-review.diff` exists (the changes since the last review), give it to the review agents instead of `gh pr diff`, and flag defects only on its lines `gh pr diff` also has. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
 - Post up to ten, one comment each: code defects and rule breaks first (at most eight, most severe first), then plan departures (at most two). Skip style nits and what a linter catches.
-- Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a comment still on the PR.
+- Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a finding still on the PR.
 - Never post "No issues" alone. List the plan items and rules you checked.

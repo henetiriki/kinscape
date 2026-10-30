@@ -30,16 +30,17 @@ The agent can't install gitleaks.
 
 ## Files that change
 
-| File                                                                                     | What                                                     |
-| ---------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| `LICENSE`, `SECURITY.md`                                                                 | New                                                      |
-| `package.json`, `README.md`                                                              | Licence; Contributions section                           |
-| `.github/workflows/claude.yml`                                                           | Comment's, review's or issue's association               |
-| `.github/workflows/claude-{plan,code-review}.yml`                                        | Issue's or PR's association                              |
-| `.github/workflows/backlog-{intent-ready,spec-link,milestone}.yml`, `claude-unblock.yml` | Issue's association: form labels reach outsiders' issues |
-| `scripts/{setup,check}-github.sh`                                                        | Five settings                                            |
-| `docs/repo-settings.md`                                                                  | Dependabot row; new rows                                 |
-| `.github/workflows/actions-pin-update.yml`                                               | Open pin-update PR after repo action changes on `main`   |
+| File                                                                                     | What                                        |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `LICENSE`, `SECURITY.md`                                                                 | New                                         |
+| `package.json`, `README.md`                                                              | Licence; Contributions section              |
+| `.github/workflows/claude.yml`                                                           | Comment's, review's or issue's association  |
+| `.github/workflows/claude-{plan,code-review}.yml`                                        | Issue's or PR's association                 |
+| `.github/workflows/backlog-{intent-ready,spec-link,milestone}.yml`, `claude-unblock.yml` | Issue's association                         |
+| `scripts/{setup,check}-github.sh`                                                        | Five settings                               |
+| `docs/repo-settings.md`                                                                  | Dependabot row; new rows                    |
+| Own refs, `review.md`, their tests                                                       | `@main` → last `main` commit to change each |
+| `.github/workflows/actions-pin-update.yml`                                               | Re-pins them by PR                          |
 
 ## Order of work
 
@@ -49,7 +50,7 @@ The agent can't install gitleaks.
 ## Risks
 
 - The bot's PRs and comments still pass: it's a COLLABORATOR.
-- Gating `ci.yml` would skip required checks, which counts as passing; fork runs need approval instead.
+- Run setup only once merged pin PRs stop opening new ones (two or three).
 
 ## Proof
 
@@ -66,5 +67,5 @@ The agent can't install gitleaks.
 
 ## Deviations
 
-`package-lock.json` also gets the licence.
-`actions-pin-update.yml` updates repo-action SHAs after main changes.
+- `package-lock.json` also gets the licence.
+- Own refs pinned (review P1).

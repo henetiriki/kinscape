@@ -217,8 +217,9 @@ describe('the run-claude action', () => {
 // secret scan (plans/chores/C415-transcript-summary.md). A runner's temp directory isn't always
 // /home/runner/work/_temp, so every path starts at runner.temp.
 describe("the upload of Claude's output", () => {
-  const SUMMARY =
-    '${{ runner.temp }}/claude-summary/claude-execution-output.json';
+  // The copy gitleaks scanned, not the summary it was copied from.
+  const SCANNED =
+    '${{ runner.temp }}/gitleaks/scan/claude-execution-output.json';
   const reviewSteps = () =>
     Object.values(
       (
@@ -235,7 +236,7 @@ describe("the upload of Claude's output", () => {
     ['run-claude', runClaudeSteps, false],
     ['claude-code-review.yml', reviewSteps, true],
   ])('in %s', (_, steps, node) => {
-    it('uploads the summary alone, for 7 days, after a clean scan', () => {
+    it('uploads the scanned summary alone, for 7 days, after a clean scan', () => {
       const uploads = steps().filter(step =>
         step.uses?.startsWith('actions/upload-artifact@')
       );
@@ -246,13 +247,19 @@ describe("the upload of Claude's output", () => {
       );
       expect(uploads[0].with).toEqual({
         name: 'claude-execution-output',
-        path: SUMMARY,
+        path: SCANNED,
         'retention-days': 7,
       });
     });
 
-    it('summarises with the script from main', () => {
-      const [checkout] = named(steps(), 'Check out the summary script');
+    // A branch or the agent could leave a symlink, file or repo at that path for checkout to follow.
+    it('clears the folder, then summarises with the script from main', () => {
+      const all = steps();
+      const [clear] = named(all, 'Clear the summary script folder');
+      const [checkout] = named(all, 'Check out the summary script');
+
+      expect(clear.run).toBe('rm -rf .claude-summary-script');
+      expect(all.indexOf(clear)).toBe(all.indexOf(checkout) - 1);
       const [summarise] = named(steps(), "Summarise Claude's output");
 
       expect(checkout.with).toMatchObject({
@@ -267,6 +274,7 @@ describe("the upload of Claude's output", () => {
 
     it('runs the summary steps even when Claude failed, and never fails on them', () => {
       for (const name of [
+        'Clear the summary script folder',
         'Check out the summary script',
         ...(node ? ['Set up Node for the summary'] : []),
         "Summarise Claude's output",
@@ -293,6 +301,20 @@ describe("the upload of Claude's output", () => {
     expect(scan(runClaudeSteps()).run).toBe(
       'bash .claude-summary-script/scripts/scan-summary.sh'
     );
+    // The gitleaks pin is in the script, from main, so one edit moves both at once.
+    expect(Object.keys(scan(runClaudeSteps()).env ?? {}).sort()).toEqual([
+      'GH_REPO',
+      'GH_TOKEN',
+      'RUN_URL',
+      'THREAD',
+    ]);
+  });
+
+  // Without pipefail, a failed comment lookup would read as "no comment yet" and post a second one.
+  it('finds the No Claude review comment with pipefail on', () => {
+    expect(named(reviewSteps(), 'Report a missing review')[0].shell).toBe(
+      'bash'
+    );
   });
 });
 
@@ -308,11 +330,21 @@ while [ "$#" -gt 0 ]; do [ "$1" = -o ] && echo tarball > "$2"; shift; done
 printf 'gh %s\n' "$*" >> "$RUNNER_TEMP/calls"
 exit "\${STUB_GH_EXIT:-0}"
 `,
-  // Logs what it was asked to scan, and what is in the folder it reads .gitleaksignore from.
+  // Logs what it was asked to scan, what is in the folder it reads .gitleaksignore from, and any
+  // config it would take from the environment.
   'gitleaks-stub': `#!/bin/bash
-echo "gitleaks $*" >> "$RUNNER_TEMP/calls"
-echo "scanned: $(ls -A "$2" | xargs)" >> "$RUNNER_TEMP/calls"
-echo "ignore folder: $(ls -A "$9" | xargs)" >> "$RUNNER_TEMP/calls"
+prev=""
+for arg in "$@"; do
+  [ "$prev" = dir ] && source="$arg"
+  [ "$prev" = --gitleaks-ignore-path ] && ignore="$arg"
+  prev="$arg"
+done
+{
+  echo "gitleaks $*"
+  echo "scanned: $(ls -A "$source" | xargs)"
+  echo "ignore folder: $(ls -A "$ignore" | xargs)"
+  echo "config env: \${GITLEAKS_CONFIG-}\${GITLEAKS_CONFIG_TOML-}"
+} >> "$RUNNER_TEMP/calls"
 exit "\${STUB_GITLEAKS_EXIT:-0}"
 `,
   sha256sum: `#!/bin/bash
@@ -336,10 +368,14 @@ const scanStep = () =>
 
 // Runs scripts/scan-summary.sh with run-claude's env and the stubs, over a summary unless `summary`
 // is false.
+const scanScript = readFileSync(join(root, 'scripts/scan-summary.sh'), 'utf8');
+const version = scanScript.match(/^GITLEAKS_VERSION=(\S+)$/m)?.[1];
+
 const scan = (stubs: Record<string, string> = {}, summary = true) => {
   const step = scanStep();
   const dir = mkdtempSync(join(tmpdir(), 'scan-summary-'));
   const file = join(dir, 'claude-summary/claude-execution-output.json');
+  const scanned = join(dir, 'gitleaks/scan/claude-execution-output.json');
 
   try {
     mkdirSync(join(dir, 'bin'));
@@ -358,6 +394,9 @@ const scan = (stubs: Record<string, string> = {}, summary = true) => {
       encoding: 'utf8',
       env: {
         ...step.env,
+        // Config an earlier step could set through $GITHUB_ENV, to allowlist everything.
+        GITLEAKS_CONFIG: '/allow-all.toml',
+        GITLEAKS_CONFIG_TOML: 'allow-all',
         ...stubs,
         GH_REPO: 'owner/repo',
         GH_TOKEN: 'token',
@@ -376,10 +415,10 @@ const scan = (stubs: Record<string, string> = {}, summary = true) => {
     return {
       calls: text(join(dir, 'calls')),
       dir,
-      kept: existsSync(file),
+      kept: existsSync(file) || existsSync(scanned),
       log,
       output: text(join(dir, 'output')),
-      version: step.env.GITLEAKS_VERSION,
+      scanned: existsSync(scanned),
     };
   } finally {
     rmSync(dir, { force: true, recursive: true });
@@ -388,14 +427,12 @@ const scan = (stubs: Record<string, string> = {}, summary = true) => {
 
 describe('the scan step', () => {
   it('pins gitleaks to a version and its SHA-256', () => {
-    const { env } = scanStep();
-
-    expect(env.GITLEAKS_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
-    expect(env.GITLEAKS_SHA256).toMatch(/^[0-9a-f]{64}$/);
+    expect(version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(scanScript).toMatch(/^GITLEAKS_SHA256=[0-9a-f]{64}$/m);
   });
 
   it('downloads, checks and runs gitleaks on the summary, and says clean', () => {
-    const { calls, dir, kept, output, version } = scan();
+    const { calls, dir, output, scanned } = scan();
 
     expect(calls).toContain(
       `https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz`
@@ -404,11 +441,11 @@ describe('the scan step', () => {
       /^sha256sum --check --quiet [0-9a-f]{64} {2}\S+\/gitleaks\.tar\.gz$/m
     );
     expect(calls).toContain(
-      `gitleaks dir ${dir}/gitleaks/scan --no-banner --redact --exit-code 2 --gitleaks-ignore-path ${dir}/gitleaks\n`
+      `gitleaks dir ${dir}/gitleaks/scan --no-banner --verbose --redact --exit-code 2 --gitleaks-ignore-path ${dir}/gitleaks\n`
     );
     expect(calls).not.toContain('gh ');
     expect(output).toBe('clean=true\n');
-    expect(kept).toBe(true);
+    expect(scanned).toBe(true);
   });
 
   it.each([
@@ -446,11 +483,16 @@ describe('the scan step', () => {
   });
 
   // A branch or the agent could leave a .gitleaksignore or .gitleaks.toml that allowlists a finding.
-  it('scans a copy of the summary alone, with no ignore file', () => {
+  it('scans a copy of the summary alone, with no ignore file or config from the environment', () => {
     const { calls } = scan();
 
     expect(calls).toContain('scanned: claude-execution-output.json\n');
-    expect(calls).toMatch(/^ignore folder: [^.]*$/m);
+    expect(calls.match(/^ignore folder: (.*)$/m)?.[1].split(' ')).toEqual([
+      'gitleaks',
+      'gitleaks.tar.gz',
+      'scan',
+    ]);
+    expect(calls).toContain('config env: \n');
   });
 
   it('runs gitleaks only on a download that checks out', () => {

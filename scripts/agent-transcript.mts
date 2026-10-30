@@ -251,8 +251,8 @@ export const readSummary = (text: string): Transcript | undefined => {
 };
 
 // Writes the transcript's summary, the only part of a run that is uploaded: the transcript holds
-// every tool result, so any token a command printed. No transcript writes nothing, and removes a
-// file already there. The summary is scanned before upload, so it has one field per line, and no
+// every tool result, so any token a command printed. A file already there is removed first, and
+// no transcript writes nothing. The summary is scanned before upload, so it has one field per line, and no
 // `gitleaks:allow`, which makes gitleaks skip its line.
 // Usage: node scripts/agent-transcript.mts <claude-execution-output.json> <summary.json>
 export const run = (args: string[]): number => {
@@ -266,11 +266,11 @@ export const run = (args: string[]): number => {
     return 1;
   }
 
+  rmSync(output, { force: true });
+
   const transcript = existsSync(input)
     ? parseTranscript(readFileSync(input, 'utf8'))
     : undefined;
-
-  rmSync(output, { force: true });
 
   if (transcript) {
     mkdirSync(dirname(output), { recursive: true });

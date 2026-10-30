@@ -361,12 +361,6 @@ const SUMMARY_KEYS = [
 ];
 
 describe('readSummary', () => {
-  it('reads back what run writes', () => {
-    const summary = parse([init, assistant(toolUse('Read')), result()]);
-
-    expect(readSummary(JSON.stringify(summary))).toEqual(summary);
-  });
-
   it('reads a summary missing the figures a run did not reach', () => {
     expect(
       readSummary(
@@ -473,7 +467,22 @@ describe('run', () => {
 
     expect(Object.keys(JSON.parse(text)).sort()).toEqual(SUMMARY_KEYS);
     expect(text).not.toContain('c2VjcmV0');
-    expect(readSummary(text)?.tools).toEqual({ 'Bash:cat': 1 });
+    expect(readSummary(text)).toEqual(
+      parseTranscript(readFileSync(input, 'utf8'))
+    );
+  });
+
+  // A planted file or symlink must not outlive a transcript that breaks the parser.
+  it('removes any earlier file before reading the transcript', () => {
+    const input = join(dir, 'claude-execution-output.json');
+    const output = join(dir, 'summary', 'claude-execution-output.json');
+
+    writeFileSync(input, '[null]');
+    mkdirSync(join(dir, 'summary'));
+    writeFileSync(output, '{"planted":true}');
+
+    expect(() => run([input, output])).toThrow();
+    expect(existsSync(output)).toBe(false);
   });
 
   // gitleaks skips any line holding its allow marker, so the marker in Claude's final message must

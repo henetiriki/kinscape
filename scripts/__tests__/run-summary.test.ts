@@ -7,6 +7,10 @@ import type { Transcript } from '../types.ts';
 
 import { formatDuration, render, run } from '../run-summary.mts';
 
+// What the page says with no summary: a scan that held it back is as likely as a run that never started.
+const NO_SUMMARY =
+  'No summary was uploaded: Claude may not have started, the secret scan may have held it back (see the thread), or the run used a run-claude from before summaries.';
+
 const transcript = (extra: Partial<Transcript> = {}): Transcript => ({
   costUsd: 2.0762,
   denials: [],
@@ -34,7 +38,7 @@ describe('formatDuration', () => {
 
 describe('render', () => {
   it('says so when there is no transcript', () => {
-    expect(render(undefined)).toContain('No output was captured');
+    expect(render(undefined)).toContain(NO_SUMMARY);
   });
 
   it('shows the figures in a table', () => {
@@ -167,27 +171,27 @@ describe('run', () => {
     );
 
     expect(run([input], { GITHUB_STEP_SUMMARY: summary })).toBe(0);
-    expect(readFileSync(summary, 'utf8')).toContain('No output was captured');
+    expect(readFileSync(summary, 'utf8')).toContain(NO_SUMMARY);
   });
 
   it('says so when the file is missing', () => {
     expect(
       run([join(dir, 'gone.json')], { GITHUB_STEP_SUMMARY: summary })
     ).toBe(0);
-    expect(readFileSync(summary, 'utf8')).toContain('No output was captured');
+    expect(readFileSync(summary, 'utf8')).toContain(NO_SUMMARY);
   });
 
   it('says so when the file cannot be read as a summary', () => {
     writeFileSync(input, 'half a fi');
 
     expect(run([input], { GITHUB_STEP_SUMMARY: summary })).toBe(0);
-    expect(readFileSync(summary, 'utf8')).toContain('No output was captured');
+    expect(readFileSync(summary, 'utf8')).toContain(NO_SUMMARY);
   });
 
   it('prints to the terminal when $GITHUB_STEP_SUMMARY is not set', () => {
     expect(run([join(dir, 'gone.json')], {})).toBe(0);
     expect(console.log).toHaveBeenCalledWith(
-      expect.stringContaining('No output was captured')
+      expect.stringContaining(NO_SUMMARY)
     );
   });
 });

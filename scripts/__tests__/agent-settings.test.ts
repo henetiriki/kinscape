@@ -27,12 +27,23 @@ describe.each(['settings.json', 'review-settings.json'])('%s', file => {
     expect(denyOf(file)).toContain(rule);
   });
 
-  // Claude Code saves long tool output there, and reads it back with Read.
-  it.each(['/tmp', '~/.claude'])('leaves %s readable', path => {
-    expect(
-      denyOf(file).filter(rule =>
-        rule.replace('//', '/').startsWith(`Read(${path}`)
-      )
-    ).toEqual([]);
-  });
+  // Claude Code saves long tool output there, and reads it back with Read. A rule's `//` starts an
+  // absolute path; `**` matches any depth and `*` one name.
+  it.each(['/tmp/claude-1/tool-results/a.txt', '~/.claude/projects/a.jsonl'])(
+    'leaves %s readable',
+    path => {
+      const matches = (rule: string) => {
+        const glob = rule.match(/^Read\((.+)\)$/)?.[1].replace(/^\/\//, '/');
+        const pattern = glob
+          ?.replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+          .replaceAll('**', '\u0000')
+          .replaceAll('*', '[^/]*')
+          .replaceAll('\u0000', '.*');
+
+        return pattern !== undefined && new RegExp(`^${pattern}$`).test(path);
+      };
+
+      expect(denyOf(file).filter(matches)).toEqual([]);
+    }
+  );
 });

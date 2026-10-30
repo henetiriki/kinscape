@@ -207,7 +207,7 @@ jobs:
           fi
 
   # GitHub lists no steps for a job in a called workflow, so the run page would show nothing. This
-  # writes the result section shown on that page from Claude's transcript (the run-summary action,
+  # writes the result section shown on that page from Claude's summary (the run-summary action,
   # from main). It runs even when `run` failed, has no secrets, and its script step never fails the job.
   summary:
     # The Actions graph shows this as "<caller job> / Result".

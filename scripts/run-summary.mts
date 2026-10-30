@@ -35,7 +35,7 @@ export const render = (transcript: Transcript | undefined): string => {
     return [
       '### Claude run',
       '',
-      'No output was captured (the run may have stopped before Claude started).',
+      'No summary was uploaded: Claude may not have started, the secret scan may have held it back (see the thread), or the run used a run-claude from before summaries.',
     ].join('\n');
   }
 

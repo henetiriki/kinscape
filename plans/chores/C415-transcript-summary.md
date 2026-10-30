@@ -5,13 +5,13 @@
 
 ## Approach
 
-`agent-transcript.mts` gains a CLI that writes `parseTranscript`'s result, and `readSummary`, which `run-summary.mts` and `denial-audit.mts` call. After Claude runs, `run-claude` and `claude-code-review.yml` sparse-check out main's `scripts`, write the summary as `claude-execution-output.json` in its own folder, scan it with gitleaks, and upload it for 7 days if clean.
+`agent-transcript.mts` gains a CLI that writes `parseTranscript`'s result, and `readSummary`, which `run-summary.mts` and `denial-audit.mts` call. After Claude runs, `run-claude` and `claude-code-review.yml` sparse-check out main's `scripts`, write the summary, scan it with gitleaks, and upload it for 7 days if clean.
 
 ## Decisions
 
 **D1 · Transcripts uploaded before the change** · Decides: Tech lead
 
-Old artifacts last 14 days; callers run the old `run-claude` until its pin PR merges.
+Old artifacts last 14 days; callers run the old `run-claude` until their pin PRs merge (plan and build: two).
 
 - ~~**A.** `readSummary` also reads a transcript array.~~
 - ~~**B.** Summaries only: those runs show "No output", and the audit skips them.~~
@@ -57,6 +57,6 @@ Old artifacts last 14 days; callers run the old `run-claude` until its pin PR me
 
 ## Deviations
 
-- Scan in `scripts/scan-summary.sh` (from main), on a copy without ignore files.
+- `scripts/scan-summary.sh` (from main, with the gitleaks pin) scans a copy, uploaded if clean.
 - `load-agent-files` also denies this runner's temp.
 - "No Claude review" comment found by heading, not `--edit-last`.

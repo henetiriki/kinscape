@@ -27,6 +27,15 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 
 **Answer: A** (@henetiriki)
 
+**D3 · Browser default colours** · Decides: Tech lead
+
+A text check can't see browser-supplied colours (an unstyled link).
+
+- **A.** Accept it as a Deviation.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                              | What                                                 |
@@ -38,14 +47,10 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 
 ## Order of work
 
-1. Ignores, so the pre-commit hook leaves the copy alone.
+1. Ignores for the copy.
 2. Tech lead commits the design agent's canvas copy.
 3. Tests first (rule 12), then the exporter.
 4. Export all 50; `git diff --exit-code design/source`.
-
-## Risks
-
-- The repo's Prettier or Chromium may differ by a byte: stop and ask, changing no snapshot.
 
 ## Proof
 
@@ -60,7 +65,7 @@ Port the starter into `scripts/design-export.mts`, shaped like `design-shots.mts
 
 - Types in `scripts/types.ts`, as lint requires.
 - `export.json` also holds the icon path and the `Kit-menu-phone.dc.html` link.
-- The colour check fails on anything it can't read, and checks keywords in CSS and non-text attributes. It can't see browser default colours.
+- The colour check fails on anything it can't read. It can't see browser default colours (D3).
 
 ## Out of scope
 

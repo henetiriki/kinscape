@@ -21,3 +21,11 @@ A time-travelling landscape for your kin. Drag the slider from 1652 to today and
 [![The KinScape sign-in screen: a map of South Africa with historical borders and a Pin on Farm Rietfontein](design/sign-in-desktop.jpg)](design/DESIGN.md)
 
 Built as an experiment in the [AI-native SDLC](https://claude.com/resources/articles/the-ai-native-sdlc-playbook).
+
+## Contributions
+
+This repo is a showcase: it takes no issues or pull requests from outside the team. To report a vulnerability, see [SECURITY.md](SECURITY.md).
+
+## Licence
+
+The code is [MIT](LICENSE). Third-party data keeps its own licences, listed in [`data/sources.json`](data/sources.json).

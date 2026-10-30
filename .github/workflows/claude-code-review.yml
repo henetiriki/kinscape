@@ -19,8 +19,10 @@ jobs:
   claude-review:
     name: Run Claude
     # Dependabot pull requests get no Actions secrets, so the review cannot run.
-    # Drafts are reviewed when marked ready for review.
-    if: github.actor != 'dependabot[bot]' && !github.event.pull_request.draft
+    # Drafts are reviewed when marked ready for review. Outsiders' PRs aren't reviewed.
+    if: >-
+      github.actor != 'dependabot[bot]' && !github.event.pull_request.draft &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
 
     runs-on: ubuntu-latest
     env:

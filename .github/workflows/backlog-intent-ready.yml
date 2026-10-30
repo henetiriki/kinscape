@@ -3,12 +3,13 @@ name: 'Backlog: Intent ready for PO'
 # When a Spec is closed, check whether that was the last open Spec of its
 # Intent. If so, hand the Intent to the PO to confirm the outcome and close it.
 #
-# The title shown for each run in the Actions tab: "Check Intent: <title>" for a Spec,
-# "Skipped: <title>" for any other issue. Repeats the job's `if:` (run-name cannot see job
-# results): change them together.
+# The title shown for each run in the Actions tab: "Check Intent: <title>" for a Spec filed by
+# the owner, a member or a collaborator, "Skipped: <title>" for any other issue. Repeats the
+# job's `if:` (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     contains(github.event.issue.labels.*.name, 'type: spec') &&
+    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
     format('Check Intent: {0}', github.event.issue.title) ||
     format('Skipped: {0}', github.event.issue.title)
   }}
@@ -23,7 +24,9 @@ permissions:
 jobs:
   # Only closed Specs matter here; every other closed issue is ignored.
   flag-intent:
-    if: "contains(github.event.issue.labels.*.name, 'type: spec')"
+    if: >-
+      contains(github.event.issue.labels.*.name, 'type: spec') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     steps:
       - name: Flag Intent for PO

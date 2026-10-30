@@ -51,7 +51,7 @@ Recommended: A.
 
 ## Risks
 
-- The bot's own PRs and comments still pass: its association is COLLABORATOR.
+- The bot's PRs and comments still pass: it's a COLLABORATOR.
 - Gating `ci.yml` would skip required checks, which counts as passing; fork runs need approval instead.
 
 ## Proof
@@ -66,3 +66,7 @@ Recommended: A.
 ## Out of scope
 
 `ci.yml`, `ci-cache-cleanup.yml` (fork runs need approval; no secrets); `claude-build.yml` (already OWNER-only).
+
+## Deviations
+
+`package-lock.json` also gets the licence.

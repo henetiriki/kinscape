@@ -83,7 +83,7 @@ check "Private vulnerability reporting" "$(gh api "repos/$REPO/private-vulnerabi
 check "Actions pinned to a full SHA"   "$(gh api "repos/$REPO/actions/permissions" --jq .sha_pinning_required)" "true"
 check "Only selected actions allowed"  "$(gh api "repos/$REPO/actions/permissions" --jq .allowed_actions)" "selected"
 check "Allowed actions list" "$(gh api "repos/$REPO/actions/permissions/selected-actions" --jq '"\(.github_owned_allowed) \(.verified_allowed) \(.patterns_allowed | sort | join(","))"')" \
-  "true false anthropics/claude-code-action@*,codecov/codecov-action@*,henetiriki/kinscape/*"
+  "true false anthropics/claude-code-action@*,codecov/codecov-action@*,henetiriki/kinscape/*,oven-sh/setup-bun@*"
 check "Code scanning (CodeQL default)" "$(gh api "repos/$REPO/code-scanning/default-setup" --jq .state 2>/dev/null)" "configured"
 check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --jq .approval_policy)" "all_external_contributors"
 

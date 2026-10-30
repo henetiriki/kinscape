@@ -98,14 +98,16 @@ gh api -X PATCH "repos/$REPO" \
   -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled' >/dev/null
 gh api -X PUT "repos/$REPO/private-vulnerability-reporting" >/dev/null
 gh api -X PATCH "repos/$REPO/code-scanning/default-setup" -f state=configured -f query_suite=default >/dev/null
-# Allowed actions: GitHub's own, this repo's, and the two third-party actions the workflows use.
+# Allowed actions: GitHub's own, this repo's, the two third-party actions the workflows use, and
+# oven-sh/setup-bun, which claude-code-action calls. Actions an allowed action calls need listing too.
 gh api -X PUT "repos/$REPO/actions/permissions" \
   -F enabled=true -F sha_pinning_required=true -f allowed_actions=selected >/dev/null
 gh api -X PUT "repos/$REPO/actions/permissions/selected-actions" \
   -F github_owned_allowed=true -F verified_allowed=false \
   -f 'patterns_allowed[]=henetiriki/kinscape/*' \
   -f 'patterns_allowed[]=anthropics/claude-code-action@*' \
-  -f 'patterns_allowed[]=codecov/codecov-action@*' >/dev/null
+  -f 'patterns_allowed[]=codecov/codecov-action@*' \
+  -f 'patterns_allowed[]=oven-sh/setup-bun@*' >/dev/null
 gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" \
   -f approval_policy=all_external_contributors >/dev/null
 

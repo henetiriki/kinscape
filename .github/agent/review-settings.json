@@ -9,6 +9,18 @@
       "Bash(gh pr list:*)",
       "Bash(gh pr comment:*)"
     ],
-    "deny": ["Write", "Edit", "WebFetch", "WebSearch", "Monitor"]
+    "deny": [
+      "Write",
+      "Edit",
+      "WebFetch",
+      "WebSearch",
+      "Monitor",
+      "Read(//proc/**)",
+      "Read(//sys/**)",
+      "Read(//etc/**)",
+      "Read(//home/runner/work/_temp/**)",
+      "Read(~/.gitconfig)",
+      "Read(~/.config/**)"
+    ]
   }
 }

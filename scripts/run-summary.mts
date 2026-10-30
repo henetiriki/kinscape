@@ -2,10 +2,11 @@ import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 
 import type { Transcript } from './types.ts';
 
-import { inlineCode, parseTranscript } from './agent-transcript.mts';
+import { inlineCode, readSummary } from './agent-transcript.mts';
 
-// Writes a Claude run's summary page from its transcript. GitHub lists no steps for a job in a
-// called workflow, and claude.yml's log ends where Claude starts, so this is what the run page shows.
+// Writes a Claude run's summary page from the summary it uploads (agent-transcript.mts). GitHub lists
+// no steps for a job in a called workflow, and claude.yml's log ends where Claude starts, so this is
+// what the run page shows.
 // Usage: node scripts/run-summary.mts <claude-execution-output.json>
 // The Markdown goes to $GITHUB_STEP_SUMMARY, or to the terminal when that is not set.
 
@@ -34,7 +35,7 @@ export const render = (transcript: Transcript | undefined): string => {
     return [
       '### Claude run',
       '',
-      'No output was captured (the run may have stopped before Claude started).',
+      'No summary was uploaded: Claude may not have started, the secret scan may have held it back (see the thread), or the run used a run-claude from before summaries.',
     ].join('\n');
   }
 
@@ -93,7 +94,7 @@ export const run = (
   }
 
   const markdown = render(
-    existsSync(path) ? parseTranscript(readFileSync(path, 'utf8')) : undefined
+    existsSync(path) ? readSummary(readFileSync(path, 'utf8')) : undefined
   );
 
   if (env.GITHUB_STEP_SUMMARY) {

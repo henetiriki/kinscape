@@ -30,20 +30,9 @@ const transcript = (
   ...extra,
 });
 
-// The artifact text for a run that was denied these Bash commands.
+// The artifact text, a run's summary, for a run that was denied these Bash commands.
 const artifact = (...commands: string[]) =>
-  JSON.stringify([
-    {
-      num_turns: 20,
-      permission_denials: commands.map(command => ({
-        tool_input: { command },
-        tool_name: 'Bash',
-      })),
-      subtype: 'success',
-      total_cost_usd: 2,
-      type: 'result',
-    },
-  ]);
+  JSON.stringify(transcript(commands.map(bash), { costUsd: 2, turns: 20 }));
 
 describe('patternOf', () => {
   it.each([
@@ -530,9 +519,22 @@ describe('run', () => {
     );
   });
 
-  it('skips a run with no artifact or an unreadable one', () => {
-    runs['claude.yml'] = [make(1), make(2), make(3)];
-    artifacts = { 1: artifact('cat a'), 2: undefined, 3: 'half a fi' };
+  // A transcript array is what runs before the change uploaded (plan C415, D1).
+  it('skips a run with no artifact, an unreadable one, or a transcript', () => {
+    runs['claude.yml'] = [make(1), make(2), make(3), make(4)];
+    artifacts = {
+      1: artifact('cat a'),
+      2: undefined,
+      3: 'half a fi',
+      4: JSON.stringify([
+        {
+          permission_denials: [
+            { tool_input: { command: 'cat b' }, tool_name: 'Bash' },
+          ],
+          type: 'result',
+        },
+      ]),
+    };
     audit();
 
     expect(console.log).toHaveBeenCalledWith(

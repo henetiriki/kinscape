@@ -115,7 +115,7 @@ jobs:
           github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
 
   # With show_full_output off, the log above stops at the start of the run. This writes the run page
-  # from Claude's transcript (the run-summary action, from main, so the checked-out branch can't
+  # from the summary of Claude's transcript (the run-summary action, from main, so the checked-out branch can't
   # change it), as claude-run.yml does for plan and build runs. It has no secrets, and its script step never fails the job.
   summary:
     name: Result

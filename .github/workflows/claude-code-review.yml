@@ -89,8 +89,8 @@ jobs:
             echo "A re-run: reviewing the whole PR."
             exit 0
           fi
-          # Successful runs, newest first. One counts as a review only if it uploaded Claude's transcript
-          # (kept 14 days): a run where Claude didn't start, as on a PR changing this file, succeeds too.
+          # Successful runs, newest first. One counts as a review only if it uploaded Claude's summary
+          # (kept 7 days): a run where Claude didn't start, as on a PR changing this file, succeeds too.
           last=""
           for run in $(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request --status success \
             --json databaseId,headSha --jq '.[] | select(.headSha != env.HEAD_SHA) | "\(.databaseId):\(.headSha)"'); do
@@ -133,17 +133,60 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
-      # The weekly denial audit (claude-denial-audit.yml) reads the denials in this transcript.
-      - name: Upload Claude's output
+      # Claude's transcript holds every tool result, so any token a command printed. Only its summary is
+      # uploaded, written by the script from main into a folder cleared first. The summary steps never
+      # fail the job: with no summary nothing is uploaded, and the next push is reviewed whole.
+      - name: Clear the summary script folder
         if: always()
+        continue-on-error: true
+        shell: bash
+        run: rm -rf .claude-summary-script
+      - name: Check out the summary script
+        if: always()
+        continue-on-error: true
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          path: .claude-summary-script
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node for the summary
+        if: always()
+        continue-on-error: true
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .claude-summary-script/.nvmrc
+      - name: Summarise Claude's output
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"
+
+      # Claude's final message or a denied command can still hold a secret. Only a clean scan uploads
+      # the copy it scanned; a hit or a failed scan comments on the PR instead (scan-summary.sh).
+      - name: Scan the summary for secrets
+        id: scan
+        if: always()
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          THREAD: ${{ github.event.issue.number || github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: bash .claude-summary-script/scripts/scan-summary.sh
+
+      # The weekly denial audit (claude-denial-audit.yml) reads the denials in this summary.
+      - name: Upload Claude's output
+        if: always() && steps.scan.outputs.clean == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: claude-execution-output
-          path: ${{ runner.temp }}/claude-execution-output.json
-          if-no-files-found: ignore
-          retention-days: 14
+          path: ${{ runner.temp }}/gitleaks/scan/claude-execution-output.json
+          retention-days: 7
 
-      # Before the step below, whose `gh pr comment --edit-last` would otherwise edit this comment.
       - name: Remove the working comment
         if: always() && env.WORKING_COMMENT_ID != ''
         continue-on-error: true
@@ -158,6 +201,8 @@ jobs:
       # main takes the `settings` input; a run cancelled by a newer push (concurrency) does not.
       - name: Report a missing review
         if: "!cancelled() && steps.claude-review.outputs.conclusion == ''"
+        # bash with pipefail, so a failed comment lookup isn't read as no comment.
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -169,11 +214,18 @@ jobs:
             exit 1
           fi
           msg=$'## :rotating_light: No Claude review\n\nThis PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs.'
-          # Each push updates the one comment. A read-only token (fork PR) falls back to a warning.
-          gh pr comment "$PR_NUMBER" --edit-last --create-if-none --body "$msg" || echo "::warning::$msg"
+          # Each push updates the one comment, found by its heading: the token's last comment could be the
+          # secret-scan warning. A read-only token (fork PR) falls back to a warning.
+          id=$(gh api --paginate "repos/$GH_REPO/issues/$PR_NUMBER/comments" \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("## :rotating_light: No Claude review"))) | .id' | tail -n 1) || id=""
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GH_REPO/issues/comments/$id" -f body="$msg" --silent || echo "::warning::$msg"
+          else
+            gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" -f body="$msg" --silent || echo "::warning::$msg"
+          fi
 
   # With show_full_output off, the log above stops at the start of the review. This writes the run
-  # page from Claude's transcript (the run-summary action, from main), as claude-run.yml does for
+  # page from the summary of Claude's transcript (the run-summary action, from main), as claude-run.yml does for
   # plan and build runs. It has no secrets, and its script step never fails the job. A review
   # cancelled by a newer push (concurrency) gets no summary, so `!cancelled()`, not `always()`.
   summary:

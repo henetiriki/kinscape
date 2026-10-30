@@ -5,10 +5,10 @@ import { join } from 'node:path';
 
 import type { Denial, Gh, Transcript } from './types.ts';
 
-import { inlineCode, parseTranscript } from './agent-transcript.mts';
+import { inlineCode, readSummary } from './agent-transcript.mts';
 
-// Reads the transcripts of the past week's plan, build and @claude runs and keeps one issue up to
-// date with the permission denials that repeat, so the allowlist and the rules follow what the
+// Reads the summaries the past week's plan, build and @claude runs uploaded and keeps one issue up
+// to date with the permission denials that repeat, so the allowlist and the rules follow what the
 // agents really try. Opens no issue when no denial repeats. Run weekly by claude-denial-audit.yml,
 // which shows the result on the run page ($GITHUB_STEP_SUMMARY) as well as in the log.
 // Usage: node scripts/denial-audit.mts, with GH_REPO set.
@@ -243,7 +243,7 @@ export const run = (
     recentRunIds(gh, workflow, since)
   ).flatMap(id => {
     const text = readArtifact(id);
-    const transcript = text === undefined ? undefined : parseTranscript(text);
+    const transcript = text === undefined ? undefined : readSummary(text);
 
     return transcript ? [{ id, transcript }] : [];
   });

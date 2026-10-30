@@ -32,7 +32,13 @@
       "Bash(gh pr * -b *)",
       "Bash(gh issue * --body *)",
       "Bash(gh issue * --body=*)",
-      "Bash(gh issue * -b *)"
+      "Bash(gh issue * -b *)",
+      "Read(//proc/**)",
+      "Read(//sys/**)",
+      "Read(//etc/**)",
+      "Read(//home/runner/work/_temp/**)",
+      "Read(~/.gitconfig)",
+      "Read(~/.config/**)"
     ]
   }
 }

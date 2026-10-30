@@ -44,19 +44,92 @@ runs:
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
         # Off: the full output includes every screenshot Claude reads, as base64, and the log
-        # stopped at the first of them. The transcript is in the artifact, and the summary job
-        # writes the run page from it.
+        # stopped at the first of them. The summary job writes the run page from the summary
+        # uploaded below.
         show_full_output: false
         # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
         settings: ${{ runner.temp }}/agent/settings.json
         claude_args: '${{ inputs.model_args }} --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
 
-    # The Actions log can stop at an image read and lose the final result; the full output survives here.
-    - name: Upload Claude's output
+    # Claude's transcript holds every tool result, so any token a command printed. Only its summary
+    # is uploaded, written by the script from main, so the checked-out branch can't change what is
+    # kept. The summary steps never fail the job: with no summary, nothing is uploaded.
+    - name: Check out the summary script
       if: always()
+      continue-on-error: true
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: main
+        path: .claude-summary-script
+        sparse-checkout: |
+          scripts
+          .nvmrc
+        persist-credentials: false
+    - name: Set up Node for the summary
+      if: always()
+      continue-on-error: true
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .claude-summary-script/.nvmrc
+    - name: Summarise Claude's output
+      if: always()
+      continue-on-error: true
+      shell: bash
+      run: node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"
+
+    # Claude's final message or a denied command can still hold a secret. Only a clean scan uploads;
+    # a hit or a failed scan comments on the thread instead (plans/chores/C415-transcript-summary.md,
+    # D3). github.token comments, as claude-run.yml's safety net counts only the bot's comments.
+    # claude-code-review.yml runs the same step: change them together.
+    - name: Scan the summary for secrets
+      id: scan
+      if: always()
+      continue-on-error: true
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+        THREAD: ${{ github.event.issue.number || github.event.pull_request.number }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        GITLEAKS_VERSION: 8.30.1
+        GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+      run: |
+        summary="$RUNNER_TEMP/claude-summary"
+        if [ ! -f "$summary/claude-execution-output.json" ]; then
+          echo "No summary: nothing to scan or upload."
+          exit 0
+        fi
+        bin="$RUNNER_TEMP/gitleaks"
+        mkdir -p "$bin"
+        code=0
+        if curl -fsSL --retry 3 -o "$bin/gitleaks.tar.gz" \
+          "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" &&
+          echo "$GITLEAKS_SHA256  $bin/gitleaks.tar.gz" | sha256sum --check --quiet &&
+          tar -xzf "$bin/gitleaks.tar.gz" -C "$bin" gitleaks; then
+          # Exit code 2 is a finding, so any other failure is a failed scan.
+          "$bin/gitleaks" dir "$summary" --no-banner --redact --exit-code 2 || code=$?
+        else
+          code=1
+        fi
+        if [ "$code" = 0 ]; then
+          echo "clean=true" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        rm -f "$summary/claude-execution-output.json"
+        if [ "$code" = 2 ]; then
+          why="gitleaks found a possible secret in Claude's output"
+        else
+          why="The secret scan of Claude's output failed"
+        fi
+        msg="## :rotating_light: Claude's output not kept
+
+        $why, so [the run]($RUN_URL) uploaded no summary. Its log shows any finding, redacted. If it is a secret, rotate it and look for it in this thread."
+        gh api "repos/$GH_REPO/issues/$THREAD/comments" -f body="$msg" --silent || echo "::warning::$why: no summary uploaded."
+
+    - name: Upload Claude's output
+      if: always() && steps.scan.outputs.clean == 'true'
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: claude-execution-output
-        path: ${{ runner.temp }}/claude-execution-output.json
-        if-no-files-found: ignore
-        retention-days: 14
+        path: ${{ runner.temp }}/claude-summary/claude-execution-output.json
+        retention-days: 7

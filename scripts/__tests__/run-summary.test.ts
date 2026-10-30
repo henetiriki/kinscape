@@ -135,13 +135,18 @@ describe('run', () => {
     );
   });
 
-  it('appends the summary of a transcript to $GITHUB_STEP_SUMMARY', () => {
+  it("appends the run's summary to $GITHUB_STEP_SUMMARY", () => {
     writeFileSync(summary, 'earlier\n');
     writeFileSync(
       input,
-      JSON.stringify([
-        { num_turns: 3, result: 'Done.', subtype: 'success', type: 'result' },
-      ])
+      JSON.stringify(
+        transcript({
+          costUsd: undefined,
+          durationMs: undefined,
+          model: undefined,
+          turns: 3,
+        })
+      )
     );
 
     expect(run([input], { GITHUB_STEP_SUMMARY: summary })).toBe(0);
@@ -152,6 +157,19 @@ describe('run', () => {
     expect(written).toContain('| n/a | 3 | n/a | n/a | success |');
   });
 
+  // Runs before the change uploaded the transcript itself (plan C415, D1).
+  it('says so when the file is a transcript, not a summary', () => {
+    writeFileSync(
+      input,
+      JSON.stringify([
+        { num_turns: 3, result: 'Done.', subtype: 'success', type: 'result' },
+      ])
+    );
+
+    expect(run([input], { GITHUB_STEP_SUMMARY: summary })).toBe(0);
+    expect(readFileSync(summary, 'utf8')).toContain('No output was captured');
+  });
+
   it('says so when the file is missing', () => {
     expect(
       run([join(dir, 'gone.json')], { GITHUB_STEP_SUMMARY: summary })
@@ -159,7 +177,7 @@ describe('run', () => {
     expect(readFileSync(summary, 'utf8')).toContain('No output was captured');
   });
 
-  it('says so when the file cannot be read as a transcript', () => {
+  it('says so when the file cannot be read as a summary', () => {
     writeFileSync(input, 'half a fi');
 
     expect(run([input], { GITHUB_STEP_SUMMARY: summary })).toBe(0);

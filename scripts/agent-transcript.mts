@@ -1,5 +1,8 @@
 // Reads the transcript claude-code-action leaves in claude-execution-output.json: a JSON array of
-// events. Shared by the run summary and the weekly denial audit.
+// events. Its summary is what a run uploads, and what the run summary and weekly denial audit read.
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 
 import type { Transcript } from './types.ts';
 
@@ -192,3 +195,78 @@ export const parseTranscript = (text: string): Transcript | undefined => {
     turns: result?.num_turns,
   };
 };
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const numberOrUndefined = (value: unknown): number | undefined =>
+  typeof value === 'number' ? value : undefined;
+
+// Reads the summary `run` uploads. A transcript array, which runs before the summary uploaded, gives
+// nothing (plan C415, D1).
+export const readSummary = (text: string): Transcript | undefined => {
+  let value: unknown;
+
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+
+  if (
+    !isRecord(value) ||
+    !Array.isArray(value.denials) ||
+    !value.denials.every(isRecord) ||
+    typeof value.finalText !== 'string' ||
+    typeof value.outcome !== 'string' ||
+    !isRecord(value.tools)
+  ) {
+    return undefined;
+  }
+
+  return {
+    costUsd: numberOrUndefined(value.costUsd),
+    denials: value.denials.map(({ costUsd, detail, tool }) => ({
+      costUsd: numberOrUndefined(costUsd),
+      detail: String(detail ?? ''),
+      tool: String(tool ?? 'unknown'),
+    })),
+    durationMs: numberOrUndefined(value.durationMs),
+    finalText: value.finalText,
+    model: typeof value.model === 'string' ? value.model : undefined,
+    outcome: value.outcome,
+    tools: value.tools as Record<string, number>,
+    turns: numberOrUndefined(value.turns),
+  };
+};
+
+// Writes the transcript's summary, the only part of a run that is uploaded: the transcript holds
+// every tool result, so any token a command printed. No transcript writes nothing.
+// Usage: node scripts/agent-transcript.mts <claude-execution-output.json> <summary.json>
+export const run = (args: string[]): number => {
+  const [input, output] = args;
+
+  if (!input || !output) {
+    console.error(
+      'Usage: agent-transcript <claude-execution-output.json> <summary.json>'
+    );
+
+    return 1;
+  }
+
+  const transcript = existsSync(input)
+    ? parseTranscript(readFileSync(input, 'utf8'))
+    : undefined;
+
+  if (transcript) {
+    mkdirSync(dirname(output), { recursive: true });
+    writeFileSync(output, JSON.stringify(transcript));
+  }
+
+  return 0;
+};
+
+/* v8 ignore next 3 -- only true when run directly with node, not when imported */
+if (import.meta.main) {
+  process.exitCode = run(process.argv.slice(2));
+}

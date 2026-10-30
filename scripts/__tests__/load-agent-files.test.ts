@@ -129,7 +129,15 @@ describe('the run-summary action', () => {
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
 const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 
-type Step = { uses?: string; with?: Record<string, string> };
+type Step = {
+  'continue-on-error'?: boolean;
+  env?: Record<string, string>;
+  if?: string;
+  name?: string;
+  run?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
+};
 const runClaudeSteps = () =>
   (
     parse(
@@ -205,27 +213,239 @@ describe('the run-claude action', () => {
   );
 });
 
-// A runner's temp directory isn't always /home/runner/work/_temp. A path that misses the file
-// uploads nothing, and `if-no-files-found: ignore` hides it: the run summary has no transcript.
-describe('the transcript upload', () => {
-  const OUTPUT = '${{ runner.temp }}/claude-execution-output.json';
-  const isTranscript = (step: Step) =>
-    step.uses?.startsWith('actions/upload-artifact@') &&
-    step.with?.name === 'claude-execution-output';
+// Only a summary of Claude's transcript is uploaded, written by the script from main after a clean
+// secret scan (plans/chores/C415-transcript-summary.md). A runner's temp directory isn't always
+// /home/runner/work/_temp, so every path starts at runner.temp.
+describe("the upload of Claude's output", () => {
+  const SUMMARY =
+    '${{ runner.temp }}/claude-summary/claude-execution-output.json';
+  const reviewSteps = () =>
+    Object.values(
+      (
+        parse(read('claude-code-review.yml')) as {
+          jobs: Record<string, { steps?: Step[] }>;
+        }
+      ).jobs
+    ).flatMap(job => job.steps ?? []);
+  const named = (steps: Step[], name: string) =>
+    steps.filter(step => step.name === name);
 
-  it('takes the file from runner.temp in run-claude', () => {
-    expect(runClaudeSteps().find(isTranscript)?.with?.path).toBe(OUTPUT);
+  describe.each([
+    ['run-claude', runClaudeSteps],
+    ['claude-code-review.yml', reviewSteps],
+  ])('in %s', (_, steps) => {
+    it('uploads the summary alone, for 7 days, after a clean scan', () => {
+      const uploads = steps().filter(step =>
+        step.uses?.startsWith('actions/upload-artifact@')
+      );
+
+      expect(uploads).toHaveLength(1);
+      expect(uploads[0].if).toBe(
+        "always() && steps.scan.outputs.clean == 'true'"
+      );
+      expect(uploads[0].with).toEqual({
+        name: 'claude-execution-output',
+        path: SUMMARY,
+        'retention-days': 7,
+      });
+    });
+
+    it('summarises with the script from main', () => {
+      const [checkout] = named(steps(), 'Check out the summary script');
+      const [summarise] = named(steps(), "Summarise Claude's output");
+
+      expect(checkout.with).toMatchObject({
+        path: '.claude-summary-script',
+        'persist-credentials': false,
+        ref: 'main',
+      });
+      expect(summarise.run).toBe(
+        'node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"'
+      );
+    });
+
+    it('runs the summary steps even when Claude failed, and never fails on them', () => {
+      for (const name of [
+        'Check out the summary script',
+        'Set up Node for the summary',
+        "Summarise Claude's output",
+        'Scan the summary for secrets',
+      ]) {
+        expect(named(steps(), name), name).toEqual([
+          expect.objectContaining({
+            'continue-on-error': true,
+            if: 'always()',
+          }),
+        ]);
+      }
+    });
   });
 
-  it('takes the file from runner.temp in claude-code-review.yml', () => {
-    const { jobs } = parse(read('claude-code-review.yml')) as {
-      jobs: Record<string, { steps?: Step[] }>;
-    };
-    const uploads = Object.values(jobs)
-      .flatMap(job => job.steps ?? [])
-      .filter(isTranscript);
+  it('scans the same way in both', () => {
+    const scan = (steps: Step[]) => {
+      const [step] = named(steps, 'Scan the summary for secrets');
 
-    expect(uploads.map(step => step.with?.path)).toEqual([OUTPUT]);
+      return { env: step.env, run: step.run };
+    };
+
+    expect(scan(reviewSteps())).toEqual(scan(runClaudeSteps()));
+  });
+});
+
+// A stand-in for each program the scan step runs. Each logs its call to $RUNNER_TEMP/calls; STUB_*
+// variables make one fail. tar writes a stub gitleaks that exits with $STUB_GITLEAKS_EXIT.
+const SCAN_STUBS: Record<string, string> = {
+  curl: `#!/bin/bash
+echo "curl $*" >> "$RUNNER_TEMP/calls"
+[ -n "$STUB_CURL_FAIL" ] && exit 22
+while [ "$#" -gt 0 ]; do [ "$1" = -o ] && echo tarball > "$2"; shift; done
+`,
+  gh: `#!/bin/bash
+printf 'gh %s\n' "$*" >> "$RUNNER_TEMP/calls"
+exit "\${STUB_GH_EXIT:-0}"
+`,
+  sha256sum: `#!/bin/bash
+read -r line
+echo "sha256sum $* $line" >> "$RUNNER_TEMP/calls"
+[ -n "$STUB_SHA_FAIL" ] && exit 1
+exit 0
+`,
+  tar: `#!/bin/bash
+echo "tar $*" >> "$RUNNER_TEMP/calls"
+printf '#!/bin/bash\necho "gitleaks $*" >> "$RUNNER_TEMP/calls"\nexit "\${STUB_GITLEAKS_EXIT:-0}"\n' > "$4/gitleaks"
+chmod +x "$4/gitleaks"
+`,
+};
+
+// run-claude's scan step; the test above checks claude-code-review.yml's is the same.
+const scanStep = () =>
+  runClaudeSteps().find(
+    ({ name }) => name === 'Scan the summary for secrets'
+  ) as { env: Record<string, string>; run: string } & Step;
+
+// Runs run-claude's scan step with the stubs, over a summary unless `summary` is false.
+const scan = (stubs: Record<string, string> = {}, summary = true) => {
+  const step = scanStep();
+  const dir = mkdtempSync(join(tmpdir(), 'scan-summary-'));
+  const file = join(dir, 'claude-summary/claude-execution-output.json');
+
+  try {
+    mkdirSync(join(dir, 'bin'));
+    for (const [name, text] of Object.entries(SCAN_STUBS)) {
+      writeFileSync(join(dir, 'bin', name), text, { mode: 0o755 });
+    }
+    if (summary) {
+      mkdirSync(join(dir, 'claude-summary'));
+      writeFileSync(file, '{}');
+    }
+    const log = execFileSync('bash', ['-e', '-o', 'pipefail', '-c', step.run], {
+      encoding: 'utf8',
+      env: {
+        ...step.env,
+        ...stubs,
+        GH_REPO: 'owner/repo',
+        GH_TOKEN: 'token',
+        GITHUB_OUTPUT: join(dir, 'output'),
+        PATH: `${join(dir, 'bin')}:${process.env.PATH}`,
+        RUN_URL: 'https://run',
+        RUNNER_TEMP: dir,
+        THREAD: '7',
+      },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const text = (path: string) =>
+      existsSync(path) ? readFileSync(path, 'utf8') : '';
+
+    return {
+      calls: text(join(dir, 'calls')),
+      dir,
+      kept: existsSync(file),
+      log,
+      output: text(join(dir, 'output')),
+      version: step.env.GITLEAKS_VERSION,
+    };
+  } finally {
+    rmSync(dir, { force: true, recursive: true });
+  }
+};
+
+describe('the scan step', () => {
+  it('pins gitleaks to a version and its SHA-256', () => {
+    const { env } = scanStep();
+
+    expect(env.GITLEAKS_VERSION).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(env.GITLEAKS_SHA256).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it('downloads, checks and runs gitleaks on the summary, and says clean', () => {
+    const { calls, dir, kept, output, version } = scan();
+
+    expect(calls).toContain(
+      `https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz`
+    );
+    expect(calls).toMatch(
+      /^sha256sum --check --quiet [0-9a-f]{64} {2}\S+\/gitleaks\.tar\.gz$/m
+    );
+    expect(calls).toContain(
+      `gitleaks dir ${dir}/claude-summary --no-banner --redact --exit-code 2`
+    );
+    expect(calls).not.toContain('gh ');
+    expect(output).toBe('clean=true\n');
+    expect(kept).toBe(true);
+  });
+
+  it.each([
+    [
+      'gitleaks finds something',
+      { STUB_GITLEAKS_EXIT: '2' },
+      "gitleaks found a possible secret in Claude's output",
+    ],
+    [
+      'gitleaks fails',
+      { STUB_GITLEAKS_EXIT: '1' },
+      "The secret scan of Claude's output failed",
+    ],
+    [
+      'the download fails',
+      { STUB_CURL_FAIL: '1' },
+      "The secret scan of Claude's output failed",
+    ],
+    [
+      'the checksum differs',
+      { STUB_SHA_FAIL: '1' },
+      "The secret scan of Claude's output failed",
+    ],
+  ])('keeps nothing and comments on the thread when %s', (_, stubs, why) => {
+    const { calls, kept, output } = scan(stubs);
+
+    expect(output).toBe('');
+    expect(kept).toBe(false);
+    expect(calls).toContain(
+      "gh api repos/owner/repo/issues/7/comments -f body=## :rotating_light: Claude's output not kept"
+    );
+    expect(calls).toContain(
+      `${why}, so [the run](https://run) uploaded no summary.`
+    );
+  });
+
+  it('runs gitleaks only on a download that checks out', () => {
+    expect(scan({ STUB_SHA_FAIL: '1' }).calls).not.toContain('gitleaks dir');
+  });
+
+  it('warns in the log when it cannot comment', () => {
+    const { kept, log } = scan({ STUB_GH_EXIT: '1', STUB_GITLEAKS_EXIT: '2' });
+
+    expect(kept).toBe(false);
+    expect(log).toContain(
+      "::warning::gitleaks found a possible secret in Claude's output: no summary uploaded."
+    );
+  });
+
+  it('does nothing without a summary', () => {
+    const { calls, output } = scan({}, false);
+
+    expect(calls).toBe('');
+    expect(output).toBe('');
   });
 });
 

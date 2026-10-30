@@ -1,6 +1,20 @@
-import { describe, expect, it } from 'vitest';
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { inlineCode, parseTranscript } from '../agent-transcript.mts';
+import {
+  inlineCode,
+  parseTranscript,
+  readSummary,
+  run,
+} from '../agent-transcript.mts';
 
 const init = { model: 'claude-opus-5-5', subtype: 'init', type: 'system' };
 
@@ -330,5 +344,137 @@ describe('parseTranscript', () => {
     const bare = { subtype: 'success', type: 'result' };
 
     expect(parse([init, bare])?.denials).toEqual([]);
+  });
+});
+
+// The summary the artifact holds, as `run` writes it and `readSummary` reads it back.
+const SUMMARY_KEYS = [
+  'costUsd',
+  'denials',
+  'durationMs',
+  'finalText',
+  'model',
+  'outcome',
+  'tools',
+  'turns',
+];
+
+describe('readSummary', () => {
+  it('reads back what run writes', () => {
+    const summary = parse([init, assistant(toolUse('Read')), result()]);
+
+    expect(readSummary(JSON.stringify(summary))).toEqual(summary);
+  });
+
+  it('reads a summary missing the figures a run did not reach', () => {
+    expect(
+      readSummary(
+        JSON.stringify({
+          denials: [{ detail: 'ls', tool: 'Bash' }, {}],
+          finalText: '',
+          outcome: 'no result',
+          tools: {},
+        })
+      )
+    ).toEqual({
+      costUsd: undefined,
+      denials: [
+        { costUsd: undefined, detail: 'ls', tool: 'Bash' },
+        { costUsd: undefined, detail: '', tool: 'unknown' },
+      ],
+      durationMs: undefined,
+      finalText: '',
+      model: undefined,
+      outcome: 'no result',
+      tools: {},
+      turns: undefined,
+    });
+  });
+
+  // A transcript array is what runs before the change uploaded: plan decision D1 skips them.
+  it.each([
+    ['not json'],
+    [''],
+    ['null'],
+    ['[]'],
+    [JSON.stringify([init, result()])],
+    ['{"outcome":"success"}'],
+    ['{"denials":{},"finalText":"","outcome":"success","tools":{}}'],
+    ['{"denials":[],"finalText":1,"outcome":"success","tools":{}}'],
+    ['{"denials":[],"finalText":"","outcome":"success","tools":[]}'],
+    ['{"denials":[null],"finalText":"","outcome":"success","tools":{}}'],
+  ])('gives nothing for %j', text => {
+    expect(readSummary(text)).toBeUndefined();
+  });
+});
+
+describe('run', () => {
+  let dir: string;
+
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), 'agent-transcript-'));
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    rmSync(dir, { force: true, recursive: true });
+    vi.restoreAllMocks();
+  });
+
+  it('needs the transcript and summary paths', () => {
+    expect(run([join(dir, 'in.json')])).toBe(1);
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('Usage')
+    );
+  });
+
+  // The transcript holds every tool result: file contents and command output, with any token in them.
+  it('writes only the summary, in a folder of its own, without the tool results', () => {
+    const input = join(dir, 'claude-execution-output.json');
+    const output = join(dir, 'summary', 'claude-execution-output.json');
+
+    writeFileSync(
+      input,
+      JSON.stringify([
+        init,
+        assistant(toolUse('Bash', { command: 'cat .git/config' })),
+        {
+          message: {
+            content: [
+              {
+                content: 'extraheader = AUTHORIZATION: basic c2VjcmV0',
+                type: 'tool_result',
+              },
+            ],
+          },
+          type: 'user',
+        },
+        result(),
+      ])
+    );
+
+    expect(run([input, output])).toBe(0);
+
+    const text = readFileSync(output, 'utf8');
+
+    expect(Object.keys(JSON.parse(text)).sort()).toEqual(SUMMARY_KEYS);
+    expect(text).not.toContain('c2VjcmV0');
+    expect(readSummary(text)?.tools).toEqual({ 'Bash:cat': 1 });
+  });
+
+  // No file is no review: the since-last-review check looks for the artifact.
+  it.each([
+    ['is missing', undefined],
+    ['is not a transcript', 'half a fi'],
+  ])('writes nothing when the transcript %s', (_, text) => {
+    const input = join(dir, 'claude-execution-output.json');
+    const output = join(dir, 'summary', 'claude-execution-output.json');
+
+    if (text !== undefined) {
+      writeFileSync(input, text);
+    }
+
+    expect(run([input, output])).toBe(0);
+    expect(existsSync(output)).toBe(false);
   });
 });

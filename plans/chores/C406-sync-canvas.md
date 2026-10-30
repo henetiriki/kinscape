@@ -29,7 +29,8 @@ The copy is about 1.2 MB (roughly 350k tokens).
 
 ## Deviations
 
-The skill checks each board name (no `/` or `..`) before writing, and on a pass-2 failure also runs `git clean -fd design/canvas` so new files don't linger.
+- The skill checks board names (no `/` or `..`) before writing, and on a pass-2 failure also runs `git clean -fd design/canvas`.
+- `design/DESIGN.md` line 3 points to `canvas/VERSION` for the canvas link, so it has one home.
 
 ## Risks
 

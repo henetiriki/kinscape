@@ -53,9 +53,23 @@ const TYPES = ['type: spec', 'type: bug', 'type: chore'];
 const VISIBLE_TYPES = ['type: spec', 'type: bug'];
 const MAY_MOVE_A_READY_PR = ['OWNER', 'MEMBER', 'COLLABORATOR'];
 
+// Removes HTML comments until none is left (one pass can join the pieces of a new one, as in
+// `<!<!-- x -->-->`), then an unterminated one with all that follows, as GitHub renders it.
+const withoutComments = (text: string): string => {
+  let previous: string;
+  let current = text;
+
+  do {
+    previous = current;
+    current = previous.replace(/<!--[\s\S]*?-->/g, '');
+  } while (current !== previous);
+
+  return current.replace(/<!--[\s\S]*$/, '');
+};
+
 // Whether the PR body has text under `## For the PO` once HTML comments are removed.
 const hasForThePo = (body: null | string): boolean => {
-  const lines = (body ?? '').replace(/<!--[\s\S]*?-->/g, '').split(/\r?\n/);
+  const lines = withoutComments(body ?? '').split(/\r?\n/);
   const start = lines.findIndex(line => PO_HEADING.test(line));
   const rest = lines.slice(start + 1);
   const end = rest.findIndex(line => HEADING.test(line));

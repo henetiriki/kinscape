@@ -472,6 +472,14 @@ describe('run', () => {
         'Closes #8\n\n## For the PO\n\n## Evidence\n\nOutput.',
       ],
       [
+        'a comment nested to leave an opener after one pass',
+        'Closes #8\n\n## For the PO\n\n<!<!-- x -->-->\n',
+      ],
+      [
+        'an unterminated comment',
+        'Closes #8\n\n## For the PO\n\n<!-- what to try',
+      ],
+      [
         'a heading hidden in a comment',
         'Closes #8\n\n<!--\n## For the PO\n\nTry\n-->',
       ],

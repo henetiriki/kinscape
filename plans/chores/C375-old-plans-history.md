@@ -1,7 +1,7 @@
 # Plan: C375: Old plans are history, kept out of searches
 
 - **Spec:** #375
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,6 +18,8 @@
 - **Other:** your own.
 
 Recommended: A, because it keeps the whole rule and removes a repeated fact.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

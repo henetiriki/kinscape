@@ -16,12 +16,14 @@ Delete the no-issue `chore:` route wherever described; exempt only Dependabot's,
 - ~~**Other:** your own.~~
 
 **Answer: A** (Tech lead)
+
 **D2 · Revert PRs** · Decides: Tech lead
 
 - **A.** Exempt head branch `revert-*`.
 - ~~**B.** A Chore issue first.~~
 
 **Answer: A** (Tech lead)
+
 **D3 · `chore.md` hand-back advice** · Decides: Tech lead
 
 - **A.** Leave `chore.md`; rule 4 owns it.

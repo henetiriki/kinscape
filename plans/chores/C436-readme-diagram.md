@@ -1,7 +1,7 @@
 # Plan: C436: Redraw the README workflow diagram with entry points and two columns
 
 - **Spec:** #436
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ Rewrite the Mermaid block as `flowchart TB` with subgraphs `People`, declared fi
 - **B.** Review and steer → Preview → Merge.
 - **Other:** your own.
 
-Recommended: A, because Claude sets the label when the PR is ready, not after review ([building](../../docs/building.md#merging)).
+**Answer: A** (@henetiriki)
 
 **D2 · Hand-offs that set no `status:` label** · Decides: Tech lead
 
@@ -24,14 +24,14 @@ Plan agent → Approve the plan, and Checks → Review and steer, change no labe
 - **A.** Label them with the event ("draft plan PR", "PR ready").
 - **B.** Leave them unlabelled.
 
-Recommended: A, because each hand-off then says what arrives.
+**Answer: A** (@henetiriki)
 
 **D3 · Feedback loop and "nothing pointing at" the starts** · Decides: Tech lead
 
 - **A.** A dashed "new Intent or Bug" arrow from Feedback to Intent and Bug.
 - **B.** No arrow; Feedback's line says "files a new Intent or Bug".
 
-Recommended: A, because #436 asks for the loop; dashed keeps it apart from the flow.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

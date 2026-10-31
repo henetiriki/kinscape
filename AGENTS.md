@@ -26,7 +26,7 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 
 ## Plans
 
-One plan per Spec, Bug or Chore, in `plans/<spec-id>-<slug>.md`, committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md) and [`docs/architecture.md`](docs/architecture.md).
+One plan per Spec, Bug or Chore, under `plans/` (paths: [rules 2 and 4](plans/README.md)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md) and [`docs/architecture.md`](docs/architecture.md).
 
 ## Data rules
 

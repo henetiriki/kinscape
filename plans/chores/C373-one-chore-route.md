@@ -25,11 +25,10 @@ Recommended: A, because the workflow sets the branch, and a title is easier to c
 | -------------------------------------- | ------------- | ------------------------------------------------------------------------ |
 | `plans/README.md`                      | Changed       | Rule 4: one route, tech lead builds a hand-back, two exempt PRs; rule 10 |
 | `AGENTS.md`                            | Changed       | Spec, Bug or Chore only; one plan each; drop "chore plan 300"            |
-| `.github/agent/review.md`              | Changed       | Flag a missing plan file, except the pin PR                              |
+| `.github/agent/review.md`              | Changed       | Flag a missing plan file, except the pin PR and reverts                  |
 | `docs/building.md`                     | Changed       | _Chores_: one route                                                      |
 | `docs/how-we-work.md`                  | Changed       | _Which issue do I need?_: drop the `chore:` PR                           |
 | `docs/repo-settings.md`                | Changed       | Bypass: "their own PRs"                                                  |
-| `.claude/skills/refine/chore.md`       | Changed       | Hand-back: the tech lead builds it from the committed plan               |
 | `.github/workflows/claude-build.yml`   | Changed       | Comment: the bot's other PRs                                             |
 | `plans/chores/C373-one-chore-route.md` | New           | This plan                                                                |
 
@@ -53,7 +52,7 @@ Recommended: A, because the workflow sets the branch, and a title is easier to c
 
 ## Deviations
 
-- Folded `building.md`'s _Chores_ into _Specs, Bugs and Chores_; dropped `review.md`'s plan fallback; named Bug and Chore in `how-we-work.md`.
+- Folded `building.md`'s _Chores_ into _Specs, Bugs and Chores_; dropped `review.md`'s plan fallback; named Bug and Chore in `how-we-work.md`; exempted `revert-*` PRs; dropped the `chore.md` edit; `AGENTS.md` links plan paths.
 
 ## Out of scope
 

@@ -2,8 +2,6 @@
 
 A map of South Africa from 1652 to today. Historical boundaries redraw as a date slider moves, and the user's ancestors are pinned where they were at the time.
 
-Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.md`).
-
 ## Source of truth
 
 - `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
@@ -26,7 +24,7 @@ Tool-agnostic: agent-specific notes live in that agent's own file (e.g. `CLAUDE.
 
 ## Plans
 
-One plan per Spec, Bug or Chore, under `plans/` (paths: [rules 2 and 4](plans/README.md)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md) and [`docs/architecture.md`](docs/architecture.md).
+One plan per Spec, Bug or Chore, under `plans/` (paths: [rules 2 and 4](plans/README.md)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md), [`plans/TEMPLATE.md`](plans/TEMPLATE.md), [`docs/architecture.md`](docs/architecture.md) and your own plan. Other plans are history: open one only to learn why something was done.
 
 ## Data rules
 

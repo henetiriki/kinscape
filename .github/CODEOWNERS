@@ -15,6 +15,7 @@ scripts/denial-audit.mts @henetiriki
 scripts/design-shots-ci.mts @henetiriki
 scripts/github/** @henetiriki
 scripts/hand-back.mts @henetiriki
+scripts/issue-status.mts @henetiriki
 scripts/layers.mts @henetiriki
 scripts/run-summary.mts @henetiriki
 scripts/scan-summary.sh @henetiriki

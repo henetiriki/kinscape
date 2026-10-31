@@ -23,7 +23,7 @@ A component's CSS goes in a `*.module.css` beside it, with camelCase class names
 
 Merge rules are in [repo settings](repo-settings.md#whats-set-and-why). The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
 
-When a user-visible pull request is ready to try, Claude sets `status: ready-for-po` on it and writes what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](repo-settings.md#vercel)).
+When a user-visible pull request is ready to try, [a workflow](../.github/workflows/backlog-issue-status.yml) sets `status: ready-for-po` on its issue; write what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](repo-settings.md#vercel)).
 
 ## Live
 

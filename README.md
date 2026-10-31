@@ -54,7 +54,7 @@ flowchart TB
   chore -->|"status: ready-for-dev"| ready
   ready -->|"status: ready-for-agent"| plan
   plan -->|"draft plan PR"| approvePlan
-  approvePlan --> build --> checks
+  approvePlan -->|"approving review"| build --> checks
   checks -->|"PR ready"| steer
   steer -->|"agent fixes"| checks
   checks -->|"visible change, status: ready-for-po"| preview --> merge
@@ -62,6 +62,8 @@ flowchart TB
   merge -->|"last Spec closes, status: ready-for-po"| feedback
   feedback -.->|"new Intent or Bug"| intent
   feedback -.-> bug
+  bug ~~~ design
+  chore ~~~ design
 ```
 
 ## Contributions

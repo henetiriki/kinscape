@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="948" height="1330" viewBox="0 0 948 1330" role="img" aria-labelledby="t d" font-family="Mulish, Figtree, 'Helvetica Neue', Arial, sans-serif">
+  <title id="t">How one Spec becomes a merged pull request</title>
+  <desc id="d">Three lanes: PO, Tech lead, and Claude and CI. Intent, Bug or Chore starts the work. A Spec is approved by the PO or tech lead, the tech lead sets ready-for-agent, Claude plans and builds, CI and Claude review, the tech lead merges, and the PO gives feedback.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6f6f6f"/></marker>
+  </defs>
+  <style>
+    .t { font-size: 14px; font-weight: 700; fill: #1a1a1a }
+    .d { font-size: 12px; fill: #333 }
+    .l { font-size: 11.5px; fill: #666 }
+    .h { font-size: 13px; font-weight: 700; fill: #1a1a1a }
+    .b { fill: #fff; stroke: #cfcfcf; stroke-width: 1.5 }
+    .m { fill: #e6f4fb; stroke: #1e8ccb; stroke-width: 2.5 }
+    .a { fill: none; stroke: #6f6f6f; stroke-width: 2; marker-end: url(#a) }
+    .j { fill: none; stroke: #6f6f6f; stroke-width: 2 }
+    .x { stroke-dasharray: 6 5 }
+  </style>
+
+  <rect width="948" height="1330" fill="#fff"/>
+  <text x="24" y="44" font-size="26" font-weight="700" fill="#1a1a1a">How one Spec becomes a merged pull request</text>
+  <text x="24" y="72" font-size="15" fill="#666">People decide on the left; Claude and CI do the work on the right.</text>
+
+  <!-- lanes -->
+  <rect x="24" y="96" width="580" height="1170" fill="#f4f4f4"/>
+  <rect x="644" y="96" width="280" height="1170" fill="#fff" stroke="#d4d4d4" stroke-width="1.5"/>
+  <line x1="324" y1="104" x2="324" y2="1258" stroke="#dcdcdc" stroke-width="1.5"/>
+  <text x="48" y="122" class="h">PO</text>
+  <text x="348" y="122" class="h">Tech lead</text>
+  <text x="664" y="122" class="h">Claude and CI</text>
+
+  <!-- arrows (drawn first, boxes sit on top) -->
+  <path class="a" d="M240,222 V250"/>
+  <path class="a" d="M312,286 H660"/>
+  <path class="a" d="M784,318 V346 H240 V376"/>
+  <path class="a" d="M444,346 V376"/>
+  <path class="a" d="M572,222 V468 H500 V490"/>
+  <path class="a" d="M102,222 V522 H336"/>
+  <path class="j" d="M240,448 V522"/>
+  <path class="a" d="M444,448 V490"/>
+  <path class="a" d="M552,508 H660"/>
+  <path class="a" d="M660,524 H606 V578 H500 V600"/>
+  <path class="a" d="M552,618 H660"/>
+  <path class="a x" d="M660,648 H552"/>
+  <path class="a" d="M444,664 V752 H660"/>
+  <path class="a" d="M784,784 V830"/>
+  <path class="a" d="M660,848 H552"/>
+  <path class="a" d="M552,878 H660"/>
+  <path class="a" d="M784,894 V962 H312"/>
+  <path class="a" d="M444,894 V1040"/>
+  <path class="a" d="M198,1002 V1072 H336"/>
+  <path class="a" d="M444,1104 V1182 H312"/>
+  <path class="a x" d="M84,1182 H36 V136 H240 V150"/>
+  <path class="a x" d="M102,136 V150"/>
+
+  <!-- boxes: starts -->
+  <rect class="b" x="48" y="150" width="108" height="72"/>
+  <text class="t" x="60" y="174">Bug</text><text class="d" x="60" y="193">PO files a</text><text class="d" x="60" y="209">defect</text>
+  <rect class="b" x="168" y="150" width="144" height="72"/>
+  <text class="t" x="180" y="174">Intent</text><text class="d" x="180" y="193">PO files a new</text><text class="d" x="180" y="209">idea</text>
+  <rect class="b" x="452" y="150" width="136" height="72"/>
+  <text class="t" x="464" y="174">Chore</text><text class="d" x="464" y="193">Tech lead files</text><text class="d" x="464" y="209">upkeep</text>
+
+  <!-- Design / Draft -->
+  <rect class="b" x="168" y="250" width="144" height="72"/>
+  <text class="t" x="180" y="274">Design</text><text class="d" x="180" y="293">PO designs the</text><text class="d" x="180" y="309">screens</text>
+  <rect class="b" x="660" y="254" width="248" height="64"/>
+  <text class="t" x="674" y="280">Draft the Spec</text><text class="d" x="674" y="300">Claude slices the Intent</text>
+
+  <!-- Approve the Spec -->
+  <rect class="b" x="168" y="376" width="144" height="72"/>
+  <text class="t" x="180" y="400">Approve the Spec</text><text class="d" x="180" y="419">PO approves a</text><text class="d" x="180" y="435">user-visible Spec</text>
+  <rect class="b" x="336" y="376" width="216" height="72"/>
+  <text class="t" x="350" y="400">Approve the Spec</text><text class="d" x="350" y="419">Tech lead approves an</text><text class="d" x="350" y="435">engineering-only Spec</text>
+
+  <!-- Set ready-for-agent / Plan -->
+  <rect class="b" x="336" y="490" width="216" height="64"/>
+  <text class="t" x="350" y="516">Set ready-for-agent</text><text class="d" x="350" y="536">Tech lead releases the work</text>
+  <rect class="b" x="660" y="476" width="248" height="64"/>
+  <text class="t" x="674" y="502">Plan agent</text><text class="d" x="674" y="522">Claude drafts the plan PR</text>
+
+  <!-- Approve the plan / Claude responds -->
+  <rect class="b" x="336" y="600" width="216" height="64"/>
+  <text class="t" x="350" y="626">Approve the plan</text><text class="d" x="350" y="646">Tech lead reviews the plan PR</text>
+  <rect class="b" x="660" y="600" width="248" height="64"/>
+  <text class="t" x="674" y="626">Claude responds</text><text class="d" x="674" y="646">Revises the plan PR on @claude</text>
+
+  <!-- Build / Checks / Review -->
+  <rect class="b" x="660" y="720" width="248" height="64"/>
+  <text class="t" x="674" y="746">Build agent</text><text class="d" x="674" y="766">Claude writes code and tests</text>
+  <rect class="b" x="660" y="830" width="248" height="64"/>
+  <text class="t" x="674" y="856">Checks and code review</text><text class="d" x="674" y="876">CI and Claude review the PR</text>
+  <rect class="b" x="336" y="830" width="216" height="64"/>
+  <text class="t" x="350" y="856">Review and steer</text><text class="d" x="350" y="876">Tech lead reviews, uses @claude</text>
+
+  <!-- Preview / Merge / Feedback -->
+  <rect class="b" x="84" y="922" width="228" height="80"/>
+  <text class="t" x="98" y="948">Preview</text><text class="d" x="98" y="967">PO tries it and approves the PR</text><text class="d" x="98" y="983">(tech lead may approve instead)</text>
+  <rect class="m" x="336" y="1040" width="216" height="64"/>
+  <text class="t" x="350" y="1066">Merge</text><text class="d" x="350" y="1086">Tech lead merges</text>
+  <rect class="b" x="84" y="1150" width="228" height="64"/>
+  <text class="t" x="98" y="1176">Feedback</text><text class="d" x="98" y="1196">PO checks the outcome</text>
+
+  <!-- arrow labels -->
+  <text class="l" x="342" y="340" text-anchor="middle">ready-for-po</text>
+  <text class="l" x="690" y="340" text-anchor="middle">ready-for-dev</text>
+  <text class="l" x="566" y="244" text-anchor="end">ready-for-dev</text>
+  <text class="l" x="288" y="516" text-anchor="middle">ready-for-dev</text>
+  <text class="l" x="438" y="474" text-anchor="end">ready-for-dev</text>
+  <text class="l" x="606" y="502" text-anchor="middle">ready-for-agent</text>
+  <text class="l" x="553" y="572" text-anchor="middle">draft plan PR</text>
+  <text class="l" x="606" y="612" text-anchor="middle">@claude</text>
+  <text class="l" x="606" y="662" text-anchor="middle">plan updated</text>
+  <text class="l" x="550" y="746" text-anchor="middle">approving review</text>
+  <text class="l" x="606" y="842" text-anchor="middle">PR ready</text>
+  <text class="l" x="606" y="892" text-anchor="middle">agent fixes</text>
+  <text class="l" x="640" y="956" text-anchor="middle">visible change: ready-for-po</text>
+  <text class="l" x="450" y="1024">approved</text>
+  <text class="l" x="452" y="1150">last Spec closes,</text>
+  <text class="l" x="452" y="1164">ready-for-po</text>
+  <text class="l" x="58" y="700" text-anchor="middle" transform="rotate(-90 58 700)">new Intent or Bug</text>
+
+  <text x="24" y="1296" font-size="13" fill="#666">Arrow labels are status: labels or GitHub events, so the history records who decided what and when.</text>
+</svg>

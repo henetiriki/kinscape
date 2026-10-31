@@ -24,40 +24,12 @@ Built as an experiment in the [AI-native SDLC](https://claude.com/resources/arti
 
 ## How we work
 
-Who acts at each stage, the `status:` label that hands it on, and the workflow (⚙) that runs. Detail: [how we work](docs/how-we-work.md). Every workflow: [workflows](.github/workflows/README.md).
+Who acts at each stage and the `status:` label that hands it on. Detail: [how we work](docs/how-we-work.md). Every workflow: [workflows](.github/workflows/README.md).
 
-```mermaid
-flowchart TD
-  subgraph PO [Product owner]
-    intent["Intent<br>files the Intent"]
-    design["Design<br>designs the screens in Claude Design"]
-    approveSpec["approves a user-visible Spec"]
-    preview["Preview<br>tries the change against the acceptance checks"]
-    feedback["Feedback<br>checks the outcome, closes the Intent"]
-  end
-  subgraph TL [Tech lead]
-    spec["Spec<br>slices the Intent with /refine spec"]
-    agent["sets status: ready-for-agent"]
-    approvePlan["Plan<br>approves the plan PR"]
-    merge["Live<br>reviews and merges"]
-  end
-  subgraph AI [Claude]
-    plan["drafts the plan PR<br>⚙ Claude: Plan"]
-    build["Build & test<br>⚙ Claude: Build, CI, Claude: Code Review"]
-    respond["answers @claude comments<br>⚙ Claude: Code"]
-  end
-  intent --> design --> spec
-  spec -->|"user-visible<br>status: ready-for-po"| approveSpec
-  approveSpec -->|"status: ready-for-dev"| agent
-  spec -->|"engineering-only<br>status: ready-for-dev"| agent
-  agent --> plan --> approvePlan
-  approvePlan -.->|"@claude"| respond -.->|revises| plan
-  approvePlan -->|approving review| build
-  build -->|"visible change<br>status: ready-for-po"| preview --> merge
-  build -->|nothing visible| merge
-  merge -->|"last Spec closes: status: ready-for-po<br>⚙ Backlog: Intent ready for PO"| feedback
-  feedback -->|"new Intent or Bug"| intent
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/workflow-dark.svg">
+  <img src="docs/media/workflow-light.svg" alt="The workflow in three lanes: PO, Tech lead, and Claude and CI. An Intent, Bug or Chore starts the work. For an Intent, the PO designs the screens and Claude drafts the Spec, which the PO or the tech lead approves. The tech lead sets ready-for-agent, Claude drafts the plan, the tech lead approves it, Claude builds, and CI and Claude check the pull request. The tech lead reviews and merges, the PO previews a visible change, and the PO gives feedback that starts new Intents or Bugs.">
+</picture>
 
 ## Contributions
 

@@ -41,12 +41,16 @@ The workflow checks out the base SHA and runs the script, which picks the row fr
 ## Risks
 
 - `claude-plan.yml` also needs the owner as actor, so a `GITHUB_TOKEN` label can't start a plan.
-- This PR's base lacks the script, so its own runs fail.
 
 ## Proof
 
 | Acceptance check                                      | Proven by                       |
 | ----------------------------------------------------- | ------------------------------- |
 | Every row; the hand-back, skip, review, failure cases | `issue-status.test.ts`          |
-| Coverage, words, lint, format, diagram                | `npm test`, `npm run words`, CI |
+| Coverage, words, lint, format                         | `npm test`, CI                  |
 | The next Spec PR follows the table                    | Its runs, linked in its PR body |
+
+## Deviations
+
+- `plans/README.md` rule 13 keeps its last sentence for a chore with no plan PR, where no workflow runs.
+- `docs/how-we-work.md`: the `ready-for-agent` row reworded, as this workflow also sets it.

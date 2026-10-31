@@ -7,7 +7,7 @@ import { invisible } from './vercel-ignore.mts';
 
 // Runs on a pull request event (backlog-issue-status.yml): keeps the `status:` label of each
 // Spec, Bug or Chore the PR closes in step with the PR. The row comes from the event payload as it
-// was when the event fired; docs/building.md and plans/chores/C441-issue-status.md hold the table:
+// was when the event fired. The table:
 //   plan PR opened (draft, title ends "(plan)")            -> ready-for-dev
 //   plan approved by the owner, no `hand-back` label        -> ready-for-agent
 //   PR ready (marked, or opened), user-visible              -> ready-for-po

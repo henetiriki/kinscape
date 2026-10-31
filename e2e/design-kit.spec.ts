@@ -722,7 +722,7 @@ test.describe('the map style board', () => {
     );
     await expect(preview(page, 'polity-line')).toHaveCSS(
       'background-image',
-      new RegExp(rgb(map.border.colour).replace(/[()]/g, '\\$&'))
+      new RegExp(rgb(map.border.colour).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
     );
   });
 });

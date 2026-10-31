@@ -30,6 +30,9 @@ label "status: ready-for-dev"   "10B981" "Approved, a person picks it up"
 label "status: ready-for-agent" "0EA5E9" "Claude plans it in GitHub Actions"
 label "status: blocked"         "7F1D1D" "Waiting on someone outside the team, or a failed agent run"
 
+# Applied by claude-hand-back.yml to a pull request that changes a code-owner path
+label "hand-back" "B60205" "The tech lead builds this: it changes a code-owner path"
+
 # Remove GitHub's default labels that overlap with ours, and our retired ones (ignore if already gone)
 for l in bug documentation duplicate enhancement "good first issue" "help wanted" invalid question wontfix \
   "status: in-progress" "status: in-review"; do

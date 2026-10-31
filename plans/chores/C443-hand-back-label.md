@@ -22,13 +22,13 @@ The workflow checks out the base SHA and runs `node scripts/hand-back.mts "$PR"`
 | File                                     | What                                                |
 | ---------------------------------------- | --------------------------------------------------- |
 | `scripts/hand-back.mts`                  | New: matcher, `EXEMPT`, `run`                       |
-| `scripts/__tests__/hand-back.test.ts`    | New: the issue's cases; the real CODEOWNERS parses  |
+| `scripts/__tests__/hand-back.test.ts`    | New: the issue's cases                              |
 | `.github/workflows/claude-hand-back.yml` | New                                                 |
 | `.github/workflows/README.md`            | `npm run workflows:diagram`                         |
 | `.github/workflows/claude-plan.yml`      | Line 77 deleted                                     |
 | `.github/agent/build.md`                 | Line 10 shortened; line 5's `--json` gains `labels` |
 | `plans/README.md`                        | Rule 13: the marker sentence links the workflow     |
-| `.github/CODEOWNERS`                     | Adds the script                                     |
+| `.github/CODEOWNERS`                     | Sorted; adds the script                             |
 | `scripts/setup-github.sh`                | The `hand-back` label                               |
 
 ## Risks
@@ -39,11 +39,13 @@ The workflow checks out the base SHA and runs `node scripts/hand-back.mts "$PR"`
 
 ## Proof
 
-| Acceptance check                         | Proven by                                   |
-| ---------------------------------------- | ------------------------------------------- |
-| Diff match; plan-table-only match (#426) | `hand-back.test.ts`                         |
-| No match, exempt only, rerun, fork       | `hand-back.test.ts`                         |
-| CODEOWNERS globs                         | `hand-back.test.ts`, the real file included |
-| `gh` failure caught and logged           | `hand-back.test.ts`                         |
-| Coverage, words, lint, format, diagram   | `npm test`, `npm run words`, CI             |
-| Next hand-back plan PR labelled          | Its run, linked in its body                 |
+| Acceptance check                                                       | Proven by                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------- |
+| Diff and plan-table matches (#426); no match, exempt only, rerun, fork | `hand-back.test.ts`                         |
+| CODEOWNERS globs; `gh` failure caught and logged                       | `hand-back.test.ts`, the real file included |
+| Coverage, words, lint, format, diagram                                 | `npm test`, `npm run words`, CI             |
+| Next hand-back plan PR labelled                                        | Its run, linked in its body                 |
+
+## Deviations
+
+- The diff is checked before any plan is fetched; the label goes on with `gh api`.

@@ -2,7 +2,7 @@
 
 - **Spec:** #445
 - **Requirement IDs:** NFR-03, NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@ Pure functions in `lib/design/system.mts` turn `tokens.json`, `DESIGN.md` and th
 - **B.** `design-system/project/`; each tool needs an ignore entry.
 - **Other:** your own.
 
-Recommended: A, because no tool config changes.
+**Answer: A** (@henetiriki)
 
 **D2 · Type groups** · Decides: Tech lead
 
@@ -24,7 +24,7 @@ Recommended: A, because no tool config changes.
 - **B.** Role groups (Headings, Text, Controls, Mono).
 - **Other:** your own.
 
-Recommended: A, because it invents nothing.
+**Answer: A** (@henetiriki)
 
 **D3 · Font notes** · Decides: Tech lead
 
@@ -34,7 +34,7 @@ Recommended: A, because it invents nothing.
 - **B.** Also a `font` family. Its `--font-<key>` clashes with the families', and `'` isn't allowed.
 - **Other:** your own.
 
-Recommended: A.
+**Answer: A** (@henetiriki)
 
 **D4 · Values the digest leaves open** · Decides: Tech lead
 
@@ -44,7 +44,7 @@ The digest names `assetGroups.<g>.tile`, `lastChange.by` and `lastChange.via` bu
 - **B.** Leave `tile` out; `by` `"KinScape repo"`, `via` `"code"`, `note` `"npm run design-system at <sha7>"`. DS.3 corrects them.
 - **Other:** your own.
 
-Recommended: A, so the format test rests on the reference.
+**Answer: A** (@henetiriki)
 
 **D5 · Cover** · Decides: Tech lead
 
@@ -54,7 +54,7 @@ Four blocks in `brand`, `map-land`, `map-sea` and `pin`, with `radius-panel` cor
 - **B.** Pattern: the 45° contested hatch (`lib/ui/hatch.ts`).
 - **Other:** your own.
 
-Recommended: A.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -50,7 +50,7 @@ export const run = (root: string, out: string): string[] => {
   const files = fontFiles(readFileSync(join(root, 'app/layout.tsx'), 'utf8'));
   const fonts = systemFonts(files, raw);
   const system = systemTokens(raw, fonts);
-  const sha = git(root, ['rev-parse', '--short=7', 'HEAD']);
+  const sha = git(root, ['rev-parse', 'HEAD']).slice(0, 7);
   const at = new Date(
     Number(git(root, ['log', '-1', '--format=%ct'])) * 1000
   ).toISOString();

@@ -4,8 +4,11 @@ import type { SystemToken, SystemTokens } from './types.ts';
 
 const NAME = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/;
 const HEX = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
-const COLOUR_FUNCTION =
-  /^(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\((?:[-+\d.%\s,/]|deg)*\)$/i;
+const COLOUR_FUNCTION_SOURCE =
+  '(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\\((?=[^)]*\\d)(?:[-+\\d.%\\s,/]|deg)*\\)';
+const COLOUR_FUNCTION = new RegExp(`^${COLOUR_FUNCTION_SOURCE}$`, 'i');
+const COLOUR_FUNCTIONS = new RegExp(COLOUR_FUNCTION_SOURCE, 'gi');
+const SHADOW_WORD = /^(?:inset|none|-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|%)?)$/i;
 const ALIAS = /^\{([^{}]*)\}$/;
 const PLAIN_VALUE = /^[A-Za-z0-9 #%(),./+_-]{1,200}$/;
 const LENGTH = /^-?(?:\d+\.?\d*|\.\d+)(?:px|rem|em|%)?$/;
@@ -83,6 +86,13 @@ const colourProblem = (
 const valueProblem = (value: string): boolean =>
   !PLAIN_VALUE.test(value) || /(?:var|url)\(/i.test(value);
 
+const shadowProblem = (value: string): boolean =>
+  value
+    .replace(COLOUR_FUNCTIONS, '')
+    .split(/[\s,]+/)
+    .filter(word => word !== '')
+    .some(word => !SHADOW_WORD.test(word) && !HEX.test(word));
+
 const tokenProblems = (tokens: SystemTokens): string[] => {
   const colours = new Map(
     tokens.color.tokens.map(({ name, value }) => [name, value])
@@ -115,6 +125,10 @@ const tokenProblems = (tokens: SystemTokens): string[] => {
       } else if (valueProblem(token.value)) {
         problems.push(
           'the value is not a plain CSS value of at most 200 characters'
+        );
+      } else if (family === 'shadow' && shadowProblem(token.value)) {
+        problems.push(
+          'the shadow is not lengths, hex or function colours, inset or none'
         );
       }
 

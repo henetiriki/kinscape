@@ -6,7 +6,7 @@
 
 ## Approach
 
-Pure functions in `lib/design/system.mts` turn `tokens.json`, `DESIGN.md` and the font list into the type's files. `scripts/design-system.mts` does the I/O: it empties the output folder, writes those files, and copies the fonts and SVGs. Names come from `cssName` without `--`. Values come from `resolveTokens`, and a `{group.path}` reference becomes `{cssName}`. The font list is read from the `src` literals in `app/layout.tsx` (path, style, weight). A file's family is the `tokens.json` font whose slug starts its file name, and its `unicode-range` comes from the package's own CSS. `formatProblems` (`lib/design/format.mts`) names each token that breaks a **Type format** rule. Timestamps are HEAD's commit time in UTC.
+Pure functions in `lib/design/system.mts` turn `tokens.json`, `DESIGN.md` and the font list into the type's files. `scripts/design-system.mts` does the I/O: it empties the output folder, writes those files, and copies the fonts and SVGs. Names come from `cssName` without `--`. Values come from `tokens.json` as written, and a `{group.path}` reference becomes `{cssName}`. The font list is read from the `src` literals in `app/layout.tsx` (path, style, weight). A file's family is the `tokens.json` font whose slug starts its file name, and its `unicode-range` comes from the package's own CSS. `formatProblems` (`lib/design/format.mts`) names each token that breaks a **Type format** rule. Timestamps are HEAD's commit time in UTC.
 
 ## Decisions
 
@@ -74,16 +74,17 @@ Four blocks in `brand`, `map-land`, `map-sea` and `pin`, with `radius-panel` cor
 1. `format.test.ts` fails on the behaviour (rule 12), then `format.mts`.
 2. `system.test.ts` fails, then `system.mts`.
 3. Script test fails, then the script and `cover.html`.
-4. Run it; `git status --porcelain`, `git check-ignore`, lint, `format:check`, `words`, tests, `validate:boundaries`, `e2e`.
+4. Run it; `git status --porcelain`, `git check-ignore`, then the checks.
 
 ## Deviations
 
 - `system.mts` also exports `fontFiles`, `systemFonts`, `unicodeRange`; types in `lib/design/types.ts`.
+- `system.test.ts` and the script test came after their code; rule 12's failing line is for `format.test.ts` only.
 
 ## Risks
 
-- **latin-ext shadows latin.** A reader that builds `@font-face` from `type.fonts` without `unicode-range` could pick the wrong file. Our `tokens.css` carries the range; DS.3 checks the rendering.
-- **`../../tokens.css` in the cover.** The digest doesn't say how previews load variables. If this is wrong, DS.3's publish shows unstyled blocks.
+- **latin-ext shadows latin.** A reader that builds `@font-face` from `type.fonts` without `unicode-range` could pick the wrong file. Our `tokens.css` carries the range.
+- **`../../tokens.css` in the cover.** If wrong, DS.3's publish shows unstyled blocks.
 
 ## Proof
 

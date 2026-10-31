@@ -106,6 +106,8 @@ describe('formatProblems', () => {
       'is not a hex or numeric colour function',
     ],
     ['rgb(var(--a))', 'is not a hex or numeric colour function'],
+    ['rgb()', 'is not a hex or numeric colour function'],
+    ['rgb(,,)', 'is not a hex or numeric colour function'],
     ['#12345', 'is not a hex or numeric colour function'],
     ['{missing}', 'aliases {missing}, which is not a colour'],
     ['{bad}', 'aliases itself'],
@@ -161,6 +163,32 @@ describe('formatProblems', () => {
       expect(formatProblems(tokens)).toEqual([
         `shadow-raised: the value is not a plain CSS value of at most 200 characters`,
       ]);
+    }
+  );
+
+  it.each([
+    ['0 1px 2px black'],
+    ['0 0 4px color-mix(in srgb, red, blue)'],
+    ['0 0 4px rgb()'],
+    ['0 0 4px'.concat(' solid')],
+  ])('names a shadow outside lengths, colours and inset: %s', value => {
+    const tokens = valid();
+
+    tokens.shadow.tokens[0].value = value;
+
+    expect(formatProblems(tokens)).toEqual([
+      'shadow-raised: the shadow is not lengths, hex or function colours, inset or none',
+    ]);
+  });
+
+  it.each([['none'], ['inset 0 1px 2px #0003, 0 0 4px hsl(0 0% 0% / 0.5)']])(
+    'passes the shadow %s',
+    value => {
+      const tokens = valid();
+
+      tokens.shadow.tokens[0].value = value;
+
+      expect(formatProblems(tokens)).toEqual([]);
     }
   );
 

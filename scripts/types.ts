@@ -1,3 +1,11 @@
+/** One uploaded file in the design system index's `assetGroups.<Group>.files`. */
+export type AssetRecord = {
+  blob: string;
+  name: string;
+  size: number;
+  type: string;
+};
+
 /** `design/canvas/export.json`: how `npm run design:export` turns artboards into snapshots. */
 export type CanvasExport = {
   /** The canvas's path for the app icon; snapshots use `app/icon0.svg`. */
@@ -27,6 +35,21 @@ export type Denial = {
 export type DesignExportDeps = {
   /** Loads the prepared artboard in Chromium, fills its template and returns the page's HTML. */
   render: (html: string, snapshot: CanvasSnapshot) => Promise<string>;
+};
+
+/** The parts of `design-system.json` that `design-system-publish.mts` writes; other keys pass through. */
+export type DesignIndex = {
+  [key: string]: unknown;
+  assetGroups: Record<
+    string,
+    {
+      files: Record<string, AssetRecord>;
+      name: string;
+      order: string[];
+      tile: string;
+    }
+  >;
+  lastChange: { at: string; by: string; note: string; via: string };
 };
 
 export type DesignShotsCiDeps = {

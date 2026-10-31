@@ -68,3 +68,9 @@ A project skill, `/publish-design-system`, does what needs the signed-in tools: 
 ## Out of scope
 
 - Installing the system on the canvas: DS.4. Components: DS.7.
+
+## Deviations
+
+- The script also exports `sendList`, `assetRecords` and `cli`, with their types in `scripts/types.ts`.
+- D3: no artifact tool returns the account's name (`db_whoami` gives an id), so `by` is `git config user.name`.
+- `upload_asset` takes 10 files a call, so the skill uploads the 11 icons in two.

@@ -2,7 +2,7 @@
 
 - **Spec:** #447
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Prettier would format the install's `.json`, `.css`, `.md` and `.html`, and `tsc
 - **B.** Ignore all of `design/canvas/project/**` in all three, replacing the two `.prettierignore` lines and the ESLint line for `*.dc.html` and `canvas.json`. Nobody edits anything there, so a future canvas folder can't break `format:check`. Rewords Spec step 3 (`gh issue edit`).
 - **Other:** your own.
 
-Recommended: B, because one pattern per file stays right as the canvas grows.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

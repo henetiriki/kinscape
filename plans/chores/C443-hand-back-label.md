@@ -1,7 +1,7 @@
 # Plan: C443: Label hand-back PRs
 
 - **Spec:** #443
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ The workflow checks out the base SHA and runs `node scripts/hand-back.mts "$PR"`
 - **B.** Log a warning and exit 0.
 - **Other:** your own.
 
-Recommended: A, because a silent miss is what this fixes.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

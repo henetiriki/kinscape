@@ -14,6 +14,12 @@ describe('resolveTokens', () => {
     });
   });
 
+  it('drops the notes group', () => {
+    const tokens = { colour: { brand: '#264f29' }, notes: { colour: {} } };
+
+    expect(resolveTokens(tokens)).toEqual({ colour: { brand: '#264f29' } });
+  });
+
   it('rejects a reference to nothing', () => {
     expect(() => resolveTokens({ a: '{b.c}' })).toThrow(
       'Unknown token reference {b.c}'

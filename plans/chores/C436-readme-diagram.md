@@ -1,53 +1,47 @@
-# Plan: C436: Redraw the README workflow diagram with entry points and two columns
+# Plan: C436: Redraw the README workflow diagram with entry points and three lanes
 
 - **Spec:** #436
-- **Status:** approved
+- **Status:** draft
 
 ## Approach
 
-Rewrite the Mermaid block as `flowchart TB` with subgraphs `People`, declared first, and `Claude and CI`; boxes and routes as #436 lists, each `<b>Title</b><br>one line`. Arrow labels: `status: ready-for-po` or `ready-for-dev` into Approve the Spec, `ready-for-dev` into the tech lead's box, `ready-for-agent` into Plan agent. The sentence above becomes "Who acts at each stage and the `status:` label that hands it on."
+Replace the Mermaid block with a `<picture>` of `docs/media/workflow-dark.svg` (dark theme) and `workflow-light.svg` (default), with alt text describing the flow. Write both SVGs by hand: lanes PO | Tech lead | Claude and CI, a grey People panel, a blue Merge box, elbow arrows labelled with the `status:` label or event. The dark file keeps the layout with dark fills and light text. The sentence above becomes "Who acts at each stage and the `status:` label that hands it on."
 
 ## Decisions
 
-**D1 · Where Preview sits** · Decides: Tech lead
+**D1 · Preview** · Decides: Tech lead. **Answer: A** (@henetiriki): Checks → Preview → Merge.
 
-- **A.** Checks and code review → Preview → Merge, labelled "visible change, status: ready-for-po", beside Review and steer.
-- **B.** Review and steer → Preview → Merge.
-- **Other:** your own.
+**D2 · Hand-offs with no `status:` label** · **Answer: A**: label them with the event.
 
-**Answer: A** (@henetiriki)
+**D3 · Feedback loop** · **Answer: A**: a dashed arrow to the starts.
 
-**D2 · Hand-offs that set no `status:` label** · Decides: Tech lead
+**D4 · Light and dark** · **Answer: B** (@henetiriki): two SVGs in a `<picture>`, not one white SVG.
 
-Plan agent → Approve the plan, and Checks → Review and steer, change no label.
+**D5 · Approve the Spec** · Decides: Tech lead. **Answer: A** (@henetiriki): two boxes, one per lane (PO: user-visible; tech lead: engineering-only).
 
-- **A.** Label them with the event ("draft plan PR", "PR ready").
-- **B.** Leave them unlabelled.
+## Alternatives considered
 
-**Answer: A** (@henetiriki)
-
-**D3 · Feedback loop and "nothing pointing at" the starts** · Decides: Tech lead
-
-- **A.** A dashed "new Intent or Bug" arrow from Feedback to Intent and Bug.
-- **B.** No arrow; Feedback's line says "files a new Intent or Bug".
-
-**Answer: A** (@henetiriki)
+Mermaid can't place boxes in lanes.
 
 ## Files that change
 
-| File                                  | New / changed | What                       |
-| ------------------------------------- | ------------- | -------------------------- |
-| `README.md`                           | Changed       | Diagram; sentence above it |
-| `plans/chores/C436-readme-diagram.md` | New           | This plan                  |
+| File                                  | New / changed | What                        |
+| ------------------------------------- | ------------- | --------------------------- |
+| `docs/media/workflow-light.svg`       | New           | Light diagram               |
+| `docs/media/workflow-dark.svg`        | New           | Dark diagram                |
+| `README.md`                           | Changed       | `<picture>`; sentence above |
+| `plans/chores/C436-readme-diagram.md` | New           | This plan                   |
 
 ## Risks
 
-- Mermaid may put `People` on the right: reorder declarations until it renders left.
+- The SVGs can drift apart: change both in one commit.
+- Dark-theme switching shows only on GitHub: check both themes on the branch's README.
 
 ## Proof
 
-| Acceptance check                     | Proven by                              |
-| ------------------------------------ | -------------------------------------- |
-| Starts, Spec route, columns; renders | The branch's README on GitHub          |
-| No `⚙` above the diagram             | `git grep -n "⚙" README.md`, in the PR |
-| lint, `format:check`, `words`        | Output in the PR                       |
+| Acceptance check                   | Proven by                              |
+| ---------------------------------- | -------------------------------------- |
+| Starts, Spec route, lanes; renders | The branch's README, light and dark    |
+| Alt text                           | The `<picture>` in `README.md`         |
+| No `⚙` above the diagram           | `git grep -n "⚙" README.md`, in the PR |
+| lint, `format:check`, `words`      | Output in the PR                       |

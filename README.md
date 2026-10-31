@@ -26,45 +26,10 @@ Built as an experiment in the [AI-native SDLC](https://claude.com/resources/arti
 
 Who acts at each stage and the `status:` label that hands it on. Detail: [how we work](docs/how-we-work.md). Every workflow: [workflows](.github/workflows/README.md).
 
-```mermaid
-flowchart TB
-  subgraph People
-    intent["<b>Intent</b><br>PO files a new idea"]
-    bug["<b>Bug</b><br>PO files a defect"]
-    chore["<b>Chore</b><br>Tech lead files upkeep"]
-    design["<b>Design</b><br>PO designs the screens"]
-    approveSpec["<b>Approve the Spec</b><br>PO if user-visible, tech lead if not"]
-    ready["<b>Set ready-for-agent</b><br>Tech lead releases the work"]
-    approvePlan["<b>Approve the plan</b><br>Tech lead reviews the plan PR"]
-    steer["<b>Review and steer</b><br>Tech lead reviews, uses @claude"]
-    preview["<b>Preview</b><br>PO tries the change"]
-    merge["<b>Merge</b><br>Tech lead merges"]
-    feedback["<b>Feedback</b><br>PO checks the outcome"]
-  end
-  subgraph CI [Claude and CI]
-    spec["<b>Draft the Spec</b><br>Claude slices the Intent"]
-    plan["<b>Plan agent</b><br>Claude drafts the plan PR"]
-    build["<b>Build agent</b><br>Claude writes code and tests"]
-    checks["<b>Checks and code review</b><br>CI and Claude review the PR"]
-  end
-  intent --> design --> spec
-  spec -->|"status: ready-for-po or ready-for-dev"| approveSpec
-  approveSpec -->|"status: ready-for-dev"| ready
-  bug -->|"status: ready-for-dev"| ready
-  chore -->|"status: ready-for-dev"| ready
-  ready -->|"status: ready-for-agent"| plan
-  plan -->|"draft plan PR"| approvePlan
-  approvePlan -->|"approving review"| build --> checks
-  checks -->|"PR ready"| steer
-  steer -->|"agent fixes"| checks
-  checks -->|"visible change, status: ready-for-po"| preview --> merge
-  steer --> merge
-  merge -->|"last Spec closes, status: ready-for-po"| feedback
-  feedback -.->|"new Intent or Bug"| intent
-  feedback -.-> bug
-  bug ~~~ design
-  chore ~~~ design
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/media/workflow-dark.svg">
+  <img src="docs/media/workflow-light.svg" alt="The workflow in three lanes: PO, Tech lead, and Claude and CI. An Intent, Bug or Chore starts the work. For an Intent, the PO designs the screens and Claude drafts the Spec, which the PO or the tech lead approves. The tech lead sets ready-for-agent, Claude drafts the plan, the tech lead approves it, Claude builds, and CI and Claude check the pull request. The tech lead reviews and merges, the PO previews a visible change, and the PO gives feedback that starts new Intents or Bugs.">
+</picture>
 
 ## Contributions
 

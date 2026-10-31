@@ -1,7 +1,7 @@
 # Plan: C439: Polish the README diagram: smaller heading, flush edges, document starts
 
 - **Spec:** #439
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

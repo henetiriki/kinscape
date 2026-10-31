@@ -1,0 +1,36 @@
+name: 'Claude: Hand back'
+
+# Labels a pull request `hand-back` when a path it changes, or its plan's "Files that change" table
+# names, is a code-owner path (plans/README.md rule 13). The label stays until merge. It is a
+# signal, not a guard: the ruleset still requires code-owner review. The script and CODEOWNERS come
+# from the base commit, so the PR can't change what runs. Never `pull_request_target`.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the base commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # Does nothing for a fork or a PR that has the label (scripts/hand-back.mts).
+      - name: Label the PR
+        run: node scripts/hand-back.mts "$PR"
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}

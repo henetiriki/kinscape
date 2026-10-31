@@ -49,6 +49,11 @@ const resolveValue = (
   return resolveValue(tokens, lookup(tokens, path), [...seen, path]);
 };
 
-/** Replaces every `{group.name}` reference with the value it points at. */
-export const resolveTokens = <T extends Tree>(tokens: T): T =>
-  resolveValue(tokens, tokens, []) as T;
+/** Replaces every `{group.name}` reference with the value it points at. Drops the `notes` group, which holds text, not tokens. */
+export const resolveTokens = <T extends Tree>(tokens: T): T => {
+  const rest = Object.fromEntries(
+    Object.entries(tokens).filter(([group]) => group !== 'notes')
+  );
+
+  return resolveValue(rest, rest, []) as T;
+};

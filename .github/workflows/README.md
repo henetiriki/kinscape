@@ -19,6 +19,7 @@ flowchart LR
   end
   subgraph g_Backlog [Backlog]
     backlog_intent_ready["Backlog: Intent ready for PO<br>backlog-intent-ready.yml<br>flag-intent"]
+    backlog_issue_status["Backlog: Issue status<br>backlog-issue-status.yml<br>status"]
     backlog_milestone["Backlog: Inherit milestone<br>backlog-milestone.yml<br>inherit"]
     backlog_spec_link["Backlog: Link Spec to Intent<br>backlog-spec-link.yml<br>link-spec"]
   end
@@ -44,6 +45,8 @@ flowchart LR
   on_push -->|"main · paths: .github/actions/**, .github/workflows/**"| actions_pin_update
   on_workflow_dispatch --> actions_pin_update
   on_issues -->|"closed"| backlog_intent_ready
+  on_pull_request -->|"opened, ready_for_review"| backlog_issue_status
+  on_pull_request_review -->|"submitted"| backlog_issue_status
   on_issues -->|"opened, edited"| backlog_milestone
   on_pull_request -->|"opened, edited, reopened"| backlog_milestone
   on_workflow_dispatch --> backlog_milestone

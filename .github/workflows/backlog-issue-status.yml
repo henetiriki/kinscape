@@ -1,0 +1,43 @@
+name: 'Backlog: Issue status'
+
+# Keeps the `status:` label of the Spec, Bug or Chore a pull request closes in step with the PR
+# (scripts/issue-status.mts holds the table). Labels set with GITHUB_TOKEN start no workflow, so
+# this can't start a plan. It is a signal, not a guard. The script comes from the base commit, so
+# the PR can't change what runs, and it skips a fork. Never `pull_request_target`.
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+# One run at a time per PR, in the order the events came.
+concurrency:
+  group: issue-status-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the base commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      # Reads the event payload as it was when the event fired.
+      - name: Move the issue's status
+        run: node scripts/issue-status.mts
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}

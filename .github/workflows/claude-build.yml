@@ -38,7 +38,7 @@ concurrency:
 
 jobs:
   # Runs when the repo owner approves a review on a draft plan PR that Claude's bot opened. The bot
-  # opens quick-chore PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md
+  # opens its other PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md
   # rule 3; the build drops the suffix). The shared runner checks the Spec isn't blocked, then
   # Claude builds what the plan describes and comments on the PR with the result. The runner comes
   # from main, like the agent files.

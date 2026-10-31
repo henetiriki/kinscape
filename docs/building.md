@@ -23,8 +23,7 @@ A component's CSS goes in a `*.module.css` beside it, with camelCase class names
 
 Tooling, CI, docs, process and settings.
 
-- **Quick, no issue:** Claude plans in plan mode, the tech lead accepts; the PR body says what changed and why. Open a `chore:` PR from a branch off `origin/main`.
-- **Filed as a Chore issue:** the tech lead sets `status: ready-for-agent` and the CI agent follows the Specs path above on `chore/C<n>-<slug>`, handing back what it can't build ([rule 13](../plans/README.md)).
+Every chore is a Chore issue. The tech lead sets `status: ready-for-agent` and the CI agent follows the Specs path above on `chore/C<n>-<slug>`, handing back what it can't build ([rule 13](../plans/README.md)); the tech lead plans and builds that. Only Dependabot's and `actions-pin-update.yml`'s PRs need no issue or plan.
 
 ## Merging
 

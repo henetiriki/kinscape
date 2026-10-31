@@ -4,7 +4,7 @@ Where these rules and the review command disagree, these win.
 
 ## The plan
 
-Find the PR's plan: a file under `plans/` changed in the PR; else the plan in the PR body; else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it and issue `#N` (`gh issue view`). Report an Approach item, Files-that-change row or issue request the diff doesn't do, an extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs (e.g. `MAP-03`) where the plan does.
+Find the PR's plan: a file under `plans/` changed in the PR; else the file under `plans/` whose `Spec:` line names the `#N` in its `Closes #N`. Read it and issue `#N` (`gh issue view`). If none, report the missing plan file, except on head branch `bot/update-action-pins`. Report an Approach item, Files-that-change row or issue request the diff doesn't do, an extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (`plans/README.md` rule 3). Cite requirement IDs (e.g. `MAP-03`) where the plan does.
 
 ## The rules
 

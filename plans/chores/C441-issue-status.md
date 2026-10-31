@@ -1,7 +1,7 @@
 # Plan: C441: Keep an issue's status label in step with its PR
 
 - **Spec:** #441
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ The workflow checks out the base SHA and runs the script, which picks the row fr
 - **B.** The PR number through `env:`, read live: an approval read after the build marks the PR ready takes row 5, not 2.
 - **Other:** your own.
 
-Recommended: A, because B races the build.
+**Answer: A** (@henetiriki)
 
 **D2 · Whose approval moves a ready PR (row 5)** · Decides: Tech lead
 
@@ -23,7 +23,7 @@ Recommended: A, because B races the build.
 - **B.** Anyone's: the repo is public, so a stranger can approve.
 - **Other:** your own.
 
-Recommended: A, because strangers shouldn't move the ball.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

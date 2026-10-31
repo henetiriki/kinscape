@@ -2,7 +2,7 @@
 
 - **Spec:** #446
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@ A project skill, `/publish-design-system`, does what needs the signed-in tools: 
 - **B.** `DesignSync`: projects on claude.ai/design, writes behind a plan the user approves. Its own description says standalone Claude Design closes by 14 December 2026, and it has no upload that returns the `blob` an icon record needs.
 - **Other:** your own.
 
-Recommended: A, because B may stop working before DS.7 lands.
+**Answer: A** (@henetiriki)
 
 **D2 · How a changed file is found** · Decides: Tech lead
 
@@ -24,7 +24,7 @@ Recommended: A, because B may stop working before DS.7 lands.
 - **B.** The skill reads every published file and compares it itself. No Spec edit, but about 30 reads a run, and fonts are binary.
 - **Other:** your own.
 
-Recommended: A, because the comparison is tested code and one read per run.
+**Answer: A** (@henetiriki)
 
 **D3 · Who `lastChange.by` names** · Decides: Tech lead
 
@@ -32,7 +32,7 @@ Recommended: A, because the comparison is tested code and one read per run.
 - **B.** The signed-in claude.ai account's name, if the tools expose it; else A.
 - **Other:** your own.
 
-Recommended: A, because it's always there and the skill needs no extra call.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

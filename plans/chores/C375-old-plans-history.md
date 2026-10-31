@@ -23,11 +23,11 @@ Recommended: A, because it keeps the whole rule and removes a repeated fact.
 
 ## Files that change
 
-| File                                     | New / changed | What                         |
-| ---------------------------------------- | ------------- | ---------------------------- |
-| `AGENTS.md`                              | Changed       | Plans: old plans are history |
-| `.github/agent/rules.md`                 | Changed       | `git grep` excludes `plans`  |
-| `plans/chores/C375-old-plans-history.md` | New           | This plan                    |
+| File                                     | New / changed | What                                                             |
+| ---------------------------------------- | ------------- | ---------------------------------------------------------------- |
+| `AGENTS.md`                              | Changed       | Plans: old plans are history; cut the Tool-agnostic line (D1: A) |
+| `.github/agent/rules.md`                 | Changed       | `git grep` excludes `plans`                                      |
+| `plans/chores/C375-old-plans-history.md` | New           | This plan                                                        |
 
 ## Order of work
 

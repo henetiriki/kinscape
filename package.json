@@ -7,6 +7,7 @@
     "design:check": "playwright test --project=design",
     "design:export": "node scripts/design-export.mts",
     "design:shots": "node scripts/design-shots.mts",
+    "design-system": "node scripts/design-system.mts",
     "dev": "next dev",
     "e2e": "playwright test",
     "e2e:install": "playwright install chromium",

@@ -39,5 +39,8 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 
+# written by npm run design-system
+/.design-system/
+
 # claude code
 /.claude/worktrees/

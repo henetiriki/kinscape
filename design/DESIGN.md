@@ -110,24 +110,7 @@ The design kit's board titles, page padding and intro width are `kit.*` tokens; 
 
 ## Colours
 
-Every value (colours, type, spacing, radii, shadows, focus, motion and the map) is in [`tokens.json`](tokens.json). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties: colours are `--brand`, `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each with its value and contrast ratio. Where a token is used:
-
-| Token                                               | Used for                                                                     |
-| --------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `--brand`, `-hover`, `-pressed`                     | Primary buttons, links, selection                                            |
-| `--brand-tint`, `-hover`, `-pressed`                | Selected tab, chip on, pressed secondary                                     |
-| `--focus-ring`, `--focus-ring-on-dark`              | Focus outline; white inside `--ink` banners                                  |
-| `--ink`, `--ink-2`, `--ink-3`                       | Main text and dark banners; secondary text; helper text and section headings |
-| `--ink-disabled`                                    | Disabled text and icons                                                      |
-| `--field-border`                                    | Fields and checkboxes                                                        |
-| `--line-strong`, `--line`                           | Secondary button borders; dividers and disabled fills                        |
-| `--segment`                                         | Segmented control track                                                      |
-| `--surface-2`, `--surface`                          | Insets, hover fills, sign-in page; panels, dock, popups, dialogs             |
-| `--scrim`                                           | Behind dialogs                                                               |
-| `--credits`                                         | Credits line                                                                 |
-| `--pin`                                             | Pins, clusters, event glyphs                                                 |
-| `--error`, `--warning`, `--success`, `--info`       | System text, with `-border` (border and icon) and `-bg` (background)         |
-| `--google-text`, `--google-border`, `--google-mark` | Google sign-in button                                                        |
+Every value (colours, type, spacing, radii, shadows, focus, motion and the map) is in [`tokens.json`](tokens.json). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties: colours are `--brand`, `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each with its value and contrast ratio. Where a token is used: its note in the `notes` group of `tokens.json`; a test fails if a token has none.
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
 

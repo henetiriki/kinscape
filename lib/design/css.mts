@@ -39,10 +39,10 @@ const walk = (node: Tree, path: string[]): [string, string][] =>
       : [[cssName([...path, key]), cssValue([...path, key], String(child))]]
   );
 
-/** Every token outside `map`, as `[--name, value]` pairs. */
+/** Every token outside `map` and `notes`, as `[--name, value]` pairs. */
 export const cssVariables = (tokens: Tree): [string, string][] =>
   Object.entries(tokens)
-    .filter(([group]) => group !== 'map')
+    .filter(([group]) => group !== 'map' && group !== 'notes')
     .flatMap(([group, child]) => (isTree(child) ? walk(child, [group]) : []));
 
 /** The text of `app/tokens.css`. */

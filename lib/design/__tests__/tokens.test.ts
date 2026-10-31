@@ -28,6 +28,7 @@ describe('cssVariables', () => {
     colour: { brand: '#264f29', focus: '{colour.brand}' },
     font: { body: "'Public Sans', system-ui, sans-serif" },
     map: { land: '#e9ebe2' },
+    notes: { colour: { brand: 'Primary buttons.' } },
     scalar: 'ignored',
     type: { body: { font: '{font.body}', size: '15px' } },
   };

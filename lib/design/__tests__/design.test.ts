@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { strayColours } from '@ks/lib/design/css.mts';
+import { noteProblems } from '@ks/lib/design/notes.mts';
 import { generate } from '@ks/scripts/tokens.mts';
 
 const root = join(import.meta.dirname, '../../..');
@@ -164,6 +165,10 @@ describe('layout tokens', () => {
 });
 
 describe('tokens.json', () => {
+  it('has a note for every token that needs one, and none for any other', () => {
+    expect(noteProblems(tokens)).toEqual([]);
+  });
+
   it('keys the map polity tints by the ids in data/polities.json, plus default', () => {
     const ids = JSON.parse(read('data/polities.json')).names.map(
       (entry: { polity: string }) => entry.polity

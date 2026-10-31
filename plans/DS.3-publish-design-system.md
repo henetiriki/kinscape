@@ -71,6 +71,7 @@ A project skill, `/publish-design-system`, does what needs the signed-in tools: 
 
 ## Deviations
 
-- The script also exports `sendList`, `assetRecords` and `cli`, with their types in `scripts/types.ts`.
-- D3: no artifact tool returns the account's name (`db_whoami` gives an id), so `by` is `git config user.name`.
-- `upload_asset` takes 10 files a call, so the skill uploads the 11 icons in two.
+- Extra exports `sendList`, `assetRecords` and `cli`; their types are in `scripts/types.ts`.
+- D3: no artifact tool returns the account's name, so `by` is `git config user.name`.
+- `upload_asset` takes 10 files a call: two calls for 11 icons.
+- `design/DESIGN.md` and the Proof runs wait for the tech lead: `create_from_type` was denied, and `claude -p` can't reach the API in the sandbox.

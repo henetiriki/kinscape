@@ -40,8 +40,11 @@ test.describe('on a desktop', () => {
     });
     const first = field.first();
 
-    await page.keyboard.press('/');
-    await expect(first).toBeFocused();
+    // The "/" listener is added after hydration, so a press right after load can be lost: press again until it lands.
+    await expect(async () => {
+      await page.keyboard.press('/');
+      await expect(first).toBeFocused({ timeout: 500 });
+    }).toPass();
 
     await page.keyboard.type('Kimberley');
     await page.keyboard.press('Escape');

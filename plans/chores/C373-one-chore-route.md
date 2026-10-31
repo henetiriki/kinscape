@@ -1,7 +1,7 @@
 # Plan: C373: One chore route: an issue and a plan file
 
 - **Spec:** #373
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -12,8 +12,10 @@ Delete the no-issue `chore:` route wherever it's described, and exempt only Depe
 **D1 · How `review.md` recognises the pin PR** · Decides: Tech lead
 
 - **A.** Its head branch, `bot/update-action-pins`.
-- **B.** Its title, `chore: update repo action pins`.
-- **Other:** your own.
+- ~~**B.** Its title, `chore: update repo action pins`.~~
+- ~~**Other:** your own.~~
+
+**Answer: A** (Tech lead)
 
 Recommended: A, because the workflow sets the branch, and a title is easier to copy by mistake.
 

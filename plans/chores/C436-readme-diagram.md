@@ -1,7 +1,7 @@
 # Plan: C436: Redraw the README workflow diagram with entry points and three lanes
 
 - **Spec:** #436
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

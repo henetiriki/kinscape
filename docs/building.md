@@ -1,10 +1,10 @@
 # Building and shipping
 
-How an approved Spec, a Bug or a chore becomes code in `main`. Roles, labels and decisions: [How we work](how-we-work.md).
+How an approved Spec, Bug or Chore becomes code in `main`. Roles, labels and decisions: [How we work](how-we-work.md).
 
-## Specs and Bugs
+## Specs, Bugs and Chores
 
-A Bug takes the same path; below, "Spec" means both. The branch is `spec/<id>-<slug>` (a Bug's: `bug/B<n>-<slug>`).
+A Bug or Chore takes the same path; below, "Spec" means all three. The branch is `spec/<id>-<slug>` (a Bug's: `bug/B<n>-<slug>`; a Chore's: `chore/C<n>-<slug>`). Who builds a hand-back, and which PRs need no issue: [plan rules 4 and 13](../plans/README.md).
 
 1. The tech lead sets `status: ready-for-agent`. Claude plans in GitHub Actions and opens a draft pull request with the plan ([plan rules](../plans/README.md)). Comment `@claude` there to change it.
 2. The tech lead's approving review starts the build. Answer the plan's open [decisions](how-we-work.md#decisions) in that review.
@@ -18,13 +18,6 @@ A silent run gets a linking comment; a plan run with no plan PR sets `status: bl
 ## Styles
 
 A component's CSS goes in a `*.module.css` beside it, with camelCase class names; a rule several components share goes in its own module and is taken with `composes`.
-
-## Chores
-
-Tooling, CI, docs, process and settings.
-
-- **Quick, no issue:** Claude plans in plan mode, the tech lead accepts; the PR body says what changed and why. Open a `chore:` PR from a branch off `origin/main`.
-- **Filed as a Chore issue:** the tech lead sets `status: ready-for-agent` and the CI agent follows the Specs path above on `chore/C<n>-<slug>`, handing back what it can't build ([rule 13](../plans/README.md)).
 
 ## Merging
 

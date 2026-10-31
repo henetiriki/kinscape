@@ -2,7 +2,7 @@
 
 - **Spec:** #444
 - **Requirement IDs:** NFR-06
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@ Add a top-level `notes` group to `design/tokens.json` mirroring the token paths 
 - **B.** Only a path that matches no token at all, as the Spec words it. A note on an excluded token passes.
 - **Other:** your own.
 
-Recommended: A, because otherwise nothing keeps notes out of the excluded groups. Neither changes the Spec text.
+**Answer: A** (@henetiriki)
 
 **D2 · Polity fills** · Decides: Tech lead
 
@@ -24,7 +24,7 @@ Recommended: A, because otherwise nothing keeps notes out of the excluded groups
 - **B.** One note on `notes.map.polity`, like a `type` style. This rewords the Spec's `map` bullet.
 - **Other:** your own.
 
-Recommended: A, because DS.2 publishes each tint as its own swatch, and each swatch needs a note.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

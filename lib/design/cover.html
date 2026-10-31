@@ -1,0 +1,88 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape</title>
+    <link rel="stylesheet" href="../../tokens.css" />
+    <style>
+      body {
+        position: relative;
+        width: 960px;
+        height: 288px;
+        margin: 0;
+        overflow: hidden;
+        background: var(--surface-2);
+      }
+      svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      .block {
+        rx: var(--radius-panel);
+      }
+      .brand {
+        fill: var(--brand);
+      }
+      .land {
+        fill: var(--map-land);
+      }
+      .sea {
+        fill: var(--map-sea);
+      }
+      .pin {
+        fill: var(--pin);
+      }
+      .border {
+        fill: none;
+        stroke: var(--map-border-colour);
+        stroke-width: 1.5;
+        stroke-dasharray: 4 2.6;
+      }
+      .name {
+        position: absolute;
+        bottom: var(--space-32);
+        left: var(--space-32);
+        margin: 0;
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 88px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 88px;
+      }
+      .tagline {
+        position: absolute;
+        bottom: 136px;
+        left: var(--space-32);
+        max-width: 440px;
+        margin: 0;
+        color: var(--ink-3);
+        font-family: var(--font-body);
+        font-size: 14px;
+        line-height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
+      <!-- Blocks: brand, map-land, map-sea and pin, the identity colours, 96 wide (space-64 + space-32), heights 224, 192, 208 and 160 (sums of space steps).
+           Arrangement: four columns right of x = 480 with space-16 gaps, tops staggered (32, 16, 48, 80), about a quarter of the cover.
+           Pattern: dashed Polity-border lines (map.border, dash 4 and 2.6) cross the blocks, as the tagline says borders move.
+           Radius: radius-panel on every block; steps used: space-16, space-32, space-64. -->
+      <rect class="block brand" x="504" y="32" width="96" height="224" />
+      <rect class="block land" x="616" y="16" width="96" height="192" />
+      <rect class="block sea" x="728" y="48" width="96" height="208" />
+      <rect class="block pin" x="840" y="80" width="96" height="160" />
+      <path
+        class="border"
+        d="M480 72 L552 120 L600 104 L680 168 L760 136 L840 208 L960 176" />
+      <path
+        class="border"
+        d="M480 232 L560 200 L640 232 L720 192 L800 240 L880 216 L960 256" />
+    </svg>
+    <p class="tagline">Borders move. Places don't.</p>
+    <h1 class="name">KinScape</h1>
+  </body>
+</html>

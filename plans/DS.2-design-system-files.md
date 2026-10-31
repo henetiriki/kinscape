@@ -76,6 +76,10 @@ Four blocks in `brand`, `map-land`, `map-sea` and `pin`, with `radius-panel` cor
 3. Script test fails, then the script and `cover.html`.
 4. Run it; `git status --porcelain`, `git check-ignore`, lint, `format:check`, `words`, tests, `validate:boundaries`, `e2e`.
 
+## Deviations
+
+- `system.mts` also exports `fontFiles`, `systemFonts`, `unicodeRange`; types in `lib/design/types.ts`.
+
 ## Risks
 
 - **latin-ext shadows latin.** A reader that builds `@font-face` from `type.fonts` without `unicode-range` could pick the wrong file. Our `tokens.css` carries the range; DS.3 checks the rendering.

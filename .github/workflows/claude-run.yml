@@ -100,7 +100,7 @@ jobs:
     name: Run Claude
     needs: gate
     if: needs.gate.outputs.go == 'true'
-    # One run per thread at a time, shared with claude.yml, so a revision and a build never overlap.
+    # One run per thread at a time, shared with claude-respond.yml, so a revision and a build never overlap.
     concurrency: thread-${{ inputs.thread }}
     # A stuck agent stops here; the longest build so far took 17 minutes.
     timeout-minutes: 45
@@ -150,7 +150,7 @@ jobs:
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
       # Loads the agent files, runs Claude Code and uploads its output: see
-      # .github/actions/run-claude/action.yml. It runs from main, like claude.yml's copy of this
+      # .github/actions/run-claude/action.yml. It runs from main, like claude-respond.yml's copy of this
       # step. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude

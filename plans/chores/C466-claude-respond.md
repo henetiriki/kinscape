@@ -46,3 +46,7 @@
 ## Out of scope
 
 Job ids and names, triggers, `if:`, `concurrency`, permissions, `plans/`.
+
+## Deviations
+
+- `docs/repo-settings.md`: Prettier re-padded the table the longer name sits in, so its diff is the whole table.

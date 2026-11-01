@@ -1,7 +1,7 @@
 name: Run summary
 description: >-
   Write the run page's result section from Claude's summary (scripts/run-summary.mts, from
-  main). claude.yml, claude-run.yml and claude-code-review.yml call this action in a job of their
+  main). claude-respond.yml, claude-run.yml and claude-code-review.yml call this action in a job of their
   own, which has no secrets; its script step never fails the job.
 
 runs:

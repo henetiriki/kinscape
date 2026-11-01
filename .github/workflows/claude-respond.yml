@@ -1,4 +1,4 @@
-name: 'Claude: Code'
+name: 'Claude: Respond'
 
 # This workflow lets people talk to Claude by writing "@claude" in an
 # issue, a comment or a PR review.

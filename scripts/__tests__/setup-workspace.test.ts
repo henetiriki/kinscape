@@ -26,7 +26,7 @@ const PINNED = new RegExp(`^${ACTION.replaceAll('.', '\\.')}@[0-9a-f]{40}$`);
 // The inputs are strings: `persist-credentials` keeps the PAT for the push that starts CI.
 const CALLERS = [
   [
-    'claude.yml',
+    'claude-respond.yml',
     'claude',
     {
       'persist-credentials': 'true',

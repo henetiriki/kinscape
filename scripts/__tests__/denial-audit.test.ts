@@ -746,7 +746,9 @@ describe('run', () => {
     expect(page).toMatch(
       /^### Denial audit\n\nPermission denials in Claude runs/
     );
-    expect(page).toContain('| 2 | $0.00 |');
+    expect(page).toContain(
+      '| `Bash: cat` | respond | settings.json: no rule | 2 | $0.00 |'
+    );
     expect(page).toMatch(
       /\nOpened issue https:\/\/github\.com\/o\/r\/issues\/9\.$/
     );
@@ -793,7 +795,9 @@ describe('run', () => {
       '--body-file',
       '-',
     ]);
-    expect(body).toContain('| 2 | $0.00 |');
+    expect(body).toContain(
+      '| `Bash: cat` | plan, build | settings.json: no rule | 2 | $0.00 |'
+    );
     expect(calls('edit')).toHaveLength(0);
   });
 
@@ -803,7 +807,9 @@ describe('run', () => {
     artifacts[2] = artifact('cat b | head');
 
     expect(audit()).toBe(0);
-    expect(calls('create')[0][1]).toContain('| 2 | $0.00 |');
+    expect(calls('create')[0][1]).toContain(
+      '| `Bash: cat` | code-review | review-settings.json: no rule | 2 | $0.00 |'
+    );
   });
 
   it('rewrites the open issue instead of opening another', () => {
@@ -824,7 +830,9 @@ describe('run', () => {
       '--body-file',
       '-',
     ]);
-    expect(calls('edit')[0][1]).toContain('| 2 | $0.00 |');
+    expect(calls('edit')[0][1]).toContain(
+      '| `Bash: cat` | respond | settings.json: no rule | 2 | $0.00 |'
+    );
   });
 
   it('ignores skipped, unfinished and older runs', () => {

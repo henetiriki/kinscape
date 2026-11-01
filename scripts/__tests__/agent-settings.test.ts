@@ -231,7 +231,7 @@ describe('the Bash hook', () => {
     ['cd /work/kinZx && gh pr view 1', 'give paths'],
     ['ls && cd app', 'give paths'],
     ['cat x', 'Read'],
-    ['gh pr view 1 | cat -n', 'Read'],
+    ['git status; cat x', 'Read'],
     ['cat < x', 'Read'],
     ['grep -rn foo src', 'git grep'],
     ['head -5 x', 'Read'],
@@ -260,6 +260,10 @@ describe('the Bash hook', () => {
     // Claude Code's usual commit form: the `cat` reads the heredoc, not a file.
     'git commit -m "$(cat <<\'EOF\'\nfix\nEOF\n)"',
     'git ls-files -co docs',
+    // A filter on a command's output: Read, git grep and git ls-files cannot replace it.
+    'gh pr diff 1 | head -50',
+    'gh pr view 1 | grep x',
+    'gh pr view 1 | cat -n',
     'node scripts/run.mts',
     'npm run format',
     'echo concatenate',

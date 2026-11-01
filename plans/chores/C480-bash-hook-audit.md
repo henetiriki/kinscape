@@ -28,7 +28,8 @@ The audit shows each pattern's workflows and settings rule.
 | `scripts/types.ts`                                    | `Transcript` gains `stripped`                                 |
 | `scripts/agent-transcript.mts` and its test           | Count strips; hook denials if `permission_denials` omits them |
 | `scripts/denial-audit.mts` and its test               | Workflow, settings status, suggestion, stripped line          |
-| `scripts/__tests__/agent-settings.test.ts`            | Copies equal; hook cases run through `bash -c`                |
+| `scripts/__tests__/agent-settings.test.ts`            | Copies equal; hook cases via `bash -c`                        |
+| `scripts/__tests__/run-summary.test.ts`               | Fixture gains `stripped`                                      |
 
 ## Order of work
 
@@ -38,7 +39,7 @@ The audit shows each pattern's workflows and settings rule.
 ## Risks
 
 - If `updatedInput` needs `allow`, the rest would skip the allowlist: stop (rule 6).
-- Agents `cd`-ing elsewhere keep a `Bash: cd` row; its suggestion says so.
+- Agents `cd`-ing elsewhere keep a `Bash: cd` row.
 
 ## Proof
 
@@ -47,9 +48,9 @@ The audit shows each pattern's workflows and settings rule.
 | Hook, copies equal              | `agent-settings.test.ts` |
 | Audit rows                      | `denial-audit.test.ts`   |
 | `rules.md` no longer repeats it | The diff                 |
-| Next weekly audit               | Its issue, after merge   |
+| Next weekly audit               | Its issue                |
 
 ## Deviations
 
-- The `claude -p` check was skipped (sandbox): unchecked are hook denials in `permission_denials`, `updatedInput` keeping the allowlist, and `cd <cwd>; curl x` denied. No transcript fallback.
+- The `claude -p` check was skipped (sandbox): unchecked are hook denials in `permission_denials`, `updatedInput` keeping the allowlist, and `cd <cwd>; curl x` denied by the allowlist. No transcript fallback.
 - The audit runs the hook to show `denied by the hook`.

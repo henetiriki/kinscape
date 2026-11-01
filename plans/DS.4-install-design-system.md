@@ -2,7 +2,7 @@
 
 - **Spec:** #447
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft (amended for D2; the tech lead re-approves, rule 6)
+- **Status:** approved
 
 ## Approach
 

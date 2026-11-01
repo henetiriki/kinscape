@@ -26,9 +26,10 @@ const OWN_PIN =
 // The action a `uses:` names when it pins one of ours that way; any other ref as it is.
 const own = (uses = '') => (OWN_PIN.test(uses) ? uses.split('@')[0] : uses);
 
-// Only the review calls it itself; claude.yml and claude-run.yml reach it through run-claude.
+// Only the review and the unblock refresh call it themselves; claude.yml and claude-run.yml reach it
+// through run-claude.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files';
-const CALLERS = ['claude-code-review.yml'];
+const CALLERS = ['claude-code-review.yml', 'claude-unblock.yml'];
 const RUN_CLAUDE_CALLERS = ['claude.yml', 'claude-run.yml'];
 const action = () =>
   readFileSync(
@@ -132,6 +133,7 @@ const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 type Step = {
   'continue-on-error'?: boolean;
   env?: Record<string, string>;
+  id?: string;
   if?: string;
   name?: string;
   run?: string;
@@ -260,6 +262,131 @@ describe('the run-claude action', () => {
       expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
     }
   );
+});
+
+// The refresh job of claude-unblock.yml runs Claude on a Spec's text from outside the team
+// (plans/chores/C457-spec-refresh.md). It repeats the review's steps instead of calling run-claude, so
+// these keep the copies equal and the job on the least it needs.
+describe('the refresh job of claude-unblock.yml', () => {
+  type Job = {
+    concurrency?: string;
+    env?: Record<string, string>;
+    if?: string;
+    needs?: string;
+    outputs?: Record<string, string>;
+    permissions?: Record<string, string>;
+    steps: Step[];
+    strategy?: { 'fail-fast'?: boolean; matrix?: { spec?: string } };
+  };
+  const jobs = () =>
+    (parse(read('claude-unblock.yml')) as { jobs: Record<string, Job> }).jobs;
+  const refresh = () => jobs().refresh;
+  const claude = () =>
+    refresh().steps.find(step =>
+      step.uses?.startsWith('anthropics/claude-code-action@')
+    );
+
+  it('loads rules.md and refresh.md with refresh-settings.json, once', () => {
+    const loaders = refresh().steps.filter(step =>
+      step.uses?.includes('load-agent-files')
+    );
+
+    expect(loaders).toHaveLength(1);
+    expect(loaders[0].with).toMatchObject({
+      files: 'rules.md refresh.md',
+      settings: 'refresh-settings.json',
+      token: '${{ github.token }}',
+    });
+    expect(existsSync(join(root, '.github/agent/refresh.md'))).toBe(true);
+    expect(existsSync(join(root, '.github/agent/refresh-settings.json'))).toBe(
+      true
+    );
+  });
+
+  it('has Claude read the settings and system prompt it loaded', () => {
+    expect(claude()?.with?.settings).toBe(
+      '${{ runner.temp }}/agent/refresh-settings.json'
+    );
+    expect(claude()?.with?.claude_args).toContain(
+      '--append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+    );
+  });
+
+  // The level an @claude comment on a Spec runs at (claude.yml); only a plan PR gets Opus.
+  it('runs on Sonnet, as an @claude comment on a Spec does', () => {
+    expect(claude()?.with?.claude_args).toMatch(/^--model sonnet /);
+  });
+
+  // The workflow's token can't push, and what it edits starts no run; a PAT could do both.
+  it('runs on main with the workflow token and read access to the code', () => {
+    const checkout = refresh().steps.find(step =>
+      step.uses?.startsWith('actions/checkout@')
+    );
+
+    expect(checkout?.with).toMatchObject({
+      'persist-credentials': false,
+      ref: 'main',
+    });
+    expect(claude()?.with?.github_token).toBe('${{ github.token }}');
+    expect(refresh().permissions).toEqual({
+      contents: 'read',
+      issues: 'write',
+      'pull-requests': 'read',
+    });
+    expect(read('claude-unblock.yml')).not.toContain('KINSCAPE_BOT_PAT');
+  });
+
+  it('pins claude-code-action to the commit claude-code-review.yml pins', () => {
+    expect(
+      pins(read('claude-unblock.yml'), 'anthropics/claude-code-action')
+    ).toEqual(
+      pins(read('claude-code-review.yml'), 'anthropics/claude-code-action')
+    );
+  });
+
+  it('refreshes each issue the unblock job listed, even after a failure in it', () => {
+    const { refresh, unblock } = jobs();
+
+    expect(refresh.needs).toBe('unblock');
+    // Not `thread-<n>`: it would queue with, and replace, the @claude runs on the Spec.
+    expect(refresh.concurrency).toBe('refresh-${{ matrix.spec.number }}');
+    expect(refresh.if).toContain('!cancelled()');
+    expect(refresh.if).toContain("needs.unblock.outputs.unblocked != '[]'");
+    expect(refresh.strategy).toMatchObject({
+      'fail-fast': false,
+      matrix: { spec: '${{ fromJSON(needs.unblock.outputs.unblocked) }}' },
+    });
+    expect(unblock.outputs).toEqual({
+      unblocked: '${{ steps.unblock.outputs.unblocked }}',
+    });
+    expect(unblock.steps.find(step => step.id === 'unblock')?.run).toContain(
+      'agent-unblock.mts'
+    );
+  });
+
+  // The run says it is an unblock run, so refresh.md has it change no label and start no plan.
+  it('says it is an unblock run, and names the Spec and its blockers by number only', () => {
+    const prompt = String(claude()?.with?.prompt);
+
+    expect(prompt).toContain('.github/agent/refresh.md');
+    expect(prompt).toContain('This is an unblock run');
+    expect(prompt).toContain('#${{ matrix.spec.number }}');
+    expect(prompt).toContain("join(matrix.spec.blockers, ', #')");
+    expect(prompt).not.toMatch(/github\.event\.issue\.(title|body)/);
+  });
+});
+
+// The plan run refreshes the Spec first, with the same file (rule 3 of plans/README.md).
+describe('the plan run', () => {
+  it('loads refresh.md and tells Claude this is a plan run', () => {
+    const plan = read('claude-plan.yml');
+
+    expect(plan).toMatch(/^\s*agent_files: rules\.md refresh\.md$/m);
+    expect(plan).toContain(
+      'First refresh it as .github/agent/refresh.md says; this is a plan run.'
+    );
+    expect(plan).toContain('dependencies/blocked_by');
+  });
 });
 
 // Only a summary of Claude's transcript is uploaded, written by the script from main after a clean
@@ -609,6 +736,7 @@ describe('the agent files a workflow loads', () => {
     ['claude.yml', /^\s*files: (.+)$/m],
     ['claude-plan.yml', /^\s*agent_files: (.+)$/m],
     ['claude-build.yml', /^\s*agent_files: (.+)$/m],
+    ['claude-unblock.yml', /^\s*files: (.+)$/m],
   ] as const)(
     'are in .github/agent/, rules.md first and build.md last, in %s',
     (file, pattern) => {
@@ -726,6 +854,7 @@ describe('the load-agent-files script', () => {
   it.each([
     [files, 'settings.json'],
     ['review.md', 'review-settings.json'],
+    ['rules.md refresh.md', 'refresh-settings.json'],
   ])(
     "downloads the settings for %s, denying this runner's temp folder too",
     (list, file) => {

@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(git grep:*)",
+      "Bash(git ls-files:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)"
+    ],
+    "deny": [
+      "Agent",
+      "Edit",
+      "Write",
+      "Monitor",
+      "WebFetch",
+      "WebSearch",
+      "Bash(git grep* -*O*)",
+      "Bash(git grep*--open-files-in-pager*)",
+      "Bash(gh issue * --add-*)",
+      "Bash(gh issue * --remove-*)",
+      "Bash(gh issue * --attach*)",
+      "Bash(gh issue * --parent*)",
+      "Bash(gh issue * --type*)",
+      "Bash(gh issue * --title*)",
+      "Bash(gh issue * -t*)",
+      "Bash(gh issue * --milestone*)",
+      "Bash(gh issue * -m*)",
+      "Bash(gh issue * --body *)",
+      "Bash(gh issue * --body=*)",
+      "Bash(gh issue * -b*)",
+      "Read(//proc/**)",
+      "Read(//sys/**)",
+      "Read(//etc/**)",
+      "Read(//home/runner/work/_temp/**)",
+      "Read(~/.gitconfig)",
+      "Read(~/.config/**)"
+    ]
+  }
+}

@@ -100,6 +100,16 @@
       "viewport": { "height": 844, "width": 390 }
     },
     {
+      "file": "Add-pin.dc.html",
+      "name": "add-pin",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Add-pin-phone.dc.html",
+      "name": "add-pin-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
       "file": "Map-phone-states.dc.html",
       "name": "map-loading-phone",
       "props": { "variant": "loading" },

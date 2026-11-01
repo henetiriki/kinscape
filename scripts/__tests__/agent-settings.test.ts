@@ -109,9 +109,21 @@ describe('refresh-settings.json', () => {
     'gh issue edit 5 --add-assignee someone',
     'gh issue edit 5 --remove-assignee someone',
     'gh issue edit 5 --milestone M1',
+    'gh issue edit 5 -m M1',
     'gh issue edit 5 --remove-milestone',
     'gh issue edit 5 --add-project P',
     'gh issue edit 5 --remove-project P',
+    // The blocked-by links are what the plan and build gates read.
+    'gh issue edit 5 --add-blocked-by 6',
+    'gh issue edit 5 --remove-blocked-by 6',
+    'gh issue edit 5 --add-blocking 6',
+    'gh issue edit 5 --add-sub-issue 6',
+    'gh issue edit 5 --parent 6',
+    'gh issue edit 5 --remove-parent',
+    'gh issue edit 5 --type Bug',
+    'gh issue edit 5 --remove-type',
+    // Uploads a file from the runner into the issue.
+    "gh issue edit 5 --attach './file.png'",
   ])('denies: %s', command => {
     expect(denied(command)).toBe(true);
   });

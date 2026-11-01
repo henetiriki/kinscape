@@ -55,7 +55,7 @@
 
 ## Deviations
 
-- Settings also allow `git ls-files`; deny title, assignee, milestone, project flags and `git grep -O`.
+- Settings also allow `git ls-files`; deny other `gh issue edit` flags and `git grep -O`.
 - No transcript upload (matrix runs would share an artifact).
 - Concurrency group `refresh-<n>`: a shared `thread-<n>` drops queued runs.
 - Fixture runs happen after merge.

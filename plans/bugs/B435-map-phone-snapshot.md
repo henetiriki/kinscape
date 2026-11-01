@@ -62,6 +62,10 @@ Bug D3 A puts the smaller fixes in `app/design-kit/`. The Layers button's differ
 | Export leaves `design/source/` unchanged; no screen worse | `npm run design:export` output; scores against the baseline |
 | Refresh steps ran as `DESIGN.md` says                     | Evidence, from the tech lead                                |
 
+## Deviations
+
+- Avatar: no change; the tokens already match the snapshot (16 / 24 · 600), so `Avatar.module.css` stays as it is.
+
 ## Out of scope
 
 - Other boards' text; the map's own phone pill.

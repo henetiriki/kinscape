@@ -268,6 +268,13 @@ describe('the control cards', () => {
     expect(button).toContain('## Design\n\n- **Buttons:**');
   });
 
+  it('says which props each form of Button requires', () => {
+    expect(card('Button', 'README.md')).toContain(
+      'Required props: `children`; or `icon`, `label`.'
+    );
+    expect(card('Toast', 'README.md')).not.toContain('forms');
+  });
+
   it('puts the canvas section last in the system README', () => {
     expect(readFileSync(join(first, 'project/README.md'), 'utf8')).toMatch(
       /## Using the controls on a canvas\n\n[^#]+$/

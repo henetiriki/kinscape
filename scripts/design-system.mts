@@ -125,15 +125,25 @@ const describeControl = (
     .getTypeOfSymbolAtLocation(symbol, file)
     .getCallSignatures();
   const [parameter] = signature.getParameters();
-  const all = checker.getPropertiesOfType(
-    checker.getTypeOfSymbolAtLocation(parameter, file)
-  );
-  const own = all.filter(prop =>
+  const parameterType = checker.getTypeOfSymbolAtLocation(parameter, file);
+  const all = checker.getPropertiesOfType(parameterType);
+  const isOwn = (prop: ts.Symbol): boolean =>
     prop.declarations!.some(
       declaration =>
         !declaration.getSourceFile().fileName.includes('/node_modules/')
-    )
-  );
+    );
+  const own = all.filter(isOwn);
+  const forms = parameterType.isUnion()
+    ? parameterType.types.map(member =>
+        checker
+          .getPropertiesOfType(member)
+          .filter(
+            prop => isOwn(prop) && !(prop.flags & ts.SymbolFlags.Optional)
+          )
+          .map(prop => prop.name)
+          .toSorted()
+      )
+    : [];
   const typeText = (prop: ts.Symbol): string => {
     const type = checker.getTypeOfSymbolAtLocation(prop, file);
     const members = type.isUnion()
@@ -148,6 +158,7 @@ const describeControl = (
   };
 
   return {
+    forms,
     props: own
       .map(prop => ({
         doc: oneLine(

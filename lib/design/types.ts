@@ -16,7 +16,13 @@ export type Card = {
 export type Control = { name: string; path: string };
 
 /** What the TypeScript program says of a control. `rest`: it also takes its HTML element's attributes. */
-export type Docs = { props: Prop[]; rest: boolean; summary: string };
+/** `forms` lists the required props of each form of a control whose props are a union. */
+export type Docs = {
+  forms: string[][];
+  props: Prop[];
+  rest: boolean;
+  summary: string;
+};
 
 export type Group = 'Actions' | 'Feedback' | 'Forms';
 

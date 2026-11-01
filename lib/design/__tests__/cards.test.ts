@@ -16,6 +16,7 @@ import { CARDS } from '@ks/lib/design/states.mts';
 const design = readFileSync('design/DESIGN.md', 'utf8');
 const card = CARDS.find(({ name }) => name === 'Toast')!;
 const docs = {
+  forms: [] as string[][],
   props: [
     { doc: 'Which | way.', name: 'tone', optional: false, type: "'a' | 'b'" },
     { doc: '', name: 'placed', optional: true, type: 'boolean' },
@@ -79,10 +80,19 @@ describe('controlReadme', () => {
     );
   });
 
+  it('lists the required props of each form, where the props are a union', () => {
+    const forms = controlReadme('Toast', { ...docs, forms: [['a'], []] }, []);
+
+    expect(forms).toContain(
+      'It takes one of these forms. Required props: `a`; or none.'
+    );
+    expect(text).not.toContain('forms');
+  });
+
   it('leaves out Design and Props where it has none, and needs a summary', () => {
     const bare = controlReadme(
       'Toast',
-      { props: [], rest: false, summary: 'A.' },
+      { forms: [], props: [], rest: false, summary: 'A.' },
       []
     );
 
@@ -100,6 +110,13 @@ describe('previewHtml', () => {
     expect(html.split('\n')[0]).toBe(
       '<!-- @dsCard group="Feedback" height=140 -->'
     );
+  });
+
+  it('is a complete document, with its doctype on line 2', () => {
+    expect(html.split('\n')[1]).toBe('<!doctype html>');
+    expect(html).toContain('<head>');
+    expect(html).toContain('<body>');
+    expect(html.trimEnd().endsWith('</html>')).toBe(true);
   });
 
   it('has a root and one script that mounts the control with its states', () => {

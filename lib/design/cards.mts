@@ -57,7 +57,7 @@ const row = ({ doc, name, optional, type }: Prop): string =>
 /** The card's README: the summary first, then the design bullets, the props and what else the element takes. */
 export const controlReadme = (
   name: string,
-  { props, rest, summary }: Docs,
+  { forms, props, rest, summary }: Docs,
   bullets: string[]
 ): string => {
   if (summary === '') {
@@ -73,6 +73,15 @@ export const controlReadme = (
           '| --- | --- | --- | --- |',
           ...props.map(row),
         ].join('\n')}`
+      : '',
+    forms.length > 0
+      ? `It takes one of these forms. Required props: ${forms
+          .map(names =>
+            names.length > 0
+              ? names.map(each => `\`${each}\``).join(', ')
+              : 'none'
+          )
+          .join('; or ')}.`
       : '',
     rest ? REST : '',
   ];
@@ -99,9 +108,15 @@ export const previewHtml = ({
   states,
 }: Card): string =>
   `<!-- @dsCard group="${group}" height=${height} -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
 <style>
 ${STYLE(pad)}
 </style>
+</head>
+<body>
 <div id="root"></div>
 <script>
 (function () {
@@ -121,6 +136,8 @@ ${STYLE(pad)}
   });
 })();
 </script>
+</body>
+</html>
 `;
 
 /** Throws if the README breaks a rule of the Design System type: 64 KB, and a summary first. */

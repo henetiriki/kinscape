@@ -1,0 +1,52 @@
+# Plan: C480: Hook the agents' shell denials and show which workflow and rule each audit row hits
+
+- **Spec:** #480
+- **Status:** draft
+
+## Approach
+
+One `jq` program, inline as the Bash `PreToolUse` hook in both settings files, reads the command up to its first `<<` (a heredoc body is text). A leading `cd <cwd>` then `;` or `&&` is cut: it returns `updatedInput` and an `additionalContext` marker, with no `permissionDecision`, so the rules still judge the rest. Any other `cd`, or a listed program at command position, gets `deny` with a reason naming the alternative.
+
+The audit groups by workflow and pattern, matching each pattern against that workflow's settings file.
+
+## Decisions
+
+**D1 · How a strip is counted** · Decides: Tech lead
+
+- **A.** `agent-transcript.mts` counts Bash calls starting `cd <init cwd>` that weren't denied; the summary gains `stripped`.
+- **B.** Count the marker, if it reaches the transcript.
+- **Other:** your own.
+
+Recommended: A, because the transcript already has the call.
+
+## Files that change
+
+| File                                                  | What                                                          |
+| ----------------------------------------------------- | ------------------------------------------------------------- |
+| `.github/agent/settings.json`, `review-settings.json` | The hook                                                      |
+| `.github/agent/rules.md`                              | Drop what the hook says                                       |
+| `scripts/types.ts`                                    | `Transcript` gains `stripped`                                 |
+| `scripts/agent-transcript.mts` and its test           | Count strips; hook denials if `permission_denials` omits them |
+| `scripts/denial-audit.mts` and its test               | Workflow, settings status, suggestion, stripped line          |
+| `scripts/__tests__/agent-settings.test.ts`            | Copies equal; hook cases run through `bash -c`                |
+
+## Order of work
+
+1. Commit this plan.
+2. The hook and its tests. With `claude -p --settings`, check that hook denials reach `permission_denials` and that `cd <cwd>; curl x` is still denied.
+3. Transcript, audit, then `rules.md`.
+
+## Risks
+
+- If `updatedInput` needs `allow`, the rest would skip the allowlist: stop (rule 6).
+- Agents `cd`-ing elsewhere keep a `Bash: cd` row; its suggestion says so.
+
+## Proof
+
+| Acceptance check                | Proven by                |
+| ------------------------------- | ------------------------ |
+| Hook, copies equal              | `agent-settings.test.ts` |
+| Audit rows                      | `denial-audit.test.ts`   |
+| `rules.md` no longer repeats it | The diff                 |
+| Next weekly audit               | Its issue, after merge   |
+| Checks pass                     | CI                       |

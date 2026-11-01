@@ -2,7 +2,7 @@
 
 - **Spec:** #450
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ The five summaries (D3 on #450):
 - **B.** As A, and `CASES` is built from `states.mts`: about 250 more changed lines, past the cap.
 - **Other:** your own.
 
-Recommended: A, because B needs a split.
+**Answer: A** (@henetiriki)
 
 **D2 · Which props the table lists** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Six controls also take their HTML element's attributes.
 - **B.** All of them, about 300 rows each.
 - **Other:** your own.
 
-Recommended: A, because attributes would bury the rest.
+**Answer: A** (@henetiriki)
 
 **D3 · Which `DESIGN.md` bullets each control takes** · Decides: Tech lead
 
@@ -44,7 +44,7 @@ Recommended: A, because attributes would bury the rest.
 - **B.** As A, but `Button` takes only Buttons.
 - **Other:** your own.
 
-Recommended: A, because those bullets say how each variant looks.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

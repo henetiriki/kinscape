@@ -661,7 +661,7 @@ describe('mountImports', () => {
 });
 
 describe('inlineStyles', () => {
-  it('writes the computed values of the declared properties onto rendered elements, then drops the stylesheet', () => {
+  it('writes the computed values of the declared properties onto every element a rule matches, then drops the stylesheet', () => {
     document.head.innerHTML =
       '<title>T</title><style data-bundle>@font-face{font-family:f}:root{--x:1px}.a{width:1px;margin-top:0;transition-property:width;border-top-color:red}@media (min-width:1px){.a{padding-top:1px}}.b:hover{height:1px}.c{--y:2px}</style>';
     document.body.innerHTML =
@@ -674,7 +674,7 @@ describe('inlineStyles', () => {
     inlineStyles();
 
     expect(document.body.innerHTML).toBe(
-      '<p class="a">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
+      '<p class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
     );
     expect(document.querySelector('style')).toBeNull();
   });
@@ -820,6 +820,10 @@ describe('exportSnapshots', () => {
       '<link rel="stylesheet" href="ds/kinscape/components/bundle.css"><script src="ds/kinscape/components/bundle.js"></script><x-import component-from-global-scope="K.B"></x-import>'
     );
     put('design/canvas/project/ds/kinscape/components/bundle.css', '.a{}');
+    put(
+      'design/canvas/project/ds/kinscape/tokens.css',
+      '@font-face{font-family:f;src:url(f.woff2)}.t{color:red}'
+    );
 
     const seen = vi.fn();
     const url = (path: string) => pathToFileURL(resolve(root, path)).href;
@@ -834,7 +838,7 @@ describe('exportSnapshots', () => {
 
     expect(seen).toHaveBeenCalledWith(
       [
-        '<style data-bundle>.a{}</style>',
+        '<style data-bundle>.t{color:red}\n.a{}</style>',
         `<script src="${url('node_modules/react-18/umd/react.production.min.js')}"></script>`,
         `<script src="${url('node_modules/react-dom-18/umd/react-dom.production.min.js')}"></script>`,
         `<script src="${url('design/canvas/project/ds/kinscape')}/components/bundle.js"></script>`,

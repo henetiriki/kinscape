@@ -613,7 +613,7 @@ export const mountImports = async (): Promise<void> => {
 
 /**
  * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
- * is dropped from the snapshot, so each rendered element takes the computed value of every
+ * is dropped from the snapshot, so each element on the page takes the computed value of every
  * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. Custom properties,
  * transitions, animations and states (`:hover`) stay out.
  * Uses nothing from the module, as `fillTemplate`.
@@ -625,9 +625,7 @@ export const inlineStyles = (): void => {
     return;
   }
 
-  const elements = Array.from(
-    document.querySelectorAll<HTMLElement>('x-import *')
-  );
+  const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
   const apply = (rules: CSSRuleList): void => {
     for (const rule of Array.from(rules)) {
       if ('selectorText' in rule) {
@@ -664,12 +662,18 @@ export const inlineStyles = (): void => {
 const fileUrl = (root: string, path: string) =>
   pathToFileURL(resolve(root, path)).href;
 
-/** The design system as an artboard that uses it loads it: the canvas copy, and React 18 from `node_modules`. */
-const designSystem = (root: string) => {
+/**
+ * The design system as an artboard that uses it loads it: the canvas copy, and React 18 from
+ * `node_modules`. Its CSS is the text styles in `tokens.css` (`.h2`, `.label`), which an artboard
+ * uses as classes, then the controls' own. The `@font-face` blocks stay out: the linked `tokens.css`
+ * loads the fonts.
+ */
+export const designSystem = (root: string) => {
   const dir = 'design/canvas/project/ds/kinscape';
+  const read = (file: string) => readFileSync(join(root, dir, file), 'utf8');
 
   return {
-    css: readFileSync(join(root, dir, 'components/bundle.css'), 'utf8'),
+    css: `${read('tokens.css').replace(/@font-face\s*\{[^}]*\}/g, '')}\n${read('components/bundle.css')}`,
     design: `${fileUrl(root, dir)}/`,
     react: fileUrl(root, 'node_modules/react-18/umd/react.production.min.js'),
     reactDom: fileUrl(

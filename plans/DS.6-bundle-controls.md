@@ -40,7 +40,7 @@ No control exports its props type, and lint allows exported types only in `types
 | `scripts/design-system.mts`                       | changed       | `buildControls`; `run` async, writing `components/`                               |
 | `scripts/__tests__/design-system.test.ts`         | changed       | Awaits `run`; header, strings, sizes, types file                                  |
 | `lib/design/__tests__/react-18.test.tsx`          | changed       | Mounts each control's first case (by `element.type`) from the bundle (D3 on #449) |
-| `scripts/__tests__/design-system-publish.test.ts` | changed       | Awaits `run`                                                                      |
+| `scripts/__tests__/design-system-publish.test.ts` | changed       | Awaits `run`, with 120 s hook timeouts                                            |
 
 ## Deviations
 
@@ -59,8 +59,9 @@ No control exports its props type, and lint allows exported types only in `types
 
 ## Risks
 
-- After merge, `/publish-design-system` sends `components/` and React 18 too, before DS.7's previews.- The shim must pass `key` and keep React 18 from warning; the mount test fails on any warning.
-- JSDOM may reject modern CSS in `bundle.css`. Then I stop and ask rather than filter the errors.
+- After merge, `/publish-design-system` sends `components/` and React 18 too, before DS.7's previews. The tech lead may hold publishing until DS.7.
+- The shim must pass `key` and keep React 18 from warning; the mount test fails on any warning.
+- JSDOM may reject modern CSS in `bundle.css`; then I stop and ask.
 - `'use client'` lines make Rolldown warn; the build silences only that warning.
 
 ## Proof

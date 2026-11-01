@@ -5,7 +5,7 @@
 
 ## Approach
 
-One `jq` program, inline as the Bash `PreToolUse` hook in both settings files, reads the command up to its first `<<` (a heredoc body is text). A leading `cd <cwd>` then `;` or `&&` is cut: it returns `updatedInput` and an `additionalContext` marker, with no `permissionDecision`, so the rules still judge the rest. Any other `cd`, or a listed program at command position, gets `deny` with a reason naming the alternative.
+One `jq` program, inline as the Bash `PreToolUse` hook in both settings files, reads the command up to its first `<<` (a heredoc body is text). A leading `cd <cwd>` then `;` or `&&` is cut: it returns `updatedInput` and an `additionalContext` marker, with no `permissionDecision`, so the rules still judge the rest. Any other `cd`, or a listed program at command position (`cat`, `grep`, `head`, `ls`, `sed` not after a single `|`, where they filter output), gets `deny` with a reason naming the alternative.
 
 The audit shows each pattern's workflows and settings rule.
 
@@ -30,11 +30,6 @@ The audit shows each pattern's workflows and settings rule.
 | `scripts/denial-audit.mts` and its test               | Workflow, settings status, suggestion, stripped line          |
 | `scripts/__tests__/agent-settings.test.ts`            | Copies equal; hook cases via `bash -c`                        |
 | `scripts/__tests__/run-summary.test.ts`               | Fixture gains `stripped`                                      |
-
-## Order of work
-
-1. The hook and its tests, checked with `claude -p --settings`.
-2. Transcript, audit, then `rules.md`.
 
 ## Risks
 

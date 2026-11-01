@@ -232,6 +232,8 @@ describe('the Bash hook', () => {
     ['ls && cd app', 'give paths'],
     ['cat x', 'Read'],
     ['git status; cat x', 'Read'],
+    ['false || cat x', 'Read'],
+    ['(cat x)', 'Read'],
     ['cat < x', 'Read'],
     ['grep -rn foo src', 'git grep'],
     ['head -5 x', 'Read'],

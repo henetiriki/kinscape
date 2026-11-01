@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(git grep:*)",
+      "Bash(git ls-files:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)"
+    ],
+    "deny": [
+      "Agent",
+      "Edit",
+      "Write",
+      "Monitor",
+      "WebFetch",
+      "WebSearch",
+      "Bash(gh issue * --add-label*)",
+      "Bash(gh issue * --remove-label*)",
+      "Bash(gh issue * --body *)",
+      "Bash(gh issue * --body=*)",
+      "Bash(gh issue * -b *)",
+      "Read(//proc/**)",
+      "Read(//sys/**)",
+      "Read(//etc/**)",
+      "Read(//home/runner/work/_temp/**)",
+      "Read(~/.gitconfig)",
+      "Read(~/.config/**)"
+    ]
+  }
+}

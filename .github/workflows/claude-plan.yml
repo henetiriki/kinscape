@@ -66,9 +66,11 @@ jobs:
       model_args: --model opus --effort high
       # The files in .github/agent/ that become the system prompt. The order matters:
       # rules.md first, build.md last (scripts/__tests__/load-agent-files.test.ts checks it).
-      agent_files: rules.md
+      agent_files: rules.md refresh.md
       prompt: >-
         Pick up Spec, Bug or Chore #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
+        First refresh it as .github/agent/refresh.md says; this is a plan run.
+        The issues that blocked it are in `gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/dependencies/blocked_by`.
         A Spec's id is on the Spec (`M1.4`) and its branch is spec/<id>-<slug>.
         A Bug's id is B${{ github.event.issue.number }}, its branch is bug/B${{ github.event.issue.number }}-<slug>
         and its plan is plans/bugs/B${{ github.event.issue.number }}-<slug>.md.

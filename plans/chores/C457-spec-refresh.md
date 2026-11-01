@@ -53,3 +53,8 @@
 | Path fixed and planned; Drift hands back    | Fixture Specs' runs                                              |
 | Behaviour, checks, Decisions untouched      | Those runs' body history                                         |
 | Coverage, lint, format, words, validate     | CI                                                               |
+
+## Deviations
+
+- The settings also allow `git ls-files`.
+- No transcript upload: matrix runs would share an artifact.

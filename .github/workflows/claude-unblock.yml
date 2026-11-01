@@ -3,6 +3,8 @@ name: 'Claude: Unblock'
 # The plan and build gates (claude-run.yml) stop while an issue is "blocked by" an open one. When
 # that issue closes, this tells the owner what it freed: an issue marked `status: blocked` becomes
 # `status: ready-for-dev`, and an open plan PR gets a comment so its build can be approved again.
+# It then refreshes each freed Spec against main (.github/agent/refresh.md), in a read-only run that
+# edits the issue body and comments only. A failed refresh leaves the swap and the comment as they are.
 # It never starts a plan: only the tech lead sets `status: ready-for-agent`.
 
 on:
@@ -20,6 +22,10 @@ jobs:
     if: contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # The issues it swapped, by the same kind of author: [{"number": 8, "blockers": [5]}]. Set even
+    # when a later issue failed, so the others are still refreshed.
+    outputs:
+      unblocked: ${{ steps.unblock.outputs.unblocked }}
     steps:
       - name: Check out code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -30,6 +36,7 @@ jobs:
       # Run the check (scripts/agent-unblock.mts). It does nothing when the closed issue was not
       # blocking an open one.
       - name: Tell what the closed issue freed
+        id: unblock
         run: node scripts/agent-unblock.mts "$NUMBER"
         env:
           GH_REPO: ${{ github.repository }}
@@ -37,3 +44,56 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           NUMBER: ${{ github.event.issue.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  # One run per freed Spec, on main, with the workflow's token and no more: it reads the repo and
+  # writes issues only, and what the token edits starts no workflow. Spec text is untrusted, so the
+  # run can't push, label or run a command outside refresh-settings.json. The files come from main.
+  refresh:
+    name: Refresh
+    needs: unblock
+    # !cancelled(): the unblock job can fail on one issue and still list the others.
+    if: ${{ !cancelled() && needs.unblock.outputs.unblocked != '' && needs.unblock.outputs.unblocked != '[]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        spec: ${{ fromJSON(needs.unblock.outputs.unblocked) }}
+    # One run per thread at a time, shared with claude.yml and claude-run.yml.
+    concurrency: thread-${{ matrix.spec.number }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    env:
+      # A run ends with its turn, which kills background sub-agents and posts nothing.
+      CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: false
+
+      # The rules and settings come from main (scripts/__tests__/load-agent-files.test.ts checks the pin).
+      - name: Load the refresh rules and settings
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
+        with:
+          files: rules.md refresh.md
+          settings: refresh-settings.json
+          token: ${{ github.token }}
+
+      # Same action pin as claude-code-review.yml and run-claude (a test checks). No transcript is
+      # uploaded: the artifact name would collide across the matrix, and nothing here reads it.
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@8041f1d17e0e7d2f2cfe35002962e9f26237c0bb # v1.0.263
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          show_full_output: false
+          settings: ${{ runner.temp }}/agent/refresh-settings.json
+          claude_args: '--model opus --effort high --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+          prompt: >-
+            Refresh Spec, Bug or Chore #${{ matrix.spec.number }} as .github/agent/refresh.md says.
+            This is an unblock run. It was blocked by: #${{ join(matrix.spec.blockers, ', #') }}.

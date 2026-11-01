@@ -1,0 +1,123 @@
+{
+  "assetGroups": {
+    "Icons": {
+      "files": {
+        "kse-baptism-christening.svg": {
+          "blob": "5bdc087fd828bd4ad308ae4ae30b4039",
+          "name": "kse-baptism-christening.svg",
+          "size": 8316,
+          "type": "image/svg+xml"
+        },
+        "kse-birth.svg": {
+          "blob": "d2b2fe89c4947832e4afbcb17616d40d",
+          "name": "kse-birth.svg",
+          "size": 8915,
+          "type": "image/svg+xml"
+        },
+        "kse-burial.svg": {
+          "blob": "a9943ed97e8edad79ea67af758a79dfc",
+          "name": "kse-burial.svg",
+          "size": 7926,
+          "type": "image/svg+xml"
+        },
+        "kse-death.svg": {
+          "blob": "ee378b35583a1c698144b4d24f53b366",
+          "name": "kse-death.svg",
+          "size": 7942,
+          "type": "image/svg+xml"
+        },
+        "kse-divorce.svg": {
+          "blob": "1df7d1ee82b529f67a2043295a54b125",
+          "name": "kse-divorce.svg",
+          "size": 8687,
+          "type": "image/svg+xml"
+        },
+        "kse-land.svg": {
+          "blob": "8f560c5eaacd66f58d257a5ed9fd5676",
+          "name": "kse-land.svg",
+          "size": 7904,
+          "type": "image/svg+xml"
+        },
+        "kse-marriage.svg": {
+          "blob": "69b479e069d659b4ff449e0c7a1f4341",
+          "name": "kse-marriage.svg",
+          "size": 8768,
+          "type": "image/svg+xml"
+        },
+        "kse-occupation.svg": {
+          "blob": "b92e517996f15e20e91c25f9abf9080b",
+          "name": "kse-occupation.svg",
+          "size": 7904,
+          "type": "image/svg+xml"
+        },
+        "kse-other.svg": {
+          "blob": "ff6a8c5905d621ce0d1863db5b163626",
+          "name": "kse-other.svg",
+          "size": 8015,
+          "type": "image/svg+xml"
+        },
+        "kse-residence.svg": {
+          "blob": "eda471493e22316d88e23574dd06aa5b",
+          "name": "kse-residence.svg",
+          "size": 7892,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Icons",
+      "order": [
+        "kse-baptism-christening.svg",
+        "kse-birth.svg",
+        "kse-burial.svg",
+        "kse-death.svg",
+        "kse-divorce.svg",
+        "kse-land.svg",
+        "kse-marriage.svg",
+        "kse-occupation.svg",
+        "kse-other.svg",
+        "kse-residence.svg"
+      ],
+      "tile": "xs"
+    },
+    "Logos": {
+      "files": {
+        "icon0.svg": {
+          "blob": "5cf703c29317680e97949fe8822025d6",
+          "name": "icon0.svg",
+          "size": 9964,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Logos",
+      "order": [
+        "icon0.svg"
+      ],
+      "tile": "l"
+    }
+  },
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-10-31T21:38:41.000Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "editing": "code",
+  "groups": [
+    "Logos",
+    "Icons"
+  ],
+  "lastChange": {
+    "at": "2026-10-31T21:38:41.000Z",
+    "by": "louw swart",
+    "note": "npm run design-system at 99d2d6e",
+    "via": "code · henetiriki/kinscape@99d2d6e"
+  },
+  "layout": "files",
+  "libraries": [],
+  "namespace": "KinScape",
+  "sections": {},
+  "title": "KinScape",
+  "v": 3
+}

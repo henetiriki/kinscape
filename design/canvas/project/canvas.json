@@ -4,7 +4,7 @@
     "v": 1,
     "at": "2026-10-19T10:20:00Z"
   },
-  "title": "KinScape design kit",
+  "title": "KinScape design kit (ouwl.house)",
   "launch": {
     "view": "canvas",
     "page": "sign-in"
@@ -486,5 +486,13 @@
     "SG-Furniture-phone-2.dc.html"
   ],
   "notes": {},
-  "designSystems": []
+  "designSystems": [
+    {
+      "title": "KinScape",
+      "namespace": "kinscape",
+      "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
+      "version": "1793483016-bceb",
+      "copiedAt": "2026-11-01T07:59:55Z"
+    }
+  ]
 }

@@ -1,0 +1,405 @@
+/* KinScape — generated from tokens.json */
+
+:root, [data-theme="light"] {
+  --brand: #264f29;
+  --brand-hover: #1d3e20;
+  --brand-pressed: #163019;
+  --brand-tint: #e6eee4;
+  --brand-tint-hover: #d9e6d6;
+  --brand-tint-pressed: #ccddc8;
+  --focus-ring: var(--brand);
+  --focus-ring-on-dark: var(--white);
+  --ink: #18211b;
+  --ink-2: #2e3a33;
+  --ink-3: #4a544c;
+  --ink-disabled: #6e776f;
+  --icon-disabled: #a3aaa1;
+  --field-border: #8e978c;
+  --line-strong: #c9cfc5;
+  --line: #e2e5dd;
+  --track: #d6dad2;
+  --segment: #eef0ea;
+  --surface-2: #f4f5f0;
+  --surface: #ffffff;
+  --white: #ffffff;
+  --scrim: rgb(24 33 27 / 0.45);
+  --credits: #24302b;
+  --pin: #9a3b12;
+  --error: #7e2316;
+  --error-border: #b4412f;
+  --error-border-soft: #e7b9b0;
+  --error-bg: #fbedea;
+  --warning: #6b4a00;
+  --warning-border: #b7791f;
+  --warning-bg: #fdf3dd;
+  --success: #1e5e32;
+  --success-border: #2f7d46;
+  --success-bg: #eaf4ec;
+  --info: #1e4e6b;
+  --info-border: #3e7fa6;
+  --info-bg: #e8f1f7;
+  --google-text: #1f1f1f;
+  --google-border: #747775;
+  --google-mark: #5f6368;
+  --map-sea: #c9d5d2;
+  --map-land: #e9ebe2;
+  --map-coastline-colour: #7e9a98;
+  --map-river-colour: #6e99a3;
+  --map-border-colour: #3b3a2f;
+  --map-district-colour: #6f7263;
+  --map-changed-colour: var(--brand);
+  --map-hatch-colour: #8b4a1c;
+  --map-hillshade-shadow: #5b6355;
+  --map-hillshade-highlight: #ffffff;
+  --map-hillshade-mid: #b9bdb0;
+  --map-polity-default: #dcd3bd;
+  --map-polity-cape-of-good-hope: #d8d1b8;
+  --map-polity-eastern-cape: #d9d3bc;
+  --map-polity-eswatini: #cbd6da;
+  --map-polity-free-state: #e3d2b2;
+  --map-polity-gauteng: #d6ccba;
+  --map-polity-kwazulu-natal: #dcd3bd;
+  --map-polity-lesotho: #d9cfd9;
+  --map-polity-limpopo: #d4d9c0;
+  --map-polity-mpumalanga: #dad0b6;
+  --map-polity-natal: #dccfbc;
+  --map-polity-north-west: #d9cfba;
+  --map-polity-northern-cape: #ddd6be;
+  --map-polity-orange-free-state: #e1d3b6;
+  --map-polity-transvaal: #d5d6bf;
+  --map-polity-western-cape: #d3dcc4;
+  --map-polity-label-colour: #2e2c22;
+  --map-contested-label-colour: #6b3412;
+  --map-place-label-colour: var(--ink);
+  --map-place-dot-colour: var(--ink);
+  --map-place-dot-stroke: var(--white);
+  --map-water-label-colour: #3f646c;
+  --map-river-label-colour: var(--map-water-label-colour);
+  --map-context-label-colour: #56615a;
+  --map-muted-label: #3f4a42;
+  --map-label-halo-colour: var(--map-land);
+  --map-pin-colour: var(--pin);
+  --map-pin-halo: var(--white);
+  --map-pin-halo-colour: var(--pin);
+  --map-selected-colour: var(--brand);
+  --shadow-raised: 0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12);
+  --shadow-floating: 0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2);
+  --shadow-modal: 0 10px 40px rgb(24 33 27 / 0.3);
+  --shadow-sheet: 0 -6px 24px rgb(24 33 27 / 0.16);
+  --shadow-segment: 0 1px 2px rgb(24 33 27 / 0.18);
+  --shadow-thumb: 0 0 0 1px #264f29, 0 2px 6px rgb(24 33 27 / 0.3);
+}
+
+:root {
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --radius-link: 2px;
+  --radius-small: 4px;
+  --radius-segment-item: 7px;
+  --radius-segment: 9px;
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --radius-sheet: 18px;
+  --radius-full: 999px;
+  --size-touch: 44px;
+  --size-control: 44px;
+  --size-control-l: 50px;
+  --size-control-s: 40px;
+  --size-control-xs: 36px;
+  --size-field: 44px;
+  --size-field-l: 48px;
+  --size-search: 52px;
+  --size-chip: 36px;
+  --size-chip-s: 30px;
+  --size-chip-remove: 26px;
+  --size-row-l: 52px;
+  --size-checkbox: 20px;
+  --size-date-field: 188px;
+  --size-panel: 320px;
+  --size-gutter: 24px;
+  --size-gutter-phone: 16px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Public Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 56px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-style: normal;
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-style: normal;
+}
+
+.h1-phone {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  font-style: normal;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.title {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.body-l {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.small {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.caption {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.credits {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.overline {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-style: normal;
+}
+
+.button {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.control {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.chip {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.chip-off {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 20px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.button-s {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.link {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.link-s {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.mono-l {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url(fonts/bricolage-grotesque-latin-wght-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url(fonts/bricolage-grotesque-latin-ext-wght-normal.woff2) format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(fonts/public-sans-latin-wght-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(fonts/public-sans-latin-wght-italic.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(fonts/public-sans-latin-ext-wght-normal.woff2) format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(fonts/public-sans-latin-ext-wght-italic.woff2) format('woff2');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/jetbrains-mono-latin-500-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+

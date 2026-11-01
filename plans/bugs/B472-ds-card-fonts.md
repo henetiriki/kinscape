@@ -2,7 +2,7 @@
 
 - **Spec:** #472
 - **Requirement IDs:** None (design tooling for Specs #449 and #450)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Bug's step 4 needs a signed-in, interactive Claude Code session (`/publish-d
 - **B.** This PR ships the code only. A follow-up Chore publishes and refreshes. This PR says `Refs #472`, not `Closes`.
 - **Other:** your own.
 
-Recommended: A, because the Bug is fixed only when the cards change.
+**Answer: A** (@henetiriki)
 
 **D2 · Preview body font** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ The Bug says the state labels set no font. They have the `small` class, and the 
 - **B.** Leave `previewHtml` alone.
 - **Other:** your own.
 
-Recommended: A, because it costs one line and covers text with no class.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

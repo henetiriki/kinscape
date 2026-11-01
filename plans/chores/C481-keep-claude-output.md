@@ -1,7 +1,7 @@
 # Plan: C481: Share the summarise, secret-scan and upload steps between the review and run-claude
 
 - **Spec:** #481
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ No `main` commit has the action until this PR merges, and merges are squashed.
 - **B.** Two PRs: this one adds the action with no callers; a second, after merge, pins it from `main`.
 - **Other:** your own.
 
-Recommended: A, because it keeps one PR and the pin is moved on merge.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

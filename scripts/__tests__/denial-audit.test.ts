@@ -1,8 +1,9 @@
-import { existsSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh, Transcript } from '../types.ts';
+import type { Gh, Settings, Transcript } from '../types.ts';
 
 import {
   artifactReader,
@@ -10,7 +11,8 @@ import {
   issueBody,
   patternOf,
   run,
-  summarise,
+  settingsReader,
+  summarise as summariseRuns,
 } from '../denial-audit.mts';
 
 const bash = (detail: string) => ({ detail, tool: 'Bash' });
@@ -25,6 +27,7 @@ const transcript = (
   finalText: '',
   model: 'm',
   outcome: 'success',
+  stripped: 0,
   tools: {},
   turns: 10,
   ...extra,
@@ -33,6 +36,23 @@ const transcript = (
 // The artifact text, a run's summary, for a run that was denied these Bash commands.
 const artifact = (...commands: string[]) =>
   JSON.stringify(transcript(commands.map(bash), { costUsd: 2, turns: 20 }));
+
+const NO_RULES: Settings = { allow: [], deny: [] };
+
+// The runs are plan runs unless they say otherwise, and no settings file has a rule.
+const summarise = (
+  runs: { id: number; transcript: Transcript; workflow?: string }[],
+  settings: (file: string) => Settings = () => NO_RULES
+) =>
+  summariseRuns(
+    runs.map(item => ({
+      ...item,
+      workflow: item.workflow ?? 'claude-plan.yml',
+    })),
+    settings
+  );
+
+const REAL_SETTINGS = settingsReader('.github/agent');
 
 describe('patternOf', () => {
   it.each([
@@ -92,7 +112,7 @@ describe('summarise', () => {
       { id: 2, transcript: transcript([bash('a b e'), bash('x y')]) },
     ]);
 
-    expect(report.groups).toEqual([
+    expect(report.groups).toMatchObject([
       {
         costUsd: 0,
         count: 3,
@@ -108,6 +128,209 @@ describe('summarise', () => {
         runs: [1, 2],
       },
     ]);
+  });
+
+  // The settings file a workflow runs with: the review's own, else settings.json.
+  describe('settings and suggestion', () => {
+    const SETTINGS: Settings = {
+      allow: ['Bash(git:*)', 'Bash(npm run:*)', 'Bash(exact)'],
+      deny: [
+        'Agent',
+        // Not a rule Claude Code reads: it covers nothing.
+        'mcp-x',
+        'Bash(cd *)',
+        'Bash(gh pr * --body *)',
+        'Bash(sleep *)',
+        'Read(//proc/**)',
+      ],
+    };
+
+    // One group per command, each denied in two runs so it repeats.
+    const groupOf = (
+      detail: string,
+      options: { settings?: Settings; tool?: string; workflow?: string } = {}
+    ) => {
+      const denial = { detail, tool: options.tool ?? 'Bash' };
+      const workflow = options.workflow ?? 'claude-build.yml';
+      const [group] = summarise(
+        [1, 2].map(id => ({
+          id,
+          transcript: transcript([denial]),
+          workflow,
+        })),
+        () => options.settings ?? SETTINGS
+      ).groups;
+
+      return group;
+    };
+
+    it('names the workflows that hit it, without the claude- prefix or .yml', () => {
+      const [group] = summarise(
+        [
+          {
+            id: 1,
+            transcript: transcript([bash('rm a')]),
+            workflow: 'claude-plan.yml',
+          },
+          {
+            id: 2,
+            transcript: transcript([bash('rm b')]),
+            workflow: 'claude-code-review.yml',
+          },
+          {
+            id: 3,
+            transcript: transcript([bash('rm c')]),
+            workflow: 'claude-plan.yml',
+          },
+        ],
+        () => NO_RULES
+      ).groups;
+
+      expect(group.workflows).toEqual(['plan', 'code-review']);
+    });
+
+    it('shows a program the allowlist covers as allowed, with the rule', () => {
+      expect(groupOf('git push origin x')).toMatchObject({
+        settings: 'settings.json: allowed by `Bash(git:*)`',
+        suggestion: expect.stringContaining(
+          'Allowed, so another part of the command was denied'
+        ),
+      });
+      // `prefix:*` matches the bare program, not a longer name; a rule without `*` the whole command.
+      expect(groupOf('git').settings).toContain('allowed by `Bash(git:*)`');
+      expect(groupOf('gitk').settings).toBe('settings.json: no rule');
+      expect(groupOf('exact').settings).toContain('allowed by `Bash(exact)`');
+      expect(groupOf('exact more').settings).toBe('settings.json: no rule');
+    });
+
+    it('shows a program a deny rule covers as denied, with the rule', () => {
+      expect(groupOf('sleep 5')).toMatchObject({
+        settings: 'settings.json: denied by `Bash(sleep *)`',
+        suggestion: expect.stringContaining(
+          'tell the agent in `.github/agent/rules.md` to stop'
+        ),
+      });
+      expect(groupOf('gh pr edit 1 --body text').settings).toContain(
+        'denied by `Bash(gh pr * --body *)`'
+      );
+      expect(groupOf('', { tool: 'Agent' }).settings).toBe(
+        'settings.json: denied by `Agent`'
+      );
+    });
+
+    it('shows a program no rule covers as no rule, and suggests allowing it or telling the agent', () => {
+      expect(groupOf('rm a')).toMatchObject({
+        settings: 'settings.json: no rule',
+        suggestion:
+          'Allow it in `.github/agent/settings.json`, or tell the agent in `.github/agent/rules.md` to stop.',
+      });
+      // A path rule says nothing about a tool's other uses.
+      expect(groupOf('/proc/x', { tool: 'Read' }).settings).toBe(
+        'settings.json: no rule'
+      );
+    });
+
+    it('judges the code review by review-settings.json and its rules in review.md', () => {
+      const asked: string[] = [];
+      const [group] = summarise(
+        [1, 2].map(id => ({
+          id,
+          transcript: transcript([bash('rm a')]),
+          workflow: 'claude-code-review.yml',
+        })),
+        file => {
+          asked.push(file);
+
+          return NO_RULES;
+        }
+      ).groups;
+
+      expect(new Set(asked)).toEqual(new Set(['review-settings.json']));
+      expect(group.settings).toBe('review-settings.json: no rule');
+      expect(group.suggestion).toBe(
+        'Allow it in `.github/agent/review-settings.json`, or tell the agent in `.github/agent/review.md` to stop.'
+      );
+    });
+
+    it('shows each settings file a group met, when its workflows differ', () => {
+      const [group] = summarise(
+        [
+          {
+            id: 1,
+            transcript: transcript([bash('sleep 1')]),
+            workflow: 'claude-build.yml',
+          },
+          {
+            id: 2,
+            transcript: transcript([bash('sleep 1')]),
+            workflow: 'claude-code-review.yml',
+          },
+        ],
+        file => (file === 'settings.json' ? SETTINGS : NO_RULES)
+      ).groups;
+
+      expect(group.settings).toBe(
+        'settings.json: denied by `Bash(sleep *)`; review-settings.json: no rule'
+      );
+      expect(group.suggestion).toContain('to stop trying it');
+      expect(group.suggestion).toContain('Allow it in');
+    });
+
+    it('says a cd elsewhere is not cut by the hook', () => {
+      expect(groupOf('cd app')).toMatchObject({
+        pattern: 'Bash: cd',
+        settings: 'settings.json: denied by `Bash(cd *)`',
+        suggestion: expect.stringContaining(
+          'cuts only a `cd` into the workspace'
+        ),
+      });
+    });
+  });
+
+  // The real hook is run on the denied command: a program it denies is shown as the hook's.
+  describe('the hook', () => {
+    const groupOf = (detail: string) =>
+      summarise(
+        [1, 2].map(id => ({ id, transcript: transcript([bash(detail)]) })),
+        REAL_SETTINGS
+      ).groups[0];
+
+    it('shows a program the hook denies as denied by the hook', () => {
+      expect(groupOf('cat a | tail')).toMatchObject({
+        settings: 'settings.json: denied by the hook',
+        suggestion: expect.stringContaining('The hook named the alternative'),
+      });
+    });
+
+    it('shows a program the hook leaves alone by the rules', () => {
+      expect(groupOf('git push origin x').settings).toBe(
+        'settings.json: allowed by `Bash(git:*)`'
+      );
+      expect(groupOf('rm a').settings).toBe('settings.json: no rule');
+    });
+  });
+
+  it('counts the stripped cd commands per workflow', () => {
+    const report = summarise([
+      {
+        id: 1,
+        transcript: transcript([], { stripped: 3 }),
+        workflow: 'claude-build.yml',
+      },
+      {
+        id: 2,
+        transcript: transcript([], { stripped: 2 }),
+        workflow: 'claude-build.yml',
+      },
+      {
+        id: 3,
+        transcript: transcript([], { stripped: 1 }),
+        workflow: 'claude-plan.yml',
+      },
+      { id: 4, transcript: transcript([]), workflow: 'claude-respond.yml' },
+    ]);
+
+    expect(report.stripped).toEqual({ build: 5, plan: 1 });
   });
 
   it('sums the cost of denied calls per group and in all, against the runs that had denials', () => {
@@ -179,6 +402,10 @@ describe('issueBody', () => {
     example: 'Bash: cat a | tail',
     pattern: 'Bash: cat a',
     runs: [11, 12],
+    settings:
+      'settings.json: denied by the hook; review-settings.json: no rule',
+    suggestion: 'Tell the agent | stop.',
+    workflows: ['build', 'code-review'],
   };
 
   it('gives the totals, the table and what to do', () => {
@@ -190,6 +417,7 @@ describe('issueBody', () => {
         deniedRunsCostUsd: 3,
         groups: [group],
         runs: 3,
+        stripped: { build: 5, plan: 1 },
         turns: 100,
         unlinked: 2,
       },
@@ -207,7 +435,13 @@ describe('issueBody', () => {
       '2 of 6 denials could not be linked to a turn and have no cost.'
     );
     expect(body).toContain(
-      '| `Bash: cat a` | 4 | $0.76 | [11](https://github.com/owner/repo/actions/runs/11), [12](https://github.com/owner/repo/actions/runs/12) | `Bash: cat a \\| tail` |'
+      '| Denied | Workflows | Settings | Times | Cost | Runs | Example | Suggestion |'
+    );
+    expect(body).toContain(
+      '| `Bash: cat a` | build, code-review | settings.json: denied by the hook; review-settings.json: no rule | 4 | $0.76 | [11](https://github.com/owner/repo/actions/runs/11), [12](https://github.com/owner/repo/actions/runs/12) | `Bash: cat a \\| tail` | Tell the agent \\| stop. |'
+    );
+    expect(body).toContain(
+      'The hook cut a leading `cd` from 6 commands: build 5, plan 1.'
     );
     expect(body).toContain('`.github/agent/settings.json`');
     expect(body).toContain(
@@ -225,6 +459,7 @@ describe('issueBody', () => {
           deniedRunsCostUsd: 0,
           groups: [],
           runs: 0,
+          stripped: {},
           turns: 0,
           unlinked: 0,
         },
@@ -232,6 +467,52 @@ describe('issueBody', () => {
         new Date('2026-10-17T00:00:00Z')
       )
     ).toMatch(/0 turns on average.*0% of the \$0\.00/s);
+  });
+
+  it('says when the hook cut no cd', () => {
+    expect(
+      issueBody(
+        {
+          costUsd: 0,
+          denials: 0,
+          deniedCostUsd: 0,
+          deniedRunsCostUsd: 0,
+          groups: [],
+          runs: 1,
+          stripped: {},
+          turns: 0,
+          unlinked: 0,
+        },
+        'o/r',
+        new Date('2026-10-17T00:00:00Z')
+      )
+    ).toContain('The hook cut a leading `cd` from 0 commands.');
+  });
+});
+
+describe('settingsReader', () => {
+  it("reads a settings file's rules and Bash hook", () => {
+    const settings = settingsReader('.github/agent')('settings.json');
+
+    expect(settings.allow).toContain('Bash(git:*)');
+    expect(settings.deny).toContain('Bash(cd *)');
+    expect(settings.hook).toMatch(/^jq /);
+  });
+
+  it('reads a file with no rules or hook as empty', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'denial-audit-settings-'));
+
+    try {
+      writeFileSync(join(dir, 'bare.json'), '{}');
+
+      expect(settingsReader(dir)('bare.json')).toEqual({
+        allow: [],
+        deny: [],
+        hook: undefined,
+      });
+    } finally {
+      rmSync(dir, { force: true, recursive: true });
+    }
   });
 });
 
@@ -310,7 +591,16 @@ describe('run', () => {
   });
 
   const audit = () =>
-    run({ gh, now: NOW, readArtifact: id => artifacts[id], summary }, ENV);
+    run(
+      {
+        gh,
+        now: NOW,
+        readArtifact: id => artifacts[id],
+        settings: () => NO_RULES,
+        summary,
+      },
+      ENV
+    );
 
   const calls = (verb: string) =>
     gh.mock.calls.filter(([args]) => args[0] === 'issue' && args[1] === verb);
@@ -348,7 +638,16 @@ describe('run', () => {
 
   it('needs GH_REPO', () => {
     expect(
-      run({ gh, now: NOW, readArtifact: () => undefined, summary }, {})
+      run(
+        {
+          gh,
+          now: NOW,
+          readArtifact: () => undefined,
+          settings: () => NO_RULES,
+          summary,
+        },
+        {}
+      )
     ).toBe(1);
     expect(console.error).toHaveBeenCalledWith(
       expect.stringContaining('Usage')
@@ -403,8 +702,52 @@ describe('run', () => {
       [
         '### Denial audit',
         '',
-        'No denial repeated in 1 runs since 2026-10-17. 1 denials in all. Cost, estimated at API prices: $2.00 for all runs read.',
+        'No denial repeated in 1 runs since 2026-10-17. 1 denials in all. Cost, estimated at API prices: $2.00 for all runs read. The hook cut a leading `cd` from 0 commands.',
       ].join('\n')
+    );
+  });
+
+  // Each run's workflow is the one whose run list it came from, and its count is the summary's.
+  it('reports the cd commands the hook cut, per workflow, in the issue and when no denial repeats', () => {
+    const stripped = (count: number) =>
+      JSON.stringify(transcript([], { stripped: count }));
+
+    runs['claude-plan.yml'] = [make(1)];
+    runs['claude-build.yml'] = [make(2), make(3)];
+    artifacts = { 1: stripped(1), 2: stripped(4), 3: stripped(2) };
+    audit();
+
+    expect(summary.mock.calls[0][0]).toContain(
+      'The hook cut a leading `cd` from 7 commands: build 6, plan 1.'
+    );
+
+    runs['claude-respond.yml'] = [make(4), make(5)];
+    artifacts[4] = artifact('cat a');
+    artifacts[5] = artifact('cat b');
+    audit();
+
+    expect(calls('create')[0][1]).toContain(
+      'The hook cut a leading `cd` from 7 commands: build 6, plan 1.'
+    );
+  });
+
+  it('judges each denial against the settings of the workflow that hit it', () => {
+    const settings = vi.fn<(file: string) => Settings>(() => NO_RULES);
+
+    runs['claude-build.yml'] = [make(1)];
+    runs['claude-code-review.yml'] = [make(2)];
+    artifacts = { 1: artifact('rm a'), 2: artifact('rm b') };
+    run(
+      { gh, now: NOW, readArtifact: id => artifacts[id], settings, summary },
+      ENV
+    );
+
+    expect(settings.mock.calls.map(([file]) => file).sort()).toEqual([
+      'review-settings.json',
+      'settings.json',
+    ]);
+    expect(calls('create')[0][1]).toContain(
+      'settings.json: no rule; review-settings.json: no rule'
     );
   });
 
@@ -420,7 +763,7 @@ describe('run', () => {
     expect(page).toMatch(
       /^### Denial audit\n\nPermission denials in Claude runs/
     );
-    expect(page).toContain('| `Bash: cat` | 2 | $0.00 |');
+    expect(page).toContain('| 2 | $0.00 |');
     expect(page).toMatch(
       /\nOpened issue https:\/\/github\.com\/o\/r\/issues\/9\.$/
     );
@@ -467,7 +810,7 @@ describe('run', () => {
       '--body-file',
       '-',
     ]);
-    expect(body).toContain('| `Bash: cat` | 2 | $0.00 |');
+    expect(body).toContain('| 2 | $0.00 |');
     expect(calls('edit')).toHaveLength(0);
   });
 
@@ -477,7 +820,7 @@ describe('run', () => {
     artifacts[2] = artifact('cat b | head');
 
     expect(audit()).toBe(0);
-    expect(calls('create')[0][1]).toContain('| `Bash: cat` | 2 | $0.00 |');
+    expect(calls('create')[0][1]).toContain('| 2 | $0.00 |');
   });
 
   it('rewrites the open issue instead of opening another', () => {
@@ -498,7 +841,7 @@ describe('run', () => {
       '--body-file',
       '-',
     ]);
-    expect(calls('edit')[0][1]).toContain('| `Bash: cat` | 2 | $0.00 |');
+    expect(calls('edit')[0][1]).toContain('| 2 | $0.00 |');
   });
 
   it('ignores skipped, unfinished and older runs', () => {

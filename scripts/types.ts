@@ -73,6 +73,9 @@ export type PrepareMapDataDeps = {
   ) => Promise<Uint8Array>;
 };
 
+/** A settings file in `.github/agent/`: its permission rules, and the command of its Bash hook. */
+export type Settings = { allow: string[]; deny: string[]; hook?: string };
+
 export type Transcript = {
   costUsd: number | undefined;
   denials: Denial[];
@@ -82,6 +85,9 @@ export type Transcript = {
   // The result event's subtype ("success", "error_max_turns", ...), or "no result" if the run
   // stopped before one.
   outcome: string;
+  // Bash calls that began with a `cd` into the run directory and weren't denied: the hook in
+  // .github/agent/settings.json cut that `cd`.
+  stripped: number;
   // Tool calls by name; a Bash call is counted by the command it starts with (`Bash:npm`).
   tools: Record<string, number>;
   turns: number | undefined;

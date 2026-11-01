@@ -66,6 +66,7 @@ describe('parseTranscript', () => {
       finalText: 'Done.',
       model: 'claude-opus-5-5',
       outcome: 'success',
+      stripped: 0,
       tools: {},
       turns: 80,
     });
@@ -103,6 +104,81 @@ describe('parseTranscript', () => {
       'Bash:git': 2,
       'Bash:npm': 1,
       Read: 2,
+    });
+  });
+
+  // The hook cuts a leading `cd` into the run directory (plan C480, D1): a Bash call that starts
+  // with one and was not denied was stripped.
+  describe('stripped cd commands', () => {
+    const cwd = '/work/kin.x';
+    const start = { ...init, cwd };
+    const bash = (id: string, command: string) => ({
+      ...toolUse('Bash', { command }),
+      id,
+    });
+    const stripped = (events: unknown[]) => parse(events)?.stripped;
+
+    it('counts the calls that start with a cd into the run directory', () => {
+      expect(
+        stripped([
+          start,
+          assistant(
+            bash('t1', `cd ${cwd} && gh pr view 1`),
+            bash('t2', `  cd "${cwd}" ; git status`),
+            bash('t3', `cd '${cwd}'&&ls`),
+            bash('t4', 'gh pr view 2')
+          ),
+          result(),
+        ])
+      ).toBe(3);
+    });
+
+    it('leaves out a cd elsewhere, a cd that does not start the command, and one with no && or ;', () => {
+      expect(
+        stripped([
+          start,
+          assistant(
+            bash('t1', 'cd app && ls'),
+            bash('t2', `cd ${cwd}x && ls`),
+            bash('t3', `ls && cd ${cwd} && ls`),
+            bash('t4', `cd ${cwd}`),
+            bash('t5', `cd /work/kinZx; ls`),
+            { ...toolUse('Read'), id: 't6' },
+            // A Bash call with no command, or with no input at all.
+            { ...toolUse('Bash'), id: 't7' },
+            { id: 't8', name: 'Bash', type: 'tool_use' },
+            { type: 'tool_use' }
+          ),
+          result(),
+        ])
+      ).toBe(0);
+    });
+
+    it('leaves out a cd the run denied', () => {
+      expect(
+        stripped([
+          start,
+          assistant(
+            bash('t1', `cd ${cwd}; curl x`),
+            bash('t2', `cd ${cwd}; git status`)
+          ),
+          result({
+            permission_denials: [
+              {
+                tool_input: { command: `cd ${cwd}; curl x` },
+                tool_name: 'Bash',
+                tool_use_id: 't1',
+              },
+            ],
+          }),
+        ])
+      ).toBe(1);
+    });
+
+    it('is 0 when the run has no init directory', () => {
+      expect(
+        stripped([init, assistant(bash('t1', `cd ${cwd}; ls`)), result()])
+      ).toBe(0);
     });
   });
 
@@ -336,6 +412,7 @@ describe('parseTranscript', () => {
       finalText: '',
       model: undefined,
       outcome: 'no result',
+      stripped: 0,
       tools: { Read: 1 },
       turns: undefined,
     });
@@ -356,6 +433,7 @@ const SUMMARY_KEYS = [
   'finalText',
   'model',
   'outcome',
+  'stripped',
   'tools',
   'turns',
 ];
@@ -381,9 +459,28 @@ describe('readSummary', () => {
       finalText: '',
       model: undefined,
       outcome: 'no result',
+      stripped: 0,
       tools: {},
       turns: undefined,
     });
+  });
+
+  // A summary from before the hook has no count.
+  it('reads the stripped count, and counts a missing or non-numeric one as 0', () => {
+    const summary = (stripped?: unknown) =>
+      readSummary(
+        JSON.stringify({
+          denials: [],
+          finalText: '',
+          outcome: 'success',
+          stripped,
+          tools: {},
+        })
+      )?.stripped;
+
+    expect(summary(4)).toBe(4);
+    expect(summary()).toBe(0);
+    expect(summary('4')).toBe(0);
   });
 
   it('drops tool counts that are not numbers', () => {

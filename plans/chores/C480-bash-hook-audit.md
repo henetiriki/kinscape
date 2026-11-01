@@ -7,7 +7,7 @@
 
 One `jq` program, inline as the Bash `PreToolUse` hook in both settings files, reads the command up to its first `<<` (a heredoc body is text). A leading `cd <cwd>` then `;` or `&&` is cut: it returns `updatedInput` and an `additionalContext` marker, with no `permissionDecision`, so the rules still judge the rest. Any other `cd`, or a listed program at command position, gets `deny` with a reason naming the alternative.
 
-The audit groups by workflow and pattern, matching each pattern against that workflow's settings file.
+The audit shows each pattern's workflows and settings rule.
 
 ## Decisions
 
@@ -32,9 +32,8 @@ The audit groups by workflow and pattern, matching each pattern against that wor
 
 ## Order of work
 
-1. Commit this plan.
-2. The hook and its tests. With `claude -p --settings`, check that hook denials reach `permission_denials` and that `cd <cwd>; curl x` is still denied.
-3. Transcript, audit, then `rules.md`.
+1. The hook and its tests, checked with `claude -p --settings`.
+2. Transcript, audit, then `rules.md`.
 
 ## Risks
 
@@ -49,4 +48,8 @@ The audit groups by workflow and pattern, matching each pattern against that wor
 | Audit rows                      | `denial-audit.test.ts`   |
 | `rules.md` no longer repeats it | The diff                 |
 | Next weekly audit               | Its issue, after merge   |
-| Checks pass                     | CI                       |
+
+## Deviations
+
+- The `claude -p` check was skipped (sandbox): unchecked are hook denials in `permission_denials`, `updatedInput` keeping the allowlist, and `cd <cwd>; curl x` denied. No transcript fallback.
+- The audit runs the hook to show `denied by the hook`.

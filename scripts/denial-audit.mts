@@ -1,9 +1,9 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { appendFileSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { Denial, Gh, Transcript } from './types.ts';
+import type { Denial, Gh, Settings, Transcript } from './types.ts';
 
 import { inlineCode, readSummary } from './agent-transcript.mts';
 
@@ -17,6 +17,8 @@ type Deps = {
   gh: Gh;
   now: Date;
   readArtifact: (runId: number) => string | undefined;
+  // A settings file in .github/agent/: its rules, and the command of its Bash hook.
+  settings: (file: string) => Settings;
   // Appends Markdown to the run page.
   summary: (markdown: string) => void;
 };
@@ -27,6 +29,11 @@ type Group = {
   example: string;
   pattern: string;
   runs: number[];
+  // What the settings of each workflow that hit it say about it, and what to do.
+  settings: string;
+  suggestion: string;
+  // The workflows that hit it: plan, build, code-review.
+  workflows: string[];
 };
 
 type Report = {
@@ -37,6 +44,8 @@ type Report = {
   deniedRunsCostUsd: number;
   groups: Group[];
   runs: number;
+  // The Bash calls the hook cut a leading `cd` from, per workflow with any.
+  stripped: Record<string, number>;
   turns: number;
   // Denials that couldn't be linked to a turn, so have no cost.
   unlinked: number;
@@ -75,6 +84,130 @@ export const patternOf = ({ detail, tool }: Denial): string => {
     ? `Bash: ${program} ${next}`
     : `Bash: ${program}`;
 };
+
+// The code review has settings of its own; every other workflow runs with settings.json.
+const settingsFileOf = (workflow: string): string =>
+  workflow === 'claude-code-review.yml'
+    ? 'review-settings.json'
+    : 'settings.json';
+
+const shortName = (workflow: string): string =>
+  workflow.replace(/^claude-|\.yml$/g, '');
+
+// Whether a permission rule covers a call, as Claude Code reads one: `Tool` is every use of the
+// tool, `Bash(prefix:*)` a command that is the prefix or starts with it and a space, and any other
+// `Bash(...)` the whole command, with `*` for any text. Path rules (`Read(...)`) are not matched.
+const covers = (rule: string, tool: string, command: string): boolean => {
+  const [, name, spec] = rule.match(/^(\w+)(?:\((.*)\))?$/s) ?? [];
+
+  if (name !== tool) {
+    return false;
+  }
+
+  if (spec === undefined) {
+    return true;
+  }
+
+  if (tool !== 'Bash') {
+    return false;
+  }
+
+  if (spec.endsWith(':*')) {
+    const prefix = spec.slice(0, -2);
+
+    return command === prefix || command.startsWith(`${prefix} `);
+  }
+
+  return new RegExp(
+    `^${spec.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replaceAll('*', '.*')}$`,
+    's'
+  ).test(command);
+};
+
+// Whether the settings' Bash hook denies the command. It runs the hook as Claude Code does, with
+// no directory, so it cuts no `cd`.
+const hookDenies = (hook: string, command: string): boolean => {
+  const { stdout } = spawnSync('bash', ['-c', hook], {
+    encoding: 'utf8',
+    input: JSON.stringify({ cwd: '', tool_input: { command } }),
+  });
+
+  try {
+    return JSON.parse(stdout).hookSpecificOutput.permissionDecision === 'deny';
+  } catch {
+    // No output, or a hook that fails, leaves the call to the rules.
+    return false;
+  }
+};
+
+// What a settings file says about a denied call: the hook, a deny rule, an allow rule, or nothing.
+const statusOf = (
+  { allow, deny, hook }: Settings,
+  { detail, tool }: Denial
+): string => {
+  if (tool === 'Bash' && hook && hookDenies(hook, detail)) {
+    return 'denied by the hook';
+  }
+
+  const denied = deny.find(rule => covers(rule, tool, detail));
+
+  if (denied) {
+    return `denied by ${inlineCode(denied)}`;
+  }
+
+  const allowed = allow.find(rule => covers(rule, tool, detail));
+
+  return allowed ? `allowed by ${inlineCode(allowed)}` : 'no rule';
+};
+
+// What to do about a group, from its status in one settings file.
+const suggestionOf = (
+  status: string,
+  pattern: string,
+  file: string
+): string => {
+  const rules = file === 'review-settings.json' ? 'review.md' : 'rules.md';
+  const tell = `tell the agent in \`.github/agent/${rules}\``;
+
+  if (pattern === 'Bash: cd') {
+    return `The hook cuts only a \`cd\` into the workspace: ${tell} to give paths.`;
+  }
+
+  if (status === 'denied by the hook') {
+    return `The hook named the alternative and the agent tried anyway: sharpen its message or ${tell}.`;
+  }
+
+  if (status.startsWith('denied')) {
+    return `Denied on purpose: ${tell} to stop trying it.`;
+  }
+
+  if (status.startsWith('allowed')) {
+    return `Allowed, so another part of the command was denied: ${tell} to run one command per call.`;
+  }
+
+  return `Allow it in \`.github/agent/${file}\`, or ${tell} to stop.`;
+};
+
+// Reads the settings files in a folder (.github/agent) when the audit asks for one.
+export const settingsReader =
+  (dir: string) =>
+  (file: string): Settings => {
+    const { hooks, permissions } = JSON.parse(
+      readFileSync(join(dir, file), 'utf8')
+    ) as {
+      hooks?: {
+        PreToolUse?: { hooks: { command: string }[]; matcher: string }[];
+      };
+      permissions?: { allow?: string[]; deny?: string[] };
+    };
+
+    return {
+      allow: permissions?.allow ?? [],
+      deny: permissions?.deny ?? [],
+      hook: hooks?.PreToolUse?.find(({ matcher }) => matcher === 'Bash')
+        ?.hooks[0].command,
+    };
+  };
 
 export const artifactReader =
   (gh: Gh) =>
@@ -127,19 +260,33 @@ const recentRunIds = (gh: Gh, workflow: string, since: Date): number[] =>
     .map((run: { databaseId: number }) => run.databaseId);
 
 export const summarise = (
-  transcripts: { id: number; transcript: Transcript }[]
+  transcripts: { id: number; transcript: Transcript; workflow: string }[],
+  settings: (file: string) => Settings
 ): Report => {
-  const groups = new Map<string, Group>();
+  // Each group keeps the first denial it saw under each settings file, to judge against that file.
+  const groups = new Map<string, { firstBy: Map<string, Denial> } & Group>();
+  const stripped: Record<string, number> = {};
 
-  for (const { id, transcript } of transcripts) {
+  for (const { id, transcript, workflow } of transcripts) {
+    const file = settingsFileOf(workflow);
+    const name = shortName(workflow);
+
+    if (transcript.stripped > 0) {
+      stripped[name] = (stripped[name] ?? 0) + transcript.stripped;
+    }
+
     for (const denial of transcript.denials) {
       const pattern = patternOf(denial);
       const group = groups.get(pattern) ?? {
         costUsd: 0,
         count: 0,
         example: `${denial.tool}: ${denial.detail}`.replace(/: $/, ''),
+        firstBy: new Map<string, Denial>(),
         pattern,
         runs: [],
+        settings: '',
+        suggestion: '',
+        workflows: [],
       };
 
       group.count += 1;
@@ -147,6 +294,14 @@ export const summarise = (
 
       if (!group.runs.includes(id)) {
         group.runs.push(id);
+      }
+
+      if (!group.workflows.includes(name)) {
+        group.workflows.push(name);
+      }
+
+      if (!group.firstBy.has(file)) {
+        group.firstBy.set(file, denial);
       }
 
       groups.set(pattern, group);
@@ -177,8 +332,29 @@ export const summarise = (
       .filter(
         ({ count, runs }) => runs.length >= REPEAT_RUNS || count >= REPEAT_COUNT
       )
-      .sort((a, b) => b.count - a.count),
+      .sort((a, b) => b.count - a.count)
+      .map(({ firstBy, ...group }) => {
+        const rows = [...firstBy].map(([file, denial]) => ({
+          file,
+          status: statusOf(settings(file), denial),
+        }));
+
+        return {
+          ...group,
+          settings: rows
+            .map(({ file, status }) => `${file}: ${status}`)
+            .join('; '),
+          suggestion: [
+            ...new Set(
+              rows.map(({ file, status }) =>
+                suggestionOf(status, group.pattern, file)
+              )
+            ),
+          ].join(' '),
+        };
+      }),
     runs: transcripts.length,
+    stripped,
     turns: transcripts.reduce(
       (sum, { transcript }) => sum + (transcript.turns ?? 0),
       0
@@ -194,6 +370,18 @@ export const summarise = (
 };
 
 const cell = (text: string): string => inlineCode(text).replaceAll('|', '\\|');
+
+const plain = (text: string): string => text.replaceAll('|', '\\|');
+
+// How many `cd` commands the hook cut, in all and per workflow.
+const strippedLine = ({ stripped }: Report): string => {
+  const entries = Object.entries(stripped).sort(([a], [b]) =>
+    a.localeCompare(b)
+  );
+  const total = entries.reduce((sum, [, count]) => sum + count, 0);
+
+  return `The hook cut a leading \`cd\` from ${total} commands${entries.length > 0 ? `: ${entries.map(([name, count]) => `${name} ${count}`).join(', ')}` : ''}.`;
+};
 
 export const issueBody = (
   report: Report,
@@ -214,13 +402,24 @@ export const issueBody = (
     '',
     `Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read. The turns that made a denied call cost $${report.deniedCostUsd.toFixed(2)}, ${share}% of the $${report.deniedRunsCostUsd.toFixed(2)} the runs with denials cost. That is a lower bound: the turn after a denial is not counted.${report.unlinked > 0 ? ` ${report.unlinked} of ${report.denials} denials could not be linked to a turn and have no cost.` : ''}`,
     '',
+    strippedLine(report),
+    '',
     `These were denied in ${REPEAT_RUNS} or more runs, or ${REPEAT_COUNT} or more times:`,
     '',
-    '| Denied | Times | Cost | Runs | Example |',
-    '| --- | ---: | ---: | --- | --- |',
+    '| Denied | Workflows | Settings | Times | Cost | Runs | Example | Suggestion |',
+    '| --- | --- | --- | ---: | ---: | --- | --- | --- |',
     ...report.groups.map(
-      ({ costUsd, count, example, pattern, runs }) =>
-        `| ${cell(pattern)} | ${count} | $${costUsd.toFixed(2)} | ${runs.map(link).join(', ')} | ${cell(example)} |`
+      ({
+        costUsd,
+        count,
+        example,
+        pattern,
+        runs,
+        settings,
+        suggestion,
+        workflows,
+      }) =>
+        `| ${cell(pattern)} | ${workflows.join(', ')} | ${plain(settings)} | ${count} | $${costUsd.toFixed(2)} | ${runs.map(link).join(', ')} | ${cell(example)} | ${plain(suggestion)} |`
     ),
     '',
     'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`. The weekly audit rewrites this issue while it stays open; close it when it is handled.',
@@ -228,7 +427,7 @@ export const issueBody = (
 };
 
 export const run = (
-  { gh, now, readArtifact, summary }: Deps,
+  { gh, now, readArtifact, settings, summary }: Deps,
   env: Record<string, string | undefined>
 ): number => {
   const repo = env.GH_REPO ?? '';
@@ -241,14 +440,14 @@ export const run = (
 
   const since = new Date(now.getTime() - DAYS * 24 * 60 * 60 * 1000);
   const transcripts = WORKFLOWS.flatMap(workflow =>
-    recentRunIds(gh, workflow, since)
-  ).flatMap(id => {
-    const text = readArtifact(id);
-    const transcript = text === undefined ? undefined : readSummary(text);
+    recentRunIds(gh, workflow, since).flatMap(id => {
+      const text = readArtifact(id);
+      const transcript = text === undefined ? undefined : readSummary(text);
 
-    return transcript ? [{ id, transcript }] : [];
-  });
-  const report = summarise(transcripts);
+      return transcript ? [{ id, transcript, workflow }] : [];
+    })
+  );
+  const report = summarise(transcripts, settings);
 
   if (report.groups.length === 0) {
     const none = `No denial repeated in ${report.runs} runs since ${since.toISOString().slice(0, 10)}.`;
@@ -258,7 +457,7 @@ export const run = (
       [
         '### Denial audit',
         '',
-        `${none} ${report.denials} denials in all. Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read.`,
+        `${none} ${report.denials} denials in all. Cost, estimated at API prices: $${report.costUsd.toFixed(2)} for all runs read. ${strippedLine(report)}`,
       ].join('\n')
     );
 
@@ -311,7 +510,7 @@ export const run = (
   return 0;
 };
 
-/* v8 ignore next 17 -- only true when run directly with node, not when imported */
+/* v8 ignore next 18 -- only true when run directly with node, not when imported */
 if (import.meta.main) {
   const gh: Gh = (args, input) =>
     execFileSync('gh', args, {
@@ -327,6 +526,7 @@ if (import.meta.main) {
       gh,
       now: new Date(),
       readArtifact: artifactReader(gh),
+      settings: settingsReader('.github/agent'),
       summary: markdown => page && appendFileSync(page, `${markdown}\n`),
     },
     process.env

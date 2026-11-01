@@ -93,7 +93,7 @@ jobs:
           github_token: ${{ github.token }}
           show_full_output: false
           settings: ${{ runner.temp }}/agent/refresh-settings.json
-          claude_args: '--model opus --effort high --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
+          claude_args: '--model sonnet --append-system-prompt-file ${{ runner.temp }}/agent/system.md'
           prompt: >-
             Refresh Spec, Bug or Chore #${{ matrix.spec.number }} as .github/agent/refresh.md says.
             This is an unblock run. It was blocked by: #${{ join(matrix.spec.blockers, ', #') }}.

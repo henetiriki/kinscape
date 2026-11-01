@@ -311,6 +311,11 @@ describe('the refresh job of claude-unblock.yml', () => {
     );
   });
 
+  // The level an @claude comment on a Spec runs at (claude.yml); only a plan PR gets Opus.
+  it('runs on Sonnet, as an @claude comment on a Spec does', () => {
+    expect(claude()?.with?.claude_args).toMatch(/^--model sonnet /);
+  });
+
   // The workflow's token can't push, and what it edits starts no run; a PAT could do both.
   it('runs on main with the workflow token and read access to the code', () => {
     const checkout = refresh().steps.find(step =>

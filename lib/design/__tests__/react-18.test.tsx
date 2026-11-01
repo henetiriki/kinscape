@@ -1,6 +1,12 @@
 import type { ReactElement } from 'react';
 
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -140,22 +146,51 @@ const CASES: [string, ReactElement][] = [
     'TextField · password',
     <TextField key='p' label='Password' type='password' />,
   ],
-  ...states('Checkbox', (state, disabled) => (
-    <Checkbox aria-label='Deceased' disabled={disabled} state={state} />
-  )),
-  ...states('CheckboxField', (state, disabled) => (
-    <CheckboxField
-      description='Only people born before 1920.'
-      disabled={disabled}
-      label='Deceased'
-      state={state}
-    />
-  )),
-  ['CheckboxField · plain', <CheckboxField key='n' label='Keep me' plain />],
-  ...states('DateField', (state, disabled) =>
-    dateField({ state: disabled ? undefined : state })
+  ...[false, true].flatMap(checked =>
+    states(`Checkbox ${checked ? 'on' : 'off'}`, (state, disabled) => (
+      <Checkbox
+        aria-label='Deceased'
+        defaultChecked={checked}
+        disabled={disabled}
+        state={state}
+      />
+    ))
   ),
-  ['DateField · error', dateField({ defaultText: '1901-02-30' })],
+  ...[false, true].flatMap(checked =>
+    states(`CheckboxField ${checked ? 'on' : 'off'}`, (state, disabled) => (
+      <CheckboxField
+        defaultChecked={checked}
+        description='Only people born before 1920.'
+        disabled={disabled}
+        label='Deceased'
+        state={state}
+      />
+    ))
+  ),
+  ['CheckboxField · plain', <CheckboxField key='n' label='Keep me' plain />],
+  ['DateField · default', dateField()],
+  ...STATES.map((state): [string, ReactElement] => [
+    `DateField · ${state}`,
+    dateField({ state }),
+  ]),
+  ['DateField · typing', dateField({ defaultText: '1901-0', state: 'focus' })],
+  ...(
+    [
+      ['wrong format', '14/06/1901'],
+      ['before 1652', '1650'],
+      ['after today', '2031'],
+      ["doesn't exist", '1901-02-30'],
+    ] as const
+  ).flatMap(([name, defaultText]) =>
+    (['below', 'above'] as const).map((placement): [string, ReactElement] => [
+      `DateField · ${name} · ${placement}`,
+      dateField({ defaultText, placement }),
+    ])
+  ),
+  [
+    'DateField · info',
+    dateField({ notice: { text: 'Switched to month.', tone: 'info' } }),
+  ],
   [
     'DateField · notice',
     dateField({ notice: { text: 'Moved to 1652.', tone: 'warning' } }),
@@ -184,14 +219,21 @@ beforeEach(() => {
   warnings = vi.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-afterEach(() => {
-  vi.restoreAllMocks();
-});
-
 const quiet = () => {
   expect(errors.mock.calls).toEqual([]);
   expect(warnings.mock.calls).toEqual([]);
 };
+
+// Unmount before the last check, so what React logs on unmount fails the test too.
+afterEach(() => {
+  vi.useRealTimers();
+  cleanup();
+  try {
+    quiet();
+  } finally {
+    vi.restoreAllMocks();
+  }
+});
 
 it('runs on React 18, with one React', () => {
   const Hook = () => React.useState('hooked')[0];
@@ -376,7 +418,6 @@ describe('interactions', () => {
       vi.advanceTimersByTime(4000);
     });
     expect(onDismiss).toHaveBeenCalledOnce();
-    vi.useRealTimers();
     quiet();
   });
 

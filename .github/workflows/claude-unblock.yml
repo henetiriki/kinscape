@@ -6,6 +6,16 @@ name: 'Claude: Unblock'
 # It then refreshes each freed Spec against main (.github/agent/refresh.md), in a read-only run that
 # edits the issue body and comments only. A failed refresh leaves the swap and the comment as they are.
 # It never starts a plan: only the tech lead sets `status: ready-for-agent`.
+#
+# The title shown for each run in the Actions tab: "Unblock: <title>" for an issue filed by the
+# owner, a member or a collaborator, "Skipped Unblock: <title>" for any other issue. Repeats the
+# `unblock` job's `if:` (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
+    format('Unblock: {0}', github.event.issue.title) ||
+    format('Skipped Unblock: {0}', github.event.issue.title)
+  }}
 
 on:
   issues:

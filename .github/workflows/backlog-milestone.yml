@@ -2,6 +2,21 @@ name: 'Backlog: Inherit milestone'
 
 # A Spec takes its parent Intent's milestone; a PR takes the milestone of the Spec or Bug it closes.
 # Only empty milestones are filled. A manual run does this for every Spec, then every PR.
+#
+# The title shown for each run in the Actions tab: "Milestone: <title>" for a Spec filed by the
+# owner, a member or a collaborator, a PR from this repo, or "Milestone: backfill" for a manual run;
+# "Skipped Milestone: <title>" for any other issue or PR. Repeats the job's `if:` (run-name cannot
+# see job results): change them together.
+run-name: >-
+  ${{
+    github.event_name == 'workflow_dispatch' && 'Milestone: backfill' ||
+    (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'type: spec') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
+      format('Milestone: {0}', github.event.issue.title)) ||
+    (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository &&
+      format('Milestone: {0}', github.event.pull_request.title)) ||
+    format('Skipped Milestone: {0}', github.event.issue.title || github.event.pull_request.title)
+  }}
 
 on:
   issues:

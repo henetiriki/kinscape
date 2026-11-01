@@ -2,6 +2,18 @@ name: 'Claude: Code Review'
 
 # When a PR is opened, updated or marked ready, Claude reviews the code and
 # leaves comments on it.
+#
+# The title shown for each run in the Actions tab: "Review: <PR title>" for a ready PR by the
+# owner, a member or a collaborator, "Skipped Review: <PR title>" for a draft, Dependabot or an
+# outsider's PR. A PR that changes only plans/** starts no run, so has no title at all. Repeats the
+# `claude-review` job's `if:` (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    github.actor != 'dependabot[bot]' && !github.event.pull_request.draft &&
+    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association) &&
+    format('Review: {0}', github.event.pull_request.title) ||
+    format('Skipped Review: {0}', github.event.pull_request.title)
+  }}
 
 on:
   pull_request:

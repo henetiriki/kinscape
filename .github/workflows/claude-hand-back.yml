@@ -4,6 +4,10 @@ name: 'Claude: Hand back'
 # names, is a code-owner path (plans/README.md rule 13). The label stays until merge. It is a
 # signal, not a guard: the ruleset still requires code-owner review. The script and CODEOWNERS come
 # from the base commit, so the PR can't change what runs. Never `pull_request_target`.
+#
+# The title shown for each run in the Actions tab: "Hand back: <PR title>". The job has no `if:`
+# (the script skips a fork), so a fork PR shows the same title and there is no "Skipped" form.
+run-name: 'Hand back: ${{ github.event.pull_request.title }}'
 
 on:
   pull_request:

@@ -1,9 +1,9 @@
 name: 'Claude: Plan'
 
 # The title shown for each run in the Actions tab:
-#   "Plan: <title>"    - the repo owner (the tech lead) marked a Spec, Bug or Chore ready for the agent,
-#                        and its author is the owner, a member or a collaborator, so Claude drafts a plan
-#   "Skipped: <title>" - anything else, so nothing runs (a PO's label included)
+#   "Plan: <title>"         - the repo owner (the tech lead) marked a Spec, Bug or Chore ready for the agent,
+#                             and its author is the owner, a member or a collaborator, so Claude drafts a plan
+#   "Skipped Plan: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
 run-name: >-
   ${{
@@ -15,7 +15,7 @@ run-name: >-
     contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
     github.actor == github.repository_owner &&
     format('Plan: {0}', github.event.issue.title) ||
-    format('Skipped: {0}', github.event.issue.title)
+    format('Skipped Plan: {0}', github.event.issue.title)
   }}
 
 # A ready-for-agent Spec, Bug or Chore gets a draft plan PR (plans/README.md); the tech lead's

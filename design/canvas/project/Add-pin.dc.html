@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Add a pin</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <aside aria-labelledby="add-pin-title" style="position: absolute; left: var(--size-gutter); top: calc(var(--space-64) + var(--size-gutter)); bottom: calc(var(--space-24) + var(--space-4)); width: var(--size-panel); display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); overflow: hidden">
+
+    <h2 id="add-pin-title" class="h2" style="margin: 0; padding: var(--space-20) var(--space-20) var(--space-16); color: var(--ink)">Add a pin</h2>
+
+    <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-16); padding: 0 var(--space-20) var(--space-16)">
+
+      <x-import component-from-global-scope="KinScape.TextField" label="Person" helper="Search the Tree" default-value="Example Person"></x-import>
+
+      <x-import component-from-global-scope="KinScape.TextField" type="search" label="Place" helper="Search a known place, or click the map." default-value="Example Farm"></x-import>
+
+      <x-import component-from-global-scope="KinScape.TextField" label="Address as recorded" helper="Type it exactly as the record reads." default-value="Farm Example, district Example"></x-import>
+
+      <x-import component-from-global-scope="KinScape.ChipGroup" label="Event type" options="{{events}}" selected="{{selected}}" on-toggle="{{noop}}"></x-import>
+
+      <fieldset style="margin: 0; padding: 0; border: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--space-8)">
+        <legend class="label" style="padding: 0; margin-bottom: var(--space-8); color: var(--ink)">From</legend>
+        <x-import component-from-global-scope="KinScape.DateField" day="{{date.day}}" min="{{date.min}}" max="{{date.max}}" precision="day" default-text="1901-02-30" placement="below" on-change="{{noop}}"></x-import>
+      </fieldset>
+
+      <x-import component-from-global-scope="KinScape.Alert" tone="warning" title="Overlaps another residence">Example Person already lives at Example Farm from 1840 to 1855.</x-import>
+
+    </div>
+
+    <div style="display: flex; gap: var(--space-8); padding: var(--space-16) var(--space-20) var(--space-20)">
+      <x-import component-from-global-scope="KinScape.Button" variant="primary">Save pin</x-import>
+      <x-import component-from-global-scope="KinScape.Button" variant="secondary">Cancel</x-import>
+    </div>
+
+  </aside>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const events = [
+      ['birth', 'Birth'], ['baptism', 'Baptism'], ['residence', 'Residence'], ['marriage', 'Marriage'], ['divorce', 'Divorce'],
+      ['death', 'Death'], ['burial', 'Burial'], ['land', 'Land'], ['occupation', 'Occupation'], ['other', 'Other']
+    ].map((e) => ({ glyph: e[0], label: e[1], value: e[0] }));
+    return {
+      events: events,
+      selected: ['residence'],
+      date: { day: 91109, min: 0, max: 136894 },
+      noop: () => {}
+    };
+  }
+}
+</script>
+</body>
+</html>

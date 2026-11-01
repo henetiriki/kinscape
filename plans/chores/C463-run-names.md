@@ -1,7 +1,7 @@
 # Plan: C463: Name every issue/PR-triggered workflow run consistently
 
 - **Spec:** #463
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

@@ -43,7 +43,7 @@ jobs:
       !github.event.pull_request.draft &&
       github.event.pull_request.head.repo.full_name == github.repository
     # Pinned to the commit that added `kind`; actions-pin-update.yml moves it to main's after merge.
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@2777c68539274b1309abef550d66f0b9a1ced308
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@1d4d4a059fca96a41d3ea6283f965f4376555261
     with:
       thread: ${{ github.event.pull_request.number }}
       # The runner's gate checks a ready PR with the label, not a draft plan PR.

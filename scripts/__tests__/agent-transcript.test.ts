@@ -149,6 +149,8 @@ describe('parseTranscript', () => {
             { id: 't8', name: 'Bash', type: 'tool_use' },
             { type: 'tool_use' }
           ),
+          // An assistant event with no content.
+          { message: {}, type: 'assistant' },
           result(),
         ])
       ).toBe(0);

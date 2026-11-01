@@ -6,7 +6,7 @@
 
 ## Approach
 
-The tech lead builds this: `AGENTS.md` is a code-owner path (rule 13). The old canvas can't be read any more, so the work moves to a new canvas, "KinScape design kit (ouwl.house)", seeded from the committed copy (D2). Claude Code reads and writes it with the artifact tools: no download or canvas chat. The copy is refreshed twice, each in its own commit with `VERSION` updated: from the seeded canvas, then after the install. An unchanged `design/source/` after `npm run design:export` proves neither touched a board.
+The tech lead builds this: `AGENTS.md` is a code-owner path (rule 13). The old canvas can't be read any more, so the work moves to a new canvas, "KinScape design kit (ouwl.house)", seeded from the committed copy (D2). Claude Code reads and writes it with the artifact tools. The copy is refreshed twice, each in its own commit with `VERSION` updated: from the seeded canvas, then after the install. An unchanged `design/source/` after `npm run design:export` proves neither touched a board.
 
 ## Decisions
 
@@ -19,34 +19,35 @@ The tech lead builds this: `AGENTS.md` is a code-owner path (rule 13). The old c
 
 **D2 · Which canvas the design lives on** · Decides: Tech lead
 
-The old canvas (`1MyZ…`) can't be read: the file tools refuse a canvas that someone outside the organization has written to.
+The file tools refuse the old canvas (`1MyZ…`): someone outside the organization wrote to it.
 
-- **A.** A new canvas owned by this account, seeded from the committed copy. Boards, pages and layout are kept; comments and history stay behind. The old canvas is left alone.
+- **A.** A new canvas owned by this account, seeded from the committed copy. Comments and history stay behind; the old canvas is left alone.
 - ~~**B.** Keep the old canvas; refresh by download or a canvas chat (Spec D1 A).~~
 
 **Answer: A** (@henetiriki). New canvas: `https://claude.ai/artifact/KNh9aZWeMNtsNSWtWLCbzU`.
 
 ## Files that change
 
-| File                                   | New / changed | What                                                                |
-| -------------------------------------- | ------------- | ------------------------------------------------------------------- |
-| `design/canvas/project/*.dc.html`      | Changed       | Refreshed: 8 boards use the new canvas's icon id                    |
-| `design/canvas/project/canvas.json`    | Changed       | New title, then the one `designSystems` entry                       |
-| `design/canvas/project/ds/kinscape/**` | New           | The installed system                                                |
-| `design/canvas/VERSION`                | Changed       | Line 1: the new canvas link; line 2: its version after each refresh |
-| `design/canvas/export.json`            | Changed       | `icon`: the new canvas's icon id                                    |
-| `design/source/*.html`, `design/*.jpg` | Changed       | Only if a board changed, by the Design agent shots workflow         |
-| `design/DESIGN.md`                     | Changed       | The new link; Screens: refreshing, updating the install, handoff    |
-| `docs/how-we-work.md`                  | Changed       | The Design row: designed on the canvas with the design system       |
-| `AGENTS.md`                            | Changed       | A person refreshes `design/canvas/` by the documented step          |
+| File                                                    | New / changed | What                                                                |
+| ------------------------------------------------------- | ------------- | ------------------------------------------------------------------- |
+| `design/canvas/project/*.dc.html`                       | Changed       | Refreshed: 8 boards use the new canvas's icon id                    |
+| `design/canvas/project/canvas.json`                     | Changed       | New title, then the one `designSystems` entry                       |
+| `design/canvas/project/ds/kinscape/**`                  | New           | The installed system                                                |
+| `design/canvas/VERSION`                                 | Changed       | Line 1: the new canvas link; line 2: its version after each refresh |
+| `design/canvas/export.json`                             | Changed       | `icon`: the new canvas's icon id                                    |
+| `design/source/*.html`, `design/*.jpg`                  | Changed       | Only if a board changed, by the Design agent shots workflow         |
+| `.prettierignore`, `eslint.config.mjs`, `tsconfig.json` | Changed       | D1                                                                  |
+| `design/DESIGN.md`                                      | Changed       | The new link; Screens: refreshing, updating the install, handoff    |
+| `docs/how-we-work.md`                                   | Changed       | The Design row: designed on the canvas with the design system       |
+| `AGENTS.md`                                             | Changed       | A person refreshes `design/canvas/` by the documented step          |
 
 ## Order of work
 
 1. Refresh the copy with `read_file`, set `export.json`'s `icon` and `VERSION`, commit. `design:export` must leave `design/source/` unchanged.
 2. Install: Claude Code copies the design system's `project/` files into `project/ds/kinscape/` and adds the `designSystems` entry, in one publish. The tech lead screenshots a board's colour picker and text styles.
 3. Refresh again, commit. Run `design:export`, `git diff --exit-code design/source`, `lint`, `format:check`, `typecheck`.
-4. Hand one board to Claude Code by the Export menu, and by Claude Code reading its file from the canvas. Note what each offered and what arrived.
-5. Update the docs as step 4 shows, in one commit. Reword Spec #447 (steps 1–3) with `gh issue edit` (rule 3).
+4. Note what the Export menu and Hand off to Claude Code offer, and read a board through the handoff link.
+5. Update the docs in one commit. Reword Spec #447 (steps 1–3) with `gh issue edit`.
 6. Run `lint`, `format:check`, `words`, `test`, `validate:boundaries`, `e2e`, `design:check`.
 
 ## Risks
@@ -72,4 +73,6 @@ The old canvas (`1MyZ…`) can't be read: the file tools refuse a canvas that so
 
 ## Deviations
 
-- Intent #442 got a comment, not a body rewrite: rule 3 covers the Spec only.
+- Intent #442 got a comment, not a rewrite: rule 3 covers the Spec.
+- `how-we-work.md`: the Spec-filing bullet is reworded to fit the budget.
+- No handoff prompt was pasted (tech lead's call, to save tokens); `DESIGN.md` keeps the snapshot fallback.

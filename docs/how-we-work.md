@@ -8,7 +8,7 @@ More detail: [Architecture](architecture.md), [Building and shipping](building.m
 
 - **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, filed already approved. M0 has none.
 - **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one. Its id is the milestone and a sequence (`M1.4`); an Intent outside the milestones gets a short prefix (`DM.1`).
-- A Spec filed with an Intent number becomes its sub-issue automatically; file it with that number, not `M<n>` (except M0). When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`; the PO checks the outcome and closes it.
+- File a Spec with its Intent's number, not `M<n>` (except M0), or it isn't linked as a sub-issue. When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`; the PO checks the outcome and closes it.
 - **Bug, Chore:** take a Spec's path, with ids `B<n>` and `C<n>`.
 - **Plan:** how a Spec, Bug or Chore is built: files, order of work, risks and proof. Committed with the code as `plans/M0.1-hello-vercel.md` ([rules](../plans/README.md)).
 

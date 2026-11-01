@@ -72,8 +72,8 @@ A person in a signed-in Claude Code session refreshes `canvas/` after a board ch
 1. Ask Claude Code to `list_files` the canvas (its link is line 1 of `canvas/VERSION`) and compare each `project/` file's `sha256` with `shasum -a 256` of the repo copy.
 2. `read_file` each file that differs into `canvas/project/` (long files in parts), then check its hash. Files under `project/ds/kinscape/` come from `npm run design-system` (`.design-system/project/`); check their hashes the same way.
 3. Set line 2 of `canvas/VERSION` to the version `list_files` reports.
-4. Run `npm run design:export`. It prints "No snapshot changed" unless a board changed; if one did, commit, push and run the Design agent shots workflow.
-5. Commit `canvas/` alone.
+4. Run `npm run design:export`. It prints "No snapshot changed" unless a board changed.
+5. Commit `canvas/` alone. If a board changed, discard the exported `source/` changes, push, and run the Design agent shots workflow.
 
 If `list_files` refuses with "written to by someone outside your organization", ask Claude in a chat on the canvas to read each changed file and hand it over.
 
@@ -83,7 +83,7 @@ After a `/publish-design-system` run that sends files, the canvas still holds th
 
 ### Handing off a board
 
-A Spec names the board's file (for example `Map.dc.html`). To hand it off, open the canvas's main menu › **Hand off to Claude Code**, name the board under "Add instructions", and send the prompt it opens in Claude Code. The prompt holds the canvas link; Claude Code reads the board with `read_file` on `project/<board>` and builds from its markup and values, checking the look against the board's snapshot in `source/`. Don't use Export: it offers HTML (every board in one file), PDF, PNG and Vercel.
+A Spec names the board's file (for example `Map.dc.html`). To hand it off, open the canvas's main menu › **Hand off to Claude Code**, name the board under "Add instructions", and send the prompt it opens in Claude Code. The prompt holds the canvas link, and a board's file reads through that link with `read_file` on `project/<board>`. If Claude Code can't build from it, build from the board's snapshot in `source/`; record in the PR which worked. Don't use Export: it offers HTML (every board in one file), PDF, PNG and Vercel.
 
 ## Brand
 

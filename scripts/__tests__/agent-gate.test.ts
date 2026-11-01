@@ -14,7 +14,13 @@ type World = {
   // The issue or PR as it is now; a plan-ready open issue and an open draft plan PR by default.
   issue?: { labels?: string[]; state?: string };
   openPrs?: { closingIssuesReferences: { number: number }[]; number: number }[];
-  pr?: { isDraft?: boolean; state?: string; title?: string };
+  // A draft plan PR by default; `labels` is read by a fix gate and defaults to the fix-review label.
+  pr?: {
+    isDraft?: boolean;
+    labels?: string[];
+    state?: string;
+    title?: string;
+  };
 };
 
 describe('run', () => {
@@ -50,6 +56,14 @@ describe('run', () => {
       }
 
       if (args[0] === 'pr' && args[1] === 'view') {
+        if (args.includes('state,isDraft,labels')) {
+          return JSON.stringify({
+            isDraft: pr.isDraft ?? false,
+            labels: (pr.labels ?? ['fix-review']).map(name => ({ name })),
+            state: pr.state ?? 'OPEN',
+          });
+        }
+
         return args.includes('state,isDraft,title')
           ? JSON.stringify({
               isDraft: pr.isDraft ?? true,
@@ -89,6 +103,7 @@ describe('run', () => {
       [['deploy', '5'], ENV],
       [['plan', '0'], ENV],
       [['plan', '5x'], ENV],
+      [['fix', '5x'], ENV],
       [['plan', '5'], {}],
       [['plan', '5'], { GH_REPO: 'no-slash' }],
     ])('rejects %j with env %j', (args, env) => {
@@ -248,11 +263,35 @@ describe('run', () => {
       quiet(['build', '50'], { pr }, 'the PR is no longer a draft plan PR');
     });
 
+    it('stops a fix quietly when the PR is not open', () => {
+      quiet(['fix', '50'], { pr: { state: 'MERGED' } }, 'the PR is not open');
+    });
+
+    it('stops a fix quietly when the PR is a draft', () => {
+      quiet(['fix', '50'], { pr: { isDraft: true } }, 'the PR is a draft');
+    });
+
+    it('stops a fix quietly when the label is gone', () => {
+      quiet(
+        ['fix', '50'],
+        { pr: { labels: ['hand-back'] } },
+        'the PR no longer has the `fix-review` label'
+      );
+    });
+
     it('reads the issue and the PR as they are now', () => {
       fakeGh({});
       run(['plan', '5'], ENV, gh, write, summary);
       run(['build', '50'], ENV, gh, write, summary);
+      run(['fix', '50'], ENV, gh, write, summary);
 
+      expect(gh).toHaveBeenCalledWith([
+        'pr',
+        'view',
+        '50',
+        '--json',
+        'state,isDraft,labels',
+      ]);
       expect(gh).toHaveBeenCalledWith([
         'issue',
         'view',
@@ -398,6 +437,34 @@ describe('run', () => {
         expect(posted()[0][1]).not.toContain('[Run]');
       }
     );
+  });
+
+  describe('fix', () => {
+    it('goes ahead for an open, ready PR with the label, and says so', () => {
+      fakeGh({});
+
+      expect(run(['fix', '50'], ENV, gh, write, summary)).toBe(0);
+      expect(write).toHaveBeenCalledWith('go=true');
+      expect(vi.mocked(console.log).mock.calls.map(([line]) => line)).toEqual([
+        'PR #50 is open, is not a draft and has the `fix-review` label.',
+        'Go.',
+      ]);
+      expect(summary.mock.calls[0][0]).toMatch(/^### Gate: go \(fix #50\)\n/);
+    });
+
+    // A fix touches code the PR already has; a Spec's blockers decide when it is built, not fixed.
+    it('checks no blocker and comments nothing', () => {
+      fakeGh({
+        blockers: { 7: [{ number: 2, state: 'open' }] },
+        closes: { 50: [7] },
+      });
+      run(['fix', '50'], ENV, gh, write, summary);
+
+      expect(write).toHaveBeenCalledWith('go=true');
+      expect(gh.mock.calls.map(([call]) => call[0])).not.toContain('api');
+      expect(posted()).toHaveLength(0);
+      expect(edited()).toHaveLength(0);
+    });
   });
 
   describe('build', () => {

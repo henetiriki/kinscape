@@ -2,8 +2,8 @@ name: 'Claude: Run (shared)'
 
 # What both agent paths share: a gate that stops a blocked or duplicate run before any model
 # runs, then set up the repo, load the agent files, run Claude, keep its output, and leave a
-# comment if Claude left none. claude-plan.yml and claude-build.yml call this workflow; each
-# decides when to run and what to ask. It never runs on its own.
+# comment if Claude left none. claude-plan.yml, claude-build.yml and claude-fix-review.yml call
+# this workflow; each decides when to run and what to ask. It never runs on its own.
 #
 # The `github` context here is the caller's, so `github.event`, `github.run_id` and the rest are
 # those of the plan or build run.
@@ -39,6 +39,10 @@ on:
         description: 'True on a plan run, where the thread is a Spec that is handed back as blocked if the agent goes quiet.'
         default: false
         type: boolean
+      kind:
+        description: '"fix" on a fix-review run, where the thread is a ready PR that carries the label; empty otherwise (plan decides: a plan or a build).'
+        default: ''
+        type: string
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
@@ -58,7 +62,8 @@ env:
 jobs:
   # Checks that cost no model run (scripts/agent-gate.mts): a plan stops if an open PR already
   # closes the issue or an issue it is "blocked by" is open; a build stops if the Spec its PR
-  # closes is blocked. On a stop it comments why, and `run` is skipped.
+  # closes is blocked; a fix stops if the PR is no longer open, ready and labelled. On a stop it
+  # comments why (a fix and a stale event stop quietly), and `run` is skipped.
   gate:
     # The Actions graph shows this as "<caller job> / Gate".
     name: Gate
@@ -89,7 +94,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
           GH_REPO: ${{ github.repository }}
-          KIND: ${{ inputs.plan && 'plan' || 'build' }}
+          KIND: ${{ inputs.kind == 'fix' && 'fix' || inputs.plan && 'plan' || 'build' }}
           NUMBER: ${{ inputs.thread }}
           # The caller's run (the `github` context here is the caller's), linked in the stop comment.
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -132,14 +137,14 @@ jobs:
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
-      # "Planning"/"Building" comment is deleted when the run ends. Neither is worth failing the run for.
+      # "Planning"/"Building"/"Fixing" comment is deleted when the run ends. Neither is worth failing the run for.
       - name: Show that the run started
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
           GH_REPO: ${{ github.repository }}
           THREAD: ${{ inputs.thread }}
-          VERB: ${{ inputs.plan && 'Planning' || 'Building' }}
+          VERB: ${{ inputs.kind == 'fix' && 'Fixing' || inputs.plan && 'Planning' || 'Building' }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           SPINNER_URL: ${{ github.server_url }}/${{ github.repository }}/raw/main/.github/clauding.gif
         run: |

@@ -482,9 +482,15 @@ export const pageHtml = (): string => {
     if (text.includes('var(')) {
       element.setAttribute(
         'style',
-        text.replace(/var\((--[\w-]+)\)/g, (_match, name: string) =>
-          root.getPropertyValue(name).trim()
-        )
+        text.replace(/var\((--[\w-]+)\)/g, (_match, name: string) => {
+          const value = root.getPropertyValue(name).trim();
+
+          if (value === '') {
+            throw new Error(`${name} has no value on :root`);
+          }
+
+          return value;
+        })
       );
     }
   }
@@ -622,6 +628,10 @@ export const inlineStyles = (): void => {
   const bundle = document.querySelector<HTMLStyleElement>('style[data-bundle]');
 
   if (!bundle?.sheet) {
+    if (document.querySelector('x-import')) {
+      throw new Error('The artboard has <x-import> but no bundle <style>');
+    }
+
     return;
   }
 

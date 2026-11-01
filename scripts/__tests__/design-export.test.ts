@@ -679,13 +679,20 @@ describe('inlineStyles', () => {
     expect(document.querySelector('style')).toBeNull();
   });
 
-  it('does nothing without the stylesheet', () => {
+  it('does nothing without the stylesheet on a page with no <x-import>', () => {
     document.head.innerHTML = '<title>T</title>';
-    document.body.innerHTML = '<x-import><i></i></x-import>';
+    document.body.innerHTML = '<i></i>';
 
     inlineStyles();
 
-    expect(document.body.innerHTML).toBe('<x-import><i></i></x-import>');
+    expect(document.body.innerHTML).toBe('<i></i>');
+  });
+
+  it('throws on <x-import> without the stylesheet', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML = '<x-import><i></i></x-import>';
+
+    expect(inlineStyles).toThrow('<x-import> but no bundle <style>');
   });
 });
 
@@ -701,6 +708,17 @@ describe('pageHtml', () => {
     expect(pageHtml()).toBe(
       '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="margin-top: 8px; width: 40px;">A</p></body></html>\n'
     );
+  });
+
+  it('throws on a var() with no value on :root', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML =
+      '<x-dc><p style="margin-top: var(--gap)">A</p></x-dc>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: () => ' ',
+    } as unknown as CSSStyleDeclaration);
+
+    expect(pageHtml).toThrow('--gap has no value on :root');
   });
 
   it('unwraps <x-import>, keeping a box for the one that places its slot', () => {

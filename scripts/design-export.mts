@@ -614,7 +614,8 @@ export const mountImports = async (): Promise<void> => {
 /**
  * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
  * is dropped from the snapshot, so each rendered element takes the computed value of every
- * property a rule that matches it declares. Custom properties and states (`:hover`) stay out.
+ * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. Custom properties,
+ * transitions, animations and states (`:hover`) stay out.
  * Uses nothing from the module, as `fillTemplate`.
  */
 export const inlineStyles = (): void => {
@@ -636,10 +637,14 @@ export const inlineStyles = (): void => {
           item.matches(selectorText)
         )) {
           for (const name of Array.from(declared)) {
-            if (!name.startsWith('--')) {
+            // A static snapshot has no use for transitions or animations, and their names
+            // (`transition-property: background`) would read as colours.
+            if (!/^(?:--|animation|transition)/.test(name)) {
               element.style.setProperty(
                 name,
-                getComputedStyle(element).getPropertyValue(name)
+                getComputedStyle(element)
+                  .getPropertyValue(name)
+                  .replaceAll('rgba(0, 0, 0, 0)', 'transparent')
               );
             }
           }

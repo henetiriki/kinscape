@@ -663,17 +663,18 @@ describe('mountImports', () => {
 describe('inlineStyles', () => {
   it('writes the computed values of the declared properties onto rendered elements, then drops the stylesheet', () => {
     document.head.innerHTML =
-      '<title>T</title><style data-bundle>@font-face{font-family:f}:root{--x:1px}.a{width:1px;margin-top:0}@media (min-width:1px){.a{padding-top:1px}}.b:hover{height:1px}.c{--y:2px}</style>';
+      '<title>T</title><style data-bundle>@font-face{font-family:f}:root{--x:1px}.a{width:1px;margin-top:0;transition-property:width;border-top-color:red}@media (min-width:1px){.a{padding-top:1px}}.b:hover{height:1px}.c{--y:2px}</style>';
     document.body.innerHTML =
       '<p class="a">out</p><x-import><i class="a"><u class="b"></u></i><s class="c"></s></x-import>';
     vi.spyOn(window, 'getComputedStyle').mockReturnValue({
-      getPropertyValue: () => '5px',
+      getPropertyValue: (name: string) =>
+        name === 'border-top-color' ? 'rgba(0, 0, 0, 0)' : '5px',
     } as unknown as CSSStyleDeclaration);
 
     inlineStyles();
 
     expect(document.body.innerHTML).toBe(
-      '<p class="a">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
+      '<p class="a">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
     );
     expect(document.querySelector('style')).toBeNull();
   });

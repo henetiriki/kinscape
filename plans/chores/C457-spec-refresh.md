@@ -5,7 +5,7 @@
 
 ## Approach
 
-`.github/agent/refresh.md` holds the refresh as #457 words it; "Spec" means all three kinds, as in `docs/building.md`. `agent-unblock.mts` writes `unblocked=[{number, blockers}]` to `$GITHUB_OUTPUT`, only for issues by the owner, a member or a collaborator. A `refresh` job in `claude-unblock.yml` needs `unblock` and runs per issue (matrix, `fail-fast: false`, concurrency `thread-<n>`) on `main`, with `github.token` (`contents: read`, `issues: write`), whose edits start no run. `refresh-settings.json` allows Read, `git grep`, `gh issue view|edit|comment` and `gh pr view|diff`, denying label flags. `claude-plan.yml` loads `refresh.md` and refreshes first.
+`.github/agent/refresh.md` holds the refresh; "Spec" means all three kinds. `agent-unblock.mts` writes `unblocked=[{number, blockers}]` to `$GITHUB_OUTPUT`, only for issues by the owner, a member or a collaborator. A `refresh` job in `claude-unblock.yml` needs `unblock` and runs per issue (matrix, `fail-fast: false`) on `main`, with `github.token` (`contents: read`, `issues: write`). `refresh-settings.json` allows reading and `gh` on issues and PRs, denying label flags.
 
 ## Decisions
 
@@ -47,14 +47,15 @@
 
 ## Proof
 
-| Acceptance check                            | Proven by                                                        |
-| ------------------------------------------- | ---------------------------------------------------------------- |
-| Unblock refreshes; a failure keeps the swap | `agent-unblock.test.ts`; `load-agent-files.test.ts`; fixture run |
-| Path fixed and planned; Drift hands back    | Fixture Specs' runs                                              |
-| Behaviour, checks, Decisions untouched      | Those runs' body history                                         |
-| Coverage, lint, format, words, validate     | CI                                                               |
+| Acceptance check                                                                 | Proven by                                                        |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Unblock refreshes; a failure keeps the swap                                      | `agent-unblock.test.ts`; `load-agent-files.test.ts`; fixture run |
+| Path fixed and planned; Drift hands back; Behaviour, checks, Decisions untouched | Fixture Specs' runs and body history                             |
+| Coverage, lint, format, words, validate                                          | CI                                                               |
 
 ## Deviations
 
-- The settings also allow `git ls-files`.
-- No transcript upload: matrix runs would share an artifact.
+- Settings also allow `git ls-files`; deny title, assignee, milestone, project flags and `git grep -O`.
+- No transcript upload (matrix runs would share an artifact).
+- Concurrency group `refresh-<n>`: a shared `thread-<n>` drops queued runs.
+- Fixture runs happen after merge.

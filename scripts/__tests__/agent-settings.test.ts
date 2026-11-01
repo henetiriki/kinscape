@@ -53,8 +53,8 @@ describe.each([
   );
 });
 
-// The refresh (.github/agent/refresh.md) may edit an issue's body and comment, and nothing else: it
-// reads Specs written outside the team.
+// The refresh (.github/agent/refresh.md) may edit an issue's body and comment; every other change
+// is denied. It reads Specs written outside the team. Which issue it edits can't be limited here.
 describe('refresh-settings.json', () => {
   const { allow, deny } = (
     JSON.parse(
@@ -65,7 +65,21 @@ describe('refresh-settings.json', () => {
     ) as { permissions: { allow: string[]; deny: string[] } }
   ).permissions;
 
-  it('allows reading the repo and the issue, and writing only an issue', () => {
+  // A deny rule, as Claude Code reads one: `*` matches any text, and the rule matches the whole command.
+  const denied = (command: string) =>
+    deny.some(rule => {
+      const glob = rule.match(/^Bash\((.+)\)$/)?.[1];
+
+      return (
+        glob !== undefined &&
+        new RegExp(
+          `^${glob.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replaceAll('*', '.*')}$`,
+          's'
+        ).test(command)
+      );
+    });
+
+  it('allows reading the repo and issues, and editing and commenting on an issue', () => {
     expect(allow).toEqual([
       'Read',
       'Bash(git grep:*)',
@@ -81,13 +95,56 @@ describe('refresh-settings.json', () => {
     );
   });
 
-  // The unblock run must not set a label: only the tech lead starts a plan.
-  it.each(['--add-label', '--remove-label'])('denies %s', flag => {
-    expect(deny).toContain(`Bash(gh issue * ${flag}*)`);
+  // The unblock run must not set a label: only the tech lead starts a plan. Nor may it change an
+  // issue's title, assignee, milestone or project, which `gh issue edit` also takes. The flag may
+  // come before the issue number or be joined to its value with `=`.
+  it.each([
+    'gh issue edit 5 --add-label ready-for-agent',
+    'gh issue edit --add-label ready-for-agent 5',
+    'gh issue edit 5 --add-label=ready-for-agent',
+    'gh issue edit 5 --remove-label blocked',
+    'gh issue edit 5 --title new',
+    'gh issue edit 5 --title=new',
+    'gh issue edit 5 -t new',
+    'gh issue edit 5 --add-assignee someone',
+    'gh issue edit 5 --remove-assignee someone',
+    'gh issue edit 5 --milestone M1',
+    'gh issue edit 5 --remove-milestone',
+    'gh issue edit 5 --add-project P',
+    'gh issue edit 5 --remove-project P',
+  ])('denies: %s', command => {
+    expect(denied(command)).toBe(true);
   });
 
   // The body goes in with --body-file, as rules.md says.
-  it.each(['--body *', '--body=*', '-b *'])('denies %s', flag => {
-    expect(deny).toContain(`Bash(gh issue * ${flag})`);
+  it.each([
+    'gh issue edit 5 --body text',
+    'gh issue edit 5 --body=text',
+    'gh issue edit 5 -b text',
+  ])('denies: %s', command => {
+    expect(denied(command)).toBe(true);
+  });
+
+  // `git grep` can run a command: -O / --open-files-in-pager hands each file to one.
+  it.each([
+    'git grep --open-files-in-pager=sh foo',
+    'git grep -O sh foo',
+    'git grep -Osh foo',
+    'git grep -nOsh foo',
+    'git grep foo -nOsh',
+    "git grep -n --open-files-in-pager 'sh -c x' foo",
+  ])('denies: %s', command => {
+    expect(denied(command)).toBe(true);
+  });
+
+  it.each([
+    "git grep -n 'old/path' -- ':!plans'",
+    "git grep 'OWNER' -- ':!plans'",
+    'git ls-files -co --exclude-standard docs',
+    "gh issue edit 5 --body-file - <<'EOF'\nthe body\nEOF",
+    'gh issue comment 5 --body-file -',
+    'gh issue view 5',
+  ])('does not deny: %s', command => {
+    expect(denied(command)).toBe(false);
   });
 });

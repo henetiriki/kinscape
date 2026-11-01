@@ -269,6 +269,7 @@ describe('the run-claude action', () => {
 // these keep the copies equal and the job on the least it needs.
 describe('the refresh job of claude-unblock.yml', () => {
   type Job = {
+    concurrency?: string;
     env?: Record<string, string>;
     if?: string;
     needs?: string;
@@ -347,6 +348,8 @@ describe('the refresh job of claude-unblock.yml', () => {
     const { refresh, unblock } = jobs();
 
     expect(refresh.needs).toBe('unblock');
+    // Not `thread-<n>`: it would queue with, and replace, the @claude runs on the Spec.
+    expect(refresh.concurrency).toBe('refresh-${{ matrix.spec.number }}');
     expect(refresh.if).toContain('!cancelled()');
     expect(refresh.if).toContain("needs.unblock.outputs.unblocked != '[]'");
     expect(refresh.strategy).toMatchObject({

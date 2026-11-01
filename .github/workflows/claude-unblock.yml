@@ -57,8 +57,9 @@ jobs:
       fail-fast: false
       matrix:
         spec: ${{ fromJSON(needs.unblock.outputs.unblocked) }}
-    # One run per thread at a time, shared with claude.yml and claude-run.yml.
-    concurrency: thread-${{ matrix.spec.number }}
+    # Its own group, not claude.yml's `thread-<n>`: a group keeps one pending job and a newer one
+    # replaces it, so a refresh would drop an @claude reply queued on the Spec, or be dropped by one.
+    concurrency: refresh-${{ matrix.spec.number }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

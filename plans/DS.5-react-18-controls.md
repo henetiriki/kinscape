@@ -6,7 +6,7 @@
 
 ## Approach
 
-`react-18@npm:react@18.3.1` and `react-dom-18@npm:react-dom@18.3.1` join the dev dependencies (Spec D1: A). `vitest.config.mts` gets two `test.projects`: `react-19`, today's suite, and `react-18`, which runs only `lib/design/__tests__/react-18.test.tsx` with `react` and `react-dom` aliased to those packages. The project inlines `@testing-library/react` and `react-dom-18` (`server.deps.inline`) so their own `react` imports take the alias too. `npm test` runs both, with one coverage report. The test spies on `console.error` and `console.warn` and fails if either is called, in a case named `<Control> · <state>`. A control that fails is fixed in its own file, with its existing test passing on 19.
+`react-18@npm:react@18.3.1` and `react-dom-18@npm:react-dom@18.3.1` join the dev dependencies (Spec D1: A). `vitest.config.mts` gets two `test.projects`: `react-19`, today's suite, and `react-18`, which runs only `lib/design/__tests__/react-18.test.tsx` with `react` and `react-dom` aliased to those packages. The project bundles them with the alias (`deps.optimizer`). `npm test` runs both, with one coverage report. The test spies on `console.error` and `console.warn` and fails if either is called, in a case named `<Control> · <state>`. A control that fails is fixed in its own file, with its existing test passing on 19.
 
 ## Decisions
 
@@ -47,7 +47,7 @@ It's used only in `FilterFields`; acceptance check 1 asks for its design kit sta
 
 ## Risks
 
-- **Two Reacts.** If an externalised package resolves `react` itself, hooks break with "Invalid hook call". The step 1 case catches it; if inlining isn't enough, Vite's dependency optimiser (`deps.optimizer`) applies the alias when it bundles them.
+- **Two Reacts.** A package that resolves `react` itself breaks hooks ("Invalid hook call"). The step 1 case catches it.
 - **18.3 deprecation warnings** (`ReactDOMTestUtils.act`) from Testing Library would fail every case. Testing Library 16 uses `React.act` when React has it, as 18.3 does; a warning naming no control is a big departure (rule 6).
 - **A fix changes the look:** the design check catches it.
 
@@ -59,6 +59,12 @@ It's used only in `FilterFields`; acceptance check 1 asks for its design kit sta
 | Main interaction behaves as its test does | `react-18.test.tsx` interaction cases         |
 | Changed controls pass under 19, 100%      | `npm test` (both projects) output in Evidence |
 | Lint, format, words, e2e, design check    | Their output in Evidence                      |
+
+## Deviations
+
+- `package.json` has `overrides` (`react-dom-18` › `react`: `$react`) so `npm ci` accepts the aliased peer.
+- The optimiser needs a small Rolldown plugin to swap `react` for `react-18`.
+- `docs/architecture.md` is trimmed to stay in budget. No control needed a fix.
 
 ## Out of scope
 

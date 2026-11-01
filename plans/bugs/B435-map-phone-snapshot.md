@@ -2,7 +2,7 @@
 
 - **Spec:** #435
 - **Requirement IDs:** None (design kit)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ Bug D3 A puts the smaller fixes in `app/design-kit/`. The Layers button's differ
 - **B.** Change nothing; the PR's Evidence says why it can't match from `app/design-kit/`.
 - **Other:** your own.
 
-Recommended: A, because the boards agree on the drawing and the map's phone screens will use the same icon.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

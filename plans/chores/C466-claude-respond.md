@@ -1,7 +1,7 @@
 # Plan: C466: Rename the Claude: Code workflow to Claude: Respond (claude-respond.yml)
 
 - **Spec:** #466
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

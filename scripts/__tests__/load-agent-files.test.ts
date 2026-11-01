@@ -538,7 +538,8 @@ describe('the callers of the keep-claude-output action', () => {
       'the refresh job of claude-unblock.yml',
       refreshSteps,
       {
-        name_suffix: '-${{ matrix.spec.number }}',
+        // The attempt too: a re-run of a failed job uploads again, and a name can't be used twice.
+        name_suffix: '-${{ matrix.spec.number }}-${{ github.run_attempt }}',
         thread: '${{ matrix.spec.number }}',
       },
     ],

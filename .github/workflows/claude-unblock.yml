@@ -109,11 +109,11 @@ jobs:
             This is an unblock run. It was blocked by: #${{ join(matrix.spec.blockers, ', #') }}.
 
       # The summary, secret scan and upload of Claude's transcript, from a pinned main commit, for the
-      # weekly denial audit. The Spec's number ends the artifact name, as the matrix runs several jobs
-      # in one run, and a leak is commented on that Spec.
+      # weekly denial audit. The Spec's number and the attempt end the artifact name: the matrix runs
+      # several jobs in one run, and a re-run of a failed job uploads again. A leak is commented on that Spec.
       - name: Keep Claude's output
         if: always()
         uses: henetiriki/kinscape/.github/actions/keep-claude-output@ef8ffb12cf0af87b7a89a7fa4fefc83bf1f83226
         with:
-          name_suffix: -${{ matrix.spec.number }}
+          name_suffix: -${{ matrix.spec.number }}-${{ github.run_attempt }}
           thread: ${{ matrix.spec.number }}

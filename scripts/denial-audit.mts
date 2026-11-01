@@ -210,8 +210,9 @@ export const settingsReader =
 
 const OUTPUT_FILE = 'claude-execution-output.json';
 
-// Reads the file of every artifact named claude-execution-output or starting with it. gh extracts
-// one artifact into the folder itself and several into a folder each, so every folder is searched.
+// Reads the file of every artifact named claude-execution-output or starting with it. Where gh
+// puts each one (in the folder itself or in a folder named for the artifact) is not relied on:
+// every folder is searched.
 export const artifactReader =
   (gh: Gh) =>
   (runId: number): string[] => {
@@ -242,6 +243,22 @@ export const artifactReader =
       rmSync(dir, { force: true, recursive: true });
     }
   };
+
+// The runs that have an unexpired summary, from one listing. Most runs have none (every issue
+// close starts an unblock run), and a download per run would fail to say so.
+export const runsWithArtifacts = (gh: Gh, repo: string): Set<number> =>
+  new Set(
+    gh([
+      'api',
+      '--paginate',
+      `repos/${repo}/actions/artifacts?per_page=100`,
+      '--jq',
+      '.artifacts[] | select(.expired | not) | select(.name == "claude-execution-output" or (.name | startswith("claude-execution-output-"))) | .workflow_run.id',
+    ])
+      .split('\n')
+      .filter(Boolean)
+      .map(Number)
+  );
 
 // Most runs of these workflows are skipped (every comment, label and review starts one), so the
 // date is asked of GitHub, not left to a count of the newest runs that skipped ones would fill.
@@ -457,14 +474,17 @@ export const run = (
   }
 
   const since = new Date(now.getTime() - DAYS * 24 * 60 * 60 * 1000);
+  const withArtifacts = runsWithArtifacts(gh, repo);
   const transcripts = WORKFLOWS.flatMap(workflow =>
-    recentRunIds(gh, workflow, since).flatMap(id =>
-      readArtifact(id).flatMap(text => {
-        const transcript = readSummary(text);
+    recentRunIds(gh, workflow, since)
+      .filter(id => withArtifacts.has(id))
+      .flatMap(id =>
+        readArtifact(id).flatMap(text => {
+          const transcript = readSummary(text);
 
-        return transcript ? [{ id, transcript, workflow }] : [];
-      })
-    )
+          return transcript ? [{ id, transcript, workflow }] : [];
+        })
+      )
   );
   const report = summarise(transcripts, settings);
 

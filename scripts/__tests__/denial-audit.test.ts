@@ -696,6 +696,14 @@ describe('run', () => {
         return created;
       }
 
+      // The artifact listing: the runs that have one, a line each.
+      if (args[0] === 'api') {
+        return Object.entries(artifacts)
+          .filter(([, text]) => text !== undefined)
+          .map(([id]) => id)
+          .join('\n');
+      }
+
       if (args[0] === 'run') {
         return JSON.stringify(runs[args[args.indexOf('--workflow') + 1]]);
       }
@@ -899,6 +907,34 @@ describe('run', () => {
     expect(calls('create')[0][1]).toContain(
       '| `Bash: cat` | code-review | review-settings.json: no rule | 2 | $0.00 |'
     );
+  });
+
+  // Most runs have no artifact (every issue close starts an unblock run): one listing says which, so
+  // none is downloaded to find out.
+  it('lists the artifacts once and downloads only the runs that have one', () => {
+    runs['claude-unblock.yml'] = [make(1), make(2), make(3)];
+    runs['claude-plan.yml'] = [make(4)];
+    artifacts = { 2: artifact('cat a'), 4: artifact('cat b') };
+
+    const read = vi.fn((id: number) => [artifacts[id] ?? []].flat());
+
+    run(
+      { gh, now: NOW, readArtifact: read, settings: () => NO_RULES, summary },
+      ENV
+    );
+
+    expect(read.mock.calls.map(([id]) => id)).toEqual([4, 2]);
+    expect(gh.mock.calls.filter(([args]) => args[0] === 'api')).toEqual([
+      [
+        [
+          'api',
+          '--paginate',
+          'repos/owner/repo/actions/artifacts?per_page=100',
+          '--jq',
+          expect.stringContaining('.workflow_run.id'),
+        ],
+      ],
+    ]);
   });
 
   // One refresh run has an artifact per freed Spec (plan C482, D2).

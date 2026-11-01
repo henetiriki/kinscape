@@ -155,6 +155,12 @@ const reviewSteps = () =>
       }
     ).jobs
   ).flatMap(job => job.steps ?? []);
+const refreshSteps = () =>
+  (
+    parse(read('claude-unblock.yml')) as {
+      jobs: Record<string, { steps?: Step[] }>;
+    }
+  ).jobs.refresh.steps ?? [];
 const keepFile = join(root, '.github/actions/keep-claude-output/action.yml');
 const keepAction = () =>
   parse(readFileSync(keepFile, 'utf8')) as {
@@ -528,6 +534,14 @@ describe('the callers of the keep-claude-output action', () => {
   describe.each([
     ['run-claude', runClaudeSteps, { setup_node: 'false', thread: THREAD }],
     ['claude-code-review.yml', reviewSteps, { thread: THREAD }],
+    [
+      'the refresh job of claude-unblock.yml',
+      refreshSteps,
+      {
+        name_suffix: '-${{ matrix.spec.number }}',
+        thread: '${{ matrix.spec.number }}',
+      },
+    ],
   ])('%s', (_, steps, inputs) => {
     it('calls it once, from a pinned main commit, after every run of Claude', () => {
       const calls = keepCall(steps);
@@ -555,11 +569,12 @@ describe('the callers of the keep-claude-output action', () => {
   });
 
   // Pins could drift if one pin PR is delayed, leaving the callers on different code.
-  it('pins it to the same commit in both', () => {
+  it('pins it to the same commit in all three', () => {
     const pin = (steps: () => Step[]) => keepCall(steps)[0].uses?.split('@')[1];
 
     expect(pin(runClaudeSteps) ?? '').toMatch(/^[0-9a-f]{40}$/);
     expect(pin(reviewSteps)).toBe(pin(runClaudeSteps));
+    expect(pin(refreshSteps)).toBe(pin(runClaudeSteps));
   });
 
   // Without pipefail, a failed comment lookup would read as "no comment yet" and post a second one.

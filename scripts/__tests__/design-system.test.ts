@@ -162,6 +162,31 @@ describe('the controls bundle', () => {
     expect(() => checkStyle(css)).not.toThrow();
   });
 
+  it('defines every --next-font-* variable it uses', () => {
+    const css = component('bundle.css');
+    const used = new Set(css.match(/var\((--next-font-[\w-]+)\)/g));
+    const defined = [...css.matchAll(/^\s*(--next-font-[\w-]+):/gm)].map(
+      match => match[1]
+    );
+
+    expect(used.size).toBeGreaterThan(0);
+    expect(
+      [...used].filter(use => !defined.includes(use.slice('var('.length, -1)))
+    ).toEqual([]);
+  });
+
+  it('sets each --next-font-* variable to the DESIGN.md family', () => {
+    const css = component('bundle.css');
+
+    for (const [name, family] of [
+      ['bricolage-grotesque', 'Bricolage Grotesque'],
+      ['public-sans', 'Public Sans'],
+      ['jetbrains-mono', 'JetBrains Mono'],
+    ]) {
+      expect(css).toContain(`--next-font-${name}: '${family}';`);
+    }
+  });
+
   it('declares each control and exports its Props', () => {
     const types = component('index.d.ts');
 

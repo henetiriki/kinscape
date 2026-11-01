@@ -99,10 +99,11 @@ The agent in Actions can't read the canvas.
 
 ## Out of scope
 
-The kit nav; Layers and Filters panels on `/screens` (a later Chore).
+The kit nav; Layers and Filters panels on `/screens`.
 
 ## Deviations
 
 - Two CSS modules: `AddPinPanel.module.css`, `layout.module.css`.
 - `tsconfig.json` now includes `.mts`.
+- `lib/design/__tests__/design.test.ts` counts 52 snapshots.
 - The e2e spec is `.mts`: Playwright loads `.ts` specs as CommonJS, which can't import `design-export.mts`.

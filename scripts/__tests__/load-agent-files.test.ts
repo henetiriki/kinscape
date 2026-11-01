@@ -407,10 +407,11 @@ describe('the plan run', () => {
 // steps once (plans/chores/C481-keep-claude-output.md). A runner's temp directory isn't always
 // /home/runner/work/_temp, so every path starts at runner.temp.
 const KEEP = 'henetiriki/kinscape/.github/actions/keep-claude-output';
+const NODE_STEP = 'Set up Node for the summary';
 const SUMMARY_STEPS = [
   'Clear the summary script folder',
   'Check out the summary script',
-  'Set up Node for the summary',
+  NODE_STEP,
   "Summarise Claude's output",
   'Scan the summary for secrets',
 ];
@@ -432,21 +433,19 @@ describe('the keep-claude-output action', () => {
       "always() && steps.scan.outputs.clean == 'true'"
     );
     expect(uploads[0].with).toEqual({
-      name: '${{ inputs.artifact_name }}',
+      // The review's changes-since step and the denial audit look the artifact up by this name.
+      name: 'claude-execution-output',
       path: SCANNED,
       'retention-days': 7,
     });
   });
 
-  // The review's changes-since step and the denial audit look the artifact up by this name.
-  it('names the artifact claude-execution-output unless told otherwise', () => {
-    expect(keepAction().inputs.artifact_name.default).toBe(
-      'claude-execution-output'
-    );
-  });
+  it('takes the thread the scan comments on, and whether to set up Node', () => {
+    const { inputs } = keepAction();
 
-  it('needs the thread the scan comments on', () => {
-    expect(keepAction().inputs.thread.required).toBe(true);
+    expect(Object.keys(inputs).sort()).toEqual(['setup_node', 'thread']);
+    expect(inputs.thread.required).toBe(true);
+    expect(inputs.setup_node.default).toBe('true');
   });
 
   // A branch or the agent could leave a symlink, file or repo at that path for checkout to follow.
@@ -473,7 +472,10 @@ describe('the keep-claude-output action', () => {
       expect(named(keepSteps(), name), name).toEqual([
         expect.objectContaining({
           'continue-on-error': true,
-          if: 'always()',
+          if:
+            name === NODE_STEP
+              ? "always() && inputs.setup_node == 'true'"
+              : 'always()',
         }),
       ]);
     }
@@ -510,18 +512,22 @@ describe('the callers of the keep-claude-output action', () => {
   const THREAD =
     '${{ github.event.issue.number || github.event.pull_request.number }}';
 
+  const keepCall = (steps: () => Step[]) =>
+    steps().filter(step => step.uses?.includes('keep-claude'));
+
+  // run-claude's callers set up Node in setup-workspace; the review has none, so the action does.
   describe.each([
-    ['run-claude', runClaudeSteps],
-    ['claude-code-review.yml', reviewSteps],
-  ])('%s', (_, steps) => {
+    ['run-claude', runClaudeSteps, { setup_node: 'false', thread: THREAD }],
+    ['claude-code-review.yml', reviewSteps, { thread: THREAD }],
+  ])('%s', (_, steps, inputs) => {
     it('calls it once, from a pinned main commit, after every run of Claude', () => {
-      const calls = steps().filter(step => step.uses?.includes('keep-claude'));
+      const calls = keepCall(steps);
 
       expect(calls).toHaveLength(1);
       expect(own(calls[0].uses)).toBe(KEEP);
       expect(calls[0].if).toBe('always()');
       expect(calls[0]['continue-on-error']).toBeUndefined();
-      expect(calls[0].with).toEqual({ thread: THREAD });
+      expect(calls[0].with).toEqual(inputs);
     });
 
     it('carries no copy of its steps', () => {
@@ -537,6 +543,14 @@ describe('the callers of the keep-claude-output action', () => {
       ).toEqual([]);
       expect(text).not.toContain('claude-summary-script');
     });
+  });
+
+  // Two pins could drift if one pin PR is delayed, leaving the review and the runs on different code.
+  it('pins it to the same commit in both', () => {
+    const pin = (steps: () => Step[]) => keepCall(steps)[0].uses?.split('@')[1];
+
+    expect(pin(runClaudeSteps) ?? '').toMatch(/^[0-9a-f]{40}$/);
+    expect(pin(reviewSteps)).toBe(pin(runClaudeSteps));
   });
 
   // Without pipefail, a failed comment lookup would read as "no comment yet" and post a second one.

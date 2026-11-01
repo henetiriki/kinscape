@@ -21,13 +21,13 @@ No `main` commit has the action until this PR merges, and merges are squashed.
 
 ## Files that change
 
-| File                                            | What                                                                                                                                      |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `.github/actions/keep-claude-output/action.yml` | New                                                                                                                                       |
-| `.github/actions/run-claude/action.yml`         | Calls it                                                                                                                                  |
-| `.github/workflows/claude-code-review.yml`      | Calls it                                                                                                                                  |
-| `scripts/scan-summary.sh`                       | Header names the action                                                                                                                   |
-| `scripts/__tests__/load-agent-files.test.ts`    | Upload and scan tests read the action once; each caller calls it once, pinned, with no copy; the `upload-artifact` pin-equality case goes |
+| File                                            | What                                                                                 |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `.github/actions/keep-claude-output/action.yml` | New                                                                                  |
+| `.github/actions/run-claude/action.yml`         | Calls it                                                                             |
+| `.github/workflows/claude-code-review.yml`      | Calls it                                                                             |
+| `scripts/scan-summary.sh`                       | Header names the action                                                              |
+| `scripts/__tests__/load-agent-files.test.ts`    | Tests read the action once; each caller calls it once, pinned the same, with no copy |
 
 ## Order of work
 
@@ -37,7 +37,6 @@ No `main` commit has the action until this PR merges, and merges are squashed.
 ## Risks
 
 - D1 A: a SHA reachable only from a PR ref might not resolve after merge; the pin PR fixes it.
-- This PR's review won't start (it changes `claude-code-review.yml`).
 
 ## Proof
 
@@ -47,3 +46,7 @@ No `main` commit has the action until this PR merges, and merges are squashed.
 | Upload after clean scan; hit   | Action tests; the scan stub tests          |
 | Live                           | First review and plan run after the pin PR |
 | Checks pass, diagram unchanged | Pasted output                              |
+
+## Deviations
+
+- Dropped `artifact_name`: consumers look it up by name. Added `setup_node` (`run-claude` passes `false`) to keep setup-workspace's Node. Callers pin `dadd94b`.

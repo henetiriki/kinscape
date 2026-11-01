@@ -145,11 +145,12 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
-      # The summary, secret scan and upload of Claude's transcript, from a pinned main commit. With no
-      # summary nothing is uploaded, and the next push is reviewed whole.
+      # The summary, secret scan and upload of Claude's transcript, from a pinned main commit. The
+      # summary and scan never fail the job: with no summary nothing is uploaded, and the next push is
+      # reviewed whole. A failed upload does fail the job.
       - name: Keep Claude's output
         if: always()
-        uses: henetiriki/kinscape/.github/actions/keep-claude-output@08c2dbc2efa0288716bef3e6f7375a9385e6e051
+        uses: henetiriki/kinscape/.github/actions/keep-claude-output@dadd94bb8843efbf288a6d2423dac28f5415e3d4
         with:
           thread: ${{ github.event.issue.number || github.event.pull_request.number }}
 

@@ -56,6 +56,8 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 | Design kit index                                     | [design-kit.jpg](design-kit.jpg)                                                   | [design-kit.html](source/design-kit.html)                                                   |
 | Design kit index, phone                              | [design-kit-phone.jpg](design-kit-phone.jpg)                                       | [design-kit-phone.html](source/design-kit-phone.html)                                       |
 | Design kit boards menu open, phone                   | [design-kit-menu-phone.jpg](design-kit-menu-phone.jpg)                             | [design-kit-menu-phone.html](source/design-kit-menu-phone.html)                             |
+| Add a pin (provisional)                              | [add-pin.jpg](add-pin.jpg)                                                         | [add-pin.html](source/add-pin.html)                                                         |
+| Add a pin, phone (provisional)                       | [add-pin-phone.jpg](add-pin-phone.jpg)                                             | [add-pin-phone.html](source/add-pin-phone.html)                                             |
 
 ![Map, desktop](map-desktop.jpg)
 
@@ -170,7 +172,7 @@ Each component, its `.module.css` and its test live in one folder of `app/compon
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero                          |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
@@ -301,7 +303,7 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 
 A Spec that needs one of these lists it under **Flagged concerns** instead of inventing the UI:
 
-- Adding or editing people, relationships, pins and sources.
+- Adding or editing people, relationships, pins and sources. "Add a pin" in the Screens table is provisional: plain Person and Place fields and no date qualifiers, built at `/screens/add-pin` to prove the export.
 - Clicking inside a contested area: how the popup shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).
 - Person panel, life trail and migration view (EXP-05 to EXP-07).

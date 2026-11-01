@@ -18,7 +18,9 @@ import {
   exportSnapshots,
   fillTemplate,
   finish,
+  inlineStyles,
   linkMap,
+  mountImports,
   pageHtml,
   prepare,
   readCanvasExport,
@@ -49,8 +51,8 @@ describe('the real canvas export', () => {
   const canvas = readCanvasExport('.');
   const names = canvas.snapshots.map(snapshot => snapshot.name).toSorted();
 
-  it('names the 50 snapshots of the Screens table and design/source', () => {
-    expect(names).toHaveLength(50);
+  it('names the 52 snapshots of the Screens table and design/source', () => {
+    expect(names).toHaveLength(52);
     expect(names).toEqual(snapshotNames('.'));
     expect(names).toEqual(
       screenNames(readFileSync('design/DESIGN.md', 'utf8')).toSorted()
@@ -124,6 +126,37 @@ describe('prepare and finish', () => {
       )
     ).toBe(
       '<head>\n<title>T</title>\n<link rel="stylesheet" href="file:///r/$&fonts.css">\n</head><body><img src="file:///r/icon0.svg"><img src="file:///r/icon0.svg"></body>'
+    );
+  });
+
+  it('prepare loads a design system from files: React 18, its CSS as a style and its scripts', () => {
+    const system = {
+      css: '.a { color: $& }',
+      design: 'file:///d/$&/',
+      react: 'file:///r/react.js',
+      reactDom: 'file:///r/react-dom.js',
+    };
+
+    expect(
+      prepare(
+        [
+          '<script src="./support.js"></script>',
+          '<link rel="stylesheet" href="ds/kinscape/tokens.css">',
+          '<link rel="stylesheet" href="ds/kinscape/components/bundle.css">',
+          '<script src="ds/kinscape/components/bundle.js"></script>',
+        ].join(''),
+        '/_blob/i',
+        { ...urls, system }
+      )
+    ).toBe(
+      [
+        `<link rel="stylesheet" href="${urls.fonts}">`,
+        '<link rel="stylesheet" href="file:///d/$&/tokens.css">',
+        '<style data-bundle>.a { color: $& }</style>',
+        '<script src="file:///r/react.js"></script>',
+        '<script src="file:///r/react-dom.js"></script>',
+        '<script src="file:///d/$&/components/bundle.js"></script>',
+      ].join('')
     );
   });
 
@@ -375,6 +408,7 @@ describe('tokenColours and snapshotProblems', () => {
     ['var(', '<i style="color: var(--x)">'],
     ['calc(', '<i style="width: calc(1px + 2px)">'],
     ['<script', '<script>x</script>'],
+    ['x-import', '<x-import></x-import>'],
     ['{{', '<i>{{ x }}</i>'],
     ['_blob', '<img src="/_blob/i">'],
     ['http://', '<a href="http://x.test">'],
@@ -431,6 +465,45 @@ describe('fillTemplate', () => {
     );
   });
 
+  it("keeps each <x-import>'s props as values, with kebab-case names in camelCase", () => {
+    artboard(
+      [
+        '<x-import component-from-global-scope="K.B" variant="primary" default-value="v" aria-label="Go" data-id="a {{ who }}" on-toggle="{{ go }}" options="{{ opts }}" day="{{ n }}" full="{{ yes }}" style="flex: 1">Save {{ who }}</x-import>',
+        '<x-import component-from-global-scope="K.G"><x-import component-from-global-scope="K.I" n="{{ n }}"></x-import></x-import>',
+      ].join('')
+    );
+
+    const go = () => {};
+
+    fillTemplate({
+      props: { go, n: 5, opts: [{ a: 1 }], who: 'Ann', yes: true },
+      state: {},
+    });
+
+    const [first, group, item] = Array.from(
+      document.querySelectorAll('x-import')
+    ) as unknown as {
+      getAttribute: (name: string) => string;
+      props: object;
+      textContent: string;
+    }[];
+
+    expect(first.props).toEqual({
+      'aria-label': 'Go',
+      'data-id': 'a Ann',
+      day: 5,
+      defaultValue: 'v',
+      full: true,
+      onToggle: go,
+      options: [{ a: 1 }],
+      variant: 'primary',
+    });
+    expect(first.getAttribute('options')).toBe('{{ opts }}');
+    expect(first.textContent).toBe('Save Ann');
+    expect(group.props).toEqual({});
+    expect(item.props).toEqual({ n: 5 });
+  });
+
   it('works without prop definitions or a helmet', () => {
     artboard(
       '<p>{{ a }}</p>',
@@ -471,7 +544,193 @@ describe('fillTemplate', () => {
   });
 });
 
+describe('mountImports', () => {
+  type Tree = {
+    children: unknown[];
+    component: (props: Record<string, unknown>) => Node;
+    props: Record<string, unknown>;
+  };
+
+  const draw = (tree: unknown): Node =>
+    typeof tree === 'string'
+      ? document.createTextNode(tree)
+      : (tree as Tree).component({
+          ...(tree as Tree).props,
+          children: (tree as Tree).children.map(draw),
+        });
+
+  const box = (tag: string, props: Record<string, unknown>) => {
+    const element = document.createElement(tag);
+
+    if (typeof props.variant === 'string') {
+      element.dataset.variant = props.variant;
+    }
+
+    element.append(...(props.children as Node[]));
+
+    return element;
+  };
+
+  const board = (body: string) => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML = `<x-dc>${body}</x-dc><script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return {}; } }</script>`;
+    fillTemplate({ props: {}, state: {} });
+  };
+
+  const install = () =>
+    Object.assign(window, {
+      KinScape: {
+        Button: (props: Record<string, unknown>) => box('button', props),
+        Group: Object.assign(
+          (props: Record<string, unknown>) => box('ul', props),
+          { Item: (props: Record<string, unknown>) => box('li', props) }
+        ),
+      },
+      React: {
+        createElement: (
+          component: unknown,
+          props: unknown,
+          ...children: unknown[]
+        ) => ({ children, component, props }),
+      },
+      ReactDOM: {
+        createRoot: (container: Element) => ({
+          render: (tree: unknown) => container.replaceChildren(draw(tree)),
+        }),
+        flushSync: (run: () => void) => run(),
+      },
+    });
+
+  afterEach(() => {
+    for (const name of ['KinScape', 'React', 'ReactDOM']) {
+      delete (window as unknown as Record<string, unknown>)[name];
+    }
+  });
+
+  it('renders each top-level <x-import> with its props and children, nested ones too', async () => {
+    install();
+    board(
+      [
+        '<x-import component-from-global-scope="KinScape.Button" variant="primary">Save pin</x-import>',
+        '<x-import component-from-global-scope="KinScape.Group">\n  <x-import component-from-global-scope="KinScape.Group.Item">One</x-import>\n</x-import>',
+      ].join('')
+    );
+
+    await mountImports();
+
+    expect(document.querySelector('button')?.outerHTML).toBe(
+      '<button data-variant="primary">Save pin</button>'
+    );
+    expect(document.querySelector('ul')?.outerHTML).toBe(
+      '<ul><li>One</li></ul>'
+    );
+    expect(document.querySelectorAll('li')).toHaveLength(1);
+  });
+
+  it('does nothing on a board with no <x-import>, needing no React', async () => {
+    board('<p>x</p>');
+
+    await expect(mountImports()).resolves.toBeUndefined();
+  });
+
+  it('rejects when React 18 is not loaded', async () => {
+    board(
+      '<x-import component-from-global-scope="KinScape.Button"></x-import>'
+    );
+
+    await expect(mountImports()).rejects.toThrow('React 18 is not loaded');
+  });
+
+  it('rejects a component the page does not define', async () => {
+    install();
+    board('<x-import component-from-global-scope="Nope.Deep"></x-import>');
+
+    await expect(mountImports()).rejects.toThrow('No component Nope.Deep');
+  });
+
+  it('rejects markup inside an <x-import>', async () => {
+    install();
+    board(
+      '<x-import component-from-global-scope="KinScape.Button"><b>x</b></x-import>'
+    );
+
+    await expect(mountImports()).rejects.toThrow(
+      'Unsupported <b> inside <x-import>'
+    );
+  });
+});
+
+describe('inlineStyles', () => {
+  it('writes the computed values of the declared properties onto every element a rule matches, then drops the stylesheet', () => {
+    document.head.innerHTML =
+      '<title>T</title><style data-bundle>@font-face{font-family:f}:root{--x:1px}.a{width:1px;margin-top:0;transition-property:width;border-top-color:red}@media (min-width:1px){.a{padding-top:1px}}.b:hover{height:1px}.c{--y:2px}</style>';
+    document.body.innerHTML =
+      '<p class="a">out</p><x-import><i class="a"><u class="b"></u></i><s class="c"></s></x-import>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: (name: string) =>
+        name === 'border-top-color' ? 'rgba(0, 0, 0, 0)' : '5px',
+    } as unknown as CSSStyleDeclaration);
+
+    inlineStyles();
+
+    expect(document.body.innerHTML).toBe(
+      '<p class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
+    );
+    expect(document.querySelector('style')).toBeNull();
+  });
+
+  it('does nothing without the stylesheet on a page with no <x-import>', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML = '<i></i>';
+
+    inlineStyles();
+
+    expect(document.body.innerHTML).toBe('<i></i>');
+  });
+
+  it('throws on <x-import> without the stylesheet', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML = '<x-import><i></i></x-import>';
+
+    expect(inlineStyles).toThrow('<x-import> but no bundle <style>');
+  });
+});
+
 describe('pageHtml', () => {
+  it("writes var() in style attributes out as the root's values, then resolves calc()", () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML =
+      '<x-dc><p style="margin-top: var(--gap); width: calc(var(--gap) + 32px)">A</p></x-dc>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: (name: string) => (name === '--gap' ? ' 8px ' : '40px'),
+    } as unknown as CSSStyleDeclaration);
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><p style="margin-top: 8px; width: 40px;">A</p></body></html>\n'
+    );
+  });
+
+  it('throws on a var() with no value on :root', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML =
+      '<x-dc><p style="margin-top: var(--gap)">A</p></x-dc>';
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: () => ' ',
+    } as unknown as CSSStyleDeclaration);
+
+    expect(pageHtml).toThrow('--gap has no value on :root');
+  });
+
+  it('unwraps <x-import>, keeping a box for the one that places its slot', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML =
+      '<x-dc><x-import component-from-global-scope="K.B"><b>A</b></x-import><x-import style="width: 5px"><i>B</i></x-import></x-dc>';
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><b>A</b><div style="width: 5px;"><i>B</i></div></body></html>\n'
+    );
+  });
+
   it('strips scripts and links, unwraps x-dc, resolves calc() and loads fonts.css', () => {
     document.head.innerHTML =
       '<title>T</title><link rel="stylesheet" href="x.css"><script>1</script>';
@@ -570,5 +829,39 @@ describe('exportSnapshots', () => {
       'A.dc.html → a.html: #123456 is not in design/tokens.json'
     );
     expect(existsSync(join(root, 'design/source'))).toBe(false);
+  });
+
+  it('loads the design system from files for a board that uses <x-import>', async () => {
+    setup();
+    put(
+      'design/canvas/project/A.dc.html',
+      '<link rel="stylesheet" href="ds/kinscape/components/bundle.css"><script src="ds/kinscape/components/bundle.js"></script><x-import component-from-global-scope="K.B"></x-import>'
+    );
+    put('design/canvas/project/ds/kinscape/components/bundle.css', '.a{}');
+    put(
+      'design/canvas/project/ds/kinscape/tokens.css',
+      '@font-face{font-family:f;src:url(f.woff2)}.t{color:red}'
+    );
+
+    const seen = vi.fn();
+    const url = (path: string) => pathToFileURL(resolve(root, path)).href;
+
+    await exportSnapshots(root, ['a'], {
+      render: async html => {
+        seen(html);
+
+        return page('<p style="color: #18211b">A</p>');
+      },
+    });
+
+    expect(seen).toHaveBeenCalledWith(
+      [
+        '<style data-bundle>.t{color:red}\n.a{}</style>',
+        `<script src="${url('node_modules/react-18/umd/react.production.min.js')}"></script>`,
+        `<script src="${url('node_modules/react-dom-18/umd/react-dom.production.min.js')}"></script>`,
+        `<script src="${url('design/canvas/project/ds/kinscape')}/components/bundle.js"></script>`,
+        '<x-import component-from-global-scope="K.B"></x-import>',
+      ].join('')
+    );
   });
 });

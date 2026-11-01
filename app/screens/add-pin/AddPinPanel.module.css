@@ -1,0 +1,54 @@
+/* The panel fills the slot the Stage gives it: a title, a body that scrolls, the actions last. */
+.panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.head {
+  padding: var(--space-20) var(--space-20) var(--space-16);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-20) var(--space-16);
+}
+
+.date {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-20) var(--space-20);
+}
+
+.form[data-form='phone'] .head {
+  padding-inline: var(--size-gutter-phone);
+}
+
+.form[data-form='phone'] .body {
+  padding-inline: var(--size-gutter-phone);
+}
+
+.form[data-form='phone'] .actions {
+  padding: var(--space-12) var(--size-gutter-phone) var(--space-20);
+}

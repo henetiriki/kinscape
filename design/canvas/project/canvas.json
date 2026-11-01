@@ -432,6 +432,22 @@
       "h": 4784,
       "title": "Style guide 08 — Map furniture, phone (part 2 of 2)",
       "page": "style-guide"
+    },
+    "Add-pin.dc.html": {
+      "x": 0,
+      "y": 1020,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — desktop",
+      "page": "map"
+    },
+    "Add-pin-phone.dc.html": {
+      "x": 1520,
+      "y": 1020,
+      "w": 390,
+      "h": 844,
+      "title": "Add a pin — phone",
+      "page": "map"
     }
   },
   "order": [
@@ -443,6 +459,8 @@
     "Map-phone-collapsed.dc.html",
     "Map-phone-states.dc.html",
     "Map-phone-filters.dc.html",
+    "Add-pin.dc.html",
+    "Add-pin-phone.dc.html",
     "Map-loading.dc.html",
     "Map-phone-loading.dc.html",
     "Map-empty-tree.dc.html",

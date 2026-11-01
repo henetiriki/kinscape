@@ -1,0 +1,6 @@
+/* The window, in the colour behind the map's furniture; the design check ignores the map itself. */
+.screen {
+  background: var(--surface-2);
+  height: 100dvh;
+  width: 100vw;
+}

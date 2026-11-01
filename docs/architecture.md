@@ -4,22 +4,22 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 
 ## Where does X go
 
-| Change                          | Put it in                                                                                                |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| A screen or route               | `app/<route>/page.tsx`: composes components, no CSS of its own (dev-only `app/design-kit` excepted)      |
-| Shared UI                       | `app/components/<role>/`: `foundation`, `actions`, `forms`, `feedback`, `overlays`                       |
-| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                       |
-| UI the kit and features share   | `lib/ui/` (`EventGlyph`, `hatch`, Event types)                                                           |
-| A feature's UI and engine       | `features/<name>/`                                                                                       |
-| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`            |
-| Pure logic, no I/O              | `lib/domain/`, with tests in `__tests__/`                                                                |
-| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                           |
-| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is `design/tokens.mts`                             |
-| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                      |
-| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                          |
-| A tool, check or CI helper      | `scripts/`, with its test beside it                                                                      |
-| A browser test                  | `e2e/`                                                                                                   |
-| A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type` |
+| Change                          | Put it in                                                                                                          |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| A screen or route               | `app/<route>/page.tsx`: composes components, no CSS of its own (dev-only `app/design-kit`, `app/screens` excepted) |
+| Shared UI                       | `app/components/<role>/`: `foundation`, `actions`, `forms`, `feedback`, `overlays`                                 |
+| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                                 |
+| UI the kit and features share   | `lib/ui/` (`EventGlyph`, `hatch`, Event types)                                                                     |
+| A feature's UI and engine       | `features/<name>/`                                                                                                 |
+| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`                      |
+| Pure logic, no I/O              | `lib/domain/`, with tests in `__tests__/`                                                                          |
+| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                                     |
+| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is `design/tokens.mts`                                       |
+| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                                |
+| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                                    |
+| A tool, check or CI helper      | `scripts/`, with its test beside it                                                                                |
+| A browser test                  | `e2e/`                                                                                                             |
+| A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`           |
 
 Import repo paths through `@ks/`; relative imports only in Node-loaded files. Node loads every `.mts` and `.mjs`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through an alias there.
 
@@ -39,14 +39,14 @@ Import repo paths through `@ks/`; relative imports only in Node-loaded files. No
 | **Map layers.** A `Layer` holds id, label, description, sources, drawing layers and `filters(day)`. `visible[id]` is on unless `false`; one panel row per layer; `MapView` names none.                                                                | `features/map/types.ts`, `layers/`                                                                    | `features/map/__tests__/layers.test.ts` (`'use client'` on each file)                  |
 | **Reference data is files, validated.** `loadAppData` throws on bad data, which stops the build; `/data/polities` is built once at deploy.                                                                                                            | `data/`, `server/boundaries/app-data.ts`, `app/data/polities/route.ts`                                | `npm run validate:boundaries` in CI                                                    |
 | **Schema first.** A Zod schema is the parser; the type is derived from it in `types.ts`.                                                                                                                                                              | `lib/domain/boundaries/schemas.mts`, `types.ts`, `server/boundaries/load.mts`                         | `npm run typecheck`; `server/boundaries/__tests__/load.test.ts`                        |
-| **Living style guide.** `/design-kit` shows every component and 404s in production; `design/screens.json` pairs built screens with snapshots.                                                                                                         | `app/design-kit/`, `e2e/design-check.spec.ts`                                                         | `npm run design:check`; `/match-design`                                                |
+| **Living style guide.** `/design-kit` shows components, `/screens` built screens; 404 in production; `design/screens.json` pairs screens with snapshots.                                                                                              | `app/design-kit/`, `app/screens/`, `e2e/design-check.spec.ts`                                         | `npm run design:check`; `/match-design`                                                |
 | **Traceability.** Tests carry `// MAP-03` style tags; plans and PRs cite IDs; code uses the Key concepts terms.                                                                                                                                       | `docs/requirements.md`, `plans/`                                                                      | Review                                                                                 |
 
 ## Enforcement
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, `@ks/` imports only, stylesheets last, type imports on their own `import type` line.
 - **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
-- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import Node built-ins (a bare name counts unless `package.json` lists a package of that name) or `maplibre-gl`. `features/` holds only feature folders; outside code imports a feature only through `index.ts`. Tests, `app/design-kit`, `scripts`, `e2e`, `lib/design` tooling are outside the map, and mapped code may not import them.
+- **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import Node built-ins (a bare name counts unless `package.json` lists a package of that name) or `maplibre-gl`. `features/` holds only feature folders; outside code imports a feature only through `index.ts`. Tests, `app/design-kit`, `app/screens`, `scripts`, `e2e`, `lib/design` tooling are outside the map; mapped code may not import them.
   | Layer             | Holds                                  | May import                                                                                   |
   | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
   | `design`          | `design/`                              | nothing                                                                                      |

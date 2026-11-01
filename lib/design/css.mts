@@ -15,11 +15,17 @@ export const cssName = (path: string[]): string =>
 export const fontVariable = (family: string): string =>
   `--next-font-${family.toLowerCase().replaceAll(' ', '-')}`;
 
-const fontStack = (stack: string): string => {
-  const [first, ...rest] = stack.split(',').map(part => part.trim());
-  const family = first.replaceAll("'", '');
+/** The first family of a font stack, without quotes: `'Public Sans', sans-serif` gives `Public Sans`. */
+export const familyName = (stack: string): string =>
+  stack.split(',')[0].replaceAll("'", '').trim();
 
-  return [`var(${fontVariable(family)})`, ...rest].join(', ');
+const fontStack = (stack: string): string => {
+  const rest = stack
+    .split(',')
+    .slice(1)
+    .map(part => part.trim());
+
+  return [`var(${fontVariable(familyName(stack))})`, ...rest].join(', ');
 };
 
 const cssValue = (path: string[], value: string): string => {

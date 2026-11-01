@@ -54,6 +54,10 @@ The Bug says the state labels set no font. They have the `small` class, and the 
 4. Run lint, `format:check`, `words`, the tests, `validate:boundaries` and `e2e`. Push.
 5. Under D1 A, ask the tech lead in the PR to publish, refresh the canvas and add the screenshots.
 
+## Deviations
+
+- `fontNames` lists each family once, not one line per `font` token; `familyName` moved to `lib/design/css.mts` and is shared with `system.mts` and `fontStack`.
+
 ## Risks
 
 - **Publish order:** an install copied before the publish carries the old `bundle.css`. The refresh checks each file's hash against `npm run design-system`.
@@ -63,7 +67,7 @@ The Bug says the state labels set no font. They have the `small` class, and the 
 | Acceptance check                                          | Proven by                                           |
 | --------------------------------------------------------- | --------------------------------------------------- |
 | `bundle.css` defines every `--next-font-*` it uses        | `design-system.test.ts`                             |
-| Each variable names the DESIGN.md family                  | `bundle.test.ts`                                    |
+| Each variable names the DESIGN.md family                  | `design-system.test.ts` (reads the real tokens)     |
 | Cards in the design system and canvas use the three fonts | Button card screenshots from both, in the PR (D1 A) |
 | Lint, tests (100%), validator and e2e pass                | Their output in the PR                              |
 

@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path';
 import type { Tree } from '../../design/types.ts';
 import type { Control } from './types.ts';
 
-import { fontVariable } from './css.mts';
+import { familyName, fontVariable } from './css.mts';
 
 const MB = 1024 * 1024;
 const IMPORT = /^import [\s\S]*?from '([^']+)';\n?/gm;
@@ -37,7 +37,7 @@ export const CONTROLS: Control[] = [
  */
 export const fontNames = (tokens: Tree): string => {
   const families = Object.values((tokens.font ?? {}) as Tree).map(stack =>
-    String(stack).split(',')[0].trim().replaceAll("'", '')
+    familyName(String(stack))
   );
 
   return [

@@ -11,7 +11,7 @@ import type {
 
 import { isTree, REFERENCE } from '../../design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from './bundle.mts';
-import { cssName } from './css.mts';
+import { cssName, familyName } from './css.mts';
 
 /** The `DESIGN.md` sections the README holds, in this order. */
 export const README_SECTIONS = [
@@ -95,9 +95,6 @@ const groupFor = (tokens: Tree, notes: Tree, key: string): SystemGroup => {
 
 const slug = (family: string): string =>
   family.toLowerCase().replaceAll(' ', '-');
-
-const familyName = (stack: string): string =>
-  stack.split(',')[0].replaceAll("'", '').trim();
 
 /** The font files `app/layout.tsx` loads, from the `path`, `style` and `weight` literals of its `src` lists. */
 export const fontFiles = (layout: string): SystemFile[] =>

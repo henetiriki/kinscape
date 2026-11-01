@@ -12,7 +12,7 @@ import {
   prepare,
   snapshotProblems,
   tokenColours,
-} from '@ks/scripts/design-export.mts';
+} from '../scripts/design-export.mts';
 
 // DS.8: a board that uses the design system exports as rendered HTML with every value written out.
 

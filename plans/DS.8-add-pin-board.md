@@ -40,7 +40,7 @@ Every `/design-kit` page gets a 61px banner; the boards have none.
 
 jsdom resolves no `var()` and computes no cascade; the `test` job has no browser.
 
-- **A.** `e2e/design-export.spec.ts` exports the test board in Chromium with the real bundle; jsdom unit tests cover the new functions' branches.
+- **A.** `e2e/design-export.spec.mts` exports the test board in Chromium with the real bundle; jsdom unit tests cover the new functions' branches.
 - **B.** Vitest launches Chromium; the `test` job must install it (a code-owner workflow change).
 - **Other:** your own.
 
@@ -70,7 +70,7 @@ The agent in Actions can't read the canvas.
 | -------------------------------------------------------------- | ------------- | ------------------------------------------------------------------ |
 | `scripts/design-export.mts`                                    | changed       | `prepare`, `mountImports`, `inlineStyles`, `pageHtml`, `FORBIDDEN` |
 | `scripts/__tests__/design-export.test.ts`                      | changed       | New functions; 50 → 52 snapshots                                   |
-| `e2e/design-export.spec.ts`                                    | new           | The test board (D2)                                                |
+| `e2e/design-export.spec.mts`                                   | new           | The test board (D2)                                                |
 | `app/screens/layout.tsx`                                       | new           | 404 in production                                                  |
 | `app/screens/add-pin/page.tsx`, `AddPinPanel.tsx`, `__tests__` | new           | The page                                                           |
 | `features/map/index.ts`                                        | changed       | Export `Stage`, `DateField`                                        |
@@ -87,20 +87,20 @@ The agent in Actions can't read the canvas.
 4. **Page** (D3), `screens.json`, doc rows; `/match-design` for both.
 5. The checks in `AGENTS.md`.
 
-## Risks
-
-- If a board sets props from its script in a way the exporter can't replay, stop (rule 6).
-
 ## Proof
 
 | Acceptance check                      | Proven by                                                                   |
 | ------------------------------------- | --------------------------------------------------------------------------- |
 | Save pin shows as `KinScape.Button`   | Tech lead's screenshot                                                      |
 | Snapshots clean; others unchanged     | `design:export` output; "matches committed snapshots" test; `e2e` re-export |
-| Test board exports as rendered HTML   | `e2e/design-export.spec.ts`                                                 |
+| Test board exports as rendered HTML   | `e2e/design-export.spec.mts`                                                |
 | `/screens/add-pin` passes, both sizes | `npm run design:check -- -g "design: add-pin"`                              |
 | Lint, `format:check`, `words`, tests  | Output pasted in the PR                                                     |
 
 ## Out of scope
 
 The kit nav; Layers and Filters panels on `/screens` (a later Chore).
+
+## Deviations
+
+- The e2e spec is `.mts`: Playwright loads `.ts` specs as CommonJS, which can't import `design-export.mts`.

@@ -250,4 +250,4 @@ jobs:
       contents: read
     steps:
       - name: Write the result
-        uses: henetiriki/kinscape/.github/actions/run-summary@48a0be9d9003af15eb5eef513e79fa73715c4210
+        uses: henetiriki/kinscape/.github/actions/run-summary@c7cfcaa85fe511b5581b8695449fb1d804e02ca0

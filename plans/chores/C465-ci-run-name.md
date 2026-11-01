@@ -1,7 +1,7 @@
 # Plan: C465: Name CI runs 'CI: <PR title>' or 'CI: main'
 
 - **Spec:** #465
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

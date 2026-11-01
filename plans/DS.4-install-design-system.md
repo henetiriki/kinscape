@@ -39,7 +39,7 @@ The file tools refuse the old canvas (`1MyZ…`): someone outside the organizati
 | `.prettierignore`, `eslint.config.mjs`, `tsconfig.json` | Changed       | D1                                                                  |
 | `design/DESIGN.md`                                      | Changed       | The new link; Screens: refreshing, updating the install, handoff    |
 | `docs/how-we-work.md`                                   | Changed       | The Design row: designed on the canvas with the design system       |
-| `AGENTS.md`                                             | Changed       | A person refreshes `design/canvas/` by the documented step          |
+| `AGENTS.md`                                             | Changed       | A person, or an agent they ask, refreshes `design/canvas/`          |
 
 ## Order of work
 

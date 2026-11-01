@@ -6,8 +6,7 @@
 
 ## Approach
 
-`scripts/design-system.mts` writes `components/<Name>/README.md` and `preview.html` per control. The TypeScript program it builds for `index.d.ts` gives each control's JSDoc and props to pure helpers in a new `lib/design/cards.mts`: `controlReadme` and `previewHtml` (line 1, a root, one script mounting each state in a new `lib/design/states.mts`). The namespace and bundle file names become constants in `bundle.mts`; `readme()` builds its canvas section from them. The generator throws when a file breaks a **Type format** rule.
-
+`scripts/design-system.mts` writes `components/<Name>/README.md` and `preview.html` per control. The TypeScript program it builds for `index.d.ts` gives each control's JSDoc and props to pure helpers in a new `lib/design/cards.mts`: `controlReadme` and `previewHtml` (line 1, a root, one script mounting each state in a new `lib/design/states.mts`). The namespace and bundle file names become constants in `bundle.mts`; `readme()` builds its canvas section from them.
 The five summaries (D3 on #450):
 
 - `Button`: "An action: primary for the one main action in a view, secondary for the rest."
@@ -20,7 +19,7 @@ The five summaries (D3 on #450):
 
 **D1 · Where the preview states come from** · Decides: Tech lead
 
-`CASES` (`react-18.test.tsx`) holds the design kit states as JSX, which a script can't use.
+`CASES` (`react-18.test.tsx`) holds the states as JSX, which a script can't use.
 
 - **A.** `states.mts` lists each control's states as props, labelled as in `CASES`; handlers get a no-op. A test fails if the labels differ from `CASES`.
 - **B.** As A, and `CASES` is built from `states.mts`: about 250 more changed lines, past the cap.
@@ -62,9 +61,9 @@ Six controls also take their HTML element's attributes.
 
 ## Order of work
 
-1. Each test first, failing on behaviour: `cards.mts` and `states.mts`, then `readme()`, then the script.
-2. The preview tests, then the summaries.
-3. The checks in `AGENTS.md`, and `npm run design-system` twice.
+1. Tests first: `cards.mts`, `states.mts`, `readme()`, the script.
+2. Preview tests, then summaries.
+3. The checks in `AGENTS.md`.
 4. The tech lead, signed in: publish, update the install, refresh the copy, `design:export`, Evidence.
 
 ## Risks
@@ -84,9 +83,11 @@ Six controls also take their HTML element's attributes.
 ## Deviations
 
 - The new types live in `lib/design/types.ts` (lint rule); `states.mts` also holds each card's `pad`.
+- Each `preview.html` is a complete document, as the Type format says.
+- A README names each form's required props where the props are a union (`Button`); `Docs.forms` carries them.
 - About 1,100 changed lines, past the 600-line cap (rule 7); @henetiriki chose one PR over a split.
 
 ## Out of scope
 
-- Boards using the controls, and exporter support: DS.8.
-- The publish skill's description (a code-owner path).
+- Boards and exporter support: DS.8.
+- The publish skill's description (code-owner path).

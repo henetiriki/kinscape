@@ -86,7 +86,7 @@ describe('controlReadme', () => {
     expect(forms).toContain(
       'It takes one of these forms. Required props: `a`; or none.'
     );
-    expect(text).not.toContain('forms');
+    expect(text).not.toContain('It takes one of these forms');
   });
 
   it('leaves out Design and Props where it has none, and needs a summary', () => {

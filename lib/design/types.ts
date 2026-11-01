@@ -15,8 +15,10 @@ export type Card = {
 /** A shared control: its name and source file. */
 export type Control = { name: string; path: string };
 
-/** What the TypeScript program says of a control. `rest`: it also takes its HTML element's attributes. */
-/** `forms` lists the required props of each form of a control whose props are a union. */
+/**
+ * What the TypeScript program says of a control. `rest`: it also takes its HTML element's
+ * attributes. `forms` lists the required props of each form of a control whose props are a union.
+ */
 export type Docs = {
   forms: string[][];
   props: Prop[];

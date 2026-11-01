@@ -84,8 +84,9 @@ Six controls also take their HTML element's attributes.
 
 - The new types live in `lib/design/types.ts` (lint rule); `states.mts` also holds each card's `pad`.
 - Each `preview.html` is a complete document, as the Type format says.
-- A README names each form's required props where the props are a union (`Button`); `Docs.forms` carries them.
-- About 1,100 changed lines, past the 600-line cap (rule 7); @henetiriki chose one PR over a split.
+- A README names each form's required props for a union (`Button`); `Docs.forms` carries them.
+- Coverage excludes `design/canvas/**` (the published `bundle.js`, which no test imports).
+- About 1,100 lines, past the 600-line cap (rule 7); @henetiriki chose one PR.
 
 ## Out of scope
 

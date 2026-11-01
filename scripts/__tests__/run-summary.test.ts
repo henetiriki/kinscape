@@ -18,6 +18,7 @@ const transcript = (extra: Partial<Transcript> = {}): Transcript => ({
   finalText: 'I opened PR #248.',
   model: 'claude-opus-5-5',
   outcome: 'success',
+  stripped: 0,
   tools: { 'Bash:git': 5, Read: 32, Write: 1 },
   turns: 80,
   ...extra,

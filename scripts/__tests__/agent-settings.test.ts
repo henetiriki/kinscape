@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -165,5 +166,118 @@ describe('refresh-settings.json', () => {
     'gh issue view 5',
   ])('does not deny: %s', command => {
     expect(denied(command)).toBe(false);
+  });
+});
+
+// The Bash hook (plan C480): a leading `cd` into the workspace is cut, and the shell commands
+// rules.md warns against are denied with the alternative. The build and the review carry the same
+// hook, so neither gets other behaviour.
+describe('the Bash hook', () => {
+  const settingsOf = (file: string) =>
+    JSON.parse(
+      readFileSync(join(process.cwd(), '.github/agent', file), 'utf8')
+    ) as {
+      hooks?: {
+        PreToolUse?: {
+          hooks: { command: string; type: string }[];
+          matcher: string;
+        }[];
+      };
+    };
+
+  const cwd = '/work/kin.x';
+
+  // Runs the hook as Claude Code does: through the shell, with the call as JSON on stdin. No output
+  // means it leaves the call to the allowlist.
+  const hook = (command: string, file = 'settings.json') => {
+    const entry = settingsOf(file).hooks?.PreToolUse?.find(
+      ({ matcher }) => matcher === 'Bash'
+    );
+    const output = execFileSync('bash', ['-c', entry?.hooks[0].command ?? ''], {
+      encoding: 'utf8',
+      input: JSON.stringify({ cwd, tool_input: { command } }),
+    }).trim();
+
+    return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
+  };
+
+  it('is the same in settings.json and review-settings.json', () => {
+    const { hooks } = settingsOf('settings.json');
+
+    expect(hooks?.PreToolUse).toHaveLength(1);
+    expect(settingsOf('review-settings.json').hooks).toEqual(hooks);
+  });
+
+  // The rest goes on to the allowlist, so there is no permissionDecision; the marker tells the agent.
+  it.each([
+    [`cd ${cwd}; gh pr view 1`, 'gh pr view 1'],
+    [`cd ${cwd} && gh pr view 1`, 'gh pr view 1'],
+    [`  cd "${cwd}"  ;git status`, 'git status'],
+    [
+      `cd ${cwd} && gh issue comment 5 --body-file - <<'EOF'\ncat x\ncd /y\nEOF`,
+      "gh issue comment 5 --body-file - <<'EOF'\ncat x\ncd /y\nEOF",
+    ],
+  ])('cuts the leading cd of %j', (command, rest) => {
+    const output = hook(command);
+
+    expect(output.updatedInput.command).toBe(rest);
+    expect(output.additionalContext).toContain('Dropped a leading cd');
+    expect(output.permissionDecision).toBeUndefined();
+  });
+
+  it.each([
+    ['cd app; ls', 'give paths'],
+    [`cd ${cwd}`, 'give paths'],
+    ['cd /work/kinZx && gh pr view 1', 'give paths'],
+    ['ls && cd app', 'give paths'],
+    ['cat x', 'Read'],
+    ['git status; cat x', 'Read'],
+    ['false || cat x', 'Read'],
+    ['(cat x)', 'Read'],
+    ['cat < x', 'Read'],
+    ['grep -rn foo src', 'git grep'],
+    ['head -5 x', 'Read'],
+    ['ls docs', 'git ls-files'],
+    ['sed -n 1,5p x', 'Edit'],
+    ['for f in a b; do ls $f; done', 'one command'],
+    ['npx prettier x', 'npm run format'],
+    ['python3 x.py', 'npm run format'],
+    ['node -e "1"', 'npm run format'],
+    // Cutting the cd does not excuse what follows it.
+    [`cd ${cwd}; cat x`, 'Read'],
+  ])('denies %j, naming the alternative', (command, alternative) => {
+    const output = hook(command);
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(output.permissionDecisionReason).toContain(alternative);
+    expect(output.updatedInput).toBeUndefined();
+  });
+
+  // Names inside quotes, arguments and a heredoc's text are not commands.
+  it.each([
+    'gh pr view 1',
+    "git grep -n 'cat' -- ':!plans'",
+    'git commit -m "fix; cat x"',
+    "gh issue comment 5 --body-file - <<'EOF'\ncd /y\ncat x\nEOF",
+    // Claude Code's usual commit form: the `cat` reads the heredoc, not a file.
+    'git commit -m "$(cat <<\'EOF\'\nfix\nEOF\n)"',
+    'git ls-files -co docs',
+    // A filter on a command's output: Read, git grep and git ls-files cannot replace it.
+    'gh pr diff 1 | head -50',
+    'gh pr view 1 | grep x',
+    'gh pr view 1 | cat -n',
+    'node scripts/run.mts',
+    'npm run format',
+    'echo concatenate',
+    '',
+  ])('leaves %j to the allowlist', command => {
+    expect(hook(command)).toBeUndefined();
+  });
+
+  it('gives the review the same answers', () => {
+    expect(hook('cat x', 'review-settings.json')).toEqual(hook('cat x'));
+    expect(hook(`cd ${cwd}; gh pr view 1`, 'review-settings.json')).toEqual(
+      hook(`cd ${cwd}; gh pr view 1`)
+    );
   });
 });

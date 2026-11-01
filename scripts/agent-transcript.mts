@@ -20,6 +20,7 @@ type Block = {
 };
 
 type Event = {
+  cwd?: string;
   duration_ms?: number;
   message?: { content?: Block[]; id?: string; model?: string; usage?: Usage };
   model?: string;
@@ -148,6 +149,33 @@ const detailOf = (input: Record<string, unknown> | undefined): string => {
   return String(value).replace(/\s+/g, ' ').trim().slice(0, 200);
 };
 
+// The Bash calls the hook cut a `cd` from: they start with `cd <dir>` then `;` or `&&`, and weren't
+// denied (a denied call never ran, so nothing was cut).
+const countStripped = (
+  events: Event[],
+  dir: string | undefined,
+  denied: Set<string | undefined>
+): number => {
+  if (!dir) {
+    return 0;
+  }
+
+  const start = new RegExp(
+    `^\\s*cd\\s+["']?${dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']?\\s*(;|&&)`
+  );
+
+  return events
+    .filter(({ type }) => type === 'assistant')
+    .flatMap(({ message }) => message?.content ?? [])
+    .filter(
+      ({ id, input, name, type }) =>
+        type === 'tool_use' &&
+        name === 'Bash' &&
+        !denied.has(id) &&
+        start.test(String(input?.command ?? ''))
+    ).length;
+};
+
 // Text as inline code in Markdown; a backtick inside it would end the span, so it becomes a quote.
 export const inlineCode = (text: string): string =>
   `\`${text.replaceAll('`', "'")}\``;
@@ -197,6 +225,11 @@ export const parseTranscript = (text: string): Transcript | undefined => {
     finalText: result?.result ?? '',
     model: init?.model,
     outcome: result?.subtype ?? 'no result',
+    stripped: countStripped(
+      list,
+      init?.cwd,
+      new Set(denied.map(({ tool_use_id }) => tool_use_id))
+    ),
     tools,
     turns: result?.num_turns,
   };
@@ -241,6 +274,8 @@ export const readSummary = (text: string): Transcript | undefined => {
     finalText: value.finalText,
     model: typeof value.model === 'string' ? value.model : undefined,
     outcome: value.outcome,
+    // Summaries uploaded before the hook have no count.
+    stripped: numberOrUndefined(value.stripped) ?? 0,
     tools: Object.fromEntries(
       Object.entries(value.tools).filter(
         (entry): entry is [string, number] => typeof entry[1] === 'number'

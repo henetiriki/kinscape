@@ -47,5 +47,5 @@ The audit shows each pattern's workflows and settings rule.
 
 ## Deviations
 
-- The `claude -p` check was skipped (sandbox): unchecked are hook denials in `permission_denials`, `updatedInput` keeping the allowlist, and `cd <cwd>; curl x` denied by the allowlist. No transcript fallback.
+- Checked locally with `claude -p`: hook denials are in `permission_denials`, and `cd <cwd>; curl x` is still denied by the allowlist. No transcript fallback.
 - The audit runs the hook to show `denied by the hook`.

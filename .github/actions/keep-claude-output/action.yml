@@ -4,12 +4,12 @@ description: >-
   run-claude share; call it after Claude runs, with `if: always()`.
 
 inputs:
-  artifact_name:
-    description: 'The name of the uploaded artifact. The review and the denial audit look it up by this name.'
-    default: claude-execution-output
   thread:
     description: 'The issue or pull request number the secret scan comments on, e.g. github.event.issue.number || github.event.pull_request.number.'
     required: true
+  setup_node:
+    description: "'false' when the caller has set up Node already (setup-workspace does), so the action keeps the job's Node."
+    default: 'true'
 
 runs:
   using: composite
@@ -35,7 +35,7 @@ runs:
           .nvmrc
         persist-credentials: false
     - name: Set up Node for the summary
-      if: always()
+      if: always() && inputs.setup_node == 'true'
       continue-on-error: true
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
@@ -61,12 +61,12 @@ runs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: bash .claude-summary-script/scripts/scan-summary.sh
 
-    # The weekly denial audit (claude-denial-audit.yml) and the review's changes-since step read this
-    # artifact. A failed upload fails the job.
+    # The weekly denial audit (claude-denial-audit.yml) and the review's changes-since step look this
+    # artifact up by name. A failed upload fails the job.
     - name: Upload Claude's output
       if: always() && steps.scan.outputs.clean == 'true'
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
-        name: ${{ inputs.artifact_name }}
+        name: claude-execution-output
         path: ${{ runner.temp }}/gitleaks/scan/claude-execution-output.json
         retention-days: 7

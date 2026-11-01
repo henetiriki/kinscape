@@ -106,10 +106,15 @@ describe('refresh-settings.json', () => {
     'gh issue edit 5 --title new',
     'gh issue edit 5 --title=new',
     'gh issue edit 5 -t new',
+    // A short flag takes its value after `=` or attached to it.
+    'gh issue edit 5 -t=new',
+    'gh issue edit 5 -tnew',
     'gh issue edit 5 --add-assignee someone',
     'gh issue edit 5 --remove-assignee someone',
     'gh issue edit 5 --milestone M1',
     'gh issue edit 5 -m M1',
+    'gh issue edit 5 -m=M1',
+    'gh issue edit 5 -mM1',
     'gh issue edit 5 --remove-milestone',
     'gh issue edit 5 --add-project P',
     'gh issue edit 5 --remove-project P',
@@ -133,6 +138,8 @@ describe('refresh-settings.json', () => {
     'gh issue edit 5 --body text',
     'gh issue edit 5 --body=text',
     'gh issue edit 5 -b text',
+    'gh issue edit 5 -b=text',
+    'gh issue edit 5 -btext',
   ])('denies: %s', command => {
     expect(denied(command)).toBe(true);
   });

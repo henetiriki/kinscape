@@ -2,66 +2,70 @@
 
 - **Spec:** #447
 - **Requirement IDs:** None (design tooling)
-- **Status:** approved
+- **Status:** draft (amended for D2; the tech lead re-approves, rule 6)
 
 ## Approach
 
-The tech lead builds this: `AGENTS.md` is a code-owner path (rule 13), and the canvas steps need someone signed in. The copy is refreshed twice, each in its own commit with line 2 of `VERSION` updated: as the canvas stands, then after the install. Between them, an unchanged `design/source/` after `npm run design:export` proves the install touched no board. The docs then describe the steps that worked, with the handoff or the snapshot fallback (Spec D2).
+The tech lead builds this: `AGENTS.md` is a code-owner path (rule 13). The old canvas can't be read any more, so the work moves to a new canvas, "KinScape design kit (ouwl.house)", seeded from the committed copy (D2). Claude Code reads and writes it with the artifact tools: no download or canvas chat. The copy is refreshed twice, each in its own commit with `VERSION` updated: from the seeded canvas, then after the install. An unchanged `design/source/` after `npm run design:export` proves neither touched a board.
 
 ## Decisions
 
 **D1 · How the installed files are kept out of the checks** · Decides: Tech lead
 
-Prettier would format the install's `.json`, `.css`, `.md` and `.html`, and `tsconfig.json` typechecks any `**/*.ts(x)`, including in `design/canvas/`.
+- ~~**A.** Ignore only `design/canvas/project/ds/**`.~~
+- **B.** Ignore all of `design/canvas/project/**` in `.prettierignore`, ESLint and `tsconfig.json`. Rewords Spec step 3.
 
-- **A.** As the Spec says: add `design/canvas/project/ds/**` to `.prettierignore`, and to ESLint's `globalIgnores` and the `tsconfig.json` `exclude` only if the folder holds `.js`, `.ts` or `.tsx` files (`tsconfig.json` is not in the Spec).
-- **B.** Ignore all of `design/canvas/project/**` in all three, replacing the two `.prettierignore` lines and the ESLint line for `*.dc.html` and `canvas.json`. Nobody edits anything there, so a future canvas folder can't break `format:check`. Rewords Spec step 3 (`gh issue edit`).
-- **Other:** your own.
+**Answer: B** (@henetiriki). Done in `af8f8c4`.
 
-**Answer: B** (@henetiriki)
+**D2 · Which canvas the design lives on** · Decides: Tech lead
+
+The old canvas (`1MyZ…`) can't be read: the file tools refuse a canvas that someone outside the organization has written to.
+
+- **A.** A new canvas owned by this account, seeded from the committed copy. Boards, pages and layout are kept; comments and history stay behind. The old canvas is left alone.
+- ~~**B.** Keep the old canvas; refresh by download or a canvas chat (Spec D1 A).~~
+
+**Answer: A** (@henetiriki). New canvas: `https://claude.ai/artifact/KNh9aZWeMNtsNSWtWLCbzU`.
 
 ## Files that change
 
-| File                                   | New / changed | What                                                                                    |
-| -------------------------------------- | ------------- | --------------------------------------------------------------------------------------- |
-| `design/canvas/project/*.dc.html`      | Changed       | Refreshed from the live canvas (step 2)                                                 |
-| `design/canvas/project/canvas.json`    | Changed       | Refreshed, then gains the one `designSystems` entry                                     |
-| `design/canvas/project/ds/kinscape/**` | New           | The installed system                                                                    |
-| `design/canvas/VERSION`                | Changed       | Line 2: the canvas version after each refresh                                           |
-| `design/source/*.html`, `design/*.jpg` | Changed       | Only if step 2 changed a board, by the Design agent shots workflow                      |
-| `.prettierignore`                      | Changed       | D1                                                                                      |
-| `eslint.config.mjs`                    | Changed       | D1                                                                                      |
-| `tsconfig.json`                        | Changed       | D1: under A, only if the install holds `.ts` or `.tsx` files                            |
-| `design/DESIGN.md`                     | Changed       | Screens: refreshing the copy, updating the install after a publish, handing off a board |
-| `docs/how-we-work.md`                  | Changed       | The Design row: screens are designed on the canvas with the design system               |
-| `AGENTS.md`                            | Changed       | Source of truth: a person refreshes `design/canvas/` by the documented step             |
+| File                                   | New / changed | What                                                                |
+| -------------------------------------- | ------------- | ------------------------------------------------------------------- |
+| `design/canvas/project/*.dc.html`      | Changed       | Refreshed: 8 boards use the new canvas's icon id                    |
+| `design/canvas/project/canvas.json`    | Changed       | New title, then the one `designSystems` entry                       |
+| `design/canvas/project/ds/kinscape/**` | New           | The installed system                                                |
+| `design/canvas/VERSION`                | Changed       | Line 1: the new canvas link; line 2: its version after each refresh |
+| `design/canvas/export.json`            | Changed       | `icon`: the new canvas's icon id                                    |
+| `design/source/*.html`, `design/*.jpg` | Changed       | Only if a board changed, by the Design agent shots workflow         |
+| `design/DESIGN.md`                     | Changed       | The new link; Screens: refreshing, updating the install, handoff    |
+| `docs/how-we-work.md`                  | Changed       | The Design row: designed on the canvas with the design system       |
+| `AGENTS.md`                            | Changed       | A person refreshes `design/canvas/` by the documented step          |
 
 ## Order of work
 
-1. Confirm that `DESIGN.md` links the published system. If it doesn't, run `/publish-design-system` and commit its link first.
-2. Refresh the copy as the canvas stands (download, or Spec D1 A), then commit. If a board changed, push and run the Design agent shots workflow, which makes its own commit.
-3. Install in a canvas chat. Screenshot a board's colour picker and text styles.
-4. Refresh again, then commit. Run `npm run design:export` and check that `git diff --exit-code design/source` passes. Add the D1 ignores, then run `lint`, `format:check` and `typecheck`.
-5. Hand one board to Claude Code by the Export menu; note what it offered and what arrived.
-6. Update the docs as the step 5 result shows, in one commit.
-7. Run `lint`, `format:check`, `words`, `test`, `validate:boundaries`, `e2e` and `design:check`.
+1. Refresh the copy with `read_file`, set `export.json`'s `icon` and `VERSION`, commit. `design:export` must leave `design/source/` unchanged.
+2. Install: Claude Code copies the design system's `project/` files into `project/ds/kinscape/` and adds the `designSystems` entry, in one publish. The tech lead screenshots a board's colour picker and text styles.
+3. Refresh again, commit. Run `design:export`, `git diff --exit-code design/source`, `lint`, `format:check`, `typecheck`.
+4. Hand one board to Claude Code by the Export menu, and by Claude Code reading its file from the canvas. Note what each offered and what arrived.
+5. Update the docs as step 4 shows, in one commit. Reword Spec #447 (steps 1–3) and Intent #442 ("existing canvas") with `gh issue edit` (rule 3).
+6. Run `lint`, `format:check`, `words`, `test`, `validate:boundaries`, `e2e`, `design:check`.
 
 ## Risks
 
-- **The install edits boards.** Step 4's export shows a diff: stop and comment on #447 instead of running the shots workflow.
+- **The install edits boards.** Step 3's export shows a diff: stop and comment on #447.
+- **An outside account writes to the new canvas.** `DESIGN.md` says never to share it; fall back to Spec D1 A.
 - **A stale install.** `DESIGN.md` says to update it after any `/publish-design-system` run that sends files.
-- **`AGENTS.md` budget (700).** Reword the existing `design/canvas/` line rather than add one.
 
 ## Proof
 
-| Acceptance check                       | Proven by                                                                 |
-| -------------------------------------- | ------------------------------------------------------------------------- |
-| Export leaves `design/source/` alone   | Step 4's `design:export` and the clean `git diff`, in Evidence            |
-| Colour picker and text styles          | Screenshot in Evidence                                                    |
-| `ds/kinscape/`, one entry, checks pass | Tree listing, the `designSystems` entry, `lint` and `format:check` output |
-| Handoff recorded                       | Evidence notes; the `DESIGN.md` diff                                      |
-| Branch checks                          | `words`, `test`, `e2e` and `design:check` output in Evidence              |
+| Acceptance check                       | Proven by                                                        |
+| -------------------------------------- | ---------------------------------------------------------------- |
+| Export leaves `design/source/` alone   | `design:export` and a clean `git diff` (steps 1, 3), in Evidence |
+| Colour picker and text styles          | Screenshot in Evidence                                           |
+| `ds/kinscape/`, one entry, checks pass | Tree listing, the `designSystems` entry, `lint`, `format:check`  |
+| Handoff recorded                       | Evidence notes; the `DESIGN.md` diff                             |
+| Branch checks                          | Step 6 output in Evidence                                        |
 
 ## Out of scope
 
 - Changing boards to use the system (DS.8) and components (DS.7).
+- Deleting or moving the old canvas.

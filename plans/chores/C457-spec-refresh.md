@@ -1,7 +1,7 @@
 # Plan: C457: Refresh a chained Spec against main
 
 - **Spec:** #457
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@
 - **B.** Leave it; `refresh.md` overrides it.
 - **Other:** your own.
 
-Recommended: A, because the plan agent reads both.
+**Answer: A** (@henetiriki)
 
 **D2 · Where the unblock run's Claude steps live** · Decides: Tech lead
 
@@ -23,7 +23,7 @@ Recommended: A, because the plan agent reads both.
 - **B.** A `settings` input on `run-claude`, in a Chore first: a pin names a main commit.
 - **Other:** your own.
 
-Recommended: A, because it is one PR.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

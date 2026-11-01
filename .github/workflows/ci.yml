@@ -1,5 +1,10 @@
 name: CI
 
+# The title shown for each run in the Actions tab: "CI: <PR title>" for a pull request, "CI: main"
+# for a push. Only the jobs have an `if:` (`format` and `words` run on every run), so there is no
+# "Skipped" form.
+run-name: 'CI: ${{ github.event.pull_request.title || github.ref_name }}'
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]

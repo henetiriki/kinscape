@@ -96,7 +96,7 @@
   },
   "blobs": {},
   "createdOnFiles": {
-    "at": "2026-10-31T21:38:41.000Z",
+    "at": "2026-11-01T13:40:48.000Z",
     "v": 1
   },
   "docs": {
@@ -109,13 +109,22 @@
     "Icons"
   ],
   "lastChange": {
-    "at": "2026-10-31T21:38:41.000Z",
+    "at": "2026-11-01T13:40:48.000Z",
     "by": "louw swart",
-    "note": "npm run design-system at 99d2d6e",
-    "via": "code · henetiriki/kinscape@99d2d6e"
+    "note": "npm run design-system at aee10a0",
+    "via": "code · henetiriki/kinscape@aee10a0"
   },
   "layout": "files",
-  "libraries": [],
+  "libraries": [
+    {
+      "name": "react",
+      "version": "18"
+    },
+    {
+      "name": "react-dom",
+      "version": "18"
+    }
+  ],
   "namespace": "KinScape",
   "sections": {},
   "title": "KinScape",

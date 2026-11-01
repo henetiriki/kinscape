@@ -29,6 +29,7 @@ type Content =
 
 const ICON_SIZE = { l: 20, m: 16, s: 16, xs: 14 } as const;
 
+/** An action: primary for the one main action in a view, secondary for the rest. */
 export const Button = ({
   children,
   full,

@@ -10,6 +10,7 @@ import type {
 } from './types.ts';
 
 import { isTree, REFERENCE } from '../../design/tokens.mts';
+import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from './bundle.mts';
 import { cssName } from './css.mts';
 
 /** The `DESIGN.md` sections the README holds, in this order. */
@@ -233,27 +234,37 @@ export const systemCss = (
     '',
   ].join('\n\n');
 
-/** The README: the listed `DESIGN.md` sections as they are, with any link that isn't `https` made plain text. */
+/** `text` with any link that isn't `https` made plain text. */
+export const plainLinks = (text: string): string =>
+  text.replace(LINK, (link, bang: string, label: string, target: string) =>
+    target.startsWith('https://') ? link : label
+  );
+
+/** How a canvas uses the controls (Spec #450): the canvas install reads the file names here. */
+const CANVAS_SECTION = `## Using the controls on a canvas
+
+The controls are on \`window.${NAMESPACE}\`. After React 18, load \`components/${BUNDLE_CSS}\`, then \`components/${BUNDLE_JS}\`. Mount a control with \`<x-import component-from-global-scope="${NAMESPACE}.Button">\`.`;
+
+/** The README: the listed `DESIGN.md` sections as they are, then how a canvas uses the controls. */
 export const readme = (design: string): string => {
   const sections = design.split(/^(?=## )/m);
 
-  return [
-    '# KinScape design',
-    ...README_SECTIONS.map(name => {
-      const section = sections.find(text => text.startsWith(`## ${name}\n`));
+  return plainLinks(
+    [
+      '# KinScape design',
+      ...README_SECTIONS.map(name => {
+        const section = sections.find(text => text.startsWith(`## ${name}\n`));
 
-      if (section === undefined) {
-        throw new Error(`DESIGN.md has no "${name}" section`);
-      }
+        if (section === undefined) {
+          throw new Error(`DESIGN.md has no "${name}" section`);
+        }
 
-      return section.trim();
-    }),
-    '',
-  ]
-    .join('\n\n')
-    .replace(LINK, (link, bang: string, text: string, target: string) =>
-      target.startsWith('https://') ? link : text
-    );
+        return section.trim();
+      }),
+      CANVAS_SECTION,
+      '',
+    ].join('\n\n')
+  );
 };
 
 /** `design-system.json`: the index, synced from code (Spec #445 › Type format). */
@@ -281,7 +292,7 @@ export const systemIndex = (
     { name: 'react', version: '18' },
     { name: 'react-dom', version: '18' },
   ],
-  namespace: 'KinScape',
+  namespace: NAMESPACE,
   sections: {},
   title: 'KinScape',
   v: 3,

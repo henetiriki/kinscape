@@ -166,3 +166,7 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 - Names on the map are the names valid on the map date (MAP-06).
 - No sign-up wording. The sign-in page says accounts are set up by whoever runs KinScape.
 
+## Using the controls on a canvas
+
+The controls are on `window.KinScape`. After React 18, load `components/bundle.css`, then `components/bundle.js`. Mount a control with `<x-import component-from-global-scope="KinScape.Button">`.
+

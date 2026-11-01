@@ -1,0 +1,34 @@
+<!-- @dsCard group="Actions" height=200 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+body { margin: 0; padding: 16px; }
+#root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 0px 0; }
+.ks-label { color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var h = React.createElement;
+  var noop = function () {};
+  var Control = window.KinScape["Segmented"];
+  var handlers = [];
+  var states = [{"label":"Segmented · default","props":{"disabled":false,"label":"View","name":"view","options":[{"label":"Map","value":"map"},{"label":"List","value":"list"}],"value":"map"}},{"label":"Segmented · active","props":{"disabled":false,"label":"View","name":"view","options":[{"label":"Map","value":"map","state":"active"},{"label":"List","value":"list","state":"active"}],"value":"map"}},{"label":"Segmented · focus","props":{"disabled":false,"label":"View","name":"view","options":[{"label":"Map","value":"map","state":"focus"},{"label":"List","value":"list","state":"focus"}],"value":"map"}},{"label":"Segmented · hover","props":{"disabled":false,"label":"View","name":"view","options":[{"label":"Map","value":"map","state":"hover"},{"label":"List","value":"list","state":"hover"}],"value":"map"}},{"label":"Segmented · disabled","props":{"disabled":true,"label":"View","name":"view","options":[{"label":"Map","value":"map"},{"label":"List","value":"list"}],"value":"map"}}];
+  var items = states.map(function (state, index) {
+    var props = Object.assign({ key: index }, state.props);
+    handlers.forEach(function (handler) { props[handler] = noop; });
+    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label' }, state.label), control);
+  });
+  ReactDOM.flushSync(function () {
+    ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));
+  });
+})();
+</script>
+</body>
+</html>

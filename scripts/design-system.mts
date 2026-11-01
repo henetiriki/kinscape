@@ -12,8 +12,11 @@ import ts from 'typescript';
 import { build } from 'vite';
 
 import type { Tree } from '../design/types.ts';
+import type { Control, Docs } from '../lib/design/types.ts';
 
 import {
+  BUNDLE_CSS,
+  BUNDLE_JS,
   bundleEntry,
   bundleHeader,
   checkScript,
@@ -22,7 +25,17 @@ import {
   CONTROLS,
   gatherTypes,
   JSX_SHIM,
+  NAMESPACE,
 } from '../lib/design/bundle.mts';
+import {
+  checkPreview,
+  checkReadme,
+  controlReadme,
+  designBullets,
+  firstSentence,
+  previewHtml,
+} from '../lib/design/cards.mts';
+import { CARDS } from '../lib/design/states.mts';
 import {
   fontFiles,
   readme,
@@ -44,11 +57,16 @@ type Built = Exclude<
   { close: unknown } | unknown[]
 >;
 
-type Controls = { css: string; js: string; types: string };
+type Controls = {
+  css: string;
+  docs: Record<string, Docs>;
+  js: string;
+  types: string;
+};
 type Output = Built['output'][number];
 
-/** The `.d.ts` text TypeScript emits for the controls and what they import, keyed by file. */
-const declarations = (root: string): Record<string, string> => {
+/** The program of the controls, as the app's `tsconfig.json` sets it up. */
+const compile = (root: string): ts.Program => {
   const config = ts.readConfigFile(
     join(root, 'tsconfig.json'),
     ts.sys.readFile
@@ -58,7 +76,8 @@ const declarations = (root: string): Record<string, string> => {
     ts.sys,
     root
   );
-  const program = ts.createProgram(
+
+  return ts.createProgram(
     CONTROLS.map(({ path }) => join(root, path)),
     {
       ...options,
@@ -68,6 +87,10 @@ const declarations = (root: string): Record<string, string> => {
       noEmit: false,
     }
   );
+};
+
+/** The `.d.ts` text TypeScript emits for the controls and what they import, keyed by file. */
+const declarations = (program: ts.Program): Record<string, string> => {
   const emitted: Record<string, string> = {};
 
   program.emit(
@@ -82,6 +105,77 @@ const declarations = (root: string): Record<string, string> => {
   return emitted;
 };
 
+const oneLine = (text: string): string => text.replace(/\s+/g, ' ').trim();
+
+/**
+ * A control's JSDoc summary and the props its source declares. Props it takes from its HTML
+ * element (declared under `node_modules`) are left out, and `rest` says there were some.
+ */
+const describeControl = (
+  program: ts.Program,
+  root: string,
+  { name, path }: Control
+): Docs => {
+  const checker = program.getTypeChecker();
+  const file = program.getSourceFile(join(root, path))!;
+  const symbol = checker
+    .getExportsOfModule(checker.getSymbolAtLocation(file)!)
+    .find(each => each.name === name)!;
+  const [signature] = checker
+    .getTypeOfSymbolAtLocation(symbol, file)
+    .getCallSignatures();
+  const [parameter] = signature.getParameters();
+  const parameterType = checker.getTypeOfSymbolAtLocation(parameter, file);
+  const all = checker.getPropertiesOfType(parameterType);
+  const isOwn = (prop: ts.Symbol): boolean =>
+    prop.declarations!.some(
+      declaration =>
+        !declaration.getSourceFile().fileName.includes('/node_modules/')
+    );
+  const own = all.filter(isOwn);
+  const forms = parameterType.isUnion()
+    ? parameterType.types.map(member =>
+        checker
+          .getPropertiesOfType(member)
+          .filter(
+            prop => isOwn(prop) && !(prop.flags & ts.SymbolFlags.Optional)
+          )
+          .map(prop => prop.name)
+          .toSorted()
+      )
+    : [];
+  const typeText = (prop: ts.Symbol): string => {
+    const type = checker.getTypeOfSymbolAtLocation(prop, file);
+    const members = type.isUnion()
+      ? type.types.filter(member => !(member.flags & ts.TypeFlags.Undefined))
+      : [type];
+
+    return members.every(member => member.isLiteral())
+      ? members.map(member => checker.typeToString(member)).join(' | ')
+      : checker
+          .typeToString(type, file, ts.TypeFormatFlags.NoTruncation)
+          .replace(/ \| undefined$/, '');
+  };
+
+  return {
+    forms,
+    props: own
+      .map(prop => ({
+        doc: oneLine(
+          ts.displayPartsToString(prop.getDocumentationComment(checker))
+        ),
+        name: prop.name,
+        optional: Boolean(prop.flags & ts.SymbolFlags.Optional),
+        type: typeText(prop),
+      }))
+      .toSorted((a, b) => a.name.localeCompare(b.name)),
+    rest: own.length < all.length,
+    summary: firstSentence(
+      ts.displayPartsToString(symbol.getDocumentationComment(checker))
+    ),
+  };
+};
+
 /**
  * Builds the shared controls from their own source: one IIFE that reads the page's `React`
  * and sets `KinScape`, its CSS, and one types file. Nothing is written to disk.
@@ -92,7 +186,7 @@ const buildControls = async (root: string): Promise<Controls> => {
   const built = await build({
     build: {
       cssCodeSplit: false,
-      lib: { entry: ENTRY, formats: ['iife'], name: 'KinScape' },
+      lib: { entry: ENTRY, formats: ['iife'], name: NAMESPACE },
       minify: true,
       rolldownOptions: {
         external: ['react', 'react-dom'],
@@ -131,10 +225,18 @@ const buildControls = async (root: string): Promise<Controls> => {
     { type: 'asset' }
   >;
 
+  const program = compile(base);
+
   return {
     css: String(css.source),
+    docs: Object.fromEntries(
+      CONTROLS.map(control => [
+        control.name,
+        describeControl(program, base, control),
+      ])
+    ),
     js: code.code,
-    types: gatherTypes(base, CONTROLS, declarations(base)),
+    types: gatherTypes(base, CONTROLS, declarations(program)),
   };
 };
 
@@ -169,6 +271,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   const at = new Date(
     Number(git(root, ['log', '-1', '--format=%ct'])) * 1000
   ).toISOString();
+  const design = readFileSync(join(root, 'design/DESIGN.md'), 'utf8');
   const written: string[] = [];
   const put = (path: string, write: (target: string) => void) => {
     const target = join(out, 'project', path);
@@ -200,16 +303,28 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   checkStyle(styles);
   checkTypes(controls.types);
   rmSync(out, { force: true, recursive: true });
-  text('components/bundle.js', script);
-  text('components/bundle.css', styles);
+  text(`components/${BUNDLE_JS}`, script);
+  text(`components/${BUNDLE_CSS}`, styles);
   text('components/index.d.ts', controls.types);
   text('design-system.json', json(systemIndex(sha, at)));
   text('tokens.json', json(system));
   text('tokens.css', systemCss(system, ranges));
-  text(
-    'README.md',
-    readme(readFileSync(join(root, 'design/DESIGN.md'), 'utf8'))
-  );
+  text('README.md', readme(design));
+
+  for (const card of CARDS) {
+    const page = previewHtml(card);
+    const summary = controlReadme(
+      card.name,
+      controls.docs[card.name],
+      designBullets(design, card.design)
+    );
+
+    checkReadme(card.name, summary);
+    checkPreview(card.name, page);
+    text(`components/${card.name}/README.md`, summary);
+    text(`components/${card.name}/preview.html`, page);
+  }
+
   text(
     'components/Cover/preview.html',
     readFileSync(join(root, 'lib/design/cover.html'), 'utf8')

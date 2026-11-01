@@ -1,0 +1,34 @@
+<!-- @dsCard group="Forms" height=1100 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+body { margin: 0; padding: 16px; }
+#root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 72px 0; }
+.ks-label { color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var h = React.createElement;
+  var noop = function () {};
+  var Control = window.KinScape["DateField"];
+  var handlers = ["onChange"];
+  var states = [{"label":"DateField · default","props":{"day":91109,"max":136894,"min":0,"precision":"day"}},{"label":"DateField · active","props":{"day":91109,"max":136894,"min":0,"precision":"day","state":"active"}},{"label":"DateField · focus","props":{"day":91109,"max":136894,"min":0,"precision":"day","state":"focus"}},{"label":"DateField · hover","props":{"day":91109,"max":136894,"min":0,"precision":"day","state":"hover"}},{"label":"DateField · typing","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"1901-0","state":"focus"}},{"label":"DateField · wrong format · below","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"14/06/1901","placement":"below"}},{"label":"DateField · wrong format · above","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"14/06/1901","placement":"above"}},{"label":"DateField · before 1652 · below","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"1650","placement":"below"}},{"label":"DateField · before 1652 · above","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"1650","placement":"above"}},{"label":"DateField · after today · below","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"2031","placement":"below"}},{"label":"DateField · after today · above","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"2031","placement":"above"}},{"label":"DateField · doesn't exist · below","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"1901-02-30","placement":"below"}},{"label":"DateField · doesn't exist · above","props":{"day":91109,"max":136894,"min":0,"precision":"day","defaultText":"1901-02-30","placement":"above"}},{"label":"DateField · info","props":{"day":91109,"max":136894,"min":0,"precision":"day","notice":{"text":"Switched to month.","tone":"info"}}},{"label":"DateField · notice","props":{"day":91109,"max":136894,"min":0,"precision":"day","notice":{"text":"Moved to 1652.","tone":"warning"}}}];
+  var items = states.map(function (state, index) {
+    var props = Object.assign({ key: index }, state.props);
+    handlers.forEach(function (handler) { props[handler] = noop; });
+    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label' }, state.label), control);
+  });
+  ReactDOM.flushSync(function () {
+    ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));
+  });
+})();
+</script>
+</body>
+</html>

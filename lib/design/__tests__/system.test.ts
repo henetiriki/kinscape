@@ -5,6 +5,7 @@ import type { Tree } from '@ks/design/types.ts';
 import type { SystemTokens } from '@ks/lib/design/types.ts';
 
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 import {
@@ -295,13 +296,27 @@ describe('readme', () => {
   const text = readme(design);
 
   it('holds the listed sections, in order, as DESIGN.md has them', () => {
-    expect([...text.matchAll(/^## (.+)$/gm)].map(([, name]) => name)).toEqual(
-      README_SECTIONS
-    );
+    expect([...text.matchAll(/^## (.+)$/gm)].map(([, name]) => name)).toEqual([
+      ...README_SECTIONS,
+      'Using the controls on a canvas',
+    ]);
     expect(text).toContain('Colour never carries meaning alone');
     expect(text).toContain('### Map date field');
     expect(text).not.toContain('## Layout');
     expect(text).not.toContain('## Map style');
+  });
+
+  it('ends with how a canvas loads and mounts the controls, from the bundle constants', () => {
+    const section = text.slice(text.indexOf('## Using the controls'));
+
+    expect(section).toContain(`\`window.${NAMESPACE}\``);
+    expect(section.indexOf(`components/${BUNDLE_CSS}`)).toBeGreaterThan(0);
+    expect(section.indexOf(`components/${BUNDLE_JS}`)).toBeGreaterThan(
+      section.indexOf(`components/${BUNDLE_CSS}`)
+    );
+    expect(section).toContain(
+      `<x-import component-from-global-scope="${NAMESPACE}.Button">`
+    );
   });
 
   it('has no link into the repo: those become their text', () => {

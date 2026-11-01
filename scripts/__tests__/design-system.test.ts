@@ -19,6 +19,8 @@ import {
   checkTypes,
   CONTROLS,
 } from '@ks/lib/design/bundle.mts';
+import { checkPreview, checkReadme } from '@ks/lib/design/cards.mts';
+import { CARDS } from '@ks/lib/design/states.mts';
 
 import { run } from '../design-system.mts';
 
@@ -182,6 +184,101 @@ describe('the controls bundle', () => {
 
     expect(values.toSorted()).toEqual(names.toSorted());
     expect(component('index.d.ts')).toMatch(/^export \{\};$/m);
+  });
+});
+
+describe('the control cards', () => {
+  const names = CONTROLS.map(({ name }) => name);
+  const card = (name: string, file: string) => component(`${name}/${file}`);
+
+  it('writes a README.md and a preview.html per control, and the cover', () => {
+    expect(
+      written
+        .filter(path => /components\/[A-Z]\w+\/[^/]+$/.test(path))
+        .toSorted()
+    ).toEqual(
+      [
+        'project/components/Cover/preview.html',
+        ...names.flatMap(name => [
+          `project/components/${name}/README.md`,
+          `project/components/${name}/preview.html`,
+        ]),
+      ].toSorted()
+    );
+    expect(names).toHaveLength(12);
+  });
+
+  it.each(names)(
+    '%s: README under 64 KB, summary first, props listed',
+    name => {
+      const text = card(name, 'README.md');
+
+      expect(() => checkReadme(name, text)).not.toThrow();
+      expect(text.split('\n')[0]).not.toMatch(/^#/);
+      expect(text).toContain('| Prop | Type | Required | Description |');
+    }
+  );
+
+  it.each(names)('%s: preview names its group and links nothing', name => {
+    const html = card(name, 'preview.html');
+    const { group, height } = CARDS.find(each => each.name === name)!;
+
+    expect(html.split('\n')[0]).toBe(
+      `<!-- @dsCard group="${group}" height=${height} -->`
+    );
+    expect(() => checkPreview(name, html)).not.toThrow();
+  });
+
+  it('uses the summaries the plan gives the five controls', () => {
+    const first = (name: string) => card(name, 'README.md').split('\n')[0];
+
+    expect(first('Button')).toBe(
+      'An action: primary for the one main action in a view, secondary for the rest.'
+    );
+    expect(first('IconButton')).toBe(
+      'An action shown only as an icon, such as zoom, close or step, named by its `label`.'
+    );
+    expect(first('Chip')).toBe(
+      'A pill that turns one filter on or off, such as an Event type.'
+    );
+    expect(first('Tabs')).toBe(
+      'A row of tabs that switches panels, such as Layers and Filters.'
+    );
+    expect(first('Checkbox')).toBe(
+      'A checkbox with no label of its own: name it with `aria-label`, or use `CheckboxField`.'
+    );
+  });
+
+  it('lists the props declared in the repo, and says the rest go to the element', () => {
+    const button = card('Button', 'README.md');
+    const toast = card('Toast', 'README.md');
+
+    expect(button).toContain(
+      '| `variant` | `"primary" \\| "secondary"` | no |'
+    );
+    expect(button).toContain(
+      '| `state` | `"active" \\| "focus" \\| "hover"` | no |'
+    );
+    expect(button).toContain(
+      '| `full` | `boolean` | no | Fills the width of its container. |'
+    );
+    expect(button).not.toContain('`onClick`');
+    expect(button).toContain('HTML element');
+    expect(toast).not.toContain('HTML element');
+    expect(button).toContain('## Design\n\n- **Buttons:**');
+  });
+
+  it('says which props each form of Button requires', () => {
+    expect(card('Button', 'README.md')).toContain(
+      'Required props: `children`; or `icon`, `label`.'
+    );
+    expect(card('Toast', 'README.md')).not.toContain('forms');
+  });
+
+  it('puts the canvas section last in the system README', () => {
+    expect(readFileSync(join(first, 'project/README.md'), 'utf8')).toMatch(
+      /## Using the controls on a canvas\n\n[^#]+$/
+    );
   });
 });
 

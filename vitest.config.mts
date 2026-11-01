@@ -22,6 +22,7 @@ export default defineConfig({
     coverage: {
       exclude: [
         '.claude/**',
+        'design/canvas/**',
         '**/__tests__/**',
         '**/*.test.{ts,tsx}',
         '**/*.d.ts',

@@ -1,7 +1,7 @@
 # Plan: C480: Hook the agents' shell denials and show which workflow and rule each audit row hits
 
 - **Spec:** #480
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The audit groups by workflow and pattern, matching each pattern against that wor
 - **B.** Count the marker, if it reaches the transcript.
 - **Other:** your own.
 
-Recommended: A, because the transcript already has the call.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

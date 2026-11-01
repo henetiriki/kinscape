@@ -160,32 +160,15 @@ const statusOf = (
   return allowed ? `allowed by ${inlineCode(allowed)}` : 'no rule';
 };
 
-// What to do about a group, from its status in one settings file.
-const suggestionOf = (
-  status: string,
-  pattern: string,
-  file: string
-): string => {
-  const rules = file === 'review-settings.json' ? 'review.md' : 'rules.md';
-  const tell = `tell the agent in \`.github/agent/${rules}\``;
-
-  if (pattern === 'Bash: cd') {
-    return `The hook cuts only a \`cd\` into the workspace: ${tell} to give paths.`;
-  }
-
-  if (status === 'denied by the hook') {
-    return `The hook named the alternative and the agent tried anyway: sharpen its message or ${tell}.`;
-  }
-
+// What to do about a group, from its status in one settings file (issue #480).
+const suggestionOf = (status: string): string => {
   if (status.startsWith('denied')) {
-    return `Denied on purpose: ${tell} to stop trying it.`;
+    return 'The agent is ignoring it, hook or prose.';
   }
 
-  if (status.startsWith('allowed')) {
-    return `Allowed, so another part of the command was denied: ${tell} to run one command per call.`;
-  }
-
-  return `Allow it in \`.github/agent/${file}\`, or ${tell} to stop.`;
+  return status.startsWith('allowed')
+    ? 'A chained part was denied.'
+    : 'Allow it or hook it.';
 };
 
 // Reads the settings files in a folder (.github/agent) when the audit asks for one.
@@ -345,11 +328,7 @@ export const summarise = (
             .map(({ file, status }) => `${file}: ${status}`)
             .join('; '),
           suggestion: [
-            ...new Set(
-              rows.map(({ file, status }) =>
-                suggestionOf(status, group.pattern, file)
-              )
-            ),
+            ...new Set(rows.map(({ status }) => suggestionOf(status))),
           ].join(' '),
         };
       }),

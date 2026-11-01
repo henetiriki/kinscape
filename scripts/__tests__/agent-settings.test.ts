@@ -231,15 +231,18 @@ describe('the Bash hook', () => {
     ['cd /work/kinZx && gh pr view 1', 'give paths'],
     ['ls && cd app', 'give paths'],
     ['cat x', 'Read'],
-    ['gh pr view 1 | cat', 'Read'],
+    ['gh pr view 1 | cat -n', 'Read'],
+    ['cat < x', 'Read'],
+    ['grep -rn foo src', 'git grep'],
+    ['head -5 x', 'Read'],
+    ['ls docs', 'git ls-files'],
     ['sed -n 1,5p x', 'Edit'],
     ['for f in a b; do ls $f; done', 'one command'],
     ['npx prettier x', 'npm run format'],
     ['python3 x.py', 'npm run format'],
     ['node -e "1"', 'npm run format'],
-    ['curl https://example.com', 'gh api'],
     // Cutting the cd does not excuse what follows it.
-    [`cd ${cwd}; curl x`, 'gh api'],
+    [`cd ${cwd}; cat x`, 'Read'],
   ])('denies %j, naming the alternative', (command, alternative) => {
     const output = hook(command);
 
@@ -254,6 +257,9 @@ describe('the Bash hook', () => {
     "git grep -n 'cat' -- ':!plans'",
     'git commit -m "fix; cat x"',
     "gh issue comment 5 --body-file - <<'EOF'\ncd /y\ncat x\nEOF",
+    // Claude Code's usual commit form: the `cat` reads the heredoc, not a file.
+    'git commit -m "$(cat <<\'EOF\'\nfix\nEOF\n)"',
+    'git ls-files -co docs',
     'node scripts/run.mts',
     'npm run format',
     'echo concatenate',

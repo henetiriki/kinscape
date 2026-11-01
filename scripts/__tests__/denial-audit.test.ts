@@ -192,9 +192,7 @@ describe('summarise', () => {
     it('shows a program the allowlist covers as allowed, with the rule', () => {
       expect(groupOf('git push origin x')).toMatchObject({
         settings: 'settings.json: allowed by `Bash(git:*)`',
-        suggestion: expect.stringContaining(
-          'Allowed, so another part of the command was denied'
-        ),
+        suggestion: 'A chained part was denied.',
       });
       // `prefix:*` matches the bare program, not a longer name; a rule without `*` the whole command.
       expect(groupOf('git').settings).toContain('allowed by `Bash(git:*)`');
@@ -206,9 +204,7 @@ describe('summarise', () => {
     it('shows a program a deny rule covers as denied, with the rule', () => {
       expect(groupOf('sleep 5')).toMatchObject({
         settings: 'settings.json: denied by `Bash(sleep *)`',
-        suggestion: expect.stringContaining(
-          'tell the agent in `.github/agent/rules.md` to stop'
-        ),
+        suggestion: 'The agent is ignoring it, hook or prose.',
       });
       expect(groupOf('gh pr edit 1 --body text').settings).toContain(
         'denied by `Bash(gh pr * --body *)`'
@@ -218,11 +214,10 @@ describe('summarise', () => {
       );
     });
 
-    it('shows a program no rule covers as no rule, and suggests allowing it or telling the agent', () => {
+    it('shows a program no rule covers as no rule, and suggests allowing it or hooking it', () => {
       expect(groupOf('rm a')).toMatchObject({
         settings: 'settings.json: no rule',
-        suggestion:
-          'Allow it in `.github/agent/settings.json`, or tell the agent in `.github/agent/rules.md` to stop.',
+        suggestion: 'Allow it or hook it.',
       });
       // A path rule says nothing about a tool's other uses.
       expect(groupOf('/proc/x', { tool: 'Read' }).settings).toBe(
@@ -230,7 +225,7 @@ describe('summarise', () => {
       );
     });
 
-    it('judges the code review by review-settings.json and its rules in review.md', () => {
+    it('judges the code review by review-settings.json', () => {
       const asked: string[] = [];
       const [group] = summarise(
         [1, 2].map(id => ({
@@ -247,9 +242,6 @@ describe('summarise', () => {
 
       expect(new Set(asked)).toEqual(new Set(['review-settings.json']));
       expect(group.settings).toBe('review-settings.json: no rule');
-      expect(group.suggestion).toBe(
-        'Allow it in `.github/agent/review-settings.json`, or tell the agent in `.github/agent/review.md` to stop.'
-      );
     });
 
     it('shows each settings file a group met, when its workflows differ', () => {
@@ -272,18 +264,9 @@ describe('summarise', () => {
       expect(group.settings).toBe(
         'settings.json: denied by `Bash(sleep *)`; review-settings.json: no rule'
       );
-      expect(group.suggestion).toContain('to stop trying it');
-      expect(group.suggestion).toContain('Allow it in');
-    });
-
-    it('says a cd elsewhere is not cut by the hook', () => {
-      expect(groupOf('cd app')).toMatchObject({
-        pattern: 'Bash: cd',
-        settings: 'settings.json: denied by `Bash(cd *)`',
-        suggestion: expect.stringContaining(
-          'cuts only a `cd` into the workspace'
-        ),
-      });
+      expect(group.suggestion).toBe(
+        'The agent is ignoring it, hook or prose. Allow it or hook it.'
+      );
     });
   });
 
@@ -298,7 +281,7 @@ describe('summarise', () => {
     it('shows a program the hook denies as denied by the hook', () => {
       expect(groupOf('cat a | tail')).toMatchObject({
         settings: 'settings.json: denied by the hook',
-        suggestion: expect.stringContaining('The hook named the alternative'),
+        suggestion: 'The agent is ignoring it, hook or prose.',
       });
     });
 

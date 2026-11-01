@@ -606,6 +606,22 @@ describe('artifactReader', () => {
     expect(artifactReader(gh)(1).sort()).toEqual(['a', 'b', 'c']);
   });
 
+  // A re-run of a failed refresh job uploads again as ...-<spec>-<attempt>: one session per Spec counts,
+  // the latest attempt (plan C482, Deviations). Attempts are compared as numbers, not names.
+  it('reads the latest attempt of each Spec, and every other artifact', () => {
+    const gh = vi.fn<Gh>(args => {
+      extract(args, 'claude-execution-output-482-1', 'old482');
+      extract(args, 'claude-execution-output-482-2', 'new482');
+      extract(args, 'claude-execution-output-483-9', 'old483');
+      extract(args, 'claude-execution-output-483-10', 'new483');
+      extract(args, 'claude-execution-output', 'plain');
+
+      return '';
+    });
+
+    expect(artifactReader(gh)(1).sort()).toEqual(['new482', 'new483', 'plain']);
+  });
+
   it('removes its temporary folder', () => {
     let dir = '';
     const gh = vi.fn<Gh>(args => {
@@ -935,6 +951,34 @@ describe('run', () => {
         ],
       ],
     ]);
+  });
+
+  // A failed listing is no reason to lose the audit: every run is downloaded, as before the listing.
+  it('downloads every run when the artifact listing fails', () => {
+    const listing = gh.getMockImplementation();
+
+    gh.mockImplementation(args => {
+      if (args[0] === 'api') {
+        throw new Error('HTTP 403');
+      }
+
+      return listing?.(args) ?? '';
+    });
+    runs['claude-unblock.yml'] = [make(1), make(2)];
+    artifacts = { 2: artifact('cat a') };
+
+    const read = vi.fn((id: number) => [artifacts[id] ?? []].flat());
+
+    expect(
+      run(
+        { gh, now: NOW, readArtifact: read, settings: () => NO_RULES, summary },
+        ENV
+      )
+    ).toBe(0);
+    expect(read.mock.calls.map(([id]) => id)).toEqual([1, 2]);
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('artifact listing failed')
+    );
   });
 
   // One refresh run has an artifact per freed Spec (plan C482, D2).

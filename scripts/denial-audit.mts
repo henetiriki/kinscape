@@ -7,7 +7,7 @@ import {
   rmSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 
 import type { Denial, Gh, Settings, Transcript } from './types.ts';
 
@@ -210,9 +210,12 @@ export const settingsReader =
 
 const OUTPUT_FILE = 'claude-execution-output.json';
 
-// Reads the file of every artifact named claude-execution-output or starting with it. Where gh
-// puts each one (in the folder itself or in a folder named for the artifact) is not relied on:
-// every folder is searched.
+// A refresh job's artifact: ...-<Spec number>-<run attempt>. A re-run of a failed job uploads again.
+const SPEC_ATTEMPT = /^(claude-execution-output-\d+)-(\d+)$/;
+
+// Reads the file of every artifact named claude-execution-output or starting with it, the latest
+// attempt only for a Spec. Where gh puts each one (in the folder itself or in a folder named for
+// the artifact) is not relied on: every folder is searched.
 export const artifactReader =
   (gh: Gh) =>
   (runId: number): string[] => {
@@ -231,9 +234,19 @@ export const artifactReader =
         dir,
       ]);
 
-      return readdirSync(dir, { recursive: true, withFileTypes: true })
+      const files = readdirSync(dir, { recursive: true, withFileTypes: true })
         .filter(entry => entry.isFile() && entry.name === OUTPUT_FILE)
-        .map(entry => join(entry.parentPath, entry.name))
+        .map(entry => {
+          const path = join(entry.parentPath, entry.name);
+          const [, key = path, attempt = '0'] =
+            basename(entry.parentPath).match(SPEC_ATTEMPT) ?? [];
+
+          return { attempt: Number(attempt), key, path };
+        })
+        // A Map keeps the last file of a key: the highest attempt.
+        .sort((a, b) => a.attempt - b.attempt);
+
+      return [...new Map(files.map(({ key, path }) => [key, path])).values()]
         .sort()
         .map(path => readFileSync(path, 'utf8'));
     } catch {
@@ -246,19 +259,30 @@ export const artifactReader =
 
 // The runs that have an unexpired summary, from one listing. Most runs have none (every issue
 // close starts an unblock run), and a download per run would fail to say so.
-export const runsWithArtifacts = (gh: Gh, repo: string): Set<number> =>
-  new Set(
-    gh([
-      'api',
-      '--paginate',
-      `repos/${repo}/actions/artifacts?per_page=100`,
-      '--jq',
-      '.artifacts[] | select(.expired | not) | select(.name == "claude-execution-output" or (.name | startswith("claude-execution-output-"))) | .workflow_run.id',
-    ])
-      .split('\n')
-      .filter(Boolean)
-      .map(Number)
-  );
+// If the listing fails, nothing is known: every run is downloaded, as it was without a listing.
+export const runsWithArtifacts = (
+  gh: Gh,
+  repo: string
+): Set<number> | undefined => {
+  try {
+    return new Set(
+      gh([
+        'api',
+        '--paginate',
+        `repos/${repo}/actions/artifacts?per_page=100`,
+        '--jq',
+        '.artifacts[] | select(.expired | not) | select(.name == "claude-execution-output" or (.name | startswith("claude-execution-output-"))) | .workflow_run.id',
+      ])
+        .split('\n')
+        .filter(Boolean)
+        .map(Number)
+    );
+  } catch {
+    console.error('The artifact listing failed: reading every run.');
+
+    return undefined;
+  }
+};
 
 // Most runs of these workflows are skipped (every comment, label and review starts one), so the
 // date is asked of GitHub, not left to a count of the newest runs that skipped ones would fill.
@@ -477,7 +501,7 @@ export const run = (
   const withArtifacts = runsWithArtifacts(gh, repo);
   const transcripts = WORKFLOWS.flatMap(workflow =>
     recentRunIds(gh, workflow, since)
-      .filter(id => withArtifacts.has(id))
+      .filter(id => !withArtifacts || withArtifacts.has(id))
       .flatMap(id =>
         readArtifact(id).flatMap(text => {
           const transcript = readSummary(text);

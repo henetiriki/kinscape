@@ -83,7 +83,7 @@ After a `/publish-design-system` run that sends files, the canvas still holds th
 
 ### Handing off a board
 
-A Spec names the board's file (for example `Map.dc.html`) and the canvas link. Claude Code reads the board with `read_file` on `project/<board>` and builds from its markup and values, checking the look against the board's snapshot in `source/`. The canvas's Export menu doesn't reach Claude Code: it offers HTML (every board in one file), PDF, PNG and Vercel.
+A Spec names the board's file (for example `Map.dc.html`). To hand it off, open the canvas's main menu › **Hand off to Claude Code**, name the board under "Add instructions", and send the prompt it opens in Claude Code. The prompt holds the canvas link; Claude Code reads the board with `read_file` on `project/<board>` and builds from its markup and values, checking the look against the board's snapshot in `source/`. Don't use Export: it offers HTML (every board in one file), PDF, PNG and Vercel.
 
 ## Brand
 

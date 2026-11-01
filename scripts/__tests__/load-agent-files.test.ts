@@ -826,6 +826,24 @@ describe('the fix-review workflow', () => {
     expect(inputs).not.toHaveProperty('playwright');
   });
 
+  // Without it the runner's gate checks for a draft plan PR and stops every ready PR.
+  it('has the shared runner gate the run as a fix', () => {
+    const runner = parse(read('claude-run.yml')) as {
+      jobs: Record<string, Job>;
+      on: { workflow_call: { inputs: Record<string, unknown> } };
+    };
+    const gate = runner.jobs.gate.steps?.find(step => step.id === 'gate');
+
+    expect(jobs().fix.with).toMatchObject({ kind: 'fix' });
+    expect(runner.on.workflow_call.inputs.kind).toMatchObject({
+      default: '',
+      type: 'string',
+    });
+    expect(gate?.env?.KIND).toBe(
+      "${{ inputs.kind == 'fix' && 'fix' || inputs.plan && 'plan' || 'build' }}"
+    );
+  });
+
   // The title and body are text from outside the team.
   it('gives the prompt the PR number alone', () => {
     const prompt = String(jobs().fix.with?.prompt);

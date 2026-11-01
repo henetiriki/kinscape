@@ -1,7 +1,7 @@
 # Plan: C467: Fix the review's findings when the fix-review label is added to a PR
 
 - **Spec:** #467
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@
 - **B.** Copy `claude-respond.yml`'s job, then add the comment and label steps.
 - **Other:** your own.
 
-Recommended: A, because it reuses the gate, comments and summary (its working comment says "Building…").
+**Answer: A** (@henetiriki)
 
 **D2 · Playwright** · Decides: Tech lead
 
@@ -23,7 +23,7 @@ Recommended: A, because it reuses the gate, comments and summary (its working co
 - **B.** On, as builds have it.
 - **Other:** your own.
 
-Recommended: A, because it's faster.
+**Answer: A** (@henetiriki)
 
 **D3 · Label on a skipped (draft, fork) PR** · Decides: Tech lead
 
@@ -31,7 +31,7 @@ Recommended: A, because it's faster.
 - **B.** It's removed.
 - **Other:** your own.
 
-Recommended: A, because it's the Chore's wording.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -433,19 +433,26 @@ describe('the keep-claude-output action', () => {
       "always() && steps.scan.outputs.clean == 'true'"
     );
     expect(uploads[0].with).toEqual({
-      // The review's changes-since step and the denial audit look the artifact up by this name.
-      name: 'claude-execution-output',
+      // The review's changes-since step looks the artifact up by the exact name, and the denial audit
+      // by the name and by names that start with it, so a suffix must follow it.
+      name: 'claude-execution-output${{ inputs.name_suffix }}',
       path: SCANNED,
       'retention-days': 7,
     });
   });
 
-  it('takes the thread the scan comments on, and whether to set up Node', () => {
+  it('takes the thread the scan comments on, whether to set up Node and a name suffix', () => {
     const { inputs } = keepAction();
 
-    expect(Object.keys(inputs).sort()).toEqual(['setup_node', 'thread']);
+    expect(Object.keys(inputs).sort()).toEqual([
+      'name_suffix',
+      'setup_node',
+      'thread',
+    ]);
     expect(inputs.thread.required).toBe(true);
     expect(inputs.setup_node.default).toBe('true');
+    // Empty, so a caller that gives none (and the review's lookup by exact name) keeps the old name.
+    expect(inputs.name_suffix.default).toBe('');
   });
 
   // A branch or the agent could leave a symlink, file or repo at that path for checkout to follow.
@@ -515,7 +522,9 @@ describe('the callers of the keep-claude-output action', () => {
   const keepCall = (steps: () => Step[]) =>
     steps().filter(step => step.uses?.includes('keep-claude'));
 
-  // run-claude's callers set up Node in setup-workspace; the review has none, so the action does.
+  // run-claude's callers set up Node in setup-workspace; the review and the refresh job have none, so
+  // the action does. The refresh job runs once per freed Spec, so its upload name ends with the Spec's
+  // number and the scan comments on that Spec.
   describe.each([
     ['run-claude', runClaudeSteps, { setup_node: 'false', thread: THREAD }],
     ['claude-code-review.yml', reviewSteps, { thread: THREAD }],
@@ -545,7 +554,7 @@ describe('the callers of the keep-claude-output action', () => {
     });
   });
 
-  // Two pins could drift if one pin PR is delayed, leaving the review and the runs on different code.
+  // Pins could drift if one pin PR is delayed, leaving the callers on different code.
   it('pins it to the same commit in both', () => {
     const pin = (steps: () => Step[]) => keepCall(steps)[0].uses?.split('@')[1];
 

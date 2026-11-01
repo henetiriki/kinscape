@@ -10,6 +10,9 @@ inputs:
   setup_node:
     description: "'false' when the caller has set up Node already (setup-workspace does), so the action keeps the job's Node."
     default: 'true'
+  name_suffix:
+    description: "Appended to the artifact name, e.g. '-482', so jobs of one run (a matrix) don't upload under the same name. The name still starts with claude-execution-output."
+    default: ''
 
 runs:
   using: composite
@@ -61,12 +64,13 @@ runs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: bash .claude-summary-script/scripts/scan-summary.sh
 
-    # The weekly denial audit (claude-denial-audit.yml) and the review's changes-since step look this
-    # artifact up by name. A failed upload fails the job.
+    # The weekly denial audit (claude-denial-audit.yml) reads every artifact named claude-execution-output
+    # or starting with it; the review's changes-since step looks up the exact name. A failed upload
+    # fails the job.
     - name: Upload Claude's output
       if: always() && steps.scan.outputs.clean == 'true'
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
-        name: claude-execution-output
+        name: claude-execution-output${{ inputs.name_suffix }}
         path: ${{ runner.temp }}/gitleaks/scan/claude-execution-output.json
         retention-days: 7

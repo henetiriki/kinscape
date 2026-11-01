@@ -22,6 +22,7 @@ const FORBIDDEN = [
   'var(',
   'calc(',
   '<script',
+  'x-import',
   '{{',
   '_blob',
   'http://',
@@ -146,19 +147,43 @@ export const linkMap = (canvas: CanvasExport): Record<string, string> => {
   return links;
 };
 
-/** The artboard as Chromium loads it: local fonts and icon, and no canvas `support.js`. */
+/**
+ * The artboard as Chromium loads it: local fonts and icon, and no canvas `support.js`. With a
+ * `system`, its tokens and scripts load from files, React 18 first, and its CSS is a `<style>`
+ * the page can read (a `file:` stylesheet is cross-origin to a `file:` page).
+ */
 export const prepare = (
   html: string,
   icon: string,
-  urls: { fonts: string; icon: string }
-): string =>
-  html
+  urls: {
+    fonts: string;
+    icon: string;
+    system?: { css: string; design: string; react: string; reactDom: string };
+  }
+): string => {
+  const page = html
     .replace(/<link[^>]+fonts\.(?:googleapis|gstatic)[^>]*>/g, '')
     .replace(
       '<script src="./support.js"></script>',
       () => `<link rel="stylesheet" href="${urls.fonts}">`
     )
     .replaceAll(icon, () => urls.icon);
+  const { system } = urls;
+
+  return system === undefined
+    ? page
+    : page
+        .replace(
+          '<link rel="stylesheet" href="ds/kinscape/components/bundle.css">',
+          () => `<style data-bundle>${system.css}</style>`
+        )
+        .replace(
+          '<script src="ds/kinscape/components/bundle.js"></script>',
+          () =>
+            `<script src="${system.react}"></script><script src="${system.reactDom}"></script><script src="${system.design}components/bundle.js"></script>`
+        )
+        .replaceAll('"ds/kinscape/', () => `"${system.design}`);
+};
 
 /** The page's HTML with the icon and artboard links pointing at repo files. */
 export const finish = (
@@ -366,6 +391,32 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
         continue;
       }
 
+      if (tag === 'x-import') {
+        // A component's props are values, not text: `{{ }}` holes keep their type, and
+        // `mountImports` reads them back. Kebab-case names become camelCase, except aria-* and data-*.
+        const props: Scope = {};
+
+        for (const { name, value } of Array.from(child.attributes)) {
+          if (name === 'component-from-global-scope' || name === 'style') {
+            continue;
+          }
+
+          const path = whole(value);
+
+          props[
+            /^(?:aria|data)-/.test(name)
+              ? name
+              : name.replace(/-([a-z])/g, (_match, letter: string) =>
+                  letter.toUpperCase()
+                )
+          ] = path === null ? fill(value, scope) : read(scope, path);
+        }
+
+        (child as { props?: Scope } & Element).props = props;
+        walk(child, scope);
+        continue;
+      }
+
       for (const { name, value } of Array.from(child.attributes)) {
         if (!value.includes('{{')) {
           continue;
@@ -422,6 +473,37 @@ export const pageHtml = (): string => {
     wrapper.replaceWith(...wrapper.childNodes);
   }
 
+  // Each `var(--name)` becomes the root's value, then `calc()` below resolves what is left.
+  const root = getComputedStyle(document.documentElement);
+
+  for (const element of document.querySelectorAll('[style]')) {
+    const text = String(element.getAttribute('style'));
+
+    if (text.includes('var(')) {
+      element.setAttribute(
+        'style',
+        text.replace(/var\((--[\w-]+)\)/g, (_match, name: string) =>
+          root.getPropertyValue(name).trim()
+        )
+      );
+    }
+  }
+
+  // A control's wrapper goes; the one with a `style` places its slot, so it stays as a box.
+  for (const wrapper of document.querySelectorAll('x-import')) {
+    const placing = wrapper.getAttribute('style');
+
+    if (placing === null) {
+      wrapper.replaceWith(...wrapper.childNodes);
+    } else {
+      const box = document.createElement('div');
+
+      box.style.cssText = placing;
+      box.append(...wrapper.childNodes);
+      wrapper.replaceWith(box);
+    }
+  }
+
   for (const element of document.querySelectorAll<HTMLElement | SVGElement>(
     '[style]'
   )) {
@@ -452,8 +534,145 @@ export const pageHtml = (): string => {
   return `<!doctype html>\n${document.documentElement.outerHTML}\n`;
 };
 
+/**
+ * Runs in the page, after `fillTemplate`: renders each top-level `<x-import>` from the global
+ * its `component-from-global-scope` names (`KinScape.Button`), with the props `fillTemplate`
+ * kept and its content as children. Uses nothing from the module, as `fillTemplate`.
+ */
+export const mountImports = async (): Promise<void> => {
+  type Imported = { props?: Record<string, unknown> } & Element;
+
+  const imports = Array.from(
+    document.querySelectorAll<Imported>('x-import')
+  ).filter(element => element.parentElement?.closest('x-import') == null);
+
+  if (imports.length === 0) {
+    return;
+  }
+
+  const { React, ReactDOM } = window as unknown as {
+    React?: {
+      createElement: (
+        component: unknown,
+        props: unknown,
+        ...children: unknown[]
+      ) => unknown;
+    };
+    ReactDOM?: {
+      createRoot: (container: Element) => { render: (tree: unknown) => void };
+      flushSync: (run: () => void) => void;
+    };
+  };
+
+  if (!React || !ReactDOM) {
+    throw new Error('React 18 is not loaded');
+  }
+
+  const build = (element: Imported): unknown => {
+    const path = String(element.getAttribute('component-from-global-scope'));
+    const component = path
+      .split('.')
+      .reduce<unknown>(
+        (value, key) =>
+          value == null ? undefined : (value as Record<string, unknown>)[key],
+        window
+      );
+
+    if (component == null) {
+      throw new Error(`No component ${path}`);
+    }
+
+    const children = Array.from(element.childNodes).flatMap(child => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        return child.nodeValue?.trim() ? [child.nodeValue] : [];
+      }
+
+      if (child instanceof Element && child.tagName === 'X-IMPORT') {
+        return [build(child)];
+      }
+
+      throw new Error(
+        `Unsupported <${child.nodeName.toLowerCase()}> inside <x-import>`
+      );
+    });
+
+    return React.createElement(component, element.props, ...children);
+  };
+
+  // Every tree is built before any content is cleared: a nested `<x-import>` is a child's source.
+  const trees = imports.map(element => [element, build(element)] as const);
+
+  for (const [element, tree] of trees) {
+    element.textContent = '';
+    ReactDOM.flushSync(() => ReactDOM.createRoot(element).render(tree));
+  }
+
+  // Effects that set state, such as the date field's first check, settle in a later frame.
+  await new Promise(resolve => setTimeout(resolve, 50));
+};
+
+/**
+ * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
+ * is dropped from the snapshot, so each rendered element takes the computed value of every
+ * property a rule that matches it declares. Custom properties and states (`:hover`) stay out.
+ * Uses nothing from the module, as `fillTemplate`.
+ */
+export const inlineStyles = (): void => {
+  const bundle = document.querySelector<HTMLStyleElement>('style[data-bundle]');
+
+  if (!bundle?.sheet) {
+    return;
+  }
+
+  const elements = Array.from(
+    document.querySelectorAll<HTMLElement>('x-import *')
+  );
+  const apply = (rules: CSSRuleList): void => {
+    for (const rule of Array.from(rules)) {
+      if ('selectorText' in rule) {
+        const { selectorText, style: declared } = rule as CSSStyleRule;
+
+        for (const element of elements.filter(item =>
+          item.matches(selectorText)
+        )) {
+          for (const name of Array.from(declared)) {
+            if (!name.startsWith('--')) {
+              element.style.setProperty(
+                name,
+                getComputedStyle(element).getPropertyValue(name)
+              );
+            }
+          }
+        }
+      }
+
+      if ('cssRules' in rule) {
+        apply((rule as CSSGroupingRule).cssRules);
+      }
+    }
+  };
+
+  apply(bundle.sheet.cssRules);
+  bundle.remove();
+};
+
 const fileUrl = (root: string, path: string) =>
   pathToFileURL(resolve(root, path)).href;
+
+/** The design system as an artboard that uses it loads it: the canvas copy, and React 18 from `node_modules`. */
+const designSystem = (root: string) => {
+  const dir = 'design/canvas/project/ds/kinscape';
+
+  return {
+    css: readFileSync(join(root, dir, 'components/bundle.css'), 'utf8'),
+    design: `${fileUrl(root, dir)}/`,
+    react: fileUrl(root, 'node_modules/react-18/umd/react.production.min.js'),
+    reactDom: fileUrl(
+      root,
+      'node_modules/react-dom-18/umd/react-dom.production.min.js'
+    ),
+  };
+};
 
 /**
  * Exports the named snapshots (all when none are named) from the canvas copy into
@@ -495,7 +714,12 @@ export const exportSnapshots = async (
     );
     const target = join(root, SOURCE_DIR, `${snapshot.name}.html`);
     const rendered = await deps.render(
-      prepare(artboard, canvas.icon, urls),
+      prepare(artboard, canvas.icon, {
+        ...urls,
+        ...(artboard.includes('<x-import') && {
+          system: designSystem(root),
+        }),
+      }),
       snapshot
     );
     const html = await format(finish(rendered, urls.icon, links), {
@@ -560,6 +784,8 @@ if (import.meta.main) {
 
         try {
           await page.evaluate(fillTemplate, { props, state });
+          await page.evaluate(mountImports);
+          await page.evaluate(inlineStyles);
           await page.evaluate(() => document.fonts.ready);
           snapshot = await page.evaluate(pageHtml);
         } catch (error) {

@@ -8,7 +8,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 - **Intents:** one per milestone (M1–M6), filed already approved. New ideas and requirement changes arrive as `type: intent` issues.
 - **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead, engineering-only ones.
 - `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen isn't designed, list it under **Flagged concerns**; don't invent the UI.
-- Only the design agent edits `design/canvas/`; a [workflow](design/DESIGN.md#screens) makes `design/source/` and `design/*.jpg` from it. Edit none of them. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
+- Only the design agent, or a person by the [refresh steps](design/DESIGN.md#refreshing-the-copy), edits `design/canvas/`; a [workflow](design/DESIGN.md#screens) makes `design/source/` and `design/*.jpg` from it. Edit none of them. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) is proposed, not a rule.
 - `docs/how-we-work.md`: the workflow, labels and roles.
 - Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.

@@ -9,16 +9,16 @@
 
 ## Files that change
 
-| File                                                                                                 | What                                       |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| `.github/workflows/claude.yml` → `claude-respond.yml`                                                | Renamed; `name:`                           |
-| `.github/actions/run-claude/action.yml`, `run-summary/action.yml`                                    | Description                                |
-| `claude-build.yml`, `claude-plan.yml`, `claude-run.yml`, `claude-unblock.yml`                        | Comments                                   |
-| `docs/repo-settings.md`, `scripts/run-summary.mts`                                                   | One mention each                           |
-| `scripts/denial-audit.mts`                                                                           | `WORKFLOWS` entry                          |
-| `scripts/__tests__/denial-audit.test.ts`                                                             | File names; `runs` keys re-sorted (ESLint) |
-| `scripts/__tests__/load-agent-files.test.ts`, `plan-pr-condition.test.ts`, `setup-workspace.test.ts` | File names in paths, comments and titles   |
-| `.github/workflows/README.md`                                                                        | Regenerated                                |
+| File                                                                                                 | What                                     |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `.github/workflows/claude.yml` → `claude-respond.yml`                                                | Renamed; `name:`                         |
+| `.github/actions/run-claude/action.yml`, `run-summary/action.yml`                                    | Description                              |
+| `claude-build.yml`, `claude-plan.yml`, `claude-run.yml`, `claude-unblock.yml`                        | Comments                                 |
+| `docs/repo-settings.md`, `scripts/run-summary.mts`                                                   | One mention each                         |
+| `scripts/denial-audit.mts`                                                                           | `WORKFLOWS` entry                        |
+| `scripts/__tests__/denial-audit.test.ts`                                                             | File names                               |
+| `scripts/__tests__/load-agent-files.test.ts`, `plan-pr-condition.test.ts`, `setup-workspace.test.ts` | File names in paths, comments and titles |
+| `.github/workflows/README.md`                                                                        | Regenerated                              |
 
 ## Order of work
 

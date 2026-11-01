@@ -81,11 +81,11 @@ The agent in Actions can't read the canvas.
 
 ## Order of work
 
-1. **Tech lead:** boards, screenshot, copy refresh. Done (`e0fb378`).
+1. **Tech lead:** boards, screenshot, copy refresh. Done.
 2. **Red first:** add both `export.json` entries, unpushed. The tech lead runs `npm run design:export`; the failure goes in the PR's Evidence.
 3. **Agent:** exporter tests first, then code; `design:export` prints only `Rewrote: add-pin, add-pin-phone`. Push; run the shots workflow.
 4. **Page** (D3), `screens.json`, doc rows; `/match-design` for both.
-5. The checks in `AGENTS.md`.
+5. `AGENTS.md` checks.
 
 ## Proof
 
@@ -104,4 +104,5 @@ The kit nav; Layers and Filters panels on `/screens` (a later Chore).
 ## Deviations
 
 - Two CSS modules: `AddPinPanel.module.css`, `layout.module.css`.
+- `tsconfig.json` now includes `.mts`.
 - The e2e spec is `.mts`: Playwright loads `.ts` specs as CommonJS, which can't import `design-export.mts`.

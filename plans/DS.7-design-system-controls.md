@@ -69,7 +69,6 @@ Six controls also take their HTML element's attributes.
 
 ## Risks
 
-- About 560 changed lines. Past 600, I stop (rule 7) to split READMEs from previews.
 - Only a publish shows whether the type accepts the cards.
 
 ## Proof
@@ -85,6 +84,7 @@ Six controls also take their HTML element's attributes.
 ## Deviations
 
 - The new types live in `lib/design/types.ts` (lint rule); `states.mts` also holds each card's `pad`.
+- About 1,100 changed lines, past the 600-line cap (rule 7); @henetiriki chose one PR over a split.
 
 ## Out of scope
 

@@ -396,7 +396,7 @@ describe('bundle', () => {
         const html = read(
           join(out, 'project/components', name, 'preview.html')
         );
-        const script = /<script>([\s\S]*)<\/script>/.exec(html)![1];
+        const script = /<script>([\s\S]*)<\/script>/i.exec(html)![1];
 
         page.document.body.innerHTML = '<div id="root"></div>';
         page.eval(script);

@@ -104,7 +104,7 @@ describe('previewHtml', () => {
 
   it('has a root and one script that mounts the control with its states', () => {
     expect(html).toContain('<div id="root"></div>');
-    expect(html.match(/<script>/g)).toHaveLength(1);
+    expect(html.match(/<script>/gi)).toHaveLength(1);
     expect(html).toContain('window.KinScape["Toast"]');
     expect(html).toContain('"label":"Toast · error"');
     expect(html).toContain('["onDismiss"]');
@@ -121,7 +121,7 @@ describe('previewHtml', () => {
       states: [{ children: '</script><!--', label: 'x', props: {} }],
     });
 
-    expect(tricky.match(/<\/script>/g)).toHaveLength(1);
+    expect(tricky.match(/<\/script>/gi)).toHaveLength(1);
     expect(tricky).not.toContain('<!--</');
   });
 });

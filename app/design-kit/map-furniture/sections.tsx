@@ -95,8 +95,8 @@ export const Wordmarks = () => (
         [
           'Alt',
           <>
-            Beside the name the icon is decoration: {code('alt="".')} Alone (the
-            phone pill) it is {code('alt="KinScape".')}
+            Beside the name the icon is decoration:{code(' alt="". ')}Alone (the
+            phone pill) it is{code(' alt="KinScape". ')}
           </>,
         ],
         [

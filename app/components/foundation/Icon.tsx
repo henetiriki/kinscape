@@ -66,8 +66,8 @@ export const PATHS = {
   ),
   layers: (
     <>
-      <path d='M12 3l9 5-9 5-9-5 9-5z' />
-      <path d='M3 13l9 5 9-5' />
+      <path d='M12 3l9 5-9 5-9-5 9-5z' strokeLinecap='butt' />
+      <path d='M3 13l9 5 9-5' strokeLinecap='butt' />
     </>
   ),
   menu: <path d='M4 7h16M4 12h16M4 17h16' />,

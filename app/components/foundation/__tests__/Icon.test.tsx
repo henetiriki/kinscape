@@ -57,6 +57,17 @@ it('draws a decorative icon in both forms', () => {
   expect(filled.getAttribute('aria-hidden')).toBe('true');
 });
 
+it('draws layers with butt caps', () => {
+  const paths = svgOf(
+    render(<Icon name='layers' />).container
+  ).querySelectorAll('path');
+
+  expect(paths).toHaveLength(2);
+  paths.forEach(path =>
+    expect(path.getAttribute('stroke-linecap')).toBe('butt')
+  );
+});
+
 it('fills play with no stroke', () => {
   const path = svgOf(render(<Icon name='play' />).container).querySelector(
     'path'

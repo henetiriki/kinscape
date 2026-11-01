@@ -64,13 +64,16 @@ export { Fragment };
 `;
 
 const check = (file: string, text: string, banned: string[], max: number) => {
+  // HTML closes tags in any case.
+  const lower = text.toLowerCase();
+
   for (const string of banned) {
-    if (text.includes(string)) {
+    if (lower.includes(string)) {
       throw new Error(`${file} holds "${string}"`);
     }
   }
 
-  if (text.length > max) {
+  if (Buffer.byteLength(text) > max) {
     throw new Error(`${file} is over ${max / MB} MB`);
   }
 };
@@ -109,7 +112,8 @@ export const gatherTypes = (
   const bodies = new Map<string, string>();
   const queue: string[] = [];
   const controlStems = controls.map(({ path }) => stem(resolve(root, path)));
-  const bodyOf = (file: string, text: string): string => {
+  // Only a control's own value is on `window.KinScape`, so no other value is exported.
+  const bodyOf = (file: string, text: string, own?: string): string => {
     for (const match of text.matchAll(IMPORT)) {
       const specifier = match[1];
 
@@ -149,6 +153,11 @@ export const gatherTypes = (
     return text
       .replace(IMPORT, '')
       .replace(/^export \{\};\n?/m, '')
+      .replace(
+        /^export ((?:declare )?(?:const|function|class|enum|type|interface) ([\w$]+))/gm,
+        (all, rest: string, name: string) =>
+          name === own || /^(type|interface) /.test(rest) ? all : rest
+      )
       .trim();
   };
 
@@ -159,7 +168,7 @@ export const gatherTypes = (
       throw new Error(`No declaration for ${controls[index].path}`);
     }
 
-    bodies.set(file, bodyOf(file, text));
+    bodies.set(file, bodyOf(file, text, controls[index].name));
   }
 
   for (let next = queue.shift(); next !== undefined; next = queue.shift()) {
@@ -183,5 +192,7 @@ export const gatherTypes = (
       ({ name }, index) =>
         `${bodies.get(controlStems[index])}\nexport type ${name}Props = Parameters<typeof ${name}>[0];`
     ),
+    // Turns off a declaration file's export of everything, so unexported values stay private.
+    'export {};',
   ].join('\n\n')}\n`;
 };

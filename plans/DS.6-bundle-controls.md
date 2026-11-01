@@ -30,20 +30,22 @@ No control exports its props type, and lint allows exported types only in `types
 
 ## Files that change
 
-| File                                      | New / changed | What                                                                              |
-| ----------------------------------------- | ------------- | --------------------------------------------------------------------------------- |
-| `package.json`, `package-lock.json`       | changed       | `vite` 8.3.5 in `devDependencies` (D2 on #449)                                    |
-| `lib/design/bundle.mts`                   | new           | `CONTROLS`, header, entry, JSX shim, checks, gathering                            |
-| `lib/design/__tests__/bundle.test.ts`     | new           | Each helper; each check fails naming its problem                                  |
-| `lib/design/system.mts`                   | changed       | `libraries`: `react` and `react-dom` at 18                                        |
-| `lib/design/__tests__/system.test.ts`     | changed       | The index's new `libraries`                                                       |
-| `scripts/design-system.mts`               | changed       | `buildControls`; `run` async, writing `components/`                               |
-| `scripts/__tests__/design-system.test.ts` | changed       | Awaits `run`; header, strings, sizes, types file                                  |
-| `lib/design/__tests__/react-18.test.tsx`  | changed       | Mounts each control's first case (by `element.type`) from the bundle (D3 on #449) |
+| File                                              | New / changed | What                                                                              |
+| ------------------------------------------------- | ------------- | --------------------------------------------------------------------------------- |
+| `package.json`, `package-lock.json`               | changed       | `vite` 8.3.5 in `devDependencies` (D2 on #449)                                    |
+| `lib/design/bundle.mts`                           | new           | `CONTROLS`, header, entry, JSX shim, checks, gathering                            |
+| `lib/design/__tests__/bundle.test.ts`             | new           | Each helper; each check fails naming its problem                                  |
+| `lib/design/system.mts`                           | changed       | `libraries`: `react` and `react-dom` at 18                                        |
+| `lib/design/__tests__/system.test.ts`             | changed       | The index's new `libraries`                                                       |
+| `scripts/design-system.mts`                       | changed       | `buildControls`; `run` async, writing `components/`                               |
+| `scripts/__tests__/design-system.test.ts`         | changed       | Awaits `run`; header, strings, sizes, types file                                  |
+| `lib/design/__tests__/react-18.test.tsx`          | changed       | Mounts each control's first case (by `element.type`) from the bundle (D3 on #449) |
+| `scripts/__tests__/design-system-publish.test.ts` | changed       | Awaits `run`                                                                      |
 
 ## Deviations
 
-- `design-system-publish.test.ts` awaits `run`; `eslint.config.mjs` and `tsconfig.json` skip `.design-system/`; `types/modules.d.ts` declares `jsdom` (no types shipped).
+- The mount test uses `runScripts: 'outside-only'` and `eval`, not `<script>` elements.
+- `eslint.config.mjs` and `tsconfig.json` skip `.design-system/`; `types/modules.d.ts` declares `jsdom` (no types shipped).
 - No `onLog` filter or diagnostics check: `logLevel: 'silent'` hides the warning, and `gatherTypes` fails on a bad declaration.
 
 ## Order of work
@@ -57,8 +59,7 @@ No control exports its props type, and lint allows exported types only in `types
 
 ## Risks
 
-- After merge, `/publish-design-system` sends `components/` and React 18 too, before DS.7's previews. The tech lead may hold publishing until DS.7.
-- The shim must pass `key` and keep React 18 from warning; the mount test fails on any warning.
+- After merge, `/publish-design-system` sends `components/` and React 18 too, before DS.7's previews.- The shim must pass `key` and keep React 18 from warning; the mount test fails on any warning.
 - JSDOM may reject modern CSS in `bundle.css`. Then I stop and ask rather than filter the errors.
 - `'use client'` lines make Rolldown warn; the build silences only that warning.
 

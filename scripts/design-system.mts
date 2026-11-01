@@ -1,5 +1,3 @@
-import type { OutputAsset, OutputChunk, RolldownOutput } from 'rolldown';
-
 import { execFileSync } from 'node:child_process';
 import {
   copyFileSync,
@@ -40,7 +38,14 @@ const OUTPUT = '.design-system';
 const ENTRY = 'ks-controls.virtual.js';
 const SHIM = '\0ks-jsx-runtime';
 
+// Vite doesn't re-export Rolldown's types, and `rolldown` isn't a declared dependency.
+type Built = Exclude<
+  Awaited<ReturnType<typeof build>>,
+  { close: unknown } | unknown[]
+>;
+
 type Controls = { css: string; js: string; types: string };
+type Output = Built['output'][number];
 
 /** The `.d.ts` text TypeScript emits for the controls and what they import, keyed by file. */
 const declarations = (root: string): Record<string, string> => {
@@ -116,13 +121,19 @@ const buildControls = async (root: string): Promise<Controls> => {
     root: base,
   });
   // A library build returns one output per format.
-  const [{ output }] = [built].flat() as RolldownOutput[];
-  const code = output.find(file => file.type === 'chunk');
-  const css = output.find(file => file.fileName.endsWith('.css'));
+  const [{ output }] = [built].flat() as Built[];
+  const code = output.find(file => file.type === 'chunk') as Extract<
+    Output,
+    { type: 'chunk' }
+  >;
+  const css = output.find(file => file.fileName.endsWith('.css')) as Extract<
+    Output,
+    { type: 'asset' }
+  >;
 
   return {
-    css: String((css as OutputAsset).source),
-    js: (code as OutputChunk).code,
+    css: String(css.source),
+    js: code.code,
     types: gatherTypes(base, CONTROLS, declarations(base)),
   };
 };

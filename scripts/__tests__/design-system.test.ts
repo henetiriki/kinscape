@@ -172,6 +172,17 @@ describe('the controls bundle', () => {
       );
     }
   });
+
+  it('exports exactly the controls as values', () => {
+    const values = [
+      ...component('index.d.ts').matchAll(
+        /^export (?:declare )?(?:const|function|class|enum) ([\w$]+)/gm
+      ),
+    ].map(match => match[1]);
+
+    expect(values.toSorted()).toEqual(names.toSorted());
+    expect(component('index.d.ts')).toMatch(/^export \{\};$/m);
+  });
 });
 
 describe('the output folder', () => {

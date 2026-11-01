@@ -72,7 +72,9 @@ describe('checkScript', () => {
   it.each([
     ['</script', 'x = "</script>"', 'bundle.js holds "</script"'],
     ['<!--', 'x = "<!--"', 'bundle.js holds "<!--"'],
+    ['</SCRIPT', 'x = "</SCRIPT>"', 'bundle.js holds "</script"'],
     ['size', 'x'.repeat(6 * 1024 * 1024 + 1), 'bundle.js is over 6 MB'],
+    ['bytes', 'é'.repeat(3 * 1024 * 1024 + 1), 'bundle.js is over 6 MB'],
   ])('fails on %s', (_name, code, message) => {
     expect(() => checkScript(code)).toThrow(message);
   });
@@ -129,10 +131,12 @@ describe('gatherTypes', () => {
       '    kind: Kind;',
       '    children: ReactNode;',
       '}) => null;',
+      'export declare const Extra: number;',
       'export {};',
       '',
     ].join('\n'),
-    '/r/a/types.d.ts': "export type Kind = 'x' | 'y';\n",
+    '/r/a/types.d.ts':
+      "export type Kind = 'x' | 'y';\nexport declare const MARKS: string[];\n",
     '/r/a/unused.d.ts': 'export type Unused = 1;\n',
   };
 
@@ -143,6 +147,7 @@ describe('gatherTypes', () => {
         "import type { ComponentProps, ReactNode } from 'react';",
         '',
         "export type Kind = 'x' | 'y';",
+        'declare const MARKS: string[];',
         '',
         'export declare const One: (p: {',
         '    kind: Kind;',
@@ -154,7 +159,10 @@ describe('gatherTypes', () => {
         '    kind: Kind;',
         '    children: ReactNode;',
         '}) => null;',
+        'declare const Extra: number;',
         'export type TwoProps = Parameters<typeof Two>[0];',
+        '',
+        'export {};',
         '',
       ].join('\n')
     );

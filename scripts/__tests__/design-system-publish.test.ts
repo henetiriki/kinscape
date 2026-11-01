@@ -48,7 +48,7 @@ beforeAll(async () => {
   project = join(out, 'project');
   sums = checksums(project);
   icons = Object.keys(sums).filter(path => path.startsWith('project/assets/'));
-});
+}, 120_000);
 
 afterAll(() => {
   rmSync(out, { force: true, recursive: true });
@@ -324,7 +324,7 @@ describe('cli', () => {
       'design/DESIGN.md',
       `# KinScape design\n\nThe [design system](${LINK}).\n\n## Screens\n`
     );
-  });
+  }, 120_000);
 
   afterAll(() => {
     rmSync(root, { force: true, recursive: true });

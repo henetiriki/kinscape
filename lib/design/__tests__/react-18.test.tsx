@@ -340,23 +340,26 @@ describe('bundle', () => {
         KinScape: Record<string, unknown>;
         React: typeof React;
         ReactDOM: typeof ReactDOM & {
-          createRoot: (node: Element) => { render: (el: unknown) => void };
+          createRoot: (node: Element) => {
+            render: (el: unknown) => void;
+            unmount: () => void;
+          };
         };
       };
       const root = page.document.createElement('div');
+      const reactRoot = pageDom.createRoot(root);
 
       page.document.body.append(root);
       pageDom.flushSync(() =>
-        pageDom
-          .createRoot(root)
-          .render(
-            pageReact.createElement(
-              KinScape[name] as never,
-              (first as [string, ReactElement])[1].props as never
-            )
+        reactRoot.render(
+          pageReact.createElement(
+            KinScape[name] as never,
+            (first as [string, ReactElement])[1].props as never
           )
+        )
       );
       expect(root.innerHTML).not.toBe('');
+      pageDom.flushSync(() => reactRoot.unmount());
       expect(problems).toEqual([]);
     }
   );

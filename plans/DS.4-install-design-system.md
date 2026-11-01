@@ -46,7 +46,7 @@ The old canvas (`1MyZ…`) can't be read: the file tools refuse a canvas that so
 2. Install: Claude Code copies the design system's `project/` files into `project/ds/kinscape/` and adds the `designSystems` entry, in one publish. The tech lead screenshots a board's colour picker and text styles.
 3. Refresh again, commit. Run `design:export`, `git diff --exit-code design/source`, `lint`, `format:check`, `typecheck`.
 4. Hand one board to Claude Code by the Export menu, and by Claude Code reading its file from the canvas. Note what each offered and what arrived.
-5. Update the docs as step 4 shows, in one commit. Reword Spec #447 (steps 1–3) and Intent #442 ("existing canvas") with `gh issue edit` (rule 3).
+5. Update the docs as step 4 shows, in one commit. Reword Spec #447 (steps 1–3) with `gh issue edit` (rule 3).
 6. Run `lint`, `format:check`, `words`, `test`, `validate:boundaries`, `e2e`, `design:check`.
 
 ## Risks
@@ -69,3 +69,7 @@ The old canvas (`1MyZ…`) can't be read: the file tools refuse a canvas that so
 
 - Changing boards to use the system (DS.8) and components (DS.7).
 - Deleting or moving the old canvas.
+
+## Deviations
+
+- Intent #442 got a comment, not a body rewrite: rule 3 covers the Spec only.

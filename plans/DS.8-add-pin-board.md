@@ -2,7 +2,7 @@
 
 - **Spec:** #451
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -31,7 +31,7 @@ Every `/design-kit` page gets the kit banner from `layout.tsx`; the SG boards dr
 - **B.** The board leaves the banner's band empty; `screens.json` ignores it.
 - **Other:** your own.
 
-Recommended: A, because the check then covers the whole page.
+**Answer: A** (@henetiriki)
 
 **D2 · Where the test board is exported** · Decides: Tech lead
 
@@ -41,7 +41,7 @@ jsdom resolves no `var()` and computes no cascade; the `test` job has no browser
 - **B.** Vitest launches Chromium; the `test` job must install it (a code-owner workflow change).
 - **Other:** your own.
 
-Recommended: A, because it needs no workflow change.
+**Answer: A** (@henetiriki)
 
 **D3 · Who builds the page** · Decides: Tech lead
 
@@ -51,7 +51,7 @@ The agent in Actions can't read the canvas.
 - **B.** The agent builds from the snapshot; the handoff is only tried.
 - **Other:** your own.
 
-Recommended: A, because check 5 on #442 is the handoff itself.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

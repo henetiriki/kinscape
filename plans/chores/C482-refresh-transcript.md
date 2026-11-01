@@ -1,11 +1,11 @@
 # Plan: C482: Upload the refresh agent's transcript and include it in the denial audit
 
 - **Spec:** #482
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
-`keep-claude-output` gets a `name_suffix` input (D1: B, answered on #482), appended to the upload name. The refresh job calls it with `if: always()`, `thread` and `name_suffix: -<spec number>`. All three callers pin the commit adding the input; `actions-pin-update.yml` moves them after merge. The audit downloads with `-p claude-execution-output -p 'claude-execution-output-*'`, reads each artifact's folder, and judges `claude-unblock.yml` by `refresh-settings.json`.
+`keep-claude-output` gets a `name_suffix` input (D1: B, on #482), added to the upload name. The refresh job calls it with `if: always()`, `thread`, `name_suffix: -<spec number>`. All three callers pin the commit adding the input; `actions-pin-update.yml` moves them after merge. The audit downloads with `-p claude-execution-output -p 'claude-execution-output-*'`, reads every `claude-execution-output.json` under the download folder (`gh` puts one artifact in the folder itself, several in one folder each), and judges `claude-unblock.yml` by `refresh-settings.json`.
 
 ## Decisions
 
@@ -17,6 +17,8 @@
 
 Recommended: A, because each artifact is one Claude session, like a plan run.
 
+**Answer: A**, as recommended (@henetiriki had it built unanswered).
+
 **D3 · The Workflow column's name for it** · Decides: Tech lead
 
 - **A.** `refresh`, the agent.
@@ -25,17 +27,19 @@ Recommended: A, because each artifact is one Claude session, like a plan run.
 
 Recommended: A, because the unblock job runs no Claude.
 
+**Answer: A.**
+
 ## Files that change
 
-| File                                            | What                                 |
-| ----------------------------------------------- | ------------------------------------ |
-| `.github/actions/keep-claude-output/action.yml` | `name_suffix`                        |
-| `.github/actions/run-claude/action.yml`         | Pin                                  |
-| `.github/workflows/claude-code-review.yml`      | Pin                                  |
-| `.github/workflows/claude-unblock.yml`          | Calls the action                     |
-| `scripts/denial-audit.mts`                      | Every artifact; refresh row; D2      |
-| `scripts/__tests__/denial-audit.test.ts`        | Several artifacts; refresh row       |
-| `scripts/__tests__/load-agent-files.test.ts`    | New input; refresh as a third caller |
+| File                                            | What                            |
+| ----------------------------------------------- | ------------------------------- |
+| `.github/actions/keep-claude-output/action.yml` | `name_suffix`                   |
+| `.github/actions/run-claude/action.yml`         | Pin                             |
+| `.github/workflows/claude-code-review.yml`      | Pin                             |
+| `.github/workflows/claude-unblock.yml`          | Calls the action                |
+| `scripts/denial-audit.mts`                      | Every artifact; refresh row; D2 |
+| `scripts/__tests__/denial-audit.test.ts`        | Several artifacts; refresh row  |
+| `scripts/__tests__/load-agent-files.test.ts`    | New input; third caller         |
 
 ## Order of work
 
@@ -45,7 +49,7 @@ Recommended: A, because the unblock job runs no Claude.
 ## Risks
 
 - `gh run download -p` layout: tested, then checked on a real run.
-- Editing `claude-code-review.yml` skips this PR's review; run `/code-review`.
+- Editing `claude-code-review.yml` skips this PR's review: run `/code-review`.
 
 ## Proof
 

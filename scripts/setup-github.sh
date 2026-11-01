@@ -33,6 +33,9 @@ label "status: blocked"         "7F1D1D" "Waiting on someone outside the team, o
 # Applied by claude-hand-back.yml to a pull request that changes a code-owner path
 label "hand-back" "B60205" "The tech lead builds this: it changes a code-owner path"
 
+# Added by the tech lead to a pull request to start claude-fix-review.yml; the run removes it
+label "fix-review" "FBCA04" "Claude fixes the review's findings on this PR"
+
 # Remove GitHub's default labels that overlap with ours, and our retired ones (ignore if already gone)
 for l in bug documentation duplicate enhancement "good first issue" "help wanted" invalid question wontfix \
   "status: in-progress" "status: in-review"; do

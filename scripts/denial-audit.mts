@@ -49,6 +49,7 @@ const WORKFLOWS = [
   'claude-build.yml',
   'claude-respond.yml',
   'claude-code-review.yml',
+  'claude-fix-review.yml',
 ];
 const DAYS = 7;
 // A denial repeats when it hit this many runs, or this many times in all.

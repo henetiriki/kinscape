@@ -5,7 +5,7 @@
 
 ## Approach
 
-`claude-fix-review.yml` calls `claude-run.yml` unchanged, like `claude-build.yml`: head branch, `plan: false`, Sonnet, `rules.md fix-review.md`. The prompt names `$THREAD`, the runner's PR-number env. A job `unlabel` (`needs: fix`, `if: always() && needs.fix.result != 'skipped'`) removes the label and allows a 404.
+`claude-fix-review.yml` calls `claude-run.yml` unchanged: head branch, `plan: false`, Sonnet, `rules.md fix-review.md`. The prompt names the PR number. A job `unlabel` (`needs: fix`, `if: always() && needs.fix.result != 'skipped'`) removes the label and allows a 404.
 
 ## Decisions
 
@@ -37,12 +37,12 @@
 
 | File                                         | New / changed | What                                                       |
 | -------------------------------------------- | ------------- | ---------------------------------------------------------- |
-| `.github/workflows/claude-fix-review.yml`    | New           | Trigger, `if:` and run-name, as the Chore says             |
+| `.github/workflows/claude-fix-review.yml`    | New           | As the Chore says                                          |
 | `.github/agent/fix-review.md`                | New           | Find unresolved `claude[bot]` threads and the gaps comment |
 | `scripts/setup-github.sh`                    | Changed       | The label                                                  |
 | `docs/repo-settings.md`, `docs/building.md`  | Changed       | Label row; step 4                                          |
 | `scripts/denial-audit.mts` and its test      | Changed       | `WORKFLOWS`                                                |
-| `scripts/__tests__/load-agent-files.test.ts` | Changed       | Check the new `agent_files:` list                          |
+| `scripts/__tests__/load-agent-files.test.ts` | Changed       | New workflow checks                                        |
 | `.github/workflows/README.md`                | Changed       | Regenerated                                                |
 
 ## Order of work
@@ -63,3 +63,7 @@
 | Skipped on a draft or fork                | A draft test PR; fork: the `if:`        |
 | A second run                              | Relabelling                             |
 | The checks                                | Running them                            |
+
+## Deviations
+
+- The prompt holds the PR number, not `$THREAD`: the agent can't `echo` it.

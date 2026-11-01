@@ -2,7 +2,7 @@
 
 - **Spec:** #448
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@
 - **B.** Render the board pages themselves under React 18. Nothing to keep in step, but a failure names the board, and non-D3 controls on them (`TextLink`, `Callout`) come into scope.
 - **Other:** your own.
 
-Recommended: A, because the Spec asks for the control's name and leaves controls outside D3 out.
+**Answer: A** (@henetiriki)
 
 **D2 · `ChipGroup` has no board** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ It's used only in `FilterFields`; acceptance check 1 asks for its design kit sta
 - **B.** Render it with the cases in `ChipGroup.test.tsx`.
 - **Other:** your own.
 
-Recommended: A, because a group's states are its chips' states.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

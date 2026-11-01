@@ -4,7 +4,7 @@ name: 'Claude: Code'
 # issue, a comment or a PR review.
 #
 # The title shown for each run in the Actions tab. It reads "Respond: <title>" when Claude
-# will answer, and "Skipped: <title>" when it won't. Claude answers when all of these hold:
+# will answer, and "Skipped Respond: <title>" when it won't. Claude answers when all of these hold:
 #   - the bot variable KINSCAPE_BOT_LOGIN is set, and the author is not that account (so Claude never
 #     answers itself, and an unset variable lets nobody through)
 #   - the issue, review or comment is by the owner, a member or a collaborator (outsiders trigger nothing)
@@ -31,7 +31,7 @@ run-name: >-
       github.event.comment.body,
       '@claude') &&
     format('Respond: {0}', github.event.issue.title || github.event.pull_request.title) ||
-    format('Skipped: {0}', github.event.issue.title || github.event.pull_request.title)
+    format('Skipped Respond: {0}', github.event.issue.title || github.event.pull_request.title)
   }}
 
 on:

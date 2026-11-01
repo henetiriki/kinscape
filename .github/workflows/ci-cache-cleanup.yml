@@ -3,6 +3,16 @@ name: 'CI: Delete PR caches'
 # A closed PR's caches can never be restored again, but they count toward the repo's cache limit
 # and push out the caches that main uses. This deletes them when the PR closes, merged or not.
 # Fork PRs are skipped: their token cannot delete caches.
+#
+# The title shown for each run in the Actions tab: "Clean caches: <PR title>", or
+# "Skipped Clean caches: <PR title>" for a fork PR. Repeats the job's `if:` (run-name cannot see
+# job results): change them together.
+run-name: >-
+  ${{
+    github.event.pull_request.head.repo.full_name == github.repository &&
+    format('Clean caches: {0}', github.event.pull_request.title) ||
+    format('Skipped Clean caches: {0}', github.event.pull_request.title)
+  }}
 
 on:
   pull_request:

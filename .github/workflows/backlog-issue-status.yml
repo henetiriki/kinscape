@@ -4,6 +4,9 @@ name: 'Backlog: Issue status'
 # (scripts/issue-status.mts holds the table). Labels set with GITHUB_TOKEN start no workflow, so
 # this can't start a plan. It is a signal, not a guard. The script comes from the base commit, so
 # the PR can't change what runs, and it skips a fork. Never `pull_request_target`.
+#
+# The title shown for each run in the Actions tab: "Status: <PR title>".
+run-name: 'Status: ${{ github.event.pull_request.title }}'
 
 on:
   pull_request:

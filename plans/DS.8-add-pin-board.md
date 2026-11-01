@@ -103,4 +103,5 @@ The kit nav; Layers and Filters panels on `/screens` (a later Chore).
 
 ## Deviations
 
+- Two CSS modules: `AddPinPanel.module.css`, `layout.module.css`.
 - The e2e spec is `.mts`: Playwright loads `.ts` specs as CommonJS, which can't import `design-export.mts`.

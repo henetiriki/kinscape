@@ -175,6 +175,20 @@
       "width": 390,
       "height": 4767,
       "mode": "blocking"
+    },
+    {
+      "name": "add-pin",
+      "route": "/screens/add-pin",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "add-pin-phone",
+      "route": "/screens/add-pin",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
     }
   ],
   "threshold": 0.5

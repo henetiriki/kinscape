@@ -2,7 +2,7 @@
 
 - **Spec:** #449
 - **Requirement IDs:** None (design tooling)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ No control exports its props type, and lint allows exported types only in `types
 - **B.** Move each control's props into a named type in its folder's `types.ts` and re-export it. Spelled out, but about 250 lines move, passing the 600-line cap.
 - **Other:** your own.
 
-Recommended: A, because the declaration the type reads sits directly above each alias, and the diff stays within the cap.
+**Answer: A** (@henetiriki)
 
 **D2 · Where the mount test runs** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Recommended: A, because the declaration the type reads sits directly above each 
 - **B.** A Playwright blank page. A real browser, but `CASES` can't load there (CSS modules, function props), so its props are copied into data.
 - **Other:** your own.
 
-Recommended: A, because it uses `CASES` without copying it, and the check is about errors, not layout.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

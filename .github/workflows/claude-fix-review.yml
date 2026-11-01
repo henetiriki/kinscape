@@ -1,0 +1,85 @@
+name: 'Claude: Fix review'
+
+# The title shown for each run in the Actions tab:
+#   "Fix review: <title>"         - someone added the label `fix-review` to an open, ready PR from a branch in
+#                                   this repo, so Claude fixes the review's findings
+#   "Skipped Fix review: <title>" - anything else (another label, a draft, a fork), so nothing runs
+# This repeats the `if:` of the `fix` job (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    github.event.label.name == 'fix-review' &&
+    github.event.pull_request.state == 'open' &&
+    !github.event.pull_request.draft &&
+    github.event.pull_request.head.repo.full_name == github.repository &&
+    format('Fix review: {0}', github.event.pull_request.title) ||
+    format('Skipped Fix review: {0}', github.event.pull_request.title)
+  }}
+
+# The label is one click and needs no wording. The push starts the next review through
+# claude-code-review.yml's `synchronize` trigger, so nothing here wires the two together.
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  # Claude reads the review's findings on the PR, fixes them on its branch and comments with the
+  # result (.github/agent/fix-review.md). Runs for the label on an open PR that is not a draft and
+  # whose branch is in this repo: a fork's code and secrets stay apart. A `hand-back` PR is not
+  # excluded. The shared runner comes from main, like the agent files, and queues behind any other
+  # run on the PR (concurrency group `thread-<n>`).
+  fix:
+    # The Actions graph shows the runner's jobs under this name: "Fix review / Gate", "Fix review / Run Claude", "Fix review / Result".
+    name: Fix review
+    if: |
+      github.event.label.name == 'fix-review' &&
+      github.event.pull_request.state == 'open' &&
+      !github.event.pull_request.draft &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@4fa797b665dca293a3f73fcbefe9a6d12eacb509
+    with:
+      thread: ${{ github.event.pull_request.number }}
+      # Check out the PR's branch.
+      ref: ${{ github.event.pull_request.head.ref }}
+      # No browser: CI runs e2e after the push.
+      model_args: --model sonnet
+      # The files in .github/agent/ that become the system prompt. The order matters:
+      # rules.md first (scripts/__tests__/load-agent-files.test.ts checks it).
+      agent_files: rules.md fix-review.md
+      # The number only: the title and the comments are text from outside the team.
+      prompt: >-
+        Fix the review's findings on PR #${{ github.event.pull_request.number }}: follow "Fix a review" in your instructions.
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}
+
+  # Removes the label when the run ends, passed or failed, so adding it again starts another round.
+  # Nothing counts rounds. A skipped run (a stopped gate still counts as run) leaves the label.
+  unlabel:
+    name: Remove the label
+    needs: fix
+    if: always() && needs.fix.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove the label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          # Someone may have removed it already: that is a 404, not a failure.
+          if ! out=$(gh api -X DELETE "repos/$GH_REPO/issues/$PR/labels/fix-review" 2>&1); then
+            case "$out" in
+              *"HTTP 404"*) echo "The label was already removed." ;;
+              *) echo "$out"; exit 1 ;;
+            esac
+          fi

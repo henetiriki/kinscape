@@ -319,6 +319,7 @@ describe('run', () => {
     runs = {
       'claude-build.yml': [],
       'claude-code-review.yml': [],
+      'claude-fix-review.yml': [],
       'claude-plan.yml': [],
       'claude-respond.yml': [],
     };
@@ -363,6 +364,7 @@ describe('run', () => {
       'claude-build.yml',
       'claude-respond.yml',
       'claude-code-review.yml',
+      'claude-fix-review.yml',
     ]) {
       expect(gh).toHaveBeenCalledWith([
         'run',

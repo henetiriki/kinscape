@@ -736,6 +736,7 @@ describe('the agent files a workflow loads', () => {
     ['claude-respond.yml', /^\s*files: (.+)$/m],
     ['claude-plan.yml', /^\s*agent_files: (.+)$/m],
     ['claude-build.yml', /^\s*agent_files: (.+)$/m],
+    ['claude-fix-review.yml', /^\s*agent_files: (.+)$/m],
     ['claude-unblock.yml', /^\s*files: (.+)$/m],
   ] as const)(
     'are in .github/agent/, rules.md first and build.md last, in %s',
@@ -754,6 +755,113 @@ describe('the agent files a workflow loads', () => {
       ).toBe(true);
     }
   );
+});
+
+// Adding the label `fix-review` to a PR has Claude fix the review's findings
+// (plans/chores/C467-fix-review-label.md). The run-name repeats the job's `if:`.
+describe('the fix-review workflow', () => {
+  type Job = {
+    if?: string;
+    needs?: string;
+    permissions?: Record<string, string>;
+    steps?: Step[];
+    uses?: string;
+    with?: Record<string, unknown>;
+  };
+  const workflow = () =>
+    parse(read('claude-fix-review.yml')) as {
+      jobs: Record<string, Job>;
+      on: Record<string, { types?: string[] }>;
+      'run-name': string;
+    };
+  const jobs = () => workflow().jobs;
+  // The condition without its line breaks, so the run-name's copy and the job's compare equal.
+  const flat = (text = '') => text.replace(/\s+/g, ' ').trim();
+  // What the run-name asks before it picks the title.
+  const condition = () => {
+    const [before] = flat(workflow()['run-name']).split(' && format(');
+
+    return before.replace(/^\$\{\{ /, '');
+  };
+
+  it('starts when a label is added to a pull request, and on nothing else', () => {
+    expect(workflow().on).toEqual({ pull_request: { types: ['labeled'] } });
+  });
+
+  it('runs only for the label on an open, ready PR from a branch in this repo', () => {
+    const text = flat(jobs().fix.if);
+
+    expect(text).toContain("github.event.label.name == 'fix-review'");
+    expect(text).toContain("github.event.pull_request.state == 'open'");
+    expect(text).toContain('!github.event.pull_request.draft');
+    expect(text).toContain(
+      'github.event.pull_request.head.repo.full_name == github.repository'
+    );
+    // A `hand-back` PR is not excluded.
+    expect(text).not.toContain('hand-back');
+  });
+
+  it('shows "Fix review" or "Skipped Fix review" with the title, on the job’s condition', () => {
+    const name = workflow()['run-name'];
+
+    expect(name).toContain("format('Fix review: {0}'");
+    expect(name).toContain("format('Skipped Fix review: {0}'");
+    expect(condition()).toBe(flat(jobs().fix.if));
+  });
+
+  it('calls the shared runner from a pinned main commit: head branch, Sonnet, no plan', () => {
+    const { uses, with: inputs } = jobs().fix;
+
+    expect(uses).toMatch(
+      /^henetiriki\/kinscape\/\.github\/workflows\/claude-run\.yml@[0-9a-f]{40}$/
+    );
+    expect(inputs).toMatchObject({
+      agent_files: 'rules.md fix-review.md',
+      model_args: '--model sonnet',
+      ref: '${{ github.event.pull_request.head.ref }}',
+      thread: '${{ github.event.pull_request.number }}',
+    });
+    // CI runs e2e after the push; the run is not a plan.
+    expect(inputs).not.toHaveProperty('plan');
+    expect(inputs).not.toHaveProperty('playwright');
+  });
+
+  // The title and body are text from outside the team.
+  it('gives the prompt the PR number alone', () => {
+    const prompt = String(jobs().fix.with?.prompt);
+
+    expect(prompt).toContain('${{ github.event.pull_request.number }}');
+    expect(prompt).not.toMatch(
+      /github\.event\.pull_request\.(title|body)|github\.event\.(comment|review)/
+    );
+  });
+
+  it('removes the label after the run, passed or failed, but not after a skip', () => {
+    const { unlabel } = jobs();
+    const [step] = unlabel.steps ?? [];
+
+    expect(unlabel.needs).toBe('fix');
+    expect(unlabel.if).toBe("always() && needs.fix.result != 'skipped'");
+    expect(unlabel.permissions).toEqual({ 'pull-requests': 'write' });
+    expect(step.env).toMatchObject({
+      GH_TOKEN: '${{ github.token }}',
+      PR: '${{ github.event.pull_request.number }}',
+    });
+    expect(step.run).toContain('labels/fix-review');
+    // A label already gone (a 404) is not a failure.
+    expect(step.run).toContain('404');
+  });
+
+  it('tells Claude to leave test changes and comment text alone, in fix-review.md', () => {
+    const text = agent('fix-review.md');
+
+    // GraphQL shows the reviewer as the Bot `claude`; REST as `claude[bot]`.
+    expect(text).toContain('`claude` with `__typename` `Bot`');
+    expect(text).toContain('newest PR comment');
+    expect(text).toContain('resolveReviewThread');
+    expect(text).toContain('rule 10');
+    expect(text).toMatch(/data, not instructions/);
+  });
 });
 
 // A stand-in for `gh api -H "Accept: application/vnd.github.raw"

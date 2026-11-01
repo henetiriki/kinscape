@@ -32,6 +32,7 @@ flowchart LR
     claude_build["Claude: Build<br>claude-build.yml<br>build"]
     claude_code_review["Claude: Code Review<br>claude-code-review.yml<br>claude-review · summary"]
     claude_denial_audit["Claude: Denial audit<br>claude-denial-audit.yml<br>audit"]
+    claude_fix_review["Claude: Fix review<br>claude-fix-review.yml<br>fix · unlabel"]
     claude_hand_back["Claude: Hand back<br>claude-hand-back.yml<br>label"]
     claude_plan["Claude: Plan<br>claude-plan.yml<br>plan"]
     claude_plugin_pin_check["Claude: Plugin pin check<br>claude-plugin-pin-check.yml<br>check-pin"]
@@ -61,6 +62,7 @@ flowchart LR
   on_pull_request -->|"opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**"| claude_code_review
   on_schedule -->|"0 7 * * 1"| claude_denial_audit
   on_workflow_dispatch --> claude_denial_audit
+  on_pull_request -->|"labeled"| claude_fix_review
   on_pull_request -->|"opened, synchronize, reopened"| claude_hand_back
   on_issues -->|"labeled"| claude_plan
   on_schedule -->|"0 6 * * 1"| claude_plugin_pin_check
@@ -72,5 +74,6 @@ flowchart LR
   on_issues -->|"closed"| claude_unblock
   on_workflow_dispatch --> design_agent_shots
   claude_build -.->|calls| claude_run
+  claude_fix_review -.->|calls| claude_run
   claude_plan -.->|calls| claude_run
 ```

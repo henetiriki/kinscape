@@ -23,6 +23,7 @@ import {
   checkStyle,
   checkTypes,
   CONTROLS,
+  fontNames,
   gatherTypes,
   JSX_SHIM,
   NAMESPACE,
@@ -297,7 +298,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
 
   const controls = await buildControls(root);
   const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${controls.js}`;
-  const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${controls.css}`;
+  const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames(raw)}\n${controls.css}`;
 
   checkScript(script);
   checkStyle(styles);

@@ -2,7 +2,10 @@
 
 import { dirname, resolve } from 'node:path';
 
+import type { Tree } from '../../design/types.ts';
 import type { Control } from './types.ts';
+
+import { fontVariable } from './css.mts';
 
 const MB = 1024 * 1024;
 const IMPORT = /^import [\s\S]*?from '([^']+)';\n?/gm;
@@ -27,6 +30,25 @@ export const CONTROLS: Control[] = [
   { name: 'Alert', path: 'app/components/feedback/Alert.tsx' },
   { name: 'Toast', path: 'app/components/feedback/Toast.tsx' },
 ];
+
+/**
+ * A `:root` block that sets each `--next-font-*` variable the tokens use to its first
+ * family. The app gets them from `next/font`; a canvas page has no such loader.
+ */
+export const fontNames = (tokens: Tree): string => {
+  const families = Object.values((tokens.font ?? {}) as Tree).map(stack =>
+    String(stack).split(',')[0].trim().replaceAll("'", '')
+  );
+
+  return [
+    ':root {',
+    ...[...new Set(families)].map(
+      family => `  ${fontVariable(family)}: '${family}';`
+    ),
+    '}',
+    '',
+  ].join('\n');
+};
 
 /** Line 1 of `bundle.js`: the type's `@ds-bundle` header listing `names`. */
 export const bundleHeader = (names: string[]): string => {

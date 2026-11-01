@@ -8,6 +8,7 @@ import {
   checkStyle,
   checkTypes,
   CONTROLS,
+  fontNames,
   gatherTypes,
   JSX_SHIM,
 } from '@ks/lib/design/bundle.mts';
@@ -31,6 +32,38 @@ describe('CONTROLS', () => {
       'Toast',
     ]);
     expect(CONTROLS.filter(({ path }) => !existsSync(path))).toEqual([]);
+  });
+});
+
+describe('fontNames', () => {
+  it('sets each font token variable to its first family, quoted', () => {
+    expect(
+      fontNames({
+        colour: { ink: '#000000' },
+        font: {
+          body: "'Public Sans', system-ui, sans-serif",
+          mono: "'JetBrains Mono', monospace",
+        },
+      })
+    ).toBe(
+      [
+        ':root {',
+        "  --next-font-public-sans: 'Public Sans';",
+        "  --next-font-jetbrains-mono: 'JetBrains Mono';",
+        '}',
+        '',
+      ].join('\n')
+    );
+  });
+
+  it('is an empty block when no token is a font', () => {
+    expect(fontNames({ colour: { ink: '#000000' } })).toBe(':root {\n}\n');
+  });
+
+  it('lists a family once', () => {
+    expect(
+      fontNames({ font: { a: "'X Y', serif", b: "'X Y', sans-serif" } })
+    ).toBe(":root {\n  --next-font-x-y: 'X Y';\n}\n");
   });
 });
 

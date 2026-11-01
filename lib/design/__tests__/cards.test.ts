@@ -127,6 +127,10 @@ describe('previewHtml', () => {
     expect(html).toContain('["onDismiss"]');
   });
 
+  it('sets the body to the body font', () => {
+    expect(html).toMatch(/body \{[^}]*font-family: var\(--font-body\);/);
+  });
+
   it('links and fetches nothing, and passes its own check', () => {
     expect(html).not.toMatch(/<link|<script[^>]*src|https?:/);
     expect(() => checkPreview('Toast', html)).not.toThrow();

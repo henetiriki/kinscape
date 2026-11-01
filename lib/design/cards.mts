@@ -93,7 +93,9 @@ export const controlReadme = (
 const data = (value: unknown): string =>
   JSON.stringify(value).replaceAll('<', '\\u003c');
 
-const STYLE = (pad: number) => `body { margin: 0; padding: 16px; }
+const STYLE = (
+  pad: number
+) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0; }
 .ks-label { color: var(--ink-3); }`;

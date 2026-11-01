@@ -55,17 +55,22 @@
 
 ## Order of work
 
-Tests first, then the files above. After merge, run `./scripts/setup-github.sh`.
+After merge, run `./scripts/setup-github.sh`.
 
 ## Risks
 
-- Any label on any PR records a skipped run: noise only.
-- A later queued run on the thread replaces a queued fix; `unlabel` still runs.
-- The caller pins a branch commit of `claude-run.yml`; `actions-pin-update.yml` moves it after merge.
+- Any label on any PR records a skipped run.
+- A later queued run replaces a queued fix; `unlabel` still runs.
+- The caller pins a branch commit; `actions-pin-update.yml` moves it after merge.
 
 ## Proof
 
-| Acceptance check                               | Proven by                 |
-| ---------------------------------------------- | ------------------------- |
-| Run, push, comment, unlabel, new review; again | After merge, on a test PR |
-| Skipped on a draft or fork                     | Draft test PR; the `if:`  |
+| Acceptance check                           | Proven by                 |
+| ------------------------------------------ | ------------------------- |
+| Run, push, comment, unlabel, review; again | After merge, on a test PR |
+| Skipped on a draft or fork                 | Draft test PR; the `if:`  |
+| The checks                                 | Running them              |
+
+## Deviations
+
+- The prompt holds the PR number, not `$THREAD` (no `echo`).

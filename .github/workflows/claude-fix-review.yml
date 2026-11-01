@@ -32,8 +32,8 @@ jobs:
   # Claude reads the review's findings on the PR, fixes them on its branch and comments with the
   # result (.github/agent/fix-review.md). Runs for the label on an open PR that is not a draft and
   # whose branch is in this repo: a fork's code and secrets stay apart. A `hand-back` PR is not
-  # excluded. The shared runner comes from main, like the agent files, and queues behind any other
-  # run on the PR (concurrency group `thread-<n>`).
+  # excluded. The shared runner is the pinned commit below, and queues behind any other run on the
+  # PR (concurrency group `thread-<n>`).
   fix:
     # The Actions graph shows the runner's jobs under this name: "Fix review / Gate", "Fix review / Run Claude", "Fix review / Result".
     name: Fix review

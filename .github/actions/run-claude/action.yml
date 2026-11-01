@@ -73,7 +73,7 @@ runs:
     # The summary, secret scan and upload of Claude's transcript, from a pinned main commit.
     - name: Keep Claude's output
       if: always()
-      uses: henetiriki/kinscape/.github/actions/keep-claude-output@ef8ffb12cf0af87b7a89a7fa4fefc83bf1f83226
+      uses: henetiriki/kinscape/.github/actions/keep-claude-output@aa2dab4d1b31c84068caa7ba123ea4b68e7be8d2
       with:
         thread: ${{ github.event.issue.number || github.event.pull_request.number }}
         # The callers set up Node in setup-workspace; keep that one.

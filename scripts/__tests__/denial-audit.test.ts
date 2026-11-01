@@ -1,4 +1,10 @@
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -293,6 +299,60 @@ describe('summarise', () => {
     });
   });
 
+  describe('the refresh of claude-unblock.yml', () => {
+    it('names the workflow refresh, and judges it by refresh-settings.json', () => {
+      const asked: string[] = [];
+      const [group] = summarise(
+        [1, 2].map(id => ({
+          id,
+          transcript: transcript([bash('rm a')]),
+          workflow: 'claude-unblock.yml',
+        })),
+        file => {
+          asked.push(file);
+
+          return NO_RULES;
+        }
+      ).groups;
+
+      expect(group.workflows).toEqual(['refresh']);
+      expect(new Set(asked)).toEqual(new Set(['refresh-settings.json']));
+      expect(group.settings).toBe('refresh-settings.json: no rule');
+    });
+
+    // One workflow run has an artifact per freed Spec: each is one Claude session (plan C482, D2).
+    it('counts each artifact of one run as a run read, and links the run once', () => {
+      const unblock = (denials: { detail: string; tool: string }[]) => ({
+        id: 7,
+        transcript: transcript(denials),
+        workflow: 'claude-unblock.yml',
+      });
+      const report = summarise([
+        unblock([bash('rm a')]),
+        unblock([bash('rm b')]),
+        unblock([bash('ls')]),
+      ]);
+
+      expect(report.runs).toBe(3);
+      // `rm` hit two artifacts of one run: it repeats, with 2 denials, below the 3-times rule.
+      expect(report.groups).toMatchObject([
+        { count: 2, pattern: 'Bash: rm', runs: [7] },
+      ]);
+    });
+
+    it('does not keep a denial seen twice in one artifact', () => {
+      const report = summarise([
+        {
+          id: 7,
+          transcript: transcript([bash('rm a'), bash('rm b')]),
+          workflow: 'claude-unblock.yml',
+        },
+      ]);
+
+      expect(report.groups).toEqual([]);
+    });
+  });
+
   it('counts the stripped cd commands per workflow', () => {
     const report = summarise([
       {
@@ -430,6 +490,9 @@ describe('issueBody', () => {
     expect(body).toContain(
       'For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`.'
     );
+    expect(body).toContain(
+      'For the unblock refresh, edit `.github/agent/refresh-settings.json` or `.github/agent/refresh.md`.'
+    );
   });
 
   it('does not divide by zero with no runs', () => {
@@ -501,29 +564,53 @@ describe('settingsReader', () => {
 
 describe('artifactReader', () => {
   const dirOf = (args: string[]) => args[args.indexOf('-D') + 1];
+  const FILE = 'claude-execution-output.json';
+  // Writes a file under `folder` of the download folder, as gh extracts an artifact.
+  const extract = (args: string[], folder: string, text: string) => {
+    const dir = join(dirOf(args), folder);
 
-  it('downloads the run artifact and reads its file', () => {
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, FILE), text);
+  };
+
+  it('downloads every artifact whose name starts with claude-execution-output', () => {
     const gh = vi.fn<Gh>(args => {
-      writeFileSync(join(dirOf(args), 'claude-execution-output.json'), '[1]');
+      extract(args, '', '[1]');
 
       return '';
     });
 
-    expect(artifactReader(gh)(42)).toBe('[1]');
-    expect(gh.mock.calls[0][0].slice(0, 5)).toEqual([
+    expect(artifactReader(gh)(42)).toEqual(['[1]']);
+    expect(gh.mock.calls[0][0].slice(0, 7)).toEqual([
       'run',
       'download',
       '42',
-      '-n',
+      '-p',
       'claude-execution-output',
+      '-p',
+      'claude-execution-output-*',
     ]);
+  });
+
+  // gh extracts several artifacts into a folder each, named for the artifact; one into the folder itself.
+  it('reads the file of each artifact, and no other file', () => {
+    const gh = vi.fn<Gh>(args => {
+      extract(args, 'claude-execution-output-12', 'b');
+      extract(args, 'claude-execution-output-3', 'c');
+      extract(args, 'claude-execution-output', 'a');
+      writeFileSync(join(dirOf(args), 'claude-execution-output-9.json'), 'x');
+
+      return '';
+    });
+
+    expect(artifactReader(gh)(1).sort()).toEqual(['a', 'b', 'c']);
   });
 
   it('removes its temporary folder', () => {
     let dir = '';
     const gh = vi.fn<Gh>(args => {
       dir = dirOf(args);
-      writeFileSync(join(dir, 'claude-execution-output.json'), '[]');
+      extract(args, '', '[]');
 
       return '';
     });
@@ -539,11 +626,11 @@ describe('artifactReader', () => {
       throw new Error('no artifact');
     });
 
-    expect(artifactReader(gh)(1)).toBeUndefined();
+    expect(artifactReader(gh)(1)).toEqual([]);
   });
 
   it('gives nothing when the artifact has no output file', () => {
-    expect(artifactReader(vi.fn<Gh>(() => ''))(1)).toBeUndefined();
+    expect(artifactReader(vi.fn<Gh>(() => ''))(1)).toEqual([]);
   });
 });
 
@@ -556,7 +643,7 @@ describe('run', () => {
     string,
     { conclusion: string; createdAt: string; databaseId: number }[]
   >;
-  let artifacts: Record<number, string | undefined>;
+  let artifacts: Record<number, string | string[] | undefined>;
   let open: { number: number; title: string }[];
   let gh: ReturnType<typeof vi.fn<Gh>>;
   let summary: ReturnType<typeof vi.fn<(markdown: string) => void>>;
@@ -573,12 +660,15 @@ describe('run', () => {
     databaseId: id,
   });
 
+  // A run's artifacts: none, one text, or several.
+  const read = (id: number) => [artifacts[id] ?? []].flat();
+
   const audit = () =>
     run(
       {
         gh,
         now: NOW,
-        readArtifact: id => artifacts[id],
+        readArtifact: read,
         settings: () => NO_RULES,
         summary,
       },
@@ -595,6 +685,7 @@ describe('run', () => {
       'claude-fix-review.yml': [],
       'claude-plan.yml': [],
       'claude-respond.yml': [],
+      'claude-unblock.yml': [],
     };
     artifacts = {};
     open = [];
@@ -625,7 +716,7 @@ describe('run', () => {
         {
           gh,
           now: NOW,
-          readArtifact: () => undefined,
+          readArtifact: () => [],
           settings: () => NO_RULES,
           summary,
         },
@@ -647,6 +738,7 @@ describe('run', () => {
       'claude-respond.yml',
       'claude-code-review.yml',
       'claude-fix-review.yml',
+      'claude-unblock.yml',
     ]) {
       expect(gh).toHaveBeenCalledWith([
         'run',
@@ -720,10 +812,7 @@ describe('run', () => {
     runs['claude-build.yml'] = [make(1)];
     runs['claude-code-review.yml'] = [make(2)];
     artifacts = { 1: artifact('rm a'), 2: artifact('rm b') };
-    run(
-      { gh, now: NOW, readArtifact: id => artifacts[id], settings, summary },
-      ENV
-    );
+    run({ gh, now: NOW, readArtifact: read, settings, summary }, ENV);
 
     expect(settings.mock.calls.map(([file]) => file).sort()).toEqual([
       'review-settings.json',
@@ -809,6 +898,21 @@ describe('run', () => {
     expect(audit()).toBe(0);
     expect(calls('create')[0][1]).toContain(
       '| `Bash: cat` | code-review | review-settings.json: no rule | 2 | $0.00 |'
+    );
+  });
+
+  // One refresh run has an artifact per freed Spec (plan C482, D2).
+  it('reads the refresh runs, every artifact of one, and shows a refresh row', () => {
+    runs['claude-unblock.yml'] = [make(1)];
+    artifacts[1] = [artifact('cat a'), artifact('cat b')];
+
+    expect(audit()).toBe(0);
+
+    const [, body] = calls('create')[0];
+
+    expect(body).toContain('2 runs read, 2 denials');
+    expect(body).toContain(
+      '| `Bash: cat` | refresh | refresh-settings.json: no rule | 2 | $0.00 | [1](https://github.com/owner/repo/actions/runs/1) |'
     );
   });
 

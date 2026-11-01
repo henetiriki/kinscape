@@ -1,5 +1,11 @@
 import { execFileSync, spawnSync } from 'node:child_process';
-import { appendFileSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import {
+  appendFileSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -7,7 +13,7 @@ import type { Denial, Gh, Settings, Transcript } from './types.ts';
 
 import { inlineCode, readSummary } from './agent-transcript.mts';
 
-// Reads the summaries the past week's plan, build and @claude runs uploaded and keeps one issue up
+// Reads the summaries the past week's plan, build, @claude, review, fix and refresh runs uploaded and keeps one issue up
 // to date with the permission denials that repeat, so the allowlist and the rules follow what the
 // agents really try. Opens no issue when no denial repeats. Run weekly by claude-denial-audit.yml,
 // which shows the result on the run page ($GITHUB_STEP_SUMMARY) as well as in the log.
@@ -16,7 +22,8 @@ import { inlineCode, readSummary } from './agent-transcript.mts';
 type Deps = {
   gh: Gh;
   now: Date;
-  readArtifact: (runId: number) => string | undefined;
+  // The summaries a run uploaded, one per Claude session: none, one, or several (a refresh run has one per Spec).
+  readArtifact: (runId: number) => string[];
   // A settings file in .github/agent/: its rules, and the command of its Bash hook.
   settings: (file: string) => Settings;
   // Appends Markdown to the run page.
@@ -32,7 +39,7 @@ type Group = {
   // What the settings of each workflow that hit it say about it, and what to do.
   settings: string;
   suggestion: string;
-  // The workflows that hit it: plan, build, code-review.
+  // The workflows that hit it: plan, build, code-review, refresh.
   workflows: string[];
 };
 
@@ -59,6 +66,7 @@ const WORKFLOWS = [
   'claude-respond.yml',
   'claude-code-review.yml',
   'claude-fix-review.yml',
+  'claude-unblock.yml',
 ];
 const DAYS = 7;
 // A denial repeats when it hit this many runs, or this many times in all.
@@ -85,14 +93,22 @@ export const patternOf = ({ detail, tool }: Denial): string => {
     : `Bash: ${program}`;
 };
 
-// The code review has settings of its own; every other workflow runs with settings.json.
+// The code review and the unblock refresh have settings of their own; every other workflow runs
+// with settings.json.
+const SETTINGS_FILES: Record<string, string> = {
+  'claude-code-review.yml': 'review-settings.json',
+  'claude-unblock.yml': 'refresh-settings.json',
+};
+
 const settingsFileOf = (workflow: string): string =>
-  workflow === 'claude-code-review.yml'
-    ? 'review-settings.json'
-    : 'settings.json';
+  SETTINGS_FILES[workflow] ?? 'settings.json';
+
+// The name shown in the Workflow column: the file's name, but the unblock workflow's Claude is the
+// refresh agent (the unblock job runs none).
+const NAMES: Record<string, string> = { 'claude-unblock.yml': 'refresh' };
 
 const shortName = (workflow: string): string =>
-  workflow.replace(/^claude-|\.yml$/g, '');
+  NAMES[workflow] ?? workflow.replace(/^claude-|\.yml$/g, '');
 
 // Whether a permission rule covers a call, as Claude Code reads one: `Tool` is every use of the
 // tool, `Bash(prefix:*)` a command that is the prefix or starts with it and a space, and any other
@@ -192,9 +208,13 @@ export const settingsReader =
     };
   };
 
+const OUTPUT_FILE = 'claude-execution-output.json';
+
+// Reads the file of every artifact named claude-execution-output or starting with it. gh extracts
+// one artifact into the folder itself and several into a folder each, so every folder is searched.
 export const artifactReader =
   (gh: Gh) =>
-  (runId: number): string | undefined => {
+  (runId: number): string[] => {
     const dir = mkdtempSync(join(tmpdir(), 'denial-audit-'));
 
     try {
@@ -202,16 +222,22 @@ export const artifactReader =
         'run',
         'download',
         String(runId),
-        '-n',
+        '-p',
         'claude-execution-output',
+        '-p',
+        'claude-execution-output-*',
         '-D',
         dir,
       ]);
 
-      return readFileSync(join(dir, 'claude-execution-output.json'), 'utf8');
+      return readdirSync(dir, { recursive: true, withFileTypes: true })
+        .filter(entry => entry.isFile() && entry.name === OUTPUT_FILE)
+        .map(entry => join(entry.parentPath, entry.name))
+        .sort()
+        .map(path => readFileSync(path, 'utf8'));
     } catch {
       // A run with no artifact (it stopped before Claude started, or it expired) has nothing to read.
-      return undefined;
+      return [];
     } finally {
       rmSync(dir, { force: true, recursive: true });
     }
@@ -246,11 +272,14 @@ export const summarise = (
   transcripts: { id: number; transcript: Transcript; workflow: string }[],
   settings: (file: string) => Settings
 ): Report => {
-  // Each group keeps the first denial it saw under each settings file, to judge against that file.
+  // Each group keeps the first denial it saw under each settings file, to judge against that file,
+  // and the sessions (one per transcript) it hit: a refresh run with several has the same run id
+  // in each, so the run is linked once but each session counts toward a repeat (plan C482, D2).
   const groups = new Map<string, { firstBy: Map<string, Denial> } & Group>();
+  const sessionsOf = new Map<string, Set<number>>();
   const stripped: Record<string, number> = {};
 
-  for (const { id, transcript, workflow } of transcripts) {
+  for (const [session, { id, transcript, workflow }] of transcripts.entries()) {
     const file = settingsFileOf(workflow);
     const name = shortName(workflow);
 
@@ -274,6 +303,10 @@ export const summarise = (
 
       group.count += 1;
       group.costUsd += denial.costUsd ?? 0;
+      sessionsOf.set(
+        pattern,
+        (sessionsOf.get(pattern) ?? new Set()).add(session)
+      );
 
       if (!group.runs.includes(id)) {
         group.runs.push(id);
@@ -290,6 +323,12 @@ export const summarise = (
       groups.set(pattern, group);
     }
   }
+
+  const repeating = new Set(
+    [...sessionsOf]
+      .filter(([, sessions]) => sessions.size >= REPEAT_RUNS)
+      .map(([pattern]) => pattern)
+  );
 
   return {
     costUsd: transcripts.reduce(
@@ -313,7 +352,7 @@ export const summarise = (
       .reduce((sum, { transcript }) => sum + (transcript.costUsd ?? 0), 0),
     groups: [...groups.values()]
       .filter(
-        ({ count, runs }) => runs.length >= REPEAT_RUNS || count >= REPEAT_COUNT
+        ({ count, pattern }) => repeating.has(pattern) || count >= REPEAT_COUNT
       )
       .sort((a, b) => b.count - a.count)
       .map(({ firstBy, ...group }) => {
@@ -401,7 +440,7 @@ export const issueBody = (
         `| ${cell(pattern)} | ${workflows.join(', ')} | ${plain(settings)} | ${count} | $${costUsd.toFixed(2)} | ${runs.map(link).join(', ')} | ${cell(example)} | ${plain(suggestion)} |`
     ),
     '',
-    'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`. The weekly audit rewrites this issue while it stays open; close it when it is handled.',
+    'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`. For the unblock refresh, edit `.github/agent/refresh-settings.json` or `.github/agent/refresh.md`. The weekly audit rewrites this issue while it stays open; close it when it is handled.',
   ].join('\n');
 };
 
@@ -419,12 +458,13 @@ export const run = (
 
   const since = new Date(now.getTime() - DAYS * 24 * 60 * 60 * 1000);
   const transcripts = WORKFLOWS.flatMap(workflow =>
-    recentRunIds(gh, workflow, since).flatMap(id => {
-      const text = readArtifact(id);
-      const transcript = text === undefined ? undefined : readSummary(text);
+    recentRunIds(gh, workflow, since).flatMap(id =>
+      readArtifact(id).flatMap(text => {
+        const transcript = readSummary(text);
 
-      return transcript ? [{ id, transcript, workflow }] : [];
-    })
+        return transcript ? [{ id, transcript, workflow }] : [];
+      })
+    )
   );
   const report = summarise(transcripts, settings);
 

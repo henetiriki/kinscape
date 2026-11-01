@@ -826,6 +826,37 @@ describe('the fix-review workflow', () => {
     expect(inputs).not.toHaveProperty('playwright');
   });
 
+  // What a runner needs to run a fix: without the input the caller's workflow is invalid, without
+  // KIND the gate checks for a draft plan PR and stops every ready PR, without VERB the run says "Building".
+  const expectFixRunner = (text: string) => {
+    const runner = parse(text) as {
+      jobs: Record<string, Job>;
+      on: { workflow_call: { inputs: Record<string, unknown> } };
+    };
+    const step = (job: string, find: (step: Step) => boolean) =>
+      runner.jobs[job].steps?.find(find);
+
+    expect(runner.on.workflow_call.inputs.kind).toMatchObject({
+      default: '',
+      type: 'string',
+    });
+    expect(step('gate', ({ id }) => id === 'gate')?.env?.KIND).toBe(
+      "${{ inputs.kind == 'fix' && 'fix' || inputs.plan && 'plan' || 'build' }}"
+    );
+    expect(
+      step('run', ({ name }) => name === 'Show that the run started')?.env?.VERB
+    ).toBe(
+      "${{ inputs.kind == 'fix' && 'Fixing' || inputs.plan && 'Planning' || 'Building' }}"
+    );
+  };
+
+  // Reads the working tree's runner. Until actions-pin-update.yml moves the caller's pin, the pinned
+  // commit is checked by hand (`git show <pin>:.github/workflows/claude-run.yml`).
+  it('has the shared runner gate the run as a fix', () => {
+    expect(jobs().fix.with).toMatchObject({ kind: 'fix' });
+    expectFixRunner(read('claude-run.yml'));
+  });
+
   // The title and body are text from outside the team.
   it('gives the prompt the PR number alone', () => {
     const prompt = String(jobs().fix.with?.prompt);

@@ -5,7 +5,7 @@
 
 ## Approach
 
-`claude-fix-review.yml` calls `claude-run.yml` unchanged: head branch, `plan: false`, Sonnet, `rules.md fix-review.md`. The prompt names the PR number. A job `unlabel` (`needs: fix`, `if: always() && needs.fix.result != 'skipped'`) removes the label and allows a 404.
+`claude-fix-review.yml` calls `claude-run.yml` with a new input `kind: fix` (Sonnet, the PR number in the prompt). `agent-gate.mts` gets a `fix` case that passes an open, non-draft PR with the label. A job `unlabel` (`needs: fix`, `if: always() && needs.fix.result != 'skipped'`) removes the label and allows a 404.
 
 ## Decisions
 
@@ -33,37 +33,44 @@
 
 **Answer: A** (@henetiriki)
 
+**D4 · Gate for a ready PR** · Decides: Tech lead
+
+- **A.** Loosen the build gate.
+- **B.** A `kind` input in `claude-run.yml` and a `fix` gate case.
+- **Other:** your own.
+
+**Answer: B** (@henetiriki)
+
 ## Files that change
 
-| File                                         | New / changed | What                                                       |
-| -------------------------------------------- | ------------- | ---------------------------------------------------------- |
-| `.github/workflows/claude-fix-review.yml`    | New           | As the Chore says                                          |
-| `.github/agent/fix-review.md`                | New           | Find unresolved `claude[bot]` threads and the gaps comment |
-| `scripts/setup-github.sh`                    | Changed       | The label                                                  |
-| `docs/repo-settings.md`, `docs/building.md`  | Changed       | Label row; step 4                                          |
-| `scripts/denial-audit.mts` and its test      | Changed       | `WORKFLOWS`                                                |
-| `scripts/__tests__/load-agent-files.test.ts` | Changed       | New workflow checks                                        |
-| `.github/workflows/README.md`                | Changed       | Regenerated                                                |
+| File                                                               | New / changed | What                     |
+| ------------------------------------------------------------------ | ------------- | ------------------------ |
+| `.github/workflows/claude-fix-review.yml`                          | New           | As the Chore says        |
+| `.github/agent/fix-review.md`                                      | New           | Reviewer's findings      |
+| `.github/workflows/claude-run.yml`, `scripts/agent-gate.mts`, test | Changed       | `kind` input; `fix` case |
+| `scripts/setup-github.sh`, `scripts/denial-audit.mts`, its test    | Changed       | Label; `WORKFLOWS`       |
+| `docs/repo-settings.md`, `docs/building.md`                        | Changed       | Label row; step 4        |
+| `scripts/__tests__/load-agent-files.test.ts`                       | Changed       | Checks                   |
+| `.github/workflows/README.md`                                      | Changed       | Regenerated              |
 
 ## Order of work
 
-1. Write the tests and see them fail, then change the files above.
-2. After merge, the tech lead runs `./scripts/setup-github.sh`.
+After merge, run `./scripts/setup-github.sh`.
 
 ## Risks
 
-- Any label on any PR records a skipped run: noise only.
-- A later queued run on the thread replaces a queued fix; `unlabel` still runs.
+- Any label on any PR records a skipped run.
+- A later queued run replaces a queued fix; `unlabel` still runs.
+- The caller pins a branch commit; `actions-pin-update.yml` moves it after merge.
 
 ## Proof
 
-| Acceptance check                          | Proven by                               |
-| ----------------------------------------- | --------------------------------------- |
-| Run, push, comment, unlabel; a new review | After merge, on a test PR with findings |
-| Skipped on a draft or fork                | A draft test PR; fork: the `if:`        |
-| A second run                              | Relabelling                             |
-| The checks                                | Running them                            |
+| Acceptance check                           | Proven by                 |
+| ------------------------------------------ | ------------------------- |
+| Run, push, comment, unlabel, review; again | After merge, on a test PR |
+| Skipped on a draft or fork                 | Draft test PR; the `if:`  |
+| The checks                                 | Running them              |
 
 ## Deviations
 
-- The prompt holds the PR number, not `$THREAD`: the agent can't `echo` it.
+- The prompt holds the PR number, not `$THREAD` (no `echo`).

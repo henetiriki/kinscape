@@ -3,11 +3,12 @@ import { appendFileSync } from 'node:fs';
 
 import type { Gh } from './types.ts';
 
-// Checks that run before a plan or build job spends a model run (see claude-run.yml):
-//   both:  stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
+// Checks that run before a plan, build or fix job spends a model run (see claude-run.yml):
+//   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
 //   build: stop if an issue the PR closes is blocked by an open issue
-// Usage: node scripts/agent-gate.mts plan|build <issue or PR number>, with GH_REPO set.
+//   fix:   nothing more; a fix-review run changes a PR that is already built
+// Usage: node scripts/agent-gate.mts plan|build|fix <issue or PR number>, with GH_REPO set.
 // An https RUN_URL, if set, is linked at the end of a stop comment.
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT. On a stop it comments why. A plan stopped by
 // an open blocker also hands the Spec back as `status: blocked`; one stopped only by an open plan PR
@@ -15,7 +16,7 @@ import type { Gh } from './types.ts';
 
 type Closing = { closingIssuesReferences: { number: number }[] };
 
-type Kind = 'build' | 'plan';
+type Kind = 'build' | 'fix' | 'plan';
 
 // Why a run can't start. `handBack` is true when the Spec should be marked `status: blocked`.
 type Stop = { handBack: boolean; reasons: string[] };
@@ -58,6 +59,26 @@ const staleReason = (
     return labels.some(({ name }) => name === 'status: ready-for-agent')
       ? undefined
       : 'the issue no longer has `status: ready-for-agent`';
+  }
+
+  if (kind === 'fix') {
+    const { isDraft, labels, state } = json<{
+      isDraft: boolean;
+      labels: { name: string }[];
+      state: string;
+    }>(gh, ['pr', 'view', String(thread), '--json', 'state,isDraft,labels']);
+
+    if (state !== 'OPEN') {
+      return 'the PR is not open';
+    }
+
+    if (isDraft) {
+      return 'the PR is a draft';
+    }
+
+    return labels.some(({ name }) => name === 'fix-review')
+      ? undefined
+      : 'the PR no longer has the `fix-review` label';
   }
 
   const { isDraft, state, title } = json<{
@@ -212,12 +233,12 @@ export const run = (
   const repo = env.GH_REPO ?? '';
 
   if (
-    (kind !== 'plan' && kind !== 'build') ||
+    (kind !== 'plan' && kind !== 'build' && kind !== 'fix') ||
     !NUMBER.test(raw ?? '') ||
     !REPO.test(repo)
   ) {
     console.error(
-      'Usage: agent-gate plan|build <issue or PR number>, with GH_REPO=<owner>/<repo> set'
+      'Usage: agent-gate plan|build|fix <issue or PR number>, with GH_REPO=<owner>/<repo> set'
     );
 
     return 1;
@@ -248,15 +269,19 @@ export const run = (
   }
 
   notes.push(
-    kind === 'plan'
-      ? `#${thread} is open and has \`status: ready-for-agent\`.`
-      : `PR #${thread} is an open draft whose title ends "(plan)".`
+    {
+      build: `PR #${thread} is an open draft whose title ends "(plan)".`,
+      fix: `PR #${thread} is open, is not a draft and has the \`fix-review\` label.`,
+      plan: `#${thread} is open and has \`status: ready-for-agent\`.`,
+    }[kind]
   );
 
-  const why =
-    kind === 'plan'
-      ? planReasons(gh, repo, thread, notes)
-      : buildReasons(gh, repo, thread, notes);
+  // A fix has no blocker to check: the PR is built already.
+  const why = {
+    build: () => buildReasons(gh, repo, thread, notes),
+    fix: (): Stop => ({ handBack: false, reasons: [] }),
+    plan: () => planReasons(gh, repo, thread, notes),
+  }[kind]();
 
   const go = why.reasons.length === 0;
 

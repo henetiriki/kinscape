@@ -32,8 +32,8 @@ jobs:
   # Claude reads the review's findings on the PR, fixes them on its branch and comments with the
   # result (.github/agent/fix-review.md). Runs for the label on an open PR that is not a draft and
   # whose branch is in this repo: a fork's code and secrets stay apart. A `hand-back` PR is not
-  # excluded. The shared runner comes from main, like the agent files, and queues behind any other
-  # run on the PR (concurrency group `thread-<n>`).
+  # excluded. The shared runner is the pinned commit below, and queues behind any other run on the
+  # PR (concurrency group `thread-<n>`).
   fix:
     # The Actions graph shows the runner's jobs under this name: "Fix review / Gate", "Fix review / Run Claude", "Fix review / Result".
     name: Fix review
@@ -42,9 +42,12 @@ jobs:
       github.event.pull_request.state == 'open' &&
       !github.event.pull_request.draft &&
       github.event.pull_request.head.repo.full_name == github.repository
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@4fa797b665dca293a3f73fcbefe9a6d12eacb509
+    # Pinned to the commit that added `kind`; actions-pin-update.yml moves it to main's after merge.
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@2777c68539274b1309abef550d66f0b9a1ced308
     with:
       thread: ${{ github.event.pull_request.number }}
+      # The runner's gate checks a ready PR with the label, not a draft plan PR.
+      kind: fix
       # Check out the PR's branch.
       ref: ${{ github.event.pull_request.head.ref }}
       # No browser: CI runs e2e after the push.

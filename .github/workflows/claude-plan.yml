@@ -56,7 +56,7 @@ jobs:
         contains(github.event.issue.labels.*.name, 'type: chore')) &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
       github.actor == github.repository_owner
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@4fa797b665dca293a3f73fcbefe9a6d12eacb509
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@1d4d4a059fca96a41d3ea6283f965f4376555261
     with:
       thread: ${{ github.event.issue.number }}
       plan: true

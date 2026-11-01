@@ -42,9 +42,9 @@ const write = (root: string, path: string, content: string): void => {
 const uploadsFor = (paths: string[]): Record<string, string> =>
   Object.fromEntries(paths.map((path, index) => [path, `blob${index}`]));
 
-beforeAll(() => {
+beforeAll(async () => {
   out = mkdtempSync(join(tmpdir(), 'design-system-publish-'));
-  run('.', out);
+  await run('.', out);
   project = join(out, 'project');
   sums = checksums(project);
   icons = Object.keys(sums).filter(path => path.startsWith('project/assets/'));
@@ -315,10 +315,10 @@ describe('cli', () => {
   let root: string;
   let dir: string;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     root = mkdtempSync(join(tmpdir(), 'design-system-publish-root-'));
     dir = mkdtempSync(join(tmpdir(), 'design-system-publish-out-'));
-    run('.', dir);
+    await run('.', dir);
     write(
       root,
       'design/DESIGN.md',

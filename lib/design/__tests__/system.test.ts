@@ -335,7 +335,10 @@ describe('systemIndex', () => {
       editing: 'code',
       groups: ['Logos', 'Icons'],
       layout: 'files',
-      libraries: [],
+      libraries: [
+        { name: 'react', version: '18' },
+        { name: 'react-dom', version: '18' },
+      ],
       namespace: 'KinScape',
       title: 'KinScape',
       v: 3,

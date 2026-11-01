@@ -41,6 +41,11 @@ No control exports its props type, and lint allows exported types only in `types
 | `scripts/__tests__/design-system.test.ts` | changed       | Awaits `run`; header, strings, sizes, types file                                  |
 | `lib/design/__tests__/react-18.test.tsx`  | changed       | Mounts each control's first case (by `element.type`) from the bundle (D3 on #449) |
 
+## Deviations
+
+- `design-system-publish.test.ts` awaits `run`; `eslint.config.mjs` and `tsconfig.json` skip `.design-system/`; `types/modules.d.ts` declares `jsdom` (no types shipped).
+- No `onLog` filter or diagnostics check: `logLevel: 'silent'` hides the warning, and `gatherTypes` fails on a bad declaration.
+
 ## Order of work
 
 1. Add `vite` with `npm install --save-dev --save-exact vite@8.3.5`.

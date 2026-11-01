@@ -1,3 +1,4 @@
+import type { DOMWindow } from 'jsdom';
 import type { ReactElement } from 'react';
 
 import {
@@ -7,9 +8,22 @@ import {
   render,
   screen,
 } from '@testing-library/react';
+import { JSDOM, VirtualConsole } from 'jsdom';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip } from '@ks/app/components/actions/Chip';
@@ -23,8 +37,10 @@ import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { DateField } from '@ks/features/map/components/DateField';
+import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date';
+import { run } from '@ks/scripts/design-system.mts';
 
 // The shared controls (DS.5) must work in the React 18 the design system targets as well as the app's 19.
 
@@ -250,6 +266,100 @@ describe('states', () => {
     render(element);
     quiet();
   });
+});
+
+describe('bundle', () => {
+  const COMPONENTS = {
+    Alert,
+    Button,
+    Checkbox,
+    CheckboxField,
+    Chip,
+    ChipGroup,
+    DateField,
+    IconButton,
+    Segmented,
+    Tabs,
+    TextField,
+    Toast,
+  };
+  const read = (path: string) => readFileSync(path, 'utf8');
+  const problems: string[] = [];
+  let out: string;
+  let page: DOMWindow;
+
+  beforeAll(async () => {
+    out = mkdtempSync(join(tmpdir(), 'react-18-bundle-'));
+    await run('.', out);
+
+    const virtualConsole = new VirtualConsole();
+
+    for (const kind of ['error', 'jsdomError', 'warn'] as const) {
+      virtualConsole.on(kind, (message: unknown) =>
+        problems.push(`${kind}: ${String(message)}`)
+      );
+    }
+
+    // A blank page with React 18 and the stylesheet, as the Design System type gives a preview.
+    const dom = new JSDOM('<!doctype html><div id="root"></div>', {
+      runScripts: 'outside-only',
+      virtualConsole,
+    });
+
+    page = dom.window;
+    page.document.head.innerHTML = `<style>${read(join(out, 'project/components/bundle.css'))}</style>`;
+    page.eval(read('node_modules/react-18/umd/react.development.js'));
+    page.eval(read('node_modules/react-dom-18/umd/react-dom.development.js'));
+    page.eval(read(join(out, 'project/components/bundle.js')));
+  }, 120_000);
+
+  afterAll(() => {
+    page.close();
+    rmSync(out, { force: true, recursive: true });
+  });
+
+  it('puts every control on window.KinScape', () => {
+    expect(
+      Object.keys((page as unknown as { KinScape: object }).KinScape).toSorted()
+    ).toEqual(CONTROLS.map(({ name }) => name).toSorted());
+    expect(CONTROLS.map(({ name }) => name).toSorted()).toEqual(
+      Object.keys(COMPONENTS).toSorted()
+    );
+    expect(problems).toEqual([]);
+  });
+
+  it.each(Object.entries(COMPONENTS))(
+    '%s mounts with the props of its first case',
+    (name, component) => {
+      const first = CASES.find(([, element]) => element.type === component);
+      const {
+        KinScape,
+        React: pageReact,
+        ReactDOM: pageDom,
+      } = page as unknown as {
+        KinScape: Record<string, unknown>;
+        React: typeof React;
+        ReactDOM: typeof ReactDOM & {
+          createRoot: (node: Element) => { render: (el: unknown) => void };
+        };
+      };
+      const root = page.document.createElement('div');
+
+      page.document.body.append(root);
+      pageDom.flushSync(() =>
+        pageDom
+          .createRoot(root)
+          .render(
+            pageReact.createElement(
+              KinScape[name] as never,
+              (first as [string, ReactElement])[1].props as never
+            )
+          )
+      );
+      expect(root.innerHTML).not.toBe('');
+      expect(problems).toEqual([]);
+    }
+  );
 });
 
 describe('interactions', () => {

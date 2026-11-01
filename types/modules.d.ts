@@ -19,6 +19,26 @@ declare module 'fontnik' {
   export default fontnik;
 }
 
+declare module 'jsdom' {
+  export type DOMWindow = Window &
+    typeof globalThis & {
+      close: () => void;
+      eval: (script: string) => unknown;
+    };
+
+  export class JSDOM {
+    window: DOMWindow;
+    constructor(
+      html: string,
+      options: { runScripts: 'outside-only'; virtualConsole: VirtualConsole }
+    );
+  }
+
+  export class VirtualConsole {
+    on: (kind: string, listener: (message: unknown) => void) => this;
+  }
+}
+
 declare module 'mapshaper' {
   const mapshaper: {
     applyCommands: (

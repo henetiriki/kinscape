@@ -82,6 +82,10 @@ Six controls also take their HTML element's attributes.
 | Canvas holds the bundle; `design/source/` unchanged    | The refreshed copy; `design:export` output      |
 | Lint, `format:check`, `words`, tests, e2e              | Output pasted in the PR                         |
 
+## Deviations
+
+- The new types live in `lib/design/types.ts` (lint rule); `states.mts` also holds each card's `pad`.
+
 ## Out of scope
 
 - Boards using the controls, and exporter support: DS.8.

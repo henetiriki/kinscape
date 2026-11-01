@@ -2,10 +2,15 @@
 
 import { dirname, resolve } from 'node:path';
 
-type Control = { name: string; path: string };
+import type { Control } from './types.ts';
 
 const MB = 1024 * 1024;
 const IMPORT = /^import [\s\S]*?from '([^']+)';\n?/gm;
+
+/** The global the bundle sets, and the files a canvas loads, under `components/`. */
+export const NAMESPACE = 'KinScape';
+export const BUNDLE_CSS = 'bundle.css';
+export const BUNDLE_JS = 'bundle.js';
 
 /** The 12 shared controls (Spec #448), in display order. */
 export const CONTROLS: Control[] = [
@@ -34,7 +39,7 @@ export const bundleHeader = (names: string[]): string => {
   const components = JSON.stringify(names.map(name => ({ name })));
 
   // The type reads the keys in this order, which sorted keys would change.
-  return `/* @ds-bundle: {"format":4,"namespace":"KinScape","components":${components}} */`;
+  return `/* @ds-bundle: {"format":4,"namespace":"${NAMESPACE}","components":${components}} */`;
 };
 
 /** The bundle's entry module: each control, re-exported from its file under `root`. */
@@ -80,11 +85,11 @@ const check = (file: string, text: string, banned: string[], max: number) => {
 
 /** Throws if `bundle.js` could end its `<script>` or is over 6 MB. */
 export const checkScript = (code: string): void =>
-  check('bundle.js', code, ['</script', '<!--'], 6 * MB);
+  check(BUNDLE_JS, code, ['</script', '<!--'], 6 * MB);
 
 /** Throws if `bundle.css` could end its `<style>` or is over 2 MB. */
 export const checkStyle = (css: string): void =>
-  check('bundle.css', css, ['</style'], 2 * MB);
+  check(BUNDLE_CSS, css, ['</style'], 2 * MB);
 
 /** Throws if `index.d.ts` is over 1.5 MB. */
 export const checkTypes = (text: string): void =>

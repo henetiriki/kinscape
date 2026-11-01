@@ -8,6 +8,7 @@ import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/components/actions/Chip.module.css';
 
+/** A pill that turns one filter on or off, such as an Event type. */
 export const Chip = ({
   children,
   glyph,

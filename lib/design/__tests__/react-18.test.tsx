@@ -38,6 +38,7 @@ import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
+import { CARDS } from '@ks/lib/design/states.mts';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date';
 import { run } from '@ks/scripts/design-system.mts';
@@ -363,6 +364,54 @@ describe('bundle', () => {
       expect(problems).toEqual([]);
     }
   );
+
+  describe('previews', () => {
+    const noFunctions = (props: object) =>
+      Object.fromEntries(
+        Object.entries(props).filter(([, value]) => typeof value !== 'function')
+      );
+
+    it.each(CARDS.map(card => [card.name, card] as const))(
+      '%s lists the states of the design kit, with the same props',
+      (name, card) => {
+        const cases = CASES.filter(
+          ([, element]) =>
+            element.type === COMPONENTS[name as keyof typeof COMPONENTS]
+        );
+
+        expect(card.states.map(({ label }) => label)).toEqual(
+          cases.map(([label]) => label)
+        );
+        expect(
+          card.states.map(({ children, props }) => ({ ...props, children }))
+        ).toEqual(
+          cases.map(([, element]) => noFunctions(element.props as object))
+        );
+      }
+    );
+
+    it.each(CARDS.map(card => [card.name, card] as const))(
+      '%s preview mounts every state with no error',
+      (name, card) => {
+        const html = read(
+          join(out, 'project/components', name, 'preview.html')
+        );
+        const script = /<script>([\s\S]*)<\/script>/.exec(html)![1];
+
+        page.document.body.innerHTML = '<div id="root"></div>';
+        page.eval(script);
+        expect(
+          [...page.document.querySelectorAll('figcaption')].map(
+            caption => caption.textContent
+          )
+        ).toEqual(card.states.map(({ label }) => label));
+        expect(
+          page.document.querySelectorAll('figure > :not(figcaption)')
+        ).toHaveLength(card.states.length);
+        expect(problems).toEqual([]);
+      }
+    );
+  });
 });
 
 describe('interactions', () => {

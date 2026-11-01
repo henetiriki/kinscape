@@ -8,6 +8,7 @@ import type { Tab } from '@ks/app/components/actions/types';
 
 import styles from '@ks/app/components/actions/Tabs.module.css';
 
+/** A row of tabs that switches panels, such as Layers and Filters. */
 export const Tabs = ({
   disabled,
   fill,

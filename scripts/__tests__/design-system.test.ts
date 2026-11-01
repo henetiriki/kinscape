@@ -12,6 +12,14 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import type { SystemTokens } from '@ks/lib/design/types.ts';
 
+import {
+  bundleHeader,
+  checkScript,
+  checkStyle,
+  checkTypes,
+  CONTROLS,
+} from '@ks/lib/design/bundle.mts';
+
 import { run } from '../design-system.mts';
 
 let first: string;
@@ -24,12 +32,15 @@ const filesIn = (dir: string): string[] =>
     .map(entry => join(entry.parentPath, entry.name).slice(dir.length + 1))
     .toSorted();
 
-beforeAll(() => {
+beforeAll(async () => {
   first = mkdtempSync(join(tmpdir(), 'design-system-'));
   second = mkdtempSync(join(tmpdir(), 'design-system-'));
-  written = run('.', first);
-  run('.', second);
-});
+  written = await run('.', first);
+  await run('.', second);
+}, 120_000);
+
+const component = (name: string): string =>
+  readFileSync(join(first, 'project/components', name), 'utf8');
 
 afterAll(() => {
   rmSync(first, { force: true, recursive: true });
@@ -108,10 +119,69 @@ describe('run', () => {
     ).toBe(readFileSync('app/icon0.svg', 'utf8'));
   });
 
-  it('empties the folder first', () => {
-    run('.', first);
+  it('empties the folder first', async () => {
+    await run('.', first);
 
     expect(filesIn(first)).toEqual(written.toSorted());
+  }, 60_000);
+});
+
+describe('the controls bundle', () => {
+  const names = CONTROLS.map(({ name }) => name);
+
+  it('writes the three files under components/', () => {
+    expect(
+      written.filter(path => /components\/(bundle|index)/.test(path)).toSorted()
+    ).toEqual([
+      'project/components/bundle.css',
+      'project/components/bundle.js',
+      'project/components/index.d.ts',
+    ]);
+  });
+
+  it('starts bundle.js with the header listing the controls, and is clean', () => {
+    const script = component('bundle.js');
+
+    expect(script.split('\n')[0]).toBe(bundleHeader(names));
+    expect(() => checkScript(script)).not.toThrow();
+    expect(script).not.toMatch(/^import |\brequire\(/m);
+  });
+
+  it('leaves React to the page: the app React 19 is not inside', () => {
+    expect(component('bundle.js')).not.toContain('react.transitional.element');
+  });
+
+  it('makes bundle.css from tokens.css, then the controls', () => {
+    const css = component('bundle.css');
+    const tokens = readFileSync('app/tokens.css', 'utf8');
+
+    expect(css.startsWith(tokens)).toBe(true);
+    expect(css.length).toBeGreaterThan(tokens.length);
+    expect(() => checkStyle(css)).not.toThrow();
+  });
+
+  it('declares each control and exports its Props', () => {
+    const types = component('index.d.ts');
+
+    expect(() => checkTypes(types)).not.toThrow();
+
+    for (const name of names) {
+      expect(types).toContain(`export declare const ${name}:`);
+      expect(types).toContain(
+        `export type ${name}Props = Parameters<typeof ${name}>[0];`
+      );
+    }
+  });
+
+  it('exports exactly the controls as values', () => {
+    const values = [
+      ...component('index.d.ts').matchAll(
+        /^export (?:declare )?(?:const|function|class|enum) ([\w$]+)/gm
+      ),
+    ].map(match => match[1]);
+
+    expect(values.toSorted()).toEqual(names.toSorted());
+    expect(component('index.d.ts')).toMatch(/^export \{\};$/m);
   });
 });
 

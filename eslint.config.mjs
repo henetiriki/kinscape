@@ -47,6 +47,7 @@ export default defineConfig([
   globalIgnores([
     '.claude-pr/**',
     '.claude/worktrees/**',
+    '.design-system/**',
     '.next/**',
     'coverage/**',
     'design/canvas/project/**',

@@ -31,6 +31,7 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
+    ".design-system",
     "node_modules",
     ".claude/worktrees",
     ".claude-pr",

@@ -68,9 +68,16 @@
     "pixelmatch": "8.0.0",
     "pngjs": "7.0.0",
     "prettier": "3.9.10",
+    "react-18": "npm:react@18.3.1",
+    "react-dom-18": "npm:react-dom@18.3.1",
     "typescript": "6.0.3",
     "vitest": "5.0.5",
     "yaml": "2.9.1"
+  },
+  "overrides": {
+    "react-dom-18": {
+      "react": "$react"
+    }
   },
   "allowScripts": {
     "better-sqlite3": false,

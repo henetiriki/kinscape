@@ -7,12 +7,12 @@ const read = (file: string) =>
   readFileSync(join(root, '.github/workflows', file), 'utf8');
 
 // "A draft plan PR the owner approved" is written out four times: in the `run-name` and the job's
-// `if:` of claude.yml (which skips it) and of claude-build.yml (which runs on it). The title can't
+// `if:` of claude-respond.yml (which skips it) and of claude-build.yml (which runs on it). The title can't
 // see job results, so the copies can't share a variable; this keeps them from drifting.
 const PLAN_PR =
   /github\.event\.review\.state == 'approved'[\s\S]*?endsWith\(github\.event\.pull_request\.title, '\(plan\)'\)/g;
 
-// claude.yml's two copies also share the bot check (which fails closed while the bot variable is
+// claude-respond.yml's two copies also share the bot check (which fails closed while the bot variable is
 // unset) and the `@claude` mention around it.
 const WHOLE =
   /vars\.KINSCAPE_BOT_LOGIN != ''[\s\S]*?github\.actor != vars\.KINSCAPE_BOT_LOGIN[\s\S]*?'@claude'\)/g;
@@ -34,7 +34,7 @@ describe('the plan-PR condition', () => {
     expect(copies('claude-build.yml', PLAN_PR)).toHaveLength(2);
   });
 
-  it.each(['claude.yml', 'claude-build.yml'])(
+  it.each(['claude-respond.yml', 'claude-build.yml'])(
     'is the same in both copies in %s',
     file => {
       expect(
@@ -44,12 +44,12 @@ describe('the plan-PR condition', () => {
     }
   );
 
-  it('is the same in the whole run-name and job condition of claude.yml', () => {
-    const [runName, job] = copies('claude.yml', WHOLE);
+  it('is the same in the whole run-name and job condition of claude-respond.yml', () => {
+    const [runName, job] = copies('claude-respond.yml', WHOLE);
 
     expect(
-      copies('claude.yml', WHOLE),
-      'claude.yml needs the run-name and the job `if:` to share one condition, from the bot check to `@claude`'
+      copies('claude-respond.yml', WHOLE),
+      'claude-respond.yml needs the run-name and the job `if:` to share one condition, from the bot check to `@claude`'
     ).toHaveLength(2);
     expect(job).toBe(runName);
   });

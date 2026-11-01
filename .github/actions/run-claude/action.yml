@@ -1,6 +1,6 @@
 name: Run Claude
 description: >-
-  Load the agent files, run Claude Code with them, and keep its output. The steps claude.yml and
+  Load the agent files, run Claude Code with them, and keep its output. The steps claude-respond.yml and
   claude-run.yml share.
 
 inputs:

@@ -16,7 +16,7 @@ run-name: >-
   }}
 
 # The tech lead's approving review on a draft plan PR starts the build (plans/README.md). Plans are
-# drafted by claude-plan.yml; `@claude` comments on the plan PR are handled by claude.yml.
+# drafted by claude-plan.yml; `@claude` comments on the plan PR are handled by claude-respond.yml.
 
 on:
   pull_request_review:

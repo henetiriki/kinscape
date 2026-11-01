@@ -320,7 +320,7 @@ describe('run', () => {
       'claude-build.yml': [],
       'claude-code-review.yml': [],
       'claude-plan.yml': [],
-      'claude.yml': [],
+      'claude-respond.yml': [],
     };
     artifacts = {};
     open = [];
@@ -361,7 +361,7 @@ describe('run', () => {
     for (const workflow of [
       'claude-plan.yml',
       'claude-build.yml',
-      'claude.yml',
+      'claude-respond.yml',
       'claude-code-review.yml',
     ]) {
       expect(gh).toHaveBeenCalledWith([
@@ -407,7 +407,7 @@ describe('run', () => {
   });
 
   it('shows the run page the issue body and the new issue', () => {
-    runs['claude.yml'] = [make(1), make(2)];
+    runs['claude-respond.yml'] = [make(1), make(2)];
     artifacts[1] = artifact('cat a');
     artifacts[2] = artifact('cat b');
     created = 'https://github.com/o/r/issues/9\n';
@@ -425,7 +425,7 @@ describe('run', () => {
   });
 
   it('shows the run page the issue it updated', () => {
-    runs['claude.yml'] = [make(1), make(2)];
+    runs['claude-respond.yml'] = [make(1), make(2)];
     artifacts[1] = artifact('cat a');
     artifacts[2] = artifact('cat b');
     open = [{ number: 9, title: ISSUE_TITLE }];
@@ -435,7 +435,7 @@ describe('run', () => {
   });
 
   it('still says it opened an issue when gh prints no URL', () => {
-    runs['claude.yml'] = [make(1), make(2)];
+    runs['claude-respond.yml'] = [make(1), make(2)];
     artifacts[1] = artifact('cat a');
     artifacts[2] = artifact('cat b');
     audit();
@@ -479,7 +479,7 @@ describe('run', () => {
   });
 
   it('rewrites the open issue instead of opening another', () => {
-    runs['claude.yml'] = [make(1), make(2)];
+    runs['claude-respond.yml'] = [make(1), make(2)];
     artifacts[1] = artifact('cat a');
     artifacts[2] = artifact('cat b');
     open = [
@@ -500,7 +500,7 @@ describe('run', () => {
   });
 
   it('ignores skipped, unfinished and older runs', () => {
-    runs['claude.yml'] = [
+    runs['claude-respond.yml'] = [
       make(1),
       make(2, '2026-10-22T10:00:00Z', 'skipped'),
       make(3, '2026-10-22T10:00:00Z', ''),
@@ -521,7 +521,7 @@ describe('run', () => {
 
   // A transcript array is what runs before the change uploaded (plan C415, D1).
   it('skips a run with no artifact, an unreadable one, or a transcript', () => {
-    runs['claude.yml'] = [make(1), make(2), make(3), make(4)];
+    runs['claude-respond.yml'] = [make(1), make(2), make(3), make(4)];
     artifacts = {
       1: artifact('cat a'),
       2: undefined,

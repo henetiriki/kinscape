@@ -67,7 +67,7 @@ jobs:
       fail-fast: false
       matrix:
         spec: ${{ fromJSON(needs.unblock.outputs.unblocked) }}
-    # Its own group, not claude.yml's `thread-<n>`: a group keeps one pending job and a newer one
+    # Its own group, not claude-respond.yml's `thread-<n>`: a group keeps one pending job and a newer one
     # replaces it, so a refresh would drop an @claude reply queued on the Spec, or be dropped by one.
     concurrency: refresh-${{ matrix.spec.number }}
     runs-on: ubuntu-latest

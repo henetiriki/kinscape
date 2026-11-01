@@ -35,9 +35,9 @@ flowchart LR
     claude_hand_back["Claude: Hand back<br>claude-hand-back.yml<br>label"]
     claude_plan["Claude: Plan<br>claude-plan.yml<br>plan"]
     claude_plugin_pin_check["Claude: Plugin pin check<br>claude-plugin-pin-check.yml<br>check-pin"]
+    claude_respond["Claude: Respond<br>claude-respond.yml<br>claude · summary"]
     claude_run["Claude: Run (shared)<br>claude-run.yml<br>gate · run · summary"]
     claude_unblock["Claude: Unblock<br>claude-unblock.yml<br>unblock · refresh"]
-    claude["Claude: Code<br>claude.yml<br>claude · summary"]
   end
   subgraph g_Design [Design]
     design_agent_shots["Design agent shots<br>design-agent-shots.yml<br>setup · render · commit"]
@@ -65,11 +65,11 @@ flowchart LR
   on_issues -->|"labeled"| claude_plan
   on_schedule -->|"0 6 * * 1"| claude_plugin_pin_check
   on_workflow_dispatch --> claude_plugin_pin_check
+  on_issue_comment -->|"created"| claude_respond
+  on_pull_request_review_comment -->|"created"| claude_respond
+  on_issues -->|"opened, assigned"| claude_respond
+  on_pull_request_review -->|"submitted"| claude_respond
   on_issues -->|"closed"| claude_unblock
-  on_issue_comment -->|"created"| claude
-  on_pull_request_review_comment -->|"created"| claude
-  on_issues -->|"opened, assigned"| claude
-  on_pull_request_review -->|"submitted"| claude
   on_workflow_dispatch --> design_agent_shots
   claude_build -.->|calls| claude_run
   claude_plan -.->|calls| claude_run

@@ -47,7 +47,7 @@ export const ISSUE_TITLE = 'Agent permission denials';
 const WORKFLOWS = [
   'claude-plan.yml',
   'claude-build.yml',
-  'claude.yml',
+  'claude-respond.yml',
   'claude-code-review.yml',
 ];
 const DAYS = 7;

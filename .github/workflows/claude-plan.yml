@@ -20,7 +20,7 @@ run-name: >-
 
 # A ready-for-agent Spec, Bug or Chore gets a draft plan PR (plans/README.md); the tech lead's
 # approving review on that PR starts claude-build.yml. `@claude` comments on the plan PR are
-# handled by claude.yml.
+# handled by claude-respond.yml.
 
 on:
   issues:

@@ -26,11 +26,11 @@ const OWN_PIN =
 // The action a `uses:` names when it pins one of ours that way; any other ref as it is.
 const own = (uses = '') => (OWN_PIN.test(uses) ? uses.split('@')[0] : uses);
 
-// Only the review and the unblock refresh call it themselves; claude.yml and claude-run.yml reach it
+// Only the review and the unblock refresh call it themselves; claude-respond.yml and claude-run.yml reach it
 // through run-claude.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files';
 const CALLERS = ['claude-code-review.yml', 'claude-unblock.yml'];
-const RUN_CLAUDE_CALLERS = ['claude.yml', 'claude-run.yml'];
+const RUN_CLAUDE_CALLERS = ['claude-respond.yml', 'claude-run.yml'];
 const action = () =>
   readFileSync(
     join(root, '.github/actions/load-agent-files/action.yml'),
@@ -40,7 +40,7 @@ const action = () =>
 describe('the load-agent-files action', () => {
   // A review that got settings.json would run with the build agent's tools. The step after the
   // action must read the file the action wrote, or Claude runs without them. (The run-claude
-  // action does the same for claude.yml and claude-run.yml: see its tests below.)
+  // action does the same for claude-respond.yml and claude-run.yml: see its tests below.)
   it('is given the settings file the review needs: review-settings.json', () => {
     const workflow = read('claude-code-review.yml');
 
@@ -111,7 +111,7 @@ describe('the load-agent-files action', () => {
 const SUMMARY_ACTION = 'henetiriki/kinscape/.github/actions/run-summary';
 
 describe('the run-summary action', () => {
-  it.each(['claude.yml', 'claude-run.yml', 'claude-code-review.yml'])(
+  it.each(['claude-respond.yml', 'claude-run.yml', 'claude-code-review.yml'])(
     'is used from a pinned main commit, once, by %s',
     file => {
       const uses = [
@@ -126,7 +126,7 @@ describe('the run-summary action', () => {
   );
 });
 
-// The run-claude action holds the steps claude.yml and claude-run.yml share. It loads the settings
+// The run-claude action holds the steps claude-respond.yml and claude-run.yml share. It loads the settings
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
 const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 
@@ -312,7 +312,7 @@ describe('the refresh job of claude-unblock.yml', () => {
     );
   });
 
-  // The level an @claude comment on a Spec runs at (claude.yml); only a plan PR gets Opus.
+  // The level an @claude comment on a Spec runs at (claude-respond.yml); only a plan PR gets Opus.
   it('runs on Sonnet, as an @claude comment on a Spec does', () => {
     expect(claude()?.with?.claude_args).toMatch(/^--model sonnet /);
   });
@@ -733,7 +733,7 @@ describe('the composite actions', () => {
 // rules.md first and build.md last (respond.md points to build.md "below").
 describe('the agent files a workflow loads', () => {
   it.each([
-    ['claude.yml', /^\s*files: (.+)$/m],
+    ['claude-respond.yml', /^\s*files: (.+)$/m],
     ['claude-plan.yml', /^\s*agent_files: (.+)$/m],
     ['claude-build.yml', /^\s*agent_files: (.+)$/m],
     ['claude-unblock.yml', /^\s*files: (.+)$/m],

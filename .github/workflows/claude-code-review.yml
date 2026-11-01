@@ -145,59 +145,14 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
 
-      # Claude's transcript holds every tool result, so any token a command printed. Only its summary is
-      # uploaded, written by the script from main into a folder cleared first. The summary steps never
-      # fail the job: with no summary nothing is uploaded, and the next push is reviewed whole.
-      - name: Clear the summary script folder
+      # The summary, secret scan and upload of Claude's transcript, from a pinned main commit. The
+      # summary and scan never fail the job: with no summary nothing is uploaded, and the next push is
+      # reviewed whole. A failed upload does fail the job.
+      - name: Keep Claude's output
         if: always()
-        continue-on-error: true
-        shell: bash
-        run: rm -rf .claude-summary-script
-      - name: Check out the summary script
-        if: always()
-        continue-on-error: true
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: henetiriki/kinscape/.github/actions/keep-claude-output@dadd94bb8843efbf288a6d2423dac28f5415e3d4
         with:
-          ref: main
-          path: .claude-summary-script
-          sparse-checkout: |
-            scripts
-            .nvmrc
-          persist-credentials: false
-      - name: Set up Node for the summary
-        if: always()
-        continue-on-error: true
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .claude-summary-script/.nvmrc
-      - name: Summarise Claude's output
-        if: always()
-        continue-on-error: true
-        shell: bash
-        run: node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"
-
-      # Claude's final message or a denied command can still hold a secret. Only a clean scan uploads
-      # the copy it scanned; a hit or a failed scan comments on the PR instead (scan-summary.sh).
-      - name: Scan the summary for secrets
-        id: scan
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          THREAD: ${{ github.event.issue.number || github.event.pull_request.number }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: bash .claude-summary-script/scripts/scan-summary.sh
-
-      # The weekly denial audit (claude-denial-audit.yml) reads the denials in this summary.
-      - name: Upload Claude's output
-        if: always() && steps.scan.outputs.clean == 'true'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: claude-execution-output
-          path: ${{ runner.temp }}/gitleaks/scan/claude-execution-output.json
-          retention-days: 7
+          thread: ${{ github.event.issue.number || github.event.pull_request.number }}
 
       - name: Remove the working comment
         if: always() && env.WORKING_COMMENT_ID != ''

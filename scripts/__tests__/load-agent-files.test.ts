@@ -147,6 +147,21 @@ const runClaudeSteps = () =>
       readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8')
     ) as { runs: { steps: Step[] } }
   ).runs.steps;
+const reviewSteps = () =>
+  Object.values(
+    (
+      parse(read('claude-code-review.yml')) as {
+        jobs: Record<string, { steps?: Step[] }>;
+      }
+    ).jobs
+  ).flatMap(job => job.steps ?? []);
+const keepFile = join(root, '.github/actions/keep-claude-output/action.yml');
+const keepAction = () =>
+  parse(readFileSync(keepFile, 'utf8')) as {
+    inputs: Record<string, { default?: string; required?: boolean }>;
+    runs: { steps: Step[] };
+  };
+const keepSteps = () => keepAction().runs.steps;
 const stepUsing = (name: string) =>
   runClaudeSteps().find(step => step.uses?.startsWith(`${name}@`));
 // Every ref a file pins `name` at, e.g. the commit SHA after `anthropics/claude-code-action@`.
@@ -251,17 +266,15 @@ describe('the run-claude action', () => {
     }
   );
 
-  // Dependabot's `actions` group takes minor and patch, so a major bump of either pin arrives as
+  // Dependabot's `actions` group takes minor and patch, so a major bump of the pin arrives as
   // two PRs, one per file. This fails until both carry it.
-  it.each(['anthropics/claude-code-action', 'actions/upload-artifact'])(
-    'pins %s to the commit claude-code-review.yml pins',
-    name => {
-      const pin = stepUsing(name)?.uses?.split('@')[1];
+  it('pins claude-code-action to the commit claude-code-review.yml pins', () => {
+    const name = 'anthropics/claude-code-action';
+    const pin = stepUsing(name)?.uses?.split('@')[1];
 
-      expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
-      expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
-    }
-  );
+    expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
+    expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
+  });
 });
 
 // The refresh job of claude-unblock.yml runs Claude on a Spec's text from outside the team
@@ -390,100 +403,154 @@ describe('the plan run', () => {
 });
 
 // Only a summary of Claude's transcript is uploaded, written by the script from main after a clean
-// secret scan (plans/chores/C415-transcript-summary.md). A runner's temp directory isn't always
+// secret scan (plans/chores/C415-transcript-summary.md). The keep-claude-output action holds those
+// steps once (plans/chores/C481-keep-claude-output.md). A runner's temp directory isn't always
 // /home/runner/work/_temp, so every path starts at runner.temp.
-describe("the upload of Claude's output", () => {
+const KEEP = 'henetiriki/kinscape/.github/actions/keep-claude-output';
+const NODE_STEP = 'Set up Node for the summary';
+const SUMMARY_STEPS = [
+  'Clear the summary script folder',
+  'Check out the summary script',
+  NODE_STEP,
+  "Summarise Claude's output",
+  'Scan the summary for secrets',
+];
+const named = (steps: Step[], name: string) =>
+  steps.filter(step => step.name === name);
+
+describe('the keep-claude-output action', () => {
   // The copy gitleaks scanned, not the summary it was copied from.
   const SCANNED =
     '${{ runner.temp }}/gitleaks/scan/claude-execution-output.json';
-  const reviewSteps = () =>
-    Object.values(
-      (
-        parse(read('claude-code-review.yml')) as {
-          jobs: Record<string, { steps?: Step[] }>;
-        }
-      ).jobs
-    ).flatMap(job => job.steps ?? []);
-  const named = (steps: Step[], name: string) =>
-    steps.filter(step => step.name === name);
 
-  // run-claude's callers set up Node in setup-workspace; the review sets it up for the summary.
-  describe.each([
-    ['run-claude', runClaudeSteps, false],
-    ['claude-code-review.yml', reviewSteps, true],
-  ])('in %s', (_, steps, node) => {
-    it('uploads the scanned summary alone, for 7 days, after a clean scan', () => {
-      const uploads = steps().filter(step =>
-        step.uses?.startsWith('actions/upload-artifact@')
-      );
+  it('uploads the scanned summary alone, for 7 days, after a clean scan', () => {
+    const uploads = keepSteps().filter(step =>
+      step.uses?.startsWith('actions/upload-artifact@')
+    );
 
-      expect(uploads).toHaveLength(1);
-      expect(uploads[0].if).toBe(
-        "always() && steps.scan.outputs.clean == 'true'"
-      );
-      expect(uploads[0].with).toEqual({
-        name: 'claude-execution-output',
-        path: SCANNED,
-        'retention-days': 7,
-      });
-    });
-
-    // A branch or the agent could leave a symlink, file or repo at that path for checkout to follow.
-    it('clears the folder, then summarises with the script from main', () => {
-      const all = steps();
-      const [clear] = named(all, 'Clear the summary script folder');
-      const [checkout] = named(all, 'Check out the summary script');
-
-      expect(clear.run).toBe('rm -rf .claude-summary-script');
-      expect(all.indexOf(clear)).toBe(all.indexOf(checkout) - 1);
-      const [summarise] = named(steps(), "Summarise Claude's output");
-
-      expect(checkout.with).toMatchObject({
-        path: '.claude-summary-script',
-        'persist-credentials': false,
-        ref: 'main',
-      });
-      expect(summarise.run).toBe(
-        'node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"'
-      );
-    });
-
-    it('runs the summary steps even when Claude failed, and never fails on them', () => {
-      for (const name of [
-        'Clear the summary script folder',
-        'Check out the summary script',
-        ...(node ? ['Set up Node for the summary'] : []),
-        "Summarise Claude's output",
-        'Scan the summary for secrets',
-      ]) {
-        expect(named(steps(), name), name).toEqual([
-          expect.objectContaining({
-            'continue-on-error': true,
-            if: 'always()',
-          }),
-        ]);
-      }
+    expect(uploads).toHaveLength(1);
+    expect(uploads[0].if).toBe(
+      "always() && steps.scan.outputs.clean == 'true'"
+    );
+    expect(uploads[0].with).toEqual({
+      // The review's changes-since step and the denial audit look the artifact up by this name.
+      name: 'claude-execution-output',
+      path: SCANNED,
+      'retention-days': 7,
     });
   });
 
-  it('scans the same way in both, with the script from main', () => {
-    const scan = (steps: Step[]) => {
-      const [step] = named(steps, 'Scan the summary for secrets');
+  it('takes the thread the scan comments on, and whether to set up Node', () => {
+    const { inputs } = keepAction();
 
-      return { env: step.env, run: step.run };
-    };
+    expect(Object.keys(inputs).sort()).toEqual(['setup_node', 'thread']);
+    expect(inputs.thread.required).toBe(true);
+    expect(inputs.setup_node.default).toBe('true');
+  });
 
-    expect(scan(reviewSteps())).toEqual(scan(runClaudeSteps()));
-    expect(scan(runClaudeSteps()).run).toBe(
+  // A branch or the agent could leave a symlink, file or repo at that path for checkout to follow.
+  it('clears the folder, then summarises with the script from main', () => {
+    const all = keepSteps();
+    const [clear] = named(all, 'Clear the summary script folder');
+    const [checkout] = named(all, 'Check out the summary script');
+    const [summarise] = named(all, "Summarise Claude's output");
+
+    expect(clear.run).toBe('rm -rf .claude-summary-script');
+    expect(all.indexOf(clear)).toBe(all.indexOf(checkout) - 1);
+    expect(checkout.with).toMatchObject({
+      path: '.claude-summary-script',
+      'persist-credentials': false,
+      ref: 'main',
+    });
+    expect(summarise.run).toBe(
+      'node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"'
+    );
+  });
+
+  it('runs the summary steps even when Claude failed, and never fails on them', () => {
+    for (const name of SUMMARY_STEPS) {
+      expect(named(keepSteps(), name), name).toEqual([
+        expect.objectContaining({
+          'continue-on-error': true,
+          if:
+            name === NODE_STEP
+              ? "always() && inputs.setup_node == 'true'"
+              : 'always()',
+        }),
+      ]);
+    }
+  });
+
+  // A failed upload of a clean summary is a real failure: the next review would miss it.
+  it('fails the job when the upload fails', () => {
+    const [upload] = keepSteps().filter(step =>
+      step.uses?.startsWith('actions/upload-artifact@')
+    );
+
+    expect(upload['continue-on-error']).toBeUndefined();
+  });
+
+  it('scans with the script from main, the thread it is given and the workflow token', () => {
+    const [step] = named(keepSteps(), 'Scan the summary for secrets');
+
+    expect(step.id).toBe('scan');
+    expect(step.run).toBe(
       'bash .claude-summary-script/scripts/scan-summary.sh'
     );
-    // The gitleaks pin is in the script, from main, so one edit moves both at once.
-    expect(Object.keys(scan(runClaudeSteps()).env ?? {}).sort()).toEqual([
-      'GH_REPO',
-      'GH_TOKEN',
-      'RUN_URL',
-      'THREAD',
-    ]);
+    // The gitleaks pin is in the script, from main, so one edit moves every caller at once.
+    expect(step.env).toEqual({
+      GH_REPO: '${{ github.repository }}',
+      GH_TOKEN: '${{ github.token }}',
+      RUN_URL:
+        '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+      THREAD: '${{ inputs.thread }}',
+    });
+  });
+});
+
+describe('the callers of the keep-claude-output action', () => {
+  const THREAD =
+    '${{ github.event.issue.number || github.event.pull_request.number }}';
+
+  const keepCall = (steps: () => Step[]) =>
+    steps().filter(step => step.uses?.includes('keep-claude'));
+
+  // run-claude's callers set up Node in setup-workspace; the review has none, so the action does.
+  describe.each([
+    ['run-claude', runClaudeSteps, { setup_node: 'false', thread: THREAD }],
+    ['claude-code-review.yml', reviewSteps, { thread: THREAD }],
+  ])('%s', (_, steps, inputs) => {
+    it('calls it once, from a pinned main commit, after every run of Claude', () => {
+      const calls = keepCall(steps);
+
+      expect(calls).toHaveLength(1);
+      expect(own(calls[0].uses)).toBe(KEEP);
+      expect(calls[0].if).toBe('always()');
+      expect(calls[0]['continue-on-error']).toBeUndefined();
+      expect(calls[0].with).toEqual(inputs);
+    });
+
+    it('carries no copy of its steps', () => {
+      const text = JSON.stringify(steps());
+
+      for (const name of SUMMARY_STEPS) {
+        expect(named(steps(), name), name).toEqual([]);
+      }
+      expect(
+        steps().filter(step =>
+          step.uses?.startsWith('actions/upload-artifact@')
+        )
+      ).toEqual([]);
+      expect(text).not.toContain('claude-summary-script');
+    });
+  });
+
+  // Two pins could drift if one pin PR is delayed, leaving the review and the runs on different code.
+  it('pins it to the same commit in both', () => {
+    const pin = (steps: () => Step[]) => keepCall(steps)[0].uses?.split('@')[1];
+
+    expect(pin(runClaudeSteps) ?? '').toMatch(/^[0-9a-f]{40}$/);
+    expect(pin(reviewSteps)).toBe(pin(runClaudeSteps));
   });
 
   // Without pipefail, a failed comment lookup would read as "no comment yet" and post a second one.
@@ -535,14 +602,14 @@ cp "$(dirname "$0")/gitleaks-stub" "$4/gitleaks"
 `,
 };
 
-// run-claude's scan step, which runs scripts/scan-summary.sh with its env; the test above checks
-// claude-code-review.yml's is the same.
+// The action's scan step, which runs scripts/scan-summary.sh with its env.
 const scanStep = () =>
-  runClaudeSteps().find(
-    ({ name }) => name === 'Scan the summary for secrets'
-  ) as { env: Record<string, string>; run: string } & Step;
+  keepSteps().find(({ name }) => name === 'Scan the summary for secrets') as {
+    env: Record<string, string>;
+    run: string;
+  } & Step;
 
-// Runs scripts/scan-summary.sh with run-claude's env and the stubs, over a summary unless `summary`
+// Runs scripts/scan-summary.sh with the action's env and the stubs, over a summary unless `summary`
 // is false.
 const scanScript = readFileSync(join(root, 'scripts/scan-summary.sh'), 'utf8');
 const version = scanScript.match(/^GITLEAKS_VERSION=(\S+)$/m)?.[1];

@@ -1,0 +1,72 @@
+name: Keep Claude's output
+description: >-
+  Summarise Claude's transcript, scan the summary for secrets and upload it. The steps the review and
+  run-claude share; call it after Claude runs, with `if: always()`.
+
+inputs:
+  thread:
+    description: 'The issue or pull request number the secret scan comments on, e.g. github.event.issue.number || github.event.pull_request.number.'
+    required: true
+  setup_node:
+    description: "'false' when the caller has set up Node already (setup-workspace does), so the action keeps the job's Node."
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    # Claude's transcript holds every tool result, so any token a command printed. Only its summary
+    # is uploaded, written by the script from main into a folder cleared first. The summary steps
+    # never fail the job: with no summary, nothing is uploaded. Guards against an accidental leak;
+    # a run's own steps could still defeat it.
+    - name: Clear the summary script folder
+      if: always()
+      continue-on-error: true
+      shell: bash
+      run: rm -rf .claude-summary-script
+    - name: Check out the summary script
+      if: always()
+      continue-on-error: true
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: main
+        path: .claude-summary-script
+        sparse-checkout: |
+          scripts
+          .nvmrc
+        persist-credentials: false
+    - name: Set up Node for the summary
+      if: always() && inputs.setup_node == 'true'
+      continue-on-error: true
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .claude-summary-script/.nvmrc
+    - name: Summarise Claude's output
+      if: always()
+      continue-on-error: true
+      shell: bash
+      run: node .claude-summary-script/scripts/agent-transcript.mts "$RUNNER_TEMP/claude-execution-output.json" "$RUNNER_TEMP/claude-summary/claude-execution-output.json"
+
+    # Claude's final message or a denied command can still hold a secret. Only a clean scan uploads
+    # the copy it scanned; a hit or a failed scan comments on the thread instead (scan-summary.sh).
+    # github.token comments, as claude-run.yml's safety net counts only the bot's comments.
+    - name: Scan the summary for secrets
+      id: scan
+      if: always()
+      continue-on-error: true
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+        THREAD: ${{ inputs.thread }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: bash .claude-summary-script/scripts/scan-summary.sh
+
+    # The weekly denial audit (claude-denial-audit.yml) and the review's changes-since step look this
+    # artifact up by name. A failed upload fails the job.
+    - name: Upload Claude's output
+      if: always() && steps.scan.outputs.clean == 'true'
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      with:
+        name: claude-execution-output
+        path: ${{ runner.temp }}/gitleaks/scan/claude-execution-output.json
+        retention-days: 7

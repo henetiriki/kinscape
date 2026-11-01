@@ -2,8 +2,8 @@
 # Scans the summary of Claude's transcript with gitleaks before upload. A clean scan writes
 # clean=true to $GITHUB_OUTPUT, and only then is the scanned copy, $RUNNER_TEMP/gitleaks/scan/,
 # uploaded. A finding or a failed scan removes the summary and comments on the thread
-# (plans/chores/C415-transcript-summary.md, D3). Run from main's scripts by run-claude and
-# claude-code-review.yml, whose step sets GH_TOKEN, GH_REPO, THREAD and RUN_URL.
+# (plans/chores/C415-transcript-summary.md, D3). Run from main's scripts by the keep-claude-output
+# action, whose step sets GH_TOKEN, GH_REPO, THREAD and RUN_URL.
 set -euo pipefail
 
 GITLEAKS_VERSION=8.30.1

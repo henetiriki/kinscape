@@ -95,8 +95,7 @@ jobs:
           settings: refresh-settings.json
           token: ${{ github.token }}
 
-      # Same action pin as claude-code-review.yml and run-claude (a test checks). No transcript is
-      # uploaded: the artifact name would collide across the matrix, and nothing here reads it.
+      # Same action pin as claude-code-review.yml and run-claude (a test checks).
       - name: Run Claude Code
         uses: anthropics/claude-code-action@8041f1d17e0e7d2f2cfe35002962e9f26237c0bb # v1.0.263
         with:
@@ -108,3 +107,13 @@ jobs:
           prompt: >-
             Refresh Spec, Bug or Chore #${{ matrix.spec.number }} as .github/agent/refresh.md says.
             This is an unblock run. It was blocked by: #${{ join(matrix.spec.blockers, ', #') }}.
+
+      # The summary, secret scan and upload of Claude's transcript, from a pinned main commit, for the
+      # weekly denial audit. The Spec's number and the attempt end the artifact name: the matrix runs
+      # several jobs in one run, and a re-run of a failed job uploads again. A leak is commented on that Spec.
+      - name: Keep Claude's output
+        if: always()
+        uses: henetiriki/kinscape/.github/actions/keep-claude-output@ef8ffb12cf0af87b7a89a7fa4fefc83bf1f83226
+        with:
+          name_suffix: -${{ matrix.spec.number }}-${{ github.run_attempt }}
+          thread: ${{ matrix.spec.number }}

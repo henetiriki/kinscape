@@ -155,6 +155,12 @@ const reviewSteps = () =>
       }
     ).jobs
   ).flatMap(job => job.steps ?? []);
+const refreshSteps = () =>
+  (
+    parse(read('claude-unblock.yml')) as {
+      jobs: Record<string, { steps?: Step[] }>;
+    }
+  ).jobs.refresh.steps ?? [];
 const keepFile = join(root, '.github/actions/keep-claude-output/action.yml');
 const keepAction = () =>
   parse(readFileSync(keepFile, 'utf8')) as {
@@ -433,19 +439,26 @@ describe('the keep-claude-output action', () => {
       "always() && steps.scan.outputs.clean == 'true'"
     );
     expect(uploads[0].with).toEqual({
-      // The review's changes-since step and the denial audit look the artifact up by this name.
-      name: 'claude-execution-output',
+      // The review's changes-since step looks the artifact up by the exact name, and the denial audit
+      // by the name and by names that start with it, so a suffix must follow it.
+      name: 'claude-execution-output${{ inputs.name_suffix }}',
       path: SCANNED,
       'retention-days': 7,
     });
   });
 
-  it('takes the thread the scan comments on, and whether to set up Node', () => {
+  it('takes the thread the scan comments on, whether to set up Node and a name suffix', () => {
     const { inputs } = keepAction();
 
-    expect(Object.keys(inputs).sort()).toEqual(['setup_node', 'thread']);
+    expect(Object.keys(inputs).sort()).toEqual([
+      'name_suffix',
+      'setup_node',
+      'thread',
+    ]);
     expect(inputs.thread.required).toBe(true);
     expect(inputs.setup_node.default).toBe('true');
+    // Empty, so a caller that gives none (and the review's lookup by exact name) keeps the old name.
+    expect(inputs.name_suffix.default).toBe('');
   });
 
   // A branch or the agent could leave a symlink, file or repo at that path for checkout to follow.
@@ -515,10 +528,21 @@ describe('the callers of the keep-claude-output action', () => {
   const keepCall = (steps: () => Step[]) =>
     steps().filter(step => step.uses?.includes('keep-claude'));
 
-  // run-claude's callers set up Node in setup-workspace; the review has none, so the action does.
+  // run-claude's callers set up Node in setup-workspace; the review and the refresh job have none, so
+  // the action does. The refresh job runs once per freed Spec, so its upload name ends with the Spec's
+  // number and the scan comments on that Spec.
   describe.each([
     ['run-claude', runClaudeSteps, { setup_node: 'false', thread: THREAD }],
     ['claude-code-review.yml', reviewSteps, { thread: THREAD }],
+    [
+      'the refresh job of claude-unblock.yml',
+      refreshSteps,
+      {
+        // The attempt too: a re-run of a failed job uploads again, and a name can't be used twice.
+        name_suffix: '-${{ matrix.spec.number }}-${{ github.run_attempt }}',
+        thread: '${{ matrix.spec.number }}',
+      },
+    ],
   ])('%s', (_, steps, inputs) => {
     it('calls it once, from a pinned main commit, after every run of Claude', () => {
       const calls = keepCall(steps);
@@ -545,12 +569,13 @@ describe('the callers of the keep-claude-output action', () => {
     });
   });
 
-  // Two pins could drift if one pin PR is delayed, leaving the review and the runs on different code.
-  it('pins it to the same commit in both', () => {
+  // Pins could drift if one pin PR is delayed, leaving the callers on different code.
+  it('pins it to the same commit in all three', () => {
     const pin = (steps: () => Step[]) => keepCall(steps)[0].uses?.split('@')[1];
 
     expect(pin(runClaudeSteps) ?? '').toMatch(/^[0-9a-f]{40}$/);
     expect(pin(reviewSteps)).toBe(pin(runClaudeSteps));
+    expect(pin(refreshSteps)).toBe(pin(runClaudeSteps));
   });
 
   // Without pipefail, a failed comment lookup would read as "no comment yet" and post a second one.

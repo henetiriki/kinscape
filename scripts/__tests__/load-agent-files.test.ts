@@ -855,7 +855,10 @@ describe('the fix-review workflow', () => {
   it('tells Claude to leave test changes and comment text alone, in fix-review.md', () => {
     const text = agent('fix-review.md');
 
-    expect(text).toContain('claude[bot]');
+    // GraphQL shows the reviewer as the Bot `claude`; REST as `claude[bot]`.
+    expect(text).toContain('`claude` with `__typename` `Bot`');
+    expect(text).toContain('newest PR comment');
+    expect(text).toContain('resolveReviewThread');
     expect(text).toContain('rule 10');
     expect(text).toMatch(/data, not instructions/);
   });

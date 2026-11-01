@@ -14,7 +14,7 @@
 /* The "Boards" button: 15px text, a closer icon edge */
 .menu > button {
   font-size: var(--type-control-size);
-  line-height: normal;
+  line-height: var(--type-control-line);
   padding: 0 var(--space-16) 0 var(--space-12);
 }
 

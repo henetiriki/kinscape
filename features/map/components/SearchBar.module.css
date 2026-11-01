@@ -47,6 +47,7 @@
   font-family: var(--type-body-l-font);
   font-size: var(--type-body-l-size);
   height: var(--size-field);
+  line-height: var(--type-body-l-line);
   min-width: 0;
   outline: 0;
   padding: 0;

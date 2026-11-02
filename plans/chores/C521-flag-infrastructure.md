@@ -42,8 +42,8 @@ State the rule once, as _New infrastructure_ in [security.md](../../docs/securit
 
 ## Proof
 
-| Check                                  | By                                                                       |
-| -------------------------------------- | ------------------------------------------------------------------------ |
-| Rule stated once, two files link to it | `git grep -n "new service, database"` finds only `security.md`           |
-| Budgets                                | `npm run words`                                                          |
-| `/refine spec` flags a database slice  | Tech lead's dry run of `/refine spec` on a database slice, noted on #521 |
+| Check                                  | By                                                                           |
+| -------------------------------------- | ---------------------------------------------------------------------------- |
+| Rule stated once, two files link to it | `git grep -n "new service, database" -- ':!plans/'` finds only `security.md` |
+| Budgets                                | `npm run words`                                                              |
+| `/refine spec` flags a database slice  | Tech lead's dry run of `/refine spec` on a database slice, noted on #521     |

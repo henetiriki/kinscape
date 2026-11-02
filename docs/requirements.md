@@ -47,6 +47,8 @@ These terms are used exactly as defined below throughout the spec and the code.
 | Map date           | The date currently selected on the date control                                                                     |
 | Fuzzy date         | A genealogical date with a qualifier: exact, about, before, after, between, from–to; may be year-only or month-year |
 
+Proposed term: **Viewer** = whoever reads a Tree: an Account now; anyone, once a Tree is published.
+
 ## Map and live date control
 
 The map is the main screen; changing the map date must feel instant, with no reload or spinner.
@@ -113,7 +115,7 @@ A pin says "this person was here, at this time, and this is how the user knows";
 
 | ID                        | Requirement                                                                                                                                                                                                             | Priority |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| <a id="pin-01"></a>PIN-01 | Create a pin by clicking the map, searching a known place, or typing coordinates; then choose the person, date and event type                                                                                           | Must     |
+| <a id="pin-01"></a>PIN-01 | Create a pin by clicking the map, searching a known place (delivered with [EXP-04](#exp-04)), or typing coordinates; then choose the person, date and event type                                                        | Must     |
 | <a id="pin-02"></a>PIN-02 | Pin fields: person, place, address as recorded (verbatim), precision (street address, building, erf, farm, suburb, town or city, district, province, approximate), event type, fuzzy date or date range, sources, notes | Must     |
 | <a id="pin-03"></a>PIN-03 | Event types: birth, baptism or christening, residence (census, voters roll, will), marriage, divorce, death, burial, land ownership, occupation, other                                                                  | Must     |
 | <a id="pin-04"></a>PIN-04 | Fuzzy dates follow GEDCOM conventions: exact, ABT, BEF, AFT, BET…AND, FROM…TO, plus EST (estimated) and CAL (calculated); precision is day (YYYYMMDD), month (YYYYMM) or year (YYYY)                                    | Must     |
@@ -158,21 +160,21 @@ The map date drives everything: only pins true on that date are shown, and uncer
 
 Everything that changes over time carries a half-open validity interval \[from, to), with an empty "to" meaning still current. Coordinates are WGS84.
 
-| Entity          | Key fields                                                                                                     | Notes                                                    |
-| --------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| Account         | id, sign-in identity                                                                                           | Not linked to a Person ([NFR-09](#nfr-09))               |
-| Tree            | id, name                                                                                                       |                                                          |
-| TreeAccount     | tree id, account id                                                                                            | One row in v1; no roles                                  |
-| Person          | id, tree id, given names, surname, maiden name, name variants, sex, birth, death, notes                        | Birth and death are FuzzyDates                           |
-| Relationship    | id, tree id, person A, person B, type (parent of, spouse of), subtype, start, end                              | Subtype: biological, adoptive, step                      |
-| Place           | id, tree id, lat, lon, precision                                                                               | Physical location only; names live in PlaceName          |
-| PlaceName       | place id, name, from, to, source id                                                                            | Follows its Place's Tree                                 |
-| Pin             | id, tree id, person id, place id, address verbatim, event type, date, source ids, notes, jurisdiction (cached) | Cache rebuilt when boundaries change ([PIN-05](#pin-05)) |
-| Polity          | id, type (colony, republic, province, homeland, district)                                                      |                                                          |
-| PolityName      | polity id, name, from, to                                                                                      |                                                          |
-| PolityParent    | child id, parent id, from, to                                                                                  | Dated nesting ([BND-03](#bnd-03))                        |
-| BoundaryVersion | id, polity id, level, geometry, from, to, confidence, contested, source id                                     | MultiPolygon, to allow enclaves                          |
-| Source          | id, tree id, title, repository, reference, URL, attachment, notes                                              |                                                          |
+| Entity          | Key fields                                                                                                         | Notes                                                    |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| Account         | id, sign-in identity                                                                                               | Not linked to a Person ([NFR-09](#nfr-09))               |
+| Tree            | id, name                                                                                                           |                                                          |
+| TreeAccount     | tree id, account id                                                                                                | One row in v1; no roles                                  |
+| Person          | id, tree id, given names, surname, maiden name, name variants, sex, birth, death, notes                            | Birth and death are FuzzyDates                           |
+| Relationship    | id, tree id, person A, person B, type (parent of, spouse of), subtype, start, end                                  | Subtype: biological, adoptive, step                      |
+| Place           | id, tree id, lat, lon, precision                                                                                   | Physical location only; names live in PlaceName          |
+| PlaceName       | place id, name, from, to, source id                                                                                | Follows its Place's Tree                                 |
+| Pin             | id, tree id, person id, place id, address verbatim, event type, date, sources (text), notes, jurisdiction (cached) | Cache rebuilt when boundaries change ([PIN-05](#pin-05)) |
+| Polity          | id, type (colony, republic, province, homeland, district)                                                          |                                                          |
+| PolityName      | polity id, name, from, to                                                                                          |                                                          |
+| PolityParent    | child id, parent id, from, to                                                                                      | Dated nesting ([BND-03](#bnd-03))                        |
+| BoundaryVersion | id, polity id, level, geometry, from, to, confidence, contested, source id                                         | MultiPolygon, to allow enclaves                          |
+| Source          | id, tree id, title, repository, reference, URL, attachment, notes                                                  | Arrives with [PIN-07](#pin-07) (M5)                      |
 
 Polity, PolityName, PolityParent and BoundaryVersion carry no tree id: every Account shares them ([NFR-09](#nfr-09)).
 
@@ -208,17 +210,18 @@ The 1900–1902 overlaps are the contested periods [BND-04](#bnd-04) exists for:
 
 Sized for one researcher with a large family tree: assume up to 2,000 people and 10,000 pins.
 
-| ID                        | Requirement                                                                                                                                                                    | Priority |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| <a id="nfr-01"></a>NFR-01 | Changing the map date redraws all layers and pins within 100 ms on a mid-range laptop                                                                                          | Must     |
-| <a id="nfr-02"></a>NFR-02 | First load of the map in under 3 s on a typical home connection                                                                                                                | Should   |
-| <a id="nfr-03"></a>NFR-03 | Private: sign-in required, no public pages, nothing indexed by search engines                                                                                                  | Must     |
-| <a id="nfr-04"></a>NFR-04 | Daily automatic backup, plus one-click export of all data as JSON and GeoJSON                                                                                                  | Must     |
-| <a id="nfr-05"></a>NFR-05 | Desktop-first; usable on a tablet; read-only lookups work on a phone                                                                                                           | Should   |
-| <a id="nfr-06"></a>NFR-06 | Date control fully usable by keyboard; colour never the only way meaning is shown                                                                                              | Should   |
-| <a id="nfr-07"></a>NFR-07 | Works offline for reading and adding pins (useful in archives and on farm visits), syncing later                                                                               | Could    |
-| <a id="nfr-08"></a>NFR-08 | Licence and attribution recorded for every basemap and boundary source, and shown in the app                                                                                   | Must     |
-| <a id="nfr-09"></a>NFR-09 | Multi-user ready: sign-in is an Account; people, relationships, pins, sources and places belong to a Tree; boundaries, polities and historical maps are shared by all Accounts | Must     |
+| ID                        | Requirement                                                                                                                                                                                                                                                                                                                   | Priority |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| <a id="nfr-01"></a>NFR-01 | Changing the map date redraws all layers and pins within 100 ms on a mid-range laptop                                                                                                                                                                                                                                         | Must     |
+| <a id="nfr-02"></a>NFR-02 | First load of the map in under 3 s on a typical home connection                                                                                                                                                                                                                                                               | Should   |
+| <a id="nfr-03"></a>NFR-03 | Private in v1: sign-in required, no public pages, nothing indexed by search engines. A later version may let the owner publish a Tree to be viewed at its own public URL                                                                                                                                                      | Must     |
+| <a id="nfr-04"></a>NFR-04 | Daily automatic backup, plus one-click export of all data as JSON and GeoJSON                                                                                                                                                                                                                                                 | Must     |
+| <a id="nfr-05"></a>NFR-05 | Desktop-first; usable on a tablet; read-only lookups work on a phone                                                                                                                                                                                                                                                          | Should   |
+| <a id="nfr-06"></a>NFR-06 | Date control fully usable by keyboard; colour never the only way meaning is shown                                                                                                                                                                                                                                             | Should   |
+| <a id="nfr-07"></a>NFR-07 | Works offline for reading and adding pins (useful in archives and on farm visits), syncing later                                                                                                                                                                                                                              | Could    |
+| <a id="nfr-08"></a>NFR-08 | Licence and attribution recorded for every basemap and boundary source, and shown in the app                                                                                                                                                                                                                                  | Must     |
+| <a id="nfr-09"></a>NFR-09 | Multi-user ready: sign-in is an Account; people, relationships, pins and places belong to a Tree (sources too, from M5); boundaries, polities and historical maps are shared by all Accounts                                                                                                                                  | Must     |
+| <a id="nfr-10"></a>NFR-10 | Publish-ready: every read of Tree data takes a Viewer and a Tree; the server decides what that Viewer may see, including hiding living Persons' details, and no page or component checks sign-in on its own. Publishing a Tree later adds a publish state and URL without changing how reads work. Nothing is published in v1 | Must     |
 
 ## Suggested tech approach
 
@@ -232,7 +235,7 @@ The key to a live slider is loading every boundary version once and changing onl
 
 - **Jurisdiction lookup:** point-in-polygon at the pin date. Turf.js in the browser is enough at this data size; PostGIS if the logic moves server-side.
 
-- **Storage:** Postgres with PostGIS (hosted, e.g. Supabase or Neon) or SQLite for a local-first build. Boundaries stay as GeoJSON in the repo either way ([BND-06](#bnd-06)).
+- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it, behind repository interfaces ([architecture-target.md](architecture-target.md) item 5) so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
 
 - **Hosting:** Vercel for the front end.
 
@@ -248,9 +251,10 @@ Prove the live slider with a few easy epochs first, then add people, then spend 
 
 2.  **M1 Time-aware map.** Boundary model and date control with three easy epochs only: 1910 Union provinces, 1994 provinces, today. Covers [MAP-01](#map-01) to [MAP-06](#map-06), [BND-01](#bnd-01), [BND-02](#bnd-02), [BND-06](#bnd-06), [BND-07](#bnd-07), [NFR-01](#nfr-01).
 
-3.  **M2 People and pins.** [PPL-01](#ppl-01), [PPL-02](#ppl-02), [PIN-01](#pin-01) to [PIN-04](#pin-04), [PIN-06](#pin-06), persistence and sign-in ([NFR-03](#nfr-03)), [NFR-09](#nfr-09). Exit: create a person, pin them, watch the pin appear and disappear as the date moves. Also:
-    - Given the user's Tree has been entered, when the tech lead creates a second Account, then all the user's people, pins and sources are unchanged and not re-entered.
-    - Given two Accounts with separate Trees, when the second signs in, then they see none of the first Tree's people, pins or sources, but the same historical maps.
+3.  **M2 People and pins.** [PPL-01](#ppl-01), [PPL-02](#ppl-02), [PIN-01](#pin-01) (by clicking the map or typing coordinates) to [PIN-04](#pin-04), [PIN-06](#pin-06), persistence and sign-in ([NFR-03](#nfr-03)), [NFR-09](#nfr-09), [NFR-10](#nfr-10). Exit: create a person, pin them, watch the pin appear and disappear as the date moves. Given a pin, when the map date is inside its earliest to latest dates, then it shows, and otherwise it is hidden; display windows and fuzzy halos stay in [EXP-01](#exp-01) and [EXP-02](#exp-02) (M3). Also:
+    - Given the user's Tree has been entered, when the tech lead creates a second Account, then all the user's people and pins are unchanged and not re-entered.
+    - Given two Accounts with separate Trees, when the second signs in, then they see none of the first Tree's people or pins, but the same historical maps.
+    - Given an unpublished Tree, when a Viewer with no Account reads any of its data, then nothing is returned.
     - Given v1, when the user uses it, then they see only a sign-in: no sign-up, sharing or account screens.
 
 4.  **M3 Jurisdiction and exploring.** [PIN-05](#pin-05), [MAP-07](#map-07), [EXP-01](#exp-01) to [EXP-05](#exp-05), [NFR-04](#nfr-04).
@@ -263,7 +267,7 @@ Prove the live slider with a few easy epochs first, then add people, then spend 
 
 ## Out of scope and open questions
 
-**Not in v1:** sharing or multiple users, GEDCOM import (export may come later), DNA data, integrations with FamilySearch or Ancestry, printed charts, and boundaries beyond South Africa's borders other than as context.
+**Not in v1:** sharing or multiple users, publishing a Tree at a public URL (planned for v2 or later), GEDCOM import (export may come later), DNA data, integrations with FamilySearch or Ancestry, printed charts, and boundaries beyond South Africa's borders other than as context.
 
 **Open questions**
 

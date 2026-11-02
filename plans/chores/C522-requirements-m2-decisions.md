@@ -2,7 +2,7 @@
 
 - **Spec:** #522
 - **Requirement IDs:** [PIN-01](../../docs/requirements.md#pin-01), [PIN-02](../../docs/requirements.md#pin-02), [PIN-07](../../docs/requirements.md#pin-07), [NFR-03](../../docs/requirements.md#nfr-03), [NFR-10](../../docs/requirements.md#nfr-10)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Chore replaces "people, pins and sources", but the second check reads "peopl
 - **B.** Change only the first check.
 - **Other:** your own.
 
-Recommended: A, because the Chore's done check allows no source records in M2 (answered A on #524).
+**Answer: A** (@henetiriki)
 
 **D2 · PlaceName's `source id`** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Recommended: A, because the Chore's done check allows no source records in M2 (a
 - **B.** Make it `sources` (text), like the Pin row.
 - **Other:** your own.
 
-Recommended: A, because the Chore changes only the Pin row.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

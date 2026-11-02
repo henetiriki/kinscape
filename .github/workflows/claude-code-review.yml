@@ -150,7 +150,7 @@ jobs:
       # reviewed whole. A failed upload does fail the job.
       - name: Keep Claude's output
         if: always()
-        uses: henetiriki/kinscape/.github/actions/keep-claude-output@9ff22b501dbbc42086c1b06931c776c1b956324c
+        uses: henetiriki/kinscape/.github/actions/keep-claude-output@4f8daa3739fc0e4fc102015b92ba4d3b6475caff
         with:
           thread: ${{ github.event.issue.number || github.event.pull_request.number }}
 

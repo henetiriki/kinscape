@@ -65,12 +65,14 @@ Database variables (NFR-03, NFR-09). All are Sensitive; the values are in Vercel
 
 Supabase has no settings-as-code here: the tech lead sets these by hand in the Supabase dashboard, and nothing checks for drift.
 
-| Setting  | Value                                                                                                 | Why                                              |
-| -------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Projects | `kinscape-preview` (Vercel Preview) and `kinscape-production` (Vercel Production); free tier          | Preview deployments never touch the real Tree    |
-| Region   | Not yet recorded: the tech lead comments the region chosen on PR #541 (Cape Town if offered, else EU) | The plan's step 2                                |
-| Sign-ups | Off in both projects                                                                                  | Accounts are created by invitation only (NFR-03) |
-| Pausing  | An idle free project pauses; the tech lead resumes it in the dashboard                                | Free tier limit                                  |
+| Setting                     | Value                                                                                                 | Why                                                                                                                                                                                                        |
+| --------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Projects                    | `kinscape-preview` (Vercel Preview) and `kinscape-production` (Vercel Production); free tier          | Preview deployments never touch the real Tree                                                                                                                                                              |
+| Region                      | Not yet recorded: the tech lead comments the region chosen on PR #541 (Cape Town if offered, else EU) | The plan's step 2                                                                                                                                                                                          |
+| Sign-ups                    | Off in both projects                                                                                  | Accounts are created by invitation only (NFR-03)                                                                                                                                                           |
+| Data API                    | Off ("Only connection string") in both projects; Supabase Auth stays on                               | The app reaches Postgres directly and never uses `supabase-js` for data, so nothing needs it                                                                                                               |
+| Automatic RLS on new tables | On in both projects                                                                                   | With no policies it denies the anon and authenticated roles. The server connects as the table owner, which bypasses RLS, so app queries are unaffected. A second layer if the Data API is ever switched on |
+| Pausing                     | An idle free project pauses; the tech lead resumes it in the dashboard                                | Free tier limit                                                                                                                                                                                            |
 
 ## Accounts and access
 

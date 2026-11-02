@@ -1,7 +1,7 @@
 # Plan: C489: Overwrite the Claude output artifact on a re-run
 
 - **Spec:** #489
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@
 - **B.** Drop it, with the audit's attempt handling in `denial-audit.mts` and its tests.
 - **Other:** your own.
 
-Recommended: A, because the Chore keeps the names, and B changes the audit.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

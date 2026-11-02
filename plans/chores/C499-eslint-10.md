@@ -1,7 +1,7 @@
 # Plan: C499: Move ESLint to 10
 
 - **Spec:** #499
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The table's intro says overrides "replace deprecated transitive packages", and i
 - **B.** Rename _Clears_ to _Why_ and reword the C497 rows to fit.
 - **Other:** your own.
 
-Recommended: A, because it keeps the C497 rows untouched.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

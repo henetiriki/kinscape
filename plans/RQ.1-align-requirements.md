@@ -2,7 +2,7 @@
 
 - **Spec:** #505 (Intent #372)
 - **Requirement IDs:** NFR-08, MAP-08, PPL-01
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

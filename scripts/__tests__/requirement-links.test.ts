@@ -4,6 +4,9 @@ import { describe, expect, it } from 'vitest';
 
 const REQUIREMENTS = 'docs/requirements.md';
 const ID = '(?:MAP|BND|PPL|PIN|EXP|NFR)-\\d+';
+const LOWER_ID = '(?:map|bnd|ppl|pin|exp|nfr)-\\d+';
+const IN_PAGE_LINK = new RegExp(`\\(#(${LOWER_ID})\\)`, 'g');
+const CROSS_FILE_LINK = new RegExp(`requirements\\.md#(${LOWER_ID})`, 'g');
 
 // ID cells that lack an `<a id="<lower-case id>"></a>` anchor.
 const unanchoredRows = (text: string) =>
@@ -50,7 +53,19 @@ describe('requirement anchors (fixtures)', () => {
     const known = anchors('| <a id="map-03"></a>MAP-03 | Date | Must |');
 
     expect(
-      brokenLinks('[a](#map-03) [b](#map-99)', known, /\(#([a-z]+-\d+)\)/g)
+      brokenLinks('[a](#map-03) [b](#map-99)', known, IN_PAGE_LINK)
+    ).toEqual(['map-99']);
+  });
+
+  it('names a cross-file link to a missing anchor', () => {
+    const known = anchors('| <a id="map-03"></a>MAP-03 | Date | Must |');
+
+    expect(
+      brokenLinks(
+        '[x](../docs/requirements.md#map-99) [y](requirements.md#map-03)',
+        known,
+        CROSS_FILE_LINK
+      )
     ).toEqual(['map-99']);
   });
 });
@@ -63,20 +78,13 @@ describe('requirement anchors (repo)', () => {
   });
 
   it('every in-page ID link has an anchor', () => {
-    expect(
-      brokenLinks(
-        text,
-        anchors(text),
-        /\(#((?:map|bnd|ppl|pin|exp|nfr)-\d+)\)/g
-      )
-    ).toEqual([]);
+    expect(brokenLinks(text, anchors(text), IN_PAGE_LINK)).toEqual([]);
   });
 
   it('every requirements.md#<id> link in tracked markdown has an anchor', () => {
     const known = anchors(text);
-    const pattern = /requirements\.md#((?:map|bnd|ppl|pin|exp|nfr)-\d+)/g;
     const broken = trackedMarkdown().flatMap(file =>
-      brokenLinks(readFileSync(file, 'utf8'), known, pattern).map(
+      brokenLinks(readFileSync(file, 'utf8'), known, CROSS_FILE_LINK).map(
         id => `${file}#${id}`
       )
     );

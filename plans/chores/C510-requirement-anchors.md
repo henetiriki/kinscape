@@ -38,3 +38,8 @@ Prefix each of the 53 ID cells with `<a id="<id>"></a>` and turn the 40 plain me
 ## Out of scope
 
 Autolink references; plain IDs in old plans, issues and other docs.
+
+## Deviations
+
+- The test lists files with `git ls-files '*.md'` and reads each, not `git grep`: it needs every file's text to find link targets.
+- The PR went back to draft: the rendered `#map-03` check isn't done.

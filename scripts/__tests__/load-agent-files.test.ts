@@ -989,6 +989,23 @@ describe('the fix-review workflow', () => {
   });
 });
 
+// Each review after the first opens with the status of its earlier findings
+// (plans/chores/C519-review-follow-up-status.md).
+describe('review.md', () => {
+  it('opens a follow-up review with the status of the earlier findings', () => {
+    expect(agent('review.md').replace(/\s+/g, ' ')).toContain(
+      'All earlier findings addressed'
+    );
+  });
+
+  // The first review is unchanged, so the bullet that covers every review stays.
+  it('still has every review list what it checked', () => {
+    expect(agent('review.md').replace(/\s+/g, ' ')).toContain(
+      'Never post "No issues" alone. List the plan items and rules you checked.'
+    );
+  });
+});
+
 // A stand-in for `gh api -H "Accept: application/vnd.github.raw"
 // "repos/owner/repo/contents/.github/agent/<file>?ref=main"`: fails for any other arguments, prints
 // the local file, and fails for one that is not there, as the API does with a 404. With

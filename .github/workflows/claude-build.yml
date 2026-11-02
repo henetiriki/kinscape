@@ -41,8 +41,10 @@ jobs:
   # opens its other PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md
   # rule 3; the build drops the suffix). It records the approval and the owner's answers to the
   # plan's decisions in the plan and commits it to the PR branch (scripts/agent-approve.mts), before
-  # any model runs. With a decision open it comments which and `build` is skipped. The script comes
-  # from main and the PR head is never checked out: it reads and writes the plan through the API.
+  # any model runs. With a decision open it comments which and `build` is skipped. It also sets the
+  # issue's status label from the outcome (`ready-for-agent` on go, `ready-for-dev` on stop). The
+  # script comes from main and the PR head is never checked out: it reads and writes the plan
+  # through the API.
   approve:
     name: Approve
     if: |

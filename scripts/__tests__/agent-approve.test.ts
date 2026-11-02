@@ -500,7 +500,7 @@ describe('run', () => {
     it('moves each issue the PR closes, and none in another repository', () => {
       fakeGh({
         closes: [{ number: 8 }, { number: 9 }, { number: 10, repo: 'a/b' }],
-        issues: { 8: [DEV], 9: [DEV, 'type: spec'], 10: [DEV] },
+        issues: { 10: [DEV], 8: [DEV], 9: [DEV, 'type: spec'] },
         reviews: answered,
       });
 

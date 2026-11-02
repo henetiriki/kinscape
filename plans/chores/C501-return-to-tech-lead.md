@@ -57,3 +57,7 @@ With Spec D2, `agent-approve.mts` sets `ready-for-dev` on `go=false`, so the scr
 | Script, approve and status cases     | Unit tests                  |
 | Gate stop, plan drift, stopped build | Runs linked in the PR       |
 | Coverage, words                      | `npm test`, `npm run words` |
+
+## Deviations
+
+- `return` skips a cancelled `run`: a newer queued run is still to come.

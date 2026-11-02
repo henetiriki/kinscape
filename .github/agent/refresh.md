@@ -10,7 +10,7 @@ Do this first, to the Spec, Bug or Chore the prompt names ("Spec" below means al
 
 ## Plan run
 
-If the prompt says this is a plan run and there is any drift: open no branch or plan PR. After the comment, swap `status: ready-for-agent` for `status: ready-for-dev` with `gh issue edit <n> --remove-label … --add-label …`, then stop. The tech lead settles the items and sets `status: ready-for-agent` again. With no drift, go on to the plan.
+If the prompt says this is a plan run and there is any drift: open no branch or plan PR. After the comment, stop. The tech lead settles the items and sets `status: ready-for-agent` again. With no drift, go on to the plan.
 
 ## Unblock run
 

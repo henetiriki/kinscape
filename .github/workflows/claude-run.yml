@@ -2,7 +2,8 @@ name: 'Claude: Run (shared)'
 
 # What both agent paths share: a gate that stops a blocked or duplicate run before any model
 # runs, then set up the repo, load the agent files, run Claude, keep its output, and leave a
-# comment if Claude left none. claude-plan.yml, claude-build.yml and claude-fix-review.yml call
+# comment if Claude left none, and hand the issue back if the run ended on Claude's turn.
+# claude-plan.yml, claude-build.yml and claude-fix-review.yml call
 # this workflow; each decides when to run and what to ask. It never runs on its own.
 #
 # The `github` context here is the caller's, so `github.event`, `github.run_id` and the rest are
@@ -213,6 +214,43 @@ jobs:
               fi
             fi
           fi
+
+  # Hands the issue back to the tech lead when a plan or build run ends on Claude's turn
+  # (scripts/agent-return.mts): a plan with no PR, or a build whose PR is still a draft plan. It
+  # follows the gate too, so a stop before `run` is covered. A build's `run` has the PR branch
+  # checked out, so this is its own job, with the script from main like the gate. A `run` cancelled
+  # by a newer queued one hands nothing back: the newer run is still to come.
+  return:
+    # The Actions graph shows this as "<caller job> / Return".
+    name: Return
+    needs: [gate, run]
+    if: always() && inputs.kind != 'fix' && needs.run.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    steps:
+      - name: Check out the return script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Hand the issue back if it is still Claude's turn
+        env:
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          KIND: ${{ inputs.plan && 'plan' || 'build' }}
+          NUMBER: ${{ inputs.thread }}
+        run: node scripts/agent-return.mts "$KIND" "$NUMBER"
 
   # GitHub lists no steps for a job in a called workflow, so the run page would show nothing. This
   # writes the result section shown on that page from Claude's summary (the run-summary action,

@@ -7,7 +7,7 @@ import {
   rmSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, join } from 'node:path';
+import { join } from 'node:path';
 
 import type { Denial, Gh, Settings, Transcript } from './types.ts';
 
@@ -210,12 +210,9 @@ export const settingsReader =
 
 const OUTPUT_FILE = 'claude-execution-output.json';
 
-// A refresh job's artifact: ...-<Spec number>-<run attempt>. A re-run of a failed job uploads again.
-const SPEC_ATTEMPT = /^(claude-execution-output-\d+)-(\d+)$/;
-
-// Reads the file of every artifact named claude-execution-output or starting with it, the latest
-// attempt only for a Spec. Where gh puts each one (in the folder itself or in a folder named for
-// the artifact) is not relied on: every folder is searched.
+// Reads the file of every artifact named claude-execution-output or starting with it. Where gh puts
+// each one (in the folder itself or in a folder named for the artifact) is not relied on: every
+// folder is searched.
 export const artifactReader =
   (gh: Gh) =>
   (runId: number): string[] => {
@@ -234,19 +231,9 @@ export const artifactReader =
         dir,
       ]);
 
-      const files = readdirSync(dir, { recursive: true, withFileTypes: true })
+      return readdirSync(dir, { recursive: true, withFileTypes: true })
         .filter(entry => entry.isFile() && entry.name === OUTPUT_FILE)
-        .map(entry => {
-          const path = join(entry.parentPath, entry.name);
-          const [, key = path, attempt = '0'] =
-            basename(entry.parentPath).match(SPEC_ATTEMPT) ?? [];
-
-          return { attempt: Number(attempt), key, path };
-        })
-        // A Map keeps the last file of a key: the highest attempt.
-        .sort((a, b) => a.attempt - b.attempt);
-
-      return [...new Map(files.map(({ key, path }) => [key, path])).values()]
+        .map(entry => join(entry.parentPath, entry.name))
         .sort()
         .map(path => readFileSync(path, 'utf8'));
     } catch {

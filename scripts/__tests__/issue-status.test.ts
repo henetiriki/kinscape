@@ -170,40 +170,15 @@ describe('run', () => {
       ]);
     });
 
-    it('row 2: the owner approving a draft plan PR moves it to ready-for-agent', () => {
-      exec(
-        'pull_request_review',
-        event('submitted', planPr(), approval('OWNER'))
-      );
-
-      expect(edited()).toEqual([
-        ['issue', 'edit', '8', '--remove-label', DEV, '--add-label', AGENT],
-      ]);
-    });
-
-    it('row 2: a hand-back plan stays on ready-for-dev after approval', () => {
-      expect(
-        exec(
-          'pull_request_review',
-          event(
-            'submitted',
-            planPr({ labels: [{ name: 'hand-back' }] }),
-            approval('OWNER')
-          )
-        )
-      ).toBe(0);
-      expect(edits()).toHaveLength(0);
-      expect(gh).not.toHaveBeenCalled();
-    });
-
-    it.each(['MEMBER', 'COLLABORATOR', 'CONTRIBUTOR', 'NONE'])(
-      'row 2: an approval from a %s does not approve a plan',
+    it.each(['OWNER', 'MEMBER', 'COLLABORATOR', 'CONTRIBUTOR', 'NONE'])(
+      'an approval from a %s of a draft plan PR moves nothing (agent-approve.mts sets that label)',
       association => {
-        exec(
-          'pull_request_review',
-          event('submitted', planPr(), approval(association))
-        );
-
+        expect(
+          exec(
+            'pull_request_review',
+            event('submitted', planPr(), approval(association))
+          )
+        ).toBe(0);
         expect(gh).not.toHaveBeenCalled();
       }
     );
@@ -212,7 +187,7 @@ describe('run', () => {
       ['pull_request', 'ready_for_review'],
       ['pull_request', 'opened'],
     ])(
-      'row 3: a user-visible Spec PR (%s %s) moves to ready-for-po',
+      'row 2: a user-visible Spec PR (%s %s) moves to ready-for-po',
       (name, action) => {
         expect(exec(name, event(action, pr()))).toBe(0);
         expect(edited()).toEqual([
@@ -221,7 +196,7 @@ describe('run', () => {
       }
     );
 
-    it('row 3: a user-visible Bug PR moves to ready-for-po', () => {
+    it('row 2: a user-visible Bug PR moves to ready-for-po', () => {
       exec('pull_request', event('ready_for_review', pr()), {
         issues: { 8: ['type: bug', DEV] },
       });
@@ -229,7 +204,7 @@ describe('run', () => {
       expect(edited()[0].slice(-1)).toEqual([PO]);
     });
 
-    it('row 4: a Chore PR moves to ready-for-dev, whatever it changes', () => {
+    it('row 3: a Chore PR moves to ready-for-dev, whatever it changes', () => {
       exec('pull_request', event('ready_for_review', pr()), {
         issues: { 8: ['type: chore', AGENT] },
       });
@@ -242,7 +217,7 @@ describe('run', () => {
       );
     });
 
-    it('row 4: a Spec PR that changes only invisible files moves to ready-for-dev', () => {
+    it('row 3: a Spec PR that changes only invisible files moves to ready-for-dev', () => {
       exec('pull_request', event('ready_for_review', pr()), {
         files: [{ filename: 'docs/a.md' }, { filename: 'scripts/x.mts' }],
         issues: { 8: ['type: spec', AGENT] },
@@ -251,7 +226,7 @@ describe('run', () => {
       expect(edited()[0].slice(-1)).toEqual([DEV]);
     });
 
-    it('row 4: a Spec PR with an empty For the PO moves to ready-for-dev, without reading its files', () => {
+    it('row 3: a Spec PR with an empty For the PO moves to ready-for-dev, without reading its files', () => {
       exec(
         'pull_request',
         event(
@@ -270,7 +245,7 @@ describe('run', () => {
     });
 
     it.each(['OWNER', 'MEMBER', 'COLLABORATOR'])(
-      'row 5: an approval from a %s on a ready PR moves it to ready-for-dev',
+      'row 4: an approval from a %s on a ready PR moves it to ready-for-dev',
       association => {
         exec(
           'pull_request_review',
@@ -285,7 +260,7 @@ describe('run', () => {
     );
 
     it.each(['CONTRIBUTOR', 'FIRST_TIME_CONTRIBUTOR', 'NONE'])(
-      'row 5: an approval from a %s does nothing',
+      'row 4: an approval from a %s does nothing',
       association => {
         exec(
           'pull_request_review',

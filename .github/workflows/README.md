@@ -37,7 +37,7 @@ flowchart LR
     claude_plan["Claude: Plan<br>claude-plan.yml<br>plan"]
     claude_plugin_pin_check["Claude: Plugin pin check<br>claude-plugin-pin-check.yml<br>check-pin"]
     claude_respond["Claude: Respond<br>claude-respond.yml<br>claude · summary"]
-    claude_run["Claude: Run (shared)<br>claude-run.yml<br>gate · run · summary"]
+    claude_run["Claude: Run (shared)<br>claude-run.yml<br>gate · run · return · summary"]
     claude_unblock["Claude: Unblock<br>claude-unblock.yml<br>unblock · refresh"]
   end
   subgraph g_Design [Design]

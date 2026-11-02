@@ -11,6 +11,10 @@ import { approve } from './approve-plan.mts';
 // `Status: approved` into the plan, and commits `plan(<id>): approved by @<owner>` to the PR branch.
 //   open decision: comment which, commit nothing, `go=false`
 //   plan already approved: change nothing, `go=true`
+// It is the one writer of the label for that approval: each issue the PR closes is set to
+// `status: ready-for-agent` on `go=true` and `status: ready-for-dev` on `go=false`. It skips a
+// `hand-back` PR, a `status: blocked` issue and one already on its target; a failed move is
+// logged and changes neither `go` nor the exit code.
 // Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO and APPROVER (the review's author)
 // set. An https RUN_URL, if set, is linked at the end of a stop comment.
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT. The commit goes through the Contents API with
@@ -35,6 +39,10 @@ const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
 const RUN_URL = /^https:\/\/\S+$/;
+const AGENT = 'status: ready-for-agent';
+const DEV = 'status: ready-for-dev';
+const BLOCKED = 'status: blocked';
+const HAND_BACK = 'hand-back';
 const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
 const ANSWER =
   /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
@@ -102,9 +110,70 @@ export const run = (
       ['Not approved yet:', '', ...lines, ...footer].join('\n')
     );
   };
+  // A failed label move is logged against its PR or issue, so the others still go.
+  const attempt = (number: number | string, action: () => void): void => {
+    try {
+      action();
+    } catch (error) {
+      console.error(
+        `#${number}: moving the label failed: ${(error as Error).message}`
+      );
+    }
+  };
+  // Writes the outcome, then sets each closed issue's label from it.
+  const finish = (go: boolean): void => {
+    write(`go=${go}`);
+    attempt(raw, () => {
+      const [owner, name] = repo.split('/');
+      const target = go ? AGENT : DEV;
+      const pr = json<{
+        closingIssuesReferences: {
+          number: number;
+          repository: { name: string; owner: { login: string } };
+        }[];
+        labels: { name: string }[];
+      }>(gh, ['pr', 'view', raw, '--json', 'closingIssuesReferences,labels']);
+
+      if (pr.labels.some(({ name: label }) => label === HAND_BACK)) {
+        return;
+      }
+
+      pr.closingIssuesReferences
+        .filter(
+          ({ repository }) =>
+            repository.name === name && repository.owner.login === owner
+        )
+        .forEach(({ number }) =>
+          attempt(number, () => {
+            const labels = json<{ labels: { name: string }[] }>(gh, [
+              'issue',
+              'view',
+              String(number),
+              '--json',
+              'labels',
+            ]).labels.map(({ name: label }) => label);
+
+            if (labels.includes(BLOCKED) || labels.includes(target)) {
+              return;
+            }
+
+            gh([
+              'issue',
+              'edit',
+              String(number),
+              ...labels
+                .filter(label => label.startsWith('status: '))
+                .flatMap(label => ['--remove-label', label]),
+              '--add-label',
+              target,
+            ]);
+          })
+        );
+    });
+  };
   const stop = (...lines: string[]): number => {
     comment(...lines);
-    write('go=false');
+    finish(false);
 
     return 0;
   };
@@ -141,7 +210,7 @@ export const run = (
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
       console.log(`${file} is already approved.`);
-      write('go=true');
+      finish(true);
 
       return 0;
     }
@@ -185,12 +254,12 @@ export const run = (
       })
     );
     console.log(`Recorded the approval of ${file} by @${approver}.`);
-    write('go=true');
+    finish(true);
 
     return 0;
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
-    write('go=false');
+    finish(false);
 
     // So the owner isn't left with only a red job; the likeliest failure is a plan that changed meanwhile.
     try {

@@ -429,7 +429,7 @@ describe('the keep-claude-output action', () => {
   const SCANNED =
     '${{ runner.temp }}/gitleaks/scan/claude-execution-output.json';
 
-  it('uploads the scanned summary alone, for 7 days, after a clean scan', () => {
+  it('uploads the scanned summary alone, for 7 days, replacing an earlier attempt, after a clean scan', () => {
     const uploads = keepSteps().filter(step =>
       step.uses?.startsWith('actions/upload-artifact@')
     );
@@ -442,6 +442,8 @@ describe('the keep-claude-output action', () => {
       // The review's changes-since step looks the artifact up by the exact name, and the denial audit
       // by the name and by names that start with it, so a suffix must follow it.
       name: 'claude-execution-output${{ inputs.name_suffix }}',
+      // A re-run of a failed job uploads under the same name; without this the upload fails on it.
+      overwrite: true,
       path: SCANNED,
       'retention-days': 7,
     });
@@ -530,7 +532,7 @@ describe('the callers of the keep-claude-output action', () => {
 
   // run-claude's callers set up Node in setup-workspace; the review and the refresh job have none, so
   // the action does. The refresh job runs once per freed Spec, so its upload name ends with the Spec's
-  // number and the scan comments on that Spec.
+  // number and the scan comments on that Spec. A re-run replaces the upload (overwrite), so no attempt.
   describe.each([
     ['run-claude', runClaudeSteps, { setup_node: 'false', thread: THREAD }],
     ['claude-code-review.yml', reviewSteps, { thread: THREAD }],
@@ -538,8 +540,7 @@ describe('the callers of the keep-claude-output action', () => {
       'the refresh job of claude-unblock.yml',
       refreshSteps,
       {
-        // The attempt too: a re-run of a failed job uploads again, and a name can't be used twice.
-        name_suffix: '-${{ matrix.spec.number }}-${{ github.run_attempt }}',
+        name_suffix: '-${{ matrix.spec.number }}',
         thread: '${{ matrix.spec.number }}',
       },
     ],

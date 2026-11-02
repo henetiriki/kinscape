@@ -66,11 +66,13 @@ runs:
 
     # The weekly denial audit (claude-denial-audit.yml) reads every artifact named claude-execution-output
     # or starting with it; the review's changes-since step looks up the exact name. A failed upload
-    # fails the job.
+    # fails the job. overwrite: a re-run of a failed job uploads under the same name, which would
+    # otherwise fail the upload.
     - name: Upload Claude's output
       if: always() && steps.scan.outputs.clean == 'true'
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
       with:
         name: claude-execution-output${{ inputs.name_suffix }}
+        overwrite: true
         path: ${{ runner.temp }}/gitleaks/scan/claude-execution-output.json
         retention-days: 7

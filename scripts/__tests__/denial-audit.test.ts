@@ -606,22 +606,6 @@ describe('artifactReader', () => {
     expect(artifactReader(gh)(1).sort()).toEqual(['a', 'b', 'c']);
   });
 
-  // A re-run of a failed refresh job uploads again as ...-<spec>-<attempt>: one session per Spec counts,
-  // the latest attempt (plan C482, Deviations). Attempts are compared as numbers, not names.
-  it('reads the latest attempt of each Spec, and every other artifact', () => {
-    const gh = vi.fn<Gh>(args => {
-      extract(args, 'claude-execution-output-482-1', 'old482');
-      extract(args, 'claude-execution-output-482-2', 'new482');
-      extract(args, 'claude-execution-output-483-9', 'old483');
-      extract(args, 'claude-execution-output-483-10', 'new483');
-      extract(args, 'claude-execution-output', 'plain');
-
-      return '';
-    });
-
-    expect(artifactReader(gh)(1).sort()).toEqual(['new482', 'new483', 'plain']);
-  });
-
   it('removes its temporary folder', () => {
     let dir = '';
     const gh = vi.fn<Gh>(args => {

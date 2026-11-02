@@ -21,11 +21,14 @@
 
 ## Files that change
 
-| File                                                                    | What                                      |
-| ----------------------------------------------------------------------- | ----------------------------------------- |
-| `.github/actions/keep-claude-output/action.yml`                         | `overwrite: true`, with a line on why     |
-| `run-claude/action.yml`, `claude-code-review.yml`, `claude-unblock.yml` | Pin                                       |
-| `scripts/__tests__/load-agent-files.test.ts`                            | The upload's `with` has `overwrite: true` |
+| File                                                                    | What                                                                         |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `.github/actions/keep-claude-output/action.yml`                         | `overwrite: true`, with a line on why                                        |
+| `run-claude/action.yml`, `claude-code-review.yml`, `claude-unblock.yml` | Pin                                                                          |
+| `claude-unblock.yml`                                                    | D1: `name_suffix` loses `-<run attempt>`                                     |
+| `scripts/denial-audit.mts`                                              | D1: read every file; drop the attempt handling                               |
+| `scripts/__tests__/load-agent-files.test.ts`                            | The upload's `with` has `overwrite: true`; the refresh suffix has no attempt |
+| `scripts/__tests__/denial-audit.test.ts`                                | D1: delete the latest-attempt test, which checks the behaviour D1 removes    |
 
 ## Order of work
 
@@ -35,7 +38,7 @@
 
 ## Risks
 
-- The audit reads only a review's or run's last attempt, as it already does for a refresh.
+- A refresh artifact uploaded before this merges keeps its `-<attempt>` for 7 days; the audit counts each as a session, so one Spec re-run in that window may count twice.
 - Unproven on a real re-run: confirm on the first failed job re-run after the pin PR merges.
 
 ## Proof

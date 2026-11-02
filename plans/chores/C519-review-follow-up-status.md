@@ -33,7 +33,7 @@ As the Chore says, with the rule's text per D1; the test asserts "All earlier fi
 
 ## Deviations
 
-- D1 A's rule without its last sentence, and the "Never post 'No issues' alone" bullet kept, not replaced: it covers every review, so the first review stays unchanged (review of 9572d15). `review.md` counts exactly 500.
+- D1 A's rule without `gh pr comment` or its last sentence, and the "Never post 'No issues' alone" bullet kept, not replaced: it covers every review, so the first review stays unchanged (review of 9572d15). `review.md` counts exactly 500.
 
 ## Proof
 

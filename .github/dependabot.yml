@@ -11,9 +11,6 @@ updates:
       prefix: chore
     # Held majors: see "Held packages" in docs/dependencies.md.
     ignore:
-      - dependency-name: eslint
-        update-types:
-          - version-update:semver-major
       - dependency-name: typescript
         update-types:
           - version-update:semver-major

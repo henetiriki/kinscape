@@ -1,7 +1,7 @@
 # Plan: C521: Flag new infrastructure in a Spec's Flagged concerns
 
 - **Spec:** #521
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ State the rule once, in the paragraph under [Decisions](../../docs/how-we-work.m
 - **B.** Raise both budgets in `scripts/word-count.mts`; a fourth file.
 - **Other:** your own.
 
-Recommended: A, because it keeps the Chore's scope and the docs short.
+**Answer: Other:** - Try to move the infrastructure wording into `architecture` or another suitable topical document and link to it. If that is not possible, go for A. (@henetiriki)
 
 ## Files that change
 

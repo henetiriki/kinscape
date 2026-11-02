@@ -6,7 +6,7 @@ Leave out any section that would only say "none".
 -->
 
 - **Spec:** #
-- **Requirement IDs:** <!-- e.g. MAP-01, MAP-02, NFR-01 -->
+- **Requirement IDs:** <!-- e.g. [MAP-01](../docs/requirements.md#map-01), [NFR-01](../docs/requirements.md#nfr-01) -->
 - **Status:** draft | approved
 
 ## Approach

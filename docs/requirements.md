@@ -220,7 +220,7 @@ Sized for one researcher with a large family tree: assume up to 2,000 people and
 | <a id="nfr-06"></a>NFR-06 | Date control fully usable by keyboard; colour never the only way meaning is shown                                                                                                                                                                                                                                             | Should   |
 | <a id="nfr-07"></a>NFR-07 | Works offline for reading and adding pins (useful in archives and on farm visits), syncing later                                                                                                                                                                                                                              | Could    |
 | <a id="nfr-08"></a>NFR-08 | Licence and attribution recorded for every basemap and boundary source, and shown in the app                                                                                                                                                                                                                                  | Must     |
-| <a id="nfr-09"></a>NFR-09 | Multi-user ready: sign-in is an Account; people, relationships, pins, sources and places belong to a Tree; boundaries, polities and historical maps are shared by all Accounts                                                                                                                                                | Must     |
+| <a id="nfr-09"></a>NFR-09 | Multi-user ready: sign-in is an Account; people, relationships, pins and places belong to a Tree (sources too, from M5); boundaries, polities and historical maps are shared by all Accounts                                                                                                                                  | Must     |
 | <a id="nfr-10"></a>NFR-10 | Publish-ready: every read of Tree data takes a Viewer and a Tree; the server decides what that Viewer may see, including hiding living Persons' details, and no page or component checks sign-in on its own. Publishing a Tree later adds a publish state and URL without changing how reads work. Nothing is published in v1 | Must     |
 
 ## Suggested tech approach
@@ -235,7 +235,7 @@ The key to a live slider is loading every boundary version once and changing onl
 
 - **Jurisdiction lookup:** point-in-polygon at the pin date. Turf.js in the browser is enough at this data size; PostGIS if the logic moves server-side.
 
-- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it. Keep the database behind repository interfaces so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
+- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it, behind repository interfaces ([architecture-target.md](architecture-target.md) item 5) so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
 
 - **Hosting:** Vercel for the front end.
 

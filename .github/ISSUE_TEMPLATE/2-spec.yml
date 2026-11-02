@@ -52,7 +52,7 @@ body:
     id: concerns
     attributes:
       label: ⚠️ Flagged concerns
-      description: 'Risks and conflicts, one line each. Write "None" if there are none.'
+      description: 'Risks and conflicts, one line each. New infrastructure goes here too: https://github.com/henetiriki/kinscape/blob/main/docs/security.md#new-infrastructure. Write "None" if there are none.'
     validations:
       required: true
   - type: textarea

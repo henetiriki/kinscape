@@ -38,6 +38,10 @@ The Chore replaces "people, pins and sources", but the second check reads "peopl
 
 1. One commit with every edit, citing #57.
 
+## Deviations
+
+- NFR-09 also changed ("sources too, from M5"): the M2 line cites it, and #522's "no leftover mention of source records in M2" covers it.
+
 ## Proof
 
 | Acceptance check                                                   | Proven by                                                             |

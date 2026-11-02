@@ -2,7 +2,7 @@
 
 GitHub settings live outside git, so we keep them **as code** instead:
 
-- `scripts/setup-github.sh` applies them (labels, milestones, repo settings, ruleset, security).
+- `scripts/setup-github.sh` applies them (labels, milestones, autolinks, repo settings, ruleset, security).
 - `scripts/github/ruleset-main.json` defines the ruleset protecting `main`.
 - `scripts/check-github.sh` checks the live settings against them and fails on any drift.
 
@@ -33,6 +33,7 @@ GitHub settings live outside git, so we keep them **as code** instead:
 | Allowed actions                                   | GitHub's, this repo's, `claude-code-action`, `codecov-action`, `setup-bun` | A new third-party action, or one an allowed action calls (`setup-bun` is `claude-code-action`'s), needs a PR to this list                      |
 | Variables `KINSCAPE_BOT_LOGIN`, `KINSCAPE_BOT_ID` | The bot account's login and numeric id, set by `setup-github.sh`           | Workflows and the `run-claude` action read the bot from them, not from literals. While the login is unset, `claude-respond.yml` answers no one |
 | Label `fix-review`                                | Created by `setup-github.sh`; the tech lead adds it to a PR                | Starts `claude-fix-review.yml`. Until the script has run, the label doesn't exist and nothing can start the workflow                           |
+| Autolinks                                         | One per requirement ID prefix, from `docs/requirements.md`                 | A bare `MAP-03` in an issue, PR or commit links to its row                                                                                     |
 | Code scanning                                     | CodeQL default setup                                                       | Free on a public repo; flags vulnerable code in PRs                                                                                            |
 | Fork PR workflow runs                             | Need approval, for all outside contributors                                | An outsider's PR runs nothing until the team approves it                                                                                       |
 

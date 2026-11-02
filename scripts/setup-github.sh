@@ -67,6 +67,26 @@ M5 Apartheid-era homelands and richer views|Homeland layers, epochs, playback, t
 M6 Hardening|Remaining Should/Could items, accessibility, offline
 EOF
 
+echo "== Autolinks"
+# One per requirement ID prefix, so a bare MAP-03 in an issue, PR or commit links to its row.
+source "$DIR/github/requirement-prefixes.sh"
+expected=$(expected_autolinks "$REPO") || { echo "No requirement ID prefixes in docs/requirements.md; autolinks left alone." >&2; exit 1; }
+existing=$(gh api "repos/$REPO/autolinks" --jq '.[] | "\(.id) \(.key_prefix) \(.url_template) \(.is_alphanumeric)"')
+# Delete any autolink that is not expected (unknown prefix or another URL).
+while read -r id spec; do
+  [ -z "$id" ] && continue
+  grep -qxF -- "$spec" <<<"$expected" && continue
+  gh api -X DELETE "repos/$REPO/autolinks/$id" >/dev/null
+  echo "autolink removed: ${spec%% *}"
+done <<<"$existing"
+# Create the missing ones.
+kept=$(cut -d' ' -f2- <<<"$existing")
+while read -r prefix url alphanumeric; do
+  grep -qxF -- "$prefix $url $alphanumeric" <<<"$kept" && continue
+  gh api -X POST "repos/$REPO/autolinks" -f key_prefix="$prefix" -f url_template="$url" -F is_alphanumeric="$alphanumeric" >/dev/null
+  echo "autolink added: $prefix"
+done <<<"$expected"
+
 echo "== Variables"
 gh variable set KINSCAPE_BOT_LOGIN --repo "$REPO" --body "$BOT_LOGIN"
 gh variable set KINSCAPE_BOT_ID --repo "$REPO" --body "$BOT_ID"

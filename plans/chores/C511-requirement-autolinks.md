@@ -5,7 +5,7 @@
 
 ## Approach
 
-Both scripts read the prefixes with one `sed` over the ID cells of `docs/requirements.md` (`| <a id="map-01"></a>MAP-01 |` gives `MAP`), and stop if it finds none. `setup-github.sh` lists `repos/$REPO/autolinks`, deletes any with an unknown prefix or another URL, then creates the missing ones (`is_alphanumeric=true`), printing only what it changes. `check-github.sh` compares the sorted `prefix url alphanumeric` list with the expected one in a single `check`, so a missing, wrong or extra autolink fails it.
+Both scripts source `scripts/github/requirement-prefixes.sh`, which reads the prefixes from the ID cells of `docs/requirements.md` (`| <a id="map-01"></a>MAP-01 |` gives `MAP`) and fails if it finds none. `setup-github.sh` lists `repos/$REPO/autolinks`, deletes any with an unknown prefix or another URL, then creates the missing ones (`is_alphanumeric=true`), printing only what it changes. `check-github.sh` compares the sorted `prefix url alphanumeric` list with the expected one in a single `check`, so a missing, wrong or extra autolink fails it.
 
 ## Decisions
 
@@ -21,11 +21,12 @@ Both scripts need it.
 
 ## Files that change
 
-| File                      | New / changed | What                                          |
-| ------------------------- | ------------- | --------------------------------------------- |
-| `scripts/setup-github.sh` | Changed       | `== Autolinks` step                           |
-| `scripts/check-github.sh` | Changed       | Autolinks check                               |
-| `docs/repo-settings.md`   | Changed       | _What's set and why_ row; intro list of steps |
+| File                                     | New / changed | What                                          |
+| ---------------------------------------- | ------------- | --------------------------------------------- |
+| `scripts/github/requirement-prefixes.sh` | New           | Prefixes and expected autolinks (D1)          |
+| `scripts/setup-github.sh`                | Changed       | `== Autolinks` step                           |
+| `scripts/check-github.sh`                | Changed       | Autolinks check                               |
+| `docs/repo-settings.md`                  | Changed       | _What's set and why_ row; intro list of steps |
 
 ## Order of work
 

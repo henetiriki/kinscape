@@ -88,6 +88,12 @@ check "Allowed actions list" "$(gh api "repos/$REPO/actions/permissions/selected
 check "Code scanning (CodeQL default)" "$(gh api "repos/$REPO/code-scanning/default-setup" --jq .state 2>/dev/null)" "configured"
 check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --jq .approval_policy)" "all_external_contributors"
 
+# One autolink per requirement ID prefix: none missing, none for another prefix or URL.
+source "$DIR/github/requirement-prefixes.sh"
+expected_links=$(expected_autolinks "$REPO" | LC_ALL=C sort) || expected_links="no requirement ID prefixes in docs/requirements.md"
+actual_links=$(gh api "repos/$REPO/autolinks" --jq '.[] | "\(.key_prefix) \(.url_template) \(.is_alphanumeric)"' 2>/dev/null | LC_ALL=C sort)
+check "Requirement autolinks" "$actual_links" "$expected_links"
+
 # The bot variables the workflows read. The values are in setup-github.sh; here the login must be
 # set and the id must be GitHub's for that login.
 bot_login=$(gh variable get KINSCAPE_BOT_LOGIN --repo "$REPO" 2>/dev/null)

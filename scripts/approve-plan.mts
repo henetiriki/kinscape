@@ -1,6 +1,8 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import type { Approval } from './types.ts';
+
 // Usage: npm run plan-approve -- <plan file> <reviewer login> D1=A "D2=other: <text>"
 const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
 
@@ -77,23 +79,17 @@ const record = (lines: string[], answers: Answer[]): string[] => {
   return result;
 };
 
-export const run = (root: string, args: string[]): number => {
-  const [file, rawLogin, ...rest] = args;
-  const login = rawLogin?.replace(/^@/, '');
-
-  if (!file || !login || !LOGIN.test(login)) {
-    console.error(
-      'Usage: plan-approve <plan file> <reviewer login> [D<n>=<letter> | "D<n>=other: <text>"]...'
-    );
-
-    return 1;
-  }
-
-  const path = resolve(root, file);
-  const text = readFileSync(path, 'utf8');
+// Records the answers (`D1=A`, `D2=other: <text>`) and approves the plan if none is left open.
+// With errors the text comes back unchanged.
+export const approve = (
+  text: string,
+  login: string,
+  args: string[],
+  file: string
+): Approval => {
   const lines = text.split('\n');
   const blocks = findBlocks(lines);
-  const answers = rest.map(arg => ({ answer: parseAnswer(arg, login), arg }));
+  const answers = args.map(arg => ({ answer: parseAnswer(arg, login), arg }));
   const errors = answers.flatMap(({ answer, arg }) => {
     if (!answer) {
       return [`${arg}: not D<n>=<letter> or D<n>=other: <text>`];
@@ -116,9 +112,7 @@ export const run = (root: string, args: string[]): number => {
   });
 
   if (errors.length > 0) {
-    errors.forEach(error => console.error(error));
-
-    return 1;
+    return { errors, open: [], text };
   }
 
   const recorded = record(
@@ -132,16 +126,45 @@ export const run = (root: string, args: string[]): number => {
     )
     .map(({ id }) => id);
   const status = open.length === 0 ? 'approved' : undefined;
-  const output = recorded
-    .map(line =>
-      status ? line.replace(/^(- \*\*Status:\*\* ).*$/, `$1${status}`) : line
-    )
-    .join('\n');
 
-  writeFileSync(path, output);
+  return {
+    errors,
+    open,
+    text: recorded
+      .map(line =>
+        status ? line.replace(/^(- \*\*Status:\*\* ).*$/, `$1${status}`) : line
+      )
+      .join('\n'),
+  };
+};
 
-  if (open.length > 0) {
-    console.error(`Open decisions: ${open.join(', ')}. Status stays draft.`);
+export const run = (root: string, args: string[]): number => {
+  const [file, rawLogin, ...rest] = args;
+  const login = rawLogin?.replace(/^@/, '');
+
+  if (!file || !login || !LOGIN.test(login)) {
+    console.error(
+      'Usage: plan-approve <plan file> <reviewer login> [D<n>=<letter> | "D<n>=other: <text>"]...'
+    );
+
+    return 1;
+  }
+
+  const path = resolve(root, file);
+  const result = approve(readFileSync(path, 'utf8'), login, rest, file);
+
+  if (result.errors.length > 0) {
+    result.errors.forEach(error => console.error(error));
+
+    return 1;
+  }
+
+  writeFileSync(path, result.text);
+
+  if (result.open.length > 0) {
+    console.error(
+      `Open decisions: ${result.open.join(', ')}. Status stays draft.`
+    );
 
     return 1;
   }

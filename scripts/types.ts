@@ -1,3 +1,6 @@
+/** What `approve` in `approve-plan.mts` returns: bad answers, decisions still open, and the plan's new text. */
+export type Approval = { errors: string[]; open: string[]; text: string };
+
 /** One uploaded file in the design system index's `assetGroups.<Group>.files`. */
 export type AssetRecord = {
   blob: string;

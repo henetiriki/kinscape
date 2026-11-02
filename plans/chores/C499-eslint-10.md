@@ -34,6 +34,10 @@ The table's intro says overrides "replace deprecated transitive packages", and i
 2. Edit `dependabot.yml` and the doc; run `npm run words`.
 3. Run the checks.
 
+## Deviations
+
+- `npm ls` was denied; the lockfile versions replace both `npm ls` proofs.
+
 ## Risks
 
 - npm may reject an override keyed on a direct dependency (`eslint-plugin-jsx-a11y`); if so, stop and ask.

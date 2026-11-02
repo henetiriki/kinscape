@@ -1,7 +1,7 @@
 # Plan: C510: Anchor requirement IDs and check links to them
 
 - **Spec:** #510
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

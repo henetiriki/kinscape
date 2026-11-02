@@ -96,11 +96,14 @@ export const run = (
   const runUrl = env.RUN_URL ?? '';
   const footer = RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : [];
   // Nothing is committed and no model runs: tell the owner why, and what to do.
-  const stop = (...lines: string[]): number => {
+  const comment = (...lines: string[]): void => {
     gh(
       ['pr', 'comment', raw, '--body-file', '-'],
       ['Not approved yet:', '', ...lines, ...footer].join('\n')
     );
+  };
+  const stop = (...lines: string[]): number => {
+    comment(...lines);
     write('go=false');
 
     return 0;
@@ -147,10 +150,21 @@ export const run = (
       return stop(`- \`${file}\` has no \`- **Status:** draft\` line.`);
     }
 
-    const result = approve(text, approver, answersFrom(pr), file);
+    // An answer to a decision this draft no longer has (an earlier draft's) is skipped, not an error.
+    const decisions = new Set(
+      [...text.matchAll(/^\*\*(D\d+) · /gm)].map(([, id]) => id)
+    );
+    const answers = answersFrom(pr).filter(answer =>
+      decisions.has(answer.split('=')[0])
+    );
+    const result = approve(text, approver, answers, file);
 
     if (result.errors.length > 0) {
-      return stop(...result.errors.map(error => `- ${error}`));
+      return stop(
+        ...result.errors.map(error => `- ${error}`),
+        '',
+        'Answer again in a new comment: the latest answer to a decision counts.'
+      );
     }
 
     if (result.open.length > 0) {
@@ -177,6 +191,15 @@ export const run = (
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
     write('go=false');
+
+    // So the owner isn't left with only a red job; the likeliest failure is a plan that changed meanwhile.
+    try {
+      comment(
+        '- A GitHub call failed (the plan may have changed meanwhile). Approve the plan again.'
+      );
+    } catch (again) {
+      console.error(`#${raw}: ${(again as Error).message}`);
+    }
 
     return 1;
   }

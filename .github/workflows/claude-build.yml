@@ -51,6 +51,9 @@ jobs:
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
       endsWith(github.event.pull_request.title, '(plan)')
+    # One run per thread at a time, shared with claude-respond.yml and the build's `run`, so an
+    # approval never overlaps a revision of the plan.
+    concurrency: thread-${{ github.event.pull_request.number }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # Only to check out main; the bot PAT comments and commits (as claude-run.yml does).

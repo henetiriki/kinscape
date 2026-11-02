@@ -306,16 +306,28 @@ describe('run', () => {
       expect(reply()).toContain('D1, D2');
     });
 
-    it('comments on an answer that is not an option, and on one for no decision', () => {
+    it('comments on an answer that is not an option, and says to answer again', () => {
       fakeGh({
-        reviews: [owner('D1: C\nD2: A\nD3: A', '2026-11-02T10:00:00Z')],
+        reviews: [owner('D1: C\nD2: A', '2026-11-02T10:00:00Z')],
       });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(put()).toEqual([]);
       expect(written).toEqual(['go=false']);
       expect(reply()).toContain('D1: C is not an option');
-      expect(reply()).toContain(`D3: no such decision in ${PATH}`);
+      expect(reply()).toContain('Answer again in a new comment');
+    });
+
+    it('skips an answer to a decision the plan no longer has', () => {
+      fakeGh({
+        comments: [owner('D3: B', '2026-11-02T09:00:00Z')],
+        reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')],
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(comments()).toEqual([]);
+      expect(committed().text).not.toContain('D3');
+      expect(written).toEqual(['go=true']);
     });
   });
 
@@ -375,6 +387,8 @@ describe('run', () => {
       expect(run(['504'], ENV, gh, write)).toBe(1);
       expect(written).toEqual(['go=false']);
       expect(errors).toEqual(['#504: 409 sha does not match']);
+      expect(reply()).toContain('Approve the plan again');
+      expect(reply()).not.toContain('409');
     });
 
     it('is caught when reading the PR fails', () => {
@@ -385,7 +399,7 @@ describe('run', () => {
 
       expect(run(['504'], ENV, gh, write)).toBe(1);
       expect(written).toEqual(['go=false']);
-      expect(errors).toEqual(['#504: HTTP 502']);
+      expect(errors).toEqual(['#504: HTTP 502', '#504: HTTP 502']);
     });
   });
 });

@@ -5,7 +5,7 @@
 
 ## Approach
 
-A new `approve` job in `claude-build.yml` takes the build's `if:` unchanged and runs `scripts/agent-approve.mts` from `main`. The script reads the PR's one plan file, then the answers in owner-written reviews and comments (`authorAssociation == OWNER`; later wins). It records them with `approve-plan.mts`'s logic, exported as a pure function, and commits `plan(<id>): approved by @<owner>` with the bot PAT. `build` then needs `go=true`.
+A new `approve` job in `claude-build.yml` takes the build's `if:` and runs `scripts/agent-approve.mts` from `main`. The script reads the PR's one plan file, then the answers in owner-written reviews and comments (`authorAssociation == OWNER`; later wins). It records them with `approve-plan.mts`'s logic, exported as a pure function, and commits `plan(<id>): approved by @<owner>` with the bot PAT. `build` then needs `go=true`.
 
 ## Decisions
 
@@ -19,15 +19,15 @@ A new `approve` job in `claude-build.yml` takes the build's `if:` unchanged and 
 
 ## Files that change
 
-| File                                      | New / changed | What                                                                           |
-| ----------------------------------------- | ------------- | ------------------------------------------------------------------------------ |
-| `scripts/agent-approve.mts`               | New           | Parse, record, commit; open decision: comment, `go=false`; approved: no change |
-| `scripts/__tests__/agent-approve.test.ts` | New           | The seven cases, injected `gh`                                                 |
-| `scripts/approve-plan.mts`                | Changed       | Export `approve(text, login, answers)`; `run` wraps it                         |
-| `.github/workflows/claude-build.yml`      | Changed       | `approve` job (`contents: read`; event text via `env:`)                        |
-| `.github/workflows/README.md`             | Changed       | `npm run workflows:diagram`                                                    |
-| `.github/agent/build.md`                  | Changed       | Lines 7-8 become one line; line 10 drops "After recording the approval,"       |
-| `plans/README.md`                         | Changed       | Rules 2 and 3 as #500; rule 2 keeps the commit text for a hand-committed plan  |
+| File                                      | New / changed | What                                                   |
+| ----------------------------------------- | ------------- | ------------------------------------------------------ |
+| `scripts/agent-approve.mts`               | New           | Parse, record, commit; open decision: comment, stop    |
+| `scripts/__tests__/agent-approve.test.ts` | New           | The seven cases, injected `gh`                         |
+| `scripts/approve-plan.mts`                | Changed       | Export `approve(text, login, answers)`; `run` wraps it |
+| `.github/workflows/claude-build.yml`      | Changed       | `approve` job (`contents: read`)                       |
+| `.github/workflows/README.md`             | Changed       | `npm run workflows:diagram`                            |
+| `.github/agent/build.md`                  | Changed       | Lines 7-8 become one line                              |
+| `plans/README.md`                         | Changed       | Rules 2 and 3 as #500                                  |
 
 ## Order of work
 
@@ -49,6 +49,8 @@ A new `approve` job in `claude-build.yml` takes the build's `if:` unchanged and 
 
 ## Deviations
 
-- `approve` also takes the plan's file name, for its error text.
+- `approve` also takes the plan's file name.
 - `build` keeps no `if:` of its own, only `needs: approve`: `plan-pr-condition.test.ts` allows two copies of the condition.
+- `Approval` lives in `scripts/types.ts` (lint).
+- Answers to a decision the plan lacks are skipped; a failed `gh` call comments; `approve` joins the `thread-<n>` group.
 - `plans/README.md` rule 13 drops "record approval,".

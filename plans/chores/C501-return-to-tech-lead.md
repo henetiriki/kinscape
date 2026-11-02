@@ -1,7 +1,7 @@
 # Plan: C501: Hand an issue back to the tech lead when a plan or build run ends without handing off
 
 - **Spec:** #501
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ For a build, `run`'s workspace is the PR branch, so a step there needs another c
 - **B.** A last step in `run`, as the Spec says.
 - **Other:** your own.
 
-Recommended: A, because it survives a timeout, away from PR code.
+**Answer: A** (@henetiriki)
 
 **D2 · The `approve` stop's label is set twice** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ With Spec D2, `agent-approve.mts` sets `ready-for-dev` on `go=false`, so the scr
 - **B.** Call it anyway (Spec D1).
 - **Other:** your own.
 
-Recommended: A, because Spec D2 chose one writer.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

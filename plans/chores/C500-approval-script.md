@@ -1,7 +1,7 @@
 # Plan: C500: Record a plan's approval in a script before the build agent starts
 
 - **Spec:** #500
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ A new `approve` job in `claude-build.yml` takes the build's `if:` unchanged and 
 - **B.** Check out the head, `git commit`, `git push`.
 - **Other:** your own.
 
-Recommended: A, because no PR files land on disk.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

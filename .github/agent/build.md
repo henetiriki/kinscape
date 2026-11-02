@@ -6,7 +6,7 @@ Your first command is `gh pr view <n> --json title,body,comments,reviews,headRef
 
 The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
 
-Stop if the PR has `hand-back` or you need a CODEOWNERS path not in `EXEMPT` (scripts/hand-back.mts): hand it back as plans/README.md rule 13 says.
+Stop if you need a CODEOWNERS path not in `EXEMPT` (scripts/hand-back.mts): hand it back as plans/README.md rule 13 says.
 
 While iterating, write each unit test for logic first and keep its failing line for Evidence (plans/README.md rule 12), and run only the affected test file. Run the full `npm test` and `npm run e2e` once, before pushing. When a test fails, read the error and follow plans/README.md rule 10; don't add temporary debug output.
 

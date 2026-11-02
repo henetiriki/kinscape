@@ -11,6 +11,8 @@ import { approve } from './approve-plan.mts';
 // `Status: approved` into the plan, and commits `plan(<id>): approved by @<owner>` to the PR branch.
 //   open decision: comment which, commit nothing, `go=false`
 //   plan already approved: change nothing, `go=true`
+// On `go=true`, a `hand-back` PR (plans/README.md rule 13) gets a comment that the tech lead builds
+// it, and `go=false`: no build run starts.
 // It is the one writer of the label for that approval: each issue the PR closes is set to
 // `status: ready-for-agent` on `go=true` and `status: ready-for-dev` on `go=false`. It skips a
 // `hand-back` PR, a `status: blocked` issue and one already on its target; a failed move is
@@ -32,6 +34,7 @@ type Pr = {
   files: { path: string }[];
   headRefName: string;
   headRefOid: string;
+  labels: { name: string }[];
   reviews: ({ submittedAt: string } & Item)[];
 };
 
@@ -103,12 +106,15 @@ export const run = (
 
   const runUrl = env.RUN_URL ?? '';
   const footer = RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : [];
-  // Nothing is committed and no model runs: tell the owner why, and what to do.
-  const comment = (...lines: string[]): void => {
+  const post = (...lines: string[]): void => {
     gh(
       ['pr', 'comment', raw, '--body-file', '-'],
-      ['Not approved yet:', '', ...lines, ...footer].join('\n')
+      [...lines, ...footer].join('\n')
     );
+  };
+  // Nothing is committed and no model runs: tell the owner why, and what to do.
+  const comment = (...lines: string[]): void => {
+    post('Not approved yet:', '', ...lines);
   };
   // A failed label move is logged against its PR or issue, so the others still go.
   const attempt = (number: number | string, action: () => void): void => {
@@ -177,6 +183,18 @@ export const run = (
 
     return 0;
   };
+  // The plan is approved: a `hand-back` PR is built by the tech lead, so no build run starts.
+  const proceed = (handBack: boolean): number => {
+    if (handBack) {
+      post(
+        'The plan is approved. This PR has `hand-back`, so the tech lead builds it (`plans/README.md` rule 13); no build run starts.'
+      );
+    }
+
+    finish(!handBack);
+
+    return 0;
+  };
 
   try {
     const pr = json<Pr>(gh, [
@@ -184,11 +202,12 @@ export const run = (
       'view',
       raw,
       '--json',
-      'files,headRefName,headRefOid,reviews,comments',
+      'files,headRefName,headRefOid,labels,reviews,comments',
     ]);
     const plans = pr.files
       .map(({ path }) => path)
       .filter(path => PLAN.test(path));
+    const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
 
     if (plans.length !== 1) {
       return stop(
@@ -210,9 +229,8 @@ export const run = (
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
       console.log(`${file} is already approved.`);
-      finish(true);
 
-      return 0;
+      return proceed(handBack);
     }
 
     if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {
@@ -254,9 +272,8 @@ export const run = (
       })
     );
     console.log(`Recorded the approval of ${file} by @${approver}.`);
-    finish(true);
 
-    return 0;
+    return proceed(handBack);
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
     finish(false);

@@ -382,6 +382,85 @@ describe('run', () => {
     });
   });
 
+  describe('a hand-back PR', () => {
+    const answered = [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')];
+    // Anything that would change the PR itself: ready, edit, merge, close.
+    const prChanges = () =>
+      gh.mock.calls.filter(
+        ([args]) =>
+          args[0] === 'pr' && !['comment', 'view'].includes(args[1] as string)
+      );
+
+    it('records the approval, comments that the tech lead builds it, and does not go', () => {
+      fakeGh({ prLabels: ['hand-back'], reviews: answered });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(put()).toHaveLength(1);
+      expect(comments()).toHaveLength(1);
+      expect(comments()[0][0].slice(0, 3)).toEqual(['pr', 'comment', '504']);
+      expect(reply()).toContain('hand-back');
+      expect(reply()).toContain('tech lead builds it');
+      expect(reply()).toContain('rule 13');
+      expect(reply()).toContain(`[Run](${ENV.RUN_URL})`);
+      expect(reply()).not.toContain('Not approved yet');
+      expect(written).toEqual(['go=false']);
+    });
+
+    it('comments for a plan already approved, committing nothing', () => {
+      fakeGh({ prLabels: ['hand-back'], text: plan('approved') });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(put()).toEqual([]);
+      expect(comments()).toHaveLength(1);
+      expect(reply()).toContain('tech lead builds it');
+      expect(written).toEqual(['go=false']);
+    });
+
+    it('stops on an open decision as before, with no hand-back comment', () => {
+      fakeGh({ prLabels: ['hand-back'] });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(put()).toEqual([]);
+      expect(comments()).toHaveLength(1);
+      expect(reply()).toContain('Not approved yet');
+      expect(reply()).not.toContain('tech lead builds it');
+      expect(written).toEqual(['go=false']);
+    });
+
+    it('leaves the PR a draft', () => {
+      fakeGh({ prLabels: ['hand-back'], reviews: answered });
+      run(['504'], ENV, gh, write);
+
+      expect(prChanges()).toEqual([]);
+    });
+
+    it('is caught when the comment fails: no go, the message logged, exit code 1', () => {
+      fakeGh({ prLabels: ['hand-back'], reviews: answered });
+
+      const base = gh.getMockImplementation()!;
+
+      gh.mockImplementation((args, input) => {
+        if (args[1] === 'comment') {
+          throw new Error('HTTP 403');
+        }
+
+        return base(args, input);
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(1);
+      expect(written).toEqual(['go=false']);
+      expect(errors).toContain('#504: HTTP 403');
+    });
+
+    it('goes on to the build when the PR has other labels but not hand-back', () => {
+      fakeGh({ prLabels: ['chore', 'wip'], reviews: answered });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(comments()).toEqual([]);
+      expect(written).toEqual(['go=true']);
+    });
+  });
+
   describe('a PR that cannot be approved', () => {
     it.each([
       [[], 'has 0'],

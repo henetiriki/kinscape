@@ -25,11 +25,13 @@ Add top-level `overrides` for `better-sqlite3` (`13.0.3`), `geographiclib` (`npm
 
 ## Files that change
 
-| File                   | What                      |
-| ---------------------- | ------------------------- |
-| `package.json`         | Three `overrides` entries |
-| `package-lock.json`    | Refreshed                 |
-| `docs/dependencies.md` | Overrides table (D1)      |
+| File                                   | What                      |
+| -------------------------------------- | ------------------------- |
+| `package.json`                         | Three `overrides` entries |
+| `package-lock.json`                    | Refreshed                 |
+| `docs/dependencies.md`                 | Overrides table (D1)      |
+| `scripts/word-count.mts`               | Budget 250 (D1)           |
+| `scripts/__tests__/word-count.test.ts` | Expect 250 (D1)           |
 
 ## Order of work
 

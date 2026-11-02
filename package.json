@@ -76,6 +76,9 @@
     "yaml": "2.9.1"
   },
   "overrides": {
+    "better-sqlite3": "13.0.3",
+    "geographiclib": "npm:geographiclib-geodesic@2.2.0",
+    "glob": "14.0.3",
     "react-dom-18": {
       "react": "$react"
     }

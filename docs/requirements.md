@@ -103,11 +103,11 @@ A pin says "this person was here, at this time, and this is how the user knows";
 
 **People and relationships**
 
-| ID     | Requirement                                                                                                                                                        | Priority |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| PPL-01 | Create and edit a person: given names, surname, maiden name, spelling variants (e.g. Van der Merwe, v.d. Merwe), sex, birth and death as fuzzy dates, notes, photo | Must     |
-| PPL-02 | Relationships: parent–child (biological, adoptive, step) and spouse, with marriage and divorce dates                                                               | Must     |
-| PPL-03 | A simple pedigree or descendants view to move around the family                                                                                                    | Should   |
+| ID     | Requirement                                                                                                                                                 | Priority |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| PPL-01 | Create and edit a person: given names, surname, maiden name, spelling variants (e.g. Van der Merwe, v.d. Merwe), sex, birth and death as fuzzy dates, notes | Must     |
+| PPL-02 | Relationships: parent–child (biological, adoptive, step) and spouse, with marriage and divorce dates                                                        | Must     |
+| PPL-03 | A simple pedigree or descendants view to move around the family                                                                                             | Should   |
 
 **Pins**
 
@@ -163,12 +163,12 @@ Everything that changes over time carries a half-open validity interval \[from, 
 | Account         | id, sign-in identity                                                                                           | Not linked to a Person (NFR-09)                 |
 | Tree            | id, name                                                                                                       |                                                 |
 | TreeAccount     | tree id, account id                                                                                            | One row in v1; no roles                         |
-| Person          | id, tree id, given names, surname, name variants, sex, birth, death, notes                                     | Birth and death are FuzzyDates                  |
+| Person          | id, tree id, given names, surname, maiden name, name variants, sex, birth, death, notes                        | Birth and death are FuzzyDates                  |
 | Relationship    | id, tree id, person A, person B, type (parent of, spouse of), subtype, start, end                              | Subtype: biological, adoptive, step             |
 | Place           | id, tree id, lat, lon, precision                                                                               | Physical location only; names live in PlaceName |
 | PlaceName       | place id, name, from, to, source id                                                                            | Follows its Place's Tree                        |
 | Pin             | id, tree id, person id, place id, address verbatim, event type, date, source ids, notes, jurisdiction (cached) | Cache rebuilt when boundaries change (PIN-05)   |
-| Polity          | id, type (colony, republic, province, homeland, district, field cornetcy)                                      |                                                 |
+| Polity          | id, type (colony, republic, province, homeland, district)                                                      |                                                 |
 | PolityName      | polity id, name, from, to                                                                                      |                                                 |
 | PolityParent    | child id, parent id, from, to                                                                                  | Dated nesting (BND-03)                          |
 | BoundaryVersion | id, polity id, level, geometry, from, to, confidence, contested, source id                                     | MultiPolygon, to allow enclaves                 |
@@ -224,7 +224,7 @@ Sized for one researcher with a large family tree: assume up to 2,000 people and
 
 The key to a live slider is loading every boundary version once and changing only a layer filter when the date moves, so no data is fetched while scrubbing. The rest is a suggestion, not a requirement.
 
-- **Front end:** React and TypeScript (Vite), with MapLibre GL JS for the map.
+- **Front end:** Next.js and TypeScript, with MapLibre GL JS for the map.
 
 - **Time filtering:** each boundary feature carries from and to as integer properties (e.g. days since 1652-01-01); a date change sets one filter expression per layer. This is what meets NFR-01.
 
@@ -255,7 +255,7 @@ Prove the live slider with a few easy epochs first, then add people, then spend 
 
 4.  **M3 Jurisdiction and exploring.** PIN-05, MAP-07, EXP-01 to EXP-05, NFR-04.
 
-5.  **M4 Pre-Union boundaries.** Research and digitise the polity layer from 1652 to 1910 (BND-03 to BND-05), then district layers for the regions the user's family lived in first.
+5.  **M4 Pre-Union boundaries.** Research and digitise the polity layer from 1652 to 1910 (BND-03 to BND-05, NFR-08), then district layers for the regions the user's family lived in first.
 
 6.  **M5 Apartheid-era homelands and richer views.** Homeland layers, MAP-08, MAP-09, EXP-06, EXP-07, PIN-07, PIN-08.
 

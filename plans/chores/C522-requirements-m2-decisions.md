@@ -2,7 +2,7 @@
 
 - **Spec:** #522
 - **Requirement IDs:** [PIN-01](../docs/requirements.md#pin-01), [PIN-02](../docs/requirements.md#pin-02), [PIN-07](../docs/requirements.md#pin-07)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Chore replaces "people, pins and sources", but the second check reads "peopl
 - **B.** Change only the first check, as worded.
 - **Other:** your own.
 
-Recommended: A, because otherwise a source record stays in M2, against the Chore's first check.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

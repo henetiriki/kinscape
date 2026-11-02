@@ -5,7 +5,7 @@
 
 ## Approach
 
-State the rule once, in the paragraph under [Decisions](../../docs/how-we-work.md#decisions): a Spec that needs a new service, database, environment variable, secret or CODEOWNERS path lists it under **Flagged concerns** and carries a **Blocking** tech-lead decision. `spec.md` gets an **Infrastructure** bullet in _What to settle_ that links there without restating the list; the form's Flagged concerns description does the same with a full URL, as its intro does. `spec.md` touches a CODEOWNERS path, so this PR is labelled `hand-back` and the tech lead builds it.
+State the rule once, as _New infrastructure_ in [security.md](../../docs/security.md) (D1): a Spec that needs a new service, database, environment variable, secret or CODEOWNERS path lists it under **Flagged concerns** with a **Blocking** tech-lead decision. `spec.md` and the form link to it without restating the list. `spec.md` and `security.md` are CODEOWNERS paths, so this PR is labelled `hand-back` and the tech lead builds it.
 
 ## Decisions
 
@@ -23,14 +23,18 @@ State the rule once, in the paragraph under [Decisions](../../docs/how-we-work.m
 
 | File                                | What                                     |
 | ----------------------------------- | ---------------------------------------- |
-| `docs/how-we-work.md`               | The rule, under Decisions                |
+| `docs/security.md`                  | The rule, as _New infrastructure_        |
 | `.claude/skills/refine/spec.md`     | **Infrastructure** bullet linking to it  |
 | `.github/ISSUE_TEMPLATE/2-spec.yml` | Flagged concerns description links to it |
 
 ## Order of work
 
-1. `how-we-work.md`, then the two links, in one commit.
+1. `security.md`, then the two links, in one commit.
 2. `npm run words`, `npm run format:check`.
+
+## Deviations
+
+- D1 put the rule in `security.md`, not `how-we-work.md`; no trimming, no budget change.
 
 ## Risks
 
@@ -40,6 +44,6 @@ State the rule once, in the paragraph under [Decisions](../../docs/how-we-work.m
 
 | Check                                  | By                                                                       |
 | -------------------------------------- | ------------------------------------------------------------------------ |
-| Rule stated once, two files link to it | `git grep -n "CODEOWNERS path"` finds only `how-we-work.md`              |
+| Rule stated once, two files link to it | `git grep -n "new service, database"` finds only `security.md`           |
 | Budgets                                | `npm run words`                                                          |
 | `/refine spec` flags a database slice  | Tech lead's dry run of `/refine spec` on a database slice, noted on #521 |

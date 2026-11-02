@@ -19,6 +19,7 @@ Ask questions as described in `SKILL.md`. Typical branches:
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_ (e.g. Next.js instead of Vite). Each is a tech-lead decision.
 - **Data:** anything storing people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).
 - **Cost:** anything that adds a paid service or moves the monthly budget (target ≤ US$10).
+- **Infrastructure:** follow [New infrastructure](../../../docs/security.md#new-infrastructure).
 - **Proof:** how each behaviour will be shown: an automated test, the boundary validator, a preview check.
 
 Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions).

@@ -9,3 +9,7 @@ Code and workflows follow these. The automated review flags a change that breaks
 - Database queries take parameters; never build SQL from strings.
 - Workflows follow the rules under _In workflows_ in [review.md](../.github/agent/review.md#the-rules).
 - Logs and error messages never include secrets, tokens or Person data.
+
+## New infrastructure
+
+A Spec that needs a new service, database, environment variable, secret or CODEOWNERS path lists it under **Flagged concerns** and carries a **Blocking** tech-lead [decision](how-we-work.md#decisions).

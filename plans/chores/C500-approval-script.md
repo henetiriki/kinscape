@@ -46,3 +46,9 @@ A new `approve` job in `claude-build.yml` takes the build's `if:` unchanged and 
 | Seven test cases              | `agent-approve.test.ts`           |
 | Next approval's commit text   | Run linked in the PR, after merge |
 | 100% coverage, `words` passes | Pasted output                     |
+
+## Deviations
+
+- `approve` also takes the plan's file name, for its error text.
+- `build` keeps no `if:` of its own, only `needs: approve`: `plan-pr-condition.test.ts` allows two copies of the condition.
+- `plans/README.md` rule 13 drops "record approval,".

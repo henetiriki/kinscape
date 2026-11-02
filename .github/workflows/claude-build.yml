@@ -1,9 +1,9 @@
 name: 'Claude: Build'
 
 # The title shown for each run in the Actions tab:
-#   "Build: <title>"         - the tech lead approved a draft plan PR, so Claude builds it
+#   "Build: <title>"         - the tech lead approved a draft plan PR, so the approval is recorded and Claude builds it
 #   "Skipped Build: <title>" - anything else, so nothing runs
-# This repeats the `if:` of the `build` job (run-name cannot see job results): change them together.
+# This repeats the `if:` of the `approve` job (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     github.event.review.state == 'approved' &&
@@ -39,18 +39,58 @@ concurrency:
 jobs:
   # Runs when the repo owner approves a review on a draft plan PR that Claude's bot opened. The bot
   # opens its other PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md
-  # rule 3; the build drops the suffix). The shared runner checks the Spec isn't blocked, then
-  # Claude builds what the plan describes and comments on the PR with the result. The runner comes
-  # from main, like the agent files.
-  build:
-    # The Actions graph shows the runner's jobs under this name: "Build / Gate", "Build / Run Claude", "Build / Result".
-    name: Build
+  # rule 3; the build drops the suffix). It records the approval and the owner's answers to the
+  # plan's decisions in the plan and commits it to the PR branch (scripts/agent-approve.mts), before
+  # any model runs. With a decision open it comments which and `build` is skipped. The script comes
+  # from main and the PR head is never checked out: it reads and writes the plan through the API.
+  approve:
+    name: Approve
     if: |
       github.event.review.state == 'approved' &&
       github.event.review.author_association == 'OWNER' &&
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
       endsWith(github.event.pull_request.title, '(plan)')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only to check out main; the bot PAT comments and commits (as claude-run.yml does).
+    permissions:
+      contents: read
+    outputs:
+      go: ${{ steps.approve.outputs.go }}
+    steps:
+      # It uses only Node's own modules, so no `npm ci`.
+      - name: Check out the approval script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Record the approval
+        id: approve
+        env:
+          # The PAT, not GITHUB_TOKEN: a push by GITHUB_TOKEN would start no workflow, so CI would not run on it.
+          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_REPO: ${{ github.repository }}
+          APPROVER: ${{ github.event.review.user.login }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node scripts/agent-approve.mts "$NUMBER"
+
+  # Claude builds what the approved plan describes and comments on the PR with the result. The
+  # `approve` job already checked that this is a draft plan PR the owner approved. The shared runner
+  # checks the Spec isn't blocked. It comes from main, like the agent files.
+  build:
+    # The Actions graph shows the runner's jobs under this name: "Build / Gate", "Build / Run Claude", "Build / Result".
+    name: Build
+    needs: approve
+    if: needs.approve.outputs.go == 'true'
     uses: henetiriki/kinscape/.github/workflows/claude-run.yml@4e609f93963b6fc5b7dd7a3742ba057657a5c9fb
     with:
       thread: ${{ github.event.pull_request.number }}

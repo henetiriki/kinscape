@@ -1,0 +1,200 @@
+import { execFileSync } from 'node:child_process';
+import { appendFileSync } from 'node:fs';
+
+import type { Gh } from './types.ts';
+
+import { approve } from './approve-plan.mts';
+
+// Records a plan's approval before any model runs (see claude-build.yml). The owner approved a draft
+// plan PR; this reads the answers to its `## Decisions` from the owner's reviews and PR comments
+// (`D1: B`, `D1=B`, `D2: other, <text>`; the later of two answers wins), writes them and
+// `Status: approved` into the plan, and commits `plan(<id>): approved by @<owner>` to the PR branch.
+//   open decision: comment which, commit nothing, `go=false`
+//   plan already approved: change nothing, `go=true`
+// Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO and APPROVER (the review's author)
+// set. An https RUN_URL, if set, is linked at the end of a stop comment.
+// It writes `go=true` or `go=false` to $GITHUB_OUTPUT. The commit goes through the Contents API with
+// the plan's blob sha, so the PR head is never checked out and a plan that changed meanwhile is
+// refused. A failed `gh` call is logged, `go=false` is written and the exit code is 1.
+// Only text from an author_association of OWNER counts; everything else on the PR is ignored.
+
+type Item = {
+  authorAssociation: string;
+  body: string;
+};
+
+type Pr = {
+  comments: ({ createdAt: string } & Item)[];
+  files: { path: string }[];
+  headRefName: string;
+  headRefOid: string;
+  reviews: ({ submittedAt: string } & Item)[];
+};
+
+const NUMBER = /^[1-9]\d*$/;
+const REPO = /^[\w.-]+\/[\w.-]+$/;
+const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+const RUN_URL = /^https:\/\/\S+$/;
+const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
+const ANSWER =
+  /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
+
+const json = <T,>(gh: Gh, args: string[]): T => JSON.parse(gh(args));
+
+const list = (ids: string[]): string => ids.join(', ');
+
+// The answers in the owner's text, oldest first so a later one replaces an earlier one, as the
+// arguments `approve` takes: `D1=B`, `D2=other: <text>`.
+const answersFrom = (pr: Pr): string[] => {
+  const answers = new Map<string, string>();
+
+  [
+    ...pr.reviews.map(({ submittedAt, ...item }) => ({
+      ...item,
+      at: submittedAt,
+    })),
+    ...pr.comments.map(({ createdAt, ...item }) => ({
+      ...item,
+      at: createdAt,
+    })),
+  ]
+    .filter(({ authorAssociation }) => authorAssociation === 'OWNER')
+    .sort((a, b) => a.at.localeCompare(b.at))
+    .flatMap(({ body }) => body.split(/\r?\n/))
+    .forEach(line => {
+      const [, id, letter, other] = ANSWER.exec(line) ?? [];
+
+      if (id) {
+        answers.set(
+          `D${id}`,
+          letter ? `D${id}=${letter}` : `D${id}=other: ${other.trim()}`
+        );
+      }
+    });
+
+  return [...answers.values()];
+};
+
+export const run = (
+  args: string[],
+  env: Record<string, string | undefined>,
+  gh: Gh,
+  write: (line: string) => void
+): number => {
+  const [raw] = args;
+  const repo = env.GH_REPO ?? '';
+  const approver = env.APPROVER ?? '';
+
+  if (!NUMBER.test(raw ?? '') || !REPO.test(repo) || !LOGIN.test(approver)) {
+    console.error(
+      'Usage: agent-approve <PR number>, with GH_REPO=<owner>/<repo> and APPROVER=<login> set'
+    );
+
+    return 1;
+  }
+
+  const runUrl = env.RUN_URL ?? '';
+  const footer = RUN_URL.test(runUrl) ? ['', `[Run](${runUrl})`] : [];
+  // Nothing is committed and no model runs: tell the owner why, and what to do.
+  const stop = (...lines: string[]): number => {
+    gh(
+      ['pr', 'comment', raw, '--body-file', '-'],
+      ['Not approved yet:', '', ...lines, ...footer].join('\n')
+    );
+    write('go=false');
+
+    return 0;
+  };
+
+  try {
+    const pr = json<Pr>(gh, [
+      'pr',
+      'view',
+      raw,
+      '--json',
+      'files,headRefName,headRefOid,reviews,comments',
+    ]);
+    const plans = pr.files
+      .map(({ path }) => path)
+      .filter(path => PLAN.test(path));
+
+    if (plans.length !== 1) {
+      return stop(
+        `- A plan PR has exactly one plan file under \`plans/\`; this one has ${plans.length}.`
+      );
+    }
+
+    const [file] = plans;
+    const url = `repos/${repo}/contents/${file}`;
+    const { content, sha } = json<{ content: string; sha: string }>(gh, [
+      'api',
+      '--method',
+      'GET',
+      url,
+      '-f',
+      `ref=${pr.headRefOid}`,
+    ]);
+    const text = Buffer.from(content, 'base64').toString('utf8');
+
+    if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
+      console.log(`${file} is already approved.`);
+      write('go=true');
+
+      return 0;
+    }
+
+    if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {
+      return stop(`- \`${file}\` has no \`- **Status:** draft\` line.`);
+    }
+
+    const result = approve(text, approver, answersFrom(pr), file);
+
+    if (result.errors.length > 0) {
+      return stop(...result.errors.map(error => `- ${error}`));
+    }
+
+    if (result.open.length > 0) {
+      return stop(
+        `- No answer yet for ${list(result.open)}.`,
+        '',
+        'Reply on this PR as `D1: B` or `D2: other, <your answer>`, then approve the plan again.'
+      );
+    }
+
+    gh(
+      ['api', '--method', 'PUT', url, '--input', '-'],
+      JSON.stringify({
+        branch: pr.headRefName,
+        content: Buffer.from(result.text).toString('base64'),
+        message: `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`,
+        sha,
+      })
+    );
+    console.log(`Recorded the approval of ${file} by @${approver}.`);
+    write('go=true');
+
+    return 0;
+  } catch (error) {
+    console.error(`#${raw}: ${(error as Error).message}`);
+    write('go=false');
+
+    return 1;
+  }
+};
+
+/* v8 ignore next 11 -- only true when run directly with node, not when imported */
+if (import.meta.main) {
+  const output = process.env.GITHUB_OUTPUT;
+
+  process.exitCode = run(
+    process.argv.slice(2),
+    process.env,
+    (args, input) =>
+      execFileSync('gh', args, {
+        encoding: 'utf8',
+        input,
+        maxBuffer: 16 * 1024 * 1024,
+      }),
+    line => (output ? appendFileSync(output, `${line}\n`) : console.log(line))
+  );
+}

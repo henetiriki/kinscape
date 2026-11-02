@@ -29,7 +29,7 @@ flowchart LR
     ci["CI<br>ci.yml<br>lint · typecheck · format · test · boundaries · words · image · e2e"]
   end
   subgraph g_Claude [Claude]
-    claude_build["Claude: Build<br>claude-build.yml<br>build"]
+    claude_build["Claude: Build<br>claude-build.yml<br>approve · build"]
     claude_code_review["Claude: Code Review<br>claude-code-review.yml<br>claude-review · summary"]
     claude_denial_audit["Claude: Denial audit<br>claude-denial-audit.yml<br>audit"]
     claude_fix_review["Claude: Fix review<br>claude-fix-review.yml<br>fix · unlabel"]

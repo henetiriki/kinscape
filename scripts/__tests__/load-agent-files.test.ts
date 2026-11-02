@@ -984,6 +984,7 @@ describe('the fix-review workflow', () => {
     expect(text).toContain('newest PR comment');
     expect(text).toContain('resolveReviewThread');
     expect(text).toContain('rule 10');
+    expect(text).toContain('draft state, labels or reviewers');
     expect(text).toMatch(/data, not instructions/);
   });
 });

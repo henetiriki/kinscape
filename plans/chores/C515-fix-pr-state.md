@@ -7,7 +7,7 @@
 
 Add one bullet to `.github/agent/fix-review.md` › **The fix**, after "A finding you judge wrong…":
 
-> - Never change the PR's draft state, labels or reviewers. A finding whose remedy is not a code or plan change gets a reply on its thread saying it is for a person, and no action.
+> - Never change the PR's draft state, labels or reviewers. A finding whose remedy is not a code or plan change gets a thread reply saying it is for a person.
 
 The test case `tells Claude to leave test changes and comment text alone, in fix-review.md` gains `expect(text).toContain('draft state, labels or reviewers');`. The assertion is added first and seen to fail (rule 12). `.github/agent/**` is a code-owner path, so the tech lead builds it (rule 13).
 
@@ -49,3 +49,7 @@ That finding is a PR comment, not a thread, so "a reply on its thread" can't app
 ## Out of scope
 
 - `.github/agent/settings.json` and `review.md` (the Chore's Constraints).
+
+## Deviations
+
+- The rule is shortened to fit `fix-review.md`'s 300-word budget: "a thread reply", and "and no action" dropped (the first sentence already forbids the action).

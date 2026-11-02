@@ -52,6 +52,26 @@ Vercel has no settings-as-code here: the tech lead sets these by hand in the Ver
 | `KINSCAPE_REPO_SLUG`      | The repo as `owner/name`; Production and Preview. Set by hand: the script has no Vercel login                                                                                      | The script asks the GitHub API about this repo. Unset, every push deploys                                                                          |
 | `KINSCAPE_GIT_READ_TOKEN` | Fine-grained token for `henetiriki/kinscape` only, Contents read-only; Sensitive, Production and Preview; expires after 90 days; the owner rotates it                              | The script reads the changed files from the GitHub API, as Vercel's clone has no remote. Once it expires every push deploys until a new one is set |
 
+Database variables (NFR-03, NFR-09). All are Sensitive; the values are in Vercel only, never in git. Preview points at `kinscape-preview`, Production at `kinscape-production`.
+
+| Variable                   | Value                                                                                              | Why                                                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`             | The project's transaction-pooler connection string; Production and Preview, each its own project's | The app's database connection (M2.3 `env.ts`). A Production value in Preview would put synthetic data beside the real Tree |
+| `SUPABASE_URL`             | The project's API URL; Production and Preview, each its own project's                              | Sign-in (M2.5)                                                                                                             |
+| `SUPABASE_PUBLISHABLE_KEY` | The project's publishable key; Production and Preview, each its own project's                      | Signs users in but can't manage them. The secret key is not used and is set nowhere                                        |
+| `DATABASE_DIRECT_URL`      | In no Vercel environment                                                                           | Only for `npm run db:migrate`, which the tech lead runs locally from a git-ignored `.env.local`                            |
+
+## Supabase
+
+Supabase has no settings-as-code here: the tech lead sets these by hand in the Supabase dashboard, and nothing checks for drift.
+
+| Setting  | Value                                                                                                 | Why                                              |
+| -------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Projects | `kinscape-preview` (Vercel Preview) and `kinscape-production` (Vercel Production); free tier          | Preview deployments never touch the real Tree    |
+| Region   | Not yet recorded: the tech lead comments the region chosen on PR #541 (Cape Town if offered, else EU) | The plan's step 2                                |
+| Sign-ups | Off in both projects                                                                                  | Accounts are created by invitation only (NFR-03) |
+| Pausing  | An idle free project pauses; the tech lead resumes it in the dashboard                                | Free tier limit                                  |
+
 ## Accounts and access
 
 | Who                       | Access               | Notes                                                                                                                                                         |

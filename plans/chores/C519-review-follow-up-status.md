@@ -31,6 +31,10 @@ As the Chore says, with the rule's text per D1; the test asserts "All earlier fi
 
 - `fix-review.md` reads the Bot's newest gaps comment; the status comment only links findings, so isn't one.
 
+## Deviations
+
+- D1 A's rule counted 505 words in place, over the 500 limit; five words trimmed, same meaning and phrase.
+
 ## Proof
 
 | Acceptance check                                     | Proven by                                 |

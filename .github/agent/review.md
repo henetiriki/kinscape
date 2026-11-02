@@ -29,5 +29,5 @@ In workflows, also check (these live only here, loaded from `main`, so a PR can'
 - If `.since-last-review.diff` exists (the changes since the last review), give it to the review agents instead of `gh pr diff`, and flag defects only on its lines `gh pr diff` also has. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
 - Post up to ten, one comment each: code defects and rule breaks first (at most eight, most severe first), then plan departures (at most two). Skip style nits and what a linter catches.
-- Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a finding still on the PR.
-- Never post "No issues" alone. List the plan items and rules you checked.
+- Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a finding still on the PR as a new comment.
+- After the first review, open with one `gh pr comment`: "All earlier findings addressed", or each still-open finding linked, with a one-line reason. Check each against current code, not only `.since-last-review.diff`; one is addressed if code fixes it or the author's reply gives a reason you accept, not a resolved thread alone. With no new findings, it lists the plan items and rules checked (no bare "No issues found").

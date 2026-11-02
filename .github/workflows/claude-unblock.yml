@@ -113,7 +113,7 @@ jobs:
       # several jobs in one run, and a re-run of a failed job uploads again. A leak is commented on that Spec.
       - name: Keep Claude's output
         if: always()
-        uses: henetiriki/kinscape/.github/actions/keep-claude-output@ef8ffb12cf0af87b7a89a7fa4fefc83bf1f83226
+        uses: henetiriki/kinscape/.github/actions/keep-claude-output@aa2dab4d1b31c84068caa7ba123ea4b68e7be8d2
         with:
           name_suffix: -${{ matrix.spec.number }}-${{ github.run_attempt }}
           thread: ${{ matrix.spec.number }}

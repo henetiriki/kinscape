@@ -51,7 +51,7 @@ jobs:
       github.event.pull_request.draft &&
       github.event.pull_request.user.login == vars.KINSCAPE_BOT_LOGIN &&
       endsWith(github.event.pull_request.title, '(plan)')
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@1789dbd4cef9dd2f95d7d2c088ef4de8ea12c57c
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@6ac6c4cddf101217a8982683dfedb4afb865c88f
     with:
       thread: ${{ github.event.pull_request.number }}
       # Check out the plan PR's branch.

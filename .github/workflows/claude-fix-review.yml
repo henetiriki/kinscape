@@ -42,7 +42,7 @@ jobs:
       github.event.pull_request.state == 'open' &&
       !github.event.pull_request.draft &&
       github.event.pull_request.head.repo.full_name == github.repository
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@1789dbd4cef9dd2f95d7d2c088ef4de8ea12c57c
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@6ac6c4cddf101217a8982683dfedb4afb865c88f
     with:
       thread: ${{ github.event.pull_request.number }}
       # The runner's gate checks a ready PR with the label, not a draft plan PR.

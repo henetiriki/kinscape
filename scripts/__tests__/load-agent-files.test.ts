@@ -993,10 +993,16 @@ describe('the fix-review workflow', () => {
 // (plans/chores/C519-review-follow-up-status.md).
 describe('review.md', () => {
   it('opens a follow-up review with the status of the earlier findings', () => {
-    const text = agent('review.md').replace(/\s+/g, ' ');
+    expect(agent('review.md').replace(/\s+/g, ' ')).toContain(
+      'All earlier findings addressed'
+    );
+  });
 
-    expect(text).toContain('All earlier findings addressed');
-    expect(text).not.toContain('Never post "No issues" alone');
+  // The first review is unchanged, so the bullet that covers every review stays.
+  it('still has every review list what it checked', () => {
+    expect(agent('review.md').replace(/\s+/g, ' ')).toContain(
+      'Never post "No issues" alone. List the plan items and rules you checked.'
+    );
   });
 });
 

@@ -1,7 +1,7 @@
 # Plan: C497: Clear four npm deprecation warnings with overrides
 
 - **Spec:** #497
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Add top-level `overrides` for `better-sqlite3` (`13.0.3`), `geographiclib` (`npm
 - **B.** Raise the budget to 250 in `scripts/word-count.mts`, and add a line that Dependabot doesn't update `overrides`.
 - **Other:** your own.
 
-Recommended: A, because it keeps the change to the files the Chore names.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

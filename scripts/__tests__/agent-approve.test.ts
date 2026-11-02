@@ -10,6 +10,9 @@ const ENV = {
   RUN_URL: 'https://github.com/owner/repo/actions/runs/1',
 };
 const PATH = 'plans/chores/C500-approval-script.md';
+const AGENT = 'status: ready-for-agent';
+const DEV = 'status: ready-for-dev';
+const BLOCKED = 'status: blocked';
 
 const plan = (status = 'draft', extra = '') => `# Plan: C500: X
 
@@ -35,9 +38,13 @@ Nothing here.
 type Item = { at: string; authorAssociation: string; body: string };
 
 type World = {
+  closes?: { number: number; repo?: string }[];
   comments?: Item[];
   files?: string[];
   headRefOid?: string;
+  // issue number -> its labels; the issue a plan PR closes is on ready-for-dev by default
+  issues?: Record<number, string[]>;
+  prLabels?: string[];
   reviews?: Item[];
   text?: string;
 };
@@ -56,14 +63,32 @@ describe('run', () => {
   const write = (line: string) => written.push(line);
 
   const fakeGh = ({
+    closes = [{ number: 8 }],
     comments = [],
     files = [PATH, 'src/other.ts'],
+    issues = { 8: ['type: chore', DEV] },
+    prLabels = [],
     reviews = [],
     text = plan(),
   }: World = {}) => {
     gh = vi.fn<Gh>(args => {
+      if (args[0] === 'issue' && args[1] === 'view') {
+        return JSON.stringify({
+          labels: (issues[Number(args[2])] ?? []).map(name => ({ name })),
+        });
+      }
+
       if (args[0] === 'pr' && args[1] === 'view') {
         return JSON.stringify({
+          closingIssuesReferences: closes.map(
+            ({ number, repo = ENV.GH_REPO }) => ({
+              number,
+              repository: {
+                name: repo.split('/')[1],
+                owner: { login: repo.split('/')[0] },
+              },
+            })
+          ),
           comments: comments.map(({ at, ...rest }) => ({
             ...rest,
             createdAt: at,
@@ -71,6 +96,7 @@ describe('run', () => {
           files: files.map(path => ({ path })),
           headRefName: 'chore/C500-approval-script',
           headRefOid: 'a'.repeat(40),
+          labels: prLabels.map(name => ({ name })),
           reviews: reviews.map(({ at, ...rest }) => ({
             ...rest,
             submittedAt: at,
@@ -101,6 +127,17 @@ describe('run', () => {
     };
   };
   const reply = () => comments()[0][1] as string;
+  const edits = () =>
+    gh.mock.calls.filter(([args]) => args[1] === 'edit').map(([args]) => args);
+  const moved = (issue: string, from: string, to: string) => [
+    'issue',
+    'edit',
+    issue,
+    '--remove-label',
+    from,
+    '--add-label',
+    to,
+  ];
 
   beforeEach(() => {
     written = [];
@@ -399,7 +436,145 @@ describe('run', () => {
 
       expect(run(['504'], ENV, gh, write)).toBe(1);
       expect(written).toEqual(['go=false']);
-      expect(errors).toEqual(['#504: HTTP 502', '#504: HTTP 502']);
+      expect(errors).toEqual([
+        '#504: HTTP 502',
+        '#504: moving the label failed: HTTP 502',
+        '#504: HTTP 502',
+      ]);
+    });
+
+    it('moves the label to ready-for-dev when the commit fails', () => {
+      fakeGh({
+        issues: { 8: ['type: chore', AGENT] },
+        reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')],
+      });
+
+      const base = gh.getMockImplementation()!;
+
+      gh.mockImplementation((args, input) => {
+        if (args.includes('PUT')) {
+          throw new Error('409 sha does not match');
+        }
+
+        return base(args, input);
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(1);
+      expect(edits()).toEqual([moved('8', AGENT, DEV)]);
+    });
+  });
+
+  describe('the issue label', () => {
+    const answered = [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')];
+
+    it('goes to ready-for-agent when the build goes', () => {
+      fakeGh({ reviews: answered });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(written).toEqual(['go=true']);
+      expect(edits()).toEqual([moved('8', DEV, AGENT)]);
+    });
+
+    it('goes to ready-for-agent for a plan already approved', () => {
+      fakeGh({ text: plan('approved') });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(edits()).toEqual([moved('8', DEV, AGENT)]);
+    });
+
+    it('goes to ready-for-dev when a decision is open, even if it is on ready-for-agent', () => {
+      fakeGh({ issues: { 8: ['type: chore', AGENT] } });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(edits()).toEqual([moved('8', AGENT, DEV)]);
+    });
+
+    it('stays on ready-for-dev when a decision is open', () => {
+      fakeGh();
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(edits()).toEqual([]);
+    });
+
+    it('moves each issue the PR closes, and none in another repository', () => {
+      fakeGh({
+        closes: [{ number: 8 }, { number: 9 }, { number: 10, repo: 'a/b' }],
+        issues: { 8: [DEV], 9: [DEV, 'type: spec'], 10: [DEV] },
+        reviews: answered,
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(edits()).toEqual([moved('8', DEV, AGENT), moved('9', DEV, AGENT)]);
+    });
+
+    it.each([
+      ['go', answered],
+      ['no go', []],
+    ])('is not moved for a hand-back PR (%s)', (_what, reviews) => {
+      fakeGh({ prLabels: ['hand-back'], reviews });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(edits()).toEqual([]);
+      expect(
+        gh.mock.calls.filter(
+          ([args]) => args[0] === 'issue' && args[1] === 'view'
+        )
+      ).toEqual([]);
+    });
+
+    it('is not moved for a blocked issue', () => {
+      fakeGh({ issues: { 8: ['type: chore', BLOCKED] }, reviews: answered });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(edits()).toEqual([]);
+    });
+
+    it('is not moved for an issue already on its target', () => {
+      fakeGh({ issues: { 8: ['type: chore', AGENT] }, reviews: answered });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(edits()).toEqual([]);
+    });
+
+    it('removes every other status label', () => {
+      fakeGh({
+        issues: { 8: [DEV, 'status: ready-for-po'] },
+        reviews: answered,
+      });
+      run(['504'], ENV, gh, write);
+
+      expect(edits()).toEqual([
+        [
+          'issue',
+          'edit',
+          '8',
+          '--remove-label',
+          DEV,
+          '--remove-label',
+          'status: ready-for-po',
+          '--add-label',
+          AGENT,
+        ],
+      ]);
+    });
+
+    it('is logged when the move fails, leaving go and the exit code alone', () => {
+      fakeGh({ reviews: answered });
+
+      const base = gh.getMockImplementation()!;
+
+      gh.mockImplementation((args, input) => {
+        if (args[1] === 'edit') {
+          throw new Error('HTTP 403');
+        }
+
+        return base(args, input);
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(written).toEqual(['go=true']);
+      expect(errors).toEqual(['#504: moving the label failed: HTTP 403']);
     });
   });
 });

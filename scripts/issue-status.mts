@@ -9,10 +9,11 @@ import { invisible } from './vercel-ignore.mts';
 // Spec, Bug or Chore the PR closes in step with the PR. The row comes from the event payload as it
 // was when the event fired. The table:
 //   plan PR opened (draft, title ends "(plan)")            -> ready-for-dev
-//   plan approved by the owner, no `hand-back` label        -> ready-for-agent
 //   PR ready (marked, or opened), user-visible              -> ready-for-po
 //   PR ready, otherwise                                     -> ready-for-dev
 //   approved by the owner, a member or a collaborator, ready -> ready-for-dev
+// A plan's approval moves nothing here: agent-approve.mts sets that label (ready-for-agent when the
+// build goes, ready-for-dev when it stops).
 // User-visible: the issue is a Spec or Bug, a changed file fails `invisible()`, and the PR's
 // `## For the PO` has text once HTML comments are removed.
 // Does nothing for a fork, a `status: blocked` issue or one already on its target. A failed `gh`
@@ -34,17 +35,15 @@ type Event = {
   review?: { author_association: string; state: string };
 };
 
-// 'ready' is rows 3 and 4: the PO if the change is user-visible, otherwise the tech lead.
-type Move = 'agent' | 'dev' | 'ready';
+// 'ready' is rows 2 and 3: the PO if the change is user-visible, otherwise the tech lead.
+type Move = 'dev' | 'ready';
 
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const PLAN = /\(plan\)$/;
 const PO_HEADING = /^#{1,6}\s+For the PO\s*$/i;
 const HEADING = /^#{1,6}\s/;
-const HAND_BACK = 'hand-back';
 const STATUS = 'status: ';
 const TARGET = {
-  agent: `${STATUS}ready-for-agent`,
   dev: `${STATUS}ready-for-dev`,
   po: `${STATUS}ready-for-po`,
 };
@@ -102,13 +101,6 @@ const pick = (
     review.state !== 'approved'
   ) {
     return undefined;
-  }
-
-  if (plan) {
-    return review.author_association === 'OWNER' &&
-      !pull.labels.some(({ name: label }) => label === HAND_BACK)
-      ? 'agent'
-      : undefined;
   }
 
   return !pull.draft && MAY_MOVE_A_READY_PR.includes(review.author_association)
@@ -203,7 +195,7 @@ export const run = (
   const isVisibleType = (labels: string[]): boolean =>
     labels.some(label => VISIBLE_TYPES.includes(label));
 
-  // Rows 3 and 4: the changed files matter only to a Spec or Bug whose PR says what to try.
+  // Rows 2 and 3: the changed files matter only to a Spec or Bug whose PR says what to try.
   let visible: boolean | undefined = false;
 
   if (

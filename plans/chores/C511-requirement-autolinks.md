@@ -1,7 +1,7 @@
 # Plan: C511: Autolink requirement IDs in issues, PRs and commits
 
 - **Spec:** #511
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Both scripts need it.
 - **B.** A shared `scripts/github/requirement-prefixes.sh` both source.
 - **Other:** your own.
 
-Recommended: A, because it is one line and adds no file.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

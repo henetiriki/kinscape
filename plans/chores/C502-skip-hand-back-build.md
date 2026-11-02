@@ -1,7 +1,7 @@
 # Plan: C502: Skip the build run for a hand-back plan PR and say why
 
 - **Spec:** #502
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@
 - **B.** An `if:` on `build` reading the event's labels, plus a script step for the comment.
 - **Other:** your own.
 
-Recommended: A, because the script already reads the PR and owns `go`.
+**Answer: A** (@henetiriki)
 
 **D2 · Rule 13's "At build, for either, leave the PR open."** · Decides: Tech lead
 
@@ -23,7 +23,7 @@ Recommended: A, because the script already reads the PR and owns `go`.
 - **B.** Reword: "At build, a `hand-back` PR gets a comment and no build run."
 - **Other:** your own.
 
-Recommended: A, because the comment says it and rule 4 says who builds.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

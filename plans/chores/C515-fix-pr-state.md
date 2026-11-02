@@ -1,7 +1,7 @@
 # Plan: C515: The fix agent never changes a PR's draft state
 
 - **Spec:** #515
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ That finding is a PR comment, not a thread, so "a reply on its thread" can't app
 - **B.** Add "(in the gap-list comment's case, in your closing comment)" to the rule.
 - **Other:** your own.
 
-Recommended: A, because the closing comment already covers it and B adds words for a rare case.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

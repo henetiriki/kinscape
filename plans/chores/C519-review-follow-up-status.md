@@ -1,7 +1,7 @@
 # Plan: C519: The review opens each follow-up with the status of its earlier findings
 
 - **Spec:** #519
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ As the Chore says, with the rule's text per D1; the test asserts "All earlier fi
 - **B.** Keep the Chore's wording and raise the limit to 525; the Chore's count changes to match.
 - **Other:** your own.
 
-Recommended: A: it meets the Chore; "one comment each" covers new findings.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

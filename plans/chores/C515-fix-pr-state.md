@@ -7,9 +7,11 @@
 
 Add one bullet to `.github/agent/fix-review.md` › **The fix**, after "A finding you judge wrong…":
 
-> - Never change the PR's draft state, labels or reviewers. A finding whose remedy is not a code or plan change gets a thread reply saying it is for a person.
+> - Never change the PR's draft state, labels or reviewers. A finding needing no code or plan change gets a thread reply saying it is for a person, and no action.
 
-The test case `tells Claude to leave test changes and comment text alone, in fix-review.md` gains `expect(text).toContain('draft state, labels or reviewers');`. The assertion is added first and seen to fail (rule 12). `.github/agent/**` is a code-owner path, so the tech lead builds it (rule 13).
+The last bullet (resolve each thread) becomes "…you fixed or judged wrong (`resolveReviewThread`), but not one left for a person."
+
+The test case `tells Claude to leave test changes and comment text alone, in fix-review.md` gains `expect(text).toContain('draft state, labels or reviewers');`. The assertion is added first and seen to fail (rule 12).
 
 ## Decisions
 
@@ -52,4 +54,4 @@ That finding is a PR comment, not a thread, so "a reply on its thread" can't app
 
 ## Deviations
 
-- The rule is shortened to fit `fix-review.md`'s 300-word budget: "a thread reply", and "and no action" dropped (the first sentence already forbids the action).
+- Wording shortened to the 300-word budget; the resolve step skips a thread left for a person (review finding).

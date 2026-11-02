@@ -43,7 +43,7 @@ jobs:
   # rule 3; the build drops the suffix). It records the approval and the owner's answers to the
   # plan's decisions in the plan and commits it to the PR branch (scripts/agent-approve.mts), before
   # any model runs. With a decision open it comments which and `build` is skipped; a `hand-back`
-  # PR (plans/README.md rule 13) gets a comment that the tech lead builds it, and `build` is
+  # PR (plans/README.md rule 4) gets a comment that the tech lead builds it, and `build` is
   # skipped. It also sets the issue's status label from the outcome (`ready-for-agent` on go,
   # `ready-for-dev` on stop; a `hand-back` PR's issue is left alone). The
   # script comes from main and the PR head is never checked out: it reads and writes the plan

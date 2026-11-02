@@ -400,7 +400,7 @@ describe('run', () => {
       expect(comments()[0][0].slice(0, 3)).toEqual(['pr', 'comment', '504']);
       expect(reply()).toContain('hand-back');
       expect(reply()).toContain('tech lead builds it');
-      expect(reply()).toContain('rule 13');
+      expect(reply()).toContain('rule 4');
       expect(reply()).toContain(`[Run](${ENV.RUN_URL})`);
       expect(reply()).not.toContain('Not approved yet');
       expect(written).toEqual(['go=false']);
@@ -449,7 +449,10 @@ describe('run', () => {
 
       expect(run(['504'], ENV, gh, write)).toBe(1);
       expect(written).toEqual(['go=false']);
-      expect(errors).toContain('#504: HTTP 403');
+      expect(errors).toEqual(['#504: HTTP 403']);
+      // The approval is committed, so there is no "Approve the plan again" comment.
+      expect(put()).toHaveLength(1);
+      expect(comments()).toHaveLength(1);
     });
 
     it('goes on to the build when the PR has other labels but not hand-back', () => {

@@ -11,7 +11,7 @@ import { approve } from './approve-plan.mts';
 // `Status: approved` into the plan, and commits `plan(<id>): approved by @<owner>` to the PR branch.
 //   open decision: comment which, commit nothing, `go=false`
 //   plan already approved: change nothing, `go=true`
-// On `go=true`, a `hand-back` PR (plans/README.md rule 13) gets a comment that the tech lead builds
+// On `go=true`, a `hand-back` PR (plans/README.md rule 4) gets a comment that the tech lead builds
 // it, and `go=false`: no build run starts.
 // It is the one writer of the label for that approval: each issue the PR closes is set to
 // `status: ready-for-agent` on `go=true` and `status: ready-for-dev` on `go=false`. It skips a
@@ -183,12 +183,21 @@ export const run = (
 
     return 0;
   };
-  // The plan is approved: a `hand-back` PR is built by the tech lead, so no build run starts.
+  // The plan is approved: a `hand-back` PR is built by the tech lead (rule 4), so no build run
+  // starts. The approval is already committed, so a failed comment is not the catch's "Approve the
+  // plan again": log it and stop.
   const proceed = (handBack: boolean): number => {
     if (handBack) {
-      post(
-        'The plan is approved. This PR has `hand-back`, so the tech lead builds it (`plans/README.md` rule 13); no build run starts.'
-      );
+      try {
+        post(
+          'The plan is approved. This PR has `hand-back`, so the tech lead builds it (`plans/README.md` rule 4); no build run starts.'
+        );
+      } catch (error) {
+        console.error(`#${raw}: ${(error as Error).message}`);
+        finish(false);
+
+        return 1;
+      }
     }
 
     finish(!handBack);

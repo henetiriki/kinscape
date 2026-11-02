@@ -20,13 +20,13 @@ Dependabot ignores the major version of these. To lift a hold, remove its entry 
 
 ## Overrides
 
-`package.json` `overrides` replace deprecated transitive packages. Dependabot doesn't update them; bump by hand.
+These `package.json` `overrides` replace deprecated transitive packages. Dependabot doesn't update them; bump by hand.
 
-| Package          | Pinned to                          | Clears                   |
-| ---------------- | ---------------------------------- | ------------------------ |
-| `better-sqlite3` | `13.0.3`                           | `prebuild-install`       |
-| `geographiclib`  | `npm:geographiclib-geodesic@2.2.0` | `geographiclib`          |
-| `glob`           | `14.0.3`                           | `inflight`, `glob@7.2.3` |
+| Package          | Clears                   | Remove when                              |
+| ---------------- | ------------------------ | ---------------------------------------- |
+| `better-sqlite3` | `prebuild-install`       | `mapshaper` moves to `better-sqlite3` 13 |
+| `geographiclib`  | `geographiclib`          | `mproj` drops `geographiclib`            |
+| `glob`           | `inflight`, `glob@7.2.3` | `fontnik` drops `glob` 7                 |
 
 ## The review plugin
 

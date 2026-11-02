@@ -2,6 +2,7 @@ name: 'Claude: Build'
 
 # The title shown for each run in the Actions tab:
 #   "Build: <title>"         - the tech lead approved a draft plan PR, so the approval is recorded and Claude builds it
+#                              (a `hand-back` PR is recorded and commented on, but not built; the title is the same)
 #   "Skipped Build: <title>" - anything else, so nothing runs
 # This repeats the `if:` of the `approve` job (run-name cannot see job results): change them together.
 run-name: >-
@@ -41,8 +42,10 @@ jobs:
   # opens its other PRs too: only a draft whose title ends "(plan)" is a plan PR (plans/README.md
   # rule 3; the build drops the suffix). It records the approval and the owner's answers to the
   # plan's decisions in the plan and commits it to the PR branch (scripts/agent-approve.mts), before
-  # any model runs. With a decision open it comments which and `build` is skipped. It also sets the
-  # issue's status label from the outcome (`ready-for-agent` on go, `ready-for-dev` on stop). The
+  # any model runs. With a decision open it comments which and `build` is skipped; a `hand-back`
+  # PR (plans/README.md rule 4) gets a comment that the tech lead builds it, and `build` is
+  # skipped. It also sets the issue's status label from the outcome (`ready-for-agent` on go,
+  # `ready-for-dev` on stop; a `hand-back` PR's issue is left alone). The
   # script comes from main and the PR head is never checked out: it reads and writes the plan
   # through the API.
   approve:

@@ -47,7 +47,6 @@ With Spec D2, `agent-approve.mts` sets `ready-for-dev` on `go=false`, so the scr
 
 ## Risks
 
-- Callers pin `claude-run.yml`; the run checks wait for the pin PR.
 - The bot's label starts a skipped `claude-plan.yml` run.
 
 ## Proof
@@ -55,9 +54,10 @@ With Spec D2, `agent-approve.mts` sets `ready-for-dev` on `go=false`, so the scr
 | Check                                | By                          |
 | ------------------------------------ | --------------------------- |
 | Script, approve and status cases     | Unit tests                  |
-| Gate stop, plan drift, stopped build | Runs linked in the PR       |
+| Gate stop, plan drift, stopped build | Runs linked on #501         |
 | Coverage, words                      | `npm test`, `npm run words` |
 
 ## Deviations
 
-- `return` skips a cancelled `run`: a newer queued run is still to come.
+- `return` skips a cancelled `run`: a newer run follows.
+- Callers pin `claude-run.yml`, so the run proofs follow the merge and the pin PR, linked on #501.

@@ -227,10 +227,9 @@ jobs:
     if: always() && inputs.kind != 'fix' && needs.run.result != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Only to check out main; the bot PAT reads the PR and moves the label.
     permissions:
       contents: read
-      issues: write
-      pull-requests: read
     steps:
       - name: Check out the return script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

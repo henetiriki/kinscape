@@ -110,11 +110,20 @@ export const run = (
       ['Not approved yet:', '', ...lines, ...footer].join('\n')
     );
   };
+  // A failed label move is logged against its PR or issue, so the others still go.
+  const attempt = (number: number | string, action: () => void): void => {
+    try {
+      action();
+    } catch (error) {
+      console.error(
+        `#${number}: moving the label failed: ${(error as Error).message}`
+      );
+    }
+  };
   // Writes the outcome, then sets each closed issue's label from it.
   const finish = (go: boolean): void => {
     write(`go=${go}`);
-
-    try {
+    attempt(raw, () => {
       const [owner, name] = repo.split('/');
       const target = go ? AGENT : DEV;
       const pr = json<{
@@ -134,35 +143,33 @@ export const run = (
           ({ repository }) =>
             repository.name === name && repository.owner.login === owner
         )
-        .forEach(({ number }) => {
-          const labels = json<{ labels: { name: string }[] }>(gh, [
-            'issue',
-            'view',
-            String(number),
-            '--json',
-            'labels',
-          ]).labels.map(({ name: label }) => label);
+        .forEach(({ number }) =>
+          attempt(number, () => {
+            const labels = json<{ labels: { name: string }[] }>(gh, [
+              'issue',
+              'view',
+              String(number),
+              '--json',
+              'labels',
+            ]).labels.map(({ name: label }) => label);
 
-          if (labels.includes(BLOCKED) || labels.includes(target)) {
-            return;
-          }
+            if (labels.includes(BLOCKED) || labels.includes(target)) {
+              return;
+            }
 
-          gh([
-            'issue',
-            'edit',
-            String(number),
-            ...labels
-              .filter(label => label.startsWith('status: '))
-              .flatMap(label => ['--remove-label', label]),
-            '--add-label',
-            target,
-          ]);
-        });
-    } catch (error) {
-      console.error(
-        `#${raw}: moving the label failed: ${(error as Error).message}`
-      );
-    }
+            gh([
+              'issue',
+              'edit',
+              String(number),
+              ...labels
+                .filter(label => label.startsWith('status: '))
+                .flatMap(label => ['--remove-label', label]),
+              '--add-label',
+              target,
+            ]);
+          })
+        );
+    });
   };
   const stop = (...lines: string[]): number => {
     comment(...lines);

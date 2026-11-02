@@ -574,7 +574,30 @@ describe('run', () => {
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(written).toEqual(['go=true']);
-      expect(errors).toEqual(['#504: moving the label failed: HTTP 403']);
+      expect(errors).toEqual(['#8: moving the label failed: HTTP 403']);
+    });
+
+    it('goes on to the next issue when one move fails', () => {
+      fakeGh({
+        closes: [{ number: 8 }, { number: 9 }],
+        issues: { 8: [DEV], 9: [DEV] },
+        reviews: answered,
+      });
+
+      const base = gh.getMockImplementation()!;
+
+      gh.mockImplementation((args, input) => {
+        if (args[1] === 'edit' && args[2] === '8') {
+          throw new Error('HTTP 403');
+        }
+
+        return base(args, input);
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(written).toEqual(['go=true']);
+      expect(errors).toEqual(['#8: moving the label failed: HTTP 403']);
+      expect(edits()).toEqual([moved('8', DEV, AGENT), moved('9', DEV, AGENT)]);
     });
   });
 });

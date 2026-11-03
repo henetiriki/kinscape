@@ -44,7 +44,7 @@ describe('readPin', () => {
 
     expect(pin).toEqual({
       path: 'plugins/code-review',
-      repo: 'anthropics/claude-code',
+      repo: 'anthropics/claude-plugins-official',
       sha: expect.stringMatching(/^[0-9a-f]{40}$/),
     });
   });

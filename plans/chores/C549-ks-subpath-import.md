@@ -51,3 +51,7 @@ The Chore keys rules to `{mts,mjs}` and `{ts,tsx}`; `RELATIVE` covers `.js` and 
 | `account:add` resolves | run with no arguments, error pasted |
 | Three `git grep`s      | pasted empty output                 |
 | `node-loaded` gone     | `git ls-files scripts`              |
+
+## Deviations
+
+- `gatherTypes` reads `#ks/` as well as `@ks/` (`lib/design/bundle.mts`, with a test), after review found it would copy a `#ks/` import through as an external. The `design-system` output is unchanged.

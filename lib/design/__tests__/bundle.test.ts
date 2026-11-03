@@ -212,4 +212,24 @@ describe('gatherTypes', () => {
       'No declaration for a/One.tsx'
     );
   });
+
+  it('reads a #ks/ import as a repo path, like @ks/', () => {
+    const own = {
+      '/r/a/One.d.ts':
+        "import type { Kind } from '#ks/a/types';\nexport declare const One: (p: { kind: Kind }) => null;\n",
+      '/r/a/Two.d.ts': 'export declare const Two: null;\n',
+      '/r/a/types.d.ts': "export type Kind = 'x';\n",
+    };
+
+    expect(gatherTypes('/r', controls, own)).toContain(
+      "export type Kind = 'x';"
+    );
+    expect(() =>
+      gatherTypes('/r', controls, {
+        ...own,
+        '/r/a/One.d.ts':
+          "import type { K } from '#ks/a/missing';\nexport {};\n",
+      })
+    ).toThrow('No declaration for #ks/a/missing imported by /r/a/One');
+  });
 });

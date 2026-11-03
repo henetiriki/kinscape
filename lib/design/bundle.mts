@@ -144,7 +144,11 @@ export const gatherTypes = (
     for (const match of text.matchAll(IMPORT)) {
       const specifier = match[1];
 
-      if (specifier.startsWith('.') || specifier.startsWith('@ks/')) {
+      if (
+        specifier.startsWith('.') ||
+        specifier.startsWith('@ks/') ||
+        specifier.startsWith('#ks/')
+      ) {
         const target = stem(
           specifier.startsWith('.')
             ? resolve(dirname(file), specifier)

@@ -1,7 +1,7 @@
 # Plan: C546: Workflows README as a table plus three small diagrams
 
 - **Spec:** #546
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,21 +17,21 @@ Replace the body of `generate()` with a table builder and a diagram builder. Wor
 - **B.** Keep `read()`; infer the row for any workflow another one calls.
 - **Other:** your own.
 
-Recommended: A, because it reports the file; YAML parsing is unchanged.
+**Answer: A** (@henetiriki)
 
 **D2 · Prefix fills** · Decides: Tech lead
 
 - **A.** `design/tokens.json` tints and their `-border` strokes: Actions `error-bg`, Backlog `warning-bg`, CI `info-bg`, Claude `brand-tint`, Design `surface-2`.
 - **B.** Other colours you name.
 
-Recommended: A, the app's palette.
+**Answer: A** (@henetiriki)
 
 **D3 · An unknown prefix** · Decides: Tech lead
 
 - **A.** The generator fails, as for an unknown event.
 - **B.** The node gets no fill.
 
-Recommended: A, so each new prefix gets a colour.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

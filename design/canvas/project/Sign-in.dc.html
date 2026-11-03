@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Sign in</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="min-height: 100vh; display: flex; flex-wrap: wrap; font-family: var(--font-body); color: var(--ink); background: var(--surface-2)">
+
+  <div style="flex: 999 1 560px; min-height: 420px; position: relative; overflow: hidden; background: var(--map-sea)">
+    <svg viewBox="180 40 1000 880" preserveAspectRatio="xMidYMid meet" style="position: absolute; inset: 0; width: 100%; height: 100%" aria-hidden="true">
+      <defs>
+        <clipPath id="landClipL"><path d="M63 0 L89 60 L126 114 L131 147 L136 210 L150 270 L163 348 L165 369 L173 408 L194 444 L220 474 L234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 Z"></path></clipPath>
+        <filter id="hsL" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="5" seed="11"></feTurbulence>
+          <feDiffuseLighting surfaceScale="4" diffuseConstant="1.1" style="lighting-color: var(--white)"><feDistantLight azimuth="315" elevation="38"></feDistantLight></feDiffuseLighting>
+        </filter>
+        <filter id="haloL" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"></feGaussianBlur></filter>
+      </defs>
+      <path d="M63 0 L89 60 L126 114 L131 147 L136 210 L150 270 L163 348 L165 369 L173 408 L194 444 L220 474 L234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 Z" style="fill: var(--map-land)"></path>
+      <g clip-path="url(#landClipL)"><rect x="0" y="-100" width="1300" height="1000" filter="url(#hsL)" style="mix-blend-mode: multiply" opacity="0.28"></rect></g>
+      <g fill="none" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" stroke-width="1.4" style="stroke: var(--map-river-colour)">
+        <path d="M887 516 L877 546 L861 576 L835 600 L798 603 L772 611 L733 600 L706 608 L665 575 L634 547 L625 514 L598 534 L564 550 L525 504 L486 477 L438 486 L420 474 L399 486 L368 507 L325 504 L283 495 L234 488"></path>
+        <path d="M950 369 L929 381 L905 387 L872 378 L836 370 L808 381 L770 389 L714 429 L691 445 L662 483 L625 514"></path>
+        <path d="M703 684 L715 701 L735 732 L761 756 L794 779"></path>
+        <path d="M887 495 L913 492 L935 495 L966 501 L992 510 L1020 523"></path>
+        <path d="M756 255 L788 216 L824 174 L856 126 L892 102 L940 99 L1013 115 L1061 150 L1082 198 L1108 240 L1133 282"></path>
+      </g>
+      <g fill="none" stroke-opacity="0.42" stroke-linejoin="round" stroke-width="1.2" vector-effect="non-scaling-stroke" style="stroke: var(--map-border-colour)">
+        <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534 L903 567 L877 594 L840 611 L808 600 L788 582 Z"></path>
+        <path d="M1048 327 L1018 313 L998 324 L987 354 L990 378 L1005 402 L1024 408 L1050 408 L1057 378 L1050 348 Z"></path>
+        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+        <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L961 456 L987 447 L1005 402 L990 378 L987 354 L998 324 L1018 313 L1048 327 L1049 294 L1047 240 L1026 180 L1013 115 L940 99 L892 102 L856 126 L824 174 L788 216 L756 255 L714 312 L703 366 L690 414 Z"></path>
+        <path d="M911 408 L935 438 L961 456 L987 447 L1005 402 L1024 408 L1050 408 L1057 381 L1097 382 M955 635 L924 594 L903 567"></path>
+        <path d="M420 474 L420 256 L441 306 L456 383 L515 372 L567 330 L620 306 L672 318 L714 312" stroke-dasharray="5 4"></path>
+      </g>
+      <circle cx="640" cy="693" r="30" opacity="0.22" filter="url(#haloL)" style="fill: var(--pin)"></circle>
+      <rect x="633" y="686" width="14" height="14" rx="2" stroke-width="2.5" vector-effect="non-scaling-stroke" style="fill: var(--pin); stroke: var(--white)"></rect>
+      <text x="656" y="690" font-size="14" font-weight="600" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" style="font-family: var(--font-body); fill: var(--ink); stroke: var(--map-land)">Farm Rietfontein</text>
+      <text x="656" y="707" font-size="12" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round" style="font-family: var(--font-mono); fill: var(--map-muted-label); stroke: var(--map-land)">FROM 1872 TO 1910</text>
+    </svg>
+
+    <div style="position: relative; padding: var(--space-40) var(--space-48); display: flex; flex-direction: column; gap: var(--space-16); max-width: 520px">
+      <h2 class="display" style="margin: 0; color: var(--ink)">Borders move.<br>Places don't.</h2>
+      <p class="body-l" style="margin: 0; color: var(--ink-2); max-width: 380px">South Africa as it was on any date from 1652 to today, with your family where they were.</p>
+    </div>
+    <div class="mono" style="position: absolute; left: var(--space-48); bottom: var(--space-32); display: flex; gap: var(--space-8); align-items: center; color: var(--ink-2)">
+      <span style="display: inline-block; width: 22px; height: 0; border-top: 1.5px solid var(--map-border-colour)"></span>
+      <span>Map date 1901-01-01 · borders as recorded</span>
+      <span style="display: inline-block; width: 22px; height: 0; border-top: 1.5px dashed var(--map-border-colour); margin-left: var(--space-8)"></span>
+      <span>approximate</span>
+    </div>
+  </div>
+
+  <div style="flex: 1 1 440px; display: flex; align-items: center; justify-content: center; padding: var(--space-48) var(--space-32); box-sizing: border-box; background: var(--surface)">
+    <form style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: var(--space-24)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-20)">
+        <div style="display: flex; align-items: center; gap: var(--space-12)">
+          <img src="/_blob/fc8efdb1b185576b872141e6e4fa37f8" alt="" style="width: 44px; height: 44px; border-radius: 25%; display: block">
+          <span class="h2" style="color: var(--ink)">KinScape</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+          <h1 class="h1" style="margin: 0; color: var(--ink)">Sign in</h1>
+          <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-16)">
+        <x-import component-from-global-scope="KinScape.TextField" size="l" type="email" label="Email" autocomplete="username" placeholder="you@example.com"></x-import>
+        <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
+      </div>
+
+      <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import>
+
+      <p class="small" style="margin: 0; padding-top: var(--space-20); border-top: 1px solid var(--line); color: var(--ink-3)">There's no sign-up. Accounts are set up by whoever runs this KinScape.</p>
+    </form>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { yes: true };
+  }
+}
+</script>
+</body>
+</html>

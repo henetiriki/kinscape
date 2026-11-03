@@ -22,7 +22,7 @@ Built today: Next.js App Router, React, TypeScript, MapLibre. [architecture-targ
 | A browser test                  | `e2e/`                                                                                                             |
 | A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`           |
 
-Import repo paths by full path: `#ks/` in `.mts` and `.mjs` files (Node reads `package.json` `imports`), `@ks/` in the rest (tsconfig `paths`). ESLint rejects the other alias and relative paths.
+Import repo paths by full path: `#ks/` in `.mts` and `.mjs` files (Node reads `package.json` `imports`), `@ks/` in the rest (tsconfig `paths`). ESLint rejects the other alias, relative paths and `.mts`/`.mjs` value imports of `.ts`/`.tsx`.
 
 ## Patterns
 

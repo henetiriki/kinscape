@@ -19,7 +19,7 @@ const lint = async (
   }).lintText(code, { filePath });
 
   return result.messages
-    .filter(m => m.ruleId !== null && ruleIds.includes(m.ruleId))
+    .filter(m => m.fatal || (m.ruleId !== null && ruleIds.includes(m.ruleId)))
     .map(m => `${m.ruleId}: ${m.message}`);
 };
 
@@ -155,6 +155,18 @@ describe('the real lint config', () => {
   });
 
   it.each([
+    ['scripts/x.mts', "import { a } from '#ks/lib/ui/hatch.ts';"],
+    ['scripts/x.mts', "export { a } from '#ks/lib/ui/hatch.ts';"],
+    ['scripts/x.mts', "import { a } from '#ks/lib/ui/Hatch.tsx';"],
+    ['x/y.mjs', "import { a } from '#ks/lib/ui/hatch.ts';"],
+    ['x/y.mjs', "export { a } from '#ks/lib/ui/hatch.ts';"],
+  ])('fails a value import of a .ts file in %s: %s', async (path, code) => {
+    expect(await lint(path, `${code}\n`)).toEqual([
+      expect.stringContaining('Node can’t run .ts'),
+    ]);
+  });
+
+  it.each([
     ['lib/map/a.ts', "import { a } from '#ks/lib/map/b';"],
     [
       'app/components/forms/X.tsx',
@@ -174,6 +186,9 @@ describe('the real lint config', () => {
     ],
     ['scripts/x.mts', "import type { A } from '#ks/lib/domain/map/types.ts';"],
     ['x/y.mjs', "import { a } from '#ks/lib/b.mjs';"],
+    ['scripts/x.mts', "import { a } from '#ks/lib/ui/hatch.mts';"],
+    ['x/y.mjs', "import { a } from '#ks/lib/ui/hatch.mts';"],
+    ['x/y.mjs', "import type { A } from '#ks/lib/ui/hatch.ts';"],
     ['lib/map/a.ts', "import { a } from '@ks/lib/map/b';"],
     ['scripts/__tests__/x.test.ts', "import { a } from '@ks/scripts/a.mts';"],
   ])('passes %s: %s', async (path, code) => {

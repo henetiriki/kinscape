@@ -178,6 +178,12 @@ export default defineConfig([
                 'Node loads this file and ignores tsconfig paths: use #ks/, not @ks/.',
               regex: String.raw`^@ks/`,
             },
+            {
+              allowTypeImports: true,
+              message:
+                'Node can’t run .ts or .tsx files: move the shared code to a .mts file, or use import type.',
+              regex: String.raw`\.tsx?$`,
+            },
           ],
         },
       ],

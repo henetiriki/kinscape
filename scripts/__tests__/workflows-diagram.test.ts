@@ -14,6 +14,10 @@ import { generate, run } from '../workflows-diagram.mts';
 
 const repo = join(import.meta.dirname, '../..');
 
+const tokens = JSON.parse(
+  readFileSync(join(repo, 'design/tokens.json'), 'utf8')
+).colour;
+
 let root: string;
 
 const workflow = (file: string, text: string) =>
@@ -26,67 +30,37 @@ beforeEach(() => {
 
 afterEach(() => rmSync(root, { force: true, recursive: true }));
 
-describe('generate', () => {
-  it('draws each workflow with its file and jobs, grouped by its name prefix', () => {
+describe('the table', () => {
+  it('lists each workflow once with its file and jobs, then a row per trigger', () => {
     workflow(
       'claude-plan.yml',
-      "name: 'Claude: Plan'\non: push\njobs:\n  gate: {}\n  plan: {}\n"
-    );
-
-    const diagram = generate(root);
-
-    expect(diagram).toContain('subgraph g_Claude [Claude]');
-    expect(diagram).toContain(
-      'claude_plan["Claude: Plan<br>claude-plan.yml<br>gate · plan"]'
-    );
-  });
-
-  it('groups a name with no prefix by its first word, and falls back to the file name', () => {
-    workflow('ci.yml', 'name: CI\non: push\njobs:\n  lint: {}\n');
-    workflow('nameless.yml', 'on: push\njobs:\n  only: {}\n');
-
-    const diagram = generate(root);
-
-    expect(diagram).toContain('subgraph g_CI [CI]');
-    expect(diagram).toContain(
-      'subgraph g_nameless [nameless.yml]\n    nameless["nameless.yml<br>nameless.yml<br>only"]'
-    );
-  });
-
-  it('joins each trigger to its workflows, labelled with its types, branches or schedule', () => {
-    workflow(
-      'a.yml',
       [
-        'name: A',
+        "name: 'Claude: Plan'",
         'on:',
         '  issues:',
-        '    types: [opened, closed]',
-        '  push:',
-        '    branches: [main]',
-        '  schedule:',
-        "    - cron: '0 6 * * 1'",
+        '    types: [labeled]',
         '  workflow_dispatch:',
         'jobs:',
-        '  one: {}',
+        '  gate: {}',
+        '  plan: {}',
       ].join('\n')
     );
-    workflow('b.yml', 'name: B\non: [issues]\njobs:\n  two: {}\n');
 
-    const diagram = generate(root);
-
-    expect(diagram).toContain('on_issues([issues])');
-    expect(diagram).toContain('on_issues -->|"opened, closed"| a');
-    expect(diagram).toContain('on_push -->|"main"| a');
-    expect(diagram).toContain('on_schedule -->|"0 6 * * 1"| a');
-    expect(diagram).toContain('on_workflow_dispatch --> a');
-    expect(diagram).toContain('on_issues --> b');
+    expect(generate(root)).toContain(
+      [
+        '| Workflow | Trigger | Filter | Jobs |',
+        '| --- | --- | --- | --- |',
+        '| Claude: Plan<br>`claude-plan.yml` | issues | `labeled` | gate · plan |',
+        '| | workflow_dispatch | | |',
+      ].join('\n')
+    );
   });
 
-  it('joins every filter on a trigger into its label', () => {
+  it('joins every filter on a trigger into its Filter cell', () => {
     workflow(
-      'f.yml',
+      'ci.yml',
       [
-        'name: F',
+        'name: CI',
         'on:',
         '  pull_request:',
         '    types: [opened]',
@@ -94,54 +68,194 @@ describe('generate', () => {
         '    paths-ignore: ["plans/**"]',
         '  push:',
         '    tags: ["v*"]',
-        '    paths: [package-lock.json, .github/workflows/f.yml]',
+        '    paths: [package-lock.json, .github/workflows/ci.yml]',
+        '  schedule:',
+        "    - cron: '0 6 * * 1'",
         'jobs:',
         '  one: {}',
       ].join('\n')
     );
 
-    const diagram = generate(root);
+    const readme = generate(root);
 
-    expect(diagram).toContain(
-      'on_pull_request -->|"opened · main · paths-ignore: plans/**"| f'
+    expect(readme).toContain(
+      '| CI<br>`ci.yml` | pull_request | `opened · main · paths-ignore: plans/**` | one |'
     );
-    expect(diagram).toContain(
-      'on_push -->|"tags: v* · paths: package-lock.json, .github/workflows/f.yml"| f'
+    expect(readme).toContain(
+      '| | push | `tags: v* · paths: package-lock.json, .github/workflows/ci.yml` | |'
     );
+    expect(readme).toContain('| | schedule | `0 6 * * 1` | |');
   });
 
-  it('draws a call to a reusable workflow instead of its workflow_call trigger', () => {
+  it('names the reusable workflow a workflow calls, and lists workflow_call as its trigger', () => {
     workflow(
-      'caller.yml',
-      'name: Caller\non: push\njobs:\n  go:\n    uses: owner/repo/.github/workflows/shared.yml@abc123\n  local:\n    uses: ./.github/workflows/shared.yml\n  step:\n    uses: actions/checkout@v7\n'
+      'claude-build.yml',
+      "name: 'Claude: Build'\non: push\njobs:\n  go:\n    uses: owner/repo/.github/workflows/claude-run.yml@abc123\n  local:\n    uses: ./.github/workflows/claude-run.yml\n  step:\n    uses: actions/checkout@v7\n"
     );
     workflow(
-      'shared.yml',
-      'name: Shared\non:\n  workflow_call:\njobs:\n  run: {}\n'
+      'claude-run.yml',
+      "name: 'Claude: Run (shared)'\non:\n  workflow_call:\njobs:\n  run: {}\n"
     );
 
-    const diagram = generate(root);
+    const readme = generate(root);
 
-    expect(diagram.match(/caller -\.->\|calls\| shared/g)).toHaveLength(1);
-    expect(diagram).not.toContain('on_workflow_call');
+    expect(readme).toContain(
+      '| Claude: Build<br>`claude-build.yml` · calls Claude: Run (shared) | push | | go · local · step |'
+    );
+    expect(readme).toContain(
+      '| Claude: Run (shared)<br>`claude-run.yml` | workflow_call | | run |'
+    );
   });
 
-  it('escapes quotes and angle brackets in names', () => {
-    workflow('q.yml', 'name: \'Say "hi" <now>\'\non: push\njobs:\n  x: {}\n');
+  it('escapes pipes and angle brackets in cells', () => {
+    workflow(
+      'ci-a.yml',
+      "name: 'CI: a | b <c>'\non:\n  push:\n    branches: ['x|y']\njobs:\n  'j|k': {}\n"
+    );
 
-    expect(generate(root)).toContain('Say #quot;hi#quot; #lt;now#gt;<br>');
-  });
-
-  it('reads only .yml files', () => {
-    workflow('README.md', '# not a workflow');
-    workflow('x.yml', 'name: X\non: push\njobs:\n  x: {}\n');
-
-    expect(generate(root)).not.toContain('<br>README.md<br>');
+    expect(generate(root)).toContain(
+      '| CI: a \\| b &lt;c&gt;<br>`ci-a.yml` | push | `x\\|y` | j\\|k |'
+    );
   });
 });
 
+describe('the diagrams', () => {
+  const frontmatter = [
+    '```mermaid',
+    '---',
+    'config:',
+    '  theme: redux-color',
+    '  look: neo',
+    '  layout: elk',
+    '---',
+    'flowchart TB',
+  ].join('\n');
+
+  it('draws one per event family, headed by its events, with unlabelled edges', () => {
+    workflow(
+      'ci.yml',
+      'name: CI\non:\n  pull_request:\n    types: [opened]\n  push:\n    branches: [main]\njobs:\n  lint: {}\n'
+    );
+    workflow(
+      'backlog-spec-link.yml',
+      "name: 'Backlog: Link Spec to Intent'\non:\n  issues:\n    types: [opened]\n  issue_comment:\n    types: [created]\njobs:\n  link: {}\n"
+    );
+
+    const readme = generate(root);
+
+    expect(readme).toContain(
+      `## Pull requests\n\n${frontmatter}\n  on_pull_request([pull_request])\n  ci["CI"]\n  on_pull_request --> ci\n`
+    );
+    expect(readme).toContain(
+      `## Issues\n\n${frontmatter}\n  on_issue_comment([issue_comment])\n  on_issues([issues])\n  backlog_spec_link["Backlog: Link Spec to Intent"]\n  on_issue_comment --> backlog_spec_link\n  on_issues --> backlog_spec_link\n`
+    );
+    expect(readme).toContain(
+      `## Push, schedule and manual runs\n\n${frontmatter}\n  on_push([push])\n  ci["CI"]\n  on_push --> ci\n`
+    );
+    expect(readme).not.toContain('-->|');
+  });
+
+  it('leaves out a family no workflow listens to', () => {
+    workflow('ci.yml', 'name: CI\non: push\njobs:\n  x: {}\n');
+
+    const readme = generate(root);
+
+    expect(readme).not.toContain('## Pull requests');
+    expect(readme).not.toContain('## Issues');
+  });
+
+  it("draws a called workflow in each caller's diagram, joined by a dotted edge", () => {
+    workflow(
+      'claude-build.yml',
+      "name: 'Claude: Build'\non:\n  pull_request_review:\n    types: [submitted]\njobs:\n  go:\n    uses: ./.github/workflows/claude-run.yml\n"
+    );
+    workflow(
+      'claude-plan.yml',
+      "name: 'Claude: Plan'\non:\n  issues:\n    types: [labeled]\njobs:\n  go:\n    uses: ./.github/workflows/claude-run.yml\n"
+    );
+    workflow(
+      'claude-run.yml',
+      "name: 'Claude: Run (shared)'\non:\n  workflow_call:\njobs:\n  run: {}\n"
+    );
+
+    const readme = generate(root);
+
+    expect(
+      readme.match(/claude_run\["Claude: Run \(shared\)"\]/g)
+    ).toHaveLength(2);
+    expect(readme).toContain('  claude_build -.->|calls| claude_run\n');
+    expect(readme).toContain('  claude_plan -.->|calls| claude_run\n');
+    expect(readme).not.toContain('on_workflow_call');
+  });
+
+  it('names a called workflow outside the directory in the table only', () => {
+    workflow(
+      'claude-build.yml',
+      "name: 'Claude: Build'\non: push\njobs:\n  go:\n    uses: owner/repo/.github/workflows/shared.yml@abc123\n"
+    );
+
+    const readme = generate(root);
+
+    expect(readme).toContain(
+      '| Claude: Build<br>`claude-build.yml` · calls shared |'
+    );
+    expect(readme).not.toContain('shared[');
+    expect(readme).not.toContain('-.->');
+  });
+
+  it('fills each node by its name prefix, from the design tokens', () => {
+    workflow('ci.yml', 'name: CI\non: push\njobs:\n  x: {}\n');
+    workflow('ci-cache.yml', "name: 'CI: Cache'\non: push\njobs:\n  x: {}\n");
+    workflow(
+      'claude-plan.yml',
+      "name: 'Claude: Plan'\non: push\njobs:\n  x: {}\n"
+    );
+
+    const readme = generate(root);
+
+    expect(readme).toContain(
+      `  classDef ci fill:${tokens['info-bg']},stroke:${tokens['info-border']}\n  classDef claude fill:${tokens['brand-tint']},stroke:${tokens.brand}\n  class ci_cache,ci ci\n  class claude_plan claude\n`
+    );
+    expect(readme).not.toContain('classDef actions');
+  });
+
+  it('escapes quotes and angle brackets in node labels', () => {
+    workflow(
+      'ci.yml',
+      'name: \'CI: Say "hi" <now>\'\non: push\njobs:\n  x: {}\n'
+    );
+
+    expect(generate(root)).toContain(
+      '  ci["CI: Say #quot;hi#quot; #lt;now#gt;"]'
+    );
+  });
+
+  it('fails on an event outside the families', () => {
+    workflow('ci.yml', 'name: CI\non: [push, release]\njobs:\n  x: {}\n');
+
+    expect(() => generate(root)).toThrow(
+      'ci.yml: no diagram family holds the release event'
+    );
+  });
+
+  it('fails on a name prefix with no fill', () => {
+    workflow('nameless.yml', 'on: push\njobs:\n  x: {}\n');
+
+    expect(() => generate(root)).toThrow(
+      'nameless.yml: no fill for the nameless.yml prefix'
+    );
+  });
+});
+
+it('reads only .yml files', () => {
+  workflow('README.md', '# not a workflow');
+  workflow('ci.yml', 'name: CI\non: push\njobs:\n  x: {}\n');
+
+  expect(generate(root)).not.toContain('`README.md`');
+});
+
 it('writes .github/workflows/README.md', () => {
-  workflow('x.yml', 'name: X\non: push\njobs:\n  x: {}\n');
+  workflow('ci.yml', 'name: CI\non: push\njobs:\n  x: {}\n');
 
   expect(run(root)).toBe(0);
   expect(readFileSync(join(root, '.github/workflows/README.md'), 'utf8')).toBe(
@@ -149,15 +263,15 @@ it('writes .github/workflows/README.md', () => {
   );
 });
 
-describe("this repo's diagram", () => {
-  const diagram = generate(repo);
+describe("this repo's README", () => {
+  const readme = generate(repo);
 
   it.each(
     readdirSync(join(repo, '.github/workflows')).filter(file =>
       file.endsWith('.yml')
     )
-  )('draws %s', file => {
-    expect(diagram).toContain(`<br>${file}<br>`);
+  )('lists %s', file => {
+    expect(readme).toContain(`<br>\`${file}\``);
   });
 
   // Fails locally and in CI's test job.
@@ -165,6 +279,6 @@ describe("this repo's diagram", () => {
     expect(
       readFileSync(join(repo, '.github/workflows/README.md'), 'utf8'),
       '.github/workflows/README.md is out of date: run `npm run workflows:diagram`'
-    ).toBe(diagram);
+    ).toBe(readme);
   });
 });

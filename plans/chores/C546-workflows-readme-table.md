@@ -5,7 +5,7 @@
 
 ## Approach
 
-Replace the body of `generate()` with a table builder and a diagram builder. Workflow and jobs cells fill a block's first row only; `|` is escaped. A `FAMILIES` map lists the three event groups; `generate()` throws on any other event. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
+`generate()` gets a table builder and a diagram builder. Workflow and jobs cells fill a block's first row only; `|` is escaped. A `FAMILIES` map lists the three event groups; `generate()` throws on any other event. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
 
 ## Decisions
 
@@ -15,7 +15,6 @@ Replace the body of `generate()` with a table builder and a diagram builder. Wor
 
 - **A.** Move that filter from `read()` into the diagram builder.
 - **B.** Keep `read()`; infer the row for any workflow another one calls.
-- **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
@@ -51,7 +50,6 @@ Replace the body of `generate()` with a table builder and a diagram builder. Wor
 ## Risks
 
 - Handed back (rule 13): the tech lead builds it.
-- GitHub may ignore `redux-color`, `neo` or `elk`; step 4 shows it, and I report it.
 
 ## Proof
 
@@ -60,3 +58,11 @@ Replace the body of `generate()` with a table builder and a diagram builder. Wor
 | README written; up-to-date test passes | `npm test`; rerun leaves no diff |
 | Table and three coloured ELK diagrams  | Screenshot of the GitHub README  |
 | Lint, `format:check`, `words`          | CI                               |
+
+## Deviations
+
+- Claude strokes `brand`, Design `line-strong`: those tints have no `-border` token.
+- Cells escape `<` and `>` too.
+- A family with no listener is left out.
+- Colours are read beside the script, not under `root`.
+- `FAMILIES` is a list: lint sorts object keys.

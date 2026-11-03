@@ -19,7 +19,7 @@ const lint = async (
   }).lintText(code, { filePath });
 
   return result.messages
-    .filter(m => m.ruleId !== null && ruleIds.includes(m.ruleId))
+    .filter(m => m.fatal || (m.ruleId !== null && ruleIds.includes(m.ruleId)))
     .map(m => `${m.ruleId}: ${m.message}`);
 };
 
@@ -155,6 +155,26 @@ describe('the real lint config', () => {
   });
 
   it.each([
+    ['scripts/x.mts', "import { a } from '#ks/lib/ui/hatch.ts';"],
+    ['scripts/x.mts', "export { a } from '#ks/lib/ui/hatch.ts';"],
+    ['scripts/x.mts', "import { a } from '#ks/lib/ui/Hatch.tsx';"],
+    ['x/y.mjs', "import { a } from '#ks/lib/ui/hatch.ts';"],
+    ['x/y.mjs', "export { a } from '#ks/lib/ui/hatch.ts';"],
+  ])('fails a value import of a .ts file in %s: %s', async (path, code) => {
+    expect(await lint(path, `${code}\n`)).toEqual([
+      expect.stringContaining('Node can’t run .ts'),
+    ]);
+  });
+
+  it('fails an import type of a .ts file in .mjs, which Node parses as plain JavaScript', async () => {
+    expect(
+      await lint('x/y.mjs', "import type { A } from '#ks/lib/ui/hatch.ts';\n")
+    ).toEqual([
+      expect.stringMatching(/move the shared code to a \.mts file\.$/),
+    ]);
+  });
+
+  it.each([
     ['lib/map/a.ts', "import { a } from '#ks/lib/map/b';"],
     [
       'app/components/forms/X.tsx',
@@ -174,6 +194,8 @@ describe('the real lint config', () => {
     ],
     ['scripts/x.mts', "import type { A } from '#ks/lib/domain/map/types.ts';"],
     ['x/y.mjs', "import { a } from '#ks/lib/b.mjs';"],
+    ['scripts/x.mts', "import { a } from '#ks/lib/ui/hatch.mts';"],
+    ['x/y.mjs', "import { a } from '#ks/lib/ui/hatch.mts';"],
     ['lib/map/a.ts', "import { a } from '@ks/lib/map/b';"],
     ['scripts/__tests__/x.test.ts', "import { a } from '@ks/scripts/a.mts';"],
   ])('passes %s: %s', async (path, code) => {
@@ -226,7 +248,7 @@ describe('the import sorter in the real lint config', () => {
         "import { a } from '#ks/lib/map/a.mts';\nimport { b } from 'node:fs';\n",
         sorter
       )
-    ).toHaveLength(1);
+    ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 
   it('keeps stylesheets last, the kit’s before a board’s', async () => {
@@ -243,7 +265,7 @@ describe('the import sorter in the real lint config', () => {
         "import styles from '@ks/app/design-kit/colour/page.module.css';\nimport kit from '@ks/app/design-kit/kit.module.css';\n",
         sorter
       )
-    ).not.toEqual([]);
+    ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 
   it('fails an @ks/ import sorted among the packages', async () => {
@@ -253,6 +275,6 @@ describe('the import sorter in the real lint config', () => {
         "import { a } from '@ks/lib/map/a';\nimport { b } from 'react';\n",
         sorter
       )
-    ).toHaveLength(1);
+    ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 });

@@ -71,7 +71,7 @@ Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and i
 
 ### Proposed screens
 
-Not built. Google sign-in is not in the requirements yet, so it needs an Intent issue first.
+Not built: see Google sign-in under [Components](#components).
 
 | Screen                                   | File                                                                 | Source                                                                        |
 | ---------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------- |

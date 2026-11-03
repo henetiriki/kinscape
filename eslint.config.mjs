@@ -10,6 +10,19 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import { plugin as layers } from '#ks/scripts/layers.mts';
 
 const RELATIVE = String.raw`^\.{1,2}/`;
+const TS_FILE = String.raw`\.tsx?$`;
+const NODE_ALIAS_PATTERNS = [
+  {
+    message:
+      'Import by full path through #ks/, as in #ks/lib/domain/<folder>/<name>.mts.',
+    regex: RELATIVE,
+  },
+  {
+    message:
+      'Node loads this file and ignores tsconfig paths: use #ks/, not @ks/.',
+    regex: String.raw`^@ks/`,
+  },
+];
 
 const ARROW_FUNCTIONS = [
   {
@@ -162,27 +175,37 @@ export default defineConfig([
     // Import by full path, so a move can't leave a stale relative one. Node resolves `#ks/` and
     // ignores tsconfig `paths`; the bundlers and TypeScript resolve `@ks/`. Each block replaces
     // the rule's options, so each lists every pattern that applies to its files.
-    files: ['**/*.{mts,mjs}'],
+    files: ['**/*.mts'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
-            {
-              message:
-                'Import by full path through #ks/, as in #ks/lib/domain/<folder>/<name>.mts.',
-              regex: RELATIVE,
-            },
-            {
-              message:
-                'Node loads this file and ignores tsconfig paths: use #ks/, not @ks/.',
-              regex: String.raw`^@ks/`,
-            },
+            ...NODE_ALIAS_PATTERNS,
             {
               allowTypeImports: true,
               message:
                 'Node can’t run .ts or .tsx files: move the shared code to a .mts file, or use import type.',
-              regex: String.raw`\.tsx?$`,
+              regex: TS_FILE,
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Node parses .mjs as plain JavaScript, so even `import type` is a syntax error there.
+    files: ['**/*.mjs'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            ...NODE_ALIAS_PATTERNS,
+            {
+              message:
+                'Node can’t run .ts or .tsx files: move the shared code to a .mts file.',
+              regex: TS_FILE,
             },
           ],
         },

@@ -166,6 +166,14 @@ describe('the real lint config', () => {
     ]);
   });
 
+  it('fails an import type of a .ts file in .mjs, which Node parses as plain JavaScript', async () => {
+    expect(
+      await lint('x/y.mjs', "import type { A } from '#ks/lib/ui/hatch.ts';\n")
+    ).toEqual([
+      expect.stringMatching(/move the shared code to a \.mts file\.$/),
+    ]);
+  });
+
   it.each([
     ['lib/map/a.ts', "import { a } from '#ks/lib/map/b';"],
     [
@@ -188,7 +196,6 @@ describe('the real lint config', () => {
     ['x/y.mjs', "import { a } from '#ks/lib/b.mjs';"],
     ['scripts/x.mts', "import { a } from '#ks/lib/ui/hatch.mts';"],
     ['x/y.mjs', "import { a } from '#ks/lib/ui/hatch.mts';"],
-    ['x/y.mjs', "import type { A } from '#ks/lib/ui/hatch.ts';"],
     ['lib/map/a.ts', "import { a } from '@ks/lib/map/b';"],
     ['scripts/__tests__/x.test.ts', "import { a } from '@ks/scripts/a.mts';"],
   ])('passes %s: %s', async (path, code) => {

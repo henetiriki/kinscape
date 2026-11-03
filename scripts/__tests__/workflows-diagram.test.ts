@@ -107,14 +107,14 @@ describe('the table', () => {
     );
   });
 
-  it('escapes pipes and angle brackets in cells', () => {
+  it('escapes backslashes, pipes and angle brackets in cells', () => {
     workflow(
       'ci-a.yml',
-      "name: 'CI: a | b <c>'\non:\n  push:\n    branches: ['x|y']\njobs:\n  'j|k': {}\n"
+      "name: 'CI: a | b <c> d\\'\non:\n  push:\n    branches: ['x|y']\njobs:\n  'j|k': {}\n"
     );
 
     expect(generate(root)).toContain(
-      '| CI: a \\| b &lt;c&gt;<br>`ci-a.yml` | push | `x\\|y` | j\\|k |'
+      '| CI: a \\| b &lt;c&gt; d\\\\<br>`ci-a.yml` | push | `x\\|y` | j\\|k |'
     );
   });
 });

@@ -5,7 +5,7 @@
 
 ## Approach
 
-`generate()` gets a table builder and a diagram builder. Workflow and jobs cells fill a block's first row only; `|` is escaped. A `FAMILIES` map lists the three event groups; `generate()` throws on any other event. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
+`generate()` gets a table builder and a diagram builder. A `FAMILIES` map lists the three event groups; `generate()` throws on any other event. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
 
 ## Decisions
 
@@ -39,6 +39,7 @@
 | `scripts/workflows-diagram.mts`               | Table, `FAMILIES`, diagrams             |
 | `scripts/__tests__/workflows-diagram.test.ts` | Table and diagram cases replace graph's |
 | `.github/workflows/README.md`                 | Regenerated                             |
+| `design/tokens.json`                          | Notes name the new use                  |
 
 ## Order of work
 
@@ -56,13 +57,14 @@
 | Acceptance check                       | Proven by                        |
 | -------------------------------------- | -------------------------------- |
 | README written; up-to-date test passes | `npm test`; rerun leaves no diff |
-| Table and three coloured ELK diagrams  | Screenshot of the GitHub README  |
+| Table and three coloured ELK diagrams  | Tech lead views it on github.com |
 | Lint, `format:check`, `words`          | CI                               |
 
 ## Deviations
 
 - Claude strokes `brand`, Design `line-strong`: those tints have no `-border` token.
-- Cells escape `<` and `>` too.
+- Cells escape `\`, `|`, `<` and `>`.
+- `tokens.json` notes name the new use (review).
 - A family with no listener is left out.
 - Colours are read beside the script, not under `root`.
 - `FAMILIES` is a list: lint sorts object keys.

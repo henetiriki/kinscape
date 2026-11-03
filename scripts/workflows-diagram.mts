@@ -60,9 +60,13 @@ const id = (text: string) => text.replace(/\.ya?ml$/, '').replace(/\W/g, '_');
 const escape = (text: string) =>
   text.replace(/"/g, '#quot;').replace(/</g, '#lt;').replace(/>/g, '#gt;');
 
-// A pipe ends a table cell; angle brackets would open HTML.
+// A pipe ends a table cell, a backslash would escape the next character, and angle brackets would open HTML.
 const cell = (text: string) =>
-  text.replace(/\|/g, '\\|').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  text
+    .replace(/\\/g, '\\\\')
+    .replace(/\|/g, '\\|')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 
 // Types and branches are shown bare; the other filters carry their key.
 const FILTERS = [

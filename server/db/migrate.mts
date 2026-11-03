@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import type { Database } from './types.ts';
+import type { Database } from '#ks/server/db/types.ts';
 
 const checksum = (body: string) =>
   createHash('sha256').update(body).digest('hex');

@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-import type { DesignShotsCiDeps } from './types.ts';
+import type { DesignShotsCiDeps } from '#ks/scripts/types.ts';
 
 type Env = Record<string, string | undefined>;
 

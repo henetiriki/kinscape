@@ -8,7 +8,7 @@ import {
 } from 'node:fs';
 import { extname, join, sep } from 'node:path';
 
-import type { AssetRecord, DesignIndex } from './types.ts';
+import type { AssetRecord, DesignIndex } from '#ks/scripts/types.ts';
 
 const INDEX = 'project/design-system.json';
 const SUMS = 'project/checksums.json';

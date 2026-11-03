@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { run } from '../approve-plan.mts';
+import { run } from '@ks/scripts/approve-plan.mts';
 
 const PLAN = `# Plan: X
 

@@ -1,9 +1,9 @@
 /** The README and preview of each shared control's design system card (Spec #450). */
 
-import type { Card, Docs, Prop } from './types.ts';
+import type { Card, Docs, Prop } from '#ks/lib/design/types.ts';
 
-import { NAMESPACE } from './bundle.mts';
-import { plainLinks } from './system.mts';
+import { NAMESPACE } from '#ks/lib/design/bundle.mts';
+import { plainLinks } from '#ks/lib/design/system.mts';
 
 export const GROUPS = ['Actions', 'Feedback', 'Forms'];
 

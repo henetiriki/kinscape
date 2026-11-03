@@ -1,9 +1,9 @@
 /** The usage notes in `design/tokens.json`: which tokens need one, and what is wrong with the notes. */
 
-import type { Tree } from '../../design/types.ts';
+import type { Tree } from '#ks/design/types.ts';
 
-import { isTree, resolveTokens } from '../../design/tokens.mts';
-import { coloursIn } from './css.mts';
+import { isTree, resolveTokens } from '#ks/design/tokens.mts';
+import { coloursIn } from '#ks/lib/design/css.mts';
 
 /** Groups where every token needs a note. `type` needs one per style, `map` one per colour. */
 const GROUPS = new Set([

@@ -3,14 +3,14 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh } from '../types.ts';
+import type { Gh } from '@ks/scripts/types.ts';
 
 import {
   ISSUE_TITLE,
   issueBody,
   readPin,
   run,
-} from '../claude-plugin-pin-check.mts';
+} from '@ks/scripts/claude-plugin-pin-check.mts';
 
 const PIN = 'a'.repeat(40);
 const NEWER = 'b'.repeat(40);

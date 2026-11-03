@@ -1,4 +1,4 @@
-import type { Shot } from './types.ts';
+import type { Shot } from '#ks/lib/design/types.ts';
 
 /** The phone boards are long pages; every other phone file is one screen. */
 const PHONE_BOARD = /^(?:style-\d.*|map-style|design-kit)-phone$/;

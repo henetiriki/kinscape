@@ -21,8 +21,7 @@ import {
 } from '@ks/lib/design/bundle.mts';
 import { checkPreview, checkReadme } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
-
-import { run } from '../design-system.mts';
+import { run } from '@ks/scripts/design-system.mts';
 
 let first: string;
 let second: string;

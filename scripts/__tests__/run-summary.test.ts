@@ -3,9 +3,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Transcript } from '../types.ts';
+import type { Transcript } from '@ks/scripts/types.ts';
 
-import { formatDuration, render, run } from '../run-summary.mts';
+import { formatDuration, render, run } from '@ks/scripts/run-summary.mts';
 
 // What the page says with no summary: a scan that held it back is as likely as a run that never started.
 const NO_SUMMARY =

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { fromDay, toDay } from './model.mts';
+import { fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const isIsoDate = (value: string): boolean => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {

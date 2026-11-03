@@ -6,10 +6,10 @@ import { kinks } from '@turf/kinks';
 import type {
   BoundaryData,
   BoundaryVersion,
-} from '../lib/domain/boundaries/types.ts';
+} from '#ks/lib/domain/boundaries/types.ts';
 
-import { fromDay } from '../lib/domain/boundaries/model.mts';
-import { loadBoundaryData } from '../server/boundaries/load.mts';
+import { fromDay } from '#ks/lib/domain/boundaries/model.mts';
+import { loadBoundaryData } from '#ks/server/boundaries/load.mts';
 
 const DATA_DIR = 'data';
 

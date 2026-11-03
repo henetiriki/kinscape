@@ -1,8 +1,8 @@
 /** What each shared control's design system card shows (Spec #450): its group, height, `DESIGN.md` bullets and states. */
 
-import type { Card, State } from './types.ts';
+import type { Card, State } from '#ks/lib/design/types.ts';
 
-import { toDay } from '../domain/boundaries/model.mts';
+import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
 const TABS = [

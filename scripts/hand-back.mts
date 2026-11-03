@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
 // Runs on a pull request (claude-hand-back.yml): plans/README.md rule 13's marker. Adds the label
 // `hand-back` when a path in the diff, or in the Files that change table of a plan the PR changes

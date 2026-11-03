@@ -2,10 +2,10 @@
 
 import { dirname, resolve } from 'node:path';
 
-import type { Tree } from '../../design/types.ts';
-import type { Control } from './types.ts';
+import type { Tree } from '#ks/design/types.ts';
+import type { Control } from '#ks/lib/design/types.ts';
 
-import { familyName, fontVariable } from './css.mts';
+import { familyName, fontVariable } from '#ks/lib/design/css.mts';
 
 const MB = 1024 * 1024;
 const IMPORT = /^import [\s\S]*?from '([^']+)';\n?/gm;
@@ -144,7 +144,11 @@ export const gatherTypes = (
     for (const match of text.matchAll(IMPORT)) {
       const specifier = match[1];
 
-      if (specifier.startsWith('.') || specifier.startsWith('@ks/')) {
+      if (
+        specifier.startsWith('.') ||
+        specifier.startsWith('@ks/') ||
+        specifier.startsWith('#ks/')
+      ) {
         const target = stem(
           specifier.startsWith('.')
             ? resolve(dirname(file), specifier)

@@ -1,11 +1,11 @@
 import type { z } from 'zod';
 
-import type { Result } from '../lib/domain/result/types.ts';
-import type { TreeStore, Viewer } from '../lib/domain/trees/types.ts';
-import type { TreeRepository } from './trees/types.ts';
+import type { Result } from '#ks/lib/domain/result/types.ts';
+import type { TreeStore, Viewer } from '#ks/lib/domain/trees/types.ts';
+import type { TreeRepository } from '#ks/server/trees/types.ts';
 
-import { err, ok } from '../lib/domain/result/result.mts';
-import { openTree } from './trees/repository.mts';
+import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { openTree } from '#ks/server/trees/repository.mts';
 
 /**
  * Wraps a Tree action: open the Tree for the Viewer, parse the raw input, run the body.

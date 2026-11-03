@@ -1,7 +1,7 @@
 /** The design check: validates `design/screens.json`, compares pixels outside the mask, summarises. */
 import pixelmatch from 'pixelmatch';
 
-import type { Outcome, Result } from './types.ts';
+import type { Outcome, Result } from '#ks/lib/design/types.ts';
 
 type Area = { height: number; width: number; x: number; y: number };
 

@@ -1,4 +1,8 @@
-import type { BoundaryData, BoundaryVersion, Day } from './types.ts';
+import type {
+  BoundaryData,
+  BoundaryVersion,
+  Day,
+} from '#ks/lib/domain/boundaries/types.ts';
 
 const DAY_MS = 86_400_000;
 const EPOCH_MS = Date.UTC(1652, 0, 1);

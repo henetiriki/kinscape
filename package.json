@@ -27,6 +27,9 @@
     "words": "node scripts/word-count.mts",
     "workflows:diagram": "node scripts/workflows-diagram.mts"
   },
+  "imports": {
+    "#ks/*": "./*"
+  },
   "engines": {
     "node": "24.x"
   },

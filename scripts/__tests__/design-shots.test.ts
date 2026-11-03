@@ -14,7 +14,7 @@ import {
   render,
   screenNames,
   snapshotNames,
-} from '../design-shots.mts';
+} from '@ks/scripts/design-shots.mts';
 
 let root: string;
 

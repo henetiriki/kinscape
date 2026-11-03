@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
 type Commit = { date: string; message: string; sha: string };
 

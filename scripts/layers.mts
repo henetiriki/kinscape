@@ -5,7 +5,7 @@ import { join, posix, relative, sep } from 'node:path';
 // The layer map from docs/architecture.md. ESLint and the fitness test both read it.
 // Test files, app/design-kit, app/screens, scripts, e2e and lib/design tooling are outside the map, and mapped code may not import them.
 // Any other lib/ folder is outside the map and unchecked.
-// Specifiers resolve only as `@ks/` or relative paths.
+// Specifiers resolve only as `#ks/` (`.mts`, `.mjs`), `@ks/` (`.ts`, `.tsx`) or relative paths.
 
 const ROOT = join(import.meta.dirname, '..');
 const MAPLIBRE = /^maplibre-gl(?:\/|$)/;
@@ -100,11 +100,12 @@ export const targetOf = (
   file: string,
   specifier: string
 ): string | undefined => {
-  const joined = specifier.startsWith('@ks/')
-    ? specifier.slice(4)
-    : specifier.startsWith('.')
-      ? posix.join(posix.dirname(file), specifier)
-      : undefined;
+  const joined =
+    specifier.startsWith('@ks/') || specifier.startsWith('#ks/')
+      ? specifier.slice(4)
+      : specifier.startsWith('.')
+        ? posix.join(posix.dirname(file), specifier)
+        : undefined;
 
   if (joined === undefined) {
     return undefined;

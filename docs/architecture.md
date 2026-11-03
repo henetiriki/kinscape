@@ -22,7 +22,7 @@ Built today: Next.js App Router, React, TypeScript, MapLibre. [architecture-targ
 | A browser test                  | `e2e/`                                                                                                             |
 | A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`           |
 
-Import repo paths through `@ks/`; relative imports only in Node-loaded files. Node loads every `.mts`, `.mjs`, `scripts/` file and the `types.ts` beside an `.mts` without the alias; ESLint (`scripts/node-loaded.mts`) rejects an aliased value import there.
+Import repo paths by full path: `#ks/` in `.mts` and `.mjs` files (Node reads `package.json` `imports`), `@ks/` in the rest (tsconfig `paths`). ESLint rejects the other alias and relative paths.
 
 ## Patterns
 
@@ -46,7 +46,7 @@ Import repo paths through `@ks/`; relative imports only in Node-loaded files. No
 
 ## Enforcement
 
-- **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, `@ks/` imports only, stylesheets last, type imports on their own `import type` line.
+- **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, alias imports by extension, stylesheets last, type imports on their own `import type` line.
 - **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
 - **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import Node built-ins (a bare name counts unless `package.json` lists a package of that name) or `maplibre-gl`. `features/` holds only feature folders; outside code imports a feature only through `index.ts`. Tests, `app/design-kit`, `app/screens`, `scripts`, `e2e`, `lib/design` tooling are outside the map; mapped code may not import them.
   | Layer             | Holds                                  | May import                                                                                   |

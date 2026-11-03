@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import type { DesignIndex } from '../types.ts';
+import type { DesignIndex } from '@ks/scripts/types.ts';
 
 import {
   address,
@@ -20,8 +20,8 @@ import {
   cli,
   sendList,
   stamp,
-} from '../design-system-publish.mts';
-import { run } from '../design-system.mts';
+} from '@ks/scripts/design-system-publish.mts';
+import { run } from '@ks/scripts/design-system.mts';
 
 const LINK = 'https://claude.ai/artifact/AbC123xyz';
 const INDEX = 'project/design-system.json';

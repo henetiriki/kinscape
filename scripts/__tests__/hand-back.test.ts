@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh } from '../types.ts';
+import type { Gh } from '@ks/scripts/types.ts';
 
-import { EXEMPT, matcher, run, tablePaths } from '../hand-back.mts';
+import { EXEMPT, matcher, run, tablePaths } from '@ks/scripts/hand-back.mts';
 
 const ENV = { GH_REPO: 'owner/repo' };
 const SHA = 'a'.repeat(40);

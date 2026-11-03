@@ -1,6 +1,6 @@
 /** Design tokens at runtime: `design/tokens.json` with its `{group.name}` references resolved. */
 
-import type { Tree } from './types.ts';
+import type { Tree } from '#ks/design/types.ts';
 
 export const REFERENCE = /^\{([^{}]+)\}$/;
 

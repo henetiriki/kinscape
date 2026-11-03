@@ -11,7 +11,7 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { format, resolveConfig } from 'prettier';
 
-import type { CanvasExport, DesignExportDeps } from './types.ts';
+import type { CanvasExport, DesignExportDeps } from '#ks/scripts/types.ts';
 
 const ARTBOARD_DIR = 'design/canvas/project';
 const EXPORT_FILE = 'design/canvas/export.json';

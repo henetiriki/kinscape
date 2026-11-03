@@ -1,9 +1,9 @@
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createTestDb } from '../../server/db/__tests__/pglite.ts';
-import { migrate } from '../../server/db/migrate.mts';
-import { run } from '../account-add.mts';
+import { run } from '@ks/scripts/account-add.mts';
+import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
+import { migrate } from '@ks/server/db/migrate.mts';
 
 const env = { KINSCAPE_DATABASE_DIRECT_URL: 'postgres://direct@localhost/db' };
 const SUBJECT_A = '11111111-1111-4111-8111-111111111111';

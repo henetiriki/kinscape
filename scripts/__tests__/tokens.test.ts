@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, expect, it } from 'vitest';
 
-import { generate, run } from '../tokens.mts';
+import { generate, run } from '@ks/scripts/tokens.mts';
 
 let root: string;
 

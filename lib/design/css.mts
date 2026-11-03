@@ -1,8 +1,8 @@
 /** Design tokens as CSS: `design/tokens.json` written as custom properties, plus the stray-colour check. */
 
-import type { Tree } from '../../design/types.ts';
+import type { Tree } from '#ks/design/types.ts';
 
-import { isTree, REFERENCE } from '../../design/tokens.mts';
+import { isTree, REFERENCE } from '#ks/design/tokens.mts';
 
 export const GENERATED_HEADER =
   '/* Generated from design/tokens.json by `npm run tokens`. Do not edit. */';

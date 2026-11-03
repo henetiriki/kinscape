@@ -1,9 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
-import { invisible } from './vercel-ignore.mts';
+import { invisible } from '#ks/scripts/vercel-ignore.mts';
 
 // Runs on a pull request event (backlog-issue-status.yml): keeps the `status:` label of each
 // Spec, Bug or Chore the PR closes in step with the PR. The row comes from the event payload as it

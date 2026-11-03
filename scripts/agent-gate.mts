@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
 // Checks that run before a plan, build or fix job spends a model run (see claude-run.yml):
 //   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date)

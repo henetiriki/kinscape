@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { PrepareMapDataDeps } from '../types.ts';
+import type { PrepareMapDataDeps } from '@ks/scripts/types.ts';
 
 import {
   boundaryVersions,
@@ -11,7 +11,7 @@ import {
   POLITY_IDS,
   prepare,
   UNION_IDS,
-} from '../prepare-map-data.mts';
+} from '@ks/scripts/prepare-map-data.mts';
 
 const ring = [
   [0, 0],

@@ -1,9 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
-import { approve } from './approve-plan.mts';
+import { approve } from '#ks/scripts/approve-plan.mts';
 
 // Records a plan's approval before any model runs (see claude-build.yml). The owner approved a draft
 // plan PR; this reads the answers to its `## Decisions` from the owner's reviews and PR comments

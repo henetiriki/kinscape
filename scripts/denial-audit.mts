@@ -9,9 +9,9 @@ import {
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { Denial, Gh, Settings, Transcript } from './types.ts';
+import type { Denial, Gh, Settings, Transcript } from '#ks/scripts/types.ts';
 
-import { inlineCode, readSummary } from './agent-transcript.mts';
+import { inlineCode, readSummary } from '#ks/scripts/agent-transcript.mts';
 
 // Reads the summaries the past week's plan, build, @claude, review, fix and refresh runs uploaded and keeps one issue up
 // to date with the permission denials that repeat, so the allowlist and the rules follow what the

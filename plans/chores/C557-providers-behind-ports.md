@@ -27,10 +27,17 @@ A fitness test in the style of `vercel-imports.test.ts`: a pure `violations(file
 
 ## Proof
 
-| Acceptance check                      | Proven by                                       |
-| ------------------------------------- | ----------------------------------------------- |
-| `npm test` passes with the new test   | pasted output                                   |
-| `'supabase'` in `server/trees/` fails | fixture case naming the file; local edit pasted |
-| `@supabase/supabase-js` import fails  | fixture case; local edit pasted                 |
-| `create policy` migration fails       | fixture case; local edit pasted                 |
-| Row and link exist                    | the diff                                        |
+| Acceptance check                      | Proven by                    |
+| ------------------------------------- | ---------------------------- |
+| `npm test` passes with the new test   | pasted output                |
+| `'supabase'` in `server/trees/` fails | fixture case naming the file |
+| `@supabase/supabase-js` import fails  | fixture case                 |
+| `create policy` migration fails       | fixture case                 |
+| Row and link exist                    | the diff                     |
+
+## Deviations
+
+- Proof rows 2-4 use fixture cases only, with no local edit of a real file.
+- To fit the 800-word budget, `docs/architecture.md` rewords the intro, the screen, migrations, shared-types and NFR-01 rows and the fitness-test line; the shared-types row loses "Node erases `import type`".
+- Rule 1 reads every tracked non-binary file under `app/`, `features/`, `lib/`, `server/` and `scripts/`, and exempts only `__tests__/` (not `.test.` or `.spec.` names).
+- Rule 2 also matches a backtick specifier; rule 3 also matches a quoted schema (`"auth".`).

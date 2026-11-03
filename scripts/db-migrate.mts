@@ -2,7 +2,7 @@ import { join } from 'node:path';
 
 import { createPgDb } from '../server/db/database.mts';
 import { migrate } from '../server/db/migrate.mts';
-import { parseEnv } from '../server/env.mts';
+import { parseDirectUrl } from '../server/env.mts';
 
 const MIGRATIONS = join(
   import.meta.dirname,
@@ -18,7 +18,7 @@ export const run = async (
   open: typeof createPgDb = createPgDb,
   dir: string = MIGRATIONS
 ): Promise<number> => {
-  const { databaseDirectUrl } = parseEnv(env);
+  const databaseDirectUrl = parseDirectUrl(env);
 
   if (databaseDirectUrl === undefined) {
     console.error('Missing environment variable: KINSCAPE_DATABASE_DIRECT_URL');

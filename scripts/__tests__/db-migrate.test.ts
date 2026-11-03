@@ -66,6 +66,18 @@ describe('db-migrate run', () => {
     expect(open).not.toHaveBeenCalled();
   });
 
+  it('needs only the direct URL', async () => {
+    const open = vi.fn(() => createTestDb());
+
+    expect(
+      await run(
+        { KINSCAPE_DATABASE_DIRECT_URL: env.KINSCAPE_DATABASE_DIRECT_URL },
+        open,
+        dir
+      )
+    ).toBe(0);
+  });
+
   it('closes the database when a migration fails', async () => {
     const db = createTestDb();
     const destroy = vi.spyOn(db, 'destroy');

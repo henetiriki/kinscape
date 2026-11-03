@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseEnv } from '@ks/server/env.mts';
+import { parseDirectUrl, parseEnv } from '@ks/server/env.mts';
 
 // NFR-09
 describe('parseEnv', () => {
@@ -53,5 +53,26 @@ describe('parseEnv', () => {
     } catch (error) {
       expect(String(error)).not.toContain(secret);
     }
+  });
+});
+
+// NFR-09
+describe('parseDirectUrl', () => {
+  it('needs no app URL', () => {
+    expect(
+      parseDirectUrl({
+        KINSCAPE_DATABASE_DIRECT_URL: 'postgres://direct@localhost/db',
+      })
+    ).toBe('postgres://direct@localhost/db');
+  });
+
+  it('is undefined when unset', () => {
+    expect(parseDirectUrl({})).toBeUndefined();
+  });
+
+  it('names an invalid variable, not its value', () => {
+    expect(() =>
+      parseDirectUrl({ KINSCAPE_DATABASE_DIRECT_URL: 'not-a-url-s3cret' })
+    ).toThrow(/KINSCAPE_DATABASE_DIRECT_URL$/);
   });
 });

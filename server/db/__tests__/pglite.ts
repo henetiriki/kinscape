@@ -27,9 +27,12 @@ const pgliteDriver = (client: PGlite): Driver => {
     }: CompiledQuery): Promise<QueryResult<R>> => {
       // Like `pg`, send parameterless SQL as a simple query, so a file may hold many statements.
       if (parameters.length === 0) {
-        const results = await client.exec(sql);
+        const last = (await client.exec(sql)).at(-1);
 
-        return { rows: (results.at(-1)?.rows ?? []) as R[] };
+        return {
+          numAffectedRows: BigInt(last?.affectedRows ?? 0),
+          rows: (last?.rows ?? []) as R[],
+        };
       }
 
       const result = await client.query<R>(sql, [...parameters]);
@@ -55,11 +58,13 @@ const pgliteDriver = (client: PGlite): Driver => {
   return {
     acquireConnection: async () => {
       const previous = lock;
+      let mine = () => {};
 
       lock = new Promise<void>(resolve => {
-        release = resolve;
+        mine = resolve;
       });
       await previous;
+      release = mine;
 
       return connection;
     },

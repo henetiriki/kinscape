@@ -8,6 +8,14 @@ const serverEnv = z.object({
   KINSCAPE_DATABASE_URL: z.url(),
 });
 
+const fail = (issues: readonly { path: PropertyKey[] }[]): never => {
+  const names = [...new Set(issues.map(({ path }) => String(path[0])))];
+
+  throw new Error(
+    `Missing or invalid environment variable: ${names.join(', ')}`
+  );
+};
+
 /** Parses the server variables. A failure names each variable at fault, never its value. */
 export const parseEnv = (source: Record<string, string | undefined>) => {
   const parsed = serverEnv.safeParse({
@@ -16,17 +24,26 @@ export const parseEnv = (source: Record<string, string | undefined>) => {
   });
 
   if (!parsed.success) {
-    const names = [
-      ...new Set(parsed.error.issues.map(({ path }) => String(path[0]))),
-    ];
-
-    throw new Error(
-      `Missing or invalid environment variable: ${names.join(', ')}`
-    );
+    return fail(parsed.error.issues);
   }
 
   return {
     databaseDirectUrl: parsed.data.KINSCAPE_DATABASE_DIRECT_URL,
     databaseUrl: parsed.data.KINSCAPE_DATABASE_URL,
   };
+};
+
+/** Parses only the direct URL, for `db:migrate`, which never needs the app's URL. */
+export const parseDirectUrl = (source: Record<string, string | undefined>) => {
+  const parsed = serverEnv
+    .pick({ KINSCAPE_DATABASE_DIRECT_URL: true })
+    .safeParse({
+      KINSCAPE_DATABASE_DIRECT_URL: source.KINSCAPE_DATABASE_DIRECT_URL,
+    });
+
+  if (!parsed.success) {
+    return fail(parsed.error.issues);
+  }
+
+  return parsed.data.KINSCAPE_DATABASE_DIRECT_URL;
 };

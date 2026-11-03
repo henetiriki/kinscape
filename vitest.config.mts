@@ -11,6 +11,8 @@ const TESTS = [
 const REACT_18_TEST = 'lib/design/__tests__/react-18.test.tsx';
 const DATABASE_TESTS = [
   'server/db/__tests__/*.test.ts',
+  'server/trees/__tests__/database-store.test.ts',
+  'scripts/__tests__/account-add.test.ts',
   'scripts/__tests__/db-migrate.test.ts',
 ];
 

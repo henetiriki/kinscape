@@ -3,6 +3,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "account:add": "node --env-file-if-exists=.env.local scripts/account-add.mts",
     "build": "next build",
     "db:migrate": "node --env-file-if-exists=.env.local scripts/db-migrate.mts",
     "design:check": "playwright test --project=design",

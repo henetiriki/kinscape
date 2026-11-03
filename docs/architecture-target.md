@@ -15,16 +15,14 @@ Layers are enforced: see [architecture.md](architecture.md#enforcement). Feature
 
 ## With the database and API
 
-5. **Ports and adapters.** Repository interfaces in the domain; adapters for files (Polity and Boundary version: global, read-only), the database (Tree data) and memory (tests).
-6. **Tree-scoped repository.** Built from the session, so a tree id can't be left out ([security.md](security.md)).
-7. **One wrapper for actions and route handlers**, in `server/`: authorise, validate, execute, revalidate, return `Result<T, E>`. Expected failures don't throw.
-8. **Mapping.** Row to domain object to view model; raw rows never reach the client.
-9. **Contract tests.** One suite runs against the memory and database adapters. Every entity's plan includes "Tree A can't read Tree B". Fixtures are synthetic.
-10. **Platform**, with the session in `server/`. A typed `env.ts` that splits server from `NEXT_PUBLIC_` and fails at boot; a logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
+5. **Ports and adapters.** Adapters for files (Polity and Boundary version: global, read-only); `TreeStore` is built (see [architecture.md](architecture.md#patterns)).
+6. **Mapping.** Row to domain object to view model; raw rows never reach the client.
+7. **Every entity's plan includes "Tree A can't read Tree B"**, run through the contract suite.
+8. **Platform**, with the session in `server/`. A typed `env.ts` that splits server from `NEXT_PUBLIC_` and fails at boot; a logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
 
 ## For agents
 
-11. **Recipe skills:** add a component, add a map layer, add a Tree-scoped entity; each a checklist of files, tests and requirement IDs.
-12. **Nested `AGENTS.md`** of a few lines in `features/`, `lib/domain` and `server/`.
-13. **ADRs** in `docs/decisions/` for choices that outlive one plan.
-14. **A naming test** that fails when the repo declares a type, function or component named for a synonym of a Key concepts term (`User` for Account, `Marker` for Pin). It scans declarations only, so MapLibre's `Marker` and a sign-in library's `User` pass.
+9. **Recipe skills:** add a component, add a map layer, add a Tree-scoped entity; each a checklist of files, tests and requirement IDs.
+10. **Nested `AGENTS.md`** of a few lines in `features/`, `lib/domain` and `server/`.
+11. **ADRs** in `docs/decisions/` for choices that outlive one plan.
+12. **A naming test** that fails when the repo declares a type, function or component named for a synonym of a Key concepts term (`User` for Account, `Marker` for Pin). It scans declarations only, so MapLibre's `Marker` and a sign-in library's `User` pass.

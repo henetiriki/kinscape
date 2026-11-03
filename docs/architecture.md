@@ -22,7 +22,7 @@ How the code is built today: Next.js App Router, React, strict TypeScript, MapLi
 | A browser test                  | `e2e/`                                                                                                             |
 | A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`           |
 
-Import repo paths through `@ks/`; relative imports only in Node-loaded files. Node loads every `.mts` and `.mjs`, `scripts/` and the `types.ts` beside an `.mts` without the alias, so ESLint (`scripts/node-loaded.mts`) rejects a value import through an alias there.
+Import repo paths through `@ks/`; relative imports only in Node-loaded files. Node loads every `.mts`, `.mjs`, `scripts/` file and the `types.ts` beside an `.mts` without the alias; ESLint (`scripts/node-loaded.mts`) rejects an aliased value import there.
 
 ## Patterns
 
@@ -41,6 +41,7 @@ Import repo paths through `@ks/`; relative imports only in Node-loaded files. No
 | **Reference data is files, validated.** `loadAppData` throws on bad data, which stops the build; `/data/polities` is built once at deploy.                                                                                                            | `data/`, `server/boundaries/app-data.ts`, `app/data/polities/route.ts`                                | `npm run validate:boundaries` in CI                                                    |
 | **Schema first.** A Zod schema is the parser; the type is derived from it in `types.ts`.                                                                                                                                                              | `lib/domain/boundaries/schemas.mts`, `types.ts`, `server/boundaries/load.mts`                         | `npm run typecheck`; `server/boundaries/__tests__/load.test.ts`                        |
 | **Living style guide.** `/design-kit` shows components, `/screens` built screens; 404 in production.                                                                                                                                                  | `app/design-kit/`, `app/screens/`, `e2e/design-check.spec.ts`                                         | `npm run design:check`; `/match-design`                                                |
+| **Tree-scoped data.** Reach it only via `openTree`.                                                                                                                                                                                                   | `server/trees/`                                                                                       | `server/trees/__tests__/contract.ts`                                                   |
 | **Traceability.** Tests carry `// MAP-03` style tags; plans and PRs cite IDs; code uses the Key concepts terms.                                                                                                                                       | `docs/requirements.md`, `plans/`                                                                      | Review                                                                                 |
 
 ## Enforcement
@@ -58,4 +59,4 @@ Import repo paths through `@ks/`; relative imports only in Node-loaded files. No
   | `features/<name>` | that feature's UI, queries and actions | `design`, `lib/domain`, `server/`, `app/components`, `lib/ui`, itself; never another feature |
   | `app/` routes     | pages, route handlers, server actions  | everything above                                                                             |
 
-Tests, hooks and word budgets: [AGENTS.md](../AGENTS.md). Security: [security.md](security.md). Workflow: [how-we-work.md](how-we-work.md).
+See also [AGENTS.md](../AGENTS.md), [security.md](security.md) and [how-we-work.md](how-we-work.md).

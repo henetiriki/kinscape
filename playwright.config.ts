@@ -55,7 +55,11 @@ export default defineConfig({
   // that URL is reused; in CI a fresh build is always made.
   webServer: {
     command: 'npm run build && npm run start',
-    env: { NEXT_PUBLIC_E2E: '1' },
+    env: {
+      // The server fails at start without a database URL. Nothing connects yet; M2.7 serves this one.
+      KINSCAPE_DATABASE_URL: 'postgres://e2e@localhost:5432/kinscape',
+      NEXT_PUBLIC_E2E: '1',
+    },
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     url: 'http://localhost:3000',

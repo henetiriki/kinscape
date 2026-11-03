@@ -8,6 +8,7 @@ import { invisible } from '../vercel-ignore.mts';
 // Vercel skips a deployment when only invisible paths change, so shipped code
 // must not depend on one (C291).
 const ROOTS = ['app', 'design', 'features', 'lib', 'server', 'types'];
+const ROOT_FILES = ['instrumentation.ts'];
 const SOURCE = /\.(?:[cm]?[jt]sx?|css)$/;
 const TEST_FILE = /(?:^|\/)__tests__\/|\.(?:test|spec)\./;
 const SPECIFIERS = [
@@ -49,12 +50,14 @@ const violations = (files: Record<string, string>): string[] =>
 
 const sources = (): Record<string, string> =>
   Object.fromEntries(
-    ROOTS.flatMap(dir =>
-      readdirSync(dir, { recursive: true })
-        .map(name => `${dir}/${String(name).split(sep).join('/')}`)
-        .filter(path => SOURCE.test(path))
-        .map(path => [path, readFileSync(path, 'utf8')])
-    )
+    [
+      ...ROOTS.flatMap(dir =>
+        readdirSync(dir, { recursive: true })
+          .map(name => `${dir}/${String(name).split(sep).join('/')}`)
+          .filter(path => SOURCE.test(path))
+      ),
+      ...ROOT_FILES,
+    ].map(path => [path, readFileSync(path, 'utf8')])
   );
 
 describe('the shipped code', () => {
@@ -62,7 +65,11 @@ describe('the shipped code', () => {
     const files = sources();
 
     expect(Object.keys(files)).toEqual(
-      expect.arrayContaining(['app/layout.tsx', 'lib/design/shots.mts'])
+      expect.arrayContaining([
+        'app/layout.tsx',
+        'lib/design/shots.mts',
+        'instrumentation.ts',
+      ])
     );
     expect(violations(files)).toEqual([]);
   });

@@ -4,9 +4,15 @@ import { defineConfig } from 'vitest/config';
 
 const requireHere = createRequire(import.meta.url);
 
-const TESTS =
-  '{app,design,features,lib,scripts,server}/**/__tests__/**/*.test.{ts,tsx}';
+const TESTS = [
+  '{app,design,features,lib,scripts,server}/**/__tests__/**/*.test.{ts,tsx}',
+  '__tests__/*.test.ts',
+];
 const REACT_18_TEST = 'lib/design/__tests__/react-18.test.tsx';
+const DATABASE_TESTS = [
+  'server/db/__tests__/*.test.ts',
+  'scripts/__tests__/db-migrate.test.ts',
+];
 
 export default defineConfig({
   resolve: {
@@ -28,6 +34,7 @@ export default defineConfig({
         '**/*.d.ts',
       ],
       include: [
+        'instrumentation.ts',
         '{app,design,features,lib,scripts,server}/**/*.{ts,tsx,js,mjs,mts}',
       ],
       provider: 'v8',
@@ -45,9 +52,18 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          exclude: ['**/node_modules/**', REACT_18_TEST],
-          include: [TESTS],
+          exclude: ['**/node_modules/**', REACT_18_TEST, ...DATABASE_TESTS],
+          include: TESTS,
           name: 'react-19',
+        },
+      },
+      {
+        // Each test starts a PGlite (WASM Postgres), which takes seconds on a busy runner.
+        extends: true,
+        test: {
+          include: DATABASE_TESTS,
+          name: 'database',
+          testTimeout: 30_000,
         },
       },
       {

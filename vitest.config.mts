@@ -4,8 +4,10 @@ import { defineConfig } from 'vitest/config';
 
 const requireHere = createRequire(import.meta.url);
 
-const TESTS =
-  '{app,design,features,lib,scripts,server}/**/__tests__/**/*.test.{ts,tsx}';
+const TESTS = [
+  '{app,design,features,lib,scripts,server}/**/__tests__/**/*.test.{ts,tsx}',
+  '__tests__/*.test.ts',
+];
 const REACT_18_TEST = 'lib/design/__tests__/react-18.test.tsx';
 
 export default defineConfig({
@@ -28,6 +30,7 @@ export default defineConfig({
         '**/*.d.ts',
       ],
       include: [
+        'instrumentation.ts',
         '{app,design,features,lib,scripts,server}/**/*.{ts,tsx,js,mjs,mts}',
       ],
       provider: 'v8',
@@ -46,7 +49,7 @@ export default defineConfig({
         extends: true,
         test: {
           exclude: ['**/node_modules/**', REACT_18_TEST],
-          include: [TESTS],
+          include: TESTS,
           name: 'react-19',
         },
       },

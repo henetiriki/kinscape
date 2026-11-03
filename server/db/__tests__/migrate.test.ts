@@ -52,13 +52,17 @@ afterEach(async () => {
 
 // NFR-09
 describe('migrate', () => {
-  it('creates the three tables with their keys on an empty database', async () => {
+  it('creates the tables with their keys on an empty database', async () => {
     const applied = await migrate(db, MIGRATIONS);
 
-    expect(applied).toEqual(['0001_accounts_and_trees.sql']);
+    expect(applied).toEqual([
+      '0001_accounts_and_trees.sql',
+      '0002_sessions.sql',
+    ]);
     expect(await tables()).toEqual([
       'account',
       'schema_migration',
+      'session',
       'tree',
       'tree_account',
     ]);

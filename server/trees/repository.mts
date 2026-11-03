@@ -3,7 +3,7 @@ import type { TreeRepository } from '#ks/server/trees/types.ts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
-/** The Account issuer for Supabase sign-in; M2.5's session adapter matches it. */
+/** The Account issuer for Supabase sign-in; M2.5.1's `signIn` looks Accounts up with it. */
 export const ISSUER = 'supabase';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

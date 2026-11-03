@@ -33,6 +33,13 @@ export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
 
       return ok({ accountId: account.id, treeId: tree.id });
     }),
+  findAccount: async (issuer, subject) =>
+    db
+      .selectFrom('account')
+      .where('issuer', '=', issuer)
+      .where('subject', '=', subject)
+      .select('id')
+      .executeTakeFirst(),
   findTree: async (accountId, treeId) =>
     db
       .selectFrom('tree')
@@ -41,4 +48,12 @@ export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
       .where('tree.id', '=', treeId)
       .select(['tree.id', 'tree.name'])
       .executeTakeFirst(),
+  findTrees: async accountId =>
+    db
+      .selectFrom('tree')
+      .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
+      .where('treeAccount.accountId', '=', accountId)
+      .orderBy('tree.id')
+      .select(['tree.id', 'tree.name'])
+      .execute(),
 });

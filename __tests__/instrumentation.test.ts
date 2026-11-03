@@ -2,6 +2,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { register } from '@ks/instrumentation.ts';
 
+const stubFull = () => {
+  vi.stubEnv('KINSCAPE_DATABASE_URL', 'postgres://app@localhost/db');
+  vi.stubEnv('KINSCAPE_SUPABASE_URL', 'https://example.supabase.co');
+  vi.stubEnv('KINSCAPE_SUPABASE_PUBLISHABLE_KEY', 'publishable-key');
+};
+
 // NFR-09
 describe('register', () => {
   afterEach(() => {
@@ -15,9 +21,9 @@ describe('register', () => {
     await expect(register()).rejects.toThrow(/KINSCAPE_DATABASE_URL/);
   });
 
-  it('passes when the database URL is set', async () => {
+  it('passes when the database and Supabase variables are set', async () => {
     vi.stubEnv('NEXT_RUNTIME', 'nodejs');
-    vi.stubEnv('KINSCAPE_DATABASE_URL', 'postgres://app@localhost/db');
+    stubFull();
 
     await expect(register()).resolves.toBeUndefined();
   });
@@ -28,4 +34,24 @@ describe('register', () => {
 
     await expect(register()).resolves.toBeUndefined();
   });
+
+  // NFR-03
+  it('passes with the memory adapters and no other variable', async () => {
+    vi.stubEnv('NEXT_RUNTIME', 'nodejs');
+    vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
+
+    await expect(register()).resolves.toBeUndefined();
+  });
+
+  // NFR-03
+  it.each(['VERCEL', 'VERCEL_ENV'])(
+    'refuses to start with the memory adapters when %s is set',
+    async name => {
+      vi.stubEnv('NEXT_RUNTIME', 'nodejs');
+      vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
+      vi.stubEnv(name, '');
+
+      await expect(register()).rejects.toThrow(/KINSCAPE_MEMORY_ADAPTERS/);
+    }
+  );
 });

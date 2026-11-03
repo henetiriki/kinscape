@@ -6,6 +6,10 @@ const serverEnv = z.object({
   KINSCAPE_DATABASE_DIRECT_URL: z.url().optional(),
   /** The app's connection, through the transaction pooler. */
   KINSCAPE_DATABASE_URL: z.url(),
+  /** The project's publishable key; it signs users in but can't manage them. */
+  KINSCAPE_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  /** The project's API URL. */
+  KINSCAPE_SUPABASE_URL: z.url(),
 });
 
 const fail = (issues: readonly { path: PropertyKey[] }[]): never => {
@@ -16,11 +20,31 @@ const fail = (issues: readonly { path: PropertyKey[] }[]): never => {
   );
 };
 
-/** Parses the server variables. A failure names each variable at fault, never its value. */
+/**
+ * Parses the server variables. A failure names each variable at fault, never its value.
+ * `KINSCAPE_MEMORY_ADAPTERS=1` is test-only: it swaps in memory adapters, needs no database or
+ * Supabase variable, and stops the server if `VERCEL` or `VERCEL_ENV` is defined, even empty.
+ */
 export const parseEnv = (source: Record<string, string | undefined>) => {
+  if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
+    if (source.VERCEL !== undefined || source.VERCEL_ENV !== undefined) {
+      throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
+    }
+
+    return {
+      databaseDirectUrl: undefined,
+      databaseUrl: undefined,
+      memoryAdapters: true as const,
+      supabasePublishableKey: undefined,
+      supabaseUrl: undefined,
+    };
+  }
+
   const parsed = serverEnv.safeParse({
     KINSCAPE_DATABASE_DIRECT_URL: source.KINSCAPE_DATABASE_DIRECT_URL,
     KINSCAPE_DATABASE_URL: source.KINSCAPE_DATABASE_URL,
+    KINSCAPE_SUPABASE_PUBLISHABLE_KEY: source.KINSCAPE_SUPABASE_PUBLISHABLE_KEY,
+    KINSCAPE_SUPABASE_URL: source.KINSCAPE_SUPABASE_URL,
   });
 
   if (!parsed.success) {
@@ -30,6 +54,9 @@ export const parseEnv = (source: Record<string, string | undefined>) => {
   return {
     databaseDirectUrl: parsed.data.KINSCAPE_DATABASE_DIRECT_URL,
     databaseUrl: parsed.data.KINSCAPE_DATABASE_URL,
+    memoryAdapters: false as const,
+    supabasePublishableKey: parsed.data.KINSCAPE_SUPABASE_PUBLISHABLE_KEY,
+    supabaseUrl: parsed.data.KINSCAPE_SUPABASE_URL,
   };
 };
 

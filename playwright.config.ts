@@ -56,8 +56,8 @@ export default defineConfig({
   webServer: {
     command: 'npm run build && npm run start',
     env: {
-      // The server fails at start without a database URL. Nothing connects yet; M2.7 serves this one.
-      KINSCAPE_DATABASE_URL: 'postgres://e2e@localhost:5432/kinscape',
+      // The server fails at start without Supabase and database variables; the memory adapters need neither.
+      KINSCAPE_MEMORY_ADAPTERS: '1',
       NEXT_PUBLIC_E2E: '1',
     },
     reuseExistingServer: !process.env.CI,

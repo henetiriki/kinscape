@@ -1,9 +1,19 @@
 import type { Result } from '@ks/lib/domain/result/types.ts';
 
+export type Account = { id: string };
+
 export type NewAccount = {
   issuer: string;
   subject: string;
   treeName: string;
+};
+
+/** A synthetic Account for `memoryStore`; `trees` may be empty. */
+export type SeedAccount = {
+  id: string;
+  issuer: string;
+  subject: string;
+  trees: Tree[];
 };
 
 export type Tree = { id: string; name: string };
@@ -14,8 +24,15 @@ export type TreeStore = {
   addAccount: (
     input: NewAccount
   ) => Promise<Result<{ accountId: string; treeId: string }, 'exists'>>;
-  /** The Tree only if the Account may access it; otherwise undefined, as for a missing Tree. */
+  /** The Account for a sign-in identity, or undefined. */
+  findAccount: (
+    issuer: string,
+    subject: string
+  ) => Promise<Account | undefined>;
+  /** The Tree only if the Account may access it; otherwise undefined, as for a missing Tree or an id that isn't a UUID. */
   findTree: (accountId: string, treeId: string) => Promise<Tree | undefined>;
+  /** The Account's Trees ordered by id; empty for an Account with none, an unknown id or an id that isn't a UUID. */
+  findTrees: (accountId: string) => Promise<Tree[]>;
 };
 
 /** Who is asking: an Account id, or none. */

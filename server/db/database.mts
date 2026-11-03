@@ -19,7 +19,15 @@ let instance: ReturnType<typeof createPgDb> | undefined;
 
 /** The app's database, opened on first use from `KINSCAPE_DATABASE_URL`. */
 export const db = () => {
-  instance ??= createPgDb(parseEnv(process.env).databaseUrl);
+  if (instance === undefined) {
+    const { databaseUrl } = parseEnv(process.env);
+
+    if (databaseUrl === undefined) {
+      throw new Error('The memory adapters have no database');
+    }
+
+    instance = createPgDb(databaseUrl);
+  }
 
   return instance;
 };

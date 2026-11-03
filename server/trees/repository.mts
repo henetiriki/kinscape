@@ -2,11 +2,7 @@ import type { TreeStore, Viewer } from '#ks/lib/domain/trees/types.ts';
 import type { TreeRepository } from '#ks/server/trees/types.ts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
-
-/** The Account issuer for Supabase sign-in; M2.5's session adapter matches it. */
-export const ISSUER = 'supabase';
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+import { isUuid } from '#ks/server/trees/uuid.mts';
 
 /**
  * The only way to reach a Tree's data. No Account, a malformed id (Postgres would throw),
@@ -17,7 +13,7 @@ export const openTree = async (
   treeId: string,
   store: TreeStore
 ) => {
-  if (viewer.accountId === undefined || !UUID.test(treeId)) {
+  if (viewer.accountId === undefined || !isUuid(treeId)) {
     return err('not-found');
   }
 

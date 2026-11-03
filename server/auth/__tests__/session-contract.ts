@@ -5,7 +5,6 @@ import type { SessionStore } from '@ks/lib/domain/auth/types.ts';
 
 import {
   endSession,
-  // Aliased: the hooks lint rule reads a `use…` call in a loop as a React Hook.
   resumeSession,
   startSession,
 } from '@ks/server/auth/sessions.mts';

@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 import type { SessionPort } from '#ks/lib/domain/auth/types.ts';
 
+/** The Account issuer for Supabase sign-in. */
+export const ISSUER = 'supabase';
+
 const TIMEOUT_MS = 5000;
 const answer = z.object({ user: z.object({ id: z.string().min(1) }) });
 
@@ -48,6 +51,6 @@ export const supabaseSession = ({
       throw new Error('Supabase Auth sent an unreadable answer');
     }
 
-    return parsed.data.user.id;
+    return { issuer: ISSUER, subject: parsed.data.user.id };
   },
 });

@@ -4,9 +4,8 @@ import type { SessionPort } from '@ks/lib/domain/auth/types.ts';
 
 import { memorySession } from '@ks/server/auth/memory-session.mts';
 import { signIn } from '@ks/server/auth/sign-in.mts';
-import { supabaseSession } from '@ks/server/auth/supabase-session.mts';
+import { ISSUER, supabaseSession } from '@ks/server/auth/supabase-session.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
-import { ISSUER } from '@ks/server/trees/repository.mts';
 
 const EMAIL = 'ada@example.test';
 const PASSWORD = 'synthetic-password';
@@ -16,8 +15,13 @@ const store = () =>
   memoryStore([{ id: ACCOUNT, issuer: ISSUER, subject: 'sub-ada', trees: [] }]);
 
 const users = [
-  { email: EMAIL, password: PASSWORD, subject: 'sub-ada' },
-  { email: 'bob@example.test', password: PASSWORD, subject: 'sub-bob' },
+  { email: EMAIL, issuer: ISSUER, password: PASSWORD, subject: 'sub-ada' },
+  {
+    email: 'bob@example.test',
+    issuer: ISSUER,
+    password: PASSWORD,
+    subject: 'sub-bob',
+  },
 ];
 
 const reply = (status: number, body: unknown) => async () =>
@@ -79,6 +83,28 @@ describe('signIn', () => {
       ok: false,
     });
     expect(verify).not.toHaveBeenCalled();
+  });
+
+  it('looks the Account up with the issuer the port returned', async () => {
+    const findAccount = vi.fn().mockResolvedValue({ id: ACCOUNT });
+    const session = {
+      verify: vi.fn().mockResolvedValue({ issuer: 'other', subject: 'sub-x' }),
+    };
+
+    await signIn({ session, store: { ...store(), findAccount } }, EMAIL, 'pw');
+
+    expect(findAccount).toHaveBeenCalledWith('other', 'sub-x');
+  });
+
+  it('refuses an Account with the right subject but another issuer', async () => {
+    const session = memorySession([
+      { email: EMAIL, issuer: 'other', password: PASSWORD, subject: 'sub-ada' },
+    ]);
+
+    expect(await signIn({ session, store: store() }, EMAIL, PASSWORD)).toEqual({
+      error: 'refused',
+      ok: false,
+    });
   });
 
   it('lets an outage through as an error, not a refusal', async () => {

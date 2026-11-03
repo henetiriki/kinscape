@@ -46,3 +46,7 @@ The Chore needs ❌ for off, wrong and expiring limits.
 | ✅ when on; ❌ off, wrong, <30 days | `check-github.sh` output here and per D1, in Evidence |
 | setup then check passes             | Tech lead, after merge                                |
 | Doc row; format and words           | `npm run format:check`, `npm run words`               |
+
+## Deviations
+
+- D1: the ❌ cases and the setup-then-check run were proven on this repo (option B), not a scratch repo; output in the PR's Evidence.

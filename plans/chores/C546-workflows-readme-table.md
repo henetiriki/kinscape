@@ -5,7 +5,7 @@
 
 ## Approach
 
-`generate()` gets a table builder and a diagram builder. A `FAMILIES` map lists the three event groups; `generate()` throws on any other event. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
+`generate()` gets a table builder and a diagram builder. `FAMILIES` lists the three event groups; any other event throws. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
 
 ## Decisions
 
@@ -63,8 +63,8 @@
 ## Deviations
 
 - Claude strokes `brand`, Design `line-strong`: those tints have no `-border` token.
-- Cells escape `\`, `|`, `<` and `>`.
-- `tokens.json` notes name the new use (review).
+- Cells escape `\`, `|`, `<` and `>`; the Filter code span only `|`.
+- `tokens.json` notes name the new use.
 - A family with no listener is left out.
 - Colours are read beside the script, not under `root`.
 - `FAMILIES` is a list: lint sorts object keys.

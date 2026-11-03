@@ -60,7 +60,10 @@ const id = (text: string) => text.replace(/\.ya?ml$/, '').replace(/\W/g, '_');
 const escape = (text: string) =>
   text.replace(/"/g, '#quot;').replace(/</g, '#lt;').replace(/>/g, '#gt;');
 
-// A pipe ends a table cell, a backslash would escape the next character, and angle brackets would open HTML.
+// A pipe ends a table cell even inside a code span, which otherwise takes text as it is.
+const code = (text: string) => `\`${text.replace(/\|/g, '\\|')}\``;
+
+// Outside a code span a backslash would escape the next character and angle brackets would open HTML.
 const cell = (text: string) =>
   text
     .replace(/\\/g, '\\\\')
@@ -170,7 +173,7 @@ const table = (workflows: Workflow[]): string[] => {
         const cells = [
           index ? '' : workflow,
           event,
-          filter ? `\`${cell(filter)}\`` : '',
+          filter ? code(filter) : '',
           index ? '' : cell(jobs.join(' · ')),
         ];
 

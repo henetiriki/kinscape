@@ -22,11 +22,54 @@ const OUT = `${DIR}/README.md`;
 // A reusable workflow, called by path, pinned (owner/repo/…@sha) or local (./…).
 const CALL = /\.github\/workflows\/([\w.-]+\.ya?ml)/;
 
+// One diagram per family; an event outside them fails the generator.
+const FAMILIES: [string, string[]][] = [
+  [
+    'Pull requests',
+    ['pull_request', 'pull_request_review', 'pull_request_review_comment'],
+  ],
+  ['Issues', ['issues', 'issue_comment']],
+  ['Push, schedule and manual runs', ['push', 'schedule', 'workflow_dispatch']],
+];
+
+// Fill and stroke per name prefix, as `design/tokens.json` colour names; a prefix outside them fails the generator.
+const FILLS: Record<string, [string, string]> = {
+  Actions: ['error-bg', 'error-border'],
+  Backlog: ['warning-bg', 'warning-border'],
+  CI: ['info-bg', 'info-border'],
+  Claude: ['brand-tint', 'brand'],
+  Design: ['surface-2', 'line-strong'],
+};
+
+const FRONTMATTER = [
+  '---',
+  'config:',
+  '  theme: redux-color',
+  '  look: neo',
+  '  layout: elk',
+  '---',
+];
+
+const colours: Record<string, string> = JSON.parse(
+  readFileSync(join(import.meta.dirname, '../design/tokens.json'), 'utf8')
+).colour;
+
 const id = (text: string) => text.replace(/\.ya?ml$/, '').replace(/\W/g, '_');
 
 // Mermaid reads these as markup in a quoted label; its entity codes print them as text.
 const escape = (text: string) =>
   text.replace(/"/g, '#quot;').replace(/</g, '#lt;').replace(/>/g, '#gt;');
+
+// A pipe ends a table cell even inside a code span, which otherwise takes text as it is: a backslash stays one.
+const code = (text: string) => `\`${text.replace(/\|/g, '\\|')}\``;
+
+// Outside a code span a backslash would escape the next character and angle brackets would open HTML.
+const cell = (text: string) =>
+  text
+    .replace(/\\/g, '\\\\')
+    .replace(/\|/g, '\\|')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 
 // Types and branches are shown bare; the other filters carry their key.
 const FILTERS = [
@@ -39,7 +82,7 @@ const FILTERS = [
   'paths-ignore',
 ] as const;
 
-// Every filter or schedule that narrows a trigger, as its edge label.
+// Every filter or schedule that narrows a trigger.
 const narrowing = (config: unknown): string | undefined => {
   if (Array.isArray(config)) {
     return config.map((entry: Trigger) => entry.cron).join(', ');
@@ -73,6 +116,27 @@ const read = (root: string, file: string): Workflow => {
         ? Object.fromEntries(doc.on.map((event: string) => [event, null]))
         : doc.on;
   const jobs: Record<string, { uses?: string }> = doc.jobs;
+  const group = name.includes(':') ? name.split(':')[0] : name.split(' ')[0];
+
+  if (!(group in FILLS)) {
+    throw new Error(`${file}: no fill for the ${group} prefix`);
+  }
+
+  const triggers = Object.entries(on).map(
+    ([event, config]): [string, string | undefined] => [
+      event,
+      narrowing(config),
+    ]
+  );
+
+  for (const [event] of triggers) {
+    if (
+      event !== 'workflow_call' &&
+      !FAMILIES.some(([, events]) => events.includes(event))
+    ) {
+      throw new Error(`${file}: no diagram family holds the ${event} event`);
+    }
+  }
 
   return {
     calls: [
@@ -85,14 +149,114 @@ const read = (root: string, file: string): Workflow => {
       ),
     ],
     file,
-    group: name.includes(':') ? name.split(':')[0] : name.split(' ')[0],
+    group,
     id: id(file),
     jobs: Object.keys(jobs),
     name,
-    triggers: Object.entries(on)
-      .filter(([event]) => event !== 'workflow_call')
-      .map(([event, config]) => [event, narrowing(config)]),
+    triggers,
   };
+};
+
+const table = (workflows: Workflow[]): string[] => {
+  const names = new Map(workflows.map(({ id, name }) => [id, name]));
+
+  return [
+    '| Workflow | Trigger | Filter | Jobs |',
+    '| --- | --- | --- | --- |',
+    ...workflows.flatMap(({ calls, file, jobs, name, triggers }) => {
+      const workflow = [
+        `${cell(name)}<br>\`${file}\``,
+        ...calls.map(call => `calls ${cell(names.get(call) ?? call)}`),
+      ].join(' · ');
+
+      return triggers.map(([event, filter], index) => {
+        // A code span can't escape a backslash, so `\|` would end the cell.
+        if (filter?.includes('\\|')) {
+          throw new Error(`${file}: a filter can't hold "\\|"`);
+        }
+
+        const cells = [
+          index ? '' : workflow,
+          event,
+          filter ? code(filter) : '',
+          index ? '' : cell(jobs.join(' · ')),
+        ];
+
+        return `|${cells.map(text => (text ? ` ${text} ` : ' ')).join('|')}|`;
+      });
+    }),
+  ];
+};
+
+const diagram = (
+  workflows: Workflow[],
+  [family, familyEvents]: [string, string[]]
+): string[] => {
+  const byId = new Map(workflows.map(workflow => [workflow.id, workflow]));
+  const listens = (workflow: Workflow) =>
+    workflow.triggers.some(([event]) => familyEvents.includes(event));
+  const triggered = workflows.filter(listens);
+  const nodes = [
+    ...new Set([
+      ...triggered,
+      ...triggered.flatMap(({ calls }) =>
+        calls.flatMap(call => {
+          const called = byId.get(call);
+
+          return called ? [called] : [];
+        })
+      ),
+    ]),
+  ];
+
+  if (!nodes.length) {
+    return [];
+  }
+
+  const events = [
+    ...new Set(
+      triggered.flatMap(({ triggers }) =>
+        triggers
+          .map(([event]) => event)
+          .filter(event => familyEvents.includes(event))
+      )
+    ),
+  ].sort();
+  const groups = [...new Set(nodes.map(({ group }) => group))].sort();
+
+  return [
+    `## ${family}`,
+    '',
+    '```mermaid',
+    ...FRONTMATTER,
+    'flowchart TB',
+    ...events.map(event => `  on_${id(event)}([${event}])`),
+    ...nodes.map(({ id: node, name }) => `  ${node}["${escape(name)}"]`),
+    ...events.flatMap(event =>
+      nodes
+        .filter(({ triggers }) => triggers.some(([e]) => e === event))
+        .map(({ id: node }) => `  on_${id(event)} --> ${node}`)
+    ),
+    ...nodes.flatMap(({ calls, id: node }) =>
+      calls
+        .filter(call => byId.has(call))
+        .map(call => `  ${node} -.->|calls| ${call}`)
+    ),
+    ...groups.map(group => {
+      const [fill, stroke] = FILLS[group];
+
+      return `  classDef ${id(group).toLowerCase()} fill:${colours[fill]},stroke:${colours[stroke]}`;
+    }),
+    ...groups.map(
+      group =>
+        `  class ${nodes
+          .filter(node => node.group === group)
+          .map(({ id }) => id)
+          .join(',')} ${id(group).toLowerCase()}`
+    ),
+    '```',
+    '',
+  ];
 };
 
 /** Reads every workflow under `root` and returns the Markdown that `.github/workflows/README.md` must hold. */
@@ -101,35 +265,6 @@ export const generate = (root: string): string => {
     .filter(file => file.endsWith('.yml'))
     .sort()
     .map(file => read(root, file));
-  const groups = [...new Set(workflows.map(({ group }) => group))];
-  const events = [
-    ...new Set(workflows.flatMap(({ triggers }) => triggers.map(([e]) => e))),
-  ].sort();
-
-  const lines = [
-    'flowchart LR',
-    ...events.map(event => `  on_${id(event)}([${event}])`),
-    ...groups.flatMap(group => [
-      `  subgraph g_${id(group)} [${escape(group)}]`,
-      ...workflows
-        .filter(workflow => workflow.group === group)
-        .map(
-          ({ file, id: node, jobs, name }) =>
-            `    ${node}["${escape(name)}<br>${file}<br>${jobs.join(' · ')}"]`
-        ),
-      '  end',
-    ]),
-    ...workflows.flatMap(({ id: node, triggers }) =>
-      triggers.map(([event, label]) =>
-        label
-          ? `  on_${id(event)} -->|"${escape(label)}"| ${node}`
-          : `  on_${id(event)} --> ${node}`
-      )
-    ),
-    ...workflows.flatMap(({ calls, id: node }) =>
-      calls.map(call => `  ${node} -.->|calls| ${call}`)
-    ),
-  ];
 
   return [
     "<!-- Written by `npm run workflows:diagram` from the workflow files. Don't edit it by hand. -->",
@@ -138,10 +273,9 @@ export const generate = (root: string): string => {
     '',
     'What starts each GitHub Actions workflow, its jobs, and the reusable workflows it calls. How the team uses them: [the README](../../README.md#how-we-work).',
     '',
-    '```mermaid',
-    ...lines,
-    '```',
+    ...table(workflows),
     '',
+    ...FAMILIES.flatMap(family => diagram(workflows, family)),
   ].join('\n');
 };
 

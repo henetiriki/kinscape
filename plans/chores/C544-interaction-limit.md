@@ -1,7 +1,7 @@
 # Plan: C544: apply the collaborators-only interaction limit in setup-github.sh
 
 - **Spec:** #544
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ The Chore needs ❌ for off, wrong and expiring limits.
 - **B.** On this repo, briefly changing the live limit, then re-running `setup-github.sh`.
 - **Other:** your own.
 
-Recommended: A, because the spam guard on this repo never lapses.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

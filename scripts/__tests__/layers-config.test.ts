@@ -241,7 +241,7 @@ describe('the import sorter in the real lint config', () => {
         "import { a } from '#ks/lib/map/a.mts';\nimport { b } from 'node:fs';\n",
         sorter
       )
-    ).toHaveLength(1);
+    ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 
   it('keeps stylesheets last, the kit’s before a board’s', async () => {
@@ -258,7 +258,7 @@ describe('the import sorter in the real lint config', () => {
         "import styles from '@ks/app/design-kit/colour/page.module.css';\nimport kit from '@ks/app/design-kit/kit.module.css';\n",
         sorter
       )
-    ).not.toEqual([]);
+    ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 
   it('fails an @ks/ import sorted among the packages', async () => {
@@ -268,6 +268,6 @@ describe('the import sorter in the real lint config', () => {
         "import { a } from '@ks/lib/map/a';\nimport { b } from 'react';\n",
         sorter
       )
-    ).toHaveLength(1);
+    ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 });

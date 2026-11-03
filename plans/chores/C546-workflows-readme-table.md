@@ -5,7 +5,7 @@
 
 ## Approach
 
-`generate()` gets a table builder and a diagram builder. `FAMILIES` lists the three event groups; any other event throws. Each diagram, headed by its events, draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
+`generate()` gets table and diagram builders. `FAMILIES` lists the three event groups; any other event throws. Each diagram draws event → workflow edges, dotted `calls` edges, and one `classDef` per prefix.
 
 ## Decisions
 
@@ -34,23 +34,23 @@
 
 ## Files that change
 
-| File                                          | What                                    |
-| --------------------------------------------- | --------------------------------------- |
-| `scripts/workflows-diagram.mts`               | Table, `FAMILIES`, diagrams             |
-| `scripts/__tests__/workflows-diagram.test.ts` | Table and diagram cases replace graph's |
-| `.github/workflows/README.md`                 | Regenerated                             |
-| `design/tokens.json`                          | Notes name the new use                  |
+| File                                          | What                        |
+| --------------------------------------------- | --------------------------- |
+| `scripts/workflows-diagram.mts`               | Table, `FAMILIES`, diagrams |
+| `scripts/__tests__/workflows-diagram.test.ts` | Rewritten                   |
+| `.github/workflows/README.md`                 | Regenerated                 |
+| `design/tokens.json`                          | Notes name the new use      |
 
 ## Order of work
 
 1. Rewrite the tests; see them fail.
 2. Change the script; `npm run workflows:diagram`.
-3. Lint, `format:check`, `words`, tests, `validate:boundaries`, `e2e`.
+3. The checks in AGENTS.md.
 4. View the README on github.com.
 
 ## Risks
 
-- Handed back (rule 13): the tech lead builds it.
+- Handed back (rule 13), as is any later change to the ten colours: the regenerated README is a CODEOWNERS path.
 
 ## Proof
 
@@ -63,7 +63,7 @@
 ## Deviations
 
 - Claude strokes `brand`, Design `line-strong`: those tints have no `-border` token.
-- Cells escape `\`, `|`, `<` and `>`; the Filter code span only `|`.
+- Cells escape `\`, `|`, `<` and `>`; the Filter code span only `|`; `\|` in a filter throws.
 - `tokens.json` notes name the new use.
 - A family with no listener is left out.
 - Colours are read beside the script, not under `root`.

@@ -171,6 +171,11 @@ const table = (workflows: Workflow[]): string[] => {
       ].join(' · ');
 
       return triggers.map(([event, filter], index) => {
+        // A code span can't escape a backslash, so `\|` would end the cell.
+        if (filter?.includes('\\|')) {
+          throw new Error(`${file}: a filter can't hold "\\|"`);
+        }
+
         const cells = [
           index ? '' : workflow,
           event,

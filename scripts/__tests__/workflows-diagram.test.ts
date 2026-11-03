@@ -87,6 +87,15 @@ describe('the table', () => {
     expect(readme).toContain('| | schedule | `0 6 * * 1` | |');
   });
 
+  it('fails on a filter holding a backslash before a pipe', () => {
+    workflow(
+      'ci.yml',
+      "name: CI\non:\n  push:\n    branches: ['a\\|b']\njobs:\n  x: {}\n"
+    );
+
+    expect(() => generate(root)).toThrow('ci.yml: a filter can\'t hold "\\|"');
+  });
+
   it('names the reusable workflow a workflow calls, and lists workflow_call as its trigger', () => {
     workflow(
       'claude-build.yml',

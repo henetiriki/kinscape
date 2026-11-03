@@ -235,7 +235,7 @@ The key to a live slider is loading every boundary version once and changing onl
 
 - **Jurisdiction lookup:** point-in-polygon at the pin date. Turf.js in the browser is enough at this data size; PostGIS if the logic moves server-side.
 
-- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it, behind repository interfaces ([architecture-target.md](architecture-target.md) item 5) so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
+- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it, behind [repository interfaces](architecture.md#patterns) so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
 
 - **Hosting:** Vercel for the front end.
 

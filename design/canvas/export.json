@@ -3,7 +3,7 @@
   "links": { "Kit-menu-phone.dc.html": "design-kit-menu-phone" },
   "snapshots": [
     {
-      "file": "Main.dc.html",
+      "file": "Sign-in.dc.html",
       "name": "sign-in-desktop",
       "viewport": { "height": 900, "width": 1440 }
     },
@@ -15,6 +15,31 @@
     {
       "file": "Sign-in-phone-default.dc.html",
       "name": "sign-in-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Sign-in-proposed.dc.html",
+      "name": "sign-in-desktop-proposed",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Sign-in-phone-default-proposed.dc.html",
+      "name": "sign-in-phone-proposed",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Sign-in-phone-proposed.dc.html",
+      "name": "sign-in-phone-error-proposed",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Sign-in-unavailable.dc.html",
+      "name": "sign-in-unavailable",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Sign-in-phone-unavailable.dc.html",
+      "name": "sign-in-phone-unavailable",
       "viewport": { "height": 844, "width": 390 }
     },
     {

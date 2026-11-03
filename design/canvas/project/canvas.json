@@ -32,12 +32,12 @@
     }
   ],
   "boards": {
-    "Main.dc.html": {
+    "Sign-in.dc.html": {
       "x": 0,
       "y": 0,
       "w": 1440,
       "h": 900,
-      "title": "Sign in — desktop",
+      "title": "Sign in — desktop (M2)",
       "expand": "fill",
       "page": "sign-in"
     },
@@ -46,7 +46,7 @@
       "y": 0,
       "w": 390,
       "h": 844,
-      "title": "Sign in — phone",
+      "title": "Sign in — phone (M2)",
       "page": "sign-in"
     },
     "Sign-in-phone.dc.html": {
@@ -54,7 +54,7 @@
       "y": 0,
       "w": 390,
       "h": 844,
-      "title": "Sign in — phone, error state",
+      "title": "Sign in — phone, error state (M2)",
       "page": "sign-in"
     },
     "Map.dc.html": {
@@ -448,12 +448,59 @@
       "h": 844,
       "title": "Add a pin — phone",
       "page": "map"
+    },
+    "Sign-in-unavailable.dc.html": {
+      "x": 0,
+      "y": 1020,
+      "w": 1440,
+      "h": 900,
+      "title": "Sign in — desktop, can't sign in right now (M2)",
+      "expand": "fill",
+      "page": "sign-in"
+    },
+    "Sign-in-phone-unavailable.dc.html": {
+      "x": 1520,
+      "y": 1020,
+      "w": 390,
+      "h": 844,
+      "title": "Sign in — phone, can't sign in right now (M2)",
+      "page": "sign-in"
+    },
+    "Sign-in-proposed.dc.html": {
+      "x": 0,
+      "y": 2040,
+      "w": 1440,
+      "h": 900,
+      "title": "Sign in — desktop (proposed)",
+      "expand": "fill",
+      "page": "sign-in"
+    },
+    "Sign-in-phone-default-proposed.dc.html": {
+      "x": 1520,
+      "y": 2040,
+      "w": 390,
+      "h": 844,
+      "title": "Sign in — phone (proposed)",
+      "page": "sign-in"
+    },
+    "Sign-in-phone-proposed.dc.html": {
+      "x": 1990,
+      "y": 2040,
+      "w": 390,
+      "h": 844,
+      "title": "Sign in — phone, error state (proposed)",
+      "page": "sign-in"
     }
   },
   "order": [
-    "Main.dc.html",
+    "Sign-in.dc.html",
     "Sign-in-phone-default.dc.html",
     "Sign-in-phone.dc.html",
+    "Sign-in-unavailable.dc.html",
+    "Sign-in-phone-unavailable.dc.html",
+    "Sign-in-proposed.dc.html",
+    "Sign-in-phone-default-proposed.dc.html",
+    "Sign-in-phone-proposed.dc.html",
     "Map.dc.html",
     "Map-phone.dc.html",
     "Map-phone-collapsed.dc.html",

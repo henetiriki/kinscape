@@ -9,6 +9,8 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 | Sign in, desktop                                     | [sign-in-desktop.jpg](sign-in-desktop.jpg)                                         | [sign-in-desktop.html](source/sign-in-desktop.html)                                         |
 | Sign in, phone                                       | [sign-in-phone.jpg](sign-in-phone.jpg)                                             | [sign-in-phone.html](source/sign-in-phone.html)                                             |
 | Sign in, phone, wrong password                       | [sign-in-phone-error.jpg](sign-in-phone-error.jpg)                                 | [sign-in-phone-error.html](source/sign-in-phone-error.html)                                 |
+| Sign in, desktop, can't sign in right now            | [sign-in-unavailable.jpg](sign-in-unavailable.jpg)                                 | [sign-in-unavailable.html](source/sign-in-unavailable.html)                                 |
+| Sign in, phone, can't sign in right now              | [sign-in-phone-unavailable.jpg](sign-in-phone-unavailable.jpg)                     | [sign-in-phone-unavailable.html](source/sign-in-phone-unavailable.html)                     |
 | Map, desktop, Layers tab, point clicked              | [map-desktop.jpg](map-desktop.jpg)                                                 | [map-desktop.html](source/map-desktop.html)                                                 |
 | Map, desktop, Filters tab                            | [map-desktop-filters.jpg](map-desktop-filters.jpg)                                 | [map-desktop-filters.html](source/map-desktop-filters.html)                                 |
 | Map, phone, look-up only (NFR-05)                    | [map-phone.jpg](map-phone.jpg)                                                     | [map-phone.html](source/map-phone.html)                                                     |
@@ -66,6 +68,16 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 `npm run design:check` renders each screen in `screens.json` beside its HTML snapshot, ignoring the map, and writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold.
 
 Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing an artboard, push the branch and run the **Design agent shots** workflow on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. Agents never edit these files ([`AGENTS.md`](../AGENTS.md#source-of-truth)), so each one always matches its source. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
+
+### Proposed screens
+
+Not built: see Google sign-in under [Components](#components).
+
+| Screen                                   | File                                                                 | Source                                                                        |
+| ---------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)         | [sign-in-desktop-proposed.html](source/sign-in-desktop-proposed.html)         |
+| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)             | [sign-in-phone-proposed.html](source/sign-in-phone-proposed.html)             |
+| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg) | [sign-in-phone-error-proposed.html](source/sign-in-phone-error-proposed.html) |
 
 ### Refreshing the copy
 

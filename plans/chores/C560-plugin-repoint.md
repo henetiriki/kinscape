@@ -1,7 +1,7 @@
 # Plan: C560: Repoint the code-review plugin to claude-plugins-official
 
 - **Spec:** #560
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

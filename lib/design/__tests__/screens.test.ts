@@ -29,8 +29,13 @@ const NOT_BUILT = [
   'map-sources',
   'map-sources-phone',
   'sign-in-desktop',
+  'sign-in-desktop-proposed',
   'sign-in-phone',
   'sign-in-phone-error',
+  'sign-in-phone-error-proposed',
+  'sign-in-phone-proposed',
+  'sign-in-phone-unavailable',
+  'sign-in-unavailable',
 ];
 
 const jpeg = (width: number, height: number, ...before: number[][]) =>

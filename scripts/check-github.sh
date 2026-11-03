@@ -88,6 +88,12 @@ check "Allowed actions list" "$(gh api "repos/$REPO/actions/permissions/selected
 check "Code scanning (CodeQL default)" "$(gh api "repos/$REPO/code-scanning/default-setup" --jq .state 2>/dev/null)" "configured"
 check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --jq .approval_policy)" "all_external_contributors"
 
+# Interaction limit: collaborators only, and more than 30 days (2592000 s) before GitHub drops it.
+# One call gives the limit, its expiry and that test; a missing limit or an unreadable reply is "none false".
+limit_info=$(gh api "repos/$REPO/interaction-limits" --jq '[(.limit // "none"), (.expires_at // "none"), (.expires_at != null and ((.expires_at | fromdateiso8601) - now) > 2592000)] | @tsv' 2>/dev/null)
+IFS=$'\t' read -r il_limit il_expires il_ok <<<"$limit_info"
+check "Interaction limit (expires ${il_expires:-none})" "${il_limit:-none} ${il_ok:-false}" "collaborators_only true"
+
 # One autolink per requirement ID prefix: none missing, none for another prefix or URL.
 source "$DIR/github/requirement-prefixes.sh"
 expected_links=$(expected_autolinks "$REPO" | LC_ALL=C sort) || expected_links="no requirement ID prefixes in docs/requirements.md"

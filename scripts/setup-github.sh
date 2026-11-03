@@ -104,6 +104,9 @@ gh api graphql -f id="$(gh api "repos/$REPO" --jq .node_id)" -f query='
       clientMutationId
     }
   }' >/dev/null
+# Only collaborators can comment, which the policy above doesn't cover. GitHub drops the limit
+# after six months (its maximum); re-running this restarts the six months.
+gh api -X PUT "repos/$REPO/interaction-limits" -f limit=collaborators_only -f expiry=six_months >/dev/null
 
 # Create or update the ruleset named $1 from the JSON file $2.
 ruleset() {

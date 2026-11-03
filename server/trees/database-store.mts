@@ -1,7 +1,7 @@
 import type { TreeStore } from '../../lib/domain/trees/types.ts';
 import type { createDb } from '../db/database.mts';
 
-import { err, ok } from '../../lib/domain/result/result.ts';
+import { err, ok } from '../../lib/domain/result/result.mts';
 
 /** A TreeStore over Postgres. */
 export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({

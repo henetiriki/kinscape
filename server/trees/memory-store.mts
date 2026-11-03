@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import type { Tree, TreeStore } from '../../lib/domain/trees/types.ts';
 
-import { err, ok } from '../../lib/domain/result/result.ts';
+import { err, ok } from '../../lib/domain/result/result.mts';
 
 /** A TreeStore in memory, for tests. */
 export const memoryStore = (): TreeStore => {

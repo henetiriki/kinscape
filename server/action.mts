@@ -4,7 +4,7 @@ import type { Result } from '../lib/domain/result/types.ts';
 import type { TreeStore, Viewer } from '../lib/domain/trees/types.ts';
 import type { TreeRepository } from './trees/types.ts';
 
-import { err, ok } from '../lib/domain/result/result.ts';
+import { err, ok } from '../lib/domain/result/result.mts';
 import { openTree } from './trees/repository.mts';
 
 /**

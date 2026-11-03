@@ -12,6 +12,13 @@ export type Database = {
     checksum: string;
     name: string;
   };
+  session: {
+    accountId: string;
+    createdAt: Date;
+    email: string;
+    expiresAt: Date;
+    tokenHash: string;
+  };
   tree: {
     id: Generated<string>;
     name: string;

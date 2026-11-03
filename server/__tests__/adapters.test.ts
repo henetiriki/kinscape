@@ -28,6 +28,17 @@ describe('appAdapters', () => {
       expect(await adapters.store.findTrees(signedIn.value.id)).toHaveLength(1);
     }
 
+    const { startSession, useSession } =
+      await import('@ks/server/auth/sessions.mts');
+    const token = await startSession(adapters.sessions, () => new Date(), {
+      accountId: SYNTHETIC.accountId,
+      email: SYNTHETIC.email,
+    });
+
+    expect(
+      await useSession(adapters.sessions, () => new Date(), token)
+    ).toEqual({ accountId: SYNTHETIC.accountId, email: SYNTHETIC.email });
+
     expect(await signIn(adapters, SYNTHETIC.email, 'wrong')).toEqual({
       error: 'refused',
       ok: false,
@@ -53,7 +64,7 @@ describe('appAdapters', () => {
     const fetch = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response('{}', { status: 400 }));
-    const { session, store } = appAdapters();
+    const { session, sessions, store } = appAdapters();
 
     expect(await session.verify('a@example.test', 'pw')).toBeUndefined();
     expect(fetch).toHaveBeenCalledWith(
@@ -62,6 +73,7 @@ describe('appAdapters', () => {
     );
     // Port 1 refuses the connection; a memory store would resolve `undefined`.
     await expect(store.findAccount('supabase', 'x')).rejects.toThrow();
+    await expect(sessions.find('x')).rejects.toThrow();
 
     fetch.mockRestore();
     await db().destroy();

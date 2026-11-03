@@ -60,8 +60,8 @@ const id = (text: string) => text.replace(/\.ya?ml$/, '').replace(/\W/g, '_');
 const escape = (text: string) =>
   text.replace(/"/g, '#quot;').replace(/</g, '#lt;').replace(/>/g, '#gt;');
 
-// A pipe ends a table cell even inside a code span, which otherwise takes text as it is.
-const code = (text: string) => `\`${text.replace(/\|/g, '\\|')}\``;
+// A pipe ends a table cell even inside a code span, which otherwise takes text as it is: a backslash stays one.
+const code = (text: string) => `\`${text.replace(/\|/g, '\\|')}\``; // codeql[js/incomplete-sanitization]
 
 // Outside a code span a backslash would escape the next character and angle brackets would open HTML.
 const cell = (text: string) =>

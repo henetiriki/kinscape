@@ -6,7 +6,7 @@ import type { SessionStore } from '@ks/lib/domain/auth/types.ts';
 import {
   endSession,
   // Aliased: the hooks lint rule reads a `use…` call in a loop as a React Hook.
-  useSession as resume,
+  resumeSession,
   startSession,
 } from '@ks/server/auth/sessions.mts';
 
@@ -66,8 +66,8 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
       const second = await startSession(store, now, who);
 
       expect(first).not.toBe(second);
-      expect(await resume(store, now, first)).toEqual(who);
-      expect(await resume(store, now, second)).toEqual(who);
+      expect(await resumeSession(store, now, first)).toEqual(who);
+      expect(await resumeSession(store, now, second)).toEqual(who);
     });
 
     it('accepts a session used within 30 days, and renews it', async () => {
@@ -78,9 +78,9 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
       });
 
       day(29);
-      expect(await resume(store, now, token)).toBeDefined();
+      expect(await resumeSession(store, now, token)).toBeDefined();
       day(58);
-      expect(await resume(store, now, token)).toBeDefined();
+      expect(await resumeSession(store, now, token)).toBeDefined();
     });
 
     it('refuses a session last used 31 days ago and deletes its row', async () => {
@@ -91,9 +91,9 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
       });
 
       day(31);
-      expect(await resume(store, now, token)).toBeUndefined();
+      expect(await resumeSession(store, now, token)).toBeUndefined();
       day(0);
-      expect(await resume(store, now, token)).toBeUndefined();
+      expect(await resumeSession(store, now, token)).toBeUndefined();
     });
 
     it('refuses a session created 91 days ago, however often used', async () => {
@@ -105,11 +105,11 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
 
       for (const n of [20, 40, 60, 80]) {
         day(n);
-        expect(await resume(store, now, token)).toBeDefined();
+        expect(await resumeSession(store, now, token)).toBeDefined();
       }
 
       day(91);
-      expect(await resume(store, now, token)).toBeUndefined();
+      expect(await resumeSession(store, now, token)).toBeUndefined();
     });
 
     it('does not let renewal pass the 90-day cap', async () => {
@@ -121,7 +121,7 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
 
       for (const n of [20, 40, 60, 80]) {
         day(n);
-        await resume(store, now, token);
+        await resumeSession(store, now, token);
       }
 
       const hash = createHash('sha256').update(token).digest('hex');
@@ -139,7 +139,7 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
       });
 
       await endSession(store, token);
-      expect(await resume(store, now, token)).toBeUndefined();
+      expect(await resumeSession(store, now, token)).toBeUndefined();
     });
 
     it('ends a session once, and ending a malformed token does nothing', async () => {
@@ -152,7 +152,7 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
       await endSession(store, token);
       await endSession(store, token);
       await endSession(store, 'not a token');
-      expect(await resume(store, now, token)).toBeUndefined();
+      expect(await resumeSession(store, now, token)).toBeUndefined();
     });
 
     it('renews nothing for an unknown hash', async () => {
@@ -165,9 +165,9 @@ export const runSessionContract = (name: string, make: () => Promise<Made>) => {
     it('refuses a malformed or unknown token', async () => {
       const { now, store } = await setup();
 
-      expect(await resume(store, now, '')).toBeUndefined();
-      expect(await resume(store, now, 'x'.repeat(43))).toBeUndefined();
-      expect(await resume(store, now, 'a b')).toBeUndefined();
+      expect(await resumeSession(store, now, '')).toBeUndefined();
+      expect(await resumeSession(store, now, 'x'.repeat(43))).toBeUndefined();
+      expect(await resumeSession(store, now, 'a b')).toBeUndefined();
     });
 
     it('deletes every expired row when a session starts', async () => {

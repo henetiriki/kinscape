@@ -39,7 +39,7 @@ export const startSession = async (
  * row past its expiry or 90 days old is deleted. Otherwise expiry becomes the earlier of 30 days
  * from now and 90 days from creation.
  */
-export const useSession = async (
+export const resumeSession = async (
   store: SessionStore,
   now: () => Date,
   token: string

@@ -28,7 +28,7 @@ describe('appAdapters', () => {
       expect(await adapters.store.findTrees(signedIn.value.id)).toHaveLength(1);
     }
 
-    const { startSession, useSession } =
+    const { resumeSession, startSession } =
       await import('@ks/server/auth/sessions.mts');
     const token = await startSession(adapters.sessions, () => new Date(), {
       accountId: SYNTHETIC.accountId,
@@ -36,7 +36,7 @@ describe('appAdapters', () => {
     });
 
     expect(
-      await useSession(adapters.sessions, () => new Date(), token)
+      await resumeSession(adapters.sessions, () => new Date(), token)
     ).toEqual({ accountId: SYNTHETIC.accountId, email: SYNTHETIC.email });
 
     expect(await signIn(adapters, SYNTHETIC.email, 'wrong')).toEqual({

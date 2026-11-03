@@ -1,26 +1,26 @@
 # Architecture
 
-Built today: Next.js App Router, React, TypeScript, MapLibre. [architecture-target.md](architecture-target.md) is proposed, not a rule.
+Built: Next.js App Router, React, TypeScript, MapLibre. [architecture-target.md](architecture-target.md) is proposed, not a rule.
 
 ## Where does X go
 
-| Change                          | Put it in                                                                                                          |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| A screen or route               | `app/<route>/page.tsx`: composes components, no CSS of its own (dev-only `app/design-kit`, `app/screens` excepted) |
-| Shared UI                       | `app/components/<role>/`                                                                                           |
-| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                                 |
-| UI the kit and features share   | `lib/ui/`                                                                                                          |
-| A feature's UI and engine       | `features/<name>/`                                                                                                 |
-| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`                      |
-| Pure logic, no I/O              | `lib/domain/`, with tests in `__tests__/`                                                                          |
-| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                                     |
-| A server variable or table      | `server/env.mts`; a new `server/db/migrations/NNNN.sql` (never edit one)                                           |
-| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is `design/tokens.mts`                                       |
-| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                                |
-| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                                    |
-| A tool, check or CI helper      | `scripts/`, with its test beside it                                                                                |
-| A browser test                  | `e2e/`                                                                                                             |
-| A type shared by two modules    | `types.ts` beside them (also in `.mts` folders: Node erases `import type`); import it with `import type`           |
+| Change                          | Put it in                                                                                          |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| A screen or route               | `app/<route>/page.tsx`: composes components, no CSS (bar dev-only `app/design-kit`, `app/screens`) |
+| Shared UI                       | `app/components/<role>/`                                                                           |
+| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                 |
+| UI the kit and features share   | `lib/ui/`                                                                                          |
+| A feature's UI and engine       | `features/<name>/`                                                                                 |
+| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`      |
+| Pure logic, no I/O              | `lib/domain/`, with tests in `__tests__/`                                                          |
+| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                     |
+| A server variable or table      | `server/env.mts`; a new `server/db/migrations/NNNN.sql` (never edit)                               |
+| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is `design/tokens.mts`                       |
+| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                |
+| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                    |
+| A tool, check or CI helper      | `scripts/`, with its test beside it                                                                |
+| A browser test                  | `e2e/`                                                                                             |
+| A type shared by two modules    | `types.ts` beside them (`import type`, also in `.mts`)                                             |
 
 Import repo paths by full path: `#ks/` in `.mts` and `.mjs` files (Node reads `package.json` `imports`), `@ks/` in the rest (tsconfig `paths`). ESLint rejects the other alias, relative paths and `.ts`/`.tsx` imports (`.mts`: values only).
 
@@ -36,18 +36,19 @@ Import repo paths by full path: `#ks/` in `.mts` and `.mjs` files (Node reads `p
 | **Functional core, imperative shell.** Pure functions in `lib/domain`; `MapView` is the only code that creates or drives the map; `features/map/style.ts`, `layers/` and `filter.ts` build MapLibre styles and expressions, importing only its types. | `lib/domain/`, `features/map/components/MapView.tsx`                                                  | Tests (100% coverage)                                                                  |
 | **Temporal validity.** A date is an integer day since 1652-01-01; a range is half-open `[validFrom, validTo)`, null meaning current. `isCurrentOn` applies it in code; `dateFilter` repeats it as a MapLibre expression.                              | `lib/domain/boundaries/model.mts`, `features/map/filter.ts`                                           | Unit tests of each; `filter.test.ts` checks that the two agree                         |
 | **Shared controls run on React 18 and 19.**                                                                                                                                                                                                           | `app/components/{actions,feedback,forms}/`, `DateField.tsx`                                           | `lib/design/__tests__/react-18.test.tsx`                                               |
-| **Load once, filter by expression.** All Boundary versions load once; a Map date change sets layer filters and fetches nothing (NFR-01).                                                                                                              | `features/map/filter.ts`, `style.ts`, `components/MapView.tsx`                                        | `@perf` e2e tests                                                                      |
+| **Load once, filter by expression.** All Boundary versions load once; a Map date change only sets filters (NFR-01).                                                                                                                                   | `features/map/filter.ts`, `style.ts`, `components/MapView.tsx`                                        | `@perf` e2e tests                                                                      |
 | **Map layers.** A `Layer` holds id, label, description, sources, drawing layers and `filters(day)`. `visible[id]` is on unless `false`; one panel row per layer; `MapView` names none.                                                                | `features/map/types.ts`, `layers/`                                                                    | `features/map/__tests__/layers.test.ts` (`'use client'` on each file)                  |
 | **Reference data is files, validated.** `loadAppData` throws on bad data, which stops the build; `/data/polities` is built once at deploy.                                                                                                            | `data/`, `server/boundaries/app-data.ts`, `app/data/polities/route.ts`                                | `npm run validate:boundaries` in CI                                                    |
 | **Schema first.** A Zod schema is the parser; the type is derived from it in `types.ts`.                                                                                                                                                              | `lib/domain/boundaries/schemas.mts`, `types.ts`, `server/boundaries/load.mts`                         | `npm run typecheck`; `server/boundaries/__tests__/load.test.ts`                        |
 | **Living style guide.** `/design-kit` shows components, `/screens` built screens; 404 in production.                                                                                                                                                  | `app/design-kit/`, `app/screens/`, `e2e/design-check.spec.ts`                                         | `npm run design:check`; `/match-design`                                                |
 | **Tree-scoped data.** Only `openTree` reaches it; `treeAction` returns a `Result`; `findTrees` gives Tree ids.                                                                                                                                        | `server/trees/`, `server/action.mts`                                                                  | `server/trees/__tests__/contract.ts`                                                   |
+| **Providers behind ports.** Supabase only in allowlisted files; Kysely over `pg`; plain Postgres; no row-level security.                                                                                                                              | `server/adapters.mts`                                                                                 | `scripts/__tests__/providers.test.ts`                                                  |
 | **Traceability.** Tests carry `// MAP-03` style tags; plans and PRs cite IDs; code uses the Key concepts terms.                                                                                                                                       | `docs/requirements.md`, `plans/`                                                                      | Review                                                                                 |
 
 ## Enforcement
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts` (or `types/*.d.ts`), no default exports outside Next.js files, sorted keys and imports, accessibility rules, alias imports by extension, stylesheets last, type imports on their own `import type` line.
-- **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports a path that doesn't deploy.
+- **Fitness test:** `scripts/__tests__/vercel-imports.test.ts` fails when shipped code imports an undeployed path.
 - **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a file's layer comes from its path, and it may import only the layers in its row. `lib/domain` may not import Node built-ins (a bare name counts unless `package.json` lists a package of that name) or `maplibre-gl`. `features/` holds only feature folders; outside code imports a feature only through `index.ts`. Tests, `app/design-kit`, `app/screens`, `scripts`, `e2e`, `lib/design` tooling are outside the map; mapped code may not import them.
   | Layer             | Holds                                  | May import                                                                                   |
   | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |

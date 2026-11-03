@@ -1,7 +1,7 @@
 # Plan: C557: Enforce that providers stay behind ports
 
 - **Spec:** #557
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

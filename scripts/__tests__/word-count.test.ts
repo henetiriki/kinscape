@@ -3,7 +3,12 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { budgetFor, checkFiles, countWords, run } from '../word-count.mts';
+import {
+  budgetFor,
+  checkFiles,
+  countWords,
+  run,
+} from '@ks/scripts/word-count.mts';
 
 const words = (count: number) => Array(count).fill('word').join(' ');
 

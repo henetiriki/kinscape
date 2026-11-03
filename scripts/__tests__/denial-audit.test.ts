@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh, Settings, Transcript } from '../types.ts';
+import type { Gh, Settings, Transcript } from '@ks/scripts/types.ts';
 
 import {
   artifactReader,
@@ -19,7 +19,7 @@ import {
   run,
   settingsReader,
   summarise as summariseRuns,
-} from '../denial-audit.mts';
+} from '@ks/scripts/denial-audit.mts';
 
 const bash = (detail: string) => ({ detail, tool: 'Bash' });
 

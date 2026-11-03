@@ -1,7 +1,7 @@
-import { createPgDb } from '../server/db/database.mts';
-import { parseDirectUrl } from '../server/env.mts';
-import { databaseStore } from '../server/trees/database-store.mts';
-import { ISSUER } from '../server/trees/repository.mts';
+import { createPgDb } from '#ks/server/db/database.mts';
+import { parseDirectUrl } from '#ks/server/env.mts';
+import { databaseStore } from '#ks/server/trees/database-store.mts';
+import { ISSUER } from '#ks/server/trees/repository.mts';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

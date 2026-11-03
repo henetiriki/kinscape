@@ -1,8 +1,8 @@
 import { join } from 'node:path';
 
-import { createPgDb } from '../server/db/database.mts';
-import { migrate } from '../server/db/migrate.mts';
-import { parseDirectUrl } from '../server/env.mts';
+import { createPgDb } from '#ks/server/db/database.mts';
+import { migrate } from '#ks/server/db/migrate.mts';
+import { parseDirectUrl } from '#ks/server/env.mts';
 
 const MIGRATIONS = join(
   import.meta.dirname,

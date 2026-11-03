@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { DesignShotsCiDeps } from '../types.ts';
+import type { DesignShotsCiDeps } from '@ks/scripts/types.ts';
 
 import {
   check,
@@ -9,7 +9,7 @@ import {
   run,
   source as sourceCheck,
   summary,
-} from '../design-shots-ci.mts';
+} from '@ks/scripts/design-shots-ci.mts';
 
 const status = (...entries: string[]) => entries.join('\0') + '\0';
 

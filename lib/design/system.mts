@@ -1,17 +1,17 @@
 /** `design/tokens.json`, `DESIGN.md` and the font list as the files of KinScape's design system (Spec #445). */
 
-import type { Tree } from '../../design/types.ts';
+import type { Tree } from '#ks/design/types.ts';
 import type {
   SystemFile,
   SystemFont,
   SystemGroup,
   SystemToken,
   SystemTokens,
-} from './types.ts';
+} from '#ks/lib/design/types.ts';
 
-import { isTree, REFERENCE } from '../../design/tokens.mts';
-import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from './bundle.mts';
-import { cssName, familyName } from './css.mts';
+import { isTree, REFERENCE } from '#ks/design/tokens.mts';
+import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
+import { cssName, familyName } from '#ks/lib/design/css.mts';
 
 /** The `DESIGN.md` sections the README holds, in this order. */
 export const README_SECTIONS = [

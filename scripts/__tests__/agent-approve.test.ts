@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh } from '../types.ts';
+import type { Gh } from '@ks/scripts/types.ts';
 
-import { run } from '../agent-approve.mts';
+import { run } from '@ks/scripts/agent-approve.mts';
 
 const ENV = {
   APPROVER: 'tech-lead',

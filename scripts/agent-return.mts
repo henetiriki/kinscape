@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
 // Hands an issue back to the tech lead when a plan or build run ends on Claude's turn (see
 // claude-run.yml, whose `return` job calls this once the run, or the gate that stops it, has ended).

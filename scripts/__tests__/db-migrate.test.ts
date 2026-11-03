@@ -3,8 +3,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createTestDb } from '../../server/db/__tests__/pglite.ts';
-import { run } from '../db-migrate.mts';
+import { run } from '@ks/scripts/db-migrate.mts';
+import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
 
 const env = {
   KINSCAPE_DATABASE_DIRECT_URL: 'postgres://direct@localhost/db',

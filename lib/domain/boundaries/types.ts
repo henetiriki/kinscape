@@ -5,7 +5,7 @@ import type {
   nameRow,
   polityRow,
   sourceRow,
-} from './schemas.mts';
+} from '@ks/lib/domain/boundaries/schemas.mts';
 
 export type BoundaryData = {
   boundaries: BoundaryVersion[];

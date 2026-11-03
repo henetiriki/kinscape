@@ -1,6 +1,6 @@
 /** The design system's `tokens.json` rules (Spec #445 › Type format). A reader drops what breaks one. */
 
-import type { SystemToken, SystemTokens } from './types.ts';
+import type { SystemToken, SystemTokens } from '#ks/lib/design/types.ts';
 
 const NAME = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$/;
 const HEX = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;

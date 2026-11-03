@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import type { Approval } from './types.ts';
+import type { Approval } from '#ks/scripts/types.ts';
 
 // Usage: npm run plan-approve -- <plan file> <reviewer login> D1=A "D2=other: <text>"
 const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;

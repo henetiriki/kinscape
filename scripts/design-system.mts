@@ -11,8 +11,8 @@ import { basename, dirname, join, resolve } from 'node:path';
 import ts from 'typescript';
 import { build } from 'vite';
 
-import type { Tree } from '../design/types.ts';
-import type { Control, Docs } from '../lib/design/types.ts';
+import type { Tree } from '#ks/design/types.ts';
+import type { Control, Docs } from '#ks/lib/design/types.ts';
 
 import {
   BUNDLE_CSS,
@@ -27,7 +27,7 @@ import {
   gatherTypes,
   JSX_SHIM,
   NAMESPACE,
-} from '../lib/design/bundle.mts';
+} from '#ks/lib/design/bundle.mts';
 import {
   checkPreview,
   checkReadme,
@@ -35,8 +35,8 @@ import {
   designBullets,
   firstSentence,
   previewHtml,
-} from '../lib/design/cards.mts';
-import { CARDS } from '../lib/design/states.mts';
+} from '#ks/lib/design/cards.mts';
+import { CARDS } from '#ks/lib/design/states.mts';
 import {
   fontFiles,
   readme,
@@ -45,7 +45,7 @@ import {
   systemIndex,
   systemTokens,
   unicodeRange,
-} from '../lib/design/system.mts';
+} from '#ks/lib/design/system.mts';
 
 const OUTPUT = '.design-system';
 // Vite resolves the entry against the root, so the entry's id is a path that never exists.

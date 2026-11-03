@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
 
-import type { Gh } from './types.ts';
+import type { Gh } from '#ks/scripts/types.ts';
 
 // Runs when an issue closes (claude-unblock.yml). For each issue it was blocking (GitHub's "blocked
 // by" links) that has no other open blocker left:

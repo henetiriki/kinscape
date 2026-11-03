@@ -6,14 +6,14 @@ import { join } from 'node:path';
 import type {
   BoundaryData,
   BoundaryVersion,
-} from '../../lib/domain/boundaries/types.ts';
+} from '#ks/lib/domain/boundaries/types.ts';
 
 import {
   boundaryFeature,
   nameRow,
   polityRow,
   sourceRow,
-} from '../../lib/domain/boundaries/schemas.mts';
+} from '#ks/lib/domain/boundaries/schemas.mts';
 
 type LoadResult = { data: BoundaryData; errors: string[] };
 

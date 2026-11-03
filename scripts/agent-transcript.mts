@@ -10,7 +10,7 @@ import {
 } from 'node:fs';
 import { dirname } from 'node:path';
 
-import type { Transcript } from './types.ts';
+import type { Transcript } from '#ks/scripts/types.ts';
 
 type Block = {
   id?: string;

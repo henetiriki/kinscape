@@ -15,7 +15,7 @@ import {
   parseTranscript,
   readSummary,
   run,
-} from '../agent-transcript.mts';
+} from '@ks/scripts/agent-transcript.mts';
 
 const init = { model: 'claude-opus-5-5', subtype: 'init', type: 'system' };
 

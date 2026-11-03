@@ -3,9 +3,9 @@ import type { Dialect } from 'kysely';
 import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
 import pg from 'pg';
 
-import type { Database } from './types.ts';
+import type { Database } from '#ks/server/db/types.ts';
 
-import { parseEnv } from '../env.mts';
+import { parseEnv } from '#ks/server/env.mts';
 
 /** Tables are snake_case in SQL and camelCase in code. */
 export const createDb = (dialect: Dialect) =>

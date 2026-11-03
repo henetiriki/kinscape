@@ -2,8 +2,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { targetOf } from '../layers.mts';
-import { invisible } from '../vercel-ignore.mts';
+import { targetOf } from '@ks/scripts/layers.mts';
+import { invisible } from '@ks/scripts/vercel-ignore.mts';
 
 // Vercel skips a deployment when only invisible paths change, so shipped code
 // must not depend on one (C291).
@@ -79,6 +79,7 @@ describe('violations', () => {
   it.each([
     ['a relative import', 'lib/a.mts', "import { x } from '../scripts/s.mts';"],
     ['a @ks/ import', 'app/a.tsx', "import { x } from '@ks/e2e/helper';"],
+    ['a #ks/ import', 'lib/a.mts', "import { x } from '#ks/scripts/s.mts';"],
     [
       'a dynamic import',
       'app/a.tsx',

@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh } from '../types.ts';
+import type { Gh } from '@ks/scripts/types.ts';
 
-import { run } from '../issue-status.mts';
+import { run } from '@ks/scripts/issue-status.mts';
 
 const REPO = 'owner/repo';
 const PO = 'status: ready-for-po';

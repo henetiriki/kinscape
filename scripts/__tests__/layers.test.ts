@@ -13,7 +13,7 @@ import {
   MODULE_CALL,
   SOURCE_EXTENSION,
   targetOf,
-} from '../layers.mts';
+} from '@ks/scripts/layers.mts';
 
 // NFR-09. The same file types as the lint rule's globs in eslint.config.mjs.
 const ROOTS = ['app', 'design', 'lib', 'features', 'server'];
@@ -249,8 +249,9 @@ describe('layerOf', () => {
 });
 
 describe('targetOf', () => {
-  it('reads @ks/ and relative specifiers as repo paths', () => {
+  it('reads @ks/, #ks/ and relative specifiers as repo paths', () => {
     expect(targetOf('lib/domain/a.ts', '@ks/server/db')).toBe('server/db');
+    expect(targetOf('lib/domain/a.mts', '#ks/server/db')).toBe('server/db');
     expect(targetOf('lib/domain/a.ts', './b')).toBe('lib/domain/b');
   });
 
@@ -438,6 +439,12 @@ describe('layerBreak', () => {
       '@ks/features/map/style',
       'Layer rule: import features/map through its index.ts.',
     ],
+    [
+      'a #ks/ import of a higher layer',
+      'lib/domain/a.mts',
+      '#ks/server/db.mts',
+      'lib/domain may not import server',
+    ],
   ])('fires in %s', (_layer, file, specifier, text) => {
     expect(layerBreak(file, specifier)).toContain(text);
   });
@@ -466,6 +473,7 @@ describe('layerBreak', () => {
     ['features', 'features/map/a.ts', '@ks/server/db'],
     ['features', 'features/map/a.ts', '@ks/app/components/forms/X'],
     ['features', 'features/map/a.ts', './b'],
+    ['a #ks/ import of a lower layer', 'server/a.mts', '#ks/lib/domain/a.mts'],
     ['app/ routes', 'app/page.tsx', '@ks/features/map'],
     ['app/ routes', 'app/page.tsx', '@ks/features/map/index'],
     ['app/ routes', 'app/page.tsx', '@ks/features/map/'],

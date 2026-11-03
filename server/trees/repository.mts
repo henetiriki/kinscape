@@ -1,7 +1,7 @@
-import type { TreeStore, Viewer } from '../../lib/domain/trees/types.ts';
-import type { TreeRepository } from './types.ts';
+import type { TreeStore, Viewer } from '#ks/lib/domain/trees/types.ts';
+import type { TreeRepository } from '#ks/server/trees/types.ts';
 
-import { err, ok } from '../../lib/domain/result/result.mts';
+import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 /** The Account issuer for Supabase sign-in; M2.5's session adapter matches it. */
 export const ISSUER = 'supabase';

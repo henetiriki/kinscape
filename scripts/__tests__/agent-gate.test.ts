@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Gh } from '../types.ts';
+import type { Gh } from '@ks/scripts/types.ts';
 
-import { run } from '../agent-gate.mts';
+import { run } from '@ks/scripts/agent-gate.mts';
 
 const ENV = { GH_REPO: 'owner/repo' };
 

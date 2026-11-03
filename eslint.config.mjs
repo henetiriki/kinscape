@@ -7,14 +7,9 @@ import packageJson from 'eslint-plugin-package-json';
 import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
-import { plugin as layers } from './scripts/layers.mts';
-import { NODE_MESSAGE, nodeLoadedFiles } from './scripts/node-loaded.mts';
+import { plugin as layers } from '#ks/scripts/layers.mts';
 
-const RELATIVE = {
-  message:
-    'Import by full path through @ks/, as in @ks/app/components/<folder>/<Name>.',
-  regex: String.raw`^\.{1,2}/`,
-};
+const RELATIVE = String.raw`^\.{1,2}/`;
 
 const ARROW_FUNCTIONS = [
   {
@@ -84,7 +79,7 @@ export default defineConfig([
             'ts-equals-import',
             'unknown',
           ],
-          internalPattern: ['^~/.+', '^@ks/.+'],
+          internalPattern: ['^~/.+', '^@ks/.+', '^#ks/.+'],
         },
       ],
     },
@@ -152,12 +147,6 @@ export default defineConfig([
     rules: { 'import/no-default-export': 'off' },
   },
   {
-    // Import by full path, so a move can't leave a stale relative one. Each block replaces
-    // the rule's options, so each lists every pattern that applies to its files.
-    files: ['**/*.{js,jsx,mjs,mts,ts,tsx}'],
-    rules: { 'no-restricted-imports': ['error', { patterns: [RELATIVE] }] },
-  },
-  {
     // The layer map in docs/architecture.md, read from scripts/layers.mts.
     files: [
       'app/**/*.{cjs,cts,js,jsx,mjs,mts,ts,tsx}',
@@ -170,22 +159,45 @@ export default defineConfig([
     rules: { 'layers/imports': 'error' },
   },
   {
-    // Node loads these files without aliases, so they import relatively.
-    files: nodeLoadedFiles(),
-    rules: { 'no-restricted-imports': 'off' },
-  },
-  {
-    files: nodeLoadedFiles(),
-    ignores: ['**/__tests__/**'],
+    // Import by full path, so a move can't leave a stale relative one. Node resolves `#ks/` and
+    // ignores tsconfig `paths`; the bundlers and TypeScript resolve `@ks/`. Each block replaces
+    // the rule's options, so each lists every pattern that applies to its files.
+    files: ['**/*.{mts,mjs}'],
     rules: {
-      '@typescript-eslint/no-restricted-imports': [
+      'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              allowTypeImports: true,
-              group: ['@ks/**'],
-              message: NODE_MESSAGE,
+              message:
+                'Import by full path through #ks/, as in #ks/lib/domain/<folder>/<name>.mts.',
+              regex: RELATIVE,
+            },
+            {
+              message:
+                'Node loads this file and ignores tsconfig paths: use #ks/, not @ks/.',
+              regex: String.raw`^@ks/`,
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              message:
+                'Import by full path through @ks/, as in @ks/app/components/<folder>/<Name>.',
+              regex: RELATIVE,
+            },
+            {
+              message: 'Use @ks/ in this file; #ks/ is for .mts and .mjs.',
+              regex: String.raw`^#ks/`,
             },
           ],
         },

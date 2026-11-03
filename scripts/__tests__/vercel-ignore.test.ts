@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { invisible, run } from '../vercel-ignore.mts';
+import { invisible, run } from '@ks/scripts/vercel-ignore.mts';
 
 const TOKEN = 'github_pat_synthetic_not_a_real_token';
 const SLUG = 'example-owner/example-repo';

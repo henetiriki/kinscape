@@ -12,7 +12,7 @@ import { pathToFileURL } from 'node:url';
 import { format } from 'prettier';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { CanvasSnapshot } from '../types.ts';
+import type { CanvasSnapshot } from '@ks/scripts/types.ts';
 
 import {
   exportSnapshots,
@@ -26,8 +26,8 @@ import {
   readCanvasExport,
   snapshotProblems,
   tokenColours,
-} from '../design-export.mts';
-import { screenNames, snapshotNames } from '../design-shots.mts';
+} from '@ks/scripts/design-export.mts';
+import { screenNames, snapshotNames } from '@ks/scripts/design-shots.mts';
 
 const DESKTOP = { height: 900, width: 1440 };
 

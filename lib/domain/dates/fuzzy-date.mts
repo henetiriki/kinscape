@@ -91,14 +91,20 @@ const build = (
   date2?: string
 ): FuzzyDate => {
   const first = firstDay(date1);
-  const last = lastDay(date2 ?? date1);
+  const end = date2 ?? date1;
+  const last = lastDay(end);
+  // Month and year precision end on the last day of the moved period.
+  const lastAfter = (years: number): string =>
+    end.split('-').length === 3
+      ? shiftYears(last, years)
+      : lastDay(`${pad(Number(end.slice(0, 4)) + years, 4)}${end.slice(4)}`);
   const [earliest, latest] = {
-    ABT: [shiftYears(first, -NEAR_YEARS), shiftYears(last, NEAR_YEARS)],
-    AFT: [shiftDays(last, 1), shiftYears(last, FAR_YEARS)],
+    ABT: [shiftYears(first, -NEAR_YEARS), lastAfter(NEAR_YEARS)],
+    AFT: [shiftDays(last, 1), lastAfter(FAR_YEARS)],
     BEF: [shiftYears(first, -FAR_YEARS), shiftDays(first, -1)],
     BET: [first, last],
-    CAL: [shiftYears(first, -NEAR_YEARS), shiftYears(last, NEAR_YEARS)],
-    EST: [shiftYears(first, -NEAR_YEARS), shiftYears(last, NEAR_YEARS)],
+    CAL: [shiftYears(first, -NEAR_YEARS), lastAfter(NEAR_YEARS)],
+    EST: [shiftYears(first, -NEAR_YEARS), lastAfter(NEAR_YEARS)],
     EXACT: [first, last],
     FROM: [first, last],
   }[qualifier];

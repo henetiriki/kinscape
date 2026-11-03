@@ -48,6 +48,12 @@ describe('parseFuzzyDate qualifiers', () => {
     expect(span('AFT 15 MAR 1850')).toEqual(['1850-03-16', '1900-03-15']);
   });
 
+  it('a month shifted into a leap year ends on its last day', () => {
+    expect(span('ABT FEB 1850')).toEqual(['1848-02-01', '1852-02-29']);
+    expect(span('AFT FEB 1854')).toEqual(['1854-03-01', '1904-02-29']);
+    expect(span('ABT 29 FEB 1904')).toEqual(['1902-02-28', '1906-02-28']);
+  });
+
   it('BET and FROM run from date 1 first day to date 2 last day', () => {
     expect(span('BET 1848 AND 1852')).toEqual(['1848-01-01', '1852-12-31']);
     expect(span('FROM 1840 TO 1855')).toEqual(['1840-01-01', '1855-12-31']);

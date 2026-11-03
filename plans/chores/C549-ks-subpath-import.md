@@ -1,7 +1,7 @@
 # Plan: C549: Use the `#ks/` subpath import in `.mts` and `.mjs` files
 
 - **Spec:** #549
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The Chore keys rules to `{mts,mjs}` and `{ts,tsx}`; `RELATIVE` covers `.js` and 
 - **B.** Join the `{ts,tsx}` block: Next bundles them.
 - **Other:** your own.
 
-Recommended: B, because it keeps today's relative-import ban.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

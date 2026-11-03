@@ -101,5 +101,7 @@ export default defineConfig({
       },
     ],
     setupFiles: ['./vitest.setup.ts'],
+    // Each database test starts a PGlite (WASM Postgres), which takes seconds on a busy runner.
+    testTimeout: 30_000,
   },
 });

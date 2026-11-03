@@ -1,7 +1,7 @@
 # Plan: C551: Stop `.mts` and `.mjs` files value-importing `.ts` files
 
 - **Spec:** #551
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The new pattern misses `'#ks/lib/ui/hatch'`, which Node can't resolve either. No
 - **B.** Also reject a `#ks/` path with no extension, with a test.
 - **Other:** your own.
 
-Recommended: A, because nothing needs B today; B can be its own Chore.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

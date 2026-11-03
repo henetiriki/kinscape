@@ -147,6 +147,29 @@ export const runTreeStoreContract = (
     });
 
     // NFR-03
+    it('treats an id that is not a UUID as one that matches nothing', async () => {
+      await withStore(async store => {
+        const added = await store.addAccount({
+          issuer: 'test',
+          subject: 'a',
+          treeName: 'Tree A',
+        });
+
+        if (!added.ok) {
+          throw new Error('setup failed');
+        }
+
+        expect(await store.findTrees('not-a-uuid')).toEqual([]);
+        expect(await store.findTree('not-a-uuid', added.value.treeId)).toBe(
+          undefined
+        );
+        expect(await store.findTree(added.value.accountId, 'not-a-uuid')).toBe(
+          undefined
+        );
+      });
+    });
+
+    // NFR-03
     it('gives an Account with no Tree an empty list', async () => {
       await withStore(
         async store => {

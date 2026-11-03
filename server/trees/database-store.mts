@@ -2,8 +2,9 @@ import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 import type { createDb } from '#ks/server/db/database.mts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { isUuid } from '#ks/server/trees/uuid.mts';
 
-/** A TreeStore over Postgres. */
+/** A TreeStore over Postgres. A read given an id that isn't a UUID finds nothing, as in memory. */
 export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
   addAccount: ({ issuer, subject, treeName }) =>
     db.transaction().execute(async trx => {
@@ -41,19 +42,23 @@ export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
       .select('id')
       .executeTakeFirst(),
   findTree: async (accountId, treeId) =>
-    db
-      .selectFrom('tree')
-      .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
-      .where('treeAccount.accountId', '=', accountId)
-      .where('tree.id', '=', treeId)
-      .select(['tree.id', 'tree.name'])
-      .executeTakeFirst(),
+    isUuid(accountId) && isUuid(treeId)
+      ? db
+          .selectFrom('tree')
+          .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
+          .where('treeAccount.accountId', '=', accountId)
+          .where('tree.id', '=', treeId)
+          .select(['tree.id', 'tree.name'])
+          .executeTakeFirst()
+      : undefined,
   findTrees: async accountId =>
-    db
-      .selectFrom('tree')
-      .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
-      .where('treeAccount.accountId', '=', accountId)
-      .orderBy('tree.id')
-      .select(['tree.id', 'tree.name'])
-      .execute(),
+    isUuid(accountId)
+      ? db
+          .selectFrom('tree')
+          .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
+          .where('treeAccount.accountId', '=', accountId)
+          .orderBy('tree.id')
+          .select(['tree.id', 'tree.name'])
+          .execute()
+      : [],
 });

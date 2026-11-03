@@ -29,9 +29,9 @@ export type TreeStore = {
     issuer: string,
     subject: string
   ) => Promise<Account | undefined>;
-  /** The Tree only if the Account may access it; otherwise undefined, as for a missing Tree. */
+  /** The Tree only if the Account may access it; otherwise undefined, as for a missing Tree or an id that isn't a UUID. */
   findTree: (accountId: string, treeId: string) => Promise<Tree | undefined>;
-  /** The Account's Trees ordered by id; empty for an Account with none or an unknown id. */
+  /** The Account's Trees ordered by id; empty for an Account with none, an unknown id or an id that isn't a UUID. */
   findTrees: (accountId: string) => Promise<Tree[]>;
 };
 

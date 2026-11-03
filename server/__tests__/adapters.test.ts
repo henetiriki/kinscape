@@ -60,7 +60,8 @@ describe('appAdapters', () => {
       'https://example.supabase.co/auth/v1/token?grant_type=password',
       expect.anything()
     );
-    expect(store).toHaveProperty('findAccount');
+    // Port 1 refuses the connection; a memory store would resolve `undefined`.
+    await expect(store.findAccount('supabase', 'x')).rejects.toThrow();
 
     fetch.mockRestore();
     await db().destroy();

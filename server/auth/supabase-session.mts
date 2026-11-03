@@ -8,6 +8,9 @@ export const ISSUER = 'supabase';
 const TIMEOUT_MS = 5000;
 const answer = z.object({ user: z.object({ id: z.string().min(1) }) });
 
+const isTimeout = (error: unknown) =>
+  error instanceof DOMException && error.name === 'TimeoutError';
+
 type Options = {
   fetch?: typeof globalThis.fetch;
   key: string;
@@ -24,28 +27,41 @@ export const supabaseSession = ({
   url,
 }: Options): SessionPort => ({
   verify: async (email, password) => {
-    const response = await send(`${url}/auth/v1/token?grant_type=password`, {
-      body: JSON.stringify({ email, password }),
-      headers: { apikey: key, 'content-type': 'application/json' },
-      method: 'POST',
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-    }).catch((error: unknown) => {
+    const response = await send(
+      `${url.replace(/\/$/, '')}/auth/v1/token?grant_type=password`,
+      {
+        body: JSON.stringify({ email, password }),
+        headers: { apikey: key, 'content-type': 'application/json' },
+        method: 'POST',
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      }
+    ).catch((error: unknown) => {
       throw new Error(
-        error instanceof DOMException && error.name === 'TimeoutError'
+        isTimeout(error)
           ? 'Supabase Auth timed out'
           : 'Supabase Auth could not be reached'
       );
     });
 
-    if (response.status === 400) {
-      return undefined;
-    }
-
     if (!response.ok) {
+      await response.body?.cancel();
+
+      if (response.status === 400) {
+        return undefined;
+      }
+
       throw new Error(`Supabase Auth answered ${response.status}`);
     }
 
-    const parsed = answer.safeParse(await response.json().catch(() => null));
+    const parsed = answer.safeParse(
+      await response.json().catch((error: unknown) => {
+        if (isTimeout(error)) {
+          throw new Error('Supabase Auth timed out');
+        }
+
+        return null;
+      })
+    );
 
     if (!parsed.success) {
       throw new Error('Supabase Auth sent an unreadable answer');

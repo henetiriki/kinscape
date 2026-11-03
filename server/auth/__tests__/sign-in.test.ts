@@ -178,6 +178,45 @@ describe('supabaseSession', () => {
     );
   });
 
+  it('throws "timed out" when the body stalls past the timeout', async () => {
+    const body = new ReadableStream({
+      start: controller =>
+        controller.error(new DOMException('slow', 'TimeoutError')),
+    });
+
+    await expect(
+      supabase(async () => new Response(body)).verify(EMAIL, PASSWORD)
+    ).rejects.toThrow('Supabase Auth timed out');
+  });
+
+  it('cancels the body of a refusal or an error status', async () => {
+    for (const status of [400, 500]) {
+      const cancel = vi.fn();
+      const body = new ReadableStream({ cancel });
+      const verify = supabase(
+        async () => new Response(body, { status })
+      ).verify(EMAIL, PASSWORD);
+
+      await verify.catch(() => undefined);
+
+      expect(cancel).toHaveBeenCalled();
+    }
+  });
+
+  it('builds the URL once when the base ends in a slash', async () => {
+    const fetch = vi.fn(reply(200, { user: { id: 'sub-ada' } }));
+
+    await supabaseSession({
+      fetch,
+      key: 'publishable-key',
+      url: 'https://x.test/',
+    }).verify(EMAIL, PASSWORD);
+
+    const [url] = fetch.mock.calls[0] as unknown as [string];
+
+    expect(url).toBe('https://x.test/auth/v1/token?grant_type=password');
+  });
+
   it('throws without the cause on another network failure', async () => {
     const fetch = async () => {
       throw new Error(`connect failed for ${EMAIL}`);

@@ -111,7 +111,7 @@ jobs:
     name: Build
     needs: approve
     if: needs.approve.outputs.go == 'true'
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@00b1ba240a0b6b9c0fa60acbc7481b435c7112f3
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@705615d42bcf917a838018eafbf610670947b405
     with:
       thread: ${{ github.event.pull_request.number }}
       # Check out the plan PR's branch, at the commit the approval recorded.

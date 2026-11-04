@@ -1,7 +1,7 @@
 # Plan: C584: CI agents authenticate with a GitHub App
 
 - **Chore:** #584
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@
 - **B.** The script lists them; the doc links to it.
 - **Other:** your own.
 
-Recommended: A: the issue names the table, and each name stays in one place.
+**Answer: B** (@henetiriki)
 
 **D2 · Proving a workflow push is refused** · Decides: Tech lead
 
@@ -23,7 +23,7 @@ Recommended: A: the issue names the table, and each name stays in one place.
 - **B.** The tech lead tries it after merge.
 - **Other:** your own.
 
-Recommended: A: the build's token is the one to prove; a refused push changes nothing.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

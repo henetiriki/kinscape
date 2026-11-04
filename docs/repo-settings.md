@@ -101,7 +101,6 @@ The names are listed in `scripts/check-github.sh` (`expected_secrets`, `expected
 
 ### Apps
 
-| App                               | Access                                  | Notes                                                                                                                                       |
-| --------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude (`kinscape-agent[bot]`)    | GitHub App, installed on this repo only | Runs the CI agent and `@claude` with a token minted per job. Permissions: Contents, Issues, Pull requests and Workflows write; Actions read |
-| Claude GitHub App (`claude[bot]`) | Installed on this repo                  | Runs the code review                                                                                                                        |
+| App                            | Access                                  | Notes                                                                                                                                       |
+| ------------------------------ | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude (`kinscape-agent[bot]`) | GitHub App, installed on this repo only | Runs the CI agent and `@claude` with a token minted per job. Permissions: Contents, Issues, Pull requests and Workflows write; Actions read |

@@ -91,7 +91,7 @@ jobs:
 
       # The rules and settings come from main (scripts/__tests__/load-agent-files.test.ts checks the pin).
       - name: Load the refresh rules and settings
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@10bbf48497442acf32bbab6465b1b5a5a4badc9f
         with:
           files: rules.md refresh.md
           settings: refresh-settings.json

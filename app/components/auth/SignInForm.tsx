@@ -33,8 +33,20 @@ export const SignInForm = ({
   const phone = usePhone();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [missing, setMissing] = useState({ email: false, password: false });
   const [state, submit, pending] = useActionState(
     async (previous: SignInState, data: FormData) => {
+      const blank = {
+        email: String(data.get('email')).trim() === '',
+        password: String(data.get('password')) === '',
+      };
+
+      setMissing(blank);
+
+      if (blank.email || blank.password) {
+        return undefined;
+      }
+
       const next = await action(previous, data);
 
       if (next === 'refused') {
@@ -51,7 +63,8 @@ export const SignInForm = ({
     <form
       action={submit}
       className={styles.form}
-      data-form={phone ? 'phone' : 'desktop'}>
+      data-form={phone ? 'phone' : 'desktop'}
+      noValidate>
       <div className={styles.head}>
         {phone ? (
           <Text as='h1' variant='h1Phone'>
@@ -72,10 +85,14 @@ export const SignInForm = ({
       <div className={styles.fields}>
         <TextField
           autoComplete='username'
+          error={missing.email ? 'Enter your email.' : undefined}
           label='Email'
           mark={refused ? 'error' : undefined}
           name='email'
-          onChange={event => setEmail(event.target.value)}
+          onChange={event => {
+            setEmail(event.target.value);
+            setMissing(current => ({ ...current, email: false }));
+          }}
           placeholder='you@example.com'
           required
           size='l'
@@ -84,13 +101,17 @@ export const SignInForm = ({
         />
         <TextField
           autoComplete='current-password'
+          error={missing.password ? 'Enter your password.' : undefined}
           helper={
             refused ? 'Password cleared after a failed attempt.' : undefined
           }
           label='Password'
           mark={refused ? 'error' : undefined}
           name='password'
-          onChange={event => setPassword(event.target.value)}
+          onChange={event => {
+            setPassword(event.target.value);
+            setMissing(current => ({ ...current, password: false }));
+          }}
           required
           size='l'
           type='password'

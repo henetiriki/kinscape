@@ -84,6 +84,30 @@ describe('SignInForm', () => {
     ).toBeTruthy();
   });
 
+  it('marks empty fields instead of using browser validation, and does not call the action', async () => {
+    const action = vi.fn(async (): Promise<SignInState> => undefined);
+    const { container } = render(<SignInForm action={action} />);
+
+    expect(container.querySelector('form')?.noValidate).toBe(true);
+
+    await submit();
+
+    expect(action).not.toHaveBeenCalled();
+    expect(screen.getByText('Enter your email.')).toBeTruthy();
+    expect(screen.getByText('Enter your password.')).toBeTruthy();
+    expect(field('Email').getAttribute('aria-invalid')).toBe('true');
+    expect(field('Password').getAttribute('aria-invalid')).toBe('true');
+
+    type('Email', 'a@example.com');
+
+    expect(screen.queryByText('Enter your email.')).toBeNull();
+    expect(screen.getByText('Enter your password.')).toBeTruthy();
+
+    type('Password', 'x');
+
+    expect(screen.queryByText('Enter your password.')).toBeNull();
+  });
+
   it("shows the can't-sign-in state and keeps both fields", async () => {
     render(<SignInForm action={async () => 'unavailable'} />);
     type('Email', 'researcher@example.com');

@@ -387,7 +387,7 @@ describe('run', () => {
       })
     ).toBe(0);
     expect(labelled()).toHaveLength(0);
-    expect(console.log).toHaveBeenCalledWith('Hand back: no code-owner path.');
+    expect(console.log).toHaveBeenCalledWith('Hand back: no hand-back path.');
   });
 
   it('does nothing when only exempt paths change or are named', () => {

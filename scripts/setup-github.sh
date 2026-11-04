@@ -31,8 +31,8 @@ label "status: ready-for-dev"   "10B981" "Approved, a person picks it up"
 label "status: ready-for-agent" "0EA5E9" "Claude plans it in GitHub Actions"
 label "status: blocked"         "7F1D1D" "Waiting on someone outside the team, or a failed agent run"
 
-# Applied by claude-hand-back.yml to a pull request that changes a code-owner path
-label "hand-back" "B60205" "The tech lead builds this: it changes a code-owner path"
+# Applied by claude-hand-back.yml to a pull request that changes a hand-back path
+label "hand-back" "B60205" "The tech lead builds this: it changes a hand-back path"
 
 # Added by the tech lead to a pull request to start claude-fix-review.yml; the run removes it
 label "fix-review" "FBCA04" "Claude fixes the review's findings on this PR"

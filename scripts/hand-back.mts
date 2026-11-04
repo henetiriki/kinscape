@@ -19,7 +19,7 @@ type View = {
   labels: { name: string }[];
 };
 
-// Code-owner paths that don't hand a PR back; the one place they are listed.
+// Owned paths that don't hand a PR back; the one place they are listed.
 export const EXEMPT = ['server/**', 'scripts/layers.mts'];
 
 const LABEL = 'hand-back';
@@ -206,7 +206,7 @@ export const run = (
     }
   }
 
-  console.log('Hand back: no code-owner path.');
+  console.log('Hand back: no hand-back path.');
 
   return failed ? 1 : 0;
 };

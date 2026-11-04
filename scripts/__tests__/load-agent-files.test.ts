@@ -336,7 +336,7 @@ describe('the refresh job of claude-unblock.yml', () => {
     expect(claude()?.with?.claude_args).toMatch(/^--model sonnet /);
   });
 
-  // The workflow's token can't push, and what it edits starts no run; a PAT could do both.
+  // The workflow's token can't push, and what it edits starts no run; the App token could do both.
   it('runs on main with the workflow token and read access to the code', () => {
     const checkout = refresh().steps.find(step =>
       step.uses?.startsWith('actions/checkout@')
@@ -352,7 +352,9 @@ describe('the refresh job of claude-unblock.yml', () => {
       issues: 'write',
       'pull-requests': 'read',
     });
-    expect(read('claude-unblock.yml')).not.toContain('KINSCAPE_BOT_PAT');
+    expect(read('claude-unblock.yml')).not.toContain(
+      'KINSCAPE_APP_PRIVATE_KEY'
+    );
   });
 
   it('pins claude-code-action to the commit claude-code-review.yml pins', () => {
@@ -785,7 +787,7 @@ describe('the scan step', () => {
   });
 });
 
-// A tag or branch can be moved to other code, and these actions run `npm ci` with the bot PAT.
+// A tag or branch can be moved to other code, and these actions run `npm ci` with the App token.
 // Dependabot bumps a SHA with its tag in the comment; actions-pin-update.yml moves our own.
 describe('the composite actions', () => {
   const ACTIONS = join(root, '.github/actions');

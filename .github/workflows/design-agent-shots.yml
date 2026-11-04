@@ -90,11 +90,19 @@ jobs:
     if: ${{ needs.render.outputs.changed != '0' }}
     runs-on: ubuntu-latest
     steps:
+      # The bot's one-hour token, which the checkout keeps for the push.
+      - name: Mint the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-contents: write
       - name: Check out code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
-          token: ${{ secrets.KINSCAPE_BOT_PAT }}
+          token: ${{ steps.bot.outputs.token }}
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:

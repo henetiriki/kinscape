@@ -101,11 +101,17 @@ actual_links=$(gh api "repos/$REPO/autolinks" --jq '.[] | "\(.key_prefix) \(.url
 check "Requirement autolinks" "$actual_links" "$expected_links"
 
 # The bot variables the workflows read. The values are in setup-github.sh; here the login must be
-# set and the id must be GitHub's for that login.
+# set and the id must be GitHub's for that login. The App's client id is set by hand (docs/repo-settings.md).
 bot_login=$(gh variable get KINSCAPE_BOT_LOGIN --repo "$REPO" 2>/dev/null)
 bot_id=$(gh variable get KINSCAPE_BOT_ID --repo "$REPO" 2>/dev/null)
 check "Bot login variable set"         "$([ -n "$bot_login" ] && echo true || echo false)" "true"
-real_id=$([ -n "$bot_login" ] && gh api "users/$bot_login" --jq .id 2>/dev/null)
+# An App's bot login ends in "[bot]", which the URL needs encoded.
+encoded_login=${bot_login//\[/%5B}; encoded_login=${encoded_login//\]/%5D}
+real_id=$([ -n "$bot_login" ] && gh api "users/$encoded_login" --jq .id 2>/dev/null)
 check "Bot id variable is the login's" "$bot_id" "${real_id:-no id for '$bot_login'}"
+client_id=$(gh variable get KINSCAPE_APP_CLIENT_ID --repo "$REPO" 2>/dev/null)
+check "App client id variable set"     "$([ -n "$client_id" ] && echo true || echo false)" "true"
+# Names only; a secret's value can't be read.
+check "App private key secret set"     "$(gh secret list --repo "$REPO" --json name --jq 'map(.name) | index("KINSCAPE_APP_PRIVATE_KEY") != null' 2>/dev/null)" "true"
 
 exit $fail

@@ -23,7 +23,7 @@ const steps = (file: string, job: string) =>
 const ACTION = 'henetiriki/kinscape/.github/actions/setup-workspace';
 const PINNED = new RegExp(`^${ACTION.replaceAll('.', '\\.')}@[0-9a-f]{40}$`);
 
-// The inputs are strings: `persist-credentials` keeps the PAT for the push that starts CI.
+// The inputs are strings: `persist-credentials` keeps the App token for the push that starts CI.
 const CALLERS = [
   [
     'claude-respond.yml',
@@ -31,7 +31,7 @@ const CALLERS = [
     {
       'persist-credentials': 'true',
       playwright: 'true',
-      token: '${{ secrets.KINSCAPE_BOT_PAT }}',
+      token: '${{ steps.bot.outputs.token }}',
     },
   ],
   [

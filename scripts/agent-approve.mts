@@ -22,7 +22,9 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // a stop comment.
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT, and on `go=true` `head=<sha>`: the commit it
 // made, or the PR head when the plan was already approved. The build checks out that commit and no
-// other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit.
+// other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit. The
+// one exception is a plan already approved whose head is the approval commit made on COMMIT: a
+// second review of the same commit, queued behind the first, goes on as that one did.
 // The commit goes through the Contents API with the plan's blob sha, so the PR head is never
 // checked out and a plan that changed meanwhile is refused. A failed `gh` call is logged,
 // `go=false` is written and the exit code is 1.
@@ -235,11 +237,18 @@ export const run = (
       .filter(path => PLAN.test(path));
     const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
 
-    if (pr.headRefOid !== commit) {
-      return stop(
+    // The head is not the commit the owner read. For a plan already approved there, the head may be
+    // the approval commit this script made on it, which a second review of the same commit finds.
+    const moved = (): boolean =>
+      pr.headRefOid !== commit &&
+      !json<{ parents: { sha: string }[] }>(gh, [
+        'api',
+        `repos/${repo}/commits/${pr.headRefOid}`,
+      ]).parents.some(({ sha: parent }) => parent === commit);
+    const stopMoved = (): number =>
+      stop(
         `- The approval is for \`${commit.slice(0, 7)}\`, but the branch is now at \`${pr.headRefOid.slice(0, 7)}\`. Approve the plan again.`
       );
-    }
 
     if (plans.length !== 1) {
       return stop(
@@ -260,9 +269,17 @@ export const run = (
     const text = Buffer.from(content, 'base64').toString('utf8');
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
+      if (moved()) {
+        return stopMoved();
+      }
+
       console.log(`${file} is already approved.`);
 
       return proceed(handBack, pr.headRefOid);
+    }
+
+    if (pr.headRefOid !== commit) {
+      return stopMoved();
     }
 
     if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {

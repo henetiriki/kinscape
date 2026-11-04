@@ -63,8 +63,8 @@ const permissionsOf = (file: string) =>
 
 // A deny rule, as Claude Code reads one: `*` matches any text, the rule matches the whole command,
 // and a rule ending in ` *` matches the bare command too.
-const deniedBy = (file: string) => (command: string) =>
-  permissionsOf(file).deny.some(rule => {
+const deniedBy = (deny: string[]) => (command: string) =>
+  deny.some(rule => {
     const glob = rule.match(/^Bash\((.+)\)$/)?.[1];
     const pattern = (text: string) =>
       new RegExp(
@@ -84,7 +84,7 @@ const deniedBy = (file: string) => (command: string) =>
 // GitHub calls below; `gh api` sends a POST as soon as a field or a method is given.
 describe('settings.json', () => {
   const { allow, deny } = permissionsOf('settings.json');
-  const denied = deniedBy('settings.json');
+  const denied = deniedBy(deny);
 
   it('installs from the lockfile only', () => {
     expect(allow).toContain('Bash(npm ci:*)');
@@ -101,13 +101,20 @@ describe('settings.json', () => {
     'git config user.name x',
     'git config --get remote.origin.url',
     'git config',
-    // A leading option: `-c` sets any key, `-C` and `--git-dir` point at another repo, `--exec-path` at other programs.
+    // A leading option: `-c` and `--config-env` set any key, `-C`, `--git-dir` and `--work-tree` point
+    // at another repo, `--exec-path` at other programs.
     'git -c core.fsmonitor=x status',
     'git -C /tmp status',
     'git --git-dir=x log',
+    'git --work-tree=/tmp status',
     'git --exec-path=/tmp status',
+    'git --config-env=core.fsmonitor=X status',
+    // These print the origin URL, which carries the App token while Claude runs.
     'git remote -v',
     'git remote set-url origin x',
+    'git ls-remote --get-url origin',
+    'git ls-remote origin --get-url',
+    'git var -l',
     'gh pr review 5 --approve',
     'gh pr merge 5',
     'gh pr close 5',
@@ -134,7 +141,9 @@ describe('settings.json', () => {
   it.each([
     'git status',
     'git log -n 5',
+    'git --no-pager log -n 5',
     'git push origin HEAD',
+    'git ls-remote origin',
     'git add -A',
     'gh pr view 5',
     'gh pr ready 5',
@@ -155,7 +164,7 @@ describe('settings.json', () => {
 // is denied. It reads Specs written outside the team. Which issue it edits is the hook's job (below).
 describe('refresh-settings.json', () => {
   const { allow, deny } = permissionsOf('refresh-settings.json');
-  const denied = deniedBy('refresh-settings.json');
+  const denied = deniedBy(deny);
 
   it('allows reading the repo and issues, and editing and commenting on an issue', () => {
     expect(allow).toEqual([
@@ -393,6 +402,15 @@ describe('the Bash hook', () => {
       ['gh issue edit 5 --body-file body.md', 'a file, not the heredoc'],
       [`${edit('5')}\n${edit('7')}`, 'a second command after the heredoc'],
       [`${edit('5')}\ngh issue view 7`, 'any command after the heredoc'],
+      // The allowlist would pass each part of a compound command on its own.
+      [`gh issue view 5; ${edit('7')}`, 'an edit after another command'],
+      [`gh issue view 5 && ${edit('7')}`, 'an edit after &&'],
+      [
+        'gh issue view 5 | gh issue edit 7 --body-file -',
+        'an edit after a pipe',
+      ],
+      ['echo $(gh issue edit 7 --title x)', 'an edit in a substitution'],
+      ['echo `gh issue edit 7 --title x`', 'an edit in backticks'],
       [edit('5', 'text\nEOF\ngh issue view 7'), 'an EOF line inside the body'],
       [edit('5', ''), 'an empty body'],
       ['gh issue edit 5', 'no body'],
@@ -416,6 +434,9 @@ describe('the Bash hook', () => {
     it.each([
       'gh issue view 5',
       "gh issue comment 5 --body-file - <<'EOF'\n## Refreshed\nEOF",
+      // The words inside a heredoc or quotes are text, not a command.
+      "gh issue comment 5 --body-file - <<'EOF'\nRun gh issue edit later.\nEOF",
+      "git grep -n 'gh issue edit' -- ':!plans'",
       "git grep -n 'x' -- ':!plans'",
       'gh pr diff 1',
     ])('leaves %j to the allowlist', command => {

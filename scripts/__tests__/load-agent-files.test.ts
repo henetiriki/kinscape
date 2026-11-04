@@ -517,18 +517,29 @@ describe('the approved-commit check', () => {
     expect(inputs.head).toMatchObject({ default: '', type: 'string' });
   });
 
-  it('runs after the token is minted and before Claude, only when a head is given', () => {
+  // Right after the checkout: a stop then costs no browser install, no token and no model run.
+  it('runs right after the workspace is set up, with the workflow token, only when a head is given', () => {
+    expect(check()?.id).toBe('head');
     expect(check()?.if).toBe("inputs.head != ''");
     expect(check()?.env).toMatchObject({
-      GH_TOKEN: '${{ steps.bot.outputs.token }}',
+      GH_TOKEN: '${{ github.token }}',
       HEAD: '${{ inputs.head }}',
     });
-    expect(index('Check the branch is at the approved commit')).toBeGreaterThan(
-      index("Mint the bot's token")
+    expect(index('Check the branch is at the approved commit')).toBe(
+      index('Set up the workspace') + 1
     );
-    expect(index('Check the branch is at the approved commit')).toBeLessThan(
-      index('Run Claude Code')
+    expect(index('Install Playwright')).toBeGreaterThan(
+      index('Check the branch is at the approved commit')
     );
+  });
+
+  // The check commented already; the safety net would add "finished without commenting".
+  it('keeps the safety net quiet after a stop', () => {
+    const net = runSteps().find(
+      step => step.name === 'Comment if Claude left none'
+    );
+
+    expect(net?.if).toBe("always() && steps.head.outcome != 'failure'");
   });
 
   it('is fed by the approval: the review commit in, the recorded head out to the build', () => {

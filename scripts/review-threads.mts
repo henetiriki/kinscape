@@ -9,11 +9,19 @@ import type { Gh } from '#ks/scripts/types.ts';
 //                                    `comments`, the PR's last comments; each comment carries its
 //                                    author's `login` and `bot`, so the prompt can tell the reviewer apart
 //   resolve <PR number> <thread id>  resolves that thread, which must be one of the PR's
-// Usage: node scripts/review-threads.mts list|resolve <PR number> [<thread id>], with GH_REPO set.
-// A failed `gh` call is logged and the exit code is 1.
+// Usage: node scripts/review-threads.mts list|resolve <PR number> [<thread id>], with GH_REPO or
+// GITHUB_REPOSITORY (which Actions sets) naming the repo. A failed `gh` call is logged and the
+// exit code is 1. The threads are read page by page; the comments are the last 50.
 
 type Author = { __typename: string; login: string } | null;
 type Comment = { author: Author; body: string; createdAt?: string };
+type Page = {
+  comments: { nodes: Comment[] };
+  reviewThreads: {
+    nodes: Thread[];
+    pageInfo: { endCursor: null | string; hasNextPage: boolean };
+  };
+};
 type Pr = {
   comments: { nodes: Comment[] };
   reviewThreads: { nodes: Thread[] };
@@ -31,10 +39,11 @@ const REPO = /^[\w.-]+\/[\w.-]+$/;
 // A GraphQL node id, as `list` prints it.
 const ID = /^[\w=-]+$/;
 
-const QUERY = `query($owner: String!, $name: String!, $number: Int!) {
+const QUERY = `query($owner: String!, $name: String!, $number: Int!, $after: String) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $number) {
-      reviewThreads(first: 100) {
+      reviewThreads(first: 100, after: $after) {
+        pageInfo { endCursor hasNextPage }
         nodes { id isResolved path line comments(first: 50) { nodes { author { login __typename } body } } }
       }
       comments(last: 50) { nodes { author { login __typename } body createdAt } }
@@ -58,14 +67,32 @@ const graphql = (gh: Gh, query: string, fields: Record<string, string>) =>
     ]),
   ]);
 
+// Every page of review threads (resolved ones take room in a page too) and the first page's comments.
 const read = (gh: Gh, repo: string, number: string): Pr => {
   const [owner, name] = repo.split('/');
+  const fetch = (after?: string): Page =>
+    (
+      JSON.parse(
+        graphql(gh, QUERY, {
+          name,
+          number,
+          owner,
+          ...(after === undefined ? {} : { after }),
+        })
+      ) as { data: { repository: { pullRequest: Page } } }
+    ).data.repository.pullRequest;
+  let page = fetch();
+  const pr: Pr = {
+    comments: page.comments,
+    reviewThreads: { nodes: [...page.reviewThreads.nodes] },
+  };
 
-  return (
-    JSON.parse(graphql(gh, QUERY, { name, number, owner })) as {
-      data: { repository: { pullRequest: Pr } };
-    }
-  ).data.repository.pullRequest;
+  while (page.reviewThreads.pageInfo.hasNextPage) {
+    page = fetch(page.reviewThreads.pageInfo.endCursor ?? undefined);
+    pr.reviewThreads.nodes.push(...page.reviewThreads.nodes);
+  }
+
+  return pr;
 };
 
 const comment = ({ author, body, createdAt }: Comment) => ({
@@ -82,7 +109,7 @@ export const run = (
   out: (text: string) => void
 ): number => {
   const [command, raw, id] = args;
-  const repo = env.GH_REPO ?? '';
+  const repo = env.GH_REPO ?? env.GITHUB_REPOSITORY ?? '';
 
   if (
     (command !== 'list' && command !== 'resolve') ||
@@ -92,7 +119,7 @@ export const run = (
     (id !== undefined && !ID.test(id))
   ) {
     console.error(
-      'Usage: review-threads list|resolve <PR number> [<thread id>], with GH_REPO=<owner>/<repo> set'
+      'Usage: review-threads list|resolve <PR number> [<thread id>], with GH_REPO or GITHUB_REPOSITORY=<owner>/<repo> set'
     );
 
     return 1;

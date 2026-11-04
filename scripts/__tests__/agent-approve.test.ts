@@ -48,6 +48,8 @@ type World = {
   headRefOid?: string;
   // issue number -> its labels; the issue a plan PR closes is on ready-for-dev by default
   issues?: Record<number, string[]>;
+  // The parent of the PR head, read when an approved plan's head is not the review's commit.
+  parent?: string;
   prLabels?: string[];
   reviews?: Item[];
   text?: string;
@@ -71,6 +73,7 @@ describe('run', () => {
     comments = [],
     files = [PATH, 'src/other.ts'],
     issues = { 8: ['type: chore', DEV] },
+    parent = 'p'.repeat(40),
     prLabels = [],
     reviews = [],
     text = plan(),
@@ -117,6 +120,10 @@ describe('run', () => {
 
       if (args[0] === 'api' && args.includes('PUT')) {
         return JSON.stringify({ commit: { sha: MADE } });
+      }
+
+      if (args[0] === 'api' && args[1].includes('/commits/')) {
+        return JSON.stringify({ parents: [{ sha: parent }] });
       }
 
       return '';
@@ -408,12 +415,31 @@ describe('run', () => {
       expect(reply()).toContain('Approve the plan again');
     });
 
-    it('stops a plan already approved too', () => {
+    it('stops a plan already approved whose head moved further', () => {
       fakeGh({ text: plan('approved') });
 
       expect(run(['504'], env, gh, write)).toBe(0);
       expect(written).toEqual(['go=false']);
       expect(reply()).toContain('The approval is for `ccccccc`');
+    });
+
+    // A second review of the same commit, queued behind the first: the head is now the approval
+    // commit the first run made on it, so this one goes on as that one did.
+    it('goes for a plan already approved whose head is the approval commit made on it', () => {
+      fakeGh({ parent: env.COMMIT, text: plan('approved') });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(comments()).toEqual([]);
+      expect(written).toEqual(['go=true', `head=${HEAD}`]);
+    });
+
+    it('reads no parent for a draft plan', () => {
+      fakeGh({ reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')] });
+      run(['504'], env, gh, write);
+
+      expect(
+        gh.mock.calls.filter(([args]) => args[1]?.includes('/commits/'))
+      ).toEqual([]);
     });
   });
 

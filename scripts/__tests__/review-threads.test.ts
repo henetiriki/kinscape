@@ -55,11 +55,16 @@ describe('run', () => {
   let out: ReturnType<typeof vi.fn<(text: string) => void>>;
   let errors: string[];
 
-  const fakeGh = (threads = THREADS) => {
+  // Serves the threads `pageSize` at a time: a query with `after=c<n>` gets page n + 1.
+  const fakeGh = (threads = THREADS, pageSize = 100) => {
     gh = vi.fn<Gh>(args => {
       if (args.some(arg => arg.startsWith('query=mutation'))) {
         return JSON.stringify({ data: { resolveReviewThread: {} } });
       }
+
+      const after = args.find(arg => arg.startsWith('after='));
+      const index = after ? Number(after.slice('after=c'.length)) + 1 : 0;
+      const last = Math.max(0, Math.ceil(threads.length / pageSize) - 1);
 
       return JSON.stringify({
         data: {
@@ -67,10 +72,16 @@ describe('run', () => {
             pullRequest: {
               comments: { nodes: COMMENTS },
               reviewThreads: {
-                nodes: threads.map(({ comments, ...thread }) => ({
-                  ...thread,
-                  comments: { nodes: comments },
-                })),
+                nodes: threads
+                  .slice(index * pageSize, (index + 1) * pageSize)
+                  .map(({ comments, ...thread }) => ({
+                    ...thread,
+                    comments: { nodes: comments },
+                  })),
+                pageInfo: {
+                  endCursor: index < last ? `c${index}` : null,
+                  hasNextPage: index < last,
+                },
               },
             },
           },
@@ -129,7 +140,7 @@ describe('run', () => {
         expect.arrayContaining(['-F', 'owner=owner', 'name=repo', 'number=5'])
       );
       expect(queries()[0].find(arg => arg.startsWith('query='))).toContain(
-        'reviewThreads(first: 100)'
+        'reviewThreads(first: 100, after: $after)'
       );
     });
 
@@ -180,6 +191,33 @@ describe('run', () => {
       expect(run(['list', '5'], ENV, gh, out)).toBe(0);
       expect(JSON.parse(out.mock.calls[0][0]).threads).toEqual([]);
     });
+
+    // Resolved threads take room in a page too, so a long-reviewed PR has more than one.
+    it('reads every page of threads', () => {
+      fakeGh(THREADS, 2);
+
+      expect(run(['list', '5'], ENV, gh, out)).toBe(0);
+      expect(queries()).toHaveLength(2);
+      expect(queries()[0]).not.toEqual(
+        expect.arrayContaining([expect.stringMatching(/^after=/)])
+      );
+      expect(queries()[1]).toEqual(expect.arrayContaining(['-F', 'after=c0']));
+      expect(
+        JSON.parse(out.mock.calls[0][0]).threads.map(
+          ({ id }: { id: string }) => id
+        )
+      ).toEqual(['PRRT_1', 'PRRT_3']);
+    });
+
+    // Actions sets GITHUB_REPOSITORY; the fix-review run's shell has no GH_REPO.
+    it('takes the repo from GITHUB_REPOSITORY when GH_REPO is unset', () => {
+      fakeGh();
+
+      expect(run(['list', '5'], { GITHUB_REPOSITORY: 'o/r' }, gh, out)).toBe(0);
+      expect(queries()[0]).toEqual(
+        expect.arrayContaining(['owner=o', 'name=r'])
+      );
+    });
   });
 
   describe('resolve', () => {
@@ -195,6 +233,13 @@ describe('run', () => {
         'resolveReviewThread'
       );
       expect(out).toHaveBeenCalledWith('Resolved PRRT_1 on #5.');
+    });
+
+    it('resolves a thread on a later page', () => {
+      fakeGh(THREADS, 2);
+
+      expect(run(['resolve', '5', 'PRRT_3'], ENV, gh, out)).toBe(0);
+      expect(mutations()).toHaveLength(1);
     });
 
     it('resolves nothing that is not a thread of the PR', () => {

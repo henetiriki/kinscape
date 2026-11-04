@@ -83,6 +83,17 @@ jobs:
       issues: write
       actions: read # Required for Claude to read CI results on PRs
     steps:
+      # The bot's one-hour token, first because the checkout needs it; the job's timeout keeps it fresh.
+      - name: Mint the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          permission-actions: read
       # Checkout, Node, `npm ci` and the Playwright and Next.js caches: see
       # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude below.
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
@@ -90,9 +101,9 @@ jobs:
       - name: Set up the workspace
         uses: henetiriki/kinscape/.github/actions/setup-workspace@90b8105edc4bfba72baf6a52cd736509ff935c54
         with:
-          # Persist the PAT, not GITHUB_TOKEN: claude-code-action fetches the PR branch before it sets up git auth,
+          # Persist the App token, not GITHUB_TOKEN: claude-code-action fetches the PR branch before it sets up git auth,
           # and runs triggered by a GITHUB_TOKEN push wait for approval.
-          token: ${{ secrets.KINSCAPE_BOT_PAT }}
+          token: ${{ steps.bot.outputs.token }}
           persist-credentials: 'true'
           playwright: 'true'
 
@@ -113,7 +124,7 @@ jobs:
             ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
           additional_permissions: 'actions: read'
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.KINSCAPE_BOT_PAT }}
+          github_token: ${{ steps.bot.outputs.token }}
           bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
           bot_id: ${{ vars.KINSCAPE_BOT_ID }}
 

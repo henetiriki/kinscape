@@ -59,7 +59,7 @@ jobs:
         Fix the review's findings on PR #${{ github.event.pull_request.number }}: follow "Fix a review" in your instructions.
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-      KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}
+      KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
 
   # Removes the label when the run ends, passed or failed, so adding it again starts another round.
   # Nothing counts rounds. A skipped run (a stopped gate still counts as run) leaves the label.

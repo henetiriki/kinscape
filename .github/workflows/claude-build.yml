@@ -61,7 +61,7 @@ jobs:
     concurrency: thread-${{ github.event.pull_request.number }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only to check out main; the bot PAT comments and commits (as claude-run.yml does).
+    # Only to check out main; the bot's App token comments and commits (as claude-run.yml does).
     permissions:
       contents: read
     outputs:
@@ -80,11 +80,20 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
+      # The App token, not GITHUB_TOKEN: a push by GITHUB_TOKEN would start no workflow, so CI would not run on it.
+      - name: Mint the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
       - name: Record the approval
         id: approve
         env:
-          # The PAT, not GITHUB_TOKEN: a push by GITHUB_TOKEN would start no workflow, so CI would not run on it.
-          GH_TOKEN: ${{ secrets.KINSCAPE_BOT_PAT }}
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}
           APPROVER: ${{ github.event.review.user.login }}
           NUMBER: ${{ github.event.pull_request.number }}
@@ -114,4 +123,4 @@ jobs:
         Build it: follow "Build a plan PR" in your instructions. The approver is ${{ github.event.review.user.login }}.
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-      KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}
+      KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}

@@ -23,7 +23,7 @@ const hits = () =>
       '-e',
       'henetiriki',
       '-e',
-      '344434370',
+      '352551460',
       '--',
       '.github',
       'scripts',

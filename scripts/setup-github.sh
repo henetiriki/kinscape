@@ -6,9 +6,10 @@
 # Verify with: ./scripts/check-github.sh
 set -euo pipefail
 REPO="${1:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
-# The bot account the CI agent runs as, set below as repo variables. The one place its values are written.
-BOT_LOGIN=henetiriki-bot
-BOT_ID=344434370
+# The GitHub App's bot the CI agent runs as, set below as repo variables. The one place its values
+# are written. The App's client id and private key are set by hand: docs/repo-settings.md.
+BOT_LOGIN='kinscape-agent[bot]'
+BOT_ID=352551460
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "== Labels"

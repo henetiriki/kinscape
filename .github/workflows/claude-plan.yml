@@ -89,4 +89,4 @@ jobs:
         (the id, not the number). Say so in your comment.
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-      KINSCAPE_BOT_PAT: ${{ secrets.KINSCAPE_BOT_PAT }}
+      KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}

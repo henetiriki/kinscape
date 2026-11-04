@@ -60,7 +60,7 @@ jobs:
       # come from main, not the checked-out branch. The action retries a failed download, then fails the
       # job (Claude doesn't start, and the report step says so), and shows review.md.
       - name: Load review rules and settings
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@10bbf48497442acf32bbab6465b1b5a5a4badc9f
         with:
           files: review.md
           settings: review-settings.json

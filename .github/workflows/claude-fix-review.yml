@@ -21,7 +21,6 @@ run-name: >-
 
 # The label is one click and needs no wording. The push starts the next review through
 # claude-code-review.yml's `synchronize` trigger, so nothing here wires the two together.
-# A skipped run leaves the label on the PR: remove it and add it again to start a run.
 
 on:
   pull_request:

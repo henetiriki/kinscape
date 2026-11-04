@@ -26,3 +26,12 @@ export type SessionStore = {
   removeExpired: (now: Date) => Promise<void>;
   renew: (tokenHash: string, expiresAt: Date) => Promise<void>;
 };
+
+/** Where failed sign-ins are kept, by `emailKey`: a hash, never the email. */
+export type ThrottleStore = {
+  add: (emailKey: string, failedAt: Date) => Promise<void>;
+  /** Deletes every failure before `before`, for all emails. */
+  removeBefore: (before: Date) => Promise<void>;
+  /** The failures for `emailKey` at or after `since`, oldest first. */
+  since: (emailKey: string, since: Date) => Promise<Date[]>;
+};

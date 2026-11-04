@@ -19,6 +19,10 @@ export type Database = {
     expiresAt: Date;
     tokenHash: string;
   };
+  signInFailure: {
+    emailKey: string;
+    failedAt: Date;
+  };
   tree: {
     id: Generated<string>;
     name: string;

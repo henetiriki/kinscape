@@ -43,6 +43,18 @@ describe('appAdapters', () => {
       error: 'refused',
       ok: false,
     });
+
+    const { countFailure, emailKey } =
+      await import('@ks/server/auth/throttle.mts');
+
+    await countFailure(adapters.throttle, new Date(), SYNTHETIC.email);
+
+    expect(
+      await adapters.throttle.since(
+        emailKey(SYNTHETIC.email),
+        new Date(Date.now() - 60_000)
+      )
+    ).toHaveLength(1);
   });
 
   it('refuses to build memory adapters on Vercel', async () => {
@@ -64,7 +76,7 @@ describe('appAdapters', () => {
     const fetch = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response('{}', { status: 400 }));
-    const { session, sessions, store } = appAdapters();
+    const { session, sessions, store, throttle } = appAdapters();
 
     expect(await session.verify('a@example.test', 'pw')).toBeUndefined();
     expect(fetch).toHaveBeenCalledWith(
@@ -74,6 +86,7 @@ describe('appAdapters', () => {
     // Port 1 refuses the connection; a memory store would resolve `undefined`.
     await expect(store.findAccount('supabase', 'x')).rejects.toThrow();
     await expect(sessions.find('x')).rejects.toThrow();
+    await expect(throttle.since('x', new Date())).rejects.toThrow();
 
     fetch.mockRestore();
     await db().destroy();

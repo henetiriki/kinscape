@@ -1,9 +1,15 @@
-import type { SessionPort, SessionStore } from '#ks/lib/domain/auth/types.ts';
+import type {
+  SessionPort,
+  SessionStore,
+  ThrottleStore,
+} from '#ks/lib/domain/auth/types.ts';
 import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 
 import { databaseSessions } from '#ks/server/auth/database-sessions.mts';
+import { databaseThrottle } from '#ks/server/auth/database-throttle.mts';
 import { memorySession } from '#ks/server/auth/memory-session.mts';
 import { memorySessions } from '#ks/server/auth/memory-sessions.mts';
+import { memoryThrottle } from '#ks/server/auth/memory-throttle.mts';
 import { supabaseSession } from '#ks/server/auth/supabase-session.mts';
 import { db } from '#ks/server/db/database.mts';
 import { parseEnv } from '#ks/server/env.mts';
@@ -24,12 +30,13 @@ type Adapters = {
   session: SessionPort;
   sessions: SessionStore;
   store: TreeStore;
+  throttle: ThrottleStore;
 };
 
 let instance: Adapters | undefined;
 
 /**
- * The session port, session store and Tree store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`
+ * The session port, session store, Tree store and throttle store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`
  * (`parseEnv` refuses that on Vercel), otherwise Supabase and the database.
  */
 export const appAdapters = (): Adapters => {
@@ -48,6 +55,7 @@ export const appAdapters = (): Adapters => {
               trees: [{ id: SYNTHETIC.treeId, name: 'Synthetic Tree' }],
             },
           ]),
+          throttle: memoryThrottle(),
         }
       : {
           session: supabaseSession({
@@ -56,6 +64,7 @@ export const appAdapters = (): Adapters => {
           }),
           sessions: databaseSessions(db()),
           store: databaseStore(db()),
+          throttle: databaseThrottle(db()),
         };
   }
 

@@ -934,7 +934,7 @@ describe('the fix-review workflow', () => {
     expect(workflow().on).toEqual({ pull_request: { types: ['labeled'] } });
   });
 
-  it('runs only for the label on an open, ready PR from a branch in this repo', () => {
+  it('runs only for the owner’s label on an open, ready PR from a branch in this repo, not a hand-back', () => {
     const text = flat(jobs().fix.if);
 
     expect(text).toContain("github.event.label.name == 'fix-review'");
@@ -943,8 +943,12 @@ describe('the fix-review workflow', () => {
     expect(text).toContain(
       'github.event.pull_request.head.repo.full_name == github.repository'
     );
-    // A `hand-back` PR is not excluded.
-    expect(text).not.toContain('hand-back');
+    // The tech lead builds a `hand-back` PR (plans/README.md rule 4), so no agent fixes it.
+    expect(text).toContain(
+      "!contains(github.event.pull_request.labels.*.name, 'hand-back')"
+    );
+    // Only the tech lead starts a write-enabled run, as claude-plan.yml has it.
+    expect(text).toContain('github.actor == github.repository_owner');
   });
 
   it('shows "Fix review" or "Skipped Fix review" with the title, on the job’s condition', () => {

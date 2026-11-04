@@ -305,7 +305,7 @@ describe('run', () => {
     ]);
   });
 
-  it('labels a PR whose diff changes a code-owner path', () => {
+  it('labels a PR whose diff changes a hand-back path', () => {
     expect(
       go({
         files: [
@@ -329,7 +329,7 @@ describe('run', () => {
     expect(fetched()).toHaveLength(0);
   });
 
-  it('labels on a renamed file whose old path was a code-owner path', () => {
+  it('labels on a renamed file whose old path was a hand-back path', () => {
     go({
       files: [
         {
@@ -343,7 +343,7 @@ describe('run', () => {
     expect(labelled()).toHaveLength(1);
   });
 
-  it('labels when only a changed plan names a code-owner path (#426)', () => {
+  it('labels when only a changed plan names a hand-back path (#426)', () => {
     expect(
       go({
         files: [

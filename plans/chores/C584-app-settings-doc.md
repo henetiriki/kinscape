@@ -5,7 +5,7 @@
 
 ## Approach
 
-`docs/repo-settings.md` gets a _Secrets and variables_ table (name, set by, read by), replacing the two bot rows in _What's set and why_, and splits _Accounts and access_ into People and Apps. `check-github.sh` compares the repo's secret and variable names with that table and prints them; the two "is set" checks go, as the names check covers them. Names only; no value is read.
+`docs/repo-settings.md` gets a _Secrets and variables_ table (name, set by, read by), replacing the two bot rows in _What's set and why_, and splits _Accounts and access_ into People and Apps. `check-github.sh` lists the expected secret and variable names itself (D1: B), compares them with the repo's and prints them; the doc's table links to the script; the two "is set" checks go, as the names check covers them. Names only; no value is read.
 
 ## Decisions
 

@@ -109,8 +109,9 @@ encoded_login=${bot_login//\[/%5B}; encoded_login=${encoded_login//\]/%5D}
 real_id=$([ -n "$bot_login" ] && gh api "users/$encoded_login" --jq .id 2>/dev/null)
 check "Bot id variable is the login's" "$bot_id" "${real_id:-no id for '$bot_login'}"
 
-# The repo's secret and variable names must match docs/repo-settings.md exactly (names only; no value
-# is read). An unreadable list gives "", which fails. The agent's token can't list secrets: run as admin.
+# The repo's secret and variable names must be exactly these (names only; no value is read). The
+# _Secrets and variables_ table in docs/repo-settings.md links here; keep it in step.
+# An unreadable list gives "", which fails. The agent's token can't list secrets: run as admin.
 expected_secrets="CLAUDE_CODE_OAUTH_TOKEN,CODECOV_TOKEN,KINSCAPE_APP_PRIVATE_KEY"
 expected_variables="KINSCAPE_APP_CLIENT_ID,KINSCAPE_BOT_ID,KINSCAPE_BOT_LOGIN"
 actual_secrets=$(gh secret list --repo "$REPO" --json name --jq 'map(.name) | sort | join(",")' 2>/dev/null)

@@ -45,6 +45,19 @@ test('a forged session cookie shows the sign-in page, not the map', async ({
 });
 
 // NFR-03
+for (const path of ['/design-kit', '/screens/add-pin']) {
+  test(`a forged session cookie shows the sign-in page, not ${path}`, async ({
+    context,
+    page,
+  }) => {
+    await forge(context);
+    await page.goto(path);
+
+    await expect(page).toHaveURL(url => url.pathname === '/sign-in');
+  });
+}
+
+// NFR-03
 test('/data/polities answers 401 without a session and with a forged one', async ({
   context,
   page,

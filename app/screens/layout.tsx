@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+
+import { currentSession } from '@ks/server/auth/current.mts';
 
 import styles from '@ks/app/screens/layout.module.css';
 
@@ -13,10 +15,14 @@ export const metadata: Metadata = {
 };
 
 /** Built screens with sample data, for the design check; the map's colour stands in for the map. */
-const ScreensLayout = ({ children }: { children: ReactNode }) => {
+const ScreensLayout = async ({ children }: { children: ReactNode }) => {
   // Vercel sets VERCEL_ENV at build, so in production every screen is built as a 404.
   if (process.env.VERCEL_ENV === 'production') {
     notFound();
+  }
+
+  if ((await currentSession()) === undefined) {
+    redirect('/sign-in');
   }
 
   return <div className={styles.screen}>{children}</div>;

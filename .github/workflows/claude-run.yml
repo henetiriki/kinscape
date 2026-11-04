@@ -44,6 +44,10 @@ on:
         description: '"fix" on a fix-review run, where the thread is a ready PR that carries the label; empty otherwise (plan decides: a plan or a build).'
         default: ''
         type: string
+      head:
+        description: 'The commit the checked-out branch must be at, on a build: the one the approval recorded (scripts/agent-approve.mts). Empty skips the check.'
+        default: ''
+        type: string
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
@@ -159,6 +163,23 @@ jobs:
           permission-issues: write
           permission-pull-requests: write
           permission-actions: read
+
+      # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
+      # landed since: that is not what the owner read, so the run stops before any model runs, and
+      # the `return` job hands the issue back.
+      - name: Check the branch is at the approved commit
+        if: inputs.head != ''
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD: ${{ inputs.head }}
+        run: |
+          now=$(git rev-parse HEAD)
+          if [ "$now" != "$HEAD" ]; then
+            gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."
+            exit 1
+          fi
+          echo "At the approved commit $now."
 
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
       # "Planning"/"Building"/"Fixing" comment is deleted when the run ends. Neither is worth failing the run for.

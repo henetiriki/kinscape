@@ -62,9 +62,10 @@ runs:
         bot_id: ${{ inputs.bot_id }}
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
-        # Off: the full output includes every screenshot Claude reads, as base64, and the log
-        # stopped at the first of them. The summary job writes the run page from the summary
-        # uploaded below.
+        # Both off: the full output includes every screenshot Claude reads, as base64, and the log
+        # stopped at the first of them; the report would put Claude's own text on the public run
+        # page. The summary job writes the run page from the summary uploaded below.
+        display_report: false
         show_full_output: false
         # Tools, denials and the Bash timeout are in settings.json; the rules are in the system prompt.
         settings: ${{ runner.temp }}/agent/settings.json

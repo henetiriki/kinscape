@@ -4,8 +4,12 @@ import type { Gh } from '@ks/scripts/types.ts';
 
 import { run } from '@ks/scripts/agent-approve.mts';
 
+// The PR head when the script runs, which the review approved; the commit the script makes.
+const HEAD = 'a'.repeat(40);
+const MADE = 'b'.repeat(40);
 const ENV = {
   APPROVER: 'tech-lead',
+  COMMIT: HEAD,
   GH_REPO: 'owner/repo',
   RUN_URL: 'https://github.com/owner/repo/actions/runs/1',
 };
@@ -95,7 +99,7 @@ describe('run', () => {
           })),
           files: files.map(path => ({ path })),
           headRefName: 'chore/C500-approval-script',
-          headRefOid: 'a'.repeat(40),
+          headRefOid: HEAD,
           labels: prLabels.map(name => ({ name })),
           reviews: reviews.map(({ at, ...rest }) => ({
             ...rest,
@@ -109,6 +113,10 @@ describe('run', () => {
           content: Buffer.from(text).toString('base64'),
           sha: 'blob-sha',
         });
+      }
+
+      if (args[0] === 'api' && args.includes('PUT')) {
+        return JSON.stringify({ commit: { sha: MADE } });
       }
 
       return '';
@@ -159,6 +167,8 @@ describe('run', () => {
       [['5x'], ENV],
       [['5'], { ...ENV, APPROVER: undefined }],
       [['5'], { ...ENV, APPROVER: '-bad' }],
+      [['5'], { ...ENV, COMMIT: undefined }],
+      [['5'], { ...ENV, COMMIT: 'abc1234' }],
       [['5'], { ...ENV, GH_REPO: 'no-slash' }],
       [['5'], { ...ENV, GH_REPO: undefined }],
     ])('rejects %j with env %j', (args, env) => {
@@ -197,7 +207,7 @@ describe('run', () => {
       );
       expect(put()[0][0]).toContain(`repos/owner/repo/contents/${PATH}`);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
     });
 
     it('reads the plan at the PR head, not the branch name', () => {
@@ -364,7 +374,7 @@ describe('run', () => {
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(comments()).toEqual([]);
       expect(committed().text).not.toContain('D3');
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
     });
   });
 
@@ -378,7 +388,32 @@ describe('run', () => {
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(put()).toEqual([]);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${HEAD}`]);
+    });
+  });
+
+  // The review approved one commit; a push since then is not what the owner read.
+  describe('an approval of another commit', () => {
+    const env = { ...ENV, COMMIT: 'c'.repeat(40) };
+
+    it('comments which commits, commits nothing and stops', () => {
+      fakeGh({ reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')] });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(put()).toEqual([]);
+      expect(written).toEqual(['go=false']);
+      expect(reply()).toContain('Not approved yet');
+      expect(reply()).toContain('The approval is for `ccccccc`');
+      expect(reply()).toContain('the branch is now at `aaaaaaa`');
+      expect(reply()).toContain('Approve the plan again');
+    });
+
+    it('stops a plan already approved too', () => {
+      fakeGh({ text: plan('approved') });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(reply()).toContain('The approval is for `ccccccc`');
     });
   });
 
@@ -460,7 +495,7 @@ describe('run', () => {
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
     });
   });
 
@@ -553,14 +588,15 @@ describe('run', () => {
       fakeGh({ reviews: answered });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
       expect(edits()).toEqual([moved('8', DEV, AGENT)]);
     });
 
-    it('goes to ready-for-agent for a plan already approved', () => {
+    it('goes to ready-for-agent for a plan already approved, with the head as it is', () => {
       fakeGh({ text: plan('approved') });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(written).toEqual(['go=true', `head=${HEAD}`]);
       expect(edits()).toEqual([moved('8', DEV, AGENT)]);
     });
 
@@ -655,7 +691,7 @@ describe('run', () => {
       });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
       expect(errors).toEqual(['#8: moving the label failed: HTTP 403']);
     });
 
@@ -677,7 +713,7 @@ describe('run', () => {
       });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
       expect(errors).toEqual(['#8: moving the label failed: HTTP 403']);
       expect(edits()).toEqual([moved('8', DEV, AGENT), moved('9', DEV, AGENT)]);
     });

@@ -17,11 +17,15 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // `status: ready-for-agent` on `go=true` and `status: ready-for-dev` on `go=false`. It skips a
 // `hand-back` PR, a `status: blocked` issue and one already on its target; a failed move is
 // logged and changes neither `go` nor the exit code.
-// Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO and APPROVER (the review's author)
-// set. An https RUN_URL, if set, is linked at the end of a stop comment.
-// It writes `go=true` or `go=false` to $GITHUB_OUTPUT. The commit goes through the Contents API with
-// the plan's blob sha, so the PR head is never checked out and a plan that changed meanwhile is
-// refused. A failed `gh` call is logged, `go=false` is written and the exit code is 1.
+// Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO, APPROVER (the review's author)
+// and COMMIT (the commit the review approved) set. An https RUN_URL, if set, is linked at the end of
+// a stop comment.
+// It writes `go=true` or `go=false` to $GITHUB_OUTPUT, and on `go=true` `head=<sha>`: the commit it
+// made, or the PR head when the plan was already approved. The build checks out that commit and no
+// other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit.
+// The commit goes through the Contents API with the plan's blob sha, so the PR head is never
+// checked out and a plan that changed meanwhile is refused. A failed `gh` call is logged,
+// `go=false` is written and the exit code is 1.
 // Only text from an author_association of OWNER counts; everything else on the PR is ignored.
 
 type Item = {
@@ -41,6 +45,7 @@ type Pr = {
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+const SHA = /^[0-9a-f]{40}$/;
 const RUN_URL = /^https:\/\/\S+$/;
 const AGENT = 'status: ready-for-agent';
 const DEV = 'status: ready-for-dev';
@@ -50,7 +55,8 @@ const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
 const ANSWER =
   /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
 
-const json = <T,>(gh: Gh, args: string[]): T => JSON.parse(gh(args));
+const json = <T,>(gh: Gh, args: string[], input?: string): T =>
+  JSON.parse(gh(args, input));
 
 const list = (ids: string[]): string => ids.join(', ');
 
@@ -95,10 +101,16 @@ export const run = (
   const [raw] = args;
   const repo = env.GH_REPO ?? '';
   const approver = env.APPROVER ?? '';
+  const commit = env.COMMIT ?? '';
 
-  if (!NUMBER.test(raw ?? '') || !REPO.test(repo) || !LOGIN.test(approver)) {
+  if (
+    !NUMBER.test(raw ?? '') ||
+    !REPO.test(repo) ||
+    !LOGIN.test(approver) ||
+    !SHA.test(commit)
+  ) {
     console.error(
-      'Usage: agent-approve <PR number>, with GH_REPO=<owner>/<repo> and APPROVER=<login> set'
+      'Usage: agent-approve <PR number>, with GH_REPO=<owner>/<repo>, APPROVER=<login> and COMMIT=<sha> set'
     );
 
     return 1;
@@ -126,9 +138,14 @@ export const run = (
       );
     }
   };
-  // Writes the outcome, then sets each closed issue's label from it.
-  const finish = (go: boolean): void => {
+  // Writes the outcome, and on a go the commit to build, then sets each closed issue's label from it.
+  const finish = (go: boolean, head = ''): void => {
     write(`go=${go}`);
+
+    if (go) {
+      write(`head=${head}`);
+    }
+
     attempt(raw, () => {
       const [owner, name] = repo.split('/');
       const target = go ? AGENT : DEV;
@@ -183,10 +200,10 @@ export const run = (
 
     return 0;
   };
-  // The plan is approved: a `hand-back` PR is built by the tech lead (rule 4), so no build run
-  // starts. The approval is already committed, so a failed comment is not the catch's "Approve the
-  // plan again": log it and stop.
-  const proceed = (handBack: boolean): number => {
+  // The plan is approved at `head`: a `hand-back` PR is built by the tech lead (rule 4), so no build
+  // run starts. The approval is already committed, so a failed comment is not the catch's "Approve
+  // the plan again": log it and stop.
+  const proceed = (handBack: boolean, head: string): number => {
     if (handBack) {
       try {
         post(
@@ -200,7 +217,7 @@ export const run = (
       }
     }
 
-    finish(!handBack);
+    finish(!handBack, head);
 
     return 0;
   };
@@ -217,6 +234,12 @@ export const run = (
       .map(({ path }) => path)
       .filter(path => PLAN.test(path));
     const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
+
+    if (pr.headRefOid !== commit) {
+      return stop(
+        `- The approval is for \`${commit.slice(0, 7)}\`, but the branch is now at \`${pr.headRefOid.slice(0, 7)}\`. Approve the plan again.`
+      );
+    }
 
     if (plans.length !== 1) {
       return stop(
@@ -239,7 +262,7 @@ export const run = (
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
       console.log(`${file} is already approved.`);
 
-      return proceed(handBack);
+      return proceed(handBack, pr.headRefOid);
     }
 
     if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {
@@ -271,7 +294,8 @@ export const run = (
       );
     }
 
-    gh(
+    const made = json<{ commit: { sha: string } }>(
+      gh,
       ['api', '--method', 'PUT', url, '--input', '-'],
       JSON.stringify({
         branch: pr.headRefName,
@@ -279,10 +303,11 @@ export const run = (
         message: `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`,
         sha,
       })
-    );
-    console.log(`Recorded the approval of ${file} by @${approver}.`);
+    ).commit.sha;
 
-    return proceed(handBack);
+    console.log(`Recorded the approval of ${file} by @${approver} as ${made}.`);
+
+    return proceed(handBack, made);
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
     finish(false);

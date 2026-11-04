@@ -1,4 +1,17 @@
 {
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "jq -c '(.tool_input.command // \"\") as $c\n| ($ENV.ISSUE // \"\") as $n\n| if ($c | test(\"^[[:space:]]*gh[[:space:]]+issue[[:space:]]+edit([[:space:]]|$)\")) | not then empty\n  else\n    ($c | rtrimstr(\"\\n\") | split(\"\\n\")) as $lines\n    | if $n != \"\"\n        and $lines[0] == \"gh issue edit \" + $n + \" --body-file - <<\\u0027EOF\\u0027\"\n        and ($lines | length) > 2\n        and $lines[-1] == \"EOF\"\n        and ($lines[1:-1] | map(select(. == \"EOF\")) | length) == 0\n        and ($lines[1:-1] | map(select(test(\"^[[:space:]]*$\") | not)) | length) > 0\n      then empty\n      else {hookSpecificOutput: {hookEventName: \"PreToolUse\", permissionDecision: \"deny\", permissionDecisionReason: (\"Edit only issue #\" + (if $n == \"\" then \"?\" else $n end) + \", as gh issue edit \" + (if $n == \"\" then \"<n>\" else $n end) + \" --body-file - <<\\u0027EOF\\u0027, the whole body on the lines after it, then a line EOF, and nothing else in the call.\")}}\n      end\n  end'",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Read",

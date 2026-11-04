@@ -104,14 +104,19 @@ check "Requirement autolinks" "$actual_links" "$expected_links"
 # set and the id must be GitHub's for that login. The App's client id is set by hand (docs/repo-settings.md).
 bot_login=$(gh variable get KINSCAPE_BOT_LOGIN --repo "$REPO" 2>/dev/null)
 bot_id=$(gh variable get KINSCAPE_BOT_ID --repo "$REPO" 2>/dev/null)
-check "Bot login variable set"         "$([ -n "$bot_login" ] && echo true || echo false)" "true"
 # An App's bot login ends in "[bot]", which the URL needs encoded.
 encoded_login=${bot_login//\[/%5B}; encoded_login=${encoded_login//\]/%5D}
 real_id=$([ -n "$bot_login" ] && gh api "users/$encoded_login" --jq .id 2>/dev/null)
 check "Bot id variable is the login's" "$bot_id" "${real_id:-no id for '$bot_login'}"
-client_id=$(gh variable get KINSCAPE_APP_CLIENT_ID --repo "$REPO" 2>/dev/null)
-check "App client id variable set"     "$([ -n "$client_id" ] && echo true || echo false)" "true"
-# Names only; a secret's value can't be read.
-check "App private key secret set"     "$(gh secret list --repo "$REPO" --json name --jq 'map(.name) | index("KINSCAPE_APP_PRIVATE_KEY") != null' 2>/dev/null)" "true"
+
+# The repo's secret and variable names must be exactly these (names only; no value is read). The
+# _Secrets and variables_ table in docs/repo-settings.md links here; keep it in step.
+# An unreadable list gives "", which fails. The agent's token can't list secrets: run as admin.
+expected_secrets="CLAUDE_CODE_OAUTH_TOKEN,CODECOV_TOKEN,KINSCAPE_APP_PRIVATE_KEY"
+expected_variables="KINSCAPE_APP_CLIENT_ID,KINSCAPE_BOT_ID,KINSCAPE_BOT_LOGIN"
+actual_secrets=$(gh secret list --repo "$REPO" --json name --jq 'map(.name) | sort | join(",")' 2>/dev/null)
+actual_variables=$(gh variable list --repo "$REPO" --json name --jq 'map(.name) | sort | join(",")' 2>/dev/null)
+check "Secrets (${actual_secrets:-unreadable})"     "$actual_secrets"   "$expected_secrets"
+check "Variables (${actual_variables:-unreadable})" "$actual_variables" "$expected_variables"
 
 exit $fail

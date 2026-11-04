@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { SignInState } from '@ks/app/components/auth/SignInForm';
+import type { SignInState } from '@ks/app/components/auth/types';
 
 import { SignInForm } from '@ks/app/components/auth/SignInForm';
 

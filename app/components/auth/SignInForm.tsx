@@ -2,6 +2,8 @@
 
 import { useActionState, useState } from 'react';
 
+import type { SignInAction, SignInState } from '@ks/app/components/auth/types';
+
 import { Button } from '@ks/app/components/actions/Button';
 import { Alert } from '@ks/app/components/feedback/Alert';
 import { TextField } from '@ks/app/components/forms/TextField';
@@ -9,15 +11,6 @@ import { Text } from '@ks/app/components/foundation/Text';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 
 import styles from '@ks/app/components/auth/SignInForm.module.css';
-
-/** The server action behind the form. It redirects on success, so it returns only a failure. */
-export type SignInAction = (
-  state: SignInState,
-  data: FormData
-) => Promise<SignInState>;
-
-/** What a sign-in left on the form: nothing yet, wrong details, or Auth not answering. */
-export type SignInState = 'refused' | 'unavailable' | undefined;
 
 const REFUSED =
   "That email and password don't match. Check them and try again.";

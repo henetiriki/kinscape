@@ -32,6 +32,11 @@
   padding-top: var(--space-20);
 }
 
+/* The text sets the height, not the paragraph's own line box. */
+.note > * {
+  display: block;
+}
+
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .form {
     gap: var(--space-16);

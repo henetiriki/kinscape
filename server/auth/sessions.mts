@@ -76,9 +76,12 @@ export const endSession = async (store: SessionStore, token: string) => {
   }
 };
 
+/** The session cookie's name. */
+export const SESSION_COOKIE = '__Host-kinscape-session';
+
 /** The cookie that carries the token. `__Host-` needs `Secure`, `Path=/` and no `Domain`. */
 export const sessionCookie = (token: string) => ({
-  name: '__Host-kinscape-session',
+  name: SESSION_COOKIE,
   options: {
     httpOnly: true,
     maxAge: AGE_LIMIT / 1000,

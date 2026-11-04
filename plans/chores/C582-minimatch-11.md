@@ -1,7 +1,7 @@
 # Plan: C582: Override minimatch to 11 for GHSA-g3hv-75wg-m249
 
 - **Spec:** #582
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

@@ -65,6 +65,23 @@ export const runThrottleContract = (
       expect(await mayTry(store, now(), 'a@example.test')).toBe(true);
     });
 
+    it('refuses spread-out failures until 15 minutes after the fifth', async () => {
+      const { at, now, store } = await setup();
+
+      for (const minute of [0, 4, 8, 12, 14]) {
+        at(minute);
+        await countFailure(store, now(), 'a@example.test');
+      }
+
+      at(28, 59);
+
+      expect(await mayTry(store, now(), 'a@example.test')).toBe(false);
+
+      at(29);
+
+      expect(await mayTry(store, now(), 'a@example.test')).toBe(true);
+    });
+
     it('allows 5 failures spread over more than 15 minutes', async () => {
       const { at, now, store } = await setup();
 

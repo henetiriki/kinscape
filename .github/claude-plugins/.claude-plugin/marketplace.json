@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "code-review",
-      "description": "Anthropic's code-review plugin, pinned to one commit of anthropics/claude-plugins-official.",
+      "description": "Anthropic's code-review plugin, pinned to one commit of anthropics/claude-plugins-official. Throwaway edit for the C588 proof.",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/anthropics/claude-plugins-official.git",

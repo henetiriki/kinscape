@@ -34,6 +34,3 @@ export type TreeStore = {
   /** The Account's Trees ordered by id; empty for an Account with none, an unknown id or an id that isn't a UUID. */
   findTrees: (accountId: string) => Promise<Tree[]>;
 };
-
-/** Who is asking: an Account id, or none. */
-export type Viewer = { accountId?: string };

@@ -76,6 +76,12 @@ for (const screen of config.screens.filter(
 )) {
   test(`design: ${screen.name}`, async ({ page }, testInfo) => {
     const { height, width } = screen;
+
+    // A signed-in visitor never sees the sign-in page.
+    if (screen.route.startsWith('/sign-in')) {
+      await page.context().clearCookies();
+    }
+
     const out = join(root, 'test-results/design', screen.name);
 
     mkdirSync(out, { recursive: true });

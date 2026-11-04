@@ -105,9 +105,12 @@ test('the credits line opens the sources and attributions dialog', async ({
 
 // BND-01
 test('the Polities route serves the 15 Polities and no other country', async ({
-  request,
+  page,
 }) => {
-  const response = await request.get('/data/polities');
+  await page.goto('/');
+
+  // The signed-in page's own request sends the cookie, as the map's fetch does.
+  const response = await page.request.get('/data/polities');
   const { features } = await response.json();
   const of = (kind: string, key: 'name' | 'polity') =>
     new Set(

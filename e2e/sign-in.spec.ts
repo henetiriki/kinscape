@@ -9,6 +9,9 @@ const SYNTHETIC = {
   password: 'synthetic-password',
 };
 
+// These start signed out: a signed-in visitor never sees the form.
+test.use({ storageState: { cookies: [], origins: [] } });
+
 const signIn = async (page: Page, email: string, password: string) => {
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password', { exact: true }).fill(password);

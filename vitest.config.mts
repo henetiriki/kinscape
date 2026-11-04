@@ -38,6 +38,8 @@ export default defineConfig({
       ],
       include: [
         'instrumentation.ts',
+        'next.config.ts',
+        'proxy.ts',
         '{app,design,features,lib,scripts,server}/**/*.{ts,tsx,js,mjs,mts}',
       ],
       provider: 'v8',

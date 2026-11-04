@@ -1,7 +1,42 @@
 import { describe, expect, it } from 'vitest';
 
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
-import { sessionCookie, startSession } from '@ks/server/auth/sessions.mts';
+import {
+  sessionCookie,
+  sessionOf,
+  startSession,
+} from '@ks/server/auth/sessions.mts';
+
+const NOW = () => new Date('2030-01-01T00:00:00Z');
+const SESSION = { accountId: 'a', email: 'a@example.test' };
+
+// NFR-03
+describe('sessionOf', () => {
+  it('gives the session of a valid token', async () => {
+    const store = memorySessions();
+    const token = await startSession(store, NOW, SESSION);
+
+    expect(await sessionOf(store, NOW, token)).toEqual(SESSION);
+  });
+
+  it.each([
+    ['no token', undefined],
+    ['a malformed token', 'nope'],
+    ['an unknown token', 'x'.repeat(43)],
+  ])('gives undefined for %s', async (_what, token) => {
+    expect(await sessionOf(memorySessions(), NOW, token)).toBeUndefined();
+  });
+
+  it('gives undefined when the store throws', async () => {
+    const store = memorySessions();
+
+    store.find = async () => {
+      throw new Error('down');
+    };
+
+    expect(await sessionOf(store, NOW, 'x'.repeat(43))).toBeUndefined();
+  });
+});
 
 // NFR-03
 describe('startSession', () => {

@@ -33,17 +33,19 @@ type Adapters = {
   throttle: ThrottleStore;
 };
 
-let instance: Adapters | undefined;
+// On `globalThis`, not in the module: Next bundles each route handler and page with its own copy of
+// this module, and the memory adapters hold the sessions, so copies would not see each other's.
+const shared = globalThis as { kinscapeAdapters?: Adapters };
 
 /**
  * The session port, session store, Tree store and throttle store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`
  * (`parseEnv` refuses that on Vercel), otherwise Supabase and the database.
  */
 export const appAdapters = (): Adapters => {
-  if (instance === undefined) {
+  if (shared.kinscapeAdapters === undefined) {
     const env = parseEnv(process.env);
 
-    instance = env.memoryAdapters
+    shared.kinscapeAdapters = env.memoryAdapters
       ? {
           session: memorySession([SYNTHETIC]),
           sessions: memorySessions(),
@@ -68,5 +70,5 @@ export const appAdapters = (): Adapters => {
         };
   }
 
-  return instance;
+  return shared.kinscapeAdapters;
 };

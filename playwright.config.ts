@@ -13,6 +13,9 @@ const use: Partial<PlaywrightWorkerOptions> = {
   },
 };
 
+// Where e2e/auth.setup.ts saves the signed-in session.
+const signedIn = 'test-results/.auth/state.json';
+
 export default defineConfig({
   // A stray `test.only` fails the run in CI instead of quietly running one test.
   forbidOnly: !!process.env.CI,
@@ -21,18 +24,26 @@ export default defineConfig({
   // A project is a named group of tests. Each picks its tests with a filter, and all
   // three use the same browser settings (`use`) above.
   projects: [
+    // Signs in once through the form and saves the session; the projects below load it.
+    { name: 'setup', testMatch: 'auth.setup.ts', use },
     // The everyday checks: every spec file except the design check, and every test
     // except the ones tagged @perf (those get their own project below).
     {
+      dependencies: ['setup'],
       grepInvert: /@perf/,
       name: 'chromium',
-      testIgnore: 'design-check.spec.ts',
-      use,
+      testIgnore: ['auth.setup.ts', 'design-check.spec.ts'],
+      use: { ...use, storageState: signedIn },
     },
     // The design check: only design-check.spec.ts, which compares each built screen
     // with its design snapshot. It is separate so `npm run design:check` can run it
     // alone with `--project=design`.
-    { name: 'design', testMatch: 'design-check.spec.ts', use },
+    {
+      dependencies: ['setup'],
+      name: 'design',
+      testMatch: 'design-check.spec.ts',
+      use: { ...use, storageState: signedIn },
+    },
     // The timing tests, tagged @perf. They measure how fast the map redraws, so they
     // run alone, after the two projects above finish (`dependencies`), and other
     // workers don't slow them. If either dependency fails, this one is skipped.
@@ -40,7 +51,8 @@ export default defineConfig({
       dependencies: ['chromium', 'design'],
       grep: /@perf/,
       name: 'perf',
-      use,
+      testIgnore: 'auth.setup.ts',
+      use: { ...use, storageState: signedIn },
     },
   ],
   reporter: [

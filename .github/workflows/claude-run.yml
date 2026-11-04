@@ -99,7 +99,8 @@ jobs:
           client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
           private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
           permission-issues: write
-          permission-pull-requests: read
+          # Write: a stop comments on the PR thread of a build or a fix.
+          permission-pull-requests: write
       - name: Check the run can start
         id: gate
         env:
@@ -214,15 +215,19 @@ jobs:
           PLAN: ${{ inputs.plan }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
+          # `gh … --json` is GraphQL, which shows an App's bot without its "[bot]" suffix, and
+          # `--author` wants "app/<name>" for one. A user account's login is the same in both.
+          export GQL_LOGIN=${BOT_LOGIN%\[bot\]}
+          author=$([ "$GQL_LOGIN" = "$BOT_LOGIN" ] && echo "$BOT_LOGIN" || echo "app/$GQL_LOGIN")
           # Count the bot's comments on this thread since the run started.
           commented=$(gh issue view "$THREAD" --json comments \
-            --jq "[.comments[] | select(.author.login == \$ENV.BOT_LOGIN and .createdAt >= \"$STARTED\")] | length")
+            --jq "[.comments[] | select(.author.login == \$ENV.GQL_LOGIN and .createdAt >= \"$STARTED\")] | length")
           # None means Claude went quiet. On a plan run (a Spec was labelled) it may still have
           # opened the plan PR: find a bot PR from this run that closes the Spec.
           if [ "$commented" = 0 ]; then
             pr=""
             if [ "$PLAN" = true ]; then
-              pr=$(gh pr list --state all --author "$BOT_LOGIN" --json number,createdAt,closingIssuesReferences \
+              pr=$(gh pr list --state all --author "$author" --json number,createdAt,closingIssuesReferences \
                 --jq "[.[] | select(.createdAt >= \"$STARTED\" and any(.closingIssuesReferences[]; .number == $THREAD))][0].number // empty")
             fi
             if [ -n "$pr" ]; then
@@ -272,7 +277,8 @@ jobs:
           client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
           private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
           permission-issues: write
-          permission-pull-requests: read
+          # Write: a stop comments on the PR thread of a build or a fix.
+          permission-pull-requests: write
       - name: Hand the issue back if it is still Claude's turn
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}

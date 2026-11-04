@@ -23,10 +23,10 @@ inputs:
     description: "The bot's token, which claude-code-action uses to read and write the repo."
     required: true
   bot_login:
-    description: "The bot account's login, from vars.KINSCAPE_BOT_LOGIN."
+    description: "The App's bot login, from vars.KINSCAPE_BOT_LOGIN."
     required: true
   bot_id:
-    description: "The bot account's numeric id, from vars.KINSCAPE_BOT_ID."
+    description: "The App's bot numeric id, from vars.KINSCAPE_BOT_ID."
     required: true
 
 runs:

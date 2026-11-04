@@ -71,6 +71,19 @@ describe('the App token', () => {
     }
   );
 
+  // `gh … --json` is GraphQL, which shows an App's bot without its "[bot]" suffix, and `--author`
+  // wants "app/<name>" for one; the safety net would otherwise count none of the bot's comments.
+  it('is matched by the safety net without its "[bot]" suffix', () => {
+    const step =
+      read('claude-run.yml')
+        .split('- name: ')
+        .find(part => part.startsWith('Comment if Claude left none')) ?? '';
+
+    expect(step).toContain('GQL_LOGIN=${BOT_LOGIN%\\[bot\\]}');
+    expect(step).toContain('.author.login == \\$ENV.GQL_LOGIN');
+    expect(step).toContain('--author "$author"');
+  });
+
   // Only the pin PR changes workflow files.
   it.each(files)('grants workflows write in %s only to the pin job', file => {
     expect(read(file).includes('permission-workflows')).toBe(

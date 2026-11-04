@@ -69,6 +69,23 @@ export const resumeSession = async (
   return { accountId: row.accountId, email: row.email };
 };
 
+/** The full session check: `resumeSession` for an optional token, where a store that throws gives undefined (fails closed). */
+export const sessionOf = async (
+  store: SessionStore,
+  now: () => Date,
+  token: string | undefined
+): Promise<Session | undefined> => {
+  if (token === undefined) {
+    return undefined;
+  }
+
+  try {
+    return await resumeSession(store, now, token);
+  } catch {
+    return undefined;
+  }
+};
+
 /** Ends the session; a malformed or unknown token does nothing. */
 export const endSession = async (store: SessionStore, token: string) => {
   if (TOKEN_FORMAT.test(token)) {

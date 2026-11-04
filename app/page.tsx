@@ -1,8 +1,15 @@
+import { redirect } from 'next/navigation';
+
 import { MapShell, polityLayer } from '@ks/features/map';
 import { boundaryCoverage } from '@ks/lib/domain/map/coverage';
+import { currentSession } from '@ks/server/auth/current.mts';
 import { loadAppData } from '@ks/server/boundaries/app-data';
 
-const Home = () => {
+const Home = async () => {
+  if ((await currentSession()) === undefined) {
+    redirect('/sign-in');
+  }
+
   const data = loadAppData();
 
   return (

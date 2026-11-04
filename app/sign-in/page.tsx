@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { AuthLayout } from '@ks/app/components/auth/AuthLayout';
@@ -6,26 +5,7 @@ import { SignInForm } from '@ks/app/components/auth/SignInForm';
 import { SignInHero } from '@ks/app/components/auth/SignInHero';
 import { signInAction } from '@ks/app/sign-in/actions';
 import { safeReturnTo } from '@ks/lib/domain/auth/return-to.mts';
-import { appAdapters } from '@ks/server/adapters.mts';
-import { resumeSession, SESSION_COOKIE } from '@ks/server/auth/sessions.mts';
-
-// An outage of the session store shows the form, whose sign-in then says it can't.
-const signedIn = async () => {
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
-
-  if (token === undefined) {
-    return false;
-  }
-
-  try {
-    return (
-      (await resumeSession(appAdapters().sessions, () => new Date(), token)) !==
-      undefined
-    );
-  } catch {
-    return false;
-  }
-};
+import { currentSession } from '@ks/server/auth/current.mts';
 
 /** The sign-in page: someone already signed in goes to the map. */
 const SignIn = async ({
@@ -33,7 +13,8 @@ const SignIn = async ({
 }: {
   searchParams: Promise<{ returnTo?: string | string[] }>;
 }) => {
-  if (await signedIn()) {
+  // An outage of the session store shows the form, whose sign-in then says it can't.
+  if ((await currentSession()) !== undefined) {
     redirect('/');
   }
 

@@ -1,6 +1,10 @@
-import { expect, it } from 'vitest';
+import { beforeEach, expect, it, vi } from 'vitest';
 
-import { dynamic, GET } from '@ks/app/data/polities/route';
+const session = vi.hoisted(() => vi.fn());
+
+vi.mock('@ks/server/auth/current.mts', () => ({ currentSession: session }));
+
+import { GET } from '@ks/app/data/polities/route';
 import { isCurrentOn, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { loadAppData } from '@ks/server/boundaries/app-data';
 
@@ -21,8 +25,12 @@ const UNION_ONLY = [
   'transvaal',
 ];
 
+beforeEach(() => {
+  session.mockResolvedValue({ accountId: 'a', email: 'a@example.test' });
+});
+
 const featuresOn = async (kind: string, isoDate: string) => {
-  const { features } = (await GET().json()) as { features: Feature[] };
+  const { features } = (await (await GET()).json()) as { features: Feature[] };
 
   return features.filter(
     ({ properties }) =>
@@ -33,8 +41,14 @@ const featuresOn = async (kind: string, isoDate: string) => {
 const namesOn = async (isoDate: string) =>
   (await featuresOn('label', isoDate)).map(f => f.properties.name).toSorted();
 
-it('is built once at deploy time', () => {
-  expect(dynamic).toBe('force-static');
+// NFR-03
+it('answers 401, with no data, when there is no valid session', async () => {
+  session.mockResolvedValue(undefined);
+
+  const response = await GET();
+
+  expect(response.status).toBe(401);
+  expect(await response.text()).toBe('');
 });
 
 // MAP-01, MAP-05, BND-01
@@ -178,7 +192,7 @@ it('switches shapes on 2006-03-01 and 2009-04-03 with one label each day', async
 
 // MAP-06
 it('dates every feature inside the data and never past today', async () => {
-  const { features } = (await GET().json()) as { features: Feature[] };
+  const { features } = (await (await GET()).json()) as { features: Feature[] };
 
   for (const { properties } of features) {
     expect(properties.validFrom).toBeGreaterThanOrEqual(toDay('1910-05-31'));

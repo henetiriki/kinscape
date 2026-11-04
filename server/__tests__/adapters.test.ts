@@ -5,6 +5,7 @@ describe('appAdapters', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.resetModules();
+    delete (globalThis as { kinscapeAdapters?: unknown }).kinscapeAdapters;
   });
 
   it('uses the memory session and store together under the test-only variable', async () => {

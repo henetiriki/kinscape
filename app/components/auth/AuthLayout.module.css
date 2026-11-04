@@ -32,6 +32,11 @@
   width: 100%;
 }
 
+/* A flex box, so the inline wordmark adds no line-box height. */
+.deskMark {
+  display: flex;
+}
+
 .phoneMark {
   display: none;
 }

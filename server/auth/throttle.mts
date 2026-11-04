@@ -36,6 +36,13 @@ export const mayTry = async (
   return true;
 };
 
+/** Takes back the failure `countFailure` recorded at `failedAt`, once the sign-in turns out not to have failed. */
+export const forgetFailure = (
+  store: ThrottleStore,
+  failedAt: Date,
+  email: string
+) => store.remove(emailKey(email), failedAt);
+
 /** Records a failed sign-in for `email` and deletes failures older than 30 minutes. */
 export const countFailure = async (
   store: ThrottleStore,

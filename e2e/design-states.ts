@@ -11,4 +11,17 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
         Promise.all(node.getAnimations().map(animation => animation.finished))
       );
   },
+  // The sign-in snapshot's password; the email stays empty and shows its placeholder.
+  'sign-in-filled': async page => {
+    await page.getByLabel('Password', { exact: true }).fill('example-password');
+    // The snapshot shows no focus border.
+    await page.getByLabel('Password', { exact: true }).blur();
+  },
+  // Researcher has no Account, so this is a real wrong-details sign-in.
+  'sign-in-wrong-password': async page => {
+    await page.getByLabel('Email').fill('researcher@example.com');
+    await page.getByLabel('Password', { exact: true }).fill('example-password');
+    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.getByRole('alert').filter({ hasText: "don't match" }).waitFor();
+  },
 };

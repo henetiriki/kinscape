@@ -1,0 +1,54 @@
+.form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.lede {
+  color: var(--ink-3);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.submit {
+  display: flex;
+  flex-direction: column;
+}
+
+.note {
+  border-top: 1px solid var(--line);
+  margin: 0;
+  padding-top: var(--space-20);
+}
+
+/* The text sets the height, not the paragraph's own line box. */
+.note > * {
+  display: block;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .form {
+    gap: var(--space-16);
+  }
+
+  .submit {
+    margin-top: var(--space-4);
+  }
+
+  .note {
+    border-top: 0;
+    margin-top: auto;
+    padding-top: 0;
+  }
+}

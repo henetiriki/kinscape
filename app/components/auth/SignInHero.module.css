@@ -86,7 +86,7 @@
   color: var(--hero-ink);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
   max-width: var(--layout-sign-in-copy);
   padding: var(--space-40) var(--space-48);
   position: relative;

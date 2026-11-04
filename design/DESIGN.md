@@ -182,7 +182,7 @@ Each component, its `.module.css` and its test live in one folder of `app/compon
 | `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField             |
 | `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                  |
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero                          |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm              |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 

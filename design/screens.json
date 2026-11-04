@@ -189,6 +189,30 @@
       "width": 390,
       "height": 844,
       "mode": "blocking"
+    },
+    {
+      "name": "sign-in-desktop",
+      "route": "/sign-in",
+      "state": "sign-in-filled",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "sign-in-phone",
+      "route": "/sign-in",
+      "state": "sign-in-filled",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
+    },
+    {
+      "name": "sign-in-phone-error",
+      "route": "/sign-in",
+      "state": "sign-in-wrong-password",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
     }
   ],
   "threshold": 0.5

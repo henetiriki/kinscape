@@ -6,7 +6,8 @@ import type { Gh } from '#ks/scripts/types.ts';
 // Runs on a pull request (claude-hand-back.yml): plans/README.md rule 13's marker. Adds the label
 // `hand-back` when a path in the diff, or in the Files that change table of a plan the PR changes
 // (read from the head commit as data), matches a pattern in the base commit's .github/CODEOWNERS,
-// apart from EXEMPT. Does nothing for a fork or a PR that has the label.
+// apart from the catch-all (`*` or `**` alone) and EXEMPT. Does nothing for a fork or a PR that
+// has the label.
 // A failed `gh` call is logged and the exit code is 1; a failed plan fetch skips that plan only.
 // Usage: node scripts/hand-back.mts <PR number>, with GH_REPO set.
 
@@ -18,10 +19,12 @@ type View = {
   labels: { name: string }[];
 };
 
-// Code-owner paths that don't hand a PR back; the one place they are listed.
+// Owned paths that don't hand a PR back; the one place they are listed.
 export const EXEMPT = ['server/**', 'scripts/layers.mts'];
 
 const LABEL = 'hand-back';
+// The line that gives every path a code owner; it hands nothing back.
+const CATCH_ALL = /^\*{1,2}$/;
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const PLAN = /^plans\/.+\.md$/;
@@ -60,7 +63,10 @@ export const matcher = (codeowners: string): ((path: string) => boolean) => {
   const owned = codeowners
     .split('\n')
     .map(line => line.replace(/#.*/, '').trim().split(/\s+/))
-    .filter(([pattern, owner]) => pattern !== '' && owner !== undefined)
+    .filter(
+      ([pattern, owner]) =>
+        pattern !== '' && owner !== undefined && !CATCH_ALL.test(pattern)
+    )
     .map(([pattern]) => toRegExp(pattern));
 
   return path =>
@@ -200,7 +206,7 @@ export const run = (
     }
   }
 
-  console.log('Hand back: no code-owner path.');
+  console.log('Hand back: no hand-back path.');
 
   return failed ? 1 : 0;
 };

@@ -73,7 +73,6 @@ describe('matcher', () => {
     ['**/logs', 'logs', true],
     ['**/logs', 'a/b/logs/c.txt', true],
     ['**/logs', 'blogs', false],
-    ['**', 'any/thing.md', true],
     ['file?.md', 'file1.md', true],
     ['file?.md', 'file.md', false],
     ['file?.md', 'file12.md', false],
@@ -102,6 +101,13 @@ describe('matcher', () => {
 
     expect(match('docs/a.md')).toBe(false);
     expect(match('plans/a.md')).toBe(true);
+  });
+
+  it('skips a catch-all line: `*` or `**` alone owns nothing', () => {
+    const match = matcher('* @lead\n** @lead\nplans/** @lead');
+
+    expect(match('app/page.tsx')).toBe(false);
+    expect(match('plans/README.md')).toBe(true);
   });
 
   it('takes the first token as the pattern and ignores the owners', () => {
@@ -299,7 +305,7 @@ describe('run', () => {
     ]);
   });
 
-  it('labels a PR whose diff changes a code-owner path', () => {
+  it('labels a PR whose diff changes a hand-back path', () => {
     expect(
       go({
         files: [
@@ -323,7 +329,7 @@ describe('run', () => {
     expect(fetched()).toHaveLength(0);
   });
 
-  it('labels on a renamed file whose old path was a code-owner path', () => {
+  it('labels on a renamed file whose old path was a hand-back path', () => {
     go({
       files: [
         {
@@ -337,7 +343,7 @@ describe('run', () => {
     expect(labelled()).toHaveLength(1);
   });
 
-  it('labels when only a changed plan names a code-owner path (#426)', () => {
+  it('labels when only a changed plan names a hand-back path (#426)', () => {
     expect(
       go({
         files: [
@@ -381,7 +387,7 @@ describe('run', () => {
       })
     ).toBe(0);
     expect(labelled()).toHaveLength(0);
-    expect(console.log).toHaveBeenCalledWith('Hand back: no code-owner path.');
+    expect(console.log).toHaveBeenCalledWith('Hand back: no hand-back path.');
   });
 
   it('does nothing when only exempt paths change or are named', () => {

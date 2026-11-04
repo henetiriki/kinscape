@@ -1,3 +1,5 @@
+# The first line covers every path; the lines after it are the hand-back paths (scripts/hand-back.mts).
+* @henetiriki @starforms
 .claude/settings*.json @henetiriki
 .claude/skills/** @henetiriki
 .github/CODEOWNERS @henetiriki

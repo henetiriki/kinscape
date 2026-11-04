@@ -115,6 +115,30 @@ export const runThrottleContract = (
       expect(emailKey('A@example.test')).toBe(emailKey(' a@example.test '));
     });
 
+    it('removes one failure by email and time, and no other', async () => {
+      const { at, now, store } = await setup();
+      const key = emailKey('a@example.test');
+
+      await countFailure(store, now(), 'a@example.test');
+      await countFailure(store, now(), 'a@example.test');
+      at(1);
+      await countFailure(store, now(), 'a@example.test');
+      await countFailure(store, now(), 'b@example.test');
+      await store.remove(key, new Date(START.getTime()));
+
+      expect(await store.since(key, START)).toEqual([
+        START,
+        new Date(START.getTime() + MINUTE),
+      ]);
+      expect(await store.since(emailKey('b@example.test'), START)).toHaveLength(
+        1
+      );
+
+      await store.remove(key, new Date(START.getTime() + 5 * MINUTE));
+
+      expect(await store.since(key, START)).toHaveLength(2);
+    });
+
     it('forgets failures older than 30 minutes', async () => {
       const { at, now, store } = await setup();
 

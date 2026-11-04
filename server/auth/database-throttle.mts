@@ -1,3 +1,5 @@
+import { sql } from 'kysely';
+
 import type { ThrottleStore } from '#ks/lib/domain/auth/types.ts';
 import type { createDb } from '#ks/server/db/database.mts';
 
@@ -10,6 +12,14 @@ export const databaseThrottle = (
       .insertInto('signInFailure')
       .values({ emailKey, failedAt })
       .execute();
+  },
+  // The table has no key, so `ctid` picks the one row.
+  remove: async (emailKey, failedAt) => {
+    await sql`delete from sign_in_failure where ctid in (
+      select ctid from sign_in_failure
+      where email_key = ${emailKey} and failed_at = ${failedAt} limit 1)`.execute(
+      db
+    );
   },
   removeBefore: async before => {
     await db

@@ -8,6 +8,16 @@ export const memoryThrottle = (): ThrottleStore => {
     add: async (emailKey, failedAt) => {
       rows.push({ emailKey, failedAt });
     },
+    remove: async (key, failedAt) => {
+      const index = rows.findIndex(
+        row =>
+          row.emailKey === key && row.failedAt.getTime() === failedAt.getTime()
+      );
+
+      if (index >= 0) {
+        rows.splice(index, 1);
+      }
+    },
     removeBefore: async before => {
       rows = rows.filter(row => row.failedAt >= before);
     },

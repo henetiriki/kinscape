@@ -73,7 +73,6 @@ describe('matcher', () => {
     ['**/logs', 'logs', true],
     ['**/logs', 'a/b/logs/c.txt', true],
     ['**/logs', 'blogs', false],
-    ['**', 'any/thing.md', true],
     ['file?.md', 'file1.md', true],
     ['file?.md', 'file.md', false],
     ['file?.md', 'file12.md', false],
@@ -102,6 +101,13 @@ describe('matcher', () => {
 
     expect(match('docs/a.md')).toBe(false);
     expect(match('plans/a.md')).toBe(true);
+  });
+
+  it('skips a catch-all line: `*` or `**` alone owns nothing', () => {
+    const match = matcher('* @lead\n** @lead\nplans/** @lead');
+
+    expect(match('app/page.tsx')).toBe(false);
+    expect(match('plans/README.md')).toBe(true);
   });
 
   it('takes the first token as the pattern and ignores the owners', () => {

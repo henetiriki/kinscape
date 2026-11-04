@@ -8,15 +8,15 @@ Find the PR's plan: a file under `plans/` changed in the PR. Read it and issue `
 
 ## The rules
 
-Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken.
+Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In the checkout those two files are `main`'s; the PR's changes to them are in the diff.
 
 Flag a test change `plans/README.md` rule 10 doesn't allow (never suggest `## Deviations` alone as the fix), and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
 When the diff moves or adds code in a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
 
-Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says (search for it). Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
+Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says. Name the file that should own it, and link to that file from the other (`AGENTS.md` Writing).
 
-In workflows, also check (these live only here, loaded from `main`, so a PR can't weaken them):
+In workflows, also check:
 
 - each action and reusable workflow pinned to a full commit SHA, this repo's own included (`actions-pin-update.yml` moves those pins);
 - the fewest `permissions:`;

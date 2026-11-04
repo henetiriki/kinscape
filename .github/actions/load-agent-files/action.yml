@@ -10,6 +10,9 @@ inputs:
   settings:
     description: "The file in .github/agent/ that is Claude's settings: settings.json, or review-settings.json for the review. Each caller names its own (a test checks), so none gets another agent's tools. The default is for a branch cut before this input existed."
     default: settings.json
+  main_files:
+    description: 'Files anywhere in the repo, as main has them, space separated: each is written to $RUNNER_TEMP/agent/main/<path>. The review loads the files CLAUDE.md imports and its plugin marketplace this way.'
+    default: ''
   token:
     description: 'A token that can read the repo.'
     required: true
@@ -25,21 +28,32 @@ runs:
       shell: bash
       env:
         AGENT_FILES: ${{ inputs.files }}
+        MAIN_FILES: ${{ inputs.main_files }}
         SETTINGS_FILE: ${{ inputs.settings }}
         GH_TOKEN: ${{ inputs.token }}
         GH_REPO: ${{ github.repository }}
       run: |
         mkdir -p "$RUNNER_TEMP/agent"
-        # Download the settings file and each file in AGENT_FILES as main has them (the raw file,
-        # not JSON). $AGENT_FILES is unquoted so it splits into one name per file. A failed
+        # Downloads a file as main has it (the raw file, not JSON) to the given path. A failed
         # download is tried 3 times, then fails the step.
-        for f in "$SETTINGS_FILE" $AGENT_FILES; do
+        download() {
           for attempt in 1 2 3; do
-            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/agent/$f?ref=main" > "$RUNNER_TEMP/agent/$f" 2> "$RUNNER_TEMP/agent.err" && continue 2
+            gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/$1?ref=main" > "$2" 2> "$RUNNER_TEMP/agent.err" && return 0
             if [ "$attempt" -lt 3 ]; then sleep $((attempt * 5)); fi
           done
           cat "$RUNNER_TEMP/agent.err" >&2
-          exit 1
+          return 1
+        }
+        # The settings file and each file in AGENT_FILES. $AGENT_FILES is unquoted so it splits
+        # into one name per file; so is $MAIN_FILES below.
+        for f in "$SETTINGS_FILE" $AGENT_FILES; do
+          download ".github/agent/$f" "$RUNNER_TEMP/agent/$f"
+        done
+        # Each file in MAIN_FILES, at its repo path under agent/main/, so a folder of them (the
+        # plugin marketplace) can be named as one.
+        for f in $MAIN_FILES; do
+          mkdir -p "$RUNNER_TEMP/agent/main/$(dirname "$f")"
+          download "$f" "$RUNNER_TEMP/agent/main/$f"
         done
         # The settings deny Read on a GitHub-hosted runner's temp folder, which holds checkout's
         # credentials and Claude's transcript. Deny this runner's too, wherever it is.

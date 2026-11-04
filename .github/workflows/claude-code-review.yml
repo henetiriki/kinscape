@@ -49,8 +49,6 @@ jobs:
       issues: read
       # The changes-since step lists this workflow's earlier runs.
       actions: read
-      # Needed: this step passes no github_token, so the action gets its token by an OIDC exchange.
-      id-token: write
 
     steps:
       - name: Checkout repository
@@ -58,18 +56,46 @@ jobs:
         with:
           fetch-depth: 1
 
-      # The rules and settings come from main, not the checked-out branch: a PR can't change its own
-      # reviewer. The action retries a failed download, then fails the job, and shows review.md.
+      # The rules, settings, plugin marketplace, the files CLAUDE.md imports and main's copy of this file
+      # come from main, not the checked-out branch. The action retries a failed download, then fails the
+      # job (Claude doesn't start, and the report step says so), and shows review.md.
       - name: Load review rules and settings
         uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
         with:
           files: review.md
           settings: review-settings.json
+          main_files: AGENTS.md docs/security.md .github/claude-plugins/.claude-plugin/marketplace.json .github/workflows/claude-code-review.yml
           token: ${{ github.token }}
+
+      # Claude runs only a copy of this file identical to main's, so a PR can't change its own reviewer.
+      # (The action checked this itself while it minted its own token; with the workflow token it doesn't.)
+      - name: Check that this workflow is main's
+        id: same
+        run: |
+          main="$RUNNER_TEMP/agent/main/.github/workflows/claude-code-review.yml"
+          if ! [ -f "$main" ]; then
+            echo "::error::The step above didn't load main's copy of this file."
+            exit 1
+          fi
+          if cmp -s "$main" .github/workflows/claude-code-review.yml; then
+            echo "same=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "same=false" >> "$GITHUB_OUTPUT"
+            echo "This file differs from main's: Claude won't start."
+          fi
+
+      # The action restores CLAUDE.md from main, but what it imports is read from the checkout: put
+      # main's copies there. `git status` shows an M for each one the PR changed.
+      - name: Put main's rule files in the checkout
+        run: |
+          cp "$RUNNER_TEMP/agent/main/AGENTS.md" AGENTS.md
+          cp "$RUNNER_TEMP/agent/main/docs/security.md" docs/security.md
+          git status --short -- AGENTS.md docs/security.md
 
       # Agent mode posts nothing until Claude does, so mark the PR as picked up: :eyes: stays, the
       # "Working" comment is deleted when the run ends. Neither is worth failing the run for.
       - name: Show that the review started
+        if: steps.same.outputs.same == 'true'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -89,6 +115,7 @@ jobs:
       # written and the whole PR is reviewed. Only a written diff sets `scope=since`.
       - name: Write the changes since the last review
         id: since
+        if: steps.same.outputs.same == 'true'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -131,14 +158,19 @@ jobs:
 
       - name: Run Claude Code Review
         id: claude-review
+        if: steps.same.outputs.same == 'true'
         uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The workflow's token: the review posts as github-actions[bot], which can't approve a PR
+          # (docs/repo-settings.md › Actions token).
+          github_token: ${{ github.token }}
           # The App's own PRs (D3 of C575): the action refuses a bot actor unless it is listed.
           allowed_bots: ${{ vars.KINSCAPE_BOT_LOGIN }}
-          # The plugin is pinned to a commit in this marketplace. Dependabot doesn't track it: bump the sha by hand,
-          # and re-check review-settings.json against the plugin command's allowed-tools.
-          plugin_marketplaces: './.github/claude-plugins'
+          # The marketplace as main has it (loaded above). The plugin is pinned to a commit in it. Dependabot
+          # doesn't track it: bump the sha by hand, and re-check review-settings.json against the plugin
+          # command's allowed-tools.
+          plugin_marketplaces: ${{ runner.temp }}/agent/main/.github/claude-plugins
           plugins: 'code-review@kinscape-ci'
           prompt: '/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
           # Read-only permissions from main (.github/agent/review-settings.json).
@@ -167,10 +199,10 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: gh api -X DELETE "repos/$GH_REPO/issues/comments/$WORKING_COMMENT_ID"
 
-      # The action runs only a workflow identical to main's, so on a PR that changes this file Claude never starts.
-      # That known cause comments on the PR (it needs a human review); any other missing review fails the job.
-      # !cancelled(): a failed load step above also lands here, as when this file changes before the action on
-      # main takes the `settings` input; a run cancelled by a newer push (concurrency) does not.
+      # On a PR that changes this file Claude never starts (the check above). That known cause comments on
+      # the PR (it needs a human review); any other missing review fails the job. !cancelled(): a failed step
+      # above also lands here, as when this file changes before the action on main takes a new input; a run
+      # cancelled by a newer push (concurrency) does not.
       - name: Report a missing review
         if: "!cancelled() && steps.claude-review.outputs.conclusion == ''"
         # bash with pipefail, so a failed comment lookup isn't read as no comment.
@@ -179,13 +211,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          SAME: ${{ steps.same.outputs.same }}
         run: |
-          gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/workflows/claude-code-review.yml?ref=main" > "$RUNNER_TEMP/main-workflow.yml"
-          if cmp -s "$RUNNER_TEMP/main-workflow.yml" .github/workflows/claude-code-review.yml; then
-            echo "::error::No review: Claude didn't start. See the step above."
+          if [ "$SAME" != false ]; then
+            echo "::error::No review: Claude didn't start. See the steps above."
             exit 1
           fi
-          msg=$'## :rotating_light: No Claude review\n\nThis PR changes claude-code-review.yml, which the action runs only as it is on main. Review it by hand; the change applies to later PRs.'
+          msg=$'## :rotating_light: No Claude review\n\nThis PR changes claude-code-review.yml, which Claude runs only as it is on main. Review it by hand; the change applies to later PRs.'
           # Each push updates the one comment, found by its heading: the token's last comment could be the
           # secret-scan warning. A read-only token (fork PR) falls back to a warning.
           id=$(gh api --paginate "repos/$GH_REPO/issues/$PR_NUMBER/comments" \

@@ -19,16 +19,17 @@ Dependabot ignores the major version of these. To lift a hold, remove its entry 
 
 ## Overrides
 
-These `package.json` `overrides` replace deprecated transitive packages or widen a stale `eslint` peer range. Dependabot doesn't update them; bump by hand.
+These `package.json` `overrides` replace deprecated transitive packages, widen a stale `eslint` peer range or lift a vulnerable transitive version. Dependabot doesn't update them; bump by hand.
 
-| Package                  | Clears                    | Remove when                              |
-| ------------------------ | ------------------------- | ---------------------------------------- |
-| `better-sqlite3`         | `prebuild-install`        | `mapshaper` moves to `better-sqlite3` 13 |
-| `eslint-plugin-import`   | `eslint` 10 peer conflict | It accepts `eslint` 10                   |
-| `eslint-plugin-jsx-a11y` | `eslint` 10 peer conflict | It accepts `eslint` 10                   |
-| `eslint-plugin-react`    | `eslint` 10 peer conflict | It accepts `eslint` 10                   |
-| `geographiclib`          | `geographiclib`           | `mproj` drops `geographiclib`            |
-| `glob`                   | `inflight`, `glob@7.2.3`  | `fontnik` drops `glob` 7                 |
+| Package                  | Clears                                                                                                        | Remove when                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `better-sqlite3`         | `prebuild-install`                                                                                            | `mapshaper` moves to `better-sqlite3` 13                                  |
+| `eslint-plugin-import`   | `eslint` 10 peer conflict                                                                                     | It accepts `eslint` 10                                                    |
+| `eslint-plugin-jsx-a11y` | `eslint` 10 peer conflict                                                                                     | It accepts `eslint` 10                                                    |
+| `eslint-plugin-react`    | `eslint` 10 peer conflict                                                                                     | It accepts `eslint` 10                                                    |
+| `geographiclib`          | `geographiclib`                                                                                               | `mproj` drops `geographiclib`                                             |
+| `glob`                   | `inflight`, `glob@7.2.3`                                                                                      | `fontnik` drops `glob` 7                                                  |
+| `minimatch`              | `10.2.6` under `eslint`, `@eslint/config-array`, `@typescript-eslint/typescript-estree` (GHSA-g3hv-75wg-m249) | All three require `minimatch` ≥ 11.0.1 (eslint/eslint#21476 is the first) |
 
 ## The review plugin
 

@@ -26,3 +26,5 @@ export const proxy = (request: NextRequest) => {
 export const config = {
   matcher: '/((?!sign-in(?:/|$)|_next/|data/|.*\\.).*)',
 };
+
+// Throwaway: C585 proof, never merged.

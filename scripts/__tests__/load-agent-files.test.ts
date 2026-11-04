@@ -19,6 +19,17 @@ const read = (file: string) =>
 const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
 
+// What the review loads from main besides .github/agent/ (plans/chores/C588-review-config-from-main.md):
+// the files CLAUDE.md imports, which Claude reads from the checkout, so main's copies are put there;
+// the plugin marketplace; and this workflow, compared with the checkout before Claude runs.
+const MARKETPLACE = '.github/claude-plugins/.claude-plugin/marketplace.json';
+const REVIEW_WORKFLOW = '.github/workflows/claude-code-review.yml';
+const imports = () =>
+  readFileSync(join(root, 'CLAUDE.md'), 'utf8')
+    .match(/^@(\S+)$/gm)
+    ?.map(line => line.slice(1)) ?? [];
+const mainFiles = () => [...imports(), MARKETPLACE, REVIEW_WORKFLOW];
+
 // Callers name our actions by repo, pinned to a full SHA of a main commit (actions-pin-update.yml
 // moves the pins): see .github/actions/load-agent-files/action.yml.
 const OWN_PIN =
@@ -68,14 +79,30 @@ describe('the load-agent-files action', () => {
     expect(inputs.settings.default).toBe('settings.json');
   });
 
-  // Only the review names files outside .github/agent/; run-claude's callers load none.
+  // Only the review names files outside .github/agent/: every other loader step, in a workflow or
+  // in run-claude, gets none.
   it('loads no main files unless told to', () => {
     const { inputs } = parse(action()) as {
       inputs: { main_files: { default?: string } };
     };
+    const loaders = readdirSync(join(root, '.github/workflows'))
+      .filter(
+        file => file.endsWith('.yml') && file !== 'claude-code-review.yml'
+      )
+      .flatMap(file =>
+        Object.values(
+          (parse(read(file)) as { jobs: Record<string, { steps?: Step[] }> })
+            .jobs
+        ).flatMap(job => job.steps ?? [])
+      )
+      .concat(runClaudeSteps())
+      .filter(step => step.uses?.includes('load-agent-files'));
 
     expect(inputs.main_files.default).toBe('');
-    expect(stepUsing(ACTION)?.with).not.toHaveProperty('main_files');
+    expect(loaders.length).toBeGreaterThan(1);
+    for (const loader of loaders) {
+      expect(loader.with).not.toHaveProperty('main_files');
+    }
   });
 
   it('is told by the review to load review.md', () => {
@@ -1037,7 +1064,7 @@ describe('review.md', () => {
 // A stand-in for `gh api -H "Accept: application/vnd.github.raw"
 // "repos/owner/repo/contents/<path>?ref=main"`: fails for any other arguments, prints the local
 // file, and fails for one that is not there or for a path with `..`, as the API does with a 404.
-// With STUB_FAIL_FIRST=n, the first n calls fail like a server error.
+// With STUB_FAIL_FIRST=n, the first n calls (for STUB_FAIL_PATH, if set) fail like a server error.
 const GH = `#!/bin/bash
 if [ "$#" -ne 4 ] || [ "$1" != api ] || [ "$2" != -H ] || [ "$3" != "Accept: application/vnd.github.raw" ]; then
   echo "unexpected gh call: $*" >&2; exit 1
@@ -1046,17 +1073,17 @@ case "$4" in
   repos/owner/repo/contents/*\\?ref=main) ;;
   *) echo "unexpected gh call: $*" >&2; exit 1 ;;
 esac
-if [ -n "$STUB_FAIL_FIRST" ]; then
-  failed=$(cat "$RUNNER_TEMP/gh-failed" 2>/dev/null || echo 0)
-  if [ "$failed" -lt "$STUB_FAIL_FIRST" ]; then
-    echo $((failed + 1)) > "$RUNNER_TEMP/gh-failed"; echo "HTTP 502" >&2; exit 1
-  fi
-fi
 path="\${4#repos/owner/repo/contents/}"
 path="\${path%\\?ref=main}"
 case "/$path/" in
   *\\?*|*/../*|*//*) echo "unexpected gh call: $*" >&2; exit 1 ;;
 esac
+if [ -n "$STUB_FAIL_FIRST" ] && { [ -z "$STUB_FAIL_PATH" ] || [ "$path" = "$STUB_FAIL_PATH" ]; }; then
+  failed=$(cat "$RUNNER_TEMP/gh-failed" 2>/dev/null || echo 0)
+  if [ "$failed" -lt "$STUB_FAIL_FIRST" ]; then
+    echo $((failed + 1)) > "$RUNNER_TEMP/gh-failed"; echo "HTTP 502" >&2; exit 1
+  fi
+fi
 if ! [ -f "$STUB_ROOT/$path" ]; then
   echo "HTTP 404: Not Found" >&2; exit 1
 fi
@@ -1204,38 +1231,37 @@ describe('the load-agent-files script', () => {
   // The review's rule files and plugin marketplace (claude-code-review.yml), each written under
   // agent/main/ at its repo path, so a folder of them can be named as one.
   describe('the main files', () => {
-    const paths = [
-      'AGENTS.md',
-      'docs/security.md',
-      '.github/claude-plugins/.claude-plugin/marketplace.json',
-    ];
     const repo = (path: string) => readFileSync(join(root, path), 'utf8');
 
     it('writes each under agent/main/ at its path, as main has it', () => {
       const { main } = load('review.md', undefined, {
-        MAIN_FILES: paths.join(' '),
+        MAIN_FILES: mainFiles().join(' '),
       });
 
-      for (const path of paths) {
+      expect(Object.keys(main).sort()).toEqual([...mainFiles()].sort());
+      for (const path of mainFiles()) {
         expect(main[path], path).toBe(repo(path));
       }
     });
 
     it('writes none when given none', () => {
-      const { main } = load(files);
-
-      for (const path of paths) {
-        expect(main[path], path).toBeUndefined();
-      }
+      expect(load(files).main).toEqual({});
     });
 
-    it('retries a download that fails, then fails on one that is not in the repo', () => {
-      expect(
-        load('review.md', undefined, {
-          MAIN_FILES: 'AGENTS.md',
-          STUB_FAIL_FIRST: '2',
-        }).main['AGENTS.md']
-      ).toBe(repo('AGENTS.md'));
+    it('retries a download that fails, up to three tries', () => {
+      const failing = (first: string) => ({
+        MAIN_FILES: 'AGENTS.md',
+        STUB_FAIL_FIRST: first,
+        STUB_FAIL_PATH: 'AGENTS.md',
+      });
+
+      expect(load('review.md', undefined, failing('2')).main['AGENTS.md']).toBe(
+        repo('AGENTS.md')
+      );
+      expect(() => load('review.md', undefined, failing('3'))).toThrow();
+    });
+
+    it('fails on one that is not in the repo', () => {
       expect(() =>
         load('review.md', undefined, { MAIN_FILES: 'AGENTS.md docs/typo.md' })
       ).toThrow();
@@ -1266,26 +1292,22 @@ describe('the load-agent-files script', () => {
 // (plans/chores/C588-review-config-from-main.md).
 describe('the review job of claude-code-review.yml', () => {
   type Job = { permissions?: Record<string, string>; steps: Step[] };
-  const WORKFLOW = '.github/workflows/claude-code-review.yml';
   const ACTION_NAME = 'anthropics/claude-code-action@';
-  const MAIN_FILES = [
-    'AGENTS.md',
-    'docs/security.md',
-    '.github/claude-plugins/.claude-plugin/marketplace.json',
-  ];
+  const LOAD = 'Load review rules and settings';
+  const CHECK = "Check that this workflow is main's";
+  const COPY = "Put main's rule files in the checkout";
   const job = () =>
     (parse(read('claude-code-review.yml')) as { jobs: Record<string, Job> })
       .jobs['claude-review'];
   const steps = () => job().steps;
   const at = (name: string) => steps().findIndex(step => step.name === name);
   const step = (name: string) => steps()[at(name)];
-  const claude = () =>
-    steps().find(step =>
-      step.uses?.startsWith('anthropics/claude-code-action@')
-    );
+  const claudeAt = () =>
+    steps().findIndex(step => step.uses?.startsWith(ACTION_NAME));
+  const claude = () => steps()[claudeAt()];
 
   it('runs Claude with the workflow token and the fewest permissions', () => {
-    expect(claude()?.with?.github_token).toBe('${{ github.token }}');
+    expect(claude().with?.github_token).toBe('${{ github.token }}');
     expect(job().permissions).toEqual({
       actions: 'read',
       contents: 'read',
@@ -1294,44 +1316,38 @@ describe('the review job of claude-code-review.yml', () => {
     });
   });
 
-  // The action restores CLAUDE.md from the base branch, but what it imports is read from the
-  // checkout, so main's copies go there first. Adding an import to CLAUDE.md fails this until the
-  // review loads and copies it too.
-  it('loads the files CLAUDE.md imports from main and puts them in the checkout before Claude', () => {
-    const loader = steps().findIndex(step =>
-      step.uses?.includes('load-agent-files')
-    );
-    const copy = at("Put main's rule files in the checkout");
-    const imports =
-      readFileSync(join(root, 'CLAUDE.md'), 'utf8')
-        .match(/^@(\S+)$/gm)
-        ?.map(line => line.slice(1)) ?? [];
-
-    expect(steps()[loader]?.with?.main_files).toBe(MAIN_FILES.join(' '));
-    expect(MAIN_FILES.filter(path => !existsSync(join(root, path)))).toEqual(
+  it('loads the files CLAUDE.md imports, the marketplace and this file from main, right after checkout', () => {
+    expect(at(LOAD)).toBe(1);
+    expect(step(LOAD).uses).toContain('load-agent-files');
+    expect(step(LOAD).with?.main_files).toBe(mainFiles().join(' '));
+    expect(mainFiles().filter(path => !existsSync(join(root, path)))).toEqual(
       []
     );
-    expect(imports).toEqual(['AGENTS.md', 'docs/security.md']);
-    for (const path of imports) {
-      expect(steps()[copy]?.run).toContain(
+    expect(imports()).toEqual(['AGENTS.md', 'docs/security.md']);
+  });
+
+  // The action restores CLAUDE.md from the base branch, but what it imports is read from the
+  // checkout, so main's copies go there first. Adding an import to CLAUDE.md fails this until the
+  // copy step takes it too.
+  it("puts main's copies of the imports in the checkout before Claude", () => {
+    for (const path of imports()) {
+      expect(step(COPY).run).toContain(
         `cp "$RUNNER_TEMP/agent/main/${path}" ${path}`
       );
     }
-    expect(loader).toBeLessThan(copy);
-    expect(copy).toBeLessThan(
-      steps().findIndex(step => step.uses?.startsWith(ACTION_NAME))
-    );
+    expect(at(LOAD)).toBeLessThan(at(COPY));
+    expect(at(COPY)).toBeLessThan(claudeAt());
   });
 
   it('installs the plugin from the marketplace loaded from main', () => {
     const marketplace = JSON.parse(
-      readFileSync(join(root, MAIN_FILES[2]), 'utf8')
+      readFileSync(join(root, MARKETPLACE), 'utf8')
     ) as { name: string; plugins: { name: string }[] };
 
-    expect(claude()?.with?.plugin_marketplaces).toBe(
+    expect(claude().with?.plugin_marketplaces).toBe(
       '${{ runner.temp }}/agent/main/.github/claude-plugins'
     );
-    expect(claude()?.with?.plugins).toBe(
+    expect(claude().with?.plugins).toBe(
       `${marketplace.plugins[0].name}@${marketplace.name}`
     );
   });
@@ -1339,28 +1355,29 @@ describe('the review job of claude-code-review.yml', () => {
   // The action checked this itself while it minted its own token; with the workflow token it
   // doesn't, so the workflow does: Claude runs only on a copy identical to main's.
   describe("the check that this workflow is main's", () => {
-    const NAME = "Check that this workflow is main's";
-    // Runs the step's script with gh stubbed to print main's copy from `mainRoot`.
-    const check = (mainRoot: string) => {
+    // Runs the step's script with `text` as the copy of the workflow the load step wrote (none when
+    // undefined).
+    const check = (text?: string) => {
       const dir = mkdtempSync(join(tmpdir(), 'review-check-'));
 
       try {
-        mkdirSync(join(dir, 'bin'));
-        writeFileSync(join(dir, 'bin/gh'), GH, { mode: 0o755 });
-        const { status } = spawnSync(
+        if (text !== undefined) {
+          mkdirSync(join(dir, 'agent/main/.github/workflows'), {
+            recursive: true,
+          });
+          writeFileSync(join(dir, 'agent/main', REVIEW_WORKFLOW), text);
+        }
+        const { status, stdout } = spawnSync(
           'bash',
-          ['-e', '-o', 'pipefail', '-c', step(NAME).run ?? ''],
+          ['-e', '-o', 'pipefail', '-c', step(CHECK).run ?? ''],
           {
             cwd: root,
             encoding: 'utf8',
             env: {
-              GH_REPO: 'owner/repo',
-              GH_TOKEN: 'token',
               GITHUB_OUTPUT: join(dir, 'output'),
               NODE_ENV: 'test',
-              PATH: `${join(dir, 'bin')}:${process.env.PATH}`,
+              PATH: process.env.PATH ?? '',
               RUNNER_TEMP: dir,
-              STUB_ROOT: mainRoot,
             },
             stdio: ['ignore', 'pipe', 'pipe'],
           }
@@ -1369,50 +1386,44 @@ describe('the review job of claude-code-review.yml', () => {
           ? readFileSync(join(dir, 'output'), 'utf8')
           : '';
 
-        return { output, status };
-      } finally {
-        rmSync(dir, { force: true, recursive: true });
-      }
-    };
-    // A root whose copy of the workflow is `text`, or that has none.
-    const withMain = (text?: string, then?: (root: string) => void) => {
-      const dir = mkdtempSync(join(tmpdir(), 'review-main-'));
-
-      try {
-        if (text !== undefined) {
-          mkdirSync(join(dir, '.github/workflows'), { recursive: true });
-          writeFileSync(join(dir, WORKFLOW), text);
-        }
-        then?.(dir);
+        return { output, status, stdout };
       } finally {
         rmSync(dir, { force: true, recursive: true });
       }
     };
 
-    it('comes right after checkout, with the workflow token, and gates Claude', () => {
-      expect(at(NAME)).toBe(1);
-      expect(step(NAME).id).toBe('same');
-      expect(step(NAME).env).toEqual({
-        GH_REPO: '${{ github.repository }}',
-        GH_TOKEN: '${{ github.token }}',
-      });
-      expect(claude()?.if).toBe("steps.same.outputs.same == 'true'");
+    it('comes right after the load, calls nothing, and gates Claude and the steps that would post', () => {
+      expect(at(CHECK)).toBe(at(LOAD) + 1);
+      expect(step(CHECK).id).toBe('same');
+      expect(step(CHECK).env).toBeUndefined();
+      expect(step(CHECK).run).not.toContain('gh ');
+      for (const name of [
+        'Show that the review started',
+        'Write the changes since the last review',
+      ]) {
+        expect(step(name).if, name).toBe("steps.same.outputs.same == 'true'");
+      }
+      expect(claude().if).toBe("steps.same.outputs.same == 'true'");
     });
 
     it("says same=true for main's copy and same=false for another", () => {
-      expect(check(root)).toEqual({ output: 'same=true\n', status: 0 });
-      withMain(`${read('claude-code-review.yml')}\n# changed\n`, dir => {
-        expect(check(dir)).toEqual({ output: 'same=false\n', status: 0 });
+      expect(check(read('claude-code-review.yml'))).toMatchObject({
+        output: 'same=true\n',
+        status: 0,
       });
+      expect(
+        check(`${read('claude-code-review.yml')}\n# changed\n`)
+      ).toMatchObject({ output: 'same=false\n', status: 0 });
     });
 
-    it("fails, saying neither, when main's copy cannot be read", () => {
-      withMain(undefined, dir => {
-        const { output, status } = check(dir);
+    it('fails, saying neither, when the load left no copy', () => {
+      const { output, status, stdout } = check();
 
-        expect(status).not.toBe(0);
-        expect(output).toBe('');
-      });
+      expect(status).not.toBe(0);
+      expect(output).toBe('');
+      expect(stdout).toContain(
+        "::error::The step above didn't load main's copy of this file."
+      );
     });
 
     // Only the check's explicit "not main's" gets the comment; a failed check or a failed Claude fails the job.

@@ -5,13 +5,13 @@
 
 ## Approach
 
-`load-agent-files` gets `main_files`: repo-root paths downloaded from `main` to `$RUNNER_TEMP/agent/main/` (default empty). The review loads `AGENTS.md`, `docs/security.md` and the marketplace so: a step copies the rule files over the checkout's, which the restored `CLAUDE.md` imports, and `plugin_marketplaces` names the download. The action gets `github_token: ${{ github.token }}` and the job drops `id-token: write`; a step runs the action only when this file equals `main`'s, as the token exchange checked.
+`load-agent-files` gets `main_files`: repo-root paths downloaded from `main` to `$RUNNER_TEMP/agent/main/`. The review loads `AGENTS.md`, `docs/security.md`, the marketplace and this workflow so: a step copies the rule files over the checkout's, which the restored `CLAUDE.md` imports, and `plugin_marketplaces` names the download. The action gets `github_token: ${{ github.token }}`, the job drops `id-token: write`, and Claude runs only when this file equals the loaded copy.
 
 ## Decisions
 
 **D1 · Review identity** · Decides: Tech lead
 
-- **A.** `github.token`, no `id-token`: the review posts as `github-actions[bot]`, which can't approve. `fix-review.md` names that Bot. The Claude GitHub App is then unused: the tech lead uninstalls it, its doc row goes.
+- **A.** `github.token`, no `id-token`: the review posts as `github-actions[bot]`, which can't approve; `fix-review.md` names it. The Claude GitHub App goes unused: uninstall it, drop its doc row.
 - ~~**B.** An App token minted with `pull-requests: write` and `contents: read` only.~~
 
 **Answer: A** (@henetiriki). `review.md` asks comments only; settings allow no `gh pr review`.
@@ -19,7 +19,7 @@
 **D2 · Rule files** · Decides: Tech lead
 
 - **A.** As in Approach.
-- ~~**B.** Inline the review rules in `review.md`; CI stops importing them from `CLAUDE.md`.~~
+- ~~**B.** Inline the review rules in `review.md`.~~
 
 **Answer: A** (@henetiriki)
 
@@ -30,22 +30,22 @@
 | `.github/actions/load-agent-files/action.yml` | changed       | `main_files`       |
 | `.github/workflows/claude-code-review.yml`    | changed       | Token, check, copy |
 | `.github/agent/fix-review.md`                 | changed       | Reviewer login     |
+| `.github/agent/review.md`                     | changed       | Checkout note      |
 | `docs/repo-settings.md`                       | changed       | Apps table         |
 | `scripts/__tests__/load-agent-files.test.ts`  | changed       | Tests              |
 
 ## Order of work
 
-1. Tests first (rule 12), then action, workflow, docs.
-2. Until the pin PR after merge lands, the load step fails and the job reports a missing review.
+1. Tests first (rule 12), then the code.
+2. Until the pin PR after merge lands, reviews report a missing review.
 3. Tech lead: Settings › Integrations › GitHub Apps › Claude › Uninstall.
-4. A throwaway PR editing `marketplace.json` and `AGENTS.md`; its log shows the copy step's `git status` and the marketplace path under `agent/main`; close it.
+4. A throwaway PR editing `marketplace.json` and `AGENTS.md`: its log shows the copy step's `git status` and the marketplace path; close it.
 
 ## Risks
 
-- `plugin marketplace add` on a folder outside the checkout is unproven until step 4; a failure gives no review.
+- `plugin marketplace add` outside the checkout is unproven until step 4; a failure gives no review.
+- A PR editing `AGENTS.md` or `docs/security.md` is reviewed with `main`'s copy on disk; its change is in the diff only.
 
-## Proof
+## Deviations
 
-| Acceptance check                                   | Proven by     |
-| -------------------------------------------------- | ------------- |
-| Files from `main`; check kept; workflow token only | Tests; step 4 |
+- The check reads the loader's copy of this file; the posting steps skip when it fails (review of #590).

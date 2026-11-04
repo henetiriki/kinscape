@@ -56,32 +56,33 @@ jobs:
         with:
           fetch-depth: 1
 
-      # Claude runs only a copy of this file identical to main's, so a PR can't change its own reviewer.
-      # (The action checked this itself while it minted its own token; with the workflow token it doesn't.)
-      # A failed download fails the step and the job: Claude doesn't start, and the report step says so.
-      - name: Check that this workflow is main's
-        id: same
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          gh api -H "Accept: application/vnd.github.raw" "repos/$GH_REPO/contents/.github/workflows/claude-code-review.yml?ref=main" > "$RUNNER_TEMP/main-workflow.yml"
-          if cmp -s "$RUNNER_TEMP/main-workflow.yml" .github/workflows/claude-code-review.yml; then
-            echo "same=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "same=false" >> "$GITHUB_OUTPUT"
-            echo "This file differs from main's: Claude won't start."
-          fi
-
-      # The rules, settings, plugin marketplace and the files CLAUDE.md imports come from main, not the
-      # checked-out branch. The action retries a failed download, then fails the job, and shows review.md.
+      # The rules, settings, plugin marketplace, the files CLAUDE.md imports and main's copy of this file
+      # come from main, not the checked-out branch. The action retries a failed download, then fails the
+      # job (Claude doesn't start, and the report step says so), and shows review.md.
       - name: Load review rules and settings
         uses: henetiriki/kinscape/.github/actions/load-agent-files@48a0be9d9003af15eb5eef513e79fa73715c4210
         with:
           files: review.md
           settings: review-settings.json
-          main_files: AGENTS.md docs/security.md .github/claude-plugins/.claude-plugin/marketplace.json
+          main_files: AGENTS.md docs/security.md .github/claude-plugins/.claude-plugin/marketplace.json .github/workflows/claude-code-review.yml
           token: ${{ github.token }}
+
+      # Claude runs only a copy of this file identical to main's, so a PR can't change its own reviewer.
+      # (The action checked this itself while it minted its own token; with the workflow token it doesn't.)
+      - name: Check that this workflow is main's
+        id: same
+        run: |
+          main="$RUNNER_TEMP/agent/main/.github/workflows/claude-code-review.yml"
+          if ! [ -f "$main" ]; then
+            echo "::error::The step above didn't load main's copy of this file."
+            exit 1
+          fi
+          if cmp -s "$main" .github/workflows/claude-code-review.yml; then
+            echo "same=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "same=false" >> "$GITHUB_OUTPUT"
+            echo "This file differs from main's: Claude won't start."
+          fi
 
       # The action restores CLAUDE.md from main, but what it imports is read from the checkout: put
       # main's copies there. `git status` shows an M for each one the PR changed.
@@ -94,6 +95,7 @@ jobs:
       # Agent mode posts nothing until Claude does, so mark the PR as picked up: :eyes: stays, the
       # "Working" comment is deleted when the run ends. Neither is worth failing the run for.
       - name: Show that the review started
+        if: steps.same.outputs.same == 'true'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -113,6 +115,7 @@ jobs:
       # written and the whole PR is reviewed. Only a written diff sets `scope=since`.
       - name: Write the changes since the last review
         id: since
+        if: steps.same.outputs.same == 'true'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}

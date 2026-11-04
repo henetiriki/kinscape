@@ -58,11 +58,13 @@ describe('migrate', () => {
     expect(applied).toEqual([
       '0001_accounts_and_trees.sql',
       '0002_sessions.sql',
+      '0003_sign_in_failures.sql',
     ]);
     expect(await tables()).toEqual([
       'account',
       'schema_migration',
       'session',
+      'sign_in_failure',
       'tree',
       'tree_account',
     ]);

@@ -70,25 +70,26 @@ const graphql = (gh: Gh, query: string, fields: Record<string, string>) =>
 // Every page of review threads (resolved ones take room in a page too) and the first page's comments.
 const read = (gh: Gh, repo: string, number: string): Pr => {
   const [owner, name] = repo.split('/');
-  const fetch = (after?: string): Page =>
+  // The cursor is null on the first call and after the last page.
+  const fetch = (after: null | string): Page =>
     (
       JSON.parse(
         graphql(gh, QUERY, {
           name,
           number,
           owner,
-          ...(after === undefined ? {} : { after }),
+          ...(after === null ? {} : { after }),
         })
       ) as { data: { repository: { pullRequest: Page } } }
     ).data.repository.pullRequest;
-  let page = fetch();
+  let page = fetch(null);
   const pr: Pr = {
     comments: page.comments,
     reviewThreads: { nodes: [...page.reviewThreads.nodes] },
   };
 
   while (page.reviewThreads.pageInfo.hasNextPage) {
-    page = fetch(page.reviewThreads.pageInfo.endCursor ?? undefined);
+    page = fetch(page.reviewThreads.pageInfo.endCursor);
     pr.reviewThreads.nodes.push(...page.reviewThreads.nodes);
   }
 

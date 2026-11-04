@@ -281,6 +281,20 @@ describe('the run-claude action', () => {
     expect(pin ?? '', `the action pins ${name}`).toMatch(/^[0-9a-f]{40}$/);
     expect(pins(read('claude-code-review.yml'), name)).toEqual([pin]);
   });
+
+  // The agent is a GitHub App (scripts/setup-github.sh), and the action refuses a bot actor unless
+  // it is listed. Only the review runs with the App as actor, on its own PRs; the other runs have a person.
+  it('lists the bot for the review only, where the App is the actor', () => {
+    const name = 'anthropics/claude-code-action';
+    const using = (steps: Step[]) =>
+      steps.find(step => step.uses?.startsWith(`${name}@`));
+
+    expect(using(reviewSteps())?.with?.allowed_bots).toBe(
+      '${{ vars.KINSCAPE_BOT_LOGIN }}'
+    );
+    expect(stepUsing(name)?.with?.allowed_bots).toBeUndefined();
+    expect(using(refreshSteps())?.with?.allowed_bots).toBeUndefined();
+  });
 });
 
 // The refresh job of claude-unblock.yml runs Claude on a Spec's text from outside the team

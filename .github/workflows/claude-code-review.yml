@@ -134,6 +134,8 @@ jobs:
         uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The App's own PRs (D3 of C575): the action refuses a bot actor unless it is listed.
+          allowed_bots: ${{ vars.KINSCAPE_BOT_LOGIN }}
           # The plugin is pinned to a commit in this marketplace. Dependabot doesn't track it: bump the sha by hand,
           # and re-check review-settings.json against the plugin command's allowed-tools.
           plugin_marketplaces: './.github/claude-plugins'

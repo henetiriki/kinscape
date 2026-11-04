@@ -44,12 +44,12 @@ type Item = { at: string; authorAssociation: string; body: string };
 type World = {
   closes?: { number: number; repo?: string }[];
   comments?: Item[];
+  // How the PR head compares with the review's commit, read for an approved plan whose head is not it.
+  compare?: string;
   files?: string[];
   headRefOid?: string;
   // issue number -> its labels; the issue a plan PR closes is on ready-for-dev by default
   issues?: Record<number, string[]>;
-  // The parent of the PR head, read when an approved plan's head is not the review's commit.
-  parent?: string;
   prLabels?: string[];
   reviews?: Item[];
   text?: string;
@@ -71,9 +71,9 @@ describe('run', () => {
   const fakeGh = ({
     closes = [{ number: 8 }],
     comments = [],
+    compare = 'diverged',
     files = [PATH, 'src/other.ts'],
     issues = { 8: ['type: chore', DEV] },
-    parent = 'p'.repeat(40),
     prLabels = [],
     reviews = [],
     text = plan(),
@@ -122,8 +122,8 @@ describe('run', () => {
         return JSON.stringify({ commit: { sha: MADE } });
       }
 
-      if (args[0] === 'api' && args[1].includes('/commits/')) {
-        return JSON.stringify({ parents: [{ sha: parent }] });
+      if (args[0] === 'api' && args[1].includes('/compare/')) {
+        return JSON.stringify({ status: compare });
       }
 
       return '';
@@ -415,30 +415,36 @@ describe('run', () => {
       expect(reply()).toContain('Approve the plan again');
     });
 
-    it('stops a plan already approved whose head moved further', () => {
-      fakeGh({ text: plan('approved') });
+    it('stops a plan already approved whose head is elsewhere, with the comment', () => {
+      fakeGh({ compare: 'diverged', text: plan('approved') });
 
       expect(run(['504'], env, gh, write)).toBe(0);
       expect(written).toEqual(['go=false']);
       expect(reply()).toContain('The approval is for `ccccccc`');
     });
 
-    // A second review of the same commit, queued behind the first: the head is now the approval
-    // commit the first run made on it, so this one goes on as that one did.
-    it('goes for a plan already approved whose head is the approval commit made on it', () => {
-      fakeGh({ parent: env.COMMIT, text: plan('approved') });
+    // A second review of the same commit, queued behind the first run, build included: that run
+    // did the work, so this one says nothing and moves no label.
+    it('stops quietly for a plan approved after the review’s commit', () => {
+      fakeGh({
+        compare: 'ahead',
+        issues: { 8: ['type: chore', AGENT] },
+        text: plan('approved'),
+      });
 
       expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true', `head=${HEAD}`]);
+      expect(edits()).toEqual([]);
+      expect(put()).toEqual([]);
     });
 
-    it('reads no parent for a draft plan', () => {
+    it('compares nothing for a draft plan', () => {
       fakeGh({ reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')] });
       run(['504'], env, gh, write);
 
       expect(
-        gh.mock.calls.filter(([args]) => args[1]?.includes('/commits/'))
+        gh.mock.calls.filter(([args]) => args[1]?.includes('/compare/'))
       ).toEqual([]);
     });
   });

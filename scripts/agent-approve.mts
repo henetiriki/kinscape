@@ -22,9 +22,9 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // a stop comment.
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT, and on `go=true` `head=<sha>`: the commit it
 // made, or the PR head when the plan was already approved. The build checks out that commit and no
-// other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit. The
-// one exception is a plan already approved whose head is the approval commit made on COMMIT: a
-// second review of the same commit, queued behind the first, goes on as that one did.
+// other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit. A
+// plan approved since COMMIT (a second review of the same commit, queued behind the first run)
+// stops quietly: no comment, no label move, `go=false`.
 // The commit goes through the Contents API with the plan's blob sha, so the PR head is never
 // checked out and a plan that changed meanwhile is refused. A failed `gh` call is logged,
 // `go=false` is written and the exit code is 1.
@@ -237,14 +237,7 @@ export const run = (
       .filter(path => PLAN.test(path));
     const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
 
-    // The head is not the commit the owner read. For a plan already approved there, the head may be
-    // the approval commit this script made on it, which a second review of the same commit finds.
-    const moved = (): boolean =>
-      pr.headRefOid !== commit &&
-      !json<{ parents: { sha: string }[] }>(gh, [
-        'api',
-        `repos/${repo}/commits/${pr.headRefOid}`,
-      ]).parents.some(({ sha: parent }) => parent === commit);
+    // The head is not the commit the owner read.
     const stopMoved = (): number =>
       stop(
         `- The approval is for \`${commit.slice(0, 7)}\`, but the branch is now at \`${pr.headRefOid.slice(0, 7)}\`. Approve the plan again.`
@@ -269,7 +262,24 @@ export const run = (
     const text = Buffer.from(content, 'base64').toString('utf8');
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
-      if (moved()) {
+      if (pr.headRefOid !== commit) {
+        // A review of an earlier commit of a plan approved since: two quick approvals, where the
+        // second waits for the first run, build included. That run did the work, so there is
+        // nothing to tell or move. Any other moved head stops as a draft's does.
+        const { status } = json<{ status: string }>(gh, [
+          'api',
+          `repos/${repo}/compare/${commit}...${pr.headRefOid}`,
+        ]);
+
+        if (status === 'ahead') {
+          console.log(
+            `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
+          );
+          write('go=false');
+
+          return 0;
+        }
+
         return stopMoved();
       }
 

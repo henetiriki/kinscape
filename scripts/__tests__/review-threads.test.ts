@@ -50,16 +50,35 @@ const COMMENTS = [
   { author: person, body: 'Thanks.', createdAt: '2026-11-02T11:00:00Z' },
 ];
 
+type Paging = {
+  // Every page says there is more but names no cursor.
+  cursorless?: boolean;
+  pageSize?: number;
+};
+
 describe('run', () => {
   let gh: ReturnType<typeof vi.fn<Gh>>;
   let out: ReturnType<typeof vi.fn<(text: string) => void>>;
   let errors: string[];
 
   // Serves the threads `pageSize` at a time: a query with `after=c<n>` gets page n + 1.
-  const fakeGh = (threads = THREADS, pageSize = 100) => {
+  const fakeGh = (
+    threads = THREADS,
+    { cursorless = false, pageSize = 100 }: Paging = {}
+  ) => {
     gh = vi.fn<Gh>(args => {
-      if (args.some(arg => arg.startsWith('query=mutation'))) {
+      const query = args.find(arg => arg.startsWith('query=')) ?? '';
+
+      if (query.startsWith('query=mutation')) {
         return JSON.stringify({ data: { resolveReviewThread: {} } });
+      }
+
+      if (!query.includes('reviewThreads')) {
+        return JSON.stringify({
+          data: {
+            repository: { pullRequest: { comments: { nodes: COMMENTS } } },
+          },
+        });
       }
 
       const after = args.find(arg => arg.startsWith('after='));
@@ -70,7 +89,6 @@ describe('run', () => {
         data: {
           repository: {
             pullRequest: {
-              comments: { nodes: COMMENTS },
               reviewThreads: {
                 nodes: threads
                   .slice(index * pageSize, (index + 1) * pageSize)
@@ -78,10 +96,12 @@ describe('run', () => {
                     ...thread,
                     comments: { nodes: comments },
                   })),
-                pageInfo: {
-                  endCursor: index < last ? `c${index}` : null,
-                  hasNextPage: index < last,
-                },
+                pageInfo: cursorless
+                  ? { endCursor: null, hasNextPage: true }
+                  : {
+                      endCursor: index < last ? `c${index}` : null,
+                      hasNextPage: index < last,
+                    },
               },
             },
           },
@@ -90,10 +110,18 @@ describe('run', () => {
     });
   };
   const queries = () => gh.mock.calls.map(([args]) => args);
-  const mutations = () =>
+  const about = (what: string) =>
     queries().filter(args =>
-      args.some(arg => arg.startsWith('query=mutation'))
+      args.some(arg => arg.startsWith('query=') && arg.includes(what))
     );
+  const threadQueries = () => about('reviewThreads');
+  const commentQueries = () => about('comments(last');
+  const mutations = () => about('resolveReviewThread');
+  const listed = () =>
+    JSON.parse(out.mock.calls[0][0]) as {
+      comments: unknown[];
+      threads: { id: string }[];
+    };
 
   beforeEach(() => {
     out = vi.fn();
@@ -134,21 +162,22 @@ describe('run', () => {
       fakeGh();
       run(['list', '5'], ENV, gh, out);
 
-      expect(queries()).toHaveLength(1);
-      expect(queries()[0].slice(0, 2)).toEqual(['api', 'graphql']);
-      expect(queries()[0]).toEqual(
+      expect(threadQueries()).toHaveLength(1);
+      expect(threadQueries()[0].slice(0, 2)).toEqual(['api', 'graphql']);
+      expect(threadQueries()[0]).toEqual(
         expect.arrayContaining(['-F', 'owner=owner', 'name=repo', 'number=5'])
       );
-      expect(queries()[0].find(arg => arg.startsWith('query='))).toContain(
-        'reviewThreads(first: 100, after: $after)'
-      );
+      expect(
+        threadQueries()[0].find(arg => arg.startsWith('query='))
+      ).toContain('reviewThreads(first: 100, after: $after)');
+      expect(commentQueries()).toHaveLength(1);
     });
 
     it('prints the unresolved threads and the comments, each author with its bot flag', () => {
       fakeGh();
 
       expect(run(['list', '5'], ENV, gh, out)).toBe(0);
-      expect(JSON.parse(out.mock.calls[0][0])).toEqual({
+      expect(listed()).toEqual({
         comments: [
           {
             body: 'Gaps: none.',
@@ -189,39 +218,52 @@ describe('run', () => {
       fakeGh([]);
 
       expect(run(['list', '5'], ENV, gh, out)).toBe(0);
-      expect(JSON.parse(out.mock.calls[0][0]).threads).toEqual([]);
+      expect(listed().threads).toEqual([]);
     });
 
     // Resolved threads take room in a page too, so a long-reviewed PR has more than one.
-    it('reads every page of threads', () => {
-      fakeGh(THREADS, 2);
+    it('reads every page of threads, and the comments once', () => {
+      fakeGh(THREADS, { pageSize: 2 });
 
       expect(run(['list', '5'], ENV, gh, out)).toBe(0);
-      expect(queries()).toHaveLength(2);
-      expect(queries()[0]).not.toEqual(
+      expect(threadQueries()).toHaveLength(2);
+      expect(threadQueries()[0]).not.toEqual(
         expect.arrayContaining([expect.stringMatching(/^after=/)])
       );
-      expect(queries()[1]).toEqual(expect.arrayContaining(['-F', 'after=c0']));
-      expect(
-        JSON.parse(out.mock.calls[0][0]).threads.map(
-          ({ id }: { id: string }) => id
-        )
-      ).toEqual(['PRRT_1', 'PRRT_3']);
+      expect(threadQueries()[1]).toEqual(
+        expect.arrayContaining(['-F', 'after=c0'])
+      );
+      expect(commentQueries()).toHaveLength(1);
+      expect(listed().threads.map(({ id }) => id)).toEqual([
+        'PRRT_1',
+        'PRRT_3',
+      ]);
     });
 
-    // Actions sets GITHUB_REPOSITORY; the fix-review run's shell has no GH_REPO.
-    it('takes the repo from GITHUB_REPOSITORY when GH_REPO is unset', () => {
+    it('stops at a page that claims more but names no cursor', () => {
+      fakeGh(THREADS, { cursorless: true, pageSize: 2 });
+
+      expect(run(['list', '5'], ENV, gh, out)).toBe(0);
+      expect(threadQueries()).toHaveLength(1);
+      expect(listed().threads.map(({ id }) => id)).toEqual(['PRRT_1']);
+    });
+
+    // Actions sets GITHUB_REPOSITORY; the fix-review run's shell has no GH_REPO, or an empty one.
+    it.each([
+      { GITHUB_REPOSITORY: 'o/r' },
+      { GH_REPO: '', GITHUB_REPOSITORY: 'o/r' },
+    ])('takes the repo from GITHUB_REPOSITORY with env %j', env => {
       fakeGh();
 
-      expect(run(['list', '5'], { GITHUB_REPOSITORY: 'o/r' }, gh, out)).toBe(0);
-      expect(queries()[0]).toEqual(
+      expect(run(['list', '5'], env, gh, out)).toBe(0);
+      expect(threadQueries()[0]).toEqual(
         expect.arrayContaining(['owner=o', 'name=r'])
       );
     });
   });
 
   describe('resolve', () => {
-    it('resolves a thread of the PR and says so', () => {
+    it('resolves a thread of the PR and says so, reading no comments', () => {
       fakeGh();
 
       expect(run(['resolve', '5', 'PRRT_1'], ENV, gh, out)).toBe(0);
@@ -229,14 +271,12 @@ describe('run', () => {
       expect(mutations()[0]).toEqual(
         expect.arrayContaining(['-F', 'id=PRRT_1'])
       );
-      expect(mutations()[0].find(arg => arg.startsWith('query='))).toContain(
-        'resolveReviewThread'
-      );
+      expect(commentQueries()).toEqual([]);
       expect(out).toHaveBeenCalledWith('Resolved PRRT_1 on #5.');
     });
 
     it('resolves a thread on a later page', () => {
-      fakeGh(THREADS, 2);
+      fakeGh(THREADS, { pageSize: 2 });
 
       expect(run(['resolve', '5', 'PRRT_3'], ENV, gh, out)).toBe(0);
       expect(mutations()).toHaveLength(1);

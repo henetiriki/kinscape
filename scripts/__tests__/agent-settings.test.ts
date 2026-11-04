@@ -101,14 +101,17 @@ describe('settings.json', () => {
     'git config user.name x',
     'git config --get remote.origin.url',
     'git config',
-    // A leading option: `-c` and `--config-env` set any key, `-C`, `--git-dir` and `--work-tree` point
-    // at another repo, `--exec-path` at other programs.
+    // Every leading option: `-c` and `--config-env` set any key, `-C`, `--git-dir` and `--work-tree`
+    // point at another repo, `--exec-path` at other programs, and a harmless one (`--no-pager`, which
+    // CI never needs) would put the subcommand past the rules below, which match from the start.
     'git -c core.fsmonitor=x status',
     'git -C /tmp status',
     'git --git-dir=x log',
     'git --work-tree=/tmp status',
     'git --exec-path=/tmp status',
     'git --config-env=core.fsmonitor=X status',
+    'git --no-pager log -n 5',
+    'git --no-pager config -l',
     // These print the origin URL, which carries the App token while Claude runs.
     'git remote -v',
     'git remote set-url origin x',
@@ -141,7 +144,6 @@ describe('settings.json', () => {
   it.each([
     'git status',
     'git log -n 5',
-    'git --no-pager log -n 5',
     'git push origin HEAD',
     'git ls-remote origin',
     'git add -A',
@@ -323,6 +325,8 @@ describe('the Bash hook', () => {
     ['ls && cd app', 'give paths'],
     ['cat x', 'Read'],
     ['git status; cat x', 'Read'],
+    // A quoted `<<` is not a heredoc: what follows it is still checked.
+    ["git grep -n '<<' -- x; cat x", 'Read'],
     ['false || cat x', 'Read'],
     ['(cat x)', 'Read'],
     ['cat < x', 'Read'],
@@ -411,6 +415,16 @@ describe('the Bash hook', () => {
       ],
       ['echo $(gh issue edit 7 --title x)', 'an edit in a substitution'],
       ['echo `gh issue edit 7 --title x`', 'an edit in backticks'],
+      [
+        'if true; then gh issue edit 7 --title x; fi',
+        'an edit after a keyword',
+      ],
+      ['! gh issue edit 7 --title x', 'an edit after a bang'],
+      ['env gh issue edit 7 --title x', 'an edit after env'],
+      [
+        `git grep -n '<<' -- ':!plans'; ${edit('7')}`,
+        'an edit after a quoted <<',
+      ],
       [edit('5', 'text\nEOF\ngh issue view 7'), 'an EOF line inside the body'],
       [edit('5', ''), 'an empty body'],
       ['gh issue edit 5', 'no body'],

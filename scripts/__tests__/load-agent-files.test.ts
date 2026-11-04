@@ -533,13 +533,14 @@ describe('the approved-commit check', () => {
     );
   });
 
-  // The check commented already; the safety net would add "finished without commenting".
-  it('keeps the safety net quiet after a stop', () => {
+  // The check commented already; the safety net would add "finished without commenting". When its
+  // comment failed, the net still speaks.
+  it('keeps the safety net quiet after a stop that commented', () => {
     const net = runSteps().find(
       step => step.name === 'Comment if Claude left none'
     );
 
-    expect(net?.if).toBe("always() && steps.head.outcome != 'failure'");
+    expect(net?.if).toBe("always() && steps.head.outputs.commented != 'true'");
   });
 
   it('is fed by the approval: the review commit in, the recorded head out to the build', () => {
@@ -556,46 +557,64 @@ describe('the approved-commit check', () => {
   // The step's script, with a `git` that answers the head it is given and a `gh` that records its call.
   describe('the step', () => {
     const approved = 'a'.repeat(40);
-    const runCheck = (now: string) => {
+    // `ghFails` makes the comment fail, as a GitHub error would.
+    const runCheck = (now: string, ghFails = false) => {
       const bin = mkdtempSync(join(tmpdir(), 'approved-commit-'));
       const calls = join(bin, 'calls');
+      const output = join(bin, 'output');
 
       writeFileSync(join(bin, 'git'), `#!/bin/sh\necho ${now}\n`, {
         mode: 0o755,
       });
-      writeFileSync(join(bin, 'gh'), `#!/bin/sh\necho "$@" >> ${calls}\n`, {
-        mode: 0o755,
-      });
+      writeFileSync(
+        join(bin, 'gh'),
+        `#!/bin/sh\necho "$@" >> ${calls}\nexit ${ghFails ? 1 : 0}\n`,
+        { mode: 0o755 }
+      );
 
       const result = spawnSync('bash', ['-e', '-c', check()?.run ?? ''], {
         encoding: 'utf8',
         env: {
           ...process.env,
+          GITHUB_OUTPUT: output,
           HEAD: approved,
           PATH: `${bin}:${process.env.PATH}`,
           THREAD: '42',
         },
       });
-      const comments = existsSync(calls) ? readFileSync(calls, 'utf8') : '';
+      const read = (file: string) =>
+        existsSync(file) ? readFileSync(file, 'utf8') : '';
+      const comments = read(calls);
+      const outputs = read(output);
 
       rmSync(bin, { force: true, recursive: true });
 
-      return { ...result, comments };
+      return { ...result, comments, outputs };
     };
 
     it('passes, saying so, when the branch is at the approved commit', () => {
-      const { comments, status, stdout } = runCheck(approved);
+      const { comments, outputs, status, stdout } = runCheck(approved);
 
       expect(status).toBe(0);
       expect(stdout).toContain(`At the approved commit ${approved}.`);
       expect(comments).toBe('');
+      expect(outputs).toBe('');
     });
 
-    it('comments on the PR with both commits and fails when the branch has moved', () => {
-      const moved = 'b'.repeat(40);
-      const { comments, status } = runCheck(moved);
+    it('fails without saying it commented when the comment fails', () => {
+      const { comments, outputs, status } = runCheck('b'.repeat(40), true);
 
       expect(status).toBe(1);
+      expect(comments).toContain('pr comment 42 --body');
+      expect(outputs).toBe('');
+    });
+
+    it('comments on the PR with both commits, says so, and fails when the branch has moved', () => {
+      const moved = 'b'.repeat(40);
+      const { comments, outputs, status } = runCheck(moved);
+
+      expect(status).toBe(1);
+      expect(outputs).toBe('commented=true\n');
       expect(comments).toContain('pr comment 42 --body');
       expect(comments).toContain(
         'Not built: the branch moved after the approval'

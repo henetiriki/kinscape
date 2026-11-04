@@ -15,17 +15,7 @@ import type { Gh } from '#ks/scripts/types.ts';
 
 type Author = { __typename: string; login: string } | null;
 type Comment = { author: Author; body: string; createdAt?: string };
-type Page = {
-  comments: { nodes: Comment[] };
-  reviewThreads: {
-    nodes: Thread[];
-    pageInfo: { endCursor: null | string; hasNextPage: boolean };
-  };
-};
-type Pr = {
-  comments: { nodes: Comment[] };
-  reviewThreads: { nodes: Thread[] };
-};
+type PageInfo = { endCursor: null | string; hasNextPage: boolean };
 type Thread = {
   comments: { nodes: Comment[] };
   id: string;
@@ -39,13 +29,19 @@ const REPO = /^[\w.-]+\/[\w.-]+$/;
 // A GraphQL node id, as `list` prints it.
 const ID = /^[\w=-]+$/;
 
-const QUERY = `query($owner: String!, $name: String!, $number: Int!, $after: String) {
+const THREADS = `query($owner: String!, $name: String!, $number: Int!, $after: String) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $number) {
       reviewThreads(first: 100, after: $after) {
         pageInfo { endCursor hasNextPage }
         nodes { id isResolved path line comments(first: 50) { nodes { author { login __typename } body } } }
       }
+    }
+  }
+}`;
+const COMMENTS = `query($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
       comments(last: 50) { nodes { author { login __typename } body createdAt } }
     }
   }
@@ -54,47 +50,53 @@ const RESOLVE = `mutation($id: ID!) {
   resolveReviewThread(input: { threadId: $id }) { thread { isResolved } }
 }`;
 
-// `-F` sends a number as a number, which `$number: Int!` needs.
-const graphql = (gh: Gh, query: string, fields: Record<string, string>) =>
-  gh([
-    'api',
-    'graphql',
-    '-f',
-    `query=${query}`,
-    ...Object.entries(fields).flatMap(([key, value]) => [
-      '-F',
-      `${key}=${value}`,
-    ]),
-  ]);
+// `-F` sends a number as a number, which `$number: Int!` needs. The query names the PR, so its
+// fields come back under it.
+const graphql = <T,>(
+  gh: Gh,
+  query: string,
+  fields: Record<string, string>
+): T =>
+  (
+    JSON.parse(
+      gh([
+        'api',
+        'graphql',
+        '-f',
+        `query=${query}`,
+        ...Object.entries(fields).flatMap(([key, value]) => [
+          '-F',
+          `${key}=${value}`,
+        ]),
+      ])
+    ) as { data: { repository: { pullRequest: T } } }
+  ).data.repository.pullRequest;
 
-// Every page of review threads (resolved ones take room in a page too) and the first page's comments.
-const read = (gh: Gh, repo: string, number: string): Pr => {
-  const [owner, name] = repo.split('/');
-  // The cursor is null on the first call and after the last page.
-  const fetch = (after: null | string): Page =>
-    (
-      JSON.parse(
-        graphql(gh, QUERY, {
-          name,
-          number,
-          owner,
-          ...(after === null ? {} : { after }),
-        })
-      ) as { data: { repository: { pullRequest: Page } } }
-    ).data.repository.pullRequest;
-  let page = fetch(null);
-  const pr: Pr = {
-    comments: page.comments,
-    reviewThreads: { nodes: [...page.reviewThreads.nodes] },
-  };
+// Every page of review threads: resolved ones take room in a page too. A page that says there is
+// more but names no cursor ends the read, so a malformed reply can't loop.
+const threadsOf = (gh: Gh, fields: Record<string, string>): Thread[] => {
+  const all: Thread[] = [];
+  let after: null | string = null;
 
-  while (page.reviewThreads.pageInfo.hasNextPage) {
-    page = fetch(page.reviewThreads.pageInfo.endCursor);
-    pr.reviewThreads.nodes.push(...page.reviewThreads.nodes);
-  }
+  do {
+    const page: { nodes: Thread[]; pageInfo: PageInfo } = graphql<{
+      reviewThreads: { nodes: Thread[]; pageInfo: PageInfo };
+    }>(
+      gh,
+      THREADS,
+      after === null ? fields : { ...fields, after }
+    ).reviewThreads;
 
-  return pr;
+    all.push(...page.nodes);
+    after = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
+  } while (after !== null);
+
+  return all;
 };
+
+const commentsOf = (gh: Gh, fields: Record<string, string>): Comment[] =>
+  graphql<{ comments: { nodes: Comment[] } }>(gh, COMMENTS, fields).comments
+    .nodes;
 
 const comment = ({ author, body, createdAt }: Comment) => ({
   body,
@@ -110,7 +112,7 @@ export const run = (
   out: (text: string) => void
 ): number => {
   const [command, raw, id] = args;
-  const repo = env.GH_REPO ?? env.GITHUB_REPOSITORY ?? '';
+  const repo = env.GH_REPO || env.GITHUB_REPOSITORY || '';
 
   if (
     (command !== 'list' && command !== 'resolve') ||
@@ -126,15 +128,18 @@ export const run = (
     return 1;
   }
 
+  const [owner, name] = repo.split('/');
+  const fields = { name, number: raw, owner };
+
   try {
-    const pr = read(gh, repo, raw);
+    const threads = threadsOf(gh, fields);
 
     if (command === 'list') {
       out(
         JSON.stringify(
           {
-            comments: pr.comments.nodes.map(comment),
-            threads: pr.reviewThreads.nodes
+            comments: commentsOf(gh, fields).map(comment),
+            threads: threads
               .filter(({ isResolved }) => !isResolved)
               .map(({ comments, id: threadId, line, path }) => ({
                 comments: comments.nodes.map(comment),
@@ -151,13 +156,13 @@ export const run = (
       return 0;
     }
 
-    if (!pr.reviewThreads.nodes.some(thread => thread.id === id)) {
+    if (!threads.some(thread => thread.id === id)) {
       console.error(`#${raw} has no review thread ${id}.`);
 
       return 1;
     }
 
-    graphql(gh, RESOLVE, { id: id as string });
+    gh(['api', 'graphql', '-f', `query=${RESOLVE}`, '-F', `id=${id}`]);
     out(`Resolved ${id} on #${raw}.`);
 
     return 0;

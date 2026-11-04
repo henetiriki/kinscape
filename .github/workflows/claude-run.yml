@@ -156,7 +156,10 @@ jobs:
         run: |
           now=$(git rev-parse HEAD)
           if [ "$now" != "$HEAD" ]; then
-            gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."
+            # Says so when the comment landed: the safety net below then stays quiet.
+            if gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."; then
+              echo "commented=true" >> "$GITHUB_OUTPUT"
+            fi
             exit 1
           fi
           echo "At the approved commit $now."
@@ -227,11 +230,11 @@ jobs:
         run: gh api -X DELETE "repos/$GH_REPO/issues/comments/$WORKING_COMMENT_ID"
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
-      # step failed, but not after the commit check above stopped the run: that step commented.
+      # step failed, but not when the commit check above stopped the run and commented.
       # If Claude left no comment, post one pointing at the run, or at the PR it
       # opened. Only a run with neither hands the Spec back as blocked.
       - name: Comment if Claude left none
-        if: always() && steps.head.outcome != 'failure'
+        if: always() && steps.head.outputs.commented != 'true'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}

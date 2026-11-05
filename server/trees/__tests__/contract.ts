@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
 
+import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
+import { startSession } from '@ks/server/auth/sessions.mts';
+import { openTree } from '@ks/server/trees/repository.mts';
+
 const MISSING = '00000000-0000-4000-8000-000000000000';
+const NOW = new Date('2030-01-01T00:00:00Z');
+const NOT_FOUND = { error: 'not-found', ok: false };
 const NO_TREE: SeedAccount = {
   id: '00000000-0000-4000-8000-0000000000a1',
   issuer: 'test',
@@ -200,6 +206,163 @@ export const runTreeStoreContract = (
         });
 
         expect(one.ok && two.ok).toBe(true);
+      });
+    });
+
+    describe('openTree', () => {
+      const twoTrees = async (store: TreeStore) => {
+        const a = await store.addAccount({
+          issuer: 'test',
+          subject: 'a',
+          treeName: 'Tree A',
+        });
+        const b = await store.addAccount({
+          issuer: 'test',
+          subject: 'b',
+          treeName: 'Tree B',
+        });
+
+        if (!a.ok || !b.ok) {
+          throw new Error('setup failed');
+        }
+
+        return { a: a.value, b: b.value };
+      };
+
+      /** Opens as a signed-in Account; `at` is the clock when opening. */
+      const openAs = async (
+        store: TreeStore,
+        accountId: string,
+        treeId?: string,
+        at = NOW
+      ) => {
+        const sessions = memorySessions();
+        const token = await startSession(sessions, () => NOW, {
+          accountId,
+          email: 'x@example.test',
+        });
+
+        return openTree({ now: () => at, sessions, store }, token, treeId);
+      };
+
+      // NFR-09, NFR-10
+      it('opens the signed-in Account’s own Tree for that Viewer', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          expect(await openAs(store, a.accountId, a.treeId)).toEqual({
+            ok: true,
+            value: {
+              tree: { id: a.treeId, name: 'Tree A' },
+              viewer: { accountId: a.accountId },
+            },
+          });
+        });
+      });
+
+      // NFR-10
+      it('opens the Account’s Tree when no id is given', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          expect(await openAs(store, a.accountId)).toEqual({
+            ok: true,
+            value: {
+              tree: { id: a.treeId, name: 'Tree A' },
+              viewer: { accountId: a.accountId },
+            },
+          });
+        });
+      });
+
+      // NFR-10
+      it('finds nothing for an Account with no Tree', async () => {
+        await withStore(
+          async store => {
+            expect(await openAs(store, NO_TREE.id)).toEqual(NOT_FOUND);
+          },
+          [NO_TREE]
+        );
+      });
+
+      // NFR-09
+      it('gives Account B the result of a Tree that does not exist', async () => {
+        await withStore(async store => {
+          const { a, b } = await twoTrees(store);
+          const cross = await openAs(store, b.accountId, a.treeId);
+
+          expect(cross).toEqual(NOT_FOUND);
+          expect(cross).toEqual(await openAs(store, b.accountId, MISSING));
+        });
+      });
+
+      // NFR-03
+      it.each([
+        ['no token', undefined],
+        ['a forged token', 'x'.repeat(43)],
+        ['a malformed token', 'nope'],
+      ])(
+        'returns nothing for %s, without asking the store',
+        async (_what, token) => {
+          await withStore(async store => {
+            const { a } = await twoTrees(store);
+            const findTree = vi.spyOn(store, 'findTree');
+            const findTrees = vi.spyOn(store, 'findTrees');
+            const deps = { now: () => NOW, sessions: memorySessions(), store };
+
+            expect(await openTree(deps, token, a.treeId)).toEqual(NOT_FOUND);
+            expect(await openTree(deps, token)).toEqual(NOT_FOUND);
+            expect(findTree).not.toHaveBeenCalled();
+            expect(findTrees).not.toHaveBeenCalled();
+          });
+        }
+      );
+
+      // NFR-03
+      it('returns nothing for an expired token, without asking the store', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const findTree = vi.spyOn(store, 'findTree');
+          const later = new Date(NOW.getTime() + 31 * 86_400_000);
+
+          expect(await openAs(store, a.accountId, a.treeId, later)).toEqual(
+            NOT_FOUND
+          );
+          expect(findTree).not.toHaveBeenCalled();
+        });
+      });
+
+      // NFR-03
+      it('returns nothing when the session store is down', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const sessions = memorySessions();
+
+          sessions.find = async () => {
+            throw new Error('down');
+          };
+
+          expect(
+            await openTree(
+              { now: () => NOW, sessions, store },
+              'x'.repeat(43),
+              a.treeId
+            )
+          ).toEqual(NOT_FOUND);
+        });
+      });
+
+      // NFR-03
+      it('treats a malformed id as not found, without asking the store', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const findTree = vi.spyOn(store, 'findTree');
+
+          expect(await openAs(store, a.accountId, 'not-a-uuid')).toEqual(
+            NOT_FOUND
+          );
+          expect(findTree).not.toHaveBeenCalled();
+        });
       });
     });
   });

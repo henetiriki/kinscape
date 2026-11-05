@@ -43,7 +43,7 @@
 ## Order of work
 
 1. Scripts and JSON; `bash -n`. The sandbox can't run `gh` from a script: the tech lead runs `check-github.sh` with the agent's token and as admin, for Evidence.
-2. `ci.yml`, diagram, docs; lint, `format:check`, `words`, `test`, `validate:boundaries`, e2e.
+2. `ci.yml`, docs; lint, `format:check`, `words`, `test`, `validate:boundaries`, e2e.
 3. After merge: `setup-github.sh`, both `check-github.sh` runs, delete `CODECOV_TOKEN`; then a status with context `e2e` posted with the agent token on a throwaway PR stays expected from GitHub Actions.
 
 ## Risks
@@ -53,4 +53,5 @@
 
 ## Deviations
 
-- Bypass actors are admin-only too: GitHub omits them for other tokens.
+- Bypass actors are admin-only: GitHub omits them for other tokens.
+- `vitest.config.mts` sets `reportOnFailure`: a failed test wrote no report.

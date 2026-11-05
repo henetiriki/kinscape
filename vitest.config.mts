@@ -44,6 +44,8 @@ export default defineConfig({
       ],
       provider: 'v8',
       reporter: ['text', 'lcov'],
+      // Written even when a test fails, so CI's coverage job still has a report to send.
+      reportOnFailure: true,
       thresholds: {
         branches: 100,
         functions: 100,

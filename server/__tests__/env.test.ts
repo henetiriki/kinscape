@@ -67,6 +67,79 @@ describe('parseEnv', () => {
   });
 });
 
+const WEAKER = [
+  'sslmode=disable',
+  'sslmode=allow',
+  'sslmode=prefer',
+  'sslmode=require',
+  'sslmode=verify-ca',
+  'sslmode=no-verify',
+  'sslmode=verify-full&uselibpqcompat=true',
+  'uselibpqcompat=true',
+  'ssl=false',
+  'ssl=0',
+  'sslrootcert=/etc/ca.crt',
+  'sslcert=/etc/client.crt',
+  'sslkey=/etc/client.key',
+];
+
+// NFR-03
+describe('database URL TLS settings', () => {
+  it.each(['', '?sslmode=verify-full', '?application_name=ks'])(
+    'accepts both URLs with query %j',
+    query => {
+      const url = `postgres://app@localhost/db${query}`;
+
+      expect(
+        parseEnv({
+          ...FULL,
+          KINSCAPE_DATABASE_DIRECT_URL: url,
+          KINSCAPE_DATABASE_URL: url,
+        })
+      ).toMatchObject({ databaseDirectUrl: url, databaseUrl: url });
+      expect(parseDirectUrl({ KINSCAPE_DATABASE_DIRECT_URL: url })).toBe(url);
+    }
+  );
+
+  it.each(WEAKER)('rejects KINSCAPE_DATABASE_URL with %s', query => {
+    expect(() =>
+      parseEnv({
+        ...FULL,
+        KINSCAPE_DATABASE_URL: `postgres://app@localhost/db?${query}`,
+      })
+    ).toThrow(
+      /^Missing or invalid environment variable: KINSCAPE_DATABASE_URL$/
+    );
+  });
+
+  it.each(WEAKER)('rejects KINSCAPE_DATABASE_DIRECT_URL with %s', query => {
+    const url = `postgres://direct@localhost/db?${query}`;
+
+    expect(() =>
+      parseEnv({ ...FULL, KINSCAPE_DATABASE_DIRECT_URL: url })
+    ).toThrow(/KINSCAPE_DATABASE_DIRECT_URL$/);
+    expect(() => parseDirectUrl({ KINSCAPE_DATABASE_DIRECT_URL: url })).toThrow(
+      /KINSCAPE_DATABASE_DIRECT_URL$/
+    );
+  });
+
+  it('never includes the URL in the error', () => {
+    const url = 'postgres://app:s3cret-pass@localhost/db?sslmode=disable';
+
+    let message = '';
+
+    try {
+      parseEnv({ ...FULL, KINSCAPE_DATABASE_URL: url });
+    } catch (error) {
+      message = String(error);
+    }
+
+    expect(message).toMatch(/KINSCAPE_DATABASE_URL$/);
+    expect(message).not.toContain('s3cret-pass');
+    expect(message).not.toContain('sslmode');
+  });
+});
+
 // NFR-03
 describe('parseEnv with KINSCAPE_MEMORY_ADAPTERS', () => {
   it('needs no database or Supabase variable', () => {

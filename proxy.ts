@@ -6,7 +6,8 @@ import { SESSION_COOKIE } from '@ks/server/auth/sessions.mts';
 
 /**
  * The quick half of the sign-in gate: no session cookie means the sign-in page, with where the
- * request was going. Whether the cookie is real is checked where the data is served.
+ * request was going, or 401 under `/data/`, which is fetched rather than visited. Whether the
+ * cookie is real is checked where the data is served.
  */
 export const proxy = (request: NextRequest) => {
   if (request.cookies.get(SESSION_COOKIE)?.value) {
@@ -14,6 +15,11 @@ export const proxy = (request: NextRequest) => {
   }
 
   const { pathname, search } = request.nextUrl;
+
+  if (pathname.startsWith('/data/')) {
+    return new NextResponse(null, { status: 401 });
+  }
+
   const signIn = new URL('/sign-in', request.url);
 
   signIn.searchParams.set('returnTo', pathname + search);
@@ -21,8 +27,9 @@ export const proxy = (request: NextRequest) => {
   return NextResponse.redirect(signIn);
 };
 
-// Skipped: the sign-in page, Next's own files, `/data/` (its route answers 401 itself) and any
-// path with a file extension.
+// Skipped: the sign-in page, Next's own files and the file types served from app/ and public/.
+// Next reads this literal at build time; scripts/__tests__/gate.test.ts checks it against the repo.
 export const config = {
-  matcher: '/((?!sign-in(?:/|$)|_next/|data/|.*\\.).*)',
+  matcher:
+    '/((?!sign-in(?:/|$)|_next/|.*\\.(?:css|geojson|ico|jpe?g|js|json|pbf|png|svg|txt|webmanifest|webp|woff2?|xml)$).*)',
 };

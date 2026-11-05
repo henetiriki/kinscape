@@ -28,6 +28,13 @@ describe('proxy', () => {
     );
   });
 
+  it('answers 401, with no body, under /data/ with no cookie', () => {
+    const response = proxy(request('/data/polities'));
+
+    expect(response.status).toBe(401);
+    expect(response.body).toBeNull();
+  });
+
   it('treats an empty cookie as none', () => {
     const response = proxy(request('/', `${SESSION_COOKIE}=`));
 
@@ -41,19 +48,24 @@ describe('proxy', () => {
 
 // NFR-03
 describe('the matcher', () => {
-  it.each(['/', '/design-kit', '/design-kit/colour', '/screens/add-pin'])(
-    'covers the page %s',
-    path => {
-      expect(matches(path)).toBe(true);
-    }
-  );
+  it.each([
+    '/',
+    '/design-kit',
+    '/design-kit/colour',
+    '/screens/add-pin',
+    '/data/polities',
+    '/data/zz',
+    '/people/j.smith',
+  ])('covers %s', path => {
+    expect(matches(path)).toBe(true);
+  });
 
   it.each([
     '/sign-in',
     '/sign-in/anything',
     '/_next/static/chunk.js',
-    '/data/polities',
     '/map/land.geojson',
+    '/glyphs/Public Sans SemiBold/0-255.pbf',
     '/robots.txt',
     '/favicon.ico',
   ])('skips %s', path => {

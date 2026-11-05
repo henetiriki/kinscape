@@ -1,7 +1,4 @@
 import { RuleTester } from 'eslint';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { sep } from 'node:path';
-import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -10,61 +7,17 @@ import {
   isBuiltin,
   layerBreak,
   layerOf,
-  MODULE_CALL,
-  SOURCE_EXTENSION,
   targetOf,
 } from '@ks/scripts/layers.mts';
+import { readSources, specifiersOf } from '@ks/scripts/sources.mts';
 
 // NFR-09. The same file types as the lint rule's globs in eslint.config.mjs.
 const ROOTS = ['app', 'design', 'lib', 'features', 'server'];
 
-/** The module a node names, if it is an import, re-export, `import()`, `import('…').T`, `import x = require()`, `require()` or `vi.mock()`. */
-const moduleOf = (node: ts.Node): ts.Node | undefined => {
-  if (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) {
-    return node.moduleSpecifier;
-  }
-
-  if (ts.isCallExpression(node)) {
-    return node.expression.kind === ts.SyntaxKind.ImportKeyword ||
-      MODULE_CALL.test(node.expression.getText())
-      ? node.arguments[0]
-      : undefined;
-  }
-
-  if (ts.isImportTypeNode(node)) {
-    return ts.isLiteralTypeNode(node.argument)
-      ? node.argument.literal
-      : undefined;
-  }
-
-  return ts.isImportEqualsDeclaration(node) &&
-    ts.isExternalModuleReference(node.moduleReference)
-    ? node.moduleReference.expression
-    : undefined;
-};
-
-/** The specifiers a source names, read from the syntax tree. */
-const specifiersOf = (path: string, source: string): string[] => {
-  const found: string[] = [];
-  const visit = (node: ts.Node): void => {
-    const target = moduleOf(node);
-
-    if (target !== undefined && ts.isStringLiteralLike(target)) {
-      found.push(target.text);
-    }
-
-    ts.forEachChild(node, visit);
-  };
-
-  visit(ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true));
-
-  return found;
-};
-
 /** Each `file: message` break in the sources. */
 const problems = (files: Record<string, string>): string[] => {
   const broken = Object.entries(files).flatMap(([path, source]) =>
-    specifiersOf(path, source).flatMap(specifier => {
+    specifiersOf(path, source).flatMap(({ specifier }) => {
       const message = layerBreak(path, specifier);
 
       return message === undefined ? [] : [`${path}: ${message}`];
@@ -79,19 +32,9 @@ const problems = (files: Record<string, string>): string[] => {
   return [...misplaced, ...broken];
 };
 
-const sources = (): Record<string, string> =>
-  Object.fromEntries(
-    ROOTS.filter(dir => existsSync(dir)).flatMap(dir =>
-      readdirSync(dir, { recursive: true })
-        .map(name => `${dir}/${String(name).split(sep).join('/')}`)
-        .filter(path => SOURCE_EXTENSION.test(path))
-        .map(path => [path, readFileSync(path, 'utf8')])
-    )
-  );
-
 describe('the repo', () => {
   it('breaks no layer rule', () => {
-    const files = sources();
+    const files = readSources(ROOTS);
 
     expect(Object.keys(files)).toEqual(
       expect.arrayContaining(['app/layout.tsx', 'features/map/style.ts'])

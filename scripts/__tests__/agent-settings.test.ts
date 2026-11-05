@@ -363,6 +363,25 @@ describe('the Bash hook', () => {
     ['gh issue create --title x --body-file=notes.md', 'heredoc'],
     ['gh pr edit 5 --body-file "notes.md"', 'heredoc'],
     ['gh pr view 1 | gh pr comment 1 --body-file x', 'heredoc'],
+    // A quoted word is still that word to bash; a line continuation is still one command.
+    ["gh pr 'merge' 5", 'a person'],
+    ['gh api repos/o/r/issues/5/comments "-f" body=x', 'read only'],
+    ["git 'config' --get remote.origin.url", 'configuration'],
+    ["'cat' x", 'Read'],
+    ['gh api repos/o/r/issues/5/comments \\\n  -f body=x', 'read only'],
+    // Only the lines between the heredoc line and its EOF are text: a command after the operator
+    // on that line, or after the EOF, still runs.
+    [
+      "gh pr comment 5 --body-file - <<'EOF'; git remote -v\nbody\nEOF",
+      'configuration',
+    ],
+    [
+      "gh pr comment 5 --body-file - <<'EOF'\nbody\nEOF\ngit remote -v",
+      'configuration',
+    ],
+    // A quoted <<EOF opens no heredoc, so the next line is a command.
+    ["git grep '<<EOF'\ngit remote -v", 'configuration'],
+    ['git commit -m "<<EOF\n"; cat x\nEOF', 'Read'],
   ])('denies %j, naming the alternative', (command, alternative) => {
     const output = hook(command);
 
@@ -396,6 +415,9 @@ describe('the Bash hook', () => {
     'gh issue comment 5 --body-file=-',
     'gh pr comment 5 -F-',
     'gh pr comment 5 -F=-',
+    'gh pr comment 5 --body-file "-"',
+    "gh pr comment 5 --body-file - << 'EOF'\nbody\nEOF",
+    "gh pr comment 5 --body-file - <<-'EOF'\n\tbody\n\tEOF",
     'gh api repos/o/r/pulls/5/files --paginate',
     'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
     '',
@@ -410,9 +432,10 @@ describe('the Bash hook', () => {
     );
   });
 
-  // The refresh may rewrite one issue: the one its job names in ISSUE (claude-unblock.yml). The
-  // hook lets an edit through only in the one form refresh.md gives, with the body in a heredoc
-  // and nothing after it, so a second command can't ride in the same call.
+  // The refresh may rewrite one issue: the one its job names in ISSUE (claude-unblock.yml). A
+  // call that says `gh issue edit` anywhere outside quotes goes through only in the one form
+  // refresh.md gives, with the body in a heredoc and nothing else, so a second command can't
+  // ride in the same call.
   describe('in refresh-settings.json', () => {
     const file = 'refresh-settings.json';
     const edit = (issue: string, body = '# Spec\n\nText.') =>
@@ -462,6 +485,20 @@ describe('the Bash hook', () => {
       [edit('5', 'text\nEOF\ngh issue view 7'), 'an EOF line inside the body'],
       [edit('5', ''), 'an empty body'],
       ['gh issue edit 5', 'no body'],
+      // Another heredoc first: the edit sits past its operator or its EOF.
+      [
+        "gh issue comment 5 --body-file - <<'EOF'; gh issue edit 7 --body-file - <<'X'\nbody\nEOF\nother\nX",
+        'an edit after a comment’s heredoc operator',
+      ],
+      [
+        `gh issue comment 5 --body-file - <<'EOF'\n## Refreshed\nEOF\n${edit('7')}`,
+        'an edit after a comment’s heredoc',
+      ],
+      // The words in a comment's text: the one form is the price of telling them apart.
+      [
+        "gh issue comment 5 --body-file - <<'EOF'\nRun gh issue edit later.\nEOF",
+        'the words in another command’s heredoc',
+      ],
     ])('denies %j: %s', command => {
       const output = hook(command, file, { ISSUE: '5' });
 
@@ -482,8 +519,7 @@ describe('the Bash hook', () => {
     it.each([
       'gh issue view 5',
       "gh issue comment 5 --body-file - <<'EOF'\n## Refreshed\nEOF",
-      // The words inside a heredoc or quotes are text, not a command.
-      "gh issue comment 5 --body-file - <<'EOF'\nRun gh issue edit later.\nEOF",
+      // The words inside quotes are text, not a command.
       "git grep -n 'gh issue edit' -- ':!plans'",
       "git grep -n 'x' -- ':!plans'",
       'gh pr diff 1',

@@ -142,22 +142,41 @@ jobs:
           persist-credentials: 'false'
           playwright: ${{ inputs.playwright }}
 
+      # Note the start time, so the last step can tell whether Claude commented during this run.
+      - name: Note start time
+        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
+
+      # After the checkout and before the browser install, so the token is fresh enough: it lasts
+      # an hour, the job 45 minutes and the install under 4. The commit check below needs it.
+      - name: Mint the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          permission-actions: read
+
       # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
       # landed since: that is not what the owner read, so the run stops here, before the browser
-      # install and any model run, and the `return` job hands the issue back. The workflow token
-      # comments: the bot's is minted later, as late as possible, so the safety net at the end
-      # has none after a stop here and is skipped.
+      # install and any model run, and the `return` job hands the issue back.
       - name: Check the branch is at the approved commit
         id: head
         if: inputs.head != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}
           HEAD: ${{ inputs.head }}
         run: |
           now=$(git rev-parse HEAD)
           if [ "$now" != "$HEAD" ]; then
-            gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."
+            # Says so when the comment landed: the safety net below then stays quiet. When it
+            # didn't, the net speaks instead.
+            if gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."; then
+              echo "commented=true" >> "$GITHUB_OUTPUT"
+            fi
             exit 1
           fi
           echo "At the approved commit $now."
@@ -169,21 +188,6 @@ jobs:
         if: inputs.playwright
         continue-on-error: true
         run: timeout 210 npm run e2e:install
-      # Note the start time, so the last step can tell whether Claude commented during this run.
-      - name: Note start time
-        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
-
-      # After the setup, so the token is as fresh as possible: it lasts an hour, and the job 45 minutes.
-      - name: Mint the bot's token
-        id: bot
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        with:
-          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-issues: write
-          permission-pull-requests: write
-          permission-actions: read
 
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
       # "Planning"/"Building"/"Fixing" comment is deleted when the run ends. Neither is worth failing the run for.
@@ -228,12 +232,11 @@ jobs:
         run: gh api -X DELETE "repos/$GH_REPO/issues/comments/$WORKING_COMMENT_ID"
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
-      # step failed, but not when the commit check above stopped the run: it commented, and the
-      # token and start time this needs were never set. If Claude left no comment, post one
-      # pointing at the run, or at the PR it opened. Only a run with neither hands the Spec back
-      # as blocked.
+      # step failed, but not when the commit check above stopped the run and commented.
+      # If Claude left no comment, post one pointing at the run, or at the PR it
+      # opened. Only a run with neither hands the Spec back as blocked.
       - name: Comment if Claude left none
-        if: always() && steps.head.outcome != 'failure'
+        if: always() && steps.head.outputs.commented != 'true'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}

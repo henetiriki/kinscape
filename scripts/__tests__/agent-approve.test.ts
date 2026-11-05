@@ -47,6 +47,8 @@ type World = {
   // How the PR head compares with the review's commit, and the messages of the commits since it,
   // read for an approved plan whose head is not it.
   compare?: string;
+  // Whether the PR is still a draft: the build marks it ready.
+  draft?: boolean;
   files?: string[];
   headRefOid?: string;
   // issue number -> its labels; the issue a plan PR closes is on ready-for-dev by default
@@ -74,6 +76,7 @@ describe('run', () => {
     closes = [{ number: 8 }],
     comments = [],
     compare = 'diverged',
+    draft = true,
     files = [PATH, 'src/other.ts'],
     issues = { 8: ['type: chore', DEV] },
     prLabels = [],
@@ -106,6 +109,7 @@ describe('run', () => {
           files: files.map(path => ({ path })),
           headRefName: 'chore/C500-approval-script',
           headRefOid: HEAD,
+          isDraft: draft,
           labels: prLabels.map(name => ({ name })),
           reviews: reviews.map(({ at, ...rest }) => ({
             ...rest,
@@ -447,6 +451,24 @@ describe('run', () => {
       expect(put()).toEqual([]);
     });
 
+    // The first run built the plan and marked the PR ready; the event still saw a draft.
+    it('stops quietly for a plan built since the review, comparing nothing', () => {
+      fakeGh({
+        draft: false,
+        issues: { 8: ['type: chore', AGENT] },
+        since: ['plan(C500): approved by @tech-lead', 'C.500: build it'],
+        text: plan('approved'),
+      });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(comments()).toEqual([]);
+      expect(edits()).toEqual([]);
+      expect(
+        gh.mock.calls.filter(([args]) => args[1]?.includes('/compare/'))
+      ).toEqual([]);
+    });
+
     it('asks the comparison for its status and first commit only', () => {
       fakeGh({ compare: 'ahead', text: plan('approved') });
       run(['504'], env, gh, write);
@@ -464,8 +486,8 @@ describe('run', () => {
       ]);
     });
 
-    // A build's push or a revision after the approval: the owner read an older commit, even
-    // from a page that still showed it.
+    // A build that failed after pushing, or a revision: the PR is still a draft, and the owner
+    // read an older commit, even from a page that still showed it.
     it.each([
       [['plan(C500): approved by @tech-lead', 'C.500: build it'], 'then more'],
       [['C.500: a revision'], 'another commit'],

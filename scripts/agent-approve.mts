@@ -23,8 +23,9 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT, and on `go=true` `head=<sha>`: the commit it
 // made, or the PR head when the plan was already approved. The build checks out that commit and no
 // other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit. A
-// plan approved since COMMIT whose only commit since is that approval (a second review of the same
-// commit, queued behind the first run) stops quietly: no comment, no label move, `go=false`.
+// second review of the same commit, queued behind the first run, stops quietly (no comment, no
+// label move, `go=false`): the plan is approved and the PR is ready, or its only commit since
+// COMMIT is the approval.
 // The commit goes through the Contents API with the plan's blob sha, so the PR head is never
 // checked out and a plan that changed meanwhile is refused. A failed `gh` call is logged,
 // `go=false` is written and the exit code is 1.
@@ -40,6 +41,7 @@ type Pr = {
   files: { path: string }[];
   headRefName: string;
   headRefOid: string;
+  isDraft: boolean;
   labels: { name: string }[];
   reviews: ({ submittedAt: string } & Item)[];
 };
@@ -230,7 +232,7 @@ export const run = (
       'view',
       raw,
       '--json',
-      'files,headRefName,headRefOid,labels,reviews,comments',
+      'files,headRefName,headRefOid,isDraft,labels,reviews,comments',
     ]);
     const plans = pr.files
       .map(({ path }) => path)
@@ -264,11 +266,25 @@ export const run = (
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
       if (pr.headRefOid !== commit) {
-        // A review of the commit before the approval, with nothing pushed since it: two quick
-        // approvals, where the second waits for the first run, build included. That run did the
-        // work, so there is nothing to tell or move. Any other moved head (a build's push, a
-        // revision) stops as a draft's does: the owner read another commit. Only the fields
-        // needed come back: the comparison carries every commit and file diff.
+        // Two quick approvals, where the second waits for the first run, build included: that
+        // run did the work, so there is nothing to tell or move. It built the plan, so the PR is
+        // ready (the event saw a draft), or it stopped with only its approval commit pushed. Any
+        // other moved head stops as a draft's does: the owner read another commit, and a build
+        // that failed after pushing needs the approval again. Only the fields needed come back:
+        // the comparison carries every commit and file diff.
+        const quiet = (): number => {
+          console.log(
+            `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
+          );
+          write('go=false');
+
+          return 0;
+        };
+
+        if (!pr.isDraft) {
+          return quiet();
+        }
+
         const { first, status, total } = json<{
           first: string;
           status: string;
@@ -280,16 +296,9 @@ export const run = (
           '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
         ]);
 
-        if (status === 'ahead' && total === 1 && first === message) {
-          console.log(
-            `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
-          );
-          write('go=false');
-
-          return 0;
-        }
-
-        return stopMoved();
+        return status === 'ahead' && total === 1 && first === message
+          ? quiet()
+          : stopMoved();
       }
 
       console.log(`${file} is already approved.`);

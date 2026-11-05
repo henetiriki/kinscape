@@ -1,12 +1,21 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
+import type { TreeRepository } from '@ks/server/trees/types.ts';
+
+const jar = vi.hoisted(() => ({ get: vi.fn() }));
+const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
+
+vi.mock('next/headers', () => ({ cookies: async () => jar }));
+vi.mock('@ks/server/adapters.mts', () => ({
+  appAdapters: () => adapters.current,
+}));
+
+import { err, ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
-import { startSession } from '@ks/server/auth/sessions.mts';
+import { SESSION_COOKIE, startSession } from '@ks/server/auth/sessions.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
-
-const NOW = () => new Date('2030-01-01T00:00:00Z');
 
 const setup = async () => {
   const store = memoryStore();
@@ -21,59 +30,75 @@ const setup = async () => {
     throw new Error('setup failed');
   }
 
-  const body = vi.fn(async (repository, input: { n: number }) => ({
-    n: input.n,
-    tree: repository.tree.name,
-  }));
+  adapters.current = { sessions, store };
+
+  const body = vi.fn(
+    async (repository: TreeRepository, input: { n: number }) =>
+      input.n < 0
+        ? err('negative')
+        : ok({
+            n: input.n,
+            tree: repository.tree.name,
+            viewer: repository.viewer,
+          })
+  );
+  const token = await startSession(sessions, () => new Date(), {
+    accountId: a.value.accountId,
+    email: 'x@example.test',
+  });
+
+  jar.get.mockReturnValue({ value: token });
 
   return {
     a: a.value,
-    action: treeAction(store, sessions, z.object({ n: z.number() }), body, NOW),
+    action: treeAction(z.object({ n: z.number() }), body),
     body,
-    token: await startSession(sessions, NOW, {
-      accountId: a.value.accountId,
-      email: 'x@example.test',
-    }),
   };
 };
 
-// NFR-09
-describe('treeAction', () => {
-  it('runs the body on the opened Tree with parsed input', async () => {
-    const { a, action, token } = await setup();
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
-    expect(await action(token, a.treeId, { n: 1 })).toEqual({
+// NFR-09, NFR-10
+describe('treeAction', () => {
+  it('runs the body on the cookie’s Viewer and Tree with parsed input', async () => {
+    const { a, action } = await setup();
+
+    expect(await action({ n: 1 })).toEqual({
       ok: true,
-      value: { n: 1, tree: 'Tree A' },
+      value: { n: 1, tree: 'Tree A', viewer: { accountId: a.accountId } },
     });
+    expect(jar.get).toHaveBeenCalledWith(SESSION_COOKIE);
+  });
+
+  it('passes the body’s own error through', async () => {
+    const { action } = await setup();
+
+    expect(await action({ n: -1 })).toEqual({ error: 'negative', ok: false });
   });
 
   it('returns invalid, without running the body, for bad input', async () => {
-    const { a, action, body, token } = await setup();
+    const { action, body } = await setup();
 
-    expect(await action(token, a.treeId, { n: 'x' })).toEqual({
-      error: 'invalid',
-      ok: false,
-    });
+    expect(await action({ n: 'x' })).toEqual({ error: 'invalid', ok: false });
     expect(body).not.toHaveBeenCalled();
   });
 
-  it('returns not-found, without running the body, for no session', async () => {
-    const { a, action, body } = await setup();
+  it('returns not-found, without running the body, with no cookie', async () => {
+    const { action, body } = await setup();
 
-    expect(await action(undefined, a.treeId, { n: 1 })).toEqual({
-      error: 'not-found',
-      ok: false,
-    });
+    jar.get.mockReturnValue(undefined);
+
+    expect(await action({ n: 1 })).toEqual({ error: 'not-found', ok: false });
     expect(body).not.toHaveBeenCalled();
   });
 
   it('checks the Tree before the input', async () => {
-    const { a, action } = await setup();
+    const { action } = await setup();
 
-    expect(await action(undefined, a.treeId, { n: 'x' })).toEqual({
-      error: 'not-found',
-      ok: false,
-    });
+    jar.get.mockReturnValue({ value: 'x'.repeat(43) });
+
+    expect(await action({ n: 'x' })).toEqual({ error: 'not-found', ok: false });
   });
 });

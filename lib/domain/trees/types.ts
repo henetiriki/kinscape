@@ -34,3 +34,6 @@ export type TreeStore = {
   /** The Account's Trees ordered by id; empty for an Account with none, an unknown id or an id that isn't a UUID. */
   findTrees: (accountId: string) => Promise<Tree[]>;
 };
+
+/** Whoever reads a Tree: an Account now; publishing adds anyone (NFR-10). Only `openTree` makes one. */
+export type Viewer = { accountId: string };

@@ -97,6 +97,12 @@ describe('settings.json', () => {
     expect(deny).toContain('Read(./.git/**)');
   });
 
+  // The action's tool saves a CI log in the runner temp folder, which DENIED keeps unread;
+  // rules.md gives `gh api … /logs` instead, which prints it.
+  it('denies the download of a CI log into the runner temp', () => {
+    expect(deny).toContain('mcp__github_ci__download_job_log');
+  });
+
   it.each([
     'git config user.name x',
     'git config --get remote.origin.url',

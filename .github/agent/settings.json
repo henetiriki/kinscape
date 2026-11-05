@@ -35,6 +35,7 @@
       "Monitor",
       "WebFetch",
       "WebSearch",
+      "mcp__github_ci__download_job_log",
       "Bash(sleep *)",
       "Bash(pgrep *)",
       "Bash(cd *)",

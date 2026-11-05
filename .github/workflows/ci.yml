@@ -106,7 +106,7 @@ jobs:
   # script runs. Runs even if a test failed, so Codecov still reports.
   coverage:
     needs: test
-    if: ${{ !cancelled() && !github.event.pull_request.draft }}
+    if: ${{ false }} # throwaway: Codecov must not report on this branch
     runs-on: ubuntu-latest
     permissions:
       contents: read

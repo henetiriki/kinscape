@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
     },
   ],
   // `server/db/database.mts` reads the CA at runtime; the trace doesn't see a readFileSync path.
-  outputFileTracingIncludes: { '/*': ['server/db/root-ca.crt'] },
+  // The key is a picomatch route glob: `/**` matches `/` and nested routes, `/*` would not.
+  outputFileTracingIncludes: { '/**': ['server/db/root-ca.crt'] },
 };
 
 export default nextConfig;

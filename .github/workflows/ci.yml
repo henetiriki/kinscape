@@ -78,7 +78,7 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
-  # Runs the automated tests, then sends the coverage report to Codecov (even if a test failed).
+  # Runs the automated tests and keeps the coverage report for the coverage job (even if a test failed).
   test:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
@@ -94,13 +94,37 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
+      - name: Keep the coverage report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: coverage
+          path: coverage/lcov.info
+
+  # Sends the test job's coverage report to Codecov, which trusts the job's own OIDC token: no
+  # stored secret. Its own job, so the permission to mint that token is held where no project
+  # script runs. Runs even if a test failed, so Codecov still reports.
+  coverage:
+    needs: test
+    if: ${{ !cancelled() && !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Get the coverage report
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: coverage
+          path: coverage
       - name: Upload coverage
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
-        if: ${{ !cancelled() }}
         with:
           fail_ci_if_error: false
           files: coverage/lcov.info
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
 
   # Checks the historical boundary data files are valid.
   boundaries:

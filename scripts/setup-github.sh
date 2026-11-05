@@ -93,7 +93,8 @@ gh variable set KINSCAPE_BOT_LOGIN --repo "$REPO" --body "$BOT_LOGIN"
 gh variable set KINSCAPE_BOT_ID --repo "$REPO" --body "$BOT_ID"
 # The logins whose comments the agents read (.github/actions/run-claude/action.yml).
 source "$DIR/github/team-logins.sh"
-gh variable set KINSCAPE_TEAM_LOGINS --repo "$REPO" --body "$(team_logins "$REPO")"
+team=$(team_logins "$REPO") || { echo "Could not read the write collaborators; KINSCAPE_TEAM_LOGINS left alone." >&2; exit 1; }
+gh variable set KINSCAPE_TEAM_LOGINS --repo "$REPO" --body "$team"
 
 echo "== Repository settings"
 gh api -X PATCH "repos/$REPO" \

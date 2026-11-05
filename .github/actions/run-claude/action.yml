@@ -68,9 +68,10 @@ runs:
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
         # Only the team's comments, reviews and review comments reach the prompt (the triggering
-        # comment always does): the write collaborators, and the bot for its own earlier replies.
-        # Exact logins; the action adds "[bot]" to an App's.
-        include_comments_by_actor: ${{ inputs.team_logins }},${{ inputs.bot_login }}
+        # comment always does): the write collaborators, the bot for its own earlier replies, and
+        # github-actions for the review's findings (claude-code-review.yml posts with the
+        # workflow's token). Exact logins; the action adds "[bot]" to an App's.
+        include_comments_by_actor: ${{ inputs.team_logins }},${{ inputs.bot_login }},github-actions[bot]
         # Both off: the full output includes every screenshot Claude reads, as base64, and the log
         # stopped at the first of them; the report would put Claude's own text on the public run
         # page. The summary job writes the run page from the summary uploaded below.

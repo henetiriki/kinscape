@@ -242,13 +242,16 @@ describe('the run-claude action', () => {
     });
   });
 
-  // Only the team's comments reach the prompt: the write collaborators (a repo variable) and the
-  // bot, for its own earlier replies. The triggering comment arrives separately.
-  it('reads comments by the team and the bot only', () => {
+  // Only the team's comments reach the prompt: the write collaborators (a repo variable), the
+  // bot for its own earlier replies, and the reviewer (github-actions) for its findings. The
+  // triggering comment arrives separately.
+  it('reads comments by the team, the bot and the reviewer only', () => {
     expect(
       stepUsing('anthropics/claude-code-action')?.with
         ?.include_comments_by_actor
-    ).toBe('${{ inputs.team_logins }},${{ inputs.bot_login }}');
+    ).toBe(
+      '${{ inputs.team_logins }},${{ inputs.bot_login }},github-actions[bot]'
+    );
   });
 
   // An empty input would replace claude-code-action's default bot, or leave Claude only its own

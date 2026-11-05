@@ -44,6 +44,8 @@
       "Bash(gh issue * --body *)",
       "Bash(gh issue * --body=*)",
       "Bash(gh issue * -b *)",
+      "Bash(gh pr view * --comments*)",
+      "Bash(gh issue view * --comments*)",
       "Bash(git config *)",
       "Bash(git -*)",
       "Bash(git remote *)",

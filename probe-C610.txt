@@ -1,1 +1,2 @@
 Throwaway file for #610's post-merge check. This PR is closed without merging.
+Second commit: a draft, so the coverage job is skipped and Codecov never reports here.

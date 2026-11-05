@@ -126,13 +126,17 @@ describe('database URL TLS settings', () => {
   it('never includes the URL in the error', () => {
     const url = 'postgres://app:s3cret-pass@localhost/db?sslmode=disable';
 
+    let message = '';
+
     try {
       parseEnv({ ...FULL, KINSCAPE_DATABASE_URL: url });
-      expect.unreachable();
     } catch (error) {
-      expect(String(error)).not.toContain('s3cret-pass');
-      expect(String(error)).not.toContain('sslmode');
+      message = String(error);
     }
+
+    expect(message).toMatch(/KINSCAPE_DATABASE_URL$/);
+    expect(message).not.toContain('s3cret-pass');
+    expect(message).not.toContain('sslmode');
   });
 });
 

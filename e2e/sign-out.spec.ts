@@ -1,19 +1,19 @@
+import type { Request } from '@playwright/test';
+
 import { expect, test } from '@playwright/test';
 
 const COOKIE = '__Host-kinscape-session';
 
 // NFR-03
 test('a GET to any path leaves the session signed in', async ({ page }) => {
-  const sent: boolean[] = [];
+  const requests: Request[] = [];
 
   page.on('request', request => {
     if (
       request.resourceType() === 'fetch' &&
       new URL(request.url()).origin === new URL(page.url()).origin
     ) {
-      void request
-        .allHeaders()
-        .then(headers => sent.push((headers.cookie ?? '').includes(COOKIE)));
+      requests.push(request);
     }
   });
 
@@ -31,7 +31,13 @@ test('a GET to any path leaves the session signed in', async ({ page }) => {
     await page.evaluate(p => fetch(p, { credentials: 'include' }), path);
   }
 
-  await expect.poll(() => sent.length).toBeGreaterThanOrEqual(paths.length);
+  expect(requests.length).toBeGreaterThanOrEqual(paths.length);
+  const sent = await Promise.all(
+    requests.map(async request =>
+      ((await request.allHeaders()).cookie ?? '').includes(COOKIE)
+    )
+  );
+
   expect(sent.every(Boolean)).toBe(true);
 
   await page.goto('/');

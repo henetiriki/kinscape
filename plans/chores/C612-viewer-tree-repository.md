@@ -12,17 +12,17 @@
 
 **D1 · What the repository exposes** · Decides: Tech lead
 
-- **A.** The Viewer, the Tree and, later, entity groups; the store stays inside `openTree`.
+- **A.** The Viewer, the Tree and, later, entity groups; the store stays inside.
 - ~~**B.** Also the store (D11's "db").~~
 
-**Answer: A** (in session).
+**Answer: A**.
 
 **D2 · Which Tree `treeAction` opens** · Decides: Tech lead
 
 - **A.** The Account's Tree (`findTrees`); `treeId` serves a URL-named Tree later.
-- ~~**B.** A Tree id from the route.~~
+- ~~**B.** A route's Tree id.~~
 
-**Answer: A** (in session).
+**Answer: A**.
 
 ## Files that change
 
@@ -34,9 +34,13 @@
 | `server/trees/__tests__/contract.ts`                   | `openTree` cases; `repository.test.ts` moves in  |
 | `docs/architecture.md`, `docs/architecture-target.md`  | _Tree data_ row; item 6 moves                    |
 
+## Order of work
+
+Failing tests; types, `openTree`, `views.mts`, `treeAction`; docs.
+
 ## Risks
 
-- `docs/architecture.md` is at its budget: other rows get shorter.
+- `docs/architecture.md` is at budget: other rows shrink.
 - Several Trees on one Account: the lowest id opens; v1 makes one.
 - The sandbox runs neither e2e nor coverage; the tech lead runs e2e.
 

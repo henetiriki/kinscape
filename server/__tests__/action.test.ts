@@ -94,11 +94,15 @@ describe('treeAction', () => {
     expect(body).not.toHaveBeenCalled();
   });
 
-  it('checks the Tree before the input', async () => {
-    const { action } = await setup();
+  it.each([
+    ['no cookie', undefined],
+    ['a forged cookie', { value: 'x'.repeat(43) }],
+  ])('checks the Tree before the input, with %s', async (_what, cookie) => {
+    const { action, body } = await setup();
 
-    jar.get.mockReturnValue({ value: 'x'.repeat(43) });
+    jar.get.mockReturnValue(cookie);
 
     expect(await action({ n: 'x' })).toEqual({ error: 'not-found', ok: false });
+    expect(body).not.toHaveBeenCalled();
   });
 });

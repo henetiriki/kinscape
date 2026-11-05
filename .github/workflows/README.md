@@ -9,6 +9,8 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | Actions: Update repo action pins<br>`actions-pin-update.yml` | push | `main · paths: .github/actions/**, .github/workflows/**` | update-pins |
 | | workflow_dispatch | | |
 | Backlog: Intent ready for PO<br>`backlog-intent-ready.yml` | issues | `closed` | flag-intent |
+| Backlog: Interaction limit reminder<br>`backlog-interaction-limit.yml` | schedule | `0 6 * * 2` | remind |
+| | workflow_dispatch | | |
 | Backlog: Issue status<br>`backlog-issue-status.yml` | pull_request | `opened, ready_for_review` | status |
 | | pull_request_review | `submitted` | |
 | Backlog: Inherit milestone<br>`backlog-milestone.yml` | issues | `opened, edited` | inherit |
@@ -129,6 +131,7 @@ flowchart TB
   on_schedule([schedule])
   on_workflow_dispatch([workflow_dispatch])
   actions_pin_update["Actions: Update repo action pins"]
+  backlog_interaction_limit["Backlog: Interaction limit reminder"]
   backlog_milestone["Backlog: Inherit milestone"]
   ci_playwright_cache["CI: Playwright cache"]
   ci["CI"]
@@ -138,10 +141,12 @@ flowchart TB
   on_push --> actions_pin_update
   on_push --> ci_playwright_cache
   on_push --> ci
+  on_schedule --> backlog_interaction_limit
   on_schedule --> ci_playwright_cache
   on_schedule --> claude_denial_audit
   on_schedule --> claude_plugin_pin_check
   on_workflow_dispatch --> actions_pin_update
+  on_workflow_dispatch --> backlog_interaction_limit
   on_workflow_dispatch --> backlog_milestone
   on_workflow_dispatch --> ci_playwright_cache
   on_workflow_dispatch --> claude_denial_audit
@@ -153,7 +158,7 @@ flowchart TB
   classDef claude fill:#e6eee4,stroke:#264f29
   classDef design fill:#f4f5f0,stroke:#c9cfc5
   class actions_pin_update actions
-  class backlog_milestone backlog
+  class backlog_interaction_limit,backlog_milestone backlog
   class ci_playwright_cache,ci ci
   class claude_denial_audit,claude_plugin_pin_check claude
   class design_agent_shots design

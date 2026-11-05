@@ -28,20 +28,25 @@ inputs:
   bot_id:
     description: "The App's bot numeric id, from vars.KINSCAPE_BOT_ID."
     required: true
+  team_logins:
+    description: 'The logins whose comments Claude reads, comma separated, from vars.KINSCAPE_TEAM_LOGINS.'
+    required: true
 
 runs:
   using: composite
   steps:
     # An input given as an empty string replaces claude-code-action's default bot, so a run before
-    # setup-github.sh has set the variables would commit with no name. Stop with the reason instead.
-    - name: Check the bot variables
+    # setup-github.sh has set the variables would commit with no name, and an empty team would
+    # leave Claude only its own comments. Stop with the reason instead.
+    - name: Check the repo variables
       shell: bash
       env:
         BOT_LOGIN: ${{ inputs.bot_login }}
         BOT_ID: ${{ inputs.bot_id }}
+        TEAM_LOGINS: ${{ inputs.team_logins }}
       run: |
-        if [ -z "$BOT_LOGIN" ] || [ -z "$BOT_ID" ]; then
-          echo '::error::The repo variables KINSCAPE_BOT_LOGIN and KINSCAPE_BOT_ID are not set. Run scripts/setup-github.sh.'
+        if [ -z "$BOT_LOGIN" ] || [ -z "$BOT_ID" ] || [ -z "$TEAM_LOGINS" ]; then
+          echo '::error::The repo variables KINSCAPE_BOT_LOGIN, KINSCAPE_BOT_ID and KINSCAPE_TEAM_LOGINS are not set. Run scripts/setup-github.sh.'
           exit 1
         fi
 
@@ -62,6 +67,10 @@ runs:
         bot_id: ${{ inputs.bot_id }}
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
+        # Only the team's comments, reviews and review comments reach the prompt (the triggering
+        # comment always does): the write collaborators, and the bot for its own earlier replies.
+        # Exact logins; the action adds "[bot]" to an App's.
+        include_comments_by_actor: ${{ inputs.team_logins }},${{ inputs.bot_login }}
         # Both off: the full output includes every screenshot Claude reads, as base64, and the log
         # stopped at the first of them; the report would put Claude's own text on the public run
         # page. The summary job writes the run page from the summary uploaded below.

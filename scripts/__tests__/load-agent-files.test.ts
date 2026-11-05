@@ -242,44 +242,59 @@ describe('the run-claude action', () => {
     });
   });
 
-  // An empty input would replace claude-code-action's default bot, so the action stops first.
-  describe('the bot variables check', () => {
+  // Only the team's comments reach the prompt: the write collaborators (a repo variable) and the
+  // bot, for its own earlier replies. The triggering comment arrives separately.
+  it('reads comments by the team and the bot only', () => {
+    expect(
+      stepUsing('anthropics/claude-code-action')?.with
+        ?.include_comments_by_actor
+    ).toBe('${{ inputs.team_logins }},${{ inputs.bot_login }}');
+  });
+
+  // An empty input would replace claude-code-action's default bot, or leave Claude only its own
+  // comments, so the action stops first.
+  describe('the repo variables check', () => {
     const check = runClaudeSteps()[0];
+    const all = { BOT_ID: '1', BOT_LOGIN: 'a-bot', TEAM_LOGINS: 'a,b' };
     const runCheck = (env: Record<string, string>) =>
       spawnSync('bash', ['-c', check.run ?? ''], {
         encoding: 'utf8',
         env: { ...process.env, ...env },
       });
 
-    it('comes first and reads the bot inputs', () => {
-      expect(check.name).toBe('Check the bot variables');
+    it('comes first and reads the variable inputs', () => {
+      expect(check.name).toBe('Check the repo variables');
       expect(check.env).toEqual({
         BOT_ID: '${{ inputs.bot_id }}',
         BOT_LOGIN: '${{ inputs.bot_login }}',
+        TEAM_LOGINS: '${{ inputs.team_logins }}',
       });
     });
 
-    it('passes when both are set', () => {
-      expect(runCheck({ BOT_ID: '1', BOT_LOGIN: 'a-bot' })).toMatchObject({
-        status: 0,
-        stdout: '',
-      });
+    it('passes when all are set', () => {
+      expect(runCheck(all)).toMatchObject({ status: 0, stdout: '' });
     });
 
     it.each([
-      ['no login', { BOT_ID: '1', BOT_LOGIN: '' }],
-      ['no id', { BOT_ID: '', BOT_LOGIN: 'a-bot' }],
+      ['no login', { ...all, BOT_LOGIN: '' }],
+      ['no id', { ...all, BOT_ID: '' }],
+      ['no team', { ...all, TEAM_LOGINS: '' }],
     ])('stops with %s, naming the variables', (_name, env) => {
       const { status, stdout } = runCheck(env);
 
       expect(status).toBe(1);
-      expect(stdout).toMatch(/KINSCAPE_BOT_LOGIN and KINSCAPE_BOT_ID/);
+      expect(stdout).toMatch(
+        /KINSCAPE_BOT_LOGIN, KINSCAPE_BOT_ID and KINSCAPE_TEAM_LOGINS/
+      );
     });
   });
 
-  it.each(RUN_CLAUDE_CALLERS)('passes the bot variables to it in %s', file => {
+  it.each(RUN_CLAUDE_CALLERS)('passes the repo variables to it in %s', file => {
     expect(read(file)).toContain('bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}');
     expect(read(file)).toContain('bot_id: ${{ vars.KINSCAPE_BOT_ID }}');
+    expect(read(file)).toContain(
+      'team_logins: ${{ vars.KINSCAPE_TEAM_LOGINS }}'
+    );
   });
 
   it.each(RUN_CLAUDE_CALLERS)(

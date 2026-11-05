@@ -91,6 +91,9 @@ done <<<"$expected"
 echo "== Variables"
 gh variable set KINSCAPE_BOT_LOGIN --repo "$REPO" --body "$BOT_LOGIN"
 gh variable set KINSCAPE_BOT_ID --repo "$REPO" --body "$BOT_ID"
+# The logins whose comments the agents read (.github/actions/run-claude/action.yml).
+source "$DIR/github/team-logins.sh"
+gh variable set KINSCAPE_TEAM_LOGINS --repo "$REPO" --body "$(team_logins "$REPO")"
 
 echo "== Repository settings"
 gh api -X PATCH "repos/$REPO" \
@@ -106,8 +109,10 @@ gh api graphql -f id="$(gh api "repos/$REPO" --jq .node_id)" -f query='
     }
   }' >/dev/null
 # Only collaborators can comment, which the policy above doesn't cover. GitHub drops the limit
-# after six months (its maximum); re-running this restarts the six months.
-gh api -X PUT "repos/$REPO/interaction-limits" -f limit=collaborators_only -f expiry=six_months >/dev/null
+# after six months (its maximum); re-running this restarts the six months. The expiry goes in a
+# variable, which backlog-interaction-limit.yml reads: the Actions token can't read the limit.
+expires=$(gh api -X PUT "repos/$REPO/interaction-limits" -f limit=collaborators_only -f expiry=six_months --jq '.expires_at[:10]')
+gh variable set KINSCAPE_INTERACTION_LIMIT_EXPIRES --repo "$REPO" --body "$expires"
 
 # Create or update the ruleset named $1 from the JSON file $2.
 ruleset() {

@@ -6,6 +6,7 @@ import { describe, nameOf, valueAt } from '@ks/app/design-kit/colour/describe';
 import { GROUPS, SYSTEM } from '@ks/app/design-kit/colour/swatches';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { requireSession } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -101,4 +102,10 @@ const ColourKit = () => (
   </main>
 );
 
-export default ColourKit;
+const Page = async () => {
+  await requireSession();
+
+  return <ColourKit />;
+};
+
+export default Page;

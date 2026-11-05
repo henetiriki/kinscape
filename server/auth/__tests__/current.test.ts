@@ -2,15 +2,26 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({ get: vi.fn(), set: vi.fn() }));
 const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
+const redirect = vi.hoisted(() =>
+  vi.fn((to: string) => {
+    throw new Error(`redirect:${to}`);
+  })
+);
 
 vi.mock('next/headers', () => ({ cookies: async () => jar }));
+vi.mock('next/navigation', () => ({ redirect }));
 vi.mock('@ks/server/adapters.mts', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   appAdapters: () => adapters.current,
 }));
 
 import { SYNTHETIC } from '@ks/server/adapters.mts';
-import { currentSession, signIn, signOut } from '@ks/server/auth/current.mts';
+import {
+  currentSession,
+  requireSession,
+  signIn,
+  signOut,
+} from '@ks/server/auth/current.mts';
 import { memorySession } from '@ks/server/auth/memory-session.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { memoryThrottle } from '@ks/server/auth/memory-throttle.mts';
@@ -42,6 +53,24 @@ beforeEach(() => {
     throttle: memoryThrottle(),
   };
   jar.get.mockReturnValue(undefined);
+});
+
+// NFR-03, NFR-10
+describe('requireSession', () => {
+  it('gives the session of the cookie’s token', async () => {
+    const token = await startSession(sessions(), () => new Date(), SESSION);
+
+    jar.get.mockReturnValue({ value: token });
+
+    expect(await requireSession()).toEqual(SESSION);
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it('sends a forged token to the sign-in page', async () => {
+    jar.get.mockReturnValue({ value: 'x'.repeat(43) });
+
+    await expect(requireSession()).rejects.toThrow('redirect:/sign-in');
+  });
 });
 
 // NFR-03

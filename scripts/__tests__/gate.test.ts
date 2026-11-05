@@ -74,6 +74,7 @@ describe('routeOf', () => {
     ['app/sitemap.ts', '/sitemap.xml'],
     ['app/manifest.ts', '/manifest.webmanifest'],
     ['app/data/x/route.js', '/data/x'],
+    ['app/x/route.tsx', '/x'],
     ['app/people/[id]/opengraph-image.tsx', '/people/x/opengraph-image'],
     ['app/icon.tsx', '/icon'],
   ])('serves %s at %s', (file, path) => {
@@ -94,11 +95,11 @@ describe('routeOf', () => {
 describe('gateBreaks', () => {
   it('names a route that checks no session', () => {
     expect(gateBreaks({ 'app/trees/route.ts': OPEN }, EVERYTHING, [])).toEqual([
-      'app/trees/route.ts: Gate rule: neither /trees nor a layout above it checks the session.',
+      'app/trees/route.ts: Gate rule: /trees checks no session.',
     ]);
   });
 
-  it('accepts a page gated by a layout above it, not beside it', () => {
+  it('does not count a layout above a page or a route handler', () => {
     const layout = 'const L = async () => { await currentSession(); };';
 
     expect(
@@ -106,29 +107,16 @@ describe('gateBreaks', () => {
         {
           'app/design-kit/colour/page.tsx': 'const P = () => null;',
           'app/design-kit/layout.tsx': layout,
-          'app/screens/add-pin/page.tsx': 'const P = () => null;',
-          'app/screens/other/layout.tsx': layout,
-        },
-        EVERYTHING,
-        []
-      )
-    ).toEqual([
-      'app/screens/add-pin/page.tsx: Gate rule: neither /screens/add-pin nor a layout above it checks the session.',
-    ]);
-  });
-
-  it('does not count a layout for a route handler', () => {
-    expect(
-      gateBreaks(
-        {
+          'app/design-kit/type/page.tsx': 'await requireSession();',
           'app/screens/export/route.ts': OPEN,
-          'app/screens/layout.tsx': 'const L = () => currentSession();',
+          'app/screens/layout.tsx': layout,
         },
         EVERYTHING,
         []
       )
     ).toEqual([
-      'app/screens/export/route.ts: Gate rule: neither /screens/export nor a layout above it checks the session.',
+      'app/design-kit/colour/page.tsx: Gate rule: /design-kit/colour checks no session.',
+      'app/screens/export/route.ts: Gate rule: /screens/export checks no session.',
     ]);
   });
 
@@ -144,6 +132,7 @@ describe('gateBreaks', () => {
 
   it.each([
     ['openTree', 'const r = await openTree(deps, token);'],
+    ['requireSession', 'const P = async () => { await requireSession(); };'],
     ['a chained call', 'const s = await auth.currentSession();'],
   ])('accepts %s as the check', (_name, source) => {
     expect(gateBreaks({ 'app/a/page.tsx': source }, EVERYTHING, [])).toEqual(

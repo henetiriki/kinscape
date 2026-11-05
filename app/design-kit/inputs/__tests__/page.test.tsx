@@ -1,7 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import InputsKit from '@ks/app/design-kit/inputs/page';
+
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
 
 const show = async (part?: string | string[]) =>
   render(await InputsKit({ searchParams: Promise.resolve({ part }) }));

@@ -1,4 +1,5 @@
 import { RuleTester } from 'eslint';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -6,6 +7,7 @@ import {
   clientImportsRule,
   isClient,
   SERVER_ONLY,
+  TOP_LEVEL,
 } from '@ks/scripts/safety.mts';
 import { readSources } from '@ks/scripts/sources.mts';
 
@@ -24,10 +26,16 @@ const CLIENT =
 
 describe('the repo', () => {
   it('keeps the boundary', () => {
-    const files = readSources(ROOTS);
+    const files = {
+      ...readSources(ROOTS),
+      ...Object.fromEntries(
+        TOP_LEVEL.map(path => [path, readFileSync(path, 'utf8')])
+      ),
+    };
 
     expect(Object.keys(files)).toEqual(
       expect.arrayContaining([
+        'proxy.ts',
         'server/adapters.mts',
         'features/map/components/MapShell.tsx',
       ])

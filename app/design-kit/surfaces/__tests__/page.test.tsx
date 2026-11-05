@@ -1,7 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import SurfacesKit from '@ks/app/design-kit/surfaces/page';
+
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
 
 const show = async (part?: string | string[]) =>
   render(await SurfacesKit({ searchParams: Promise.resolve({ part }) }));

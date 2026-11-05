@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import MapFurnitureKit from '@ks/app/design-kit/map-furniture/page';
+
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
 
 const show = async (part?: string | string[]) =>
   render(await MapFurnitureKit({ searchParams: Promise.resolve({ part }) }));

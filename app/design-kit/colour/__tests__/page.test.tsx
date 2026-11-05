@@ -3,6 +3,8 @@ import { afterEach, expect, it, vi } from 'vitest';
 
 import rawTokens from '@ks/design/tokens.json';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 afterEach(() => {
   vi.resetModules();
   vi.doUnmock('@ks/design/tokens.json');
@@ -12,7 +14,7 @@ afterEach(() => {
 it('shows six groups in board order, then the system colours', async () => {
   const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
-  render(<ColourKit />);
+  render(await ColourKit());
 
   expect(
     screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent)
@@ -38,7 +40,7 @@ it('shows six groups in board order, then the system colours', async () => {
 it('shows value, ratio and use, with opacity for the scrim and the hatch', async () => {
   const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
-  render(<ColourKit />);
+  render(await ColourKit());
 
   expect(screen.getByText('#163019 · 14.3:1')).toBeTruthy();
   expect(screen.getByText('#A3AAA1 · 2.4:1, disabled')).toBeTruthy();
@@ -55,7 +57,7 @@ it('shows value, ratio and use, with opacity for the scrim and the hatch', async
 it('draws an edge under the white chips only', async () => {
   const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
-  render(<ColourKit />);
+  render(await ColourKit());
 
   const chip = (name: string) =>
     screen.getByText(name).closest('div')!.previousElementSibling!.className;
@@ -75,7 +77,7 @@ it('follows a changed token', async () => {
 
   const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
-  render(<ColourKit />);
+  render(await ColourKit());
 
   expect(screen.getByText('#000000 · 21.0:1')).toBeTruthy();
 });

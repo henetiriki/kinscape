@@ -1,6 +1,8 @@
 import 'server-only';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
+import type { Session } from '#ks/lib/domain/auth/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
 import { ok } from '#ks/lib/domain/result/result.mts';
@@ -26,6 +28,20 @@ export const currentSession = async () =>
     now,
     (await cookies()).get(SESSION_COOKIE)?.value
   );
+
+/**
+ * The session, or the sign-in page. Every page calls it before it renders anything: a layout's
+ * redirect sets the status, but the page segment still renders into the response.
+ */
+export const requireSession = async (): Promise<Session> => {
+  const session = await currentSession();
+
+  if (session === undefined) {
+    redirect('/sign-in');
+  }
+
+  return session;
+};
 
 /** A sign-in from raw form input: success sets the session cookie; a failure says why. */
 export const signIn = async (

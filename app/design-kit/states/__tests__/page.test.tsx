@@ -1,11 +1,13 @@
 import { render, screen, within } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import StatesKit from '@ks/app/design-kit/states/page';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 // NFR-06
-it('shows every control in five states', () => {
-  render(<StatesKit />);
+it('shows every control in five states', async () => {
+  render(await StatesKit());
 
   const matrix = screen.getByRole('figure', { name: 'State matrix' });
 
@@ -16,8 +18,8 @@ it('shows every control in five states', () => {
   expect(matrix.querySelectorAll('.kitRow:not(.kitColumns)')).toHaveLength(9);
 });
 
-it('labels every cell with its state for a phone', () => {
-  render(<StatesKit />);
+it('labels every cell with its state for a phone', async () => {
+  render(await StatesKit());
 
   const rows = document.querySelectorAll('.kitRow:not(.kitColumns)');
 
@@ -32,8 +34,8 @@ it('labels every cell with its state for a phone', () => {
   }
 });
 
-it('keeps the pointer-state cells out of the tab order and the accessibility tree', () => {
-  render(<StatesKit />);
+it('keeps the pointer-state cells out of the tab order and the accessibility tree', async () => {
+  render(await StatesKit());
 
   const inert = document.querySelectorAll('.kitCell[inert]');
 
@@ -48,8 +50,8 @@ it('keeps the pointer-state cells out of the tab order and the accessibility tre
   ).toBe(true);
 });
 
-it('shows the Text field with a placeholder at rest, text when typed and filled, and disabled', () => {
-  render(<StatesKit />);
+it('shows the Text field with a placeholder at rest, text when typed and filled, and disabled', async () => {
+  render(await StatesKit());
 
   const row = screen.getByText('Text field').closest('.kitRow')!;
   const values = [...row.querySelectorAll('input')].map(

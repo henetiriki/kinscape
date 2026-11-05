@@ -41,8 +41,11 @@ export const SERVER_ONLY = [
 /** The routes served without a session. */
 export const PUBLIC_PATHS = ['/sign-in', '/robots.txt'];
 
-/** The calls that check the session: a route makes one, or, for a page only, a layout above it does. The check is per file. */
-const SESSION_CHECK = /(?:^|\.)(?:currentSession|openTree)$/;
+/**
+ * The calls that check the session. Each page and route handler makes one itself: a layout's
+ * redirect doesn't stop its page from rendering into the response. The check is per file.
+ */
+const SESSION_CHECK = /(?:^|\.)(?:currentSession|openTree|requireSession)$/;
 
 const ADAPTERS_MESSAGE =
   'Scoping rule: only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters.';
@@ -169,11 +172,11 @@ export const routeOf = (file: string): AppRoute | undefined => {
     .split('/')
     .filter(segment => segment !== '' && !/^\(.*\)$/.test(segment))
     .map(segment => (segment.startsWith('[') ? 'x' : segment));
-  const tail =
-    METADATA[name] ??
-    (name.endsWith('.tsx') && name !== 'page.tsx'
-      ? name.replace(/\.tsx$/, '')
-      : undefined);
+  // A metadata image is served under its own name; a page or route handler at its folder.
+  const image = /^(icon|apple-icon|opengraph-image|twitter-image)\.tsx$/.exec(
+    name
+  );
+  const tail = METADATA[name] ?? image?.[1];
 
   return {
     file,
@@ -189,7 +192,7 @@ export const appRoutes = (paths: string[]): AppRoute[] =>
     return route === undefined ? [] : [route];
   });
 
-/** Whether a source calls `currentSession` or `openTree`. */
+/** Whether a source calls `currentSession`, `openTree` or `requireSession`. */
 const checksSession = (path: string, source: string): boolean => {
   let found = false;
   const visit = (node: ts.Node): void => {
@@ -202,18 +205,6 @@ const checksSession = (path: string, source: string): boolean => {
   visit(parse(path, source));
 
   return found;
-};
-
-/** The file and each `layout.tsx` above it, down from `app/`. */
-const withLayouts = (file: string): string[] => {
-  const dirs = file.split('/').slice(0, -1);
-
-  return [
-    file,
-    ...dirs.map(
-      (_, depth) => `${dirs.slice(0, depth + 1).join('/')}/layout.tsx`
-    ),
-  ];
 };
 
 /**
@@ -236,13 +227,9 @@ export const gateBreaks = (
           ...(matches(path)
             ? []
             : [`${file}: Gate rule: the matcher skips ${path}.`]),
-          ...((file.endsWith('/page.tsx') ? withLayouts(file) : [file]).some(
-            layout => layout in files && checksSession(layout, files[layout])
-          )
+          ...(checksSession(file, files[file])
             ? []
-            : [
-                `${file}: Gate rule: neither ${path} nor a layout above it checks the session.`,
-              ]),
+            : [`${file}: Gate rule: ${path} checks no session.`]),
         ]
   );
   const statics = staticPaths.flatMap(path =>

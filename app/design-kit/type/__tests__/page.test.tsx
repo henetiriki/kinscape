@@ -3,6 +3,8 @@ import { expect, it, vi } from 'vitest';
 
 import type tokens from '@ks/design/tokens.json';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 vi.mock('@ks/design/tokens.json', async importOriginal => {
   const original = await importOriginal<{ default: typeof tokens }>();
 
@@ -23,8 +25,8 @@ vi.mock('@ks/design/tokens.json', async importOriginal => {
 const { default: TypeKit } = await import('@ks/app/design-kit/type/page');
 
 // NFR-06
-it('shows the five map labels and a note built from the tokens', () => {
-  render(<TypeKit />);
+it('shows the five map labels and a note built from the tokens', async () => {
+  render(await TypeKit());
 
   for (const text of [
     'ORANGE FREE STATE',
@@ -44,8 +46,8 @@ it('shows the five map labels and a note built from the tokens', () => {
 });
 
 // NFR-06
-it('draws the water label chip in the changed water-label colour', () => {
-  render(<TypeKit />);
+it('draws the water label chip in the changed water-label colour', async () => {
+  render(await TypeKit());
 
   expect(screen.getByText('INDIAN OCEAN').style.color).toBe('rgb(18, 52, 86)');
   // The river label takes the water colour by reference.
@@ -53,8 +55,8 @@ it('draws the water label chip in the changed water-label colour', () => {
 });
 
 // NFR-06
-it('shows the 22 styles, with natural heading elements', () => {
-  render(<TypeKit />);
+it('shows the 22 styles, with natural heading elements', async () => {
+  render(await TypeKit());
 
   const scale = screen.getByRole('table', { name: 'Type scale' });
 

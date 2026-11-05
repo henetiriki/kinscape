@@ -11,7 +11,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 - Only the design agent, or a person or an agent they ask to run the [refresh steps](design/DESIGN.md#refreshing-the-copy), edits `design/canvas/`; a [workflow](design/DESIGN.md#screens) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) is proposed, not a rule.
 - `docs/how-we-work.md`: the workflow, labels and roles.
-- Use the terms in the requirements' _Key concepts_ table exactly (Person, Place, Pin, Polity, Boundary version, Jurisdiction chain, Map date, Fuzzy date) in code, UI and docs.
+- Use the terms in the requirements' _Key concepts_ table exactly in code, UI and docs.
 
 ## Workflow rules
 
@@ -49,7 +49,7 @@ Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforc
 
 ## Commands
 
-Node 24 (`.nvmrc`): `npm ci`, `npm run dev`, `npm run build`, `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev` and `npm run build` (both need [`KINSCAPE_MEMORY_ADAPTERS=1`](docs/repo-settings.md#vercel) outside Vercel), `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
 
 ## Verifying your work
 

@@ -10,12 +10,13 @@ NEEDS_ADMIN='needs admin'
 ADMIN=$(gh api "repos/$REPO" --jq '.permissions.admin // false' 2>/dev/null)
 
 # gh, with an HTTP 403 answered as "needs admin" (keeping gh's exit code), so it reads as 🔒 not ❌.
+# Only for a token that isn't an admin's: an admin's 403 (a rate limit, a missing scope) is a failure.
 g() {
   local err out rc
   err=$(mktemp)
   out=$(gh "$@" 2>"$err")
   rc=$?
-  if [ $rc -ne 0 ] && grep -q 'HTTP 403' "$err"; then out=$NEEDS_ADMIN; fi
+  if [ $rc -ne 0 ] && [ "$ADMIN" != "true" ] && grep -q 'HTTP 403' "$err"; then out=$NEEDS_ADMIN; fi
   rm -f "$err"
   printf '%s' "$out"
   return $rc

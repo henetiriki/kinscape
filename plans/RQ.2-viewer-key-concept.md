@@ -2,7 +2,7 @@
 
 - **Spec:** #616
 - **Requirement IDs:** [NFR-10](../docs/requirements.md#nfr-10)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

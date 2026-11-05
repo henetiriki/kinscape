@@ -108,3 +108,10 @@ export const sessionCookie = (token: string) => ({
   },
   value: token,
 });
+
+/** The cookie that clears the session cookie: same name and attributes, empty value, `maxAge: 0`. */
+export const endedSessionCookie = () => {
+  const { name, options } = sessionCookie('');
+
+  return { name, options: { ...options, maxAge: 0 }, value: '' };
+};

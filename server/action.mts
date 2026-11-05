@@ -1,31 +1,33 @@
 import type { z } from 'zod';
 
-import type { SessionStore } from '#ks/lib/domain/auth/types.ts';
+import { cookies } from 'next/headers';
+
 import type { Result } from '#ks/lib/domain/result/types.ts';
-import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 import type { TreeRepository } from '#ks/server/trees/types.ts';
 
-import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { err } from '#ks/lib/domain/result/result.mts';
+import { appAdapters } from '#ks/server/adapters.mts';
+import { SESSION_COOKIE } from '#ks/server/auth/sessions.mts';
 import { openTree } from '#ks/server/trees/repository.mts';
 
 /**
- * Wraps a Tree action: open the Tree for the session token, parse the raw input, run the body.
- * Expected failures come back as `not-found` or `invalid`; they don't throw.
+ * Wraps a Tree action: opens the Viewer's Tree from the request's cookie, parses the raw input,
+ * runs the body. No caller passes a token or a Tree id. `not-found` and `invalid` join the body's
+ * own errors; none throw.
  */
 export const treeAction =
-  <S extends z.ZodType, R>(
-    store: TreeStore,
-    sessions: SessionStore,
+  <S extends z.ZodType, R, E>(
     schema: S,
-    body: (repository: TreeRepository, input: z.output<S>) => Promise<R>,
-    now: () => Date
+    body: (
+      repository: TreeRepository,
+      input: z.output<S>
+    ) => Promise<Result<R, E>>
   ) =>
-  async (
-    token: string | undefined,
-    treeId: string,
-    input: unknown
-  ): Promise<Result<R, 'invalid' | 'not-found'>> => {
-    const opened = await openTree(token, treeId, store, sessions, now);
+  async (input: unknown): Promise<Result<R, 'invalid' | 'not-found' | E>> => {
+    const opened = await openTree(
+      appAdapters(),
+      (await cookies()).get(SESSION_COOKIE)?.value
+    );
 
     if (!opened.ok) {
       return opened;
@@ -37,5 +39,5 @@ export const treeAction =
       return err('invalid');
     }
 
-    return ok(await body(opened.value, parsed.data));
+    return body(opened.value, parsed.data);
   };

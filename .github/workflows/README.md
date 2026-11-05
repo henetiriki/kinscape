@@ -21,7 +21,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | CI: Playwright cache<br>`ci-playwright-cache.yml` | push | `main · paths: package-lock.json, .github/workflows/ci-playwright-cache.yml` | seed |
 | | schedule | `0 5 * * 1,4` | |
 | | workflow_dispatch | | |
-| CI<br>`ci.yml` | pull_request | `opened, synchronize, reopened, ready_for_review` | lint · typecheck · format · test · boundaries · words · image · e2e |
+| CI<br>`ci.yml` | pull_request | `opened, synchronize, reopened, ready_for_review` | lint · typecheck · format · test · coverage · boundaries · words · image · e2e |
 | | push | `main` | |
 | Claude: Build<br>`claude-build.yml` · calls Claude: Run (shared) | pull_request_review | `submitted` | approve · build |
 | Claude: Code Review<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**` | claude-review · summary |

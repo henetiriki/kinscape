@@ -13,33 +13,12 @@ BOT_ID=352551460
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "== Labels"
-label() { gh label create "$1" --repo "$REPO" --color "$2" --description "$3" --force; }
-
-# Type: what kind of issue
-label "type: intent" "8B5CF6" "What the PO wants and why"
-label "type: spec"   "3B82F6" "Requirements and design for an accepted intent"
-label "type: bug"    "EF4444" "Something isn't working"
-label "type: chore"  "6B7280" "Tooling, CI, docs or process change filed by the tech lead"
-
-# Applied by Dependabot to its pull requests
-label "dependencies" "0366D6" "Dependency update"
-
-# Status: whose turn is it
-label "status: draft"           "E5E7EB" "Still being written"
-label "status: ready-for-po"    "F59E0B" "Waiting on the product owner"
-label "status: ready-for-dev"   "10B981" "Approved, a person picks it up"
-label "status: ready-for-agent" "0EA5E9" "Claude plans it in GitHub Actions"
-label "status: blocked"         "7F1D1D" "Waiting on someone outside the team, or a failed agent run"
-
-# Applied by claude-hand-back.yml to a pull request that changes a hand-back path
-label "hand-back" "B60205" "The tech lead builds this: it changes a hand-back path"
-
-# Added by the tech lead to a pull request to start claude-fix-review.yml; the run removes it
-label "fix-review" "FBCA04" "Claude fixes the review's findings on this PR"
-
-# Remove GitHub's default labels that overlap with ours, and our retired ones (ignore if already gone)
-for l in bug documentation duplicate enhancement "good first issue" "help wanted" invalid question wontfix \
-  "status: in-progress" "status: in-review"; do
+# The list, and the retired names, are in scripts/github/labels.sh (ignore a retired one already gone).
+source "$DIR/github/labels.sh"
+while IFS='|' read -r name color description; do
+  gh label create "$name" --repo "$REPO" --color "$color" --description "$description" --force
+done < <(labels)
+for l in "${RETIRED_LABELS[@]}"; do
   gh label delete "$l" --repo "$REPO" --yes 2>/dev/null || true
 done
 

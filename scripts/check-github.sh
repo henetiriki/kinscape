@@ -85,7 +85,8 @@ else
   check "Squash only in ruleset"            "$(q "$pr | .allowed_merge_methods | join(\",\")")" "squash"
   # Each required check as context@app, so a check reported by another app doesn't count.
   check "Required checks, each from its app" "$(q '[.rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[] | "\(.context)@\(.integration_id // "")"] | sort | join(",")')" "$(j ruleset-main.json "$CHECKS")"
-  check "Bypass actors"                     "$(q '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "$(j ruleset-main.json "$BYPASS")"
+  # GitHub leaves bypass_actors out of a ruleset read without admin rights.
+  check "Bypass actors"                     "$(a api "repos/$REPO/rulesets/$id" --jq '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "$(j ruleset-main.json "$BYPASS")"
 fi
 
 # The smaller rulesets: active, with the rule types and bypass actors in their JSON file.
@@ -95,7 +96,7 @@ check_ruleset() { # name, file
   if [ -z "$rid" ]; then echo "❌ Ruleset '$1' missing"; fail=1; return; fi
   check "Ruleset '$1' active"        "$(g api "repos/$REPO/rulesets/$rid" --jq .enforcement)" "active"
   check "Ruleset '$1' rules"         "$(g api "repos/$REPO/rulesets/$rid" --jq '[.rules[].type] | sort | join(",")')" "$(j "$2" "$RULE_TYPES")"
-  check "Ruleset '$1' bypass actors" "$(g api "repos/$REPO/rulesets/$rid" --jq '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "$(j "$2" "$BYPASS")"
+  check "Ruleset '$1' bypass actors" "$(a api "repos/$REPO/rulesets/$rid" --jq '[.bypass_actors[] | "\(.actor_type):\(.actor_id):\(.bypass_mode)"] | join(",")')" "$(j "$2" "$BYPASS")"
 }
 check_ruleset "Protect po-preview" ruleset-po-preview.json
 check_ruleset "Protect tags" ruleset-tags.json

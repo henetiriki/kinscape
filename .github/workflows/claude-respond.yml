@@ -112,7 +112,7 @@ jobs:
       # step, so the checked-out branch can't change it.
       - name: Run Claude Code
         id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@8a057b22f7fb4ad8ccda6d372ccc852d38996ed8
+        uses: henetiriki/kinscape/.github/actions/run-claude@89fe5258309134e084de00d33e8cd85b0d69a175
         with:
           # The files in .github/agent/ that become the system prompt. The order matters: respond.md
           # points to build.md "below", so build.md comes after it.

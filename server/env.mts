@@ -1,11 +1,29 @@
 import { z } from 'zod';
 
+/** Connection-string parameters that change how the server's certificate is checked. */
+const TLS_KEYS = ['ssl', 'sslcert', 'sslkey', 'sslrootcert', 'uselibpqcompat'];
+
+/**
+ * A database URL whose TLS the code alone decides (`server/db/database.mts`): it may name
+ * `sslmode=verify-full` and no other TLS parameter.
+ */
+const databaseUrl = z.url().pipe(
+  z.string().refine(value => {
+    const { searchParams } = new URL(value);
+
+    return (
+      TLS_KEYS.every(key => !searchParams.has(key)) &&
+      searchParams.getAll('sslmode').every(mode => mode === 'verify-full')
+    );
+  })
+);
+
 // Server variables only: none starts with NEXT_PUBLIC_, so none reaches the browser.
 const serverEnv = z.object({
   /** Used by `npm run db:migrate`; the app never needs it. */
-  KINSCAPE_DATABASE_DIRECT_URL: z.url().optional(),
+  KINSCAPE_DATABASE_DIRECT_URL: databaseUrl.optional(),
   /** The app's connection, through the transaction pooler. */
-  KINSCAPE_DATABASE_URL: z.url(),
+  KINSCAPE_DATABASE_URL: databaseUrl,
   /** The project's publishable key; it signs users in but can't manage them. */
   KINSCAPE_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
   /** The project's API URL. */

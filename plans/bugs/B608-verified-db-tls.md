@@ -6,13 +6,13 @@
 
 ## Approach
 
-`createPgDb` passes `ssl: { ca, rejectUnauthorized: true }`, with `ca` read once from `server/db/supabase-ca.crt`. It first removes `sslmode` from the connection string, so the pinned CA is the one used. `serverEnv` refines both URL variables: `sslmode` must be absent or `verify-full`, and `ssl`, `sslrootcert`, `sslcert`, `sslkey` and `uselibpqcompat` are rejected. `parseEnv` runs in `instrumentation.ts`, so a URL that asks for less stops the server at boot. `parseDirectUrl` shares the refinement, and `db:migrate` and `account:add` already call `createPgDb`, so they need no code change. `next.config.ts` traces the `.crt` into every server function.
+`createPgDb` passes `ssl: { ca, rejectUnauthorized: true }`, with `ca` read once from `server/db/root-ca.crt`. It first removes `sslmode` from the connection string, so the pinned CA is the one used. `serverEnv` refines both URL variables: `sslmode` must be absent or `verify-full`, and `ssl`, `sslrootcert`, `sslcert`, `sslkey` and `uselibpqcompat` are rejected. `parseEnv` runs in `instrumentation.ts`, so a URL that asks for less stops the server at boot. `parseDirectUrl` shares the refinement, and `db:migrate` and `account:add` already call `createPgDb`, so they need no code change. `next.config.ts` traces the `.crt` into every server function.
 
 ## Decisions
 
 **D1 · CA source** · Decides: Tech lead
 
-- **A.** Supabase's root CA checked in at `server/db/supabase-ca.crt`. It is a public certificate.
+- **A.** Supabase's root CA checked in at `server/db/root-ca.crt`. It is a public certificate.
 - **B.** A new environment variable holding the CA.
 - **Other:** your own.
 
@@ -38,7 +38,7 @@
 
 | File                                   | New / changed | What                                                                                                     |
 | -------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------- |
-| `server/db/supabase-ca.crt`            | new           | Supabase root CA                                                                                         |
+| `server/db/root-ca.crt`                | new           | Supabase root CA                                                                                         |
 | `server/db/database.mts`               | changed       | `poolConfig(url, ca)` returns the pool config; `createPgDb` uses it; the CA is read on first use         |
 | `server/env.mts`                       | changed       | Refinement on both URL variables                                                                         |
 | `next.config.ts`                       | changed       | `outputFileTracingIncludes` for the `.crt`                                                               |
@@ -69,3 +69,7 @@
 ## Out of scope
 
 Vercel function region.
+
+## Deviations
+
+- The file is `server/db/root-ca.crt` and the reader `rootCa()`, not `supabase-ca.crt`: `scripts/__tests__/providers.test.ts` keeps provider names out of `server/db`.

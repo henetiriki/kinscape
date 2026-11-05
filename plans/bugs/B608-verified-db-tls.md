@@ -73,4 +73,4 @@ Vercel function region.
 ## Deviations
 
 - The file is `server/db/root-ca.crt` and the reader `rootCa()`, not `supabase-ca.crt`: `scripts/__tests__/providers.test.ts` keeps provider names out of `server/db`.
-- No local `db:migrate` run: the `parseDirectUrl` tests prove the URL check. The tech lead runs `db:migrate` against Preview with `?sslmode=verify-full` after rollout.
+- The tech lead ran `db:migrate` against Preview with `?sslmode=verify-full`; it applied the pending `0003_sign_in_failures.sql`. `docs/repo-settings.md` gains an Email provider row: that setting was off on Preview and looked like a TLS failure.

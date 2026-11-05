@@ -127,6 +127,7 @@ jobs:
           github_token: ${{ steps.bot.outputs.token }}
           bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
           bot_id: ${{ vars.KINSCAPE_BOT_ID }}
+          team_logins: ${{ vars.KINSCAPE_TEAM_LOGINS }}
 
   # With show_full_output off, the log above stops at the start of the run. This writes the run page
   # from the summary of Claude's transcript (the run-summary action, from main, so the checked-out branch can't

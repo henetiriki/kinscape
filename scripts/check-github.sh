@@ -93,6 +93,12 @@ check "Fork PR runs need approval"     "$(gh api "repos/$REPO/actions/permission
 limit_info=$(gh api "repos/$REPO/interaction-limits" --jq '[(.limit // "none"), (.expires_at // "none"), (.expires_at != null and ((.expires_at | fromdateiso8601) - now) > 2592000)] | @tsv' 2>/dev/null)
 IFS=$'\t' read -r il_limit il_expires il_ok <<<"$limit_info"
 check "Interaction limit (expires ${il_expires:-none})" "${il_limit:-none} ${il_ok:-false}" "collaborators_only true"
+# The variable backlog-interaction-limit.yml reads must be the live expiry's date.
+check "Interaction limit expiry variable" "$(gh variable get KINSCAPE_INTERACTION_LIMIT_EXPIRES --repo "$REPO" 2>/dev/null)" "${il_expires:0:10}"
+
+# The logins whose comments the agents read must be the write collaborators.
+source "$DIR/github/team-logins.sh"
+check "Team logins variable" "$(gh variable get KINSCAPE_TEAM_LOGINS --repo "$REPO" 2>/dev/null)" "$(team_logins "$REPO")"
 
 # One autolink per requirement ID prefix: none missing, none for another prefix or URL.
 source "$DIR/github/requirement-prefixes.sh"
@@ -113,7 +119,7 @@ check "Bot id variable is the login's" "$bot_id" "${real_id:-no id for '$bot_log
 # _Secrets and variables_ table in docs/repo-settings.md links here; keep it in step.
 # An unreadable list gives "", which fails. The agent's token can't list secrets: run as admin.
 expected_secrets="CLAUDE_CODE_OAUTH_TOKEN,CODECOV_TOKEN,KINSCAPE_APP_PRIVATE_KEY"
-expected_variables="KINSCAPE_APP_CLIENT_ID,KINSCAPE_BOT_ID,KINSCAPE_BOT_LOGIN"
+expected_variables="KINSCAPE_APP_CLIENT_ID,KINSCAPE_BOT_ID,KINSCAPE_BOT_LOGIN,KINSCAPE_INTERACTION_LIMIT_EXPIRES,KINSCAPE_TEAM_LOGINS"
 actual_secrets=$(gh secret list --repo "$REPO" --json name --jq 'map(.name) | sort | join(",")' 2>/dev/null)
 actual_variables=$(gh variable list --repo "$REPO" --json name --jq 'map(.name) | sort | join(",")' 2>/dev/null)
 check "Secrets (${actual_secrets:-unreadable})"     "$actual_secrets"   "$expected_secrets"

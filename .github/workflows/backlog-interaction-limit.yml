@@ -1,0 +1,52 @@
+name: 'Backlog: Interaction limit reminder'
+
+# The collaborators-only interaction limit (scripts/setup-github.sh) lapses six months after it is
+# set, and the Actions token cannot read it. setup-github.sh records the expiry in the repo variable
+# KINSCAPE_INTERACTION_LIMIT_EXPIRES. Once a week this opens a Chore to re-run the script when that
+# date is under 30 days away, or the variable is unset, unless a Chore with that title is open.
+
+on:
+  schedule:
+    # Every Tuesday at 06:00 UTC.
+    - cron: '0 6 * * 2'
+  # Lets a person run it by hand from the Actions tab.
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Open a Chore if the limit lapses within 30 days
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EXPIRES: ${{ vars.KINSCAPE_INTERACTION_LIMIT_EXPIRES }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          title='Chore: Re-run setup-github.sh before the interaction limit lapses'
+          if [ -n "$EXPIRES" ]; then
+            if ! expires_at=$(date -u -d "$EXPIRES" +%s); then
+              echo "::error::KINSCAPE_INTERACTION_LIMIT_EXPIRES is not a date: '$EXPIRES'. Run scripts/setup-github.sh."
+              exit 1
+            fi
+            days=$(( (expires_at - $(date -u +%s)) / 86400 ))
+            if [ "$days" -gt 30 ]; then
+              echo "The interaction limit lapses on $EXPIRES, in $days days."
+              exit 0
+            fi
+            reason="The collaborators-only interaction limit lapses on $EXPIRES."
+          else
+            reason='The repo variable KINSCAPE_INTERACTION_LIMIT_EXPIRES is not set, so the interaction limit may have lapsed.'
+          fi
+          open=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq length)
+          if [ "$open" -gt 0 ]; then
+            echo 'A reminder is already open.'
+            exit 0
+          fi
+          gh issue create --title "$title" --assignee "$OWNER" --label 'type: chore' --label 'status: ready-for-dev' --body-file - <<EOF
+          $reason Run \`./scripts/setup-github.sh\`, which restarts the six months and records the new expiry, then \`./scripts/check-github.sh\` ([repository settings](https://github.com/$GH_REPO/blob/main/docs/repo-settings.md)).
+          EOF

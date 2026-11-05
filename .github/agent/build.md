@@ -2,7 +2,7 @@
 
 The caller names the PR and who approved or asked. Follow plans/README.md.
 
-Your first command is `gh pr view <n> --json title,body,comments,reviews,headRefName,labels` (`--comments` can't be combined with `--json`).
+Your first command is `gh pr view <n> --json title,body,comments,reviews,headRefName,labels --jq '(.comments, .reviews) |= map(select(.authorAssociation | IN("OWNER", "MEMBER", "COLLABORATOR")))'`: the team's comments and reviews, and nobody else's. The bot's own and the review's findings are not needed here: the plan file and the PR body hold the state, and a finding reaches you through a fix-review run or a respond run's thread.
 
 The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
 

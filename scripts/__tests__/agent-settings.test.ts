@@ -126,6 +126,9 @@ describe('settings.json', () => {
     'gh issue delete 5',
     'gh issue lock 5',
     'gh issue transfer 5 o/r',
+    // Every author's comments; the prompts filter by author (rules.md).
+    'gh pr view 5 --comments',
+    'gh issue view 5 --comments',
     'gh api -X POST repos/o/r/issues/5/labels',
     'gh api -XPOST repos/o/r/issues/5/labels',
     'gh api --method PATCH repos/o/r/issues/5',

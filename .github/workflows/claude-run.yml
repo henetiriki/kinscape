@@ -221,6 +221,7 @@ jobs:
           github_token: ${{ steps.bot.outputs.token }}
           bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
           bot_id: ${{ vars.KINSCAPE_BOT_ID }}
+          team_logins: ${{ vars.KINSCAPE_TEAM_LOGINS }}
 
       # Before the safety net, which counts the bot's comments and would take this one for Claude's.
       - name: Remove the working comment

@@ -4,8 +4,12 @@ import type { Gh } from '@ks/scripts/types.ts';
 
 import { run } from '@ks/scripts/agent-approve.mts';
 
+// The PR head when the script runs, which the review approved; the commit the script makes.
+const HEAD = 'a'.repeat(40);
+const MADE = 'b'.repeat(40);
 const ENV = {
   APPROVER: 'tech-lead',
+  COMMIT: HEAD,
   GH_REPO: 'owner/repo',
   RUN_URL: 'https://github.com/owner/repo/actions/runs/1',
 };
@@ -40,12 +44,18 @@ type Item = { at: string; authorAssociation: string; body: string };
 type World = {
   closes?: { number: number; repo?: string }[];
   comments?: Item[];
+  // How the PR head compares with the review's commit, and the messages of the commits since it,
+  // read for an approved plan whose head is not it.
+  compare?: string;
+  // Whether the PR is still a draft: the build marks it ready.
+  draft?: boolean;
   files?: string[];
   headRefOid?: string;
   // issue number -> its labels; the issue a plan PR closes is on ready-for-dev by default
   issues?: Record<number, string[]>;
   prLabels?: string[];
   reviews?: Item[];
+  since?: string[];
   text?: string;
 };
 
@@ -65,10 +75,13 @@ describe('run', () => {
   const fakeGh = ({
     closes = [{ number: 8 }],
     comments = [],
+    compare = 'diverged',
+    draft = true,
     files = [PATH, 'src/other.ts'],
     issues = { 8: ['type: chore', DEV] },
     prLabels = [],
     reviews = [],
+    since = [],
     text = plan(),
   }: World = {}) => {
     gh = vi.fn<Gh>(args => {
@@ -95,7 +108,8 @@ describe('run', () => {
           })),
           files: files.map(path => ({ path })),
           headRefName: 'chore/C500-approval-script',
-          headRefOid: 'a'.repeat(40),
+          headRefOid: HEAD,
+          isDraft: draft,
           labels: prLabels.map(name => ({ name })),
           reviews: reviews.map(({ at, ...rest }) => ({
             ...rest,
@@ -108,6 +122,18 @@ describe('run', () => {
         return JSON.stringify({
           content: Buffer.from(text).toString('base64'),
           sha: 'blob-sha',
+        });
+      }
+
+      if (args[0] === 'api' && args.includes('PUT')) {
+        return JSON.stringify({ commit: { sha: MADE } });
+      }
+
+      if (args[0] === 'api' && args[1].includes('/compare/')) {
+        return JSON.stringify({
+          first: since[0] ?? '',
+          status: compare,
+          total: since.length,
         });
       }
 
@@ -159,6 +185,8 @@ describe('run', () => {
       [['5x'], ENV],
       [['5'], { ...ENV, APPROVER: undefined }],
       [['5'], { ...ENV, APPROVER: '-bad' }],
+      [['5'], { ...ENV, COMMIT: undefined }],
+      [['5'], { ...ENV, COMMIT: 'abc1234' }],
       [['5'], { ...ENV, GH_REPO: 'no-slash' }],
       [['5'], { ...ENV, GH_REPO: undefined }],
     ])('rejects %j with env %j', (args, env) => {
@@ -197,7 +225,7 @@ describe('run', () => {
       );
       expect(put()[0][0]).toContain(`repos/owner/repo/contents/${PATH}`);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
     });
 
     it('reads the plan at the PR head, not the branch name', () => {
@@ -364,7 +392,7 @@ describe('run', () => {
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(comments()).toEqual([]);
       expect(committed().text).not.toContain('D3');
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
     });
   });
 
@@ -378,7 +406,107 @@ describe('run', () => {
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(put()).toEqual([]);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${HEAD}`]);
+    });
+  });
+
+  // The review approved one commit; a push since then is not what the owner read.
+  describe('an approval of another commit', () => {
+    const env = { ...ENV, COMMIT: 'c'.repeat(40) };
+
+    it('comments which commits, commits nothing and stops', () => {
+      fakeGh({ reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')] });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(put()).toEqual([]);
+      expect(written).toEqual(['go=false']);
+      expect(reply()).toContain('Not approved yet');
+      expect(reply()).toContain('The approval is for `ccccccc`');
+      expect(reply()).toContain('the branch is now at `aaaaaaa`');
+      expect(reply()).toContain('Approve the plan again');
+    });
+
+    it('stops a plan already approved whose head is elsewhere, with the comment', () => {
+      fakeGh({ compare: 'diverged', text: plan('approved') });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(reply()).toContain('The approval is for `ccccccc`');
+    });
+
+    // A second review of the same commit, queued behind the first run, build included: that run
+    // did the work, so this one says nothing and moves no label.
+    it('stops quietly for a plan whose only commit since the review’s is its approval', () => {
+      fakeGh({
+        compare: 'ahead',
+        issues: { 8: ['type: chore', AGENT] },
+        since: ['plan(C500): approved by @tech-lead'],
+        text: plan('approved'),
+      });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(comments()).toEqual([]);
+      expect(edits()).toEqual([]);
+      expect(put()).toEqual([]);
+    });
+
+    // The first run built the plan and marked the PR ready; the event still saw a draft.
+    it('stops quietly for a plan built since the review, comparing nothing', () => {
+      fakeGh({
+        draft: false,
+        issues: { 8: ['type: chore', AGENT] },
+        since: ['plan(C500): approved by @tech-lead', 'C.500: build it'],
+        text: plan('approved'),
+      });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(comments()).toEqual([]);
+      expect(edits()).toEqual([]);
+      expect(
+        gh.mock.calls.filter(([args]) => args[1]?.includes('/compare/'))
+      ).toEqual([]);
+    });
+
+    it('asks the comparison for its status and first commit only', () => {
+      fakeGh({ compare: 'ahead', text: plan('approved') });
+      run(['504'], env, gh, write);
+
+      const [compare] = gh.mock.calls
+        .map(([args]) => args)
+        .filter(args => args[1]?.includes('/compare/'));
+
+      expect(compare[1]).toBe(
+        `repos/owner/repo/compare/${'c'.repeat(40)}...${HEAD}`
+      );
+      expect(compare.slice(2)).toEqual([
+        '--jq',
+        '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
+      ]);
+    });
+
+    // A build that failed after pushing, or a revision: the PR is still a draft, and the owner
+    // read an older commit, even from a page that still showed it.
+    it.each([
+      [['plan(C500): approved by @tech-lead', 'C.500: build it'], 'then more'],
+      [['C.500: a revision'], 'another commit'],
+      [['plan(C500): approved by @someone-else'], 'another approver'],
+    ])('stops an approved plan ahead by %j (%s), with the comment', since => {
+      fakeGh({ compare: 'ahead', since, text: plan('approved') });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(reply()).toContain('The approval is for `ccccccc`');
+    });
+
+    it('compares nothing for a draft plan', () => {
+      fakeGh({ reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')] });
+      run(['504'], env, gh, write);
+
+      expect(
+        gh.mock.calls.filter(([args]) => args[1]?.includes('/compare/'))
+      ).toEqual([]);
     });
   });
 
@@ -460,7 +588,7 @@ describe('run', () => {
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(comments()).toEqual([]);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
     });
   });
 
@@ -553,14 +681,15 @@ describe('run', () => {
       fakeGh({ reviews: answered });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
       expect(edits()).toEqual([moved('8', DEV, AGENT)]);
     });
 
-    it('goes to ready-for-agent for a plan already approved', () => {
+    it('goes to ready-for-agent for a plan already approved, with the head as it is', () => {
       fakeGh({ text: plan('approved') });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(written).toEqual(['go=true', `head=${HEAD}`]);
       expect(edits()).toEqual([moved('8', DEV, AGENT)]);
     });
 
@@ -655,7 +784,7 @@ describe('run', () => {
       });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
       expect(errors).toEqual(['#8: moving the label failed: HTTP 403']);
     });
 
@@ -677,7 +806,7 @@ describe('run', () => {
       });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
-      expect(written).toEqual(['go=true']);
+      expect(written).toEqual(['go=true', `head=${MADE}`]);
       expect(errors).toEqual(['#8: moving the label failed: HTTP 403']);
       expect(edits()).toEqual([moved('8', DEV, AGENT), moved('9', DEV, AGENT)]);
     });

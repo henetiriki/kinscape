@@ -79,6 +79,8 @@ jobs:
     env:
       # A run ends with its turn, which kills background sub-agents and posts nothing.
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
+      # The one issue the run may edit: refresh-settings.json's hook denies `gh issue edit` on any other.
+      ISSUE: ${{ matrix.spec.number }}
     steps:
       - name: Check out main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -101,6 +103,8 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ github.token }}
+          # Neither Claude's report nor its full output goes on the public run page.
+          display_report: false
           show_full_output: false
           settings: ${{ runner.temp }}/agent/refresh-settings.json
           claude_args: '--model sonnet --append-system-prompt-file ${{ runner.temp }}/agent/system.md'

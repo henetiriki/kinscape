@@ -44,6 +44,10 @@ on:
         description: '"fix" on a fix-review run, where the thread is a ready PR that carries the label; empty otherwise (plan decides: a plan or a build).'
         default: ''
         type: string
+      head:
+        description: 'The commit the checked-out branch must be at, on a build: the one the approval recorded (scripts/agent-approve.mts). Empty skips the check.'
+        default: ''
+        type: string
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
@@ -137,18 +141,13 @@ jobs:
           # Otherwise git pushes with GITHUB_TOKEN, not the App token, and the runs it triggers wait for approval.
           persist-credentials: 'false'
           playwright: ${{ inputs.playwright }}
-      # The runner already has Chromium's system packages, so only the browser is installed.
-      # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
-      # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
-      - name: Install Playwright
-        if: inputs.playwright
-        continue-on-error: true
-        run: timeout 210 npm run e2e:install
+
       # Note the start time, so the last step can tell whether Claude commented during this run.
       - name: Note start time
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
-      # After the setup, so the token is as fresh as possible: it lasts an hour, and the job 45 minutes.
+      # After the checkout and before the browser install, so the token is fresh enough: it lasts
+      # an hour, the job 45 minutes and the install under 4. The commit check below needs it.
       - name: Mint the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
@@ -159,6 +158,36 @@ jobs:
           permission-issues: write
           permission-pull-requests: write
           permission-actions: read
+
+      # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
+      # landed since: that is not what the owner read, so the run stops here, before the browser
+      # install and any model run, and the `return` job hands the issue back.
+      - name: Check the branch is at the approved commit
+        id: head
+        if: inputs.head != ''
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD: ${{ inputs.head }}
+        run: |
+          now=$(git rev-parse HEAD)
+          if [ "$now" != "$HEAD" ]; then
+            # Says so when the comment landed: the safety net below then stays quiet. When it
+            # didn't, the net speaks instead.
+            if gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."; then
+              echo "commented=true" >> "$GITHUB_OUTPUT"
+            fi
+            exit 1
+          fi
+          echo "At the approved commit $now."
+
+      # The runner already has Chromium's system packages, so only the browser is installed.
+      # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
+      # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
+      - name: Install Playwright
+        if: inputs.playwright
+        continue-on-error: true
+        run: timeout 210 npm run e2e:install
 
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
       # "Planning"/"Building"/"Fixing" comment is deleted when the run ends. Neither is worth failing the run for.
@@ -203,10 +232,11 @@ jobs:
         run: gh api -X DELETE "repos/$GH_REPO/issues/comments/$WORKING_COMMENT_ID"
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
-      # step failed. If Claude left no comment, post one pointing at the run, or at the PR it
+      # step failed, but not when the commit check above stopped the run and commented.
+      # If Claude left no comment, post one pointing at the run, or at the PR it
       # opened. Only a run with neither hands the Spec back as blocked.
       - name: Comment if Claude left none
-        if: always()
+        if: always() && steps.head.outputs.commented != 'true'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}

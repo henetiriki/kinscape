@@ -459,6 +459,171 @@ describe('the plan run', () => {
     );
     expect(plan).toContain('dependencies/blocked_by');
   });
+
+  // settings.json denies `gh api` a method or a body, so a blocker is linked through `gh issue edit`.
+  it('links a blocker with gh issue edit, not a POST', () => {
+    const plan = read('claude-plan.yml');
+
+    expect(plan).toContain(
+      '`gh issue edit ${{ github.event.issue.number }} --add-blocked-by <other>`'
+    );
+    expect(plan).not.toMatch(/gh api -X|--jq \.id/);
+  });
+});
+
+// Claude's report and full output stay off the public run page on every run; run-summary writes
+// the page from the scanned summary instead.
+describe('the claude-code-action steps', () => {
+  const name = 'anthropics/claude-code-action';
+  const using = (steps: Step[]) =>
+    steps.find(step => step.uses?.startsWith(`${name}@`));
+
+  it.each([
+    ['the run-claude action', () => runClaudeSteps()],
+    ['claude-code-review.yml', () => reviewSteps()],
+    ['claude-unblock.yml', () => refreshSteps()],
+  ])('show no report and no full output in %s', (_where, steps) => {
+    expect(using(steps())?.with).toMatchObject({
+      display_report: false,
+      show_full_output: false,
+    });
+  });
+});
+
+// A build checks out the commit the approval recorded and no other (scripts/agent-approve.mts).
+describe('the approved-commit check', () => {
+  type Job = {
+    outputs?: Record<string, string>;
+    steps?: Step[];
+    with?: Record<string, unknown>;
+  };
+  const runSteps = () =>
+    (parse(read('claude-run.yml')) as { jobs: Record<string, Job> }).jobs.run
+      .steps ?? [];
+  const check = () =>
+    runSteps().find(
+      step => step.name === 'Check the branch is at the approved commit'
+    );
+  const index = (name: string) =>
+    runSteps().findIndex(step => step.name === name);
+
+  it('is an input of the shared runner, empty unless a build passes it', () => {
+    const { inputs } = (
+      parse(read('claude-run.yml')) as {
+        on: { workflow_call: { inputs: Record<string, unknown> } };
+      }
+    ).on.workflow_call;
+
+    expect(inputs.head).toMatchObject({ default: '', type: 'string' });
+  });
+
+  // Right after the token, before the browser install: a stop then costs no install and no model
+  // run, and the safety net has the token and the start time it needs.
+  it('runs with the bot’s token, after it is minted and before the browser install, only when a head is given', () => {
+    const at = index('Check the branch is at the approved commit');
+
+    expect(check()?.id).toBe('head');
+    expect(check()?.if).toBe("inputs.head != ''");
+    expect(check()?.env).toMatchObject({
+      GH_TOKEN: '${{ steps.bot.outputs.token }}',
+      HEAD: '${{ inputs.head }}',
+    });
+    expect(at).toBe(index("Mint the bot's token") + 1);
+    expect(index('Note start time')).toBeLessThan(at);
+    expect(index('Install Playwright')).toBeGreaterThan(at);
+  });
+
+  // The check commented already; the safety net would add "finished without commenting". When its
+  // comment failed, the net still speaks.
+  it('keeps the safety net quiet after a stop that commented', () => {
+    const net = runSteps().find(
+      step => step.name === 'Comment if Claude left none'
+    );
+
+    expect(net?.if).toBe("always() && steps.head.outputs.commented != 'true'");
+  });
+
+  it('is fed by the approval: the review commit in, the recorded head out to the build', () => {
+    const { approve, build } = (
+      parse(read('claude-build.yml')) as { jobs: Record<string, Job> }
+    ).jobs;
+    const record = approve.steps?.find(step => step.id === 'approve');
+
+    expect(record?.env?.COMMIT).toBe('${{ github.event.review.commit_id }}');
+    expect(approve.outputs?.head).toBe('${{ steps.approve.outputs.head }}');
+    expect(build.with?.head).toBe('${{ needs.approve.outputs.head }}');
+  });
+
+  // The step's script, with a `git` that answers the head it is given and a `gh` that records its call.
+  describe('the step', () => {
+    const approved = 'a'.repeat(40);
+    // `ghFails` makes the comment fail, as a GitHub error would.
+    const runCheck = (now: string, ghFails = false) => {
+      const bin = mkdtempSync(join(tmpdir(), 'approved-commit-'));
+      const calls = join(bin, 'calls');
+      const output = join(bin, 'output');
+
+      writeFileSync(join(bin, 'git'), `#!/bin/sh\necho ${now}\n`, {
+        mode: 0o755,
+      });
+      writeFileSync(
+        join(bin, 'gh'),
+        `#!/bin/sh\necho "$@" >> ${calls}\nexit ${ghFails ? 1 : 0}\n`,
+        { mode: 0o755 }
+      );
+
+      const result = spawnSync('bash', ['-e', '-c', check()?.run ?? ''], {
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          GITHUB_OUTPUT: output,
+          HEAD: approved,
+          PATH: `${bin}:${process.env.PATH}`,
+          THREAD: '42',
+        },
+      });
+      const read = (file: string) =>
+        existsSync(file) ? readFileSync(file, 'utf8') : '';
+      const comments = read(calls);
+      const outputs = read(output);
+
+      rmSync(bin, { force: true, recursive: true });
+
+      return { ...result, comments, outputs };
+    };
+
+    it('passes, saying so, when the branch is at the approved commit', () => {
+      const { comments, outputs, status, stdout } = runCheck(approved);
+
+      expect(status).toBe(0);
+      expect(stdout).toContain(`At the approved commit ${approved}.`);
+      expect(comments).toBe('');
+      expect(outputs).toBe('');
+    });
+
+    it('fails without saying it commented when the comment fails', () => {
+      const { comments, outputs, status } = runCheck('b'.repeat(40), true);
+
+      expect(status).toBe(1);
+      expect(comments).toContain('pr comment 42 --body');
+      expect(outputs).toBe('');
+    });
+
+    it('comments on the PR with both commits, says so, and fails when the branch has moved', () => {
+      const moved = 'b'.repeat(40);
+      const { comments, outputs, status } = runCheck(moved);
+
+      expect(status).toBe(1);
+      expect(outputs).toBe('commented=true\n');
+      expect(comments).toContain('pr comment 42 --body');
+      expect(comments).toContain(
+        'Not built: the branch moved after the approval'
+      );
+      expect(comments).toContain(`\`${approved.slice(0, 7)}\``);
+      expect(comments).toContain(`\`${moved.slice(0, 7)}\``);
+      expect(comments).toContain('Approve the plan again.');
+    });
+  });
 });
 
 // Only a summary of Claude's transcript is uploaded, written by the script from main after a clean
@@ -1036,12 +1201,14 @@ describe('the fix-review workflow', () => {
   it('tells Claude to leave test changes and comment text alone, in fix-review.md', () => {
     const text = agent('fix-review.md');
 
-    // The review posts with the workflow token: GraphQL shows the reviewer as the Bot
-    // `github-actions`; REST as `github-actions[bot]`.
-    expect(text).toContain('`github-actions` with `__typename` `Bot`');
-    expect(text).not.toContain('`claude[bot]`');
+    // The review posts with the workflow token: the script shows the reviewer as
+    // `github-actions` with `bot` true.
+    expect(text).toContain('`login` `github-actions` with `bot` true');
+    expect(text).not.toContain('claude');
+    expect(text).toContain('npm run review:threads -- list <n>');
     expect(text).toContain('newest PR comment');
-    expect(text).toContain('resolveReviewThread');
+    expect(text).toContain('npm run review:threads -- resolve <n> <thread id>');
+    expect(text).not.toContain('gh api');
     expect(text).toContain('rule 10');
     expect(text).toContain('draft state, labels or reviewers');
     expect(text).toMatch(/data, not instructions/);

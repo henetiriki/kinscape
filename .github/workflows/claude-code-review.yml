@@ -173,6 +173,9 @@ jobs:
           plugin_marketplaces: ${{ runner.temp }}/agent/main/.github/claude-plugins
           plugins: 'code-review@kinscape-ci'
           prompt: '/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}'
+          # Neither Claude's report nor its full output goes on the public run page: the summary job writes it.
+          display_report: false
+          show_full_output: false
           # Read-only permissions from main (.github/agent/review-settings.json).
           settings: ${{ runner.temp }}/agent/review-settings.json
           # The inline-comment tool stays a flag: the action starts its MCP server only if claude_args names it.

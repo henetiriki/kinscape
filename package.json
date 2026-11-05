@@ -19,6 +19,7 @@
     "map:prepare": "node scripts/prepare-map-data.mts",
     "plan-approve": "node scripts/approve-plan.mts",
     "prepare": "husky",
+    "review:threads": "node scripts/review-threads.mts",
     "start": "next start",
     "test": "vitest run --coverage",
     "tokens": "node scripts/tokens.mts",

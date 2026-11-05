@@ -17,11 +17,18 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // `status: ready-for-agent` on `go=true` and `status: ready-for-dev` on `go=false`. It skips a
 // `hand-back` PR, a `status: blocked` issue and one already on its target; a failed move is
 // logged and changes neither `go` nor the exit code.
-// Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO and APPROVER (the review's author)
-// set. An https RUN_URL, if set, is linked at the end of a stop comment.
-// It writes `go=true` or `go=false` to $GITHUB_OUTPUT. The commit goes through the Contents API with
-// the plan's blob sha, so the PR head is never checked out and a plan that changed meanwhile is
-// refused. A failed `gh` call is logged, `go=false` is written and the exit code is 1.
+// Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO, APPROVER (the review's author)
+// and COMMIT (the commit the review approved) set. An https RUN_URL, if set, is linked at the end of
+// a stop comment.
+// It writes `go=true` or `go=false` to $GITHUB_OUTPUT, and on `go=true` `head=<sha>`: the commit it
+// made, or the PR head when the plan was already approved. The build checks out that commit and no
+// other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit. A
+// second review of the same commit, queued behind the first run, stops quietly (no comment, no
+// label move, `go=false`): the plan is approved and the PR is ready, or its only commit since
+// COMMIT is the approval.
+// The commit goes through the Contents API with the plan's blob sha, so the PR head is never
+// checked out and a plan that changed meanwhile is refused. A failed `gh` call is logged,
+// `go=false` is written and the exit code is 1.
 // Only text from an author_association of OWNER counts; everything else on the PR is ignored.
 
 type Item = {
@@ -34,6 +41,7 @@ type Pr = {
   files: { path: string }[];
   headRefName: string;
   headRefOid: string;
+  isDraft: boolean;
   labels: { name: string }[];
   reviews: ({ submittedAt: string } & Item)[];
 };
@@ -41,6 +49,7 @@ type Pr = {
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+const SHA = /^[0-9a-f]{40}$/;
 const RUN_URL = /^https:\/\/\S+$/;
 const AGENT = 'status: ready-for-agent';
 const DEV = 'status: ready-for-dev';
@@ -50,7 +59,8 @@ const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
 const ANSWER =
   /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
 
-const json = <T,>(gh: Gh, args: string[]): T => JSON.parse(gh(args));
+const json = <T,>(gh: Gh, args: string[], input?: string): T =>
+  JSON.parse(gh(args, input));
 
 const list = (ids: string[]): string => ids.join(', ');
 
@@ -95,10 +105,16 @@ export const run = (
   const [raw] = args;
   const repo = env.GH_REPO ?? '';
   const approver = env.APPROVER ?? '';
+  const commit = env.COMMIT ?? '';
 
-  if (!NUMBER.test(raw ?? '') || !REPO.test(repo) || !LOGIN.test(approver)) {
+  if (
+    !NUMBER.test(raw ?? '') ||
+    !REPO.test(repo) ||
+    !LOGIN.test(approver) ||
+    !SHA.test(commit)
+  ) {
     console.error(
-      'Usage: agent-approve <PR number>, with GH_REPO=<owner>/<repo> and APPROVER=<login> set'
+      'Usage: agent-approve <PR number>, with GH_REPO=<owner>/<repo>, APPROVER=<login> and COMMIT=<sha> set'
     );
 
     return 1;
@@ -126,9 +142,14 @@ export const run = (
       );
     }
   };
-  // Writes the outcome, then sets each closed issue's label from it.
-  const finish = (go: boolean): void => {
+  // Writes the outcome, and on a go the commit to build, then sets each closed issue's label from it.
+  const finish = (go: boolean, head = ''): void => {
     write(`go=${go}`);
+
+    if (go) {
+      write(`head=${head}`);
+    }
+
     attempt(raw, () => {
       const [owner, name] = repo.split('/');
       const target = go ? AGENT : DEV;
@@ -183,10 +204,10 @@ export const run = (
 
     return 0;
   };
-  // The plan is approved: a `hand-back` PR is built by the tech lead (rule 4), so no build run
-  // starts. The approval is already committed, so a failed comment is not the catch's "Approve the
-  // plan again": log it and stop.
-  const proceed = (handBack: boolean): number => {
+  // The plan is approved at `head`: a `hand-back` PR is built by the tech lead (rule 4), so no build
+  // run starts. The approval is already committed, so a failed comment is not the catch's "Approve
+  // the plan again": log it and stop.
+  const proceed = (handBack: boolean, head: string): number => {
     if (handBack) {
       try {
         post(
@@ -200,7 +221,7 @@ export const run = (
       }
     }
 
-    finish(!handBack);
+    finish(!handBack, head);
 
     return 0;
   };
@@ -211,12 +232,18 @@ export const run = (
       'view',
       raw,
       '--json',
-      'files,headRefName,headRefOid,labels,reviews,comments',
+      'files,headRefName,headRefOid,isDraft,labels,reviews,comments',
     ]);
     const plans = pr.files
       .map(({ path }) => path)
       .filter(path => PLAN.test(path));
     const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
+
+    // The head is not the commit the owner read.
+    const stopMoved = (): number =>
+      stop(
+        `- The approval is for \`${commit.slice(0, 7)}\`, but the branch is now at \`${pr.headRefOid.slice(0, 7)}\`. Approve the plan again.`
+      );
 
     if (plans.length !== 1) {
       return stop(
@@ -226,6 +253,7 @@ export const run = (
 
     const [file] = plans;
     const url = `repos/${repo}/contents/${file}`;
+    const message = `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`;
     const { content, sha } = json<{ content: string; sha: string }>(gh, [
       'api',
       '--method',
@@ -237,9 +265,49 @@ export const run = (
     const text = Buffer.from(content, 'base64').toString('utf8');
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
+      if (pr.headRefOid !== commit) {
+        // Two quick approvals, where the second waits for the first run, build included: that
+        // run did the work, so there is nothing to tell or move. It built the plan, so the PR is
+        // ready (the event saw a draft), or it stopped with only its approval commit pushed. Any
+        // other moved head stops as a draft's does: the owner read another commit, and a build
+        // that failed after pushing needs the approval again. Only the fields needed come back:
+        // the comparison carries every commit and file diff.
+        const quiet = (): number => {
+          console.log(
+            `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
+          );
+          write('go=false');
+
+          return 0;
+        };
+
+        if (!pr.isDraft) {
+          return quiet();
+        }
+
+        const { first, status, total } = json<{
+          first: string;
+          status: string;
+          total: number;
+        }>(gh, [
+          'api',
+          `repos/${repo}/compare/${commit}...${pr.headRefOid}`,
+          '--jq',
+          '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
+        ]);
+
+        return status === 'ahead' && total === 1 && first === message
+          ? quiet()
+          : stopMoved();
+      }
+
       console.log(`${file} is already approved.`);
 
-      return proceed(handBack);
+      return proceed(handBack, pr.headRefOid);
+    }
+
+    if (pr.headRefOid !== commit) {
+      return stopMoved();
     }
 
     if (!/^- \*\*Status:\*\* draft\s*$/m.test(text)) {
@@ -271,18 +339,20 @@ export const run = (
       );
     }
 
-    gh(
+    const made = json<{ commit: { sha: string } }>(
+      gh,
       ['api', '--method', 'PUT', url, '--input', '-'],
       JSON.stringify({
         branch: pr.headRefName,
         content: Buffer.from(result.text).toString('base64'),
-        message: `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`,
+        message,
         sha,
       })
-    );
-    console.log(`Recorded the approval of ${file} by @${approver}.`);
+    ).commit.sha;
 
-    return proceed(handBack);
+    console.log(`Recorded the approval of ${file} by @${approver} as ${made}.`);
+
+    return proceed(handBack, made);
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
     finish(false);

@@ -12,6 +12,7 @@ import {
   ADAPTERS_PATTERN,
   APP_SERVER_PATTERN,
   plugin as safety,
+  TOP_LEVEL,
 } from '#ks/scripts/safety.mts';
 
 const RELATIVE = String.raw`^\.{1,2}/`;
@@ -261,7 +262,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['server/**/*.{js,jsx,ts,tsx}'],
+    files: ['server/**/*.{js,jsx,ts,tsx}', ...TOP_LEVEL],
     ignores: ['**/__tests__/**', 'server/trees/**'],
     rules: {
       'no-restricted-imports': [

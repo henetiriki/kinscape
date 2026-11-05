@@ -12,6 +12,9 @@ import { parse, specifiersOf, TEST_FILE } from '#ks/scripts/sources.mts';
 
 const ROOT = join(import.meta.dirname, '..');
 
+/** The top-level files that run on the server and are held to the scoping and boundary rules. */
+export const TOP_LEVEL = ['instrumentation.ts', 'proxy.ts'];
+
 /** The files that may import `server/adapters.mts`: the request entry points and the Tree repository. */
 export const ADAPTER_IMPORTERS =
   /^server\/(?:action\.mts|auth\/current\.mts|trees\/)/;
@@ -38,8 +41,8 @@ export const SERVER_ONLY = [
 /** The routes served without a session. */
 export const PUBLIC_PATHS = ['/sign-in', '/robots.txt'];
 
-/** The calls that check the session: a page or route makes one, or a layout above it does. */
-const SESSION_CHECK = /(?:^|\.)(?:currentSession|openTree|treeAction)$/;
+/** The calls that check the session: a route makes one, or, for a page only, a layout above it does. The check is per file. */
+const SESSION_CHECK = /(?:^|\.)(?:currentSession|openTree)$/;
 
 const ADAPTERS_MESSAGE =
   'Scoping rule: only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters.';
@@ -74,7 +77,8 @@ export const treeMethods = (typesSource: string): string[] =>
         : []
     )
     .flatMap(member =>
-      ts.isPropertySignature(member) && ts.isIdentifier(member.name)
+      (ts.isPropertySignature(member) || ts.isMethodSignature(member)) &&
+      ts.isIdentifier(member.name)
         ? [member.name.text]
         : []
     )
@@ -145,7 +149,7 @@ export const scopingBreaks = (
     });
 
 const ROUTE_FILE =
-  /^app\/(?:(.*)\/)?(page\.tsx|route\.ts|robots\.ts|sitemap\.ts|manifest\.ts)$/;
+  /^app\/(?:(.*)\/)?(page\.tsx|route\.[jt]sx?|robots\.ts|sitemap\.ts|manifest\.ts|(?:icon|apple-icon|opengraph-image|twitter-image)\.tsx)$/;
 const METADATA: Record<string, string> = {
   'manifest.ts': 'manifest.webmanifest',
   'robots.ts': 'robots.txt',
@@ -165,7 +169,11 @@ export const routeOf = (file: string): AppRoute | undefined => {
     .split('/')
     .filter(segment => segment !== '' && !/^\(.*\)$/.test(segment))
     .map(segment => (segment.startsWith('[') ? 'x' : segment));
-  const tail = METADATA[name];
+  const tail =
+    METADATA[name] ??
+    (name.endsWith('.tsx') && name !== 'page.tsx'
+      ? name.replace(/\.tsx$/, '')
+      : undefined);
 
   return {
     file,
@@ -181,7 +189,7 @@ export const appRoutes = (paths: string[]): AppRoute[] =>
     return route === undefined ? [] : [route];
   });
 
-/** Whether a source calls `currentSession`, `openTree` or `treeAction`. */
+/** Whether a source calls `currentSession` or `openTree`. */
 const checksSession = (path: string, source: string): boolean => {
   let found = false;
   const visit = (node: ts.Node): void => {
@@ -228,7 +236,7 @@ export const gateBreaks = (
           ...(matches(path)
             ? []
             : [`${file}: Gate rule: the matcher skips ${path}.`]),
-          ...(withLayouts(file).some(
+          ...((file.endsWith('/page.tsx') ? withLayouts(file) : [file]).some(
             layout => layout in files && checksSession(layout, files[layout])
           )
             ? []

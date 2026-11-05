@@ -5,6 +5,7 @@ import {
   ADAPTERS_PATTERN,
   APP_SERVER_PATTERN,
   scopingBreaks,
+  TOP_LEVEL,
   treeMethods,
 } from '@ks/scripts/safety.mts';
 import { readSources } from '@ks/scripts/sources.mts';
@@ -35,10 +36,16 @@ const THROWAWAY = {
 
 describe('the repo', () => {
   it('reaches Tree data only through server/trees/', () => {
-    const files = readSources(ROOTS);
+    const files = {
+      ...readSources(ROOTS),
+      ...Object.fromEntries(
+        TOP_LEVEL.map(path => [path, readFileSync(path, 'utf8')])
+      ),
+    };
 
     expect(Object.keys(files)).toEqual(
       expect.arrayContaining([
+        'proxy.ts',
         'app/sign-in/actions.ts',
         'server/trees/repository.mts',
       ])
@@ -62,6 +69,14 @@ describe('treeMethods', () => {
         ].join('\n')
       )
     ).toEqual(['findPin']);
+  });
+
+  it('reads a method-style member', () => {
+    expect(
+      treeMethods(
+        'export type TreeStore = { findPins(treeId: string): Promise<string[]>; findAccount(): void };'
+      )
+    ).toEqual(['findPins']);
   });
 });
 

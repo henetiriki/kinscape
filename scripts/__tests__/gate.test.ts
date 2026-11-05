@@ -73,6 +73,9 @@ describe('routeOf', () => {
     ['app/robots.ts', '/robots.txt'],
     ['app/sitemap.ts', '/sitemap.xml'],
     ['app/manifest.ts', '/manifest.webmanifest'],
+    ['app/data/x/route.js', '/data/x'],
+    ['app/people/[id]/opengraph-image.tsx', '/people/x/opengraph-image'],
+    ['app/icon.tsx', '/icon'],
   ])('serves %s at %s', (file, path) => {
     expect(routeOf(file)).toEqual({ file, path });
   });
@@ -114,9 +117,33 @@ describe('gateBreaks', () => {
     ]);
   });
 
+  it('does not count a layout for a route handler', () => {
+    expect(
+      gateBreaks(
+        {
+          'app/screens/export/route.ts': OPEN,
+          'app/screens/layout.tsx': 'const L = () => currentSession();',
+        },
+        EVERYTHING,
+        []
+      )
+    ).toEqual([
+      'app/screens/export/route.ts: Gate rule: neither /screens/export nor a layout above it checks the session.',
+    ]);
+  });
+
+  it('does not count treeAction, which only returns a wrapper', () => {
+    expect(
+      gateBreaks(
+        { 'app/a/route.ts': 'const save = treeAction(schema, body);' },
+        EVERYTHING,
+        []
+      )
+    ).toHaveLength(1);
+  });
+
   it.each([
     ['openTree', 'const r = await openTree(deps, token);'],
-    ['treeAction', 'export const add = treeAction(schema, body);'],
     ['a chained call', 'const s = await auth.currentSession();'],
   ])('accepts %s as the check', (_name, source) => {
     expect(gateBreaks({ 'app/a/page.tsx': source }, EVERYTHING, [])).toEqual(

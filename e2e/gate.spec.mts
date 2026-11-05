@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 import { readdirSync } from 'node:fs';
 import { sep } from 'node:path';
 
-import { appRoutes, PUBLIC_PATHS } from '@ks/scripts/safety.mts';
+import { appRoutes, PUBLIC_PATHS } from '#ks/scripts/safety.mts';
 
 const SESSION_COOKIE = '__Host-kinscape-session';
 

@@ -49,7 +49,7 @@ Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforc
 
 ## Commands
 
-Node 24 (`.nvmrc`): `npm ci`, `npm run dev` and `npm run build` (both need `KINSCAPE_MEMORY_ADAPTERS=1` outside Vercel), `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev` and `npm run build` (both need [`KINSCAPE_MEMORY_ADAPTERS=1`](docs/repo-settings.md#vercel) outside Vercel), `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
 
 ## Verifying your work
 

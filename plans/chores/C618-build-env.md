@@ -36,3 +36,7 @@ One edit to `AGENTS.md`. The _Commands_ line gains a parenthetical in the style 
 ## Out of scope
 
 Any change to the app, workflows or settings; making a bare `next build` pass without variables.
+
+## Deviations
+
+- Coverage and e2e run by CI only: neither runs in the sandbox that built this.

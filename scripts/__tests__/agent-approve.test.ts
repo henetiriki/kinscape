@@ -44,7 +44,8 @@ type Item = { at: string; authorAssociation: string; body: string };
 type World = {
   closes?: { number: number; repo?: string }[];
   comments?: Item[];
-  // How the PR head compares with the review's commit, read for an approved plan whose head is not it.
+  // How the PR head compares with the review's commit, and the messages of the commits since it,
+  // read for an approved plan whose head is not it.
   compare?: string;
   files?: string[];
   headRefOid?: string;
@@ -52,6 +53,7 @@ type World = {
   issues?: Record<number, string[]>;
   prLabels?: string[];
   reviews?: Item[];
+  since?: string[];
   text?: string;
 };
 
@@ -76,6 +78,7 @@ describe('run', () => {
     issues = { 8: ['type: chore', DEV] },
     prLabels = [],
     reviews = [],
+    since = [],
     text = plan(),
   }: World = {}) => {
     gh = vi.fn<Gh>(args => {
@@ -123,7 +126,11 @@ describe('run', () => {
       }
 
       if (args[0] === 'api' && args[1].includes('/compare/')) {
-        return JSON.stringify({ status: compare });
+        return JSON.stringify({
+          first: since[0] ?? '',
+          status: compare,
+          total: since.length,
+        });
       }
 
       return '';
@@ -425,10 +432,11 @@ describe('run', () => {
 
     // A second review of the same commit, queued behind the first run, build included: that run
     // did the work, so this one says nothing and moves no label.
-    it('stops quietly for a plan approved after the review’s commit', () => {
+    it('stops quietly for a plan whose only commit since the review’s is its approval', () => {
       fakeGh({
         compare: 'ahead',
         issues: { 8: ['type: chore', AGENT] },
+        since: ['plan(C500): approved by @tech-lead'],
         text: plan('approved'),
       });
 
@@ -437,6 +445,37 @@ describe('run', () => {
       expect(comments()).toEqual([]);
       expect(edits()).toEqual([]);
       expect(put()).toEqual([]);
+    });
+
+    it('asks the comparison for its status and first commit only', () => {
+      fakeGh({ compare: 'ahead', text: plan('approved') });
+      run(['504'], env, gh, write);
+
+      const [compare] = gh.mock.calls
+        .map(([args]) => args)
+        .filter(args => args[1]?.includes('/compare/'));
+
+      expect(compare[1]).toBe(
+        `repos/owner/repo/compare/${'c'.repeat(40)}...${HEAD}`
+      );
+      expect(compare.slice(2)).toEqual([
+        '--jq',
+        '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
+      ]);
+    });
+
+    // A build's push or a revision after the approval: the owner read an older commit, even
+    // from a page that still showed it.
+    it.each([
+      [['plan(C500): approved by @tech-lead', 'C.500: build it'], 'then more'],
+      [['C.500: a revision'], 'another commit'],
+      [['plan(C500): approved by @someone-else'], 'another approver'],
+    ])('stops an approved plan ahead by %j (%s), with the comment', since => {
+      fakeGh({ compare: 'ahead', since, text: plan('approved') });
+
+      expect(run(['504'], env, gh, write)).toBe(0);
+      expect(written).toEqual(['go=false']);
+      expect(reply()).toContain('The approval is for `ccccccc`');
     });
 
     it('compares nothing for a draft plan', () => {

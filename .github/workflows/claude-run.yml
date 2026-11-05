@@ -145,7 +145,8 @@ jobs:
       # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
       # landed since: that is not what the owner read, so the run stops here, before the browser
       # install and any model run, and the `return` job hands the issue back. The workflow token
-      # comments: the bot's is minted later, as late as possible.
+      # comments: the bot's is minted later, as late as possible, so the safety net at the end
+      # has none after a stop here and is skipped.
       - name: Check the branch is at the approved commit
         id: head
         if: inputs.head != ''
@@ -156,10 +157,7 @@ jobs:
         run: |
           now=$(git rev-parse HEAD)
           if [ "$now" != "$HEAD" ]; then
-            # Says so when the comment landed: the safety net below then stays quiet.
-            if gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."; then
-              echo "commented=true" >> "$GITHUB_OUTPUT"
-            fi
+            gh pr comment "$THREAD" --body "Not built: the branch moved after the approval (\`${HEAD:0:7}\` → \`${now:0:7}\`). Approve the plan again."
             exit 1
           fi
           echo "At the approved commit $now."
@@ -230,11 +228,12 @@ jobs:
         run: gh api -X DELETE "repos/$GH_REPO/issues/comments/$WORKING_COMMENT_ID"
 
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
-      # step failed, but not when the commit check above stopped the run and commented.
-      # If Claude left no comment, post one pointing at the run, or at the PR it
-      # opened. Only a run with neither hands the Spec back as blocked.
+      # step failed, but not when the commit check above stopped the run: it commented, and the
+      # token and start time this needs were never set. If Claude left no comment, post one
+      # pointing at the run, or at the PR it opened. Only a run with neither hands the Spec back
+      # as blocked.
       - name: Comment if Claude left none
-        if: always() && steps.head.outputs.commented != 'true'
+        if: always() && steps.head.outcome != 'failure'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}

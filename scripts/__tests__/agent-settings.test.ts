@@ -340,6 +340,29 @@ describe('the Bash hook', () => {
     ['node -e "1"', 'npm run format'],
     // Cutting the cd does not excuse what follows it.
     [`cd ${cwd}; cat x`, 'Read'],
+    // The shapes settings.json denies, which its rules match with one space between words: the
+    // hook matches any blanks, so a double space or a tab is no way past them.
+    ['git  remote -v', 'configuration'],
+    ['git\tconfig --get remote.origin.url', 'configuration'],
+    ['git -c core.fsmonitor=x status', 'configuration'],
+    ['git --no-pager  config -l', 'configuration'],
+    ['git var -l', 'configuration'],
+    ['git ls-remote origin  --get-url', 'configuration'],
+    ['git status; git  remote -v', 'configuration'],
+    ['gh pr  merge 5', 'a person'],
+    ['gh  issue close 5', 'a person'],
+    ['gh pr view 5 && gh pr\treview 5 --approve', 'a person'],
+    ['gh api  repos/o/r/issues/5/labels -XPOST', 'read only'],
+    ['gh api graphql -f query=x', 'read only'],
+    ['gh api repos/o/r/issues/5 --input -', 'read only'],
+    ['gh api repos/o/r/issues/5\t--method=PATCH', 'read only'],
+    // A file as the body would post its text, the checkout credentials included.
+    ['gh pr comment 5 --body-file .git/config', 'heredoc'],
+    ['gh pr comment 5 -F .git/config', 'heredoc'],
+    ['gh pr comment 5 -F.git/config', 'heredoc'],
+    ['gh issue create --title x --body-file=notes.md', 'heredoc'],
+    ['gh pr edit 5 --body-file "notes.md"', 'heredoc'],
+    ['gh pr view 1 | gh pr comment 1 --body-file x', 'heredoc'],
   ])('denies %j, naming the alternative', (command, alternative) => {
     const output = hook(command);
 
@@ -364,6 +387,17 @@ describe('the Bash hook', () => {
     'node scripts/run.mts',
     'npm run format',
     'echo concatenate',
+    // Near the denied shapes, but not them.
+    'git grep -F foo -- src',
+    'git ls-remote origin',
+    'git log -n 5',
+    'gh issue edit 5 --add-label x-Foo',
+    "gh pr create --title x --body-file - <<'EOF'\nbody\nEOF",
+    'gh issue comment 5 --body-file=-',
+    'gh pr comment 5 -F-',
+    'gh pr comment 5 -F=-',
+    'gh api repos/o/r/pulls/5/files --paginate',
+    'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
     '',
   ])('leaves %j to the allowlist', command => {
     expect(hook(command)).toBeUndefined();

@@ -533,14 +533,17 @@ describe('the approved-commit check', () => {
     );
   });
 
-  // The check commented already; the safety net would add "finished without commenting". When its
-  // comment failed, the net still speaks.
-  it('keeps the safety net quiet after a stop that commented', () => {
+  // The check commented already; the safety net would add "finished without commenting", and
+  // after a stop it has no token: the bot's is minted later.
+  it('keeps the safety net quiet after a stop', () => {
     const net = runSteps().find(
       step => step.name === 'Comment if Claude left none'
     );
 
-    expect(net?.if).toBe("always() && steps.head.outputs.commented != 'true'");
+    expect(net?.if).toBe("always() && steps.head.outcome != 'failure'");
+    expect(index("Mint the bot's token")).toBeGreaterThan(
+      index('Check the branch is at the approved commit')
+    );
   });
 
   it('is fed by the approval: the review commit in, the recorded head out to the build', () => {
@@ -561,7 +564,6 @@ describe('the approved-commit check', () => {
     const runCheck = (now: string, ghFails = false) => {
       const bin = mkdtempSync(join(tmpdir(), 'approved-commit-'));
       const calls = join(bin, 'calls');
-      const output = join(bin, 'output');
 
       writeFileSync(join(bin, 'git'), `#!/bin/sh\necho ${now}\n`, {
         mode: 0o755,
@@ -576,45 +578,38 @@ describe('the approved-commit check', () => {
         encoding: 'utf8',
         env: {
           ...process.env,
-          GITHUB_OUTPUT: output,
           HEAD: approved,
           PATH: `${bin}:${process.env.PATH}`,
           THREAD: '42',
         },
       });
-      const read = (file: string) =>
-        existsSync(file) ? readFileSync(file, 'utf8') : '';
-      const comments = read(calls);
-      const outputs = read(output);
+      const comments = existsSync(calls) ? readFileSync(calls, 'utf8') : '';
 
       rmSync(bin, { force: true, recursive: true });
 
-      return { ...result, comments, outputs };
+      return { ...result, comments };
     };
 
     it('passes, saying so, when the branch is at the approved commit', () => {
-      const { comments, outputs, status, stdout } = runCheck(approved);
+      const { comments, status, stdout } = runCheck(approved);
 
       expect(status).toBe(0);
       expect(stdout).toContain(`At the approved commit ${approved}.`);
       expect(comments).toBe('');
-      expect(outputs).toBe('');
     });
 
-    it('fails without saying it commented when the comment fails', () => {
-      const { comments, outputs, status } = runCheck('b'.repeat(40), true);
+    it('still fails when the comment fails', () => {
+      const { comments, status } = runCheck('b'.repeat(40), true);
 
       expect(status).toBe(1);
       expect(comments).toContain('pr comment 42 --body');
-      expect(outputs).toBe('');
     });
 
-    it('comments on the PR with both commits, says so, and fails when the branch has moved', () => {
+    it('comments on the PR with both commits and fails when the branch has moved', () => {
       const moved = 'b'.repeat(40);
-      const { comments, outputs, status } = runCheck(moved);
+      const { comments, status } = runCheck(moved);
 
       expect(status).toBe(1);
-      expect(outputs).toBe('commented=true\n');
       expect(comments).toContain('pr comment 42 --body');
       expect(comments).toContain(
         'Not built: the branch moved after the approval'

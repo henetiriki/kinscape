@@ -23,8 +23,8 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // It writes `go=true` or `go=false` to $GITHUB_OUTPUT, and on `go=true` `head=<sha>`: the commit it
 // made, or the PR head when the plan was already approved. The build checks out that commit and no
 // other (claude-run.yml). A PR whose head is not COMMIT stops: the owner read another commit. A
-// plan approved since COMMIT (a second review of the same commit, queued behind the first run)
-// stops quietly: no comment, no label move, `go=false`.
+// plan approved since COMMIT whose only commit since is that approval (a second review of the same
+// commit, queued behind the first run) stops quietly: no comment, no label move, `go=false`.
 // The commit goes through the Contents API with the plan's blob sha, so the PR head is never
 // checked out and a plan that changed meanwhile is refused. A failed `gh` call is logged,
 // `go=false` is written and the exit code is 1.
@@ -251,6 +251,7 @@ export const run = (
 
     const [file] = plans;
     const url = `repos/${repo}/contents/${file}`;
+    const message = `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`;
     const { content, sha } = json<{ content: string; sha: string }>(gh, [
       'api',
       '--method',
@@ -263,15 +264,23 @@ export const run = (
 
     if (/^- \*\*Status:\*\* approved\s*$/m.test(text)) {
       if (pr.headRefOid !== commit) {
-        // A review of an earlier commit of a plan approved since: two quick approvals, where the
-        // second waits for the first run, build included. That run did the work, so there is
-        // nothing to tell or move. Any other moved head stops as a draft's does.
-        const { status } = json<{ status: string }>(gh, [
+        // A review of the commit before the approval, with nothing pushed since it: two quick
+        // approvals, where the second waits for the first run, build included. That run did the
+        // work, so there is nothing to tell or move. Any other moved head (a build's push, a
+        // revision) stops as a draft's does: the owner read another commit. Only the fields
+        // needed come back: the comparison carries every commit and file diff.
+        const { first, status, total } = json<{
+          first: string;
+          status: string;
+          total: number;
+        }>(gh, [
           'api',
           `repos/${repo}/compare/${commit}...${pr.headRefOid}`,
+          '--jq',
+          '{status: .status, total: .total_commits, first: (.commits[0].commit.message // "")}',
         ]);
 
-        if (status === 'ahead') {
+        if (status === 'ahead' && total === 1 && first === message) {
           console.log(
             `${file} was approved after the review's commit ${commit.slice(0, 7)}: nothing to do.`
           );
@@ -327,7 +336,7 @@ export const run = (
       JSON.stringify({
         branch: pr.headRefName,
         content: Buffer.from(result.text).toString('base64'),
-        message: `plan(${file.replace(/^.*\//, '').split('-')[0]}): approved by @${approver}`,
+        message,
         sha,
       })
     ).commit.sha;

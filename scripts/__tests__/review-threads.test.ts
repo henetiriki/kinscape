@@ -50,9 +50,11 @@ const COMMENTS = [
   { author: person, body: 'Thanks.', createdAt: '2026-11-02T11:00:00Z' },
 ];
 
-type Paging = {
+type Options = {
   // Every page says there is more but names no cursor.
   cursorless?: boolean;
+  // The PR the threads are on, as the thread query answers it.
+  on?: { number: number; repo: string };
   pageSize?: number;
 };
 
@@ -61,16 +63,38 @@ describe('run', () => {
   let out: ReturnType<typeof vi.fn<(text: string) => void>>;
   let errors: string[];
 
-  // Serves the threads `pageSize` at a time: a query with `after=c<n>` gets page n + 1.
+  // Serves the threads `pageSize` at a time: a query with `after=c<n>` gets page n + 1. A thread
+  // asked by id answers the PR it is on; an unknown id answers no node, another kind of node an
+  // empty one.
   const fakeGh = (
     threads = THREADS,
-    { cursorless = false, pageSize = 100 }: Paging = {}
+    {
+      cursorless = false,
+      on = { number: 5, repo: 'Owner/Repo' },
+      pageSize = 100,
+    }: Options = {}
   ) => {
     gh = vi.fn<Gh>(args => {
       const query = args.find(arg => arg.startsWith('query=')) ?? '';
 
       if (query.startsWith('query=mutation')) {
         return JSON.stringify({ data: { resolveReviewThread: {} } });
+      }
+
+      if (query.includes('node(id:')) {
+        const id = args.find(arg => arg.startsWith('id='))?.slice(3);
+        const node = threads.some(thread => thread.id === id)
+          ? {
+              pullRequest: {
+                number: on.number,
+                repository: { nameWithOwner: on.repo },
+              },
+            }
+          : id === 'PR_1'
+            ? {}
+            : null;
+
+        return JSON.stringify({ data: { node } });
       }
 
       if (!query.includes('reviewThreads')) {
@@ -116,7 +140,11 @@ describe('run', () => {
     );
   const threadQueries = () => about('reviewThreads');
   const commentQueries = () => about('comments(last');
+  const byId = () => about('node(id:');
   const mutations = () => about('resolveReviewThread');
+  // The flag before a variable: `-f` sends it as a string, `-F` as a typed value.
+  const flagOf = (args: string[], variable: string) =>
+    args[args.indexOf(variable) - 1];
   const listed = () =>
     JSON.parse(out.mock.calls[0][0]) as {
       comments: unknown[];
@@ -158,19 +186,26 @@ describe('run', () => {
   });
 
   describe('list', () => {
-    it('asks for the PR by owner, name and number, as a number', () => {
+    // An all-digit login is a valid one, and `-F` would send it as a number.
+    it('asks for the PR by owner and name as strings and by number as a number', () => {
       fakeGh();
       run(['list', '5'], ENV, gh, out);
 
       expect(threadQueries()).toHaveLength(1);
       expect(threadQueries()[0].slice(0, 2)).toEqual(['api', 'graphql']);
-      expect(threadQueries()[0]).toEqual(
-        expect.arrayContaining(['-F', 'owner=owner', 'name=repo', 'number=5'])
-      );
+      expect(threadQueries()[0].slice(4)).toEqual([
+        '-f',
+        'name=repo',
+        '-F',
+        'number=5',
+        '-f',
+        'owner=owner',
+      ]);
       expect(
         threadQueries()[0].find(arg => arg.startsWith('query='))
       ).toContain('reviewThreads(first: 100, after: $after)');
       expect(commentQueries()).toHaveLength(1);
+      expect(commentQueries()[0].slice(4)).toEqual(threadQueries()[0].slice(4));
     });
 
     it('prints the unresolved threads and the comments, each author with its bot flag', () => {
@@ -222,7 +257,7 @@ describe('run', () => {
     });
 
     // Resolved threads take room in a page too, so a long-reviewed PR has more than one.
-    it('reads every page of threads, and the comments once', () => {
+    it('reads every page of threads, the cursor as a string, and the comments once', () => {
       fakeGh(THREADS, { pageSize: 2 });
 
       expect(run(['list', '5'], ENV, gh, out)).toBe(0);
@@ -230,9 +265,7 @@ describe('run', () => {
       expect(threadQueries()[0]).not.toEqual(
         expect.arrayContaining([expect.stringMatching(/^after=/)])
       );
-      expect(threadQueries()[1]).toEqual(
-        expect.arrayContaining(['-F', 'after=c0'])
-      );
+      expect(flagOf(threadQueries()[1], 'after=c0')).toBe('-f');
       expect(commentQueries()).toHaveLength(1);
       expect(listed().threads.map(({ id }) => id)).toEqual([
         'PRRT_1',
@@ -263,31 +296,31 @@ describe('run', () => {
   });
 
   describe('resolve', () => {
-    it('resolves a thread of the PR and says so, reading no comments', () => {
+    // One small query asks the thread which PR it is on: no page of threads is read.
+    it('resolves a thread of the PR and says so, reading no threads or comments', () => {
       fakeGh();
 
       expect(run(['resolve', '5', 'PRRT_1'], ENV, gh, out)).toBe(0);
+      expect(byId()).toHaveLength(1);
+      expect(flagOf(byId()[0], 'id=PRRT_1')).toBe('-f');
       expect(mutations()).toHaveLength(1);
-      expect(mutations()[0]).toEqual(
-        expect.arrayContaining(['-F', 'id=PRRT_1'])
-      );
+      expect(flagOf(mutations()[0], 'id=PRRT_1')).toBe('-f');
+      expect(threadQueries()).toEqual([]);
       expect(commentQueries()).toEqual([]);
       expect(out).toHaveBeenCalledWith('Resolved PRRT_1 on #5.');
     });
 
-    it('resolves a thread on a later page', () => {
-      fakeGh(THREADS, { pageSize: 2 });
+    it.each<[string, Options, string]>([
+      ['PRRT_9', {}, 'an unknown id'],
+      ['PR_1', {}, 'a node that is no thread'],
+      ['PRRT_1', { on: { number: 7, repo: 'owner/repo' } }, 'another PR'],
+      ['PRRT_1', { on: { number: 5, repo: 'owner/fork' } }, 'another repo'],
+    ])('resolves nothing for %s (%s)', (id, options) => {
+      fakeGh(THREADS, options);
 
-      expect(run(['resolve', '5', 'PRRT_3'], ENV, gh, out)).toBe(0);
-      expect(mutations()).toHaveLength(1);
-    });
-
-    it('resolves nothing that is not a thread of the PR', () => {
-      fakeGh();
-
-      expect(run(['resolve', '5', 'PRRT_9'], ENV, gh, out)).toBe(1);
+      expect(run(['resolve', '5', id], ENV, gh, out)).toBe(1);
       expect(mutations()).toEqual([]);
-      expect(errors).toEqual(['#5 has no review thread PRRT_9.']);
+      expect(errors).toEqual([`#5 has no review thread ${id}.`]);
       expect(out).not.toHaveBeenCalled();
     });
   });

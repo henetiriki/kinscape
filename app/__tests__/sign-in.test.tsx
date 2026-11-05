@@ -26,13 +26,18 @@ vi.mock('@ks/app/components/auth/SignInForm', () => ({
   ),
 }));
 
-import { signInAction } from '@ks/app/sign-in/actions';
+import { signInAction, signOutAction } from '@ks/app/sign-in/actions';
 import SignIn from '@ks/app/sign-in/page';
 import { SYNTHETIC } from '@ks/server/adapters.mts';
 import { memorySession } from '@ks/server/auth/memory-session.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { memoryThrottle } from '@ks/server/auth/memory-throttle.mts';
-import { SESSION_COOKIE, startSession } from '@ks/server/auth/sessions.mts';
+import {
+  endedSessionCookie,
+  SESSION_COOKIE,
+  sessionOf,
+  startSession,
+} from '@ks/server/auth/sessions.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const fresh = () => {
@@ -193,6 +198,67 @@ describe('signInAction', () => {
     };
 
     expect(await signInAction(undefined, form(RIGHT))).toBe('unavailable');
+    expect(jar.set).not.toHaveBeenCalled();
+  });
+});
+
+// NFR-03
+describe('signOutAction', () => {
+  const sessions = () => (adapters.current as { sessions: never }).sessions;
+  const start = (email: string) =>
+    startSession(sessions(), () => new Date(), {
+      accountId: SYNTHETIC.accountId,
+      email,
+    });
+  const ended = () => {
+    const { name, options, value } = endedSessionCookie();
+
+    return [name, value, options];
+  };
+
+  it('removes the session, clears the cookie and goes to /sign-in', async () => {
+    const token = await start(SYNTHETIC.email);
+
+    jar.get.mockReturnValue({ value: token });
+
+    await expect(signOutAction()).rejects.toThrow('redirect:/sign-in');
+    expect(jar.get).toHaveBeenCalledWith(SESSION_COOKIE);
+    expect(jar.set).toHaveBeenCalledWith(...ended());
+    expect(
+      await sessionOf(sessions(), () => new Date(), token)
+    ).toBeUndefined();
+  });
+
+  it.each([
+    ['no cookie', undefined],
+    ['a malformed token', { value: 'nope' }],
+    ['an unknown token', { value: 'x'.repeat(43) }],
+  ])(
+    'with %s clears the cookie, goes to /sign-in and keeps other sessions',
+    async (_what, cookie) => {
+      const other = await start('other@example.test');
+
+      jar.get.mockReturnValue(cookie);
+
+      await expect(signOutAction()).rejects.toThrow('redirect:/sign-in');
+      expect(jar.set).toHaveBeenCalledWith(...ended());
+      expect(
+        await sessionOf(sessions(), () => new Date(), other)
+      ).toBeDefined();
+    }
+  );
+
+  it('throws and keeps the cookie when the session store is down', async () => {
+    adapters.current = {
+      sessions: {
+        remove: async () => {
+          throw new Error('down');
+        },
+      },
+    };
+    jar.get.mockReturnValue({ value: 'x'.repeat(43) });
+
+    await expect(signOutAction()).rejects.toThrow('down');
     expect(jar.set).not.toHaveBeenCalled();
   });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import {
+  endedSessionCookie,
   sessionCookie,
   sessionOf,
   startSession,
@@ -64,6 +65,23 @@ describe('sessionCookie', () => {
         secure: true,
       },
       value: 'tok',
+    });
+  });
+});
+
+// NFR-03
+describe('endedSessionCookie', () => {
+  it('has the same name, an empty value and maxAge 0, keeping Secure, Path=/ and HttpOnly', () => {
+    expect(endedSessionCookie()).toEqual({
+      name: '__Host-kinscape-session',
+      options: {
+        httpOnly: true,
+        maxAge: 0,
+        path: '/',
+        sameSite: 'lax',
+        secure: true,
+      },
+      value: '',
     });
   });
 });

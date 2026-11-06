@@ -23,7 +23,8 @@ Ask questions as described in `SKILL.md`. Typical branches:
 - **Cost:** anything that adds a paid service or moves the monthly budget (target ≤ US$10).
 - **Infrastructure:** follow [New infrastructure](../../../docs/security.md#new-infrastructure).
 - **Proof:** how each behaviour will be shown: an automated test, the boundary validator, a preview check.
-  Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions).
+
+Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions).
 
 ## Step 1: slice
 

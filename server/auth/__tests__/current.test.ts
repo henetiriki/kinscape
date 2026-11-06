@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({ get: vi.fn(), set: vi.fn() }));
 const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
@@ -9,7 +9,13 @@ const redirect = vi.hoisted(() =>
 );
 
 vi.mock('next/headers', () => ({ cookies: async () => jar }));
-vi.mock('next/navigation', () => ({ redirect }));
+const notFound = vi.hoisted(() =>
+  vi.fn(() => {
+    throw new Error('notFound');
+  })
+);
+
+vi.mock('next/navigation', () => ({ notFound, redirect }));
 vi.mock('@ks/server/adapters.mts', async importOriginal => ({
   ...(await importOriginal<Record<string, unknown>>()),
   appAdapters: () => adapters.current,
@@ -18,6 +24,7 @@ vi.mock('@ks/server/adapters.mts', async importOriginal => ({
 import { SYNTHETIC } from '@ks/server/adapters.mts';
 import {
   currentSession,
+  requireDevPage,
   requireSession,
   signIn,
   signOut,
@@ -70,6 +77,36 @@ describe('requireSession', () => {
     jar.get.mockReturnValue({ value: 'x'.repeat(43) });
 
     await expect(requireSession()).rejects.toThrow('redirect:/sign-in');
+  });
+});
+
+// NFR-03: the design kit and screens are 404 outside Preview and development, even signed in.
+describe('requireDevPage', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('is 404 on a production deployment, before the session is read', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VERCEL_ENV', 'production');
+
+    await expect(requireDevPage()).rejects.toThrow('notFound');
+    expect(jar.get).not.toHaveBeenCalled();
+  });
+
+  it('gives the session where the pages show', async () => {
+    const token = await startSession(sessions(), () => new Date(), SESSION);
+
+    jar.get.mockReturnValue({ value: token });
+
+    expect(await requireDevPage()).toEqual(SESSION);
+    expect(notFound).not.toHaveBeenCalled();
+  });
+
+  it('sends a forged token to the sign-in page where the pages show', async () => {
+    jar.get.mockReturnValue({ value: 'x'.repeat(43) });
+
+    await expect(requireDevPage()).rejects.toThrow('redirect:/sign-in');
   });
 });
 

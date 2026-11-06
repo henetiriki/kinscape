@@ -4,7 +4,7 @@ import { expect, it, vi } from 'vitest';
 import { BOARDS } from '@ks/app/design-kit/boards';
 import DesignKitIndex from '@ks/app/design-kit/page';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 // NFR-06
 it('lists each board with its link and line', async () => {

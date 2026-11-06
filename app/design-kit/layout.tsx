@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { Text } from '@ks/app/components/foundation/Text';
 import { KitMenu } from '@ks/app/design-kit/KitMenu';
@@ -18,11 +18,6 @@ export const metadata: Metadata = {
 };
 
 const DesignKitLayout = async ({ children }: { children: ReactNode }) => {
-  // Vercel sets VERCEL_ENV at build, so in production every kit page is built as a 404.
-  if (process.env.VERCEL_ENV === 'production') {
-    notFound();
-  }
-
   if ((await currentSession()) === undefined) {
     redirect('/sign-in');
   }

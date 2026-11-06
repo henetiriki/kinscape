@@ -1,6 +1,6 @@
 import 'server-only';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import type { Session } from '#ks/lib/domain/auth/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
@@ -15,6 +15,7 @@ import {
   sessionCookie,
   sessionOf,
 } from '#ks/server/auth/sessions.mts';
+import { devPagesVisible } from '#ks/server/dev-pages.mts';
 
 // The request's session, behind the app's adapters and cookie jar: the one `server/auth` entry
 // that `app/` imports.
@@ -41,6 +42,18 @@ export const requireSession = async (): Promise<Session> => {
   }
 
   return session;
+};
+
+/**
+ * The check every page under `/design-kit` and `/screens` makes: 404 where those pages are hidden
+ * (`devPagesVisible`), then `requireSession()`. `proxy.ts` makes the first half too.
+ */
+export const requireDevPage = async (): Promise<Session> => {
+  if (!devPagesVisible(process.env)) {
+    notFound();
+  }
+
+  return requireSession();
 };
 
 /** A sign-in from raw form input: success sets the session cookie; a failure says why. */

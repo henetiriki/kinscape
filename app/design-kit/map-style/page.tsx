@@ -6,7 +6,7 @@ import { LAYERS, LEGEND } from '@ks/app/design-kit/map-style/layers';
 import { Preview } from '@ks/app/design-kit/map-style/Preview';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
-import { requireSession } from '@ks/server/auth/current.mts';
+import { requireDevPage } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -154,7 +154,7 @@ const MapStyleKit = () => (
 );
 
 const Page = async () => {
-  await requireSession();
+  await requireDevPage();
 
   return <MapStyleKit />;
 };

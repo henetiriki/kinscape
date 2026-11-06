@@ -12,7 +12,7 @@ import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { boardTitle } from '@ks/app/design-kit/boards';
-import { requireSession } from '@ks/server/auth/current.mts';
+import { requireDevPage } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -280,7 +280,7 @@ const StatesKit = () => (
 );
 
 const Page = async () => {
-  await requireSession();
+  await requireDevPage();
 
   return <StatesKit />;
 };

@@ -12,7 +12,7 @@ import {
   SPACE,
 } from '@ks/app/design-kit/foundations/values';
 import rawTokens from '@ks/design/tokens.json';
-import { requireSession } from '@ks/server/auth/current.mts';
+import { requireDevPage } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -151,7 +151,7 @@ const FoundationsKit = () => (
 );
 
 const Page = async () => {
-  await requireSession();
+  await requireDevPage();
 
   return <FoundationsKit />;
 };

@@ -5,6 +5,7 @@
   "scripts": {
     "account:add": "node --env-file-if-exists=.env.local scripts/account-add.mts",
     "build": "next build",
+    "check:production": "node scripts/check-production.mts",
     "db:migrate": "node --env-file-if-exists=.env.local scripts/db-migrate.mts",
     "design:check": "playwright test --project=design",
     "design:export": "node scripts/design-export.mts",

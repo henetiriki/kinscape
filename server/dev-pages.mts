@@ -7,11 +7,12 @@ const DEV_PAGE = /^\/(?:design-kit|screens)(?:\/|$)/;
 export const isDevPage = (pathname: string) => DEV_PAGE.test(pathname);
 
 /**
- * An allowlist: the pages show on a Preview deployment, outside a production build, or with the
+ * An allowlist: the pages show on a Preview deployment, in development or tests, or with the
  * test-only `KINSCAPE_DEV_PAGES=1` (refused on Vercel by `parseEnv`). Anything else hides them,
- * including a production deployment where Vercel's system variables are off.
+ * including an unset `NODE_ENV` and a production deployment where Vercel's system variables are off.
  */
 export const devPagesVisible = (env: Record<string, string | undefined>) =>
   env.VERCEL_ENV === 'preview' ||
-  env.NODE_ENV !== 'production' ||
+  env.NODE_ENV === 'development' ||
+  env.NODE_ENV === 'test' ||
   env.KINSCAPE_DEV_PAGES === '1';

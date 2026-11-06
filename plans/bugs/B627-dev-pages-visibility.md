@@ -6,7 +6,7 @@
 
 ## Approach
 
-`devPagesVisible(env)` in `server/dev-pages.mts` is an allowlist: `VERCEL_ENV === 'preview'`, `NODE_ENV !== 'production'` or `KINSCAPE_DEV_PAGES === '1'`. `proxy.ts` answers 404 for `/design-kit` and `/screens` when they are hidden, before the cookie check. `requireDevPage()` in `server/auth/current.mts` calls `notFound()` when they are hidden, then `requireSession()`; every page under both folders calls it. The layouts lose their `VERCEL_ENV` check. `parseEnv` refuses `KINSCAPE_DEV_PAGES` on Vercel. `scripts/check-production.mts` checks a deployment by hand.
+`devPagesVisible(env)` in `server/dev-pages.mts` is an allowlist: `VERCEL_ENV === 'preview'`, `NODE_ENV` of `development` or `test`, or `KINSCAPE_DEV_PAGES === '1'`. `proxy.ts` answers 404 for `/design-kit` and `/screens` when they are hidden, before the cookie check. `requireDevPage()` in `server/auth/current.mts` calls `notFound()` when they are hidden, then `requireSession()`; every page under both folders calls it. The layouts lose their `VERCEL_ENV` check. `parseEnv` refuses `KINSCAPE_DEV_PAGES` on Vercel. `scripts/check-production.mts` checks a deployment by hand.
 
 ## Decisions
 
@@ -71,3 +71,6 @@
 ## Deviations
 
 - `scripts/safety.mts` counts `requireDevPage()` as a page's session check, with a `gate.test.ts` case.
+- Review: the gate check requires `requireDevPage()` in every route under `/design-kit` and `/screens`.
+- Review: an unset `NODE_ENV` hides the pages; only `development` and `test` show them.
+- Review: `e2e/dev-pages.spec.mts` also prefetches the layout segments.

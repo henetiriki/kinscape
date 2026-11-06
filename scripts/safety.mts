@@ -5,6 +5,7 @@ import type { AppRoute } from '#ks/scripts/types.ts';
 
 import { SOURCE_EXTENSION, targetOf } from '#ks/scripts/layers.mts';
 import { parse, specifiersOf, TEST_FILE } from '#ks/scripts/sources.mts';
+import { isDevPage } from '#ks/server/dev-pages.mts';
 
 // The three safety rows of docs/architecture.md › Patterns: Tree scoping, the sign-in gate and
 // the client/server boundary. The fitness tests run them over the repo; eslint.config.mjs reads
@@ -47,6 +48,9 @@ export const PUBLIC_PATHS = ['/sign-in', '/robots.txt'];
  */
 const SESSION_CHECK =
   /(?:^|\.)(?:currentSession|openTree|requireDevPage|requireSession)$/;
+
+/** The call every route under `/design-kit` and `/screens` makes, so each hides itself too. */
+const DEV_PAGE_CHECK = /(?:^|\.)requireDevPage$/;
 
 const ADAPTERS_MESSAGE =
   'Scoping rule: only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters.';
@@ -197,13 +201,12 @@ export const appRoutes = (paths: string[]): AppRoute[] =>
     return route === undefined ? [] : [route];
   });
 
-/** Whether a source calls `currentSession`, `openTree`, `requireDevPage` or `requireSession`. */
-const checksSession = (path: string, source: string): boolean => {
+/** Whether a source calls a function whose name matches `check`. */
+const calls = (check: RegExp, path: string, source: string): boolean => {
   let found = false;
   const visit = (node: ts.Node): void => {
     found ||=
-      ts.isCallExpression(node) &&
-      SESSION_CHECK.test(node.expression.getText());
+      ts.isCallExpression(node) && check.test(node.expression.getText());
     ts.forEachChild(node, visit);
   };
 
@@ -232,9 +235,12 @@ export const gateBreaks = (
           ...(matches(path)
             ? []
             : [`${file}: Gate rule: the matcher skips ${path}.`]),
-          ...(checksSession(file, files[file])
+          ...(calls(SESSION_CHECK, file, files[file])
             ? []
             : [`${file}: Gate rule: ${path} checks no session.`]),
+          ...(isDevPage(path) && !calls(DEV_PAGE_CHECK, file, files[file])
+            ? [`${file}: Gate rule: ${path} does not call requireDevPage().`]
+            : []),
         ]
   );
   const statics = staticPaths.flatMap(path =>

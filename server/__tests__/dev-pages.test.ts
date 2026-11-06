@@ -7,7 +7,6 @@ describe('devPagesVisible', () => {
   it.each([
     [{ NODE_ENV: 'development' }],
     [{ NODE_ENV: 'test' }],
-    [{}],
     [{ NODE_ENV: 'production', VERCEL_ENV: 'preview' }],
     [{ KINSCAPE_DEV_PAGES: '1', NODE_ENV: 'production' }],
   ])('shows them for %j', env => {
@@ -15,6 +14,8 @@ describe('devPagesVisible', () => {
   });
 
   it.each([
+    [{}],
+    [{ NODE_ENV: 'staging' }],
     [{ NODE_ENV: 'production' }],
     [{ NODE_ENV: 'production', VERCEL_ENV: 'production' }],
     [{ NODE_ENV: 'production', VERCEL_ENV: '' }],

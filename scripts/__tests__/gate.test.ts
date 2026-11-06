@@ -110,7 +110,7 @@ describe('gateBreaks', () => {
         {
           'app/design-kit/colour/page.tsx': 'const P = () => null;',
           'app/design-kit/layout.tsx': layout,
-          'app/design-kit/type/page.tsx': 'await requireSession();',
+          'app/design-kit/type/page.tsx': 'await requireDevPage();',
           'app/screens/export/route.ts': OPEN,
           'app/screens/layout.tsx': layout,
         },
@@ -119,7 +119,9 @@ describe('gateBreaks', () => {
       )
     ).toEqual([
       'app/design-kit/colour/page.tsx: Gate rule: /design-kit/colour checks no session.',
+      'app/design-kit/colour/page.tsx: Gate rule: /design-kit/colour does not call requireDevPage().',
       'app/screens/export/route.ts: Gate rule: /screens/export checks no session.',
+      'app/screens/export/route.ts: Gate rule: /screens/export does not call requireDevPage().',
     ]);
   });
 
@@ -131,6 +133,26 @@ describe('gateBreaks', () => {
         []
       )
     ).toHaveLength(1);
+  });
+
+  it.each([
+    ['app/design-kit/x/page.tsx', '/design-kit/x'],
+    ['app/screens/x/page.tsx', '/screens/x'],
+  ])('needs requireDevPage in %s, not only requireSession', (file, path) => {
+    expect(
+      gateBreaks(
+        { [file]: 'const P = async () => { await requireSession(); };' },
+        EVERYTHING,
+        []
+      )
+    ).toEqual([`${file}: Gate rule: ${path} does not call requireDevPage().`]);
+    expect(
+      gateBreaks(
+        { [file]: 'const P = async () => { await requireDevPage(); };' },
+        EVERYTHING,
+        []
+      )
+    ).toEqual([]);
   });
 
   it.each([

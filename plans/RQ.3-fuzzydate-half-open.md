@@ -2,7 +2,7 @@
 
 - **Spec:** #631
 - **Requirement IDs:** [PIN-04](../docs/requirements.md#pin-04), [BND-01](../docs/requirements.md#bnd-01)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

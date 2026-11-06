@@ -5,17 +5,7 @@
 
 ## Approach
 
-Classify the 59 decisions by cause from each plan and its issue. Drop those #636's round catches (its PR maps DM.12.6.3 D2–D7). Add one STE line per remaining cause. First reading of the causes:
-
-| Cause                                          | Example        | Line in                     |
-| ---------------------------------------------- | -------------- | --------------------------- |
-| Line estimate under the merged size            | DM.13.10 D5–D6 | `spec.md` › Step 1          |
-| A board draws a part, state or value not named | DM.12.6.1 D1   | `spec.md` › What to settle  |
-| A board draws no close, leave, timer or fail   | DM.6 D1, D4    | `spec.md` › What to settle  |
-| How the design check sees a timed part         | DM.5 D4        | `spec.md` › Proof           |
-| Workflow edges: forks, re-runs, races, edits   | C266 D2–D5     | `chore.md` › What to change |
-| A picture's content and themes                 | C436 D1–D5     | `chore.md` › What to change |
-| How to build it                                | DM.4 D1        | PR body: cannot catch (D1)  |
+Classify the 59 decisions by cause from each plan and its issue. Drop those #636's round catches (its PR maps DM.12.6.3 D2–D7). Add one STE line per remaining cause. The PR body maps each decision to its cause and line.
 
 ## Decisions
 
@@ -27,14 +17,17 @@ Some decisions only pick how to build (`notFound()` or `proxy.ts`).
 - **B.** Add a line: ask each hard-to-reverse method in `/refine`.
 - **Other:** your own.
 
+Recommended: A, because a Spec says what, not how.
+
 **Answer: A** (@henetiriki)
 
 ## Files that change
 
-| File                             | What              |
-| -------------------------------- | ----------------- |
-| `.claude/skills/refine/spec.md`  | Lines above; cuts |
-| `.claude/skills/refine/chore.md` | Lines above       |
+| File                              | What                 |
+| --------------------------------- | -------------------- |
+| `.claude/skills/refine/spec.md`   | Cause lines; cuts    |
+| `.claude/skills/refine/design.md` | Design cause lines   |
+| `.claude/skills/refine/chore.md`  | Workflow and picture |
 
 ## Risks
 
@@ -53,4 +46,9 @@ Some decisions only pick how to build (`notFound()` or `proxy.ts`).
 ## Deviations
 
 - Added causes: kit pages, outside formats.
-- `spec.md` cut: box notes (form), edges (round), link fallback, examples.
+- New `design.md` holds the design lines; `spec.md` was over budget.
+- Approach's first-reading table cut; the PR body has the final one.
+- `spec.md` cut: box notes; the form has them.
+- `spec.md` cut: Behaviour's edges; the round asks them.
+- `spec.md` cut: the link fallback; `SKILL.md` has it.
+- `spec.md` cut: "Next.js instead of Vite".

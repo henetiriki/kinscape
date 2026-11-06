@@ -13,20 +13,17 @@ Slice a milestone or an accepted Intent into **Specs**, each small enough for on
 
 ## What to settle
 
-Typical branches:
+Ask questions as described in `SKILL.md`. Typical branches:
 
 - **Behaviour:** what the user sees and does.
-- **Design match:** compare the Spec with each board and `DESIGN.md`. Ask about each part, state, size, word or value that differs between them, or has no token.
-- **Not drawn:** ask about each close, exit, failure, empty state, motion and accessible name that no board draws.
-- **Kit pages:** ask which parts are live, what holds a later Spec's place, and what the screen Spec owns (position, timers).
+- **Design:** for a UI slice, the branches in [design.md](design.md).
 - **Outside formats:** map each output field to its source. Ask about each field with no source.
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_. Each is a tech-lead decision.
 - **Data:** anything storing people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).
 - **Cost:** anything that adds a paid service or moves the monthly budget (target ≤ US$10).
 - **Infrastructure:** follow [New infrastructure](../../../docs/security.md#new-infrastructure).
-- **Proof:** how each behaviour will be shown: an automated test, the boundary validator, a preview check. For a design check, get the board's score on `main`. Ask how the check sees a timed part.
-
-Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions).
+- **Proof:** how each behaviour will be shown: an automated test, the boundary validator, a preview check.
+  Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions).
 
 ## Step 1: slice
 
@@ -38,7 +35,7 @@ Get the slices confirmed before drafting; sizing is discussed only here.
 - A question that blocks the build (an unknown data source or licence, say) is its own decision slice, and comes first.
 - Give each an id (`M0.1`, …), a short name, its kind, a line estimate, its requirement IDs, and whether it changes what the user sees or is engineering-only. Say which comes first and why.
 - Every behaviour lands in exactly one slice, or is listed as carried forward.
-- Once confirmed, post the list on the Intent issue before drafting: offer `gh issue comment`, or print it to paste.
+- Once confirmed, post the list as a comment on the Intent issue before drafting: offer `gh issue comment <number> --body-file <file>`, or print it to paste.
 
 ## Step 2: draft each Spec
 

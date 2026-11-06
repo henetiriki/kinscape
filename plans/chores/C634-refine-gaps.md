@@ -49,3 +49,8 @@ Some decisions only pick how to build (`notFound()` or `proxy.ts`).
 | `npm run words` passes         | CI                                        |
 | Table of all 59 decisions      | PR body                                   |
 | Each cause: a line or a reason | PR body table's last column, and the diff |
+
+## Deviations
+
+- Added causes: kit pages, outside formats.
+- `spec.md` cut: box notes (form), edges (round), link fallback, examples.

@@ -38,6 +38,8 @@ Technology, cost and order of work go under _Open questions_ as tech-lead decisi
 
 Show one block per form box, in the PO's wording, and let them adjust it. In order, with link parameters: Title, starting "Intent: " (`title`); Problem (`problem`); What better looks like (`outcome`); How we'll know it works, one check per line (`acceptance`); Related requirement IDs, optional (`requirements`); Constraints (`constraints`); Out of scope (`out-of-scope`); Open questions, with any `Proposed term` lines (`questions`). If `.github/ISSUE_TEMPLATE/1-intent.yml` differs, follow the form.
 
+Then run the check round on _How we'll know it works_, in plain words: ask "How would we see that?", not "Is that testable?".
+
 ## The prefilled link
 
 Then give **one link** for form `1-intent.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes, and tell the PO:

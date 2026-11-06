@@ -1,6 +1,6 @@
 # `/refine spec <M<n> | intent issue number>`: for the tech lead
 
-Slice a milestone or an accepted Intent into **Specs**, each small enough for one plan and one pull request. A Spec says **what** will change and how we'll know it works; the plan says **how**.
+Slice a milestone or an accepted Intent into **Specs**, each small enough for one plan and one pull request.
 
 ## Before the first question
 
@@ -57,6 +57,8 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order:
 > **⚠️ Flagged concerns** (risks and conflicts, one line each. "None" only if there are none.)
 >
 > **Out of scope / carried forward** (with any `Proposed term: <name> = <meaning>` lines)
+
+Write each box in [STE](../../../docs/how-we-work.md#writing-specs-bugs-and-chores). Then run the check round on _Acceptance checks_.
 
 ## Hand-over
 

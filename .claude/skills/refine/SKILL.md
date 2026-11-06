@@ -7,13 +7,13 @@ argument-hint: intent [your idea] | spec <M<n> or intent issue number> | chore [
 
 # Refine
 
-Questions first, drafting last. Agree on what is wanted before anything is written down. Nothing is built.
+Questions first, drafting last. Agree on what is wanted before anything is written down.
 
 The argument picks the mode. Read the matching file and follow it, with the method below:
 
 - `intent [idea]` → [intent.md](intent.md). For the product owner (PO), in plain language. Any text after `intent` is the PO's first description of the idea.
 - `spec <M<n> | number>` → [spec.md](spec.md). For the tech lead. Slices a milestone or an accepted Intent into Specs.
-- `chore [idea]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue and warns if the agent would hand it back.
+- `chore [idea]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue.
 - No argument, or anything else: ask which of the three they want.
 
 ## Method
@@ -28,6 +28,12 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 4. **Look facts up, don't ask.** Check `docs/requirements.md`, existing issues and the repo yourself. Ask only about decisions. Questions that depend on a pending lookup wait until it's done.
 5. **A recommendation is not an answer.** A branch stays open until the user confirms it. Never fill a gap silently; if a question comes up while drafting, ask it.
 6. **Finish** when every branch is confirmed. Summarise what was agreed in a few lines, then write the draft as the mode file describes.
+7. **Check round.** After the draft and before the link, walk each check in the box the mode file names. Ask about a check, one at a time as above, only if:
+   - it is vague, or a test can't check it;
+   - it misses an edge (no data, a Fuzzy date, a failed load, phone);
+   - it holds a value the plan would otherwise choose.
+
+   Redraft with each answer.
 
 ## Rules for every mode
 
@@ -42,7 +48,6 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 Each drafted issue gets one link that opens its form filled in.
 
-- Re-check the data rules first.
 - Say the command only turns their text into a link.
 - Run [form-link.mjs](scripts/form-link.mjs) with the form's file name and each box after a `=== <id>` line (the form's `id:` values, plus `title`), in a quoted heredoc, never in quotes on the command line:
 

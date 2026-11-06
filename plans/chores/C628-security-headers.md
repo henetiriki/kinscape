@@ -24,6 +24,13 @@
 
 **Answer: A** (@henetiriki)
 
+**D3 · The Vercel Toolbar on previews** · Decides: Tech lead
+
+- **A.** On Preview only, allow the toolbar's sources from Vercel's docs (`vercel.live`, `vercel.com`, `assets.vercel.com`, `ws-us3.pusher.com`).
+- ~~**B.** Turn the toolbar off.~~
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                              | What                                                 |
@@ -45,3 +52,5 @@
 | The map still renders        | `e2e/smoke.spec.ts`   |
 
 ## Deviations
+
+- D3 added in review: `securityHeaders({ dev, preview })` adds the toolbar's sources when `VERCEL_ENV` is `preview`.

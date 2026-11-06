@@ -1,0 +1,42 @@
+# Plan: C635: /refine bug, so Bugs are well defined before an agent plans them
+
+- **Spec:** #635
+- **Status:** draft
+
+## Approach
+
+New `bug.md` reads the Bug with `gh issue view`, then asks, as _Method_ says, until **Steps to reproduce**, **Expected per**, **Acceptance checks** and **Must not break** are settled. It looks up requirement IDs, Specs and snapshots itself; with none, it asks. It writes in STE, runs the check round on _Acceptance checks_, and shows the four sections as `###` headings, as the form renders its boxes. After the tech lead confirms, one `gh issue edit --body-file` adds them below the reporter's text, unchanged. `SKILL.md` lists the mode ("which of the four"); the Bug row of _Which issue do I need?_ names `/refine bug`. A file over budget loses text from itself.
+
+## Decisions
+
+**D1 · Where the Must not break proof rule goes** · Decides: Tech lead
+
+The Chore allows either file.
+
+- **A.** `plans/TEMPLATE.md` › _Proof_ comment: a Bug plan adds one row per **Must not break** item, with an existing or new test.
+- **B.** A new `plans/README.md` rule, cutting README text to stay within its 750 words.
+- **Other:** your own.
+
+Recommended: A, because _Proof_ is where the plan writes it and TEMPLATE has room.
+
+## Files that change
+
+| File                             | What                        |
+| -------------------------------- | --------------------------- |
+| `.claude/skills/refine/bug.md`   | New mode                    |
+| `.claude/skills/refine/SKILL.md` | Mode, description, hint     |
+| `docs/how-we-work.md`            | Bug row: `/refine bug`      |
+| `plans/TEMPLATE.md`              | Must not break proof (D1 A) |
+
+## Risks
+
+- `SKILL.md` and `how-we-work.md` are at budget: cut text from that file, one Deviations line per cut.
+- `.claude/skills/**` is a hand-back path: the tech lead builds (rule 13).
+
+## Proof
+
+| Acceptance check         | Proven by                                                  |
+| ------------------------ | ---------------------------------------------------------- |
+| `npm run words` passes   | CI                                                         |
+| Dry run on #280          | Evidence: the questions, the four sections; #280 unedited  |
+| Mode and check are named | `git grep -n "refine bug\|Must not break"` lists all three |

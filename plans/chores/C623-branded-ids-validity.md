@@ -63,7 +63,7 @@ Failing `validity` and `ids` tests; ids and `findTree`; sign-in names; Day and `
 | Acceptance check                     | Proven by                                                  |
 | ------------------------------------ | ---------------------------------------------------------- |
 | Typecheck rejects the three misuses  | Three errors in Evidence                                   |
-| The three greps                      | Outside `plans/` (history) and `design/canvas/` (not ours) |
+| The three greps                      | Outside `design/canvas/` (not ours); D2 B renamed `plans/` |
 | `.mts` import; no precision list     | Lint; `fuzzy-date.mts`                                     |
 | "BET 1848 AND 1852" by `isCurrentOn` | `fuzzy-date.test.ts`                                       |
 | No behaviour change                  | Contract suite, `npm test`, e2e                            |

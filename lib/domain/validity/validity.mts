@@ -13,6 +13,6 @@ export const current = <T extends Validity>(
   day: Day
 ): T[] => rows.filter(row => isCurrentOn(row, day));
 
-/** Whether two validities share a day. */
+/** Whether two validities share a day. An empty or reversed range shares none. */
 export const overlaps = (a: Validity, b: Validity): boolean =>
-  a.validFrom < endOf(b) && b.validFrom < endOf(a);
+  Math.max(a.validFrom, b.validFrom) < Math.min(endOf(a), endOf(b));

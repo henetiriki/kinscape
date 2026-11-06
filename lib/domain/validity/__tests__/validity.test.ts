@@ -50,5 +50,6 @@ describe('overlaps', () => {
   it('is false when one ends where the other starts', () => {
     expect(overlaps(span(0, 10), span(10, 20))).toBe(false);
     expect(overlaps(span(10, 20), span(0, 10))).toBe(false);
+    expect(overlaps(span(5, 5), span(0, null))).toBe(false);
   });
 });

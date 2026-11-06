@@ -43,3 +43,9 @@
 | `npm run words` passes        | CI                                                                         |
 | Round run on DM.12.6.3 (#198) | Evidence: each question and the check that caused it                       |
 | STE section and its links     | `git grep -l "how-we-work.md#writing-specs-bugs-and-chores"` lists all six |
+
+## Deviations
+
+- `how-we-work.md` cut: "Everything happens in GitHub…", "It files and builds nothing", "in the app's selectors", the `/refine` outcome lines, "never merges or releases".
+- `SKILL.md` cut: "Nothing is built", the Chore hand-back note, "Re-check the data rules first".
+- `spec.md` cut: the what/how sentence.

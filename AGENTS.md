@@ -44,6 +44,7 @@ For chat replies, plans, PRs, issues and docs:
 - One line per deviation.
 - Leave out any section that would only say "none". A required form box may say "None".
 - Prefer deleting text to adding it.
+- Specs, Bugs and Chores: [STE rules](docs/how-we-work.md#writing-specs-bugs-and-chores).
 
 Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforced in CI. Review rules, not enforced: chat replies short with detail on request; PR body per its template.
 

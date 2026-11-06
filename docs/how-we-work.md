@@ -1,6 +1,6 @@
 # How we work on KinScape
 
-Claude writes most drafts and code; people make the decisions. Everything happens in GitHub **Issues** and **Pull requests**. The **product owner** (PO) decides what the user sees; the **tech lead** decides how it is built and merges it.
+Claude writes most drafts and code; people make the decisions. The **product owner** (PO) decides what the user sees; the **tech lead** decides how it is built and merges it.
 
 More detail: [Architecture](architecture.md), [Building and shipping](building.md), [Dependencies](dependencies.md), [Repository settings](repo-settings.md), [Security rules](security.md), [Design](../design/DESIGN.md).
 
@@ -43,12 +43,22 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 ## Drafting with Claude
 
-The `/refine` skill asks questions until you agree, then drafts the issue. It files and builds nothing.
+The `/refine` skill asks questions until you agree, then drafts the issue.
 
-**Before you start, choose Opus and High effort** in the app's selectors (terminal: `/model opus`, `/effort high`).
+**Before you start, choose Opus and High effort** (terminal: `/model opus`, `/effort high`).
 
-- **PO:** run `/refine intent` and answer in plain language. Claude gives you a link that opens the Intent form filled in.
-- **Tech lead:** run `/refine spec <Intent number>`. Claude proposes the slices, then drafts each Spec. For a chore, run `/refine chore [idea]`.
+- **PO:** run `/refine intent` and answer in plain language.
+- **Tech lead:** run `/refine spec <Intent number>`.
+
+## Writing Specs, Bugs and Chores
+
+New Specs, Bugs and Chores follow these Simplified Technical English (ASD-STE100) rules:
+
+- Write one instruction per sentence.
+- Keep an instruction to 20 words or fewer, and a description sentence to 25.
+- Use the active voice.
+- Give each word one meaning.
+- The [_Key concepts_](requirements.md#key-concepts) terms are approved technical names.
 
 ## Decisions
 
@@ -71,7 +81,7 @@ Answer with `D1: B` or `D1: other, <your option>`. On an issue, start the commen
 
 - **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs.
 - **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns settings, secrets and `AGENTS.md` / `CLAUDE.md`.
-- **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing, and never merges or releases to production.
+- **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing.
 
 Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status** label; the status tells you whose turn it is.
 

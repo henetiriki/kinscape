@@ -2,7 +2,7 @@
 
 - **Spec:** #622
 - **Requirement IDs:** [NFR-09](../../docs/requirements.md#nfr-09), [NFR-10](../../docs/requirements.md#nfr-10)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ It is within a few words of its 800 budget; the row needs about 35.
 - **B.** Raise its budget to 850 in `scripts/word-count.mts`.
 - **Other:** your own.
 
-Recommended: A, because the template's comments hold the detail once.
+**Answer: B** (@henetiriki)
 
 **D2 · UUIDv7 generator** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Recommended: A, because the template's comments hold the detail once.
 - **B.** Add it to `lib/domain/` here, with its test.
 - **Other:** your own.
 
-Recommended: A, because #622 lists only the row, template and test.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -42,6 +42,7 @@ create table example_pin (
     and (placed_qualifier is null) = (placed_precision is null)
     and (placed_qualifier is null) = (placed_valid_from is null)
     and (placed_qualifier is null) = (placed_valid_to is null)
+    and (placed_date2 is null or coalesce(placed_qualifier in ('BET', 'FROM'), false))
   )
 );
 

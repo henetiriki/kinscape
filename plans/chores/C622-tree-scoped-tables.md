@@ -6,7 +6,7 @@
 
 ## Approach
 
-`server/db/TEMPLATE.sql` holds two commented tables, `example_person` and `example_pin`, built to every rule in #622, with the update and create statements as comments. The names keep it applicable after M2.8 adds `person`. `tree-scoped.test.ts` applies the migrations and the template on PGlite; a catalog check (`pg_constraint`) lists each table breaking a rule and expects none. Further cases apply one bad table per rule and expect it named, so a scratch migration fails the same way.
+`server/db/TEMPLATE.sql` holds two commented tables, `example_person` and `example_pin`, built to every rule in #622, with the update and create statements as comments. The names keep it applicable after M2.8 adds `person`. `tree-scoped.test.ts` applies the migrations and the template on PGlite; a catalog check (`pg_constraint`) lists each table breaking a rule and expects none. Further cases apply one bad table per rule and expect it named.
 
 ## Decisions
 
@@ -28,6 +28,11 @@ It is within a few words of its 800 budget; the row needs about 35.
 
 **Answer: A** (@henetiriki)
 
+## Deviations
+
+- `placed_date2` is optional, only with `BET` or `FROM`, as the domain builds it.
+- Step 4 not run: bad-table cases prove each rule.
+
 ## Files that change
 
 | File                                      | New / changed | What                       |
@@ -43,7 +48,7 @@ It is within a few words of its 800 budget; the row needs about 35.
 1. Bad-table cases against a check returning nothing; see each fail.
 2. The check, the template, its three cases.
 3. The row.
-4. Evidence: a scratch migration per rule, its failure pasted, then deleted.
+4. Evidence: a scratch migration per rule, failure pasted.
 
 ## Proof
 

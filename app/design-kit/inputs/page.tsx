@@ -12,6 +12,7 @@ import {
   TabsSection,
   TextFields,
 } from '@ks/app/design-kit/inputs/sections';
+import { requireSession } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -39,6 +40,8 @@ const InputsKit = async ({
 }: {
   searchParams: Promise<{ part?: string | string[] }>;
 }) => {
+  await requireSession();
+
   const part = (await searchParams).part === '2' ? 2 : 1;
   const other = OTHER_PART[part === 1 ? 2 : 1];
 

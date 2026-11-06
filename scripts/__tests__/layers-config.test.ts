@@ -221,6 +221,97 @@ describe('the real lint config', () => {
   });
 });
 
+// NFR-10. The safety rules of scripts/safety.mts, through the real config.
+describe('the safety rules in the real lint config', () => {
+  const safety = ['no-restricted-imports', 'safety/client-imports'];
+
+  it.each([
+    [
+      'app/trees/route.ts',
+      "import { appAdapters } from '@ks/server/adapters.mts';",
+      'take values from server/ only through',
+    ],
+    [
+      'features/map/a.ts',
+      "import { sessionOf } from '@ks/server/auth/sessions.mts';",
+      'take values from server/ only through',
+    ],
+    [
+      'server/auth/sign-in.mts',
+      "import { appAdapters } from '#ks/server/adapters.mts';",
+      'only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters',
+    ],
+    [
+      'server/boundaries/app-data.ts',
+      "import { appAdapters } from '@ks/server/adapters.mts';",
+      'import appAdapters',
+    ],
+    [
+      'lib/ui/A.tsx',
+      "'use client';\nimport { a } from '@ks/server/trees/repository.mts';",
+      "safety/client-imports: Boundary rule: a 'use client' file imports no value from server/ (@ks/server/trees/repository.mts).",
+    ],
+  ])('fails %s containing %s', async (path, code, message) => {
+    expect(await lint(path, `${code}\n`, safety)).toEqual([
+      expect.stringContaining(message),
+    ]);
+  });
+
+  it('fails a client file in features/ on both rules', async () => {
+    expect(
+      await lint(
+        'features/map/components/A.tsx',
+        "'use client';\nimport { a } from '@ks/server/auth/sessions.mts';\n",
+        safety
+      )
+    ).toEqual([
+      expect.stringContaining('Scoping rule: app/, features/ and lib/'),
+      expect.stringContaining('safety/client-imports: Boundary rule'),
+    ]);
+  });
+
+  it.each([
+    [
+      'app/page.tsx',
+      "import { currentSession } from '@ks/server/auth/current.mts';",
+    ],
+    [
+      'app/people/actions.ts',
+      "import { treeAction } from '@ks/server/action.mts';",
+    ],
+    [
+      'app/data/polities/route.ts',
+      "import { loadAppData } from '@ks/server/boundaries/app-data';",
+    ],
+    [
+      'features/map/a.ts',
+      "import type { TreeRepository } from '@ks/server/trees/types.ts';",
+    ],
+    [
+      'server/auth/current.mts',
+      "import { appAdapters } from '#ks/server/adapters.mts';",
+    ],
+    [
+      'server/trees/repository.mts',
+      "import { appAdapters } from '#ks/server/adapters.mts';",
+    ],
+    [
+      'app/__tests__/a.test.ts',
+      "import { appAdapters } from '@ks/server/adapters.mts';",
+    ],
+    [
+      'features/map/components/A.tsx',
+      "'use client';\nimport type { T } from '@ks/server/trees/types.ts';",
+    ],
+    [
+      'features/map/components/A.tsx',
+      "import { a } from '@ks/server/action.mts';",
+    ],
+  ])('passes %s: %s', async (path, code) => {
+    expect(await lint(path, `${code}\n`, safety)).toEqual([]);
+  });
+});
+
 describe('the import sorter in the real lint config', () => {
   const sorter = ['perfectionist/sort-imports'];
 

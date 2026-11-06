@@ -1,12 +1,14 @@
 import { render, screen, within } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import { BOARDS } from '@ks/app/design-kit/boards';
 import DesignKitIndex from '@ks/app/design-kit/page';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 // NFR-06
-it('lists each board with its link and line', () => {
-  render(<DesignKitIndex />);
+it('lists each board with its link and line', async () => {
+  render(await DesignKitIndex());
 
   expect(
     screen.getByRole('heading', { level: 1, name: 'Boards' })

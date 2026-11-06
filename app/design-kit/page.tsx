@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Text } from '@ks/app/components/foundation/Text';
 import { BOARDS } from '@ks/app/design-kit/boards';
+import { requireSession } from '@ks/server/auth/current.mts';
 
 import styles from '@ks/app/design-kit/page.module.css';
 
@@ -25,4 +26,10 @@ const DesignKitIndex = () => (
   </main>
 );
 
-export default DesignKitIndex;
+const Page = async () => {
+  await requireSession();
+
+  return <DesignKitIndex />;
+};
+
+export default Page;

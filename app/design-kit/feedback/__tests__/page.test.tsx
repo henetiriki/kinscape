@@ -1,11 +1,13 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 
 import FeedbackKit from '@ks/app/design-kit/feedback/page';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 // MAP-03, NFR-06
-it('shows the eight cases, each a live field with its message', () => {
-  render(<FeedbackKit />);
+it('shows the eight cases, each a live field with its message', async () => {
+  render(await FeedbackKit());
 
   const titles = [
     'Default',
@@ -53,8 +55,8 @@ it('shows the eight cases, each a live field with its message', () => {
   );
 });
 
-it('draws the step buttons in the cards as boxes that are not controls', () => {
-  render(<FeedbackKit />);
+it('draws the step buttons in the cards as boxes that are not controls', async () => {
+  render(await FeedbackKit());
 
   const card = screen.getByText('Default').parentElement!;
 
@@ -62,8 +64,8 @@ it('draws the step buttons in the cards as boxes that are not controls', () => {
   expect(card.querySelectorAll('[aria-hidden="true"].step')).toHaveLength(2);
 });
 
-it('holds the last good date a card is given', () => {
-  render(<FeedbackKit />);
+it('holds the last good date a card is given', async () => {
+  render(await FeedbackKit());
 
   const field = within(screen.getByText('Default').parentElement!).getByRole(
     'textbox'
@@ -85,8 +87,8 @@ const samples = () =>
     .getAllByRole('button', { name: 'Back one day' })
     .map(button => button.parentElement!.parentElement!.parentElement!);
 
-it('shows the dock with the message above the field, naming the date the map shows', () => {
-  render(<FeedbackKit />);
+it('shows the dock with the message above the field, naming the date the map shows', async () => {
+  render(await FeedbackKit());
 
   const [dock] = samples();
 
@@ -96,8 +98,8 @@ it('shows the dock with the message above the field, naming the date the map sho
   expect(within(dock).getByRole('radio', { name: 'Day' })).toBeTruthy();
 });
 
-it('shows the phone date sheet with the fix and a Play button', () => {
-  render(<FeedbackKit />);
+it('shows the phone date sheet with the fix and a Play button', async () => {
+  render(await FeedbackKit());
 
   const sheet = samples()[1].parentElement!;
 
@@ -110,8 +112,8 @@ it('shows the phone date sheet with the fix and a Play button', () => {
   expect(within(sheet).queryByRole('radio')).toBeNull();
 });
 
-it('steps the dock by a day', () => {
-  render(<FeedbackKit />);
+it('steps the dock by a day', async () => {
+  render(await FeedbackKit());
 
   const [dock] = samples();
   const field = within(dock).getByRole('textbox') as HTMLInputElement;
@@ -125,8 +127,8 @@ it('steps the dock by a day', () => {
   expect(field.value).toBe('1901-02-27');
 });
 
-it('shows four alerts with their roles, two toasts and the banner', () => {
-  render(<FeedbackKit />);
+it('shows four alerts with their roles, two toasts and the banner', async () => {
+  render(await FeedbackKit());
 
   const alerts = screen.getByRole('heading', {
     name: 'Alerts',
@@ -145,8 +147,8 @@ it('shows four alerts with their roles, two toasts and the banner', () => {
   ).toBeTruthy();
 });
 
-it('lists the behaviour and shows the form fields', () => {
-  render(<FeedbackKit />);
+it('lists the behaviour and shows the form fields', async () => {
+  render(await FeedbackKit());
 
   expect(
     screen.getByRole('heading', { name: 'Behaviour' }).nextElementSibling!

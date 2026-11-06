@@ -1,3 +1,6 @@
+/** A route file under `app/` and the URL path it serves. */
+export type AppRoute = { file: string; path: string };
+
 /** What `approve` in `approve-plan.mts` returns: bad answers, decisions still open, and the plan's new text. */
 export type Approval = { errors: string[]; open: string[]; text: string };
 
@@ -78,6 +81,9 @@ export type PrepareMapDataDeps = {
 
 /** A settings file in `.github/agent/`: its permission rules, and the command of its Bash hook. */
 export type Settings = { allow: string[]; deny: string[]; hook?: string };
+
+/** A module a source names, and whether only types come from it. */
+export type Specifier = { specifier: string; typeOnly: boolean };
 
 export type Transcript = {
   costUsd: number | undefined;

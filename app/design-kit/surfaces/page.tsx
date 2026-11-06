@@ -13,6 +13,7 @@ import {
   Surfaces,
 } from '@ks/app/design-kit/surfaces/sections';
 import { SAMPLE_SOURCES } from '@ks/app/design-kit/surfaces/sources';
+import { requireSession } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -41,6 +42,8 @@ const SurfacesKit = async ({
 }: {
   searchParams: Promise<{ part?: string | string[] }>;
 }) => {
+  await requireSession();
+
   const part = (await searchParams).part === '2' ? 2 : 1;
   const other = OTHER_PART[part === 1 ? 2 : 1];
 

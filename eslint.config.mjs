@@ -8,6 +8,12 @@ import perfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 import { plugin as layers } from '#ks/scripts/layers.mts';
+import {
+  ADAPTERS_PATTERN,
+  APP_SERVER_PATTERN,
+  plugin as safety,
+  TOP_LEVEL,
+} from '#ks/scripts/safety.mts';
 
 const RELATIVE = String.raw`^\.{1,2}/`;
 const TS_FILE = String.raw`\.tsx?$`;
@@ -21,6 +27,23 @@ const NODE_ALIAS_PATTERNS = [
     message:
       'Node loads this file and ignores tsconfig paths: use #ks/, not @ks/.',
     regex: String.raw`^@ks/`,
+  },
+];
+const MTS_TS_PATTERN = {
+  allowTypeImports: true,
+  message:
+    'Node can’t run .ts or .tsx files: move the shared code to a .mts file, or use import type.',
+  regex: TS_FILE,
+};
+const TS_ALIAS_PATTERNS = [
+  {
+    message:
+      'Import by full path through @ks/, as in @ks/app/components/<folder>/<Name>.',
+    regex: RELATIVE,
+  },
+  {
+    message: 'Use @ks/ in this file; #ks/ is for .mts and .mjs.',
+    regex: String.raw`^#ks/`,
   },
 ];
 
@@ -179,17 +202,7 @@ export default defineConfig([
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          patterns: [
-            ...NODE_ALIAS_PATTERNS,
-            {
-              allowTypeImports: true,
-              message:
-                'Node can’t run .ts or .tsx files: move the shared code to a .mts file, or use import type.',
-              regex: TS_FILE,
-            },
-          ],
-        },
+        { patterns: [...NODE_ALIAS_PATTERNS, MTS_TS_PATTERN] },
       ],
     },
   },
@@ -215,23 +228,62 @@ export default defineConfig([
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     rules: {
+      'no-restricted-imports': ['error', { patterns: TS_ALIAS_PATTERNS }],
+    },
+  },
+  {
+    // The scoping rule of docs/architecture.md › Patterns, from scripts/safety.mts: app/ and
+    // features/ and lib/ take values from server/ only through its entry points; appAdapters
+    // stays in the files that open a Tree. Tests are outside the rule; the kit is below server/ already.
+    files: [
+      'app/**/*.{js,jsx,ts,tsx}',
+      'features/**/*.{js,jsx,ts,tsx}',
+      'lib/**/*.{js,jsx,ts,tsx}',
+    ],
+    ignores: ['**/__tests__/**', 'app/components/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: [...TS_ALIAS_PATTERNS, APP_SERVER_PATTERN] },
+      ],
+    },
+  },
+  {
+    files: ['server/**/*.mts'],
+    ignores: [
+      '**/__tests__/**',
+      'server/action.mts',
+      'server/auth/current.mts',
+      'server/trees/**',
+    ],
+    rules: {
       'no-restricted-imports': [
         'error',
         {
-          patterns: [
-            {
-              message:
-                'Import by full path through @ks/, as in @ks/app/components/<folder>/<Name>.',
-              regex: RELATIVE,
-            },
-            {
-              message: 'Use @ks/ in this file; #ks/ is for .mts and .mjs.',
-              regex: String.raw`^#ks/`,
-            },
-          ],
+          patterns: [...NODE_ALIAS_PATTERNS, MTS_TS_PATTERN, ADAPTERS_PATTERN],
         },
       ],
     },
+  },
+  {
+    files: ['server/**/*.{js,jsx,ts,tsx}', ...TOP_LEVEL],
+    ignores: ['**/__tests__/**', 'server/trees/**'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: [...TS_ALIAS_PATTERNS, ADAPTERS_PATTERN] },
+      ],
+    },
+  },
+  {
+    // The boundary rule: a 'use client' file imports no value from server/.
+    files: [
+      'app/**/*.{js,jsx,ts,tsx}',
+      'features/**/*.{js,jsx,ts,tsx}',
+      'lib/**/*.{js,jsx,ts,tsx}',
+    ],
+    plugins: { safety },
+    rules: { 'safety/client-imports': 'error' },
   },
   {
     ...packageJson.configs.recommended,

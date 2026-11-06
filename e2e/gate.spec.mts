@@ -1,6 +1,10 @@
 import type { BrowserContext } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
+import { readdirSync } from 'node:fs';
+import { sep } from 'node:path';
+
+import { appRoutes, PUBLIC_PATHS } from '#ks/scripts/safety.mts';
 
 const SESSION_COOKIE = '__Host-kinscape-session';
 
@@ -20,6 +24,13 @@ const forge = async (context: BrowserContext) =>
       value: 'x'.repeat(43),
     },
   ]);
+
+/** Every route the app serves, from the files under app/ (scripts/__tests__/gate.test.ts checks the same list). */
+const ROUTES = appRoutes(
+  readdirSync('app', { recursive: true }).map(name =>
+    `app/${String(name)}`.split(sep).join('/')
+  )
+);
 
 // NFR-03
 for (const path of ['/', '/design-kit', '/screens/add-pin']) {
@@ -44,33 +55,35 @@ test('a forged session cookie shows the sign-in page, not the map', async ({
   await expect(page.locator('canvas.maplibregl-canvas')).toHaveCount(0);
 });
 
-// NFR-03
-for (const path of ['/design-kit', '/screens/add-pin']) {
-  test(`a forged session cookie shows the sign-in page, not ${path}`, async ({
+// NFR-03, NFR-10: every route, with no cookie and with a forged one, is public or turns the
+// request away: a redirect to the sign-in page, or 401 under /data/.
+for (const { file, path } of ROUTES) {
+  const isPublic = PUBLIC_PATHS.includes(path);
+
+  test(`${path} (${file}) is ${isPublic ? 'public' : 'gated'} without a session and with a forged one`, async ({
     context,
     page,
   }) => {
-    await forge(context);
-    await page.goto(path);
+    const check = async () => {
+      const response = await page.request.get(path, { maxRedirects: 0 });
 
-    await expect(page).toHaveURL(url => url.pathname === '/sign-in');
+      if (isPublic) {
+        expect(response.status()).toBe(200);
+      } else if (response.status() === 401) {
+        expect(await response.text()).toBe('');
+      } else {
+        expect(response.status()).toBe(307);
+        expect(
+          new URL(response.headers().location, 'http://localhost').pathname
+        ).toBe('/sign-in');
+      }
+    };
+
+    await check();
+    await forge(context);
+    await check();
   });
 }
-
-// NFR-03
-test('/data/polities answers 401 without a session and with a forged one', async ({
-  context,
-  page,
-}) => {
-  expect((await page.request.get('/data/polities')).status()).toBe(401);
-
-  await forge(context);
-
-  const response = await page.request.get('/data/polities');
-
-  expect(response.status()).toBe(401);
-  expect(await response.text()).toBe('');
-});
 
 // NFR-03
 test('every response says noindex: a 401, a redirect, the sign-in page and a public file', async ({

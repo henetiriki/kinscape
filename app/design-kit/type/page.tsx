@@ -8,6 +8,7 @@ import { boardTitle } from '@ks/app/design-kit/boards';
 import { labelStyle } from '@ks/app/design-kit/mapLabels';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { requireSession } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -347,4 +348,10 @@ const TypeKit = () => (
   </main>
 );
 
-export default TypeKit;
+const Page = async () => {
+  await requireSession();
+
+  return <TypeKit />;
+};
+
+export default Page;

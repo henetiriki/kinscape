@@ -3,6 +3,8 @@ import { expect, it, vi } from 'vitest';
 
 import type tokens from '@ks/design/tokens.json';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 vi.mock('@ks/design/tokens.json', async importOriginal => {
   const original = await importOriginal<{ default: typeof tokens }>();
 
@@ -19,8 +21,8 @@ const { default: MapStyleKit } =
   await import('@ks/app/design-kit/map-style/page');
 
 // NFR-06
-it('shows 20 layers in order, with every column', () => {
-  render(<MapStyleKit />);
+it('shows 20 layers in order, with every column', async () => {
+  render(await MapStyleKit());
 
   const table = screen.getByRole('table', { name: 'Layer stack' });
   const rows = within(table).getAllByRole('row');
@@ -40,8 +42,8 @@ it('shows 20 layers in order, with every column', () => {
 });
 
 // NFR-05: a phone shows each layer as a card, so its last three fields carry labels
-it('labels the source, key properties and covers of every layer', () => {
-  render(<MapStyleKit />);
+it('labels the source, key properties and covers of every layer', async () => {
+  render(await MapStyleKit());
 
   const rows = within(
     screen.getByRole('table', { name: 'Layer stack' })
@@ -55,15 +57,15 @@ it('labels the source, key properties and covers of every layer', () => {
 });
 
 // NFR-06
-it('shows the Map style eyebrow in the header', () => {
-  render(<MapStyleKit />);
+it('shows the Map style eyebrow in the header', async () => {
+  render(await MapStyleKit());
 
   expect(screen.getByText('Map style')).toBeTruthy();
 });
 
 // NFR-06
-it('shows a changed map token in the key properties and the legend', () => {
-  render(<MapStyleKit />);
+it('shows a changed map token in the key properties and the legend', async () => {
+  render(await MapStyleKit());
 
   expect(screen.getByText('background-color #123456')).toBeTruthy();
   expect(screen.getByText('Brand #112233')).toBeTruthy();

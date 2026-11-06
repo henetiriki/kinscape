@@ -3,6 +3,8 @@ import { afterEach, expect, it, vi } from 'vitest';
 
 import rawTokens from '@ks/design/tokens.json';
 
+vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+
 afterEach(() => {
   vi.resetModules();
   vi.doUnmock('@ks/design/tokens.json');
@@ -13,7 +15,7 @@ it('shows the five sections in board order, and the nineteen icons', async () =>
   const { default: FoundationsKit } =
     await import('@ks/app/design-kit/foundations/page');
 
-  render(<FoundationsKit />);
+  render(await FoundationsKit());
 
   expect(
     screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent)
@@ -91,7 +93,7 @@ it('follows changed tokens', async () => {
   const { default: FoundationsKit } =
     await import('@ks/app/design-kit/foundations/page');
 
-  render(<FoundationsKit />);
+  render(await FoundationsKit());
 
   // The space step and the control radius.
   expect(screen.getAllByText('5px')).toHaveLength(2);

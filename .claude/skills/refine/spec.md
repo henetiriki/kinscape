@@ -15,8 +15,10 @@ Slice a milestone or an accepted Intent into **Specs**, each small enough for on
 
 Ask questions as described in `SKILL.md`. Typical branches:
 
-- **Behaviour:** what the user sees and does, and the edges (no data, a Fuzzy date, a failed load).
-- **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_ (e.g. Next.js instead of Vite). Each is a tech-lead decision.
+- **Behaviour:** what the user sees and does.
+- **Design:** for a UI slice, the branches in [design.md](design.md).
+- **Outside formats:** map each output field to its source. Ask about each field with no source.
+- **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_. Each is a tech-lead decision.
 - **Data:** anything storing people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).
 - **Cost:** anything that adds a paid service or moves the monthly budget (target ≤ US$10).
 - **Infrastructure:** follow [New infrastructure](../../../docs/security.md#new-infrastructure).
@@ -29,7 +31,7 @@ Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decis
 Get the slices confirmed before drafting; sizing is discussed only here.
 
 - Each slice is one pull request with something to check on a preview. Prefer thin vertical slices to layers.
-- Cap each slice at about 600 changed lines, not counting lockfiles, data files, fonts and the plan.
+- Cap each slice at about 600 changed lines, not counting lockfiles, data files, fonts and the plan. Estimate from a merged Spec of the same kind, with its tests and CSS. Settle each split now.
 - A slice is one kind: UI, data, or tooling and refactors. A dependency the slice needs may come with it.
 - A question that blocks the build (an unknown data source or licence, say) is its own decision slice, and comes first.
 - Give each an id (`M0.1`, …), a short name, its kind, a line estimate, its requirement IDs, and whether it changes what the user sees or is engineering-only. Say which comes first and why.
@@ -38,31 +40,13 @@ Get the slices confirmed before drafting; sizing is discussed only here.
 
 ## Step 2: draft each Spec
 
-Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order:
-
-> **Title** (e.g. "Spec: M0.1 Hello Vercel")
->
-> **Intent or milestone** (the Intent's number, e.g. `#57`; `M0` only for M0)
->
-> **Requirement IDs covered**
->
-> **Summary** (plain language: what will change)
->
-> **Behaviour and UX**
->
-> **Acceptance checks** (Given / When / Then, each one able to become an automated test where possible)
->
-> **❓ Decisions** (in the decision format. Mark each one that blocks the build **Blocking**. "None" only if there are none.)
->
-> **⚠️ Flagged concerns** (risks and conflicts, one line each. "None" only if there are none.)
->
-> **Out of scope / carried forward** (with any `Proposed term: <name> = <meaning>` lines)
+Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order, after the title (`Spec: M0.1 Hello Vercel`). Fill each box as its description says. Put `Proposed term` lines under _Out of scope_.
 
 Write each box in [STE](../../../docs/how-we-work.md#writing-specs-bugs-and-chores). Then run the check round on _Acceptance checks_.
 
 ## Hand-over
 
-Give **one link** per Spec for form `2-spec.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. A workflow links it to the Intent, or add the link by hand. If a link fails: **Issues → New issue → Spec**, and copy each block into the box with the same name.
+Give **one link** per Spec for form `2-spec.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. A workflow links it to the Intent, or add the link by hand.
 
 Then set the status label for whoever acts next, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.
 

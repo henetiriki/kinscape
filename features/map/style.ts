@@ -1,6 +1,7 @@
 import type { LayerSpecification, StyleSpecification } from 'maplibre-gl';
 
 import type { Layer, LayerId } from '@ks/features/map/types';
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
@@ -51,7 +52,7 @@ const BASEMAP: LayerSpecification[] = [
 
 /** The map's style: the basemap and each layer's drawing layers, filtered to `day`. */
 export const buildStyle = (
-  day: number,
+  day: Day,
   layers: Layer[],
   visible: Partial<Record<LayerId, boolean>> = {}
 ): StyleSpecification => {

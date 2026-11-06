@@ -1,11 +1,13 @@
 import { randomUUID } from 'node:crypto';
 
+import type { AccountId, TreeId } from '#ks/lib/domain/ids/types.ts';
 import type {
   SeedAccount,
   Tree,
   TreeStore,
 } from '#ks/lib/domain/trees/types.ts';
 
+import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 const identityOf = (issuer: string, subject: string) =>
@@ -13,9 +15,9 @@ const identityOf = (issuer: string, subject: string) =>
 
 /** A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree. */
 export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
-  const accounts = new Map<string, string>();
-  const trees = new Map<string, Tree>();
-  const links = new Map<string, Set<string>>();
+  const accounts = new Map<string, AccountId>();
+  const trees = new Map<TreeId, Tree>();
+  const links = new Map<AccountId, Set<TreeId>>();
 
   for (const { id, issuer, subject, trees: owned } of seed) {
     accounts.set(identityOf(issuer, subject), id);
@@ -26,7 +28,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
     }
   }
 
-  const ownedBy = (accountId: string) => [...(links.get(accountId) ?? [])];
+  const ownedBy = (accountId: AccountId) => [...(links.get(accountId) ?? [])];
 
   return {
     addAccount: async ({ issuer, subject, treeName }) => {
@@ -36,8 +38,9 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
         return err('exists');
       }
 
-      const accountId = randomUUID();
-      const treeId = randomUUID();
+      // A random UUID is always well-formed.
+      const accountId = parseAccountId(randomUUID())!;
+      const treeId = parseTreeId(randomUUID())!;
 
       accounts.set(identity, accountId);
       trees.set(treeId, { id: treeId, name: treeName });
@@ -50,7 +53,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
 
       return id === undefined ? undefined : { id };
     },
-    findTree: async (accountId, treeId) => {
+    findTree: async ({ accountId, treeId }) => {
       const found = trees.get(treeId);
 
       return found !== undefined && links.get(accountId)?.has(treeId)

@@ -40,7 +40,7 @@ import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { MIN_DAY } from '@ks/lib/domain/map/map-date';
+import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
 import { run } from '@ks/scripts/design-system.mts';
 
 // The shared controls (DS.5) must work in the React 18 the design system targets as well as the app's 19.

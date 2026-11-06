@@ -20,8 +20,8 @@ export type BoundaryVersion = { file: string } & Pick<
 > &
   z.output<typeof boundaryFeature>['properties'];
 
-/** Days are UTC days since 1652-01-01. `validTo` is exclusive; null = still current. */
-export type Day = number;
+/** UTC days since 1652-01-01, made only by `toDay`, `asDay` and `dayOf`. */
+export type Day = { brand: 'Day' } & number;
 
 export type Polity = z.output<typeof polityRow>;
 

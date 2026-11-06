@@ -1,4 +1,4 @@
-import { ISSUER } from '#ks/server/auth/supabase-session.mts';
+import { ISSUER } from '#ks/server/auth/supabase-sign-in.mts';
 import { createPgDb } from '#ks/server/db/database.mts';
 import { parseDirectUrl } from '#ks/server/env.mts';
 import { databaseStore } from '#ks/server/trees/database-store.mts';

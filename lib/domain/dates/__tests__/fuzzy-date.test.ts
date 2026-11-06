@@ -8,6 +8,7 @@ import {
   formatFuzzyDate,
   parseFuzzyDate,
 } from '@ks/lib/domain/dates/fuzzy-date.mts';
+import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 
 const parsed = (text: string): FuzzyDate => {
   const result = parseFuzzyDate(text);
@@ -34,6 +35,17 @@ describe('parseFuzzyDate qualifiers', () => {
 
     expect(date.earliestDay).toBe(toDay('1848-01-01'));
     expect(date.latestDay).toBe(toDay('1852-12-31'));
+  });
+
+  it('BET 1848 AND 1852 is current on 1852-12-31, not on 1853-01-01', () => {
+    const date = parsed('BET 1848 AND 1852');
+
+    expect(date.validFrom).toBe(toDay('1848-01-01'));
+    expect(date.validTo).toBe(toDay('1853-01-01'));
+    expect(isCurrentOn(date, toDay('1848-01-01'))).toBe(true);
+    expect(isCurrentOn(date, toDay('1852-12-31'))).toBe(true);
+    expect(isCurrentOn(date, toDay('1853-01-01'))).toBe(false);
+    expect(isCurrentOn(date, toDay('1847-12-31'))).toBe(false);
   });
 
   it('BEF runs from 50 years before to the day before', () => {

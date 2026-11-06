@@ -4,6 +4,7 @@ import type { ComponentProps } from 'react';
 
 import { useEffect, useState } from 'react';
 
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types';
 import type { ContestedYears, Epoch } from '@ks/lib/ui/types';
 
@@ -16,13 +17,14 @@ import { DateKeyHints } from '@ks/features/map/components/DateKeyHints';
 import { DateSlider } from '@ks/features/map/components/DateSlider';
 import { JumpTo } from '@ks/features/map/components/JumpTo';
 import { PlayButton } from '@ks/features/map/components/PlayButton';
-import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import {
   finerPrecision,
   MIN_DAY,
   PRECISIONS,
   stepDay,
-} from '@ks/lib/domain/map/map-date';
+  yearOf,
+} from '@ks/lib/domain/map/map-date.mts';
 
 import styles from '@ks/features/map/components/DateDock.module.css';
 
@@ -70,13 +72,13 @@ export const DateDock = ({
   contestedCount?: number;
   /** Year spans drawn hatched on the slider. */
   contestedYears?: ContestedYears[];
-  day: number;
+  day: Day;
   /** Epochs for Jump to; they are also the slider's ticks. */
   epochs?: Epoch[];
   /** Whether a Boundary version is valid on a day; a typed date without one shows the warning. */
-  hasBorders?: (day: number) => boolean;
-  lastDay: number;
-  onChange: (day: number) => void;
+  hasBorders?: (day: Day) => boolean;
+  lastDay: Day;
+  onChange: (day: Day) => void;
   /** Play pressed, with the speed in years per second. */
   onPlay?: (speed: number) => void;
   /** The phone sheet instead of the dock. */
@@ -86,7 +88,7 @@ export const DateDock = ({
   const [speed, setSpeed] = useState('5');
   // `forDay` ties the no-borders warning to the day it was set for.
   const [note, setNote] = useState<
-    { forDay?: number } & ComponentProps<typeof DateField>['notice']
+    { forDay?: Day } & ComponentProps<typeof DateField>['notice']
   >();
   const notice =
     note?.forDay === undefined || note.forDay === day ? note : undefined;
@@ -134,7 +136,7 @@ export const DateDock = ({
         if (hasBorders && !hasBorders(to)) {
           setNote({
             forDay: to,
-            text: `No borders are mapped for ${fromDay(to).slice(0, 4)} yet.`,
+            text: `No borders are mapped for ${yearOf(to)} yet.`,
             tone: 'warning',
           });
         } else if (finerPrecision(at, precision) !== precision) {
@@ -204,9 +206,11 @@ export const DateDock = ({
       <div className={styles.footer}>
         {epochs && (
           <JumpTo
-            current={Number(fromDay(day).slice(0, 4))}
+            current={yearOf(day)}
             epochs={epochs}
-            onJump={year => onChange(Math.min(toDay(`${year}-01-01`), lastDay))}
+            onJump={year =>
+              onChange(asDay(Math.min(toDay(`${year}-01-01`), lastDay)))
+            }
           />
         )}
         <span className={styles.hints}>

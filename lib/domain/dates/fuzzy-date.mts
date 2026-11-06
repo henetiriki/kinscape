@@ -6,7 +6,8 @@ import type {
 import type { Precision } from '#ks/lib/domain/map/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
-import { fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { asDay, fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { coarserPrecision, PRECISIONS } from '#ks/lib/domain/map/map-date.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 const MONTHS = [
@@ -27,7 +28,6 @@ const MIN_YEAR = 1000;
 const MAX_YEAR = 2999;
 const NEAR_YEARS = 2;
 const FAR_YEARS = 50;
-const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 const SINGLE: Qualifier[] = ['ABT', 'AFT', 'BEF', 'CAL', 'EST'];
 
 const pad = (value: number, width: number): string =>
@@ -38,9 +38,6 @@ const daysIn = (year: number, month: number): number =>
 
 const precisionOf = (date: string): Precision =>
   PRECISIONS[date.split('-').length - 1];
-
-const coarser = (a: Precision, b: Precision): Precision =>
-  PRECISIONS[Math.min(PRECISIONS.indexOf(a), PRECISIONS.indexOf(b))];
 
 const firstDay = (date: string): string => {
   const [year, month = '01', day = '01'] = date.split('-');
@@ -63,7 +60,7 @@ const shiftYears = (iso: string, years: number): string => {
 };
 
 const shiftDays = (iso: string, days: number): string =>
-  fromDay(toDay(iso) + days);
+  fromDay(asDay(toDay(iso) + days));
 
 const parseDate = (text: string): Result<string, FuzzyDateError> => {
   const match = /^(?:(?:(\d{1,2}) )?([A-Z]{3}) )?(\d{1,4})$/.exec(text);
@@ -109,15 +106,23 @@ const build = (
     FROM: [first, last],
   }[qualifier];
 
+  const earliestDay = toDay(earliest);
+  const latestDay = toDay(latest);
+
   return {
     date1,
     ...(date2 === undefined ? {} : { date2 }),
     earliest,
-    earliestDay: toDay(earliest),
+    earliestDay,
     latest,
-    latestDay: toDay(latest),
-    precision: coarser(precisionOf(date1), precisionOf(date2 ?? date1)),
+    latestDay,
+    precision: coarserPrecision(
+      precisionOf(date1),
+      precisionOf(date2 ?? date1)
+    ),
     qualifier,
+    validFrom: earliestDay,
+    validTo: asDay(latestDay + 1),
   };
 };
 

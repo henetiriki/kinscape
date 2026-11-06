@@ -5,7 +5,20 @@ import type {
   BoundaryVersion,
 } from '@ks/lib/domain/boundaries/types.ts';
 
-import { polityCollection } from '@ks/lib/domain/map/features';
+import { asDay } from '@ks/lib/domain/boundaries/model.mts';
+import { polityCollection } from '@ks/lib/domain/map/features.mts';
+
+const named = (
+  name: string,
+  polity: string,
+  validFrom: number,
+  validTo: null | number
+) => ({
+  name,
+  polity,
+  validFrom: asDay(validFrom),
+  validTo: validTo === null ? null : asDay(validTo),
+});
 
 const polygon = (x: number, y: number, size: number) => [
   [
@@ -30,8 +43,8 @@ const version = (
   level: 'polity',
   polity,
   source: 's',
-  validFrom,
-  validTo,
+  validFrom: asDay(validFrom),
+  validTo: validTo === null ? null : asDay(validTo),
 });
 
 const data = (overrides: Partial<BoundaryData>): BoundaryData => ({
@@ -74,7 +87,7 @@ describe('polityCollection', () => {
             polygon(20, 20, 2),
           ]),
         ],
-        names: [{ name: 'Alpha', polity: 'a', validFrom: 5, validTo: null }],
+        names: [named('Alpha', 'a', 5, null)],
       })
     );
     const label = features.find(f => f.properties.kind === 'label');
@@ -101,9 +114,9 @@ describe('polityCollection', () => {
           version('b', 0, null, [polygon(80, 80, 2)]),
         ],
         names: [
-          { name: 'Old', polity: 'a', validFrom: 0, validTo: 10 },
-          { name: 'New', polity: 'a', validFrom: 10, validTo: null },
-          { name: 'Orphan', polity: 'c', validFrom: 0, validTo: null },
+          named('Old', 'a', 0, 10),
+          named('New', 'a', 10, null),
+          named('Orphan', 'c', 0, null),
         ],
       })
     );
@@ -123,10 +136,7 @@ describe('polityCollection', () => {
           version('a', 10, 30, [polygon(50, 50, 2)]),
           version('a', 30, null, [polygon(70, 70, 2)]),
         ],
-        names: [
-          { name: 'Same', polity: 'a', validFrom: 5, validTo: 40 },
-          { name: 'Open', polity: 'a', validFrom: 20, validTo: null },
-        ],
+        names: [named('Same', 'a', 5, 40), named('Open', 'a', 20, null)],
       })
     );
     const labels = features.filter(f => f.properties.kind === 'label');

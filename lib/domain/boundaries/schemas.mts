@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { asDay, fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const isIsoDate = (value: string): boolean => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -15,7 +15,7 @@ const isIsoDate = (value: string): boolean => {
 
 const text = z.string().min(1);
 
-const day = z.number().int();
+const day = z.number().int().transform(asDay);
 
 const isoDate = text.refine(isIsoDate);
 

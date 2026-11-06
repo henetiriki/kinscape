@@ -1,7 +1,7 @@
 # Plan: C634: Close /refine gaps found in plans with 5 or more decisions
 
 - **Spec:** #634
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ Some decisions only pick how to build (`notFound()` or `proxy.ts`).
 - **B.** Add a line: ask each hard-to-reverse method in `/refine`.
 - **Other:** your own.
 
-Recommended: A, because asking every method makes `/refine` a plan.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

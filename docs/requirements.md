@@ -177,7 +177,7 @@ Everything that changes over time carries a half-open validity interval \[from, 
 
 Polity, PolityName, PolityParent and BoundaryVersion carry no tree id: every Account shares them ([NFR-09](#nfr-09)).
 
-**FuzzyDate** is stored as: qualifier, date 1, date 2 (for ranges), precision (day, month, year), plus derived earliest and latest ISO dates. All date filtering uses the derived earliest–latest pair, so "ABT 1850" and "BET 1848 AND 1852" are queried the same way.
+**FuzzyDate** is stored as: qualifier, date 1, date 2 (for ranges), precision (day, month, year), plus derived earliest and latest ISO dates. All date filtering uses the derived span, half-open like every validity interval: from the earliest day up to but not including the day after the latest, so 'ABT 1850' and 'BET 1848 AND 1852' are queried the same way as a Boundary version.
 
 ## Boundary data to build
 

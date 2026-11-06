@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { MapShell, polityLayer } from '@ks/features/map';
-import { boundaryCoverage } from '@ks/lib/domain/map/coverage';
+import { boundaryCoverage } from '@ks/lib/domain/map/coverage.mts';
 import { currentSession } from '@ks/server/auth/current.mts';
 import { loadAppData } from '@ks/server/boundaries/app-data';
 

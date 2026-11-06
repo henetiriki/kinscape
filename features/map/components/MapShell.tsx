@@ -4,7 +4,8 @@ import { useState } from 'react';
 
 import type { Layer, LayerId } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
-import type { Span } from '@ks/lib/domain/map/types';
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
+import type { Validity } from '@ks/lib/domain/validity/types.ts';
 
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
@@ -20,9 +21,8 @@ import { MapView } from '@ks/features/map/components/MapView';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 import { freeArea, Stage } from '@ks/features/map/components/Stage';
 import { polityLayer } from '@ks/features/map/layers/polities';
-import { fromDay } from '@ks/lib/domain/boundaries/model.mts';
-import { hasBorders } from '@ks/lib/domain/map/coverage';
-import { todayDay } from '@ks/lib/domain/map/map-date';
+import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
+import { todayDay, yearOf } from '@ks/lib/domain/map/map-date.mts';
 
 import styles from '@ks/features/map/components/MapShell.module.css';
 
@@ -32,7 +32,7 @@ export const MapShell = ({
   sources,
 }: {
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
-  coverage: Span[];
+  coverage: Validity[];
   /** The layers the map draws. */
   layers: Layer[];
   sources: Source[];
@@ -62,9 +62,9 @@ export const MapShell = ({
       setVisible(current => ({ ...current, [id]: show })),
     visible,
   };
-  const borders = (day: number) => hasBorders(coverage, day);
+  const borders = (day: Day) => hasBorders(coverage, day);
   const first = coverage.at(0)?.validFrom;
-  const firstYear = first === undefined ? '' : fromDay(first).slice(0, 4);
+  const firstYear = first === undefined ? '' : String(yearOf(first));
 
   return (
     <>
@@ -110,7 +110,7 @@ export const MapShell = ({
               ]}
               icon='layers'
               phone={phone}
-              title={`No borders are mapped for ${fromDay(mapDay).slice(0, 4)} yet`}>
+              title={`No borders are mapped for ${yearOf(mapDay)} yet`}>
               {`The map has borders from ${firstYear}.`}
             </NoticeCard>
           ) : undefined

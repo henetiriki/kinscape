@@ -4,26 +4,19 @@ import type {
   Day,
 } from '#ks/lib/domain/boundaries/types.ts';
 
+import { current } from '#ks/lib/domain/validity/validity.mts';
+
 const DAY_MS = 86_400_000;
 const EPOCH_MS = Date.UTC(1652, 0, 1);
 
+/** A whole number of days since 1652-01-01 as a Day. */
+export const asDay = (days: number): Day => days as Day;
+
 export const toDay = (isoDate: string): Day =>
-  Math.round((Date.parse(`${isoDate}T00:00:00Z`) - EPOCH_MS) / DAY_MS);
+  asDay(Math.round((Date.parse(`${isoDate}T00:00:00Z`) - EPOCH_MS) / DAY_MS));
 
 export const fromDay = (day: Day): string =>
   new Date(EPOCH_MS + day * DAY_MS).toISOString().slice(0, 10);
-
-export const isCurrentOn = (
-  range: { validFrom: Day; validTo: Day | null },
-  day: Day
-): boolean =>
-  range.validFrom <= day && (range.validTo === null || day < range.validTo);
-
-/** The rows whose range holds `day`. */
-export const current = <T extends { validFrom: Day; validTo: Day | null }>(
-  rows: readonly T[],
-  day: Day
-): T[] => rows.filter(row => isCurrentOn(row, day));
 
 export const nameOn = (
   data: BoundaryData,

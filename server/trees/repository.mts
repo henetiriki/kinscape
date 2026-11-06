@@ -2,9 +2,9 @@ import type { Result } from '#ks/lib/domain/result/types.ts';
 import type { Viewer } from '#ks/lib/domain/trees/types.ts';
 import type { TreeDeps, TreeRepository } from '#ks/server/trees/types.ts';
 
+import { parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { sessionOf } from '#ks/server/auth/sessions.mts';
-import { isUuid } from '#ks/server/trees/uuid.mts';
 import { treeView } from '#ks/server/trees/views.mts';
 
 /**
@@ -25,12 +25,13 @@ export const openTree = async (
   }
 
   const viewer: Viewer = { accountId: session.accountId };
+  const parsed = treeId === undefined ? undefined : parseTreeId(treeId);
   const row =
     treeId === undefined
       ? (await store.findTrees(viewer.accountId))[0]
-      : isUuid(treeId)
-        ? await store.findTree(viewer.accountId, treeId)
-        : undefined;
+      : parsed === undefined
+        ? undefined
+        : await store.findTree({ accountId: viewer.accountId, treeId: parsed });
 
   return row === undefined
     ? err('not-found')

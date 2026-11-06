@@ -5,7 +5,7 @@ import type { Layer } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { dayOf } from '@ks/lib/domain/map/map-date';
+import { dayOf } from '@ks/lib/domain/map/map-date.mts';
 
 const mapView = vi.hoisted(() => vi.fn());
 

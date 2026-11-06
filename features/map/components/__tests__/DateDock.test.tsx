@@ -2,12 +2,14 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
+
 import { DateDock } from '@ks/features/map/components/DateDock';
-import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay, fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 const today = toDay('2026-10-21');
 
-const setup = (day: number) => {
+const setup = (day: Day) => {
   const onChange = vi.fn();
 
   render(<DateDock day={day} lastDay={today} onChange={onChange} />);
@@ -63,7 +65,7 @@ it('disables Forward on the last date', () => {
 });
 
 it('disables Back on 1652-01-01', () => {
-  setup(0);
+  setup(asDay(0));
   expect(
     (screen.getByRole('button', { name: 'Back' }) as HTMLButtonElement).disabled
   ).toBe(true);
@@ -176,7 +178,7 @@ it('keeps a jump past today on today', () => {
     <DateDock
       day={today}
       epochs={[{ year: 2026 }]}
-      lastDay={toDay('2026-01-01') - 1}
+      lastDay={asDay(toDay('2026-01-01') - 1)}
       onChange={onChange}
     />
   );

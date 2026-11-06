@@ -4,13 +4,14 @@ import type { ComponentProps } from 'react';
 
 import { useState } from 'react';
 
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { IconButton } from '@ks/app/components/actions/IconButton';
 import { Segmented } from '@ks/app/components/actions/Segmented';
 import { DateField } from '@ks/features/map/components/DateField';
-import { MIN_DAY, stepDay, todayDay } from '@ks/lib/domain/map/map-date';
+import { MIN_DAY, stepDay, todayDay } from '@ks/lib/domain/map/map-date.mts';
 
 import styles from '@ks/app/design-kit/feedback/page.module.css';
 
@@ -49,7 +50,7 @@ export const DateCase = ({
   ...field
 }: {
   dock?: boolean;
-  initial: { day: number; precision: Precision };
+  initial: { day: Day; precision: Precision };
   /** The phone date sheet: the field fills the row and a round Play button ends it. */
   sheet?: boolean;
 } & Pick<

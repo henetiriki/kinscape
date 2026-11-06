@@ -1,11 +1,12 @@
-import type { BoundaryData, Day } from '@ks/lib/domain/boundaries/types.ts';
-import type { Span } from '@ks/lib/domain/map/types';
+import type { BoundaryData, Day } from '#ks/lib/domain/boundaries/types.ts';
+import type { Validity } from '#ks/lib/domain/validity/types.ts';
 
-import { current } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay } from '#ks/lib/domain/boundaries/model.mts';
+import { current } from '#ks/lib/domain/validity/validity.mts';
 
 /** The days that have a Boundary version, as sorted spans that touch or overlap merged. */
-export const boundaryCoverage = (data: BoundaryData): Span[] => {
-  const spans: Span[] = [];
+export const boundaryCoverage = (data: BoundaryData): Validity[] => {
+  const spans: Validity[] = [];
   const sorted = data.boundaries
     .map(({ validFrom, validTo }) => ({ validFrom, validTo }))
     .sort((a, b) => a.validFrom - b.validFrom);
@@ -17,7 +18,9 @@ export const boundaryCoverage = (data: BoundaryData): Span[] => {
       spans.push(span);
     } else if (last.validTo !== null) {
       last.validTo =
-        span.validTo === null ? null : Math.max(last.validTo, span.validTo);
+        span.validTo === null
+          ? null
+          : asDay(Math.max(last.validTo, span.validTo));
     }
   }
 
@@ -25,5 +28,5 @@ export const boundaryCoverage = (data: BoundaryData): Span[] => {
 };
 
 /** Whether a Boundary version is valid on `day`. */
-export const hasBorders = (coverage: Span[], day: Day): boolean =>
+export const hasBorders = (coverage: Validity[], day: Day): boolean =>
   current(coverage, day).length > 0;

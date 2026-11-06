@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay, fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import {
+  coarserPrecision,
   dayFromSlider,
   dayOf,
   finerPrecision,
@@ -11,7 +12,8 @@ import {
   sliderValue,
   stepDay,
   todayDay,
-} from '@ks/lib/domain/map/map-date';
+  yearOf,
+} from '@ks/lib/domain/map/map-date.mts';
 
 const today = toDay('2026-10-21');
 
@@ -27,6 +29,22 @@ describe('finerPrecision', () => {
     expect(finerPrecision('year', 'month')).toBe('month');
     expect(finerPrecision('day', 'month')).toBe('day');
     expect(finerPrecision('year', 'year')).toBe('year');
+  });
+});
+
+describe('coarserPrecision', () => {
+  it('returns the coarser of two precisions', () => {
+    expect(coarserPrecision('year', 'month')).toBe('year');
+    expect(coarserPrecision('day', 'month')).toBe('month');
+    expect(coarserPrecision('day', 'day')).toBe('day');
+  });
+});
+
+describe('yearOf', () => {
+  it('gives the calendar year of a day', () => {
+    expect(yearOf(MIN_DAY)).toBe(1652);
+    expect(yearOf(toDay('1899-12-31'))).toBe(1899);
+    expect(yearOf(toDay('1900-01-01'))).toBe(1900);
   });
 });
 
@@ -78,7 +96,7 @@ describe('slider', () => {
     expect(fromDay(dayFromSlider(148 * 12 + 1, day, 'month', today))).toBe(
       '1800-02-28'
     );
-    expect(dayFromSlider(5, day, 'day', today)).toBe(5);
+    expect(dayFromSlider(5, day, 'day', today)).toBe(asDay(5));
   });
 
   it('never passes the ends', () => {

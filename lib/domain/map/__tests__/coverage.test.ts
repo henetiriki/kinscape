@@ -6,7 +6,7 @@ import type {
 } from '@ks/lib/domain/boundaries/types.ts';
 
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { boundaryCoverage, hasBorders } from '@ks/lib/domain/map/coverage';
+import { boundaryCoverage, hasBorders } from '@ks/lib/domain/map/coverage.mts';
 
 const version = (from: string, to: null | string): BoundaryVersion => ({
   confidence: 'high',

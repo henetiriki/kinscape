@@ -3,16 +3,18 @@ import { describe, expect, it } from 'vitest';
 
 import { dateFilter } from '@ks/features/map/filter';
 import { polityLayer } from '@ks/features/map/layers/polities';
+import { asDay } from '@ks/lib/domain/boundaries/model.mts';
 
 describe('polityLayer', () => {
   it('applies the Map date to every polity layer', () => {
-    const filters = polityLayer.filters(42);
+    const day = asDay(42);
+    const filters = polityLayer.filters(day);
 
     expect(Object.keys(filters).toSorted()).toEqual(
       polityLayer.layers.map(layer => layer.id).toSorted()
     );
-    expect(filters['polity-fills']).toEqual(dateFilter(42, 'boundary'));
-    expect(filters['polity-labels']).toEqual(dateFilter(42, 'label'));
+    expect(filters['polity-fills']).toEqual(dateFilter(day, 'boundary'));
+    expect(filters['polity-labels']).toEqual(dateFilter(day, 'label'));
   });
 
   it('names its panel row and keeps the ids the row has always had', () => {
@@ -24,7 +26,7 @@ describe('polityLayer', () => {
   });
 
   it('splits solid and dashed borders by confidence', () => {
-    const filters = polityLayer.filters(1);
+    const filters = polityLayer.filters(asDay(1));
 
     expect(JSON.stringify(filters['polity-borders'])).toContain('"!"');
     expect(JSON.stringify(filters['polity-borders-low'])).not.toContain('"!"');

@@ -4,6 +4,8 @@ import type {
   SourceSpecification,
 } from 'maplibre-gl';
 
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
+
 /** A MapLibre layer that can name the basemap layer it draws in front of. */
 export type DrawingLayer = {
   /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
@@ -15,7 +17,7 @@ export type Layer = {
   /** The help text under the layer's row in the Layers panel. */
   description: string;
   /** The filter for each drawing layer id on `day`. */
-  filters: (day: number) => Record<string, ExpressionSpecification>;
+  filters: (day: Day) => Record<string, ExpressionSpecification>;
   id: LayerId;
   /** The name on the layer's row in the Layers panel. */
   label: string;

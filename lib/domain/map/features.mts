@@ -3,7 +3,9 @@ import polylabel from 'polylabel';
 import type {
   BoundaryData,
   BoundaryVersion,
-} from '@ks/lib/domain/boundaries/types.ts';
+} from '#ks/lib/domain/boundaries/types.ts';
+
+import { overlaps } from '#ks/lib/domain/validity/validity.mts';
 
 type PolityCollection = {
   features: PolityFeature[];
@@ -61,10 +63,7 @@ export const polityCollection = (data: BoundaryData): PolityCollection => ({
     ...data.names.flatMap((row): PolityFeature[] =>
       data.boundaries
         .filter(
-          version =>
-            version.polity === row.polity &&
-            version.validFrom < (row.validTo ?? Infinity) &&
-            row.validFrom < (version.validTo ?? Infinity)
+          version => version.polity === row.polity && overlaps(version, row)
         )
         .map((version): PolityFeature => ({
           geometry: { coordinates: labelPoint(version), type: 'Point' },

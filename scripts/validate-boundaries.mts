@@ -6,9 +6,12 @@ import { kinks } from '@turf/kinks';
 import type {
   BoundaryData,
   BoundaryVersion,
+  Day,
 } from '#ks/lib/domain/boundaries/types.ts';
+import type { Validity } from '#ks/lib/domain/validity/types.ts';
 
-import { fromDay } from '#ks/lib/domain/boundaries/model.mts';
+import { asDay, fromDay } from '#ks/lib/domain/boundaries/model.mts';
+import { overlaps } from '#ks/lib/domain/validity/validity.mts';
 import { loadBoundaryData } from '#ks/server/boundaries/load.mts';
 
 const DATA_DIR = 'data';
@@ -16,13 +19,12 @@ const DATA_DIR = 'data';
 /** Overlaps up to this size per Polity pair are digitising noise, not errors. */
 export const OVERLAP_TOLERANCE_M2 = 1_000_000;
 
-type Range = { polity: string; validFrom: number; validTo: null | number };
+type Ranged = { polity: string } & Validity;
 
 const describe = (version: BoundaryVersion): string =>
   `${version.file}: ${version.polity} from ${fromDay(version.validFrom)}`;
 
-const endOf = (range: Pick<Range, 'validTo'>): number =>
-  range.validTo ?? Infinity;
+const endOf = (range: Validity): number => range.validTo ?? Infinity;
 
 const hasKinks = (version: BoundaryVersion): boolean => {
   try {
@@ -34,7 +36,7 @@ const hasKinks = (version: BoundaryVersion): boolean => {
   }
 };
 
-const checkDateOrder = (rows: Range[], kind: string): string[] =>
+const checkDateOrder = (rows: Ranged[], kind: string): string[] =>
   rows
     .filter(row => row.validFrom >= endOf(row))
     .map(
@@ -43,7 +45,7 @@ const checkDateOrder = (rows: Range[], kind: string): string[] =>
     );
 
 /** Each row of a Polity must start where the previous one ended. */
-const checkContiguous = (rows: Range[], kind: string): string[] => {
+const checkContiguous = (rows: Ranged[], kind: string): string[] => {
   const byPolity = Map.groupBy(rows, row => row.polity);
 
   return [...byPolity].flatMap(([polity, group]) => {
@@ -58,7 +60,7 @@ const checkContiguous = (rows: Range[], kind: string): string[] => {
 
       return next.validFrom > end
         ? [
-            `${kind} for ${polity} have a gap from ${fromDay(end)} to ${fromDay(next.validFrom)}`,
+            `${kind} for ${polity} have a gap from ${fromDay(asDay(end))} to ${fromDay(next.validFrom)}`,
           ]
         : [];
     });
@@ -96,17 +98,17 @@ const overlapArea = (a: BoundaryVersion, b: BoundaryVersion): number => {
 
 /** Two Polities at the same level may only overlap where both are contested. */
 const checkOverlaps = (versions: BoundaryVersion[]): string[] => {
-  const found = new Map<string, { area: number; day: number }>();
+  const found = new Map<string, { area: number; day: Day }>();
 
   versions.forEach((a, index) => {
     for (const b of versions.slice(index + 1)) {
-      const day = Math.max(a.validFrom, b.validFrom);
+      const day = asDay(Math.max(a.validFrom, b.validFrom));
 
       if (
         a.level !== b.level ||
         a.polity === b.polity ||
         (a.contested && b.contested) ||
-        day >= Math.min(endOf(a), endOf(b))
+        !overlaps(a, b)
       ) {
         continue;
       }
@@ -116,7 +118,7 @@ const checkOverlaps = (versions: BoundaryVersion[]): string[] => {
 
       found.set(key, {
         area: entry.area + overlapArea(a, b),
-        day: Math.min(entry.day, day),
+        day: asDay(Math.min(entry.day, day)),
       });
     }
   });

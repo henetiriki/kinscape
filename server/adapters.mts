@@ -1,18 +1,19 @@
 import 'server-only';
 
 import type {
-  SessionPort,
   SessionStore,
+  SignInPort,
   ThrottleStore,
 } from '#ks/lib/domain/auth/types.ts';
 import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 
+import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { databaseSessions } from '#ks/server/auth/database-sessions.mts';
 import { databaseThrottle } from '#ks/server/auth/database-throttle.mts';
-import { memorySession } from '#ks/server/auth/memory-session.mts';
 import { memorySessions } from '#ks/server/auth/memory-sessions.mts';
+import { memorySignIn } from '#ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '#ks/server/auth/memory-throttle.mts';
-import { supabaseSession } from '#ks/server/auth/supabase-session.mts';
+import { supabaseSignIn } from '#ks/server/auth/supabase-sign-in.mts';
 import { db } from '#ks/server/db/database.mts';
 import { parseEnv } from '#ks/server/env.mts';
 import { databaseStore } from '#ks/server/trees/database-store.mts';
@@ -20,17 +21,17 @@ import { memoryStore } from '#ks/server/trees/memory-store.mts';
 
 /** The one synthetic user and Tree behind the test-only memory adapters. */
 export const SYNTHETIC = {
-  accountId: '00000000-0000-4000-8000-0000000000a1',
+  accountId: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
   email: 'synthetic@example.test',
   issuer: 'synthetic',
   password: 'synthetic-password',
   subject: 'synthetic-subject',
-  treeId: '00000000-0000-4000-8000-0000000000b1',
+  treeId: parseTreeId('00000000-0000-4000-8000-0000000000b1')!,
 };
 
 type Adapters = {
-  session: SessionPort;
   sessions: SessionStore;
+  signIn: SignInPort;
   store: TreeStore;
   throttle: ThrottleStore;
 };
@@ -40,7 +41,7 @@ type Adapters = {
 const shared = globalThis as { kinscapeAdapters?: Adapters };
 
 /**
- * The session port, session store, Tree store and throttle store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`
+ * The sign-in port, session store, Tree store and throttle store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`
  * (`parseEnv` refuses that on Vercel), otherwise Supabase and the database.
  */
 export const appAdapters = (): Adapters => {
@@ -49,8 +50,8 @@ export const appAdapters = (): Adapters => {
 
     shared.kinscapeAdapters = env.memoryAdapters
       ? {
-          session: memorySession([SYNTHETIC]),
           sessions: memorySessions(),
+          signIn: memorySignIn([SYNTHETIC]),
           store: memoryStore([
             {
               id: SYNTHETIC.accountId,
@@ -62,11 +63,11 @@ export const appAdapters = (): Adapters => {
           throttle: memoryThrottle(),
         }
       : {
-          session: supabaseSession({
+          sessions: databaseSessions(db()),
+          signIn: supabaseSignIn({
             key: env.supabasePublishableKey,
             url: env.supabaseUrl,
           }),
-          sessions: databaseSessions(db()),
           store: databaseStore(db()),
           throttle: databaseThrottle(db()),
         };

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { SessionPort } from '#ks/lib/domain/auth/types.ts';
+import type { SignInPort } from '#ks/lib/domain/auth/types.ts';
 
 /** The Account issuer for Supabase sign-in. */
 export const ISSUER = 'supabase';
@@ -18,14 +18,14 @@ type Options = {
 };
 
 /**
- * A SessionPort over Supabase Auth's password grant. A 400 is wrong credentials; anything else
+ * A SignInPort over Supabase Auth's password grant. A 400 is wrong credentials; anything else
  * throws an error naming only the status or the kind of failure, never a credential or a body.
  */
-export const supabaseSession = ({
+export const supabaseSignIn = ({
   fetch: send = (url, init) => globalThis.fetch(url, init),
   key,
   url,
-}: Options): SessionPort => ({
+}: Options): SignInPort => ({
   verify: async (email, password) => {
     const response = await send(
       `${url.replace(/\/$/, '')}/auth/v1/token?grant_type=password`,

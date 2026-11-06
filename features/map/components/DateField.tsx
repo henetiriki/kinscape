@@ -5,13 +5,14 @@ import type { ComponentProps, ReactNode } from 'react';
 import { useEffect, useId, useState } from 'react';
 
 import type { ControlState, Tone } from '@ks/app/components/foundation/types';
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Precision, Problem } from '@ks/lib/domain/map/types';
 
 import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { Text } from '@ks/app/components/foundation/Text';
-import { checkDate } from '@ks/lib/domain/map/date-input';
-import { finerPrecision, shownDate } from '@ks/lib/domain/map/map-date';
+import { checkDate } from '@ks/lib/domain/map/date-input.mts';
+import { finerPrecision, shownDate } from '@ks/lib/domain/map/map-date.mts';
 
 import styles from '@ks/features/map/components/DateField.module.css';
 
@@ -41,7 +42,7 @@ export const DateField = ({
   /** Beside the field on the left: the step back button. */
   before?: ReactNode;
   /** The last good date: what the map shows. */
-  day: number;
+  day: Day;
   /** Text to start with instead of the date; it is checked on the first render, unless `state` is `focus`. */
   defaultText?: string;
   /** The field takes the width the row leaves, as in the phone date sheet. */
@@ -49,12 +50,12 @@ export const DateField = ({
   /** A typed date or a fix commits at the field's precision, never a finer one. */
   keepPrecision?: boolean;
   /** The last Map date: today. */
-  max: number;
+  max: Day;
   /** The first Map date. */
-  min: number;
+  min: Day;
   /** Something the app did, shown while it is passed; the caller clears it. */
   notice?: Notice;
-  onChange: (day: number, precision: Precision) => void;
+  onChange: (day: Day, precision: Precision) => void;
   /** `above` opens the message over the field, for the dock at the bottom of the screen. */
   placement?: 'above' | 'below';
   precision: Precision;
@@ -107,7 +108,7 @@ export const DateField = ({
     return () => document.removeEventListener('keydown', onEsc);
   }, [problem, checked, shown]);
 
-  const goTo = (to: number, wanted: Precision) => {
+  const goTo = (to: Day, wanted: Precision) => {
     const at = keepPrecision ? precision : wanted;
 
     setProblem(null);

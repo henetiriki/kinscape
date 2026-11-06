@@ -1,7 +1,7 @@
 # Plan: C633: Acceptance-check round in /refine; STE for Specs, Bugs and Chores
 
 - **Spec:** #633
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@
 - **B.** The form's top `markdown` block; `3-bug.yml` gets a new one.
 - **Other:** your own.
 
-Recommended: A, because the writer sees it beside the box.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

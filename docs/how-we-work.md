@@ -38,7 +38,7 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 | Start the next milestone                      | Nothing: the tech lead runs `/refine spec <Intent number>`                                             | See _Spec_                     | n/a                     |
 | Add or change something not in a milestone    | **Intent**                                                                                             | PO                             | `status: draft`         |
 | Change [the requirements](requirements.md)    | **Intent** (the only route)                                                                            | PO                             | `status: draft`         |
-| Report something broken                       | **Bug**                                                                                                | Nobody; the tech lead plans it | `status: ready-for-dev` |
+| Report something broken                       | **Bug** (tech lead: `/refine bug <number>`, then `ready-for-agent`)                                    | Nobody; the tech lead plans it | `status: ready-for-dev` |
 | Change tooling, CI, docs, process or settings | **Chore** (tech lead; draft with `/refine chore`; [how it's built](building.md#specs-bugs-and-chores)) | Tech lead                      | `status: ready-for-dev` |
 
 ## Drafting with Claude
@@ -80,7 +80,7 @@ Answer with `D1: B` or `D1: other, <your option>`. On an issue, start the commen
 ## Roles and labels: whose turn is it?
 
 - **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs.
-- **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns settings, secrets and `AGENTS.md` / `CLAUDE.md`.
+- **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests.
 - **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing.
 
 Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status** label; the status tells you whose turn it is.

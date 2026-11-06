@@ -43,6 +43,8 @@ Leave out any section that would only say "none".
 
 ## Proof
 
+<!-- A Bug with a **Must not break** section: add one row per item, proven by an existing test or a new one. -->
+
 | Acceptance check | Proven by                                           |
 | ---------------- | --------------------------------------------------- |
 |                  | <!-- test, validator, screenshot, preview check --> |

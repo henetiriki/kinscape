@@ -35,6 +35,8 @@ It is within a few words of its 800 budget; the row needs about 35.
 | `server/db/TEMPLATE.sql`                  | New           | The example tables         |
 | `server/db/__tests__/tree-scoped.test.ts` | New           | Catalog check and template |
 | `docs/architecture.md`                    | Changed       | The Patterns row (D1)      |
+| `scripts/word-count.mts`                  | Changed       | Its budget 800 → 850 (D1)  |
+| `scripts/__tests__/word-count.test.ts`    | Changed       | The budget it pins (D1)    |
 
 ## Order of work
 

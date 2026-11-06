@@ -4,7 +4,7 @@ Make a filed **Bug** clear before an agent plans it. Add four sections below the
 
 ## Before the first question
 
-1. Read the Bug: `gh issue view <number> --comments`. Get the exact body with `gh issue view <number> --json body --jq .body`. Without `gh`, ask the user to paste it. Follow the [Data rules](../../../AGENTS.md#data-rules).
+1. Read the Bug: `gh issue view <number> --comments`. Get the exact body with `gh issue view <number> --json body --jq .body`. Without `gh`, ask the user to paste it.
 2. Look up what defines the expected result: requirement IDs in `docs/requirements.md`, merged Specs, `design/DESIGN.md` and the snapshots in `design/`.
 3. Read the code the Bug names, as far as the steps need.
 

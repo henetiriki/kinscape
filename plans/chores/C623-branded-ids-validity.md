@@ -6,13 +6,11 @@
 
 ## Approach
 
-Types first; `npm run typecheck` then lists every caller. Kysely's `Database` types id columns as `AccountId` and `TreeId`, so rows arrive branded. `overlaps` replaces the inline checks in `features.mts` and `validate-boundaries.mts`. Renames use `git mv`.
+Kysely's `Database` types id columns as `AccountId` and `TreeId`, so rows arrive branded. `overlaps` replaces the inline checks in `features.mts` and `validate-boundaries.mts`.
 
 ## Decisions
 
 **D1 · Making a Day from a number** · Decides: Tech lead
-
-Zod, slider steps, label spans and fixtures start from numbers.
 
 - **A.** One more maker, `asDay(n)`, beside `toDay`.
 - **B.** `as Day` at each site.
@@ -48,22 +46,25 @@ About 1,000 changed lines, past the 600 cap.
 | `features/map/`, `app/`, `scripts/validate-boundaries.mts` | Imports, `yearOf`, `Validity`                            |
 | Their tests (rule 10)                                      | Branded fixtures, renamed imports                        |
 | `docs/architecture.md`                                     | _Temporal validity_ row                                  |
+| `docs/architecture-target.md`                              | Item 4 keeps only `PersonId`                             |
 
 ## Order of work
 
-Failing `validity` and `ids` tests; ids and `findTree`; sign-in names; Day and `Validity`; `.mts`; `yearOf`; docs.
+Failing tests; ids and `findTree`; sign-in names; Day and `Validity`; `.mts`; `yearOf`; docs.
 
 ## Deviations
 
 - `brands.test.ts` holds the three `@ts-expect-error` misuses.
 - `validTo` stays typed in test helpers and `prepare-map-data.mts` (a string).
+- Three `plans/M2.5.*` files say `SignInPort` (#623 D2 B).
+- `overlaps` is the validator's `max(validFrom) < min(validTo)`: an empty or reversed range shares no day.
 
 ## Proof
 
-| Acceptance check                     | Proven by                                                  |
-| ------------------------------------ | ---------------------------------------------------------- |
-| Typecheck rejects the three misuses  | Three errors in Evidence                                   |
-| The three greps                      | Outside `design/canvas/` (not ours); D2 B renamed `plans/` |
-| `.mts` import; no precision list     | Lint; `fuzzy-date.mts`                                     |
-| "BET 1848 AND 1852" by `isCurrentOn` | `fuzzy-date.test.ts`                                       |
-| No behaviour change                  | Contract suite, `npm test`, e2e                            |
+| Acceptance check                     | Proven by                                                         |
+| ------------------------------------ | ----------------------------------------------------------------- |
+| Typecheck rejects the three misuses  | Three errors in Evidence                                          |
+| The three greps                      | Outside `design/canvas/` (not ours); `plans/` renamed (#623 D2 B) |
+| `.mts` import; no precision list     | Lint; `fuzzy-date.mts`                                            |
+| "BET 1848 AND 1852" by `isCurrentOn` | `fuzzy-date.test.ts`                                              |
+| No behaviour change                  | Contract suite, `npm test`, e2e                                   |

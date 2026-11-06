@@ -48,7 +48,7 @@ Recommended: A, because a Spec says what, not how.
 - Added causes: kit pages, outside formats.
 - New `design.md` holds the design lines; `spec.md` was over budget.
 - Approach's first-reading table cut; the PR body has the final one.
-- `spec.md` cut: box notes; the form has them.
+- `spec.md` cut: Step 2's box list; it points to the form's descriptions.
 - `spec.md` cut: Behaviour's edges; the round asks them.
 - `spec.md` cut: the link fallback; `SKILL.md` has it.
 - `spec.md` cut: "Next.js instead of Vite".

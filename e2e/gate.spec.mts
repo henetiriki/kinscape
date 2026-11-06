@@ -103,3 +103,23 @@ test('every response says noindex: a 401, a redirect, the sign-in page and a pub
     expect(response.headers()['x-robots-tag'], path).toBe('noindex');
   }
 });
+
+// NFR-03
+test('the sign-in page sends the security headers and no X-Powered-By', async ({
+  page,
+}) => {
+  const headers = (await page.request.get('/sign-in')).headers();
+
+  expect(headers['content-security-policy']).toContain(
+    "frame-ancestors 'none'"
+  );
+  expect(headers['content-security-policy']).toContain(
+    "worker-src 'self' blob:"
+  );
+  expect(headers['referrer-policy']).toBe('same-origin');
+  expect(headers['x-content-type-options']).toBe('nosniff');
+  expect(headers['permissions-policy']).toBe(
+    'camera=(), microphone=(), geolocation=()'
+  );
+  expect(headers['x-powered-by']).toBeUndefined();
+});

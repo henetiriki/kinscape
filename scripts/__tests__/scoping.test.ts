@@ -17,7 +17,7 @@ const METHODS = treeMethods(readFileSync('lib/domain/trees/types.ts', 'utf8'));
 const ADAPTERS =
   'Scoping rule: only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters.';
 const APP_SERVER =
-  'Scoping rule: app/ and features/ take values from server/ only through server/action, server/auth/current, server/boundaries/app-data, server/trees/repository.';
+  'Scoping rule: app/, features/ and lib/ take values from server/ only through server/action, server/auth/current, server/boundaries/app-data, server/trees/repository.';
 
 /** A route that reads a Tree with ids from the query string: the shape the rule exists to catch. */
 const THROWAWAY = {
@@ -129,6 +129,30 @@ describe('scopingBreaks', () => {
       'a renamed method taken out of the store',
       'server/auth/current.mts',
       'const { findTree: find } = store;',
+      'Scoping rule: only server/trees/ reads or writes store.findTree.',
+    ],
+    [
+      'a lib folder re-exporting the session store',
+      'lib/x/raw.ts',
+      "export { sessionOf } from '@ks/server/auth/sessions.mts';",
+      APP_SERVER,
+    ],
+    [
+      'a method reached by a string key',
+      'server/action.mts',
+      "const read = appAdapters().store['findTrees'](id);",
+      'Scoping rule: only server/trees/ reads or writes store.findTrees.',
+    ],
+    [
+      'a method reached by a template key',
+      'server/action.mts',
+      'const read = store[`findTree`];',
+      'Scoping rule: only server/trees/ reads or writes store.findTree.',
+    ],
+    [
+      'a method taken out by a string key',
+      'server/action.mts',
+      "const { 'findTree': find } = store;",
       'Scoping rule: only server/trees/ reads or writes store.findTree.',
     ],
     [

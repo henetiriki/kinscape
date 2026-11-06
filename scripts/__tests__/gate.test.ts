@@ -75,6 +75,9 @@ describe('routeOf', () => {
     ['app/manifest.ts', '/manifest.webmanifest'],
     ['app/data/x/route.js', '/data/x'],
     ['app/x/route.tsx', '/x'],
+    ['app/people/page.jsx', '/people'],
+    ['app/people/page.ts', '/people'],
+    ['app/people/page.js', '/people'],
     ['app/people/[id]/opengraph-image.tsx', '/people/x/opengraph-image'],
     ['app/icon.tsx', '/icon'],
   ])('serves %s at %s', (file, path) => {

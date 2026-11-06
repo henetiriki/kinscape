@@ -265,7 +265,7 @@ describe('the safety rules in the real lint config', () => {
         safety
       )
     ).toEqual([
-      expect.stringContaining('Scoping rule: app/ and features/'),
+      expect.stringContaining('Scoping rule: app/, features/ and lib/'),
       expect.stringContaining('safety/client-imports: Boundary rule'),
     ]);
   });

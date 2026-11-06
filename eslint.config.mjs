@@ -233,9 +233,13 @@ export default defineConfig([
   },
   {
     // The scoping rule of docs/architecture.md › Patterns, from scripts/safety.mts: app/ and
-    // features/ take values from server/ only through its entry points; appAdapters stays in
-    // the files that open a Tree. Tests are outside the rule; the kit is below server/ already.
-    files: ['app/**/*.{js,jsx,ts,tsx}', 'features/**/*.{js,jsx,ts,tsx}'],
+    // features/ and lib/ take values from server/ only through its entry points; appAdapters
+    // stays in the files that open a Tree. Tests are outside the rule; the kit is below server/ already.
+    files: [
+      'app/**/*.{js,jsx,ts,tsx}',
+      'features/**/*.{js,jsx,ts,tsx}',
+      'lib/**/*.{js,jsx,ts,tsx}',
+    ],
     ignores: ['**/__tests__/**', 'app/components/**'],
     rules: {
       'no-restricted-imports': [

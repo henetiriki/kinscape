@@ -49,7 +49,7 @@ const SESSION_CHECK = /(?:^|\.)(?:currentSession|openTree|requireSession)$/;
 
 const ADAPTERS_MESSAGE =
   'Scoping rule: only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters.';
-const APP_SERVER_MESSAGE = `Scoping rule: app/ and features/ take values from server/ only through ${APP_SERVER_MODULES.join(', ')}.`;
+const APP_SERVER_MESSAGE = `Scoping rule: app/, features/ and lib/ take values from server/ only through ${APP_SERVER_MODULES.join(', ')}.`;
 
 const escape = (text: string): string =>
   text.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
@@ -97,13 +97,17 @@ const methodUses = (
   const visit = (node: ts.Node): void => {
     const name = ts.isPropertyAccessExpression(node)
       ? node.name
-      : ts.isBindingElement(node)
-        ? (node.propertyName ?? node.name)
-        : undefined;
+      : ts.isElementAccessExpression(node)
+        ? node.argumentExpression
+        : ts.isBindingElement(node)
+          ? (node.propertyName ?? node.name)
+          : undefined;
 
     if (
       name !== undefined &&
-      ts.isIdentifier(name) &&
+      (ts.isIdentifier(name) ||
+        ts.isStringLiteral(name) ||
+        ts.isNoSubstitutionTemplateLiteral(name)) &&
       methods.includes(name.text)
     ) {
       found.push(name.text);
@@ -135,7 +139,7 @@ export const scopingBreaks = (
         .flatMap(target =>
           target === 'server/adapters' && !ADAPTER_IMPORTERS.test(path)
             ? [`${path}: ${ADAPTERS_MESSAGE}`]
-            : /^(?:app|features)\//.test(path) &&
+            : /^(?:app|features|lib)\//.test(path) &&
                 target.startsWith('server/') &&
                 !APP_SERVER_MODULES.includes(target)
               ? [`${path}: ${APP_SERVER_MESSAGE}`]
@@ -152,7 +156,7 @@ export const scopingBreaks = (
     });
 
 const ROUTE_FILE =
-  /^app\/(?:(.*)\/)?(page\.tsx|route\.[jt]sx?|robots\.ts|sitemap\.ts|manifest\.ts|(?:icon|apple-icon|opengraph-image|twitter-image)\.tsx)$/;
+  /^app\/(?:(.*)\/)?((?:page|route)\.[jt]sx?|robots\.ts|sitemap\.ts|manifest\.ts|(?:icon|apple-icon|opengraph-image|twitter-image)\.tsx)$/;
 const METADATA: Record<string, string> = {
   'manifest.ts': 'manifest.webmanifest',
   'robots.ts': 'robots.txt',

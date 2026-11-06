@@ -83,10 +83,41 @@ describe('check-production', () => {
     );
   });
 
-  it.each([[[]], [['not a url']]])('needs a base URL: %j', async args => {
+  it.each([[[]], [['not a url']], [['localhost:3000']]])(
+    'needs a base URL: %j',
+    async args => {
+      const fetch = deployment(GOOD());
+
+      expect(await run(args, {}, fetch)).toBe(2);
+      expect(fetch).not.toHaveBeenCalled();
+    }
+  );
+
+  it('does not send the bypass secret over http', async () => {
     const fetch = deployment(GOOD());
 
-    expect(await run(args, {}, fetch)).toBe(2);
-    expect(fetch).not.toHaveBeenCalled();
+    await run(
+      ['http://localhost:3000'],
+      { VERCEL_AUTOMATION_BYPASS_SECRET: 's3cret' },
+      fetch
+    );
+
+    expect(fetch.mock.calls[0]?.[1]).toEqual({
+      headers: {},
+      redirect: 'manual',
+    });
+  });
+
+  it('counts a rejected fetch as a failure', async () => {
+    const fetch = vi.fn<(url: string, init: RequestInit) => Promise<Response>>(
+      async () => {
+        throw new Error('refused');
+      }
+    );
+
+    expect(await run(['https://example.test'], {}, fetch)).toBe(1);
+    expect(error).toHaveBeenCalledWith(
+      expect.stringContaining('FAIL /design-kit')
+    );
   });
 });

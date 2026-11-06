@@ -80,10 +80,16 @@ export default defineConfig({
       url: 'http://localhost:3000',
     },
     // The same build with the design kit and screens hidden, as in production, for
-    // e2e/dev-pages.spec.mts. It starts after the server above, so the build exists.
+    // e2e/dev-pages.spec.mts. It starts after the server above, so in CI the build exists.
+    // Locally, if :3000 is already running the build is skipped: run `npm run build` first.
     {
       command: 'npm run start -- -p 3001',
-      env: { KINSCAPE_MEMORY_ADAPTERS: '1', NEXT_PUBLIC_E2E: '1' },
+      env: {
+        // Overrides any value exported in the shell.
+        KINSCAPE_DEV_PAGES: '',
+        KINSCAPE_MEMORY_ADAPTERS: '1',
+        NEXT_PUBLIC_E2E: '1',
+      },
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,
       url: 'http://localhost:3001/sign-in',

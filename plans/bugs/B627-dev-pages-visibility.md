@@ -37,15 +37,15 @@
 
 ## Files that change
 
-| File                                                                        | What                                   |
-| --------------------------------------------------------------------------- | -------------------------------------- |
-| `server/dev-pages.mts`, `server/__tests__/dev-pages.test.ts`                | Allowlist                              |
-| `proxy.ts`, `__tests__/proxy.test.ts`                                       | 404 for hidden pages                   |
-| `server/auth/current.mts`, `server/env.mts`, their tests                    | `requireDevPage()`; D2 guard           |
-| `app/design-kit/**/page.tsx`, `app/screens/add-pin/page.tsx`, `layout.tsx`s | Page check; layout check removed       |
-| `playwright.config.ts`, `e2e/dev-pages.spec.mts`                            | D2                                     |
-| `scripts/check-production.mts`, its test                                    | `/design-kit` 404; `/` redirects       |
-| `docs/architecture.md`, `docs/repo-settings.md`                             | Layout rule; Vercel rows; new variable |
+| File                                                                                         | What                                                                                          |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `server/dev-pages.mts`, `server/__tests__/dev-pages.test.ts`                                 | Allowlist                                                                                     |
+| `proxy.ts`, `__tests__/proxy.test.ts`                                                        | 404 for hidden pages                                                                          |
+| `server/auth/current.mts`, `server/env.mts`, their tests                                     | `requireDevPage()`; D2 guard                                                                  |
+| `app/design-kit/**/page.tsx`, `app/screens/add-pin/page.tsx`, `layout.tsx`s, and their tests | Page check; layout check removed (layout 404 tests deleted; page tests mock `requireDevPage`) |
+| `playwright.config.ts`, `e2e/dev-pages.spec.mts`                                             | D2                                                                                            |
+| `scripts/check-production.mts`, its test, `package.json`                                     | `/design-kit` 404; `/` redirects; `check:production` script                                   |
+| `docs/architecture.md`, `docs/repo-settings.md`                                              | Layout rule; Vercel rows; new variable                                                        |
 
 ## Order of work
 

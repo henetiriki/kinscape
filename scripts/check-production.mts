@@ -35,23 +35,35 @@ export const run = async (
 ): Promise<number> => {
   const [base] = args;
 
-  if (base === undefined || !URL.canParse(base)) {
+  const url = base === undefined ? null : URL.parse(base);
+
+  if (url === null || !['http:', 'https:'].includes(url.protocol)) {
     console.error('Usage: npm run check:production -- https://<host>');
 
     return 2;
   }
 
   const secret = env.VERCEL_AUTOMATION_BYPASS_SECRET;
-  const headers: Record<string, string> = secret
-    ? { 'x-vercel-protection-bypass': secret }
-    : {};
+  // Never send the secret in cleartext.
+  const headers: Record<string, string> =
+    secret && url.protocol === 'https:'
+      ? { 'x-vercel-protection-bypass': secret }
+      : {};
   let failures = 0;
 
   for (const { expected, ok, path } of CHECKS) {
-    const response = await fetch(new URL(path, base).href, {
-      headers,
-      redirect: 'manual',
-    });
+    let response: Response;
+
+    try {
+      response = await fetch(new URL(path, url).href, {
+        headers,
+        redirect: 'manual',
+      });
+    } catch {
+      failures += 1;
+      console.error(`FAIL ${path}: expected ${expected}, got no response`);
+      continue;
+    }
 
     if (ok(response)) {
       console.log(`ok   ${path}: ${expected}`);

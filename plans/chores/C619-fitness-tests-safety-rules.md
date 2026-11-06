@@ -6,7 +6,7 @@
 
 ## Approach
 
-Three checks in `scripts/safety.mts`, tested over the repo and fixtures; `eslint.config.mjs` reads the same lists. Scoping: `appAdapters` only in `server/action.mts`, `auth/current.mts` and `trees/`; `TreeStore`'s Tree methods only in `server/trees/`; `app/` and `features/` take values from `server/` only via those, `app-data` and `repository.mts`. Gate: the matcher skips named extensions; every route is public, or matched and checking the session itself (D4). Boundary: `server-only` opens each entry point; `'use client'` files import no value from `server/`.
+Three checks in `scripts/safety.mts`; `eslint.config.mjs` reads the same lists. Scoping: `appAdapters` only in `server/action.mts`, `auth/current.mts` and `trees/`; `TreeStore`'s Tree methods only in `server/trees/`; `app/` and `features/` take values from `server/` only via those, `app-data` and `repository.mts`. Gate: the matcher skips named extensions; every route is public, or matched and checking the session itself (D4). Boundary: `server-only` opens each entry point; `'use client'` files import no value from `server/`.
 
 ## Decisions
 
@@ -19,21 +19,21 @@ Three checks in `scripts/safety.mts`, tested over the repo and fixtures; `eslint
 
 **D2 · `/data/` under the gate** · Decides: Tech lead
 
-- **A.** The matcher covers it; the proxy answers 401 with no cookie.
+- **A.** The matcher covers it; 401 with no cookie.
 - ~~**B.** Keep the skip.~~
 
 **Answer: A** (@henetiriki)
 
 **D3 · Where `server-only` goes** · Decides: Tech lead
 
-- **A.** `action.mts`, `adapters.mts`, `auth/current.mts`, `app-data.ts`; not `env.mts`, `database.mts` (Node scripts import them).
+- **A.** `action.mts`, `adapters.mts`, `auth/current.mts`, `app-data.ts`; not `env.mts`, `database.mts`.
 - ~~**B.** Those too, with `--conditions=react-server`.~~
 
 **Answer: A** (@henetiriki)
 
 **D4 · Gated layouts** · Decides: Tech lead
 
-- **A.** Every page calls `requireSession()` (new in `auth/current.mts`): a layout's redirect doesn't stop its page rendering.
+- **A.** Every page calls `requireSession()` (new in `auth/current.mts`).
 - ~~**B.** The proxy makes the full check, or layouts keep counting.~~
 
 **Answer: A** (@henetiriki)
@@ -51,12 +51,14 @@ Three checks in `scripts/safety.mts`, tested over the repo and fixtures; `eslint
 
 ## Order of work
 
-1. Checks and tests; the repo fails.
+1. Checks and tests.
 2. D1–D4, ESLint, proxy, e2e, docs.
-3. Break each rule for Evidence.
+3. Evidence.
 
 ## Deviations
 
-- `app/components/` is outside the ESLint scoping block (the layer rule covers it).
+- `app/components/` is outside the ESLint scoping block (layer rule covers it).
 - The session check is per file.
 - `gate.spec.mts`: `.ts` specs load as CommonJS.
+- Kit pages render per request in production (D4); the layout's `notFound()` answers.
+- Server Actions are outside the gate check; `openTree` scopes Tree data.

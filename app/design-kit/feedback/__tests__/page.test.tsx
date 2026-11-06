@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import FeedbackKit from '@ks/app/design-kit/feedback/page';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 // MAP-03, NFR-06
 it('shows the eight cases, each a live field with its message', async () => {

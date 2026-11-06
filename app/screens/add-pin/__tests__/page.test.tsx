@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import AddPinPage, { metadata } from '@ks/app/screens/add-pin/page';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 it('puts the panel in the map screen frame, with no map', async () => {
   const { container } = render(await AddPinPage());

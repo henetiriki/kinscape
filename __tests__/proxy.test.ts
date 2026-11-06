@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { config, proxy } from '@ks/proxy';
 import { SESSION_COOKIE } from '@ks/server/auth/sessions.mts';
@@ -43,6 +43,45 @@ describe('proxy', () => {
 
   it('ignores a cookie with another name', () => {
     expect(proxy(request('/', 'other=1')).status).toBe(307);
+  });
+});
+
+// NFR-03: outside Preview and development the design kit and screens are 404, whatever the cookie.
+describe('proxy, with the dev pages hidden', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  const hide = () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VERCEL_ENV', 'production');
+  };
+
+  it.each(['/design-kit', '/design-kit/colour', '/screens/add-pin'])(
+    'answers 404 for %s, with or without a session cookie',
+    path => {
+      hide();
+
+      for (const cookie of [undefined, `${SESSION_COOKIE}=anything`]) {
+        const response = proxy(request(path, cookie));
+
+        expect(response.status).toBe(404);
+        expect(response.headers.get('location')).toBeNull();
+      }
+    }
+  );
+
+  it('leaves other pages to the cookie check', () => {
+    hide();
+
+    expect(proxy(request('/')).status).toBe(307);
+  });
+
+  it('lets them through on a Preview deployment', () => {
+    hide();
+    vi.stubEnv('VERCEL_ENV', 'preview');
+
+    expect(proxy(request('/design-kit')).status).toBe(307);
   });
 });
 

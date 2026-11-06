@@ -65,17 +65,30 @@ export default defineConfig({
   use: { baseURL: 'http://localhost:3000' },
   // Builds and starts the app before the tests. Locally an app already running on
   // that URL is reused; in CI a fresh build is always made.
-  webServer: {
-    command: 'npm run build && npm run start',
-    env: {
-      // The server fails at start without Supabase and database variables; the memory adapters need neither.
-      KINSCAPE_MEMORY_ADAPTERS: '1',
-      NEXT_PUBLIC_E2E: '1',
+  webServer: [
+    {
+      command: 'npm run build && npm run start',
+      env: {
+        // A production build hides the design kit and screens; the tests need them.
+        KINSCAPE_DEV_PAGES: '1',
+        // The server fails at start without Supabase and database variables; the memory adapters need neither.
+        KINSCAPE_MEMORY_ADAPTERS: '1',
+        NEXT_PUBLIC_E2E: '1',
+      },
+      reuseExistingServer: !process.env.CI,
+      timeout: 180_000,
+      url: 'http://localhost:3000',
     },
-    reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
-    url: 'http://localhost:3000',
-  },
+    // The same build with the design kit and screens hidden, as in production, for
+    // e2e/dev-pages.spec.mts. It starts after the server above, so the build exists.
+    {
+      command: 'npm run start -- -p 3001',
+      env: { KINSCAPE_MEMORY_ADAPTERS: '1', NEXT_PUBLIC_E2E: '1' },
+      reuseExistingServer: !process.env.CI,
+      timeout: 60_000,
+      url: 'http://localhost:3001/sign-in',
+    },
+  ],
   // The CI runner has 2 cores; elsewhere Playwright picks.
   workers: process.env.CI ? 2 : undefined,
 });

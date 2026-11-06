@@ -3,7 +3,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 
 import rawTokens from '@ks/design/tokens.json';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 afterEach(() => {
   vi.resetModules();

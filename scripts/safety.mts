@@ -45,7 +45,8 @@ export const PUBLIC_PATHS = ['/sign-in', '/robots.txt'];
  * The calls that check the session. Each page and route handler makes one itself: a layout's
  * redirect doesn't stop its page from rendering into the response. The check is per file.
  */
-const SESSION_CHECK = /(?:^|\.)(?:currentSession|openTree|requireSession)$/;
+const SESSION_CHECK =
+  /(?:^|\.)(?:currentSession|openTree|requireDevPage|requireSession)$/;
 
 const ADAPTERS_MESSAGE =
   'Scoping rule: only server/action.mts, server/auth/current.mts and server/trees/ import appAdapters.';
@@ -196,7 +197,7 @@ export const appRoutes = (paths: string[]): AppRoute[] =>
     return route === undefined ? [] : [route];
   });
 
-/** Whether a source calls `currentSession`, `openTree` or `requireSession`. */
+/** Whether a source calls `currentSession`, `openTree`, `requireDevPage` or `requireSession`. */
 const checksSession = (path: string, source: string): boolean => {
   let found = false;
   const visit = (node: ts.Node): void => {

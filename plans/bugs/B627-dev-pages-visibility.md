@@ -69,3 +69,5 @@
 - New variable `KINSCAPE_DEV_PAGES`: local and e2e only, refused on Vercel.
 
 ## Deviations
+
+- `scripts/safety.mts` counts `requireDevPage()` as a page's session check, with a `gate.test.ts` case.

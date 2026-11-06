@@ -174,6 +174,33 @@ describe('parseEnv with KINSCAPE_MEMORY_ADAPTERS', () => {
   });
 });
 
+// NFR-03
+describe('parseEnv with KINSCAPE_DEV_PAGES', () => {
+  it.each([
+    ['VERCEL', '1'],
+    ['VERCEL_ENV', 'production'],
+    ['VERCEL_ENV', ''],
+  ])('refuses to start with %s=%j', (name, value) => {
+    expect(() =>
+      parseEnv({ ...FULL, KINSCAPE_DEV_PAGES: '1', [name]: value })
+    ).toThrow(/KINSCAPE_DEV_PAGES/);
+    expect(() =>
+      parseEnv({
+        KINSCAPE_DEV_PAGES: '',
+        KINSCAPE_MEMORY_ADAPTERS: '1',
+        [name]: value,
+      })
+    ).toThrow(/KINSCAPE_DEV_PAGES/);
+  });
+
+  it('starts with it off Vercel', () => {
+    expect(
+      parseEnv({ KINSCAPE_DEV_PAGES: '1', KINSCAPE_MEMORY_ADAPTERS: '1' })
+        .memoryAdapters
+    ).toBe(true);
+  });
+});
+
 // NFR-09
 describe('parseDirectUrl', () => {
   it('needs no app URL', () => {

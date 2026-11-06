@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import StatesKit from '@ks/app/design-kit/states/page';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 // NFR-06
 it('shows every control in five states', async () => {

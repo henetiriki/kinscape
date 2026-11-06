@@ -1,11 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
-const notFound = vi.hoisted(() =>
-  vi.fn(() => {
-    throw new Error('NEXT_NOT_FOUND');
-  })
-);
 const redirect = vi.hoisted(() =>
   vi.fn((to: string) => {
     throw new Error(`redirect:${to}`);
@@ -14,7 +9,6 @@ const redirect = vi.hoisted(() =>
 const session = vi.hoisted(() => vi.fn());
 
 vi.mock('next/navigation', () => ({
-  notFound,
   redirect,
   usePathname: () => '/design-kit/type',
 }));
@@ -27,22 +21,11 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.unstubAllEnvs();
   vi.clearAllMocks();
 });
 
 // NFR-03
-it('is a 404 in production, for every kit page', async () => {
-  vi.stubEnv('VERCEL_ENV', 'production');
-  await expect(DesignKitLayout({ children: <p>board</p> })).rejects.toThrow(
-    'NEXT_NOT_FOUND'
-  );
-  expect(notFound).toHaveBeenCalled();
-});
-
-// NFR-03
 it('sends a visitor with no valid session to the sign-in page', async () => {
-  vi.stubEnv('VERCEL_ENV', 'preview');
   session.mockResolvedValue(undefined);
 
   await expect(DesignKitLayout({ children: <p>board</p> })).rejects.toThrow(
@@ -51,8 +34,7 @@ it('sends a visitor with no valid session to the sign-in page', async () => {
 });
 
 // NFR-06
-it('shows the banner, then the page outside production', async () => {
-  vi.stubEnv('VERCEL_ENV', 'preview');
+it('shows the banner, then the page', async () => {
   render(await DesignKitLayout({ children: <h1>Board</h1> }));
 
   const banner = screen.getByRole('banner');

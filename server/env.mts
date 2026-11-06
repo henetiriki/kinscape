@@ -42,10 +42,18 @@ const fail = (issues: readonly { path: PropertyKey[] }[]): never => {
  * Parses the server variables. A failure names each variable at fault, never its value.
  * `KINSCAPE_MEMORY_ADAPTERS=1` is test-only: it swaps in memory adapters, needs no database or
  * Supabase variable, and stops the server if `VERCEL` or `VERCEL_ENV` is defined, even empty.
+ * So does test-only `KINSCAPE_DEV_PAGES`, which shows the design kit and screens (`dev-pages.mts`).
  */
 export const parseEnv = (source: Record<string, string | undefined>) => {
+  const onVercel =
+    source.VERCEL !== undefined || source.VERCEL_ENV !== undefined;
+
+  if (onVercel && source.KINSCAPE_DEV_PAGES !== undefined) {
+    throw new Error('KINSCAPE_DEV_PAGES must never be set on Vercel');
+  }
+
   if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
-    if (source.VERCEL !== undefined || source.VERCEL_ENV !== undefined) {
+    if (onVercel) {
       throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
     }
 

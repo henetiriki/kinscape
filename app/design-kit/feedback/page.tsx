@@ -10,7 +10,7 @@ import { DateCase } from '@ks/app/design-kit/feedback/DateCase';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { requireSession } from '@ks/server/auth/current.mts';
+import { requireDevPage } from '@ks/server/auth/current.mts';
 
 import kit from '@ks/app/design-kit/kit.module.css';
 
@@ -284,7 +284,7 @@ const FeedbackKit = () => (
 );
 
 const Page = async () => {
-  await requireSession();
+  await requireDevPage();
 
   return <FeedbackKit />;
 };

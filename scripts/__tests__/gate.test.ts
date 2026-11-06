@@ -136,6 +136,7 @@ describe('gateBreaks', () => {
   it.each([
     ['openTree', 'const r = await openTree(deps, token);'],
     ['requireSession', 'const P = async () => { await requireSession(); };'],
+    ['requireDevPage', 'const P = async () => { await requireDevPage(); };'],
     ['a chained call', 'const s = await auth.currentSession();'],
   ])('accepts %s as the check', (_name, source) => {
     expect(gateBreaks({ 'app/a/page.tsx': source }, EVERYTHING, [])).toEqual(

@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import SurfacesKit from '@ks/app/design-kit/surfaces/page';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 const show = async (part?: string | string[]) =>
   render(await SurfacesKit({ searchParams: Promise.resolve({ part }) }));

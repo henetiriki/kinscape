@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 
 import type tokens from '@ks/design/tokens.json';
 
-vi.mock('@ks/server/auth/current.mts', () => ({ requireSession: vi.fn() }));
+vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 
 vi.mock('@ks/design/tokens.json', async importOriginal => {
   const original = await importOriginal<{ default: typeof tokens }>();

@@ -6,7 +6,7 @@ More detail: [Architecture](architecture.md), [Building and shipping](building.m
 
 ## Intent, Spec, Plan
 
-- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, filed already approved. M0 has none.
+- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, filed already approved.
 - **Spec:** one slice of an Intent: what will change and how we'll know it works, small enough for one pull request. The PO approves a Spec that changes what the user sees; the tech lead approves an engineering-only one. Its id is the milestone and a sequence (`M1.4`); an Intent outside the milestones gets a short prefix (`DM.1`).
 - File a Spec with its Intent's number, not `M<n>` (except M0), or it isn't linked as a sub-issue. When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`; the PO checks the outcome and closes it.
 - **Bug, Chore:** take a Spec's path, with ids `B<n>` and `C<n>`.
@@ -80,7 +80,7 @@ Answer with `D1: B` or `D1: other, <your option>`. On an issue, start the commen
 ## Roles and labels: whose turn is it?
 
 - **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs.
-- **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests.
+- **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns secrets.
 - **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing.
 
 Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status** label; the status tells you whose turn it is.

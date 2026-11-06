@@ -44,8 +44,9 @@ Recommended: A, because a plan proves each item in its Proof table.
 ## Deviations
 
 - `SKILL.md` cut: "Agree on what is wanted…"; the description says it. 62ceb31.
-- `SKILL.md` cut: "Say so the first time"; `bug.md` asks before it edits. 62ceb31.
-- `SKILL.md` cut: "Follow the data rules"; `bug.md` links them. 62ceb31.
-- `how-we-work.md` cut: the tech lead's owner list; CODEOWNERS has it. 62ceb31.
-- `how-we-work.md` cut: "the tech lead plans it" from the Bug row; the agent plans. Review-fix commit.
-- Approach cut: what `bug.md` now says; plan budget. Review-fix commit.
+- `SKILL.md` cut: "Say so the first time"; `bug.md` asks first. 62ceb31.
+- `SKILL.md` cut: "(e.g. `MAP-03`)", to link the Data rules.
+- `how-we-work.md` cut: the owner list but secrets; CODEOWNERS has it. 62ceb31.
+- `how-we-work.md` cut: "M0 has none"; line 11 says it.
+- `how-we-work.md` cut: "the tech lead plans it" from the Bug row; the agent plans. c090bb1.
+- Approach cut: repeats `bug.md`. c090bb1.

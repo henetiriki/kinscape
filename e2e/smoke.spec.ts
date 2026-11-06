@@ -2,10 +2,17 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+// NFR-03: the map renders under the Content-Security-Policy (next.config.ts), with no violation.
 test('the page loads and the map canvas renders', async ({ page }) => {
   const errors: Error[] = [];
+  const violations: string[] = [];
 
   page.on('pageerror', error => errors.push(error));
+  page.on('console', message => {
+    if (message.text().includes('Content Security Policy')) {
+      violations.push(message.text());
+    }
+  });
   await page.goto('/');
 
   const canvas = page.locator('canvas.maplibregl-canvas');
@@ -19,6 +26,7 @@ test('the page loads and the map canvas renders', async ({ page }) => {
     )
     .toBe(true);
   expect(errors).toEqual([]);
+  expect(violations).toEqual([]);
 });
 
 // MAP-01, MAP-02: the basemap and Polity data all load.

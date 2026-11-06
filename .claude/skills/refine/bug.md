@@ -27,6 +27,6 @@ A Bug is already filed, so give no form link. Ask "Edit #<number> now?" as its o
 
 The new body is the exact body up to any `<!-- refine bug -->` line, unchanged. Then comes that line, then the four sections. So a later run replaces only its own sections.
 
-Without `gh`, print only the four sections. The tech lead adds them at the end of the body, in the issue's Edit box.
+Without `gh`, print only the `<!-- refine bug -->` line and the four sections. The tech lead adds them at the end of the body, in the issue's Edit box.
 
 The tech lead sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.

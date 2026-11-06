@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { parseAccountId } from '@ks/lib/domain/ids/ids.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import {
   endedSessionCookie,
@@ -9,7 +10,8 @@ import {
 } from '@ks/server/auth/sessions.mts';
 
 const NOW = () => new Date('2030-01-01T00:00:00Z');
-const SESSION = { accountId: 'a', email: 'a@example.test' };
+const ACCOUNT = parseAccountId('00000000-0000-4000-8000-0000000000a1')!;
+const SESSION = { accountId: ACCOUNT, email: 'a@example.test' };
 
 // NFR-03
 describe('sessionOf', () => {
@@ -45,7 +47,7 @@ describe('startSession', () => {
     const token = await startSession(
       memorySessions(),
       () => new Date('2030-01-01T00:00:00Z'),
-      { accountId: 'a', email: 'a@example.test' }
+      SESSION
     );
 
     expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/);

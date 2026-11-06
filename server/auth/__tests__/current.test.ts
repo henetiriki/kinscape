@@ -22,8 +22,8 @@ import {
   signIn,
   signOut,
 } from '@ks/server/auth/current.mts';
-import { memorySession } from '@ks/server/auth/memory-session.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
+import { memorySignIn } from '@ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '@ks/server/auth/memory-throttle.mts';
 import {
   SESSION_COOKIE,
@@ -32,7 +32,7 @@ import {
 } from '@ks/server/auth/sessions.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
-const SESSION = { accountId: 'a', email: 'a@example.test' };
+const SESSION = { accountId: SYNTHETIC.accountId, email: 'a@example.test' };
 const RIGHT = { email: SYNTHETIC.email, password: SYNTHETIC.password };
 
 const sessions = () => (adapters.current as { sessions: never }).sessions;
@@ -40,8 +40,8 @@ const sessions = () => (adapters.current as { sessions: never }).sessions;
 beforeEach(() => {
   vi.clearAllMocks();
   adapters.current = {
-    session: memorySession([SYNTHETIC]),
     sessions: memorySessions(),
+    signIn: memorySignIn([SYNTHETIC]),
     store: memoryStore([
       {
         id: SYNTHETIC.accountId,

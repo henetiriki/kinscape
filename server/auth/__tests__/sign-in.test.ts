@@ -1,15 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { SessionPort } from '@ks/lib/domain/auth/types.ts';
+import type { SignInPort } from '@ks/lib/domain/auth/types.ts';
 
-import { memorySession } from '@ks/server/auth/memory-session.mts';
+import { parseAccountId } from '@ks/lib/domain/ids/ids.mts';
+import { memorySignIn } from '@ks/server/auth/memory-sign-in.mts';
 import { signIn } from '@ks/server/auth/sign-in.mts';
-import { ISSUER, supabaseSession } from '@ks/server/auth/supabase-session.mts';
+import { ISSUER, supabaseSignIn } from '@ks/server/auth/supabase-sign-in.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const EMAIL = 'ada@example.test';
 const PASSWORD = 'synthetic-password';
-const ACCOUNT = '00000000-0000-4000-8000-0000000000a1';
+const ACCOUNT = parseAccountId('00000000-0000-4000-8000-0000000000a1')!;
 
 const store = () =>
   memoryStore([{ id: ACCOUNT, issuer: ISSUER, subject: 'sub-ada', trees: [] }]);
@@ -27,12 +28,12 @@ const users = [
 const reply = (status: number, body: unknown) => async () =>
   new Response(JSON.stringify(body), { status });
 
-const supabase = (fetch: typeof globalThis.fetch): SessionPort =>
-  supabaseSession({ fetch, key: 'publishable-key', url: 'https://x.test' });
+const supabase = (fetch: typeof globalThis.fetch): SignInPort =>
+  supabaseSignIn({ fetch, key: 'publishable-key', url: 'https://x.test' });
 
 // NFR-03
 describe.each([
-  ['memory', () => memorySession(users)],
+  ['memory', () => memorySignIn(users)],
   [
     'Supabase',
     () =>
@@ -47,15 +48,15 @@ describe.each([
           : new Response(JSON.stringify({ user: { id: user.subject } }));
       }),
   ],
-])('signIn with the %s port', (_name, session) => {
+])('signIn with the %s port', (_name, port) => {
   it('returns the Account for the right email and password', async () => {
     expect(
-      await signIn({ session: session(), store: store() }, EMAIL, PASSWORD)
+      await signIn({ signIn: port(), store: store() }, EMAIL, PASSWORD)
     ).toEqual({ ok: true, value: { id: ACCOUNT } });
   });
 
   it('gives one refusal for a wrong password, no Account and an unknown email', async () => {
-    const deps = { session: session(), store: store() };
+    const deps = { signIn: port(), store: store() };
     const refusals = [
       await signIn(deps, EMAIL, 'wrong'),
       await signIn(deps, 'bob@example.test', PASSWORD),
@@ -72,7 +73,7 @@ describe.each([
 describe('signIn', () => {
   it('refuses an empty email or password without asking the port', async () => {
     const verify = vi.fn();
-    const deps = { session: { verify }, store: store() };
+    const deps = { signIn: { verify }, store: store() };
 
     expect(await signIn(deps, '', PASSWORD)).toEqual({
       error: 'refused',
@@ -87,37 +88,43 @@ describe('signIn', () => {
 
   it('looks the Account up with the issuer the port returned', async () => {
     const findAccount = vi.fn().mockResolvedValue({ id: ACCOUNT });
-    const session = {
+    const port = {
       verify: vi.fn().mockResolvedValue({ issuer: 'other', subject: 'sub-x' }),
     };
 
-    await signIn({ session, store: { ...store(), findAccount } }, EMAIL, 'pw');
+    await signIn(
+      { signIn: port, store: { ...store(), findAccount } },
+      EMAIL,
+      'pw'
+    );
 
     expect(findAccount).toHaveBeenCalledWith('other', 'sub-x');
   });
 
   it('refuses an Account with the right subject but another issuer', async () => {
-    const session = memorySession([
+    const port = memorySignIn([
       { email: EMAIL, issuer: 'other', password: PASSWORD, subject: 'sub-ada' },
     ]);
 
-    expect(await signIn({ session, store: store() }, EMAIL, PASSWORD)).toEqual({
+    expect(
+      await signIn({ signIn: port, store: store() }, EMAIL, PASSWORD)
+    ).toEqual({
       error: 'refused',
       ok: false,
     });
   });
 
   it('lets an outage through as an error, not a refusal', async () => {
-    const session = { verify: vi.fn().mockRejectedValue(new Error('down')) };
+    const port = { verify: vi.fn().mockRejectedValue(new Error('down')) };
 
     await expect(
-      signIn({ session, store: store() }, EMAIL, PASSWORD)
+      signIn({ signIn: port, store: store() }, EMAIL, PASSWORD)
     ).rejects.toThrow('down');
   });
 });
 
 // NFR-03
-describe('supabaseSession', () => {
+describe('supabaseSignIn', () => {
   it('posts the credentials to the password grant with the key', async () => {
     const fetch = vi.fn(reply(200, { user: { id: 'sub-ada' } }));
 
@@ -206,7 +213,7 @@ describe('supabaseSession', () => {
   it('builds the URL once when the base ends in a slash', async () => {
     const fetch = vi.fn(reply(200, { user: { id: 'sub-ada' } }));
 
-    await supabaseSession({
+    await supabaseSignIn({
       fetch,
       key: 'publishable-key',
       url: 'https://x.test/',

@@ -2,8 +2,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { DateField } from '@ks/features/map/components/DateField';
-import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { MIN_DAY } from '@ks/lib/domain/map/map-date';
+import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
 
 const TODAY = toDay('2026-10-21');
 const JUNE = toDay('1901-06-14');
@@ -281,7 +281,7 @@ it('drops a problem when the date changes from outside', () => {
   fireEvent.keyDown(field, { key: 'Enter' });
   rerender(
     <DateField
-      day={JUNE + 1}
+      day={asDay(JUNE + 1)}
       max={TODAY}
       min={MIN_DAY}
       onChange={onChange}

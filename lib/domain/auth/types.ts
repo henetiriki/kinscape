@@ -1,14 +1,7 @@
-/** Who a session belongs to. */
-export type Session = { accountId: string; email: string };
+import type { AccountId } from '@ks/lib/domain/ids/types.ts';
 
-/** Turns an email and password into the sign-in provider's issuer and subject, or undefined if refused. */
-export type SessionPort = {
-  /** Throws, naming no credential, when the provider can't answer. */
-  verify: (
-    email: string,
-    password: string
-  ) => Promise<{ issuer: string; subject: string } | undefined>;
-};
+/** Who a session belongs to. */
+export type Session = { accountId: AccountId; email: string };
 
 /** A stored session: only the SHA-256 of its token, never the token. */
 export type SessionRow = {
@@ -25,6 +18,15 @@ export type SessionStore = {
   /** Deletes every row whose `expiresAt` is at or before `now`. */
   removeExpired: (now: Date) => Promise<void>;
   renew: (tokenHash: string, expiresAt: Date) => Promise<void>;
+};
+
+/** Turns an email and password into the sign-in provider's issuer and subject, or undefined if refused. */
+export type SignInPort = {
+  /** Throws, naming no credential, when the provider can't answer. */
+  verify: (
+    email: string,
+    password: string
+  ) => Promise<{ issuer: string; subject: string } | undefined>;
 };
 
 /** Where failed sign-ins are kept, by `emailKey`: a hash, never the email. */

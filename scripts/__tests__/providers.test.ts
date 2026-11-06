@@ -130,7 +130,7 @@ describe('violations', () => {
         'scripts/account-add.mts': 'supabase',
         'server/__tests__/adapters.test.ts': 'supabase',
         'server/adapters.mts': "const issuer = 'supabase';",
-        'server/auth/supabase-session.mts': 'supabase',
+        'server/auth/supabase-sign-in.mts': 'supabase',
         'server/db/migrations/0001_x.sql': 'create table author (id int);',
         'server/env.mts': 'SUPABASE_URL',
       })

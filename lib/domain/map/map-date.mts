@@ -1,7 +1,7 @@
-import type { Day } from '@ks/lib/domain/boundaries/types.ts';
-import type { Precision } from '@ks/lib/domain/map/types';
+import type { Day } from '#ks/lib/domain/boundaries/types.ts';
+import type { Precision } from '#ks/lib/domain/map/types.ts';
 
-import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay, fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 export const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 
@@ -9,8 +9,12 @@ export const PRECISIONS: Precision[] = ['year', 'month', 'day'];
 export const finerPrecision = (a: Precision, b: Precision): Precision =>
   PRECISIONS[Math.max(PRECISIONS.indexOf(a), PRECISIONS.indexOf(b))];
 
+/** The coarser of two precisions: year over month over day. */
+export const coarserPrecision = (a: Precision, b: Precision): Precision =>
+  PRECISIONS[Math.min(PRECISIONS.indexOf(a), PRECISIONS.indexOf(b))];
+
 /** The first Map date: 1652-01-01. */
-export const MIN_DAY: Day = 0;
+export const MIN_DAY: Day = asDay(0);
 
 const FIRST_YEAR = 1652;
 
@@ -21,16 +25,19 @@ export const dayOf = (date: Date): Day =>
 /** The last Map date: today, in UTC. */
 export const todayDay = (): Day => dayOf(new Date());
 
-const clamp = (day: Day, max: Day): Day =>
-  Math.min(Math.max(day, MIN_DAY), max);
+const clamp = (days: number, max: Day): Day =>
+  asDay(Math.min(Math.max(days, MIN_DAY), max));
+
+/** The calendar year of `day`. */
+export const yearOf = (day: Day): number => Number(fromDay(day).slice(0, 4));
 
 const pad = (n: number, width: number): string =>
   String(n).padStart(width, '0');
 
 const parts = (day: Day): [number, number, number] => {
-  const [year, month, date] = fromDay(day).split('-').map(Number);
+  const [, month, date] = fromDay(day).split('-').map(Number);
 
-  return [year, month, date];
+  return [yearOf(day), month, date];
 };
 
 /** The day for a year and month (which may run past 1–12), keeping `date` or the month's last day. */

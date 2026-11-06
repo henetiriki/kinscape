@@ -3,14 +3,15 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import type { SessionStore } from '@ks/lib/domain/auth/types.ts';
 
+import { parseAccountId } from '@ks/lib/domain/ids/ids.mts';
 import {
   endSession,
   resumeSession,
   startSession,
 } from '@ks/server/auth/sessions.mts';
 
-export const ACCOUNT = '00000000-0000-4000-8000-0000000000a1';
-export const OTHER = '00000000-0000-4000-8000-0000000000a2';
+export const ACCOUNT = parseAccountId('00000000-0000-4000-8000-0000000000a1')!;
+export const OTHER = parseAccountId('00000000-0000-4000-8000-0000000000a2')!;
 
 const DAY = 86_400_000;
 const START = new Date('2030-01-01T00:00:00Z');

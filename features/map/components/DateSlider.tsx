@@ -2,15 +2,17 @@
 
 import type { CSSProperties } from 'react';
 
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types';
 import type { ContestedYears } from '@ks/lib/ui/types';
 
-import { fromDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import {
   dayFromSlider,
   sliderMax,
   sliderValue,
-} from '@ks/lib/domain/map/map-date';
+  yearOf,
+} from '@ks/lib/domain/map/map-date.mts';
 import { hatchStyle } from '@ks/lib/ui/hatch';
 
 import styles from '@ks/features/map/components/DateSlider.module.css';
@@ -22,7 +24,7 @@ const LABEL_GAP = 0.05;
 const SHIFT_STEPS = 10;
 
 /** Where a mark sits along the slider, 0 to 1, as the thumb would. */
-const at = (year: number, precision: Precision, lastDay: number): number => {
+const at = (year: number, precision: Precision, lastDay: Day): number => {
   const max = sliderMax(precision, lastDay);
 
   return (
@@ -52,15 +54,15 @@ export const DateSlider = ({
   ticks = [],
 }: {
   contested?: ContestedYears[];
-  day: number;
-  lastDay: number;
-  onChange: (day: number) => void;
+  day: Day;
+  lastDay: Day;
+  onChange: (day: Day) => void;
   precision: Precision;
   ticks?: number[];
 }) => {
   const max = sliderMax(precision, lastDay);
   const value = sliderValue(day, precision);
-  const lastYear = Number(fromDay(lastDay).slice(0, 4));
+  const lastYear = yearOf(lastDay);
   const years: number[] = [];
 
   for (

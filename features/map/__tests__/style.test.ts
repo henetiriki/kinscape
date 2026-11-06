@@ -6,6 +6,7 @@ import tokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { buildStyle } from '@ks/features/map/style';
+import { asDay } from '@ks/lib/domain/boundaries/model.mts';
 
 const POLITY_IDS = [
   'polity-borders',
@@ -17,17 +18,17 @@ const POLITY_IDS = [
 describe('buildStyle', () => {
   const layers = (day: number, show: boolean) =>
     new Map(
-      buildStyle(day, [polityLayer], {
+      buildStyle(asDay(day), [polityLayer], {
         [polityLayer.id]: show,
       }).layers.map(layer => [layer.id, layer])
     );
 
   it('builds the same style as before the Layer contract', () => {
-    expect(buildStyle(7, [polityLayer])).toMatchSnapshot();
+    expect(buildStyle(asDay(7), [polityLayer])).toMatchSnapshot();
   });
 
   it('draws the sea, land, coast and rivers from local files', () => {
-    const style = buildStyle(0, [polityLayer]);
+    const style = buildStyle(asDay(0), [polityLayer]);
 
     expect(style.glyphs).toBe('/glyphs/{fontstack}/{range}.pbf');
     expect((style.sources.land as { data: string }).data).toBe(
@@ -57,7 +58,7 @@ describe('buildStyle', () => {
 
       for (const id of POLITY_IDS) {
         expect(built.get(id)).toMatchObject({
-          filter: polityLayer.filters(7)[id],
+          filter: polityLayer.filters(asDay(7))[id],
           layout: { visibility: expected },
         });
       }
@@ -73,7 +74,7 @@ describe('buildStyle', () => {
       layers: [{ before, id, source: 'x', type: 'fill' }],
       sources: { x: { data: '/x.geojson', type: 'geojson' } },
     });
-    const style = buildStyle(0, [
+    const style = buildStyle(asDay(0), [
       extra('first', 'land'),
       extra('last'),
       extra('stale', 'missing'),

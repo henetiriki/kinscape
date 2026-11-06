@@ -4,8 +4,11 @@ const session = vi.hoisted(() => vi.fn());
 
 vi.mock('@ks/server/auth/current.mts', () => ({ currentSession: session }));
 
+import type { Validity } from '@ks/lib/domain/validity/types.ts';
+
 import { GET } from '@ks/app/data/polities/route';
-import { isCurrentOn, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 import { loadAppData } from '@ks/server/boundaries/app-data';
 
 type Feature = {
@@ -13,9 +16,7 @@ type Feature = {
     kind: string;
     name: string;
     polity: string;
-    validFrom: number;
-    validTo: null | number;
-  };
+  } & Validity;
 };
 
 const UNION_ONLY = [

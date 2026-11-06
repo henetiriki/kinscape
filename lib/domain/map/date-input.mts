@@ -1,10 +1,11 @@
-import type { Fix, Precision, Problem } from '@ks/lib/domain/map/types';
+import type { Day } from '#ks/lib/domain/boundaries/types.ts';
+import type { Fix, Precision, Problem } from '#ks/lib/domain/map/types.ts';
 
-import { toDay } from '@ks/lib/domain/boundaries/model.mts';
-import { shownDate } from '@ks/lib/domain/map/map-date';
+import { toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { shownDate } from '#ks/lib/domain/map/map-date.mts';
 
 type Check =
-  | { day: number; ok: true; precision: Precision }
+  | { day: Day; ok: true; precision: Precision }
   | { ok: false; problem: Problem };
 
 const FORMAT = /^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?$/;
@@ -45,7 +46,7 @@ const daysIn = (year: number, month: number): number => {
  * (single digits are padded). The day is the first of the period typed.
  * A problem says what is wrong and offers the nearest date that works.
  */
-export const checkDate = (text: string, min: number, max: number): Check => {
+export const checkDate = (text: string, min: Day, max: Day): Check => {
   const match = FORMAT.exec(text.trim());
   const [, typedYear, typedMonth, typedDate] = match ?? [];
   const month = typedMonth === undefined ? undefined : Number(typedMonth);

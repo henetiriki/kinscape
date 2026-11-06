@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { parseAccountId } from '@ks/lib/domain/ids/ids.mts';
 import { attemptSignIn } from '@ks/server/auth/attempt.mts';
-import { memorySession } from '@ks/server/auth/memory-session.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
+import { memorySignIn } from '@ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '@ks/server/auth/memory-throttle.mts';
 import { resumeSession } from '@ks/server/auth/sessions.mts';
 import { emailKey } from '@ks/server/auth/throttle.mts';
@@ -10,7 +11,7 @@ import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const MINUTE = 60_000;
 const START = new Date('2030-01-01T00:00:00Z');
-const ACCOUNT = '00000000-0000-4000-8000-0000000000a1';
+const ACCOUNT = parseAccountId('00000000-0000-4000-8000-0000000000a1')!;
 const USER = {
   email: 'ada@example.test',
   issuer: 'synthetic',
@@ -27,14 +28,14 @@ const RIGHT = { email: USER.email, password: USER.password };
 const WRONG = { email: USER.email, password: 'wrong' };
 
 const setup = (
-  session = memorySession([USER, NO_ACCOUNT]),
+  port = memorySignIn([USER, NO_ACCOUNT]),
   throttle = memoryThrottle()
 ) => {
   let time = START.getTime();
   const sessions = memorySessions();
   const deps = {
-    session,
     sessions,
+    signIn: port,
     store: memoryStore([
       { id: ACCOUNT, issuer: USER.issuer, subject: USER.subject, trees: [] },
     ]),

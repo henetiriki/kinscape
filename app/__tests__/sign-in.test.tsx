@@ -29,8 +29,8 @@ vi.mock('@ks/app/components/auth/SignInForm', () => ({
 import { signInAction, signOutAction } from '@ks/app/sign-in/actions';
 import SignIn from '@ks/app/sign-in/page';
 import { SYNTHETIC } from '@ks/server/adapters.mts';
-import { memorySession } from '@ks/server/auth/memory-session.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
+import { memorySignIn } from '@ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '@ks/server/auth/memory-throttle.mts';
 import {
   endedSessionCookie,
@@ -42,8 +42,8 @@ import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const fresh = () => {
   adapters.current = {
-    session: memorySession([SYNTHETIC]),
     sessions: memorySessions(),
+    signIn: memorySignIn([SYNTHETIC]),
     store: memoryStore([
       {
         id: SYNTHETIC.accountId,
@@ -190,7 +190,7 @@ describe('signInAction', () => {
   it('returns unavailable when Auth does not answer', async () => {
     adapters.current = {
       ...(adapters.current as object),
-      session: {
+      signIn: {
         verify: async () => {
           throw new Error('down');
         },

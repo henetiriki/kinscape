@@ -1,10 +1,13 @@
 import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 import type { createDb } from '#ks/server/db/database.mts';
 
+import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
-import { isUuid } from '#ks/server/trees/uuid.mts';
 
-/** A TreeStore over Postgres. A read given an id that isn't a UUID finds nothing, as in memory. */
+/**
+ * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
+ * throws on a malformed `uuid`, so a read given an id that isn't a UUID finds nothing, as in memory.
+ */
 export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
   addAccount: ({ issuer, subject, treeName }) =>
     db.transaction().execute(async trx => {
@@ -41,8 +44,8 @@ export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
       .where('subject', '=', subject)
       .select('id')
       .executeTakeFirst(),
-  findTree: async (accountId, treeId) =>
-    isUuid(accountId) && isUuid(treeId)
+  findTree: async ({ accountId, treeId }) =>
+    parseAccountId(accountId) && parseTreeId(treeId)
       ? db
           .selectFrom('tree')
           .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')
@@ -52,7 +55,7 @@ export const databaseStore = (db: ReturnType<typeof createDb>): TreeStore => ({
           .executeTakeFirst()
       : undefined,
   findTrees: async accountId =>
-    isUuid(accountId)
+    parseAccountId(accountId)
       ? db
           .selectFrom('tree')
           .innerJoin('treeAccount', 'treeAccount.treeId', 'tree.id')

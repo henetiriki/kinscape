@@ -1,16 +1,22 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import type { AccountId, TreeId } from '@ks/lib/domain/ids/types.ts';
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
 
+import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
 import { openTree } from '@ks/server/trees/repository.mts';
 
-const MISSING = '00000000-0000-4000-8000-000000000000';
+const MISSING_ACCOUNT = parseAccountId('00000000-0000-4000-8000-000000000000')!;
+const MISSING_TREE = parseTreeId('00000000-0000-4000-8000-000000000000')!;
+// A cast can hold a string that is not a UUID; a store still finds nothing for it.
+const MALFORMED_ACCOUNT = 'not-a-uuid' as AccountId;
+const MALFORMED_TREE = 'not-a-uuid' as TreeId;
 const NOW = new Date('2030-01-01T00:00:00Z');
 const NOT_FOUND = { error: 'not-found', ok: false };
 const NO_TREE: SeedAccount = {
-  id: '00000000-0000-4000-8000-0000000000a1',
+  id: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
   issuer: 'test',
   subject: 'no-tree',
   trees: [],
@@ -52,9 +58,10 @@ export const runTreeStoreContract = (
           return;
         }
 
-        expect(
-          await store.findTree(added.value.accountId, added.value.treeId)
-        ).toEqual({ id: added.value.treeId, name: 'Tree A' });
+        expect(await store.findTree(added.value)).toEqual({
+          id: added.value.treeId,
+          name: 'Tree A',
+        });
       });
     });
 
@@ -76,12 +83,23 @@ export const runTreeStoreContract = (
           throw new Error('setup failed');
         }
 
-        const cross = await store.findTree(b.value.accountId, a.value.treeId);
-        const missing = await store.findTree(b.value.accountId, MISSING);
+        const cross = await store.findTree({
+          accountId: b.value.accountId,
+          treeId: a.value.treeId,
+        });
+        const missing = await store.findTree({
+          accountId: b.value.accountId,
+          treeId: MISSING_TREE,
+        });
 
         expect(cross).toBeUndefined();
         expect(cross).toEqual(missing);
-        expect(await store.findTree(MISSING, a.value.treeId)).toBeUndefined();
+        expect(
+          await store.findTree({
+            accountId: MISSING_ACCOUNT,
+            treeId: a.value.treeId,
+          })
+        ).toBeUndefined();
       });
     });
 
@@ -97,9 +115,10 @@ export const runTreeStoreContract = (
         }
 
         expect(second).toEqual({ error: 'exists', ok: false });
-        expect(
-          await store.findTree(first.value.accountId, first.value.treeId)
-        ).toEqual({ id: first.value.treeId, name: 'Tree A' });
+        expect(await store.findTree(first.value)).toEqual({
+          id: first.value.treeId,
+          name: 'Tree A',
+        });
       });
     });
 
@@ -148,7 +167,7 @@ export const runTreeStoreContract = (
         expect(await store.findTrees(b.value.accountId)).toEqual([
           { id: b.value.treeId, name: 'Tree B' },
         ]);
-        expect(await store.findTrees(MISSING)).toEqual([]);
+        expect(await store.findTrees(MISSING_ACCOUNT)).toEqual([]);
       });
     });
 
@@ -165,13 +184,19 @@ export const runTreeStoreContract = (
           throw new Error('setup failed');
         }
 
-        expect(await store.findTrees('not-a-uuid')).toEqual([]);
-        expect(await store.findTree('not-a-uuid', added.value.treeId)).toBe(
-          undefined
-        );
-        expect(await store.findTree(added.value.accountId, 'not-a-uuid')).toBe(
-          undefined
-        );
+        expect(await store.findTrees(MALFORMED_ACCOUNT)).toEqual([]);
+        expect(
+          await store.findTree({
+            accountId: MALFORMED_ACCOUNT,
+            treeId: added.value.treeId,
+          })
+        ).toBe(undefined);
+        expect(
+          await store.findTree({
+            accountId: added.value.accountId,
+            treeId: MALFORMED_TREE,
+          })
+        ).toBe(undefined);
       });
     });
 
@@ -232,7 +257,7 @@ export const runTreeStoreContract = (
       /** Opens as a signed-in Account; `at` is the clock when opening. */
       const openAs = async (
         store: TreeStore,
-        accountId: string,
+        accountId: AccountId,
         treeId?: string,
         at = NOW
       ) => {
@@ -292,7 +317,7 @@ export const runTreeStoreContract = (
           const cross = await openAs(store, b.accountId, a.treeId);
 
           expect(cross).toEqual(NOT_FOUND);
-          expect(cross).toEqual(await openAs(store, b.accountId, MISSING));
+          expect(cross).toEqual(await openAs(store, b.accountId, MISSING_TREE));
         });
       });
 

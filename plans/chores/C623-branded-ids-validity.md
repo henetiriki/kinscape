@@ -53,6 +53,11 @@ About 1,000 changed lines, past the 600 cap.
 
 Failing `validity` and `ids` tests; ids and `findTree`; sign-in names; Day and `Validity`; `.mts`; `yearOf`; docs.
 
+## Deviations
+
+- `brands.test.ts` holds the three `@ts-expect-error` misuses.
+- `validTo` stays typed in test helpers and `prepare-map-data.mts` (a string).
+
 ## Proof
 
 | Acceptance check                     | Proven by                                                  |

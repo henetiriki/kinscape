@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { DateSlider } from '@ks/features/map/components/DateSlider';
-import { toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 const today = toDay('2026-10-21');
 
@@ -93,13 +93,13 @@ it('moves ten steps with Shift and an arrow', () => {
 });
 
 it('stops Shift and an arrow at both ends', () => {
-  const first = setup({}, 0);
+  const first = setup({}, asDay(0));
 
   fireEvent.keyDown(screen.getByRole('slider'), {
     key: 'ArrowLeft',
     shiftKey: true,
   });
-  expect(first.onChange).toHaveBeenLastCalledWith(0);
+  expect(first.onChange).toHaveBeenLastCalledWith(asDay(0));
 });
 
 it('leaves a plain arrow and other keys to the range', () => {

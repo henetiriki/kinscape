@@ -1,4 +1,4 @@
-import type { SessionPort } from '#ks/lib/domain/auth/types.ts';
+import type { SignInPort } from '#ks/lib/domain/auth/types.ts';
 import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
@@ -8,7 +8,7 @@ import { err, ok } from '#ks/lib/domain/result/result.mts';
  * Account give the same `refused`. An Auth outage throws (the port's error) and is never a refusal.
  */
 export const signIn = async (
-  { session, store }: { session: SessionPort; store: TreeStore },
+  { signIn: port, store }: { signIn: SignInPort; store: TreeStore },
   email: string,
   password: string
 ) => {
@@ -16,7 +16,7 @@ export const signIn = async (
     return err('refused');
   }
 
-  const identity = await session.verify(email, password);
+  const identity = await port.verify(email, password);
   const account =
     identity === undefined
       ? undefined

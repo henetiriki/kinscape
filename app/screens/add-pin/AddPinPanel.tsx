@@ -10,7 +10,7 @@ import { Surface } from '@ks/app/components/foundation/Surface';
 import { Text } from '@ks/app/components/foundation/Text';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { DateField } from '@ks/features/map';
-import { dayOf, MIN_DAY, todayDay } from '@ks/lib/domain/map/map-date';
+import { dayOf, MIN_DAY, todayDay } from '@ks/lib/domain/map/map-date.mts';
 import { EVENT_ORDER } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/screens/add-pin/AddPinPanel.module.css';

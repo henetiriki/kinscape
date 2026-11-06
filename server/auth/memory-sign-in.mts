@@ -1,14 +1,14 @@
-import type { SessionPort } from '#ks/lib/domain/auth/types.ts';
+import type { SignInPort } from '#ks/lib/domain/auth/types.ts';
 
-/** A SessionPort over synthetic users, for tests and the test-only adapters. */
-export const memorySession = (
+/** A SignInPort over synthetic users, for tests and the test-only adapters. */
+export const memorySignIn = (
   users: {
     email: string;
     issuer: string;
     password: string;
     subject: string;
   }[]
-): SessionPort => ({
+): SignInPort => ({
   verify: async (email, password) => {
     const user = users.find(u => u.email === email && u.password === password);
 

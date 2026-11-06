@@ -1,4 +1,4 @@
-import { polityCollection } from '@ks/lib/domain/map/features';
+import { polityCollection } from '@ks/lib/domain/map/features.mts';
 import { currentSession } from '@ks/server/auth/current.mts';
 import { loadAppData } from '@ks/server/boundaries/app-data';
 

@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
 import type {
-  SessionPort,
   SessionStore,
+  SignInPort,
   ThrottleStore,
 } from '#ks/lib/domain/auth/types.ts';
 import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { startSession } from '#ks/server/auth/sessions.mts';
-import { signIn } from '#ks/server/auth/sign-in.mts';
+import { signIn as signInWith } from '#ks/server/auth/sign-in.mts';
 import {
   countFailure,
   forgetFailure,
@@ -29,8 +29,8 @@ const input = z.object({
  */
 export const attemptSignIn = async (
   deps: {
-    session: SessionPort;
     sessions: SessionStore;
+    signIn: SignInPort;
     store: TreeStore;
     throttle: ThrottleStore;
   },
@@ -54,7 +54,9 @@ export const attemptSignIn = async (
 
     await countFailure(deps.throttle, failedAt, email);
 
-    const result = await signIn(deps, email, password).catch(() => undefined);
+    const result = await signInWith(deps, email, password).catch(
+      () => undefined
+    );
 
     if (result?.ok !== false) {
       await forgetFailure(deps.throttle, failedAt, email);

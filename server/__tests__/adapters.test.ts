@@ -77,9 +77,9 @@ describe('appAdapters', () => {
     const fetch = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response('{}', { status: 400 }));
-    const { session, sessions, store, throttle } = appAdapters();
+    const { sessions, signIn, store, throttle } = appAdapters();
 
-    expect(await session.verify('a@example.test', 'pw')).toBeUndefined();
+    expect(await signIn.verify('a@example.test', 'pw')).toBeUndefined();
     expect(fetch).toHaveBeenCalledWith(
       'https://example.supabase.co/auth/v1/token?grant_type=password',
       expect.anything()

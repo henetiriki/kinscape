@@ -11,6 +11,7 @@ import { useEffect, useRef } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import type { Layer, LayerId } from '@ks/features/map/types';
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 
 import { PHONE } from '@ks/app/components/foundation/usePhone';
 import { freeArea } from '@ks/features/map/components/Stage';
@@ -46,7 +47,7 @@ export const MapView = ({
 }: {
   /** The layers the map draws; the Map date filters each and `visible` shows or hides them. */
   layers: Layer[];
-  mapDay: number;
+  mapDay: Day;
   /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
   padding: Padding;
   /** Each layer is on unless its entry is `false`. */

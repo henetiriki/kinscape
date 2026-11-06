@@ -1,7 +1,7 @@
 # Plan: C635: /refine bug, so Bugs are well defined before an agent plans them
 
 - **Spec:** #635
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The Chore allows either file.
 - **B.** A new `plans/README.md` rule, cutting README text to stay within its 750 words.
 - **Other:** your own.
 
-Recommended: A, because _Proof_ is where the plan writes it and TEMPLATE has room.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

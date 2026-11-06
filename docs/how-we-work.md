@@ -33,13 +33,13 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 ## Which issue do I need?
 
-| I want to...                                  | Open a                                                                                                 | Who approves                   | Starts as               |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------ | ----------------------- |
-| Start the next milestone                      | Nothing: the tech lead runs `/refine spec <Intent number>`                                             | See _Spec_                     | n/a                     |
-| Add or change something not in a milestone    | **Intent**                                                                                             | PO                             | `status: draft`         |
-| Change [the requirements](requirements.md)    | **Intent** (the only route)                                                                            | PO                             | `status: draft`         |
-| Report something broken                       | **Bug** (tech lead: `/refine bug <number>`, then `ready-for-agent`)                                    | Nobody; the tech lead plans it | `status: ready-for-dev` |
-| Change tooling, CI, docs, process or settings | **Chore** (tech lead; draft with `/refine chore`; [how it's built](building.md#specs-bugs-and-chores)) | Tech lead                      | `status: ready-for-dev` |
+| I want to...                                  | Open a                                                                                                 | Who approves | Starts as               |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------ | ----------------------- |
+| Start the next milestone                      | Nothing: the tech lead runs `/refine spec <Intent number>`                                             | See _Spec_   | n/a                     |
+| Add or change something not in a milestone    | **Intent**                                                                                             | PO           | `status: draft`         |
+| Change [the requirements](requirements.md)    | **Intent** (the only route)                                                                            | PO           | `status: draft`         |
+| Report something broken                       | **Bug** (the tech lead may run `/refine bug <number>`, then sets `status: ready-for-agent`)            | Nobody       | `status: ready-for-dev` |
+| Change tooling, CI, docs, process or settings | **Chore** (tech lead; draft with `/refine chore`; [how it's built](building.md#specs-bugs-and-chores)) | Tech lead    | `status: ready-for-dev` |
 
 ## Drafting with Claude
 

@@ -5,7 +5,7 @@
 
 ## Approach
 
-New `bug.md` reads the Bug with `gh issue view`, then asks, as _Method_ says, until **Steps to reproduce**, **Expected per**, **Acceptance checks** and **Must not break** are settled. It looks up requirement IDs, Specs and snapshots itself; with none, it asks. It writes in STE, runs the check round on _Acceptance checks_, and shows the four sections as `###` headings, as the form renders its boxes. After the tech lead confirms, one `gh issue edit --body-file` adds them below the reporter's text, unchanged. `SKILL.md` lists the mode ("which of the four"); the Bug row of _Which issue do I need?_ names `/refine bug`.
+New `bug.md` asks, as _Method_ says, until **Steps to reproduce**, **Expected per**, **Acceptance checks** and **Must not break** are settled, then adds them to the Bug. `SKILL.md` lists the mode ("which of the four"); the Bug row of _Which issue do I need?_ names `/refine bug`.
 
 ## Decisions
 
@@ -15,16 +15,18 @@ New `bug.md` reads the Bug with `gh issue view`, then asks, as _Method_ says, un
 - **B.** A new `plans/README.md` rule, cutting README text to stay within its 750 words.
 - **Other:** your own.
 
+Recommended: A, because a plan proves each item in its Proof table.
+
 **Answer: A** (@henetiriki)
 
 ## Files that change
 
-| File                             | What                        |
-| -------------------------------- | --------------------------- |
-| `.claude/skills/refine/bug.md`   | New mode                    |
-| `.claude/skills/refine/SKILL.md` | Mode, description, hint     |
-| `docs/how-we-work.md`            | Bug row: `/refine bug`      |
-| `plans/TEMPLATE.md`              | Must not break proof (D1 A) |
+| File                             | New / changed | What                        |
+| -------------------------------- | ------------- | --------------------------- |
+| `.claude/skills/refine/bug.md`   | New           | The mode                    |
+| `.claude/skills/refine/SKILL.md` | Changed       | Mode, description, hint     |
+| `docs/how-we-work.md`            | Changed       | Bug row: `/refine bug`      |
+| `plans/TEMPLATE.md`              | Changed       | Must not break proof (D1 A) |
 
 ## Risks
 
@@ -41,7 +43,8 @@ New `bug.md` reads the Bug with `gh issue view`, then asks, as _Method_ says, un
 
 ## Deviations
 
-- `SKILL.md` cut: "Agree on what is wanted…"; the description says it.
-- `SKILL.md` cut: "Say so the first time."
-- `SKILL.md` cut: "Follow the data rules in `AGENTS.md`."
-- `how-we-work.md` cut: the tech lead's owner list.
+- `SKILL.md` cut: "Agree on what is wanted…"; the description says it. 62ceb31.
+- `SKILL.md` cut: "Say so the first time"; `bug.md` asks before it edits. 62ceb31.
+- `SKILL.md` cut: "Follow the data rules"; `bug.md` links them. 62ceb31.
+- `how-we-work.md` cut: the tech lead's owner list; CODEOWNERS has it. 62ceb31.
+- Approach cut: what `bug.md` now says; plan budget. Review-fix commit.

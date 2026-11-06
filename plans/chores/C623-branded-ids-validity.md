@@ -2,7 +2,7 @@
 
 - **Spec:** #623
 - **Requirement IDs:** [BND-01](../../docs/requirements.md#bnd-01), [PIN-04](../../docs/requirements.md#pin-04), [NFR-09](../../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Zod, slider steps, label spans and fixtures start from numbers.
 - **B.** `as Day` at each site.
 - **Other:** your own.
 
-Recommended: A, because one maker can be found and tested.
+**Answer: A** (@henetiriki)
 
 **D2 · Malformed ids in the store contract** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Recommended: A, because one maker can be found and tested.
 - **B.** The guards go; the cases move to the `ids` tests.
 - **Other:** your own.
 
-Recommended: A: the contract stays unchanged.
+**Answer: A** (@henetiriki)
 
 **D3 · One PR or two** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ About 1,000 changed lines, past the 600 cap.
 - **B.** Split: ids, `findTree`, sign-in names; then the rest.
 - **Other:** your own.
 
-Recommended: A: most lines are imports and fixtures.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

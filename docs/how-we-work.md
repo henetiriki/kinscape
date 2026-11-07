@@ -52,7 +52,7 @@ The `/refine` skill asks questions until you agree, then drafts the issue.
 
 ## Writing Specs, Bugs and Chores
 
-New Specs, Bugs and Chores follow these Simplified Technical English (ASD-STE100) rules:
+New Specs, Bugs, Chores and plans follow these Simplified Technical English (ASD-STE100) rules:
 
 - Write one instruction per sentence.
 - Keep an instruction to 20 words or fewer, and a description sentence to 25.

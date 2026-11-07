@@ -1,7 +1,7 @@
 # Plan: C639: Plans follow the STE writing rules
 
 - **Spec:** #639
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

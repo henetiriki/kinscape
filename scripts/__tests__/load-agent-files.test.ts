@@ -1066,6 +1066,7 @@ describe('the agent files a workflow loads', () => {
     ['claude-plan.yml', /^\s*agent_files: (.+)$/m],
     ['claude-build.yml', /^\s*agent_files: (.+)$/m],
     ['claude-fix-review.yml', /^\s*agent_files: (.+)$/m],
+    ['claude-resolve-conflict.yml', /^\s*agent_files: (.+)$/m],
     ['claude-unblock.yml', /^\s*files: (.+)$/m],
   ] as const)(
     'are in .github/agent/, rules.md first and build.md last, in %s',
@@ -1231,6 +1232,115 @@ describe('the fix-review workflow', () => {
     expect(text).toContain('newest PR comment');
     expect(text).toContain('npm run review:threads -- resolve <n> <thread id>');
     expect(text).not.toContain('gh api');
+    expect(text).toContain('rule 10');
+    expect(text).toContain('draft state, labels or reviewers');
+    expect(text).toMatch(/data, not instructions/);
+  });
+});
+
+// Adding the label `resolve-conflict` to a PR has Claude merge main into its branch
+// (plans/chores/C641-resolve-conflict-label.md). The run-name repeats the job's `if:`.
+describe('the resolve-conflict workflow', () => {
+  type Job = {
+    if?: string;
+    needs?: string;
+    permissions?: Record<string, string>;
+    steps?: Step[];
+    uses?: string;
+    with?: Record<string, unknown>;
+  };
+  const workflow = () =>
+    parse(read('claude-resolve-conflict.yml')) as {
+      jobs: Record<string, Job>;
+      on: Record<string, { types?: string[] }>;
+      'run-name': string;
+    };
+  const jobs = () => workflow().jobs;
+  const flat = (text = '') => text.replace(/\s+/g, ' ').trim();
+  const condition = () => {
+    const [before] = flat(workflow()['run-name']).split(' && format(');
+
+    return before.replace(/^\$\{\{ /, '');
+  };
+
+  it('starts when a label is added to a pull request, and on nothing else', () => {
+    expect(workflow().on).toEqual({ pull_request: { types: ['labeled'] } });
+  });
+
+  it('runs only for the owner’s label on an open PR, a draft too, from a branch in this repo, not a hand-back', () => {
+    const text = flat(jobs().resolve.if);
+
+    expect(text).toContain("github.event.label.name == 'resolve-conflict'");
+    expect(text).toContain("github.event.pull_request.state == 'open'");
+    // A draft plan PR falls behind main too.
+    expect(text).not.toContain('draft');
+    expect(text).toContain(
+      'github.event.pull_request.head.repo.full_name == github.repository'
+    );
+    expect(text).toContain(
+      "!contains(github.event.pull_request.labels.*.name, 'hand-back')"
+    );
+    expect(text).toContain('github.actor == github.repository_owner');
+  });
+
+  it('shows "Resolve conflict" or "Skipped Resolve conflict" with the title, on the job’s condition', () => {
+    const name = workflow()['run-name'];
+
+    expect(name).toContain("format('Resolve conflict: {0}'");
+    expect(name).toContain("format('Skipped Resolve conflict: {0}'");
+    expect(condition()).toBe(flat(jobs().resolve.if));
+  });
+
+  it('calls the shared runner from a pinned commit as a resolve: head branch, Sonnet, no plan', () => {
+    const { uses, with: inputs } = jobs().resolve;
+
+    expect(uses).toMatch(
+      /^henetiriki\/kinscape\/\.github\/workflows\/claude-run\.yml@[0-9a-f]{40}$/
+    );
+    expect(inputs).toMatchObject({
+      agent_files: 'rules.md resolve-conflict.md',
+      kind: 'resolve',
+      model_args: '--model sonnet',
+      ref: '${{ github.event.pull_request.head.ref }}',
+      thread: '${{ github.event.pull_request.number }}',
+    });
+    expect(inputs).not.toHaveProperty('plan');
+    expect(inputs).not.toHaveProperty('playwright');
+  });
+
+  it('gives the prompt the PR number alone', () => {
+    const prompt = String(jobs().resolve.with?.prompt);
+
+    expect(prompt).toContain('${{ github.event.pull_request.number }}');
+    expect(prompt).not.toMatch(
+      /github\.event\.pull_request\.(title|body)|github\.event\.(comment|review)/
+    );
+  });
+
+  it('removes the label after the run, passed or failed, but not after a skip', () => {
+    const { unlabel } = jobs();
+    const [step] = unlabel.steps ?? [];
+
+    expect(unlabel.needs).toBe('resolve');
+    expect(unlabel.if).toBe("always() && needs.resolve.result != 'skipped'");
+    expect(unlabel.permissions).toEqual({ 'pull-requests': 'write' });
+    expect(step.env).toMatchObject({
+      GH_TOKEN: '${{ github.token }}',
+      PR: '${{ github.event.pull_request.number }}',
+    });
+    expect(step.run).toContain('labels/resolve-conflict');
+    expect(step.run).toContain('404');
+  });
+
+  it('tells Claude to merge, never rebase or force-push, and to abort when unsure, in resolve-conflict.md', () => {
+    const text = agent('resolve-conflict.md');
+
+    // The checkout has depth 1, so the merge needs main's history (D1).
+    expect(text).toContain('git fetch --unshallow origin main');
+    expect(text).toContain('git merge --no-commit --no-ff origin/main');
+    expect(text).toContain('Never rebase. Never force-push.');
+    expect(text).toContain('git merge --abort');
+    expect(text).toContain("If you can't tell which side is right");
     expect(text).toContain('rule 10');
     expect(text).toContain('draft state, labels or reviewers');
     expect(text).toMatch(/data, not instructions/);

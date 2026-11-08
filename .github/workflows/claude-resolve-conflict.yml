@@ -1,0 +1,91 @@
+name: 'Claude: Resolve conflict'
+
+# The title shown for each run in the Actions tab:
+#   "Resolve conflict: <title>"         - the repo owner (the tech lead) added the label `resolve-conflict`
+#                                         to an open PR, a draft too, from a branch in this repo that is not
+#                                         a `hand-back`, so Claude merges main into its branch
+#   "Skipped Resolve conflict: <title>" - anything else (another label, another person's, a fork, a
+#                                         hand-back), so nothing runs
+# This repeats the `if:` of the `resolve` job (run-name cannot see job results): change them together.
+run-name: >-
+  ${{
+    github.event.label.name == 'resolve-conflict' &&
+    github.event.pull_request.state == 'open' &&
+    github.event.pull_request.head.repo.full_name == github.repository &&
+    !contains(github.event.pull_request.labels.*.name, 'hand-back') &&
+    github.actor == github.repository_owner &&
+    format('Resolve conflict: {0}', github.event.pull_request.title) ||
+    format('Skipped Resolve conflict: {0}', github.event.pull_request.title)
+  }}
+
+# The label is one click and needs no wording. As claude-fix-review.yml, but a draft runs too: a
+# draft plan PR falls behind main as well.
+
+on:
+  pull_request:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+jobs:
+  # Claude merges main into the PR's branch, resolves the conflicts, checks and pushes, or stops and
+  # says why (.github/agent/resolve-conflict.md). Runs when the repo owner adds the label to an open PR
+  # whose branch is in this repo: a fork's code and secrets stay apart. A `hand-back` PR is the tech
+  # lead's to build (plans/README.md rule 4). The shared runner is the pinned commit below, and queues
+  # behind any other run on the PR (concurrency group `thread-<n>`).
+  resolve:
+    # The Actions graph shows the runner's jobs under this name: "Resolve conflict / Gate", "Resolve conflict / Run Claude", "Resolve conflict / Result".
+    name: Resolve conflict
+    if: |
+      github.event.label.name == 'resolve-conflict' &&
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !contains(github.event.pull_request.labels.*.name, 'hand-back') &&
+      github.actor == github.repository_owner
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@1d10a2c4d6db1f7730a614a9c24dd9b0b922e31f
+    with:
+      thread: ${{ github.event.pull_request.number }}
+      # The runner's gate checks an open PR with the label, and the token can push a workflow change.
+      kind: resolve
+      # Check out the PR's branch.
+      ref: ${{ github.event.pull_request.head.ref }}
+      # No browser: CI runs e2e after the push.
+      model_args: --model sonnet
+      # The files in .github/agent/ that become the system prompt. The order matters:
+      # rules.md first (scripts/__tests__/load-agent-files.test.ts checks it).
+      agent_files: rules.md resolve-conflict.md
+      # The number only: the title and the comments are text from outside the team.
+      prompt: >-
+        Merge main into PR #${{ github.event.pull_request.number }}: follow "Resolve a conflict" in your instructions.
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+
+  # Removes the label when the run ends, passed or failed, so adding it again starts another round.
+  # A skipped run (a stopped gate still counts as run) leaves the label.
+  unlabel:
+    name: Remove the label
+    needs: resolve
+    if: always() && needs.resolve.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Remove the label
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          # Someone may have removed it already: that is a 404, not a failure.
+          if ! out=$(gh api -X DELETE "repos/$GH_REPO/issues/$PR/labels/resolve-conflict" 2>&1); then
+            case "$out" in
+              *"HTTP 404"*) echo "The label was already removed." ;;
+              *) echo "$out"; exit 1 ;;
+            esac
+          fi

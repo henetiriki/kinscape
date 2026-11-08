@@ -7,7 +7,7 @@ Code and workflows follow these. The automated review flags a change that breaks
 - On the server, check that the signed-in Account may access the Tree on every read and write. Never trust an id sent by the client.
 - No `dangerouslySetInnerHTML`, `eval` or `new Function` on user or third-party content.
 - Database queries take parameters; never build SQL from strings.
-- Workflows follow the rules under _In workflows_ in [review.md](../.github/agent/review.md#the-rules).
+- Workflows follow the rules under _Workflows_ in [review-code.md](../.github/agent/review-code.md#workflows).
 - Logs and error messages never include secrets, tokens or Person data.
 
 ## New infrastructure

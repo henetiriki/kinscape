@@ -62,7 +62,7 @@ jobs:
       - name: Load review rules and settings
         uses: henetiriki/kinscape/.github/actions/load-agent-files@10bbf48497442acf32bbab6465b1b5a5a4badc9f
         with:
-          files: review.md
+          files: review.md review-code.md
           settings: review-settings.json
           main_files: AGENTS.md docs/security.md .github/claude-plugins/.claude-plugin/marketplace.json .github/workflows/claude-code-review.yml
           token: ${{ github.token }}

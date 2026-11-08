@@ -12,19 +12,19 @@ Flag a rule or fact the diff adds to a `.md` file that another doc or prompt alr
 
 ## Code smells (not style)
 
-Name the refactoring with each: Extract Module, Move Function, Replace Primitive with Object, Remove Dead Code.
+Name the refactoring with each, e.g. Extract Function, Split Phase, Extract Module, Move Function, Replace Primitive with Object, Remove Dead Code.
 
 - Flag logic duplicated across files (two implementations of one port, a copied helper).
 - Flag a function over about 60 lines or with more than one phase.
-- Flag a type or constant defined again: `git grep` its name.
+- Flag a type or constant defined again: search for its name.
 - Flag a list of primitives where a domain type exists (`Day`, branded ids, `lib/domain/validity/`).
-- Flag an export, component or file that no route or test reaches.
-- Flag a server variable read from `process.env` outside `server/env.mts` (not `NEXT_PUBLIC_*`, `NODE_ENV`, configs, tests).
+- Flag an export, component or file that no route, page, script or workflow reaches (tests don't count).
+- Flag a `process.env.<NAME>` read of a server variable outside `server/env.mts`. Passing `process.env` to `parseEnv` or `devPagesVisible` is fine.
 
 ## Placement
 
 - Check each new file against `docs/architecture.md` › _Where does X go_ and its layer table (a domain type under `lib/ui`, a clock read in `lib/domain`).
-- Check the Patterns rows enforced by "Review": variants as data attributes, slots, state in the shell, traceability.
+- Check the Patterns rows whose _Enforced by_ is "Review".
 - Flag a synonym for a _Key concepts_ term in code, UI or docs (`User` for Account, `Marker` for Pin, `Region` for Polity).
 
 ## Pattern table
@@ -35,7 +35,7 @@ Name the refactoring with each: Extract Module, Move Function, Replace Primitive
 ## New surface
 
 - A new page, route handler or server action: reached through the gate and `openTree` with a Viewer, validates its input, sets `Cache-Control: private, no-store` on Tree data, and takes no Tree or Account id from the client.
-- A new environment variable, secret or service: in `server/env.mts`, a row in `docs/repo-settings.md`, and a **Blocking** decision in the Spec or plan.
+- A new environment variable, secret or service: in `server/env.mts`, a row in `docs/repo-settings.md`, and as `docs/security.md` › _New infrastructure_ says.
 - A new dependency or asset: licence and origin recorded (NFR-08, `data/sources.json` or a file beside it); a pinned version gives its reason.
 
 ## Test quality

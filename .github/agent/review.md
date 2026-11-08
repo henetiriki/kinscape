@@ -1,6 +1,6 @@
 # Review rules
 
-Where these rules or `review-code.md` (what to look for) and the review command disagree, the rules win.
+Where `review.md` or `review-code.md` (what to look for) disagrees with the review command, these files win.
 
 ## The plan
 

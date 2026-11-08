@@ -110,7 +110,24 @@ describe('the load-agent-files action', () => {
     expect(read('claude-code-review.yml')).toMatch(
       /^\s*files: review\.md review-code\.md$/m
     );
-    expect(existsSync(join(root, '.github/agent/review-code.md'))).toBe(true);
+  });
+
+  // The rule groups of #644: the review drops one only by this test failing.
+  it.each([
+    'Rules',
+    'Code smells (not style)',
+    'Placement',
+    'Pattern table',
+    'New surface',
+    'Test quality',
+    'Decision reversal',
+    'Stale facts',
+    'Scale',
+    'Workflows',
+  ])('gives the review the rule group "%s"', heading => {
+    expect(agent('review-code.md')).toMatch(
+      new RegExp(`^## ${heading.replace(/[()]/g, '\\$&')}$`, 'm')
+    );
   });
 
   // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.

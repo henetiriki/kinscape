@@ -84,10 +84,25 @@ describe('the App token', () => {
     expect(step).toContain('--author "$author"');
   });
 
-  // Only the pin PR changes workflow files.
-  it.each(files)('grants workflows write in %s only to the pin job', file => {
-    expect(read(file).includes('permission-workflows')).toBe(
-      file === 'actions-pin-update.yml'
+  // Only the pin PR changes workflow files, and a resolve run that merges a change from main.
+  it.each(files)(
+    'grants workflows write in %s only to the pin job and the runner',
+    file => {
+      expect(read(file).includes('permission-workflows')).toBe(
+        file === 'actions-pin-update.yml' || file === 'claude-run.yml'
+      );
+    }
+  );
+
+  it('grants workflows write in the runner only on a resolve run', () => {
+    const text = read('claude-run.yml');
+    const mint = (parse(text) as Workflow).jobs.run.steps?.find(
+      step => step.id === 'bot'
+    );
+
+    expect(text.match(/permission-workflows/g)).toHaveLength(1);
+    expect(mint?.with?.['permission-workflows']).toBe(
+      "${{ inputs.kind == 'resolve' && 'write' || '' }}"
     );
   });
 });

@@ -1174,12 +1174,16 @@ describe('the fix-review workflow', () => {
       type: 'string',
     });
     expect(step('gate', ({ id }) => id === 'gate')?.env?.KIND).toBe(
-      "${{ inputs.kind == 'fix' && 'fix' || inputs.plan && 'plan' || 'build' }}"
+      "${{ inputs.kind || inputs.plan && 'plan' || 'build' }}"
     );
     expect(
       step('run', ({ name }) => name === 'Show that the run started')?.env?.VERB
     ).toBe(
-      "${{ inputs.kind == 'fix' && 'Fixing' || inputs.plan && 'Planning' || 'Building' }}"
+      "${{ inputs.kind == 'fix' && 'Fixing' || inputs.kind == 'resolve' && 'Resolving' || inputs.plan && 'Planning' || 'Building' }}"
+    );
+    // Only a plan or a build hands an issue back.
+    expect(runner.jobs.return.if).toBe(
+      "always() && inputs.kind == '' && needs.run.result != 'cancelled'"
     );
   };
 

@@ -279,6 +279,22 @@ describe('run', () => {
       );
     });
 
+    it('stops a resolve quietly when the PR is not open', () => {
+      quiet(
+        ['resolve', '50'],
+        { pr: { labels: ['resolve-conflict'], state: 'MERGED' } },
+        'the PR is not open'
+      );
+    });
+
+    it('stops a resolve quietly when the label is gone', () => {
+      quiet(
+        ['resolve', '50'],
+        { pr: { labels: ['fix-review'] } },
+        'the PR no longer has the `resolve-conflict` label'
+      );
+    });
+
     it('reads the issue and the PR as they are now', () => {
       fakeGh({});
       run(['plan', '5'], ENV, gh, write, summary);
@@ -459,6 +475,37 @@ describe('run', () => {
         closes: { 50: [7] },
       });
       run(['fix', '50'], ENV, gh, write, summary);
+
+      expect(write).toHaveBeenCalledWith('go=true');
+      expect(gh.mock.calls.map(([call]) => call[0])).not.toContain('api');
+      expect(posted()).toHaveLength(0);
+      expect(edited()).toHaveLength(0);
+    });
+  });
+
+  describe('resolve', () => {
+    it('goes ahead for an open PR with the label, a draft too, and says so', () => {
+      fakeGh({ pr: { isDraft: true, labels: ['resolve-conflict'] } });
+
+      expect(run(['resolve', '50'], ENV, gh, write, summary)).toBe(0);
+      expect(write).toHaveBeenCalledWith('go=true');
+      expect(vi.mocked(console.log).mock.calls.map(([line]) => line)).toEqual([
+        'PR #50 is open and has the `resolve-conflict` label.',
+        'Go.',
+      ]);
+      expect(summary.mock.calls[0][0]).toMatch(
+        /^### Gate: go \(resolve #50\)\n/
+      );
+    });
+
+    // A merge from main changes no plan, so a Spec's blockers don't hold it.
+    it('checks no blocker and comments nothing', () => {
+      fakeGh({
+        blockers: { 7: [{ number: 2, state: 'open' }] },
+        closes: { 50: [7] },
+        pr: { labels: ['resolve-conflict'] },
+      });
+      run(['resolve', '50'], ENV, gh, write, summary);
 
       expect(write).toHaveBeenCalledWith('go=true');
       expect(gh.mock.calls.map(([call]) => call[0])).not.toContain('api');

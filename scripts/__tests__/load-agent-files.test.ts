@@ -105,8 +105,33 @@ describe('the load-agent-files action', () => {
     }
   });
 
-  it('is told by the review to load review.md', () => {
-    expect(read('claude-code-review.yml')).toMatch(/^\s*files: review\.md$/m);
+  // review.md is the process, review-code.md what to look for (plans/chores/C644-review-code-rules.md).
+  it('is told by the review to load review.md, then review-code.md', () => {
+    expect(read('claude-code-review.yml')).toMatch(
+      /^\s*files: review\.md review-code\.md$/m
+    );
+  });
+
+  // The rule groups of #644: the review drops one only by this test failing.
+  it.each([
+    'Rules',
+    'Code smells (not style)',
+    'Placement',
+    'Pattern table',
+    'New surface',
+    'Test quality',
+    'Decision reversal',
+    'Stale facts',
+    'Scale',
+    'Workflows',
+  ])('gives the review the rule group "%s"', heading => {
+    const [, ...rules] = (
+      agent('review-code.md')
+        .split(/^## /m)
+        .find(section => section.split('\n')[0] === heading) ?? ''
+    ).split('\n');
+
+    expect(rules.join('').trim(), `"## ${heading}" has no rules`).not.toBe('');
   });
 
   // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.
@@ -1512,15 +1537,15 @@ describe('the load-agent-files script', () => {
     );
   });
 
-  it('downloads the settings file it is told to, and loads review.md alone', () => {
-    const { settings, system } = load('review.md', undefined, {
+  it('downloads the settings file it is told to, and loads the review files in order', () => {
+    const { settings, system } = load('review.md review-code.md', undefined, {
       SETTINGS_FILE: 'review-settings.json',
     });
 
     expect(JSON.parse(settings).permissions.allow).toEqual(
       JSON.parse(agent('review-settings.json')).permissions.allow
     );
-    expect(system).toBe(`${agent('review.md')}\n`);
+    expect(system).toBe(`${agent('review.md')}\n${agent('review-code.md')}\n`);
   });
 
   it('retries a download that fails, up to three tries', () => {

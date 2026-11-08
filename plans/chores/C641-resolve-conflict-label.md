@@ -66,3 +66,7 @@ The run's token has no `workflows` permission. GitHub refuses a push that brings
 | `run-name`, `if:`, unlabel, prompt    | `load-agent-files.test.ts`         |
 | Conflict, draft and skipped runs      | After merge, on test PRs           |
 | `check-github.sh` shows no difference | Running it after `setup-github.sh` |
+
+## Deviations
+
+- `scripts/__tests__/app-token.test.ts` also changes: it allowed `permission-workflows` only in `actions-pin-update.yml`, and D2 adds it to the runner (1d10a2c).

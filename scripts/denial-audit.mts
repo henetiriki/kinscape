@@ -66,6 +66,7 @@ const WORKFLOWS = [
   'claude-respond.yml',
   'claude-code-review.yml',
   'claude-fix-review.yml',
+  'claude-resolve-conflict.yml',
   'claude-unblock.yml',
 ];
 const DAYS = 7;

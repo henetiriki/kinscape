@@ -684,6 +684,7 @@ describe('run', () => {
       'claude-code-review.yml': [],
       'claude-fix-review.yml': [],
       'claude-plan.yml': [],
+      'claude-resolve-conflict.yml': [],
       'claude-respond.yml': [],
       'claude-unblock.yml': [],
     };
@@ -746,6 +747,7 @@ describe('run', () => {
       'claude-respond.yml',
       'claude-code-review.yml',
       'claude-fix-review.yml',
+      'claude-resolve-conflict.yml',
       'claude-unblock.yml',
     ]) {
       expect(gh).toHaveBeenCalledWith([

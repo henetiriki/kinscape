@@ -32,6 +32,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | Claude: Plan<br>`claude-plan.yml` · calls Claude: Run (shared) | issues | `labeled` | plan |
 | Claude: Plugin pin check<br>`claude-plugin-pin-check.yml` | schedule | `0 6 * * 1` | check-pin |
 | | workflow_dispatch | | |
+| Claude: Resolve conflict<br>`claude-resolve-conflict.yml` · calls Claude: Run (shared) | pull_request_target | `labeled` | resolve · unlabel |
 | Claude: Respond<br>`claude-respond.yml` | issue_comment | `created` | claude · summary |
 | | pull_request_review_comment | `created` | |
 | | issues | `opened, assigned` | |
@@ -53,6 +54,7 @@ flowchart TB
   on_pull_request([pull_request])
   on_pull_request_review([pull_request_review])
   on_pull_request_review_comment([pull_request_review_comment])
+  on_pull_request_target([pull_request_target])
   backlog_issue_status["Backlog: Issue status"]
   backlog_milestone["Backlog: Inherit milestone"]
   ci_cache_cleanup["CI: Delete PR caches"]
@@ -61,6 +63,7 @@ flowchart TB
   claude_code_review["Claude: Code Review"]
   claude_fix_review["Claude: Fix review"]
   claude_hand_back["Claude: Hand back"]
+  claude_resolve_conflict["Claude: Resolve conflict"]
   claude_respond["Claude: Respond"]
   claude_run["Claude: Run (shared)"]
   on_pull_request --> backlog_issue_status
@@ -74,14 +77,16 @@ flowchart TB
   on_pull_request_review --> claude_build
   on_pull_request_review --> claude_respond
   on_pull_request_review_comment --> claude_respond
+  on_pull_request_target --> claude_resolve_conflict
   claude_build -.->|calls| claude_run
   claude_fix_review -.->|calls| claude_run
+  claude_resolve_conflict -.->|calls| claude_run
   classDef backlog fill:#fdf3dd,stroke:#b7791f
   classDef ci fill:#e8f1f7,stroke:#3e7fa6
   classDef claude fill:#e6eee4,stroke:#264f29
   class backlog_issue_status,backlog_milestone backlog
   class ci_cache_cleanup,ci ci
-  class claude_build,claude_code_review,claude_fix_review,claude_hand_back,claude_respond,claude_run claude
+  class claude_build,claude_code_review,claude_fix_review,claude_hand_back,claude_resolve_conflict,claude_respond,claude_run claude
 ```
 
 ## Issues

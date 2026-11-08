@@ -26,7 +26,12 @@ const CALL = /\.github\/workflows\/([\w.-]+\.ya?ml)/;
 const FAMILIES: [string, string[]][] = [
   [
     'Pull requests',
-    ['pull_request', 'pull_request_review', 'pull_request_review_comment'],
+    [
+      'pull_request',
+      'pull_request_target',
+      'pull_request_review',
+      'pull_request_review_comment',
+    ],
   ],
   ['Issues', ['issues', 'issue_comment']],
   ['Push, schedule and manual runs', ['push', 'schedule', 'workflow_dispatch']],

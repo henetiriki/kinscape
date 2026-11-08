@@ -20,6 +20,8 @@ status: blocked|7F1D1D|Waiting on someone outside the team, or a failed agent ru
 hand-back|B60205|The tech lead builds this: it changes a hand-back path
 # Added by the tech lead to a pull request to start claude-fix-review.yml; the run removes it
 fix-review|FBCA04|Claude fixes the review's findings on this PR
+# Added by the tech lead to a pull request to start claude-resolve-conflict.yml; the run removes it
+resolve-conflict|0E8A16|Claude merges main into this PR and resolves the conflicts
 EOF
 }
 

@@ -32,7 +32,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | Claude: Plan<br>`claude-plan.yml` · calls Claude: Run (shared) | issues | `labeled` | plan |
 | Claude: Plugin pin check<br>`claude-plugin-pin-check.yml` | schedule | `0 6 * * 1` | check-pin |
 | | workflow_dispatch | | |
-| Claude: Resolve conflict<br>`claude-resolve-conflict.yml` · calls Claude: Run (shared) | pull_request | `labeled` | resolve · unlabel |
+| Claude: Resolve conflict<br>`claude-resolve-conflict.yml` · calls Claude: Run (shared) | pull_request_target | `labeled` | resolve · unlabel |
 | Claude: Respond<br>`claude-respond.yml` | issue_comment | `created` | claude · summary |
 | | pull_request_review_comment | `created` | |
 | | issues | `opened, assigned` | |
@@ -54,6 +54,7 @@ flowchart TB
   on_pull_request([pull_request])
   on_pull_request_review([pull_request_review])
   on_pull_request_review_comment([pull_request_review_comment])
+  on_pull_request_target([pull_request_target])
   backlog_issue_status["Backlog: Issue status"]
   backlog_milestone["Backlog: Inherit milestone"]
   ci_cache_cleanup["CI: Delete PR caches"]
@@ -72,11 +73,11 @@ flowchart TB
   on_pull_request --> claude_code_review
   on_pull_request --> claude_fix_review
   on_pull_request --> claude_hand_back
-  on_pull_request --> claude_resolve_conflict
   on_pull_request_review --> backlog_issue_status
   on_pull_request_review --> claude_build
   on_pull_request_review --> claude_respond
   on_pull_request_review_comment --> claude_respond
+  on_pull_request_target --> claude_resolve_conflict
   claude_build -.->|calls| claude_run
   claude_fix_review -.->|calls| claude_run
   claude_resolve_conflict -.->|calls| claude_run

@@ -20,9 +20,14 @@ run-name: >-
 
 # The label is one click and needs no wording. As claude-fix-review.yml, but a draft runs too: a
 # draft plan PR falls behind main as well.
+#
+# The one exception to "Never `pull_request_target`": GitHub runs no `pull_request` workflow on a
+# PR with a merge conflict, the case this exists for. It is safe here because this file runs from
+# main, so the PR can't change it, and the `if:` admits only the owner's label on a branch in this
+# repo, never a fork's code.
 
 on:
-  pull_request:
+  pull_request_target:
     types: [labeled]
 
 permissions:

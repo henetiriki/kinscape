@@ -1263,8 +1263,11 @@ describe('the resolve-conflict workflow', () => {
     return before.replace(/^\$\{\{ /, '');
   };
 
-  it('starts when a label is added to a pull request, and on nothing else', () => {
-    expect(workflow().on).toEqual({ pull_request: { types: ['labeled'] } });
+  // `pull_request` never runs on a PR with a merge conflict.
+  it('starts when a label is added to a pull request, even a conflicted one, and on nothing else', () => {
+    expect(workflow().on).toEqual({
+      pull_request_target: { types: ['labeled'] },
+    });
   });
 
   it('runs only for the owner’s label on an open PR, a draft too, from a branch in this repo, not a hand-back', () => {

@@ -1,7 +1,5 @@
 # What to look for
 
-Each finding below is a defect, not style ([Findings](review.md#findings)).
-
 ## Rules
 
 Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In the checkout those two files are `main`'s; the PR's changes to them are in the diff.
@@ -16,23 +14,23 @@ Flag a rule or fact the diff adds to a `.md` file that another doc or prompt alr
 
 Name the refactoring with each: Extract Module, Move Function, Replace Primitive with Object, Remove Dead Code.
 
-- Flag logic duplicated across files: two implementations of one port, a helper copied into another script.
-- Flag a function over about 60 lines, or one that does more than one phase.
+- Flag logic duplicated across files (two implementations of one port, a copied helper).
+- Flag a function over about 60 lines or with more than one phase.
 - Flag a type or constant defined again: `git grep` its name.
 - Flag a list of primitives where a domain type exists (`Day`, branded ids, `lib/domain/validity/`).
 - Flag an export, component or file that no route or test reaches.
-- Flag a `process.env` read outside `server/env.mts`.
+- Flag a server variable read from `process.env` outside `server/env.mts` (not `NEXT_PUBLIC_*`, `NODE_ENV`, configs, tests).
 
 ## Placement
 
-- Check each new file against `docs/architecture.md` › _Where does X go_ and its layer table: a domain type under `lib/ui` or a clock read in `lib/domain` is misplaced.
+- Check each new file against `docs/architecture.md` › _Where does X go_ and its layer table (a domain type under `lib/ui`, a clock read in `lib/domain`).
 - Check the Patterns rows enforced by "Review": variants as data attributes, slots, state in the shell, traceability.
 - Flag a synonym for a _Key concepts_ term in code, UI or docs (`User` for Account, `Marker` for Pin, `Region` for Polity).
 
 ## Pattern table
 
 - A PR that adds a pattern, rule or guard, or calls a rule "enforced", names the test or lint rule that fails when it breaks. "Review" is only for rules no test can express.
-- A new top-level folder or script appears in the Patterns table's file column where it belongs.
+- A new top-level folder or script appears in the Patterns table's _Where_ column where it belongs.
 
 ## New surface
 
@@ -58,7 +56,7 @@ When the diff changes behaviour a doc describes (a setting, a default, a path, w
 
 ## Scale
 
-On a request path, ask what the number is at M4 scale (about 1,640 Boundary versions, 10,000 Pins). Flag:
+On a request path, ask the number at M4 scale (about 1,640 Boundary versions; Pins as [sized](../../docs/requirements.md#non-functional-requirements)). Flag:
 
 - reference data parsed or loaded per request without a memo;
 - a nested or pairwise loop over Boundary versions or Pins;

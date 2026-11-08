@@ -58,4 +58,4 @@ Add `.github/agent/review-code.md`: what the review looks for. `review.md` keeps
 
 ## Deviations
 
-- The `process.env` rule flags only `process.env.<NAME>` reads of server variables: passing `process.env` to `parseEnv` is the pattern.
+- The `process.env` rule flags only `process.env.KINSCAPE_*` reads: passing `process.env` to `parseEnv` is the pattern.

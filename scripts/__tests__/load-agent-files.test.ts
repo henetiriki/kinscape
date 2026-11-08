@@ -125,9 +125,13 @@ describe('the load-agent-files action', () => {
     'Scale',
     'Workflows',
   ])('gives the review the rule group "%s"', heading => {
-    expect(agent('review-code.md')).toMatch(
-      new RegExp(`^## ${heading.replace(/[()]/g, '\\$&')}$`, 'm')
-    );
+    const [, ...rules] = (
+      agent('review-code.md')
+        .split(/^## /m)
+        .find(section => section.split('\n')[0] === heading) ?? ''
+    ).split('\n');
+
+    expect(rules.join('').trim(), `"## ${heading}" has no rules`).not.toBe('');
   });
 
   // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.

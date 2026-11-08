@@ -1,7 +1,7 @@
 # Plan: C641: Add a `resolve-conflict` label that merges main into a PR
 
 - **Spec:** #641
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The checkout has depth 1, so `git merge` finds no merge base.
 - **B.** A `fetch-depth` input in `setup-workspace` and `claude-run.yml`.
 - **Other:** your own.
 
-Recommended: A, because it changes no pinned action.
+**Answer: A** (@henetiriki)
 
 **D2 · Workflow files** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ The run's token has no `workflows` permission. GitHub refuses a push that brings
 - **B.** No change: that push fails, and Claude comments.
 - **Other:** your own.
 
-Recommended: A, because `main` often changes a workflow.
+**Answer: A** (@henetiriki)
 
 **D3 · Label colour** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ Recommended: A, because `main` often changes a workflow.
 - **B.** `0E8A16`.
 - **Other:** your own.
 
-Recommended: A, because both labels start a Claude run.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

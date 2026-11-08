@@ -12,7 +12,7 @@ Find the PR's plan: a file under `plans/` changed in the PR. Read it and issue `
 - If `.since-last-review.diff` exists (the changes since the last review), give it to the review agents instead of `gh pr diff`, and flag defects only on its lines `gh pr diff` also has. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
 - A smell or placement finding (`review-code.md`) is a defect, not a nit. Label it **PLAUSIBLE** when the fix needs a design decision.
-- Post up to ten, one comment each: code defects and rule breaks first (at most six, most severe first), then smell, placement and test-quality findings (at most two), then plan departures (at most two). Skip style nits and what a linter catches.
+- Post up to ten, one comment each: code defects and rule breaks first (at most eight, most severe first), smell, placement and test-quality findings among them (at most three), then plan departures (at most two). Skip style nits and what a linter catches.
 - Ignore the command's stop when Claude has already commented. Review every push, and don't repeat a finding still on the PR as a new comment.
 - After the first review, open with one comment: "All earlier findings addressed", or a link to each still-open finding with a one-line reason. Check each against the current code, not only `.since-last-review.diff`; one is addressed if the code fixes it or the author's reply gives a reason you accept, not by a resolved thread alone.
 - Never post "No issues" alone. List the plan items and rules you checked.

@@ -9,7 +9,8 @@ import type { Gh } from '#ks/scripts/types.ts';
 //     `status: ready-for-dev`; the tech lead then sets `status: ready-for-agent`
 //   - with an open PR that closes it (a plan PR whose build the gate stopped): comment on the PR
 // Usage: node scripts/agent-unblock.mts <closed issue number>, with GH_REPO and GH_OWNER set.
-// BOT_LOGIN, the agent App's login (`kinscape-agent[bot]`), is optional: if it is unset, no bot is trusted.
+// KINSCAPE_BOT_LOGIN, the agent App's login (`kinscape-agent[bot]`), is optional. If it is unset, the
+// script trusts no bot.
 // An https RUN_URL, if set, is linked at the end of each comment.
 // With GITHUB_OUTPUT set it writes `unblocked=[{"number":8,"blockers":[5]}]`: the issues just swapped
 // to `status: ready-for-dev` whose author is the owner, a member, a collaborator or the bot, and the
@@ -45,7 +46,7 @@ export const run = (
   const [raw] = args;
   const repo = env.GH_REPO ?? '';
   const owner = env.GH_OWNER ?? '';
-  const bot = env.BOT_LOGIN ?? '';
+  const bot = env.KINSCAPE_BOT_LOGIN ?? '';
 
   if (
     !NUMBER.test(raw ?? '') ||

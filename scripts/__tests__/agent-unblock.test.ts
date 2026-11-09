@@ -79,9 +79,9 @@ describe('run', () => {
       [['5'], { GH_OWNER: 'tech-lead', GH_REPO: 'no-slash' }],
       [['5'], { GH_REPO: 'owner/repo' }],
       [['5'], { GH_OWNER: '-bad', GH_REPO: 'owner/repo' }],
-      [['5'], { ...ENV, BOT_LOGIN: 'not a login' }],
-      [['5'], { ...ENV, BOT_LOGIN: '[bot]' }],
-      [['5'], { ...ENV, BOT_LOGIN: 'bot[bot' }],
+      [['5'], { ...ENV, KINSCAPE_BOT_LOGIN: 'not a login' }],
+      [['5'], { ...ENV, KINSCAPE_BOT_LOGIN: '[bot]' }],
+      [['5'], { ...ENV, KINSCAPE_BOT_LOGIN: 'bot[bot' }],
     ])('rejects %j with env %j', (args, env) => {
       fakeGh({});
 
@@ -311,7 +311,7 @@ describe('run', () => {
 
     describe('an issue filed by the bot App', () => {
       const BOT = 'kinscape-agent[bot]';
-      const WITH_BOT = { ...WITH_OUTPUT, BOT_LOGIN: BOT };
+      const WITH_BOT = { ...WITH_OUTPUT, KINSCAPE_BOT_LOGIN: BOT };
 
       it.each(['CONTRIBUTOR', 'NONE', undefined])(
         'includes an issue by the bot whose association is %s',
@@ -351,8 +351,8 @@ describe('run', () => {
       });
 
       it.each([undefined, ''])(
-        'trusts no bot when BOT_LOGIN is %j',
-        BOT_LOGIN => {
+        'trusts no bot when KINSCAPE_BOT_LOGIN is %j',
+        KINSCAPE_BOT_LOGIN => {
           fakeGh({
             blocking: [
               {
@@ -365,7 +365,9 @@ describe('run', () => {
             ],
           });
 
-          expect(run(['5'], { ...WITH_OUTPUT, BOT_LOGIN }, gh, append)).toBe(0);
+          expect(
+            run(['5'], { ...WITH_OUTPUT, KINSCAPE_BOT_LOGIN }, gh, append)
+          ).toBe(0);
           expect(edits()).toHaveLength(2);
           expect(unblocked()).toEqual([]);
         }

@@ -54,7 +54,7 @@ jobs:
         env:
           GH_REPO: ${{ github.repository }}
           GH_OWNER: ${{ github.repository_owner }}
-          BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
+          KINSCAPE_BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
           GH_TOKEN: ${{ github.token }}
           NUMBER: ${{ github.event.issue.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

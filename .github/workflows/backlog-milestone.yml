@@ -37,8 +37,8 @@ concurrency:
 
 jobs:
   inherit:
-    # New or edited issues: Specs by the owner, a member, a collaborator or the agent App only. Fork
-    # PRs are skipped: their token cannot write.
+    # New or edited issues: Specs by the owner, a member, a collaborator or the agent App only. The
+    # job skips fork PRs: their token cannot write.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'type: spec') &&

@@ -1,7 +1,7 @@
 # Plan: C651: Give each agent rule one owner and one doc the builder reads
 
 - **Spec:** #651
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Do the Chore's edits. Move each section's text as it is. Name paths in `docs/cod
 - **B.** Add a new linked line, and keep the how-we-work bullet.
 - **Other:** your own.
 
-Recommended: A, because B names `how-we-work.md` twice.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

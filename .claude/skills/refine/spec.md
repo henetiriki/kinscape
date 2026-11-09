@@ -24,7 +24,7 @@ Ask questions as described in `SKILL.md`. Typical branches:
 - **Infrastructure:** follow [New infrastructure](../../../docs/security.md#new-infrastructure).
 - **Proof:** how each behaviour will be shown: an automated test, the boundary validator, a preview check.
 
-Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions). Write an unlikely case ([AGENTS.md](../../../AGENTS.md#workflow-rules)) under **Flagged concerns**, with its failure, likelihood and cost.
+Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decisions). Write an unlikely case ([AGENTS.md](../../../AGENTS.md#workflow-rules)) under **Flagged concerns**.
 
 ## Step 1: slice
 

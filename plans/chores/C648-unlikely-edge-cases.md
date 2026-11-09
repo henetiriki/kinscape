@@ -48,7 +48,6 @@ Add the `AGENTS.md` bullet. Each of the other six files gets one sentence that l
 
 ## Deviations
 
-- Cuts: five repeated phrases in `fix-review.md`, three in `SKILL.md`.
-- Budget of `fix-review.md` is 350 (`word-count.mts`, its test).
+- Cuts: seven repeated phrases in `fix-review.md`, three in `SKILL.md`.
 - `build.md` names the final PR comment, not **Risks** (the plan is approved).
-- `fix-review.md` ignores the **PLAUSIBLE** label.
+- `fix-review.md` matches the `Unlikely case:` marker, not **PLAUSIBLE**.

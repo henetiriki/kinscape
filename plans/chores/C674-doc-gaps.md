@@ -33,8 +33,9 @@ Make the seven edits in #674 as it words them. In workflows and scripts, edit co
 
 ## Deviations
 
-- `docs/code-rules.md` names the `AGENTS.md` naming rule, with no link.
+- `docs/code-rules.md` names the `AGENTS.md` naming rule, with no link. `AGENTS.md` gives the synonym examples.
 - Item 7 keeps `server/env.mts`.
+- Comments on a `hand-back` PR cite `#hand-back`.
 - `plan-rule-citations.test.ts` scans comments in the seven changed files.
 
 ## Order of work

@@ -1301,7 +1301,7 @@ describe('the fix-review workflow', () => {
     expect(text).toContain(
       'github.event.pull_request.head.repo.full_name == github.repository'
     );
-    // The tech lead builds a `hand-back` PR (plans/README.md#chores), so no agent fixes it.
+    // The tech lead builds a `hand-back` PR (plans/README.md#hand-back), so no agent fixes it.
     expect(text).toContain(
       "!contains(github.event.pull_request.labels.*.name, 'hand-back')"
     );

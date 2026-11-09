@@ -37,7 +37,7 @@ jobs:
   # result (.github/agent/fix-review.md). Runs when the repo owner adds the label to an open PR that
   # is not a draft and whose branch is in this repo: a fork's code and secrets stay apart. Only the
   # tech lead starts a run that pushes (as claude-plan.yml has it), and a `hand-back` PR is theirs
-  # to build (plans/README.md#chores). The shared runner is the pinned commit below, and queues
+  # to build (plans/README.md#hand-back). The shared runner is the pinned commit below, and queues
   # behind any other run on the PR (concurrency group `thread-<n>`).
   fix:
     # The Actions graph shows the runner's jobs under this name: "Fix review / Gate", "Fix review / Run Claude", "Fix review / Result".

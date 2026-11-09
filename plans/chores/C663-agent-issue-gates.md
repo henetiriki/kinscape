@@ -1,7 +1,7 @@
 # Plan: C663: Let issues filed by the agent App pass the author gates
 
 - **Spec:** #663
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The `GH_OWNER` pattern rejects `[bot]`, so `BOT_LOGIN` needs its own pattern.
 - **B.** Required, as `GH_OWNER`: an unset variable fails the job, and no label swaps.
 - **Other:** your own.
 
-Recommended: A, because an unset variable then stops only the refresh.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

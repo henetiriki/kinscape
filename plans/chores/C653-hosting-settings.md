@@ -14,10 +14,12 @@ Move the Vercel and Supabase sections of `docs/repo-settings.md` into a new `doc
 The bullet also asks for `server/env.mts`, which the new sentence does not say. What replaces the bullet?
 
 - **A.** Keep "in `server/env.mts`", and link the sentence for the rest.
-- **B.** Only the link. The reviewer stops checking `server/env.mts`.
+- ~~**B.** Only the link. The reviewer stops checking `server/env.mts`.~~
 - **Other:** your own.
 
-**Answer: A** (@henetiriki)
+Recommended: A, because the reviewer keeps the `server/env.mts` check.
+
+**Answer: A** (Tech lead)
 
 ## Files that change
 

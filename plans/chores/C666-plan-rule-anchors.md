@@ -40,7 +40,8 @@ Do the Chore's edits. Put each `<a id>` inside its list item, so the list keeps 
 
 ## Deviations
 
-- `.github/pull_request_template.md` cites the rule inside an HTML comment, which does not render a link. It uses the plain-text name.
+- The PR template cites the rule in an HTML comment, which shows no link. It uses the plain-text name.
+- Rule 4 links its six rules as `[name](#name) … rules apply`, so `plans/README.md` stays within 750 words.
 
 ## Proof
 

@@ -25,3 +25,5 @@ A change to a workflow or action follows these:
 ## New infrastructure
 
 A Spec that needs a new service, database, environment variable, secret or CODEOWNERS path lists it under **Flagged concerns** and carries a **Blocking** tech-lead [decision](how-we-work.md#decisions).
+
+Add a row for a new variable, secret or service to [`infrastructure.md`](infrastructure.md) (Vercel, Supabase) or [`repo-settings.md`](repo-settings.md) (GitHub).

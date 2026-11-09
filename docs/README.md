@@ -8,6 +8,7 @@ Each topic has one owner file, as the [writing rules](writing.md#all-text) say.
 | Decision format      | [How we work](how-we-work.md#decisions)                         |
 | Build and ship       | [Building and shipping](building.md)                            |
 | Settings             | [Repository settings](repo-settings.md)                         |
+| Hosting              | [Infrastructure](infrastructure.md)                             |
 | Code placement       | [Architecture](architecture.md)                                 |
 | Code rules           | [Code rules](code-rules.md)                                     |
 | Look                 | [Design](../design/DESIGN.md)                                   |

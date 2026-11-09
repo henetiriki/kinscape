@@ -27,7 +27,7 @@ Read `docs/code-rules.md` in the checkout. Check the diff against its [Pattern t
 ## New surface
 
 - A new page, route handler or server action: reached through the gate and `openTree` with a Viewer, validates its input, and takes no Tree or Account id from the client.
-- A new environment variable, secret or service: in `server/env.mts`, a row in `docs/repo-settings.md`, and as `docs/security.md` › _New infrastructure_ says.
+- A new environment variable, secret or service: in `server/env.mts`, with a row, and as [_New infrastructure_](../../docs/security.md#new-infrastructure) says.
 - A new dependency or asset: licence and origin recorded (NFR-08, `data/sources.json` or a file beside it); a pinned version gives its reason.
 
 ## Test quality

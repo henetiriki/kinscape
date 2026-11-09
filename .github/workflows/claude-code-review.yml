@@ -176,9 +176,9 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           # The workflow's token: the review posts as github-actions[bot], which can't approve a PR
-          # (docs/repo-settings.md › Actions token).
+          # (the Actions token row of docs/repo-settings.md).
           github_token: ${{ github.token }}
-          # The App's own PRs (D3 of C575): the action refuses a bot actor unless it is listed.
+          # The App's own PRs: the action refuses a bot actor unless it is listed.
           allowed_bots: ${{ vars.KINSCAPE_BOT_LOGIN }}
           # The marketplace as main has it (loaded above). The plugin is pinned to a commit in it. Dependabot
           # doesn't track it: bump the sha by hand, and re-check review-settings.json against the plugin

@@ -40,8 +40,8 @@ jobs:
   # Claude merges main into the PR's branch, resolves the conflicts, checks and pushes, or stops and
   # says why (.github/agent/resolve-conflict.md). Runs when the repo owner adds the label to an open PR
   # whose branch is in this repo: a fork's code and secrets stay apart. A `hand-back` PR is the tech
-  # lead's to build (plans/README.md rule 4). The shared runner is the pinned commit below, and queues
-  # behind any other run on the PR (concurrency group `thread-<n>`).
+  # lead's to build (plans/README.md#hand-back). The shared runner is the pinned commit below, and
+  # queues behind any other run on the PR (concurrency group `thread-<n>`).
   resolve:
     # The Actions graph shows the runner's jobs under this name: "Resolve conflict / Gate", "Resolve conflict / Run Claude", "Resolve conflict / Result".
     name: Resolve conflict

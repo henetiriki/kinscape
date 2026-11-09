@@ -29,22 +29,20 @@ const IN_SCOPE = [
   'eslint.config.mjs',
   'scripts/agent-approve.mts',
   '.github/workflows/claude-plan.yml',
+  '.github/workflows/claude-build.yml',
+  '.github/workflows/claude-fix-review.yml',
+  '.github/workflows/claude-hand-back.yml',
+  '.github/workflows/claude-resolve-conflict.yml',
   '.github/ISSUE_TEMPLATE/4-chore.yml',
+  'scripts/hand-back.mts',
+  'scripts/__tests__/load-agent-files.test.ts',
+  'scripts/__tests__/test-modifiers-config.test.ts',
 ];
 const BY_NUMBER = /\brules?\s+\d+/gi;
 const ANCHOR = /<a id="([^"]+)"><\/a>/g;
 const LINKED = /plans\/README\.md#([\w-]+)/g;
 const IN_FILE_LINK = /\]\(#([\w-]+)\)/g;
 const NAMED = /plans\/README\.md, ([\w-]+) rule/g;
-
-// The Chore leaves code comments unchanged, so a comment line in a code file is out of scope.
-const withoutComments = (path: string, text: string) =>
-  path.endsWith('.md')
-    ? text
-    : text
-        .split('\n')
-        .filter(line => !/^\s*(?:\/\/|\/\*|\*|#)/.test(line))
-        .join('\n');
 
 const numberCitations = (text: string) =>
   [...text.matchAll(BY_NUMBER)].map(m => m[0]);
@@ -90,18 +88,8 @@ describe('plan rule citations (fixtures)', () => {
     ).toEqual([]);
   });
 
-  it('skips a comment line in a code file', () => {
-    const text = '// plans/README.md rule 4\nconst a = "rule 10";';
-
-    expect(numberCitations(withoutComments('a.mts', text))).toEqual([
-      'rule 10',
-    ]);
-  });
-
-  it('keeps every line of a Markdown file', () => {
-    expect(
-      numberCitations(withoutComments('a.md', '# Title\nrule 10'))
-    ).toEqual(['rule 10']);
+  it('finds a citation by number in a comment', () => {
+    expect(numberCitations('// plans/README.md rule 4')).toEqual(['rule 4']);
   });
 
   it('finds a list item without an anchor', () => {
@@ -146,7 +134,7 @@ describe('plan rule citations (repo)', () => {
 
   it('no file cites a plan rule by number', () => {
     const cited = files.flatMap(path =>
-      numberCitations(withoutComments(path, readFileSync(path, 'utf8'))).map(
+      numberCitations(readFileSync(path, 'utf8')).map(
         citation => `${path}: ${citation}`
       )
     );
@@ -158,7 +146,7 @@ describe('plan rule citations (repo)', () => {
     const known = anchors(rules);
     const missing = files.flatMap(path =>
       missingAnchors(
-        withoutComments(path, readFileSync(path, 'utf8')),
+        readFileSync(path, 'utf8'),
         known,
         path === PLAN_RULES
       ).map(name => `${path}: ${name}`)

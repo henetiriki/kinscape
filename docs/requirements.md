@@ -1,5 +1,5 @@
 > **Baseline requirements** imported from `Genealogy Map App – Requirements.docx` (2026-10-13). This file is the reference that Intent and Spec issues cite by requirement ID.
-> An Intent changes a requirement, key term, number, priority or acceptance check. The tech lead may fix links, anchors, headings, table layout and typos in a Chore. Keep each requirement's `<a id>` anchor, because GitHub autolinks point to it.
+> To change this file, see _Which issue do I need?_ in `how-we-work.md`.
 
 # Genealogy Map App — Requirements
 

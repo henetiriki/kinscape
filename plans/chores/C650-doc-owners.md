@@ -41,7 +41,7 @@
 
 ## Deviations
 
-- Rule: keep each `<a id>` anchor.
+- Rule: keep each `<a id>` anchor. `how-we-work.md` owns it; `requirements.md` names it, no link.
 - Item 7 keeps the `server/env.mts` part.
 - The requirements row splits: Intent, Chore.
 - The Live row is reworded.

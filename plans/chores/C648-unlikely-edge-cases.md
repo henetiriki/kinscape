@@ -1,7 +1,7 @@
 # Plan: C648: Write down unlikely edge cases and do not build them
 
 - **Spec:** #648
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Add the `AGENTS.md` bullet from the Chore, item 1. Each of the other six files g
 - **B.** Post it inline, as for other findings. The fix-review run replies on its thread.
 - **Other:** your own.
 
-Recommended: A, because `fix-review.md` already reads that comment, and inline threads count against the cap of ten.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -49,7 +49,7 @@ describe('the Playwright browser cache', () => {
     try {
       return read(file)
         .match(
-          /name: Cache Playwright browser\n[\s\S]*?key: (.+)\n\s*path: (.+)/
+          /name: Cache the Playwright browser\n[\s\S]*?key: (.+)\n\s*path: (.+)/
         )
         ?.slice(1);
     } catch {
@@ -65,7 +65,7 @@ describe('the Playwright browser cache', () => {
   it(`is cached by ${SEED} under the same key and path as setup-workspace`, () => {
     expect(
       keyAndPath(`.github/workflows/${SEED}`),
-      `${SEED} needs a "Cache Playwright browser" step with the key and path of setup-workspace`
+      `${SEED} needs a "Cache the Playwright browser" step with the key and path of setup-workspace`
     ).toEqual(reference);
   });
 });

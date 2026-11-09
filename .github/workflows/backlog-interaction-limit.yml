@@ -1,4 +1,4 @@
-name: 'Backlog: Interaction limit reminder'
+name: 'Backlog: Warn of interaction limit'
 
 # The collaborators-only interaction limit (scripts/setup-github.sh) lapses six months after it is
 # set, and the Actions token cannot read it. setup-github.sh records the expiry in the repo variable
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Open a Chore if the limit lapses within 30 days
+      - name: If the limit lapses within 30 days, open a Chore
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}

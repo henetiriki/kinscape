@@ -70,7 +70,7 @@ jobs:
       head: ${{ steps.approve.outputs.head }}
     steps:
       # It uses only Node's own modules, so no `npm ci`.
-      - name: Check out the approval script
+      - name: Fetch the approval script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
@@ -78,12 +78,12 @@ jobs:
             scripts
             .nvmrc
           persist-credentials: false
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       # The App token, not GITHUB_TOKEN: a push by GITHUB_TOKEN would start no workflow, so CI would not run on it.
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:

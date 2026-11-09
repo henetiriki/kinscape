@@ -26,7 +26,7 @@ runs:
       continue-on-error: true
       shell: bash
       run: rm -rf .claude-summary-script
-    - name: Check out the summary script
+    - name: Fetch the summary script
       if: always()
       continue-on-error: true
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -37,7 +37,7 @@ runs:
           scripts
           .nvmrc
         persist-credentials: false
-    - name: Set up Node for the summary
+    - name: Install Node for the summary
       if: always() && inputs.setup_node == 'true'
       continue-on-error: true
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0

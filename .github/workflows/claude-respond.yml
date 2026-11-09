@@ -84,7 +84,7 @@ jobs:
       actions: read # Required for Claude to read CI results on PRs
     steps:
       # The bot's one-hour token, first because the checkout needs it; the job's timeout keeps it fresh.
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
@@ -98,7 +98,7 @@ jobs:
       # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude below.
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
       # see .github/agent/respond.md); the cache keeps the download between runs.
-      - name: Set up the workspace
+      - name: Prepare the workspace
         uses: henetiriki/kinscape/.github/actions/setup-workspace@90b8105edc4bfba72baf6a52cd736509ff935c54
         with:
           # Persist the App token, not GITHUB_TOKEN: claude-code-action fetches the PR branch before it sets up git auth,

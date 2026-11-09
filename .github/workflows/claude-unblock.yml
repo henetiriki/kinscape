@@ -37,15 +37,15 @@ jobs:
     outputs:
       unblocked: ${{ steps.unblock.outputs.unblocked }}
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       # Run the check (scripts/agent-unblock.mts). It does nothing when the closed issue was not
       # blocking an open one.
-      - name: Tell what the closed issue freed
+      - name: Report what the closed issue unblocked
         id: unblock
         run: node scripts/agent-unblock.mts "$NUMBER"
         env:
@@ -82,7 +82,7 @@ jobs:
       # The one issue the run may edit: refresh-settings.json's hook denies `gh issue edit` on any other.
       ISSUE: ${{ matrix.spec.number }}
     steps:
-      - name: Check out main
+      - name: Fetch main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main

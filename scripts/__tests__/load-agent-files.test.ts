@@ -545,7 +545,7 @@ describe('the approved-commit check', () => {
       .steps ?? [];
   const check = () =>
     runSteps().find(
-      step => step.name === 'Check the branch is at the approved commit'
+      step => step.name === 'Check that the branch is at the approved commit'
     );
   const index = (name: string) =>
     runSteps().findIndex(step => step.name === name);
@@ -563,7 +563,7 @@ describe('the approved-commit check', () => {
   // Right after the token, before the browser install: a stop then costs no install and no model
   // run, and the safety net has the token and the start time it needs.
   it('runs with the bot’s token, after it is minted and before the browser install, only when a head is given', () => {
-    const at = index('Check the branch is at the approved commit');
+    const at = index('Check that the branch is at the approved commit');
 
     expect(check()?.id).toBe('head');
     expect(check()?.if).toBe("inputs.head != ''");
@@ -571,8 +571,8 @@ describe('the approved-commit check', () => {
       GH_TOKEN: '${{ steps.bot.outputs.token }}',
       HEAD: '${{ inputs.head }}',
     });
-    expect(at).toBe(index("Mint the bot's token") + 1);
-    expect(index('Note start time')).toBeLessThan(at);
+    expect(at).toBe(index("Create the bot's token") + 1);
+    expect(index('Note the start time')).toBeLessThan(at);
     expect(index('Install Playwright')).toBeGreaterThan(at);
   });
 
@@ -580,7 +580,7 @@ describe('the approved-commit check', () => {
   // comment failed, the net still speaks.
   it('keeps the safety net quiet after a stop that commented', () => {
     const net = runSteps().find(
-      step => step.name === 'Comment if Claude left none'
+      step => step.name === 'If Claude left no comment, post one'
     );
 
     expect(net?.if).toBe("always() && steps.head.outputs.commented != 'true'");
@@ -674,10 +674,10 @@ describe('the approved-commit check', () => {
 // steps once (plans/chores/C481-keep-claude-output.md). A runner's temp directory isn't always
 // /home/runner/work/_temp, so every path starts at runner.temp.
 const KEEP = 'henetiriki/kinscape/.github/actions/keep-claude-output';
-const NODE_STEP = 'Set up Node for the summary';
+const NODE_STEP = 'Install Node for the summary';
 const SUMMARY_STEPS = [
   'Clear the summary script folder',
-  'Check out the summary script',
+  'Fetch the summary script',
   NODE_STEP,
   "Summarise Claude's output",
   'Scan the summary for secrets',
@@ -728,7 +728,7 @@ describe('the keep-claude-output action', () => {
   it('clears the folder, then summarises with the script from main', () => {
     const all = keepSteps();
     const [clear] = named(all, 'Clear the summary script folder');
-    const [checkout] = named(all, 'Check out the summary script');
+    const [checkout] = named(all, 'Fetch the summary script');
     const [summarise] = named(all, "Summarise Claude's output");
 
     expect(clear.run).toBe('rm -rf .claude-summary-script');
@@ -1624,7 +1624,7 @@ describe('the load-agent-files script', () => {
 describe('the review job of claude-code-review.yml', () => {
   type Job = { permissions?: Record<string, string>; steps: Step[] };
   const ACTION_NAME = 'anthropics/claude-code-action@';
-  const LOAD = 'Load review rules and settings';
+  const LOAD = 'Load the review rules and settings';
   const CHECK = "Check that this workflow is main's";
   const COPY = "Put main's rule files in the checkout";
   const job = () =>

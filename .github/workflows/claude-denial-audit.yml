@@ -1,4 +1,4 @@
-name: 'Claude: Denial audit'
+name: 'Claude: Audit denials'
 
 # Claude's runs are limited by an allowlist and some denials (.github/agent/settings.json). Each
 # time Claude tries something denied, the summary the run uploads records it. Once a week this
@@ -22,15 +22,15 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       # Run the audit (scripts/denial-audit.mts). GH_TOKEN lets it list runs, download their
       # summaries, and open or update the issue.
-      - name: Audit permission denials
+      - name: Audit the permission denials
         run: node scripts/denial-audit.mts
         env:
           GH_REPO: ${{ github.repository }}

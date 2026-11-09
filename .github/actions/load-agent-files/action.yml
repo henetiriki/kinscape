@@ -1,4 +1,4 @@
-name: Load agent files
+name: Load the agent files
 description: >-
   Download a settings file and the given files from .github/agent/ as main has them, and join the
   files into one system prompt. claude-code-review.yml and the run-claude action call this action.
@@ -24,7 +24,7 @@ runs:
     # still gets it, and a branch can't widen its own tools. For the same reason the callers name
     # this action by repo, pinned to a main commit, never a `./` path, which would run the branch's
     # copy (scripts/__tests__/load-agent-files.test.ts checks both).
-    - name: Load agent files
+    - name: Load the agent files
       shell: bash
       env:
         AGENT_FILES: ${{ inputs.files }}

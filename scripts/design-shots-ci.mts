@@ -98,7 +98,7 @@ export const source = (deps: DesignShotsCiDeps): number => {
 
   for (const path of changed) {
     console.log(
-      `::error file=${path}::Hand-edited or stale: run the Design agent shots workflow on this branch.`
+      `::error file=${path}::Hand-edited or stale: run the Design: Render snapshots workflow on this branch.`
     );
   }
 

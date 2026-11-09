@@ -128,9 +128,9 @@ describe('source', () => {
 
     expect(sourceCheck(d)).toBe(1);
     expect(log.mock.calls.map(call => call[0])).toEqual([
-      '::error file=design/source/a.html::Hand-edited or stale: run the Design agent shots workflow on this branch.',
-      '::error file=design/source/b.html::Hand-edited or stale: run the Design agent shots workflow on this branch.',
-      '::error file=design/source/kse-birth.svg::Hand-edited or stale: run the Design agent shots workflow on this branch.',
+      '::error file=design/source/a.html::Hand-edited or stale: run the Design: Render snapshots workflow on this branch.',
+      '::error file=design/source/b.html::Hand-edited or stale: run the Design: Render snapshots workflow on this branch.',
+      '::error file=design/source/kse-birth.svg::Hand-edited or stale: run the Design: Render snapshots workflow on this branch.',
     ]);
   });
 });

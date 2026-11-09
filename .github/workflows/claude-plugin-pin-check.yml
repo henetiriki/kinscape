@@ -1,4 +1,4 @@
-name: 'Claude: Plugin pin check'
+name: 'Claude: Check plugin pin'
 
 # The automated code review uses a plugin fixed ("pinned") to one exact
 # version, and Dependabot can't update it. Once a week this checks whether the plugin has
@@ -20,16 +20,16 @@ jobs:
   check-pin:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       # Run the check (scripts/claude-plugin-pin-check.mts). It does nothing when the pin is
       # current or a reminder issue is already open. GH_TOKEN lets it read the plugin's
       # history and file the issue.
-      - name: Check plugin pin
+      - name: Check the plugin pin
         run: node scripts/claude-plugin-pin-check.mts
         env:
           GH_REPO: ${{ github.repository }}

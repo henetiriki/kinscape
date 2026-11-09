@@ -14,7 +14,7 @@ The `run-name` and the job `if:` of `claude-code-review.yml` each get this claus
   github.event.pull_request.head.repo.full_name == github.repository)
 ```
 
-A collaborator's PR fails the author test. A person's push to the bot's PR fails the actor test. Both are still reviewed. Every path except the test and this plan is a hand-back path (rule 13).
+A collaborator's PR, or a person's push to the bot's PR, fails a test and is still reviewed. Every path except the test and this plan is a hand-back path (rule 13).
 
 ## Decisions
 
@@ -33,7 +33,6 @@ The step lists the PRs Claude does not review. The Chore does not name this file
 | File                                         | New / changed | What                                                     |
 | -------------------------------------------- | ------------- | -------------------------------------------------------- |
 | `.github/workflows/claude-code-review.yml`   | Changed       | The clause in both copies; the header comment            |
-| `.github/agent/review.md`                    | Changed       | Line 7 keeps only `revert-*`                             |
 | `scripts/__tests__/review-condition.test.ts` | New           | Two equal copies, each with the four tests in one `!( )` |
 | `docs/building.md`                           | Changed       | Step 4, if D1 is A                                       |
 | `plans/README.md`                            | Changed       | Rule 4 says the review skips the pin PR                  |
@@ -41,7 +40,7 @@ The step lists the PRs Claude does not review. The Chore does not name this file
 ## Order of work
 
 1. The test, failing on the old file (rule 12).
-2. The workflow, `review.md`, then `docs/building.md`.
+2. The workflow, then `docs/building.md`.
 
 ## Risks
 
@@ -51,8 +50,9 @@ The step lists the PRs Claude does not review. The Chore does not name this file
 ## Deviations
 
 - The clause adds the actor test (code review finding); #664 lists three.
-- `plans/README.md` rule 4 gets a note, so it agrees with `review.md`.
-- The test also evaluates both expressions.
+- `review.md` keeps its pin-branch exception: a person's push to the pin PR has no plan.
+- `plans/README.md` rule 4 gets a note on it.
+- The test evaluates both expressions.
 
 ## Proof
 

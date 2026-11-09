@@ -67,7 +67,7 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 `npm run design:check` renders each screen in `screens.json` beside its HTML snapshot, ignoring the map, and writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold.
 
-How the canvas, the snapshots and the JPGs are made: [CANVAS.md](CANVAS.md).
+[CANVAS.md](CANVAS.md) tells how to refresh the canvas copy and make the snapshots and JPGs.
 
 ### Proposed screens
 

@@ -3,13 +3,14 @@ name: 'Backlog: Link Spec to Intent'
 # When a new Spec is filed, attach it to the Intent it slices, using the
 # "Intent or milestone" answer on the issue form. If that can't be done, leave a comment.
 #
-# The title shown for each run in the Actions tab: "Link: <title>" for a Spec filed by the
-# owner, a member or a collaborator, "Skipped Link: <title>" for any other issue. Repeats the job's
-# `if:` (run-name cannot see job results): change them together.
+# The title shown for each run in the Actions tab: "Link: <title>" for a Spec filed by the owner, a
+# member, a collaborator or the agent App, "Skipped Link: <title>" for any other issue. Repeats the
+# job's `if:` (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     contains(github.event.issue.labels.*.name, 'type: spec') &&
-    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
+    (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
+      github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     format('Link: {0}', github.event.issue.title) ||
     format('Skipped Link: {0}', github.event.issue.title)
   }}
@@ -26,7 +27,8 @@ jobs:
   link-spec:
     if: >-
       contains(github.event.issue.labels.*.name, 'type: spec') &&
-      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+      (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
+        github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)
     runs-on: ubuntu-latest
     steps:
       - name: Link the Spec to the Intent

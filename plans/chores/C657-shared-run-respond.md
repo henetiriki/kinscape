@@ -1,7 +1,7 @@
 # Plan: C657: Run review and respond through the shared workflow
 
 - **Spec:** #657
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ Respond's job `respond` (`Respond`) keeps its `run-name`, `if:` and permissions,
 - **B.** A `respond` gate kind that always says go: one more job per reply.
 - **Other:** your own.
 
-Recommended: A: an empty check delays each reply.
+**Answer: A** (@henetiriki)
 
 **D2 · When the runner mints the App token** · Decides: Tech lead
 
@@ -33,7 +33,7 @@ Tag mode fetches the PR branch before it sets git auth. The runner mints after c
 - **B.** Respond persists nothing, so that fetch has no credentials.
 - **Other:** your own.
 
-Recommended: A, because the 45-minute job stays inside the token's hour.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

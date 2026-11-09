@@ -51,7 +51,7 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository &&
       !contains(github.event.pull_request.labels.*.name, 'hand-back') &&
       github.actor == github.repository_owner
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@f5b59e1a01ae91cb0f42036186dbd8ba53ec124c
     with:
       thread: ${{ github.event.pull_request.number }}
       # The runner's gate checks an open PR with the label, and the token can push a workflow change.

@@ -46,7 +46,8 @@ export const MenuItem = ({
 
 type PanelProps = {
   email: string;
-  footer: string;
+  /** A line under the items. No line is drawn when unset. */
+  footer?: string;
   groups: MenuEntry[][];
   /** The item drawn hovered. */
   hovered?: string;
@@ -92,19 +93,26 @@ export const MenuPanel = ({
           </div>
         ))}
       </div>
-      <span className={`${styles.caption} ${styles.footer}`}>{footer}</span>
+      {footer && (
+        <span className={`${styles.caption} ${styles.footer}`}>{footer}</span>
+      )}
     </div>
   </Surface>
 );
 
 type MenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
+  /**
+   * `phone`: the card hangs from the nearest positioned ancestor (the search
+   * pill), not from the Avatar. With no positioned ancestor it hangs from the page.
+   */
+  form?: 'phone';
   initial: string;
   /** Called after the menu has closed and the Avatar has focus. */
   onSelect: (id: string) => void;
 };
 
 /** The Avatar and its Menu, 8 below it and right-aligned. */
-export const Menu = ({ initial, onSelect, ...panel }: MenuProps) => {
+export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLDivElement>(null);
   const avatar = useRef<HTMLButtonElement>(null);
@@ -163,7 +171,7 @@ export const Menu = ({ initial, onSelect, ...panel }: MenuProps) => {
   };
 
   return (
-    <div className={styles.anchor} ref={anchor}>
+    <div className={styles.anchor} data-form={form} ref={anchor}>
       <Avatar
         expanded={open}
         initial={initial}
@@ -171,7 +179,7 @@ export const Menu = ({ initial, onSelect, ...panel }: MenuProps) => {
         ref={avatar}
       />
       {open && (
-        <div className={styles.drop}>
+        <div className={styles.drop} data-form={form}>
           <MenuPanel
             {...panel}
             menuRef={menu}

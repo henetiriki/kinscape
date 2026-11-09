@@ -11,6 +11,21 @@
   z-index: var(--z-menu);
 }
 
+/* Phone: the anchor takes no box of its own, so the drop hangs from the pill. */
+.anchor[data-form='phone'] {
+  position: static;
+}
+
+.drop[data-form='phone'] {
+  display: flex;
+  justify-content: flex-end;
+  left: 0;
+}
+
+.drop[data-form='phone'] .panel {
+  max-width: 100%;
+}
+
 .panel {
   padding: var(--space-4);
   text-align: left;

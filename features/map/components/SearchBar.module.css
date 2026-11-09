@@ -19,6 +19,7 @@
 .pill {
   border-radius: var(--radius-full);
   padding: 0 var(--space-4) 0 var(--space-12);
+  position: relative;
   width: 100%;
 }
 

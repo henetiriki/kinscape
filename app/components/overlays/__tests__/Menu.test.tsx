@@ -26,8 +26,12 @@ const MENU = {
   initial: 'L',
 };
 
-const setup = (onSelect: (id: string) => void = vi.fn()) => {
-  render(<Menu {...MENU} onSelect={onSelect} />);
+const FORMS = [undefined, 'phone'] as const;
+
+type Form = (typeof FORMS)[number];
+
+const setup = (onSelect: (id: string) => void = vi.fn(), form?: Form) => {
+  render(<Menu {...MENU} form={form} onSelect={onSelect} />);
 
   return {
     avatar: screen.getByRole('button', { name: 'Account menu' }),
@@ -35,8 +39,8 @@ const setup = (onSelect: (id: string) => void = vi.fn()) => {
   };
 };
 
-const open = () => {
-  const made = setup();
+const open = (form?: Form) => {
+  const made = setup(vi.fn(), form);
 
   fireEvent.click(made.avatar);
 
@@ -161,6 +165,65 @@ it('closes on a press outside, not on one inside, and stops listening once close
   fireEvent.click(avatar);
   expect(screen.queryByRole('menu')).toBeNull();
 });
+
+// NFR-03
+it('draws no footer line when there is no footer, and the groups stay', () => {
+  const bare = { ...MENU, footer: undefined };
+  const { container } = render(<MenuPanel {...bare} />);
+
+  expect(container.textContent).toBe(
+    'Signed in asresearcher@example.comExportJSON and GeoJSONSourcesSign outAbout'
+  );
+  expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual(
+    ['ExportJSON and GeoJSON', 'Sources', 'Sign out', 'About']
+  );
+});
+
+// NFR-03
+it('opens a Menu with no footer and the same items', () => {
+  const bare = { ...MENU, footer: undefined };
+
+  render(<Menu {...bare} onSelect={vi.fn()} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  expect(items()).toHaveLength(4);
+  expect(screen.queryByText('Last backup: today, 02:00')).toBeNull();
+});
+
+// NFR-03
+it('sets data-form on the anchor and the drop only in the phone form', () => {
+  const { container } = render(
+    <Menu {...MENU} form='phone' onSelect={vi.fn()} />
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  expect(container.querySelectorAll('[data-form=phone]')).toHaveLength(2);
+});
+
+it('sets no data-form without a form', () => {
+  const { container } = render(<Menu {...MENU} onSelect={vi.fn()} />);
+
+  fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  expect(container.querySelector('[data-form]')).toBeNull();
+});
+
+it.each(FORMS)(
+  'moves with arrows, closes on Esc, Tab and outside press (%s)',
+  form => {
+    const { avatar } = open(form);
+
+    key('ArrowDown');
+    expect(document.activeElement).toBe(items()[1]);
+    key('Escape');
+    expect(screen.queryByRole('menu')).toBeNull();
+    expect(document.activeElement).toBe(avatar);
+    fireEvent.click(avatar);
+    key('Tab');
+    expect(screen.queryByRole('menu')).toBeNull();
+    fireEvent.click(avatar);
+    fireEvent.pointerDown(document.body);
+    expect(screen.queryByRole('menu')).toBeNull();
+  }
+);
 
 it('draws a panel inert, with one item hovered', () => {
   const { container } = render(<MenuPanel {...MENU} hovered='sources' inert />);

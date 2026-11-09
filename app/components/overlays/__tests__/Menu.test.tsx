@@ -177,6 +177,7 @@ it('draws no footer line when there is no footer, and the groups stay', () => {
   expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual(
     ['ExportJSON and GeoJSON', 'Sources', 'Sign out', 'About']
   );
+  expect(screen.getByRole('menu').nextElementSibling).toBeNull();
 });
 
 // NFR-03
@@ -186,7 +187,7 @@ it('opens a Menu with no footer and the same items', () => {
   render(<Menu {...bare} onSelect={vi.fn()} />);
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
   expect(items()).toHaveLength(4);
-  expect(screen.queryByText('Last backup: today, 02:00')).toBeNull();
+  expect(screen.getByRole('menu').nextElementSibling).toBeNull();
 });
 
 // NFR-03

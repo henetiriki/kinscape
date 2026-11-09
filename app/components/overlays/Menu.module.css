@@ -11,7 +11,7 @@
   z-index: var(--z-menu);
 }
 
-/* Phone: the anchor takes no box of its own, so the drop hangs from the pill. */
+/* Phone: the anchor is not the containing block, so the drop hangs from the pill. */
 .anchor[data-form='phone'] {
   position: static;
 }
@@ -20,10 +20,13 @@
   display: flex;
   justify-content: flex-end;
   left: 0;
+  /* The drop spans the pill. Only the card takes a tap, so a tap next to it reaches the map. */
+  pointer-events: none;
 }
 
 .drop[data-form='phone'] .panel {
   max-width: 100%;
+  pointer-events: auto;
 }
 
 .panel {

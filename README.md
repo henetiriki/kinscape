@@ -9,10 +9,7 @@ A time-travelling landscape for your kin. Drag the slider from 1652 to today and
 
 ## Where things are
 
-- **[How we work](docs/how-we-work.md)**: the workflow, labels and who does what. Start here.
-- **[Requirements](docs/requirements.md)**: the baseline, with requirement IDs.
-- **[Design](design/DESIGN.md)**: how things look, with mockups.
-- **[Repository settings](docs/repo-settings.md)**: GitHub settings, kept as code.
+- **[Docs](docs/README.md)**: the owner file for each topic. Start with [how we work](docs/how-we-work.md).
 - **[Issues](https://github.com/henetiriki/kinscape/issues)**: Intents, Specs and bugs.
 - **[AGENTS.md](AGENTS.md)**: what AI agents read at the start of every session (`CLAUDE.md` imports it).
 

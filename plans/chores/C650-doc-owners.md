@@ -36,12 +36,11 @@
 
 ## Order of work
 
-1. Tests, then scripts.
-2. Docs.
+Tests, scripts, docs.
 
 ## Deviations
 
-- Rule: keep each `<a id>` anchor. `how-we-work.md` owns it; `requirements.md` names it, no link.
+- Rule: keep each `<a id>` anchor. `how-we-work.md` owns it; the `requirements.md` header note points to it, no link.
 - Item 7 keeps the `server/env.mts` part.
 - The requirements row splits: Intent, Chore.
 - The Live row is reworded.
@@ -56,7 +55,7 @@ A slug in `anchorsOf` can differ from GitHub's.
 
 | Acceptance check                                  | Proven by            |
 | ------------------------------------------------- | -------------------- |
-| Lint, `format:check`, `words` and tests pass      | Output in the PR     |
+| Lint, `format:check`, `words`, tests pass         | Output in the PR     |
 | The default `words` run covers each budgeted file | `word-count.test.ts` |
 | The link test passes; four fixtures fail          | `doc-links.test.ts`  |
 | `requirements.md`, `building.md`, Live row        | `git diff` in the PR |

@@ -1,7 +1,7 @@
 # Plan: C646: Move the writing rules to docs/writing.md and add STE rules
 
 - **Spec:** #646
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ It cites "`AGENTS.md` Writing", which becomes one link.
 - **B.** Keep it (Constraints).
 - **Other:** your own.
 
-Recommended: A, because the rule moves.
+**Answer: A** (@henetiriki)
 
 **D2 · The `git grep -l "writing.md"` check** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ Recommended: A, because the rule moves.
 - **B.** Other wording in the Chore.
 - **Other:** your own.
 
-Recommended: A, because step 10 adds a match.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

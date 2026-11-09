@@ -20,8 +20,8 @@ A silent run gets a linking comment; a plan run with no plan PR sets `status: bl
 
 Merge rules are in [repo settings](repo-settings.md#whats-set-and-why). The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
 
-When a user-visible pull request is ready to try, [a workflow](../.github/workflows/backlog-issue-status.yml) sets `status: ready-for-po` on its issue; write what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](repo-settings.md#vercel)).
+When a user-visible pull request is ready to try, [a workflow](../.github/workflows/backlog-issue-status.yml) sets `status: ready-for-po` on its issue; write what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](infrastructure.md#vercel)).
 
 ## Live
 
-Merging to `main` deploys production on Vercel unless nothing visible changed ([rule](repo-settings.md#vercel)); no separate release. To undo a bad one, the tech lead uses Instant Rollback in the Vercel dashboard, then merges a revert pull request so `main` matches production.
+Merging to `main` deploys production on Vercel unless nothing visible changed ([rule](infrastructure.md#vercel)); no separate release. To undo a bad one, the tech lead uses Instant Rollback in the Vercel dashboard, then merges a revert pull request so `main` matches production.

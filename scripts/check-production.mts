@@ -1,7 +1,7 @@
 // Checks a deployment from outside, by hand after a production deploy:
 // `npm run check:production -- https://<production host>`.
 // While Vercel Authentication covers production, set VERCEL_AUTOMATION_BYPASS_SECRET in your shell
-// (docs/repo-settings.md); it is sent as a header and never printed.
+// (docs/infrastructure.md); it is sent as a header and never printed.
 
 type Fetch = (url: string, init: RequestInit) => Promise<Response>;
 

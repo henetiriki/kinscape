@@ -26,7 +26,7 @@ body:
     id: summary
     attributes:
       label: Summary
-      description: In plain language, what will change. Follow the [writing rules](https://github.com/henetiriki/kinscape/blob/main/docs/how-we-work.md#writing-specs-bugs-and-chores).
+      description: In plain language, what will change. Follow the [writing rules](https://github.com/henetiriki/kinscape/blob/main/docs/writing.md).
     validations:
       required: true
   - type: textarea

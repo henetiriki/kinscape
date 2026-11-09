@@ -42,7 +42,7 @@ Get the slices confirmed before drafting; sizing is discussed only here.
 
 Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order, after the title (`Spec: M0.1 Hello Vercel`). Fill each box as its description says. Put `Proposed term` lines under _Out of scope_.
 
-Write each box in [STE](../../../docs/how-we-work.md#writing-specs-bugs-and-chores). Then run the check round on _Acceptance checks_.
+Write each box in [STE](../../../docs/writing.md#ste). Then run the check round on _Acceptance checks_.
 
 ## Hand-over
 

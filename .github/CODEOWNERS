@@ -10,6 +10,7 @@
 AGENTS.md @henetiriki
 CLAUDE.md @henetiriki
 docs/security.md @henetiriki
+docs/writing.md @henetiriki
 plans/README.md @henetiriki
 scripts/agent-*.mts @henetiriki
 scripts/claude-plugin-pin-check.mts @henetiriki

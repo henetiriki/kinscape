@@ -19,7 +19,7 @@ Ask questions as described in `SKILL.md`, until these four sections are settled:
 
 ## The draft
 
-Show the four sections as `###` headings, in the order above, as the form shows its boxes. Write each in [STE](../../../docs/how-we-work.md#writing-specs-bugs-and-chores). Then run the check round on _Acceptance checks_.
+Show the four sections as `###` headings, in the order above, as the form shows its boxes. Write each in [STE](../../../docs/writing.md#ste). Then run the check round on _Acceptance checks_.
 
 ## Hand-over
 

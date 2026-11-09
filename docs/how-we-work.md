@@ -50,16 +50,6 @@ The `/refine` skill asks questions until you agree, then drafts the issue.
 - **PO:** run `/refine intent` and answer in plain language.
 - **Tech lead:** run `/refine spec <Intent number>`.
 
-## Writing Specs, Bugs and Chores
-
-New Specs, Bugs, Chores and plans follow these Simplified Technical English (ASD-STE100) rules:
-
-- Write one instruction per sentence.
-- Keep an instruction to 20 words or fewer, and a description sentence to 25.
-- Use the active voice.
-- Give each word one meaning.
-- The [_Key concepts_](requirements.md#key-concepts) terms are approved technical names.
-
 ## Decisions
 
 Write each PO or tech-lead decision like this:

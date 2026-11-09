@@ -21,6 +21,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 - Never choose silently. Write each PO or tech-lead decision in the [decision format](docs/how-we-work.md#decisions) (Spec: **Decisions**; Intent: _Open questions_; plan: `## Decisions`); risks go under **Flagged concerns**. When a Spec decision is answered, update the issue body as it says.
 - Never use `--no-verify`. If a hook fails, fix the code.
 - Set status labels as the workflow says.
+- A case is unlikely if no shown input, user path or past incident reaches it. For an unlikely case (a race, a security edge case or an extra guard), write no code. Write the failure, its likelihood and the cost of a fix. Put them in the Spec under **Flagged concerns**, in the plan under **Risks**, or in a PR comment. The tech lead decides whether to build it. `docs/security.md`, the Data rules and acceptance checks are never unlikely: build them.
 
 ## Plans
 

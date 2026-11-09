@@ -9,6 +9,7 @@ Find the PR's plan: a file under `plans/` changed in the PR. Read it and issue `
 ## Findings
 
 - Ignore the command's "only if certain" and "don't flag what depends on inputs" filters. Report probable problems too, but list gaps no committed file's input reaches in one `gh pr comment`, not inline.
+- For a finding that needs an unlikely case (see [AGENTS.md](../../AGENTS.md#workflow-rules)), start it with `Unlikely case:`. State the failure, its likelihood and the cost of a fix. Label it **PLAUSIBLE**. Put it in that one `gh pr comment`.
 - If `.since-last-review.diff` exists (the changes since the last review), give it to the review agents instead of `gh pr diff`, and flag defects only on its lines `gh pr diff` also has. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
 - A smell or placement finding (`review-code.md`) is a defect, not a nit. Label it **PLAUSIBLE** when the fix needs a design decision.

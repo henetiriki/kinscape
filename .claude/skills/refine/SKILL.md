@@ -31,19 +31,21 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 6. **Finish** when every branch is confirmed. Summarise what was agreed in a few lines, then write the draft as the mode file describes.
 7. **Check round.** After the draft and before the link, walk each check in the box the mode file names. Ask about a check, one at a time as above, only if:
    - it is vague, or a test can't check it;
-   - it misses an edge (no data, a Fuzzy date, a failed load, phone);
+   - it misses an edge that a user or a workflow can reach (no data, a Fuzzy date, a failed load, phone);
    - it holds a value the plan would otherwise choose.
+
+   Do not ask about an unlikely case ([AGENTS.md](../../../AGENTS.md#workflow-rules)).
 
    Redraft with each answer.
 
 ## Rules for every mode
 
 - **Never build anything:** no code, branches, pull requests or edits to repository files. The output is a draft in the conversation. A command that only formats text, such as encoding a form link, is fine.
-- **Never touch GitHub on your own.** Print the draft under one heading per form box. Create or change an issue only if the user asks and has `gh`, confirming each one.
+- **Never touch GitHub on your own.** Create or change an issue only if the user asks and has `gh`, confirming each one.
 - **Use the project's words.** The _Key concepts_ terms in `docs/requirements.md` mean exactly that. For a new term, add `Proposed term: <name> = <meaning>` under _Open questions_; don't edit the table.
-- **Cite requirement IDs.** Don't invent requirements. If something isn't covered, ask.
+- **Cite requirement IDs.** Don't invent requirements.
 - Follow the [Data rules](../../../AGENTS.md#data-rules).
-- **Leave sizing out of an Intent.** Slicing happens only in spec mode.
+- **Leave sizing out of an Intent.**
 
 ## Prefilled links
 

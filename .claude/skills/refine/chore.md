@@ -10,7 +10,7 @@ Look up the files, settings and workflows the idea touches. What exists is a fac
 
 Ask questions as described in `SKILL.md`, only about what the idea leaves open:
 
-- **What to change:** the files or settings, and the edges. For a workflow, ask about forks, re-runs, races, edits and manual changes. For a picture, ask about each box, arrow, label and theme.
+- **What to change:** the files or settings, and the edges. For a workflow, ask about each fork, re-run, race, edit and manual change that a user or a workflow can reach. Do not ask about an unlikely case ([AGENTS.md](../../../AGENTS.md#workflow-rules)). For a picture, ask about each box, arrow, label and theme.
 - **Why:** the problem it fixes.
 - **Done:** how we'll know, as a check someone can run or see.
 - **Constraints:** anything it must not touch or break.

@@ -216,7 +216,7 @@ jobs:
       # step. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
+        uses: henetiriki/kinscape/.github/actions/run-claude@f5b59e1a01ae91cb0f42036186dbd8ba53ec124c
         with:
           files: ${{ inputs.agent_files }}
           prompt: ${{ inputs.prompt }}

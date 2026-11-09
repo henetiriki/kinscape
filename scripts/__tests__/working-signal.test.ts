@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { parse } from 'yaml';
 
 const read = (file: string) =>
   readFileSync(join(process.cwd(), '.github/workflows', file), 'utf8');
@@ -31,12 +32,14 @@ describe('the working signal', () => {
 
   // Tag mode, which a respond run uses, posts its own :eyes: and comment; a second one would double them.
   it('in claude-run.yml is not shown on a respond run', () => {
-    const workflow = read('claude-run.yml');
-    const start = workflow.indexOf('- name: Show that the run started');
-
-    expect(workflow.slice(start, start + 120)).toContain(
-      "if: inputs.kind != 'respond'"
+    const { jobs } = parse(read('claude-run.yml')) as {
+      jobs: Record<string, { steps: { if?: string; name?: string }[] }>;
+    };
+    const start = jobs.run.steps.find(
+      step => step.name === 'Show that the run started'
     );
+
+    expect(start?.if).toBe("inputs.kind != 'respond'");
   });
 
   it.each(['claude-run.yml', 'claude-code-review.yml'])(

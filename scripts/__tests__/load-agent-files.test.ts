@@ -615,7 +615,9 @@ describe('the approved-commit check', () => {
       step => step.name === 'If Claude left no comment, post one'
     );
 
-    expect(net?.if).toBe("always() && steps.head.outputs.commented != 'true'");
+    expect(net?.if).toBe(
+      "always() && inputs.kind != 'respond' && steps.head.outputs.commented != 'true'"
+    );
   });
 
   it('is fed by the approval: the review commit in, the recorded head out to the build', () => {
@@ -736,6 +738,9 @@ describe('the respond run of claude-run.yml', () => {
     expect(back.if).toContain("inputs.kind == ''");
     expect(run.if).toContain("inputs.kind == 'respond'");
     expect(run.if).toContain("needs.gate.outputs.go == 'true'");
+    expect(run.if, 'a failed gate stops the run').toContain(
+      "needs.gate.result == 'success'"
+    );
     expect(run.if, 'a skipped gate skips its dependants').toContain(
       '!cancelled()'
     );
@@ -763,6 +768,13 @@ describe('the respond run of claude-run.yml', () => {
     );
     expect(step('Install Playwright')?.if).toBe(
       "inputs.playwright && inputs.kind != 'respond'"
+    );
+  });
+
+  // Tag mode may reply in a review thread, which the net's comment count does not see.
+  it('leaves the safety net to the other runs', () => {
+    expect(step('If Claude left no comment, post one')?.if).toContain(
+      "inputs.kind != 'respond'"
     );
   });
 

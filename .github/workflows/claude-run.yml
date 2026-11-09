@@ -127,7 +127,7 @@ jobs:
     name: Run Claude
     needs: gate
     # A skipped gate skips its dependants unless the condition names a status function.
-    if: ${{ !cancelled() && (needs.gate.outputs.go == 'true' || inputs.kind == 'respond') }}
+    if: ${{ !cancelled() && (inputs.kind == 'respond' || needs.gate.result == 'success' && needs.gate.outputs.go == 'true') }}
     # One run per thread at a time, so a reply, a revision and a build never overlap.
     concurrency: thread-${{ inputs.thread }}
     # A stuck agent stops here; the longest build so far took 17 minutes.
@@ -253,9 +253,10 @@ jobs:
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
       # step failed, but not when the commit check above stopped the run and commented.
       # If Claude left no comment, post one pointing at the run, or at the PR it
-      # opened. Only a run with neither hands the Spec back as blocked.
+      # opened. Only a run with neither hands the Spec back as blocked. A respond run has none:
+      # tag mode may reply in a review thread, which this count does not see.
       - name: If Claude left no comment, post one
-        if: always() && steps.head.outputs.commented != 'true'
+        if: always() && inputs.kind != 'respond' && steps.head.outputs.commented != 'true'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}

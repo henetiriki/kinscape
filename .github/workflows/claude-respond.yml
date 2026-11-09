@@ -49,8 +49,9 @@ jobs:
   # in the `run-name` comment above skips this job, so the Actions tab shows the skipped icon.
   # The shared runner (claude-run.yml, `kind: respond`) does the rest, in tag mode: the comment
   # is the prompt, Claude posts its own comment and :eyes:, and there is no gate. It queues
-  # behind any other run on the thread (concurrency group `thread-<n>`, set in the runner). The
-  # runner is the pinned commit below. The Actions graph shows its jobs under this name: "Respond / Run Claude" and "Respond / Result".
+  # behind any other run on the thread (concurrency group `thread-<n>`, set in the runner).
+  # The runner is the pinned commit below. The Actions graph shows its jobs as
+  # "Respond / Run Claude" and "Respond / Result".
   respond:
     name: Respond
     if: >-

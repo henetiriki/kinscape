@@ -5,13 +5,19 @@
 For chat replies, plans, PRs, issues and docs:
 
 - Lead with the answer.
-- Say each fact once, in one file, and link to it from elsewhere.
-- Instructions say what to do. History belongs in commits and PR comments; give a reason only where the rule would be misapplied without it.
-- One line per deviation.
-- Leave out any section that would only say "none". A required form box may say "None".
-- Prefer deleting text to adding it.
+- Say each fact once, in one file.
+- Link to that file from elsewhere.
+- Write what to do.
+- Put history in the PR.
+- Give a reason only where the reader would misapply the rule without it.
+- Write one line for each deviation.
+- Omit a section that would only say "none". A required form box can say "None".
+- Delete text. Add text only when a reader needs it.
 
-Word budgets for files are in `scripts/word-count.mts` (`npm run words`), enforced in CI. Review rules, not enforced: chat replies short with detail on request; PR body per its template.
+`scripts/word-count.mts` sets the word budget for each file, and CI enforces it (`npm run words`). CI does not enforce two more rules, but reviewers check them:
+
+- Keep chat replies short, and give detail on request.
+- Write each PR body as its template says.
 
 ## Readers
 
@@ -23,7 +29,7 @@ A comment tells why the code is as it is now. Name the real constraint. Do not t
 
 ## STE
 
-These rules apply to all text in the repo, issues and PRs. This includes PR bodies, agent comments, code comments, docs, agent prompts and skills. Intents and the root `README.md` do not follow STE. Existing text follows the rules when a change edits it.
+These rules apply to all text in the repo, issues and PRs. This includes PR bodies, agent comments, code comments, docs, agent prompts and skills. Intents and the root `README.md` do not follow STE. When a change edits a line, make that line follow the rules.
 
 Text follows these 16 rules of Simplified Technical English (ASD-STE100). Code, commands and file names are technical names.
 

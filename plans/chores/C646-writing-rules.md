@@ -5,7 +5,7 @@
 
 ## Approach
 
-Do the ten steps of #646 in order. Move all of `AGENTS.md` › _Writing_, including the word-budget line, to _All text_. Keep the `## Writing` heading, so that _Known mistakes_ still links.
+Do the ten steps of #646 in order. Move all of `AGENTS.md` › _Writing_, including the word-budget line, to _All text_. Keep the `## Writing` heading, so that _Known mistakes_ still names a section.
 
 ## Decisions
 

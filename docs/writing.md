@@ -8,7 +8,7 @@ For chat replies, plans, PRs, issues and docs:
 - Say each fact once, in one file.
 - Link to that file from elsewhere.
 - Write what to do.
-- Put history in the PR.
+- Put history in commits and PR comments.
 - Give a reason only where the reader would misapply the rule without it.
 - Write one line for each deviation.
 - Omit a section that would only say "none". A required form box can say "None".

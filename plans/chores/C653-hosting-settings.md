@@ -1,7 +1,7 @@
 # Plan: C653: Split the hosting settings out of repo-settings.md
 
 - **Spec:** #653
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The bullet also asks for `server/env.mts`, which the new sentence does not say. 
 - **B.** Only the link. The reviewer stops checking `server/env.mts`.
 - **Other:** your own.
 
-Recommended: A, because a variable missing from `server/env.mts` gets no check.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -5,13 +5,11 @@
 
 ## Approach
 
-Do the Chore's edits. Move each section's text as it is. Name paths in `docs/code-rules.md` as code spans, so it adds no link cycle. Take the Cache-Control clause out of _New surface_ in `review-code.md`. In `review.md`, point the smell and placement finding to `docs/code-rules.md`, their new owner.
+Do the Chore's edits. Name paths in `docs/code-rules.md` as code spans, so it adds no link cycle. Take the Cache-Control clause out of _New surface_. In `review.md`, point the smell and placement finding to `docs/code-rules.md`.
 
 ## Decisions
 
 **D1 · The AGENTS.md line for Intents and Specs** · Decides: Tech lead
-
-`AGENTS.md` already has a `docs/how-we-work.md` bullet: "the workflow, labels and roles".
 
 - **A.** Replace the Intent, Spec and how-we-work bullets with one linked bullet.
 - **B.** Add a new linked line, and keep the how-we-work bullet.
@@ -34,12 +32,11 @@ Do the Chore's edits. Move each section's text as it is. Name paths in `docs/cod
 ## Order of work
 
 1. Tests, and see them fail.
-2. Docs and prompts.
-3. Workflow, scripts, diagram.
+2. Docs, prompts, workflow, scripts, diagram.
 
 ## Risks
 
-On this PR only, the review job fails: main has no `docs/code-rules.md`. The check is not required. Claude skips a PR that changes its workflow.
+On this PR only, the review job fails: main has no `docs/code-rules.md`. The check is not required.
 
 ## Proof
 
@@ -52,3 +49,10 @@ On this PR only, the review job fails: main has no `docs/code-rules.md`. The che
 | `docs/code-rules.md` is a hand-back path               | `hand-back.test.ts`             |
 | `security.md` and `AGENTS.md` items, in budget         | `git diff`; `words`             |
 | No README entry; the `DESIGN.md` entry lists its cycle | `doc-links.test.ts`             |
+
+## Deviations
+
+- `code-rules.md` words each rule as a builder instruction.
+- `security.md` gains a `## Workflows` heading; Cache-Control keeps its scope.
+- Prompts in `review.md` and `fix-review.md` say what to write; `AGENTS.md` keeps the Intent route.
+- The rule-group test also checks both docs.

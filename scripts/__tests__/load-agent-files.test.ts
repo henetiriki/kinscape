@@ -140,6 +140,35 @@ describe('the load-agent-files action', () => {
     expect(rules.join('').trim(), `"## ${heading}" has no rules`).not.toBe('');
   });
 
+  // The groups that review-code.md points to: the rules live in the doc, so deleting them there
+  // must fail here. The review reads main's copy of both docs (the main files below).
+  it.each([
+    ['Code smells (not style)', 'code-rules.md'],
+    ['Placement', 'code-rules.md'],
+    ['Pattern table', 'code-rules.md'],
+    ['Test quality', 'code-rules.md'],
+    ['Scale', 'code-rules.md'],
+    ['Workflows', 'security.md'],
+  ])('points the group "%s" to rules in docs/%s', (heading, file) => {
+    const slug = heading
+      .toLowerCase()
+      .replace(/[^a-z\s]/g, '')
+      .replace(/\s/g, '-');
+    const doc = readFileSync(join(root, 'docs', file), 'utf8');
+    const rules = (
+      doc.split(/^## /m).find(section => section.split('\n')[0] === heading) ??
+      ''
+    ).match(/^- .+$/gm);
+
+    expect(agent('review-code.md'), `"## ${heading}" links the doc`).toContain(
+      `(../../docs/${file}#${slug})`
+    );
+    expect(
+      rules?.length,
+      `docs/${file} "## ${heading}" has no rules`
+    ).toBeGreaterThan(0);
+  });
+
   // The script reads the repo from GH_REPO; a fork's repo would load the fork's `main`.
   it("takes the repo from this run's repository", () => {
     expect(action()).toContain('GH_REPO: ${{ github.repository }}');

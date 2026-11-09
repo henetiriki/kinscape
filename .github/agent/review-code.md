@@ -48,4 +48,4 @@ Check the diff against [Scale](../../docs/code-rules.md#scale).
 
 ## Workflows
 
-When the diff changes a workflow or action, check it against the workflow rules in [Security rules](../../docs/security.md).
+When the diff changes a workflow or action, check it against [Workflows](../../docs/security.md#workflows).

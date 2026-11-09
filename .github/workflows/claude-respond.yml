@@ -11,7 +11,7 @@ name: 'Claude: Respond'
 #   - it is not the repo owner approving a draft plan PR that the bot opened (claude-build.yml
 #     handles those; an approval from anyone else is answered here, as feedback)
 #   - the text mentions "@claude"
-# This repeats the `if:` of the `claude` job below (run-name cannot see job results): change them together.
+# This repeats the `if:` of the `respond` job below (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     vars.KINSCAPE_BOT_LOGIN != '' && github.actor != vars.KINSCAPE_BOT_LOGIN &&
@@ -44,15 +44,15 @@ on:
   pull_request_review:
     types: [submitted]
 
-# The npm cache path shared with the container jobs (see ci.yml).
-env:
-  npm_config_cache: /tmp/npm-cache
-
 jobs:
   # Let Claude read the request, work in the repo and reply. A run that fails any of the checks
   # in the `run-name` comment above skips this job, so the Actions tab shows the skipped icon.
-  claude:
-    name: Run Claude
+  # The shared runner (claude-run.yml, `kind: respond`) does the rest, in tag mode: the comment
+  # is the prompt, Claude posts its own comment and :eyes:, and there is no gate. It queues
+  # behind any other run on the thread (concurrency group `thread-<n>`, set in the runner). The
+  # runner is the pinned commit below. The Actions graph shows its jobs under this name: "Respond / Run Claude" and "Respond / Result".
+  respond:
+    name: Respond
     if: >-
       vars.KINSCAPE_BOT_LOGIN != '' && github.actor != vars.KINSCAPE_BOT_LOGIN &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
@@ -70,76 +70,26 @@ jobs:
         github.event_name == 'pull_request_review' && github.event.review.body ||
         github.event.comment.body,
         '@claude')
-    # Shared with the plan and build runs (claude-run.yml), so a revision and a build never overlap.
-    concurrency: thread-${{ github.event.pull_request.number || github.event.issue.number }}
-    timeout-minutes: 45
-    runs-on: ubuntu-latest
-    env:
-      # A run ends with its turn, which kills any background work.
-      CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     permissions:
       contents: write
       pull-requests: write
       issues: write
       actions: read # Required for Claude to read CI results on PRs
-    steps:
-      # The bot's one-hour token, first because the checkout needs it; the job's timeout keeps it fresh.
-      - name: Create the bot's token
-        id: bot
-        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
-        with:
-          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-issues: write
-          permission-pull-requests: write
-          permission-actions: read
-      # Checkout, Node, `npm ci` and the Playwright and Next.js caches: see
-      # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude below.
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@49856ad3ab60aee805c174001d7d20acd34bea4a
+    with:
+      thread: ${{ github.event.pull_request.number || github.event.issue.number }}
+      kind: respond
       # Most runs never open a browser, so Claude installs it when it needs one (`npm run e2e:install`,
-      # see .github/agent/respond.md); the cache keeps the download between runs.
-      - name: Prepare the workspace
-        uses: henetiriki/kinscape/.github/actions/setup-workspace@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
-        with:
-          # Persist the App token, not GITHUB_TOKEN: claude-code-action fetches the PR branch before it sets up git auth,
-          # and runs triggered by a GITHUB_TOKEN push wait for approval.
-          token: ${{ steps.bot.outputs.token }}
-          persist-credentials: 'true'
-          playwright: 'true'
-
-      # Loads the agent files, runs Claude Code and uploads its output: see
-      # .github/actions/run-claude/action.yml. It runs from main, like claude-run.yml's copy of this
-      # step, so the checked-out branch can't change it.
-      - name: Run Claude Code
-        id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@f5b59e1a01ae91cb0f42036186dbd8ba53ec124c
-        with:
-          # The files in .github/agent/ that become the system prompt. The order matters: respond.md
-          # points to build.md "below", so build.md comes after it.
-          files: rules.md respond.md build.md
-          # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules and the
-          # respond and build instructions are the system prompt. Planning is the hard thinking, so a
-          # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.
-          model_args: >-
-            ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
-          additional_permissions: 'actions: read'
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ steps.bot.outputs.token }}
-          bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
-          bot_id: ${{ vars.KINSCAPE_BOT_ID }}
-          team_logins: ${{ vars.KINSCAPE_TEAM_LOGINS }}
-
-  # With show_full_output off, the log above stops at the start of the run. This writes the run page
-  # from the summary of Claude's transcript (the run-summary action, from main, so the checked-out branch can't
-  # change it), as claude-run.yml does for plan and build runs. It has no secrets, and its script step never fails the job.
-  summary:
-    name: Result
-    needs: claude
-    if: always() && needs.claude.result != 'skipped'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - name: Write the result
-        uses: henetiriki/kinscape/.github/actions/run-summary@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
+      # see .github/agent/respond.md); this keeps the download between runs.
+      playwright: true
+      # The files in .github/agent/ that become the system prompt. The order matters: respond.md
+      # points to build.md "below", so build.md comes after it.
+      agent_files: rules.md respond.md build.md
+      # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules and the
+      # respond and build instructions are the system prompt. Planning is the hard thinking, so a
+      # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.
+      model_args: >-
+        ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}

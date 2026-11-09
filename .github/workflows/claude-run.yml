@@ -1,10 +1,14 @@
 name: 'Claude: Run (shared)'
 
-# What both agent paths share: a gate that stops a blocked or duplicate run before any model
+# What the agent paths share: a gate that stops a blocked or duplicate run before any model
 # runs, then fetch the repo, load the agent files, run Claude, keep its output, and leave a
 # comment if Claude left none, and hand the issue back if the run ended on Claude's turn.
-# claude-plan.yml, claude-build.yml, claude-fix-review.yml and claude-resolve-conflict.yml call
-# this workflow; each decides when to run and what to ask. It never runs on its own.
+# claude-plan.yml, claude-build.yml, claude-fix-review.yml, claude-resolve-conflict.yml and
+# claude-respond.yml call this workflow; each decides when to run and what to ask. It never runs on its own.
+#
+# A respond run (`kind: respond`) answers an @claude comment in tag mode, where the comment is the
+# prompt. It has no gate (it has nothing to check), keeps the App token in git, and leaves the start
+# comment and the browser install to Claude.
 #
 # The `github` context here is the caller's, so `github.event`, `github.run_id` and the rest are
 # those of the plan or build run.
@@ -17,8 +21,8 @@ on:
         required: true
         type: string
       prompt:
-        description: 'What Claude is asked to do.'
-        required: true
+        description: 'What Claude is asked to do. Empty keeps tag mode, where the triggering comment is the prompt.'
+        default: ''
         type: string
       model_args:
         description: 'Claude CLI model flags, e.g. "--model sonnet".'
@@ -33,7 +37,7 @@ on:
         default: ''
         type: string
       playwright:
-        description: 'Install the test browser, for a run that runs e2e or design:check.'
+        description: 'Restore the test browser cache; install the browser too, for a run that runs e2e or design:check. A respond run installs it on demand.'
         default: false
         type: boolean
       plan:
@@ -41,7 +45,7 @@ on:
         default: false
         type: boolean
       kind:
-        description: '"fix" on a fix-review run and "resolve" on a resolve-conflict run, where the thread is a PR that carries the label; empty otherwise (plan decides: a plan or a build).'
+        description: '"fix" on a fix-review run and "resolve" on a resolve-conflict run, where the thread is a PR that carries the label; "respond" on a reply to an @claude comment; empty otherwise (plan decides: a plan or a build).'
         default: ''
         type: string
       head:
@@ -71,10 +75,11 @@ jobs:
   # closes the issue or an issue it is "blocked by" is open; a build stops if the Spec its PR
   # closes is blocked; a fix stops if the PR is no longer open, ready and labelled, a resolve if it
   # is no longer open and labelled. On a stop it comments why (a fix, a resolve and a stale event
-  # stop quietly), and `run` is skipped.
+  # stop quietly), and `run` is skipped. A respond run has nothing to check, so it skips this job.
   gate:
     # The Actions graph shows this as "<caller job> / Gate".
     name: Gate
+    if: inputs.kind != 'respond'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -121,8 +126,9 @@ jobs:
     # The Actions graph shows this as "<caller job> / Run Claude".
     name: Run Claude
     needs: gate
-    if: needs.gate.outputs.go == 'true'
-    # One run per thread at a time, shared with claude-respond.yml, so a revision and a build never overlap.
+    # A skipped gate skips its dependants unless the condition names a status function.
+    if: ${{ !cancelled() && (needs.gate.outputs.go == 'true' || inputs.kind == 'respond') }}
+    # One run per thread at a time, so a reply, a revision and a build never overlap.
     concurrency: thread-${{ inputs.thread }}
     # A stuck agent stops here; the longest build so far took 17 minutes.
     timeout-minutes: 45
@@ -132,23 +138,8 @@ jobs:
       # A run ends with its turn, which kills any background work.
       CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: '1'
     steps:
-      # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a
-      # build, or a plan for a UI Spec), the Playwright and Next.js caches: see
-      # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
-      - name: Prepare the workspace
-        uses: henetiriki/kinscape/.github/actions/setup-workspace@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
-        with:
-          ref: ${{ inputs.ref }}
-          # Otherwise git pushes with GITHUB_TOKEN, not the App token, and the runs it triggers wait for approval.
-          persist-credentials: 'false'
-          playwright: ${{ inputs.playwright }}
-
-      # Note the start time, so the last step can tell whether Claude commented during this run.
-      - name: Note the start time
-        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
-
-      # After the checkout and before the browser install, so the token is fresh enough: it lasts
-      # an hour, the job 45 minutes and the install under 4. The commit check below needs it.
+      # First, because a respond run's checkout needs it; the job's timeout keeps it fresh: it lasts
+      # an hour and the job 45 minutes. The commit check below needs it too.
       - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
@@ -162,6 +153,24 @@ jobs:
           # A merge from main can bring in a workflow change, which GitHub refuses to push without
           # this. Only a resolve run gets it; an empty value asks for nothing.
           permission-workflows: ${{ inputs.kind == 'resolve' && 'write' || '' }}
+
+      # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a
+      # build, or a plan for a UI Spec), the Playwright and Next.js caches: see
+      # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
+      - name: Prepare the workspace
+        uses: henetiriki/kinscape/.github/actions/setup-workspace@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
+        with:
+          ref: ${{ inputs.ref }}
+          token: ${{ steps.bot.outputs.token }}
+          # Only a respond run keeps the token in git: claude-code-action fetches the PR branch before it
+          # sets up git auth, and a push by GITHUB_TOKEN starts runs that wait for approval. Any other run
+          # sets its auth in the action, so a persisted token would only serve a push by hand.
+          persist-credentials: ${{ inputs.kind == 'respond' && 'true' || 'false' }}
+          playwright: ${{ inputs.playwright }}
+
+      # Note the start time, so the last step can tell whether Claude commented during this run.
+      - name: Note the start time
+        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
       # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
       # landed since: that is not what the owner read, so the run stops here, before the browser
@@ -188,14 +197,17 @@ jobs:
       # The runner already has Chromium's system packages, so only the browser is installed.
       # A CDN stall on a cache miss can hang the download, so it stops after 3.5 minutes. A failed
       # install doesn't stop the build: Claude reports that e2e couldn't run, and CI runs it.
+      # A respond run installs it on demand (`npm run e2e:install`, .github/agent/respond.md); the cache keeps the download.
       - name: Install Playwright
-        if: inputs.playwright
+        if: inputs.playwright && inputs.kind != 'respond'
         continue-on-error: true
         run: timeout 210 npm run e2e:install
 
       # Agent mode posts nothing until Claude does, so mark the thread as picked up: :eyes: stays, the
       # "Planning"/"Building"/"Fixing"/"Resolving" comment is deleted when the run ends. Neither is worth failing the run for.
+      # Tag mode, which a respond run uses, posts its own comment and :eyes:.
       - name: Show that the run started
+        if: inputs.kind != 'respond'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
@@ -212,8 +224,8 @@ jobs:
           echo "WORKING_COMMENT_ID=$id" >> "$GITHUB_ENV"
 
       # Loads the agent files, runs Claude Code and uploads its output: see
-      # .github/actions/run-claude/action.yml. It runs from main, like claude-respond.yml's copy of this
-      # step. The caller's prompt and model flags say what to do.
+      # .github/actions/run-claude/action.yml. It runs from main, so the checked-out branch can't
+      # change it. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
         uses: henetiriki/kinscape/.github/actions/run-claude@f5b59e1a01ae91cb0f42036186dbd8ba53ec124c
@@ -221,6 +233,8 @@ jobs:
           files: ${{ inputs.agent_files }}
           prompt: ${{ inputs.prompt }}
           model_args: ${{ inputs.model_args }}
+          # Tag mode reads CI results on a PR.
+          additional_permissions: "${{ inputs.kind == 'respond' && 'actions: read' || '' }}"
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ steps.bot.outputs.token }}
           bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
@@ -329,7 +343,7 @@ jobs:
     # The Actions graph shows this as "<caller job> / Result".
     name: Result
     needs: [gate, run]
-    if: always() && needs.gate.outputs.go == 'true'
+    if: always() && (needs.gate.outputs.go == 'true' || inputs.kind == 'respond')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

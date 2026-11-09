@@ -29,6 +29,16 @@ describe('the working signal', () => {
     expect(at('Remove the working comment')).toBeLessThan(at(after));
   });
 
+  // Tag mode, which a respond run uses, posts its own :eyes: and comment; a second one would double them.
+  it('in claude-run.yml is not shown on a respond run', () => {
+    const workflow = read('claude-run.yml');
+    const start = workflow.indexOf('- name: Show that the run started');
+
+    expect(workflow.slice(start, start + 120)).toContain(
+      "if: inputs.kind != 'respond'"
+    );
+  });
+
   it.each(['claude-run.yml', 'claude-code-review.yml'])(
     'in %s never fails the run and removes the comment even after a failure',
     file => {

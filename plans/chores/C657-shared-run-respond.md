@@ -49,6 +49,10 @@ Tag mode fetches the PR branch before it sets git auth. The runner mints after c
 - The caller pins a branch commit; `actions-pin-update.yml` moves it after merge.
 - The caller sets no `concurrency`: the runner's `thread-<n>` would wait on it.
 
+## Deviations
+
+- `prompt` is optional. Every checkout fetches with the App token.
+
 ## Proof
 
 | Acceptance check        | Proven by                                    |

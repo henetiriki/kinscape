@@ -33,16 +33,16 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
-      - name: Lint
+      - name: Lint the code
         run: npm run lint
 
   # Checks the types, so a type error fails here and not late in e2e's build.
@@ -50,32 +50,32 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
-      - name: Check types
+      - name: Check the types
         run: npm run typecheck
 
   # Checks that files are laid out consistently.
   format:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
-      - name: Check formatting
+      - name: Check the format
         run: npm run format:check
 
   # Runs the automated tests and keeps the coverage report for the coverage job (even if a test failed).
@@ -83,18 +83,18 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
-      - name: Run tests
+      - name: Run the tests
         run: npm test
-      - name: Keep the coverage report
+      - name: Upload the coverage report
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ !cancelled() }}
         with:
@@ -112,14 +112,14 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Get the coverage report
+      - name: Download the coverage report
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: coverage
           path: coverage
-      - name: Upload coverage
+      - name: Send the coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           fail_ci_if_error: false
@@ -131,29 +131,29 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
-      - name: Validate boundaries
+      - name: Validate the boundaries
         run: npm run validate:boundaries
 
   # Checks that docs and plans stay within their word limits.
   words:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-      - name: Check word counts
+      - name: Check the word counts
         run: npm run words
 
   # Reads the Playwright image from its one home. A job's container can't read a file, so this passes it on.
@@ -163,9 +163,9 @@ jobs:
     outputs:
       image: ${{ steps.pin.outputs.image }}
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Read the image
+      - name: Read the Playwright image
         id: pin
         run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
 
@@ -180,28 +180,28 @@ jobs:
       image: ${{ needs.image.outputs.image }}
       options: --user 1001
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
       # Fails, naming the file, when a design/source snapshot differs from its design/canvas artboard.
-      - name: Check the HTML snapshots match the canvas
+      - name: Check that the HTML snapshots match the canvas
         run: npm run design:export && node scripts/design-shots-ci.mts source
       # Keep Next.js's build cache. A source change still restores the last build for the same lockfile.
-      - name: Cache Next.js build
+      - name: Cache the Next.js build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'features/**', 'lib/**', 'server/**', 'data/**', 'types/**', 'design/tokens.*', 'next.config.ts', 'instrumentation.ts', 'proxy.ts') }}
           path: .next/cache
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
-      - name: Run end-to-end tests
+      - name: Run the end-to-end tests
         run: npm run e2e
-      - name: Upload design-check results
+      - name: Upload the design-check results
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ !cancelled() }}
         with:

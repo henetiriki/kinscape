@@ -77,7 +77,8 @@ describe('the App token', () => {
     const step =
       read('claude-run.yml')
         .split('- name: ')
-        .find(part => part.startsWith('Comment if Claude left none')) ?? '';
+        .find(part => part.startsWith('If Claude left no comment, post one')) ??
+      '';
 
     expect(step).toContain('GQL_LOGIN=${BOT_LOGIN%\\[bot\\]}');
     expect(step).toContain('.author.login == \\$ENV.GQL_LOGIN');

@@ -1,4 +1,4 @@
-name: Design agent shots
+name: 'Design: Render snapshots'
 
 # Exports the HTML snapshots (design/source/*.html) from design/canvas/, renders every JPG
 # (design/*.jpg) in the Playwright image that the design check runs in, and commits the files that
@@ -31,17 +31,17 @@ jobs:
     outputs:
       image: ${{ steps.pin.outputs.image }}
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-      - name: Refuse main and non-branches
+      - name: Check that the ref is a branch but not main
         run: node scripts/design-shots-ci.mts guard
         env:
           REF: ${{ github.ref }}
-      - name: Read the image
+      - name: Read the Playwright image
         id: pin
         run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
 
@@ -56,23 +56,23 @@ jobs:
     outputs:
       changed: ${{ steps.check.outputs.changed }}
     steps:
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           cache: npm
           node-version-file: .nvmrc
-      - name: Install dependencies
+      - name: Install the dependencies
         run: npm ci
       - name: Export the HTML snapshots
         run: npm run design:export
       - name: Render the snapshots
         run: npm run design:shots
       # Lists the HTML snapshots and JPGs that changed in the job summary.
-      - name: Check what changed
+      - name: Check which files changed
         id: check
         run: OUTPUT_FILE="$GITHUB_OUTPUT" SUMMARY_FILE="$GITHUB_STEP_SUMMARY" node scripts/design-shots-ci.mts check
       - name: Upload the snapshots
@@ -91,19 +91,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # The bot's one-hour token, which the checkout keeps for the push.
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
           private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
           permission-contents: write
-      - name: Check out code
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           token: ${{ steps.bot.outputs.token }}
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
@@ -114,7 +114,7 @@ jobs:
           path: design
       - name: Check that only snapshots changed
         run: node scripts/design-shots-ci.mts check
-      - name: Commit and push
+      - name: Commit the snapshots to the branch
         run: |
           git config user.name "$BOT_LOGIN"
           git config user.email "$BOT_ID+$BOT_LOGIN@users.noreply.github.com"

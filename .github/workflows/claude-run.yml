@@ -1,7 +1,7 @@
 name: 'Claude: Run (shared)'
 
 # What both agent paths share: a gate that stops a blocked or duplicate run before any model
-# runs, then set up the repo, load the agent files, run Claude, keep its output, and leave a
+# runs, then fetch the repo, load the agent files, run Claude, keep its output, and leave a
 # comment if Claude left none, and hand the issue back if the run ended on Claude's turn.
 # claude-plan.yml, claude-build.yml, claude-fix-review.yml and claude-resolve-conflict.yml call
 # this workflow; each decides when to run and what to ask. It never runs on its own.
@@ -29,7 +29,7 @@ on:
         required: true
         type: string
       ref:
-        description: 'The branch to check out. Empty checks out the default branch.'
+        description: 'The branch to fetch. Empty fetches the default branch.'
         default: ''
         type: string
       playwright:
@@ -85,7 +85,7 @@ jobs:
       go: ${{ steps.gate.outputs.go }}
     steps:
       # The script comes from main, like the agent files. It uses only Node's own modules, so no `npm ci`.
-      - name: Check out the gate script
+      - name: Fetch the gate script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
@@ -93,11 +93,11 @@ jobs:
             scripts
             .nvmrc
           persist-credentials: false
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
@@ -106,7 +106,7 @@ jobs:
           permission-issues: write
           # Write: a stop comments on the PR thread of a build or a fix.
           permission-pull-requests: write
-      - name: Check the run can start
+      - name: Check that the run can start
         id: gate
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
@@ -135,7 +135,7 @@ jobs:
       # Checkout, Node, `npm ci` and, when the caller says Claude will run e2e or design:check (a
       # build, or a plan for a UI Spec), the Playwright and Next.js caches: see
       # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
-      - name: Set up the workspace
+      - name: Prepare the workspace
         uses: henetiriki/kinscape/.github/actions/setup-workspace@90b8105edc4bfba72baf6a52cd736509ff935c54
         with:
           ref: ${{ inputs.ref }}
@@ -144,12 +144,12 @@ jobs:
           playwright: ${{ inputs.playwright }}
 
       # Note the start time, so the last step can tell whether Claude commented during this run.
-      - name: Note start time
+      - name: Note the start time
         run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
 
       # After the checkout and before the browser install, so the token is fresh enough: it lasts
       # an hour, the job 45 minutes and the install under 4. The commit check below needs it.
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
@@ -166,7 +166,7 @@ jobs:
       # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
       # landed since: that is not what the owner read, so the run stops here, before the browser
       # install and any model run, and the `return` job hands the issue back.
-      - name: Check the branch is at the approved commit
+      - name: Check that the branch is at the approved commit
         id: head
         if: inputs.head != ''
         env:
@@ -240,7 +240,7 @@ jobs:
       # step failed, but not when the commit check above stopped the run and commented.
       # If Claude left no comment, post one pointing at the run, or at the PR it
       # opened. Only a run with neither hands the Spec back as blocked.
-      - name: Comment if Claude left none
+      - name: If Claude left no comment, post one
         if: always() && steps.head.outputs.commented != 'true'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
@@ -280,7 +280,7 @@ jobs:
   # Hands the issue back to the tech lead when a plan or build run ends on Claude's turn
   # (scripts/agent-return.mts): a plan with no PR, or a build whose PR is still a draft plan. It
   # follows the gate too, so a stop before `run` is covered. A build's `run` has the PR branch
-  # checked out, so this is its own job, with the script from main like the gate. A `run` cancelled
+  # fetched, so this is its own job, with the script from main like the gate. A `run` cancelled
   # by a newer queued one hands nothing back: the newer run is still to come.
   return:
     # The Actions graph shows this as "<caller job> / Return".
@@ -289,11 +289,11 @@ jobs:
     if: always() && inputs.kind == '' && needs.run.result != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only to check out main; the bot's App token reads the PR and moves the label.
+    # Only to fetch main; the bot's App token reads the PR and moves the label.
     permissions:
       contents: read
     steps:
-      - name: Check out the return script
+      - name: Fetch the return script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
@@ -301,11 +301,11 @@ jobs:
             scripts
             .nvmrc
           persist-credentials: false
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
@@ -314,7 +314,7 @@ jobs:
           permission-issues: write
           # Write: a stop comments on the PR thread of a build or a fix.
           permission-pull-requests: write
-      - name: Hand the issue back if it is still Claude's turn
+      - name: If it is still Claude's turn, return the issue
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}

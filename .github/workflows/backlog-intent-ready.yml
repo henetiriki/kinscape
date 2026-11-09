@@ -1,4 +1,4 @@
-name: 'Backlog: Intent ready for PO'
+name: 'Backlog: Flag Intent for PO'
 
 # When a Spec is closed, check whether that was the last open Spec of its
 # Intent. If so, hand the Intent to the PO to confirm the outcome and close it.
@@ -29,7 +29,7 @@ jobs:
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
     runs-on: ubuntu-latest
     steps:
-      - name: Flag Intent for PO
+      - name: Flag the Intent for the PO
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |

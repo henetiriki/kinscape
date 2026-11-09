@@ -1,4 +1,4 @@
-name: Run summary
+name: Summarise the run
 description: >-
   Write the run page's result section from Claude's summary (scripts/run-summary.mts, from
   main). claude-respond.yml, claude-run.yml and claude-code-review.yml call this action in a job of their
@@ -9,7 +9,7 @@ runs:
   steps:
     # The script comes from main, so the checked-out branch can't change it. Callers pin this
     # action to a main commit, for the same reason (scripts/__tests__/load-agent-files.test.ts).
-    - name: Check out the summary script
+    - name: Fetch the summary script
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         ref: main
@@ -17,7 +17,7 @@ runs:
           scripts
           .nvmrc
         persist-credentials: false
-    - name: Set up Node
+    - name: Install Node
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version-file: .nvmrc

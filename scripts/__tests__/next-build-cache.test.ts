@@ -11,7 +11,7 @@ describe('the Next.js build cache', () => {
   const [path, prefix] =
     read('.github/workflows/ci.yml')
       .match(
-        /name: Cache Next\.js build\n[\s\S]*?path: (.+)\n\s*restore-keys: (.+)/
+        /name: Cache the Next\.js build\n[\s\S]*?path: (.+)\n\s*restore-keys: (.+)/
       )
       ?.slice(1) ?? [];
 
@@ -24,10 +24,10 @@ describe('the Next.js build cache', () => {
     expect(
       read('.github/actions/setup-workspace/action.yml')
         .match(
-          /name: Restore Next\.js build cache\n[\s\S]*?key: (.+)\n\s*path: (.+)/
+          /name: Restore the Next\.js build cache\n[\s\S]*?key: (.+)\n\s*path: (.+)/
         )
         ?.slice(1),
-      `setup-workspace needs a "Restore Next.js build cache" step with the key and path ci.yml's e2e job restores`
+      `setup-workspace needs a "Restore the Next.js build cache" step with the key and path ci.yml's e2e job restores`
     ).toEqual([prefix, path]);
   });
 });

@@ -8,29 +8,29 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | --- | --- | --- | --- |
 | Actions: Update repo action pins<br>`actions-pin-update.yml` | push | `main · paths: .github/actions/**, .github/workflows/**` | update-pins |
 | | workflow_dispatch | | |
-| Backlog: Intent ready for PO<br>`backlog-intent-ready.yml` | issues | `closed` | flag-intent |
-| Backlog: Interaction limit reminder<br>`backlog-interaction-limit.yml` | schedule | `0 6 * * 2` | remind |
+| Backlog: Flag Intent for PO<br>`backlog-intent-ready.yml` | issues | `closed` | flag-intent |
+| Backlog: Warn of interaction limit<br>`backlog-interaction-limit.yml` | schedule | `0 6 * * 2` | remind |
 | | workflow_dispatch | | |
-| Backlog: Issue status<br>`backlog-issue-status.yml` | pull_request | `opened, ready_for_review` | status |
+| Backlog: Move issue status<br>`backlog-issue-status.yml` | pull_request | `opened, ready_for_review` | status |
 | | pull_request_review | `submitted` | |
 | Backlog: Inherit milestone<br>`backlog-milestone.yml` | issues | `opened, edited` | inherit |
 | | pull_request | `opened, edited, reopened` | |
 | | workflow_dispatch | | |
 | Backlog: Link Spec to Intent<br>`backlog-spec-link.yml` | issues | `opened` | link-spec |
 | CI: Delete PR caches<br>`ci-cache-cleanup.yml` | pull_request | `closed` | delete |
-| CI: Playwright cache<br>`ci-playwright-cache.yml` | push | `main · paths: package-lock.json, .github/workflows/ci-playwright-cache.yml` | seed |
+| CI: Seed Playwright cache<br>`ci-playwright-cache.yml` | push | `main · paths: package-lock.json, .github/workflows/ci-playwright-cache.yml` | seed |
 | | schedule | `0 5 * * 1,4` | |
 | | workflow_dispatch | | |
 | CI<br>`ci.yml` | pull_request | `opened, synchronize, reopened, ready_for_review` | lint · typecheck · format · test · coverage · boundaries · words · image · e2e |
 | | push | `main` | |
 | Claude: Build<br>`claude-build.yml` · calls Claude: Run (shared) | pull_request_review | `submitted` | approve · build |
-| Claude: Code Review<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**` | claude-review · summary |
-| Claude: Denial audit<br>`claude-denial-audit.yml` | schedule | `0 7 * * 1` | audit |
+| Claude: Review code<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**` | claude-review · summary |
+| Claude: Audit denials<br>`claude-denial-audit.yml` | schedule | `0 7 * * 1` | audit |
 | | workflow_dispatch | | |
 | Claude: Fix review<br>`claude-fix-review.yml` · calls Claude: Run (shared) | pull_request | `labeled` | fix · unlabel |
 | Claude: Hand back<br>`claude-hand-back.yml` | pull_request | `opened, synchronize, reopened` | label |
 | Claude: Plan<br>`claude-plan.yml` · calls Claude: Run (shared) | issues | `labeled` | plan |
-| Claude: Plugin pin check<br>`claude-plugin-pin-check.yml` | schedule | `0 6 * * 1` | check-pin |
+| Claude: Check plugin pin<br>`claude-plugin-pin-check.yml` | schedule | `0 6 * * 1` | check-pin |
 | | workflow_dispatch | | |
 | Claude: Resolve conflict<br>`claude-resolve-conflict.yml` · calls Claude: Run (shared) | pull_request_target | `labeled` | resolve · unlabel |
 | Claude: Respond<br>`claude-respond.yml` | issue_comment | `created` | claude · summary |
@@ -39,7 +39,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | | pull_request_review | `submitted` | |
 | Claude: Run (shared)<br>`claude-run.yml` | workflow_call | | gate · run · return · summary |
 | Claude: Unblock<br>`claude-unblock.yml` | issues | `closed` | unblock · refresh |
-| Design agent shots<br>`design-agent-shots.yml` | workflow_dispatch | | setup · render · commit |
+| Design: Render snapshots<br>`design-agent-shots.yml` | workflow_dispatch | | setup · render · commit |
 
 ## Pull requests
 
@@ -55,12 +55,12 @@ flowchart TB
   on_pull_request_review([pull_request_review])
   on_pull_request_review_comment([pull_request_review_comment])
   on_pull_request_target([pull_request_target])
-  backlog_issue_status["Backlog: Issue status"]
+  backlog_issue_status["Backlog: Move issue status"]
   backlog_milestone["Backlog: Inherit milestone"]
   ci_cache_cleanup["CI: Delete PR caches"]
   ci["CI"]
   claude_build["Claude: Build"]
-  claude_code_review["Claude: Code Review"]
+  claude_code_review["Claude: Review code"]
   claude_fix_review["Claude: Fix review"]
   claude_hand_back["Claude: Hand back"]
   claude_resolve_conflict["Claude: Resolve conflict"]
@@ -101,7 +101,7 @@ config:
 flowchart TB
   on_issue_comment([issue_comment])
   on_issues([issues])
-  backlog_intent_ready["Backlog: Intent ready for PO"]
+  backlog_intent_ready["Backlog: Flag Intent for PO"]
   backlog_milestone["Backlog: Inherit milestone"]
   backlog_spec_link["Backlog: Link Spec to Intent"]
   claude_plan["Claude: Plan"]
@@ -136,13 +136,13 @@ flowchart TB
   on_schedule([schedule])
   on_workflow_dispatch([workflow_dispatch])
   actions_pin_update["Actions: Update repo action pins"]
-  backlog_interaction_limit["Backlog: Interaction limit reminder"]
+  backlog_interaction_limit["Backlog: Warn of interaction limit"]
   backlog_milestone["Backlog: Inherit milestone"]
-  ci_playwright_cache["CI: Playwright cache"]
+  ci_playwright_cache["CI: Seed Playwright cache"]
   ci["CI"]
-  claude_denial_audit["Claude: Denial audit"]
-  claude_plugin_pin_check["Claude: Plugin pin check"]
-  design_agent_shots["Design agent shots"]
+  claude_denial_audit["Claude: Audit denials"]
+  claude_plugin_pin_check["Claude: Check plugin pin"]
+  design_agent_shots["Design: Render snapshots"]
   on_push --> actions_pin_update
   on_push --> ci_playwright_cache
   on_push --> ci

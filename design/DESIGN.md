@@ -67,7 +67,7 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 `npm run design:check` renders each screen in `screens.json` beside its HTML snapshot, ignoring the map, and writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold.
 
-Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing an artboard, push the branch and run the **Design agent shots** workflow on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. Agents never edit these files ([`AGENTS.md`](../AGENTS.md#source-of-truth)), so each one always matches its source. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
+Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing an artboard, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. Agents never edit these files ([`AGENTS.md`](../AGENTS.md#source-of-truth)), so each one always matches its source. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
 
 ### Proposed screens
 
@@ -87,7 +87,7 @@ A person in a signed-in Claude Code session refreshes `canvas/` after a board ch
 2. `read_file` each file that differs into `canvas/project/` (long files in parts), then check its hash. Files under `project/ds/kinscape/` come from `npm run design-system` (`.design-system/project/`); check their hashes the same way.
 3. Set line 2 of `canvas/VERSION` to the version `list_files` reports.
 4. Run `npm run design:export`. It prints "No snapshot changed" unless a board changed.
-5. Commit `canvas/` alone. If a board changed, discard the exported `source/` changes, push, and run the Design agent shots workflow.
+5. Commit `canvas/` alone. If a board changed, discard the exported `source/` changes, push, and run the workflow Design: Render snapshots.
 
 If `list_files` refuses with "written to by someone outside your organization", ask Claude in a chat on the canvas to read each changed file and hand it over.
 

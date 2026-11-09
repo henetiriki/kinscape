@@ -1,12 +1,12 @@
-name: Set up the workspace
+name: Prepare the workspace
 description: >-
-  Check out the repo, set up Node with the npm cache, run `npm ci`, and, when `playwright` is true,
+  Fetch the repo, install Node with the npm cache, run `npm ci`, and, when `playwright` is true,
   read the Playwright version, cache the browser and restore the Next.js build cache. Installing the
   browser stays with the caller.
 
 inputs:
   ref:
-    description: "The ref to check out. Empty checks out the triggering event's ref, as actions/checkout does."
+    description: "The ref to fetch. Empty fetches the triggering event's ref, as actions/checkout does."
     default: ''
   token:
     description: 'The token checkout fetches with, and persists when persist-credentials is true.'
@@ -21,7 +21,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Check out code
+    - name: Fetch the code
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         ref: ${{ inputs.ref }}
@@ -30,22 +30,22 @@ runs:
         persist-credentials: ${{ inputs.persist-credentials }}
 
     # Install the project's tools so Claude can run lint and tests.
-    - name: Set up Node
+    - name: Install Node
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         cache: npm
         node-version-file: .nvmrc
-    - name: Install dependencies
+    - name: Install the dependencies
       shell: bash
       run: npm ci
     # Inputs are strings, so a bare `inputs.playwright` is always true: compare it with 'true'.
     # The cache keeps the browser between runs.
-    - name: Read Playwright version
+    - name: Read the Playwright version
       id: playwright
       if: inputs.playwright == 'true'
       shell: bash
       run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-    - name: Cache Playwright browser
+    - name: Cache the Playwright browser
       if: inputs.playwright == 'true'
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
@@ -55,7 +55,7 @@ runs:
     # by an issue or a comment has a read-only cache token (`Cache mode: read` in its log),
     # whatever the job's token permissions, so it can't save to main's cache. The key is the
     # e2e job's restore-keys prefix (scripts/__tests__/next-build-cache.test.ts keeps them equal).
-    - name: Restore Next.js build cache
+    - name: Restore the Next.js build cache
       if: inputs.playwright == 'true'
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:

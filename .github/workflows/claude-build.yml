@@ -47,7 +47,7 @@ jobs:
   # skipped. It also sets the issue's status label from the outcome (`ready-for-agent` on go,
   # `ready-for-dev` on stop; a `hand-back` PR's issue is left alone). The review approved one
   # commit: a PR whose head has moved since stops too, and `head` names the commit the build must
-  # check out. The script comes from main and the PR head is never checked out: it reads and
+  # fetch. The script comes from main and the PR head is never fetched: it reads and
   # writes the plan through the API.
   approve:
     name: Approve
@@ -62,7 +62,7 @@ jobs:
     concurrency: thread-${{ github.event.pull_request.number }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only to check out main; the bot's App token comments and commits (as claude-run.yml does).
+    # Only to fetch main; the bot's App token comments and commits (as claude-run.yml does).
     permissions:
       contents: read
     outputs:
@@ -70,7 +70,7 @@ jobs:
       head: ${{ steps.approve.outputs.head }}
     steps:
       # It uses only Node's own modules, so no `npm ci`.
-      - name: Check out the approval script
+      - name: Fetch the approval script
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
@@ -78,12 +78,12 @@ jobs:
             scripts
             .nvmrc
           persist-credentials: false
-      - name: Set up Node
+      - name: Install Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
       # The App token, not GITHUB_TOKEN: a push by GITHUB_TOKEN would start no workflow, so CI would not run on it.
-      - name: Mint the bot's token
+      - name: Create the bot's token
         id: bot
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
@@ -114,7 +114,7 @@ jobs:
     uses: henetiriki/kinscape/.github/workflows/claude-run.yml@8aafb8ef8a191db6b5a7348817accbee4afef225
     with:
       thread: ${{ github.event.pull_request.number }}
-      # Check out the plan PR's branch, at the commit the approval recorded.
+      # Fetch the plan PR's branch, at the commit the approval recorded.
       ref: ${{ github.event.pull_request.head.ref }}
       head: ${{ needs.approve.outputs.head }}
       playwright: true

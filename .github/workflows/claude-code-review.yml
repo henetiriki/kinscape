@@ -1,4 +1,4 @@
-name: 'Claude: Code Review'
+name: 'Claude: Review code'
 
 # When a PR is opened, updated or marked ready, Claude reviews the code and
 # leaves comments on it.
@@ -51,7 +51,7 @@ jobs:
       actions: read
 
     steps:
-      - name: Checkout repository
+      - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
@@ -59,7 +59,7 @@ jobs:
       # The rules, settings, plugin marketplace, the files CLAUDE.md imports and main's copy of this file
       # come from main, not the checked-out branch. The action retries a failed download, then fails the
       # job (Claude doesn't start, and the report step says so), and shows the system prompt.
-      - name: Load review rules and settings
+      - name: Load the review rules and settings
         uses: henetiriki/kinscape/.github/actions/load-agent-files@10bbf48497442acf32bbab6465b1b5a5a4badc9f
         with:
           files: review.md review-code.md
@@ -157,7 +157,7 @@ jobs:
           echo "scope=since" >> "$GITHUB_OUTPUT"
           echo "Reviewing the changes since $last."
 
-      - name: Run Claude Code Review
+      - name: Run Claude Code
         id: claude-review
         if: steps.same.outputs.same == 'true'
         uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266

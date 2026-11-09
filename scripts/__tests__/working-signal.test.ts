@@ -10,12 +10,12 @@ const read = (file: string) =>
 // or edits the bot's comments, or that step would take it for Claude's.
 describe('the working signal', () => {
   it.each([
-    ['claude-run.yml', 'Run Claude Code', 'Comment if Claude left none'],
     [
-      'claude-code-review.yml',
-      'Run Claude Code Review',
-      'Report a missing review',
+      'claude-run.yml',
+      'Run Claude Code',
+      'If Claude left no comment, post one',
     ],
+    ['claude-code-review.yml', 'Run Claude Code', 'Report a missing review'],
   ])('in %s starts before Claude and ends before %s', (file, run, after) => {
     const workflow = read(file);
     const at = (name: string) => workflow.indexOf(`- name: ${name}`);

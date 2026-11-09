@@ -51,7 +51,7 @@ runs:
         fi
 
     # From main, not this branch (see load-agent-files). settings.json is the build agent's tools.
-    - name: Load agent files
+    - name: Load the agent files
       uses: henetiriki/kinscape/.github/actions/load-agent-files@10bbf48497442acf32bbab6465b1b5a5a4badc9f
       with:
         files: ${{ inputs.files }}
@@ -87,5 +87,5 @@ runs:
       uses: henetiriki/kinscape/.github/actions/keep-claude-output@4f8daa3739fc0e4fc102015b92ba4d3b6475caff
       with:
         thread: ${{ github.event.issue.number || github.event.pull_request.number }}
-        # The callers set up Node in setup-workspace; keep that one.
+        # The callers install Node in setup-workspace; keep that one.
         setup_node: 'false'

@@ -5,7 +5,7 @@
 
 ## Approach
 
-Do the Chore's edits. Name paths in `docs/code-rules.md` as code spans, so it adds no link cycle. Move the Cache-Control clause. In `review.md`, point the smell and placement finding to `docs/code-rules.md`.
+Do the Chore's edits. Name paths in `docs/code-rules.md` as code spans: no link cycle. Move the Cache-Control clause. In `review.md`, point the smell and placement finding to `docs/code-rules.md`.
 
 ## Decisions
 
@@ -52,7 +52,8 @@ On this PR only, the review job fails: main has no `docs/code-rules.md`. The che
 
 ## Deviations
 
-- `code-rules.md` words each rule as a builder instruction.
-- `security.md` gains a `## Workflows` heading; Cache-Control keeps its scope.
-- `review.md` and `fix-review.md` say what to write; `fix-review.md` links its checks to Verifying. `AGENTS.md` keeps the Intent route.
-- The rule-group test also checks both docs.
+- `code-rules.md` words each rule as an instruction.
+- `security.md` gains a `## Workflows` heading.
+- `review.md` and `fix-review.md` say what to write; `fix-review.md` links its checks. `AGENTS.md` keeps the Intent route.
+- The rule-group test checks both docs.
+- Each `plans/README.md` mention in `.github/agent/` is a link.

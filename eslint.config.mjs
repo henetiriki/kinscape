@@ -62,13 +62,13 @@ const ARROW_FUNCTIONS = [
 const TEST_MODIFIERS = [
   {
     message:
-      'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
+      'Don’t commit a skipped, focused or unfinished test (plans/README.md, failing-tests rule).',
     selector:
       'MemberExpression[property.name=/^(only|skip|skipIf|runIf|todo|fixme|fail|fails)$/]:matches([object.name=/^(describe|it|suite|test)$/], [object.property.name=/^(describe|concurrent|sequential|shuffle|serial|parallel|step)$/])',
   },
   {
     message:
-      'Don’t commit a skipped, focused or unfinished test (plans/README.md rule 10).',
+      'Don’t commit a skipped, focused or unfinished test (plans/README.md, failing-tests rule).',
     selector:
       'CallExpression:matches([callee.name=/^(describe|it|suite|test)$/], [callee.object.name=/^(describe|it|suite|test)$/], [callee.object.object.name=/^(describe|it|suite|test)$/], [callee.callee.object.name=/^(describe|it|suite|test)$/], [callee.callee.object.object.name=/^(describe|it|suite|test)$/]) > ObjectExpression > Property[key.name=/^(only|skip|todo|fails)$/]',
   },

@@ -19,9 +19,9 @@ Ask every open choice, so none reach the plan: a Chore has no decisions box.
 
 ## Screen
 
-Once the change is known, and again before drafting, read `plans/README.md` rule 13 (and rule 7, which it links) and `.github/CODEOWNERS`. Don't copy them here.
+Once the change is known, read the [hand-back rule](../../../plans/README.md#hand-back), the [too-big rule](../../../plans/README.md#too-big) and `.github/CODEOWNERS`. Read them again before you draft. Don't copy them here.
 
-If rule 13 would hand the chore back, name the path or reason and keep drafting.
+If the [hand-back rule](../../../plans/README.md#hand-back) would hand the chore back, name the path or reason and keep drafting.
 
 ## The draft
 

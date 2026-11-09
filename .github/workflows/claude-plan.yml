@@ -78,13 +78,13 @@ jobs:
         A Bug's id is B${{ github.event.issue.number }}, its branch is bug/B${{ github.event.issue.number }}-<slug>
         and its plan is plans/bugs/B${{ github.event.issue.number }}-<slug>.md.
         A Chore's id is C${{ github.event.issue.number }}, its branch is chore/C${{ github.event.issue.number }}-<slug>
-        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. If it needs a secret or is too big, hand it back at plan time as plans/README.md rule 13 says.
+        and its plan is plans/chores/C${{ github.event.issue.number }}-<slug>.md. If it needs a secret or is too big, hand it back at plan time as plans/README.md, hand-back rule says.
         Write each open choice as a decision in the format in docs/how-we-work.md.
         Put `Closes #${{ github.event.issue.number }}` in the plan PR's body, so the gates and the safety net can find it.
         Push before you stop, then comment on the Spec with a link to the plan PR.
         If you're blocked, comment on the Spec saying why,
         then swap its status label for `status: blocked`.
-        A stale fact is not blocked: follow plans/README.md rule 11.
+        A stale fact is not blocked: follow plans/README.md, stale-facts rule.
         Run `npm run words` once after drafting, not after every edit.
         If the plan can't be built until another Spec merges, record that first:
         `gh issue edit ${{ github.event.issue.number }} --add-blocked-by <other>`. Say so in your comment.

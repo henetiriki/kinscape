@@ -528,7 +528,7 @@ describe('run', () => {
       expect(comments()[0][0].slice(0, 3)).toEqual(['pr', 'comment', '504']);
       expect(reply()).toContain('hand-back');
       expect(reply()).toContain('tech lead builds it');
-      expect(reply()).toContain('rule 4');
+      expect(reply()).toContain('chores rule');
       expect(reply()).toContain(`[Run](${ENV.RUN_URL})`);
       expect(reply()).not.toContain('Not approved yet');
       expect(written).toEqual(['go=false']);

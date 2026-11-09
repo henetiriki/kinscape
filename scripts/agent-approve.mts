@@ -211,7 +211,7 @@ export const run = (
     if (handBack) {
       try {
         post(
-          'The plan is approved. This PR has `hand-back`, so the tech lead builds it (`plans/README.md` rule 4); no build run starts.'
+          'The plan is approved. This PR has `hand-back`, so the tech lead builds it (plans/README.md, chores rule); no build run starts.'
         );
       } catch (error) {
         console.error(`#${raw}: ${(error as Error).message}`);

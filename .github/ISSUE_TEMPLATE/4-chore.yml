@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Only the tech lead files a chore. Some chores are handed back to a person ([plans/README.md rule 13](https://github.com/henetiriki/kinscape/blob/main/plans/README.md)).
+        Only the tech lead files a chore. Some chores are handed back to a person ([plans/README.md, hand-back rule](https://github.com/henetiriki/kinscape/blob/main/plans/README.md#hand-back)).
   - type: textarea
     id: change
     attributes:

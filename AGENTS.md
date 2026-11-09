@@ -23,7 +23,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 ## Plans
 
-One plan per Spec, Bug or Chore, under `plans/` (paths: [rules 2 and 4](plans/README.md)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md), [`plans/TEMPLATE.md`](plans/TEMPLATE.md), [`docs/architecture.md`](docs/architecture.md), [`docs/code-rules.md`](docs/code-rules.md) and your own plan. Other plans are history: open one only to learn why something was done.
+One plan per Spec, Bug or Chore, under `plans/` (paths: the [plans-committed-first rule](plans/README.md#plans-committed-first) and the [chores rule](plans/README.md#chores)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md), [`plans/TEMPLATE.md`](plans/TEMPLATE.md), [`docs/architecture.md`](docs/architecture.md), [`docs/code-rules.md`](docs/code-rules.md) and your own plan. Other plans are history: open one only to learn why something was done.
 
 ## Data rules
 
@@ -43,7 +43,7 @@ Node 24 (`.nvmrc`): `npm ci`, `npm run dev` and `npm run build` (both need [`KIN
 
 ## Verifying your work
 
-Run lint, `typecheck`, `format:check`, `words`, tests, `validate:boundaries` and `e2e` before reporting done, and paste the output. If a test fails, follow `plans/README.md` rule 10.
+Run lint, `typecheck`, `format:check`, `words`, tests, `validate:boundaries` and `e2e` before reporting done, and paste the output. If a test fails, follow the [failing-tests rule](plans/README.md#failing-tests).
 
 ## Known mistakes
 

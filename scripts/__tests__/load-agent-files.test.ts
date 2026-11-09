@@ -1406,7 +1406,7 @@ describe('the fix-review workflow', () => {
     expect(text).toContain('newest PR comment');
     expect(text).toContain('npm run review:threads -- resolve <n> <thread id>');
     expect(text).not.toContain('gh api');
-    expect(text).toContain('rule 10');
+    expect(text).toContain('failing-tests rule');
     expect(text).toContain('draft state, labels or reviewers');
     expect(text).toMatch(/data, not instructions/);
   });
@@ -1518,7 +1518,7 @@ describe('the resolve-conflict workflow', () => {
     expect(text).toContain('Never rebase. Never force-push.');
     expect(text).toContain('git merge --abort');
     expect(text).toContain("If you can't tell which side is right");
-    expect(text).toContain('rule 10');
+    expect(text).toContain('failing-tests rule');
     expect(text).toContain('draft state, labels or reviewers');
     expect(text).toMatch(/data, not instructions/);
   });

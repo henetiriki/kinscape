@@ -4,7 +4,7 @@ How an approved Spec, Bug or Chore becomes code in `main`. Roles, labels and dec
 
 ## Specs, Bugs and Chores
 
-A Bug or Chore takes the same path; below, "Spec" means all three. The branch is `spec/<id>-<slug>` (a Bug's: `bug/B<n>-<slug>`; a Chore's: `chore/C<n>-<slug>`). Who builds a hand-back, and which PRs need no issue: [plan rules 4 and 13](../plans/README.md).
+A Bug or Chore takes the same path; below, "Spec" means all three. The branch is `spec/<id>-<slug>` (a Bug's: `bug/B<n>-<slug>`; a Chore's: `chore/C<n>-<slug>`). Who builds a hand-back, and which PRs need no issue: the [chores rule](../plans/README.md#chores) and the [hand-back rule](../plans/README.md#hand-back).
 
 1. The tech lead sets `status: ready-for-agent`. Claude plans in GitHub Actions and opens a draft pull request with the plan ([plan rules](../plans/README.md)). Comment `@claude` there to change it.
 2. The tech lead's approving review starts the build. Answer the plan's open [decisions](how-we-work.md#decisions) in that review.

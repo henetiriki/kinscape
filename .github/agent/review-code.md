@@ -4,7 +4,7 @@
 
 Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In the checkout, `AGENTS.md`, `docs/security.md`, `docs/writing.md` and `docs/code-rules.md` are `main`'s; the PR's changes to them are in the diff.
 
-Flag a test change [plans/README.md](../../plans/README.md) rule 10 doesn't allow (never suggest `## Deviations` alone as the fix), and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
+Flag a test change the [failing-tests rule](../../plans/README.md#failing-tests) doesn't allow (never suggest `## Deviations` alone as the fix), and a new `v8 ignore` with no reason (`AGENTS.md` Commands).
 
 When the diff moves or adds code in a new top-level folder, check that the guards and configs listing folders (`ROOTS`, globs, ignore lists) include it.
 

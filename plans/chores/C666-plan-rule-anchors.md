@@ -38,6 +38,10 @@ Do the Chore's edits. Put each `<a id>` inside its list item, so the list keeps 
 - `plans/README.md` has about 720 words. The anchors add about 15. If the file passes 750 words, stop and ask: the Chore forbids new rule text.
 - The plan PR gets `hand-back`. A person builds it.
 
+## Deviations
+
+- `.github/pull_request_template.md` cites the rule inside an HTML comment, which does not render a link. It uses the plain-text name.
+
 ## Proof
 
 | Acceptance check                                  | Proven by                                              |

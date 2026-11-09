@@ -11,7 +11,7 @@ const LIMIT = 300;
 const INVISIBLE = [
   /^(?:docs|plans|\.github|\.claude|\.husky|\.idea|e2e|scripts|design\/source)\//,
   /^[^/]+\.md$/,
-  /^design\/DESIGN\.md$/,
+  /^design\/(?:DESIGN|CANVAS)\.md$/,
   /^design\/[^/]+\.jpg$/,
   /(?:^|\/)__tests__\//,
   /^(?:vitest\.config\.mts|vitest\.setup\.ts|playwright\.config\.ts|codecov\.yml)$/,

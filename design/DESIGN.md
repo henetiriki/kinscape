@@ -4,62 +4,62 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 
 ## Screens
 
-| Screen                                               | File                                                                               | Source                                                                                      |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Sign in, desktop                                     | [sign-in-desktop.jpg](sign-in-desktop.jpg)                                         | [sign-in-desktop.html](source/sign-in-desktop.html)                                         |
-| Sign in, phone                                       | [sign-in-phone.jpg](sign-in-phone.jpg)                                             | [sign-in-phone.html](source/sign-in-phone.html)                                             |
-| Sign in, phone, wrong password                       | [sign-in-phone-error.jpg](sign-in-phone-error.jpg)                                 | [sign-in-phone-error.html](source/sign-in-phone-error.html)                                 |
-| Sign in, desktop, can't sign in right now            | [sign-in-unavailable.jpg](sign-in-unavailable.jpg)                                 | [sign-in-unavailable.html](source/sign-in-unavailable.html)                                 |
-| Sign in, phone, can't sign in right now              | [sign-in-phone-unavailable.jpg](sign-in-phone-unavailable.jpg)                     | [sign-in-phone-unavailable.html](source/sign-in-phone-unavailable.html)                     |
-| Map, desktop, Layers tab, point clicked              | [map-desktop.jpg](map-desktop.jpg)                                                 | [map-desktop.html](source/map-desktop.html)                                                 |
-| Map, desktop, Filters tab                            | [map-desktop-filters.jpg](map-desktop-filters.jpg)                                 | [map-desktop-filters.html](source/map-desktop-filters.html)                                 |
-| Map, phone, look-up only (NFR-05)                    | [map-phone.jpg](map-phone.jpg)                                                     | [map-phone.html](source/map-phone.html)                                                     |
-| Map, phone, sheet collapsed                          | [map-phone-collapsed.jpg](map-phone-collapsed.jpg)                                 | [map-phone-collapsed.html](source/map-phone-collapsed.html)                                 |
-| Map, phone, Layers screen                            | [map-phone-layers.jpg](map-phone-layers.jpg)                                       | [map-phone-layers.html](source/map-phone-layers.html)                                       |
-| Map, phone, Filters                                  | [map-phone-filters.jpg](map-phone-filters.jpg)                                     | [map-phone-filters.html](source/map-phone-filters.html)                                     |
-| First load                                           | [map-loading.jpg](map-loading.jpg)                                                 | [map-loading.html](source/map-loading.html)                                                 |
-| First load, phone                                    | [map-loading-phone.jpg](map-loading-phone.jpg)                                     | [map-loading-phone.html](source/map-loading-phone.html)                                     |
-| No pins in the tree                                  | [map-empty-tree.jpg](map-empty-tree.jpg)                                           | [map-empty-tree.html](source/map-empty-tree.html)                                           |
-| No pins in the tree, phone                           | [map-empty-tree-phone.jpg](map-empty-tree-phone.jpg)                               | [map-empty-tree-phone.html](source/map-empty-tree-phone.html)                               |
-| No pins on this date                                 | [map-empty-date.jpg](map-empty-date.jpg)                                           | [map-empty-date.html](source/map-empty-date.html)                                           |
-| No pins on this date, phone                          | [map-empty-date-phone.jpg](map-empty-date-phone.jpg)                               | [map-empty-date-phone.html](source/map-empty-date-phone.html)                               |
-| Districts layer on                                   | [map-districts.jpg](map-districts.jpg)                                             | [map-districts.html](source/map-districts.html)                                             |
-| Districts layer on, phone                            | [map-districts-phone.jpg](map-districts-phone.jpg)                                 | [map-districts-phone.html](source/map-districts-phone.html)                                 |
-| Terrain failed to load                               | [map-offline.jpg](map-offline.jpg)                                                 | [map-offline.html](source/map-offline.html)                                                 |
-| Terrain failed to load, phone                        | [map-offline-phone.jpg](map-offline-phone.jpg)                                     | [map-offline-phone.html](source/map-offline-phone.html)                                     |
-| Account menu                                         | [map-account-menu.jpg](map-account-menu.jpg)                                       | [map-account-menu.html](source/map-account-menu.html)                                       |
-| Account menu, phone                                  | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                           | [map-account-menu-phone.html](source/map-account-menu-phone.html)                           |
-| Sources and attributions                             | [map-sources.jpg](map-sources.jpg)                                                 | [map-sources.html](source/map-sources.html)                                                 |
-| Sources and attributions, phone                      | [map-sources-phone.jpg](map-sources-phone.jpg)                                     | [map-sources-phone.html](source/map-sources-phone.html)                                     |
-| Map style: MapLibre layer stack                      | [map-style.jpg](map-style.jpg)                                                     | [map-style.html](source/map-style.html)                                                     |
-| Map style, phone                                     | [map-style-phone.jpg](map-style-phone.jpg)                                         | [map-style-phone.html](source/map-style-phone.html)                                         |
-| Invalid date typed in the dock                       | [map-date-invalid.jpg](map-date-invalid.jpg)                                       | [map-date-invalid.html](source/map-date-invalid.html)                                       |
-| Invalid date typed in the dock, phone                | [map-date-invalid-phone.jpg](map-date-invalid-phone.jpg)                           | [map-date-invalid-phone.html](source/map-date-invalid-phone.html)                           |
-| Style guide 01: typography                           | [style-1-type.jpg](style-1-type.jpg)                                               | [style-1-type.html](source/style-1-type.html)                                               |
-| Style guide 01: typography, phone                    | [style-1-type-phone.jpg](style-1-type-phone.jpg)                                   | [style-1-type-phone.html](source/style-1-type-phone.html)                                   |
-| Style guide 02: colour                               | [style-2-colour.jpg](style-2-colour.jpg)                                           | [style-2-colour.html](source/style-2-colour.html)                                           |
-| Style guide 02: colour, phone                        | [style-2-colour-phone.jpg](style-2-colour-phone.jpg)                               | [style-2-colour-phone.html](source/style-2-colour-phone.html)                               |
-| Style guide 03: spacing, shape, motion               | [style-3-foundations.jpg](style-3-foundations.jpg)                                 | [style-3-foundations.html](source/style-3-foundations.html)                                 |
-| Style guide 03: spacing, shape, motion, phone        | [style-3-foundations-phone.jpg](style-3-foundations-phone.jpg)                     | [style-3-foundations-phone.html](source/style-3-foundations-phone.html)                     |
-| Style guide 04: component states                     | [style-4-states.jpg](style-4-states.jpg)                                           | [style-4-states.html](source/style-4-states.html)                                           |
-| Style guide 04: component states, phone              | [style-4-states-phone.jpg](style-4-states-phone.jpg)                               | [style-4-states-phone.html](source/style-4-states-phone.html)                               |
-| Style guide 05: feedback and validation              | [style-5-feedback.jpg](style-5-feedback.jpg)                                       | [style-5-feedback.html](source/style-5-feedback.html)                                       |
-| Style guide 05: feedback and validation, phone       | [style-5-feedback-phone.jpg](style-5-feedback-phone.jpg)                           | [style-5-feedback-phone.html](source/style-5-feedback-phone.html)                           |
-| Style guide 06: inputs and actions                   | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     | [style-6-components-inputs.html](source/style-6-components-inputs.html)                     |
-| Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         | [style-6-components-inputs-phone.html](source/style-6-components-inputs-phone.html)         |
-| Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     | [style-6-components-inputs-2-phone.html](source/style-6-components-inputs-2-phone.html)     |
-| Style guide 07: surfaces and overlays, part 1        | [style-7-components-surfaces.jpg](style-7-components-surfaces.jpg)                 | [style-7-components-surfaces.html](source/style-7-components-surfaces.html)                 |
-| Style guide 07: surfaces and overlays, part 2        | [style-7-components-surfaces-2.jpg](style-7-components-surfaces-2.jpg)             | [style-7-components-surfaces-2.html](source/style-7-components-surfaces-2.html)             |
-| Style guide 07: surfaces and overlays, phone, part 1 | [style-7-components-surfaces-phone.jpg](style-7-components-surfaces-phone.jpg)     | [style-7-components-surfaces-phone.html](source/style-7-components-surfaces-phone.html)     |
-| Style guide 07: surfaces and overlays, phone, part 2 | [style-7-components-surfaces-2-phone.jpg](style-7-components-surfaces-2-phone.jpg) | [style-7-components-surfaces-2-phone.html](source/style-7-components-surfaces-2-phone.html) |
-| Style guide 08: map furniture                        | [style-8-components-map.jpg](style-8-components-map.jpg)                           | [style-8-components-map.html](source/style-8-components-map.html)                           |
-| Style guide 08: map furniture, phone, part 1         | [style-8-components-map-phone.jpg](style-8-components-map-phone.jpg)               | [style-8-components-map-phone.html](source/style-8-components-map-phone.html)               |
-| Style guide 08: map furniture, phone, part 2         | [style-8-components-map-2-phone.jpg](style-8-components-map-2-phone.jpg)           | [style-8-components-map-2-phone.html](source/style-8-components-map-2-phone.html)           |
-| Design kit index                                     | [design-kit.jpg](design-kit.jpg)                                                   | [design-kit.html](source/design-kit.html)                                                   |
-| Design kit index, phone                              | [design-kit-phone.jpg](design-kit-phone.jpg)                                       | [design-kit-phone.html](source/design-kit-phone.html)                                       |
-| Design kit boards menu open, phone                   | [design-kit-menu-phone.jpg](design-kit-menu-phone.jpg)                             | [design-kit-menu-phone.html](source/design-kit-menu-phone.html)                             |
-| Add a pin (provisional)                              | [add-pin.jpg](add-pin.jpg)                                                         | [add-pin.html](source/add-pin.html)                                                         |
-| Add a pin, phone (provisional)                       | [add-pin-phone.jpg](add-pin-phone.jpg)                                             | [add-pin-phone.html](source/add-pin-phone.html)                                             |
+| Screen                                               | File                                                                               |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Sign in, desktop                                     | [sign-in-desktop.jpg](sign-in-desktop.jpg)                                         |
+| Sign in, phone                                       | [sign-in-phone.jpg](sign-in-phone.jpg)                                             |
+| Sign in, phone, wrong password                       | [sign-in-phone-error.jpg](sign-in-phone-error.jpg)                                 |
+| Sign in, desktop, can't sign in right now            | [sign-in-unavailable.jpg](sign-in-unavailable.jpg)                                 |
+| Sign in, phone, can't sign in right now              | [sign-in-phone-unavailable.jpg](sign-in-phone-unavailable.jpg)                     |
+| Map, desktop, Layers tab, point clicked              | [map-desktop.jpg](map-desktop.jpg)                                                 |
+| Map, desktop, Filters tab                            | [map-desktop-filters.jpg](map-desktop-filters.jpg)                                 |
+| Map, phone, look-up only (NFR-05)                    | [map-phone.jpg](map-phone.jpg)                                                     |
+| Map, phone, sheet collapsed                          | [map-phone-collapsed.jpg](map-phone-collapsed.jpg)                                 |
+| Map, phone, Layers screen                            | [map-phone-layers.jpg](map-phone-layers.jpg)                                       |
+| Map, phone, Filters                                  | [map-phone-filters.jpg](map-phone-filters.jpg)                                     |
+| First load                                           | [map-loading.jpg](map-loading.jpg)                                                 |
+| First load, phone                                    | [map-loading-phone.jpg](map-loading-phone.jpg)                                     |
+| No pins in the tree                                  | [map-empty-tree.jpg](map-empty-tree.jpg)                                           |
+| No pins in the tree, phone                           | [map-empty-tree-phone.jpg](map-empty-tree-phone.jpg)                               |
+| No pins on this date                                 | [map-empty-date.jpg](map-empty-date.jpg)                                           |
+| No pins on this date, phone                          | [map-empty-date-phone.jpg](map-empty-date-phone.jpg)                               |
+| Districts layer on                                   | [map-districts.jpg](map-districts.jpg)                                             |
+| Districts layer on, phone                            | [map-districts-phone.jpg](map-districts-phone.jpg)                                 |
+| Terrain failed to load                               | [map-offline.jpg](map-offline.jpg)                                                 |
+| Terrain failed to load, phone                        | [map-offline-phone.jpg](map-offline-phone.jpg)                                     |
+| Account menu                                         | [map-account-menu.jpg](map-account-menu.jpg)                                       |
+| Account menu, phone                                  | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                           |
+| Sources and attributions                             | [map-sources.jpg](map-sources.jpg)                                                 |
+| Sources and attributions, phone                      | [map-sources-phone.jpg](map-sources-phone.jpg)                                     |
+| Map style: MapLibre layer stack                      | [map-style.jpg](map-style.jpg)                                                     |
+| Map style, phone                                     | [map-style-phone.jpg](map-style-phone.jpg)                                         |
+| Invalid date typed in the dock                       | [map-date-invalid.jpg](map-date-invalid.jpg)                                       |
+| Invalid date typed in the dock, phone                | [map-date-invalid-phone.jpg](map-date-invalid-phone.jpg)                           |
+| Style guide 01: typography                           | [style-1-type.jpg](style-1-type.jpg)                                               |
+| Style guide 01: typography, phone                    | [style-1-type-phone.jpg](style-1-type-phone.jpg)                                   |
+| Style guide 02: colour                               | [style-2-colour.jpg](style-2-colour.jpg)                                           |
+| Style guide 02: colour, phone                        | [style-2-colour-phone.jpg](style-2-colour-phone.jpg)                               |
+| Style guide 03: spacing, shape, motion               | [style-3-foundations.jpg](style-3-foundations.jpg)                                 |
+| Style guide 03: spacing, shape, motion, phone        | [style-3-foundations-phone.jpg](style-3-foundations-phone.jpg)                     |
+| Style guide 04: component states                     | [style-4-states.jpg](style-4-states.jpg)                                           |
+| Style guide 04: component states, phone              | [style-4-states-phone.jpg](style-4-states-phone.jpg)                               |
+| Style guide 05: feedback and validation              | [style-5-feedback.jpg](style-5-feedback.jpg)                                       |
+| Style guide 05: feedback and validation, phone       | [style-5-feedback-phone.jpg](style-5-feedback-phone.jpg)                           |
+| Style guide 06: inputs and actions                   | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     |
+| Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         |
+| Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     |
+| Style guide 07: surfaces and overlays, part 1        | [style-7-components-surfaces.jpg](style-7-components-surfaces.jpg)                 |
+| Style guide 07: surfaces and overlays, part 2        | [style-7-components-surfaces-2.jpg](style-7-components-surfaces-2.jpg)             |
+| Style guide 07: surfaces and overlays, phone, part 1 | [style-7-components-surfaces-phone.jpg](style-7-components-surfaces-phone.jpg)     |
+| Style guide 07: surfaces and overlays, phone, part 2 | [style-7-components-surfaces-2-phone.jpg](style-7-components-surfaces-2-phone.jpg) |
+| Style guide 08: map furniture                        | [style-8-components-map.jpg](style-8-components-map.jpg)                           |
+| Style guide 08: map furniture, phone, part 1         | [style-8-components-map-phone.jpg](style-8-components-map-phone.jpg)               |
+| Style guide 08: map furniture, phone, part 2         | [style-8-components-map-2-phone.jpg](style-8-components-map-2-phone.jpg)           |
+| Design kit index                                     | [design-kit.jpg](design-kit.jpg)                                                   |
+| Design kit index, phone                              | [design-kit-phone.jpg](design-kit-phone.jpg)                                       |
+| Design kit boards menu open, phone                   | [design-kit-menu-phone.jpg](design-kit-menu-phone.jpg)                             |
+| Add a pin (provisional)                              | [add-pin.jpg](add-pin.jpg)                                                         |
+| Add a pin, phone (provisional)                       | [add-pin-phone.jpg](add-pin-phone.jpg)                                             |
 
 ![Map, desktop](map-desktop.jpg)
 
@@ -67,37 +67,17 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 `npm run design:check` renders each screen in `screens.json` beside its HTML snapshot, ignoring the map, and writes the differences to `test-results/design/`. Every screen is `blocking`: CI fails above the threshold.
 
-Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline with the fonts from `node_modules`. After editing an artboard, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. Agents never edit these files ([`AGENTS.md`](../AGENTS.md#source-of-truth)), so each one always matches its source. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
+[CANVAS.md](CANVAS.md) tells how to refresh the canvas copy and make the snapshots and JPGs.
 
 ### Proposed screens
 
 Not built: see Google sign-in under [Components](#components).
 
-| Screen                                   | File                                                                 | Source                                                                        |
-| ---------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)         | [sign-in-desktop-proposed.html](source/sign-in-desktop-proposed.html)         |
-| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)             | [sign-in-phone-proposed.html](source/sign-in-phone-proposed.html)             |
-| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg) | [sign-in-phone-error-proposed.html](source/sign-in-phone-error-proposed.html) |
-
-### Refreshing the copy
-
-A person in a signed-in Claude Code session refreshes `canvas/` after a board changes on the canvas and after each install update. Keep the canvas private: once anyone outside the organization writes to it, Claude Code can no longer read it.
-
-1. Ask Claude Code to `list_files` the canvas (its link is line 1 of `canvas/VERSION`) and compare each `project/` file's `sha256` with `shasum -a 256` of the repo copy.
-2. `read_file` each file that differs into `canvas/project/` (long files in parts), then check its hash. Files under `project/ds/kinscape/` come from `npm run design-system` (`.design-system/project/`); check their hashes the same way.
-3. Set line 2 of `canvas/VERSION` to the version `list_files` reports.
-4. Run `npm run design:export`. It prints "No snapshot changed" unless a board changed.
-5. Commit `canvas/` alone. If a board changed, discard the exported `source/` changes, push, and run the workflow Design: Render snapshots.
-
-If `list_files` refuses with "written to by someone outside your organization", ask Claude in a chat on the canvas to read each changed file and hand it over.
-
-### Updating the install
-
-After a `/publish-design-system` run that sends files, the canvas still holds the old copy. Ask Claude Code to `copy_file` each changed file from the design system (its address is in the `designSystems` entry of `canvas/project/canvas.json`) to `project/ds/kinscape/`, remove files the publish deleted, and set the entry's `version` and `copiedAt`. Then refresh the copy.
-
-### Handing off a board
-
-A Spec names the board's file (for example `Map.dc.html`). To hand it off, open the canvas's main menu › **Hand off to Claude Code**, name the board under "Add instructions", and send the prompt it opens in Claude Code. The prompt holds the canvas link, and a board's file reads through that link with `read_file` on `project/<board>`. If Claude Code can't build from it, build from the board's snapshot in `source/`; record in the PR which worked. Don't use Export: it offers HTML (every board in one file), PDF, PNG and Vercel.
+| Screen                                   | File                                                                 |
+| ---------------------------------------- | -------------------------------------------------------------------- |
+| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)         |
+| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)             |
+| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg) |
 
 ## Brand
 
@@ -173,7 +153,7 @@ Shown with spacing and motion at `/design-kit/foundations`.
 
 ## Components
 
-Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>` (a feature's own components: [architecture.md](../docs/architecture.md#where-does-x-go)):
+Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>` (a feature's own components: architecture.md):
 
 | Folder       | Holds                                                                   |
 | ------------ | ----------------------------------------------------------------------- |

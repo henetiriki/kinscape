@@ -44,6 +44,7 @@ describe('invisible', () => {
     'README.md',
     'AGENTS.md',
     'design/DESIGN.md',
+    'design/CANVAS.md',
     'design/map.jpg',
     'design/source/map.html',
     '.github/CODEOWNERS',

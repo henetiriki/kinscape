@@ -12,15 +12,6 @@ export const ALLOWLIST: string[][] = [
     '.claude/skills/refine/spec.md',
   ],
   ['docs/building.md', 'docs/how-we-work.md'],
-  // Temporary: a later Chore removes each entry below.
-  [
-    'AGENTS.md',
-    'design/DESIGN.md',
-    'docs/architecture-target.md',
-    'docs/architecture.md',
-    'docs/how-we-work.md',
-    'docs/security.md',
-  ],
 ];
 
 const FENCE = /^ {0,3}(`{3,}|~{3,}).*\n[\s\S]*?^ {0,3}\1[`~]*[ \t]*$/gm;

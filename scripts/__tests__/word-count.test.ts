@@ -53,6 +53,8 @@ describe('budgetFor', () => {
     ['docs/dependencies.md', 250],
     ['docs/architecture.md', 850],
     ['docs/architecture-target.md', 650],
+    ['design/DESIGN.md', 3000],
+    ['design/CANVAS.md', 550],
     ['plans/README.md', 750],
     ['plans/M0.1-hello-vercel.md', 600],
     ['plans/TEMPLATE.md', 600],
@@ -70,7 +72,6 @@ describe('budgetFor', () => {
 
   it.each([
     'docs/requirements.md',
-    'design/DESIGN.md',
     '.claude/skills/refine/NOTICE.md',
     '.claude/skills/NOTICE.md',
     'plans/sub/file.md',

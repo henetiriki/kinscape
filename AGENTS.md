@@ -6,7 +6,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 - `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
 - `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen isn't designed, list it under **Flagged concerns**; don't invent the UI.
-- Only the design agent, or a person or an agent they ask to run the [refresh steps](design/DESIGN.md#refreshing-the-copy), edits `design/canvas/`; a [workflow](design/DESIGN.md#screens) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
+- Only the design agent, or a person or an agent they ask to run the [refresh steps](design/CANVAS.md#refreshing-the-copy), edits `design/canvas/`; a [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) is proposed, not a rule.
 - [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs. File a `type: intent` issue for a new idea or requirement change.
 - Use the terms in the requirements' _Key concepts_ table exactly in code, UI and docs.

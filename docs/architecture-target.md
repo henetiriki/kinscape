@@ -17,7 +17,7 @@ Layers are enforced: see [architecture.md](architecture.md#enforcement). Feature
 
 5. **Ports and adapters.** Adapters for files (Polity and Boundary version: global, read-only).
 6. **Every entity's plan includes "Tree A can't read Tree B"**, run through the contract suite.
-7. **Platform.** A logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
+7. **Platform.** `server/env.mts` holds server variables only, and no schema splits them from `NEXT_PUBLIC_` variables. A logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
 
 ## For agents
 

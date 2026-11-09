@@ -40,7 +40,8 @@ describe('the pin-PR skip condition of claude-code-review.yml', () => {
 
 // Runs the workflow's own expressions (GitHub's syntax is a subset of JavaScript's for these) so the
 // tests check who is reviewed, not how the condition is written. GitHub compares strings without regard
-// to case and JavaScript does not: the cases use one spelling of each login.
+// to case and JavaScript does not: the cases use one spelling of each login. The code under test is this
+// repo's own workflow file, never input from outside, so `new Function` is safe here.
 const BOT = 'kinscape-bot[bot]';
 
 type Pr = {

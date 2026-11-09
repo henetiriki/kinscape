@@ -14,7 +14,7 @@ The `run-name` and the job `if:` of `claude-code-review.yml` each get this claus
   github.event.pull_request.head.repo.full_name == github.repository)
 ```
 
-A collaborator's PR, or a person's push to the bot's PR, fails a test and is still reviewed. Every path except the test and this plan is a hand-back path (rule 13).
+A collaborator's PR, or a person's push to the bot's PR, fails a test and is still reviewed. Every path except the test, `docs/building.md` and this plan is a hand-back path (rule 13).
 
 ## Decisions
 

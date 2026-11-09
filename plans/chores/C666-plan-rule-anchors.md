@@ -1,7 +1,7 @@
 # Plan: C666: Name plan rules by anchor, not by number
 
 - **Spec:** #666
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ Do the Chore's edits. Put each `<a id>` inside its list item, so the list keeps 
 - **B.** `[plans/README.md, failing-tests rule](…#failing-tests)`, the same words as the plain-text form.
 - **Other:** your own.
 
-Recommended: A, because it uses fewer words, and `build.md` has four citations against a 300-word budget.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

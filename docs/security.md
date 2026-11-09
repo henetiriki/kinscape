@@ -7,15 +7,15 @@ Code and workflows follow these. The automated review flags a change that breaks
 - On the server, check that the signed-in Account may access the Tree on every read and write. Never trust an id sent by the client.
 - No `dangerouslySetInnerHTML`, `eval` or `new Function` on user or third-party content.
 - Database queries take parameters; never build SQL from strings.
-- Set `Cache-Control: private, no-store` on Tree data in a new page or route handler.
+- Set `Cache-Control: private, no-store` on Tree data in a new page, route handler or server action.
 - Logs and error messages never include secrets, tokens or Person data.
 
 ## Workflows
 
 A change to a workflow or action follows these:
 
-- Pin each action and reusable workflow to a full commit SHA, this repo's own included (`actions-pin-update.yml` moves those pins).
-- Give a workflow the fewest `permissions:`; `id-token: write` only where it uses OIDC.
+- Pin each action and reusable workflow to a full commit SHA. Pin this repo's own too; `actions-pin-update.yml` moves those pins.
+- Give a workflow the fewest `permissions:`. Use `id-token: write` only where it uses OIDC.
 - Pass `${{ github.event.* }}` text through `env:`.
 - Catch API calls that can fail (404, rate limit). One failure must not abort a loop over many items.
 - Never read a prompt, settings, marketplace or rule file from the PR head.

@@ -143,17 +143,13 @@ describe('the load-agent-files action', () => {
   // The groups that review-code.md points to: the rules live in the doc, so deleting them there
   // must fail here. The review reads main's copy of both docs (the main files below).
   it.each([
-    ['Code smells (not style)', 'code-rules.md'],
-    ['Placement', 'code-rules.md'],
-    ['Pattern table', 'code-rules.md'],
-    ['Test quality', 'code-rules.md'],
-    ['Scale', 'code-rules.md'],
-    ['Workflows', 'security.md'],
-  ])('points the group "%s" to rules in docs/%s', (heading, file) => {
-    const slug = heading
-      .toLowerCase()
-      .replace(/[^a-z\s]/g, '')
-      .replace(/\s/g, '-');
+    ['Code smells (not style)', 'code-rules.md', 'code-smells-not-style'],
+    ['Placement', 'code-rules.md', 'placement'],
+    ['Pattern table', 'code-rules.md', 'pattern-table'],
+    ['Test quality', 'code-rules.md', 'test-quality'],
+    ['Scale', 'code-rules.md', 'scale'],
+    ['Workflows', 'security.md', 'workflows'],
+  ])('points the group "%s" to rules in docs/%s', (heading, file, anchor) => {
     const doc = readFileSync(join(root, 'docs', file), 'utf8');
     const rules = (
       doc.split(/^## /m).find(section => section.split('\n')[0] === heading) ??
@@ -161,11 +157,11 @@ describe('the load-agent-files action', () => {
     ).match(/^- .+$/gm);
 
     expect(agent('review-code.md'), `"## ${heading}" links the doc`).toContain(
-      `(../../docs/${file}#${slug})`
+      `(../../docs/${file}#${anchor})`
     );
     expect(
       rules?.length,
-      `docs/${file} "## ${heading}" has no rules`
+      `docs/${file} "## ${heading}" has rules`
     ).toBeGreaterThan(0);
   });
 

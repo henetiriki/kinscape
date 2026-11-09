@@ -14,15 +14,15 @@ Check that the lines the diff adds follow `docs/writing.md`. Report all breaks i
 
 ## Code smells (not style)
 
-Check the diff against [Code smells](../../docs/code-rules.md#code-smells-not-style).
+Read `docs/code-rules.md` in the checkout. Check the diff against its [Code smells](../../docs/code-rules.md#code-smells-not-style) section.
 
 ## Placement
 
-Check the diff against [Placement](../../docs/code-rules.md#placement).
+Read `docs/code-rules.md` in the checkout. Check the diff against its [Placement](../../docs/code-rules.md#placement) section.
 
 ## Pattern table
 
-Check the diff against [Pattern table](../../docs/code-rules.md#pattern-table).
+Read `docs/code-rules.md` in the checkout. Check the diff against its [Pattern table](../../docs/code-rules.md#pattern-table) section.
 
 ## New surface
 
@@ -32,7 +32,7 @@ Check the diff against [Pattern table](../../docs/code-rules.md#pattern-table).
 
 ## Test quality
 
-Check the diff against [Test quality](../../docs/code-rules.md#test-quality).
+Read `docs/code-rules.md` in the checkout. Check the diff against its [Test quality](../../docs/code-rules.md#test-quality) section.
 
 ## Decision reversal
 
@@ -44,7 +44,7 @@ When the diff changes behaviour a doc describes (a setting, a default, a path, w
 
 ## Scale
 
-Check the diff against [Scale](../../docs/code-rules.md#scale).
+Read `docs/code-rules.md` in the checkout. Check the diff against its [Scale](../../docs/code-rules.md#scale) section.
 
 ## Workflows
 

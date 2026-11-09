@@ -48,4 +48,5 @@ Add the `AGENTS.md` bullet from the Chore, item 1. Each of the other six files g
 
 ## Deviations
 
-- Cuts: six repeated phrases in `fix-review.md`, three in `SKILL.md`.
+- Cuts: five repeated phrases in `fix-review.md`, three in `SKILL.md`.
+- `scripts/word-count.mts` and its test: budget of `fix-review.md` is 350.

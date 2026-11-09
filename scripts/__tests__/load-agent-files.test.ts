@@ -43,11 +43,11 @@ const OWN_PIN =
 // The action a `uses:` names when it pins one of ours that way; any other ref as it is.
 const own = (uses = '') => (OWN_PIN.test(uses) ? uses.split('@')[0] : uses);
 
-// Only the review and the unblock refresh call it themselves; claude-respond.yml and claude-run.yml reach it
-// through run-claude.
+// Only the review and the unblock refresh call it themselves; claude-run.yml reaches it through
+// run-claude, and so does every workflow that calls claude-run.yml.
 const ACTION = 'henetiriki/kinscape/.github/actions/load-agent-files';
 const CALLERS = ['claude-code-review.yml', 'claude-unblock.yml'];
-const RUN_CLAUDE_CALLERS = ['claude-respond.yml', 'claude-run.yml'];
+const RUN_CLAUDE_CALLERS = ['claude-run.yml'];
 const action = () =>
   readFileSync(
     join(root, '.github/actions/load-agent-files/action.yml'),
@@ -57,7 +57,7 @@ const action = () =>
 describe('the load-agent-files action', () => {
   // A review that got settings.json would run with the build agent's tools. The step after the
   // action must read the file the action wrote, or Claude runs without them. (The run-claude
-  // action does the same for claude-respond.yml and claude-run.yml: see its tests below.)
+  // action does the same for claude-run.yml: see its tests below.)
   it('is given the settings file the review needs: review-settings.json', () => {
     const workflow = read('claude-code-review.yml');
 
@@ -204,7 +204,7 @@ describe('the load-agent-files action', () => {
 const SUMMARY_ACTION = 'henetiriki/kinscape/.github/actions/run-summary';
 
 describe('the run-summary action', () => {
-  it.each(['claude-respond.yml', 'claude-run.yml', 'claude-code-review.yml'])(
+  it.each(['claude-run.yml', 'claude-code-review.yml'])(
     'is used from a pinned main commit, once, by %s',
     file => {
       const uses = [
@@ -219,7 +219,7 @@ describe('the run-summary action', () => {
   );
 });
 
-// The run-claude action holds the steps claude-respond.yml and claude-run.yml share. It loads the settings
+// The run-claude action holds the steps of every run in claude-run.yml. It loads the settings
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
 const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 
@@ -591,9 +591,9 @@ describe('the approved-commit check', () => {
     expect(inputs.head).toMatchObject({ default: '', type: 'string' });
   });
 
-  // Right after the token, before the browser install: a stop then costs no install and no model
-  // run, and the safety net has the token and the start time it needs.
-  it('runs with the bot’s token, after it is minted and before the browser install, only when a head is given', () => {
+  // After the checkout it reads and before the browser install: a stop then costs no install and no
+  // model run, and the safety net has the token and the start time it needs.
+  it('runs with the bot’s token, after the checkout and before the browser install, only when a head is given', () => {
     const at = index('Check that the branch is at the approved commit');
 
     expect(check()?.id).toBe('head');
@@ -602,7 +602,8 @@ describe('the approved-commit check', () => {
       GH_TOKEN: '${{ steps.bot.outputs.token }}',
       HEAD: '${{ inputs.head }}',
     });
-    expect(at).toBe(index("Create the bot's token") + 1);
+    expect(index("Create the bot's token")).toBeLessThan(at);
+    expect(index('Prepare the workspace')).toBeLessThan(at);
     expect(index('Note the start time')).toBeLessThan(at);
     expect(index('Install Playwright')).toBeGreaterThan(at);
   });
@@ -614,7 +615,9 @@ describe('the approved-commit check', () => {
       step => step.name === 'If Claude left no comment, post one'
     );
 
-    expect(net?.if).toBe("always() && steps.head.outputs.commented != 'true'");
+    expect(net?.if).toBe(
+      "always() && inputs.kind != 'respond' && steps.head.outputs.commented != 'true'"
+    );
   });
 
   it('is fed by the approval: the review commit in, the recorded head out to the build', () => {
@@ -697,6 +700,121 @@ describe('the approved-commit check', () => {
       expect(comments).toContain(`\`${moved.slice(0, 7)}\``);
       expect(comments).toContain('Approve the plan again.');
     });
+  });
+});
+
+// A reply to an @claude comment runs through the shared runner as `kind: respond`
+// (plans/chores/C657-shared-run-respond.md). Tag mode posts its own comment and :eyes:, and there is
+// nothing for the gate to check.
+describe('the respond run of claude-run.yml', () => {
+  type RunnerJob = {
+    if?: string;
+    needs?: string | string[];
+    steps?: Step[];
+  };
+  const runner = () =>
+    parse(read('claude-run.yml')) as {
+      jobs: Record<string, RunnerJob>;
+      on: {
+        workflow_call: {
+          inputs: Record<string, { default?: unknown; required?: boolean }>;
+        };
+      };
+    };
+  const step = (name: string) =>
+    runner().jobs.run.steps?.find(candidate => candidate.name === name);
+
+  it('asks for no prompt, so tag mode reads the comment', () => {
+    expect(runner().on.workflow_call.inputs.prompt).toMatchObject({
+      default: '',
+    });
+    expect(runner().on.workflow_call.inputs.prompt.required).toBeUndefined();
+  });
+
+  it('skips the gate and the return job, and runs Claude and the summary without the gate', () => {
+    const { gate, return: back, run, summary } = runner().jobs;
+
+    expect(gate.if).toBe("inputs.kind != 'respond'");
+    expect(back.if).toContain("inputs.kind == ''");
+    expect(run.if).toContain("inputs.kind == 'respond'");
+    expect(run.if).toContain("needs.gate.outputs.go == 'true'");
+    expect(run.if, 'a failed gate stops the run').toContain(
+      "needs.gate.result == 'success'"
+    );
+    expect(run.if, 'a skipped gate skips its dependants').toContain(
+      '!cancelled()'
+    );
+    expect(summary.if).toContain("inputs.kind == 'respond'");
+    expect(summary.if).toContain("needs.gate.outputs.go == 'true'");
+  });
+
+  // Tag mode fetches the PR branch before it sets git auth, so the checkout needs the token.
+  it('mints the bot’s token first and has the checkout keep it only for a respond run', () => {
+    const steps = runner().jobs.run.steps ?? [];
+    const prepare = step('Prepare the workspace');
+
+    expect(steps[0].id).toBe('bot');
+    expect(prepare?.with).toMatchObject({
+      'persist-credentials':
+        "${{ inputs.kind == 'respond' && 'true' || 'false' }}",
+      token: '${{ steps.bot.outputs.token }}',
+    });
+    expect(steps[1].name).toBe('Prepare the workspace');
+  });
+
+  it('leaves the start comment and the browser install to Claude', () => {
+    expect(step('Show that the run started')?.if).toBe(
+      "inputs.kind != 'respond'"
+    );
+    expect(step('Install Playwright')?.if).toBe(
+      "inputs.playwright && inputs.kind != 'respond'"
+    );
+  });
+
+  // Tag mode may reply in a review thread, which the net's comment count does not see.
+  it('leaves the safety net to the other runs', () => {
+    expect(step('If Claude left no comment, post one')?.if).toContain(
+      "inputs.kind != 'respond'"
+    );
+  });
+
+  it('gives tag mode read access to CI results', () => {
+    expect(step('Run Claude Code')?.with?.additional_permissions).toBe(
+      "${{ inputs.kind == 'respond' && 'actions: read' || '' }}"
+    );
+  });
+});
+
+// Two checks with one name hide which run failed. A check is "<caller job> / <runner job>" for a call
+// of claude-run.yml and the job's name, or its id, otherwise.
+describe('the check names of the Claude workflows', () => {
+  type NamedJob = { name?: string; uses?: string };
+  const jobsOf = (file: string) =>
+    (parse(read(file)) as { jobs: Record<string, NamedJob> }).jobs;
+  const runnerNames = Object.values(jobsOf('claude-run.yml')).map(
+    job => job.name
+  );
+  const checks = readdirSync(join(root, '.github/workflows'))
+    .filter(file => /^claude-.+\.yml$/.test(file) && file !== 'claude-run.yml')
+    .flatMap(file =>
+      Object.entries(jobsOf(file)).flatMap(([id, job]) =>
+        job.uses?.includes('/claude-run.yml@')
+          ? runnerNames.map(name => `${job.name} / ${name}`)
+          : [job.name ?? id]
+      )
+    );
+
+  it('are all different', () => {
+    expect(checks.filter((name, at) => checks.indexOf(name) !== at)).toEqual(
+      []
+    );
+  });
+
+  it('show a reply as "Respond / Run Claude" and a review as "Review"', () => {
+    expect(checks).toContain('Respond / Run Claude');
+    expect(checks).toContain('Respond / Result');
+    expect(checks).toContain('Review');
+    expect(checks).toContain('Review result');
   });
 });
 
@@ -1118,7 +1236,7 @@ describe('the composite actions', () => {
 // rules.md first and build.md last (respond.md points to build.md "below").
 describe('the agent files a workflow loads', () => {
   it.each([
-    ['claude-respond.yml', /^\s*files: (.+)$/m],
+    ['claude-respond.yml', /^\s*agent_files: (.+)$/m],
     ['claude-plan.yml', /^\s*agent_files: (.+)$/m],
     ['claude-build.yml', /^\s*agent_files: (.+)$/m],
     ['claude-fix-review.yml', /^\s*agent_files: (.+)$/m],

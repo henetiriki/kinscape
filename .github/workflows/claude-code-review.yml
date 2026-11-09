@@ -30,7 +30,8 @@ concurrency:
 
 jobs:
   claude-review:
-    name: Run Claude
+    # A check name no other workflow uses: claude-respond.yml's jobs show as "Respond / Run Claude" and "Respond / Result".
+    name: Review
     # Dependabot pull requests get no Actions secrets, so the review cannot run.
     # Drafts are reviewed when marked ready for review. Outsiders' PRs aren't reviewed; the bot's own
     # are (a GitHub App's PR is no collaborator's).
@@ -238,7 +239,7 @@ jobs:
   # plan and build runs. It has no secrets, and its script step never fails the job. A review
   # cancelled by a newer push (concurrency) gets no summary, so `!cancelled()`, not `always()`.
   summary:
-    name: Result
+    name: Review result
     needs: claude-review
     if: "!cancelled() && needs.claude-review.result != 'skipped'"
     runs-on: ubuntu-latest

@@ -33,7 +33,6 @@ describe('the App token', () => {
     expect(bots.map(([file, job]) => `${file}:${job}`)).toEqual([
       'actions-pin-update.yml:update-pins',
       'claude-build.yml:approve',
-      'claude-respond.yml:claude',
       'claude-run.yml:gate',
       'claude-run.yml:run',
       'claude-run.yml:return',

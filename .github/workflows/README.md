@@ -33,7 +33,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | Claude: Check plugin pin<br>`claude-plugin-pin-check.yml` | schedule | `0 6 * * 1` | check-pin |
 | | workflow_dispatch | | |
 | Claude: Resolve conflict<br>`claude-resolve-conflict.yml` · calls Claude: Run (shared) | pull_request_target | `labeled` | resolve · unlabel |
-| Claude: Respond<br>`claude-respond.yml` | issue_comment | `created` | claude · summary |
+| Claude: Respond<br>`claude-respond.yml` · calls Claude: Run (shared) | issue_comment | `created` | respond |
 | | pull_request_review_comment | `created` | |
 | | issues | `opened, assigned` | |
 | | pull_request_review | `submitted` | |
@@ -81,6 +81,7 @@ flowchart TB
   claude_build -.->|calls| claude_run
   claude_fix_review -.->|calls| claude_run
   claude_resolve_conflict -.->|calls| claude_run
+  claude_respond -.->|calls| claude_run
   classDef backlog fill:#fdf3dd,stroke:#b7791f
   classDef ci fill:#e8f1f7,stroke:#3e7fa6
   classDef claude fill:#e6eee4,stroke:#264f29
@@ -116,6 +117,7 @@ flowchart TB
   on_issues --> claude_respond
   on_issues --> claude_unblock
   claude_plan -.->|calls| claude_run
+  claude_respond -.->|calls| claude_run
   classDef backlog fill:#fdf3dd,stroke:#b7791f
   classDef claude fill:#e6eee4,stroke:#264f29
   class backlog_intent_ready,backlog_milestone,backlog_spec_link backlog

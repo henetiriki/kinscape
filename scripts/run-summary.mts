@@ -5,8 +5,8 @@ import type { Transcript } from '#ks/scripts/types.ts';
 import { inlineCode, readSummary } from '#ks/scripts/agent-transcript.mts';
 
 // Writes a Claude run's summary page from the summary it uploads (agent-transcript.mts). GitHub lists
-// no steps for a job in a called workflow, and claude-respond.yml's log ends where Claude starts, so this is
-// what the run page shows.
+// no steps for a job in a called workflow, and a run's log ends where Claude starts, so this is what
+// the run page shows.
 // Usage: node scripts/run-summary.mts <claude-execution-output.json>
 // The Markdown goes to $GITHUB_STEP_SUMMARY, or to the terminal when that is not set.
 

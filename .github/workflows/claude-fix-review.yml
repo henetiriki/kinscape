@@ -71,7 +71,8 @@ jobs:
   # Removes the label when the run ends, passed or failed, so adding it again starts another round.
   # Nothing counts rounds. A skipped run (a stopped gate still counts as run) leaves the label.
   unlabel:
-    name: Remove the label
+    # Named for its label: claude-resolve-conflict.yml has a job like this one.
+    name: Remove the fix-review label
     needs: fix
     if: always() && needs.fix.result != 'skipped'
     runs-on: ubuntu-latest

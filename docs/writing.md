@@ -12,7 +12,7 @@ For chat replies, plans, PRs, issues and docs:
 - Give a reason only where the reader would misapply the rule without it.
 - Write one line for each deviation.
 - Omit a section that would only say "none". A required form box can say "None".
-- Delete text. Add text only when a reader needs it.
+- If a reader does not need text, delete it. Add text only if a reader needs it.
 
 `scripts/word-count.mts` sets the word budget for each file, and CI enforces it (`npm run words`). CI does not enforce two more rules, but reviewers check them:
 

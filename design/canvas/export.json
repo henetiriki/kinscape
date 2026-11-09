@@ -102,6 +102,12 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "file": "Map.dc.html",
+      "name": "map-account-menu-proposed",
+      "props": { "variant": "account-proposed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
       "file": "Map-phone.dc.html",
       "name": "map-phone",
       "viewport": { "height": 844, "width": 390 }
@@ -180,6 +186,12 @@
       "file": "Map-phone-states.dc.html",
       "name": "map-account-menu-phone",
       "props": { "variant": "account" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-account-menu-phone-proposed",
+      "props": { "variant": "account-proposed" },
       "viewport": { "height": 844, "width": 390 }
     },
     {

@@ -44,10 +44,10 @@ jobs:
   # owner's answers to the plan's decisions in the plan and commits it to the PR branch
   # (scripts/agent-approve.mts), before any model runs. With a decision open it comments which and
   # `build` is skipped; a `hand-back` PR (plans/README.md#chores) gets a comment that the tech lead
-  # builds it, and `build` is skipped. It also sets the issue's status label from the outcome (`ready-for-agent` on go,
-  # `ready-for-dev` on stop; a `hand-back` PR's issue is left alone). The review approved one
-  # commit: a PR whose head has moved since stops too, and `head` names the commit the build must
-  # fetch. The script comes from main and the PR head is never fetched: it reads and
+  # builds it, and `build` is skipped. It also sets the issue's status label from the outcome
+  # (`ready-for-agent` on go, `ready-for-dev` on stop; a `hand-back` PR's issue is left alone). The
+  # review approved one commit: a PR whose head has moved since stops too, and `head` names the
+  # commit the build must fetch. The script comes from main and the PR head is never fetched: it reads and
   # writes the plan through the API.
   approve:
     name: Approve

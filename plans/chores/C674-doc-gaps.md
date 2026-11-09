@@ -29,6 +29,13 @@ Make the seven edits in #674 as it words them. In workflows and scripts, edit co
 | `scripts/agent-approve.mts`, `scripts/hand-back.mts`, `load-agent-files.test.ts`, `test-modifiers-config.test.ts` | Changed       | Rule anchors                |
 | `claude-code-review.yml`                                                                                          | Changed       | Actions token row; no C575  |
 | `scripts/check-github.sh`                                                                                         | Changed       | Secrets and variables note  |
+| `scripts/__tests__/plan-rule-citations.test.ts`                                                                   | Changed       | Scan comments; 7 new files  |
+
+## Deviations
+
+- `docs/code-rules.md` names the `AGENTS.md` naming rule, with no link.
+- Item 7 keeps `server/env.mts`.
+- `plan-rule-citations.test.ts` scans comments in the seven changed files.
 
 ## Order of work
 

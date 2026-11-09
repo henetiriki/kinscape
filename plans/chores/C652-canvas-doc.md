@@ -1,7 +1,7 @@
 # Plan: C652: Move the canvas procedures out of DESIGN.md
 
 - **Spec:** #652
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

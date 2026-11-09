@@ -30,15 +30,14 @@
 | File                                                             | New / changed | What                                                |
 | ---------------------------------------------------------------- | ------------- | --------------------------------------------------- |
 | `docs/README.md`                                                 | New           | The owner table                                     |
-| `README.md` and six files in `docs/`                             | Changed       | The edits that the Chore lists                      |
+| `README.md` and six files in `docs/`                             | Changed       | The Chore's edits                                   |
 | `scripts/word-count.mts`, `scripts/__tests__/word-count.test.ts` | Changed       | Two budgets; default run from `git ls-files`; tests |
 | `scripts/doc-links.mts`, `scripts/__tests__/doc-links.test.ts`   | New           | The link test, its fixtures and the repo run        |
 
 ## Order of work
 
-1. Fixtures, then `doc-links.mts`.
-2. Default-run tests, then `word-count.mts`.
-3. Docs.
+1. Tests, then scripts.
+2. Docs.
 
 ## Deviations
 
@@ -46,15 +45,19 @@
 - Item 7 keeps the `server/env.mts` part.
 - The requirements row splits: Intent, Chore.
 - The Live row is reworded.
-- The review prompt has no link to `docs/README.md`; a person adds it (`.github/**`).
+- A person adds the review-prompt link (`.github/**`).
 - The default `words` run adds untracked files.
+
+## Risks
+
+A slug in `anchorsOf` can differ from GitHub's.
 
 ## Proof
 
-| Acceptance check                                  | Proven by               |
-| ------------------------------------------------- | ----------------------- |
-| Lint, `format:check`, `words` and tests pass      | Output in the PR        |
-| The default `words` run covers each budgeted file | `word-count.test.ts`    |
-| The link test passes; four fixtures fail          | `doc-links.test.ts`     |
-| `requirements.md`, `building.md`, Live row        | `git diff` in the PR    |
-| `architecture-target.md` names nothing built      | Review against the code |
+| Acceptance check                                  | Proven by            |
+| ------------------------------------------------- | -------------------- |
+| Lint, `format:check`, `words` and tests pass      | Output in the PR     |
+| The default `words` run covers each budgeted file | `word-count.test.ts` |
+| The link test passes; four fixtures fail          | `doc-links.test.ts`  |
+| `requirements.md`, `building.md`, Live row        | `git diff` in the PR |
+| `architecture-target.md` names nothing built      | Review               |

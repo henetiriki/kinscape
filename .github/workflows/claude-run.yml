@@ -228,7 +228,7 @@ jobs:
       # change it. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@f5b59e1a01ae91cb0f42036186dbd8ba53ec124c
+        uses: henetiriki/kinscape/.github/actions/run-claude@7b3e19c7f97cad9663185947d3c0c0fa422e3cc5
         with:
           files: ${{ inputs.agent_files }}
           prompt: ${{ inputs.prompt }}

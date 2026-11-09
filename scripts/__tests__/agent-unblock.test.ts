@@ -14,6 +14,7 @@ type World = {
   blocking?: {
     author_association?: string;
     labels: string[];
+    login?: string;
     number: number;
     state?: string;
   }[];
@@ -32,12 +33,15 @@ describe('run', () => {
 
         return JSON.stringify(
           kind === 'blocking'
-            ? blocking.map(({ author_association, labels, number, state }) => ({
-                author_association,
-                labels: labels.map(name => ({ name })),
-                number,
-                state: state ?? 'open',
-              }))
+            ? blocking.map(
+                ({ author_association, labels, login, number, state }) => ({
+                  author_association,
+                  labels: labels.map(name => ({ name })),
+                  number,
+                  state: state ?? 'open',
+                  user: login === undefined ? undefined : { login },
+                })
+              )
             : (blockedBy[Number(issue)] ?? [])
         );
       }
@@ -75,6 +79,9 @@ describe('run', () => {
       [['5'], { GH_OWNER: 'tech-lead', GH_REPO: 'no-slash' }],
       [['5'], { GH_REPO: 'owner/repo' }],
       [['5'], { GH_OWNER: '-bad', GH_REPO: 'owner/repo' }],
+      [['5'], { ...ENV, BOT_LOGIN: 'not a login' }],
+      [['5'], { ...ENV, BOT_LOGIN: '[bot]' }],
+      [['5'], { ...ENV, BOT_LOGIN: 'bot[bot' }],
     ])('rejects %j with env %j', (args, env) => {
       fakeGh({});
 
@@ -301,6 +308,69 @@ describe('run', () => {
         expect(unblocked()).toEqual([]);
       }
     );
+
+    describe('an issue filed by the bot App', () => {
+      const BOT = 'kinscape-agent[bot]';
+      const WITH_BOT = { ...WITH_OUTPUT, BOT_LOGIN: BOT };
+
+      it.each(['CONTRIBUTOR', 'NONE', undefined])(
+        'includes an issue by the bot whose association is %s',
+        author_association => {
+          fakeGh({
+            blocking: [
+              { author_association, labels: BLOCKED, login: BOT, number: 8 },
+            ],
+          });
+
+          expect(run(['5'], WITH_BOT, gh, append)).toBe(0);
+          expect(unblocked()).toEqual([{ blockers: [5], number: 8 }]);
+        }
+      );
+
+      it('leaves out an issue by another CONTRIBUTOR, and by a login that only starts like the bot', () => {
+        fakeGh({
+          blocking: [
+            {
+              author_association: 'CONTRIBUTOR',
+              labels: BLOCKED,
+              login: 'someone',
+              number: 8,
+            },
+            {
+              author_association: 'CONTRIBUTOR',
+              labels: BLOCKED,
+              login: `${BOT}-2`,
+              number: 9,
+            },
+          ],
+        });
+        run(['5'], WITH_BOT, gh, append);
+
+        expect(edits()).toHaveLength(2);
+        expect(unblocked()).toEqual([]);
+      });
+
+      it.each([undefined, ''])(
+        'trusts no bot when BOT_LOGIN is %j',
+        BOT_LOGIN => {
+          fakeGh({
+            blocking: [
+              {
+                author_association: 'CONTRIBUTOR',
+                labels: BLOCKED,
+                login: BOT,
+                number: 8,
+              },
+              { author_association: 'NONE', labels: BLOCKED, number: 9 },
+            ],
+          });
+
+          expect(run(['5'], { ...WITH_OUTPUT, BOT_LOGIN }, gh, append)).toBe(0);
+          expect(edits()).toHaveLength(2);
+          expect(unblocked()).toEqual([]);
+        }
+      );
+    });
 
     it('leaves out an issue that is still blocked, or not labelled blocked', () => {
       fakeGh({

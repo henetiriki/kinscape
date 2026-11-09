@@ -8,11 +8,12 @@ name: 'Claude: Unblock'
 # It never starts a plan: only the tech lead sets `status: ready-for-agent`.
 #
 # The title shown for each run in the Actions tab: "Unblock: <title>" for an issue filed by the
-# owner, a member or a collaborator, "Skipped Unblock: <title>" for any other issue. Repeats the
-# `unblock` job's `if:` (run-name cannot see job results): change them together.
+# owner, a member, a collaborator or the agent App, "Skipped Unblock: <title>" for any other issue.
+# Repeats the `unblock` job's `if:` (run-name cannot see job results): change them together.
 run-name: >-
   ${{
-    contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) &&
+    (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
+      github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     format('Unblock: {0}', github.event.issue.title) ||
     format('Skipped Unblock: {0}', github.event.issue.title)
   }}
@@ -28,8 +29,10 @@ permissions:
 
 jobs:
   unblock:
-    # Only issues filed by the owner, a member or a collaborator.
-    if: contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+    # Only issues filed by the owner, a member, a collaborator or the agent App.
+    if: >-
+      (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
+        github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # The issues it swapped, by the same kind of author: [{"number": 8, "blockers": [5]}]. Set even
@@ -51,6 +54,7 @@ jobs:
         env:
           GH_REPO: ${{ github.repository }}
           GH_OWNER: ${{ github.repository_owner }}
+          BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
           GH_TOKEN: ${{ github.token }}
           NUMBER: ${{ github.event.issue.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

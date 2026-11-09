@@ -153,7 +153,7 @@ real_id=$([ -n "$bot_login" ] && g api "users/$encoded_login" --jq .id)
 check "Bot id variable is the login's" "$bot_id" "${real_id:-no id for '$bot_login'}"
 
 # The repo's secret and variable names must be exactly these (names only; no value is read). The
-# _Secrets and variables_ table in docs/repo-settings.md links here; keep it in step.
+# _Secrets and variables_ section of docs/repo-settings.md names this script; keep it in step.
 # An unreadable list gives "", which fails.
 expected_secrets="CLAUDE_CODE_OAUTH_TOKEN,KINSCAPE_APP_PRIVATE_KEY"
 expected_variables="KINSCAPE_APP_CLIENT_ID,KINSCAPE_BOT_ID,KINSCAPE_BOT_LOGIN,KINSCAPE_INTERACTION_LIMIT_EXPIRES,KINSCAPE_TEAM_LOGINS"

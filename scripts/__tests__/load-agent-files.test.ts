@@ -522,7 +522,7 @@ describe('the refresh job of claude-unblock.yml', () => {
   });
 });
 
-// The plan run refreshes the Spec first, with the same file (rule 3 of plans/README.md).
+// The plan run refreshes the Spec first, with the same file (plans/README.md#plan-pr-flow).
 describe('the plan run', () => {
   it('loads refresh.md and tells Claude this is a plan run', () => {
     const plan = read('claude-plan.yml');
@@ -1301,7 +1301,7 @@ describe('the fix-review workflow', () => {
     expect(text).toContain(
       'github.event.pull_request.head.repo.full_name == github.repository'
     );
-    // The tech lead builds a `hand-back` PR (plans/README.md rule 4), so no agent fixes it.
+    // The tech lead builds a `hand-back` PR (plans/README.md#chores), so no agent fixes it.
     expect(text).toContain(
       "!contains(github.event.pull_request.labels.*.name, 'hand-back')"
     );

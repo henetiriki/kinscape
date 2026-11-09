@@ -3,9 +3,9 @@ import { readFileSync } from 'node:fs';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
-// Runs on a pull request (claude-hand-back.yml): plans/README.md rule 13's marker. Adds the label
-// `hand-back` when a path in the diff, or in the Files that change table of a plan the PR changes
-// (read from the head commit as data), matches a pattern in the base commit's .github/CODEOWNERS,
+// Runs on a pull request (claude-hand-back.yml): the marker of plans/README.md#hand-back. Adds the
+// label `hand-back` when a path in the diff, or in the Files that change table of a plan the PR
+// changes (read from the head commit as data), matches a pattern in the base commit's .github/CODEOWNERS,
 // apart from the catch-all (`*` or `**` alone) and EXEMPT. Does nothing for a fork or a PR that
 // has the label.
 // A failed `gh` call is logged and the exit code is 1; a failed plan fetch skips that plan only.

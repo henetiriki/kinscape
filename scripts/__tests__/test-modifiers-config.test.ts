@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 import config from '@ks/eslint.config.mjs';
 
-// Plan rule 10. Lints text against the real config, as layers-config.test.ts does.
+// Rule plans/README.md#failing-tests. Lints text against the real config, as layers-config.test.ts
+// does.
 const lint = async (code: string): Promise<string[]> => {
   const [result] = await new ESLint({
     overrideConfig: config,

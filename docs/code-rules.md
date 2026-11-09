@@ -15,7 +15,6 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 
 - Put each new file where `docs/architecture.md` › _Where does X go_ and its layer table say (no domain type under `lib/ui`).
 - Follow the Patterns rows whose _Enforced by_ is "Review".
-- Use the _Key concepts_ terms in code, UI and docs, not a synonym (`User` for Account, `Marker` for Pin, `Region` for Polity).
 
 ## Pattern table
 

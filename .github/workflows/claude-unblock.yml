@@ -91,7 +91,7 @@ jobs:
 
       # The rules and settings come from main (scripts/__tests__/load-agent-files.test.ts checks the pin).
       - name: Load the refresh rules and settings
-        uses: henetiriki/kinscape/.github/actions/load-agent-files@10bbf48497442acf32bbab6465b1b5a5a4badc9f
+        uses: henetiriki/kinscape/.github/actions/load-agent-files@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
         with:
           files: rules.md refresh.md
           settings: refresh-settings.json
@@ -117,7 +117,7 @@ jobs:
       # one run. A re-run of a failed job replaces its upload. A leak is commented on that Spec.
       - name: Keep Claude's output
         if: always()
-        uses: henetiriki/kinscape/.github/actions/keep-claude-output@4f8daa3739fc0e4fc102015b92ba4d3b6475caff
+        uses: henetiriki/kinscape/.github/actions/keep-claude-output@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
         with:
           name_suffix: -${{ matrix.spec.number }}
           thread: ${{ matrix.spec.number }}

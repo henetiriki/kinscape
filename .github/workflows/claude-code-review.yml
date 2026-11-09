@@ -64,7 +64,7 @@ jobs:
         with:
           files: review.md review-code.md
           settings: review-settings.json
-          main_files: AGENTS.md docs/security.md docs/writing.md .github/claude-plugins/.claude-plugin/marketplace.json .github/workflows/claude-code-review.yml
+          main_files: AGENTS.md docs/security.md docs/writing.md docs/code-rules.md .github/claude-plugins/.claude-plugin/marketplace.json .github/workflows/claude-code-review.yml
           token: ${{ github.token }}
 
       # Claude runs only a copy of this file identical to main's, so a PR can't change its own reviewer.
@@ -91,7 +91,8 @@ jobs:
           cp "$RUNNER_TEMP/agent/main/AGENTS.md" AGENTS.md
           cp "$RUNNER_TEMP/agent/main/docs/security.md" docs/security.md
           cp "$RUNNER_TEMP/agent/main/docs/writing.md" docs/writing.md
-          git status --short -- AGENTS.md docs/security.md docs/writing.md
+          cp "$RUNNER_TEMP/agent/main/docs/code-rules.md" docs/code-rules.md
+          git status --short -- AGENTS.md docs/security.md docs/writing.md docs/code-rules.md
 
       # Agent mode posts nothing until Claude does, so mark the PR as picked up: :eyes: stays, the
       # "Working" comment is deleted when the run ends. Neither is worth failing the run for.

@@ -21,14 +21,20 @@ const agent = (file: string) =>
 
 // What the review loads from main besides .github/agent/ (plans/chores/C588-review-config-from-main.md):
 // the files CLAUDE.md imports, which Claude reads from the checkout, so main's copies are put there;
-// the plugin marketplace; and this workflow, compared with the checkout before Claude runs.
+// the code rules that review-code.md points to, put there the same way; the plugin marketplace; and this workflow, compared with the checkout before Claude runs.
 const MARKETPLACE = '.github/claude-plugins/.claude-plugin/marketplace.json';
 const REVIEW_WORKFLOW = '.github/workflows/claude-code-review.yml';
+const CODE_RULES = 'docs/code-rules.md';
 const imports = () =>
   readFileSync(join(root, 'CLAUDE.md'), 'utf8')
     .match(/^@(\S+)$/gm)
     ?.map(line => line.slice(1)) ?? [];
-const mainFiles = () => [...imports(), MARKETPLACE, REVIEW_WORKFLOW];
+const mainFiles = () => [
+  ...imports(),
+  CODE_RULES,
+  MARKETPLACE,
+  REVIEW_WORKFLOW,
+];
 
 // Callers name our actions by repo, pinned to a full SHA of a main commit (actions-pin-update.yml
 // moves the pins): see .github/actions/load-agent-files/action.yml.
@@ -1665,7 +1671,7 @@ describe('the review job of claude-code-review.yml', () => {
   // checkout, so main's copies go there first. Adding an import to CLAUDE.md fails this until the
   // copy step takes it too.
   it("puts main's copies of the imports in the checkout before Claude", () => {
-    for (const path of imports()) {
+    for (const path of [...imports(), CODE_RULES]) {
       expect(step(COPY).run).toContain(
         `cp "$RUNNER_TEMP/agent/main/${path}" ${path}`
       );

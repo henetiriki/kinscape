@@ -21,7 +21,6 @@ export const ALLOWLIST: string[][] = [
     'docs/how-we-work.md',
     'docs/security.md',
   ],
-  ['.github/workflows/README.md', 'README.md'],
 ];
 
 const FENCE = /^ {0,3}(`{3,}|~{3,}).*\n[\s\S]*?^ {0,3}\1[`~]*[ \t]*$/gm;

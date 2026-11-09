@@ -135,6 +135,7 @@ describe('matcher', () => {
       '.claude/settings.json',
       'plans/README.md',
       'AGENTS.md',
+      'docs/code-rules.md',
       'scripts/setup-github.sh',
       'scripts/github/ruleset-main.json',
       'scripts/agent-gate.mts',

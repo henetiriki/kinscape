@@ -9,6 +9,7 @@ Each topic has one owner file, as the [writing rules](writing.md#all-text) say.
 | Build and ship   | [Building and shipping](building.md)                            |
 | Settings         | [Repository settings](repo-settings.md)                         |
 | Code placement   | [Architecture](architecture.md)                                 |
+| Code rules       | [Code rules](code-rules.md)                                     |
 | Look             | [Design](../design/DESIGN.md)                                   |
 | Security rules   | [Security rules](security.md)                                   |
 | Writing rules    | [Writing rules](writing.md)                                     |

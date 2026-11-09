@@ -276,7 +276,7 @@ export const generate = (root: string): string => {
     '',
     '# Workflows',
     '',
-    'What starts each GitHub Actions workflow, its jobs, and the reusable workflows it calls. How the team uses them: [the README](../../README.md#how-we-work).',
+    'What starts each GitHub Actions workflow, its jobs, and the reusable workflows it calls. How the team uses them: [how we work](../../docs/how-we-work.md).',
     '',
     ...table(workflows),
     '',

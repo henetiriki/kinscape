@@ -5,12 +5,10 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 ## Source of truth
 
 - `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
-- **Intents:** one per milestone (M1–M6), filed already approved. New ideas and requirement changes arrive as `type: intent` issues.
-- **Specs:** `type: spec` issues, one per slice of an Intent, drafted by Claude. The PO approves user-visible slices; the tech lead, engineering-only ones.
 - `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen isn't designed, list it under **Flagged concerns**; don't invent the UI.
 - Only the design agent, or a person or an agent they ask to run the [refresh steps](design/DESIGN.md#refreshing-the-copy), edits `design/canvas/`; a [workflow](design/DESIGN.md#screens) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't build around it: raise a Bug naming the screen and the difference.
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) is proposed, not a rule.
-- `docs/how-we-work.md`: the workflow, labels and roles.
+- [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs.
 - Use the terms in the requirements' _Key concepts_ table exactly in code, UI and docs.
 
 ## Workflow rules
@@ -25,7 +23,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 ## Plans
 
-One plan per Spec, Bug or Chore, under `plans/` (paths: [rules 2 and 4](plans/README.md)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md), [`plans/TEMPLATE.md`](plans/TEMPLATE.md), [`docs/architecture.md`](docs/architecture.md) and your own plan. Other plans are history: open one only to learn why something was done.
+One plan per Spec, Bug or Chore, under `plans/` (paths: [rules 2 and 4](plans/README.md)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read [`plans/README.md`](plans/README.md), [`plans/TEMPLATE.md`](plans/TEMPLATE.md), [`docs/architecture.md`](docs/architecture.md), [`docs/code-rules.md`](docs/code-rules.md) and your own plan. Other plans are history: open one only to learn why something was done.
 
 ## Data rules
 
@@ -41,11 +39,11 @@ Follow the [writing rules](docs/writing.md) in all text.
 
 ## Commands
 
-Node 24 (`.nvmrc`): `npm ci`, `npm run dev` and `npm run build` (both need [`KINSCAPE_MEMORY_ADAPTERS=1`](docs/repo-settings.md#vercel) outside Vercel), `npm run lint`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
+Node 24 (`.nvmrc`): `npm ci`, `npm run dev` and `npm run build` (both need [`KINSCAPE_MEMORY_ADAPTERS=1`](docs/repo-settings.md#vercel) outside Vercel), `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run format` (fixes), `npm test` (100% coverage), `npm run e2e`, `npm run validate:boundaries`. Tests go in `__tests__`; a `v8 ignore` needs a reason.
 
 ## Verifying your work
 
-Run lint, `format:check`, `words`, tests, `validate:boundaries` and `e2e` before reporting done, and paste the output. If a test fails, follow `plans/README.md` rule 10.
+Run lint, `typecheck`, `format:check`, `words`, tests, `validate:boundaries` and `e2e` before reporting done, and paste the output. If a test fails, follow `plans/README.md` rule 10.
 
 ## Known mistakes
 

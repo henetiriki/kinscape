@@ -1,12 +1,12 @@
 name: Prepare the workspace
 description: >-
-  Check out the repo, set up Node with the npm cache, run `npm ci`, and, when `playwright` is true,
+  Fetch the repo, install Node with the npm cache, run `npm ci`, and, when `playwright` is true,
   read the Playwright version, cache the browser and restore the Next.js build cache. Installing the
   browser stays with the caller.
 
 inputs:
   ref:
-    description: "The ref to check out. Empty checks out the triggering event's ref, as actions/checkout does."
+    description: "The ref to fetch. Empty fetches the triggering event's ref, as actions/checkout does."
     default: ''
   token:
     description: 'The token checkout fetches with, and persists when persist-credentials is true.'

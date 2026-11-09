@@ -56,7 +56,7 @@ jobs:
       thread: ${{ github.event.pull_request.number }}
       # The runner's gate checks an open PR with the label, and the token can push a workflow change.
       kind: resolve
-      # Check out the PR's branch.
+      # Fetch the PR's branch.
       ref: ${{ github.event.pull_request.head.ref }}
       # No browser: CI runs e2e after the push.
       model_args: --model sonnet

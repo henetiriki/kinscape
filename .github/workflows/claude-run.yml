@@ -1,7 +1,7 @@
 name: 'Claude: Run (shared)'
 
 # What both agent paths share: a gate that stops a blocked or duplicate run before any model
-# runs, then set up the repo, load the agent files, run Claude, keep its output, and leave a
+# runs, then fetch the repo, load the agent files, run Claude, keep its output, and leave a
 # comment if Claude left none, and hand the issue back if the run ended on Claude's turn.
 # claude-plan.yml, claude-build.yml, claude-fix-review.yml and claude-resolve-conflict.yml call
 # this workflow; each decides when to run and what to ask. It never runs on its own.
@@ -29,7 +29,7 @@ on:
         required: true
         type: string
       ref:
-        description: 'The branch to check out. Empty checks out the default branch.'
+        description: 'The branch to fetch. Empty fetches the default branch.'
         default: ''
         type: string
       playwright:
@@ -280,7 +280,7 @@ jobs:
   # Hands the issue back to the tech lead when a plan or build run ends on Claude's turn
   # (scripts/agent-return.mts): a plan with no PR, or a build whose PR is still a draft plan. It
   # follows the gate too, so a stop before `run` is covered. A build's `run` has the PR branch
-  # checked out, so this is its own job, with the script from main like the gate. A `run` cancelled
+  # fetched, so this is its own job, with the script from main like the gate. A `run` cancelled
   # by a newer queued one hands nothing back: the newer run is still to come.
   return:
     # The Actions graph shows this as "<caller job> / Return".
@@ -289,7 +289,7 @@ jobs:
     if: always() && inputs.kind == '' && needs.run.result != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only to check out main; the bot's App token reads the PR and moves the label.
+    # Only to fetch main; the bot's App token reads the PR and moves the label.
     permissions:
       contents: read
     steps:

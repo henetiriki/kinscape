@@ -39,9 +39,9 @@ STE rule 10 bans phrasal verbs.
 
 | Acceptance check                       | Proven by                                           |
 | -------------------------------------- | --------------------------------------------------- |
-| Workflow names match the pattern       | `grep -h '^name:'` output in Evidence               |
-| Step names follow STE                  | Sorted step names in Evidence                       |
-| Lint, format, words, tests, boundaries | Command output in Evidence; CI                      |
+| Workflow names match the pattern       | `grep -h '^name:' .github/workflows/*.yml`          |
+| Step names follow STE                  | `git diff origin/main` of the `name:` lines         |
+| Lint, format, words, tests, boundaries | The PR's Evidence section; CI                       |
 | The README needs no change             | `npm run workflows:diagram`, `git diff --exit-code` |
 | Required checks unchanged              | `ruleset-main.json` and job ids have no diff        |
 
@@ -52,3 +52,5 @@ Job ids, job names, workflow file names, and "Open or update the pin PR" (it doe
 ## Deviations
 
 - The renames came before this plan and #656. Approval covers them as built.
+- Review fix: comments and descriptions say "fetch" and "install", like the step names.
+- Review fix: the error text reads "run the workflow Design: Render snapshots".

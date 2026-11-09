@@ -8,7 +8,7 @@ inputs:
     description: 'The issue or pull request number the secret scan comments on, e.g. github.event.issue.number || github.event.pull_request.number.'
     required: true
   setup_node:
-    description: "'false' when the caller has set up Node already (setup-workspace does), so the action keeps the job's Node."
+    description: "'false' when the caller has installed Node already (setup-workspace does), so the action keeps the job's Node."
     default: 'true'
   name_suffix:
     description: "Appended to the artifact name, e.g. '-482', so jobs of one run (a matrix) don't upload under the same name. The name still starts with claude-execution-output."

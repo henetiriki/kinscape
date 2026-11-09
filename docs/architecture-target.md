@@ -6,18 +6,18 @@ Why: M2 adds sign-in, a database, an API and Tree-scoped data ([NFR-09](requirem
 
 Layers are enforced: see [architecture.md](architecture.md#enforcement). Features don't import each other: a route passes one feature's output to another (see [where does X go](architecture.md#where-does-x-go)).
 
-## Before the database
+## Before Tree data
 
 1. **Feature slices.** `people` and `pins`, each with `components/`, domain code, `queries`, `actions` and tests, per [architecture.md](architecture.md#where-does-x-go).
 2. **State ownership.** URL (shareable, MAP-10), then server, then a feature store, then local `useState`. `useMapState` reads `searchParams` through a schema.
 3. **Map layer `legendRow`.** A layer also exports a `legendRow`; the first Spec that adds a second layer carries it.
 4. **Domain primitives.** A branded `PersonId`.
 
-## With the database and API
+## With Tree data and the API
 
-5. **Ports and adapters.** Adapters for files (Polity and Boundary version: global, read-only); `TreeStore` is built (see [architecture.md](architecture.md#patterns)).
+5. **Ports and adapters.** Adapters for files (Polity and Boundary version: global, read-only).
 6. **Every entity's plan includes "Tree A can't read Tree B"**, run through the contract suite.
-7. **Platform**, with the session in `server/`. A typed `env.ts` that splits server from `NEXT_PUBLIC_` and fails at boot; a logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
+7. **Platform.** `server/env.mts` holds server variables only, and no schema splits them from `NEXT_PUBLIC_` variables. A logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
 
 ## For agents
 

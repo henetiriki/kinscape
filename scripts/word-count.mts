@@ -1,10 +1,13 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, relative, sep } from 'node:path';
 
 // The single home of the word budgets. To change one, edit it here in a PR.
 // A word is a whitespace-separated token with a letter or digit in it.
 const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 150, pattern: /^CLAUDE\.md$/ },
+  { limit: 300, pattern: /^README\.md$/ },
+  { limit: 200, pattern: /^docs\/README\.md$/ },
   { limit: 700, pattern: /^AGENTS\.md$/ },
   { limit: 200, pattern: /^docs\/security\.md$/ },
   { limit: 600, pattern: /^docs\/writing\.md$/ },
@@ -27,12 +30,17 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
   },
 ];
 
-const listFiles = (root: string, dir: string): string[] =>
-  existsSync(`${root}/${dir}`)
-    ? readdirSync(`${root}/${dir}`, { recursive: true }).map(
-        name => `${dir}/${String(name).split(sep).join('/')}`
-      )
-    : [];
+const trackedFiles = (root: string): string[] =>
+  execFileSync(
+    'git',
+    ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+    {
+      cwd: root,
+      encoding: 'utf8',
+    }
+  )
+    .split('\0')
+    .filter(path => budgetFor(path) !== undefined);
 
 // Blocks that `next dev` writes into AGENTS.md between BEGIN:nextjs-… and END:nextjs-… markers.
 // Next.js owns their text and rewrites it, so they don't count towards a budget.
@@ -84,19 +92,7 @@ export const run = (root: string, args: string[], stdin: string): number => {
     ? [hookPath(root, stdin)].filter(path => path !== undefined)
     : args.length > 0
       ? args
-      : [
-          'CLAUDE.md',
-          'AGENTS.md',
-          'docs/writing.md',
-          'docs/how-we-work.md',
-          'docs/building.md',
-          'docs/dependencies.md',
-          'docs/architecture.md',
-          'docs/architecture-target.md',
-          ...listFiles(root, 'plans'),
-          ...listFiles(root, '.github/agent'),
-          ...listFiles(root, '.claude/skills'),
-        ];
+      : trackedFiles(root);
   const errors = checkFiles(root, paths);
 
   errors.forEach(error => console.error(error));

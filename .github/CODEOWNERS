@@ -9,6 +9,7 @@
 .github/workflows/** @henetiriki
 AGENTS.md @henetiriki
 CLAUDE.md @henetiriki
+docs/code-rules.md @henetiriki
 docs/security.md @henetiriki
 docs/writing.md @henetiriki
 plans/README.md @henetiriki

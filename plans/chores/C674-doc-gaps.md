@@ -1,7 +1,7 @@
 # Plan: C674: Close the gaps left by the doc clean-up
 
 - **Spec:** #674
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ Make the seven edits in #674 as it words them. In workflows and scripts, edit co
 - **B.** `plans/README.md, chores rule`: the form the agent prompts use.
 - **Other:** your own.
 
-Recommended: A, because each line keeps its length and wrap.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

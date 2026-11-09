@@ -43,6 +43,10 @@ It cites "`AGENTS.md` Writing", which becomes one link.
 | `.github/agent/review-code.md`                           | Step 9; D1                               |
 | `scripts/word-count.mts`, `__tests__/word-count.test.ts` | Step 10; add to the default `run` list   |
 
+## Deviations
+
+- `review-code.md` was at 698 of 700 words, so step 9 raises its budget to 750 in `word-count.mts` and its test.
+
 ## Risks
 
 - Hand-back paths: the tech lead builds this (rule 13).

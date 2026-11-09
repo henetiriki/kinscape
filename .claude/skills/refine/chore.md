@@ -39,7 +39,7 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/4-chore.yml`, in order. If t
 
 The box ids are `title`, `change`, `why`, `done` and `constraints`.
 
-Write each box in [STE](../../../docs/how-we-work.md#writing-specs-bugs-and-chores). Then run the check round on _How we'll know it's done_.
+Write each box in [STE](../../../docs/writing.md#ste). Then run the check round on _How we'll know it's done_.
 
 ## Hand-over
 

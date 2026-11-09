@@ -1654,7 +1654,11 @@ describe('the review job of claude-code-review.yml', () => {
     expect(mainFiles().filter(path => !existsSync(join(root, path)))).toEqual(
       []
     );
-    expect(imports()).toEqual(['AGENTS.md', 'docs/security.md']);
+    expect(imports()).toEqual([
+      'AGENTS.md',
+      'docs/security.md',
+      'docs/writing.md',
+    ]);
   });
 
   // The action restores CLAUDE.md from the base branch, but what it imports is read from the

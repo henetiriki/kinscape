@@ -7,7 +7,7 @@ body:
     id: what
     attributes:
       label: What happened?
-      description: What did you do, and what did you see? Screenshots are very welcome. Paste or drag them in. Follow the [writing rules](https://github.com/henetiriki/kinscape/blob/main/docs/how-we-work.md#writing-specs-bugs-and-chores).
+      description: What did you do, and what did you see? Screenshots are very welcome. Paste or drag them in. Follow the [writing rules](https://github.com/henetiriki/kinscape/blob/main/docs/writing.md).
     validations:
       required: true
   - type: textarea

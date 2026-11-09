@@ -1,7 +1,7 @@
 # Plan: C664: Skip the code review on the action-pin PR
 
 - **Spec:** #664
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ The step lists the PRs Claude does not review. The Chore does not name this file
 - **B.** Leave the file stale.
 - **Other:** your own.
 
-Recommended: A, because only this line tells a reader which PRs get no review.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

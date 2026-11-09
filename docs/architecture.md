@@ -4,24 +4,24 @@ Built: Next.js App Router, React, TypeScript, MapLibre.
 
 ## Where does X go
 
-| Change                          | Put it in                                                                                          |
-| ------------------------------- | -------------------------------------------------------------------------------------------------- |
-| A screen or route               | `app/<route>/page.tsx`: composes components, no CSS (bar dev-only `app/design-kit`, `app/screens`) |
-| Shared UI                       | `app/components/<role>/`                                                                           |
-| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                                 |
-| UI the kit and features share   | `lib/ui/`                                                                                          |
-| A feature's UI and engine       | `features/<name>/`                                                                                 |
-| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell`      |
-| Pure logic, no I/O              | `lib/domain/`, tests in `__tests__/`                                                               |
-| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                     |
-| A server variable or table      | `server/env.mts`; a new `server/db/migrations/NNNN.sql` (never edit)                               |
-| Tree data                       | `server/trees/`, behind `openTree`: an entity's port, group and mapper                             |
-| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is in `design/tokens.mts`                    |
-| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                                |
-| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                                    |
-| A tool, check or CI helper      | `scripts/`, its test beside it                                                                     |
-| A browser test                  | `e2e/`                                                                                             |
-| A type shared by two modules    | `types.ts` beside them (`import type`, also in `.mts`)                                             |
+| Change                          | Put it in                                                                                     |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| A screen or route               | `app/<route>/page.tsx` ([page rule](../design/DESIGN.md#components))                          |
+| Shared UI                       | `app/components/<role>/`                                                                      |
+| UI only the map or sign-in uses | `features/map/components/`, `app/components/auth/`                                            |
+| UI the kit and features share   | `lib/ui/`                                                                                     |
+| A feature's UI and engine       | `features/<name>/`                                                                            |
+| A map layer                     | `features/<name>/layers/<layer>.ts`, exported by `index.ts`; routes pass layers to `MapShell` |
+| Pure logic, no I/O              | `lib/domain/`, tests in `__tests__/`                                                          |
+| Reading data files              | `server/boundaries/load.mts` and `app-data.ts`                                                |
+| A server variable or table      | `server/env.mts`; a new `server/db/migrations/NNNN.sql` (never edit)                          |
+| Tree data                       | `server/trees/`, behind `openTree`: an entity's port, group and mapper                        |
+| Design checks and token tooling | `lib/design/` (dev-only); the runtime `resolveTokens` is in `design/tokens.mts`               |
+| A colour, size or font value    | `design/tokens.json` + notes, then `npm run tokens`                                           |
+| Boundary and name data          | `data/`; basemap files in `public/map/` (`npm run map:prepare`)                               |
+| A tool, check or CI helper      | `scripts/`, its test beside it                                                                |
+| A browser test                  | `e2e/`                                                                                        |
+| A type shared by two modules    | `types.ts` beside them (`import type`, also in `.mts`)                                        |
 
 Import repo paths by alias: `#ks/` in `.mts` and `.mjs` files, `@ks/` elsewhere. ESLint rejects the other alias, relative paths and `.ts`/`.tsx` imports (`.mts`: values only).
 
@@ -31,7 +31,7 @@ Import repo paths by alias: `#ks/` in `.mts` and `.mjs` files, `@ks/` elsewhere.
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | **Tokens are the one source.** CSS variables, MapLibre paint values and map padding read `design/tokens.json`.                                                                                                                                             | `design/tokens.mts`, `lib/design/css.mts`, `features/map/style.ts`, `layers/`, `Stage.tsx` `freeArea`    | `lib/design/__tests__/design.test.ts` fails if `app/tokens.css` is stale                                     |
 | **Components by role.** One folder per role: its components, their `.module.css` and `__tests__/`.                                                                                                                                                         | `app/components/`                                                                                        | ESLint `no-restricted-imports`; [DESIGN.md](../design/DESIGN.md#components)                                  |
-| **Variants are data attributes.** `data-size`, `data-state`, `data-form` select the look in the CSS module; a shared rule goes in its own module, taken with `composes`.                                                                                   | `Button.tsx`, `foundation/focus.module.css`                                                              | Review                                                                                                       |
+| **Variants are data attributes.** `data-size`, `data-state`, `data-form` select the look in the component's `*.module.css` (camelCase classes); a shared rule has its own module, taken with `composes`.                                                   | `Button.tsx`, `foundation/focus.module.css`                                                              | Review                                                                                                       |
 | **Slots.** A frame places named boxes over the map, desktop and phone forms.                                                                                                                                                                               | `features/map/components/Stage.tsx`                                                                      | Review                                                                                                       |
 | **State in the shell, controlled children.** `MapShell` owns the Map date and layer toggles; children are controlled; `usePhone` picks the form, the server renders desktop.                                                                               | `features/map/components/MapShell.tsx`, `foundation/usePhone.ts`                                         | Review                                                                                                       |
 | **Functional core, imperative shell.** Pure functions in `lib/domain`; only `MapView` creates or drives the map; `style.ts`, `layers/` and `filter.ts` build MapLibre styles and expressions from its types.                                               | `lib/domain/`, `features/map/components/MapView.tsx`                                                     | Tests (100% coverage)                                                                                        |

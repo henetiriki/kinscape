@@ -16,10 +16,6 @@ A Bug or Chore takes the same path; below, "Spec" means all three. The branch is
 
 A silent run gets a linking comment; a plan run with no plan PR sets `status: blocked`: check the run, then swap it for `ready-for-agent`. Stalled build: re-run it.
 
-## Styles
-
-A component's CSS goes in a `*.module.css` beside it, with camelCase class names; a rule several components share goes in its own module and is taken with `composes`.
-
 ## Merging
 
 Merge rules are in [repo settings](repo-settings.md#whats-set-and-why). The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.

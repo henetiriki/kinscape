@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -41,6 +42,8 @@ describe('countWords', () => {
 describe('budgetFor', () => {
   it.each([
     ['CLAUDE.md', 150],
+    ['README.md', 300],
+    ['docs/README.md', 200],
     ['AGENTS.md', 700],
     ['docs/security.md', 200],
     ['docs/writing.md', 600],
@@ -66,7 +69,7 @@ describe('budgetFor', () => {
 
   it.each([
     'docs/requirements.md',
-    'README.md',
+    'design/DESIGN.md',
     '.claude/skills/refine/NOTICE.md',
     '.claude/skills/NOTICE.md',
     'plans/sub/file.md',
@@ -91,8 +94,13 @@ describe('checkFiles and run', () => {
     return path;
   };
 
+  const track = () => {
+    execFileSync('git', ['add', '-A'], { cwd: root });
+  };
+
   beforeEach(() => {
     root = mkdtempSync(join(tmpdir(), 'word-count-'));
+    execFileSync('git', ['init', '--quiet'], { cwd: root });
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
@@ -143,8 +151,10 @@ describe('checkFiles and run', () => {
     );
   });
 
-  it('checks every budgeted file when given no paths', () => {
+  it('checks every tracked file that has a budget when given no paths', () => {
     write('CLAUDE.md', words(151));
+    write('README.md', words(301));
+    write('docs/README.md', words(201));
     write('plans/a.md', words(10));
     write('plans/b.md', words(601));
     write('plans/bugs/B1-x.md', words(601));
@@ -152,16 +162,34 @@ describe('checkFiles and run', () => {
     write('.github/agent/rules.md', words(301));
     write('.claude/skills/x/SKILL.md', words(651));
     write('.claude/skills/x/NOTICE.md', words(5000));
+    write('docs/requirements.md', words(5000));
+    track();
 
     expect(run(root, [], '')).toBe(1);
-    expect(console.error).toHaveBeenCalledTimes(6);
+    expect(console.error).toHaveBeenCalledTimes(8);
     expect(console.error).toHaveBeenCalledWith(
-      'CLAUDE.md: 151 words, budget 150'
+      'docs/README.md: 201 words, budget 200'
     );
+  });
+
+  it('skips a budgeted file that git does not track', () => {
+    write('CLAUDE.md', words(151));
+
+    expect(run(root, [], '')).toBe(0);
+  });
+
+  it('skips a tracked file that is gone from disk', () => {
+    const path = write('CLAUDE.md', words(151));
+
+    track();
+    rmSync(path);
+
+    expect(run(root, [], '')).toBe(0);
   });
 
   it('passes when nothing is over budget', () => {
     write('CLAUDE.md', words(5));
+    track();
 
     expect(run(root, [], '')).toBe(0);
     expect(console.error).not.toHaveBeenCalled();

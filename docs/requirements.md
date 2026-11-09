@@ -1,5 +1,5 @@
 > **Baseline requirements** imported from `Genealogy Map App – Requirements.docx` (2026-10-13). This file is the reference that Intent and Spec issues cite by requirement ID.
-> Changes to it arrive through an approved Intent issue. They are never edited in directly.
+> An Intent changes a requirement, key term, number, priority or acceptance check. The tech lead may fix links, anchors, headings, table layout and typos in a Chore.
 
 # Genealogy Map App — Requirements
 
@@ -234,7 +234,7 @@ The key to a live slider is loading every boundary version once and changing onl
 
 - **Jurisdiction lookup:** point-in-polygon at the pin date. Turf.js in the browser is enough at this data size; PostGIS if the logic moves server-side.
 
-- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it, behind [repository interfaces](architecture.md#patterns) so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
+- **Storage:** Postgres hosted on Supabase, plain Postgres without PostGIS until server-side spatial queries need it, behind repository interfaces so the provider can change. Boundaries stay as GeoJSON in the repo ([BND-06](#bnd-06)).
 
 - **Hosting:** Vercel for the front end.
 

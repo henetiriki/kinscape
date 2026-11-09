@@ -1,7 +1,7 @@
 name: Run Claude
 description: >-
-  Load the agent files, run Claude Code with them, and keep its output. The steps claude-respond.yml and
-  claude-run.yml share.
+  Load the agent files, run Claude Code with them, and keep its output. The steps of every run in
+  claude-run.yml, which claude-respond.yml also calls.
 
 inputs:
   files:

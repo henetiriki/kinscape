@@ -26,21 +26,15 @@ const PINNED = new RegExp(`^${ACTION.replaceAll('.', '\\.')}@[0-9a-f]{40}$`);
 // The inputs are strings: `persist-credentials` keeps the App token for the push that starts CI.
 const CALLERS = [
   [
-    'claude-respond.yml',
-    'claude',
-    {
-      'persist-credentials': 'true',
-      playwright: 'true',
-      token: '${{ steps.bot.outputs.token }}',
-    },
-  ],
-  [
     'claude-run.yml',
     'run',
     {
-      'persist-credentials': 'false',
+      // Only a respond run keeps the token in git (claude-run.yml says why).
+      'persist-credentials':
+        "${{ inputs.kind == 'respond' && 'true' || 'false' }}",
       playwright: '${{ inputs.playwright }}',
       ref: '${{ inputs.ref }}',
+      token: '${{ steps.bot.outputs.token }}',
     },
   ],
 ] as const;

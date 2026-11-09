@@ -19,6 +19,14 @@ A link to `how-we-work.md` or `security.md` makes a cycle with `docs/README.md` 
 
 Recommended: A, because the index has no outgoing link and the allowlist stays as the Chore says.
 
+**D2 · When an allowlist entry matches a cycle** · Decides: Tech lead
+
+- **A.** The entry holds each file on the cycle. The `DESIGN.md` entry lists the six files on its cycles.
+- **B.** The cycle holds each file in the entry. The `DESIGN.md` entry lists one file.
+- **Other:** your own.
+
+Recommended: A, because B passes a new cycle through two allowed files.
+
 ## Files that change
 
 | File                                                             | New / changed | What                                                         |

@@ -45,3 +45,7 @@ Add the `AGENTS.md` bullet from the Chore, item 1. Each of the other six files g
 | `npm run words` passes                 | CI                                                |
 | `docs/security.md` has no change       | `git diff --stat origin/main` in Evidence         |
 | The reviewer and fix-review run follow | The next PR with a speculative guard, after merge |
+
+## Deviations
+
+- Cuts: six repeated phrases in `fix-review.md`, three in `SKILL.md`.

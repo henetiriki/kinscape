@@ -1,7 +1,7 @@
 # Plan: C650: Name one owner for each doc fact and check doc links
 
 - **Spec:** #650
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ A link to `how-we-work.md` or `security.md` makes a cycle with `docs/README.md` 
 - **B.** Link each owner file, and add `how-we-work.md` with `docs/README.md` to the allowlist.
 - **Other:** your own.
 
-Recommended: A, because the index has no outgoing link and the allowlist stays as the Chore says.
+**Answer: Other:** docs/README.md links every owner file. Only README.md and the review prompt link to it. how-we-work.md drops its "More detail" list and adds no link. No owner file links docs/README.md. Drop "each file exists" from the done-checks: the link test covers it. (@henetiriki)
 
 **D2 · When an allowlist entry matches a cycle** · Decides: Tech lead
 
@@ -25,7 +25,7 @@ Recommended: A, because the index has no outgoing link and the allowlist stays a
 - **B.** The cycle holds each file in the entry. The `DESIGN.md` entry lists one file.
 - **Other:** your own.
 
-Recommended: A, because B passes a new cycle through two allowed files.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

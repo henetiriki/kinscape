@@ -136,7 +136,7 @@ jobs:
       # build, or a plan for a UI Spec), the Playwright and Next.js caches: see
       # .github/actions/setup-workspace/action.yml. It runs from main, like run-claude.
       - name: Prepare the workspace
-        uses: henetiriki/kinscape/.github/actions/setup-workspace@90b8105edc4bfba72baf6a52cd736509ff935c54
+        uses: henetiriki/kinscape/.github/actions/setup-workspace@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
         with:
           ref: ${{ inputs.ref }}
           # Otherwise git pushes with GITHUB_TOKEN, not the App token, and the runs it triggers wait for approval.
@@ -216,7 +216,7 @@ jobs:
       # step. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@8937915d6328b0a4e441459c9db3f609467ef1b0
+        uses: henetiriki/kinscape/.github/actions/run-claude@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
         with:
           files: ${{ inputs.agent_files }}
           prompt: ${{ inputs.prompt }}
@@ -336,4 +336,4 @@ jobs:
       contents: read
     steps:
       - name: Write the result
-        uses: henetiriki/kinscape/.github/actions/run-summary@c7cfcaa85fe511b5581b8695449fb1d804e02ca0
+        uses: henetiriki/kinscape/.github/actions/run-summary@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4

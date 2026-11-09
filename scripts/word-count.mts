@@ -31,7 +31,14 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
 ];
 
 const trackedFiles = (root: string): string[] =>
-  execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'utf8' })
+  execFileSync(
+    'git',
+    ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+    {
+      cwd: root,
+      encoding: 'utf8',
+    }
+  )
     .split('\0')
     .filter(path => budgetFor(path) !== undefined);
 

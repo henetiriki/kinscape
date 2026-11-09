@@ -36,9 +36,9 @@
 
 ## Order of work
 
-1. Write the link fixtures, then `doc-links.mts`.
-2. Change the default-run tests, then `word-count.mts`.
-3. Edit the docs until the repo run passes.
+1. Fixtures, then `doc-links.mts`.
+2. Default-run tests, then `word-count.mts`.
+3. Docs.
 
 ## Deviations
 
@@ -46,10 +46,8 @@
 - Item 7 keeps the `server/env.mts` part.
 - The requirements row splits: Intent, Chore.
 - The Live row is reworded.
-
-## Risks
-
-- A slug can differ from GitHub's.
+- The review prompt has no link to `docs/README.md`; a person adds it (`.github/**`).
+- The default `words` run adds untracked files.
 
 ## Proof
 

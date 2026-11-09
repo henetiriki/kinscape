@@ -1,6 +1,6 @@
 # Docs
 
-Each topic has one owner file. Change a fact there, and link to it from elsewhere.
+Each topic has one owner file, as the [writing rules](writing.md#all-text) say.
 
 | Topic            | Owner                                                           |
 | ---------------- | --------------------------------------------------------------- |

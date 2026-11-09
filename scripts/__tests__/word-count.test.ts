@@ -172,10 +172,10 @@ describe('checkFiles and run', () => {
     );
   });
 
-  it('skips a budgeted file that git does not track', () => {
+  it('checks a budgeted file that git does not track yet', () => {
     write('CLAUDE.md', words(151));
 
-    expect(run(root, [], '')).toBe(0);
+    expect(run(root, [], '')).toBe(1);
   });
 
   it('skips a tracked file that is gone from disk', () => {

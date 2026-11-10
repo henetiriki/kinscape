@@ -1,7 +1,7 @@
 # Plan: C704: Put the design system steps into plans and Chores
 
 - **Spec:** #704
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Add one line to the plan template, two rules to `plans/README.md` and one questi
 - **B.** Shorten other rules to fit 750.
 - **Other:** your own.
 
-Recommended: A, because B changes rules that the Chore does not name.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

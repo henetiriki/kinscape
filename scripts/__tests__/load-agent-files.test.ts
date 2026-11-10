@@ -85,8 +85,8 @@ describe('the load-agent-files action', () => {
     expect(inputs.settings.default).toBe('settings.json');
   });
 
-  // Only the review names files outside .github/agent/: every other loader step, in a workflow or
-  // in run-claude, gets none.
+  // Only the review names files outside .github/agent/: no other workflow step names any. The
+  // run-claude action passes on what its caller gives it, which is empty unless the caller sets it.
   it('loads no main files unless told to', () => {
     const { inputs } = parse(action()) as {
       inputs: { main_files: { default?: string } };
@@ -101,11 +101,10 @@ describe('the load-agent-files action', () => {
             .jobs
         ).flatMap(job => job.steps ?? [])
       )
-      .concat(runClaudeSteps())
       .filter(step => step.uses?.includes('load-agent-files'));
 
     expect(inputs.main_files.default).toBe('');
-    expect(loaders.length).toBeGreaterThan(1);
+    expect(loaders.length).toBeGreaterThan(0);
     for (const loader of loaders) {
       expect(loader.with).not.toHaveProperty('main_files');
     }
@@ -405,6 +404,145 @@ describe('the run-claude action', () => {
     );
     expect(stepUsing(name)?.with?.allowed_bots).toBeUndefined();
     expect(using(refreshSteps())?.with?.allowed_bots).toBeUndefined();
+  });
+});
+
+// A caller of claude-run.yml may name files that a run takes from main, not from the PR branch
+// (plans/chores/C681-rule-files-from-main.md). The callers set none yet.
+describe('the main_files input of the run-claude action', () => {
+  const PASS = '${{ inputs.main_files }}';
+  const COPY = "Put main's rule files in the checkout";
+  const FILES = 'AGENTS.md docs/writing.md';
+
+  type Inputs = Record<string, { default?: string; type?: string }>;
+
+  it('is empty by default, in the action and in claude-run.yml', () => {
+    const { inputs } = parse(
+      readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8')
+    ) as { inputs: Inputs };
+    const { on } = parse(read('claude-run.yml')) as {
+      on: { workflow_call: { inputs: Inputs } };
+    };
+
+    expect(inputs.main_files.default).toBe('');
+    expect(on.workflow_call.inputs.main_files).toMatchObject({
+      default: '',
+      type: 'string',
+    });
+  });
+
+  it('goes from claude-run.yml through run-claude to the loader', () => {
+    const runner = parse(read('claude-run.yml')) as {
+      jobs: { run: { steps: Step[] } };
+    };
+    const call = runner.jobs.run.steps.find(step =>
+      step.uses?.includes('actions/run-claude@')
+    );
+
+    expect(call?.with).toMatchObject({ main_files: PASS });
+    expect(stepUsing(ACTION)?.with).toMatchObject({ main_files: PASS });
+  });
+
+  describe('the copy step', () => {
+    const steps = () => runClaudeSteps();
+    const copy = () => steps().find(step => step.name === COPY);
+    const git = (dir: string, ...args: string[]) =>
+      spawnSync('git', args, {
+        cwd: dir,
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          GIT_AUTHOR_EMAIL: 'a@example.test',
+          GIT_AUTHOR_NAME: 'A',
+          GIT_COMMITTER_EMAIL: 'a@example.test',
+          GIT_COMMITTER_NAME: 'A',
+        },
+      });
+    // A checkout of a PR branch, cut before main changed docs/writing.md, and main's text on the runner.
+    const checkout = () => {
+      const dir = mkdtempSync(join(tmpdir(), 'main-files-'));
+      const repo = join(dir, 'repo');
+      const put = (base: string, file: string, text: string) => {
+        mkdirSync(join(base, file, '..'), { recursive: true });
+        writeFileSync(join(base, file), text);
+      };
+
+      mkdirSync(repo);
+      git(repo, 'init', '-q', '-b', 'main');
+      put(repo, 'AGENTS.md', 'rules\n');
+      put(repo, 'docs/writing.md', 'old\n');
+      git(repo, 'add', '-A');
+      git(repo, 'commit', '-q', '-m', 'cut');
+      git(repo, 'branch', 'pr');
+      put(repo, 'docs/writing.md', 'new\n');
+      git(repo, 'commit', '-q', '-am', 'main changes a rule');
+      git(repo, 'checkout', '-q', 'pr');
+      put(join(dir, 'agent/main'), 'AGENTS.md', 'rules\n');
+      put(join(dir, 'agent/main'), 'docs/writing.md', 'new\n');
+
+      return { dir, repo };
+    };
+    const runStep = (repo: string, dir: string, files = FILES) =>
+      spawnSync('bash', ['-e', '-c', copy()?.run ?? ''], {
+        cwd: repo,
+        encoding: 'utf8',
+        env: { ...process.env, MAIN_FILES: files, RUNNER_TEMP: dir },
+      });
+
+    it('runs before Claude, only when files are given, with the files in its env', () => {
+      const names = steps().map(step => step.name);
+
+      expect(names.indexOf(COPY)).toBeGreaterThan(-1);
+      expect(names.indexOf(COPY)).toBeLessThan(
+        steps().findIndex(step => step.uses?.includes('claude-code-action'))
+      );
+      expect(copy()?.if).toBe("inputs.main_files != ''");
+      expect(copy()?.env).toEqual({ MAIN_FILES: PASS });
+    });
+
+    it('logs the file that differs from the branch, and leaves it out of git add', () => {
+      const { dir, repo } = checkout();
+      const result = runStep(repo, dir);
+
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain('M docs/writing.md');
+      expect(result.stdout).not.toContain('AGENTS.md');
+      expect(readFileSync(join(repo, 'docs/writing.md'), 'utf8')).toBe('new\n');
+      git(repo, 'add', '-A');
+      expect(git(repo, 'diff', '--cached', '--name-only').stdout).toBe('');
+      rmSync(dir, { force: true, recursive: true });
+    });
+
+    it('fails when main has no copy of a file', () => {
+      const { dir, repo } = checkout();
+
+      expect(runStep(repo, dir, 'docs/missing.md').status).not.toBe(0);
+      rmSync(dir, { force: true, recursive: true });
+    });
+
+    // The merge of main (resolve-conflict.md) stops on a marked, changed file, so the agent clears
+    // the marks and restores the files first.
+    it('stops git merge until resolve-conflict.md restores the files', () => {
+      const { dir, repo } = checkout();
+      const prompt = agent('resolve-conflict.md');
+      const merge = () => git(repo, 'merge', '--no-commit', '--no-ff', 'main');
+
+      runStep(repo, dir);
+      expect(merge().status).not.toBe(0);
+
+      expect(prompt).toContain('git ls-files -v');
+      expect(prompt).toContain('git update-index --no-skip-worktree -- <file>');
+      expect(prompt).toContain('git checkout -- <file>');
+      expect(prompt.indexOf('git checkout -- <file>')).toBeLessThan(
+        prompt.indexOf('git merge --no-commit')
+      );
+      for (const file of FILES.split(' ')) {
+        git(repo, 'update-index', '--no-skip-worktree', '--', file);
+        git(repo, 'checkout', '--', file);
+      }
+      expect(merge().status).toBe(0);
+      rmSync(dir, { force: true, recursive: true });
+    });
   });
 });
 

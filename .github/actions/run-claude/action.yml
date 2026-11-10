@@ -31,6 +31,9 @@ inputs:
   team_logins:
     description: 'The logins whose comments Claude reads, comma separated, from vars.KINSCAPE_TEAM_LOGINS.'
     required: true
+  main_files:
+    description: "Repo files Claude reads as main has them, space separated: each is copied over the checkout's. Empty leaves the checkout's files as they are."
+    default: ''
 
 runs:
   using: composite
@@ -56,7 +59,23 @@ runs:
       with:
         files: ${{ inputs.files }}
         settings: settings.json
+        main_files: ${{ inputs.main_files }}
         token: ${{ inputs.github_token }}
+
+    # Claude reads these files from the checkout, which is the PR branch. The log shows an M for each
+    # copy that differs from the branch. --skip-worktree keeps `git add -A` from committing the copies;
+    # resolve-conflict.md clears the marks before the merge of main, which they would stop.
+    - name: Put main's rule files in the checkout
+      if: inputs.main_files != ''
+      shell: bash
+      env:
+        MAIN_FILES: ${{ inputs.main_files }}
+      run: |
+        for f in $MAIN_FILES; do
+          cp "$RUNNER_TEMP/agent/main/$f" "$f"
+        done
+        git status --short -- $MAIN_FILES
+        git update-index --skip-worktree -- $MAIN_FILES
 
     - name: Run Claude Code
       uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266

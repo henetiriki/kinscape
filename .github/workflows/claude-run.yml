@@ -52,6 +52,10 @@ on:
         description: 'The commit the checked-out branch must be at, on a build: the one the approval recorded (scripts/agent-approve.mts). Empty skips the check.'
         default: ''
         type: string
+      main_files:
+        description: "Repo files Claude reads as main has them, space separated. The run-claude action writes main's copy of each file in the checkout. An empty value changes no file."
+        default: ''
+        type: string
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN:
         required: true
@@ -240,6 +244,7 @@ jobs:
           bot_login: ${{ vars.KINSCAPE_BOT_LOGIN }}
           bot_id: ${{ vars.KINSCAPE_BOT_ID }}
           team_logins: ${{ vars.KINSCAPE_TEAM_LOGINS }}
+          main_files: ${{ inputs.main_files }}
 
       # Before the safety net, which counts the bot's comments and would take this one for Claude's.
       - name: Remove the working comment

@@ -689,6 +689,30 @@ describe('mountImports', () => {
     );
   });
 
+  it('keeps a single space between inline elements and drops other whitespace', async () => {
+    const React = await import('react');
+    const ReactDOM = await import('react-dom');
+    const { createRoot } = await import('react-dom/client');
+
+    Object.assign(window, {
+      KinScape: {
+        Group: ({ children }: { children?: React.ReactNode }) =>
+          React.createElement('ul', null, children),
+      },
+      React,
+      ReactDOM: { createRoot, flushSync: ReactDOM.flushSync },
+    });
+    board(
+      '<x-import component-from-global-scope="KinScape.Group"> <p><span>Born</span> <strong>1820</strong>\n<em>x</em></p> </x-import>'
+    );
+
+    await mountImports();
+
+    expect(document.querySelector('ul')?.innerHTML).toBe(
+      '<p><span>Born</span> <strong>1820</strong><em>x</em></p>'
+    );
+  });
+
   it('rejects a comment inside an <x-import>', async () => {
     install();
     board(

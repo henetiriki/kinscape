@@ -636,7 +636,14 @@ export const mountImports = async (): Promise<void> => {
   const contents = (element: Element): unknown[] =>
     Array.from(element.childNodes).flatMap(child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        return child.nodeValue?.trim() ? [child.nodeValue] : [];
+        // A single space between two elements inside markup separates inline words.
+        const spaced =
+          child.nodeValue === ' ' &&
+          element.tagName !== 'X-IMPORT' &&
+          child.previousSibling instanceof Element &&
+          child.nextSibling instanceof Element;
+
+        return child.nodeValue?.trim() || spaced ? [child.nodeValue] : [];
       }
 
       if (child instanceof Element) {

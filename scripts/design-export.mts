@@ -547,40 +547,28 @@ export const pageHtml = (): string => {
 };
 
 /**
- * Runs in the page, after `fillTemplate`: renders each top-level `<x-import>` from the global
- * its `component-from-global-scope` names (`KinScape.Button`), with the props `fillTemplate`
- * kept and its content as children. Uses nothing from the module, as `fillTemplate`.
+ * Runs in the page, after `fillTemplate`: puts `kinscapeBuild` on `window`. It turns an
+ * `<x-import>` into a React element from the global its `component-from-global-scope` names
+ * (`KinScape.Button`), with the props `fillTemplate` kept and its content as children. An HTML
+ * child becomes a React element too. `page.evaluate` sends one function, so `mountImports` reads
+ * this one from `window`. Uses nothing from the module, as `fillTemplate`.
  */
-export const mountImports = async (): Promise<void> => {
-  type Imported = { props?: Record<string, unknown> } & Element;
+export const defineBuilder = (): void => {
+  const react = () =>
+    (
+      window as unknown as {
+        React: {
+          createElement: (
+            component: unknown,
+            props: unknown,
+            ...children: unknown[]
+          ) => unknown;
+        };
+      }
+    ).React;
 
-  const imports = Array.from(
-    document.querySelectorAll<Imported>('x-import')
-  ).filter(element => element.parentElement?.closest('x-import') == null);
-
-  if (imports.length === 0) {
-    return;
-  }
-
-  const { React, ReactDOM } = window as unknown as {
-    React?: {
-      createElement: (
-        component: unknown,
-        props: unknown,
-        ...children: unknown[]
-      ) => unknown;
-    };
-    ReactDOM?: {
-      createRoot: (container: Element) => { render: (tree: unknown) => void };
-      flushSync: (run: () => void) => void;
-    };
-  };
-
-  if (!React || !ReactDOM) {
-    throw new Error('React 18 is not loaded');
-  }
-
-  const build = (element: Imported): unknown => {
+  const build = (element: Element): unknown => {
+    const { props } = element as { props?: Record<string, unknown> } & Element;
     const path = String(element.getAttribute('component-from-global-scope'));
     const component = path
       .split('.')
@@ -594,13 +582,54 @@ export const mountImports = async (): Promise<void> => {
       throw new Error(`No component ${path}`);
     }
 
-    const children = Array.from(element.childNodes).flatMap(child => {
+    return react().createElement(component, props, ...contents(element));
+  };
+
+  // An HTML element becomes a React element: `class` and `for` take React's names; `style` stays text.
+  const markup = (element: Element): unknown => {
+    const props: Record<string, unknown> = {};
+
+    for (const { name, value } of Array.from(element.attributes)) {
+      if (name === 'style') {
+        // The attribute text stays as written: CSSOM empties a longhand of a shorthand with
+        // `var()`, and `pageHtml` substitutes the `var()` later.
+        props.ref = (node: Element | null) =>
+          node?.setAttribute('style', value);
+      } else {
+        props[
+          name === 'class' ? 'className' : name === 'for' ? 'htmlFor' : name
+        ] = value;
+      }
+    }
+
+    return react().createElement(
+      element.tagName.toLowerCase(),
+      props,
+      ...contents(element)
+    );
+  };
+
+  const contents = (element: Element): unknown[] =>
+    Array.from(element.childNodes).flatMap(child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        return child.nodeValue?.trim() ? [child.nodeValue] : [];
+        // A single space between two elements inside markup separates inline words.
+        const spaced =
+          child.nodeValue === ' ' &&
+          element.tagName !== 'X-IMPORT' &&
+          child.previousSibling instanceof Element &&
+          child.nextSibling instanceof Element;
+
+        return child.nodeValue?.trim() || spaced ? [child.nodeValue] : [];
       }
 
-      if (child instanceof Element && child.tagName === 'X-IMPORT') {
-        return [build(child)];
+      if (child instanceof Element) {
+        if (child.tagName === 'X-IMPORT') {
+          return [build(child)];
+        }
+
+        if (child.namespaceURI === 'http://www.w3.org/1999/xhtml') {
+          return [markup(child)];
+        }
       }
 
       throw new Error(
@@ -608,8 +637,38 @@ export const mountImports = async (): Promise<void> => {
       );
     });
 
-    return React.createElement(component, element.props, ...children);
+  Object.assign(window, { kinscapeBuild: build });
+};
+
+/**
+ * Runs in the page, after `defineBuilder`: renders each top-level `<x-import>` with
+ * `kinscapeBuild`. Uses nothing from the module, as `fillTemplate`.
+ */
+export const mountImports = async (): Promise<void> => {
+  const imports = Array.from(
+    document.querySelectorAll<Element>('x-import')
+  ).filter(element => element.parentElement?.closest('x-import') == null);
+
+  if (imports.length === 0) {
+    return;
+  }
+
+  const {
+    kinscapeBuild: build,
+    React,
+    ReactDOM,
+  } = window as unknown as {
+    kinscapeBuild: (element: Element) => unknown;
+    React?: unknown;
+    ReactDOM?: {
+      createRoot: (container: Element) => { render: (tree: unknown) => void };
+      flushSync: (run: () => void) => void;
+    };
   };
+
+  if (!React || !ReactDOM) {
+    throw new Error('React 18 is not loaded');
+  }
 
   // Every tree is built before any content is cleared: a nested `<x-import>` is a child's source.
   const trees = imports.map(element => [element, build(element)] as const);
@@ -626,11 +685,13 @@ export const mountImports = async (): Promise<void> => {
 /**
  * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
  * is dropped from the snapshot, so each element on the page takes the computed value of every
- * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. Custom properties,
- * transitions, animations and states (`:hover`) stay out.
+ * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. It skips custom properties,
+ * transitions, animations and states (`:hover`). It also skips a border colour that is not a token
+ * (`tokens` holds `r,g,b` strings) where the border is 0px wide. The browser fills that colour
+ * with a default grey that the author never set.
  * Uses nothing from the module, as `fillTemplate`.
  */
-export const inlineStyles = (): void => {
+export const inlineStyles = (tokens: string[]): void => {
   const bundle = document.querySelector<HTMLStyleElement>('style[data-bundle]');
 
   if (!bundle?.sheet) {
@@ -653,14 +714,36 @@ export const inlineStyles = (): void => {
           for (const name of Array.from(declared)) {
             // A static snapshot has no use for transitions or animations, and their names
             // (`transition-property: background`) would read as colours.
-            if (!/^(?:--|animation|transition)/.test(name)) {
-              element.style.setProperty(
-                name,
-                getComputedStyle(element)
-                  .getPropertyValue(name)
-                  .replaceAll('rgba(0, 0, 0, 0)', 'transparent')
-              );
+            if (/^(?:--|animation|transition)/.test(name)) {
+              continue;
             }
+
+            const computed = getComputedStyle(element);
+            const value = computed.getPropertyValue(name);
+            const side = /^border(?:-(top|right|bottom|left))?-color$/.exec(
+              name
+            );
+
+            if (
+              side &&
+              (side[1] ? [side[1]] : ['top', 'right', 'bottom', 'left']).every(
+                each =>
+                  computed.getPropertyValue(`border-${each}-width`) === '0px'
+              ) &&
+              !tokens.includes(
+                [...value.matchAll(/\d+/g)]
+                  .slice(0, 3)
+                  .map(([digits]) => digits)
+                  .join(',')
+              )
+            ) {
+              continue;
+            }
+
+            element.style.setProperty(
+              name,
+              value.replaceAll('rgba(0, 0, 0, 0)', 'transparent')
+            );
           }
         }
       }
@@ -721,6 +804,7 @@ export const exportSnapshots = async (
   const tokens = tokenColours(
     readFileSync(join(root, 'design/tokens.json'), 'utf8')
   );
+  const tokenList = [...tokens];
   const urls = {
     fonts: fileUrl(root, `${SOURCE_DIR}/fonts.css`),
     icon: fileUrl(root, 'app/icon0.svg'),
@@ -745,7 +829,8 @@ export const exportSnapshots = async (
           system: designSystem(root),
         }),
       }),
-      snapshot
+      snapshot,
+      tokenList
     );
     const html = await format(finish(rendered, urls.icon, links), {
       ...(await resolveConfig(target, { editorconfig: true })),
@@ -788,7 +873,11 @@ if (import.meta.main) {
 
   try {
     const changed = await exportSnapshots('.', process.argv.slice(2), {
-      render: async (html, { name, props = {}, state = {}, viewport }) => {
+      render: async (
+        html,
+        { name, props = {}, state = {}, viewport },
+        tokens
+      ) => {
         const file = join(dir, `${name}.html`);
         const page = await browser.newPage({ viewport });
         const errors: string[] = [];
@@ -809,8 +898,9 @@ if (import.meta.main) {
 
         try {
           await page.evaluate(fillTemplate, { props, state });
+          await page.evaluate(defineBuilder);
           await page.evaluate(mountImports);
-          await page.evaluate(inlineStyles);
+          await page.evaluate(inlineStyles, tokens);
           await page.evaluate(() => document.fonts.ready);
           snapshot = await page.evaluate(pageHtml);
         } catch (error) {

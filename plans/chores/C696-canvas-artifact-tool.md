@@ -1,7 +1,7 @@
 # Plan: C696: Document the design system workflow and update the canvas install with the Artifact tool
 
 - **Spec:** #696
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Make the Chore's four edits to `design/CANVAS.md`. Put the prompt in a fenced bl
 - **B.** Keep 550 and cut the edits.
 - **Other:** your own.
 
-Recommended: A, because the prompt alone needs about 120 words.
+**Answer: A** (@henetiriki)
 
 **D2 · Handing off a board** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ That section names `read_file`, but an acceptance check allows it only as the fa
 - **B.** Leave it, and drop `read_file` from that check.
 - **Other:** your own.
 
-Recommended: A, because it is one sentence.
+**Answer: A** (@henetiriki)
 
 **D3 · Canvas checks** · Decides: Tech lead
 
@@ -37,7 +37,7 @@ The build agent has no `Artifact` tool, so it cannot run the prompt.
 - **B.** A later Chore runs it.
 - **Other:** your own.
 
-Recommended: A, because the new section says so.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

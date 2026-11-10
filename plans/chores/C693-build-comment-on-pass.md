@@ -1,7 +1,7 @@
 # Plan: C693: Make the build agent comment when its checks pass
 
 - **Spec:** #693
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ A respond run also loads `build.md`, so the new instruction reaches a respond bu
 - **B.** No. Put the instruction in the `claude-build.yml` prompt.
 - **Other:** your own.
 
-Recommended: A, because #693 names `build.md`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

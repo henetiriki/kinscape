@@ -27,17 +27,17 @@ Add one line to the plan template, two rules to `plans/README.md` and one questi
 | `plans/TEMPLATE.md`                             | Changed       | The _Order of work_ line            |
 | `plans/README.md`                               | Changed       | The two rules, each with an anchor  |
 | `.claude/skills/refine/chore.md`                | Changed       | The design system question          |
+| `.github/agent/build.md`                        | Changed       | Keep the PR a draft                 |
 | `scripts/__tests__/plan-rule-citations.test.ts` | Changed       | The two new anchors in `RULE_NAMES` |
 | `scripts/word-count.mts`, its test              | Changed       | D1: A only                          |
 
 ## Order of work
 
-1. Add the template line under _Order of work_.
-2. Add the rule `design-system`: the build agent asks the tech lead in the PR for steps 3 to 5. It keeps the PR a draft until they are done.
-3. Add the rule `canvas-follow-up`, with the C689 plan as its example.
-4. Add both anchors to the citations test.
-5. Add the question to _What to settle_ in `chore.md`.
-6. Apply D1. Run all checks.
+1. Add the template line.
+2. Add the rules `design-system` and `canvas-follow-up` (the C689 plan is its example).
+3. Add both anchors to the citations test.
+4. Add the question to `chore.md`.
+5. Apply D1. Run all checks.
 
 ## Proof
 
@@ -47,3 +47,8 @@ Add one line to the plan template, two rules to `plans/README.md` and one questi
 | `plans/README.md` holds both rules                       | The citations test      |
 | A design system `/refine chore` draft has the two checks | The `chore.md` question |
 | `npm run words` passes                                   | Its output in the PR    |
+
+## Deviations
+
+- `build.md` marked every passing PR ready, against the `design-system` rule. The tech lead approved the edit here and marks such a PR ready.
+- `chore.md` links to `design/CANVAS.md` for the two done checks.

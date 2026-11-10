@@ -19,6 +19,17 @@ const read = (file: string) =>
 const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
 
+type WorkflowJob = {
+  name?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
+};
+const jobsOf = (file: string) =>
+  (parse(read(file)) as { jobs: Record<string, WorkflowJob> }).jobs;
+// A job that calls the shared runner, claude-run.yml.
+const callsRunner = (job: WorkflowJob) =>
+  job.uses?.includes('/claude-run.yml@') ?? false;
+
 // What the review loads from main besides .github/agent/ (plans/chores/C588-review-config-from-main.md):
 // the files CLAUDE.md imports, which Claude reads from the checkout, so main's copies are put there;
 // the code rules that review-code.md points to, put there the same way; the plugin marketplace; and this workflow, compared with the checkout before Claude runs.
@@ -545,21 +556,12 @@ describe('the main_files input of the run-claude action', () => {
     });
   });
 
-  // The runs that check out a PR branch and skip a hand-back PR. A plan run checks out main. A
-  // respond run is left out: tag mode fetches the PR branch after the copy (no Chore yet).
+  // These callers check out a PR branch, and they skip a hand-back PR. A plan run checks out main.
+  // A respond run sets no files, because tag mode fetches the PR branch after the copy.
   describe('the callers', () => {
     const given = (file: string) =>
-      Object.values(
-        (
-          parse(read(file)) as {
-            jobs: Record<
-              string,
-              { uses?: string; with?: Record<string, unknown> }
-            >;
-          }
-        ).jobs
-      )
-        .filter(job => job.uses?.includes('/claude-run.yml@'))
+      Object.values(jobsOf(file))
+        .filter(callsRunner)
         .map(job => job.with?.main_files);
 
     it.each([
@@ -959,9 +961,6 @@ describe('the respond run of claude-run.yml', () => {
 // Two checks with one name hide which run failed. A check is "<caller job> / <runner job>" for a call
 // of claude-run.yml and the job's name, or its id, otherwise.
 describe('the check names of the Claude workflows', () => {
-  type NamedJob = { name?: string; uses?: string };
-  const jobsOf = (file: string) =>
-    (parse(read(file)) as { jobs: Record<string, NamedJob> }).jobs;
   const runnerNames = Object.values(jobsOf('claude-run.yml')).map(
     job => job.name
   );
@@ -969,7 +968,7 @@ describe('the check names of the Claude workflows', () => {
     .filter(file => /^claude-.+\.yml$/.test(file) && file !== 'claude-run.yml')
     .flatMap(file =>
       Object.entries(jobsOf(file)).flatMap(([id, job]) =>
-        job.uses?.includes('/claude-run.yml@')
+        callsRunner(job)
           ? runnerNames.map(name => `${job.name} / ${name}`)
           : [job.name ?? id]
       )

@@ -5,11 +5,11 @@
 
 ## Approach
 
-This first PR of D3 sets no caller value and says `Refs #681`.
+This first PR of D3 sets no caller value.
 
 1. Add a `main_files` input, empty by default, to `run-claude` and `claude-run.yml`.
 2. A new `run-claude` step writes main's copy of each file in the checkout. It logs `git status --short`, then marks each copy `--skip-worktree`, so `git add -A` stages nothing.
-3. A marked, changed file stops `git merge`. So `resolve-conflict.md` restores the files first.
+3. A marked, changed file stops `git merge`, so `resolve-conflict.md` restores it first.
 
 ## Decisions
 
@@ -17,7 +17,7 @@ The comment on #681 records D1: A, D2: A, D3: A.
 
 **D4 · Where the second PR goes** · Decides: Tech lead
 
-The second PR sets the callers' values.
+Who edits the callers?
 
 **Answer: B** (Tech lead)
 
@@ -28,9 +28,9 @@ The second PR sets the callers' values.
 
 ## Order of work
 
-1. Write the tests, see them fail, then change the files.
+1. Tests first, then the files.
 2. Merge this PR.
-3. Merge the two pin PRs: `run-claude` in `claude-run.yml`, then `claude-run.yml` in the callers.
+3. Merge the pin PRs: `run-claude` in `claude-run.yml`, then `claude-run.yml` in the callers.
 4. Merge the second PR. It says `Closes #681`.
 
 ## Files that change
@@ -44,9 +44,11 @@ The second PR sets the callers' values.
 
 ## Risks
 
-- If the second PR merges before step 3, those three runs fail at start.
+- The second PR before step 3 fails three runs at start.
 - D2: A needs a Chore for `claude-respond.yml`. None exists.
-- On a branch behind `main`, the copied `AGENTS.md` can fail `plan-rule-citations.test.ts` or `npm run words`. The tech lead accepted it: no code.
+- The tech lead accepted these, with no code:
+  - On a branch behind `main`, the copied `AGENTS.md` can fail `plan-rule-citations.test.ts` or `npm run words`.
+  - A listed file missing on a branch fails the copy step; an agent edit to one stays hidden.
 
 ## Proof
 
@@ -54,4 +56,4 @@ The second PR sets the callers' values.
 | --------------------------- | ----------------------------------------------------------- |
 | `git status` shows the copy | A test runs the step in a temporary repo: the log shows `M` |
 | No merge stop (D1)          | In that repo, the restore, then `git merge` passes          |
-| A live build (second PR)    | The first build after the second PR                         |
+| A live build (second PR)    | A build after the second PR                                 |

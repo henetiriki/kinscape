@@ -250,6 +250,52 @@ const runClaudeSteps = () =>
       readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8')
     ) as { runs: { steps: Step[] } }
   ).runs.steps;
+
+// The steps of the shared runner's `run` job (claude-run.yml), and one of them by name.
+const runnerSteps = () =>
+  (
+    parse(read('claude-run.yml')) as {
+      jobs: Record<string, { steps?: Step[] }>;
+    }
+  ).jobs.run.steps ?? [];
+const runnerStep = (name: string) =>
+  runnerSteps().find(step => step.name === name);
+
+// Runs a step's script with fake commands first on PATH. A fake is a shell script body, and
+// it appends to "$LOG". Returns the exit status, stdout, what the fakes logged and what the
+// script wrote to GITHUB_OUTPUT.
+const runScript = (
+  run: string | undefined,
+  fakes: Record<string, string>,
+  env: Record<string, string>
+) => {
+  const dir = mkdtempSync(join(tmpdir(), 'run-script-'));
+  const log = join(dir, 'log');
+  const output = join(dir, 'output');
+
+  for (const [name, body] of Object.entries(fakes)) {
+    writeFileSync(join(dir, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 });
+  }
+
+  const result = spawnSync('bash', ['-e', '-c', run ?? ''], {
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      ...env,
+      GITHUB_OUTPUT: output,
+      LOG: log,
+      PATH: `${dir}:${process.env.PATH}`,
+    },
+  });
+  const contents = (file: string) =>
+    existsSync(file) ? readFileSync(file, 'utf8') : '';
+  const logged = contents(log);
+  const outputs = contents(output);
+
+  rmSync(dir, { force: true, recursive: true });
+
+  return { ...result, log: logged, outputs };
+};
 const reviewSteps = () =>
   Object.values(
     (
@@ -744,15 +790,10 @@ describe('the approved-commit check', () => {
     steps?: Step[];
     with?: Record<string, unknown>;
   };
-  const runSteps = () =>
-    (parse(read('claude-run.yml')) as { jobs: Record<string, Job> }).jobs.run
-      .steps ?? [];
   const check = () =>
-    runSteps().find(
-      step => step.name === 'Check that the branch is at the approved commit'
-    );
+    runnerStep('Check that the branch is at the approved commit');
   const index = (name: string) =>
-    runSteps().findIndex(step => step.name === name);
+    runnerSteps().findIndex(step => step.name === name);
 
   it('is an input of the shared runner, empty unless a build passes it', () => {
     const { inputs } = (
@@ -784,11 +825,7 @@ describe('the approved-commit check', () => {
   // The check commented already; the safety net would add "finished without commenting". When its
   // comment failed, the net still speaks.
   it('keeps the safety net quiet after a stop that commented', () => {
-    const net = runSteps().find(
-      step => step.name === 'If Claude left no comment, post one'
-    );
-
-    expect(net?.if).toBe(
+    expect(runnerStep('If Claude left no comment, post one')?.if).toBe(
       "always() && inputs.kind != 'respond' && steps.head.outputs.commented != 'true'"
     );
   });
@@ -809,37 +846,16 @@ describe('the approved-commit check', () => {
     const approved = 'a'.repeat(40);
     // `ghFails` makes the comment fail, as a GitHub error would.
     const runCheck = (now: string, ghFails = false) => {
-      const bin = mkdtempSync(join(tmpdir(), 'approved-commit-'));
-      const calls = join(bin, 'calls');
-      const output = join(bin, 'output');
-
-      writeFileSync(join(bin, 'git'), `#!/bin/sh\necho ${now}\n`, {
-        mode: 0o755,
-      });
-      writeFileSync(
-        join(bin, 'gh'),
-        `#!/bin/sh\necho "$@" >> ${calls}\nexit ${ghFails ? 1 : 0}\n`,
-        { mode: 0o755 }
+      const { log, ...result } = runScript(
+        check()?.run,
+        {
+          gh: `echo "$@" >> "$LOG"\nexit ${ghFails ? 1 : 0}`,
+          git: `echo ${now}`,
+        },
+        { HEAD: approved, THREAD: '42' }
       );
 
-      const result = spawnSync('bash', ['-e', '-c', check()?.run ?? ''], {
-        encoding: 'utf8',
-        env: {
-          ...process.env,
-          GITHUB_OUTPUT: output,
-          HEAD: approved,
-          PATH: `${bin}:${process.env.PATH}`,
-          THREAD: '42',
-        },
-      });
-      const read = (file: string) =>
-        existsSync(file) ? readFileSync(file, 'utf8') : '';
-      const comments = read(calls);
-      const outputs = read(output);
-
-      rmSync(bin, { force: true, recursive: true });
-
-      return { ...result, comments, outputs };
+      return { ...result, comments: log };
     };
 
     it('passes, saying so, when the branch is at the approved commit', () => {
@@ -876,6 +892,114 @@ describe('the approved-commit check', () => {
   });
 });
 
+// A run that pushed a commit and left no comment gets its own text, so a build that passed does
+// not read as a failure (plans/chores/C693-build-comment-on-pass.md).
+describe('the safety net of claude-run.yml', () => {
+  const net = () => runnerStep('If Claude left no comment, post one');
+  const started = 'a'.repeat(40);
+  const pushed = 'b'.repeat(40);
+
+  // Pass and fail share one final instruction.
+  it('tells the build agent to comment whether its checks pass or fail', () => {
+    expect(agent('build.md')).toContain(
+      'Whether the checks pass or fail, comment on the PR last.'
+    );
+  });
+
+  it('records the head at the start, with the start time', () => {
+    expect(runnerStep('Note the start time')?.run).toContain(
+      'START_SHA=$(git rev-parse HEAD)'
+    );
+  });
+
+  it('gets the branch and the start head through its environment', () => {
+    expect(net()?.env).toMatchObject({ REF: '${{ inputs.ref }}' });
+    expect(net()?.run).toContain('$START_SHA');
+  });
+
+  // The net's script, with a `gh` that answers each call and logs the ones that write.
+  // `head` is what the branch API returns. `apiFails` makes that call fail like a 404: gh
+  // writes the error body to stdout and exits 1.
+  const runNet = ({
+    apiFails = false,
+    head = started,
+    plan = false,
+    ref = 'chore/C1-example',
+  }) => {
+    const branch = apiFails
+      ? `echo '{"message":"Branch not found","status":"404"}'\n    exit 1`
+      : `echo ${head}`;
+
+    return runScript(
+      net()?.run,
+      {
+        gh: `case "$1" in
+  issue)
+    case "$2" in
+      view) echo 0 ;;
+      *) echo "$@" >> "$LOG" ;;
+    esac ;;
+  pr) ;;
+  api)
+    echo "$@" >> "$LOG"
+    ${branch} ;;
+esac`,
+      },
+      {
+        BOT_LOGIN: 'kinscape[bot]',
+        GH_REPO: 'owner/repo',
+        OUTCOME: 'failure',
+        PLAN: String(plan),
+        REF: ref,
+        RUN_URL: 'https://example.test/run',
+        START_SHA: started,
+        STARTED: '2026-01-01T00:00:00Z',
+        THREAD: '42',
+      }
+    );
+  };
+
+  it('says the agent pushed a commit, with the step outcome, when the branch head moved', () => {
+    const { log, status } = runNet({ head: pushed });
+
+    expect(status).toBe(0);
+    expect(log).toContain('api repos/owner/repo/branches/chore/C1-example');
+    expect(log).toContain(
+      'issue comment 42 --body The agent pushed a commit but left no comment (step outcome: failure). See the [run](https://example.test/run).'
+    );
+    expect(log).not.toContain('finished without commenting');
+  });
+
+  it('keeps the current text when the branch head did not move', () => {
+    const { log, status } = runNet({});
+
+    expect(status).toBe(0);
+    expect(log).toContain('The agent finished without commenting');
+    expect(log).not.toContain('pushed a commit');
+    expect(log).not.toContain('issue edit');
+  });
+
+  // A plan run has no `ref`, so it never reads a branch and still returns the Spec as blocked.
+  it('keeps the current text and swaps the label on a plan run', () => {
+    const { log, status } = runNet({ head: pushed, plan: true, ref: '' });
+
+    expect(status).toBe(0);
+    expect(log).not.toContain('api ');
+    expect(log).toContain('The agent finished without commenting');
+    expect(log).toContain(
+      'issue edit 42 --remove-label status: ready-for-agent --add-label status: blocked'
+    );
+  });
+
+  it('keeps the current text when the branch read fails', () => {
+    const { log, status } = runNet({ apiFails: true });
+
+    expect(status).toBe(0);
+    expect(log).toContain('The agent finished without commenting');
+    expect(log).not.toContain('pushed a commit');
+  });
+});
+
 // A reply to an @claude comment runs through the shared runner as `kind: respond`
 // (plans/chores/C657-shared-run-respond.md). Tag mode posts its own comment and :eyes:, and there is
 // nothing for the gate to check.
@@ -894,8 +1018,7 @@ describe('the respond run of claude-run.yml', () => {
         };
       };
     };
-  const step = (name: string) =>
-    runner().jobs.run.steps?.find(candidate => candidate.name === name);
+  const step = runnerStep;
 
   it('asks for no prompt, so tag mode reads the comment', () => {
     expect(runner().on.workflow_call.inputs.prompt).toMatchObject({

@@ -50,3 +50,7 @@ The first check needs a run that sends files. If the artifact matches the inputs
 | Report says the canvas copy is old              | First run's report (D1)               |
 | `AGENTS.md` link resolves                       | `scripts/__tests__/doc-links.test.ts` |
 | `npm run words` passes                          | Output in the PR                      |
+
+## Deviations
+
+`tools.md` adds two rules from the tool description.

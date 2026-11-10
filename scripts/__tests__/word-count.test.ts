@@ -56,7 +56,7 @@ describe('budgetFor', () => {
     ['docs/architecture.md', 850],
     ['docs/architecture-target.md', 650],
     ['design/DESIGN.md', 3000],
-    ['design/CANVAS.md', 550],
+    ['design/CANVAS.md', 900],
     ['plans/README.md', 750],
     ['plans/M0.1-hello-vercel.md', 600],
     ['plans/TEMPLATE.md', 600],

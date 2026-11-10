@@ -241,6 +241,25 @@ const buildControls = async (root: string): Promise<Controls> => {
   };
 };
 
+const LOGO = /(["'`])\/icon0\.svg\1/g;
+
+/**
+ * `code` with each `"/icon0.svg"` (the `Wordmark` logo) as a data URL: a canvas page does not
+ * serve that path. Throws if the path is gone, so the swap cannot pass unnoticed.
+ */
+export const logoInline = (code: string, svg: Buffer): string => {
+  const inlined = code.replace(
+    LOGO,
+    `"data:image/svg+xml;base64,${svg.toString('base64')}"`
+  );
+
+  if (inlined === code) {
+    throw new Error('bundle.js has no "/icon0.svg" to inline');
+  }
+
+  return inlined;
+};
+
 const git = (root: string, args: string[]): string =>
   execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
 
@@ -297,7 +316,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   ) as Record<string, string>;
 
   const controls = await buildControls(root);
-  const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${controls.js}`;
+  const script = `${bundleHeader(CONTROLS.map(({ name }) => name))}\n${logoInline(controls.js, readFileSync(join(root, 'app/icon0.svg')))}`;
   const styles = `${readFileSync(join(root, 'app/tokens.css'), 'utf8')}\n${fontNames(raw)}\n${controls.css}`;
 
   checkScript(script);

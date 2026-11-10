@@ -36,6 +36,13 @@ import { Toast } from '@ks/app/components/feedback/Toast';
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
 import { TextField } from '@ks/app/components/forms/TextField';
+import { Avatar } from '@ks/app/components/foundation/Avatar';
+import { Divider } from '@ks/app/components/foundation/Divider';
+import { Icon, PATHS } from '@ks/app/components/foundation/Icon';
+import { Surface } from '@ks/app/components/foundation/Surface';
+import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
+import { Wordmark } from '@ks/app/components/foundation/Wordmark';
+import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -76,6 +83,34 @@ const states = (
   ]),
   [`${name} · disabled`, make(undefined, true)],
 ];
+
+const GROUPS = [
+  [
+    {
+      detail: 'JSON and GeoJSON',
+      icon: 'export',
+      id: 'export',
+      label: 'Export',
+    },
+    { icon: 'document', id: 'sources', label: 'Sources' },
+  ],
+  [
+    { disabled: true, icon: 'signOut', id: 'out', label: 'Sign out' },
+    { icon: 'info', id: 'about', label: 'About' },
+  ],
+] as const;
+const ACCOUNT = {
+  email: 'researcher@example.com',
+  footer: 'Last backup: today, 02:00',
+  groups: GROUPS.map(group => [...group]),
+};
+const HEADINGS = [
+  ['display', 'h1'],
+  ['h1', 'h1'],
+  ['h2', 'h2'],
+  ['h3', 'h3'],
+] as const;
+const OTHERS = Object.keys(DEFAULT_TAG) as (keyof typeof DEFAULT_TAG)[];
 
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (
@@ -226,6 +261,64 @@ const CASES: [string, ReactElement][] = [
       Done.
     </Toast>,
   ]),
+  ...states('Avatar', (state, disabled) => (
+    <Avatar disabled={disabled} initial='L' state={state} />
+  )),
+  ['Avatar · open', <Avatar expanded initial='L' key='open' />],
+  ['Divider · plain', <Divider key='plain' />],
+  ['Divider · labelled', <Divider key='labelled' label='or' />],
+  ...(Object.keys(PATHS) as (keyof typeof PATHS)[]).map(
+    (name): [string, ReactElement] => [
+      `Icon · ${name}`,
+      <Icon key={name} name={name} />,
+    ]
+  ),
+  ...([14, 16, 20, 24, 28] as const).map((size): [string, ReactElement] => [
+    `Icon · search · ${size}`,
+    <Icon key={size} name='search' size={size} />,
+  ]),
+  ...(['floating', 'modal', 'raised', 'sheet'] as const).map(
+    (level): [string, ReactElement] => [
+      `Surface · ${level}`,
+      <Surface key={level} level={level}>
+        Content
+      </Surface>,
+    ]
+  ),
+  ...HEADINGS.map(([variant, as]): [string, ReactElement] => [
+    `Text · ${variant}`,
+    <Text as={as} key={variant} variant={variant}>
+      Sample
+    </Text>,
+  ]),
+  ...OTHERS.map((variant): [string, ReactElement] => [
+    `Text · ${variant}`,
+    <Text key={variant} variant={variant}>
+      Sample
+    </Text>,
+  ]),
+  ...(['error', 'info', 'warning'] as const).map(
+    (tone): [string, ReactElement] => [
+      `Text · body · ${tone}`,
+      <Text key={tone} tone={tone} variant='body'>
+        Sample
+      </Text>,
+    ]
+  ),
+  ...([32, 36, 44] as const).map((size): [string, ReactElement] => [
+    `Wordmark · ${size}`,
+    <Wordmark key={size} size={size} />,
+  ]),
+  ['Wordmark · icon only', <Wordmark iconOnly key='icon' />],
+  [
+    'Menu · closed',
+    <Menu {...ACCOUNT} initial='L' key='menu' onSelect={noop} />,
+  ],
+  ['MenuPanel · open', <MenuPanel {...ACCOUNT} key='open' onSelect={noop} />],
+  [
+    'MenuPanel · hovered',
+    <MenuPanel {...ACCOUNT} hovered='sources' key='hovered' onSelect={noop} />,
+  ],
 ];
 
 let errors: ReturnType<typeof vi.spyOn>;
@@ -272,17 +365,25 @@ describe('states', () => {
 describe('bundle', () => {
   const COMPONENTS = {
     Alert,
+    Avatar,
     Button,
     Checkbox,
     CheckboxField,
     Chip,
     ChipGroup,
     DateField,
+    Divider,
+    Icon,
     IconButton,
+    Menu,
+    MenuPanel,
     Segmented,
+    Surface,
     Tabs,
+    Text,
     TextField,
     Toast,
+    Wordmark,
   };
   const read = (path: string) => readFileSync(path, 'utf8');
   const problems: string[] = [];
@@ -580,6 +681,25 @@ describe('interactions', () => {
       vi.advanceTimersByTime(4000);
     });
     expect(onDismiss).toHaveBeenCalledOnce();
+    quiet();
+  });
+
+  it('Menu opens, and Esc and a selection close it to the Avatar', () => {
+    const onSelect = vi.fn();
+
+    render(<Menu {...ACCOUNT} initial='L' onSelect={onSelect} />);
+
+    const avatar = screen.getByRole('button', { name: 'Account menu' });
+
+    fireEvent.click(avatar);
+    expect(avatar.getAttribute('aria-expanded')).toBe('true');
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    expect(screen.queryByRole('menu')).toBeNull();
+    expect(document.activeElement).toBe(avatar);
+    fireEvent.click(avatar);
+    fireEvent.click(screen.getByRole('menuitem', { name: /Sources/ }));
+    expect(onSelect).toHaveBeenCalledWith('sources');
+    expect(document.activeElement).toBe(avatar);
     quiet();
   });
 

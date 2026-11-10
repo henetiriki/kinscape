@@ -100,7 +100,7 @@ export const MenuPanel = ({
   </Surface>
 );
 
-type MenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
+type AccountMenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
   /**
    * `phone`: the card hangs from the nearest positioned ancestor (the search
    * pill), not from the Avatar. With no positioned ancestor it hangs from the page.
@@ -112,10 +112,14 @@ type MenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
 };
 
 /** The Avatar and its Menu, 8 below it and right-aligned. */
-export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
+export const Menu = ({
+  form,
+  initial,
+  onSelect,
+  ...panel
+}: AccountMenuProps) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLDivElement>(null);
-  const avatar = useRef<HTMLButtonElement>(null);
   const menu = useRef<HTMLDivElement>(null);
 
   const items = () => [
@@ -147,7 +151,8 @@ export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
   }, [open]);
 
   const closeToAvatar = () => {
-    avatar.current!.focus();
+    // A `ref` on Avatar does not reach its button in React 18, so the anchor finds it.
+    anchor.current!.querySelector<HTMLElement>('[aria-haspopup]')!.focus();
     setOpen(false);
   };
 
@@ -176,7 +181,6 @@ export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
         expanded={open}
         initial={initial}
         onClick={() => setOpen(!open)}
-        ref={avatar}
       />
       {open && (
         <div className={styles.drop} data-form={form}>

@@ -20,6 +20,73 @@ const OPTIONS = [
   { glyph: 'marriage', label: 'Marriage', value: 'marriage' },
 ];
 
+const ICONS = [
+  'alert',
+  'back',
+  'chevronDown',
+  'close',
+  'cloudOff',
+  'copy',
+  'document',
+  'done',
+  'error',
+  'export',
+  'eye',
+  'eyeOff',
+  'fit',
+  'forward',
+  'info',
+  'layers',
+  'menu',
+  'place',
+  'play',
+  'search',
+  'signOut',
+  'success',
+  'warning',
+  'zoomIn',
+  'zoomOut',
+];
+const OTHERS = [
+  'body',
+  'bodyL',
+  'button',
+  'buttonS',
+  'caption',
+  'chip',
+  'chipOff',
+  'control',
+  'credits',
+  'h1Phone',
+  'label',
+  'link',
+  'linkS',
+  'mono',
+  'monoL',
+  'overline',
+  'small',
+  'title',
+];
+const ACCOUNT = {
+  email: 'researcher@example.com',
+  footer: 'Last backup: today, 02:00',
+  groups: [
+    [
+      {
+        detail: 'JSON and GeoJSON',
+        icon: 'export',
+        id: 'export',
+        label: 'Export',
+      },
+      { icon: 'document', id: 'sources', label: 'Sources' },
+    ],
+    [
+      { disabled: true, icon: 'signOut', id: 'out', label: 'Sign out' },
+      { icon: 'info', id: 'about', label: 'About' },
+    ],
+  ],
+};
+
 type Make = (
   state: (typeof FOCUS)[number] | undefined,
   disabled: boolean
@@ -62,7 +129,7 @@ const checkboxes = (name: string, make: (checked: boolean) => Make) =>
     grid(`${name} ${checked ? 'on' : 'off'}`, make(checked))
   );
 
-/** The 12 cards, in the order of `CONTROLS`. */
+/** One card per control, in the order of `CONTROLS`. */
 export const CARDS: Card[] = [
   {
     design: ['Buttons', 'Primary button', 'Secondary button'],
@@ -270,5 +337,111 @@ export const CARDS: Card[] = [
     states: ['error', 'success'].map(tone =>
       one(`Toast · ${tone}`, { action: 'Undo', tone }, 'Done.')
     ),
+  },
+  {
+    design: [],
+    group: 'Foundation',
+    handlers: [],
+    height: 220,
+    name: 'Avatar',
+    pad: 0,
+    states: [
+      ...grid('Avatar', (state, disabled) => ({
+        props: { disabled, initial: 'L', state },
+      })),
+      one('Avatar · open', { expanded: true, initial: 'L' }),
+    ],
+  },
+  {
+    design: [],
+    group: 'Foundation',
+    handlers: [],
+    height: 160,
+    name: 'Divider',
+    pad: 0,
+    states: [
+      one('Divider · plain', {}),
+      one('Divider · labelled', { label: 'or' }),
+    ],
+  },
+  {
+    design: [],
+    group: 'Foundation',
+    handlers: [],
+    height: 300,
+    name: 'Icon',
+    pad: 0,
+    states: [
+      ...ICONS.map(name => one(`Icon · ${name}`, { name })),
+      ...[14, 16, 20, 24, 28].map(size =>
+        one(`Icon · search · ${size}`, { name: 'search', size })
+      ),
+    ],
+  },
+  {
+    design: [],
+    group: 'Foundation',
+    handlers: [],
+    height: 220,
+    name: 'Surface',
+    pad: 0,
+    states: ['floating', 'modal', 'raised', 'sheet'].map(level =>
+      one(`Surface · ${level}`, { level }, 'Content')
+    ),
+  },
+  {
+    design: [],
+    group: 'Foundation',
+    handlers: [],
+    height: 700,
+    name: 'Text',
+    pad: 0,
+    states: [
+      ...[
+        ['display', 'h1'],
+        ['h1', 'h1'],
+        ['h2', 'h2'],
+        ['h3', 'h3'],
+      ].map(([variant, as]) =>
+        one(`Text · ${variant}`, { as, variant }, 'Sample')
+      ),
+      ...OTHERS.map(variant => one(`Text · ${variant}`, { variant }, 'Sample')),
+      ...['error', 'info', 'warning'].map(tone =>
+        one(`Text · body · ${tone}`, { tone, variant: 'body' }, 'Sample')
+      ),
+    ],
+  },
+  {
+    design: [],
+    group: 'Foundation',
+    handlers: [],
+    height: 200,
+    name: 'Wordmark',
+    pad: 0,
+    states: [
+      ...[32, 36, 44].map(size => one(`Wordmark · ${size}`, { size })),
+      one('Wordmark · icon only', { iconOnly: true }),
+    ],
+  },
+  {
+    design: ['Menu'],
+    group: 'Overlays',
+    handlers: ['onSelect'],
+    height: 160,
+    name: 'Menu',
+    pad: 0,
+    states: [one('Menu · closed', { ...ACCOUNT, initial: 'L' })],
+  },
+  {
+    design: ['Menu'],
+    group: 'Overlays',
+    handlers: ['onSelect'],
+    height: 420,
+    name: 'MenuPanel',
+    pad: 0,
+    states: [
+      one('MenuPanel · open', ACCOUNT),
+      one('MenuPanel · hovered', { ...ACCOUNT, hovered: 'sources' }),
+    ],
   },
 ];

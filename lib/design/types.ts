@@ -26,7 +26,8 @@ export type Docs = {
   summary: string;
 };
 
-export type Group = 'Actions' | 'Feedback' | 'Forms';
+export type Group =
+  'Actions' | 'Feedback' | 'Forms' | 'Foundation' | 'Overlays';
 
 export type Outcome = 'blocked' | 'matches';
 

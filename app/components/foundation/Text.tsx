@@ -8,7 +8,7 @@ type Tag =
   'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'label' | 'p' | 'span';
 
 // Body text is a paragraph; every other style that isn't a heading is inline.
-const DEFAULT_TAG: Record<Other, Tag> = {
+export const DEFAULT_TAG: Record<Other, Tag> = {
   body: 'p',
   bodyL: 'p',
   button: 'span',
@@ -37,6 +37,7 @@ type Props = {
 } & ({ as: Tag; variant: Heading } | { as?: Tag; variant: Other }) &
   Omit<ComponentProps<'span'>, 'className' | 'ref'>;
 
+/** Text in one style of the type scale. A heading needs `as`; `tone` colours a message. */
 export const Text = ({ as, tone, variant, ...rest }: Props) => {
   const Element = as ?? DEFAULT_TAG[variant as Other];
 

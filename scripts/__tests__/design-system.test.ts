@@ -21,7 +21,7 @@ import {
 } from '@ks/lib/design/bundle.mts';
 import { checkPreview, checkReadme } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
-import { run } from '@ks/scripts/design-system.mts';
+import { logoInline, run } from '@ks/scripts/design-system.mts';
 
 let first: string;
 let second: string;
@@ -148,6 +148,25 @@ describe('the controls bundle', () => {
     expect(script).not.toMatch(/^import |\brequire\(/m);
   });
 
+  it('serves the Wordmark logo as a data URL, not the /icon0.svg path', () => {
+    const script = component('bundle.js');
+    const svg = readFileSync('app/icon0.svg').toString('base64');
+
+    expect(script).not.toContain('/icon0.svg');
+    expect(script).toContain(`"data:image/svg+xml;base64,${svg}"`);
+  });
+
+  it('logoInline swaps each quoted path, and throws when none is left', () => {
+    const svg = Buffer.from('<svg/>');
+
+    expect(logoInline("a('/icon0.svg');b(`/icon0.svg`)", svg)).toBe(
+      `a("data:image/svg+xml;base64,${svg.toString('base64')}");b("data:image/svg+xml;base64,${svg.toString('base64')}")`
+    );
+    expect(() => logoInline('a("/logo.svg")', svg)).toThrow(
+      'bundle.js has no "/icon0.svg" to inline'
+    );
+  });
+
   it('leaves React to the page: the app React 19 is not inside', () => {
     expect(component('bundle.js')).not.toContain('react.transitional.element');
   });
@@ -199,6 +218,18 @@ describe('the controls bundle', () => {
     }
   });
 
+  it('declares each type once', () => {
+    const declared = [
+      ...component('index.d.ts').matchAll(
+        /^(?:export )?(?:declare )?(?:type|interface) ([\w$]+)/gm
+      ),
+    ].map(match => match[1]);
+
+    expect(
+      declared.filter((name, at) => declared.indexOf(name) !== at)
+    ).toEqual([]);
+  });
+
   it('exports exactly the controls as values', () => {
     const values = [
       ...component('index.d.ts').matchAll(
@@ -229,7 +260,7 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(12);
+    expect(names).toHaveLength(20);
   });
 
   it.each(names)(

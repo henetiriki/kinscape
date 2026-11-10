@@ -36,6 +36,7 @@ A canvas page does not serve `/icon0.svg`, which `Wordmark` loads.
 ## Deviations
 
 - `gatherTypes` writes a file's declarations once: `Menu.tsx` holds two controls.
+- `Menu.tsx` renames `MenuProps` to `AccountMenuProps`: it clashed in `index.d.ts`.
 
 ## Files that change
 
@@ -49,7 +50,6 @@ A canvas page does not serve `/icon0.svg`, which `Wordmark` loads.
 
 ## Risks
 
-- About 450 changed lines, under the 600 cap.
 - The canvas can block data URLs. If it does, raise a Bug.
 
 ## Proof

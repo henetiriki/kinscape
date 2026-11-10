@@ -120,19 +120,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.emptyTree}}" hint-placeholder-val="{{ false }}">
-    <div role="status" style="position: absolute; left: 16px; right: 16px; top: 260px; box-sizing: border-box; padding: 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#264F29" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
-      <x-import component-from-global-scope="KinScape.Text" variant="h3" as="span">No pins yet</x-import>
-      <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</span>
-    </div>
+    <div style="position: absolute; left: 16px; right: 16px; top: 260px"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="place" title="No pins yet">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</x-import></div>
   </sc-if>
 
   <sc-if value="{{v.loading}}" hint-placeholder-val="{{ false }}">
-    <div role="status" aria-live="polite" style="position: absolute; left: 16px; right: 16px; top: 300px; box-sizing: border-box; padding: 16px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
-      <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Loading the map</x-import>
-      <span style="display: block; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden"><span style="display: block; width: 45%; height: 100%; border-radius: 3px; background: #264F29"></span></span>
-      <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Every border from 1652 to today loads once, up front, so the slider never has to wait.</x-import>
-    </div>
+    <div style="position: absolute; left: 16px; right: 16px; top: 300px"><x-import component-from-global-scope="KinScape.NoticeCard" title="Loading the map" progress="{{ks.loadingProgress}}">Every border from 1652 to today loads once, up front, so the slider never has to wait.</x-import></div>
   </sc-if>
 
   <sc-if value="{{v.dateError}}" hint-placeholder-val="{{ false }}">
@@ -314,6 +306,7 @@ class Component extends DCLogic {
     const ph = 'font-family: JetBrains Mono, monospace; font-size: 12px; line-height: 16px; color: #4A544C';
     const row = (label, sub, on) => ({ label: label, sub: sub, on: on });
     return {
+      ks: { loadingProgress: 45 },
       chrome: !is('account'),
       v: {
         panel: is('layers') || is('filters'), scrim: is('layers') || is('filters') || is('sources'),

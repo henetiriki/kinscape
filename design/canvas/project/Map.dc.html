@@ -169,7 +169,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     <label style="display: flex; align-items: center; gap: 8px; width: 340px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #4A544C">
       <x-import component-from-global-scope="KinScape.Icon" name="search"></x-import>
       <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; border: 0; background: transparent; font-size: 15px; line-height: 22px; color: #18211B; outline: none">
-      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">/</span>
+      <x-import component-from-global-scope="KinScape.KeyHint">/</x-import>
     </label>
   </div>
   </sc-if>
@@ -310,35 +310,15 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.emptyDate}}" hint-placeholder-val="{{ false }}">
-    <div role="status" style="position: absolute; left: 712px; top: 88px; width: 360px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
-      <div style="display: flex; gap: 12px; align-items: flex-start">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A3B12" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">No pins in 1901</x-import>
-          <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Nobody in your filters is pinned to this date.</span>
-        </div>
-      </div>
-      <div style="display: flex; gap: 8px; padding-left: 32px">
-        <button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer">Jump to 1898</button>
-        <button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600; cursor: pointer">Clear filters</button>
-      </div>
-    </div>
+    <div style="position: absolute; left: 712px; top: 88px; width: 360px"><x-import component-from-global-scope="KinScape.NoticeCard" icon="place" title="No pins in 1901" actions="{{ks.emptyDateActions}}">Nobody in your filters is pinned to this date.</x-import></div>
   </sc-if>
 
   <sc-if value="{{v.emptyTree}}" hint-placeholder-val="{{ false }}">
-    <div role="status" style="position: absolute; left: 702px; top: 300px; width: 380px; box-sizing: border-box; padding: 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#264F29" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
-      <x-import component-from-global-scope="KinScape.Text" variant="h3" as="span">No pins yet</x-import>
-      <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</span>
-    </div>
+    <div style="position: absolute; left: 702px; top: 300px; width: 380px"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="place" title="No pins yet">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</x-import></div>
   </sc-if>
 
   <sc-if value="{{v.loading}}" hint-placeholder-val="{{ false }}">
-    <div role="status" aria-live="polite" style="position: absolute; left: 712px; top: 320px; width: 360px; box-sizing: border-box; padding: 16px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
-      <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Loading the map</x-import>
-      <span style="display: block; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden"><span style="display: block; width: 45%; height: 100%; border-radius: 3px; background: #264F29"></span></span>
-      <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Every border from 1652 to today loads once, up front, so the slider never has to wait.</x-import>
-    </div>
+    <div style="position: absolute; left: 712px; top: 320px; width: 360px"><x-import component-from-global-scope="KinScape.NoticeCard" title="Loading the map" progress="{{ks.loadingProgress}}">Every border from 1652 to today loads once, up front, so the slider never has to wait.</x-import></div>
   </sc-if>
 
   <sc-if value="{{v.offline}}" hint-placeholder-val="{{ false }}">
@@ -350,10 +330,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{dateInvalid}}" hint-placeholder-val="{{ false }}">
-    <div id="date-msg" role="alert" style="position: absolute; left: 388px; top: 618px; width: 340px; box-sizing: border-box; padding: 12px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 13px; line-height: 20px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
-      <strong style="font-weight: 600">February 1901 has 28 days.</strong> The map still shows 1901-02-28. Press Esc to go back to it.
-      <span style="position: absolute; left: 136px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
-    </div>
+    <div style="position: absolute; left: 388px; top: 618px; width: 340px"><x-import component-from-global-scope="KinScape.Callout" id="date-msg"><strong>February 1901 has 28 days.</strong> The map still shows 1901-02-28. Press Esc to go back to it.</x-import><span style="position: absolute; left: 137px; bottom: -6px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span></div>
   </sc-if>
 
   <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
@@ -415,7 +392,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <sc-for list="{{epochs}}" as="e" hint-placeholder-count="9">
         <button type="button" style="{{e.style}}">{{e.label}}</button>
       </sc-for>
-      <span style="margin-left: auto; font-size: 12.5px; line-height: 18px; color: #4A544C; display: inline-flex; gap: 8px; align-items: center"><kbd style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">←</kbd><kbd style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">→</kbd>1 {{precisionWord}} · with <kbd style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">Shift</kbd> ×10</span>
+      <span style="margin-left: auto; font-size: 12.5px; line-height: 18px; color: #4A544C; display: inline-flex; gap: 8px; align-items: center"><x-import component-from-global-scope="KinScape.KeyHint">←</x-import><x-import component-from-global-scope="KinScape.KeyHint">→</x-import>1 {{precisionWord}} · with <x-import component-from-global-scope="KinScape.KeyHint">Shift</x-import> ×10</span>
     </div>
   </section>
   </sc-if>
@@ -540,6 +517,7 @@ class Component extends DCLogic {
       ['Map library', 'MapLibre GL JS', 'BSD-3-Clause', '—', ok]
     ].map((r) => ({ layer: r[0], source: r[1], licence: r[2], checked: r[3], style: r[4] }));
     return {
+      ks: { loadingProgress: 45, emptyDateActions: [{ label: 'Jump to 1898' }, { label: 'Clear filters' }] },
       chrome: variant !== 'account',
       v: {
         popup: variant === 'default', emptyDate: variant === 'empty-date', emptyTree: variant === 'empty-tree',

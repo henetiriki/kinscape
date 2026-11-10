@@ -32,7 +32,7 @@ inputs:
     description: 'The logins whose comments Claude reads, comma separated, from vars.KINSCAPE_TEAM_LOGINS.'
     required: true
   main_files:
-    description: "Repo files Claude reads as main has them, space separated: each is copied over the checkout's. Empty leaves the checkout's files as they are."
+    description: "Repo files Claude reads as main has them, space separated. The step below writes main's copy of each file in the checkout. An empty value changes no file."
     default: ''
 
 runs:
@@ -63,8 +63,8 @@ runs:
         token: ${{ inputs.github_token }}
 
     # Claude reads these files from the checkout, which is the PR branch. The log shows an M for each
-    # copy that differs from the branch. --skip-worktree keeps `git add -A` from committing the copies;
-    # resolve-conflict.md clears the marks before the merge of main, which they would stop.
+    # copy that differs from the branch. --skip-worktree marks each copy, so `git add -A` stages none
+    # of them. A marked copy stops the merge of main, so resolve-conflict.md clears the marks first.
     - name: Put main's rule files in the checkout
       if: inputs.main_files != ''
       shell: bash

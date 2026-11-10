@@ -86,7 +86,7 @@ describe('the load-agent-files action', () => {
   });
 
   // Only the review names files outside .github/agent/: no other workflow step names any. The
-  // run-claude action passes on what its caller gives it, which is empty unless the caller sets it.
+  // run-claude action gives its caller's value to the loader. That value is empty unless the caller sets it.
   it('loads no main files unless told to', () => {
     const { inputs } = parse(action()) as {
       inputs: { main_files: { default?: string } };
@@ -489,7 +489,7 @@ describe('the main_files input of the run-claude action', () => {
         env: { ...process.env, MAIN_FILES: files, RUNNER_TEMP: dir },
       });
 
-    it('runs before Claude, only when files are given, with the files in its env', () => {
+    it('runs before Claude, if a caller sets files, and reads them from its env', () => {
       const names = steps().map(step => step.name);
 
       expect(names.indexOf(COPY)).toBeGreaterThan(-1);
@@ -500,7 +500,7 @@ describe('the main_files input of the run-claude action', () => {
       expect(copy()?.env).toEqual({ MAIN_FILES: PASS });
     });
 
-    it('logs the file that differs from the branch, and leaves it out of git add', () => {
+    it('logs the file that differs from the branch, and git add stages nothing', () => {
       const { dir, repo } = checkout();
       const result = runStep(repo, dir);
 

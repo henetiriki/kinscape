@@ -7,7 +7,8 @@ Your first command is `gh pr view <n> --json title,body,headRefName`. The plan t
 ## The merge
 
 - Run `git fetch --unshallow origin main`: the checkout has one commit, so git can't find where the branch left `main`.
-- Run `git ls-files -v`. A file with `S` in front is a copy of `main`'s rule file, and it stops the merge. For each one, run `git update-index --no-skip-worktree -- <file>`, then `git checkout -- <file>`.
+- Run `git ls-files -v`. A file with `S` in front is a copy of `main`'s rule file, and it stops the merge.
+- For each such file, run `git update-index --no-skip-worktree -- <file>`. Then run `git checkout -- <file>`.
 - Run `git merge --no-commit --no-ff origin/main`. Never rebase. Never force-push.
 - If git says "Already up to date", push nothing and say so in your comment.
 - Resolve each conflict so both sides keep what they meant: the PR's change, and what `main` changed since. `git log HEAD..origin/main` and the PR's plan say what each side meant.

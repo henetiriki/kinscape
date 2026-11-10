@@ -53,7 +53,7 @@ on:
         default: ''
         type: string
       main_files:
-        description: 'Repo files Claude reads as main has them, space separated, copied over the checkout (see run-claude). Empty leaves the checkout as it is.'
+        description: "Repo files Claude reads as main has them, space separated. The run-claude action writes main's copy of each file in the checkout. An empty value changes no file."
         default: ''
         type: string
     secrets:

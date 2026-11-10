@@ -25,7 +25,7 @@
 | `scripts/design-export.mts`               | Steps 1–3.                                                   |
 | `scripts/types.ts`                        | `render` takes the tokens.                                   |
 | `scripts/__tests__/design-export.test.ts` | New cases. `<b>` becomes `<svg>`. Four tests get the tokens. |
-| `e2e/design-export.spec.mts`              | Pass the tokens.                                             |
+| `e2e/design-export.spec.mts`              | Pass the tokens. Run `defineBuilder`.                        |
 
 ## Order of work
 
@@ -39,7 +39,8 @@
 - The skip covers `border-color`.
 - `contents` keeps a single space between two elements in markup.
 - A markup `style` goes to the element as text through a `ref`, so a `var()` shorthand survives.
-- `mountImports` and `inlineStyles` exceed 60 lines: `page.evaluate` sends one function, so a helper cannot come from the module.
+- `defineBuilder` puts the builder on `window`, and `mountImports` reads it: `page.evaluate` sends one function.
+- `inlineStyles` exceeds 60 lines.
 
 ## Risks
 

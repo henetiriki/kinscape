@@ -547,40 +547,28 @@ export const pageHtml = (): string => {
 };
 
 /**
- * Runs in the page, after `fillTemplate`: renders each top-level `<x-import>` from the global
- * its `component-from-global-scope` names (`KinScape.Button`), with the props `fillTemplate`
- * kept and its content as children. Uses nothing from the module, as `fillTemplate`.
+ * Runs in the page, after `fillTemplate`: puts `kinscapeBuild` on `window`. It turns an
+ * `<x-import>` into a React element from the global its `component-from-global-scope` names
+ * (`KinScape.Button`), with the props `fillTemplate` kept and its content as children. An HTML
+ * child becomes a React element too. `page.evaluate` sends one function, so `mountImports` reads
+ * this one from `window`. Uses nothing from the module, as `fillTemplate`.
  */
-export const mountImports = async (): Promise<void> => {
-  type Imported = { props?: Record<string, unknown> } & Element;
+export const defineBuilder = (): void => {
+  const react = () =>
+    (
+      window as unknown as {
+        React: {
+          createElement: (
+            component: unknown,
+            props: unknown,
+            ...children: unknown[]
+          ) => unknown;
+        };
+      }
+    ).React;
 
-  const imports = Array.from(
-    document.querySelectorAll<Imported>('x-import')
-  ).filter(element => element.parentElement?.closest('x-import') == null);
-
-  if (imports.length === 0) {
-    return;
-  }
-
-  const { React, ReactDOM } = window as unknown as {
-    React?: {
-      createElement: (
-        component: unknown,
-        props: unknown,
-        ...children: unknown[]
-      ) => unknown;
-    };
-    ReactDOM?: {
-      createRoot: (container: Element) => { render: (tree: unknown) => void };
-      flushSync: (run: () => void) => void;
-    };
-  };
-
-  if (!React || !ReactDOM) {
-    throw new Error('React 18 is not loaded');
-  }
-
-  const build = (element: Imported): unknown => {
+  const build = (element: Element): unknown => {
+    const { props } = element as { props?: Record<string, unknown> } & Element;
     const path = String(element.getAttribute('component-from-global-scope'));
     const component = path
       .split('.')
@@ -594,10 +582,10 @@ export const mountImports = async (): Promise<void> => {
       throw new Error(`No component ${path}`);
     }
 
-    return React.createElement(component, element.props, ...contents(element));
+    return react().createElement(component, props, ...contents(element));
   };
 
-  // An HTML element becomes a React element: `class`, `for` and `style` take React's names.
+  // An HTML element becomes a React element: `class` and `for` take React's names; `style` stays text.
   const markup = (element: Element): unknown => {
     const props: Record<string, unknown> = {};
 
@@ -614,7 +602,7 @@ export const mountImports = async (): Promise<void> => {
       }
     }
 
-    return React.createElement(
+    return react().createElement(
       element.tagName.toLowerCase(),
       props,
       ...contents(element)
@@ -648,6 +636,39 @@ export const mountImports = async (): Promise<void> => {
         `Unsupported <${child.nodeName.toLowerCase()}> inside <x-import>`
       );
     });
+
+  Object.assign(window, { kinscapeBuild: build });
+};
+
+/**
+ * Runs in the page, after `defineBuilder`: renders each top-level `<x-import>` with
+ * `kinscapeBuild`. Uses nothing from the module, as `fillTemplate`.
+ */
+export const mountImports = async (): Promise<void> => {
+  const imports = Array.from(
+    document.querySelectorAll<Element>('x-import')
+  ).filter(element => element.parentElement?.closest('x-import') == null);
+
+  if (imports.length === 0) {
+    return;
+  }
+
+  const {
+    kinscapeBuild: build,
+    React,
+    ReactDOM,
+  } = window as unknown as {
+    kinscapeBuild: (element: Element) => unknown;
+    React?: unknown;
+    ReactDOM?: {
+      createRoot: (container: Element) => { render: (tree: unknown) => void };
+      flushSync: (run: () => void) => void;
+    };
+  };
+
+  if (!React || !ReactDOM) {
+    throw new Error('React 18 is not loaded');
+  }
 
   // Every tree is built before any content is cleared: a nested `<x-import>` is a child's source.
   const trees = imports.map(element => [element, build(element)] as const);
@@ -877,6 +898,7 @@ if (import.meta.main) {
 
         try {
           await page.evaluate(fillTemplate, { props, state });
+          await page.evaluate(defineBuilder);
           await page.evaluate(mountImports);
           await page.evaluate(inlineStyles, tokens);
           await page.evaluate(() => document.fonts.ready);

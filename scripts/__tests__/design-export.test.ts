@@ -15,6 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CanvasSnapshot } from '@ks/scripts/types.ts';
 
 import {
+  defineBuilder,
   exportSnapshots,
   fillTemplate,
   finish,
@@ -587,6 +588,7 @@ describe('mountImports', () => {
     document.head.innerHTML = '<title>T</title>';
     document.body.innerHTML = `<x-dc>${body}</x-dc><script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return {}; } }</script>`;
     fillTemplate({ props: {}, state: {} });
+    defineBuilder();
   };
 
   const install = () =>

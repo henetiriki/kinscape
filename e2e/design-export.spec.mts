@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+  defineBuilder,
   designSystem,
   fillTemplate,
   inlineStyles,
@@ -57,6 +58,7 @@ test('exports a board that uses <x-import> and var() as rendered HTML with writt
     );
     await page.goto(pathToFileURL(file).href);
     await page.evaluate(fillTemplate, { props: {}, state: {} });
+    await page.evaluate(defineBuilder);
     await page.evaluate(mountImports);
     await page.evaluate(inlineStyles, [...tokens]);
 

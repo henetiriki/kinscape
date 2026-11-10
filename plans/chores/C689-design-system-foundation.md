@@ -7,15 +7,15 @@
 
 1. Copy the card states into the React 18 test. React 18 warns when `Menu` gives `Avatar` a `ref`: see it fail.
 2. Make `Menu` find the Avatar through its anchor.
-3. Check that `Menu` closes in React 18 too.
-4. Add the components and cards, in new groups `Foundation` and `Overlays`, named after their folders.
+3. Check that `Menu` closes in React 18.
+4. Add the components and cards in new groups `Foundation` and `Overlays`.
 5. Give `Text` the JSDoc summary its README needs.
 
 ## Decisions
 
 **D1 · How a board gets the open Menu** · Decides: Tech lead
 
-A `Menu` card shows it closed only. Spec #684 draws it open, with one item highlighted.
+A `Menu` card shows it closed. Spec #684 draws it open, with one item highlighted.
 
 - **A.** Also add `MenuPanel`, which draws the open card and a hovered item: eight components.
 - **B.** Add only `Menu`. Boards draw the open card by hand.
@@ -37,6 +37,7 @@ A canvas page does not serve `/icon0.svg`, which `Wordmark` loads.
 
 - `gatherTypes` writes a file's declarations once: `Menu.tsx` holds two controls.
 - `Menu.tsx` renames `MenuProps` to `AccountMenuProps`: it clashed in `index.d.ts`.
+- `Text.tsx` exports `DEFAULT_TAG` for the React 18 test.
 
 ## Files that change
 
@@ -50,7 +51,7 @@ A canvas page does not serve `/icon0.svg`, which `Wordmark` loads.
 
 ## Risks
 
-- The canvas can block data URLs. If it does, raise a Bug.
+- If the canvas blocks data URLs, raise a Bug.
 
 ## Proof
 

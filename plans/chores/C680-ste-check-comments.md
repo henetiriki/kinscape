@@ -2,7 +2,7 @@
 
 - **Spec:** #680
 - **Requirement IDs:** None
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Chore's draft repeats three STE rules, and its Constraints say not to copy t
 - **B.** Only the check: "Before you post a comment, check each sentence against `docs/writing.md` › STE." This copies no rule. The rules are already in context through `CLAUDE.md`.
 - **Other:** your own.
 
-Recommended: B. It obeys the Constraint and matches `review-code.md`, which also only links to `docs/writing.md`.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

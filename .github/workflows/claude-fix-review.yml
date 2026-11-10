@@ -49,7 +49,7 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository &&
       !contains(github.event.pull_request.labels.*.name, 'hand-back') &&
       github.actor == github.repository_owner
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@ce4d89d64f61057adfd48f95982b73eba616f532
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@bad60e59235ef7a0ed51bd81b39918cae36091bf
     with:
       thread: ${{ github.event.pull_request.number }}
       # The runner's gate checks a ready PR with the label, not a draft plan PR.

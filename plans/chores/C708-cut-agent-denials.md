@@ -1,7 +1,7 @@
 # Plan: C708: Cut agent permission denials
 
 - **Spec:** #708
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ A glob has only `*`, so no rule matches `-nO` but not `-A30 "## NOTE"`.
 - **B.** `Bash(git grep* -O*)` only: `-nOsh` runs a command.
 - **Other:** your own.
 
-Recommended: A, because the refresh reads untrusted Specs.
+**Answer: A** (@henetiriki)
 
 **D4 · `gh api` denies in the review** · Decides: Tech lead
 
@@ -29,7 +29,7 @@ Recommended: A, because the refresh reads untrusted Specs.
 - **B.** Only the hook guards them.
 - **Other:** your own.
 
-Recommended: A, because the review token has `pull-requests: write`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

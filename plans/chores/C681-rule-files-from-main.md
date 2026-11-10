@@ -46,7 +46,7 @@ The second PR sets the callers' values.
 
 - If the second PR merges before step 3, those three runs fail at start.
 - D2: A needs a Chore for `claude-respond.yml`. None exists.
-- On a branch behind `main`, the copied `AGENTS.md` can fail `plan-rule-citations.test.ts` or `npm run words`. The second PR decides the fix.
+- On a branch behind `main`, the copied `AGENTS.md` can fail `plan-rule-citations.test.ts` or `npm run words`. The tech lead accepted it: no code.
 
 ## Proof
 

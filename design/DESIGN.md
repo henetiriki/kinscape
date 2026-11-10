@@ -27,8 +27,8 @@ The look of KinScape: fonts, colours, components and the map style. The screensh
 | Districts layer on, phone                            | [map-districts-phone.jpg](map-districts-phone.jpg)                                 |
 | Terrain failed to load                               | [map-offline.jpg](map-offline.jpg)                                                 |
 | Terrain failed to load, phone                        | [map-offline-phone.jpg](map-offline-phone.jpg)                                     |
-| Account menu                                         | [map-account-menu.jpg](map-account-menu.jpg)                                       |
-| Account menu, phone                                  | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                           |
+| Account menu (M2)                                    | [map-account-menu.jpg](map-account-menu.jpg)                                       |
+| Account menu, phone (M2)                             | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                           |
 | Sources and attributions                             | [map-sources.jpg](map-sources.jpg)                                                 |
 | Sources and attributions, phone                      | [map-sources-phone.jpg](map-sources-phone.jpg)                                     |
 | Map style: MapLibre layer stack                      | [map-style.jpg](map-style.jpg)                                                     |
@@ -73,11 +73,13 @@ People, pins and boundary shapes in the mockups are illustrative, not data.
 
 Not built: see Google sign-in under [Components](#components).
 
-| Screen                                   | File                                                                 |
-| ---------------------------------------- | -------------------------------------------------------------------- |
-| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)         |
-| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)             |
-| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg) |
+| Screen                                   | File                                                                       |
+| ---------------------------------------- | -------------------------------------------------------------------------- |
+| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)               |
+| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)                   |
+| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
+| Account menu, proposed                   | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
+| Account menu, phone, proposed            | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
 
 ## Brand
 
@@ -196,7 +198,7 @@ Every control has the five states in [style-4-states.jpg](style-4-states.jpg). H
 | No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date".                 |
 | Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                             |
 | Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                         |
-| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time.                                                             |
+| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                                   |
 | Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                                 |
 
 ## Feedback and validation

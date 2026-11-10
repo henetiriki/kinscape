@@ -383,9 +383,9 @@ const CASES: [string, ReactElement][] = [
       The 1910 provinces are off.
     </NoticeCard>,
   ],
-  ...([0, 40, 100] as const).map((value): [string, ReactElement] => [
+  ...([0, 40, 100] as const).map((value, index): [string, ReactElement] => [
     `ProgressBar · ${value}`,
-    <ProgressBar key={value} labelledBy='progress-title' value={value} />,
+    <ProgressBar key={value} labelledBy={`ks-case-${index}`} value={value} />,
   ]),
   ...states('Avatar', (state, disabled) => (
     <Avatar disabled={disabled} initial='L' state={state} />
@@ -734,6 +734,14 @@ describe('bundle', () => {
         expect(
           page.document.querySelectorAll('figure > :not(figcaption)')
         ).toHaveLength(card.states.length);
+        expect(
+          [...page.document.querySelectorAll('[aria-labelledby]')].filter(
+            each =>
+              !page.document.getElementById(
+                each.getAttribute('aria-labelledby')!
+              )
+          )
+        ).toEqual([]);
         expect(problems).toEqual([]);
       }
     );
@@ -988,6 +996,20 @@ describe('interactions', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
     expect(onAction).toHaveBeenCalledOnce();
     expect(onClick).toHaveBeenCalledOnce();
+    quiet();
+  });
+
+  it('ProgressBar takes its name from the element that labelledBy names', () => {
+    render(
+      <>
+        <span id='loading'>Loading boundaries</span>
+        <ProgressBar labelledBy='loading' value={40} />
+      </>
+    );
+
+    const bar = screen.getByRole('progressbar', { name: 'Loading boundaries' });
+
+    expect(bar.getAttribute('aria-valuenow')).toBe('40');
     quiet();
   });
 

@@ -127,6 +127,10 @@ describe('previewHtml', () => {
     expect(html).toContain('["onDismiss"]');
   });
 
+  it('gives each caption an id, so a control can take its name from it', () => {
+    expect(html).toContain("id: 'ks-case-' + index");
+  });
+
   it('sets the body to the body font', () => {
     expect(html).toMatch(/body \{[^}]*font-family: var\(--font-body\);/);
   });

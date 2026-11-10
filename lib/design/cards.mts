@@ -137,7 +137,7 @@ ${STYLE(pad)}
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
     var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
-    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label' }, state.label), control);
+    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {
     ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));

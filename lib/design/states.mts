@@ -510,8 +510,9 @@ export const CARDS: Card[] = [
     height: 100,
     name: 'ProgressBar',
     pad: 0,
-    states: [0, 40, 100].map(value =>
-      one(`ProgressBar · ${value}`, { labelledBy: 'progress-title', value })
+    // A preview gives each caption the id `ks-case-<index>`, so each bar takes its name from its caption.
+    states: [0, 40, 100].map((value, index) =>
+      one(`ProgressBar · ${value}`, { labelledBy: `ks-case-${index}`, value })
     ),
   },
   {

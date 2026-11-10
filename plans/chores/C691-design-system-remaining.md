@@ -13,24 +13,19 @@
 
 **D1 · The parts that the eight use** · Decides: Tech lead
 
-The Chore names neither `CalloutPointer` nor `RemovableChip`.
+**Answer: other, `RemovableChip` only: nine components** (@henetiriki). `CalloutPointer` needs a `className` that a board cannot write.
 
-- **A.** Add the eight only.
-- **B.** Also add the two parts: ten components.
-- **Other:** your own.
+**D2 · The canvas check** · Decides: Tech lead
 
-Recommended: A, because a board cannot write `CalloutPointer`'s `className`.
+**Answer: Chromium renders each preview with the React 18 bundle** (@henetiriki). The tech lead cannot screenshot it.
 
-**Answer: other, `RemovableChip` only: nine components** (@henetiriki).
+**D3 · Board edits** · Decides: Tech lead
+
+**Answer: the design agent uses the new components where nothing visible changes** (@henetiriki): `Map`, `Map-phone-states`, `SG-Feedback` and `SG-Inputs`.
 
 ## Files that change
 
-| File                                             | What            |
-| ------------------------------------------------ | --------------- |
-| `lib/design/{bundle,states}.mts`                 | Controls, cards |
-| `lib/design/__tests__/`, `design-system.test.ts` | Cases, counts   |
-| `design/canvas/`                                 | Steps 4 and 5   |
-| `design/source/`, `design/*.jpg`                 | Render workflow |
+`lib/design/{bundle,cards,states}.mts`, their tests, `design/canvas/`, `design/source/` and `design/*.jpg`.
 
 ## Order of work
 
@@ -41,20 +36,18 @@ Recommended: A, because a board cannot write `CalloutPointer`'s `className`.
 
 ## Risks
 
-A new `bundle.css` rule can change a control on a board, as `Popup` did in #690. `design:export` and the `e2e` design check find it.
+A new `bundle.css` rule can change a board's control, as `Popup` did in #690. `design:export` finds it.
 
 ## Proof
 
-| Acceptance check                          | Proven by                          |
-| ----------------------------------------- | ---------------------------------- |
-| Bundle, types, README and card            | `design-system.test.ts`            |
-| React 18 renders each state               | `react-18.test.tsx`                |
-| Cards render on the canvas                | A Chromium render (see Deviations) |
-| Under 6 MB                                | `checkScript`                      |
-| Hashes, snapshots, tests, lint, typecheck | Output in the PR                   |
+| Acceptance check                          | Proven by                              |
+| ----------------------------------------- | -------------------------------------- |
+| Bundle, types, README, card and size      | `design-system.test.ts`, `checkScript` |
+| React 18 renders each state               | `react-18.test.tsx`                    |
+| Previews render                           | A Chromium render (D2)                 |
+| Hashes, snapshots, tests, lint, typecheck | PR output                              |
 
 ## Deviations
 
-- The design agent changed four canvas boards on the tech lead's request. `415812c`.
-- Render snapshots changed 16 snapshots and 5 JPGs. It ran `design:export`, because the build session has no Chromium. `409989c`.
-- A Chromium render of each preview replaced the canvas screenshot and set the card heights. `db4e45e`.
+- Render snapshots (`409989c`) ran `design:export`, with no Chromium here. It changed 5 JPGs and 16 snapshots: `add-pin`, `add-pin-phone`, `map-account-menu-proposed`, `map-date-invalid`, `map-desktop`, `map-desktop-filters`, `map-districts`, `map-empty-date`, `map-empty-tree`, `map-empty-tree-phone`, `map-loading`, `map-loading-phone`, `map-offline`, `map-sources`, `style-5-feedback`, `style-6-components-inputs`.
+- Each preview caption has an id, so `ProgressBar` has a name. Steps 2 to 5 ran again.

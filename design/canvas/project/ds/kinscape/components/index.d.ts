@@ -1,4 +1,6 @@
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, KeyboardEvent, ReactNode, Ref } from 'react';
+import type { z } from 'zod';
+import { z } from 'zod';
 
 export type ChipOption = {
     /** The Event type this chip filters on; its glyph leads the label. */
@@ -21,49 +23,6 @@ export type Tab = {
     value: string;
 };
 
-declare const PATHS: {
-    alert: import("react").JSX.Element;
-    back: import("react").JSX.Element;
-    chevronDown: import("react").JSX.Element;
-    close: import("react").JSX.Element;
-    cloudOff: import("react").JSX.Element;
-    copy: import("react").JSX.Element;
-    document: import("react").JSX.Element;
-    done: import("react").JSX.Element;
-    error: import("react").JSX.Element;
-    export: import("react").JSX.Element;
-    eye: import("react").JSX.Element;
-    eyeOff: import("react").JSX.Element;
-    fit: import("react").JSX.Element;
-    forward: import("react").JSX.Element;
-    info: import("react").JSX.Element;
-    layers: import("react").JSX.Element;
-    menu: import("react").JSX.Element;
-    place: import("react").JSX.Element;
-    play: import("react").JSX.Element;
-    search: import("react").JSX.Element;
-    signOut: import("react").JSX.Element;
-    success: import("react").JSX.Element;
-    warning: import("react").JSX.Element;
-    zoomIn: import("react").JSX.Element;
-    zoomOut: import("react").JSX.Element;
-};
-declare const MARKS: {
-    error: string;
-    info: string;
-    success: string;
-    warning: string;
-};
-/** A decorative icon (18px unless sized) in the current colour; the words beside it carry the meaning. */
-declare const Icon: ({ name, size, }: {
-    name: IconName;
-    size?: IconSize;
-}) => import("react").JSX.Element;
-/** The 20px form for alerts: a disc in the current colour with a white mark. */
-declare const FilledIcon: ({ name }: {
-    name: FilledIconName;
-}) => import("react").JSX.Element;
-
 /** A state the design kit shows without the pointer or keyboard; the real states come from the browser. */
 export type ControlState = 'active' | 'focus' | 'hover';
 export type FilledIconName = keyof typeof MARKS;
@@ -75,9 +34,114 @@ export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type TextVariant = Heading | Other;
 export type Tone = 'error' | 'info' | 'warning';
 
+/** One level of the Jurisdiction chain; `detail` says what the name was before. */
+export type ChainLevel = {
+    detail?: string;
+    level: string;
+    name: string;
+};
+export type MenuEntry = {
+    detail?: string;
+    /** Stays in the arrow-key order but does nothing. */
+    disabled?: boolean;
+    icon: IconName;
+    id: string;
+    label: string;
+};
+export type PopupPin = {
+    date: string;
+    event: EventType;
+    /** The pin's record; a pin without one is plain text. */
+    href?: string;
+    id: string;
+    people: string;
+    title: string;
+};
+
+declare const boundaryProperties: z.ZodObject<{
+    confidence: z.ZodEnum<{
+        high: "high";
+        low: "low";
+    }>;
+    contested: z.ZodBoolean;
+    level: z.ZodEnum<{
+        polity: "polity";
+        district: "district";
+    }>;
+    polity: z.ZodString;
+    source: z.ZodString;
+    validFrom: z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>;
+    validTo: z.ZodNullable<z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>>;
+}, z.core.$strip>;
+/** Only the outer array is checked; `validate-boundaries.mts` walks the coordinates. */
+declare const multiPolygon: z.ZodObject<{
+    coordinates: z.ZodCustom<number[][][][], number[][][][]>;
+    type: z.ZodLiteral<"MultiPolygon">;
+}, z.core.$strip>;
+declare const boundaryFeature: z.ZodObject<{
+    geometry: z.ZodObject<{
+        coordinates: z.ZodCustom<number[][][][], number[][][][]>;
+        type: z.ZodLiteral<"MultiPolygon">;
+    }, z.core.$strip>;
+    properties: z.ZodObject<{
+        confidence: z.ZodEnum<{
+            high: "high";
+            low: "low";
+        }>;
+        contested: z.ZodBoolean;
+        level: z.ZodEnum<{
+            polity: "polity";
+            district: "district";
+        }>;
+        polity: z.ZodString;
+        source: z.ZodString;
+        validFrom: z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>;
+        validTo: z.ZodNullable<z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>>;
+    }, z.core.$strip>;
+    type: z.ZodLiteral<"Feature">;
+}, z.core.$strip>;
+declare const polityRow: z.ZodObject<{
+    id: z.ZodString;
+}, z.core.$strip>;
+declare const nameRow: z.ZodObject<{
+    name: z.ZodString;
+    polity: z.ZodString;
+    validFrom: z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>;
+    validTo: z.ZodNullable<z.ZodPipe<z.ZodNumber, z.ZodTransform<import("./types.ts").Day, number>>>;
+}, z.core.$strip>;
+declare const sourceRow: z.ZodObject<{
+    attribution: z.ZodString;
+    author: z.ZodString;
+    dateChecked: z.ZodString;
+    id: z.ZodString;
+    layer: z.ZodString;
+    licence: z.ZodString;
+    licenceLink: z.ZodString;
+    processing: z.ZodOptional<z.ZodString>;
+    title: z.ZodString;
+}, z.core.$strip>;
+
+export type BoundaryData = {
+    boundaries: BoundaryVersion[];
+    names: PolityName[];
+    polities: Polity[];
+    sources: Source[];
+};
+export type BoundaryVersion = {
+    file: string;
+} & Pick<z.output<typeof boundaryFeature>, 'geometry'> & z.output<typeof boundaryFeature>['properties'];
+/** UTC days since 1652-01-01, made only by `toDay`, `asDay` and `dayOf`. */
+export type Day = {
+    brand: 'Day';
+} & number;
+export type Polity = z.output<typeof polityRow>;
+export type PolityName = z.output<typeof nameRow>;
+/** `processing` is what was done to the data, such as clipping and simplifying. */
+export type Source = z.output<typeof sourceRow>;
+
 /** A one-click way out of a problem: the day to go to, shown at `precision`. */
 export type Fix = {
-    day: number;
+    day: Day;
     label: string;
     precision: Precision;
 };
@@ -85,11 +149,6 @@ export type Precision = 'day' | 'month' | 'year';
 export type Problem = {
     fix?: Fix;
     message: string;
-};
-/** A run of days with a Boundary version. `validTo` is exclusive; null = still current. */
-export type Span = {
-    validFrom: number;
-    validTo: null | number;
 };
 
 /** Each Event type's path, copied from design/source/kse-*.svg (DESIGN.md › Event glyphs). A test keeps them in step. */
@@ -258,7 +317,7 @@ export declare const DateField: ({ after, before, day, defaultText, fill, keepPr
     /** Beside the field on the left: the step back button. */
     before?: ReactNode;
     /** The last good date: what the map shows. */
-    day: number;
+    day: Day;
     /** Text to start with instead of the date; it is checked on the first render, unless `state` is `focus`. */
     defaultText?: string;
     /** The field takes the width the row leaves, as in the phone date sheet. */
@@ -266,12 +325,12 @@ export declare const DateField: ({ after, before, day, defaultText, fill, keepPr
     /** A typed date or a fix commits at the field's precision, never a finer one. */
     keepPrecision?: boolean;
     /** The last Map date: today. */
-    max: number;
+    max: Day;
     /** The first Map date. */
-    min: number;
+    min: Day;
     /** Something the app did, shown while it is passed; the caller clears it. */
     notice?: Notice;
-    onChange: (day: number, precision: Precision) => void;
+    onChange: (day: Day, precision: Precision) => void;
     /** `above` opens the message over the field, for the dock at the bottom of the screen. */
     placement?: "above" | "below";
     precision: Precision;
@@ -303,5 +362,140 @@ export declare const Toast: ({ action, children, onAction, onDismiss, placed, to
     tone: "error" | "success";
 }) => import("react").JSX.Element;
 export type ToastProps = Parameters<typeof Toast>[0];
+
+/** The 44 round button that opens the account Menu; `expanded` is its open look. */
+export declare const Avatar: ({ expanded, initial, state, ...rest }: {
+    expanded?: boolean;
+    initial: string;
+    state?: ControlState;
+} & Omit<ComponentProps<"button">, "aria-expanded" | "aria-haspopup" | "aria-label" | "children" | "className">) => import("react").JSX.Element;
+export type AvatarProps = Parameters<typeof Avatar>[0];
+
+/** A hairline; with `label` it reads as "or" between two choices. */
+export declare const Divider: ({ label }: {
+    label?: string;
+}) => import("react").JSX.Element;
+export type DividerProps = Parameters<typeof Divider>[0];
+
+declare const PATHS: {
+    alert: import("react").JSX.Element;
+    back: import("react").JSX.Element;
+    chevronDown: import("react").JSX.Element;
+    close: import("react").JSX.Element;
+    cloudOff: import("react").JSX.Element;
+    copy: import("react").JSX.Element;
+    document: import("react").JSX.Element;
+    done: import("react").JSX.Element;
+    error: import("react").JSX.Element;
+    export: import("react").JSX.Element;
+    eye: import("react").JSX.Element;
+    eyeOff: import("react").JSX.Element;
+    fit: import("react").JSX.Element;
+    forward: import("react").JSX.Element;
+    info: import("react").JSX.Element;
+    layers: import("react").JSX.Element;
+    menu: import("react").JSX.Element;
+    place: import("react").JSX.Element;
+    play: import("react").JSX.Element;
+    search: import("react").JSX.Element;
+    signOut: import("react").JSX.Element;
+    success: import("react").JSX.Element;
+    warning: import("react").JSX.Element;
+    zoomIn: import("react").JSX.Element;
+    zoomOut: import("react").JSX.Element;
+};
+declare const MARKS: {
+    error: string;
+    info: string;
+    success: string;
+    warning: string;
+};
+/** A decorative icon (18px unless sized) in the current colour; the words beside it carry the meaning. */
+export declare const Icon: ({ name, size, }: {
+    name: IconName;
+    size?: IconSize;
+}) => import("react").JSX.Element;
+/** The 20px form for alerts: a disc in the current colour with a white mark. */
+declare const FilledIcon: ({ name }: {
+    name: FilledIconName;
+}) => import("react").JSX.Element;
+export type IconProps = Parameters<typeof Icon>[0];
+
+/** A white surface above the map; the higher the level, the more it interrupts. */
+export declare const Surface: ({ children, className, level, }: {
+    children: ReactNode;
+    className?: string;
+    level: SurfaceLevel;
+}) => import("react").JSX.Element;
+export type SurfaceProps = Parameters<typeof Surface>[0];
+
+type Tag = 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'label' | 'p' | 'span';
+declare const DEFAULT_TAG: Record<Other, Tag>;
+type Props = {
+    /** For `as='label'`. */
+    htmlFor?: string;
+    /** The colour of a message; the style's own colour without it. */
+    tone?: Tone;
+} & ({
+    as: Tag;
+    variant: Heading;
+} | {
+    as?: Tag;
+    variant: Other;
+}) & Omit<ComponentProps<'span'>, 'className' | 'ref'>;
+/** Text in one style of the type scale. A heading needs `as`; `tone` colours a message. */
+export declare const Text: ({ as, tone, variant, ...rest }: Props) => import("react").JSX.Element;
+export type TextProps = Parameters<typeof Text>[0];
+
+declare const NAME: {
+    readonly 32: "h3";
+    readonly 36: "h3";
+    readonly 44: "h2";
+};
+/**
+ * The icon and "KinScape" in Bricolage 700; `iconOnly` drops the name and names the icon instead.
+ * Beside the name the icon is decoration. It is not a link.
+ */
+export declare const Wordmark: ({ iconOnly, size, }: {
+    iconOnly?: boolean;
+    size?: keyof typeof NAME;
+}) => import("react").JSX.Element;
+export type WordmarkProps = Parameters<typeof Wordmark>[0];
+
+/** One row: an icon and a label, with a second line if `detail` is set. A look when `state` is. */
+declare const MenuItem: ({ entry, onSelect, state, }: {
+    entry: MenuEntry;
+    onSelect?: (id: string) => void;
+    state?: ControlState;
+}) => import("react").JSX.Element;
+type PanelProps = {
+    email: string;
+    /** A line under the items. No line is drawn when unset. */
+    footer?: string;
+    groups: MenuEntry[][];
+    /** The item drawn hovered. */
+    hovered?: string;
+    /** Only drawn: out of the tab order and the accessibility tree. */
+    inert?: boolean;
+    menuRef?: Ref<HTMLDivElement>;
+    onKeyDown?: (event: KeyboardEvent<HTMLDivElement>) => void;
+    onSelect?: (id: string) => void;
+};
+/** The account Menu's card: who is signed in, the item groups split by dividers, and a footer line. */
+export declare const MenuPanel: ({ email, footer, groups, hovered, inert, menuRef, onKeyDown, onSelect, }: PanelProps) => import("react").JSX.Element;
+type AccountMenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
+    /**
+     * `phone`: the card hangs from the nearest positioned ancestor (the search
+     * pill), not from the Avatar. With no positioned ancestor it hangs from the page.
+     */
+    form?: 'phone';
+    initial: string;
+    /** Called after the menu has closed and the Avatar has focus. */
+    onSelect: (id: string) => void;
+};
+/** The Avatar and its Menu, 8 below it and right-aligned. */
+export declare const Menu: ({ form, initial, onSelect, ...panel }: AccountMenuProps) => import("react").JSX.Element;
+export type MenuProps = Parameters<typeof Menu>[0];
+export type MenuPanelProps = Parameters<typeof MenuPanel>[0];
 
 export {};

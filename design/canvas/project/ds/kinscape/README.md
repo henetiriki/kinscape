@@ -72,9 +72,9 @@ Each component, its `.module.css` and its test live in one folder of `app/compon
 | `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField             |
 | `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                  |
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero                          |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm              |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
@@ -106,7 +106,7 @@ Every control has the five states in style-4-states.jpg. Hover darkens or tints,
 | No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date".                 |
 | Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                             |
 | Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                         |
-| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time.                                                             |
+| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                                   |
 | Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                                 |
 
 ## Feedback and validation

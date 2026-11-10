@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <title>KinScape — Map</title>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
 </head>
 <body>
 <x-dc>
@@ -159,27 +162,31 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </g>
   </svg>
 
+  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <div style="position: absolute; left: 24px; top: 20px; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 8px 0 12px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-    <img src="/_blob/fc8efdb1b185576b872141e6e4fa37f8" alt="" style="width: 32px; height: 32px; border-radius: 8px; display: block">
-    <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">KinScape</span>
+    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
     <span style="width: 1px; height: 28px; background: #E2E5DD"></span>
     <label style="display: flex; align-items: center; gap: 8px; width: 340px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #4A544C">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg>
+      <x-import component-from-global-scope="KinScape.Icon" name="search"></x-import>
       <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; border: 0; background: transparent; font-size: 15px; line-height: 22px; color: #18211B; outline: none">
       <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">/</span>
     </label>
   </div>
+  </sc-if>
 
-  <button type="button" aria-label="Account menu" style="position: absolute; right: 24px; top: 24px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #264F29; color: #FFFFFF; font-weight: 600; font-size: 16px; line-height: 24px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); cursor: pointer">L</button>
+  <div style="position: absolute; right: 24px; top: 24px; display: flex"><x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import></div>
 
+  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <div style="position: absolute; right: 24px; top: 88px; display: flex; flex-direction: column; background: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-    <button type="button" aria-label="Zoom in" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+    <button type="button" aria-label="Zoom in" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="zoomIn"></x-import></button>
     <span style="height: 1px; background: #E2E5DD"></span>
-    <button type="button" aria-label="Zoom out" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+    <button type="button" aria-label="Zoom out" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="zoomOut"></x-import></button>
     <span style="height: 1px; background: #E2E5DD"></span>
-    <button type="button" aria-label="Fit South Africa" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+    <button type="button" aria-label="Fit South Africa" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="fit"></x-import></button>
   </div>
+  </sc-if>
 
+  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <aside style="position: absolute; left: 24px; top: 88px; width: 320px; height: 784px; display: flex; flex-direction: column; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); overflow: hidden">
     <div style="display: flex; gap: 4px; padding: 4px; border-bottom: 1px solid #E2E5DD">
       <button type="button" aria-pressed="{{tabs.layersOn}}" onClick="{{tabs.toLayers}}" style="{{tabs.layersStyle}}">Layers</button>
@@ -193,7 +200,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           <sc-for list="{{groups.boundaries}}" as="item" hint-placeholder-count="2">
             <label style="display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer">
               <input type="checkbox" checked="{{item.on}}" onChange="{{item.toggle}}" style="width: 20px; height: 20px; margin: 0; accent-color: #264F29; flex: none">
-              <span style="display: flex; flex-direction: column; gap: 1px; flex: 1"><span style="font-size: 14px; line-height: 20px; font-weight: 600">{{item.label}}</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{item.sub}}</span></span>
+              <span style="display: flex; flex-direction: column; gap: 1px; flex: 1"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">{{item.label}}</x-import><x-import component-from-global-scope="KinScape.Text" variant="caption" as="span">{{item.sub}}</x-import></span>
             </label>
           </sc-for>
         </div>
@@ -202,7 +209,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           <sc-for list="{{groups.basemap}}" as="item" hint-placeholder-count="3">
             <label style="display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer">
               <input type="checkbox" checked="{{item.on}}" onChange="{{item.toggle}}" style="width: 20px; height: 20px; margin: 0; accent-color: #264F29; flex: none">
-              <span style="display: flex; flex-direction: column; gap: 1px; flex: 1"><span style="font-size: 14px; line-height: 20px; font-weight: 600">{{item.label}}</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{item.sub}}</span></span>
+              <span style="display: flex; flex-direction: column; gap: 1px; flex: 1"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">{{item.label}}</x-import><x-import component-from-global-scope="KinScape.Text" variant="caption" as="span">{{item.sub}}</x-import></span>
             </label>
           </sc-for>
         </div>
@@ -211,7 +218,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           <sc-for list="{{groups.pins}}" as="item" hint-placeholder-count="2">
             <label style="display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer">
               <input type="checkbox" checked="{{item.on}}" onChange="{{item.toggle}}" style="width: 20px; height: 20px; margin: 0; accent-color: #264F29; flex: none">
-              <span style="display: flex; flex-direction: column; gap: 1px; flex: 1"><span style="font-size: 14px; line-height: 20px; font-weight: 600">{{item.label}}</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{item.sub}}</span></span>
+              <span style="display: flex; flex-direction: column; gap: 1px; flex: 1"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">{{item.label}}</x-import><x-import component-from-global-scope="KinScape.Text" variant="caption" as="span">{{item.sub}}</x-import></span>
             </label>
           </sc-for>
         </div>
@@ -244,7 +251,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
             <span style="display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 4px 0 12px; border-radius: 15px; background: #E6EEE4; color: #1D3E20; font-size: 13.5px; line-height: 20px; font-weight: 600">Rossouw<button type="button" aria-label="Remove Rossouw" style="width: 26px; height: 26px; border: 0; background: transparent; color: #1D3E20; border-radius: 13px; cursor: pointer">×</button></span>
             <input id="f-surname" placeholder="Add a surname" style="flex: 1; min-width: 100px; height: 32px; border: 0; font-size: 15px; line-height: 22px; outline: none">
           </div>
-          <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">Matches spelling variants too (Rossouw, Rossau)</span>
+          <x-import component-from-global-scope="KinScape.Text" variant="caption" as="span">Matches spelling variants too (Rossouw, Rossau)</x-import>
         </div>
         <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px">
           <legend style="font-size: 14px; line-height: 20px; font-weight: 600; padding: 0; margin-bottom: 8px">Event type</legend>
@@ -262,6 +269,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       </div>
     </sc-if>
   </aside>
+  </sc-if>
 
   <sc-if value="{{v.popup}}" hint-placeholder-val="{{ true }}">
   <div role="dialog" aria-label="Jurisdiction at this point" style="position: absolute; left: 545px; top: 250px; width: 304px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
@@ -270,20 +278,20 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
         <div style="display: flex; flex-direction: column; gap: 2px">
           <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">On this spot in 1901</span>
-          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">Kimberley</span>
+          <x-import component-from-global-scope="KinScape.Text" variant="h3" as="span">Kimberley</x-import>
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #4A544C">28.738° S · 24.764° E</span>
         </div>
-        <button type="button" aria-label="Close" style="width: 36px; height: 36px; margin: -8px -8px 0 0; border: 0; border-radius: 18px; background: transparent; color: #4A544C; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+        <button type="button" aria-label="Close" style="width: 36px; height: 36px; margin: -8px -8px 0 0; border: 0; border-radius: 18px; background: transparent; color: #4A544C; cursor: pointer; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="close" size="16"></x-import></button>
       </div>
 
       <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0">
         <li style="display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #E2E5DD">
           <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">District</span>
-          <span style="font-size: 15px; line-height: 22px; font-weight: 600">Kimberley</span>
+          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Kimberley</x-import>
         </li>
         <li style="display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #E2E5DD">
           <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Colony</span>
-          <span style="display: flex; flex-direction: column"><span style="font-size: 15px; line-height: 22px; font-weight: 600">Cape Colony</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">Was Griqualand West until 1880</span></span>
+          <span style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Cape Colony</x-import><x-import component-from-global-scope="KinScape.Text" variant="caption" as="span">Was Griqualand West until 1880</x-import></span>
         </li>
       </ol>
 
@@ -306,7 +314,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <div style="display: flex; gap: 12px; align-items: flex-start">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A3B12" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
         <div style="display: flex; flex-direction: column; gap: 4px">
-          <span style="font-size: 15px; line-height: 22px; font-weight: 600">No pins in 1901</span>
+          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">No pins in 1901</x-import>
           <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Nobody in your filters is pinned to this date.</span>
         </div>
       </div>
@@ -320,16 +328,16 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <sc-if value="{{v.emptyTree}}" hint-placeholder-val="{{ false }}">
     <div role="status" style="position: absolute; left: 702px; top: 300px; width: 380px; box-sizing: border-box; padding: 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#264F29" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
-      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">No pins yet</span>
+      <x-import component-from-global-scope="KinScape.Text" variant="h3" as="span">No pins yet</x-import>
       <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</span>
     </div>
   </sc-if>
 
   <sc-if value="{{v.loading}}" hint-placeholder-val="{{ false }}">
     <div role="status" aria-live="polite" style="position: absolute; left: 712px; top: 320px; width: 360px; box-sizing: border-box; padding: 16px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
-      <span style="font-size: 15px; line-height: 22px; font-weight: 600">Loading the map</span>
+      <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Loading the map</x-import>
       <span style="display: block; height: 6px; border-radius: 3px; background: #E2E5DD; overflow: hidden"><span style="display: block; width: 45%; height: 100%; border-radius: 3px; background: #264F29"></span></span>
-      <span style="font-size: 13px; line-height: 20px; color: #4A544C">Every border from 1652 to today loads once, up front, so the slider never has to wait.</span>
+      <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Every border from 1652 to today loads once, up front, so the slider never has to wait.</x-import>
     </div>
   </sc-if>
 
@@ -348,15 +356,16 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </div>
   </sc-if>
 
+  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <section aria-label="Map date" style="position: absolute; left: 368px; right: 24px; top: 696px; height: 176px; box-sizing: border-box; padding: 14px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
     <div style="display: flex; align-items: center; gap: 14px; height: 44px">
       <div style="display: flex; align-items: center; gap: 4px">
-        <button type="button" aria-label="Back one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+        <button type="button" aria-label="Back one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
         <span style="position: relative; display: inline-flex">
           <input aria-label="Map date" aria-invalid="{{dateInvalid}}" aria-describedby="date-msg" value="{{dateValue}}" readonly style="{{dateFieldStyle}}">
           <sc-if value="{{dateInvalid}}" hint-placeholder-val="{{ false }}"><svg style="position: absolute; right: 9px; top: 13px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4412F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.01"></path></svg></sc-if>
         </span>
-        <button type="button" aria-label="Forward one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        <button type="button" aria-label="Forward one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
       </div>
       <div style="display: flex; padding: 3px; gap: 2px; background: #EEF0EA; border-radius: 9px" aria-label="Date precision">
         <sc-for list="{{precisions}}" as="p" hint-placeholder-count="3">
@@ -367,7 +376,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
         <button type="button" onClick="{{togglePlay}}" aria-label="{{playLabel}} through time" style="height: 44px; padding: 0 16px 0 12px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer">
           <sc-if value="{{playing}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg></sc-if>
-          <sc-if value="{{notPlaying}}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"></path></svg></sc-if>
+          <sc-if value="{{notPlaying}}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></sc-if>
           {{playLabel}}
         </button>
         <div style="display: flex; padding: 3px; gap: 2px; background: #EEF0EA; border-radius: 9px" aria-label="Playback speed in years per second">
@@ -409,22 +418,24 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <span style="margin-left: auto; font-size: 12.5px; line-height: 18px; color: #4A544C; display: inline-flex; gap: 8px; align-items: center"><kbd style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">←</kbd><kbd style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">→</kbd>1 {{precisionWord}} · with <kbd style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; padding: 2px 4px; border: 1px solid #C9CFC5; border-radius: 4px; color: #4A544C">Shift</kbd> ×10</span>
     </div>
   </section>
+  </sc-if>
 
+  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <p style="position: absolute; right: 24px; bottom: 6px; margin: 0; font-size: 11px; color: #24302B">Boundaries: KinScape data, sources per layer · Terrain: [DEM SOURCE] · Coast &amp; rivers: [SOURCE] · <a href="#" style="color: #1D3E20">Attributions</a></p>
+  </sc-if>
 
   <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
-    <div role="menu" aria-label="Account" style="position: absolute; right: 24px; top: 76px; width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
-      <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
-        <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">Signed in as</span>
-        <span style="font-size: 14px; line-height: 20px; font-weight: 600">researcher@example.com</span>
+    <div role="menu" aria-label="Account" style="position: absolute; right: var(--size-gutter); top: calc(var(--space-24) + var(--size-touch) + var(--space-8)); width: 296px; box-sizing: border-box; display: flex; flex-direction: column; padding: var(--space-4); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
+      <div style="padding: var(--space-12); display: flex; flex-direction: column; gap: var(--space-4)">
+        <span class="caption" style="color: var(--ink-3)">Signed in as</span>
+        <span class="label" style="color: var(--ink)">researcher@example.com</span>
       </div>
-      <span style="height: 1px; background: #E2E5DD; margin: 0 8px 4px"></span>
-      <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; border: 0; border-radius: 8px; background: #F4F5F0; color: #18211B; text-align: left; font-size: 14px; font-weight: 600; cursor: pointer">
+      <button type="button" role="menuitem" class="label" style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-touch); padding: var(--space-4) var(--space-12); border: 0; border-radius: var(--radius-control); color: var(--ink); text-align: left; background: var(--surface-2); cursor: pointer">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 4h9l3 3v13H6z"></path><path d="M9 11h6M9 15h6"></path></svg>
         Sources and attributions
       </button>
-      <span style="height: 1px; background: #E2E5DD; margin: 4px 8px"></span>
-      <button type="button" role="menuitem" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 12px; border: 0; border-radius: 8px; background: transparent; color: #18211B; text-align: left; font-size: 14px; font-weight: 600; cursor: pointer">
+      <span style="height: 1px; margin: var(--space-4) var(--space-8); background: var(--line)"></span>
+      <button type="button" role="menuitem" class="label" style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-touch); padding: var(--space-4) var(--space-12); border: 0; border-radius: var(--radius-control); color: var(--ink); text-align: left; background: transparent; cursor: pointer">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path></svg>
         Sign out
       </button>
@@ -463,7 +474,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
           <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px">Sources and attributions</h2>
           <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">Where every layer on the map comes from, and the licence it's used under.</p>
         </div>
-        <button type="button" aria-label="Close" style="width: 44px; height: 44px; margin: -8px -8px 0 0; border: 0; border-radius: 22px; background: transparent; color: #4A544C; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+        <button type="button" aria-label="Close" style="width: 44px; height: 44px; margin: -8px -8px 0 0; border: 0; border-radius: 22px; background: transparent; color: #4A544C; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="close"></x-import></button>
       </div>
       <div role="table" aria-label="Sources" style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
         <div role="row" style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 12px; padding: 10px 0; border-bottom: 1px solid #E2E5DD; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
@@ -471,14 +482,14 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
         </div>
         <sc-for list="{{sources}}" as="src" hint-placeholder-count="7">
           <div role="row" style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 12px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-            <span role="cell" style="font-size: 14px; line-height: 20px; font-weight: 600">{{src.layer}}</span>
+            <x-import component-from-global-scope="KinScape.Text" variant="label" as="span" role="cell">{{src.layer}}</x-import>
             <span role="cell" style="{{src.style}}">{{src.source}}</span>
             <span role="cell" style="{{src.style}}">{{src.licence}}</span>
             <span role="cell" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #4A544C">{{src.checked}}</span>
           </div>
         </sc-for>
       </div>
-      <p style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">The line under the date control is built from this list. A source isn't used until its licence has been checked.</p>
+      <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">The line under the date control is built from this list. A source isn't used until its licence has been checked.</x-import>
     </div>
   </sc-if>
 </div>
@@ -529,6 +540,7 @@ class Component extends DCLogic {
       ['Map library', 'MapLibre GL JS', 'BSD-3-Clause', '—', ok]
     ].map((r) => ({ layer: r[0], source: r[1], licence: r[2], checked: r[3], style: r[4] }));
     return {
+      chrome: variant !== 'account',
       v: {
         popup: variant === 'default', emptyDate: variant === 'empty-date', emptyTree: variant === 'empty-tree',
         loading: loading, offline: variant === 'offline', account: variant === 'account', accountProposed: variant === 'account-proposed', sources: variant === 'sources'

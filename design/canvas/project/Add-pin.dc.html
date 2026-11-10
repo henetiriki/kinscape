@@ -19,7 +19,7 @@ body{margin:0}
 
   <aside aria-labelledby="add-pin-title" style="position: absolute; left: var(--size-gutter); top: calc(var(--space-64) + var(--size-gutter)); bottom: calc(var(--space-24) + var(--space-4)); width: var(--size-panel); display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); overflow: hidden">
 
-    <h2 id="add-pin-title" class="h2" style="margin: 0; padding: var(--space-20) var(--space-20) var(--space-16); color: var(--ink)">Add a pin</h2>
+    <div style="padding: var(--space-20) var(--space-20) var(--space-16)"><x-import component-from-global-scope="KinScape.Text" variant="h2" as="h2" id="add-pin-title">Add a pin</x-import></div>
 
     <div style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: var(--space-16); padding: 0 var(--space-20) var(--space-16)">
 

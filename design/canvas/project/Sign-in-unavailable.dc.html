@@ -65,12 +65,9 @@ body{margin:0}
   <div style="flex: 1 1 440px; display: flex; align-items: center; justify-content: center; padding: var(--space-48) var(--space-32); box-sizing: border-box; background: var(--surface)">
     <form style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: var(--space-24)">
       <div style="display: flex; flex-direction: column; gap: var(--space-20)">
-        <div style="display: flex; align-items: center; gap: var(--space-12)">
-          <img src="/_blob/fc8efdb1b185576b872141e6e4fa37f8" alt="" style="width: 44px; height: 44px; border-radius: 25%; display: block">
-          <span class="h2" style="color: var(--ink)">KinScape</span>
-        </div>
+        <x-import component-from-global-scope="KinScape.Wordmark" size="44"></x-import>
         <div style="display: flex; flex-direction: column; gap: var(--space-4)">
-          <h1 class="h1" style="margin: 0; color: var(--ink)">Sign in</h1>
+          <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Sign in</x-import>
           <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
         </div>
       </div>

@@ -1,7 +1,7 @@
 # Plan: C711: Document the path for a new or updated design system component
 
 - **Spec:** #711
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@
 - **B.** Move the two "Fallback" paragraphs to `COMPONENTS.md`.
 - **Other:** your own.
 
-Recommended: A, because each step stays in `CANVAS.md`.
+**Answer: A** (@henetiriki)
 
 **D2 · What fix 4 lists** · Decides: Tech lead
 
@@ -29,7 +29,7 @@ Recommended: A, because each step stays in `CANVAS.md`.
 - **B.** Step 6 also lists the `project/` boards, for the board swap.
 - **Other:** your own.
 
-Recommended: A, because the install compares only `project/ds/kinscape/`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

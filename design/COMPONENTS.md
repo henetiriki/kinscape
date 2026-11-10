@@ -16,7 +16,7 @@ All steps run on one branch and one pull request. The plan lists the boards to s
 5. **Design agent.** Swap each board in the plan with the [board swap prompt](#board-swap-prompt).
 6. **Tech lead, same session as step 4.** Refresh the copy a second time: [Refreshing the copy](CANVAS.md#refreshing-the-copy). This step adds the swapped boards.
 7. **Tech lead or build agent.** Start the workflow Design: Render snapshots on the branch. It has only a manual trigger. See [Making the snapshots and JPGs](CANVAS.md#making-the-snapshots-and-jpgs).
-8. **Build agent.** Run the checks in [`AGENTS.md`](../AGENTS.md#verifying-your-work). The tech lead then marks the pull request ready ([design-system rule](../plans/README.md#design-system)).
+8. **Build agent.** Run the checks in `AGENTS.md`, section "Verifying your work". The tech lead then marks the pull request ready ([design-system rule](../plans/README.md#design-system)).
 
 ## Board swap prompt
 

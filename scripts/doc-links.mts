@@ -11,6 +11,7 @@ export const ALLOWLIST: string[][] = [
     '.claude/skills/refine/intent.md',
     '.claude/skills/refine/spec.md',
   ],
+  ['design/CANVAS.md', 'design/COMPONENTS.md'],
   ['docs/building.md', 'docs/how-we-work.md'],
 ];
 

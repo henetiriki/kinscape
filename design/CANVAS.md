@@ -15,10 +15,9 @@ With no Chromium, skip `npm run design:export`: the workflow exports in CI.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
-  3. Run `/publish-design-system`. Before it, `read` the canvas in full. A `read` with `paths` makes the publish fail, and the canvas version moves after a publish.
-  4. Run the steps in "Updating the install".
-  5. Run the steps in "Refreshing the copy", then commit `design/canvas/` alone.
-  6. Push the branch. If a board changed, run the workflow Design: Render snapshots.
+  3. Run `/publish-design-system`. 4. Run the steps in "Updating the install".
+  4. Run the steps in "Refreshing the copy", then commit `design/canvas/` alone.
+  5. Push the branch. If a board changed, run the workflow Design: Render snapshots.
 - **Done check.** A Spec or Chore that changes these inputs lists steps 3 to 5 in its done check: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`.
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
 - **Boards.** The design agent swaps the new component into the boards that the plan lists, on the same branch: [`COMPONENTS.md`](COMPONENTS.md).
@@ -50,7 +49,7 @@ After a `/publish-design-system` run that sends files, the canvas still holds th
 1. List the files of the design system and the canvas files under `project/ds/kinscape/` with `list` and `scope: "files"`. List no board.
 2. Read both sides with `read` and `paths`. The result gives a sha256 for each saved file. Compare each pair.
 3. Show the person the files that differ, the files that are new, and the files the publish deleted. Wait for their OK.
-4. Send the changed and new files with one `publish` to the canvas `url`. Map each `project/ds/kinscape/<path>` to its source file in `files`. Set a deleted file to `null`. Send `index.d.ts` as `{"from": …, "contentType": "text/plain"}`.
+4. `read` the canvas in full: a `read` with `paths` does not let the `publish` pass. Send the changed and new files with one `publish` to the canvas `url`. Map each `project/ds/kinscape/<path>` to its source file in `files`. Set a deleted file to `null`. Send `index.d.ts` as `{"from": …, "contentType": "text/plain"}`.
 5. Read `project/canvas.json` right before the edit. Set the `version` and `copiedAt` of the `designSystems` entry, and change nothing else. Send it last.
 6. Read the canvas folder again. Report each file whose sha256 differs from the design system.
 7. Ask the person to open the canvas and check that the new cards render.

@@ -87,7 +87,6 @@ const ACCOUNT = {
   ],
 };
 
-// Synthetic, as on the design kit's Popup, Dialog and Sheet samples.
 const CHAIN = [
   { level: 'District', name: 'Kimberley' },
   {
@@ -105,9 +104,10 @@ const PINS = [
     title: 'Marriage',
   },
 ];
-const DIALOG_WORDS = {
-  subtitle: 'Where the map data comes from',
-  title: 'Sources and attributions',
+const PANEL = {
+  footnote: 'Footnote',
+  subtitle: 'Subtitle',
+  title: 'Sources',
 };
 
 type Make = (
@@ -471,7 +471,7 @@ export const CARDS: Card[] = [
     design: ['Jurisdiction popup'],
     group: 'Overlays',
     handlers: ['onClose', 'onCopied'],
-    height: 520,
+    height: 420,
     name: 'Popup',
     pad: 0,
     states: ['floating', 'sheet'].map(form =>
@@ -489,54 +489,48 @@ export const CARDS: Card[] = [
     design: ['Phone date sheet'],
     group: 'Overlays',
     handlers: ['onExpandedChange'],
-    height: 320,
+    height: 480,
     name: 'BottomSheet',
     pad: 0,
     states: [false, true].map(expanded =>
       one(
         `BottomSheet · ${expanded ? 'expanded' : 'collapsed'}`,
         { expanded },
-        'Map date'
+        'Date controls'
       )
     ),
   },
   {
-    design: [],
+    design: ['Dialog'],
     group: 'Overlays',
     handlers: ['onClose'],
-    height: 320,
+    height: 300,
     name: 'Modal',
     pad: 0,
     states: [
-      one('Modal · open', { 'aria-label': 'Example', open: true }, 'Content'),
+      one('Modal · open', { 'aria-label': 'Modal', open: true }, 'Content'),
     ],
   },
   {
     design: ['Dialog'],
     group: 'Overlays',
     handlers: ['onClose'],
-    height: 520,
+    height: 500,
     name: 'Dialog',
     pad: 0,
-    states: [
-      one(
-        'Dialog · open',
-        { form: 'centred', open: true, ...DIALOG_WORDS },
-        'Content'
-      ),
-    ],
+    states: [one('Dialog · centred', { ...PANEL, open: true }, 'Content')],
   },
   {
     design: ['Dialog'],
     group: 'Overlays',
-    handlers: [],
-    height: 880,
+    handlers: ['onClose'],
+    height: 560,
     name: 'DialogPanel',
     pad: 0,
     states: ['centred', 'sheet'].map(form =>
       one(
         `DialogPanel · ${form}`,
-        { form, titleId: `dialog-${form}`, ...DIALOG_WORDS },
+        { ...PANEL, form, titleId: `dialog-${form}` },
         'Content'
       )
     ),
@@ -545,7 +539,7 @@ export const CARDS: Card[] = [
     design: [],
     group: 'Overlays',
     handlers: ['onClose'],
-    height: 420,
+    height: 500,
     name: 'Sheet',
     pad: 0,
     states: [one('Sheet · open', { open: true, title: 'Boards' }, 'Content')],
@@ -553,26 +547,26 @@ export const CARDS: Card[] = [
   {
     design: [],
     group: 'Overlays',
-    handlers: [],
-    height: 880,
+    handlers: ['onClose'],
+    height: 560,
     name: 'SheetPanel',
     pad: 0,
     states: [
       one(
         'SheetPanel · title',
-        { title: 'Boards', titleId: 'head-title' },
+        { title: 'Boards', titleId: 'sheet-title' },
         'Content'
       ),
       one(
-        'SheetPanel · title and subtitle',
-        { titleId: 'head-subtitle', ...DIALOG_WORDS },
+        'SheetPanel · subtitle',
+        { subtitle: 'Subtitle', title: 'Sources', titleId: 'sheet-subtitle' },
         'Content'
       ),
       one(
         'SheetPanel · tabs',
         {
           tabs: { label: 'Layers and filters', selected: 'layers', tabs: TABS },
-          titleId: 'head-tabs',
+          titleId: 'sheet-tabs',
         },
         'Content'
       ),

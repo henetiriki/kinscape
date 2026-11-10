@@ -15,7 +15,7 @@ export const NAMESPACE = 'KinScape';
 export const BUNDLE_CSS = 'bundle.css';
 export const BUNDLE_JS = 'bundle.js';
 
-/** The shared controls (Spec #448, Chores #689 and #690), in display order. `Menu` and `MenuPanel` share a file, as do `Dialog` and `DialogPanel`, and `Sheet` and `SheetPanel`. */
+/** The shared controls (Spec #448, Chore #689), in display order. A control and its panel (`Menu`, `Dialog`, `Sheet`) share a file. */
 export const CONTROLS: Control[] = [
   { name: 'Button', path: 'app/components/actions/Button.tsx' },
   { name: 'IconButton', path: 'app/components/actions/IconButton.tsx' },

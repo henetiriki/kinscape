@@ -48,6 +48,7 @@ import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Modal } from '@ks/app/components/overlays/Modal';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
+import { CHAIN, PINS } from '@ks/app/design-kit/surfaces/data';
 import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -73,28 +74,6 @@ const OPTIONS = [
   { glyph: 'death', label: 'Death', value: 'death' },
   { glyph: 'marriage', label: 'Marriage', value: 'marriage' },
 ] as const;
-
-const CHAIN = [
-  { level: 'District', name: 'Kimberley' },
-  {
-    detail: 'Was Griqualand West until 1880',
-    level: 'Colony',
-    name: 'Cape Colony',
-  },
-];
-const PINS = [
-  {
-    date: '1901-03-14',
-    event: 'marriage' as const,
-    id: 'marriage',
-    people: 'J. Rossouw & M. du Toit',
-    title: 'Marriage',
-  },
-];
-const WORDS = {
-  subtitle: 'Where the map data comes from',
-  title: 'Sources and attributions',
-};
 
 const states = (
   name: string,
@@ -353,8 +332,6 @@ const CASES: [string, ReactElement][] = [
       coordinates='28.738° S · 24.764° E'
       form={form}
       key={form}
-      onClose={noop}
-      onCopied={noop}
       pins={PINS}
       place='Kimberley'
       year={1901}
@@ -366,24 +343,36 @@ const CASES: [string, ReactElement][] = [
       expanded={expanded}
       key={String(expanded)}
       onExpandedChange={noop}>
-      Map date
+      Date controls
     </BottomSheet>,
   ]),
   [
     'Modal · open',
-    <Modal aria-label='Example' key='modal' onClose={noop} open>
+    <Modal aria-label='Modal' key='modal' onClose={noop} open>
       Content
     </Modal>,
   ],
   [
-    'Dialog · open',
-    <Dialog form='centred' key='dialog' onClose={noop} open {...WORDS}>
+    'Dialog · centred',
+    <Dialog
+      footnote='Footnote'
+      key='dialog'
+      onClose={noop}
+      open
+      subtitle='Subtitle'
+      title='Sources'>
       Content
     </Dialog>,
   ],
   ...(['centred', 'sheet'] as const).map((form): [string, ReactElement] => [
     `DialogPanel · ${form}`,
-    <DialogPanel form={form} key={form} titleId={`dialog-${form}`} {...WORDS}>
+    <DialogPanel
+      footnote='Footnote'
+      form={form}
+      key={form}
+      subtitle='Subtitle'
+      title='Sources'
+      titleId={`dialog-${form}`}>
       Content
     </DialogPanel>,
   ]),
@@ -395,13 +384,17 @@ const CASES: [string, ReactElement][] = [
   ],
   [
     'SheetPanel · title',
-    <SheetPanel key='title' title='Boards' titleId='head-title'>
+    <SheetPanel key='title' title='Boards' titleId='sheet-title'>
       Content
     </SheetPanel>,
   ],
   [
-    'SheetPanel · title and subtitle',
-    <SheetPanel key='subtitle' titleId='head-subtitle' {...WORDS}>
+    'SheetPanel · subtitle',
+    <SheetPanel
+      key='subtitle'
+      subtitle='Subtitle'
+      title='Sources'
+      titleId='sheet-subtitle'>
       Content
     </SheetPanel>,
   ],
@@ -410,7 +403,7 @@ const CASES: [string, ReactElement][] = [
     <SheetPanel
       key='tabs'
       tabs={{ label: 'Layers and filters', selected: 'layers', tabs: TABS }}
-      titleId='head-tabs'>
+      titleId='sheet-tabs'>
       Content
     </SheetPanel>,
   ],
@@ -511,7 +504,7 @@ describe('bundle', () => {
     });
 
     page = dom.window;
-    // The stand-ins of vitest.setup.ts: jsdom has no showModal, close or matchMedia.
+    // The stand-ins of `vitest.setup.ts`: jsdom has no showModal, close or matchMedia.
     Object.assign(page.HTMLDialogElement.prototype, {
       close: () =>
         page.document.querySelector('dialog[open]')?.removeAttribute('open'),

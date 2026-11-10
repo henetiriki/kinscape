@@ -40,7 +40,7 @@ import { Avatar } from '@ks/app/components/foundation/Avatar';
 import { Divider } from '@ks/app/components/foundation/Divider';
 import { Icon, PATHS } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
-import { Text } from '@ks/app/components/foundation/Text';
+import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { DateField } from '@ks/features/map/components/DateField';
@@ -110,26 +110,7 @@ const HEADINGS = [
   ['h2', 'h2'],
   ['h3', 'h3'],
 ] as const;
-const OTHERS = [
-  'body',
-  'bodyL',
-  'button',
-  'buttonS',
-  'caption',
-  'chip',
-  'chipOff',
-  'control',
-  'credits',
-  'h1Phone',
-  'label',
-  'link',
-  'linkS',
-  'mono',
-  'monoL',
-  'overline',
-  'small',
-  'title',
-] as const;
+const OTHERS = Object.keys(DEFAULT_TAG) as (keyof typeof DEFAULT_TAG)[];
 
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (

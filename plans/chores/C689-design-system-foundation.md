@@ -6,9 +6,10 @@
 ## Approach
 
 1. Copy the card states into the React 18 test. React 18 warns when `Menu` gives `Avatar` a `ref`: see it fail.
-2. `Menu` will find the Avatar through its anchor, and close to it in React 18 too.
-3. Add the components and cards, in new groups `Foundation` and `Overlays`, named after their folders.
-4. Give `Text` the JSDoc summary its README needs.
+2. Make `Menu` find the Avatar through its anchor.
+3. Check that `Menu` closes in React 18 too.
+4. Add the components and cards, in new groups `Foundation` and `Overlays`, named after their folders.
+5. Give `Text` the JSDoc summary its README needs.
 
 ## Decisions
 
@@ -32,13 +33,17 @@ A canvas page does not serve `/icon0.svg`, which `Wordmark` loads.
 
 **Answer: A** (@henetiriki)
 
+## Deviations
+
+- `gatherTypes` writes a file's declarations once: `Menu.tsx` holds two controls.
+
 ## Files that change
 
 | File                                                                    | What                    |
 | ----------------------------------------------------------------------- | ----------------------- |
 | `lib/design/{bundle,states,cards}.mts`, `types.ts`                      | Controls, cards, groups |
 | `scripts/design-system.mts`                                             | D2                      |
-| `app/components/overlays/Menu.tsx`, `foundation/Text.tsx`               | Steps 2 and 4           |
+| `app/components/overlays/Menu.tsx`, `foundation/Text.tsx`               | Steps 2, 3, 5           |
 | `docs/architecture.md`                                                  | The controls row        |
 | `lib/design/__tests__/{react-18,bundle,cards}`, `design-system.test.ts` | Cases and counts        |
 

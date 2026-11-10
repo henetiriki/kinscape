@@ -100,7 +100,7 @@ export const MenuPanel = ({
   </Surface>
 );
 
-type MenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
+type AccountMenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
   /**
    * `phone`: the card hangs from the nearest positioned ancestor (the search
    * pill), not from the Avatar. With no positioned ancestor it hangs from the page.
@@ -112,7 +112,12 @@ type MenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
 };
 
 /** The Avatar and its Menu, 8 below it and right-aligned. */
-export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
+export const Menu = ({
+  form,
+  initial,
+  onSelect,
+  ...panel
+}: AccountMenuProps) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);

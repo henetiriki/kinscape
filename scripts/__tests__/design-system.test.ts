@@ -218,6 +218,18 @@ describe('the controls bundle', () => {
     }
   });
 
+  it('declares each type once', () => {
+    const declared = [
+      ...component('index.d.ts').matchAll(
+        /^(?:export )?(?:declare )?(?:type|interface) ([\w$]+)/gm
+      ),
+    ].map(match => match[1]);
+
+    expect(
+      declared.filter((name, at) => declared.indexOf(name) !== at)
+    ).toEqual([]);
+  });
+
   it('exports exactly the controls as values', () => {
     const values = [
       ...component('index.d.ts').matchAll(

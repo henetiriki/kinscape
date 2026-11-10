@@ -177,6 +177,7 @@ export const DateField = ({
             {problem.fix && (
               <button
                 className={`${styles.fix} ${styles.phoneFix}`}
+                data-size='small'
                 onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
                 type='button'>
                 {problem.fix.label}
@@ -193,6 +194,7 @@ export const DateField = ({
       {problem?.fix && !above && (
         <button
           className={styles.fix}
+          data-size='small'
           onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
           type='button'>
           {problem.fix.label}

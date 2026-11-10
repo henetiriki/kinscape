@@ -1,7 +1,7 @@
 # Plan: C695: Make publish-design-system use the Artifact tool and run on the change's branch
 
 - **Spec:** #695
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The first check needs a run that sends files. If the artifact matches the inputs
 - **B.** Keep this PR open until a branch that changes an input runs the skill.
 - **Other:** your own.
 
-Recommended: A, because the earlier run sent 22 files with the same calls.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

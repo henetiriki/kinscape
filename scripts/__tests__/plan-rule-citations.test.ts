@@ -19,6 +19,8 @@ const RULE_NAMES = [
   'stale-facts',
   'test-first',
   'hand-back',
+  'design-system',
+  'canvas-follow-up',
 ];
 const IN_SCOPE = [
   'plans/README.md',
@@ -127,7 +129,7 @@ describe('plan rule citations (repo)', () => {
   const rules = readFileSync(PLAN_RULES, 'utf8');
   const files = [...new Set([...IN_SCOPE, ...trackedAgentFiles()])];
 
-  it('plans/README.md has one named anchor in each of its 13 rules', () => {
+  it('plans/README.md has one named anchor in each rule', () => {
     expect(unanchoredItems(rules)).toEqual([]);
     expect(anchors(rules)).toEqual(RULE_NAMES);
   });

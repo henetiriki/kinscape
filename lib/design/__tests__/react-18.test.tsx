@@ -692,7 +692,7 @@ describe('interactions', () => {
     const avatar = screen.getByRole('button', { name: 'Account menu' });
 
     fireEvent.click(avatar);
-    expect(screen.getByRole('menu')).toBeTruthy();
+    expect(avatar.getAttribute('aria-expanded')).toBe('true');
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.queryByRole('menu')).toBeNull();
     expect(document.activeElement).toBe(avatar);

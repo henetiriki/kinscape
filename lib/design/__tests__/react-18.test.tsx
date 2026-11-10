@@ -330,7 +330,7 @@ const CASES: [string, ReactElement][] = [
   ]),
   [
     'Banner · offline',
-    <Banner action='Retry' icon='cloudOff' key='banner' onAction={noop}>
+    <Banner action='Retry' icon='cloudOff' key='banner'>
       You are offline.
     </Banner>,
   ],
@@ -343,7 +343,7 @@ const CASES: [string, ReactElement][] = [
   [
     'NoticeCard · one action',
     <NoticeCard
-      actions={[{ label: 'Undo', onClick: noop }]}
+      actions={[{ label: 'Undo' }]}
       icon='info'
       key='one'
       title='Layer hidden'>
@@ -353,7 +353,7 @@ const CASES: [string, ReactElement][] = [
   [
     'NoticeCard · two actions',
     <NoticeCard
-      actions={[{ label: 'Retry', onClick: noop }, { label: 'Dismiss' }]}
+      actions={[{ label: 'Retry' }, { label: 'Dismiss' }]}
       icon='warning'
       key='two'
       title='Map not loaded'>
@@ -375,7 +375,7 @@ const CASES: [string, ReactElement][] = [
   [
     'NoticeCard · phone',
     <NoticeCard
-      actions={[{ label: 'Undo', onClick: noop }]}
+      actions={[{ label: 'Undo' }]}
       icon='info'
       key='phone'
       phone

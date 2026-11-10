@@ -84,7 +84,8 @@ describe('the real canvas export', () => {
         ).map(problem => `${name}: ${problem}`)
       )
     ).toEqual([]);
-  });
+    // The check reads 59 snapshots, each up to a few hundred kilobytes; under load it takes more than the 5 s default.
+  }, 30_000);
 });
 
 describe('linkMap', () => {

@@ -13,7 +13,7 @@ Make the Chore's edits. Each `SKILL.md` step names its capability. The intro lin
 
 The first check needs a run that sends files. If the artifact matches the inputs, the run sends none.
 
-- **A.** Accept a run that lists no files. The next Spec or Chore that changes an input proves the send and the report line.
+- **A.** Accept a run that lists no files. The next Spec or Chore that changes an input (likely C689) proves the send, the second run, the stop and the report line.
 - **B.** Keep this PR open until a branch that changes an input runs the skill.
 - **Other:** your own.
 
@@ -32,24 +32,20 @@ The first check needs a run that sends files. If the artifact matches the inputs
 1. Check the create, icon upload and `publish` calls against the `Artifact` tool's description.
 2. Write `tools.md`, then `SKILL.md`, then `AGENTS.md`.
 3. Run `npm run words`, `npm test` and `npm run format:check`.
-4. Run the skill twice in a signed-in session, then once in a `claude -p` run.
-
-## Risks
-
-`SKILL.md` has about 640 of 650 words. If edits pass 650, move call detail to `tools.md`.
+4. The next change (D1) runs the skill twice, then once in a `claude -p` run.
 
 ## Proof
 
-| Acceptance check                                | Proven by                             |
-| ----------------------------------------------- | ------------------------------------- |
-| Step 1 passes; files, checksums, index sent     | First signed-in run (D1)              |
-| Second run lists no files                       | Second run                            |
-| MCP names only in step 1 and fallback column    | `git grep mcp__claude-artifacts`      |
-| Neither tool set stops with "artifacts are off" | `claude -p` run                       |
-| Description, Rules                              | `git diff`                            |
-| Report says the canvas copy is old              | First run's report (D1)               |
-| `AGENTS.md` link resolves                       | `scripts/__tests__/doc-links.test.ts` |
-| `npm run words` passes                          | Output in the PR                      |
+| Acceptance check                                | Proven by                               |
+| ----------------------------------------------- | --------------------------------------- |
+| Step 1 passes; files, checksums, index sent     | First signed-in run (D1)                |
+| Second run lists no files                       | Second run in the next change (D1)      |
+| MCP names only in step 1 and fallback column    | `git grep mcp__claude-artifacts`        |
+| Neither tool set stops with "artifacts are off" | `claude -p` run in the next change (D1) |
+| Description, Rules                              | `git diff`                              |
+| Report says the canvas copy is old              | First run's report (D1)                 |
+| `AGENTS.md` link resolves                       | `scripts/__tests__/doc-links.test.ts`   |
+| `npm run words` passes                          | Output in the PR                        |
 
 ## Deviations
 

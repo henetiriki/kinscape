@@ -45,6 +45,7 @@ The Chore's draft repeats three STE rules, and its Constraints say not to copy t
 ## Deviations
 
 - The Approach lists the six runs that load `rules.md`. The code review does not load it.
+- The line links to the STE rules (`../../docs/writing.md#ste`), as the other agent files link a rule. D1 B names the file in plain text.
 
 ## Out of scope
 

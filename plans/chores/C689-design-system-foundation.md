@@ -1,7 +1,7 @@
 # Plan: C689: Add the foundation components and Menu to the design system
 
 - **Spec:** #689
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ A `Menu` card shows it closed only. Spec #684 draws it open, with one item highl
 - **B.** Add only `Menu`. Boards draw the open card by hand.
 - **Other:** your own.
 
-Recommended: A, because #684 then draws nothing by hand.
+**Answer: A** (@henetiriki)
 
 **D2 · The Wordmark logo on the canvas** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ A canvas page does not serve `/icon0.svg`, which `Wordmark` loads.
 - **B.** Change nothing. The canvas shows a broken image.
 - **Other:** your own.
 
-Recommended: A, because the app does not change.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

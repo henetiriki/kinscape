@@ -1,7 +1,7 @@
 # Plan: C690: Add the other overlays to the design system
 
 - **Spec:** #690
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ An open modal fills the card from the top layer and covers the other states.
 - **B.** Add only the five. Boards draw the other forms by hand.
 - **Other:** your own.
 
-Recommended: A, because the export can copy a panel (Risks).
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -9,7 +9,7 @@ Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and i
 ## Changing the design system
 
 - **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
-- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Do not run them from `main`. `.design-system/` is not committed, so only the refresh produces a commit.
+- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Do not run them from `main`. Git ignores `.design-system/`, so only the refresh produces a commit.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
@@ -51,7 +51,7 @@ Fallback, in a session without the `Artifact` tool: use `copy_file` for each cha
 Then refresh the copy. To run the steps, paste this prompt into Claude Code:
 
 ```text
-Use the Artifact tool to update the design system copy in project/ds/kinscape/ on the canvas.
+Use the Artifact tool to update project/ds/kinscape/ and the designSystems entry on the canvas.
 Follow "Updating the install" in design/CANVAS.md, steps 1 to 6.
 After step 3, wait for my OK. If nothing differs, say so and stop.
 Change nothing else on the canvas. Touch no board. Leave the repo alone.

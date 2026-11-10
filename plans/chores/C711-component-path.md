@@ -25,7 +25,7 @@
 
 "Updating the install" lists no boards on `main`.
 
-- **A.** Step 1 lists only the canvas files under `project/`.
+- **A.** Step 1 lists only the canvas files under `project/ds/kinscape/`.
 - **B.** Step 6 also lists the `project/` boards, for the board swap.
 - **Other:** your own.
 

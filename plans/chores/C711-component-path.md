@@ -42,6 +42,7 @@
 | `scripts/vercel-ignore.mts`               | Ignore the file   |
 | `scripts/__tests__/vercel-ignore.test.ts` | An ignored case   |
 | `docs/README.md`                          | Owner table row   |
+| `scripts/doc-links.mts`                   | Allow link cycle  |
 
 ## Order of work
 
@@ -59,6 +60,10 @@
 | Design agent prompt                | Review                                                |
 | Seven fixes                        | One line each in the PR body                          |
 | The PR of Chore #690 walks through | A PR table: the seven lines and their commits in #710 |
+
+## Deviations
+
+- The PR table lists only stages with a #710 commit.
 
 ## Out of scope
 

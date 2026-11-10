@@ -15,9 +15,10 @@ With no Chromium, skip `npm run design:export`: the workflow exports in CI.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
-  3. Run `/publish-design-system`. 4. Run the steps in "Updating the install".
-  4. Run the steps in "Refreshing the copy", then commit `design/canvas/` alone.
-  5. Push the branch. If a board changed, run the workflow Design: Render snapshots.
+  3. Run `/publish-design-system`.
+  4. Run the steps in "Updating the install".
+  5. Run the steps in "Refreshing the copy", then commit `design/canvas/` alone.
+  6. Push the branch. If a board changed, run the workflow Design: Render snapshots.
 - **Done check.** A Spec or Chore that changes these inputs lists steps 3 to 5 in its done check: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`.
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
 - **Boards.** The design agent swaps the new component into the boards that the plan lists, on the same branch: [`COMPONENTS.md`](COMPONENTS.md).

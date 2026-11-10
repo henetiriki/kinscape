@@ -172,9 +172,12 @@ jobs:
           persist-credentials: ${{ inputs.kind == 'respond' && 'true' || 'false' }}
           playwright: ${{ inputs.playwright }}
 
-      # Note the start time, so the last step can tell whether Claude commented during this run.
+      # Note the start time and the head, so the last step can tell whether Claude commented or
+      # pushed a commit during this run.
       - name: Note the start time
-        run: echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
+        run: |
+          echo "STARTED=$(date -u +%FT%TZ)" >> "$GITHUB_ENV"
+          echo "START_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       # The approval named one commit (scripts/agent-approve.mts). The branch has moved if a push
       # landed since: that is not what the owner read, so the run stops here, before the browser
@@ -258,7 +261,8 @@ jobs:
       # Safety net: a stalled or failed run still leaves a trace. This runs even if Claude's
       # step failed, but not when the commit check above stopped the run and commented.
       # If Claude left no comment, post one pointing at the run, or at the PR it
-      # opened. Only a run with neither hands the Spec back as blocked. A respond run has none:
+      # opened, or saying it pushed a commit. Only a run with none of these hands the Spec back
+      # as blocked. A respond run has none:
       # tag mode may reply in a review thread, which this count does not see.
       - name: If Claude left no comment, post one
         if: always() && inputs.kind != 'respond' && steps.head.outputs.commented != 'true'
@@ -268,6 +272,7 @@ jobs:
           BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
           OUTCOME: ${{ steps.claude.outcome }}
           PLAN: ${{ inputs.plan }}
+          REF: ${{ inputs.ref }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           # `gh … --json` is GraphQL, which shows an App's bot without its "[bot]" suffix, and
@@ -285,8 +290,19 @@ jobs:
               pr=$(gh pr list --state all --author "$author" --json number,createdAt,closingIssuesReferences \
                 --jq "[.[] | select(.createdAt >= \"$STARTED\" and any(.closingIssuesReferences[]; .number == $THREAD))][0].number // empty")
             fi
+            # A run with a `ref` works on that branch: a new head means it pushed. A failed read
+            # counts as no push, so the text below stays.
+            pushed=""
+            if [ -z "$pr" ] && [ -n "$REF" ]; then
+              head=$(gh api "repos/$GH_REPO/branches/$REF" --jq .commit.sha || true)
+              if [ -n "$head" ] && [ "$head" != "$START_SHA" ]; then
+                pushed=true
+              fi
+            fi
             if [ -n "$pr" ]; then
               gh issue comment "$THREAD" --body "The agent opened #$pr but left no comment here. See the [run]($RUN_URL)."
+            elif [ -n "$pushed" ]; then
+              gh issue comment "$THREAD" --body "The agent pushed a commit but left no comment. See the [run]($RUN_URL)."
             else
               gh issue comment "$THREAD" --body "The agent finished without commenting (step outcome: $OUTCOME). Check the [run]($RUN_URL) and the branch before re-triggering."
               # If this was a plan run, the thread is the Spec itself:

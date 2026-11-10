@@ -876,6 +876,131 @@ describe('the approved-commit check', () => {
   });
 });
 
+// A build that passes its checks pushes and ends with no comment. The net then tells a run that
+// pushed a commit from one that did nothing (plans/chores/C693-build-comment-on-pass.md).
+describe('the safety net of claude-run.yml', () => {
+  const steps = () =>
+    (
+      parse(read('claude-run.yml')) as {
+        jobs: Record<string, { steps: Step[] }>;
+      }
+    ).jobs.run.steps;
+  const named = (name: string) => steps().find(step => step.name === name);
+  const net = () => named('If Claude left no comment, post one');
+  const started = 'a'.repeat(40);
+  const pushed = 'b'.repeat(40);
+
+  // The final comment follows a pass and a fail alike; a failure-only sentence read as failure-only.
+  it('tells the build agent to comment whether its checks pass or fail', () => {
+    expect(agent('build.md')).toContain(
+      'Whether the checks pass or fail, comment on the PR last.'
+    );
+  });
+
+  it('records the head at the start, with the start time', () => {
+    expect(named('Note the start time')?.run).toContain(
+      'START_SHA=$(git rev-parse HEAD)'
+    );
+  });
+
+  it('gets the branch and the start head through its environment', () => {
+    expect(net()?.env).toMatchObject({ REF: '${{ inputs.ref }}' });
+    expect(net()?.run).toContain('$START_SHA');
+  });
+
+  // The net's script, with a `gh` that answers each call and records the ones that write.
+  // `head` is what the branch API returns; `apiFails` makes that call fail, as a 404 would.
+  const runNet = ({
+    apiFails = false,
+    head = started,
+    plan = false,
+    ref = 'chore/C1-example',
+  }) => {
+    const bin = mkdtempSync(join(tmpdir(), 'safety-net-'));
+    const calls = join(bin, 'calls');
+
+    writeFileSync(
+      join(bin, 'gh'),
+      `#!/bin/sh
+case "$1" in
+  issue)
+    case "$2" in
+      view) echo 0 ;;
+      *) echo "$@" >> ${calls} ;;
+    esac ;;
+  pr) ;;
+  api)
+    echo "$@" >> ${calls}
+    ${apiFails ? 'exit 1' : `echo ${head}`} ;;
+esac
+`,
+      { mode: 0o755 }
+    );
+
+    const result = spawnSync('bash', ['-e', '-c', net()?.run ?? ''], {
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        BOT_LOGIN: 'kinscape[bot]',
+        GH_REPO: 'owner/repo',
+        OUTCOME: 'success',
+        PATH: `${bin}:${process.env.PATH}`,
+        PLAN: String(plan),
+        REF: ref,
+        RUN_URL: 'https://example.test/run',
+        START_SHA: started,
+        STARTED: '2026-01-01T00:00:00Z',
+        THREAD: '42',
+      },
+    });
+    const log = existsSync(calls) ? readFileSync(calls, 'utf8') : '';
+
+    rmSync(bin, { force: true, recursive: true });
+
+    return { ...result, log };
+  };
+
+  it('says the agent pushed a commit when the branch head moved', () => {
+    const { log, status } = runNet({ head: pushed });
+
+    expect(status).toBe(0);
+    expect(log).toContain('api repos/owner/repo/branches/chore/C1-example');
+    expect(log).toContain(
+      'issue comment 42 --body The agent pushed a commit but left no comment. See the [run](https://example.test/run).'
+    );
+    expect(log).not.toContain('finished without commenting');
+  });
+
+  it('keeps the current text when the branch head did not move', () => {
+    const { log, status } = runNet({});
+
+    expect(status).toBe(0);
+    expect(log).toContain('The agent finished without commenting');
+    expect(log).not.toContain('pushed a commit');
+    expect(log).not.toContain('issue edit');
+  });
+
+  // A plan run has no `ref`, so it never reads a branch and still hands the Spec back.
+  it('keeps the current text and swaps the label on a plan run', () => {
+    const { log, status } = runNet({ head: pushed, plan: true, ref: '' });
+
+    expect(status).toBe(0);
+    expect(log).not.toContain('api ');
+    expect(log).toContain('The agent finished without commenting');
+    expect(log).toContain(
+      'issue edit 42 --remove-label status: ready-for-agent --add-label status: blocked'
+    );
+  });
+
+  it('keeps the current text when the branch read fails', () => {
+    const { log, status } = runNet({ apiFails: true });
+
+    expect(status).toBe(0);
+    expect(log).toContain('The agent finished without commenting');
+    expect(log).not.toContain('pushed a commit');
+  });
+});
+
 // A reply to an @claude comment runs through the shared runner as `kind: respond`
 // (plans/chores/C657-shared-run-respond.md). Tag mode posts its own comment and :eyes:, and there is
 // nothing for the gate to check.

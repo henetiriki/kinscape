@@ -5,7 +5,7 @@ description: Publish KinScape's design system (tokens, fonts, icons, README, cov
 
 # Publish the design system
 
-Runs `npm run design-system` ([Spec #446](https://github.com/henetiriki/kinscape/issues/446)) and sends the result to the artifact titled "KinScape". `scripts/design-system-publish.mts` decides what changed; this skill makes the artifact calls. [`tools.md`](tools.md) names the call for each step.
+Runs `npm run design-system` and sends the result to the artifact titled "KinScape". `scripts/design-system-publish.mts` decides what changed; this skill makes the artifact calls. [`tools.md`](tools.md) names the call for each step.
 
 Scratch files go in `.design-system/published/`, which git ignores. Never run any other command from `.design-system/`.
 

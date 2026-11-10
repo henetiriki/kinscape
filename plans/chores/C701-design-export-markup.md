@@ -1,7 +1,7 @@
 # Plan: C701: Let the design export hold markup inside a component and skip the browser's border grey
 
 - **Spec:** #701
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ jsdom has no `<hr>` grey.
 - **B.** Export a board in Chromium in a Playwright test. It is slower, and it adds no unit coverage.
 - **Other:** your own.
 
-Recommended: A, because the Chore names `design-export.test.ts`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

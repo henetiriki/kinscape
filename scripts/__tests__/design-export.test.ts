@@ -563,43 +563,13 @@ describe('mountImports', () => {
     props: Record<string, unknown>;
   };
 
-  const draw = (tree: unknown): Node => {
-    if (typeof tree === 'string') {
-      return document.createTextNode(tree);
-    }
-
-    const { children, component, props } = tree as {
-      component: string | Tree['component'];
-    } & Omit<Tree, 'component'>;
-
-    if (typeof component === 'string') {
-      const { className, htmlFor, style, ...rest } = props as {
-        className?: string;
-        htmlFor?: string;
-        style?: Record<string, string>;
-      } & Record<string, string>;
-      const element = document.createElement(component);
-
-      for (const [name, value] of Object.entries(rest)) {
-        element.setAttribute(name, value);
-      }
-
-      if (className) {
-        element.className = className;
-      }
-
-      if (htmlFor) {
-        element.setAttribute('for', htmlFor);
-      }
-
-      Object.assign(element.style, style);
-      element.append(...children.map(draw));
-
-      return element;
-    }
-
-    return component({ ...props, children: children.map(draw) });
-  };
+  const draw = (tree: unknown): Node =>
+    typeof tree === 'string'
+      ? document.createTextNode(tree)
+      : (tree as Tree).component({
+          ...(tree as Tree).props,
+          children: (tree as Tree).children.map(draw),
+        });
 
   const box = (tag: string, props: Record<string, unknown>) => {
     const element = document.createElement(tag);
@@ -691,7 +661,23 @@ describe('mountImports', () => {
   });
 
   it('renders HTML markup inside an <x-import>, with class, for and style as React props', async () => {
-    install();
+    const React = await import('react');
+    const ReactDOM = await import('react-dom');
+    const { createRoot } = await import('react-dom/client');
+    const item = ({ children }: { children?: React.ReactNode }) =>
+      React.createElement('li', null, children);
+
+    Object.assign(window, {
+      KinScape: {
+        Group: Object.assign(
+          ({ children }: { children?: React.ReactNode }) =>
+            React.createElement('ul', null, children),
+          { Item: item }
+        ),
+      },
+      React,
+      ReactDOM: { createRoot, flushSync: ReactDOM.flushSync },
+    });
     board(
       '<x-import component-from-global-scope="KinScape.Group"><div class="row" aria-label="Row" style="margin-top: 4px; --x: 1"><label for="a">A</label><br><x-import component-from-global-scope="KinScape.Group.Item">One</x-import></div></x-import>'
     );
@@ -699,7 +685,7 @@ describe('mountImports', () => {
     await mountImports();
 
     expect(document.querySelector('ul')?.innerHTML).toBe(
-      '<div aria-label="Row" class="row" style="margin-top: 4px;"><label for="a">A</label><br><li>One</li></div>'
+      '<div class="row" aria-label="Row" style="margin-top: 4px; --x: 1;"><label for="a">A</label><br><li>One</li></div>'
     );
   });
 

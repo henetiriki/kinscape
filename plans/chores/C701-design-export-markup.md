@@ -13,8 +13,6 @@
 
 **D1 · How the test proves `Divider` and `MenuPanel`** · Decides: Tech lead
 
-jsdom has no `<hr>` grey.
-
 - **A.** Render both with React 19 and their CSS module text. Mock `getComputedStyle` to give `0px` and `rgb(128, 128, 128)`.
 - **B.** Export a board in Chromium in a Playwright test. It is slower, and it adds no unit coverage.
 - **Other:** your own.
@@ -28,6 +26,7 @@ jsdom has no `<hr>` grey.
 | `scripts/design-export.mts`               | Steps 1–3.                                                                                  |
 | `scripts/types.ts`                        | `render` takes the tokens.                                                                  |
 | `scripts/__tests__/design-export.test.ts` | New cases. The `<b>` rejection becomes the `<svg>` case. Two tests get the tokens argument. |
+| `e2e/design-export.spec.mts`              | Pass the tokens.                                                                            |
 
 ## Order of work
 

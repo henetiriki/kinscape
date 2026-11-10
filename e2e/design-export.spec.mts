@@ -31,7 +31,8 @@ const BOARD = `<!doctype html>
   <h2 class="h2" style="margin: 0">Add a pin</h2>
   <x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Example Person"></x-import>
   <x-import component-from-global-scope="KinScape.Button" variant="primary" style="flex: 1">Save pin</x-import>
-  <x-import component-from-global-scope="KinScape.Alert" tone="warning" title="Heads up">Careful.</x-import></div></x-dc>
+  <x-import component-from-global-scope="KinScape.Alert" tone="warning" title="Heads up">Careful.</x-import>
+</div></x-dc>
 <script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return {}; } }</script>
 </body></html>`;
 

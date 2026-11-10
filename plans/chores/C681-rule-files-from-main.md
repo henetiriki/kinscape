@@ -29,22 +29,22 @@ Who edits the callers?
 ## Order of work
 
 1. Tests first, then the files.
-2. Merge this PR.
-3. Merge the pin PRs: `run-claude` in `claude-run.yml`, then `claude-run.yml` in the callers.
-4. Merge the second PR. It says `Closes #681`.
+2. Merge the pin PRs: `run-claude` in `claude-run.yml`, then `claude-run.yml` in the callers.
+3. Merge the second PR. It says `Closes #681`.
 
 ## Files that change
 
-| File                                         | What                   |
-| -------------------------------------------- | ---------------------- |
-| `.github/actions/run-claude/action.yml`      | The input and the step |
-| `.github/workflows/claude-run.yml`           | The input              |
-| `.github/agent/resolve-conflict.md`          | The restore            |
-| `scripts/__tests__/load-agent-files.test.ts` | New tests              |
+| File                                                         | What                   |
+| ------------------------------------------------------------ | ---------------------- |
+| `.github/actions/run-claude/action.yml`                      | The input and the step |
+| `.github/workflows/claude-run.yml`                           | The input              |
+| `.github/agent/resolve-conflict.md`                          | The restore            |
+| `scripts/__tests__/load-agent-files.test.ts`                 | New tests              |
+| `claude-{build,fix-review,resolve-conflict}.yml` (second PR) | `main_files`           |
 
 ## Risks
 
-- The second PR before step 3 fails three runs at start.
+- The second PR before step 2 fails three runs at start.
 - D2: A needs a Chore for `claude-respond.yml`. None exists.
 - The tech lead accepted these, with no code:
   - On a branch behind `main`, the copied `AGENTS.md` can fail `plan-rule-citations.test.ts` or `npm run words`.

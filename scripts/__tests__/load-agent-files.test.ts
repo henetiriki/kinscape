@@ -408,7 +408,7 @@ describe('the run-claude action', () => {
 });
 
 // A caller of claude-run.yml may name files that a run takes from main, not from the PR branch
-// (plans/chores/C681-rule-files-from-main.md). The callers set none yet.
+// (plans/chores/C681-rule-files-from-main.md).
 describe('the main_files input of the run-claude action', () => {
   const PASS = '${{ inputs.main_files }}';
   const COPY = "Put main's rule files in the checkout";
@@ -543,6 +543,39 @@ describe('the main_files input of the run-claude action', () => {
       expect(merge().status).toBe(0);
       rmSync(dir, { force: true, recursive: true });
     });
+  });
+
+  // The runs that check out a PR branch and skip a hand-back PR. A plan run checks out main. A
+  // respond run is left out: tag mode fetches the PR branch after the copy (no Chore yet).
+  describe('the callers', () => {
+    const given = (file: string) =>
+      Object.values(
+        (
+          parse(read(file)) as {
+            jobs: Record<
+              string,
+              { uses?: string; with?: Record<string, unknown> }
+            >;
+          }
+        ).jobs
+      )
+        .filter(job => job.uses?.includes('/claude-run.yml@'))
+        .map(job => job.with?.main_files);
+
+    it.each([
+      'claude-build.yml',
+      'claude-fix-review.yml',
+      'claude-resolve-conflict.yml',
+    ])('%s names the files CLAUDE.md imports and the code rules', file => {
+      expect(given(file)).toEqual([[...imports(), CODE_RULES].join(' ')]);
+    });
+
+    it.each(['claude-plan.yml', 'claude-respond.yml'])(
+      '%s names none',
+      file => {
+        expect(given(file)).toEqual([undefined]);
+      }
+    );
   });
 });
 

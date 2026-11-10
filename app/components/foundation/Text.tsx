@@ -37,6 +37,7 @@ type Props = {
 } & ({ as: Tag; variant: Heading } | { as?: Tag; variant: Other }) &
   Omit<ComponentProps<'span'>, 'className' | 'ref'>;
 
+/** Text in one style of the type scale; a headline needs `as`, and `tone` colours a message. */
 export const Text = ({ as, tone, variant, ...rest }: Props) => {
   const Element = as ?? DEFAULT_TAG[variant as Other];
 

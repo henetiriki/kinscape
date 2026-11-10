@@ -115,7 +115,6 @@ type MenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
 export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
   const [open, setOpen] = useState(false);
   const anchor = useRef<HTMLDivElement>(null);
-  const avatar = useRef<HTMLButtonElement>(null);
   const menu = useRef<HTMLDivElement>(null);
 
   const items = () => [
@@ -147,7 +146,8 @@ export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
   }, [open]);
 
   const closeToAvatar = () => {
-    avatar.current!.focus();
+    // A `ref` on Avatar does not reach its button in React 18, so the anchor finds it.
+    anchor.current!.querySelector<HTMLElement>('[aria-haspopup]')!.focus();
     setOpen(false);
   };
 
@@ -176,7 +176,6 @@ export const Menu = ({ form, initial, onSelect, ...panel }: MenuProps) => {
         expanded={open}
         initial={initial}
         onClick={() => setOpen(!open)}
-        ref={avatar}
       />
       {open && (
         <div className={styles.drop} data-form={form}>

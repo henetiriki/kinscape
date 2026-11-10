@@ -5,7 +5,13 @@ import type { Card, Docs, Prop } from '#ks/lib/design/types.ts';
 import { NAMESPACE } from '#ks/lib/design/bundle.mts';
 import { plainLinks } from '#ks/lib/design/system.mts';
 
-export const GROUPS = ['Actions', 'Feedback', 'Forms'];
+export const GROUPS = [
+  'Actions',
+  'Feedback',
+  'Forms',
+  'Foundation',
+  'Overlays',
+];
 
 const KB = 1024;
 const LINE_ONE = /^<!-- @dsCard group="(\w+)" height=(\d+) -->$/;
@@ -160,7 +166,7 @@ export const checkPreview = (name: string, html: string): void => {
     Buffer.byteLength(html) > 256 * KB
       ? 'is over 256 KB'
       : !GROUPS.includes(group)
-        ? 'does not start with a card comment naming one of the three groups'
+        ? 'does not start with a card comment naming one of the groups'
         : Number(height) < 40 || Number(height) > 4000
           ? 'has a height outside 40 to 4000'
           : BANNED.test(html) || SCRIPT_SRC.test(html)

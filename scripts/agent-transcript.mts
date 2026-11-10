@@ -149,6 +149,12 @@ const detailOf = (input: Record<string, unknown> | undefined): string => {
   return String(value).replace(/\s+/g, ' ').trim().slice(0, 200);
 };
 
+// The start of a Bash call that the hook cuts: `cd <dir>`, then `;` or `&&`, and the blanks after it.
+export const leadingCd = (dir: string): RegExp =>
+  new RegExp(
+    `^\\s*cd\\s+["']?${dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']?\\s*(;|&&)\\s*`
+  );
+
 // The Bash calls the hook cut a `cd` from: they start with `cd <dir>` then `;` or `&&`, and weren't
 // denied (a denied call never ran, so nothing was cut).
 const countStripped = (
@@ -160,9 +166,7 @@ const countStripped = (
     return 0;
   }
 
-  const start = new RegExp(
-    `^\\s*cd\\s+["']?${dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']?\\s*(;|&&)`
-  );
+  const start = leadingCd(dir);
 
   return events
     .filter(({ type }) => type === 'assistant')

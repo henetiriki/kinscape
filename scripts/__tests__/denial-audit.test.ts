@@ -297,6 +297,56 @@ describe('summarise', () => {
       );
       expect(groupOf('rm a').settings).toBe('settings.json: no rule');
     });
+
+    it('runs the hook in the workspace, so a cut cd is no denial of cd', () => {
+      expect(groupOf(`cd ${process.cwd()}; cat x`).settings).toBe(
+        'settings.json: denied by the hook'
+      );
+      expect(groupOf(`cd ${process.cwd()} && gh pr view 1`).settings).toBe(
+        'settings.json: allowed by `Bash(gh pr:*)`'
+      );
+    });
+
+    // The audit names the group for the part the hook denied, not the first word of the call.
+    it.each([
+      [`cd ${process.cwd()}; cat x`, 'Bash: cat'],
+      [`cd ${process.cwd()} && cat x`, 'Bash: cat'],
+      ['gh pr view 1; cat x', 'Bash: cat'],
+      ['gh pr view 1 && cat x', 'Bash: cat'],
+      ['gh pr view 1 || cat x', 'Bash: cat'],
+      ['  gh pr view 1 ;  git status ;  ls docs', 'Bash: ls'],
+      // The first denied part names it.
+      ['gh pr view 1; cat x; ls', 'Bash: cat'],
+      // Not the workspace: this cd is the denied part.
+      ['cd /elsewhere; cat x', 'Bash: cd'],
+      // The hook denies no part: the call, without a cut cd.
+      [`cd ${process.cwd()}; rm a`, 'Bash: rm'],
+      ['git push origin x', 'Bash: git push'],
+    ])('names %j as %s', (detail, pattern) => {
+      expect(groupOf(detail).pattern).toBe(pattern);
+    });
+
+    it('keeps the whole call as the example', () => {
+      expect(groupOf('gh pr view 1; cat x').example).toBe(
+        'Bash: gh pr view 1; cat x'
+      );
+    });
+
+    it('names the call by its first words when the settings have no hook', () => {
+      const hookless = (file: string) => ({
+        ...REAL_SETTINGS(file),
+        hook: undefined,
+      });
+      const [group] = summarise(
+        [1, 2].map(id => ({
+          id,
+          transcript: transcript([bash('gh pr view 1; cat x')]),
+        })),
+        hookless
+      ).groups;
+
+      expect(group.pattern).toBe('Bash: gh pr');
+    });
   });
 
   describe('the refresh of claude-unblock.yml', () => {

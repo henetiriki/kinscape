@@ -1,7 +1,7 @@
 # Plan: C705: Speed up the design-export snapshot test
 
 - **Spec:** #705
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ If the fixed test still takes more than 1 s alone, what then?
 - **B.** Also split the test into one `it` for each snapshot, with the same assertion.
 - **Other:** your own.
 
-Recommended: A, because B hides the cause, as the timeout does.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

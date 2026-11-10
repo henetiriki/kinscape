@@ -40,7 +40,7 @@
 - `contents` keeps a single space between two elements in markup.
 - A markup `style` goes to the element as text through a `ref`, so a `var()` shorthand survives.
 - `defineBuilder` puts the builder on `window`, and `mountImports` reads it: `page.evaluate` sends one function.
-- `inlineStyles` exceeds 60 lines.
+- `defineBuilder` and `inlineStyles` exceed 60 lines.
 
 ## Risks
 

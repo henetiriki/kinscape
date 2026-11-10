@@ -307,20 +307,19 @@ describe('summarise', () => {
       );
     });
 
-    // The group is named for the part the hook denied, not the first word of the call.
+    // The audit names the group for the part the hook denied, not the first word of the call.
     it.each([
       [`cd ${process.cwd()}; cat x`, 'Bash: cat'],
       [`cd ${process.cwd()} && cat x`, 'Bash: cat'],
       ['gh pr view 1; cat x', 'Bash: cat'],
       ['gh pr view 1 && cat x', 'Bash: cat'],
       ['gh pr view 1 || cat x', 'Bash: cat'],
-      ['gh pr view 1\ncat x', 'Bash: cat'],
       ['  gh pr view 1 ;  git status ;  ls docs', 'Bash: ls'],
       // The first denied part names it.
       ['gh pr view 1; cat x; ls', 'Bash: cat'],
       // Not the workspace: this cd is the denied part.
       ['cd /elsewhere; cat x', 'Bash: cd'],
-      // No part is denied by the hook: the call, without a cut cd.
+      // The hook denies no part: the call, without a cut cd.
       [`cd ${process.cwd()}; rm a`, 'Bash: rm'],
       ['git push origin x', 'Bash: git push'],
     ])('names %j as %s', (detail, pattern) => {

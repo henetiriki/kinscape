@@ -4,7 +4,7 @@ Where `review.md` or `review-code.md` (what to look for) disagrees with the revi
 
 ## Commands
 
-- Run one command in each Bash call. If one part is denied, the whole call is denied.
+- Run one command in each Bash call. One denied part denies the whole call.
 - `npm` is off in this review. A PR can hold a hostile script, so do not run a project script.
 
 ## The plan

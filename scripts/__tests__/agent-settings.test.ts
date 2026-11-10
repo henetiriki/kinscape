@@ -177,7 +177,7 @@ describe('settings.json', () => {
     'gh api repos/o/r/issues/5/dependencies/blocked_by',
     'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
     'gh api repos/o/r/pulls/5/files --paginate',
-    // The hook guards -f: it lets a GraphQL read through (see the Bash hook below).
+    // The hook guards -f: it passes a GraphQL read (see the Bash hook below).
     "gh api graphql -f query='query { x }'",
     'npm run review:threads -- list 5',
     'npm ci',
@@ -225,7 +225,25 @@ describe('review-settings.json', () => {
     expect(allowed(command)).toBe(false);
   });
 
-  // The review's token can write, and gh api sends a POST when given a field or a method.
+  // `--output` writes a file, and `--no-index` reads one that `Read(//proc/**)` denies. Git does not
+  // shorten either option: the longer options that start the same make a shorter form ambiguous.
+  it.each([
+    'git diff --output=x origin/main...HEAD',
+    'git log --output x',
+    'git show --output=x HEAD',
+    'git diff --no-index /proc/self/environ /dev/null',
+  ])('denies: %s', command => {
+    expect(denied(command)).toBe(true);
+  });
+
+  it.each(['git diff origin/main...HEAD', 'git log --oneline -n 5'])(
+    'does not deny: %s',
+    command => {
+      expect(denied(command)).toBe(false);
+    }
+  );
+
+  // The review's token can write, and gh api sends a POST when the call has a field or a method.
   it.each([
     'gh api -X POST repos/o/r/issues/5/labels',
     'gh api --method PATCH repos/o/r/issues/5',
@@ -446,6 +464,15 @@ describe('the Bash hook', () => {
       'read only',
     ],
     ["gh api graphql -f query='query { x }' --input -", 'read only'],
+    // Quotes can split the word `mutation`, and bash joins the pieces again.
+    ["gh api graphql -f query='mu''tation { x }'", 'read only'],
+    ['gh api graphql -f query="mu""tation { x }"', 'read only'],
+    ["gh api graphql -f query=$'\\x6dutation { x }'", 'read only'],
+    ['gh api graphql -f query=mut\\ation{x}', 'read only'],
+    // git takes a unique prefix of a long option, and bash joins `""` to the next word.
+    ['git grep --open=sh foo', 'runs a command'],
+    ['git grep --op=sh foo', 'runs a command'],
+    ['git grep -n ""-Osh foo', 'runs a command'],
     // The option that opens each file in a program; -nO is a cluster, and the rule can't match it.
     ['git grep -O sh foo', 'runs a command'],
     ['git grep -nO foo', 'runs a command'],
@@ -529,8 +556,10 @@ describe('the Bash hook', () => {
     'git grep -n -A30 "## NOTE" -- docs',
     "git grep -n 'OWNER' -- ':!plans'",
     'git grep -n --no-index -e Foo -- src',
+    'git grep --or -e a -e b',
+    'git grep -n --only-matching foo',
     'git grep -ne foo',
-    // Only a command at the start is rewritten (below).
+    // The hook rewrites only a command at the start (below).
     'echo npx vitest run',
     '',
   ])('leaves %j to the allowlist', command => {
@@ -679,6 +708,8 @@ describe('the Bash hook', () => {
       'git grep foo -nOsh',
       'git grep -nO foo',
       'git grep -n --open-files-in-pager=sh foo',
+      'git grep --open=sh foo',
+      'git grep -n ""-Osh foo',
     ])('denies %j: it runs a command', command => {
       const output = hook(command, file, { ISSUE: '5' });
 

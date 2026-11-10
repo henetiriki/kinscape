@@ -145,9 +145,8 @@ const covers = (rule: string, tool: string, command: string): boolean => {
   ).test(command);
 };
 
-// Whether the settings' Bash hook denies the command. It runs the hook as Claude Code does, with the
-// workspace as the directory (the audit runs in the same folder as the agents), so it cuts a `cd`
-// into it and does not deny that `cd`.
+// Whether the settings' Bash hook denies the command. The hook runs as in CI, with the workspace as
+// `cwd`. It cuts a `cd` into the workspace, so it does not deny that `cd`.
 const hookDenies = (hook: string, command: string): boolean => {
   const { stdout } = spawnSync('bash', ['-c', hook], {
     encoding: 'utf8',
@@ -162,20 +161,20 @@ const hookDenies = (hook: string, command: string): boolean => {
   }
 };
 
-// A Bash call as the rules see it: the hook has cut a leading `cd` into the workspace.
+// A Bash call as the rules see it: the hook cuts a leading `cd` into the workspace.
 const withoutCd = (command: string): string =>
   command.replace(leadingCd(process.cwd()), '');
 
 // The part of a denied Bash call to name the group by: the first part, after a leading `cd` into the
-// workspace, that the hook denies. Parts end at `;`, `&&`, `||` or a newline; the split ignores
-// quotes. With no such part, the call without that `cd`.
+// workspace, that the hook denies. Parts end at `;`, `&&` or `||`; the split ignores quotes and
+// newlines (`detailOf` turns each newline into a space). With no such part, the call without that `cd`.
 const deniedPartOf = ({ hook }: Settings, command: string): string => {
   const rest = withoutCd(command);
 
   return (
     (hook &&
       rest
-        .split(/;|&&|\|\||\n/)
+        .split(/;|&&|\|\|/)
         .map(part => part.trim())
         .filter(Boolean)
         .find(part => hookDenies(hook, part))) ||
@@ -333,7 +332,7 @@ export const summarise = (
   const groups = new Map<string, { firstBy: Map<string, Denial> } & Group>();
   const sessionsOf = new Map<string, Set<number>>();
   const stripped: Record<string, number> = {};
-  // Each settings file is read once: naming a denial runs its hook, and there are many denials.
+  // The audit reads each settings file once, because it runs the hook for each denial.
   const known = new Map<string, Settings>();
   const settingsOf = (file: string): Settings => {
     const read = known.get(file) ?? settings(file);

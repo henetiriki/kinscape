@@ -42,7 +42,12 @@ import { Icon, PATHS } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
+import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
+import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
+import { Modal } from '@ks/app/components/overlays/Modal';
+import { Popup } from '@ks/app/components/overlays/Popup';
+import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -68,6 +73,28 @@ const OPTIONS = [
   { glyph: 'death', label: 'Death', value: 'death' },
   { glyph: 'marriage', label: 'Marriage', value: 'marriage' },
 ] as const;
+
+const CHAIN = [
+  { level: 'District', name: 'Kimberley' },
+  {
+    detail: 'Was Griqualand West until 1880',
+    level: 'Colony',
+    name: 'Cape Colony',
+  },
+];
+const PINS = [
+  {
+    date: '1901-03-14',
+    event: 'marriage' as const,
+    id: 'marriage',
+    people: 'J. Rossouw & M. du Toit',
+    title: 'Marriage',
+  },
+];
+const WORDS = {
+  subtitle: 'Where the map data comes from',
+  title: 'Sources and attributions',
+};
 
 const states = (
   name: string,
@@ -319,6 +346,74 @@ const CASES: [string, ReactElement][] = [
     'MenuPanel · hovered',
     <MenuPanel {...ACCOUNT} hovered='sources' key='hovered' onSelect={noop} />,
   ],
+  ...(['floating', 'sheet'] as const).map((form): [string, ReactElement] => [
+    `Popup · ${form}`,
+    <Popup
+      chain={CHAIN}
+      coordinates='28.738° S · 24.764° E'
+      form={form}
+      key={form}
+      onClose={noop}
+      onCopied={noop}
+      pins={PINS}
+      place='Kimberley'
+      year={1901}
+    />,
+  ]),
+  ...([false, true] as const).map((expanded): [string, ReactElement] => [
+    `BottomSheet · ${expanded ? 'expanded' : 'collapsed'}`,
+    <BottomSheet
+      expanded={expanded}
+      key={String(expanded)}
+      onExpandedChange={noop}>
+      Map date
+    </BottomSheet>,
+  ]),
+  [
+    'Modal · open',
+    <Modal aria-label='Example' key='modal' onClose={noop} open>
+      Content
+    </Modal>,
+  ],
+  [
+    'Dialog · open',
+    <Dialog form='centred' key='dialog' onClose={noop} open {...WORDS}>
+      Content
+    </Dialog>,
+  ],
+  ...(['centred', 'sheet'] as const).map((form): [string, ReactElement] => [
+    `DialogPanel · ${form}`,
+    <DialogPanel form={form} key={form} titleId={`dialog-${form}`} {...WORDS}>
+      Content
+    </DialogPanel>,
+  ]),
+  [
+    'Sheet · open',
+    <Sheet key='sheet' onClose={noop} open title='Boards'>
+      Content
+    </Sheet>,
+  ],
+  [
+    'SheetPanel · title',
+    <SheetPanel key='title' title='Boards' titleId='head-title'>
+      Content
+    </SheetPanel>,
+  ],
+  [
+    'SheetPanel · title and subtitle',
+    <SheetPanel key='subtitle' titleId='head-subtitle' {...WORDS}>
+      Content
+    </SheetPanel>,
+  ],
+  [
+    'SheetPanel · tabs',
+    <SheetPanel
+      key='tabs'
+      tabs={{ label: 'Layers and filters', selected: 'layers', tabs: TABS }}
+      titleId='head-tabs'>
+      Content
+    </SheetPanel>,
+  ],
 ];
 
 let errors: ReturnType<typeof vi.spyOn>;
@@ -366,18 +461,25 @@ describe('bundle', () => {
   const COMPONENTS = {
     Alert,
     Avatar,
+    BottomSheet,
     Button,
     Checkbox,
     CheckboxField,
     Chip,
     ChipGroup,
     DateField,
+    Dialog,
+    DialogPanel,
     Divider,
     Icon,
     IconButton,
     Menu,
     MenuPanel,
+    Modal,
+    Popup,
     Segmented,
+    Sheet,
+    SheetPanel,
     Surface,
     Tabs,
     Text,
@@ -409,6 +511,19 @@ describe('bundle', () => {
     });
 
     page = dom.window;
+    // The stand-ins of vitest.setup.ts: jsdom has no showModal, close or matchMedia.
+    Object.assign(page.HTMLDialogElement.prototype, {
+      close: () =>
+        page.document.querySelector('dialog[open]')?.removeAttribute('open'),
+      showModal: () =>
+        page.document.querySelector('dialog')?.setAttribute('open', ''),
+    });
+    page.matchMedia = ((query: string) => ({
+      addEventListener: () => {},
+      matches: false,
+      media: query,
+      removeEventListener: () => {},
+    })) as unknown as typeof page.matchMedia;
     page.document.head.innerHTML = `<style>${read(join(out, 'project/components/bundle.css'))}</style>`;
     page.eval(read('node_modules/react-18/umd/react.development.js'));
     page.eval(read('node_modules/react-dom-18/umd/react-dom.development.js'));

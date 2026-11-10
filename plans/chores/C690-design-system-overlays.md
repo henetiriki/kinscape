@@ -39,6 +39,10 @@ An open modal fills the card from the top layer and covers the other states.
 4. The tech lead runs steps 3 to 5 in a signed-in session.
 5. Compare the hashes; run `npm run design:export`.
 
+## Deviations
+
+- Props types in four files are `*Args`. `cards.test.ts` counts nine Overlays cards.
+
 ## Risks
 
 The export copies no top layer or `::backdrop`, so a board with an open modal fails the design check. No board has one.

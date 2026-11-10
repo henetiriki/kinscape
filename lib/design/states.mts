@@ -87,6 +87,29 @@ const ACCOUNT = {
   ],
 };
 
+// Synthetic, as on the design kit's Popup, Dialog and Sheet samples.
+const CHAIN = [
+  { level: 'District', name: 'Kimberley' },
+  {
+    detail: 'Was Griqualand West until 1880',
+    level: 'Colony',
+    name: 'Cape Colony',
+  },
+];
+const PINS = [
+  {
+    date: '1901-03-14',
+    event: 'marriage',
+    id: 'marriage',
+    people: 'J. Rossouw & M. du Toit',
+    title: 'Marriage',
+  },
+];
+const DIALOG_WORDS = {
+  subtitle: 'Where the map data comes from',
+  title: 'Sources and attributions',
+};
+
 type Make = (
   state: (typeof FOCUS)[number] | undefined,
   disabled: boolean
@@ -442,6 +465,117 @@ export const CARDS: Card[] = [
     states: [
       one('MenuPanel · open', ACCOUNT),
       one('MenuPanel · hovered', { ...ACCOUNT, hovered: 'sources' }),
+    ],
+  },
+  {
+    design: ['Jurisdiction popup'],
+    group: 'Overlays',
+    handlers: ['onClose', 'onCopied'],
+    height: 520,
+    name: 'Popup',
+    pad: 0,
+    states: ['floating', 'sheet'].map(form =>
+      one(`Popup · ${form}`, {
+        chain: CHAIN,
+        coordinates: '28.738° S · 24.764° E',
+        form,
+        pins: PINS,
+        place: 'Kimberley',
+        year: 1901,
+      })
+    ),
+  },
+  {
+    design: ['Phone date sheet'],
+    group: 'Overlays',
+    handlers: ['onExpandedChange'],
+    height: 320,
+    name: 'BottomSheet',
+    pad: 0,
+    states: [false, true].map(expanded =>
+      one(
+        `BottomSheet · ${expanded ? 'expanded' : 'collapsed'}`,
+        { expanded },
+        'Map date'
+      )
+    ),
+  },
+  {
+    design: [],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 320,
+    name: 'Modal',
+    pad: 0,
+    states: [
+      one('Modal · open', { 'aria-label': 'Example', open: true }, 'Content'),
+    ],
+  },
+  {
+    design: ['Dialog'],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 520,
+    name: 'Dialog',
+    pad: 0,
+    states: [
+      one(
+        'Dialog · open',
+        { form: 'centred', open: true, ...DIALOG_WORDS },
+        'Content'
+      ),
+    ],
+  },
+  {
+    design: ['Dialog'],
+    group: 'Overlays',
+    handlers: [],
+    height: 880,
+    name: 'DialogPanel',
+    pad: 0,
+    states: ['centred', 'sheet'].map(form =>
+      one(
+        `DialogPanel · ${form}`,
+        { form, titleId: `dialog-${form}`, ...DIALOG_WORDS },
+        'Content'
+      )
+    ),
+  },
+  {
+    design: [],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 420,
+    name: 'Sheet',
+    pad: 0,
+    states: [one('Sheet · open', { open: true, title: 'Boards' }, 'Content')],
+  },
+  {
+    design: [],
+    group: 'Overlays',
+    handlers: [],
+    height: 880,
+    name: 'SheetPanel',
+    pad: 0,
+    states: [
+      one(
+        'SheetPanel · title',
+        { title: 'Boards', titleId: 'head-title' },
+        'Content'
+      ),
+      one(
+        'SheetPanel · title and subtitle',
+        { titleId: 'head-subtitle', ...DIALOG_WORDS },
+        'Content'
+      ),
+      one(
+        'SheetPanel · tabs',
+        {
+          tabs: { label: 'Layers and filters', selected: 'layers', tabs: TABS },
+          titleId: 'head-tabs',
+        },
+        'Content'
+      ),
     ],
   },
 ];

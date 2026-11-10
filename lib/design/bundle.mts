@@ -15,7 +15,7 @@ export const NAMESPACE = 'KinScape';
 export const BUNDLE_CSS = 'bundle.css';
 export const BUNDLE_JS = 'bundle.js';
 
-/** The shared controls (Spec #448, Chore #689), in display order. `Menu` and `MenuPanel` share a file. */
+/** The shared controls (Spec #448, Chores #689 and #690), in display order. `Menu` and `MenuPanel` share a file, as do `Dialog` and `DialogPanel`, and `Sheet` and `SheetPanel`. */
 export const CONTROLS: Control[] = [
   { name: 'Button', path: 'app/components/actions/Button.tsx' },
   { name: 'IconButton', path: 'app/components/actions/IconButton.tsx' },
@@ -37,6 +37,13 @@ export const CONTROLS: Control[] = [
   { name: 'Wordmark', path: 'app/components/foundation/Wordmark.tsx' },
   { name: 'Menu', path: 'app/components/overlays/Menu.tsx' },
   { name: 'MenuPanel', path: 'app/components/overlays/Menu.tsx' },
+  { name: 'Popup', path: 'app/components/overlays/Popup.tsx' },
+  { name: 'BottomSheet', path: 'app/components/overlays/BottomSheet.tsx' },
+  { name: 'Modal', path: 'app/components/overlays/Modal.tsx' },
+  { name: 'Dialog', path: 'app/components/overlays/Dialog.tsx' },
+  { name: 'DialogPanel', path: 'app/components/overlays/Dialog.tsx' },
+  { name: 'Sheet', path: 'app/components/overlays/Sheet.tsx' },
+  { name: 'SheetPanel', path: 'app/components/overlays/Sheet.tsx' },
 ];
 
 /**

@@ -679,13 +679,13 @@ describe('mountImports', () => {
       ReactDOM: { createRoot, flushSync: ReactDOM.flushSync },
     });
     board(
-      '<x-import component-from-global-scope="KinScape.Group"><div class="row" aria-label="Row" style="margin-top: 4px; --x: 1"><label for="a">A</label><br><x-import component-from-global-scope="KinScape.Group.Item">One</x-import></div></x-import>'
+      '<x-import component-from-global-scope="KinScape.Group"><div class="row" aria-label="Row" style="margin: var(--a) 4px; --x: 1"><label for="a">A</label><br><x-import component-from-global-scope="KinScape.Group.Item">One</x-import></div></x-import>'
     );
 
     await mountImports();
 
     expect(document.querySelector('ul')?.innerHTML).toBe(
-      '<div class="row" aria-label="Row" style="margin-top: 4px; --x: 1;"><label for="a">A</label><br><li>One</li></div>'
+      '<div class="row" aria-label="Row" style="margin: var(--a) 4px; --x: 1"><label for="a">A</label><br><li>One</li></div>'
     );
   });
 

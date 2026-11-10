@@ -603,22 +603,10 @@ export const mountImports = async (): Promise<void> => {
 
     for (const { name, value } of Array.from(element.attributes)) {
       if (name === 'style') {
-        const style: Record<string, string> = {};
-        const { style: declared } = element as HTMLElement;
-
-        for (let index = 0; index < declared.length; index += 1) {
-          const property = declared[index];
-
-          style[
-            property.startsWith('--')
-              ? property
-              : property.replace(/-([a-z])/g, (_match, letter: string) =>
-                  letter.toUpperCase()
-                )
-          ] = declared.getPropertyValue(property);
-        }
-
-        props.style = style;
+        // The attribute text stays as written: CSSOM empties a longhand of a shorthand with
+        // `var()`, and `pageHtml` substitutes the `var()` later.
+        props.ref = (node: Element | null) =>
+          node?.setAttribute('style', value);
       } else {
         props[
           name === 'class' ? 'className' : name === 'for' ? 'htmlFor' : name
@@ -676,9 +664,9 @@ export const mountImports = async (): Promise<void> => {
 /**
  * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
  * is dropped from the snapshot, so each element on the page takes the computed value of every
- * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. Custom properties,
- * transitions, animations and states (`:hover`) stay out. A border colour that is not a token
- * (`tokens` holds `r,g,b` strings) stays out where the border is 0px wide: the browser fills it
+ * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. It skips custom properties,
+ * transitions, animations and states (`:hover`). It also skips a border colour that is not a token
+ * (`tokens` holds `r,g,b` strings) where the border is 0px wide. The browser fills that colour
  * with a default grey that the author never set.
  * Uses nothing from the module, as `fillTemplate`.
  */

@@ -5,7 +5,7 @@
 
 ## Approach
 
-On `main`, the test reads 3.4 MB and takes 3,990 ms alone, without coverage. Under 1 MB/s means that a step of `snapshotProblems` does more than linear work. First, time each step on the real snapshots in a temporary test, and name the slow step in the PR. The likely step is `/url\(#|([a-z-][\w-]*)\(/gi`: it starts again at each letter of a word. Thus a 13 KB base64 `src` in 31 snapshots costs the square of each run. Make the slow step read each character a fixed number of times, with the same output. The target is 1 s alone, a five-times margin.
+On `main`, the test reads 3.4 MB and takes 3,990 ms alone, without coverage. Under 1 MB/s means that a step of `snapshotProblems` does more than linear work. Time each step on the real snapshots in a temporary test. The likely step is `/url\(#|([a-z-][\w-]*)\(/gi`, which starts again at each letter of a word, so a 13 KB base64 `src` in 31 snapshots costs the square of each run. Make the slow step read each character a fixed number of times, with the same output. The target is 1 s alone, a five-times margin.
 
 ## Decisions
 
@@ -13,7 +13,7 @@ On `main`, the test reads 3.4 MB and takes 3,990 ms alone, without coverage. Und
 
 If the fixed test still takes more than 1 s alone, what then?
 
-- **A.** Stop, report each step's time, and wait.
+- **A.** Stop. Report each step's time. Wait.
 - **B.** Also split the test into one `it` for each snapshot, with the same assertion.
 - **Other:** your own.
 
@@ -28,9 +28,13 @@ If the fixed test still takes more than 1 s alone, what then?
 
 ## Order of work
 
-1. Time each step, then remove the temporary test.
+1. Time each step. Remove the temporary test.
 2. Fix the slow step. Keep each `snapshotProblems` test unchanged.
 3. Remove the timeout.
+
+## Deviations
+
+- Added one unit test: a function name after leading digits, and a `(` with no name.
 
 ## Risks
 

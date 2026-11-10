@@ -122,8 +122,8 @@ const unreadableColours = (html: string): string[] =>
   );
 
 /**
- * `url(#` or a word before `(`. A word starts only at the start of a run, so a long run with no
- * `(` (a base64 `src`) is read once. A leading digit or `_` is not part of the name.
+ * `url(#` or a word before `(`. A word starts only at the start of a run, so the regex reads a
+ * long run with no `(` (a base64 `src`) once. A leading digit or `_` is not part of the name.
  */
 const FUNCTION_CALL = /url\(#|(?<![\w-])([\w-]+)\(/gi;
 const RGB_FUNCTION = /rgba?\([^)]*\)/gi;

@@ -2,6 +2,7 @@
 
 import type { Card, State } from '#ks/lib/design/types.ts';
 
+import { CHAIN, PINS } from '#ks/lib/design/samples.mts';
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
@@ -87,23 +88,6 @@ const ACCOUNT = {
   ],
 };
 
-const CHAIN = [
-  { level: 'District', name: 'Kimberley' },
-  {
-    detail: 'Was Griqualand West until 1880',
-    level: 'Colony',
-    name: 'Cape Colony',
-  },
-];
-const PINS = [
-  {
-    date: '1901-03-14',
-    event: 'marriage',
-    id: 'marriage',
-    people: 'J. Rossouw & M. du Toit',
-    title: 'Marriage',
-  },
-];
 const PANEL = {
   footnote: 'Footnote',
   subtitle: 'Subtitle',

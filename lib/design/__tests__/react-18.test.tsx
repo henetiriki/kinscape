@@ -25,6 +25,7 @@ import {
   vi,
 } from 'vitest';
 
+import { standInDom } from '@ks/__tests__/dom-stand-ins';
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip } from '@ks/app/components/actions/Chip';
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
@@ -504,19 +505,7 @@ describe('bundle', () => {
     });
 
     page = dom.window;
-    // The stand-ins of `vitest.setup.ts`: jsdom has no showModal, close or matchMedia.
-    Object.assign(page.HTMLDialogElement.prototype, {
-      close: () =>
-        page.document.querySelector('dialog[open]')?.removeAttribute('open'),
-      showModal: () =>
-        page.document.querySelector('dialog')?.setAttribute('open', ''),
-    });
-    page.matchMedia = ((query: string) => ({
-      addEventListener: () => {},
-      matches: false,
-      media: query,
-      removeEventListener: () => {},
-    })) as unknown as typeof page.matchMedia;
+    standInDom(page);
     page.document.head.innerHTML = `<style>${read(join(out, 'project/components/bundle.css'))}</style>`;
     page.eval(read('node_modules/react-18/umd/react.development.js'));
     page.eval(read('node_modules/react-dom-18/umd/react-dom.development.js'));

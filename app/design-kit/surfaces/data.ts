@@ -4,6 +4,11 @@ import type {
   PopupPin,
 } from '@ks/app/components/overlays/types';
 
+import {
+  CHAIN as SAMPLE_CHAIN,
+  PINS as SAMPLE_PINS,
+} from '@ks/lib/design/samples.mts';
+
 export const MENU_GROUPS: MenuEntry[][] = [
   [
     {
@@ -23,22 +28,6 @@ export const MENU_WORDS = {
   initial: 'L',
 };
 
-// Synthetic: the Popup samples on board 07 are drawn with these.
-export const CHAIN: ChainLevel[] = [
-  { level: 'District', name: 'Kimberley' },
-  {
-    detail: 'Was Griqualand West until 1880',
-    level: 'Colony',
-    name: 'Cape Colony',
-  },
-];
+export const CHAIN: ChainLevel[] = SAMPLE_CHAIN;
 
-export const PINS: PopupPin[] = [
-  {
-    date: '1901-03-14',
-    event: 'marriage',
-    id: 'marriage',
-    people: 'J. Rossouw & M. du Toit',
-    title: 'Marriage',
-  },
-];
+export const PINS: PopupPin[] = SAMPLE_PINS;

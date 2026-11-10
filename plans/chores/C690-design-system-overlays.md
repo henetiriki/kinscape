@@ -5,10 +5,11 @@
 
 ## Approach
 
-1. Add the five to `CONTROLS`, with a card each in `Overlays`: `Popup` floating and sheet; `BottomSheet` collapsed and expanded; `Modal`, `Dialog` and `Sheet` open (D1).
-2. Give the bundle test page the `showModal` and `matchMedia` stand-ins of `vitest.setup.ts`.
+1. Add the seven to `CONTROLS` (D1), with a card each in `Overlays`.
+2. Share the `vitest.setup.ts` stand-ins with the bundle test page: `__tests__/dom-stand-ins.ts`.
 3. Rename the props types that clash in `index.d.ts`.
-4. Set `data-size='small'` on the two `DateField` fix buttons and delete the font rules in `.fix`. `Popup` moved `TextLink` after `.fix`, so the link grew to 15px.
+4. Set `data-size='small'` on the two `DateField` fix buttons and delete the font rules in `.fix`.
+5. Move `CHAIN` and `PINS` to `lib/design/samples.mts`; the kit imports them.
 
 ## Decisions
 
@@ -16,24 +17,24 @@
 
 An open modal covers the other states in its card.
 
-- **A.** Also add `DialogPanel` and `SheetPanel`, which draw each form and head in place: seven components.
-- **B.** Add only the five. Boards draw the other forms by hand.
+- **A.** Also add `DialogPanel` and `SheetPanel`, which draw each form and head in place.
+- **B.** Add only the five.
 
 **Answer: A** (@henetiriki)
 
 ## Files that change
 
-| File                                                     | What                |
-| -------------------------------------------------------- | ------------------- |
-| `lib/design/{bundle,states}.mts`                         | Controls and cards  |
-| `app/components/overlays/{Modal,Dialog,Sheet,Popup}.tsx` | Type names only     |
-| `features/map/components/DateField.{tsx,module.css}`     | Item 4              |
-| `lib/design/__tests__`, `scripts/__tests__`, `DateField` | Cases, counts, link |
-| `design/canvas/`                                         | Steps 4 and 5       |
+| File                                                     | What             |
+| -------------------------------------------------------- | ---------------- |
+| `lib/design/{bundle,states,samples}.mts`                 | Controls, cards  |
+| `app/components/overlays/{Modal,Dialog,Sheet,Popup}.tsx` | Type names only  |
+| `DateField.{tsx,module.css}`, `data.ts`, `vitest.setup`  | Items 2, 4 and 5 |
+| `design/canvas/`                                         | Steps 4 and 5    |
+| `design/source/add-pin*.html`, `design/*.jpg`            | Render workflow  |
 
 ## Order of work
 
-1. Add the React 18 cases and the `DateField` case; see them fail.
+1. Add the React 18 and `DateField` cases; see them fail.
 2. Do the Approach, then `npm run design-system`.
 3. The tech lead runs steps 3 to 5 in a signed-in session.
 4. Compare the hashes; run `npm run design:export`.
@@ -41,10 +42,11 @@ An open modal covers the other states in its card.
 ## Deviations
 
 - Props types are `*Args`. `cards.test.ts` counts nine Overlays cards.
+- Item 4 undoes a 15px fix link that `Popup` caused. The `Add-pin` snapshots change, so `design:export` does not print "No snapshot changed". Two map JPGs differ by render noise (#690).
 
 ## Risks
 
-A board with an open modal fails the design check: the export copies no top layer. No board has one.
+A board with an open modal fails the design check. No board has one.
 
 ## Proof
 
@@ -54,5 +56,5 @@ A board with an open modal fails the design check: the export copies no top laye
 | React 18 renders each state           | `react-18.test.tsx`                  |
 | Cards render on the canvas            | The tech lead's screenshot in the PR |
 | Fix link stays 13px                   | `DateField.test.tsx`                 |
-| Hashes and "No snapshot changed"      | Output in the PR                     |
+| Hashes; snapshots change by item 4    | Output in the PR                     |
 | Tests, lint, typecheck, format, words | Output in the PR                     |

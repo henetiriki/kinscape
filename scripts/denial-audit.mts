@@ -11,7 +11,11 @@ import { join } from 'node:path';
 
 import type { Denial, Gh, Settings, Transcript } from '#ks/scripts/types.ts';
 
-import { inlineCode, readSummary } from '#ks/scripts/agent-transcript.mts';
+import {
+  inlineCode,
+  leadingCd,
+  readSummary,
+} from '#ks/scripts/agent-transcript.mts';
 
 // Reads the summaries the past week's plan, build, @claude, review, fix and refresh runs uploaded and keeps one issue up
 // to date with the permission denials that repeat, so the allowlist and the rules follow what the
@@ -141,12 +145,13 @@ const covers = (rule: string, tool: string, command: string): boolean => {
   ).test(command);
 };
 
-// Whether the settings' Bash hook denies the command. It runs the hook as Claude Code does, with
-// no directory, so it cuts no `cd`.
+// Whether the settings' Bash hook denies the command. It runs the hook as Claude Code does, with the
+// workspace as the directory (the audit runs in the same folder as the agents), so it cuts a `cd`
+// into it and does not deny that `cd`.
 const hookDenies = (hook: string, command: string): boolean => {
   const { stdout } = spawnSync('bash', ['-c', hook], {
     encoding: 'utf8',
-    input: JSON.stringify({ cwd: '', tool_input: { command } }),
+    input: JSON.stringify({ cwd: process.cwd(), tool_input: { command } }),
   });
 
   try {
@@ -157,11 +162,32 @@ const hookDenies = (hook: string, command: string): boolean => {
   }
 };
 
+// A Bash call as the rules see it: the hook has cut a leading `cd` into the workspace.
+const withoutCd = (command: string): string =>
+  command.replace(leadingCd(process.cwd()), '');
+
+// The part of a denied Bash call to name the group by: the first part, after a leading `cd` into the
+// workspace, that the hook denies. Parts end at `;`, `&&`, `||` or a newline; the split ignores
+// quotes. With no such part, the call without that `cd`.
+const deniedPartOf = ({ hook }: Settings, command: string): string => {
+  const rest = withoutCd(command);
+
+  return (
+    (hook &&
+      rest
+        .split(/;|&&|\|\||\n/)
+        .map(part => part.trim())
+        .filter(Boolean)
+        .find(part => hookDenies(hook, part))) ||
+    rest
+  );
+};
+
 // What a settings file says about a denied call: the hook, a deny rule, an allow rule, or nothing.
-const statusOf = (
-  { allow, deny, hook }: Settings,
-  { detail, tool }: Denial
-): string => {
+const statusOf = ({ allow, deny, hook }: Settings, denial: Denial): string => {
+  const { tool } = denial;
+  const detail = tool === 'Bash' ? withoutCd(denial.detail) : denial.detail;
+
   if (tool === 'Bash' && hook && hookDenies(hook, detail)) {
     return 'denied by the hook';
   }
@@ -307,6 +333,15 @@ export const summarise = (
   const groups = new Map<string, { firstBy: Map<string, Denial> } & Group>();
   const sessionsOf = new Map<string, Set<number>>();
   const stripped: Record<string, number> = {};
+  // Each settings file is read once: naming a denial runs its hook, and there are many denials.
+  const known = new Map<string, Settings>();
+  const settingsOf = (file: string): Settings => {
+    const read = known.get(file) ?? settings(file);
+
+    known.set(file, read);
+
+    return read;
+  };
 
   for (const [session, { id, transcript, workflow }] of transcripts.entries()) {
     const file = settingsFileOf(workflow);
@@ -317,7 +352,11 @@ export const summarise = (
     }
 
     for (const denial of transcript.denials) {
-      const pattern = patternOf(denial);
+      const pattern = patternOf(
+        denial.tool === 'Bash'
+          ? { ...denial, detail: deniedPartOf(settingsOf(file), denial.detail) }
+          : denial
+      );
       const group = groups.get(pattern) ?? {
         costUsd: 0,
         count: 0,
@@ -387,7 +426,7 @@ export const summarise = (
       .map(({ firstBy, ...group }) => {
         const rows = [...firstBy].map(([file, denial]) => ({
           file,
-          status: statusOf(settings(file), denial),
+          status: statusOf(settingsOf(file), denial),
         }));
 
         return {

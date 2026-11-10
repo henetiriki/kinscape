@@ -58,3 +58,7 @@ A glob has only `*`, so no rule matches `-nO` but not `-A30 "## NOTE"`.
 | Audit names `cat`                    | `denial-audit.test.ts`         |
 | No review row for `cd` or git reads  | The next weekly audit, on #542 |
 | The checks and `validate:boundaries` | Output in the PR               |
+
+## Deviations
+
+- The vitest rewrite needs a call that starts with it.

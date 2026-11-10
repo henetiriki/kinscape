@@ -2,6 +2,11 @@
 
 Where `review.md` or `review-code.md` (what to look for) disagrees with the review command, these files win.
 
+## Commands
+
+- Run one command in each Bash call. If one part is denied, the whole call is denied.
+- `npm` is off in this review. A PR can hold a hostile script, so do not run a project script.
+
 ## The plan
 
 Find the PR's plan: a file under `plans/` changed in the PR. Read it and issue `#N` (`gh issue view`) from its `Spec:` line. If none, report the missing plan file, except on head branch `bot/update-action-pins` or `revert-*`. Report an Approach item, Files-that-change row or issue request the diff doesn't do, an extra file, a Proof row nothing in the diff can satisfy, and a departure not listed under `## Deviations`. For each answered Decision, check that the Spec's Behaviour and Acceptance checks match it (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)). Cite requirement IDs (e.g. `MAP-03`) where the plan does.

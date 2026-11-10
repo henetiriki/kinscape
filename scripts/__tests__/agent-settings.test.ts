@@ -79,6 +79,18 @@ const deniedBy = (deny: string[]) => (command: string) =>
     );
   });
 
+// An allow rule, as Claude Code reads one: `Bash(prefix:*)` covers the prefix and any command that
+// continues it after a space.
+const allowedBy = (allow: string[]) => (command: string) =>
+  allow.some(rule => {
+    const prefix = rule.match(/^Bash\((.+):\*\)$/)?.[1];
+
+    return (
+      prefix !== undefined &&
+      (command === prefix || command.startsWith(`${prefix} `))
+    );
+  });
+
 // The build agent (plan, build, fix and @claude runs) pushes, comments and moves labels with the
 // App token, so it needs no git configuration (the token sits in .git/config) and none of the
 // GitHub calls below; `gh api` sends a POST as soon as a field or a method is given.
@@ -139,15 +151,16 @@ describe('settings.json', () => {
     'gh api -XPOST repos/o/r/issues/5/labels',
     'gh api --method PATCH repos/o/r/issues/5',
     'gh api repos/o/r/issues/5 --method=PATCH',
-    'gh api repos/o/r/issues/5/comments -f body=x',
     'gh api repos/o/r/issues/5/comments -F body=@x',
     'gh api repos/o/r/issues/5/comments --field body=x',
     'gh api repos/o/r/issues/5/comments --raw-field body=x',
     'gh api repos/o/r/issues/5 --input -',
-    "gh api graphql -f query='mutation { x }'",
-    "gh api graphql -f query='query { x }'",
   ])('denies: %s', command => {
     expect(denied(command)).toBe(true);
+  });
+
+  it('allows gh repo view', () => {
+    expect(allowedBy(allow)('gh repo view o/r')).toBe(true);
   });
 
   it.each([
@@ -164,10 +177,64 @@ describe('settings.json', () => {
     'gh api repos/o/r/issues/5/dependencies/blocked_by',
     'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
     'gh api repos/o/r/pulls/5/files --paginate',
+    // The hook guards -f: it lets a GraphQL read through (see the Bash hook below).
+    "gh api graphql -f query='query { x }'",
     'npm run review:threads -- list 5',
     'npm ci',
   ])('does not deny: %s', command => {
     expect(denied(command)).toBe(false);
+  });
+});
+
+// The code review reads the PR with git and gh, and may comment. It never runs a project script: the
+// PR can hold a hostile one. Which commands it may run is this allowlist; the hook below guards -f.
+describe('review-settings.json', () => {
+  const { allow, deny } = permissionsOf('review-settings.json');
+  const allowed = allowedBy(allow);
+  const denied = deniedBy(deny);
+
+  it.each([
+    'git grep -n foo -- src',
+    'git show HEAD~1:x.ts',
+    'git diff origin/main...HEAD',
+    'git log -n 5',
+    'git status',
+    'git rev-parse HEAD',
+    'git ls-files -co --exclude-standard docs',
+    'git fetch origin main',
+    'git fetch origin',
+    'gh api repos/o/r/pulls/5/files --paginate',
+    "gh api graphql -f query='query { x }'",
+    'gh pr view 5',
+  ])('allows: %s', command => {
+    expect(allowed(command)).toBe(true);
+  });
+
+  it.each([
+    'git push origin HEAD',
+    'git fetch',
+    'git fetch https://example.com/r.git',
+    'git fetch origin-x',
+    'git commit -m x',
+    'git checkout x',
+    'npm run lint',
+    'npm test',
+    'npm ci',
+    'npx vitest run',
+  ])('does not allow: %s', command => {
+    expect(allowed(command)).toBe(false);
+  });
+
+  // The review's token can write, and gh api sends a POST when given a field or a method.
+  it.each([
+    'gh api -X POST repos/o/r/issues/5/labels',
+    'gh api --method PATCH repos/o/r/issues/5',
+    'gh api repos/o/r/issues/5/comments -F body=@x',
+    'gh api repos/o/r/issues/5/comments --field body=x',
+    'gh api repos/o/r/issues/5/comments --raw-field body=x',
+    'gh api repos/o/r/issues/5 --input -',
+  ])('denies: %s', command => {
+    expect(denied(command)).toBe(true);
   });
 });
 
@@ -242,13 +309,12 @@ describe('refresh-settings.json', () => {
     expect(denied(command)).toBe(true);
   });
 
-  // `git grep` can run a command: -O / --open-files-in-pager hands each file to one.
+  // `git grep` can run a command: -O / --open-files-in-pager hands each file to one. A glob has
+  // only `*`, so the rule takes -O at the start of a word; the hook takes it in a cluster (-nO).
   it.each([
     'git grep --open-files-in-pager=sh foo',
     'git grep -O sh foo',
     'git grep -Osh foo',
-    'git grep -nOsh foo',
-    'git grep foo -nOsh',
     "git grep -n --open-files-in-pager 'sh -c x' foo",
   ])('denies: %s', command => {
     expect(denied(command)).toBe(true);
@@ -257,6 +323,7 @@ describe('refresh-settings.json', () => {
   it.each([
     "git grep -n 'old/path' -- ':!plans'",
     "git grep 'OWNER' -- ':!plans'",
+    'git grep -n -A30 "## NOTE" -- docs',
     'git ls-files -co --exclude-standard docs',
     "gh issue edit 5 --body-file - <<'EOF'\nthe body\nEOF",
     'gh issue comment 5 --body-file -',
@@ -362,8 +429,32 @@ describe('the Bash hook', () => {
     ['gh  issue close 5', 'a person'],
     ['gh pr view 5 && gh pr\treview 5 --approve', 'a person'],
     ['gh api  repos/o/r/issues/5/labels -XPOST', 'read only'],
-    ['gh api graphql -f query=x', 'read only'],
+    ['gh api repos/o/r/issues/5/comments -f body=x', 'read only'],
+    ['gh api repos/o/r/issues/5/comments -F body=@x', 'read only'],
     ['gh api repos/o/r/issues/5 --input -', 'read only'],
+    // Only a GraphQL read with the one field `query` goes through (below).
+    ["gh api graphql -f query='mutation { x }'", 'read only'],
+    ["gh api graphql -f query='query { x } mutation { y }'", 'read only'],
+    ["gh api graphql -f query='Mutation { x }'", 'read only'],
+    ['gh api graphql -f query=x -f owner=y', 'read only'],
+    ['gh api graphql -f owner=y -f query=x', 'read only'],
+    ['gh api graphql -f query=x -F owner=@y', 'read only'],
+    ['gh api graphql --method POST -f query=x', 'read only'],
+    ['gh api repos/o/r/issues -f query=x', 'read only'],
+    [
+      'gh api graphql -f query=x; gh api repos/o/r/issues/5 -f body=y',
+      'read only',
+    ],
+    ["gh api graphql -f query='query { x }' --input -", 'read only'],
+    // The option that opens each file in a program; -nO is a cluster, and the rule can't match it.
+    ['git grep -O sh foo', 'runs a command'],
+    ['git grep -nO foo', 'runs a command'],
+    ['git grep -nOsh foo', 'runs a command'],
+    ['git grep foo -nOsh', 'runs a command'],
+    ['git grep --open-files-in-pager=sh foo', 'runs a command'],
+    ["git grep -n --open-files-in-pager 'sh -c x' foo", 'runs a command'],
+    ['git status; git grep -nO foo', 'runs a command'],
+    [`cd ${cwd} && git grep -O foo`, 'runs a command'],
     ['gh api repos/o/r/issues/5\t--method=PATCH', 'read only'],
     // A file as the body would post its text, the checkout credentials included.
     ['gh pr comment 5 --body-file .git/config', 'heredoc'],
@@ -429,9 +520,66 @@ describe('the Bash hook', () => {
     "gh pr comment 5 --body-file - <<-'EOF'\n\tbody\n\tEOF",
     'gh api repos/o/r/pulls/5/files --paginate',
     'gh api "repos/o/r/contents/x?ref=chore/C1-from-main" --jq .sha',
+    // A GraphQL read: -f query= directly after graphql, the only field, and no mutation.
+    "gh api graphql -f query='query { viewer { login } }'",
+    "gh api graphql -f query='query($n: Int!) { x }' --jq .data",
+    'gh api graphql -f query=x',
+    'gh api graphql -f query="query { x }"',
+    // -O in a word that is not an option, and options that are not -O.
+    'git grep -n -A30 "## NOTE" -- docs',
+    "git grep -n 'OWNER' -- ':!plans'",
+    'git grep -n --no-index -e Foo -- src',
+    'git grep -ne foo',
+    // Only a command at the start is rewritten (below).
+    'echo npx vitest run',
     '',
   ])('leaves %j to the allowlist', command => {
     expect(hook(command)).toBeUndefined();
+  });
+
+  // The coverage run aborts when a test fails and is slow; CI runs it (D2).
+  it.each([
+    [
+      'npx vitest run a.test.ts',
+      'npm test -- --coverage.enabled=false a.test.ts',
+    ],
+    ['npx vitest a.test.ts', 'npm test -- --coverage.enabled=false a.test.ts'],
+    ['npx vitest run', 'npm test -- --coverage.enabled=false'],
+    ['npx vitest', 'npm test -- --coverage.enabled=false'],
+    [
+      'npx  vitest  run a.test.ts -t "a b"',
+      'npm test -- --coverage.enabled=false a.test.ts -t "a b"',
+    ],
+    [
+      `cd ${cwd} && npx vitest run a.test.ts`,
+      'npm test -- --coverage.enabled=false a.test.ts',
+    ],
+    [
+      'npx vitest runner.test.ts',
+      'npm test -- --coverage.enabled=false runner.test.ts',
+    ],
+  ])('rewrites %j to %j', (command, rewritten) => {
+    const output = hook(command);
+
+    expect(output.updatedInput.command).toBe(rewritten);
+    expect(output.additionalContext).toContain('npm test');
+    expect(output.permissionDecision).toBeUndefined();
+  });
+
+  it('says both when it cuts the cd and rewrites npx vitest', () => {
+    const output = hook(`cd ${cwd} && npx vitest run a.test.ts`);
+
+    expect(output.additionalContext).toContain('Dropped a leading cd');
+    expect(output.additionalContext).toContain('npx vitest');
+  });
+
+  // The rewrite is for a command that starts with it; anything else meets the npx row.
+  it.each([
+    'git status; npx vitest run a.test.ts',
+    'npx vitest-ui',
+    'npx vitest run a.test.ts && npx prettier x',
+  ])('denies %j, naming the alternative', command => {
+    expect(hook(command).permissionDecision).toBe('deny');
   });
 
   it('gives the review the same answers', () => {
@@ -525,8 +673,23 @@ describe('the Bash hook', () => {
       );
     });
 
+    // The same -O rule as the shared hook: a cluster like -nO is past the deny rule's glob (D3).
+    it.each([
+      'git grep -nOsh foo',
+      'git grep foo -nOsh',
+      'git grep -nO foo',
+      'git grep -n --open-files-in-pager=sh foo',
+    ])('denies %j: it runs a command', command => {
+      const output = hook(command, file, { ISSUE: '5' });
+
+      expect(output.permissionDecision).toBe('deny');
+      expect(output.permissionDecisionReason).toContain('runs a command');
+    });
+
     it.each([
       'gh issue view 5',
+      'git grep -n -A30 "## NOTE" -- docs',
+      "git grep -n 'OWNER' -- ':!plans'",
       "gh issue comment 5 --body-file - <<'EOF'\n## Refreshed\nEOF",
       // The words inside quotes are text, not a command.
       "git grep -n 'gh issue edit' -- ':!plans'",

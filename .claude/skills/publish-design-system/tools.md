@@ -1,6 +1,6 @@
 # Calls for the publish skill
 
-Use the built-in `Artifact` tool when the session has it. Otherwise use the six MCP tools in the last column. A step in [SKILL.md](SKILL.md) names what a call does; this table names the call.
+Use the built-in `Artifact` tool when the session has it. Otherwise use the six MCP tools in the last column. A step in `SKILL.md` names what a call does; this table names the call.
 
 | Step             | `Artifact` tool (default)                                                                                                                                        | MCP fallback (`mcp__claude-artifacts__*`) |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |

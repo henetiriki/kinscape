@@ -122,6 +122,9 @@ jobs:
       # The files in .github/agent/ that become the system prompt. The order matters:
       # rules.md first, build.md last (scripts/__tests__/load-agent-files.test.ts checks it).
       agent_files: rules.md build.md
+      # Claude reads these from the checkout, which is the PR branch: put main's copies there
+      # (scripts/__tests__/load-agent-files.test.ts checks the list).
+      main_files: AGENTS.md docs/security.md docs/writing.md docs/code-rules.md
       prompt: >-
         @${{ github.event.review.user.login }} approved the plan on PR #${{ github.event.pull_request.number }}.
         Build it: follow "Build a plan PR" in your instructions. The approver is ${{ github.event.review.user.login }}.

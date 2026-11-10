@@ -61,6 +61,9 @@ jobs:
       # The files in .github/agent/ that become the system prompt. The order matters:
       # rules.md first (scripts/__tests__/load-agent-files.test.ts checks it).
       agent_files: rules.md fix-review.md
+      # Claude reads these from the checkout, which is the PR branch: put main's copies there
+      # (scripts/__tests__/load-agent-files.test.ts checks the list).
+      main_files: AGENTS.md docs/security.md docs/writing.md docs/code-rules.md
       # The number only: the title and the comments are text from outside the team.
       prompt: >-
         Fix the review's findings on PR #${{ github.event.pull_request.number }}: follow "Fix a review" in your instructions.

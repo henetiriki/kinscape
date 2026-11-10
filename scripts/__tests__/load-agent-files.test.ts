@@ -19,6 +19,17 @@ const read = (file: string) =>
 const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
 
+type WorkflowJob = {
+  name?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
+};
+const jobsOf = (file: string) =>
+  (parse(read(file)) as { jobs: Record<string, WorkflowJob> }).jobs;
+// A job that calls the shared runner, claude-run.yml.
+const callsRunner = (job: WorkflowJob) =>
+  job.uses?.includes('/claude-run.yml@') ?? false;
+
 // What the review loads from main besides .github/agent/ (plans/chores/C588-review-config-from-main.md):
 // the files CLAUDE.md imports, which Claude reads from the checkout, so main's copies are put there;
 // the code rules that review-code.md points to, put there the same way; the plugin marketplace; and this workflow, compared with the checkout before Claude runs.
@@ -408,7 +419,7 @@ describe('the run-claude action', () => {
 });
 
 // A caller of claude-run.yml may name files that a run takes from main, not from the PR branch
-// (plans/chores/C681-rule-files-from-main.md). The callers set none yet.
+// (plans/chores/C681-rule-files-from-main.md).
 describe('the main_files input of the run-claude action', () => {
   const PASS = '${{ inputs.main_files }}';
   const COPY = "Put main's rule files in the checkout";
@@ -543,6 +554,30 @@ describe('the main_files input of the run-claude action', () => {
       expect(merge().status).toBe(0);
       rmSync(dir, { force: true, recursive: true });
     });
+  });
+
+  // These callers check out a PR branch, and they skip a hand-back PR. A plan run checks out main.
+  // A respond run sets no files, because tag mode fetches the PR branch after the copy.
+  describe('the callers', () => {
+    const given = (file: string) =>
+      Object.values(jobsOf(file))
+        .filter(callsRunner)
+        .map(job => job.with?.main_files);
+
+    it.each([
+      'claude-build.yml',
+      'claude-fix-review.yml',
+      'claude-resolve-conflict.yml',
+    ])('%s names the files CLAUDE.md imports and the code rules', file => {
+      expect(given(file)).toEqual([[...imports(), CODE_RULES].join(' ')]);
+    });
+
+    it.each(['claude-plan.yml', 'claude-respond.yml'])(
+      '%s names none',
+      file => {
+        expect(given(file)).toEqual([undefined]);
+      }
+    );
   });
 });
 
@@ -926,9 +961,6 @@ describe('the respond run of claude-run.yml', () => {
 // Two checks with one name hide which run failed. A check is "<caller job> / <runner job>" for a call
 // of claude-run.yml and the job's name, or its id, otherwise.
 describe('the check names of the Claude workflows', () => {
-  type NamedJob = { name?: string; uses?: string };
-  const jobsOf = (file: string) =>
-    (parse(read(file)) as { jobs: Record<string, NamedJob> }).jobs;
   const runnerNames = Object.values(jobsOf('claude-run.yml')).map(
     job => job.name
   );
@@ -936,7 +968,7 @@ describe('the check names of the Claude workflows', () => {
     .filter(file => /^claude-.+\.yml$/.test(file) && file !== 'claude-run.yml')
     .flatMap(file =>
       Object.entries(jobsOf(file)).flatMap(([id, job]) =>
-        job.uses?.includes('/claude-run.yml@')
+        callsRunner(job)
           ? runnerNames.map(name => `${job.name} / ${name}`)
           : [job.name ?? id]
       )

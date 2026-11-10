@@ -41,7 +41,12 @@ A respond run also loads `build.md`, so the new instruction reaches a respond bu
 
 | Acceptance check                       | Proven by                                      |
 | -------------------------------------- | ---------------------------------------------- |
-| A passing build comments               | The next passing build run after the merge     |
+| A passing build comments               | Test: `build.md` names a pass and a fail       |
 | A pushed commit gets the new text      | Net test: new head, no comment                 |
 | No commit keeps the text and the label | Net tests: same head; plan run swaps the label |
 | Checks pass                            | `npm test`, `lint`, `format:check`, `words`    |
+
+## Deviations
+
+- The pushed-commit text gives the step outcome, so a failed build does not read as a finished one.
+- The next passing build after the merge shows the comment itself.

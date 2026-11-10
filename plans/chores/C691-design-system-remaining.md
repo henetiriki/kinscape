@@ -1,11 +1,11 @@
 # Plan: C691: Add the remaining actions, forms and feedback components to the design system
 
 - **Spec:** #691
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
-1. Add the eight to `CONTROLS` and `CARDS`, each at the end of its group.
+1. Add the eight, and `RemovableChip` (D1), to `CONTROLS` and `CARDS`, each at the end of its group. That makes nine.
 2. Each card shows the props that change the look. `Banner` leaves out `placed`, which fixes it to the page.
 3. The React 18 test checks the `TokenField`, `SelectField`, `Banner` and `NoticeCard` events.
 
@@ -20,6 +20,8 @@ The Chore names neither `CalloutPointer` nor `RemovableChip`.
 - **Other:** your own.
 
 Recommended: A, because a board cannot write the `className` that `CalloutPointer` needs.
+
+**Answer: other, add `RemovableChip` only: nine components** (@henetiriki). `RemovableChip` takes plain props. `CalloutPointer` stays out.
 
 ## Files that change
 

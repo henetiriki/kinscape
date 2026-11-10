@@ -13,6 +13,7 @@ Each topic has one owner file, as the [writing rules](writing.md#all-text) say.
 | Code rules              | [Code rules](code-rules.md)                                     |
 | Look                    | [Design](../design/DESIGN.md)                                   |
 | Canvas and snapshots    | [Design canvas](../design/CANVAS.md)                            |
+| Design system component | [Components](../design/COMPONENTS.md)                           |
 | Security rules          | [Security rules](security.md)                                   |
 | Writing rules           | [Writing rules](writing.md)                                     |
 | Requirements            | [Requirements](requirements.md)                                 |

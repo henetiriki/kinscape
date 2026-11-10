@@ -121,6 +121,11 @@ const unreadableColours = (html: string): string[] =>
       .map(([text]) => `${text.trim()} cannot be read as a colour`)
   );
 
+/**
+ * `url(#` or a word before `(`. A word starts only at the start of a run, so a long run with no
+ * `(` (a base64 `src`) is read once. A leading digit or `_` is not part of the name.
+ */
+const FUNCTION_CALL = /url\(#|(?<![\w-])([\w-]+)\(/gi;
 const RGB_FUNCTION = /rgba?\([^)]*\)/gi;
 const RGB_INTEGERS = /^rgba?\(\s*\d+[ ,]+\d+[ ,]+\d+[^)]*\)$/i;
 
@@ -230,11 +235,12 @@ export const snapshotProblems = (
       .filter(({ rgb }) => !tokens.has(rgb))
       .map(({ text }) => `${text} is not in design/tokens.json`),
     ...markupValues(html).flatMap(value => [
-      ...[...value.matchAll(/url\(#|([a-z-][\w-]*)\(/gi)]
-        .map(([, name]) => name)
+      ...[...value.matchAll(FUNCTION_CALL)]
+        .map(([, run]) => run?.replace(/^[\d_]+/, ''))
         .filter(
           name =>
             name !== undefined &&
+            name !== '' &&
             !FUNCTIONS.has(name.toLowerCase()) &&
             !FORBIDDEN.includes(`${name}(`)
         )

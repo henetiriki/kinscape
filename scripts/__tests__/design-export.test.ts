@@ -84,8 +84,7 @@ describe('the real canvas export', () => {
         ).map(problem => `${name}: ${problem}`)
       )
     ).toEqual([]);
-    // The check reads 59 snapshots, each up to a few hundred kilobytes; under load it takes more than the 5 s default.
-  }, 30_000);
+  });
 });
 
 describe('linkMap', () => {
@@ -316,6 +315,18 @@ describe('tokenColours and snapshotProblems', () => {
       'uses light-dark(), which the colour check cannot read',
       'uses color-mix(), which the colour check cannot read',
       'uses oklch(), which the colour check cannot read',
+    ]);
+  });
+
+  it('names a function after leading digits, and skips parentheses with no name', () => {
+    expect(
+      snapshotProblems(
+        '<i style="margin: rotate(1px) 2(3); width: 1x(4); height: 9abc(1)"></i>',
+        tokens
+      )
+    ).toEqual([
+      'uses x(), which the colour check cannot read',
+      'uses abc(), which the colour check cannot read',
     ]);
   });
 

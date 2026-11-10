@@ -21,6 +21,12 @@ const OPTIONS = [
   { glyph: 'marriage', label: 'Marriage', value: 'marriage' },
 ];
 
+const POLITIES = [
+  { label: 'Cape', value: 'cape' },
+  { label: 'Natal', value: 'natal' },
+  { label: 'Transvaal', value: 'transvaal' },
+];
+
 const ICONS = [
   'alert',
   'back',
@@ -235,6 +241,44 @@ export const CARDS: Card[] = [
     })),
   },
   {
+    design: [],
+    group: 'Actions',
+    handlers: [],
+    height: 160,
+    name: 'TextLink',
+    pad: 0,
+    states: [
+      ...grid('TextLink', (state, disabled) => ({
+        children: 'Sources',
+        props: { disabled, href: '/sources', state },
+      })),
+      one('TextLink · small', { href: '/sources', size: 'small' }, 'Sources'),
+    ],
+  },
+  {
+    design: [],
+    group: 'Actions',
+    handlers: [],
+    height: 100,
+    name: 'KeyHint',
+    pad: 0,
+    states: [
+      one('KeyHint · key', {}, '/'),
+      one('KeyHint · decorative', { decorative: true }, '/'),
+    ],
+  },
+  {
+    design: [],
+    group: 'Actions',
+    handlers: [],
+    height: 200,
+    name: 'RemovableChip',
+    pad: 0,
+    states: grid('RemovableChip', (state, disabled) => ({
+      props: { disabled, state, value: 'Birth' },
+    })),
+  },
+  {
     design: ['Text field'],
     group: 'Forms',
     handlers: [],
@@ -324,6 +368,48 @@ export const CARDS: Card[] = [
     ],
   },
   {
+    design: [],
+    group: 'Forms',
+    handlers: [],
+    height: 280,
+    name: 'SelectField',
+    pad: 0,
+    states: [
+      ...grid('SelectField', (state, disabled) => ({
+        props: { disabled, label: 'Polity', options: POLITIES, state },
+      })),
+      one('SelectField · hidden label', {
+        hideLabel: true,
+        label: 'Polity',
+        options: POLITIES,
+      }),
+    ],
+  },
+  {
+    design: [],
+    group: 'Forms',
+    handlers: [],
+    height: 760,
+    name: 'TokenField',
+    pad: 0,
+    states: [
+      ...grid('TokenField', (state, disabled) => ({
+        props: {
+          defaultValues: ['Birth', 'Death'],
+          disabled,
+          helper: 'Press Enter to add.',
+          label: 'Event types',
+          placeholder: 'Add a type',
+          state,
+        },
+      })),
+      one('TokenField · empty', {
+        label: 'Event types',
+        placeholder: 'Add a type',
+      }),
+    ],
+  },
+  {
     design: ['Alert'],
     group: 'Feedback',
     handlers: [],
@@ -343,6 +429,90 @@ export const CARDS: Card[] = [
     pad: 0,
     states: ['error', 'success'].map(tone =>
       one(`Toast · ${tone}`, { action: 'Undo', tone }, 'Done.')
+    ),
+  },
+  {
+    design: ['Banner'],
+    group: 'Feedback',
+    handlers: [],
+    height: 140,
+    name: 'Banner',
+    pad: 0,
+    states: [
+      one(
+        'Banner · offline',
+        { action: 'Retry', icon: 'cloudOff' },
+        'You are offline.'
+      ),
+    ],
+  },
+  {
+    design: [],
+    group: 'Feedback',
+    handlers: [],
+    height: 120,
+    name: 'Callout',
+    pad: 0,
+    states: [one('Callout · error', { id: 'callout-error' }, 'Enter a date.')],
+  },
+  {
+    design: ['Notice card'],
+    group: 'Feedback',
+    handlers: [],
+    height: 580,
+    name: 'NoticeCard',
+    pad: 0,
+    states: [
+      one(
+        'NoticeCard · one action',
+        {
+          actions: [{ label: 'Undo' }],
+          icon: 'info',
+          title: 'Layer hidden',
+        },
+        'The 1910 provinces are off.'
+      ),
+      one(
+        'NoticeCard · two actions',
+        {
+          actions: [{ label: 'Retry' }, { label: 'Dismiss' }],
+          icon: 'warning',
+          title: 'Map not loaded',
+        },
+        'Check your connection.'
+      ),
+      one(
+        'NoticeCard · loading',
+        { progress: 40, title: 'Loading boundaries' },
+        '1910 of 1994.'
+      ),
+      one(
+        'NoticeCard · large',
+        { icon: 'info', size: 'large', title: 'No ancestors yet' },
+        'Add a Person to see them on the map.'
+      ),
+      one(
+        'NoticeCard · phone',
+        {
+          actions: [{ label: 'Undo' }],
+          icon: 'info',
+          phone: true,
+          title: 'Layer hidden',
+        },
+        'The 1910 provinces are off.'
+      ),
+    ],
+  },
+  {
+    design: [],
+    group: 'Feedback',
+    handlers: [],
+    height: 100,
+    name: 'ProgressBar',
+    pad: 0,
+    // A preview gives each caption the id `ks-case-<index>`, so each bar takes its name from its caption.
+    states: [0, 40, 100].map((value, index) =>
+      one(`ProgressBar · ${value}`, { labelledBy: `ks-case-${index}`, value })
     ),
   },
   {

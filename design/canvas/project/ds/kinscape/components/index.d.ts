@@ -220,7 +220,7 @@ export declare const Chip: ({ children, glyph, on, state, ...rest }: {
     state?: ControlState;
 } & Omit<ComponentProps<"button">, "aria-pressed" | "className">) => import("react").JSX.Element;
 /** A chosen value with a × that removes it. The × is 26px with a 44px hit area. */
-declare const RemovableChip: ({ disabled, onRemove, state, value, }: {
+export declare const RemovableChip: ({ disabled, onRemove, state, value, }: {
     disabled?: boolean;
     onRemove?: () => void;
     /** Shown on the ×, the control inside. */
@@ -228,6 +228,7 @@ declare const RemovableChip: ({ disabled, onRemove, state, value, }: {
     value: string;
 }) => import("react").JSX.Element;
 export type ChipProps = Parameters<typeof Chip>[0];
+export type RemovableChipProps = Parameters<typeof RemovableChip>[0];
 
 /** A labelled set of toggle chips that wraps. */
 export declare const ChipGroup: ({ label, onToggle, options, selected, }: {
@@ -260,6 +261,22 @@ export declare const Tabs: ({ disabled, fill, label, onSelect, selected, tabs, }
     tabs: Tab[];
 }) => import("react").JSX.Element;
 export type TabsProps = Parameters<typeof Tabs>[0];
+
+/** An anchor has no disabled state, so a disabled link is plain text that says so. */
+export declare const TextLink: ({ children, disabled, size, state, ...rest }: {
+    disabled?: boolean;
+    /** `small` is 13 / 20, for dense surfaces such as the Sources dialog. */
+    size?: "small";
+    state?: ControlState;
+} & Omit<ComponentProps<"a">, "className">) => import("react").JSX.Element;
+export type TextLinkProps = Parameters<typeof TextLink>[0];
+
+/** A keyboard key, drawn in mono. In a sentence it is read as part of it; `decorative` hides it when the control carries `aria-keyshortcuts`. */
+export declare const KeyHint: ({ children, decorative, }: {
+    children: string;
+    decorative?: boolean;
+}) => import("react").JSX.Element;
+export type KeyHintProps = Parameters<typeof KeyHint>[0];
 
 /** A single-line field with its label and, below it, helper text or an error that replaces it. */
 export declare const TextField: ({ date, defaultShown, error, helper, hideLabel, label, mark, shortcut, size, state, type, ...rest }: {
@@ -338,6 +355,33 @@ export declare const DateField: ({ after, before, day, defaultText, fill, keepPr
 }) => import("react").JSX.Element;
 export type DateFieldProps = Parameters<typeof DateField>[0];
 
+/** A native select with its label and a drawn chevron. The open list is the browser's. */
+export declare const SelectField: ({ hideLabel, label, options, state, ...rest }: {
+    /** Names the select without showing the label. */
+    hideLabel?: boolean;
+    label: string;
+    options: {
+        label: string;
+        value: string;
+    }[];
+    state?: ControlState;
+} & Omit<ComponentProps<"select">, "children" | "className" | "id">) => import("react").JSX.Element;
+export type SelectFieldProps = Parameters<typeof SelectField>[0];
+
+/** A field of removable chips with an input that adds the next one on Enter. */
+export declare const TokenField: ({ defaultValues, disabled, helper, label, onChange, placeholder, state, values: controlled, }: {
+    defaultValues?: string[];
+    disabled?: boolean;
+    helper?: ReactNode;
+    label: string;
+    onChange?: (values: string[]) => void;
+    placeholder?: string;
+    state?: ControlState;
+    /** When given, the field shows these and only reports changes; the caller holds them. */
+    values?: string[];
+}) => import("react").JSX.Element;
+export type TokenFieldProps = Parameters<typeof TokenField>[0];
+
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export declare const Alert: ({ aside, children, title, tone, }: {
     /** A note at the right of the title line. */
@@ -362,6 +406,59 @@ export declare const Toast: ({ action, children, onAction, onDismiss, placed, to
     tone: "error" | "success";
 }) => import("react").JSX.Element;
 export type ToastProps = Parameters<typeof Toast>[0];
+
+/** A problem with the app that doesn't stop the map, with one action. */
+export declare const Banner: ({ action, children, icon, onAction, placed, }: {
+    action: string;
+    children: string;
+    icon: IconName;
+    onAction?: () => void;
+    /** Fix it at its phone position, under the search bar. */
+    placed?: boolean;
+}) => import("react").JSX.Element;
+export type BannerProps = Parameters<typeof Banner>[0];
+
+/** The error box of one control; the control points at it with `aria-describedby={id}`. */
+export declare const Callout: ({ children, className, id, }: {
+    children: ReactNode;
+    className?: string;
+    id: string;
+}) => import("react").JSX.Element;
+/** Decoration, never read: a square turned 45°. The caller sets `bottom` and `left` on `className`. */
+declare const CalloutPointer: ({ className }: {
+    className?: string;
+}) => import("react").JSX.Element;
+export type CalloutProps = Parameters<typeof Callout>[0];
+
+type Action = {
+    label: string;
+    onClick?: () => void;
+};
+/**
+ * Says what is going on in one line and offers at most two ways out. It never takes focus.
+ * With `progress` (0 to 100) it is the loading form and announces politely.
+ */
+export declare const NoticeCard: ({ actions, children, icon, phone, progress, size, title, }: {
+    /** Up to two buttons; the first is primary. */
+    actions?: [Action, Action] | [Action];
+    /** The one line. */
+    children: ReactNode;
+    icon?: IconName;
+    /** The kit's phone sample: 358 wide with 44 buttons. */
+    phone?: boolean;
+    progress?: number;
+    /** `large`: the icon on top, an H3 title, 380 wide. */
+    size?: "large";
+    title: string;
+}) => import("react").JSX.Element;
+export type NoticeCardProps = Parameters<typeof NoticeCard>[0];
+
+/** How much is done, 0 to 100. Determinate only; `labelledBy` is the id of the text that names it. */
+export declare const ProgressBar: ({ labelledBy, value, }: {
+    labelledBy: string;
+    value: number;
+}) => import("react").JSX.Element;
+export type ProgressBarProps = Parameters<typeof ProgressBar>[0];
 
 /** The 44 round button that opens the account Menu; `expanded` is its open look. */
 export declare const Avatar: ({ expanded, initial, state, ...rest }: {

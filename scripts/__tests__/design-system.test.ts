@@ -260,7 +260,7 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(27);
+    expect(names).toHaveLength(36);
   });
 
   it.each(names)(

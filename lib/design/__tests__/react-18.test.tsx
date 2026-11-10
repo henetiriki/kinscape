@@ -27,16 +27,24 @@ import {
 
 import { standInDom } from '@ks/__tests__/dom-stand-ins';
 import { Button } from '@ks/app/components/actions/Button';
-import { Chip } from '@ks/app/components/actions/Chip';
+import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
 import { IconButton } from '@ks/app/components/actions/IconButton';
+import { KeyHint } from '@ks/app/components/actions/KeyHint';
 import { Segmented } from '@ks/app/components/actions/Segmented';
 import { Tabs } from '@ks/app/components/actions/Tabs';
+import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Alert } from '@ks/app/components/feedback/Alert';
+import { Banner } from '@ks/app/components/feedback/Banner';
+import { Callout } from '@ks/app/components/feedback/Callout';
+import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
+import { ProgressBar } from '@ks/app/components/feedback/ProgressBar';
 import { Toast } from '@ks/app/components/feedback/Toast';
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
+import { SelectField } from '@ks/app/components/forms/SelectField';
 import { TextField } from '@ks/app/components/forms/TextField';
+import { TokenField } from '@ks/app/components/forms/TokenField';
 import { Avatar } from '@ks/app/components/foundation/Avatar';
 import { Divider } from '@ks/app/components/foundation/Divider';
 import { Icon, PATHS } from '@ks/app/components/foundation/Icon';
@@ -75,6 +83,11 @@ const OPTIONS = [
   { glyph: 'death', label: 'Death', value: 'death' },
   { glyph: 'marriage', label: 'Marriage', value: 'marriage' },
 ] as const;
+const POLITIES = [
+  { label: 'Cape', value: 'cape' },
+  { label: 'Natal', value: 'natal' },
+  { label: 'Transvaal', value: 'transvaal' },
+];
 
 const states = (
   name: string,
@@ -184,6 +197,27 @@ const CASES: [string, ReactElement][] = [
       tabs={TABS.map(tab => ({ ...tab, state }))}
     />
   )),
+  ...states('TextLink', (state, disabled) => (
+    <TextLink disabled={disabled} href='/sources' state={state}>
+      Sources
+    </TextLink>
+  )),
+  [
+    'TextLink · small',
+    <TextLink href='/sources' key='small' size='small'>
+      Sources
+    </TextLink>,
+  ],
+  ['KeyHint · key', <KeyHint key='key'>/</KeyHint>],
+  [
+    'KeyHint · decorative',
+    <KeyHint decorative key='decorative'>
+      /
+    </KeyHint>,
+  ],
+  ...states('RemovableChip', (state, disabled) => (
+    <RemovableChip disabled={disabled} state={state} value='Birth' />
+  )),
   ...states('TextField', (state, disabled) => (
     <TextField
       disabled={disabled}
@@ -254,6 +288,32 @@ const CASES: [string, ReactElement][] = [
     'DateField · notice',
     dateField({ notice: { text: 'Moved to 1652.', tone: 'warning' } }),
   ],
+  ...states('SelectField', (state, disabled) => (
+    <SelectField
+      disabled={disabled}
+      label='Polity'
+      options={POLITIES}
+      state={state}
+    />
+  )),
+  [
+    'SelectField · hidden label',
+    <SelectField hideLabel key='hidden' label='Polity' options={POLITIES} />,
+  ],
+  ...states('TokenField', (state, disabled) => (
+    <TokenField
+      defaultValues={['Birth', 'Death']}
+      disabled={disabled}
+      helper='Press Enter to add.'
+      label='Event types'
+      placeholder='Add a type'
+      state={state}
+    />
+  )),
+  [
+    'TokenField · empty',
+    <TokenField key='empty' label='Event types' placeholder='Add a type' />,
+  ],
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,
@@ -267,6 +327,65 @@ const CASES: [string, ReactElement][] = [
     <Toast action='Undo' key={tone} onDismiss={noop} tone={tone}>
       Done.
     </Toast>,
+  ]),
+  [
+    'Banner · offline',
+    <Banner action='Retry' icon='cloudOff' key='banner'>
+      You are offline.
+    </Banner>,
+  ],
+  [
+    'Callout · error',
+    <Callout id='callout-error' key='callout'>
+      Enter a date.
+    </Callout>,
+  ],
+  [
+    'NoticeCard · one action',
+    <NoticeCard
+      actions={[{ label: 'Undo' }]}
+      icon='info'
+      key='one'
+      title='Layer hidden'>
+      The 1910 provinces are off.
+    </NoticeCard>,
+  ],
+  [
+    'NoticeCard · two actions',
+    <NoticeCard
+      actions={[{ label: 'Retry' }, { label: 'Dismiss' }]}
+      icon='warning'
+      key='two'
+      title='Map not loaded'>
+      Check your connection.
+    </NoticeCard>,
+  ],
+  [
+    'NoticeCard · loading',
+    <NoticeCard key='loading' progress={40} title='Loading boundaries'>
+      1910 of 1994.
+    </NoticeCard>,
+  ],
+  [
+    'NoticeCard · large',
+    <NoticeCard icon='info' key='large' size='large' title='No ancestors yet'>
+      Add a Person to see them on the map.
+    </NoticeCard>,
+  ],
+  [
+    'NoticeCard · phone',
+    <NoticeCard
+      actions={[{ label: 'Undo' }]}
+      icon='info'
+      key='phone'
+      phone
+      title='Layer hidden'>
+      The 1910 provinces are off.
+    </NoticeCard>,
+  ],
+  ...([0, 40, 100] as const).map((value, index): [string, ReactElement] => [
+    `ProgressBar · ${value}`,
+    <ProgressBar key={value} labelledBy={`ks-case-${index}`} value={value} />,
   ]),
   ...states('Avatar', (state, disabled) => (
     <Avatar disabled={disabled} initial='L' state={state} />
@@ -455,8 +574,10 @@ describe('bundle', () => {
   const COMPONENTS = {
     Alert,
     Avatar,
+    Banner,
     BottomSheet,
     Button,
+    Callout,
     Checkbox,
     CheckboxField,
     Chip,
@@ -467,18 +588,25 @@ describe('bundle', () => {
     Divider,
     Icon,
     IconButton,
+    KeyHint,
     Menu,
     MenuPanel,
     Modal,
+    NoticeCard,
     Popup,
+    ProgressBar,
+    RemovableChip,
     Segmented,
+    SelectField,
     Sheet,
     SheetPanel,
     Surface,
     Tabs,
     Text,
     TextField,
+    TextLink,
     Toast,
+    TokenField,
     Wordmark,
   };
   const read = (path: string) => readFileSync(path, 'utf8');
@@ -606,6 +734,14 @@ describe('bundle', () => {
         expect(
           page.document.querySelectorAll('figure > :not(figcaption)')
         ).toHaveLength(card.states.length);
+        expect(
+          [...page.document.querySelectorAll('[aria-labelledby]')].filter(
+            each =>
+              !page.document.getElementById(
+                each.getAttribute('aria-labelledby')!
+              )
+          )
+        ).toEqual([]);
         expect(problems).toEqual([]);
       }
     );
@@ -797,6 +933,83 @@ describe('interactions', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: /Sources/ }));
     expect(onSelect).toHaveBeenCalledWith('sources');
     expect(document.activeElement).toBe(avatar);
+    quiet();
+  });
+
+  it('TokenField adds on Enter, and removes with × and Backspace', () => {
+    const onChange = vi.fn();
+
+    render(
+      <TokenField
+        defaultValues={['Birth']}
+        label='Event types'
+        onChange={onChange}
+      />
+    );
+
+    const input = screen.getByRole('textbox', {
+      name: 'Event types',
+    }) as HTMLInputElement;
+
+    fireEvent.change(input, { target: { value: 'Death' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onChange).toHaveBeenLastCalledWith(['Birth', 'Death']);
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Birth' }));
+    expect(onChange).toHaveBeenLastCalledWith(['Death']);
+    fireEvent.keyDown(input, { key: 'Backspace' });
+    expect(onChange).toHaveBeenLastCalledWith([]);
+    quiet();
+  });
+
+  it('SelectField reports the chosen option', () => {
+    const onChange = vi.fn();
+
+    render(
+      <SelectField label='Polity' onChange={onChange} options={POLITIES} />
+    );
+
+    const select = screen.getByRole('combobox', {
+      name: 'Polity',
+    }) as HTMLSelectElement;
+
+    fireEvent.change(select, { target: { value: 'natal' } });
+    expect(onChange).toHaveBeenCalledOnce();
+    expect(select.value).toBe('natal');
+    quiet();
+  });
+
+  it('Banner and NoticeCard run their actions', () => {
+    const onAction = vi.fn();
+    const onClick = vi.fn();
+
+    render(
+      <>
+        <Banner action='Retry' icon='cloudOff' onAction={onAction}>
+          You are offline.
+        </Banner>
+        <NoticeCard actions={[{ label: 'Undo', onClick }]} title='Layer hidden'>
+          The 1910 provinces are off.
+        </NoticeCard>
+      </>
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    expect(onAction).toHaveBeenCalledOnce();
+    expect(onClick).toHaveBeenCalledOnce();
+    quiet();
+  });
+
+  it('ProgressBar takes its name from the element that labelledBy names', () => {
+    render(
+      <>
+        <span id='loading'>Loading boundaries</span>
+        <ProgressBar labelledBy='loading' value={40} />
+      </>
+    );
+
+    const bar = screen.getByRole('progressbar', { name: 'Loading boundaries' });
+
+    expect(bar.getAttribute('aria-valuenow')).toBe('40');
     quiet();
   });
 

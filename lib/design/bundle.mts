@@ -15,7 +15,7 @@ export const NAMESPACE = 'KinScape';
 export const BUNDLE_CSS = 'bundle.css';
 export const BUNDLE_JS = 'bundle.js';
 
-/** The shared controls (Spec #448, Chore #689), in display order. A control and its panel (`Menu`, `Dialog`, `Sheet`) share a file. */
+/** The shared controls (Spec #448, Chores #689 and #691), in display order. A control can share a file with its panel (`Menu`, `Dialog`, `Sheet`) or its part (`RemovableChip` in `Chip`). */
 export const CONTROLS: Control[] = [
   { name: 'Button', path: 'app/components/actions/Button.tsx' },
   { name: 'IconButton', path: 'app/components/actions/IconButton.tsx' },
@@ -23,12 +23,21 @@ export const CONTROLS: Control[] = [
   { name: 'ChipGroup', path: 'app/components/actions/ChipGroup.tsx' },
   { name: 'Segmented', path: 'app/components/actions/Segmented.tsx' },
   { name: 'Tabs', path: 'app/components/actions/Tabs.tsx' },
+  { name: 'TextLink', path: 'app/components/actions/TextLink.tsx' },
+  { name: 'KeyHint', path: 'app/components/actions/KeyHint.tsx' },
+  { name: 'RemovableChip', path: 'app/components/actions/Chip.tsx' },
   { name: 'TextField', path: 'app/components/forms/TextField.tsx' },
   { name: 'Checkbox', path: 'app/components/forms/Checkbox.tsx' },
   { name: 'CheckboxField', path: 'app/components/forms/CheckboxField.tsx' },
   { name: 'DateField', path: 'features/map/components/DateField.tsx' },
+  { name: 'SelectField', path: 'app/components/forms/SelectField.tsx' },
+  { name: 'TokenField', path: 'app/components/forms/TokenField.tsx' },
   { name: 'Alert', path: 'app/components/feedback/Alert.tsx' },
   { name: 'Toast', path: 'app/components/feedback/Toast.tsx' },
+  { name: 'Banner', path: 'app/components/feedback/Banner.tsx' },
+  { name: 'Callout', path: 'app/components/feedback/Callout.tsx' },
+  { name: 'NoticeCard', path: 'app/components/feedback/NoticeCard.tsx' },
+  { name: 'ProgressBar', path: 'app/components/feedback/ProgressBar.tsx' },
   { name: 'Avatar', path: 'app/components/foundation/Avatar.tsx' },
   { name: 'Divider', path: 'app/components/foundation/Divider.tsx' },
   { name: 'Icon', path: 'app/components/foundation/Icon.tsx' },

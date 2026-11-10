@@ -14,6 +14,7 @@ Ask questions as described in `SKILL.md`, only about what the idea leaves open:
 - **Why:** the problem it fixes.
 - **Done:** how we'll know, as a check someone can run or see.
 - **Constraints:** anything it must not touch or break.
+- **Design system:** does the idea change a design system input ([list](../../../design/CANVAS.md#changing-the-design-system))? If it does, add two done checks to the draft and leave out "Do not edit `design/canvas/`". The checks: every file under `design/canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`, and `npm run design:export` prints "No snapshot changed".
 
 Ask every open choice, so none reach the plan: a Chore has no decisions box.
 

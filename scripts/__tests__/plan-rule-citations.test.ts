@@ -19,6 +19,8 @@ const RULE_NAMES = [
   'stale-facts',
   'test-first',
   'hand-back',
+  'design-system',
+  'canvas-follow-up',
 ];
 const IN_SCOPE = [
   'plans/README.md',

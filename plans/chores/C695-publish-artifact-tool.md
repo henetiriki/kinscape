@@ -5,7 +5,7 @@
 
 ## Approach
 
-Make the Chore's edits. Each `SKILL.md` step names its capability and links to `tools.md` for the call. The tech lead builds this hand-back.
+Make the Chore's edits. Each `SKILL.md` step names its capability. The intro links to `tools.md` for the call. The tech lead builds this hand-back.
 
 ## Decisions
 
@@ -36,7 +36,7 @@ The first check needs a run that sends files. If the artifact matches the inputs
 
 ## Risks
 
-`SKILL.md` has about 640 of 650 words. If the edits pass 650, move more call detail to `tools.md`.
+`SKILL.md` has about 640 of 650 words. If edits pass 650, move call detail to `tools.md`.
 
 ## Proof
 
@@ -53,4 +53,4 @@ The first check needs a run that sends files. If the artifact matches the inputs
 
 ## Deviations
 
-`tools.md` adds two rules from the tool description.
+`tools.md` adds two tool rules and the MCP arguments.

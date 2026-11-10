@@ -33,18 +33,22 @@
 
 ## Files that change
 
-| File                                   | What              |
-| -------------------------------------- | ----------------- |
-| `design/COMPONENTS.md`                 | New               |
-| `design/CANVAS.md`                     | Seven fixes, link |
-| `scripts/word-count.mts`               | 600-word budget   |
-| `scripts/__tests__/word-count.test.ts` | A budget case     |
+| File                                      | What              |
+| ----------------------------------------- | ----------------- |
+| `design/COMPONENTS.md`                    | New               |
+| `design/CANVAS.md`                        | Seven fixes, link |
+| `scripts/word-count.mts`                  | 600-word budget   |
+| `scripts/__tests__/word-count.test.ts`    | A budget case     |
+| `scripts/vercel-ignore.mts`               | Ignore the file   |
+| `scripts/__tests__/vercel-ignore.test.ts` | An ignored case   |
+| `docs/README.md`                          | Owner table row   |
 
 ## Order of work
 
-1. Add the test case; see it fail.
-2. Add the budget.
-3. Edit `CANVAS.md`, then write `COMPONENTS.md`.
+1. Add the test case.
+2. See it fail.
+3. Add the budget.
+4. Edit `CANVAS.md`, then write `COMPONENTS.md`.
 
 ## Proof
 

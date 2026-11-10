@@ -20,8 +20,8 @@ With no Chromium, skip `npm run design:export`: the workflow exports in CI.
   5. Run the steps in "Refreshing the copy", then commit `design/canvas/` alone.
   6. Push the branch. If a board changed, run the workflow Design: Render snapshots.
 - **Done check.** A Spec or Chore that changes these inputs lists steps 3 to 5 in its done check: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`.
-- **Who.** The tech lead, or a local Claude Code session that the tech lead starts and signs in. The CI build agent cannot sign in.
-- **Boards.** The design agent redraws a board with a new component later, on the branch of the Spec that needs it, after step 5.
+- **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
+- **Boards.** The design agent swaps the new component into the boards that the plan lists, on the same branch: [`COMPONENTS.md`](COMPONENTS.md).
 
 ## Refreshing the copy
 
@@ -55,7 +55,11 @@ After a `/publish-design-system` run that sends files, the canvas still holds th
 6. Read the canvas folder again. Report each file whose sha256 differs from the design system.
 7. Ask the person to open the canvas and check that the new cards render.
 
-Fallback, without the `Artifact` tool: use `copy_file` for each changed file, remove the deleted files, and set the entry's `version` and `copiedAt`.
+Fallback, without the `Artifact` tool:
+
+- Use `copy_file` for each changed file.
+- Remove the deleted files.
+- Set the entry's `version` and `copiedAt`.
 
 To run the steps, paste this prompt into Claude Code:
 
@@ -63,9 +67,9 @@ To run the steps, paste this prompt into Claude Code:
 Use the Artifact tool to update project/ds/kinscape/ and the designSystems entry on the canvas.
 Follow "Updating the install" in design/CANVAS.md, steps 1 to 7.
 After step 3, wait for my OK. If nothing differs, say so and stop.
-Touch no board. Leave the repo alone.
+Change nothing else on the canvas. Touch no board. Leave the repo alone.
 ```
 
 ## Handing off a board
 
-A Spec names the board's file (for example `Map.dc.html`). Open the canvas's main menu › **Hand off to Claude Code**, name the board under "Add instructions", and send the prompt it opens. The prompt holds the canvas link. Read the board through that link with `read` and `paths` on `project/<board>` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`; record in the PR which worked. Don't use Export.
+A Spec names the board's file (for example `Map.dc.html`). Open the canvas's main menu › **Hand off to Claude Code**. Name the board under "Add instructions". Send the prompt it opens. The prompt holds the canvas link. Read the board through that link with `read` and `paths` on `project/<board>` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked. Don't use Export.

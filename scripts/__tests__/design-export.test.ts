@@ -563,13 +563,43 @@ describe('mountImports', () => {
     props: Record<string, unknown>;
   };
 
-  const draw = (tree: unknown): Node =>
-    typeof tree === 'string'
-      ? document.createTextNode(tree)
-      : (tree as Tree).component({
-          ...(tree as Tree).props,
-          children: (tree as Tree).children.map(draw),
-        });
+  const draw = (tree: unknown): Node => {
+    if (typeof tree === 'string') {
+      return document.createTextNode(tree);
+    }
+
+    const { children, component, props } = tree as {
+      component: string | Tree['component'];
+    } & Omit<Tree, 'component'>;
+
+    if (typeof component === 'string') {
+      const { className, htmlFor, style, ...rest } = props as {
+        className?: string;
+        htmlFor?: string;
+        style?: Record<string, string>;
+      } & Record<string, string>;
+      const element = document.createElement(component);
+
+      for (const [name, value] of Object.entries(rest)) {
+        element.setAttribute(name, value);
+      }
+
+      if (className) {
+        element.className = className;
+      }
+
+      if (htmlFor) {
+        element.setAttribute('for', htmlFor);
+      }
+
+      Object.assign(element.style, style);
+      element.append(...children.map(draw));
+
+      return element;
+    }
+
+    return component({ ...props, children: children.map(draw) });
+  };
 
   const box = (tag: string, props: Record<string, unknown>) => {
     const element = document.createElement(tag);
@@ -660,14 +690,38 @@ describe('mountImports', () => {
     await expect(mountImports()).rejects.toThrow('No component Nope.Deep');
   });
 
-  it('rejects markup inside an <x-import>', async () => {
+  it('renders HTML markup inside an <x-import>, with class, for and style as React props', async () => {
     install();
     board(
-      '<x-import component-from-global-scope="KinScape.Button"><b>x</b></x-import>'
+      '<x-import component-from-global-scope="KinScape.Group"><div class="row" aria-label="Row" style="margin-top: 4px; --x: 1"><label for="a">A</label><br><x-import component-from-global-scope="KinScape.Group.Item">One</x-import></div></x-import>'
+    );
+
+    await mountImports();
+
+    expect(document.querySelector('ul')?.innerHTML).toBe(
+      '<div aria-label="Row" class="row" style="margin-top: 4px;"><label for="a">A</label><br><li>One</li></div>'
+    );
+  });
+
+  it('rejects a comment inside an <x-import>', async () => {
+    install();
+    board(
+      '<x-import component-from-global-scope="KinScape.Button"><!-- c --></x-import>'
     );
 
     await expect(mountImports()).rejects.toThrow(
-      'Unsupported <b> inside <x-import>'
+      'Unsupported <#comment> inside <x-import>'
+    );
+  });
+
+  it('rejects an <svg> inside an <x-import>', async () => {
+    install();
+    board(
+      '<x-import component-from-global-scope="KinScape.Button"><svg></svg></x-import>'
+    );
+
+    await expect(mountImports()).rejects.toThrow(
+      'Unsupported <svg> inside <x-import>'
     );
   });
 });
@@ -683,7 +737,7 @@ describe('inlineStyles', () => {
         name === 'border-top-color' ? 'rgba(0, 0, 0, 0)' : '5px',
     } as unknown as CSSStyleDeclaration);
 
-    inlineStyles();
+    inlineStyles([]);
 
     expect(document.body.innerHTML).toBe(
       '<p class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;">out</p><x-import><i class="a" style="width: 5px; margin-top: 5px; border-top-color: transparent; padding-top: 5px;"><u class="b"></u></i><s class="c"></s></x-import>'
@@ -695,7 +749,7 @@ describe('inlineStyles', () => {
     document.head.innerHTML = '<title>T</title>';
     document.body.innerHTML = '<i></i>';
 
-    inlineStyles();
+    inlineStyles([]);
 
     expect(document.body.innerHTML).toBe('<i></i>');
   });
@@ -704,7 +758,83 @@ describe('inlineStyles', () => {
     document.head.innerHTML = '<title>T</title>';
     document.body.innerHTML = '<x-import><i></i></x-import>';
 
-    expect(inlineStyles).toThrow('<x-import> but no bundle <style>');
+    expect(() => inlineStyles([])).toThrow('<x-import> but no bundle <style>');
+  });
+
+  describe('a zero-width border', () => {
+    const run = (tokens: string[]) => {
+      document.head.innerHTML =
+        '<title>T</title><style data-bundle>.a{border-top-width:0;border-top-color:red}</style>';
+      document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+        getPropertyValue: (name: string) =>
+          name === 'border-top-color' ? 'rgb(128, 128, 128)' : '0px',
+      } as unknown as CSSStyleDeclaration);
+
+      inlineStyles(tokens);
+
+      return document.querySelector('i')?.getAttribute('style');
+    };
+
+    it("drops the browser's colour", () => {
+      expect(run([])).toBe('border-top-width: 0px;');
+    });
+
+    it('keeps a token colour', () => {
+      expect(run(['128,128,128'])).toBe(
+        'border-top-width: 0px; border-top-color: rgb(128, 128, 128);'
+      );
+    });
+  });
+
+  it('leaves only token colours on Divider and MenuPanel', async () => {
+    const { act, createElement, Fragment } = await import('react');
+    const { createRoot } = await import('react-dom/client');
+    const { Divider } = await import('@ks/app/components/foundation/Divider');
+    const { MenuPanel } = await import('@ks/app/components/overlays/Menu');
+    const css = ['foundation/Divider', 'overlays/Menu']
+      .map(file =>
+        readFileSync(`app/components/${file}.module.css`, 'utf8').replace(
+          /^\s*composes:.*$/gm,
+          ''
+        )
+      )
+      .join('\n');
+    const container = document.createElement('div');
+
+    Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+    document.head.innerHTML = `<title>T</title><style data-bundle>${css}</style>`;
+    document.body.replaceChildren(container);
+    await act(async () => {
+      createRoot(container).render(
+        createElement(
+          Fragment,
+          null,
+          createElement(Divider),
+          createElement(MenuPanel, {
+            email: 'a@example.com',
+            groups: [
+              [{ icon: 'info', id: 'one', label: 'One' }],
+              [{ icon: 'info', id: 'two', label: 'Two' }],
+            ],
+          })
+        )
+      );
+    });
+    vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: (name: string) =>
+        /^border-.*-width$/.test(name)
+          ? '0px'
+          : /^border-.*color$/.test(name)
+            ? 'rgb(128, 128, 128)'
+            : 'rgb(226, 229, 221)',
+    } as unknown as CSSStyleDeclaration);
+
+    inlineStyles(['226,229,221']);
+
+    expect(container.querySelectorAll('hr')).toHaveLength(3);
+    expect(container.innerHTML).not.toContain('128, 128, 128');
+    expect(container.innerHTML).toContain('rgb(226, 229, 221)');
   });
 });
 
@@ -798,7 +928,8 @@ describe('exportSnapshots', () => {
     expect(await exportSnapshots(root, [], { render })).toEqual(['a', 'b']);
     expect(render).toHaveBeenCalledWith(
       `<img src="${icon}"><p style="color: #18211b">A</p>`,
-      snapshots[0]
+      snapshots[0],
+      ['24,33,27']
     );
     expect(readFileSync(join(root, 'design/source/a.html'), 'utf8')).toBe(
       await expected(

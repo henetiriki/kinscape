@@ -39,8 +39,15 @@ export type Denial = {
 };
 
 export type DesignExportDeps = {
-  /** Loads the prepared artboard in Chromium, fills its template and returns the page's HTML. */
-  render: (html: string, snapshot: CanvasSnapshot) => Promise<string>;
+  /**
+   * Loads the prepared artboard in Chromium, fills its template and returns the page's HTML.
+   * `tokens` holds each token colour as `r,g,b`.
+   */
+  render: (
+    html: string,
+    snapshot: CanvasSnapshot,
+    tokens: string[]
+  ) => Promise<string>;
 };
 
 /** The parts of `design-system.json` that `design-system-publish.mts` writes; other keys pass through. */

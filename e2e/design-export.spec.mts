@@ -31,8 +31,7 @@ const BOARD = `<!doctype html>
   <h2 class="h2" style="margin: 0">Add a pin</h2>
   <x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Example Person"></x-import>
   <x-import component-from-global-scope="KinScape.Button" variant="primary" style="flex: 1">Save pin</x-import>
-  <x-import component-from-global-scope="KinScape.Alert" tone="warning" title="Heads up">Careful.</x-import>
-</div></x-dc>
+  <x-import component-from-global-scope="KinScape.Alert" tone="warning" title="Heads up">Careful.</x-import></div></x-dc>
 <script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return {}; } }</script>
 </body></html>`;
 
@@ -40,6 +39,9 @@ test('exports a board that uses <x-import> and var() as rendered HTML with writt
   page,
 }) => {
   const dir = mkdtempSync(join(tmpdir(), 'design-export-e2e-'));
+  const tokens = tokenColours(
+    readFileSync(join(root, 'design/tokens.json'), 'utf8')
+  );
 
   try {
     const file = join(dir, 'board.html');
@@ -55,16 +57,11 @@ test('exports a board that uses <x-import> and var() as rendered HTML with writt
     await page.goto(pathToFileURL(file).href);
     await page.evaluate(fillTemplate, { props: {}, state: {} });
     await page.evaluate(mountImports);
-    await page.evaluate(inlineStyles);
+    await page.evaluate(inlineStyles, [...tokens]);
 
     const snapshot = await page.evaluate(pageHtml);
 
-    expect(
-      snapshotProblems(
-        snapshot,
-        tokenColours(readFileSync(join(root, 'design/tokens.json'), 'utf8'))
-      )
-    ).toEqual([]);
+    expect(snapshotProblems(snapshot, tokens)).toEqual([]);
     expect(snapshot).toContain('<input');
     expect(snapshot).toContain('Example Person');
     expect(snapshot).toMatch(/<div style="flex: 1[^"]*"><button/);

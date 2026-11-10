@@ -594,22 +594,65 @@ export const mountImports = async (): Promise<void> => {
       throw new Error(`No component ${path}`);
     }
 
-    const children = Array.from(element.childNodes).flatMap(child => {
+    return React.createElement(component, element.props, ...contents(element));
+  };
+
+  // An HTML element becomes a React element: `class`, `for` and `style` take React's names.
+  const markup = (element: Element): unknown => {
+    const props: Record<string, unknown> = {};
+
+    for (const { name, value } of Array.from(element.attributes)) {
+      if (name === 'style') {
+        const style: Record<string, string> = {};
+        const { style: declared } = element as HTMLElement;
+
+        for (let index = 0; index < declared.length; index += 1) {
+          const property = declared[index];
+
+          style[
+            property.startsWith('--')
+              ? property
+              : property.replace(/-([a-z])/g, (_match, letter: string) =>
+                  letter.toUpperCase()
+                )
+          ] = declared.getPropertyValue(property);
+        }
+
+        props.style = style;
+      } else {
+        props[
+          name === 'class' ? 'className' : name === 'for' ? 'htmlFor' : name
+        ] = value;
+      }
+    }
+
+    return React.createElement(
+      element.tagName.toLowerCase(),
+      props,
+      ...contents(element)
+    );
+  };
+
+  const contents = (element: Element): unknown[] =>
+    Array.from(element.childNodes).flatMap(child => {
       if (child.nodeType === Node.TEXT_NODE) {
         return child.nodeValue?.trim() ? [child.nodeValue] : [];
       }
 
-      if (child instanceof Element && child.tagName === 'X-IMPORT') {
-        return [build(child)];
+      if (child instanceof Element) {
+        if (child.tagName === 'X-IMPORT') {
+          return [build(child)];
+        }
+
+        if (child.namespaceURI === 'http://www.w3.org/1999/xhtml') {
+          return [markup(child)];
+        }
       }
 
       throw new Error(
         `Unsupported <${child.nodeName.toLowerCase()}> inside <x-import>`
       );
     });
-
-    return React.createElement(component, element.props, ...children);
-  };
 
   // Every tree is built before any content is cleared: a nested `<x-import>` is a child's source.
   const trees = imports.map(element => [element, build(element)] as const);
@@ -627,10 +670,12 @@ export const mountImports = async (): Promise<void> => {
  * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
  * is dropped from the snapshot, so each element on the page takes the computed value of every
  * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. Custom properties,
- * transitions, animations and states (`:hover`) stay out.
+ * transitions, animations and states (`:hover`) stay out. A border colour that is not a token
+ * (`tokens` holds `r,g,b` strings) stays out where the border is 0px wide: the browser fills it
+ * with a default grey that the author never set.
  * Uses nothing from the module, as `fillTemplate`.
  */
-export const inlineStyles = (): void => {
+export const inlineStyles = (tokens: string[]): void => {
   const bundle = document.querySelector<HTMLStyleElement>('style[data-bundle]');
 
   if (!bundle?.sheet) {
@@ -653,14 +698,36 @@ export const inlineStyles = (): void => {
           for (const name of Array.from(declared)) {
             // A static snapshot has no use for transitions or animations, and their names
             // (`transition-property: background`) would read as colours.
-            if (!/^(?:--|animation|transition)/.test(name)) {
-              element.style.setProperty(
-                name,
-                getComputedStyle(element)
-                  .getPropertyValue(name)
-                  .replaceAll('rgba(0, 0, 0, 0)', 'transparent')
-              );
+            if (/^(?:--|animation|transition)/.test(name)) {
+              continue;
             }
+
+            const computed = getComputedStyle(element);
+            const value = computed.getPropertyValue(name);
+            const side = /^border(?:-(top|right|bottom|left))?-color$/.exec(
+              name
+            );
+
+            if (
+              side &&
+              (side[1] ? [side[1]] : ['top', 'right', 'bottom', 'left']).every(
+                each =>
+                  computed.getPropertyValue(`border-${each}-width`) === '0px'
+              ) &&
+              !tokens.includes(
+                [...value.matchAll(/\d+/g)]
+                  .slice(0, 3)
+                  .map(([digits]) => digits)
+                  .join(',')
+              )
+            ) {
+              continue;
+            }
+
+            element.style.setProperty(
+              name,
+              value.replaceAll('rgba(0, 0, 0, 0)', 'transparent')
+            );
           }
         }
       }
@@ -721,6 +788,7 @@ export const exportSnapshots = async (
   const tokens = tokenColours(
     readFileSync(join(root, 'design/tokens.json'), 'utf8')
   );
+  const tokenList = [...tokens];
   const urls = {
     fonts: fileUrl(root, `${SOURCE_DIR}/fonts.css`),
     icon: fileUrl(root, 'app/icon0.svg'),
@@ -745,7 +813,8 @@ export const exportSnapshots = async (
           system: designSystem(root),
         }),
       }),
-      snapshot
+      snapshot,
+      tokenList
     );
     const html = await format(finish(rendered, urls.icon, links), {
       ...(await resolveConfig(target, { editorconfig: true })),
@@ -788,7 +857,11 @@ if (import.meta.main) {
 
   try {
     const changed = await exportSnapshots('.', process.argv.slice(2), {
-      render: async (html, { name, props = {}, state = {}, viewport }) => {
+      render: async (
+        html,
+        { name, props = {}, state = {}, viewport },
+        tokens
+      ) => {
         const file = join(dir, `${name}.html`);
         const page = await browser.newPage({ viewport });
         const errors: string[] = [];
@@ -810,7 +883,7 @@ if (import.meta.main) {
         try {
           await page.evaluate(fillTemplate, { props, state });
           await page.evaluate(mountImports);
-          await page.evaluate(inlineStyles);
+          await page.evaluate(inlineStyles, tokens);
           await page.evaluate(() => document.fonts.ready);
           snapshot = await page.evaluate(pageHtml);
         } catch (error) {

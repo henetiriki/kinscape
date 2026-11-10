@@ -35,6 +35,11 @@ jsdom has no `<hr>` grey.
 2. See the `Divider` test fail on the grey, then do steps 2–3.
 3. Run `npm run design:export` and the checks.
 
+## Deviations
+
+- The tokens are `r,g,b` strings in an array: `page.evaluate` cannot send a `Set`.
+- The skip covers `border-color`.
+
 ## Risks
 
 React drops an empty boolean attribute (`hidden=""`). No board on `main` has one inside an `<x-import>`. A fix costs about five lines.

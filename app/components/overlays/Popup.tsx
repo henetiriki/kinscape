@@ -23,7 +23,7 @@ export const chainText = (chain: ChainLevel[]) =>
     )
     .join('\n');
 
-type Props = {
+type PopupArgs = {
   chain: ChainLevel[];
   coordinates: string;
   /** A floating popup on a desktop; a sheet region on a phone. */
@@ -64,7 +64,7 @@ export const Popup = ({
   pins,
   place,
   year,
-}: Props) => {
+}: PopupArgs) => {
   const overlineId = useId();
   const floating = form === 'floating';
 

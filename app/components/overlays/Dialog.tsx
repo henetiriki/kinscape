@@ -12,7 +12,7 @@ import styles from '@ks/app/components/overlays/Dialog.module.css';
 
 type DialogForm = 'centred' | 'sheet';
 
-type PanelProps = {
+type DialogPanelArgs = {
   children: ReactNode;
   /** A line under the body. */
   footnote?: string;
@@ -33,7 +33,7 @@ export const DialogPanel = ({
   subtitle,
   title,
   titleId,
-}: PanelProps) => (
+}: DialogPanelArgs) => (
   <div className={styles.panel} data-form={form}>
     <span aria-hidden='true' className={styles.handle} />
     <div className={styles.head}>
@@ -52,7 +52,7 @@ export const DialogPanel = ({
   </div>
 );
 
-type DialogProps = Omit<PanelProps, 'form' | 'onClose' | 'titleId'> & {
+type DialogArgs = Omit<DialogPanelArgs, 'form' | 'onClose' | 'titleId'> & {
   /** Forces a form; without it a phone gets the sheet and anything else the centred dialog. */
   form?: DialogForm;
   /** Called when the Close button, the scrim or Esc dismisses the dialog. */
@@ -61,7 +61,7 @@ type DialogProps = Omit<PanelProps, 'form' | 'onClose' | 'titleId'> & {
 };
 
 /** A modal for a task or a long read: centred over the scrim, or a bottom sheet on a phone. */
-export const Dialog = ({ form, onClose, open, ...panel }: DialogProps) => {
+export const Dialog = ({ form, onClose, open, ...panel }: DialogArgs) => {
   const titleId = useId();
   const phone = usePhone();
   const shape = form ?? (phone ? 'sheet' : 'centred');

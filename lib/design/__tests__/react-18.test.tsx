@@ -25,6 +25,7 @@ import {
   vi,
 } from 'vitest';
 
+import { standInDom } from '@ks/__tests__/dom-stand-ins';
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip } from '@ks/app/components/actions/Chip';
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
@@ -42,7 +43,13 @@ import { Icon, PATHS } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
+import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
+import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
+import { Modal } from '@ks/app/components/overlays/Modal';
+import { Popup } from '@ks/app/components/overlays/Popup';
+import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
+import { CHAIN, PINS } from '@ks/app/design-kit/surfaces/data';
 import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -319,6 +326,88 @@ const CASES: [string, ReactElement][] = [
     'MenuPanel · hovered',
     <MenuPanel {...ACCOUNT} hovered='sources' key='hovered' onSelect={noop} />,
   ],
+  ...(['floating', 'sheet'] as const).map((form): [string, ReactElement] => [
+    `Popup · ${form}`,
+    <Popup
+      chain={CHAIN}
+      coordinates='28.738° S · 24.764° E'
+      form={form}
+      key={form}
+      pins={PINS}
+      place='Kimberley'
+      year={1901}
+    />,
+  ]),
+  ...([false, true] as const).map((expanded): [string, ReactElement] => [
+    `BottomSheet · ${expanded ? 'expanded' : 'collapsed'}`,
+    <BottomSheet
+      expanded={expanded}
+      key={String(expanded)}
+      onExpandedChange={noop}>
+      Date controls
+    </BottomSheet>,
+  ]),
+  [
+    'Modal · open',
+    <Modal aria-label='Modal' key='modal' onClose={noop} open>
+      Content
+    </Modal>,
+  ],
+  [
+    'Dialog · centred',
+    <Dialog
+      footnote='Footnote'
+      key='dialog'
+      onClose={noop}
+      open
+      subtitle='Subtitle'
+      title='Sources'>
+      Content
+    </Dialog>,
+  ],
+  ...(['centred', 'sheet'] as const).map((form): [string, ReactElement] => [
+    `DialogPanel · ${form}`,
+    <DialogPanel
+      footnote='Footnote'
+      form={form}
+      key={form}
+      subtitle='Subtitle'
+      title='Sources'
+      titleId={`dialog-${form}`}>
+      Content
+    </DialogPanel>,
+  ]),
+  [
+    'Sheet · open',
+    <Sheet key='sheet' onClose={noop} open title='Boards'>
+      Content
+    </Sheet>,
+  ],
+  [
+    'SheetPanel · title',
+    <SheetPanel key='title' title='Boards' titleId='sheet-title'>
+      Content
+    </SheetPanel>,
+  ],
+  [
+    'SheetPanel · subtitle',
+    <SheetPanel
+      key='subtitle'
+      subtitle='Subtitle'
+      title='Sources'
+      titleId='sheet-subtitle'>
+      Content
+    </SheetPanel>,
+  ],
+  [
+    'SheetPanel · tabs',
+    <SheetPanel
+      key='tabs'
+      tabs={{ label: 'Layers and filters', selected: 'layers', tabs: TABS }}
+      titleId='sheet-tabs'>
+      Content
+    </SheetPanel>,
+  ],
 ];
 
 let errors: ReturnType<typeof vi.spyOn>;
@@ -366,18 +455,25 @@ describe('bundle', () => {
   const COMPONENTS = {
     Alert,
     Avatar,
+    BottomSheet,
     Button,
     Checkbox,
     CheckboxField,
     Chip,
     ChipGroup,
     DateField,
+    Dialog,
+    DialogPanel,
     Divider,
     Icon,
     IconButton,
     Menu,
     MenuPanel,
+    Modal,
+    Popup,
     Segmented,
+    Sheet,
+    SheetPanel,
     Surface,
     Tabs,
     Text,
@@ -409,6 +505,7 @@ describe('bundle', () => {
     });
 
     page = dom.window;
+    standInDom(page);
     page.document.head.innerHTML = `<style>${read(join(out, 'project/components/bundle.css'))}</style>`;
     page.eval(read('node_modules/react-18/umd/react.development.js'));
     page.eval(read('node_modules/react-dom-18/umd/react-dom.development.js'));

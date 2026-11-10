@@ -498,4 +498,116 @@ export declare const Menu: ({ form, initial, onSelect, ...panel }: AccountMenuPr
 export type MenuProps = Parameters<typeof Menu>[0];
 export type MenuPanelProps = Parameters<typeof MenuPanel>[0];
 
+/** What Copy chain copies: a line per level, smallest first, as `Colony: Cape Colony (Was … until 1880)`. */
+declare const chainText: (chain: ChainLevel[]) => string;
+type PopupArgs = {
+    chain: ChainLevel[];
+    coordinates: string;
+    /** A floating popup on a desktop; a sheet region on a phone. */
+    form: 'floating' | 'sheet';
+    /** Called by Close and by Esc inside the popup. */
+    onClose?: () => void;
+    /** Called with whether the chain reached the clipboard; the caller shows the Toast. */
+    onCopied?: (ok: boolean) => void;
+    pins: PopupPin[];
+    place: string;
+    year: number;
+};
+/** "What was this spot part of on the map date?": the Jurisdiction chain and the pins there. */
+export declare const Popup: ({ chain, coordinates, form, onClose, onCopied, pins, place, year, }: PopupArgs) => import("react").JSX.Element;
+/**
+ * The floating Popup at a map point, in pixels from the corner of the overlay area:
+ * left of the point, with its pointer on the right edge.
+ */
+declare const PlacedPopup: ({ x, y, ...rest }: {
+    x: number;
+    y: number;
+} & Omit<Parameters<typeof Popup>[0], "form">) => import("react").JSX.Element;
+/** Decoration, never read: a square turned 45°. The caller sets `bottom` and `left` on `className`. */
+declare const PopupPointer: ({ className }: {
+    className?: string;
+}) => import("react").JSX.Element;
+export type PopupProps = Parameters<typeof Popup>[0];
+
+/** The phone's non-modal date sheet: the map stays usable behind it. Collapsed or expanded; the grabber toggles it. */
+export declare const BottomSheet: ({ children, expanded, onExpandedChange, }: {
+    children: ReactNode;
+    expanded: boolean;
+    onExpandedChange: (expanded: boolean) => void;
+}) => import("react").JSX.Element;
+export type BottomSheetProps = Parameters<typeof BottomSheet>[0];
+
+type ModalArgs = {
+    /** Called when the scrim or Esc dismisses the modal. */
+    onClose: () => void;
+    open: boolean;
+} & Omit<ComponentProps<'dialog'>, 'onClick' | 'onClose'>;
+/** A modal on a native `<dialog>`: the browser handles Esc, the inert page and focus return. */
+export declare const Modal: ({ children, onClose, open, ...rest }: ModalArgs) => import("react").JSX.Element;
+/** The round 44 × 44 Close button that ends every Dialog and Sheet head. */
+declare const ModalClose: ({ iconSize, onClick, }: {
+    iconSize: 18 | 20;
+    /** Left off in the design kit, where the head is only drawn. */
+    onClick?: () => void;
+}) => import("react").JSX.Element;
+export type ModalProps = Parameters<typeof Modal>[0];
+
+type DialogForm = 'centred' | 'sheet';
+type DialogPanelArgs = {
+    children: ReactNode;
+    /** A line under the body. */
+    footnote?: string;
+    form: DialogForm;
+    /** Left off in the design kit, where the panel is only drawn. */
+    onClose?: () => void;
+    subtitle?: string;
+    title: string;
+    titleId: string;
+};
+/** The Dialog as drawn: a modal Surface with a fixed head and a body that scrolls. */
+export declare const DialogPanel: ({ children, footnote, form, onClose, subtitle, title, titleId, }: DialogPanelArgs) => import("react").JSX.Element;
+type DialogArgs = Omit<DialogPanelArgs, 'form' | 'onClose' | 'titleId'> & {
+    /** Forces a form; without it a phone gets the sheet and anything else the centred dialog. */
+    form?: DialogForm;
+    /** Called when the Close button, the scrim or Esc dismisses the dialog. */
+    onClose: () => void;
+    open: boolean;
+};
+/** A modal for a task or a long read: centred over the scrim, or a bottom sheet on a phone. */
+export declare const Dialog: ({ form, onClose, open, ...panel }: DialogArgs) => import("react").JSX.Element;
+export type DialogProps = Parameters<typeof Dialog>[0];
+export type DialogPanelProps = Parameters<typeof DialogPanel>[0];
+
+type SheetHead = {
+    subtitle?: string;
+    tabs?: undefined;
+    title: string;
+} | {
+    subtitle?: undefined;
+    tabs: {
+        /** The sheet's name, whichever tab is selected. */
+        label: string;
+        onSelect?: (value: string) => void;
+        selected: string;
+        tabs: Tab[];
+    };
+    title?: undefined;
+};
+type SheetPanelArgs = SheetHead & {
+    children: ReactNode;
+    onClose?: () => void;
+    titleId: string;
+};
+/** The handle, one of three heads (title, title and subtitle, or tabs) and the content. A Sheet puts it on a dialog. */
+export declare const SheetPanel: ({ children, onClose, subtitle, tabs, title, titleId, }: SheetPanelArgs) => import("react").JSX.Element;
+type SheetArgs = SheetHead & Pick<ComponentProps<typeof SheetPanel>, 'children'> & {
+    /** Called when the Close button, the scrim or Esc dismisses the sheet. */
+    onClose: () => void;
+    open: boolean;
+};
+/** A modal bottom sheet on a native `<dialog>`. */
+export declare const Sheet: ({ children, onClose, open, ...head }: SheetArgs) => import("react").JSX.Element;
+export type SheetProps = Parameters<typeof Sheet>[0];
+export type SheetPanelProps = Parameters<typeof SheetPanel>[0];
+
 export {};

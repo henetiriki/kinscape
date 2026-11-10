@@ -305,6 +305,20 @@ it('leaves a half-typed date unchecked', () => {
   expect(screen.queryByRole('alert')).toBeNull();
 });
 
+// The design system bundle orders TextLink's rules after `.fix`, so only a data attribute keeps the link small.
+it.each(['above', 'below'] as const)(
+  'sets the fix link to the small TextLink size, with the message %s the field',
+  placement => {
+    setup({ defaultText: '1901-02-30', placement });
+
+    expect(
+      screen
+        .getByRole('button', { name: 'Go to 1901-02-28' })
+        .getAttribute('data-size')
+    ).toBe('small');
+  }
+);
+
 it('starts with the date when its starting text is a good date', () => {
   const { field } = setup({ defaultText: '1901-06' });
 

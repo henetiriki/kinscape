@@ -137,8 +137,7 @@ button,input{font:inherit}
   </sc-if>
 
   <sc-if value="{{collapsed}}" hint-placeholder-val="{{ false }}">
-  <section aria-label="Map date" style="position: absolute; left: 0; right: 0; bottom: 0; height: 152px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
-    <button type="button" aria-label="Expand the sheet" style="align-self: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer"><span style="width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span></button>
+  <div style="position: absolute; left: 0; right: 0; bottom: 0"><x-import component-from-global-scope="KinScape.BottomSheet" expanded="{{no}}" on-expanded-change="{{noop}}">
     <div style="display: flex; align-items: center; gap: 6px">
       <button type="button" aria-label="Back one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
       <input aria-label="Map date" value="1901" readonly style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B">
@@ -146,7 +145,7 @@ button,input{font:inherit}
       <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>
     </div>
     <p style="margin: 0; font-size: 13px; color: #4A544C; text-align: center">Tap the map to see what a place was part of in 1901.</p>
-  </section>
+  </x-import></div>
   </sc-if>
 </div>
 </x-dc>
@@ -154,7 +153,7 @@ button,input{font:inherit}
 class Component extends DCLogic {
   renderVals() {
     const collapsed = (this.props.variant ?? 'lookup') === 'collapsed';
-    return { collapsed: collapsed, expanded: !collapsed, ringDisplay: collapsed ? 'none' : 'inline' };
+    return { noop: () => {}, no: false, collapsed: collapsed, expanded: !collapsed, ringDisplay: collapsed ? 'none' : 'inline' };
   }
 }
 </script>

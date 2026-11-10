@@ -8,14 +8,14 @@ import { Icon } from '@ks/app/components/foundation/Icon';
 
 import styles from '@ks/app/components/overlays/Modal.module.css';
 
-type ModalProps = {
+type ModalArgs = {
   /** Called when the scrim or Esc dismisses the modal. */
   onClose: () => void;
   open: boolean;
 } & Omit<ComponentProps<'dialog'>, 'onClick' | 'onClose'>;
 
 /** A modal on a native `<dialog>`: the browser handles Esc, the inert page and focus return. */
-export const Modal = ({ children, onClose, open, ...rest }: ModalProps) => {
+export const Modal = ({ children, onClose, open, ...rest }: ModalArgs) => {
   const dialog = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {

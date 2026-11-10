@@ -2,6 +2,7 @@
 
 import type { Card, State } from '#ks/lib/design/types.ts';
 
+import { CHAIN, PINS } from '#ks/lib/design/samples.mts';
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
@@ -85,6 +86,12 @@ const ACCOUNT = {
       { icon: 'info', id: 'about', label: 'About' },
     ],
   ],
+};
+
+const PANEL = {
+  footnote: 'Footnote',
+  subtitle: 'Subtitle',
+  title: 'Sources',
 };
 
 type Make = (
@@ -442,6 +449,111 @@ export const CARDS: Card[] = [
     states: [
       one('MenuPanel · open', ACCOUNT),
       one('MenuPanel · hovered', { ...ACCOUNT, hovered: 'sources' }),
+    ],
+  },
+  {
+    design: ['Jurisdiction popup'],
+    group: 'Overlays',
+    handlers: ['onClose', 'onCopied'],
+    height: 420,
+    name: 'Popup',
+    pad: 0,
+    states: ['floating', 'sheet'].map(form =>
+      one(`Popup · ${form}`, {
+        chain: CHAIN,
+        coordinates: '28.738° S · 24.764° E',
+        form,
+        pins: PINS,
+        place: 'Kimberley',
+        year: 1901,
+      })
+    ),
+  },
+  {
+    design: ['Phone date sheet'],
+    group: 'Overlays',
+    handlers: ['onExpandedChange'],
+    height: 480,
+    name: 'BottomSheet',
+    pad: 0,
+    states: [false, true].map(expanded =>
+      one(
+        `BottomSheet · ${expanded ? 'expanded' : 'collapsed'}`,
+        { expanded },
+        'Date controls'
+      )
+    ),
+  },
+  {
+    design: ['Dialog'],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 300,
+    name: 'Modal',
+    pad: 0,
+    states: [
+      one('Modal · open', { 'aria-label': 'Modal', open: true }, 'Content'),
+    ],
+  },
+  {
+    design: ['Dialog'],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 500,
+    name: 'Dialog',
+    pad: 0,
+    states: [one('Dialog · centred', { ...PANEL, open: true }, 'Content')],
+  },
+  {
+    design: ['Dialog'],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 560,
+    name: 'DialogPanel',
+    pad: 0,
+    states: ['centred', 'sheet'].map(form =>
+      one(
+        `DialogPanel · ${form}`,
+        { ...PANEL, form, titleId: `dialog-${form}` },
+        'Content'
+      )
+    ),
+  },
+  {
+    design: [],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 500,
+    name: 'Sheet',
+    pad: 0,
+    states: [one('Sheet · open', { open: true, title: 'Boards' }, 'Content')],
+  },
+  {
+    design: [],
+    group: 'Overlays',
+    handlers: ['onClose'],
+    height: 560,
+    name: 'SheetPanel',
+    pad: 0,
+    states: [
+      one(
+        'SheetPanel · title',
+        { title: 'Boards', titleId: 'sheet-title' },
+        'Content'
+      ),
+      one(
+        'SheetPanel · subtitle',
+        { subtitle: 'Subtitle', title: 'Sources', titleId: 'sheet-subtitle' },
+        'Content'
+      ),
+      one(
+        'SheetPanel · tabs',
+        {
+          tabs: { label: 'Layers and filters', selected: 'layers', tabs: TABS },
+          titleId: 'sheet-tabs',
+        },
+        'Content'
+      ),
     ],
   },
 ];

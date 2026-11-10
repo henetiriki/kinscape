@@ -12,12 +12,6 @@ import { Modal, ModalClose } from '@ks/app/components/overlays/Modal';
 
 import styles from '@ks/app/components/overlays/Sheet.module.css';
 
-type PanelProps = SheetHead & {
-  children: ReactNode;
-  onClose?: () => void;
-  titleId: string;
-};
-
 type SheetHead =
   | { subtitle?: string; tabs?: undefined; title: string }
   | {
@@ -32,6 +26,12 @@ type SheetHead =
       title?: undefined;
     };
 
+type SheetPanelArgs = SheetHead & {
+  children: ReactNode;
+  onClose?: () => void;
+  titleId: string;
+};
+
 /** The handle, one of three heads (title, title and subtitle, or tabs) and the content. A Sheet puts it on a dialog. */
 export const SheetPanel = ({
   children,
@@ -40,7 +40,7 @@ export const SheetPanel = ({
   tabs,
   title,
   titleId,
-}: PanelProps) => (
+}: SheetPanelArgs) => (
   <div
     className={styles.content}
     data-head={tabs ? 'tabs' : subtitle ? 'subtitle' : 'title'}>
@@ -62,7 +62,7 @@ export const SheetPanel = ({
   </div>
 );
 
-type SheetProps = SheetHead &
+type SheetArgs = SheetHead &
   Pick<ComponentProps<typeof SheetPanel>, 'children'> & {
     /** Called when the Close button, the scrim or Esc dismisses the sheet. */
     onClose: () => void;
@@ -70,7 +70,7 @@ type SheetProps = SheetHead &
   };
 
 /** A modal bottom sheet on a native `<dialog>`. */
-export const Sheet = ({ children, onClose, open, ...head }: SheetProps) => {
+export const Sheet = ({ children, onClose, open, ...head }: SheetArgs) => {
   const titleId = useId();
 
   return (

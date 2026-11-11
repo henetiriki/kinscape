@@ -2,7 +2,7 @@
 
 - **Spec:** #730
 - **Requirement IDs:** [NFR-09](../../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ On the agent runner, `main` takes 27.84 s, not 8.45 s. Where must the 40 tests t
 - **B.** On the tech lead's machine. The PR also shows the runner's times.
 - **Other:** your own.
 
-Recommended: A, because each file then starts PGlite once, and each test adds about 6 ms.
+**Answer: A** (@henetiriki)
 
 **D2 · Last constraint ends mid-sentence** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ The issue ends "The helper shares one connection". What does it share?
 - **B.** One client. Each handle gets its own driver and lock.
 - **Other:** your own.
 
-Recommended: A, because it costs no more code, and one lock stops two handles from mixing queries.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

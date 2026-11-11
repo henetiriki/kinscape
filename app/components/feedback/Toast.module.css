@@ -68,7 +68,7 @@
 .bannerAction {
   composes: ringOnDark from '@ks/app/components/foundation/focus.module.css';
   background: transparent;
-  border-color: color-mix(in srgb, var(--white) 45%, transparent);
+  border-color: var(--white-45);
   color: var(--white);
 }
 

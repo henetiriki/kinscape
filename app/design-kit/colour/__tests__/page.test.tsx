@@ -32,7 +32,7 @@ it('shows six groups in board order, then the system colours', async () => {
       name =>
         within(screen.getByRole('region', { name })).getAllByRole('code').length
     )
-  ).toEqual([6, 2, 13, 2, 2, 3]);
+  ).toEqual([6, 2, 15, 2, 2, 3]);
   expect(screen.getAllByRole('alert')).toHaveLength(1);
   expect(screen.getAllByRole('status')).toHaveLength(3);
 });

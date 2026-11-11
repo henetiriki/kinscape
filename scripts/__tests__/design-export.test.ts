@@ -799,6 +799,16 @@ describe('inlineStyles', () => {
     });
   });
 
+  // Chromium computes color-mix() as color(srgb …), which snapshotProblems rejects.
+  it('keeps color-mix() out of the CSS of Banner and Segmented', () => {
+    for (const file of ['feedback/Toast', 'actions/Segmented']) {
+      expect(
+        readFileSync(`app/components/${file}.module.css`, 'utf8'),
+        file
+      ).not.toContain('color-mix(');
+    }
+  });
+
   it('leaves only token colours on Divider and MenuPanel', async () => {
     const { act, createElement, Fragment } = await import('react');
     const { createRoot } = await import('react-dom/client');

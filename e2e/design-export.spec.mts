@@ -33,8 +33,10 @@ const BOARD = `<!doctype html>
   <x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Example Person"></x-import>
   <x-import component-from-global-scope="KinScape.Button" variant="primary" style="flex: 1">Save pin</x-import>
   <x-import component-from-global-scope="KinScape.Alert" tone="warning" title="Heads up">Careful.</x-import>
+  <x-import component-from-global-scope="KinScape.Banner" icon="cloudOff" action="Retry">You are offline.</x-import>
+  <x-import component-from-global-scope="KinScape.Segmented" label="View" name="view" value="map" options="{{ segments }}"></x-import>
 </div></x-dc>
-<script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return {}; } }</script>
+<script type="text/x-dc" data-dc-script>class Component extends DCLogic { renderVals() { return { segments: [{ label: 'Map', value: 'map' }, { label: 'List', value: 'list', state: 'hover' }] }; } }</script>
 </body></html>`;
 
 test('exports a board that uses <x-import> and var() as rendered HTML with written-out values', async ({
@@ -70,6 +72,9 @@ test('exports a board that uses <x-import> and var() as rendered HTML with writt
     expect(snapshot).toMatch(/<div style="flex: 1[^"]*"><button/);
     expect(snapshot).toContain('Save pin');
     expect(snapshot).toContain('Careful.');
+    // Banner and a hovered Segmented item use the white-45 and white-60 tokens.
+    expect(snapshot).toContain('You are offline.');
+    expect(snapshot).toContain('List');
     expect(snapshot).toContain('width: 160px');
     // A text style the board takes from tokens.css by class, which has no link left in the snapshot.
     expect(snapshot).toMatch(/<h2 class="h2" style="[^"]*line-height: 32px/);

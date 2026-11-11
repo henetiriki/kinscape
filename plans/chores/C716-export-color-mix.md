@@ -42,7 +42,7 @@ A `colour` token needs a swatch. Two swatches change `/design-kit/colour` from i
 
 - `design/tokens.json`, `app/tokens.css`: tokens and notes.
 - `Toast.module.css`, `Segmented.module.css`.
-- `swatches.ts`, `swatches.test.ts`: two swatches.
+- `swatches.ts`; three tests that count.
 - `design-export.test.ts`, `e2e/design-export.spec.mts`.
 - `.design-system/`, `design/canvas/`: generated.
 

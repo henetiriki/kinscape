@@ -81,7 +81,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(124);
+    expect(all(system).length).toBe(126);
   });
 
   it('puts the map colours beside the colours, with aliases as converted names', () => {

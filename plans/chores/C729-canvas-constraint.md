@@ -1,7 +1,7 @@
 # Plan: C729: Canvas constraint for design system Chores
 
 - **Spec:** #729
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The file has 893 of 900 words. The sentence adds about 25.
 - **B.** Cut other text that you name.
 - **Other:** your own.
 
-Recommended: A, because each cut text is in another place.
+**Answer: A** (@henetiriki)
 
 **D2 · Where a Spec uses the sentence** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ The Spec form has no Constraints box.
 - **B.** Line 20 links the sentence and names no box.
 - **Other:** your own.
 
-Recommended: A, because a reader then finds it.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

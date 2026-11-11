@@ -165,13 +165,19 @@ describe('checkFiles and run', () => {
     ]);
   });
 
-  it('counts a Deviations section in a file that is not a plan', () => {
-    write('CLAUDE.md', `## Deviations\n${words(151)}`);
+  it.each([
+    ['CLAUDE.md', 150],
+    ['plans/README.md', 800],
+  ])(
+    'counts a Deviations section in %s, which is not a plan',
+    (path, budget) => {
+      write(path, `## Deviations\n${words(budget)}`);
 
-    expect(checkFiles(root, ['CLAUDE.md'])).toEqual([
-      'CLAUDE.md: 152 words, budget 150',
-    ]);
-  });
+      expect(checkFiles(root, [path])).toEqual([
+        `${path}: ${budget + 1} words, budget ${budget}`,
+      ]);
+    }
+  );
 
   it('names a file over its budget', () => {
     write('CLAUDE.md', words(151));

@@ -74,6 +74,17 @@ The guard for a shared component that is not in `CONTROLS`.
 
 ## Deviations
 
-- `plans/README.md`: D2 A cut the Draft-before-code list (the template holds it), the issue-body and `agent-approve.mts` detail, the bot branch names (`review.md` holds them) and two short clauses.
+- `plans/README.md`: D2 A cut the Draft-before-code list. The template holds it.
+- `plans/README.md`: D2 A cut "any Drift means no PR" and "(it decides whether to stop)". `refresh.md` holds both.
+- `plans/README.md`: D2 A cut "update both whenever the work changes". `respond.md` holds it.
+- `plans/README.md`: D2 A cut "not how it got there". The same sentence says "as it would merge now".
+- `plans/README.md`: D2 A cut the `claude-build.yml` and `agent-approve.mts` sentence. Rule 2 and `how-we-work.md` hold it.
+- `plans/README.md`: D2 A cut the `gh issue edit` and "count, name or value" detail. `how-we-work.md` holds it.
+- `plans/README.md`: D2 A cut the `bot/update-action-pins` and `revert-*` branch names. `review.md` holds them.
+- `plans/README.md`: D2 A cut "(what the issue says, what the repo has)". `refresh.md` names the same pair for Drift.
+- `plans/README.md`: D2 A cut the Chore branch name from the plan-pr-flow rule. The chores rule holds it.
+- `plans/README.md`: the review asked for STE, so the plan-pr-flow, chores, missing-components and stale-facts rules have shorter sentences and a list.
+- `plans/README.md`: the Ready check names the parts of a Chore, a Spec and a Bug. The Chore text names only the Chore parts.
+- `.github/agent/build.md`: the ready check runs before the design system branch, so a design system PR gets it too.
+- `.github/agent/build.md`: D2 A cut "Keep its failing line for Evidence". The test-first rule holds it.
 - `scripts/__tests__/plan-rule-citations.test.ts`: added to Files that change. It lists each anchor in `plans/README.md`, so the new rule needs an entry.
-- `.github/agent/build.md`: D2 A cut "Keep its failing line for Evidence" (the test-first rule holds it).

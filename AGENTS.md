@@ -6,7 +6,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 - `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
 - `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen has no design, list it under **Flagged concerns**. Don't invent the UI.
-- Only the design agent, or a person or an agent they ask to run the [refresh steps](design/CANVAS.md#refreshing-the-copy), edits `design/canvas/`. A [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't build around it. Raise a Bug that names the screen and the difference. A change to the design system's inputs follows [Changing the design system](design/CANVAS.md#changing-the-design-system).
+- Only the design agent, or a person or an agent they ask to run the [refresh steps](design/CANVAS.md#refreshing-the-copy), edits `design/canvas/`. A [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't hide the difference in code. Raise a Bug that names the screen and the difference. A change to the design system's inputs follows [Changing the design system](design/CANVAS.md#changing-the-design-system).
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) holds proposals, not rules.
 - [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs. File a `type: intent` issue for a new idea or requirement change.
 - Use the terms in the requirements' _Key concepts_ table exactly in code, UI and docs: no `User` for Account, `Marker` for Pin or `Region` for Polity.
@@ -23,7 +23,15 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 ## Plans
 
-One plan per Spec, Bug or Chore, under `plans/` (paths: the [plans-committed-first rule](plans/README.md#plans-committed-first) and the [chores rule](plans/README.md#chores)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read these files: [`plans/README.md`](plans/README.md), [`plans/TEMPLATE.md`](plans/TEMPLATE.md), [`docs/architecture.md`](docs/architecture.md), [`docs/code-rules.md`](docs/code-rules.md) and your own plan. Other plans are history. Open one only to learn why we did something.
+One plan per Spec, Bug or Chore, under `plans/` (paths: the [plans-committed-first rule](plans/README.md#plans-committed-first) and the [chores rule](plans/README.md#chores)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read these files:
+
+- [`plans/README.md`](plans/README.md)
+- [`plans/TEMPLATE.md`](plans/TEMPLATE.md)
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/code-rules.md`](docs/code-rules.md)
+- Your own plan
+
+Other plans are history. Open one only to learn why we did something.
 
 ## Data rules
 
@@ -44,7 +52,14 @@ Node 24 (`.nvmrc`). Tests go in `__tests__`. A `v8 ignore` needs a reason.
 - Setup: `npm ci`.
 - Run: `npm run dev` and `npm run build`. Both need [`KINSCAPE_MEMORY_ADAPTERS=1`](docs/infrastructure.md#vercel) outside Vercel.
 - Fix: `npm run format` fixes formatting.
-- Checks: `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm run words`, `npm test` (100% coverage), `npm run e2e` and `npm run validate:boundaries`.
+- Checks:
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run format:check`
+  - `npm run words`
+  - `npm test` (100% coverage)
+  - `npm run e2e`
+  - `npm run validate:boundaries`
 
 ## Verifying your work
 

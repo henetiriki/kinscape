@@ -68,9 +68,9 @@ A **Blocking** decision stops the plan until it has an answer. Any other decisio
 
 Answer with `D1: B` or `D1: other, <your option>`:
 
-- On an issue, start the comment with `@claude`, or nothing records it. In a plan PR's approving review, no `@claude` is needed.
+- On an issue, start the comment with `@claude`, or nothing records it. In a plan PR's approving review, you need no `@claude`.
 - Claude records the answer. It rewrites the issue body in its prompt with one command: `gh issue edit <n> --body-file - <<'EOF'` (no pipes, `&&` or temp files).
-- The rewrite adds `**Answer: B** (PO)` under the decision and strikes through (`~~…~~`) each option not chosen. It also rewords any Summary, Behaviour or Acceptance check that the answer changes.
+- The rewrite adds `**Answer: B** (PO)` under the decision and marks each option not chosen with strikethrough (`~~…~~`). It also rewords any Summary, Behaviour or Acceptance check that the answer changes.
 - Claude records a plan decision that changes the Spec's text the same way ([plan rules](../plans/README.md)).
 - Hard-to-reverse engineering choices go to the tech lead, even in a Spec the PO approves.
 

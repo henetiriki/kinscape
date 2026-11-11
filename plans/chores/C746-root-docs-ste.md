@@ -43,6 +43,6 @@ The twelve files that _What to change_ names, `.github/ISSUE_TEMPLATE/2-spec.yml
 
 ## Deviations
 
-- `docs/architecture-target.md` items 6 and 7 lose their built parts (the contract suite and the `serverEnv` schema). `docs/architecture.md` already holds both: the _Tree data_ row and the _Where does X go_ row for `server/env.mts`.
+- `docs/architecture-target.md` items 6 and 7 lose their built parts (the contract suite and the `serverEnv` schema). `docs/architecture.md` already holds the contract suite (the _Tree data_ row). `docs/code-rules.md` now says that the `serverEnv` schema in `server/env.mts` holds server variables only, because `architecture.md` has no room under its word budget.
 - `docs/architecture.md` grows by no word. A **Map layer** is the panel toggle, a **style layer** is a MapLibre layer, and a **layer** alone is an architecture layer. "Map" alone is the map on screen. "Form" already has one meaning (desktop or phone layout).
 - The STE pass fixes the prose and the clear table-cell breaks. A table cell that is a fragment keeps its wording.

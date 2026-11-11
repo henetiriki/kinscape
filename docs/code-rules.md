@@ -9,7 +9,7 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 - Define a type or constant once. Search for its name first.
 - Use a domain type where one exists (`Day`, branded ids, `lib/domain/validity/`), not a list of primitives.
 - Wire each export, component or file you add to a route, page, script or workflow. Tests do not count. Skip this only if the plan names the slice that wires it.
-- Read `process.env.KINSCAPE_*` only in `server/env.mts`. You may pass `process.env` to `parseEnv` or `devPagesVisible`.
+- Read `process.env.KINSCAPE_*` only in `server/env.mts`. Its `serverEnv` schema holds server variables only: none starts with `NEXT_PUBLIC_`. You may pass `process.env` to `parseEnv` or `devPagesVisible`.
 
 ## Placement
 

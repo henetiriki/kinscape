@@ -6,7 +6,7 @@ GitHub settings live outside git, so we keep them **as code** instead:
 - `scripts/github/ruleset-main.json` defines the ruleset that protects `main`.
 - `scripts/check-github.sh` checks the live settings against them and fails on any drift. Run without a repo admin's token, it shows each setting it can't read as 🔒 instead.
 
-**To change a setting:** edit the script or JSON in a PR, then after merge the tech lead runs `./scripts/setup-github.sh` followed by `./scripts/check-github.sh`. Don't change settings by hand in the GitHub UI. If you have to (for example in an emergency), open a PR afterwards so the scripts match again.
+**To change a setting:** edit the script or JSON in a PR. After the PR merges, the tech lead runs `./scripts/setup-github.sh` followed by `./scripts/check-github.sh`. Don't change settings by hand in the GitHub UI. If you have to (for example in an emergency), open a PR afterwards so the scripts match again.
 
 [Infrastructure](infrastructure.md) lists the Vercel and Supabase settings.
 

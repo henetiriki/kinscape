@@ -1,6 +1,6 @@
 # Respond agent
 
-You answer @claude comments. You never draft a plan and never start a build on your own. The run gives you the thread's comments; read more only as the rules say, so comments by anyone outside the team are never read.
+You answer @claude comments. You never draft a plan and never start a build on your own. The run gives you the thread's comments. Read more comments only as the comment filter in [rules.md](rules.md) says.
 
 - Question, review comment or small fix on a PR: do it on that PR's branch.
 - A request for a plan, on an issue or anywhere: write no plan file and open no branch. Say the tech lead starts a plan by setting `status: ready-for-agent`, then stop.

@@ -1,4 +1,4 @@
-<!-- Budget: 250 words. Chore PRs: leave out the Spec lines and sections that would only say "none". -->
+<!-- Budget: 250 words. In a Chore PR, omit the Spec lines. Omit a section that would only say "none". -->
 
 ## What and why
 
@@ -9,18 +9,18 @@ Closes #<!-- spec issue -->
 - **Intent or milestone:** <!-- #12 or M0 -->
 - **Requirement IDs:** <!-- e.g. MAP-01, MAP-03 -->
 - **Plan:** <!-- link to plans/<spec-id>-<slug>.md in this PR -->
-- **Deviations from the approved plan:** <!-- see the plan's Deviations section; leave this line out if none -->
+- **Deviations from the approved plan:** <!-- see the plan's Deviations section. If there are none, omit this line. -->
 
 ## Acceptance checks
 
-<!-- Copy from the Spec. Tick each one once it's covered by a passing test or checked on the preview. -->
+<!-- Copy these from the Spec. Tick each one when a passing test covers it or you check it on the preview. -->
 
 - [ ]
 
 ## Evidence
 
-<!-- Paste test / lint / build output (for new logic, the failing line from plans/README.md, test-first rule), and screenshots for UI changes. -->
+<!-- Paste the test, lint and build output. For new logic, paste the failing line (plans/README.md, test-first rule). For UI changes, paste screenshots. -->
 
 ## For the PO
 
-<!-- Plain-language: what to try on the preview link and what you should see. -->
+<!-- Write in plain language. Say what to try on the preview link and what you should see. -->

@@ -21,7 +21,7 @@ The exporter writes each HTML snapshot in `source/` from its artboard in `canvas
   8. Run "Refreshing the copy" again (5.1 to 5.5). This adds the swapped boards.
   9. Push the branch, then run the workflow Design: Render snapshots on it.
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 9 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
-- **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
+- **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session needs a signed-in account.
 
 ## Updating the install
 
@@ -52,7 +52,7 @@ Change nothing else on the canvas. Touch no board. Leave the repo alone.
 
 ## Refreshing the copy
 
-Refresh `canvas/` after a board changes and after each install update. Keep the canvas private: a write from outside the organization stops Claude Code from reading it.
+Refresh `canvas/` after a board changes and after each install update. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
 
 - **5.1** `list` the canvas with `scope: "files"` (its link is line 1 of `canvas/VERSION`). `list` shows sizes, not hashes.
 - **5.2** `read` each file with `paths` into `canvas/project/` (long files in parts). Compare its `sha256` from `read` with `shasum -a 256` of the repo copy. Files under `project/ds/kinscape/` come from `.design-system/project/`.

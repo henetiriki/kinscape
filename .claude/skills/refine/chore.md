@@ -22,13 +22,13 @@ Ask about every open choice, so that none reach the plan. A Chore has no decisio
 
 After you know the change, read the [hand-back rule](../../../plans/README.md#hand-back), the [too-big rule](../../../plans/README.md#too-big) and `.github/CODEOWNERS`. Read them again before you draft. Don't copy them here.
 
-If the [hand-back rule](../../../plans/README.md#hand-back) would hand the chore back, name the path or reason and keep drafting.
+If the [hand-back rule](../../../plans/README.md#hand-back) would hand the chore back, name the path or reason and continue the draft.
 
 ## The draft
 
 Show one heading per box of `.github/ISSUE_TEMPLATE/4-chore.yml`, in order. If the form differs, follow the form.
 
-> **Title** (starting "Chore: ")
+> **Title** (start it with "Chore: ")
 >
 > **What to change**
 >

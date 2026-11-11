@@ -10,7 +10,7 @@ Make a filed **Bug** clear before an agent plans it. Add four sections below the
 
 ## What to settle
 
-Ask questions as described in `SKILL.md`, until these four sections are settled:
+Ask questions as described in `SKILL.md`, until you settle these four sections:
 
 - **Steps to reproduce:** numbered steps that show the Bug on `main`, from a named page and state.
 - **Expected per:** the requirement ID, Spec or design snapshot that defines the expected result. If none defines it, ask the tech lead. Cite the answer as `Tech lead`.

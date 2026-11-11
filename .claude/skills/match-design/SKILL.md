@@ -10,7 +10,7 @@ Show the built screen next to its design and close the gap. Take values from the
 
 ## Run it
 
-1. **Pick the screen.** The argument must be a `name` in `design/screens.json`. With no argument, list the names and ask. A snapshot in `design/source/` without a `screens.json` entry isn't checked yet: say so and stop. Its entry belongs to the Spec for that screen.
+1. **Pick the screen.** The argument must be a `name` in `design/screens.json`. With no argument, list the names and ask. If a snapshot in `design/source/` has no `screens.json` entry, the check does not cover it yet: say so and stop. Its entry belongs to the Spec for that screen.
 2. **Stop any dev server on port 3000.** Playwright reuses it locally, and the Next.js badge then appears as a difference.
 3. **Run** `npm run design:check -- -g "design: <screen>"`. It builds the app first, so the first run is slow.
 4. **Look** at `test-results/design/<screen>/side-by-side.png` with Read. It shows the built screen on the left, the design in the middle and the differences on the right. The check masks the map, so differences inside it don't count. `built.png`, `design.png` and `diff.png` sit beside it for a closer look.
@@ -29,7 +29,7 @@ Then fix the code with tokens (`var(--…)` from `app/tokens.css`), never with n
 ## Rules
 
 - **Never change the design to pass.** Don't edit `design/tokens.json` to make a screen match. For other design files, and for a design that looks wrong, follow [AGENTS.md](../../../AGENTS.md#source-of-truth).
-- **A token that seems wrong is a question, not a fix.** Ask before editing `tokens.json`.
+- **A token that seems wrong is a question, not a fix.** Ask before you edit `tokens.json`.
 - **Don't widen the check.** Add an `ignore` area or raise the threshold only if the screen's Spec allows it. Otherwise propose it under Flagged concerns.
 - **Do not change `mode`** unless the screen's Spec says it is done. Then set it to `blocking`.
 

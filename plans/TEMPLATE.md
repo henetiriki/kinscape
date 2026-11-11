@@ -35,7 +35,7 @@ Omit any section that would only say "none".
 
 ## Order of work
 
-<!-- A change to a design system input: list the steps that the _Issue text_ of [Changing the design system](../design/CANVAS.md#changing-the-design-system) gives. Say who runs steps 3 to 5: the tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in. -->
+<!-- A change to a design system input: list the steps that the _Issue text_ of [Changing the design system](../design/CANVAS.md#changing-the-design-system) gives. Say who runs steps 3 to 5: the tech lead, or a local Claude Code session that the tech lead starts. The session needs a signed-in account. -->
 
 1.
 

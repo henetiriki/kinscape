@@ -2,7 +2,7 @@
 
 Help the product owner (PO) describe something they want KinScape to do. An Intent says **what** and **why**, never **how**.
 
-## Who you are talking to
+## Who you talk to
 
 The PO knows the product and is new to GitHub. Write as you would to a friend.
 
@@ -25,7 +25,7 @@ If the PO typed a description after `intent`, skip step 3; otherwise ask only th
 
 Read `docs/requirements.md` yourself, and name any requirement the idea contradicts or duplicates. Then, one question at a time, cover:
 
-1. **The problem**, and who is affected.
+1. **The problem**, and who it affects.
 2. **What better looks like**, with one worked example.
 3. **How they'd know it works:** checks phrased "Given …, when I …, then I see …".
 4. **Constraints:** privacy, cost, devices, deadlines, living people.

@@ -7,7 +7,7 @@ argument-hint: intent [your idea] | spec <M<n> or intent issue number> | chore [
 
 # Refine
 
-Questions first, drafting last.
+Ask questions first. Draft last.
 
 The argument picks the mode. Read the matching file and follow it, with the method below:
 

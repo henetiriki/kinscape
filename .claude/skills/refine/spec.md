@@ -29,14 +29,14 @@ Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decis
 
 ## Step 1: slice
 
-Confirm the slices before you draft. Discuss sizing only here.
+Confirm the slices before you draft. Discuss slice size only here.
 
 - Each slice is one pull request with something to check on a preview. Prefer thin vertical slices to layers.
 - Cap each slice at about 600 changed lines. Do not count lockfiles, data files, fonts and the plan. Estimate from a merged Spec of the same kind, with its tests and CSS. Settle each split now.
 - A slice is one kind: UI, data, or tooling and refactors. A dependency the slice needs may come with it.
 - A question that blocks the build (an unknown data source or licence, say) is its own decision slice, and comes first.
 - Give each an id (`M0.1`, …), a short name, its kind, a line estimate and its requirement IDs. Say whether it changes what the user sees or is engineering-only. Say which comes first and why.
-- Every behaviour lands in exactly one slice, or is listed as carried forward.
+- Every behaviour lands in exactly one slice, or you list it as carried forward.
 - After the user confirms the slices, post the list as a comment on the Intent issue before you draft. Offer `gh issue comment <number> --body-file <file>`, or print the list to paste.
 
 ## Step 2: draft each Spec

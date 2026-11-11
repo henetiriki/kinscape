@@ -2,7 +2,7 @@
 
 - **Spec:** #732
 - **Requirement IDs:** [NFR-09](../../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

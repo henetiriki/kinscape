@@ -1,7 +1,7 @@
 # Plan: C715: Build ownership and a local design agent
 
 - **Spec:** #715
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@
 - **B.** Cut text that another file holds. C712 cut most of it.
 - **Other:** your own.
 
-Recommended: A, because the remaining text has no other home.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -6,8 +6,25 @@ Your first command is `gh pr view <n> --json title,body,comments,reviews,headRef
 
 The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
 
-If you need a path that hands a PR back (the [hand-back rule](../../plans/README.md#hand-back)), stop. Push nothing. Leave the PR a draft. Comment why. Add no package: `npm install` is off. If a plan needs one, stop, as the [big-departures rule](../../plans/README.md#big-departures) says. Write an unlikely case in your final PR comment, not in code ([AGENTS.md](../../AGENTS.md#workflow-rules)).
+These rules apply:
 
-Write each unit test for logic first ([test-first rule](../../plans/README.md#test-first)). As you iterate, run only the affected test file. Before you push, run the full `npm test` and `npm run e2e` once. If a test fails, read the error. Then follow the [failing-tests rule](../../plans/README.md#failing-tests). Don't add temporary debug output.
+- If you need a path that hands a PR back (the [hand-back rule](../../plans/README.md#hand-back)), stop. Push nothing. Comment why.
+- Add no package: `npm install` is off. If a plan needs one, stop (the [big-departures rule](../../plans/README.md#big-departures)).
+- Write an unlikely case in your final PR comment, not in code ([AGENTS.md](../../AGENTS.md#workflow-rules)).
+- Write each unit test for logic first (the [test-first rule](../../plans/README.md#test-first)).
+- As you iterate, run only the affected test file.
+- If a test fails, read the error. Then follow the [failing-tests rule](../../plans/README.md#failing-tests).
+- Don't add temporary debug output.
 
-Push before you stop. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work). If every check passes, run the [ready check](../../plans/README.md#ready-check). Then set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)). If the ready check stops you, or the plan changes a design system input ([design-system rule](../../plans/README.md#design-system)), leave the PR a draft. Otherwise run `gh pr ready <n>`. If any check fails, leave the PR a draft. Whether the checks pass or fail, comment on the PR last. Say what you did. If a check failed, say what blocked you.
+Do these in order:
+
+1. Run the full `npm test` and `npm run e2e` once.
+2. Push.
+3. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work).
+4. If every check passes, run the [ready check](../../plans/README.md#ready-check).
+5. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)).
+6. Leave the PR a draft if any is true. Otherwise run `gh pr ready <n>`.
+   - A check failed.
+   - The ready check stops you.
+   - The plan changes a design system input (the [design-system rule](../../plans/README.md#design-system)).
+7. Whether the checks pass or fail, comment on the PR last. Say what you did. If a check failed, say what blocked you.

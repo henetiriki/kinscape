@@ -1,5 +1,7 @@
 # What to look for
 
+Read `docs/code-rules.md` in the checkout.
+
 ## Rules
 
 Check the diff against `docs/security.md` and the Data rules in `AGENTS.md`, quoting the rule broken. In the checkout, `AGENTS.md`, `docs/security.md`, `docs/writing.md` and `docs/code-rules.md` are `main`'s; the PR's changes to them are in the diff.
@@ -10,19 +12,19 @@ When the diff moves or adds code in a new top-level folder, check that the guard
 
 Flag a rule or fact the diff adds to a `.md` file that another doc or prompt already says. Name the owner in the [docs owner table](../../docs/README.md), and link to that file from the other (`docs/writing.md`).
 
-Check that the lines the diff adds follow `docs/writing.md`. Report all breaks in one finding that lists each line.
+Check that the lines the diff adds follow `docs/writing.md`. An STE break is not a style nit. Report all breaks in one finding that lists each line.
 
 ## Code smells (not style)
 
-Read `docs/code-rules.md` in the checkout. Check the diff against its [Code smells](../../docs/code-rules.md#code-smells-not-style) section.
+Check the diff against the [Code smells](../../docs/code-rules.md#code-smells-not-style) section.
 
 ## Placement
 
-Read `docs/code-rules.md` in the checkout. Check the diff against its [Placement](../../docs/code-rules.md#placement) section.
+Check the diff against the [Placement](../../docs/code-rules.md#placement) section.
 
 ## Pattern table
 
-Read `docs/code-rules.md` in the checkout. Check the diff against its [Pattern table](../../docs/code-rules.md#pattern-table) section.
+Check the diff against the [Pattern table](../../docs/code-rules.md#pattern-table) section.
 
 ## New surface
 
@@ -32,7 +34,7 @@ Read `docs/code-rules.md` in the checkout. Check the diff against its [Pattern t
 
 ## Test quality
 
-Read `docs/code-rules.md` in the checkout. Check the diff against its [Test quality](../../docs/code-rules.md#test-quality) section.
+Check the diff against the [Test quality](../../docs/code-rules.md#test-quality) section.
 
 ## Decision reversal
 
@@ -44,7 +46,7 @@ When the diff changes behaviour a doc describes (a setting, a default, a path, w
 
 ## Scale
 
-Read `docs/code-rules.md` in the checkout. Check the diff against its [Scale](../../docs/code-rules.md#scale) section.
+Check the diff against the [Scale](../../docs/code-rules.md#scale) section.
 
 ## Workflows
 

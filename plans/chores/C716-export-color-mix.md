@@ -1,42 +1,49 @@
 # Plan: C716: Let a canvas board mount Banner and Segmented without failing the design export
 
 - **Spec:** #716
-- **Status:** approved
+- **Status:** draft
 
 ## Approach
 
-Chromium computes the `color-mix()` values as `color(srgb 1 1 1 / 0.6)`, and `snapshotProblems` rejects `color()`. With D1 A, `inlineStyles` writes each `color(srgb r g b / a)` as `rgba(R, G, B, a)`, with channel `round(x × 255)`. The check reads that value as a token colour (`white`). A non-token mix or another colour space still fails.
+Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` rejects. Add tokens `white-45` and `white-60` (`rgb(255 255 255 / a)`). Use them in `.bannerAction` and the two `.segItem` hover rules. The colour is the same. Chromium computes `rgba(255, 255, 255, 0.6)`, which the check reads as `white`. The export script does not change.
+
+The tech lead, or a local session they start, runs steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
 
 ## Decisions
 
 **D1 · Where the fix goes** · Decides: Tech lead
 
-- **A.** `inlineStyles` writes `color(srgb …)` as `rgba()`. Snapshots keep the colour forms that their readers read now.
-- **B.** `snapshotProblems` reads `color(srgb …)`. Snapshots then hold `color()`, and `/match-design` must read it too.
-- **C.** Add two alpha tokens for the two CSS files. The tech lead then runs steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
-- **Other:** your own.
-
-**Answer: C** (@henetiriki)
+**Answer: C** (@henetiriki). Two alpha tokens.
 
 **D2 · The board that proves the export** · Decides: Tech lead
 
-The done checks name `npm run design:export`, but the Constraints forbid a board in `design/canvas/`.
+**Answer: A** (@henetiriki). Add `Banner` and a hovered `Segmented` to the board in `e2e/design-export.spec.mts`.
 
-- **A.** Add `Banner` and a hovered `Segmented` to the board in `e2e/design-export.spec.mts`. It runs the page steps of `design:export` in Chromium.
-- **B.** Also run `design:export` on an uncommitted local board, and paste the output.
+**D3 · The colour board** · Decides: Tech lead
+
+A test fails if a `colour` token has no swatch. Two swatches make `/design-kit/colour` differ from its snapshot.
+
+- **A.** Add both swatches to **Neutrals**, role `overlay`.
+- **B.** Put the tokens in a new group. No swatch needed.
 - **Other:** your own.
 
-**Answer: A** (@henetiriki)
+**Answer: A** (@henetiriki). Fix a board difference in this PR, with a line under `## Deviations`.
 
 ## Files that change
 
-`scripts/design-export.mts`, `scripts/__tests__/design-export.test.ts` and `e2e/design-export.spec.mts`.
+- `design/tokens.json`, `app/tokens.css`: the tokens and their notes.
+- `Toast.module.css`, `Segmented.module.css`: use the tokens.
+- `swatches.ts` and `swatches.test.ts`: two swatches and the count.
+- `design-export.test.ts`, `e2e/design-export.spec.mts`: the tests.
+- `.design-system/`, `design/canvas/`: generated.
 
 ## Order of work
 
-1. Add a unit test: `Banner` and a hovered `Segmented` with their CSS and a `color(srgb …)` computed value. See it fail.
-2. Change `inlineStyles`.
-3. Add both components to the e2e board.
+1. Add the tests. See the unit test fail.
+2. Add the tokens, then change the CSS and swatches.
+3. Run `npm run design-system`.
+4. Tech lead or local session: steps 3 to 5.
+5. Compare `/design-kit/colour` with its snapshot (D3).
 
 ## Proof
 
@@ -44,4 +51,5 @@ The done checks name `npm run design:export`, but the Constraints forbid a board
 | --------------------------------------- | ------------------------ |
 | `Banner` and hovered `Segmented` export | `design-export.spec.mts` |
 | A test fails without the fix            | `design-export.test.ts`  |
+| Install matches the design system       | sha256 of both copies    |
 | Tests, lint, typecheck, format, words   | PR output                |

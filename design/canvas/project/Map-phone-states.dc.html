@@ -86,7 +86,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <div style="position: absolute; left: 16px; right: 16px; top: 16px; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
     <x-import component-from-global-scope="KinScape.Wordmark" icon-only="{{ true }}" size="32"></x-import>
     <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; height: 44px; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent">
-    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
+    <x-import component-from-global-scope="KinScape.Avatar" initial="L" expanded="{{avatarExpanded}}"></x-import>
   </div>
 
   <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
@@ -156,21 +156,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
-    <div role="menu" aria-label="Account" style="position: absolute; right: var(--size-gutter-phone); top: calc(var(--space-64) + var(--space-12)); width: 296px; box-sizing: border-box; display: flex; flex-direction: column; padding: var(--space-4); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
-      <div style="padding: var(--space-12); display: flex; flex-direction: column; gap: var(--space-4)">
-        <span class="caption" style="color: var(--ink-3)">Signed in as</span>
-        <span class="label" style="color: var(--ink)">researcher@example.com</span>
-      </div>
-      <button type="button" role="menuitem" class="label" style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-touch); padding: var(--space-4) var(--space-12); border: 0; border-radius: var(--radius-control); color: var(--ink); text-align: left; background: var(--surface-2)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M6 4h9l3 3v13H6z"></path><path d="M9 11h6M9 15h6"></path></svg>
-        Sources and attributions
-      </button>
-      <span style="height: 1px; margin: var(--space-4) var(--space-8); background: var(--line)"></span>
-      <button type="button" role="menuitem" class="label" style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-touch); padding: var(--space-4) var(--space-12); border: 0; border-radius: var(--radius-control); color: var(--ink); text-align: left; background: transparent">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"></path></svg>
-        Sign out
-      </button>
-    </div>
+    <div style="position: absolute; right: var(--size-gutter-phone); top: calc(var(--space-64) + var(--space-12))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="sources"></x-import></div>
   </sc-if>
 
   <sc-if value="{{v.accountProposed}}" hint-placeholder-val="{{ false }}">
@@ -308,6 +294,8 @@ class Component extends DCLogic {
     return {
       ks: { loadingProgress: 45 },
       chrome: !is('account'),
+      avatarExpanded: is('account') ? true : undefined,
+      accountMenu: { groups: [[{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]] },
       v: {
         panel: is('layers') || is('filters'), scrim: is('layers') || is('filters') || is('sources'),
         loading: loading, emptyTree: is('empty-tree'), emptyDate: is('empty-date'), offline: is('offline'),

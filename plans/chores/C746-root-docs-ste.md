@@ -1,7 +1,7 @@
 # Plan: C746: Fix STE and repeated facts in the root files and docs
 
 - **Spec:** #746
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Each file gets the edit that _What to change_ names. Then a pass over each file 
 - **B.** Change the form hint in this Chore. This adds a file outside the scope.
 - **Other:** your own.
 
-Recommended: A, because the form is outside the scope that _What to change_ gives.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

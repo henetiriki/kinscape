@@ -20,7 +20,7 @@ If the session has the built-in `Artifact` tool, use it. Otherwise use the six M
 
 ## Rules for the MCP tools
 
-- `publish_files`: pass the slug, `base_version` (from `get_artifact` or the last publish), `mode` "patch", `shared_live` as the `read` mode says, and each path as `{as: "<path>", path: "<repo>/.design-system/<path>"}`.
+- `publish_files`: pass the slug, `base_version` (from `get_artifact` or the last publish), `mode` "patch", `shared_live` as the sharing status says, and each path as `{as: "<path>", path: "<repo>/.design-system/<path>"}`.
 - `upload_asset`: send 10 files a call at most.
-- Take the owner for step 3.11 from the `read` mode that `get_artifact` gives.
+- Take the owner and the sharing status for step 3.11 from `get_artifact`.
 - `db_whoami` gives only an id, not a name.

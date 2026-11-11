@@ -2,7 +2,7 @@
 
 <!--
 Copy to plans/<spec-id>-<slug>.md. Rules: plans/README.md. Budget: 600 words.
-Leave out any section that would only say "none".
+Omit any section that would only say "none".
 -->
 
 - **Spec:** #
@@ -11,7 +11,7 @@ Leave out any section that would only say "none".
 
 ## Approach
 
-<!-- 3–6 sentences: how the change will be made and why this way. -->
+<!-- 3–6 sentences: how you make the change, and why this way. -->
 
 ## Components
 
@@ -35,13 +35,13 @@ Leave out any section that would only say "none".
 
 ## Order of work
 
-<!-- A change to a design system input: list steps 2 to 5 of [Changing the design system](../design/CANVAS.md#changing-the-design-system). Say who runs steps 3 to 5: the tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in. If a board shows the change, also list steps 7 to 9. -->
+<!-- A change to a design system input: list the steps that the _Issue text_ of [Changing the design system](../design/CANVAS.md#changing-the-design-system) gives. Say who runs steps 3 to 5: the tech lead, or a local Claude Code session that the tech lead starts. The session needs a signed-in account. -->
 
 1.
 
 ## Risks
 
-<!-- What could break, and how it's mitigated. -->
+<!-- What could break, and how you reduce the risk. -->
 
 ## Proof
 
@@ -55,4 +55,4 @@ Leave out any section that would only say "none".
 
 ## Deviations
 
-<!-- Added during the build. One line each: what changed, why, the commit. -->
+<!-- Add these during the build. One line each: what changed, why, the commit. -->

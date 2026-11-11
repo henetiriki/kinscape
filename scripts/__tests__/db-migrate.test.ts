@@ -1,10 +1,20 @@
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 
 import { run } from '@ks/scripts/db-migrate.mts';
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
+
+const shared = sharedTestDb();
 
 const env = {
   KINSCAPE_DATABASE_DIRECT_URL: 'postgres://direct@localhost/db',
@@ -20,6 +30,8 @@ beforeEach(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {});
 });
 
+afterAll(() => shared.close());
+
 afterEach(() => {
   rmSync(dir, { force: true, recursive: true });
   vi.restoreAllMocks();
@@ -28,7 +40,8 @@ afterEach(() => {
 // NFR-09
 describe('db-migrate run', () => {
   it('opens the direct URL, applies pending files and closes', async () => {
-    const open = vi.fn(() => createTestDb());
+    const db = await shared.empty();
+    const open = vi.fn(() => db);
 
     expect(await run(env, open, dir)).toBe(0);
     expect(open).toHaveBeenCalledExactlyOnceWith(
@@ -38,7 +51,7 @@ describe('db-migrate run', () => {
   });
 
   it('says so when nothing is pending', async () => {
-    const db = createTestDb();
+    const db = await shared.empty();
     const destroy = vi.spyOn(db, 'destroy');
 
     expect(await run(env, () => db, dir)).toBe(0);
@@ -49,7 +62,9 @@ describe('db-migrate run', () => {
     // so check the message through an empty folder instead.
     const empty = mkdtempSync(join(tmpdir(), 'db-migrate-empty-'));
 
-    expect(await run(env, () => createTestDb(), empty)).toBe(0);
+    const second = await shared.empty();
+
+    expect(await run(env, () => second, empty)).toBe(0);
     expect(console.log).toHaveBeenLastCalledWith('No pending migrations.');
     rmSync(empty, { force: true, recursive: true });
   });
@@ -67,7 +82,8 @@ describe('db-migrate run', () => {
   });
 
   it('needs only the direct URL', async () => {
-    const open = vi.fn(() => createTestDb());
+    const db = await shared.empty();
+    const open = vi.fn(() => db);
 
     expect(
       await run(
@@ -79,7 +95,7 @@ describe('db-migrate run', () => {
   });
 
   it('closes the database when a migration fails', async () => {
-    const db = createTestDb();
+    const db = await shared.empty();
     const destroy = vi.spyOn(db, 'destroy');
 
     writeFileSync(join(dir, '0002_b.sql'), 'select * from missing;');

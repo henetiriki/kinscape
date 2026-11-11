@@ -1,24 +1,35 @@
-import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Kysely } from 'kysely';
+
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
+
+import type { Database } from '@ks/server/db/types.ts';
 
 import { run } from '@ks/scripts/account-add.mts';
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
-import { migrate } from '@ks/server/db/migrate.mts';
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
 
 const env = { KINSCAPE_DATABASE_DIRECT_URL: 'postgres://direct@localhost/db' };
 const SUBJECT_A = '11111111-1111-4111-8111-111111111111';
 const SUBJECT_B = '22222222-2222-4222-8222-222222222222';
 
-const snapshot = async (db: ReturnType<typeof createTestDb>) => ({
+const shared = sharedTestDb();
+
+const snapshot = async (db: Kysely<Database>) => ({
   accounts: await db.selectFrom('account').selectAll().orderBy('id').execute(),
   links: await db.selectFrom('treeAccount').selectAll().execute(),
   trees: await db.selectFrom('tree').selectAll().orderBy('id').execute(),
 });
 
 const migrated = async () => {
-  const db = createTestDb();
+  const db = await shared.fresh();
 
-  await migrate(db, join(import.meta.dirname, '../../server/db/migrations'));
   vi.spyOn(db, 'destroy').mockResolvedValue();
 
   return db;
@@ -28,6 +39,8 @@ beforeEach(() => {
   vi.spyOn(console, 'log').mockImplementation(() => {});
   vi.spyOn(console, 'error').mockImplementation(() => {});
 });
+
+afterAll(() => shared.close());
 
 afterEach(() => {
   vi.restoreAllMocks();

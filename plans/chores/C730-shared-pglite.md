@@ -18,7 +18,7 @@ On the agent runner, `main` takes 27.84 s, not 8.45 s. Where must the 40 tests t
 - **B.** On the tech lead's machine. The PR also shows the runner's times.
 - **Other:** your own.
 
-**Answer: A** (@henetiriki)
+**Answer: Other** (@henetiriki): The 40 tests need no Duration limit. The PR shows the Duration before and after, and the task passes if all tests and checks pass.
 
 **D2 · Last constraint ends mid-sentence** · Decides: Tech lead
 
@@ -50,3 +50,8 @@ The issue ends "The helper shares one connection". What does it share?
 ## Risks
 
 - A failed test can leave the connection inside a transaction. Kysely rolls back on an error, so this is unlikely. A fix costs one line; it is not planned.
+
+## Deviations
+
+- D1 replaces the issue's "under 4 s" done check. The 40 tests have no Duration limit.
+- `createTestDb()` builds its dialect with the new `dialectFor()`, which `sharedTestDb()` also uses. Its behaviour does not change (630467a).

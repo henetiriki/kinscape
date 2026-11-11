@@ -22,6 +22,7 @@ const RULE_NAMES = [
   'design-system',
   'canvas-follow-up',
   'ready-check',
+  'build-ownership',
 ];
 const IN_SCOPE = [
   'plans/README.md',

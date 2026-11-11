@@ -1,7 +1,7 @@
 # Plan: C713: Fail the tests when a shared component is not in the design system
 
 - **Spec:** #713
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ Each role folder has `.tsx` tests in `__tests__/`, and no other subfolder. Which
 - **B.** The files in each folder and its subfolders, except `__tests__/`.
 - **Other:** your own.
 
-Recommended: B, because then a component in a new subfolder also fails the test.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

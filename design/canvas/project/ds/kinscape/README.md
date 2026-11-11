@@ -47,7 +47,7 @@ The `kit.*` tokens set the design kit's board titles, page padding and intro wid
 
 `tokens.json` holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each colour with its value and contrast ratio. The `notes` group of `tokens.json` says where each token is used.
 
-Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
+Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
 ## Shape and depth
 
@@ -74,13 +74,13 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm              |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. Make a part that is reused, or has states of its own, a component, never part of a page. The dev-only `app/design-kit` and `app/screens` are exempt.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
-- **Google sign-in (proposed):** not in the requirements yet: file an Intent issue before you build it. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
-- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see Feedback and validation. Clear the password after a failed sign-in.
+- **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
+- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
@@ -124,7 +124,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Map date field
 
-`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
+`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. The field pads single digits (`1901-6-4`).
 
 1. Check on Enter or when focus leaves, never while the user types.
 2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field. Set `aria-invalid`. Link the message with `aria-describedby`.
@@ -144,7 +144,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ## Event glyphs
 
-Each Event type is one 24 × 24 path in `design/source/`. It is filled `currentColor` (`--pin`) and 1em square. The order below is the same everywhere. `EventGlyph` copies the paths. A test keeps them in step.
+Each Event type is one 24 × 24 path in `design/source/`. It uses `currentColor` (`--pin`) as its fill and is 1em square. The order below is the same everywhere. `EventGlyph` copies the paths. A test keeps them in step.
 
 | Event      | SVG                           |
 | ---------- | ----------------------------- |
@@ -166,7 +166,7 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 - Use the requirements' Key concepts terms (Map date, Pin, Polity, Jurisdiction chain).
 - Sentence case everywhere, except map labels for polities and context areas.
 - Names on the map are the names valid on the map date (MAP-06).
-- No sign-up wording. The sign-in page says whoever runs KinScape sets up accounts.
+- No sign-up wording. The sign-in page says whoever runs KinScape creates accounts.
 
 ## Using the controls on a canvas
 

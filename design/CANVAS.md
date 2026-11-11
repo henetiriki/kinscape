@@ -1,12 +1,10 @@
 # Design canvas
 
-How the canvas, the snapshots and the JPGs stay in step. The look rules are in `design/DESIGN.md`. The path for a new or updated component is in [`COMPONENTS.md`](COMPONENTS.md).
+How the canvas, the snapshots and the JPGs stay in step. The path for a new or updated component is in [`COMPONENTS.md`](COMPONENTS.md).
 
 ## Making the snapshots and JPGs
 
 Each HTML snapshot in `source/` is exported from its artboard in `canvas/` and is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After editing an artboard, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `e2e` job exports again and fails, naming the file, if a snapshot in `source/` differs.
-
-With no Chromium, skip `npm run design:export`: the workflow exports in CI.
 
 ## Changing the design system
 
@@ -22,7 +20,7 @@ With no Chromium, skip `npm run design:export`: the workflow exports in CI.
   7. The design agent swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
   8. Run "Refreshing the copy" again (5.1 to 5.5). This adds the swapped boards.
   9. Push the branch, then run the workflow Design: Render snapshots on it.
-- **Done check.** A Spec or Chore that changes these inputs lists steps 3 to 5 in its done check: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`.
+- **Issue text.** A Spec or Chore that changes these inputs lists steps 3 to 5 in its done check: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. Its Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
 
 ## Updating the install

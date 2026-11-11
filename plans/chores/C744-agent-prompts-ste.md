@@ -1,7 +1,7 @@
 # Plan: C744: Fix STE and repeated rules in the agent prompts
 
 - **Spec:** #744
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Lines 9 and 11 also hold rules that are not steps, for example the hand-back sto
 - **B.** Sub-items of the step that each rule applies to.
 - **Other:** your own.
 
-Recommended: A, because each condition then comes before its steps.
+**Answer: A** (@henetiriki)
 
 **D2 · Where `refresh.md` links the stale-facts rule** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ Recommended: A, because each condition then comes before its steps.
 - **B.** In step 4, for both runs. _Unblock run_ then overrides the label swap.
 - **Other:** your own.
 
-Recommended: A, because only the plan run can set a label.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

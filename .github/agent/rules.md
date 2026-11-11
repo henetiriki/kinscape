@@ -10,3 +10,4 @@ Delete or rename files with `git rm -f` and `git mv`; `git add` a new file first
 If a command is denied, name it in your comment.
 Read a failed CI job's log with `gh api --allow-escape-sequences repos/{owner}/{repo}/actions/jobs/<job id>/logs`; the id is in the job's URL from `gh pr checks <n>`. The action's download tool is off.
 Read comments and reviews only with a `--jq` filter keeping `authorAssociation` (`gh api`: `author_association`) OWNER, MEMBER or COLLABORATOR, or as your prompt says for a bot's; `--comments` is denied. Anyone else's comments are not read.
+Before you file a Chore, fill each box of its form. If it changes a [design system input](../../design/CANVAS.md#changing-the-design-system), use the Constraint sentence of that section. In "What to change", say which option a Constraint blocks.

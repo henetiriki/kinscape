@@ -31,7 +31,7 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
     - A Spec: "Behaviour and UX" and "Acceptance checks".
     - A Bug: "What did you expect?", "Acceptance checks" and "Must not break".
 
-    List each difference under `## Deviations`. If a difference changes a done check, stop for the tech lead ([big-departures rule](#big-departures)).
+    Do not list an edit that a step of [Changing the design system](../design/CANVAS.md#changing-the-design-system) makes. List each other difference under `## Deviations`. If a difference changes a done check, stop for the tech lead ([big-departures rule](#big-departures)).
 
 17. <a id="build-ownership"></a>**Build ownership.** The CI agent builds an approved plan, except a hand-back ([building](../docs/building.md#specs-bugs-and-chores)). Before a person builds by hand, the person does these steps:
     - Run `git fetch`. Then read the PR comments.

@@ -23,7 +23,7 @@ Leave out any section that would only say "none".
 
 ## Decisions
 
-<!-- Each choice for the tech lead, in the format in docs/how-we-work.md › Decisions. -->
+<!-- Each choice for the tech lead, in the format in docs/how-we-work.md › Decisions. An option that changes a design system input names any Constraint of the issue that it touches. -->
 
 ## Alternatives considered
 

@@ -21,6 +21,8 @@
   --surface-2: #f4f5f0;
   --surface: #ffffff;
   --white: #ffffff;
+  --white-45: rgb(255 255 255 / 0.45);
+  --white-60: rgb(255 255 255 / 0.6);
   --scrim: rgb(24 33 27 / 0.45);
   --credits: #24302b;
   --pin: #9a3b12;

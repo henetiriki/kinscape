@@ -36,9 +36,9 @@ it('shows every colour token as a swatch or a system line', () => {
   expect(missing).toEqual([]);
 });
 
-it('lists 28 swatches in six groups, then 4 system colours', () => {
+it('lists 30 swatches in six groups, then 4 system colours', () => {
   expect(GROUPS.map(group => group.swatches.length)).toEqual([
-    6, 2, 13, 2, 2, 3,
+    6, 2, 15, 2, 2, 3,
   ]);
   expect(SYSTEM).toHaveLength(4);
 });

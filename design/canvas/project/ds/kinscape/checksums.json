@@ -84,8 +84,8 @@
   "project/components/TokenField/preview.html": "eb570a1d34cd4ea586ab1c2524d69d7212478bb70cad4d6ad487d2d3d0470bfa",
   "project/components/Wordmark/README.md": "dd86ea505e9fa48112037bedbed867294530aa4ebb1dfba86a81ca3390a21149",
   "project/components/Wordmark/preview.html": "8afdb92373188a35985440912a48d475719f4f5472e45e8ab3779ba8bfac9ab7",
-  "project/components/bundle.css": "994fa0a93d0ff6f631f271510603d1bb72c2113e2b8e718bb05a210d8c36ad20",
-  "project/components/bundle.js": "3de1ccb9e5721db16a9c71ba4ec9525dbe365c5f698a08952f3ba1b3ae04759b",
+  "project/components/bundle.css": "37e65c0b5fdca952420d511e85b5b78657d66b4fb096664d73fa0d81286c2451",
+  "project/components/bundle.js": "9bd81d9d4c85a4d17c6b31d8ca5b5454e68d8bff297351935673dec063a21fec",
   "project/components/index.d.ts": "b50e4c509279dfd0a5d6f10e459c871a3f43ee6f6ffa994d4b7b3837a95bc32d",
   "project/fonts/bricolage-grotesque-latin-ext-wght-normal.woff2": "e808f16b56f84dc7933e498cc8a41d4a5cd853adc6eef154584baa5de1008b15",
   "project/fonts/bricolage-grotesque-latin-wght-normal.woff2": "a97804dc9fbe5fc972a08018c5eda4dab7ef2346f64c57e61419d05e6de4ea1c",
@@ -95,6 +95,6 @@
   "project/fonts/public-sans-latin-ext-wght-normal.woff2": "3a00a32f0242b723dcea79935747d6d27dd93675d03ef23f470dfe274e79586a",
   "project/fonts/public-sans-latin-wght-italic.woff2": "16dc93252adb78785ae56a6465494f73b604b39817760ea92bd4046521bb5a35",
   "project/fonts/public-sans-latin-wght-normal.woff2": "5ed4d31c988e73b258894244f209069ebe77dc7e564861954b21198b6de90d68",
-  "project/tokens.css": "9528b8fe0c64581776f566b9d21119dd8364c1b070d23c4be5edb99ef0b3bc36",
-  "project/tokens.json": "921d61fcce2854201831e503968714b9f419e371996ea5f026abdb9cbbbf66db"
+  "project/tokens.css": "74ae9c3b931973a60a79b32b244959039910a4f72bd2cd094b1b3f38b62c6dd9",
+  "project/tokens.json": "74bd3cbf4434a52d381b1c86a1f535a35a147a3ba707e0f10897c155c02e7fa1"
 }

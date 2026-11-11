@@ -122,6 +122,16 @@ export const GROUPS: Group[] = [
         role: 'text',
         use: 'Text and icons on --brand and --ink',
       },
+      {
+        path: 'colour.white-45',
+        role: 'overlay',
+        use: 'Border of a Banner action',
+      },
+      {
+        path: 'colour.white-60',
+        role: 'overlay',
+        use: 'Hover fill of a Segmented item',
+      },
     ],
     title: 'Neutrals',
   },

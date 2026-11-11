@@ -69,7 +69,7 @@
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":4528}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":4727}}'>
 class Component extends DCLogic {
   renderVals() {
     const lum = (h) => {
@@ -113,7 +113,9 @@ class Component extends DCLogic {
         sw('--segment', '#EEF0EA', 'Segmented control track', { ratio: 'fill only' }),
         sw('--surface-2', '#F4F5F0', 'Insets, hover fills, sign-in page', { ratio: 'fill only' }),
         sw('--surface', '#FFFFFF', 'Panels, dock, popups, dialogs', { ratio: 'fill only' }),
-        sw('--white', '#FFFFFF', 'Text and icons on --brand and --ink', { ratio: cr('#FFFFFF', '#264F29') + ' on brand' })
+        sw('--white', '#FFFFFF', 'Text and icons on --brand and --ink', { ratio: cr('#FFFFFF', '#264F29') + ' on brand' }),
+        sw('--white-45', 'rgb(255 255 255 / 0.45)', 'Border of a Banner action', { bg: 'rgba(255,255,255,0.45)', dark: false, ratio: 'overlay', chipExtra: '; border-bottom: 1px solid #E2E5DD' }),
+        sw('--white-60', 'rgb(255 255 255 / 0.6)', 'Hover fill of a Segmented item', { bg: 'rgba(255,255,255,0.6)', dark: false, ratio: 'overlay', chipExtra: '; border-bottom: 1px solid #E2E5DD' })
       ] },
       { title: 'Focus', note: 'One colour family, so anything green can be clicked.', items: [
         sw('--focus-ring', '#264F29', 'Same value as --brand. 2px outline, 2px offset, on every focusable thing'),

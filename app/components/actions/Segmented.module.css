@@ -53,13 +53,13 @@
 
 @media (hover: hover) {
   .segItem:hover:not(:has(:disabled)):not(:has(:checked)) {
-    background: color-mix(in srgb, var(--white) 60%, transparent);
+    background: var(--white-60);
     color: var(--ink);
   }
 }
 
 .segItem[data-state='hover']:not(:has(:disabled)):not(:has(:checked)) {
-  background: color-mix(in srgb, var(--white) 60%, transparent);
+  background: var(--white-60);
   color: var(--ink);
 }
 

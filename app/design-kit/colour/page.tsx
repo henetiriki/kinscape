@@ -17,11 +17,14 @@ export const metadata: Metadata = { title: boardTitle('colour') };
 // Map tokens have no CSS variable, and the board shows hex and ratios, so it reads the tokens itself.
 const tokens = resolveTokens(rawTokens);
 
-// White chips have no edge on a white card, so they get a line like the focus ring chip.
+// White chips, and the translucent whites that fill as white, have no edge on a white card,
+// so they get a line like the focus ring chip.
 const EDGED = new Set([
   'colour.focus-ring-on-dark',
   'colour.surface',
   'colour.white',
+  'colour.white-45',
+  'colour.white-60',
 ]);
 
 const opacity = `${Math.round(tokens.map.hatch.opacity * 100)}%`;

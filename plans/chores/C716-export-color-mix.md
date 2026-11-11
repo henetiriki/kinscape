@@ -1,7 +1,7 @@
 # Plan: C716: Let a canvas board mount Banner and Segmented without failing the design export
 
 - **Spec:** #716
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@ Chromium computes the `color-mix()` values as `color(srgb 1 1 1 / 0.6)`, and `sn
 - **C.** Add two alpha tokens for the two CSS files. The tech lead then runs steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
 - **Other:** your own.
 
-Recommended: A, because it is the smallest change and needs no signed-in session. An `rgb()` value in the CSS fails `lib/design/__tests__/design.test.ts`.
+**Answer: C** (@henetiriki)
 
 **D2 · The board that proves the export** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ The done checks name `npm run design:export`, but the Constraints forbid a board
 - **B.** Also run `design:export` on an uncommitted local board, and paste the output.
 - **Other:** your own.
 
-Recommended: A, because CI runs it.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

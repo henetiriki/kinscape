@@ -721,18 +721,11 @@ export const inlineStyles = (tokens: string[]): void => {
 
             const computed = getComputedStyle(element);
             const value = computed.getPropertyValue(name);
-            const side = /^border(?:-(top|right|bottom|left))?-color$/.exec(
-              name
-            );
+            const side = /^border-(top|right|bottom|left)-color$/.exec(name);
             const undrawn =
               (side &&
-                (side[1]
-                  ? [side[1]]
-                  : ['top', 'right', 'bottom', 'left']
-                ).every(
-                  each =>
-                    computed.getPropertyValue(`border-${each}-width`) === '0px'
-                )) ||
+                computed.getPropertyValue(`border-${side[1]}-width`) ===
+                  '0px') ||
               (name === 'outline-color' &&
                 computed.getPropertyValue('outline-style') === 'none');
 

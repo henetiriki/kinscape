@@ -17,7 +17,7 @@ Ask questions as described in `SKILL.md`. Typical branches:
 
 - **Behaviour:** what the user sees and does.
 - **Design:** for a UI slice, the branches in [design.md](design.md).
-- **Design system:** does a slice build or change a shared component, or change another [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, add two done checks to _Acceptance checks_. The first is "Steps 2 to 5 ran on this branch". The second is the sha256 check in that section. Omit "Do not edit `design/canvas/`".
+- **Design system:** does a slice build or change a shared component, or change another [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, add two done checks to _Acceptance checks_: "Steps 2 to 5 ran on this branch" ("2 to 9" if a board shows the change), and the sha256 check in that section. Omit "Do not edit `design/canvas/`".
 - **Outside formats:** map each output field to its source. Ask about each field with no source.
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_. Each is a tech-lead decision.
 - **Data:** anything storing people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).

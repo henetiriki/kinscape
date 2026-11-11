@@ -56,7 +56,7 @@ Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` r
 - `swatches.ts`, `colour/page.tsx`.
 - Counts: `swatches.test.ts`, `colour/__tests__/page.test.tsx`, `lib/design/__tests__/system.test.ts`.
 - `design-export.mts`, `design-export.test.ts`, `e2e/design-export.spec.mts`.
-- Generated: `design/canvas/`.
+- `design/screens.json`. Generated: `design/canvas/`.
 
 ## Order of work
 
@@ -76,4 +76,4 @@ Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` r
 ## Deviations
 
 - The render job changed `design/map-districts.jpg` by 19 bytes (`13e6714`). This change did not cause it.
-- `style-2-colour` and `style-2-colour-phone` differ from their snapshots until the design agent adds the two swatches to the `SG-Colour` boards (D3).
+- The `SG-Colour` boards are taller, so `design/screens.json` heights for `style-2-colour` (2765) and `style-2-colour-phone` (4693) changed. `screens.test.ts` requires them.

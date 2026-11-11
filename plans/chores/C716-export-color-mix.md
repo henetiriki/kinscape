@@ -5,9 +5,7 @@
 
 ## Approach
 
-Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` rejects. Add tokens `white-45` and `white-60` (`rgb(255 255 255 / a)`). Use them in `.bannerAction` and the two `.segItem` hover rules. The check reads the computed `rgba()` as `white`.
-
-The tech lead, or a local session, runs steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
+Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` rejects. Add tokens `white-45` and `white-60`. Use them in `.bannerAction` and `.segItem`. A radio with `outline: none` computes black, so `inlineStyles` skips an off-token colour of a `none` outline.
 
 ## Decisions
 
@@ -22,37 +20,51 @@ The tech lead, or a local session, runs steps 3 to 5 of [Changing the design sys
 
 **D2 · The board that proves the export** · Decides: Tech lead
 
-- **A.** Add `Banner` and a hovered `Segmented` to the board in `e2e/design-export.spec.mts`.
-- **B.** Also run `design:export` on an uncommitted local board.
+- **A.** Add `Banner` and a hovered `Segmented` to the e2e board.
+- **B.** Also run `design:export` on a local board.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
 **D3 · The colour board** · Decides: Tech lead
 
-A `colour` token needs a swatch. Two swatches change `/design-kit/colour` from its snapshot.
-
 - **A.** Add both swatches to **Neutrals**, role `overlay`.
-- **B.** Put the tokens in a new group. No swatch needed.
+- **B.** Put the tokens in a new group.
 - **Other:** your own.
 
-**Answer: A** (@henetiriki). Fix a board difference in this PR, with a line under `## Deviations`.
+**Answer: A** (@henetiriki). Fix a board difference in this PR. Add a Deviations line.
+
+**D4 · The black outline colour** · Decides: Tech lead
+
+- **A.** `inlineStyles` skips it.
+- **B.** `.segItem input` takes `color: inherit`.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D5 · The new chips on the colour board** · Decides: Tech lead
+
+- **A.** Add them to `EDGED`.
+- **B.** Use a dark backing.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 
-- `design/tokens.json`, `app/tokens.css`: tokens and notes.
-- `Toast.module.css`, `Segmented.module.css`.
-- `swatches.ts`; three tests that count.
-- `design-export.test.ts`, `e2e/design-export.spec.mts`.
-- `.design-system/`, `design/canvas/`: generated.
+- `design/tokens.json`, `app/tokens.css`, `Toast.module.css`, `Segmented.module.css`.
+- `swatches.ts`, `colour/page.tsx`.
+- Counts: `swatches.test.ts`, `colour/__tests__/page.test.tsx`, `lib/design/__tests__/system.test.ts`.
+- `design-export.mts`, `design-export.test.ts`, `e2e/design-export.spec.mts`.
+- Generated: `design/canvas/`.
 
 ## Order of work
 
-1. Add the tests. See the unit test fail.
-2. Add the tokens, then change the CSS and swatches.
+1. Add the tests. See them fail.
+2. Add the tokens. Change the CSS, swatches and `inlineStyles`.
 3. Run `npm run design-system`.
-4. Tech lead or local session: steps 3 to 5.
-5. Compare `/design-kit/colour` with its snapshot (D3).
+4. Tech lead: steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system). Both copies match.
+5. Design agent: `SG-Colour` swatches.
 
 ## Proof
 
@@ -60,11 +72,8 @@ A `colour` token needs a swatch. Two swatches change `/design-kit/colour` from i
 | --------------------------------------- | ------------------------ |
 | `Banner` and hovered `Segmented` export | `design-export.spec.mts` |
 | A test fails without the fix            | `design-export.test.ts`  |
-| Install matches the design system       | sha256 of both copies    |
-| Tests, lint, typecheck, format, words   | PR output                |
 
 ## Deviations
 
-- The issue says not to edit `design/canvas/`. Steps 4 and 5 edit its `ds/kinscape/` copy, `canvas.json` and `VERSION` (`321366b`). No board changed.
 - The render job changed `design/map-districts.jpg` by 19 bytes (`13e6714`). This change did not cause it.
-- `style-2-colour` and `style-2-colour-phone` still differ from their snapshots (D3). The `SG-Colour` boards lack the two swatches. The design agent must add them.
+- `style-2-colour` and `style-2-colour-phone` differ from their snapshots until the design agent adds the two swatches to the `SG-Colour` boards (D3).

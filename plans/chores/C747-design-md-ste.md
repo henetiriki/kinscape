@@ -34,7 +34,7 @@ One pass over `design/DESIGN.md` fixes the items in _What to change_. The Text f
 ## Order of work
 
 1. Edit `design/DESIGN.md`.
-2. Run `npm run design-system` (step 2), and push.
+2. Run `npm run design-system` (step 2). Then push.
 3. The tech lead, or a local Claude Code session that the tech lead starts, runs steps 3 to 5. The session needs a signed-in account.
 
 ## Proof

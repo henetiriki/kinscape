@@ -128,13 +128,13 @@ The `kit.*` tokens set the design kit's board titles, page padding and intro wid
 
 [`tokens.json`](tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each colour with its value and contrast ratio. The `notes` group of `tokens.json` says where each token is used.
 
-Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
+Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
 ## Layout
 
 - Desktop first. The map fills the window and everything else floats on it with a 24px gutter.
 - Desktop: search bar top left. The Layers / Filters panel sits below it, 320px wide. The date dock runs along the bottom, right of the panel. Account and zoom controls are top right. The credits line sits under the dock.
-- Phone: search pill on top, a layers button under it, and a bottom sheet. When collapsed, the sheet holds only the date stepper and Play. A tap on the map opens it with the look-up result. A phone has no editing.
+- Phone: search pill on top, a layers button under it, and a bottom sheet. When collapsed, the sheet holds only the date stepper and Play. When the user taps the map, the sheet opens with the look-up result. A user cannot edit on a phone.
 - Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`. A media query can't read a variable, so a test checks each against `breakpoint`.
 - The `Stage` places the search, account, zoom, panel, dock, credits and overlay slots from those tokens. On a phone only, it also places a Layers button. Its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`), with the pointer on its right edge.
 - A notice centres in the free map area, not the window.
@@ -166,13 +166,13 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm              |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. Make a part that is reused, or has states of its own, a component, never part of a page. The dev-only `app/design-kit` and `app/screens` are exempt.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
-- **Google sign-in (proposed):** not in the requirements yet: file an Intent issue before you build it. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
-- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
+- **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
+- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
@@ -216,7 +216,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Map date field
 
-`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
+`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. The field pads single digits (`1901-6-4`).
 
 1. Check on Enter or when focus leaves, never while the user types.
 2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field. Set `aria-invalid`. Link the message with `aria-describedby`.
@@ -238,14 +238,14 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 NFR-08 requires the app to credit every source. The design fixes the format. The licence checks (NFR-08, BND-06) supply the text.
 
-- One sources file in the repo lists each source: layer, title, author, licence, licence link, attribution text and the date of the check. Add a source to the map only after its licence check.
+- One sources file in the repo lists each source: layer, title, author, licence, licence link, attribution text and the date of the check. After you check its licence, add a source to the map.
 - The credits line under the date dock joins the attribution text of the sources on screen with " · " and ends with an "Attributions" link. 11px, `--credits`.
 - The "Sources and attributions" dialog opens from that link or the account menu. It lists every source as layer, source (with its detail line), licence and date checked.
-- The JPGs show `[Source]` and `[Licence]` until the checks are done. Do not fill them in with guesses.
+- The JPGs show `[Source]` and `[Licence]` until someone completes the checks. Do not replace them with guesses.
 
 ## Event glyphs
 
-Each Event type is one 24 × 24 path in `design/source/`. It is filled `currentColor` (`--pin`) and 1em square. The order below is the same everywhere. `EventGlyph` copies the paths. A test keeps them in step.
+Each Event type is one 24 × 24 path in `design/source/`. It uses `currentColor` (`--pin`) as its fill and is 1em square. The order below is the same everywhere. `EventGlyph` copies the paths. A test keeps them in step.
 
 | Event      | SVG                           |
 | ---------- | ----------------------------- |
@@ -293,17 +293,17 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 - Use the requirements' Key concepts terms (Map date, Pin, Polity, Jurisdiction chain).
 - Sentence case everywhere, except map labels for polities and context areas.
 - Names on the map are the names valid on the map date (MAP-06).
-- No sign-up wording. The sign-in page says whoever runs KinScape sets up accounts.
+- No sign-up wording. The sign-in page says whoever runs KinScape creates accounts.
 
 ## Not designed yet
 
 These have no design: see `AGENTS.md`.
 
-- Add or edit people, relationships, pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
-- Click inside a contested area: how the popup shows both claims (BND-04, MAP-07).
+- The screens that add or edit people, relationships, pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
+- The popup for a click inside a contested area: how it shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).
 - Person panel, life trail and migration view (EXP-05 to EXP-07).
 - The changed-border flash (MAP-11).
-- Compare two dates (MAP-12).
+- The view that compares two dates (MAP-12).
 - Pin warnings (PIN-08) and source records on the map (PIN-07).
 - Tablet layout (NFR-05).

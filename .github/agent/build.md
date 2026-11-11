@@ -4,8 +4,6 @@ The caller names the PR and who approved or asked. Follow [plans/README.md](../.
 
 Your first command is `gh pr view <n> --json title,body,comments,reviews,headRefName,labels --jq '(.comments, .reviews) |= map(select(.authorAssociation | IN("OWNER", "MEMBER", "COLLABORATOR")))'`: the team's comments and reviews, and nobody else's. The bot's own and the review's findings are not needed here: the plan file and the PR body hold the state, and a finding reaches you through a fix-review run or a respond run's thread.
 
-After that command, and before you change a file, comment "Build started" on the PR. A person who wants to build by hand reads it ([build-ownership rule](../../plans/README.md#build-ownership)).
-
 The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
 
 If you need a path that hands a PR back (the [hand-back rule](../../plans/README.md#hand-back)), stop. Push nothing. Leave the PR a draft. Comment why. Add no package: `npm install` is off. If a plan needs one, stop, as the [big-departures rule](../../plans/README.md#big-departures) says. Write an unlikely case in your final PR comment, not in code ([AGENTS.md](../../AGENTS.md#workflow-rules)).

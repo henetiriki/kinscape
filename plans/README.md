@@ -33,9 +33,7 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
 
     List each difference under `## Deviations`. If a difference changes a done check, stop for the tech lead ([big-departures rule](#big-departures)).
 
-17. <a id="build-ownership"></a>**Build ownership.** After the tech lead approves a plan, the CI agent builds it. Before a person builds by hand, the person does these steps:
-    - Run `git fetch` and read the PR comments.
-    - If the agent has pushed, continue from its commit.
-    - If the agent commented "Build started" and posted no final comment, check its run on the PR's Actions tab.
-    - If the run is in progress, wait.
-    - If the run is not in progress, build from the last pushed commit.
+17. <a id="build-ownership"></a>**Build ownership.** The CI agent builds an approved plan, except a hand-back ([building](../docs/building.md#specs-bugs-and-chores)). Before a person builds by hand, the person does these steps:
+    - Run `git fetch`. Then read the PR comments.
+    - If the PR has a "Building…" comment, wait. The workflow deletes it when the run ends.
+    - If the PR has no "Building…" comment, continue from the last pushed commit.

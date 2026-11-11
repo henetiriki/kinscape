@@ -10,6 +10,10 @@ import type { Validity } from '@ks/lib/domain/validity/types.ts';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { Sheet } from '@ks/app/components/overlays/Sheet';
+import {
+  AccountMenu,
+  accountSlots,
+} from '@ks/features/map/components/AccountMenu';
 import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
@@ -28,13 +32,21 @@ import styles from '@ks/features/map/components/MapShell.module.css';
 
 export const MapShell = ({
   coverage,
+  email,
+  initial,
   layers,
+  onSignOut,
   sources,
 }: {
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
   coverage: Validity[];
+  /** Shown in the account menu. */
+  email: string;
+  /** The letter on the Avatar. */
+  initial: string;
   /** The layers the map draws. */
   layers: Layer[];
+  onSignOut: () => Promise<unknown>;
   sources: Source[];
 }) => {
   const phone = usePhone();
@@ -66,9 +78,20 @@ export const MapShell = ({
   const first = coverage.at(0)?.validFrom;
   const firstYear = first === undefined ? '' : String(yearOf(first));
 
+  const account = (
+    <AccountMenu
+      email={email}
+      initial={initial}
+      onOpenSources={() => setShowSources(true)}
+      onSignOut={onSignOut}
+      phone={phone}
+    />
+  );
+
   return (
     <>
       <Stage
+        {...accountSlots(phone, account)}
         credits={phone ? undefined : credits}
         dock={
           phone ? (

@@ -10,11 +10,17 @@ const redirect = vi.hoisted(() =>
 );
 
 vi.mock('next/navigation', () => ({ redirect }));
-vi.mock('@ks/server/auth/current.mts', () => ({ currentSession: session }));
+vi.mock('@ks/server/auth/current.mts', () => ({
+  currentSession: session,
+  signOut: vi.fn(),
+}));
 vi.mock('@ks/features/map', () => ({
   MapShell: (props: {
     coverage: unknown[];
+    email: string;
+    initial: string;
     layers: unknown[];
+    onSignOut: unknown;
     sources: unknown[];
   }) => {
     shell(props);
@@ -25,6 +31,7 @@ vi.mock('@ks/features/map', () => ({
 }));
 
 import Home from '@ks/app/page';
+import { signOutAction } from '@ks/app/sign-in/actions';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -41,6 +48,16 @@ describe('the map page', () => {
     expect(shell.mock.calls[0][0].sources.length).toBeGreaterThan(0);
     expect(shell.mock.calls[0][0].coverage.length).toBeGreaterThan(0);
     expect(shell.mock.calls[0][0].layers).toEqual([{ name: 'polity layer' }]);
+  });
+
+  it("passes the session's email, its upper-case first letter and the sign-out action", async () => {
+    session.mockResolvedValue({ accountId: 'a', email: 'ada@example.test' });
+
+    render(await Home());
+
+    expect(shell.mock.calls[0][0].email).toBe('ada@example.test');
+    expect(shell.mock.calls[0][0].initial).toBe('A');
+    expect(shell.mock.calls[0][0].onSignOut).toBe(signOutAction);
   });
 
   it('sends a visitor with no valid session to the sign-in page', async () => {

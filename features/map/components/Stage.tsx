@@ -23,7 +23,7 @@ export const freeArea = (phone: boolean) =>
         top: px(layout['furniture-top']),
       };
 
-/** The slots, in the order they stack; a phone shows `layers` and hides `account`, `zoom` and `credits`. */
+/** The slots in DOM order; `search` and `account` stack above the others (`Stage.module.css`). A phone shows `layers` and hides `account`, `zoom` and `credits`. */
 const SLOTS = [
   'search',
   'account',

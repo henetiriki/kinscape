@@ -23,6 +23,11 @@ body {
   outline-offset: var(--focus-offset);
 }
 
+/* MapLibre's zoom buttons sit under the account Avatar, in the `zoom` slot's place, until a Spec fills that slot. */
+.map .maplibregl-ctrl-top-right {
+  top: var(--layout-furniture-top);
+}
+
 /* A phone zooms by pinch: MapLibre's zoom buttons (top right) and scale (bottom left) would sit under the Layers button and the sheet. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .map .maplibregl-ctrl-top-right,

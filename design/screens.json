@@ -191,6 +191,22 @@
       "mode": "blocking"
     },
     {
+      "name": "map-account-menu",
+      "route": "/screens/map-account-menu",
+      "state": "account-menu-open",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "map-account-menu-phone",
+      "route": "/screens/map-account-menu",
+      "state": "account-menu-open",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
+    },
+    {
       "name": "sign-in-desktop",
       "route": "/sign-in",
       "state": "sign-in-filled",

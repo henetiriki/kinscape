@@ -18,6 +18,12 @@
   z-index: var(--z-furniture);
 }
 
+/* The menu card hangs from these two slots, so they paint above the other furniture, such as the Layers button. */
+.search,
+.account {
+  z-index: var(--z-menu);
+}
+
 .search {
   left: var(--size-gutter);
   top: var(--layout-search-top);

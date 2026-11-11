@@ -60,10 +60,7 @@ The publish skill steps are in `SKILL.md`.
 | Labels, grep           | The done `git grep`         |
 | Links, budgets, checks | `npm test`, `npm run words` |
 
-## Out of scope
-
-`spec.md`: "Steps 2 to 5" keeps its label. Steps 7 to 9 apply only if a board shows the change, so the plan lists them.
-
 ## Deviations
 
+- `.claude/skills/refine/spec.md` line 20 also says "2 to 9" if a board shows the change, so a Spec done check covers steps 7 to 9. The tech lead chose this on the review thread. The plan had put `spec.md` out of scope.
 - `CANVAS.md` step 5.5 and step 8 lose their push and render clauses. Step 9 owns them, so the render runs once (review fix).

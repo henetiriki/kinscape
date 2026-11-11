@@ -21,6 +21,6 @@ In `db-migrate.test.ts`, each of the four tests that opens a database starts wit
 
 ## Order of work
 
-1. Record the before output of the `vitest` command in the issue.
+1. Record the before output of the `vitest` command for the PR body.
 2. Change `account-add.test.ts`, then `db-migrate.test.ts`.
-3. Record the after output and the `grep -n createTestDb` output.
+3. Put the before and after Durations and the `grep -n createTestDb` output in the PR body.

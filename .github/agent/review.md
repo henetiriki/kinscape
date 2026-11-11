@@ -26,7 +26,7 @@ For each answered Decision, check that the Spec's Behaviour and Acceptance check
 
 - Ignore the command's "only if certain" and "don't flag what depends on inputs" filters. Report probable problems too. List the gaps that no committed file's input reaches in one `gh pr comment`, not inline.
 - If a finding needs an unlikely case (see [AGENTS.md](../../AGENTS.md#workflow-rules)), start it with `Unlikely case:`. Write the three parts that the bullet names. Label it **PLAUSIBLE**. Put it in that one `gh pr comment`.
-- If `.since-last-review.diff` exists, it holds the changes since the last review. Give it to the review agents, not `gh pr diff`. Flag a defect only on a line that `gh pr diff` also has. Check the plan against the whole PR.
+- If `.since-last-review.diff` exists, it holds the changes since the last review. Give it to the review agents, not `gh pr diff`. Flag a defect only on a line that both diffs have. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
 - A smell or placement finding ([`docs/code-rules.md`](../../docs/code-rules.md)) is a defect, not a nit. Label it **PLAUSIBLE** when the fix needs a design decision.
 - Post at most ten findings, one comment each. Post them in this order:

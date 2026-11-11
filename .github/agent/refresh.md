@@ -10,7 +10,7 @@ Do this first, to the Spec, Bug or Chore the prompt names ("Spec" below means al
 
 ## Plan run
 
-If the prompt says this is a plan run and there is any drift: open no branch or plan PR. After the comment, stop. For who fixes each item and which status label to set, follow the [stale-facts rule](../../plans/README.md#stale-facts). With no drift, go on to the plan.
+If the prompt says this is a plan run and there is any drift: open no branch or plan PR. After the comment, stop. For who fixes each item and which status label to set, follow the [stale-facts rule](../../plans/README.md#stale-facts). With no drift, continue with the plan.
 
 ## Unblock run
 

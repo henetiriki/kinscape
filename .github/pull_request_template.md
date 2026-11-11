@@ -1,4 +1,4 @@
-<!-- Budget: 250 words. In a Chore PR, leave out the Spec lines. Leave out a section that would only say "none". -->
+<!-- Budget: 250 words. In a Chore PR, omit the Spec lines. Omit a section that would only say "none". -->
 
 ## What and why
 
@@ -9,7 +9,7 @@ Closes #<!-- spec issue -->
 - **Intent or milestone:** <!-- #12 or M0 -->
 - **Requirement IDs:** <!-- e.g. MAP-01, MAP-03 -->
 - **Plan:** <!-- link to plans/<spec-id>-<slug>.md in this PR -->
-- **Deviations from the approved plan:** <!-- see the plan's Deviations section. If there are none, leave this line out. -->
+- **Deviations from the approved plan:** <!-- see the plan's Deviations section. If there are none, omit this line. -->
 
 ## Acceptance checks
 

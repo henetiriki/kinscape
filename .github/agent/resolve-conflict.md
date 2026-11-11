@@ -26,4 +26,4 @@ Your first command is `gh pr view <n> --json title,body,headRefName`. The plan t
 
 Run `git commit --no-edit`. Then run `git push`. The push starts the PR's checks. Do not ask for a review.
 
-End with one PR comment. Say what came in from `main` and how you resolved each conflict. If you stopped, say why.
+End with one PR comment. Say what `main` added and how you resolved each conflict. If you stopped, say why.

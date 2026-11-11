@@ -6,7 +6,7 @@ Your first command is `gh pr view <n> --json title,body,comments,reviews,headRef
 
 The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
 
-These rules apply:
+## Rules
 
 - If you need a path that hands a PR back (the [hand-back rule](../../plans/README.md#hand-back)), stop. Push nothing. Comment why.
 - Add no package: `npm install` is off. If a plan needs one, stop (the [big-departures rule](../../plans/README.md#big-departures)).
@@ -16,14 +16,14 @@ These rules apply:
 - If a test fails, read the error. Then follow the [failing-tests rule](../../plans/README.md#failing-tests).
 - Don't add temporary debug output.
 
-Do these in order:
+## Steps
 
 1. Run the full `npm test` and `npm run e2e` once.
 2. Push.
 3. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work).
 4. If every check passes, run the [ready check](../../plans/README.md#ready-check).
 5. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)).
-6. Leave the PR a draft if any is true. Otherwise run `gh pr ready <n>`.
+6. If one of these is true, leave the PR a draft. If none is true, run `gh pr ready <n>`.
    - A check failed.
    - The ready check stops you.
    - The plan changes a design system input (the [design-system rule](../../plans/README.md#design-system)).

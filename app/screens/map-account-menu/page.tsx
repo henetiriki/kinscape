@@ -12,9 +12,20 @@ const { map } = resolveTokens(rawTokens);
 const Page = async () => {
   await requireDevPage();
 
-  // The sea colour stands in for the map, as the board draws it.
+  // The sea colour stands in for the map, on its own layer as the map canvas
+  // is. Text above a separate layer gets grey edges, as on the board; text on
+  // the page layer gets coloured edges.
   return (
-    <div style={{ background: map.sea, height: '100%' }}>
+    <div style={{ height: '100%', position: 'relative' }}>
+      <div
+        aria-hidden
+        style={{
+          background: map.sea,
+          inset: 0,
+          position: 'absolute',
+          willChange: 'transform',
+        }}
+      />
       <AccountMenuScreen />
     </div>
   );

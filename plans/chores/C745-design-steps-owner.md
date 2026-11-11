@@ -1,7 +1,7 @@
 # Plan: C745: Give the design system done check one owner, and fix the refine skill conflicts
 
 - **Spec:** #745
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Steps 3.2 and 3.3 and _Rules_ each say it.
 - **B.** In step 3.3 only. _Rules_ loses its bullet.
 - **Other:** your own.
 
-Recommended: A, because _Rules_ holds the other run-wide limits.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

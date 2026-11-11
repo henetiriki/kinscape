@@ -5,7 +5,7 @@ Make a filed **Bug** clear before an agent plans it. Add four sections below the
 ## Before the first question
 
 1. Read the Bug: `gh issue view <number> --comments`. Get the exact body with `gh issue view <number> --json body --jq .body`. Without `gh`, ask the user to paste it.
-2. Look up what defines the expected result: requirement IDs in `docs/requirements.md`, merged Specs, `design/DESIGN.md` and the snapshots in `design/`.
+2. Find what defines the expected result: requirement IDs in `docs/requirements.md`, merged Specs, `design/DESIGN.md` and the snapshots in `design/`.
 3. Read the code the Bug names, as far as the steps need.
 
 ## What to settle
@@ -13,7 +13,7 @@ Make a filed **Bug** clear before an agent plans it. Add four sections below the
 Ask questions as described in `SKILL.md`, until these four sections are settled:
 
 - **Steps to reproduce:** numbered steps that show the Bug on `main`, from a named page and state.
-- **Expected per:** the requirement ID, Spec or design snapshot that defines the expected result. If none defines it, ask the tech lead, and cite the answer as `Tech lead (Q<n>)`.
+- **Expected per:** the requirement ID, Spec or design snapshot that defines the expected result. If none defines it, ask the tech lead. Cite the answer as `Tech lead`.
 - **Acceptance checks:** Given / When / Then checks, each one able to become an automated test.
 - **Must not break:** the requirements and Specs that use the code or behaviour the fix changes. Give each its ID or issue number.
 

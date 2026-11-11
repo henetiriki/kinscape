@@ -4,23 +4,23 @@ Draft one **Chore** issue: tooling, CI, docs, process or settings. Any text afte
 
 ## Before the first question
 
-Look up the files, settings and workflows the idea touches. What exists is a fact to look up.
+Find the files, settings and workflows that the idea touches. What exists is a fact to find.
 
 ## What to settle
 
 Ask questions as described in `SKILL.md`, only about what the idea leaves open:
 
-- **What to change:** the files or settings, and the edges. For a workflow, ask about each fork, re-run, race, edit and manual change that a user or a workflow can reach. Do not ask about an unlikely case ([AGENTS.md](../../../AGENTS.md#workflow-rules)). For a picture, ask about each box, arrow, label and theme.
+- **What to change:** the files or settings, and the edges. For a workflow, ask about each fork, re-run, race, edit and manual change that a user or a workflow can reach. For a picture, ask about each box, arrow, label and theme.
 - **Why:** the problem it fixes.
 - **Done:** how we'll know, as a check someone can run or see.
 - **Constraints:** anything it must not touch or break.
 - **Design system:** does the idea change a [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, read that section. Add its **Issue text** to the draft: the done check, and the Constraint sentence in Constraints. Add the output of step 5.4 in [Refreshing the copy](../../../design/CANVAS.md#refreshing-the-copy) as a second done check. If the Chore adds components, add this done check: "Each drawing the design agent left has a line in one follow-up issue, with the reason."
 
-Ask every open choice, so none reach the plan: a Chore has no decisions box.
+Ask about every open choice, so that none reach the plan. A Chore has no decisions box.
 
 ## Screen
 
-Once the change is known, read the [hand-back rule](../../../plans/README.md#hand-back), the [too-big rule](../../../plans/README.md#too-big) and `.github/CODEOWNERS`. Read them again before you draft. Don't copy them here.
+After you know the change, read the [hand-back rule](../../../plans/README.md#hand-back), the [too-big rule](../../../plans/README.md#too-big) and `.github/CODEOWNERS`. Read them again before you draft. Don't copy them here.
 
 If the [hand-back rule](../../../plans/README.md#hand-back) would hand the chore back, name the path or reason and keep drafting.
 
@@ -36,7 +36,7 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/4-chore.yml`, in order. If t
 >
 > **How we'll know it's done**
 >
-> **Constraints** (optional; leave out if none)
+> **Constraints** (optional; omit if none)
 
 The box ids are `title`, `change`, `why`, `done` and `constraints`.
 

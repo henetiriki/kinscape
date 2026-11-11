@@ -41,3 +41,8 @@ The eleven files that _What to change_ names, and this plan.
 ## Out of scope
 
 - `plans/README.md` › _Design system_ and _Missing components_. They name who runs the steps, not a done check.
+
+## Deviations
+
+- `design/CANVAS.md` is at its word budget. Step 4.4 no longer repeats the `index.d.ts` content type (`tools.md` holds it). The two pasted prompts lose a line that their steps already say.
+- `tools.md`: for the MCP path, "sharing status" also names where the owner comes from (`get_artifact`).

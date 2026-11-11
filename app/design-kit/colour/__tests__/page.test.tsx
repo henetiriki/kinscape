@@ -54,7 +54,7 @@ it('shows value, ratio and use, with opacity for the scrim and the hatch', async
   ).toBeTruthy();
 });
 
-it('draws an edge under the white chips only', async () => {
+it('draws an edge under the white chips and the translucent white chips only', async () => {
   const { default: ColourKit } = await import('@ks/app/design-kit/colour/page');
 
   render(await ColourKit());
@@ -64,6 +64,8 @@ it('draws an edge under the white chips only', async () => {
 
   expect(chip('--surface')).toMatch(/edge/);
   expect(chip('--white')).toMatch(/edge/);
+  expect(chip('--white-45')).toMatch(/edge/);
+  expect(chip('--white-60')).toMatch(/edge/);
   expect(chip('--surface-2')).not.toMatch(/edge/);
 });
 

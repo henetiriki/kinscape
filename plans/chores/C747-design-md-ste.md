@@ -1,7 +1,7 @@
 # Plan: C747: Fix STE and repeated facts in design/DESIGN.md
 
 - **Spec:** #747
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ One pass over `design/DESIGN.md` fixes the items in _What to change_. The Text f
 - **B.** Link them. Add the three files as one `ALLOWLIST` entry in `scripts/doc-links.mts`.
 - **Other:** your own.
 
-Recommended: A, because `AGENTS.md` names `design/DESIGN.md` the same way.
+**Answer: A** (@henetiriki)
 
 **D2 · The name of a screen image** · Decides: Tech lead
 
@@ -25,7 +25,7 @@ Recommended: A, because `AGENTS.md` names `design/DESIGN.md` the same way.
 - **B.** "Mockup".
 - **Other:** your own.
 
-Recommended: A, because `CANVAS.md` and `AGENTS.md` use it.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

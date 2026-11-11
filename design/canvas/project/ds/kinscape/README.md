@@ -15,7 +15,7 @@
 | Public Sans         | 400, 500, 600, italic 400 and 500 | All UI text and every map label                         |
 | JetBrains Mono      | 400, 500                          | Dates, coordinates, keyboard hints, code. Ligatures off |
 
-Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`); `/design-kit/type` shows them.
+Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`). `/design-kit/type` shows them.
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see Map style).
 
@@ -39,19 +39,19 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Mono L   | JetBrains Mono 22 / 28 · 500               | Map date field                 |
 | Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
 
-Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line, and never set body text below 12.5px or map labels below 11px.
+Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
 
-The design kit's board titles, page padding and intro width are `kit.*` tokens; only kit pages use them.
+The `kit.*` tokens set the design kit's board titles, page padding and intro width. Only kit pages use them.
 
 ## Colours
 
-Every value (colours, type, spacing, radii, shadows, focus, motion and the map) is in `tokens.json`. `npm run tokens` writes it to `app/tokens.css` as CSS custom properties: colours are `--brand`, `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each with its value and contrast ratio. Where a token is used: its note in the `notes` group of `tokens.json`; a test fails if a token has none.
+`tokens.json` holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each colour with its value and contrast ratio. The `notes` group of `tokens.json` says where each token is used.
 
-Text colours pass 4.5:1 on `--surface` and `--surface-2`, and each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
+Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, contested claims are hatched, approximate borders are dashed (NFR-06).
 
 ## Shape and depth
 
-Shown with spacing and motion at `/design-kit/foundations`.
+`/design-kit/foundations` shows these with spacing and motion.
 
 | Token   | Value                                                                                                                             |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
@@ -59,11 +59,11 @@ Shown with spacing and motion at `/design-kit/foundations`.
 | Shadow  | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment` |
 | Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                           |
 | Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                            |
-| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields show a 2px `--brand` border instead                      |
+| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                          |
 
 ## Components
 
-Each component, its `.module.css` and its test live in one folder of `app/components`, imported as `@ks/app/components/<folder>/<Name>` (a feature's own components: architecture.md):
+`docs/architecture.md` has the component-folder rule. Import a component as `@ks/app/components/<folder>/<Name>`. These folders hold the shared components:
 
 | Folder       | Holds                                                                   |
 | ------------ | ----------------------------------------------------------------------- |
@@ -74,59 +74,61 @@ Each component, its `.module.css` and its test live in one folder of `app/compon
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm              |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. A part that is reused, or has states of its own, is a component, never built inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. Make a part that is reused, or has states of its own, a component, never part of a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
-- **Google sign-in (proposed):** not in the requirements yet, so it needs an Intent issue before it's built. Under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark from their branding kit, never a redrawn one; the mockup's dashed box marks the spot. Hide the button and the divider when Google sign-in is off.
+- **Google sign-in (proposed):** not in the requirements yet: file an Intent issue before you build it. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
 - **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border. Error: see Feedback and validation. Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
-- **Layer rows:** a checkbox (accent `--brand`), name 14/600, a one-line description in `--ink-3`. The description reports live facts, such as how many pins are true on the date or where district data exists.
-- **Date dock:** step back, a typed date field, step forward, then Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that, the 1652–today slider (the thumb snaps to each step at the chosen precision; the date field is the only date readout) with epoch ticks and the contested years hatched, then "Jump to" epoch buttons and keyboard hints.
+- **Layer rows:** a checkbox (accent `--brand`), name 14/600, a one-line description in `--ink-3`. The description gives live facts, such as how many pins are true on the date.
+- **Date dock:** step back, a typed date field, step forward, Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that is the 1652–today slider with epoch ticks and the contested years hatched. The thumb snaps to each step at the chosen precision. The date field is the only date readout. Then "Jump to" epoch buttons and keyboard hints.
 - **Phone date sheet:** a non-modal bottom sheet, 152px collapsed and 432px expanded, with a grabber ("Expand the sheet"). Collapsed: the stepper around the date field and a round Play. Expanded adds the slider. No precision, speed, Jump to or hints.
 - **Jurisdiction popup:** "On this spot in {year}", the place name valid on that date, coordinates in mono, then the jurisdiction chain as level / name rows, then pins at that spot.
-- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. Used for empty and loading states.
+- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. It shows empty and loading states.
 - **Banner:** `--ink` background, white text, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.
 - **Dialog:** centred over a `--scrim`, radius 12, close button top right.
 - **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a 14/600 title and one line in `type.small`.
-- **Toast:** white, popup shadow, bottom centre above the dock. Success leaves after 4 seconds; errors stay and offer a retry.
+- **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
-Every control has the five states in style-4-states.jpg. Hover darkens or tints, pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls), and disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover. The controls are built in `/design-kit/states`; `/design-kit` lists the boards (the kit is a 404 in production).
+Every control has the five states in style-4-states.jpg. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
+
+`/design-kit/states` builds the controls. `/design-kit` lists the boards. In production the kit is a 404.
 
 ## States
 
-| State                | Design                                                                                                                                                                                 |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First load (NFR-02)  | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. Only on first load: changing the date never shows a loader (NFR-01). |
-| No pins in the tree  | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed.                                                                   |
-| No pins on this date | A notice card at the top: "No pins in {year}", then "Jump to {nearest year}", plus "Clear filters" when filters are on. The Pins row reads "0 of N true on this date".                 |
-| Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                             |
-| Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                         |
-| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                                   |
-| Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                                 |
+| State                | Design                                                                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| First load (NFR-02)  | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. A date change never shows a loader (NFR-01).                    |
+| No pins in the tree  | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed.                                                              |
+| No pins on this date | A notice card at the top reads "No pins in {year}" and "Jump to {nearest year}". When filters are on, it also has "Clear filters". The Pins row reads "0 of N true on this date". |
+| Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                        |
+| Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                    |
+| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                              |
+| Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                            |
 
 ## Feedback and validation
 
 Errors block until fixed, warnings don't, success confirms something finished, and info explains something the app did. Each one has an icon and words. Where it goes:
 
-- **A field's problem:** next to the field, replacing its helper text.
+- **A field's problem:** next to the field, in place of its helper text.
 - **A problem with one part of the screen:** an alert in that part, such as a failed sign-in above the form.
 - **The result of an action:** a toast.
 - **A problem with the app:** a banner.
 
-Errors use `role="alert"`; everything else uses `role="status"`.
+Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Map date field
 
-Built in `/design-kit/feedback`. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
+`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. Single digits (`1901-6-4`) are padded.
 
-1. Check on Enter or when focus leaves, never while typing.
-2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field, set `aria-invalid`, and link the message with `aria-describedby`.
-3. In the dock, the message opens 12px above the dock's top edge and points at the field: 340px wide from the Back button, or the sheet's full width on a phone, where it may cover the credits line. Everywhere else it goes below.
+1. Check on Enter or when focus leaves, never while the user types.
+2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field. Set `aria-invalid`. Link the message with `aria-describedby`.
+3. In the dock, the message opens 12px above the dock's top edge and points at the field. It is 340px wide from the Back button. On a phone it is the sheet's full width and may cover the credits line. Everywhere else it goes below the field.
 4. The map, slider and URL stay on the last good date, and the message names it.
 5. Esc restores the last good date. The slider, step buttons and Jump to buttons also clear the error.
 6. A good date gets no success styling: the map moving is the confirmation.
@@ -142,7 +144,7 @@ Built in `/design-kit/feedback`. The field is 188px wide and accepts `1901`, `19
 
 ## Event glyphs
 
-Each Event type is one 24 × 24 path in `design/source/`, filled `currentColor` (`--pin`), 1em square, in this order everywhere. `EventGlyph` copies the paths; a test keeps them in step.
+Each Event type is one 24 × 24 path in `design/source/`. It is filled `currentColor` (`--pin`) and 1em square. The order below is the same everywhere. `EventGlyph` copies the paths. A test keeps them in step.
 
 | Event      | SVG                           |
 | ---------- | ----------------------------- |
@@ -164,7 +166,7 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 - Use the requirements' Key concepts terms (Map date, Pin, Polity, Jurisdiction chain).
 - Sentence case everywhere, except map labels for polities and context areas.
 - Names on the map are the names valid on the map date (MAP-06).
-- No sign-up wording. The sign-in page says accounts are set up by whoever runs KinScape.
+- No sign-up wording. The sign-in page says whoever runs KinScape sets up accounts.
 
 ## Using the controls on a canvas
 

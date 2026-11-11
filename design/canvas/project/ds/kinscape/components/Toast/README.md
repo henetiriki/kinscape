@@ -2,7 +2,7 @@ The result of an action.
 
 ## Design
 
-- **Toast:** white, popup shadow, bottom centre above the dock. Success leaves after 4 seconds; errors stay and offer a retry.
+- **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
 ## Props
 

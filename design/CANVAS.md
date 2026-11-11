@@ -20,8 +20,8 @@ With no Chromium, skip `npm run design:export`: the workflow exports in CI.
   5. Run "Refreshing the copy" (5.1 to 5.5), then commit `design/canvas/` alone.
   6. Push the branch. Steps 7 to 9 apply if a board shows the change.
   7. The design agent swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
-  8. Run "Refreshing the copy" again. Commit `design/canvas/` alone and push. This adds the swapped boards.
-  9. Run the workflow Design: Render snapshots on the branch.
+  8. Run "Refreshing the copy" again (5.1 to 5.5). This adds the swapped boards.
+  9. Push the branch, then run the workflow Design: Render snapshots on it.
 - **Done check.** A Spec or Chore that changes these inputs lists steps 3 to 5 in its done check: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`.
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
 
@@ -60,7 +60,7 @@ Refresh `canvas/` after a board changes and after each install update. Keep the 
 - **5.2** `read` each file with `paths` into `canvas/project/` (long files in parts). Compare its `sha256` from `read` with `shasum -a 256` of the repo copy. Files under `project/ds/kinscape/` come from `.design-system/project/`.
 - **5.3** Set line 2 of `canvas/VERSION` to the version that `list` reports.
 - **5.4** Run `npm run design:export`. It prints "No snapshot changed" unless a board changed. With no Chromium, skip it.
-- **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes, push, and run the workflow Design: Render snapshots.
+- **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes: step 9 renders the snapshots.
 
 Fallback, without the `Artifact` tool: use `list_files` and `read_file`. If `list_files` refuses with "written to by someone outside your organization", ask Claude in a chat on the canvas to read each changed file and hand it over.
 

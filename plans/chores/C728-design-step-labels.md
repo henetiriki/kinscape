@@ -62,4 +62,8 @@ The publish skill steps are in `SKILL.md`.
 
 ## Out of scope
 
-`spec.md`: "Steps 2 to 5" keeps its label.
+`spec.md`: "Steps 2 to 5" keeps its label. Steps 7 to 9 apply only if a board shows the change, so the plan lists them.
+
+## Deviations
+
+- `CANVAS.md` step 5.5 and step 8 lose their push and render clauses. Step 9 owns them, so the render runs once (review fix).

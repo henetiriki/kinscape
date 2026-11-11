@@ -1,7 +1,7 @@
 # Plan: C716: Let a canvas board mount Banner and Segmented without failing the design export
 
 - **Spec:** #716
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

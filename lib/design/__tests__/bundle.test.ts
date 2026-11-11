@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -56,6 +56,51 @@ describe('CONTROLS', () => {
       'SheetPanel',
     ]);
     expect(CONTROLS.filter(({ path }) => !existsSync(path))).toEqual([]);
+  });
+});
+
+const ROLE_FOLDERS = [
+  'actions',
+  'feedback',
+  'forms',
+  'foundation',
+  'overlays',
+].map(role => `app/components/${role}`);
+
+const EXCLUDED: { path: string; reason: string }[] = [];
+
+/** The `.tsx` files in a folder and its subfolders, except `__tests__`. */
+const sourceFiles = (folder: string): string[] =>
+  readdirSync(folder, { withFileTypes: true }).flatMap(entry => {
+    const path = `${folder}/${entry.name}`;
+
+    if (entry.isDirectory()) {
+      return entry.name === '__tests__' ? [] : sourceFiles(path);
+    }
+
+    return path.endsWith('.tsx') ? [path] : [];
+  });
+
+describe('CONTROLS coverage', () => {
+  it('has every shared component file in CONTROLS or EXCLUDED', () => {
+    const known = new Set([
+      ...CONTROLS.map(({ path }) => path),
+      ...EXCLUDED.map(({ path }) => path),
+    ]);
+
+    expect(
+      ROLE_FOLDERS.flatMap(sourceFiles).filter(path => !known.has(path))
+    ).toEqual([]);
+  });
+
+  it('has only EXCLUDED paths that exist and are not in CONTROLS', () => {
+    const controlPaths = new Set(CONTROLS.map(({ path }) => path));
+
+    expect(
+      EXCLUDED.filter(
+        ({ path }) => !existsSync(path) || controlPaths.has(path)
+      ).map(({ path }) => path)
+    ).toEqual([]);
   });
 });
 

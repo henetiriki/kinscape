@@ -45,7 +45,7 @@ body:
     id: decisions
     attributes:
       label: ❓ Decisions
-      description: 'Every choice the approver must make, in the format in docs/how-we-work.md › Decisions (D1 with options A, B, Other, and who decides). Answer with `D1: B`. Mark each one that blocks the build **Blocking**. Write "None" if there are none.'
+      description: 'Every choice the approver must make, in the format in docs/how-we-work.md › Decisions (D1 with options A, B, Other, and who decides). Answer with `D1: B`. Mark each one that stops the plan **Blocking**. Write "None" if there are none.'
     validations:
       required: true
   - type: textarea

@@ -9,19 +9,19 @@ A Bug or Chore takes the same path; below, "Spec" means all three. The branch is
 1. The tech lead sets `status: ready-for-agent`. Claude plans in GitHub Actions and opens a draft pull request with the plan ([plan rules](../plans/README.md)). Comment `@claude` there to change it.
 2. The tech lead's approving review starts the build. Answer the plan's open [decisions](how-we-work.md#decisions) in that review.
 3. Claude records them (and rewords the Spec if one changes its text), builds, rewrites the PR description and marks it ready. A draft runs only the format and words checks.
-4. Claude reviews each ready pull request, except Dependabot's, the bot's action-pin PR (a person's push to it is reviewed) and `plans/`-only ones; changing `claude-code-review.yml` gets a comment. The tech lead adds the `fix-review` label to have Claude fix the findings and push; the run removes the label, and the push starts a new review. A fork or `hand-back` PR never runs. A draft, or anyone else's label, does nothing and the label stays: remove it and add it again once the PR is ready.
+4. Claude reviews each ready pull request. It skips Dependabot's PRs, the bot's action-pin PR (a person's push gets a review) and `plans/`-only PRs. A change to `claude-code-review.yml` gets a comment. The tech lead adds the `fix-review` label to have Claude fix the findings and push. The run removes the label, and the push starts a new review. A fork or `hand-back` PR never runs. A draft, or anyone else's label, does nothing and the label stays. When the PR is ready, remove the label and add it again.
 5. The tech lead adds `resolve-conflict` to have Claude merge `main` into the PR and push, or comment why not. As `fix-review`, but a draft runs too.
 
 ### If a run stalls
 
-A silent run gets a linking comment; a plan run with no plan PR sets `status: blocked`: check the run, then swap it for `ready-for-agent`. Stalled build: re-run it.
+A silent run gets a comment that links the run. A plan run with no plan PR sets `status: blocked`: check the run, then swap the label for `ready-for-agent`. If a build stalls, run it again.
 
 ## Merging
 
-Merge rules are in [repo settings](repo-settings.md#whats-set-and-why). The tech lead merges; a pull request the tech lead wrote is merged by admin bypass.
+The merge rules, and the admin bypass for the tech lead's own PRs, are in [repo settings](repo-settings.md#whats-set-and-why).
 
 When a user-visible pull request is ready to try, [a workflow](../.github/workflows/backlog-issue-status.yml) sets `status: ready-for-po` on its issue; write what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](infrastructure.md#vercel)).
 
 ## Live
 
-Merging to `main` deploys production on Vercel unless nothing visible changed ([rule](infrastructure.md#vercel)); no separate release. To undo a bad one, the tech lead uses Instant Rollback in the Vercel dashboard, then merges a revert pull request so `main` matches production.
+A merge to `main` deploys production on Vercel unless nothing visible changed ([rule](infrastructure.md#vercel)). There is no separate release. To undo a bad deploy, the tech lead uses Instant Rollback in the Vercel dashboard. Then the tech lead merges a revert pull request, so `main` matches production.

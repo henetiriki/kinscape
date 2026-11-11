@@ -62,5 +62,5 @@ The publish skill steps are in `SKILL.md`.
 
 ## Deviations
 
-- `.claude/skills/refine/spec.md` line 20 also says "2 to 9" if a board shows the change, so a Spec done check covers steps 7 to 9. The tech lead chose this on the review thread. The plan had put `spec.md` out of scope.
-- `CANVAS.md` step 5.5 and step 8 lose their push and render clauses. Step 9 owns them, so the render runs once (review fix).
+- `.claude/skills/refine/spec.md` line 20 says "2 to 9" if a board shows the change. Rule 9 of `plans/README.md` runs steps 2 to 9 for a shared component, so the Spec done check must cover steps 7 to 9 too.
+- `CANVAS.md` step 5.5 and step 8 lose their push and render clauses. Step 9 owns them, so the render runs once.

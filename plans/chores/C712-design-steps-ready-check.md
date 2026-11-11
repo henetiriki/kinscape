@@ -1,7 +1,7 @@
 # Plan: C712: Add the design system steps to the Spec flow, and a ready check
 
 - **Spec:** #712
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ Edit the five rule files as the Chore lists. Each new line links to [`CANVAS.md`
 - **B.** Plans get a fixed 100-word allowance.
 - **Other:** your own.
 
-Recommended: A, because a fixed number can be too small again.
+**Answer: A** (@henetiriki)
 
 **D2 · How full files make room** · Decides: Tech lead
 
@@ -25,7 +25,7 @@ Recommended: A, because a fixed number can be too small again.
 - **B.** Raise each budget by 100.
 - **Other:** your own.
 
-Recommended: A, as C711 D1 chose.
+**Answer: A** (@henetiriki)
 
 **D3 · Which two checks `spec.md` adds** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ Recommended: A, as C711 D1 chose.
 - **B.** The two checks that `chore.md` adds.
 - **Other:** your own.
 
-Recommended: A, because the Chore's done check names these.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -18,7 +18,7 @@ A silent run gets a comment that links the run. A plan run with no plan PR sets 
 
 ## Merging
 
-The merge rules, and the admin bypass for the tech lead's own PRs, are in [repo settings](repo-settings.md#whats-set-and-why). The tech lead merges.
+The merge rules, and the admin bypass for the tech lead's own PRs, are in [repo settings](repo-settings.md#whats-set-and-why).
 
 When a user-visible pull request is ready to try, [a workflow](../.github/workflows/backlog-issue-status.yml) sets `status: ready-for-po` on its issue; write what to try under _For the PO_. Previews need a Vercel sign-in ([Vercel settings](infrastructure.md#vercel)).
 

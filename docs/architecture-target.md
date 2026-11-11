@@ -1,10 +1,8 @@
 # Target architecture
 
-**Status: proposed. None of this is a rule yet.** [architecture.md](architecture.md) says what the code does today. When an item below is built, move it there and delete it here. Each item ships as its own Spec or chore; the tech lead approves its plan.
+**Status: proposed. None of this is a rule yet.** [architecture.md](architecture.md) says what the code does today. When you build an item below, move it there and delete it here. Each item ships as its own Spec or chore. The tech lead approves its plan.
 
-Why: M2 adds sign-in, a database, an API and Tree-scoped data ([NFR-09](requirements.md#non-functional-requirements)). Today `MapShell` holds all state.
-
-Layers are enforced: see [architecture.md](architecture.md#enforcement). Features don't import each other: a route passes one feature's output to another (see [where does X go](architecture.md#where-does-x-go)).
+The code enforces layers: see [architecture.md](architecture.md#enforcement). Features don't import each other: a route passes one feature's output to another (see [where does X go](architecture.md#where-does-x-go)).
 
 ## Before Tree data
 
@@ -16,12 +14,12 @@ Layers are enforced: see [architecture.md](architecture.md#enforcement). Feature
 ## With Tree data and the API
 
 5. **Ports and adapters.** A port and adapters for boundary data (Polity and Boundary version: global, read-only).
-6. **Every entity's plan includes "Tree A can't read Tree B"**, run through the contract suite.
-7. **Platform.** No schema splits server variables (`server/env.mts`) from `NEXT_PUBLIC_` variables. A logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
+6. **Every entity's plan includes "Tree A can't read Tree B".**
+7. **Platform.** A logger that scrubs Person data; `loading`, `error` and `not-found` per route on `NoticeCard`.
 
 ## For agents
 
 8. **Recipe skills:** add a component, add a map layer, add a Tree-scoped entity; each a checklist of files, tests and requirement IDs.
 9. **Nested `AGENTS.md`** of a few lines in `features/`, `lib/domain` and `server/`.
 10. **ADRs** in `docs/decisions/` for choices that outlive one plan.
-11. **A naming test** that fails when the repo declares a type, function or component named for a synonym of a Key concepts term (`User` for Account, `Marker` for Pin). It scans declarations only, so MapLibre's `Marker` and a sign-in library's `User` pass.
+11. **A naming test** that fails on a type, function or component whose name is a synonym of a Key concepts term (`User` for Account, `Marker` for Pin). It scans declarations only, so MapLibre's `Marker` and a sign-in library's `User` pass.

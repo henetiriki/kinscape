@@ -1,16 +1,21 @@
+import type { Kysely } from 'kysely';
+
 import { sql } from 'kysely';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
-import { migrate } from '@ks/server/db/migrate.mts';
+import type { Database } from '@ks/server/db/types.ts';
+
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
 
 type Violation = { rule: string; table: string };
 
 const DB_DIR = join(import.meta.dirname, '..');
 
-let db = createTestDb();
+const shared = sharedTestDb();
+
+let db: Kysely<Database>;
 
 /** Every table with a `tree_id` column (`tree_account` is the link table) that breaks a rule. */
 const violations = async (): Promise<Violation[]> => {
@@ -65,6 +70,8 @@ afterEach(async () => {
   await db.destroy();
 });
 
+afterAll(() => shared.close());
+
 const found = async (table: string, body: string) => {
   await sql.raw(`create table ${table} (${body})`).execute(db);
 
@@ -74,7 +81,7 @@ const found = async (table: string, body: string) => {
 // NFR-09
 describe('the Tree-scoped table check', () => {
   beforeEach(async () => {
-    db = createTestDb();
+    db = await shared.empty();
     await sql`create table tree (id uuid primary key)`.execute(db);
     await sql
       .raw(
@@ -138,8 +145,7 @@ describe('the migrations and TEMPLATE.sql', () => {
   const personId = crypto.randomUUID();
 
   beforeEach(async () => {
-    db = createTestDb();
-    await migrate(db, join(DB_DIR, 'migrations'));
+    db = await shared.fresh();
     await sql
       .raw(readFileSync(join(DB_DIR, 'TEMPLATE.sql'), 'utf8'))
       .execute(db);

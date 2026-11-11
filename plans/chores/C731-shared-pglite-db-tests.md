@@ -27,6 +27,10 @@ Each file makes one `sharedTestDb()` at module level and calls `close()` on it i
 
 - Two tests in `migrate.test.ts` make a migration fail inside a transaction on the shared connection. Kysely rolls the transaction back before it throws, so the next `empty()` starts clean. If it does not, the next test fails at once.
 
+## Deviations
+
+- Both files keep their `afterEach` calls to `db.destroy()`, as the issue says. On the shared client, `destroy()` closes nothing.
+
 ## Proof
 
 | Acceptance check                          | Proven by                                                      |

@@ -1,15 +1,21 @@
+import type { Kysely } from 'kysely';
+
 import { sql } from 'kysely';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
+import type { Database } from '@ks/server/db/types.ts';
+
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
 import { migrate } from '@ks/server/db/migrate.mts';
 
 const MIGRATIONS = join(import.meta.dirname, '..', 'migrations');
 
-let db = createTestDb();
+const shared = sharedTestDb();
+
+let db: Kysely<Database>;
 let dir = '';
 
 const columnsOf = async (table: string) => {
@@ -40,8 +46,8 @@ const tables = async () => {
 const write = (name: string, body: string) =>
   writeFileSync(join(dir, name), body);
 
-beforeEach(() => {
-  db = createTestDb();
+beforeEach(async () => {
+  db = await shared.empty();
   dir = mkdtempSync(join(tmpdir(), 'migrations-'));
 });
 
@@ -49,6 +55,8 @@ afterEach(async () => {
   await db.destroy();
   rmSync(dir, { force: true, recursive: true });
 });
+
+afterAll(() => shared.close());
 
 // NFR-09
 describe('migrate', () => {

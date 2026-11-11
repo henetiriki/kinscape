@@ -11,9 +11,12 @@ import {
   PostgresAdapter,
   PostgresIntrospector,
   PostgresQueryCompiler,
+  sql,
 } from 'kysely';
+import { join } from 'node:path';
 
 import { createDb } from '@ks/server/db/database.mts';
+import { migrate } from '@ks/server/db/migrate.mts';
 
 /** One connection, lent to one caller at a time, over an in-process Postgres. */
 const pgliteDriver = (client: PGlite): Driver => {
@@ -79,15 +82,43 @@ const pgliteDriver = (client: PGlite): Driver => {
   };
 };
 
+const dialectFor = (driver: Driver): Dialect => ({
+  createAdapter: () => new PostgresAdapter(),
+  createDriver: () => driver,
+  createIntrospector: db => new PostgresIntrospector(db),
+  createQueryCompiler: () => new PostgresQueryCompiler(),
+});
+
 /** A fresh in-memory database per call (NFR-09). Call `destroy()` on the result when done. */
-export const createTestDb = () => {
+export const createTestDb = () =>
+  createDb(dialectFor(pgliteDriver(new PGlite())));
+
+/**
+ * One PGlite client for a whole test file (NFR-09). Tests in a file run one after another, so
+ * each test resets the `public` schema and starts no new client. Call `close()` in `afterAll`.
+ */
+export const sharedTestDb = () => {
   const client = new PGlite();
-  const dialect: Dialect = {
-    createAdapter: () => new PostgresAdapter(),
-    createDriver: () => pgliteDriver(client),
-    createIntrospector: db => new PostgresIntrospector(db),
-    createQueryCompiler: () => new PostgresQueryCompiler(),
+  const driver = pgliteDriver(client);
+  // The handle's `destroy()` must not close the shared client.
+  const keepOpen: Driver = { ...driver, destroy: async () => {} };
+
+  const empty = async () => {
+    const db = createDb(dialectFor(keepOpen));
+
+    await sql`drop schema public cascade`.execute(db);
+    await sql`create schema public`.execute(db);
+
+    return db;
   };
 
-  return createDb(dialect);
+  const fresh = async () => {
+    const db = await empty();
+
+    await migrate(db, join(import.meta.dirname, '../migrations'));
+
+    return db;
+  };
+
+  return { close: () => client.close(), empty, fresh };
 };

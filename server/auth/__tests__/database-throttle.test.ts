@@ -1,19 +1,15 @@
-import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 
 import { runThrottleContract } from '@ks/server/auth/__tests__/throttle-contract.ts';
 import { databaseThrottle } from '@ks/server/auth/database-throttle.mts';
 import { countFailure } from '@ks/server/auth/throttle.mts';
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
-import { migrate } from '@ks/server/db/migrate.mts';
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
 
-const prepare = async () => {
-  const db = createTestDb();
+const shared = sharedTestDb();
 
-  await migrate(db, join(import.meta.dirname, '../../db/migrations'));
+afterAll(() => shared.close());
 
-  return db;
-};
+const prepare = () => shared.fresh();
 
 runThrottleContract('database', async () => {
   const db = await prepare();

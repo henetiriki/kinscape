@@ -62,3 +62,9 @@ A `colour` token needs a swatch. Two swatches change `/design-kit/colour` from i
 | A test fails without the fix            | `design-export.test.ts`  |
 | Install matches the design system       | sha256 of both copies    |
 | Tests, lint, typecheck, format, words   | PR output                |
+
+## Deviations
+
+- The issue says not to edit `design/canvas/`. Steps 4 and 5 edit its `ds/kinscape/` copy, `canvas.json` and `VERSION` (`321366b`). No board changed.
+- The render job changed `design/map-districts.jpg` by 19 bytes (`13e6714`). This change did not cause it.
+- `style-2-colour` and `style-2-colour-phone` still differ from their snapshots (D3). The `SG-Colour` boards lack the two swatches. The design agent must add them.

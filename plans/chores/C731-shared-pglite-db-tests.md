@@ -6,7 +6,7 @@
 
 ## Approach
 
-Each file makes one `sharedTestDb()` at module level and calls `close()` on it in `afterAll`, as `database-store.test.ts` does. In `migrate.test.ts`, `beforeEach` calls `await shared.empty()`. In `tree-scoped.test.ts`, the first `beforeEach` calls `await shared.empty()`. The second calls `await shared.fresh()` in place of `createTestDb()` and `migrate()`. The module-level `let db` keeps its name and gets the type `Kysely<Database>`, because it has no initial value now. `pglite.ts`, the test bodies and the expected values do not change.
+Each file makes one `sharedTestDb()` at module level and calls `close()` on it in `afterAll`, as `database-store.test.ts` does. In `migrate.test.ts`, `beforeEach` calls `await shared.empty()`. In `tree-scoped.test.ts`, the first `beforeEach` calls `await shared.empty()`. The second calls `await shared.fresh()` in place of `createTestDb()` and `migrate()`. The module-level `let db` keeps its name and gets the type `Kysely<Database>`, because it has no initial value now. Both files keep their `afterEach` calls to `db.destroy()`; on the shared client, `destroy()` closes nothing. `pglite.ts`, the test bodies and the expected values do not change.
 
 ## Files that change
 
@@ -25,11 +25,7 @@ Each file makes one `sharedTestDb()` at module level and calls `close()` on it i
 
 ## Risks
 
-- Two tests in `migrate.test.ts` make a migration fail inside a transaction on the shared connection. Kysely rolls the transaction back before it throws, so the next `empty()` starts clean. If it does not, the next test fails at once.
-
-## Deviations
-
-- Both files keep their `afterEach` calls to `db.destroy()`, as the issue says. On the shared client, `destroy()` closes nothing.
+- One test in `migrate.test.ts` makes a migration fail inside a transaction on the shared connection. Kysely rolls the transaction back before it throws, so the next `empty()` starts clean. If it does not, the next test fails at once.
 
 ## Proof
 

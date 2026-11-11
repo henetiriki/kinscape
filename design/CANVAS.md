@@ -4,7 +4,7 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot in `source/` from its artboard in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After you edit an artboard, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. If a snapshot in `source/` differs, the `e2e` job exports again, fails and names the file.
+The exporter writes each HTML snapshot in `source/` from its artboard in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After you edit an artboard, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `e2e` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
 ## Changing the design system
 
@@ -20,7 +20,7 @@ The exporter writes each HTML snapshot in `source/` from its artboard in `canvas
   7. The design agent swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
   8. Run "Refreshing the copy" again (5.1 to 5.5). This adds the swapped boards.
   9. Push the branch, then run the workflow Design: Render snapshots on it.
-- **Issue text.** A Spec or Chore that changes these inputs has a done check that lists steps 2 to 5, or 2 to 9 if a board shows the change. The check says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
+- **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 9 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session must be signed in.
 
 ## Updating the install

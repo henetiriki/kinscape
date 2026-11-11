@@ -27,7 +27,7 @@ The eleven files that _What to change_ names, and this plan.
 
 - `.claude/skills/**` is a hand-back path. The tech lead builds.
 - The new link from `match-design/SKILL.md` to `AGENTS.md` makes no cycle: no file links `match-design/SKILL.md`.
-- Removal of the `AGENTS.md` link from `chore.md` keeps the refine allowlist cycle whole.
+- When `chore.md` loses its `AGENTS.md` link, the refine allowlist cycle stays whole.
 
 ## Proof
 
@@ -46,3 +46,5 @@ The eleven files that _What to change_ names, and this plan.
 
 - `design/CANVAS.md` is at its word budget. Step 4.4 no longer repeats the `index.d.ts` content type (`tools.md` holds it). The two pasted prompts lose a line that their steps already say.
 - `tools.md`: for the MCP path, "sharing status" also names where the owner comes from (`get_artifact`).
+- `refine/SKILL.md` step 4 loses "Questions that depend on a pending lookup wait until it's done." Step 1 ("whose inputs are settled") already says it. This makes room under the word budget.
+- CANVAS _Issue text_, `spec.md` and `chore.md` all say two done checks: the steps ran, and the sha256 match. The tech lead chose two.

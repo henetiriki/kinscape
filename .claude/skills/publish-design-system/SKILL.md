@@ -11,7 +11,7 @@ Scratch files go in `.design-system/published/`, which git ignores. Never run an
 
 ## Run it
 
-- **3.1 Check the tools.** You need the built-in `Artifact` tool or the six `mcp__claude-artifacts__*` tools that `tools.md` lists. If the session defers a tool, load it with ToolSearch. If neither set exists (for example in a GitHub Action or a `claude -p` run), say that artifacts are off in this session, so nothing was sent. Say that the run needs an interactive Claude Code session signed in to claude.ai. Then stop.
+- **3.1 Check the tools.** You need the built-in `Artifact` tool or the six `mcp__claude-artifacts__*` tools that `tools.md` lists. If the session defers a tool, load it with ToolSearch. If neither set exists (for example in a GitHub Action or a `claude -p` run), say that artifacts are off in this session, so you sent nothing. Say that the run needs an interactive Claude Code session signed in to claude.ai. Then stop.
 - **3.2 Find the address.** Run `node scripts/design-system-publish.mts address`. If it fails, show its message and stop. If the output is empty, this is the first run: go to step 3.3. Otherwise the output is the artifact's link: go to step 3.4.
 - **3.3 First run only: create it.** Create a Design System artifact titled "KinScape" with no files. Keep its link. At once, add `The [design system](<link>) holds the same tokens, fonts and icons for Claude.` to the end of `design/DESIGN.md`'s opening paragraph, so the next run finds the address.
 - **3.4 Generate.** Run `npm run design-system`.

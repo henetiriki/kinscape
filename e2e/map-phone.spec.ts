@@ -165,7 +165,7 @@ test.describe('phone, 390 × 844', () => {
     );
     const sheetBox = await box(sheet(page));
 
-    // The search pill isn't on the map yet; 144 is the top of the overlay slot, below its place.
+    // 144 is the top of the overlay slot, below the pill and the Layers button.
     expect(cardBox.y).toBeGreaterThanOrEqual(144);
     expect(cardBox.y).toBeGreaterThanOrEqual(layers.y + layers.height);
     expect(cardBox.y + cardBox.height).toBeLessThanOrEqual(sheetBox.y);

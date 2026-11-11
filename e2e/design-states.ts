@@ -2,6 +2,13 @@ import type { Page } from '@playwright/test';
 
 /** Puts the page in the state a screen in `design/screens.json` names, before the screenshot. */
 export const states: Record<string, (page: Page) => Promise<void>> = {
+  // The board draws the menu open with Sources and attributions hovered.
+  'account-menu-open': async page => {
+    await page.getByRole('button', { name: 'Account menu' }).click();
+    await page
+      .getByRole('menuitem', { name: 'Sources and attributions' })
+      .evaluate(node => node.setAttribute('data-state', 'hover'));
+  },
   'kit-menu-open': async page => {
     await page.getByRole('button', { name: 'Boards' }).click();
     // The sheet has slid in once its animation is done.

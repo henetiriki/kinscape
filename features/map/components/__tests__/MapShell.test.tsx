@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Layer } from '@ks/features/map/types';
@@ -38,10 +38,55 @@ const sources: Source[] = [
 const coverage = [{ validFrom: toDay('1994-04-27'), validTo: null }];
 const layers: Layer[] = [polityLayer];
 
+const onSignOut = vi.fn(() => Promise.resolve());
+const account = { email: 'a@example.test', initial: 'A', onSignOut };
+
 const lastProps = () => mapView.mock.calls.at(-1)?.[0];
 
+// NFR-03
+it('opens the Sources dialog from the account menu', () => {
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  expect(screen.getByText('a@example.test')).toBeTruthy();
+  fireEvent.click(
+    screen.getByRole('menuitem', { name: 'Sources and attributions' })
+  );
+  expect(screen.getByRole('dialog')).toBeTruthy();
+});
+
+// NFR-03
+it('signs out from the account menu', () => {
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  fireEvent.click(screen.getByRole('menuitem', { name: 'Sign out' }));
+  expect(onSignOut).toHaveBeenCalledOnce();
+});
+
 it('shows the map for today with Polity borders on', () => {
-  render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
 
   expect(screen.getByTestId('map-view')).toBeTruthy();
   expect(lastProps()).toEqual({
@@ -56,6 +101,7 @@ it('shows the map for today with Polity borders on', () => {
 it('gives a second layer its own row and toggle', () => {
   render(
     <MapShell
+      {...account}
       coverage={coverage}
       layers={[polityLayer, testLayer]}
       sources={sources}
@@ -73,14 +119,28 @@ it('gives a second layer its own row and toggle', () => {
 
 // MAP-03
 it('moves the Map date from the date dock', () => {
-  render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
   fireEvent.click(screen.getByRole('button', { name: 'Back' }));
   expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
 });
 
 // MAP-02
 it('hides and restores the Polity borders from the Layers panel', () => {
-  render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
 
   const row = screen.getByRole('checkbox', { name: /Polity borders/ });
 
@@ -91,7 +151,14 @@ it('hides and restores the Polity borders from the Layers panel', () => {
 });
 
 it('opens and closes the sources dialog from the credits line', () => {
-  render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
 
   expect(screen.queryByRole('dialog')).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: 'Attributions' }));
@@ -115,9 +182,34 @@ describe('on a phone', () => {
     window.matchMedia = desktop;
   });
 
+  // NFR-03
+  it('puts the account menu in the search pill', () => {
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        sources={sources}
+      />
+    );
+
+    expect(
+      within(screen.getByRole('search')).getByRole('button', {
+        name: 'Account menu',
+      })
+    ).toBeTruthy();
+  });
+
   // NFR-05
   it('draws the date sheet, the Layers button and the credits, and no panel or dock', () => {
-    render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        sources={sources}
+      />
+    );
 
     expect(screen.getByRole('region', { name: 'Map date' })).toBeTruthy();
     expect(
@@ -131,7 +223,14 @@ describe('on a phone', () => {
 
   // MAP-03
   it('expands the sheet to the slider, which moves the Map date', () => {
-    render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        sources={sources}
+      />
+    );
     expect(screen.queryByRole('slider')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Expand the sheet' }));
 
@@ -143,7 +242,14 @@ describe('on a phone', () => {
 
   // MAP-02
   it('opens Layers in a sheet, turns the Polities off and closes it', () => {
-    render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        sources={sources}
+      />
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Layers and filters' }));
     fireEvent.click(screen.getByRole('checkbox', { name: /Polity borders/ }));
     expect(lastProps().visible[polityLayer.id]).toBe(false);
@@ -167,7 +273,14 @@ const typeDate = (text: string) => {
 
 // MAP-03
 it('moves the Map date, slider and map to a typed day', () => {
-  render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
   fireEvent.click(screen.getByRole('radio', { name: 'Day' }));
   typeDate('1995-06-15');
   expect(lastProps().mapDay).toBe(toDay('1995-06-15'));
@@ -177,7 +290,14 @@ it('moves the Map date, slider and map to a typed day', () => {
 });
 
 it('keeps an impossible day in the field and the map where it was', () => {
-  render(<MapShell coverage={coverage} layers={layers} sources={sources} />);
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
   fireEvent.click(screen.getByRole('radio', { name: 'Day' }));
   typeDate('1901-02-28');
 
@@ -198,7 +318,14 @@ describe('the pre-boundary notice', () => {
     screen.queryByText(`No borders are mapped for ${year} yet`);
 
   const renderOn = (spans = first) => {
-    render(<MapShell coverage={spans} layers={layers} sources={sources} />);
+    render(
+      <MapShell
+        {...account}
+        coverage={spans}
+        layers={layers}
+        sources={sources}
+      />
+    );
     fireEvent.click(screen.getByRole('radio', { name: 'Day' }));
   };
 

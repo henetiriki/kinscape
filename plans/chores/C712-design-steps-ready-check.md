@@ -1,11 +1,11 @@
-# Plan: C712: Add the design system steps to the Spec flow, and a ready check
+# Plan: C712: Design system steps and ready check
 
 - **Spec:** #712
 - **Status:** approved
 
 ## Approach
 
-Edit the five rule files as the Chore lists. Each new line links to [`CANVAS.md`](../../design/CANVAS.md#changing-the-design-system) or [`COMPONENTS.md`](../../design/COMPONENTS.md) for step detail. In `word-count.mts`, apply D1 to every plan path.
+Edit the files as the Chore lists. Link to [`CANVAS.md`](../../design/CANVAS.md#changing-the-design-system) or [`COMPONENTS.md`](../../design/COMPONENTS.md) for step detail. Apply D1 to every plan path.
 
 ## Decisions
 
@@ -37,28 +37,44 @@ Edit the five rule files as the Chore lists. Each new line links to [`CANVAS.md`
 
 **Answer: A** (@henetiriki)
 
+**D4 · Design system PR** · Decides: Tech lead
+
+- **A.** Run it before the design-system branch.
+- **B.** Name who runs it in the design-system rule.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D5 · Ready check parts** · Decides: Tech lead
+
+- **A.** List the parts for a Chore, a Spec and a Bug.
+- **B.** Keep the Chore parts for every issue.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
-| File                                            | What                              |
-| ----------------------------------------------- | --------------------------------- |
-| `plans/README.md`                               | Two rules changed, one added      |
-| `.github/agent/build.md`                        | Ready check                       |
-| `.claude/skills/refine/spec.md`                 | Design system question            |
-| `.claude/skills/refine/chore.md`                | Follow-up done check              |
-| `plans/TEMPLATE.md`                             | Order of work comment             |
-| `scripts/word-count.mts`                        | D1                                |
-| `scripts/__tests__/word-count.test.ts`          | D1 cases                          |
-| `scripts/__tests__/plan-rule-citations.test.ts` | Add `ready-check` to `RULE_NAMES` |
+| File                                            | What                 |
+| ----------------------------------------------- | -------------------- |
+| `plans/README.md`                               | Rules                |
+| `.github/agent/build.md`                        | Ready check          |
+| `.claude/skills/refine/spec.md`                 | Question             |
+| `.claude/skills/refine/chore.md`                | Follow-up done check |
+| `plans/TEMPLATE.md`                             | Comment              |
+| `scripts/word-count.mts`                        | D1                   |
+| `scripts/__tests__/word-count.test.ts`          | D1 cases             |
+| `scripts/__tests__/plan-rule-citations.test.ts` | `RULE_NAMES`         |
 
 ## Order of work
 
-1. Add the D1 test. See it fail.
+1. Add the D1 test first.
 2. Change `word-count.mts`.
 3. Edit the rule files.
 
 ## Risks
 
-The listed paths, except the scripts, are hand-back paths: the tech lead builds.
+Hand-back paths, except the scripts: the tech lead builds.
 
 ## Proof
 
@@ -70,7 +86,7 @@ The listed paths, except the scripts, are hand-back paths: the tech lead builds.
 
 ## Out of scope
 
-The guard for a shared component that is not in `CONTROLS`.
+The guard for a shared component missing from `CONTROLS`.
 
 ## Deviations
 

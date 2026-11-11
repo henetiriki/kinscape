@@ -1,7 +1,7 @@
 # Plan: C728: Design system step labels
 
 - **Spec:** #728
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ The publish skill steps are in `SKILL.md`.
 - **B.** Also copy their names into `CANVAS.md`.
 - **Other:** your own.
 
-Recommended: A, because each fact stays in one file.
+**Answer: A** (@henetiriki)
 
 **D3 · What step 4.4 says about the read** · Decides: Tech lead
 
@@ -33,7 +33,7 @@ Recommended: A, because each fact stays in one file.
 - **B.** Say nothing.
 - **Other:** your own.
 
-Recommended: A, because the install runs outside the skill.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

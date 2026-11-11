@@ -799,6 +799,40 @@ describe('inlineStyles', () => {
     });
   });
 
+  // A radio with `outline: none` computes its outline colour from the default text colour, black,
+  // and Chromium leaves its outline width at 3px: only `outline-style` says it is not drawn.
+  describe('an outline that is not drawn', () => {
+    const run = (tokens: string[], style: string) => {
+      document.head.innerHTML =
+        '<title>T</title><style data-bundle>.a{outline-style:none;outline-color:red}</style>';
+      document.body.innerHTML = '<x-import><input class="a"></x-import>';
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue({
+        getPropertyValue: (name: string) =>
+          name === 'outline-color' ? 'rgb(0, 0, 0)' : style,
+      } as unknown as CSSStyleDeclaration);
+
+      inlineStyles(tokens);
+
+      return document.querySelector('input')?.getAttribute('style');
+    };
+
+    it("drops the browser's colour", () => {
+      expect(run([], 'none')).toBe('outline-style: none;');
+    });
+
+    it('keeps a token colour', () => {
+      expect(run(['0,0,0'], 'none')).toBe(
+        'outline-style: none; outline-color: rgb(0, 0, 0);'
+      );
+    });
+
+    it('keeps the colour of an outline that is drawn', () => {
+      expect(run([], 'solid')).toBe(
+        'outline-style: solid; outline-color: rgb(0, 0, 0);'
+      );
+    });
+  });
+
   // Chromium computes color-mix() as color(srgb …), which snapshotProblems rejects.
   it('keeps color-mix() out of the CSS of Banner and Segmented', () => {
     for (const file of ['feedback/Toast', 'actions/Segmented']) {

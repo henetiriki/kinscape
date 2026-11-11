@@ -687,8 +687,9 @@ export const mountImports = async (): Promise<void> => {
  * is dropped from the snapshot, so each element on the page takes the computed value of every
  * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. It skips custom properties,
  * transitions, animations and states (`:hover`). It also skips a border colour that is not a token
- * (`tokens` holds `r,g,b` strings) where the border is 0px wide. The browser fills that colour
- * with a default grey that the author never set.
+ * (`tokens` holds `r,g,b` strings) where the border is 0px wide, and an outline colour that is not
+ * a token where `outline-style` is `none` (Chromium keeps such an outline 3px wide). The browser
+ * fills that colour with a default grey, or with black for a radio, that the author never set.
  * Uses nothing from the module, as `fillTemplate`.
  */
 export const inlineStyles = (tokens: string[]): void => {
@@ -723,13 +724,20 @@ export const inlineStyles = (tokens: string[]): void => {
             const side = /^border(?:-(top|right|bottom|left))?-color$/.exec(
               name
             );
+            const undrawn =
+              (side &&
+                (side[1]
+                  ? [side[1]]
+                  : ['top', 'right', 'bottom', 'left']
+                ).every(
+                  each =>
+                    computed.getPropertyValue(`border-${each}-width`) === '0px'
+                )) ||
+              (name === 'outline-color' &&
+                computed.getPropertyValue('outline-style') === 'none');
 
             if (
-              side &&
-              (side[1] ? [side[1]] : ['top', 'right', 'bottom', 'left']).every(
-                each =>
-                  computed.getPropertyValue(`border-${each}-width`) === '0px'
-              ) &&
+              undrawn &&
               !tokens.includes(
                 [...value.matchAll(/\d+/g)]
                   .slice(0, 3)

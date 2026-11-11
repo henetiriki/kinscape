@@ -72,9 +72,11 @@ test('exports a board that uses <x-import> and var() as rendered HTML with writt
     expect(snapshot).toMatch(/<div style="flex: 1[^"]*"><button/);
     expect(snapshot).toContain('Save pin');
     expect(snapshot).toContain('Careful.');
-    // Banner and a hovered Segmented item use the white-45 and white-60 tokens.
+    // Banner and a hovered Segmented item use the white-45 and white-60 tokens, which
+    // Chromium computes as rgba(); color-mix() would have left color(srgb …).
     expect(snapshot).toContain('You are offline.');
-    expect(snapshot).toContain('List');
+    expect(snapshot).toContain('rgba(255, 255, 255, 0.45)');
+    expect(snapshot).toContain('rgba(255, 255, 255, 0.6)');
     expect(snapshot).toContain('width: 160px');
     // A text style the board takes from tokens.css by class, which has no link left in the snapshot.
     expect(snapshot).toMatch(/<h2 class="h2" style="[^"]*line-height: 32px/);

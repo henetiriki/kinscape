@@ -1,7 +1,7 @@
 # Plan: C743: Add three STE exemptions to docs/writing.md
 
 - **Spec:** #743
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@
 - **B.** In the scope paragraph above the rules, as sentences. Rule 15 asks for a vertical list, so B breaks STE.
 - **Other:** your own.
 
-Recommended: A, because the exemptions cite rule numbers, and the reader sees those rules first.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

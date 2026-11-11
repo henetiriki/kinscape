@@ -49,3 +49,9 @@ Text follows these 16 rules of Simplified Technical English (ASD-STE100). Code, 
 14. Give each paragraph one topic and no more than six sentences.
 15. Use a vertical list for a sequence or for more than two items.
 16. Put a warning before the step that it applies to.
+
+These exemptions apply:
+
+- A bold lead-in that names a rule (for example "**A failed publish**") is a label. Rule 12 does not apply to it.
+- Rules 11, 12 and 15 do not apply to a table cell or a form hint.
+- In a skill, a line that the agent says to the PO does not follow STE. The agent's own instructions follow STE.

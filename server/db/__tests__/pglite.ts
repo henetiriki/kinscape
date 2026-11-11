@@ -95,7 +95,7 @@ export const createTestDb = () =>
 
 /**
  * One PGlite client for a whole test file (NFR-09). Tests in a file run one after another, so
- * each test resets the `public` schema instead of starting a client. Call `close()` in `afterAll`.
+ * each test resets the `public` schema and starts no new client. Call `close()` in `afterAll`.
  */
 export const sharedTestDb = () => {
   const client = new PGlite();

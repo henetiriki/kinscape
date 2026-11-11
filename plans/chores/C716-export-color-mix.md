@@ -5,23 +5,32 @@
 
 ## Approach
 
-Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` rejects. Add tokens `white-45` and `white-60` (`rgb(255 255 255 / a)`). Use them in `.bannerAction` and the two `.segItem` hover rules. The colour is the same. Chromium computes `rgba(255, 255, 255, 0.6)`, which the check reads as `white`. The export script does not change.
+Chromium computes `color-mix()` as `color(srgb …)`, which `snapshotProblems` rejects. Add tokens `white-45` and `white-60` (`rgb(255 255 255 / a)`). Use them in `.bannerAction` and the two `.segItem` hover rules. The check reads the computed `rgba()` as `white`.
 
-The tech lead, or a local session they start, runs steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
+The tech lead, or a local session, runs steps 3 to 5 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
 
 ## Decisions
 
 **D1 · Where the fix goes** · Decides: Tech lead
 
-**Answer: C** (@henetiriki). Two alpha tokens.
+- **A.** `inlineStyles` writes `color(srgb …)` as `rgba()`.
+- **B.** `snapshotProblems` reads `color(srgb …)`.
+- **C.** Add two alpha tokens for the two CSS files.
+- **Other:** your own.
+
+**Answer: C** (@henetiriki)
 
 **D2 · The board that proves the export** · Decides: Tech lead
 
-**Answer: A** (@henetiriki). Add `Banner` and a hovered `Segmented` to the board in `e2e/design-export.spec.mts`.
+- **A.** Add `Banner` and a hovered `Segmented` to the board in `e2e/design-export.spec.mts`.
+- **B.** Also run `design:export` on an uncommitted local board.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 **D3 · The colour board** · Decides: Tech lead
 
-A test fails if a `colour` token has no swatch. Two swatches make `/design-kit/colour` differ from its snapshot.
+A `colour` token needs a swatch. Two swatches change `/design-kit/colour` from its snapshot.
 
 - **A.** Add both swatches to **Neutrals**, role `overlay`.
 - **B.** Put the tokens in a new group. No swatch needed.
@@ -31,10 +40,10 @@ A test fails if a `colour` token has no swatch. Two swatches make `/design-kit/c
 
 ## Files that change
 
-- `design/tokens.json`, `app/tokens.css`: the tokens and their notes.
-- `Toast.module.css`, `Segmented.module.css`: use the tokens.
-- `swatches.ts` and `swatches.test.ts`: two swatches and the count.
-- `design-export.test.ts`, `e2e/design-export.spec.mts`: the tests.
+- `design/tokens.json`, `app/tokens.css`: tokens and notes.
+- `Toast.module.css`, `Segmented.module.css`.
+- `swatches.ts`, `swatches.test.ts`: two swatches.
+- `design-export.test.ts`, `e2e/design-export.spec.mts`.
 - `.design-system/`, `design/canvas/`: generated.
 
 ## Order of work

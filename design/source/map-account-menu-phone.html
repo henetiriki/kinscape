@@ -9,6 +9,7 @@
       body{margin:0}
       a{color:#264F29}a:hover{color:#1D3E20}
       button,input,select{font:inherit}
+      input[aria-label="Search people and places"]::placeholder{color:#4A544C}
       button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #264F29;outline-offset:2px}
     </style>
   </head>
@@ -227,7 +228,7 @@
           type="search"
           aria-label="Search people and places"
           placeholder="Search people and places"
-          style="flex: 1; min-width: 0; height: 44px; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent" />
+          style="flex: 1; min-width: 0; height: 44px; padding: 0; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent" />
         <button
           aria-expanded="true"
           aria-haspopup="menu"

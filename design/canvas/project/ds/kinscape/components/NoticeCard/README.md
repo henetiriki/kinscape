@@ -2,7 +2,7 @@ Says what is going on in one line and offers at most two ways out.
 
 ## Design
 
-- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. Used for empty and loading states.
+- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. It shows empty and loading states.
 
 ## Props
 

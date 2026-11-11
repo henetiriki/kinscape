@@ -4,7 +4,8 @@ import { isAbsolute, relative, sep } from 'node:path';
 
 // The single home of the word budgets. To change one, edit it here in a PR.
 // A word is a whitespace-separated token with a letter or digit in it.
-const BUDGETS: { limit: number; pattern: RegExp }[] = [
+// A plan entry skips the plan's `## Deviations` section, which the build adds lines to.
+const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 150, pattern: /^CLAUDE\.md$/ },
   { limit: 300, pattern: /^README\.md$/ },
   { limit: 200, pattern: /^docs\/README\.md$/ },
@@ -23,9 +24,9 @@ const BUDGETS: { limit: number; pattern: RegExp }[] = [
   { limit: 900, pattern: /^design\/CANVAS\.md$/ },
   { limit: 600, pattern: /^design\/COMPONENTS\.md$/ },
   { limit: 800, pattern: /^plans\/README\.md$/ },
-  { limit: 600, pattern: /^plans\/[^/]+\.md$/ },
-  { limit: 600, pattern: /^plans\/bugs\/[^/]+\.md$/ },
-  { limit: 300, pattern: /^plans\/chores\/[^/]+\.md$/ },
+  { limit: 600, pattern: /^plans\/[^/]+\.md$/, plan: true },
+  { limit: 600, pattern: /^plans\/bugs\/[^/]+\.md$/, plan: true },
+  { limit: 300, pattern: /^plans\/chores\/[^/]+\.md$/, plan: true },
   { limit: 500, pattern: /^\.github\/agent\/review\.md$/ },
   { limit: 750, pattern: /^\.github\/agent\/review-code\.md$/ },
   { limit: 350, pattern: /^\.github\/agent\/fix-review\.md$/ },
@@ -58,20 +59,42 @@ export const countWords = (text: string): number =>
     .split(/\s+/)
     .filter(token => /[\p{L}\p{N}]/u.test(token)).length;
 
+const entryFor = (path: string) =>
+  BUDGETS.find(({ pattern }) => pattern.test(path));
+
 export const budgetFor = (path: string): number | undefined =>
-  BUDGETS.find(({ pattern }) => pattern.test(path))?.limit;
+  entryFor(path)?.limit;
+
+// The section has its own room: it ends at the next `## ` heading.
+const withoutDeviations = (text: string): string => {
+  let skipping = false;
+
+  return text
+    .split('\n')
+    .filter(line => {
+      if (line.startsWith('## ')) {
+        skipping = /^## Deviations\s*$/.test(line);
+      }
+
+      return !skipping;
+    })
+    .join('\n');
+};
 
 export const checkFiles = (root: string, paths: string[]): string[] =>
   paths.flatMap(path => {
-    const limit = budgetFor(path);
+    const entry = entryFor(path);
 
-    if (limit === undefined || !existsSync(`${root}/${path}`)) {
+    if (entry === undefined || !existsSync(`${root}/${path}`)) {
       return [];
     }
 
-    const count = countWords(readFileSync(`${root}/${path}`, 'utf8'));
+    const text = readFileSync(`${root}/${path}`, 'utf8');
+    const count = countWords(entry.plan ? withoutDeviations(text) : text);
 
-    return count > limit ? [`${path}: ${count} words, budget ${limit}`] : [];
+    return count > entry.limit
+      ? [`${path}: ${count} words, budget ${entry.limit}`]
+      : [];
   });
 
 const hookPath = (root: string, stdin: string): string | undefined => {

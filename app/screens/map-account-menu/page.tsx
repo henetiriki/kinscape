@@ -12,9 +12,9 @@ const { map } = resolveTokens(rawTokens);
 const Page = async () => {
   await requireDevPage();
 
-  // The sea colour stands in for the map, on its own layer as the map canvas
-  // is. Text above a separate layer gets grey edges, as on the board; text on
-  // the page layer gets coloured edges.
+  // The sea colour shows in place of the map, on its own layer as the map
+  // canvas is. Text above a separate layer gets grey edges, as on the board;
+  // text on the page layer gets coloured edges.
   return (
     <div style={{ height: '100%', position: 'relative' }}>
       <div

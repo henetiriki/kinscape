@@ -21,6 +21,7 @@ const RULE_NAMES = [
   'hand-back',
   'design-system',
   'canvas-follow-up',
+  'ready-check',
 ];
 const IN_SCOPE = [
   'plans/README.md',

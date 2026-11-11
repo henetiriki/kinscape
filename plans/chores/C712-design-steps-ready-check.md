@@ -39,15 +39,16 @@ Edit the five rule files as the Chore lists. Each new line links to [`CANVAS.md`
 
 ## Files that change
 
-| File                                   | What                         |
-| -------------------------------------- | ---------------------------- |
-| `plans/README.md`                      | Two rules changed, one added |
-| `.github/agent/build.md`               | Ready check                  |
-| `.claude/skills/refine/spec.md`        | Design system question       |
-| `.claude/skills/refine/chore.md`       | Follow-up done check         |
-| `plans/TEMPLATE.md`                    | Order of work comment        |
-| `scripts/word-count.mts`               | D1                           |
-| `scripts/__tests__/word-count.test.ts` | D1 cases                     |
+| File                                            | What                              |
+| ----------------------------------------------- | --------------------------------- |
+| `plans/README.md`                               | Two rules changed, one added      |
+| `.github/agent/build.md`                        | Ready check                       |
+| `.claude/skills/refine/spec.md`                 | Design system question            |
+| `.claude/skills/refine/chore.md`                | Follow-up done check              |
+| `plans/TEMPLATE.md`                             | Order of work comment             |
+| `scripts/word-count.mts`                        | D1                                |
+| `scripts/__tests__/word-count.test.ts`          | D1 cases                          |
+| `scripts/__tests__/plan-rule-citations.test.ts` | Add `ready-check` to `RULE_NAMES` |
 
 ## Order of work
 
@@ -70,3 +71,9 @@ The listed paths, except the scripts, are hand-back paths: the tech lead builds.
 ## Out of scope
 
 The guard for a shared component that is not in `CONTROLS`.
+
+## Deviations
+
+- `plans/README.md`: D2 A cut the Draft-before-code list (the template holds it), the issue-body and `agent-approve.mts` detail, the bot branch names (`review.md` holds them) and two short clauses.
+- `scripts/__tests__/plan-rule-citations.test.ts`: added to Files that change. It lists each anchor in `plans/README.md`, so the new rule needs an entry.
+- `.github/agent/build.md`: D2 A cut "Keep its failing line for Evidence" (the test-first rule holds it).

@@ -61,6 +61,24 @@ export const countWords = (text: string): number =>
 export const budgetFor = (path: string): number | undefined =>
   BUDGETS.find(({ pattern }) => pattern.test(path))?.limit;
 
+const PLAN = /^plans\/(bugs\/|chores\/)?[^/]+\.md$/;
+
+// The build adds lines under `## Deviations`, so the section has its own room: it ends at the next `## ` heading.
+const withoutDeviations = (text: string): string => {
+  let skipping = false;
+
+  return text
+    .split('\n')
+    .filter(line => {
+      if (line.startsWith('## ')) {
+        skipping = /^## Deviations\s*$/.test(line);
+      }
+
+      return !skipping;
+    })
+    .join('\n');
+};
+
 export const checkFiles = (root: string, paths: string[]): string[] =>
   paths.flatMap(path => {
     const limit = budgetFor(path);
@@ -69,7 +87,8 @@ export const checkFiles = (root: string, paths: string[]): string[] =>
       return [];
     }
 
-    const count = countWords(readFileSync(`${root}/${path}`, 'utf8'));
+    const text = readFileSync(`${root}/${path}`, 'utf8');
+    const count = countWords(PLAN.test(path) ? withoutDeviations(text) : text);
 
     return count > limit ? [`${path}: ${count} words, budget ${limit}`] : [];
   });

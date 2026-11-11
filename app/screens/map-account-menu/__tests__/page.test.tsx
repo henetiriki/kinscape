@@ -26,7 +26,7 @@ it('puts the menu in the account slot on desktop, with no Layers button', async 
     screen.queryByRole('button', { name: 'Layers and filters' })
   ).toBeNull();
   open();
-  expect(screen.getByText('researcher@example.com').textContent).toBe(
+  expect(screen.getByText('Signed in as').parentElement?.textContent).toContain(
     'researcher@example.com'
   );
   expect(screen.getAllByRole('menuitem')).toHaveLength(2);

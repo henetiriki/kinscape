@@ -55,7 +55,9 @@ it('opens the Sources dialog from the account menu', () => {
   );
 
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
-  expect(screen.getByText('a@example.test').textContent).toBe('a@example.test');
+  expect(screen.getByText('Signed in as').parentElement?.textContent).toContain(
+    'a@example.test'
+  );
   expect(screen.queryByRole('dialog')).toBeNull();
   fireEvent.click(
     screen.getByRole('menuitem', { name: 'Sources and attributions' })

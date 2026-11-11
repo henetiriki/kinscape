@@ -29,9 +29,9 @@ describe('AccountMenu on desktop', () => {
     setup();
     open();
 
-    expect(screen.getByText('a@example.test').textContent).toBe(
-      'a@example.test'
-    );
+    expect(
+      screen.getByText('Signed in as').parentElement?.textContent
+    ).toContain('a@example.test');
     expect(
       screen
         .getAllByRole('menuitem')

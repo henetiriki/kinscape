@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
-import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 
 import {
   ACCOUNT,
@@ -9,13 +8,15 @@ import {
 } from '@ks/server/auth/__tests__/session-contract.ts';
 import { databaseSessions } from '@ks/server/auth/database-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
-import { migrate } from '@ks/server/db/migrate.mts';
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
+
+const shared = sharedTestDb();
+
+afterAll(() => shared.close());
 
 const prepare = async () => {
-  const db = createTestDb();
+  const db = await shared.fresh();
 
-  await migrate(db, join(import.meta.dirname, '../../db/migrations'));
   await db
     .insertInto('account')
     .values([

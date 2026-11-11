@@ -1,14 +1,15 @@
-import { join } from 'node:path';
+import { afterAll } from 'vitest';
 
-import { createTestDb } from '@ks/server/db/__tests__/pglite.ts';
-import { migrate } from '@ks/server/db/migrate.mts';
+import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
 import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
 import { databaseStore } from '@ks/server/trees/database-store.mts';
 
-runTreeStoreContract('database', async seed => {
-  const db = createTestDb();
+const shared = sharedTestDb();
 
-  await migrate(db, join(import.meta.dirname, '../../db/migrations'));
+afterAll(() => shared.close());
+
+runTreeStoreContract('database', async seed => {
+  const db = await shared.fresh();
 
   for (const { id, issuer, subject, trees } of seed) {
     await db.insertInto('account').values({ id, issuer, subject }).execute();

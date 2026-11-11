@@ -53,3 +53,7 @@
 ## Out of scope
 
 Labels, workflows, new scripts.
+
+## Deviations
+
+- `COMPONENTS.md` step 3 says the tech lead gives the OK on the install's file list, as the issue asks.

@@ -55,11 +55,12 @@ it('opens the Sources dialog from the account menu', () => {
   );
 
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
-  expect(screen.getByText('a@example.test')).toBeTruthy();
+  expect(screen.getByText('a@example.test').textContent).toBe('a@example.test');
+  expect(screen.queryByRole('dialog')).toBeNull();
   fireEvent.click(
     screen.getByRole('menuitem', { name: 'Sources and attributions' })
   );
-  expect(screen.getByRole('dialog')).toBeTruthy();
+  expect(screen.getByRole('dialog').hasAttribute('open')).toBe(true);
 });
 
 // NFR-03
@@ -194,10 +195,10 @@ describe('on a phone', () => {
     );
 
     expect(
-      within(screen.getByRole('search')).getByRole('button', {
+      within(screen.getByRole('search')).getAllByRole('button', {
         name: 'Account menu',
       })
-    ).toBeTruthy();
+    ).toHaveLength(1);
   });
 
   // NFR-05

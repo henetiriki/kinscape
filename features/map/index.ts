@@ -1,4 +1,7 @@
-export { AccountMenu } from '@ks/features/map/components/AccountMenu';
+export {
+  AccountMenu,
+  accountSlots,
+} from '@ks/features/map/components/AccountMenu';
 export { DateField } from '@ks/features/map/components/DateField';
 export { LayersButton } from '@ks/features/map/components/LayersButton';
 export { MapShell } from '@ks/features/map/components/MapShell';

@@ -23,7 +23,7 @@
   width: 100%;
 }
 
-/* Focus on a menu item is drawn by the item, not by the pill. */
+/* A menu item draws its own focus ring, so the pill draws none. */
 .pill:focus-within:not(:has([role='menu'] :focus)) {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: var(--focus-offset);

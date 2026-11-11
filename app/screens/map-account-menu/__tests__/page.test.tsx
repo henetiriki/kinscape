@@ -26,14 +26,18 @@ it('puts the menu in the account slot on desktop, with no Layers button', async 
     screen.queryByRole('button', { name: 'Layers and filters' })
   ).toBeNull();
   open();
-  expect(screen.getByText('researcher@example.com')).toBeTruthy();
+  expect(screen.getByText('researcher@example.com').textContent).toBe(
+    'researcher@example.com'
+  );
   expect(screen.getAllByRole('menuitem')).toHaveLength(2);
-  // The items do nothing on this sample screen.
+  // The items do nothing on this sample screen but close the menu.
   fireEvent.click(
     screen.getByRole('menuitem', { name: 'Sources and attributions' })
   );
+  expect(screen.queryByRole('menu')).toBeNull();
   open();
   fireEvent.click(screen.getByRole('menuitem', { name: 'Sign out' }));
+  expect(screen.queryByRole('menu')).toBeNull();
 });
 
 it('puts the menu in the search pill on a phone, with the Layers button', async () => {
@@ -51,8 +55,10 @@ it('puts the menu in the search pill on a phone, with the Layers button', async 
       .contains(screen.getByRole('search'))
   ).toBe(true);
   expect(
-    screen.getByRole('button', { name: 'Layers and filters' })
-  ).toBeTruthy();
+    container
+      .querySelector('[data-slot="layers"]')!
+      .contains(screen.getByRole('button', { name: 'Layers and filters' }))
+  ).toBe(true);
 });
 
 it('titles the page', () => {

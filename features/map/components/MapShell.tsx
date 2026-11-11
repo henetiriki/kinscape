@@ -10,7 +10,10 @@ import type { Validity } from '@ks/lib/domain/validity/types.ts';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { Sheet } from '@ks/app/components/overlays/Sheet';
-import { AccountMenu } from '@ks/features/map/components/AccountMenu';
+import {
+  AccountMenu,
+  accountSlots,
+} from '@ks/features/map/components/AccountMenu';
 import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
@@ -88,7 +91,7 @@ export const MapShell = ({
   return (
     <>
       <Stage
-        account={phone ? undefined : account}
+        {...accountSlots(phone, account)}
         credits={phone ? undefined : credits}
         dock={
           phone ? (
@@ -136,8 +139,7 @@ export const MapShell = ({
           ) : undefined
         }
         overlayAt='top'
-        panel={phone ? undefined : <LayersPanel {...layerProps} />}
-        search={phone ? account : undefined}>
+        panel={phone ? undefined : <LayersPanel {...layerProps} />}>
         <MapView
           layers={layers}
           mapDay={mapDay}

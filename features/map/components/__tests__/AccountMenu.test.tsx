@@ -29,7 +29,9 @@ describe('AccountMenu on desktop', () => {
     setup();
     open();
 
-    expect(screen.getByText('a@example.test')).toBeTruthy();
+    expect(screen.getByText('a@example.test').textContent).toBe(
+      'a@example.test'
+    );
     expect(
       screen
         .getAllByRole('menuitem')

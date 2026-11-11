@@ -51,7 +51,7 @@ test.describe('own session', () => {
     viewport: { height: 800, width: 1280 },
   });
 
-  // NFR-03: signs in on its own, so signing out leaves the shared session alone.
+  // NFR-03: it signs in on its own, so the sign-out does not end the shared session.
   test('Sign out shows the sign-in page and the map is no longer reachable', async ({
     page,
   }) => {

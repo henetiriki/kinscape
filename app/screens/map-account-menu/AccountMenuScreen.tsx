@@ -1,7 +1,12 @@
 'use client';
 
 import { usePhone } from '@ks/app/components/foundation/usePhone';
-import { AccountMenu, LayersButton, Stage } from '@ks/features/map';
+import {
+  AccountMenu,
+  accountSlots,
+  LayersButton,
+  Stage,
+} from '@ks/features/map';
 
 /** The map screen's frame with the account menu and, on a phone, the Layers button; no map. Synthetic Account. */
 export const AccountMenuScreen = () => {
@@ -18,9 +23,8 @@ export const AccountMenuScreen = () => {
 
   return (
     <Stage
-      account={phone ? undefined : menu}
+      {...accountSlots(phone, menu)}
       layers={phone ? <LayersButton /> : undefined}
-      search={phone ? menu : undefined}
     />
   );
 };

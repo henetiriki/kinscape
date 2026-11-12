@@ -28,12 +28,16 @@ Change the workflow `name:` in `claude-code-review.yml` and its two mentions in 
 
 ## Proof
 
-| Acceptance check                            | Proven by                                        |
-| ------------------------------------------- | ------------------------------------------------ |
-| No `Claude: Review code` in the repo        | `git grep -n "Claude: Review code"` has no match |
-| `name:`, table row and diagram node all new | `git diff origin/main`; `workflows-diagram` test |
-| Job, `run-name`, triggers, permissions kept | `git diff origin/main` shows only the `name:`    |
+| Acceptance check                            | Proven by                                                       |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| No `Claude: Review code` in the repo        | `git grep -n "Claude: Review code" -- . ':!plans'` has no match |
+| `name:`, table row and diagram node all new | `git diff origin/main`; `workflows-diagram` test                |
+| Job, `run-name`, triggers, permissions kept | `git diff origin/main` shows only the `name:`                   |
 
 ## Out of scope
 
 - A merge deploys nothing: `scripts/vercel-ignore.mts` lists `.github/` and `plans/` as invisible.
+
+## Deviations
+
+- The search for the old name skips `plans/`, because this plan quotes the name.

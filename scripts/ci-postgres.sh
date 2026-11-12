@@ -6,7 +6,7 @@
 #   e2e   exports KINSCAPE_DATABASE_CA_FILE, KINSCAPE_DATABASE_URL and KINSCAPE_DATABASE_DIRECT_URL.
 #
 # In GitHub Actions the values go to $GITHUB_ENV. Elsewhere they print as KEY=value lines.
-# The password and the certificate are made for this run and held nowhere.
+# Each run makes a new password and certificate, and keeps neither.
 set -euo pipefail
 
 # Same major version as the hosted database projects (docs/infrastructure.md). A person moves the pin:
@@ -25,13 +25,18 @@ fi
 
 password="$(openssl rand -hex 16)"
 
+# Keep the password out of the job log: later steps show the values in $GITHUB_ENV.
+if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+  echo "::add-mask::$password"
+fi
+
 rm -rf "$DIR"
 mkdir -p "$DIR"
 
 # One self-signed certificate is both the server's certificate and the CA file the app trusts.
-# `verify-full` checks the host name, so the certificate names `localhost` and `127.0.0.1`.
+# `verify-full` checks the host name, so the certificate names `localhost`, which the URLs use.
 openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj '/CN=localhost' \
-  -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1' \
+  -addext 'subjectAltName=DNS:localhost' \
   -keyout "$DIR/server.key" -out "$DIR/ca.crt" 2>/dev/null
 
 docker rm --force "$NAME" >/dev/null 2>&1 || true

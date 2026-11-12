@@ -31,9 +31,9 @@ type Adapters = {
 const shared = globalThis as { kinscapeAdapters?: Adapters };
 
 /**
- * The sign-in port, session store, Tree store and throttle store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`,
- * otherwise the database stores, with memory sign-in under `KINSCAPE_MEMORY_SIGN_IN` and Supabase if it is off
- * (`parseEnv` refuses both flags on Vercel).
+ * The sign-in port, session store, Tree store and throttle store. `KINSCAPE_MEMORY_ADAPTERS` makes all four
+ * memory. Otherwise the database holds the sessions, Trees and throttle. Sign-in is memory under
+ * `KINSCAPE_MEMORY_SIGN_IN` and Supabase if it is off. `parseEnv` refuses both flags on Vercel.
  */
 export const appAdapters = (): Adapters => {
   if (shared.kinscapeAdapters === undefined) {

@@ -9,7 +9,12 @@ const read = (file: string) => readFileSync(join(root, file), 'utf8');
 const SCRIPT = 'scripts/ci-postgres.sh';
 const WORKFLOW = '.github/workflows/ci.yml';
 
-type Job = { container?: unknown; needs?: unknown; steps: Step[] };
+type Job = {
+  container?: unknown;
+  if?: string;
+  needs?: unknown;
+  steps: Step[];
+};
 type Step = { env?: Record<string, string>; name?: string; run?: string };
 
 const jobs = (parse(read(WORKFLOW)) as { jobs: Record<string, Job> }).jobs;
@@ -55,6 +60,22 @@ describe('the Postgres container of CI', () => {
   it('runs e2e on the runner, which has Docker, not in the Playwright image', () => {
     expect(jobs.e2e).not.toHaveProperty('container');
     expect(jobs.e2e).not.toHaveProperty('needs');
+  });
+
+  it.each(['test', 'e2e'])('skips draft PRs in the %s job', job => {
+    expect(
+      jobs[job]?.if,
+      `the ${job} job needs the same draft gate as the image job`
+    ).toBe(jobs.image?.if);
+  });
+
+  it('masks the password before it reaches $GITHUB_ENV', () => {
+    const script = read(SCRIPT);
+
+    expect(script.indexOf('::add-mask::$password')).toBeGreaterThan(-1);
+    expect(script.indexOf('::add-mask::$password')).toBeLessThan(
+      script.indexOf('>>"$GITHUB_ENV"')
+    );
   });
 
   it('leaves the design job in the Playwright image, with no database', () => {

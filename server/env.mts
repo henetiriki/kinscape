@@ -44,7 +44,7 @@ const isOnVercel = (source: Record<string, string | undefined>) =>
 /**
  * The path of the CA file that replaces `server/db/root-ca.crt`, or `undefined` for the default.
  * Test-only: CI names the self-signed certificate of its Postgres container. It stops the server
- * if `VERCEL` or `VERCEL_ENV` is defined, even empty, as a CA of the caller's choice would weaken TLS.
+ * if `VERCEL` or `VERCEL_ENV` is defined, even empty, because a CA of the caller's choice weakens TLS.
  */
 export const parseCaFile = (source: Record<string, string | undefined>) => {
   if (source.KINSCAPE_DATABASE_CA_FILE === undefined) {
@@ -62,12 +62,12 @@ export const parseCaFile = (source: Record<string, string | undefined>) => {
 
 /**
  * Parses the server variables. A failure names each variable at fault, never its value.
- * `KINSCAPE_MEMORY_ADAPTERS=1` is test-only: it swaps in memory adapters, needs no database or
- * Supabase variable, and stops the server if `VERCEL` or `VERCEL_ENV` is defined, even empty.
- * `KINSCAPE_MEMORY_SIGN_IN=1` is test-only too: it swaps in only the sign-in, needs the database
- * variable but no Supabase variable, and stops the server on Vercel the same way.
- * So does test-only `KINSCAPE_DEV_PAGES`, which shows the design kit and screens (`dev-pages.mts`),
- * and `KINSCAPE_DATABASE_CA_FILE` (`parseCaFile`).
+ * `KINSCAPE_MEMORY_ADAPTERS=1` is test-only. It swaps in memory adapters and needs no database or
+ * Supabase variable. The server stops if `VERCEL` or `VERCEL_ENV` is defined, even empty.
+ * `KINSCAPE_MEMORY_SIGN_IN=1` is test-only too. It swaps in only the sign-in and needs the database
+ * variable. The server stops on Vercel in the same way.
+ * Test-only `KINSCAPE_DEV_PAGES` shows the design kit and screens (`dev-pages.mts`).
+ * `KINSCAPE_DATABASE_CA_FILE` (`parseCaFile`) follows the same Vercel rule.
  */
 export const parseEnv = (source: Record<string, string | undefined>) => {
   const onVercel = isOnVercel(source);

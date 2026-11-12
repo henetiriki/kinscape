@@ -94,7 +94,7 @@ describe('appAdapters', () => {
     });
     expect(await signIn.verify(SYNTHETIC.email, 'wrong')).toBeUndefined();
     expect(fetch).not.toHaveBeenCalled();
-    // Port 1 refuses the connection; a memory adapter would resolve.
+    // Port 1 refuses the connection; a memory adapter resolves.
     await expect(store.findAccount('x', 'x')).rejects.toThrow();
     await expect(sessions.find('x')).rejects.toThrow();
     await expect(throttle.since('x', new Date())).rejects.toThrow();

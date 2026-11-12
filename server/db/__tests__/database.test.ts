@@ -69,11 +69,11 @@ describe('poolConfig', () => {
     expect(rootCa()).toBe('first CA');
     expect(poolConfig('postgres://app@localhost/db').ssl.ca).toBe('first CA');
 
-    // A later change to the variable is not hidden by the first read.
+    // A later change to the variable takes effect after the first read.
     vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', second);
     expect(rootCa()).toBe('second CA');
 
-    // The first path was read once: its file can go and the memo still answers.
+    // The memo answers for the first path after its file changes.
     writeFileSync(first, 'changed');
     vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', first);
     expect(rootCa()).toBe('first CA');

@@ -11,8 +11,8 @@ type ContractDb = { name: string } & ReturnType<typeof sharedTestDb>;
 
 /**
  * One database of its own on the Postgres container, for one test file (NFR-09). Parallel files
- * would reset each other's schema if they shared a database. It is made on first use. `close()`
- * drops it. A handle's `destroy()` closes that handle's pool, as on a real connection.
+ * reset each other's schema in a shared database. The first call makes it, and `close()` drops it.
+ * A handle's `destroy()` closes that handle's pool, as on a real connection.
  */
 const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
   const name = `ks_test_${randomUUID().replaceAll('-', '')}`;
@@ -61,8 +61,8 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
 
 /**
  * The backends a database contract file runs on: PGlite always, and the Postgres container when
- * `KINSCAPE_TEST_DATABASE_URL` is set (CI's `test` job, `scripts/ci-postgres.sh`). Read here, not
- * in `server/env.mts`, because only tests use it.
+ * `KINSCAPE_TEST_DATABASE_URL` is set (CI's `test` job, `scripts/ci-postgres.sh`). This helper
+ * reads it, not `server/env.mts`, because only tests use it.
  */
 export const contractDbs = (
   env: Record<string, string | undefined> = process.env

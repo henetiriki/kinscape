@@ -14,7 +14,7 @@ describe('contractDbs', () => {
   });
 
   it('adds the container with it, and opens no connection until a test asks', async () => {
-    // Port 1 refuses a connection, so any attempt would throw.
+    // Port 1 refuses a connection, so an attempt throws.
     const dbs = contractDbs({
       KINSCAPE_TEST_DATABASE_URL: 'postgres://app@localhost:1/postgres',
     });

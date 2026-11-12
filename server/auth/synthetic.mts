@@ -1,7 +1,7 @@
 import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 
 /**
- * The one synthetic user and Tree behind the test-only memory sign-in. No `server-only`, so
+ * The one synthetic Account and Tree behind the test-only memory sign-in. No `server-only`, so
  * `scripts/seed-ci.mts` can import it under plain Node.
  */
 export const SYNTHETIC = {

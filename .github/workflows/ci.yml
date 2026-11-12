@@ -172,10 +172,11 @@ jobs:
         id: pin
         run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
 
-  # Opens the app in a real browser and clicks through it, as a user would. It runs on the runner,
+  # Opens the app in a real browser and clicks through it, like a person. It runs on the runner,
   # not in the Playwright image: the Postgres script needs Docker, which the image lacks. It signs in
   # with the memory sign-in and reads and writes the Postgres of scripts/ci-postgres.sh.
   e2e:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
       - name: Fetch the code
@@ -223,7 +224,9 @@ jobs:
   design:
     needs: image
     runs-on: ubuntu-latest
-    # The same image as e2e: the snapshot export and the design check both launch Chromium.
+    # The image has the browser and its system packages, which the snapshot export and the design check
+    # need. Its version must match @playwright/test (scripts/__tests__/playwright-image.test.ts). Bump
+    # the tag and digest together in .github/playwright-image, then run the design-shots workflow on the branch.
     container:
       image: ${{ needs.image.outputs.image }}
       options: --user 1001

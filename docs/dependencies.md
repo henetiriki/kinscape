@@ -1,6 +1,6 @@
 # Dependencies
 
-Dependabot opens security PRs when an advisory lands. It opens weekly updates for npm packages and GitHub Actions. It labels each PR `dependencies`. Nothing auto-merges: the tech lead reviews and merges each PR once CI passes, within:
+Dependabot opens security PRs when an advisory lands. It opens weekly updates for npm packages, GitHub Actions and the CI images. It labels each PR `dependencies`. Nothing auto-merges: the tech lead reviews and merges each PR once CI passes, within:
 
 | Severity         | Deadline              |
 | ---------------- | --------------------- |
@@ -16,6 +16,11 @@ Dependabot ignores the major version of these. To lift a hold, remove its entry 
 | ------------- | -------------- | ------------------------------------------------- | -------------------------------------------------------------- |
 | `typescript`  | 6              | typescript-eslint needs the JS API, which 7 omits | typescript-eslint supports 7                                   |
 | `@types/node` | `.nvmrc` major | Types must match the Node version we run          | `.nvmrc` moves; bump both in one PR (Dependabot can't read it) |
+| `postgres`    | 17             | Same major as the hosted databases                | The hosted databases move; bump the Dockerfile in the same PR  |
+
+## The Playwright image
+
+One Dependabot PR moves `@playwright/test` and its image. Before you merge it, run **Design: Render snapshots** on its branch. The workflow commits the new JPGs.
 
 ## Overrides
 

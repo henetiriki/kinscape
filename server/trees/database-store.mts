@@ -14,7 +14,7 @@ import {
   parsePersonId,
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
-import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { isVersion, MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 type Db = ReturnType<typeof createDb>;
@@ -188,7 +188,7 @@ export const databaseStore = (db: Db): TreeStore => ({
           .select(['tree.id', 'tree.name'])
           .execute()
       : [],
-  // `collate "C"` orders by code unit, as the memory store does.
+  // In a UTF-8 database `collate "C"` compares bytes, which is code-point order, as the memory store does.
   listPersons: async scope =>
     (await reaches(db, scope))
       ? (
@@ -205,18 +205,21 @@ export const databaseStore = (db: Db): TreeStore => ({
       return err('not-found');
     }
 
-    const row = await db
-      .updateTable('person')
-      .set({
-        ...fieldsOf(person),
-        updatedAt: sql`now()`,
-        version: sql`version + 1`,
-      })
-      .where('treeId', '=', scope.treeId)
-      .where('id', '=', person.id)
-      .where('version', '=', version)
-      .returningAll()
-      .executeTakeFirst();
+    // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
+    const row = isVersion(version)
+      ? await db
+          .updateTable('person')
+          .set({
+            ...fieldsOf(person),
+            updatedAt: sql`now()`,
+            version: sql`version + 1`,
+          })
+          .where('treeId', '=', scope.treeId)
+          .where('id', '=', person.id)
+          .where('version', '=', version)
+          .returningAll()
+          .executeTakeFirst()
+      : undefined;
 
     if (row !== undefined) {
       return ok(personOf(row));

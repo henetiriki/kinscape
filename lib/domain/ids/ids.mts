@@ -7,9 +7,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const parseAccountId = (text: string): AccountId | undefined =>
   UUID.test(text) ? (text as AccountId) : undefined;
 
-/** The Person id for `text`, or undefined if it isn't a UUID. */
+/** The Person id for `text` in lower case, as Postgres returns it, or undefined if it isn't a UUID. */
 export const parsePersonId = (text: string): PersonId | undefined =>
-  UUID.test(text) ? (text as PersonId) : undefined;
+  UUID.test(text) ? (text.toLowerCase() as PersonId) : undefined;
 
 /** The Tree id for `text`, or undefined if it isn't a UUID. */
 export const parseTreeId = (text: string): TreeId | undefined =>

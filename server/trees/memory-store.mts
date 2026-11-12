@@ -9,12 +9,17 @@ import type {
   TreeStore,
 } from '#ks/lib/domain/trees/types.ts';
 
-import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
+import {
+  parseAccountId,
+  parsePersonId,
+  parseTreeId,
+} from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
-/** Code-unit order, as `collate "C"` gives in Postgres. */
-const compare = (x: string, y: string): number => (x < y ? -1 : x > y ? 1 : 0);
+/** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
+const compare = (x: string, y: string): number =>
+  Buffer.compare(Buffer.from(x), Buffer.from(y));
 
 const identityOf = (issuer: string, subject: string) =>
   JSON.stringify([issuer, subject]);
@@ -64,15 +69,15 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
     addPerson: async ({ person, ...scope }) => {
       const owned = personsOf(scope);
 
-      if (owned === undefined) {
+      if (owned === undefined || parsePersonId(person.id) === undefined) {
         return undefined;
       }
 
       if (!owned.has(person.id)) {
-        owned.set(person.id, { ...person, version: 1 });
+        owned.set(person.id, { ...structuredClone(person), version: 1 });
       }
 
-      return owned.get(person.id);
+      return structuredClone(owned.get(person.id));
     },
     findAccount: async (issuer, subject) => {
       const id = accounts.get(identityOf(issuer, subject));
@@ -80,7 +85,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       return id === undefined ? undefined : { id };
     },
     findPerson: async ({ personId, ...scope }) =>
-      personsOf(scope)?.get(personId),
+      structuredClone(personsOf(scope)?.get(personId)),
     findTree: async ({ accountId, treeId }) => {
       const found = trees.get(treeId);
 
@@ -97,7 +102,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
           return { id, name };
         }),
     listPersons: async scope =>
-      [...(personsOf(scope)?.values() ?? [])]
+      structuredClone([...(personsOf(scope)?.values() ?? [])])
         .sort(
           (x, y) =>
             compare(x.surname, y.surname) ||
@@ -117,11 +122,11 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
         return err('conflict');
       }
 
-      const next = { ...person, version: version + 1 };
+      const next = { ...structuredClone(person), version: version + 1 };
 
       owned.set(person.id, next);
 
-      return ok(next);
+      return ok(structuredClone(next));
     },
   };
 };

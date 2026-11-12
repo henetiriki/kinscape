@@ -46,6 +46,9 @@ describe('personInputSchema', () => {
     ['a long name', { id: ID, surname: 'x'.repeat(201) }],
     ['21 variants', { id: ID, variants: Array(21).fill('x') }],
     ['long notes', { id: ID, notes: 'x'.repeat(10_001) }],
+    ['a NUL in a name', { id: ID, surname: 'a\0b' }],
+    ['a NUL in the notes', { id: ID, notes: 'a\0b' }],
+    ['a NUL in a variant', { id: ID, variants: ['a\0b'] }],
   ])('refuses %s', (_what, input) => {
     expect(personInputSchema.safeParse(input).success).toBe(false);
   });

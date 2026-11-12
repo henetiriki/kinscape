@@ -8,11 +8,25 @@ import { parsePersonId } from '#ks/lib/domain/ids/ids.mts';
 /** The most Persons a list returns: the NFR sizing of a Tree, so a response has a cap. */
 export const MAX_LISTED = 2000;
 
+const MAX_VERSION = 2_147_483_647;
+
+/** Whether `version` fits the `int4` column: Postgres throws on any other number. */
+export const isVersion = (version: number): boolean =>
+  Number.isInteger(version) && version >= 1 && version <= MAX_VERSION;
+
 const MAX_NAME = 200;
 const MAX_VARIANTS = 20;
 const MAX_NOTES = 10_000;
 
-const name = z.string().trim().max(MAX_NAME).default('');
+/** Postgres `text` refuses a NUL character, so the schema refuses it for both stores. */
+const text = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .refine(value => !value.includes('\0'), 'contains a NUL character');
+
+const name = text(MAX_NAME).default('');
 
 /** A GEDCOM date as text; blank means no date. */
 const date = z
@@ -54,11 +68,8 @@ export const personInputSchema = z.object({
     return id;
   }),
   maidenName: name,
-  notes: z.string().trim().max(MAX_NOTES).default(''),
+  notes: text(MAX_NOTES).default(''),
   sex: z.enum(['F', 'M', 'U', 'X']).default('U'),
   surname: name,
-  variants: z
-    .array(z.string().trim().max(MAX_NAME))
-    .max(MAX_VARIANTS)
-    .default([]),
+  variants: z.array(text(MAX_NAME)).max(MAX_VARIANTS).default([]),
 });

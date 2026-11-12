@@ -506,12 +506,116 @@ export const runTreeStoreContract = (
             await store.addPerson({ ...badTree, person: personOf(ID_1, {}) })
           ).toBeUndefined();
           expect(
+            await store.addPerson({
+              ...a,
+              person: { ...personOf(ID_1, {}), id: 'nope' as PersonId },
+            })
+          ).toBeUndefined();
+          expect(await store.listPersons(a)).toEqual([]);
+          expect(
             await store.updatePerson({
               ...a,
               person: { ...personOf(ID_1, {}), id: 'nope' as PersonId },
               version: 1,
             })
           ).toEqual({ error: 'not-found', ok: false });
+        });
+      });
+
+      // PPL-01
+      it('keeps one Person for an id in either case', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const upper = ID_1.replace('a1', 'A1');
+
+          await store.addPerson({
+            ...a,
+            person: personOf(upper, { surname: 'First' }),
+          });
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: 'Second' }),
+          });
+
+          const listed = await store.listPersons(a);
+
+          expect(listed.map(p => [p.id, p.surname])).toEqual([[ID_1, 'First']]);
+        });
+      });
+
+      // PPL-01
+      it('refuses a NUL character in text', () => {
+        expect(
+          personInputSchema.safeParse({ id: ID_1, surname: 'a\0b' }).success
+        ).toBe(false);
+      });
+
+      // NFR-09
+      it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
+        'gives conflict for the version %s',
+        async version => {
+          await withStore(async store => {
+            const { a } = await twoTrees(store);
+
+            await store.addPerson({ ...a, person: personOf(ID_1, {}) });
+
+            expect(
+              await store.updatePerson({
+                ...a,
+                person: personOf(ID_1, { surname: 'New' }),
+                version,
+              })
+            ).toEqual({ error: 'conflict', ok: false });
+          });
+        }
+      );
+
+      // NFR-09
+      it('returns copies that a caller may change', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const input = personOf(ID_1, {
+            birth: '1850',
+            variants: ['Anna'],
+          });
+          const added = await store.addPerson({ ...a, person: input });
+          const found = await store.findPerson({ ...a, personId: ID_1 });
+          const [listed] = await store.listPersons(a);
+
+          for (const copy of [added, found, listed, input]) {
+            copy?.variants.push('Changed');
+
+            if (copy?.birth) {
+              copy.birth.date1 = '1900';
+            }
+          }
+
+          const saved = await store.findPerson({ ...a, personId: ID_1 });
+
+          expect(saved?.variants).toEqual(['Anna']);
+          expect(saved?.birth?.date1).toBe('1850');
+        });
+      });
+
+      // NFR-09
+      it('lists names in code-point order', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: '\u{1D504}' }),
+          });
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_2, { surname: 'Ａ' }),
+          });
+
+          // U+FF21 (bytes EF BC A1) sorts before U+1D504 (bytes F0 9D 94 84).
+          expect((await store.listPersons(a)).map(p => p.id)).toEqual([
+            ID_2,
+            ID_1,
+          ]);
         });
       });
     });

@@ -120,7 +120,7 @@ describe('checkRelationship', () => {
     expect(refusal(parent(2, 1, 1), [parent(1, 1, 1)])).toBe('self');
   });
 
-  it('refuses a spouse that shares a parent id pair only for the same type', () => {
+  it('accepts a spouse Relationship between a parent and their child', () => {
     expect(checkRelationship(spouse(2, 1, 2), [parent(1, 1, 2)]).ok).toBe(true);
   });
 });

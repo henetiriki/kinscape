@@ -33,7 +33,7 @@ const isDuplicate = (input: RelationshipInput, other: Relationship) => {
   );
 };
 
-/** Whether a walk down from `start` through the parent Relationships reaches `target`. */
+/** Whether a walk from `start` to its children, and their children, reaches `target`. */
 const reaches = (
   start: PersonId,
   target: PersonId,
@@ -42,13 +42,21 @@ const reaches = (
   const childrenOf = new Map<PersonId, PersonId[]>();
 
   for (const { childId, parentId } of parents) {
-    childrenOf.set(parentId, [...(childrenOf.get(parentId) ?? []), childId]);
+    const list = childrenOf.get(parentId);
+
+    if (list) {
+      list.push(childId);
+    } else {
+      childrenOf.set(parentId, [childId]);
+    }
   }
 
   const seen = new Set<PersonId>([start]);
   const queue = [start];
 
-  for (let next = queue.shift(); next !== undefined; next = queue.shift()) {
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const next = queue[cursor];
+
     if (next === target) {
       return true;
     }

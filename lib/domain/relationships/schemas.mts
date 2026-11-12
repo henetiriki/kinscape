@@ -30,4 +30,7 @@ const spouseSchema = z
   );
 
 /** What a client saves for a Relationship (PPL-02): a parent has a subtype, a spouse has dates. */
-export const relationshipInputSchema = z.union([parentSchema, spouseSchema]);
+export const relationshipInputSchema = z.discriminatedUnion('type', [
+  parentSchema,
+  spouseSchema,
+]);

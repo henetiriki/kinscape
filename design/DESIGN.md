@@ -82,7 +82,7 @@ People, pins and boundary shapes in the JPGs are illustrative, not data.
 
 ### Proposed screens
 
-Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components). The two People rows show the People entry in the account menu. M2.9.2 builds it and swaps them in.
+Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components). The two People rows show the People entry in the account menu. M2.9.2 builds it and puts these rows in place of the built ones.
 
 | Screen                                   | File                                                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------- |

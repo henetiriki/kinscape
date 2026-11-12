@@ -295,7 +295,7 @@ describe('stamp', () => {
       Object.keys(records.Icons).toSorted()
     );
     expect(stamped.assetGroups.Icons.files).toEqual(records.Icons);
-    expect(stamped.title).toBe('KinScape');
+    expect(stamped.title).toBe('KinScape design system');
     expect(stamped.editing).toBe('code');
     expect(index.lastChange.by).toBe('KinScape repo');
   });

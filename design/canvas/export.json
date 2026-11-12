@@ -382,13 +382,15 @@
       "viewport": { "height": 1240, "width": 1440 }
     },
     {
-      "file": "Map-account-people.dc.html",
+      "file": "Map.dc.html",
       "name": "map-account-menu-people",
+      "props": { "variant": "account-people" },
       "viewport": { "height": 900, "width": 1440 }
     },
     {
-      "file": "Map-phone-account-people.dc.html",
+      "file": "Map-phone-states.dc.html",
       "name": "map-account-menu-phone-people",
+      "props": { "variant": "account-people" },
       "viewport": { "height": 844, "width": 390 }
     }
   ]

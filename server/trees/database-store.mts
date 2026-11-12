@@ -21,6 +21,7 @@ import {
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
+import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { isVersion } from '#ks/server/trees/version.mts';
 
@@ -310,9 +311,12 @@ export const databaseStore = (db: Db): TreeStore => ({
       : [],
   listRelationships: async scope =>
     (await reaches(db, scope))
-      ? (await selectRelationship(db, scope).orderBy('id').execute()).map(
-          relationshipOf
-        )
+      ? (
+          await selectRelationship(db, scope)
+            .orderBy('id')
+            .limit(MAX_RELATIONSHIPS)
+            .execute()
+        ).map(relationshipOf)
       : [],
   updatePerson: async ({ person, version, ...scope }) => {
     if (!(await reaches(db, scope, person.id))) {

@@ -78,7 +78,7 @@ export type TreeStore = {
    * may not access the Tree.
    */
   listPersons: (scope: TreeScope) => Promise<Person[]>;
-  /** The Tree's Relationships ordered by id. Empty if the Account may not access the Tree. */
+  /** At most `MAX_RELATIONSHIPS` of the Tree's Relationships, ordered by id. Empty if the Account may not access the Tree. */
   listRelationships: (scope: TreeScope) => Promise<Relationship[]>;
   /**
    * Replaces the Person if `version` is the one saved. `conflict` for a stale version; `not-found`

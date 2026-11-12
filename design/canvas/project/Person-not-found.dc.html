@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Person not found</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <header style="position: absolute; left: 0; right: 0; top: 0; height: 64px; box-sizing: border-box; padding: 0 var(--space-24); display: flex; align-items: center; gap: var(--space-16); background: var(--surface); border-bottom: 1px solid var(--line)">
+    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
+    <span style="width: 1px; height: 28px; background: var(--line)"></span>
+    <a href="People-list.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>People</a>
+    <span style="flex: 1"></span>
+    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
+  </header>
+
+  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 120px; box-sizing: border-box">
+    <x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="people" title="Person not found" actions="{{actions}}">No one in your Tree has this address. The person may have been deleted, or the link is wrong.</x-import>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { actions: [{ label: 'Go to People' }] };
+  }
+}
+</script>
+</body>
+</html>

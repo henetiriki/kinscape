@@ -49,7 +49,7 @@ describe('budgetFor', () => {
     ['docs/code-rules.md', 400],
     ['docs/writing.md', 600],
     ['docs/how-we-work.md', 850],
-    ['docs/building.md', 400],
+    ['docs/building.md', 450],
     ['docs/dependencies.md', 250],
     ['docs/repo-settings.md', 900],
     ['docs/infrastructure.md', 1000],

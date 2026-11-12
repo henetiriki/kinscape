@@ -64,3 +64,7 @@ Each skill has the frontmatter from #765 and `argument-hint: <PR number>`. The b
 ## Out of scope
 
 Agent files, workflows, `plans/README.md`, labels.
+
+## Deviations
+
+- `build-local` stops on an unapproved plan, asks for approval on GitHub and re-reads the plan before it goes on. The tech lead asked for this in the session. This commit.

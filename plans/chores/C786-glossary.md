@@ -1,7 +1,7 @@
 # Plan: C786: Add a project glossary and rename the design artifacts
 
 - **Spec:** #786
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ Step 8 names `SKILL.md` only. Line 7 of `publish-design-system/tools.md` also cr
 - **B.** Keep it.
 - **Other:** your own.
 
-Recommended: A, because a first run then uses the new name.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -2,7 +2,7 @@
 
 - **Spec:** #781
 - **Requirement IDs:** [NFR-09](../../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Restore the Postgres half of #770. `scripts/ci-postgres.sh` reads the `FROM` lin
 - **B.** The test matches only a reference with a full 64-digit digest.
 - **Other:** your own.
 
-Recommended: A, because B misses a script that names a tag without a digest.
+**Answer: A** (@henetiriki)
 
 **D2 · Word budget of `docs/dependencies.md`** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ The new row puts the file near or over its 250-word budget.
 - **B.** Shorten other text in the file.
 - **Other:** your own.
 
-Recommended: A, because #770 raised it for the same row.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

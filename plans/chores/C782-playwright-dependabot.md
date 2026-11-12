@@ -2,7 +2,7 @@
 
 - **Spec:** #782
 - **Requirement IDs:** None: CI tooling
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Move the Postgres Dockerfile to `docker/postgres/`. Add `docker/playwright/Docke
 - **B.** Leave `docs/architecture.md` as it is.
 - **Other:** your own.
 
-Recommended: A, because the code rule asks for it.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

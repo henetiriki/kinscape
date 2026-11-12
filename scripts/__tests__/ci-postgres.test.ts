@@ -69,6 +69,12 @@ describe('the Postgres container of CI', () => {
     ).toBe(jobs.image?.if);
   });
 
+  it('prints the Vitest project labels as plain text in the test job', () => {
+    const step = jobs.test?.steps.find(({ run }) => run === 'npm test');
+
+    expect(step?.env?.NO_COLOR).toBe('1');
+  });
+
   it('masks the password before it reaches $GITHUB_ENV', () => {
     const script = read(SCRIPT);
 

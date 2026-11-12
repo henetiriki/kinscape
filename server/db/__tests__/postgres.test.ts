@@ -51,9 +51,9 @@ describe('contractDb', () => {
       await destroyed.destroy();
       await shared.close();
 
-      // `pg` names a pool that was ended; a pool that the drop cut off gives another error.
+      // Kysely names a handle that was destroyed. A handle left open gives a `pg` error instead.
       await expect(sql`select 1`.execute(left)).rejects.toThrow(
-        /after calling end on the pool/
+        /driver has already been destroyed/
       );
     });
 

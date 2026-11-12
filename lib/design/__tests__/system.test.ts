@@ -355,7 +355,7 @@ describe('systemIndex', () => {
         { name: 'react-dom', version: '18' },
       ],
       namespace: 'KinScape',
-      title: 'KinScape',
+      title: 'KinScape design system',
       v: 3,
     });
     expect(index.assetGroups).toEqual({

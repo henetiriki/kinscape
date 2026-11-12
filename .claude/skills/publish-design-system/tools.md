@@ -2,13 +2,13 @@
 
 If the session has the built-in `Artifact` tool, use it. Otherwise use the six MCP tools in the last column.
 
-| Step               | `Artifact` tool (default)                                                                                                                                        | MCP fallback (`mcp__claude-artifacts__*`) |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Create (3.3)       | `quickstart` with intent `other`, then `list` with `scope: "types"` for the Design System type. Then `publish` with `type_url`, `title` "KinScape" and no files. | `list_types`, `create_from_type`          |
-| Read (3.5)         | `read` with `url`.                                                                                                                                               | `get_artifact`                            |
-| Read files (3.5)   | `read` with `url` and `paths`. The tool saves each file under `artifact-files/<id>/project/` in the scratchpad. Copy it to the name that step 3.5 gives.         | `read_file`                               |
-| Upload icons (3.7) | `publish` with `url`, `asset: true` and `file_paths` (25 at most). The `url` in the result holds `/_blob/<id>`.                                                  | `upload_asset`                            |
-| Publish (3.10)     | `publish` with `url`, `root: ".design-system"`, `file_path` (the absolute path of one file) and `files` (a map of `project/<path>` to the same path).            | `publish_files`                           |
+| Step               | `Artifact` tool (default)                                                                                                                                                      | MCP fallback (`mcp__claude-artifacts__*`) |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| Create (3.3)       | `quickstart` with intent `other`, then `list` with `scope: "types"` for the Design System type. Then `publish` with `type_url`, `title` "KinScape design system" and no files. | `list_types`, `create_from_type`          |
+| Read (3.5)         | `read` with `url`.                                                                                                                                                             | `get_artifact`                            |
+| Read files (3.5)   | `read` with `url` and `paths`. The tool saves each file under `artifact-files/<id>/project/` in the scratchpad. Copy it to the name that step 3.5 gives.                       | `read_file`                               |
+| Upload icons (3.7) | `publish` with `url`, `asset: true` and `file_paths` (25 at most). The `url` in the result holds `/_blob/<id>`.                                                                | `upload_asset`                            |
+| Publish (3.10)     | `publish` with `url`, `root: ".design-system"`, `file_path` (the absolute path of one file) and `files` (a map of `project/<path>` to the same path).                          | `publish_files`                           |
 
 ## Rules for `publish` with the `Artifact` tool
 

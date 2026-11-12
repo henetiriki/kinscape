@@ -291,6 +291,6 @@ export const systemIndex = (
   ],
   namespace: NAMESPACE,
   sections: {},
-  title: 'KinScape',
+  title: 'KinScape design system',
   v: 3,
 });

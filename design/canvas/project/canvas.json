@@ -4,7 +4,7 @@
     "v": 1,
     "at": "2026-10-19T10:20:00Z"
   },
-  "title": "KinScape design kit (ouwl.house)",
+  "title": "KinScape design canvas",
   "launch": {
     "view": "canvas",
     "page": "sign-in"
@@ -709,11 +709,11 @@
   },
   "designSystems": [
     {
-      "title": "KinScape",
+      "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1794507808-5dae",
-      "copiedAt": "2026-11-12T18:28:14Z"
+      "version": "1794516054-df2a",
+      "copiedAt": "2026-11-12T20:42:00Z"
     }
   ]
 }

@@ -1,4 +1,5 @@
 import type { Person, PersonView } from '#ks/lib/domain/persons/types.ts';
+import type { Relationship } from '#ks/lib/domain/relationships/types.ts';
 import type { Tree } from '#ks/lib/domain/trees/types.ts';
 import type { ToView } from '#ks/server/trees/types.ts';
 
@@ -9,6 +10,12 @@ export const personView: ToView<Person, PersonView> = (viewer, row) => ({
   ...row,
   living: isLiving(row),
 });
+
+/** The Relationship as its Viewer sees it. In v1 the view hides nothing from an Account. */
+export const relationshipView: ToView<Relationship, Relationship> = (
+  viewer,
+  row
+) => row;
 
 /** The Tree as its Viewer sees it. In v1 the view hides nothing from an Account. */
 export const treeView: ToView<Tree, Tree> = (viewer, row) => ({

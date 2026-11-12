@@ -1166,6 +1166,217 @@ export const runTreeStoreContract = (
         });
       });
 
+      describe('relationships', () => {
+        const REL_1 = '01900000-0000-7000-9000-0000000000b1';
+        const REL_2 = '01900000-0000-7000-9000-0000000000b2';
+        const REL_3 = '01900000-0000-7000-9000-0000000000b3';
+        const REL_4 = '01900000-0000-7000-9000-0000000000b4';
+        const ID_5 = '01900000-0000-7000-8000-0000000000a5';
+
+        const parentOf = (
+          id: string,
+          parentId: string,
+          childId: string,
+          subtype = 'biological'
+        ) =>
+          relationshipInputSchema.parse({
+            childId,
+            id,
+            parentId,
+            subtype,
+            type: 'parent',
+          });
+        const spouseOf = (id: string, personAId: string, personBId: string) =>
+          relationshipInputSchema.parse({
+            id,
+            personAId,
+            personBId,
+            type: 'spouse',
+          });
+
+        /** Opens Tree A with Persons 1 to 5. */
+        const openWithPersons = async (store: TreeStore) => {
+          const { a } = await twoTrees(store);
+          const opened = await openAs(store, a.accountId, a.treeId);
+
+          if (!opened.ok) {
+            throw new Error('setup failed');
+          }
+
+          for (const id of [ID_1, ID_2, ID_3, ID_4, ID_5]) {
+            await opened.value.persons.create(personOf(id, {}));
+          }
+
+          return opened.value;
+        };
+
+        // PPL-02
+        it('lists, gets, and saves a Relationship', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+            const input = parentOf(REL_1, ID_1, ID_2);
+            const created = await relationships.create(input);
+            const expected = { ...input, version: 1 };
+
+            expect(created).toEqual({ ok: true, value: expected });
+            expect(await relationships.get(input.id)).toEqual(expected);
+            expect(await relationships.list()).toEqual([expected]);
+            expect(await relationships.get(REL_2 as RelationshipId)).toBe(
+              undefined
+            );
+          });
+        });
+
+        // PPL-02
+        it('refuses a cycle and saves nothing', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+
+            await relationships.create(parentOf(REL_1, ID_1, ID_2));
+
+            const before = await relationships.list();
+
+            expect(
+              await relationships.create(parentOf(REL_2, ID_2, ID_1))
+            ).toEqual({ error: 'cycle', ok: false });
+            expect(await relationships.list()).toEqual(before);
+          });
+        });
+
+        // PPL-02
+        it('refuses a third biological parent, and saves an adoptive one', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+
+            await relationships.create(parentOf(REL_1, ID_1, ID_4));
+            await relationships.create(parentOf(REL_2, ID_2, ID_4));
+
+            const before = await relationships.list();
+
+            expect(
+              await relationships.create(parentOf(REL_3, ID_3, ID_4))
+            ).toEqual({ error: 'third-biological-parent', ok: false });
+            expect(await relationships.list()).toEqual(before);
+
+            const adoptive = await relationships.create(
+              parentOf(REL_3, ID_3, ID_4, 'adoptive')
+            );
+
+            expect(adoptive.ok).toBe(true);
+            expect(await relationships.list()).toHaveLength(3);
+          });
+        });
+
+        // PPL-02
+        it('refuses an update to a third biological parent', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+
+            await relationships.create(parentOf(REL_1, ID_1, ID_4));
+            await relationships.create(parentOf(REL_2, ID_2, ID_4));
+            await relationships.create(parentOf(REL_3, ID_3, ID_4, 'adoptive'));
+
+            const before = await relationships.list();
+
+            expect(
+              await relationships.update(parentOf(REL_3, ID_3, ID_4), 1)
+            ).toEqual({ error: 'third-biological-parent', ok: false });
+            expect(await relationships.list()).toEqual(before);
+          });
+        });
+
+        // PPL-02
+        it('refuses a Person as their own spouse', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+
+            expect(
+              await relationships.create(spouseOf(REL_1, ID_1, ID_1))
+            ).toEqual({ error: 'self', ok: false });
+            expect(await relationships.list()).toEqual([]);
+          });
+        });
+
+        // PPL-02
+        it('refuses spouses added again in the other order', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+
+            await relationships.create(spouseOf(REL_1, ID_1, ID_2));
+
+            const before = await relationships.list();
+
+            expect(
+              await relationships.create(spouseOf(REL_2, ID_2, ID_1))
+            ).toEqual({ error: 'duplicate', ok: false });
+            expect(await relationships.list()).toEqual(before);
+          });
+        });
+
+        // PPL-02
+        it('updates a Relationship with the version read, and refuses a stale one', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+
+            await relationships.create(parentOf(REL_1, ID_1, ID_2));
+
+            const step = parentOf(REL_1, ID_1, ID_2, 'step');
+            const updated = await relationships.update(step, 1);
+
+            expect(updated).toEqual({
+              ok: true,
+              value: { ...step, version: 2 },
+            });
+            expect(await relationships.update(step, 1)).toEqual({
+              error: 'conflict',
+              ok: false,
+            });
+            expect(
+              await relationships.update(parentOf(REL_4, ID_1, ID_3), 1)
+            ).toEqual(NOT_FOUND);
+          });
+        });
+
+        // NFR-09
+        it('gives not-found for a Person outside the Tree', async () => {
+          await withStore(async store => {
+            const { relationships } = await openWithPersons(store);
+            const outside = '01900000-0000-7000-8000-0000000000ff';
+
+            expect(
+              await relationships.create(parentOf(REL_1, ID_1, outside))
+            ).toEqual(NOT_FOUND);
+            expect(await relationships.list()).toEqual([]);
+          });
+        });
+
+        // NFR-09
+        it('keeps a Relationship of Tree A out of Account B’s Tree', async () => {
+          await withStore(async store => {
+            const { a, b } = await twoTrees(store);
+            const asA = await openAs(store, a.accountId, a.treeId);
+            const asB = await openAs(store, b.accountId, b.treeId);
+
+            if (!asA.ok || !asB.ok) {
+              throw new Error('setup failed');
+            }
+
+            for (const id of [ID_1, ID_2]) {
+              await asA.value.persons.create(personOf(id, {}));
+            }
+
+            await asA.value.relationships.create(parentOf(REL_1, ID_1, ID_2));
+
+            expect(
+              await asB.value.relationships.get(REL_1 as RelationshipId)
+            ).toEqual(
+              await asB.value.relationships.get(REL_2 as RelationshipId)
+            );
+            expect(await asB.value.relationships.list()).toEqual([]);
+          });
+        });
+      });
+
       // NFR-09
       it('gives not-found when the store refuses a create', async () => {
         await withStore(async store => {

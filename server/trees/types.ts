@@ -1,6 +1,11 @@
 import type { SessionStore } from '@ks/lib/domain/auth/types.ts';
-import type { PersonId } from '@ks/lib/domain/ids/types.ts';
+import type { PersonId, RelationshipId } from '@ks/lib/domain/ids/types.ts';
 import type { PersonInput, PersonView } from '@ks/lib/domain/persons/types.ts';
+import type {
+  Refusal,
+  Relationship,
+  RelationshipInput,
+} from '@ks/lib/domain/relationships/types.ts';
 import type { Result } from '@ks/lib/domain/result/types.ts';
 import type { Tree, TreeStore, Viewer } from '@ks/lib/domain/trees/types.ts';
 
@@ -15,6 +20,21 @@ export type PersonGroup = {
     person: PersonInput,
     version: number
   ) => Promise<Result<PersonView, 'conflict' | 'not-found'>>;
+};
+
+/** The Relationships of the opened Tree. Each write runs `checkRelationship` first (PPL-02). */
+export type RelationshipGroup = {
+  /** Saves a new Relationship; a repeat of an id returns the one saved first. */
+  create: (
+    relationship: RelationshipInput
+  ) => Promise<Result<Relationship, 'not-found' | Refusal>>;
+  get: (id: RelationshipId) => Promise<Relationship | undefined>;
+  list: () => Promise<Relationship[]>;
+  /** `version` is the one the client read. A rule refusal shows before `conflict` or `not-found`. */
+  update: (
+    relationship: RelationshipInput,
+    version: number
+  ) => Promise<Result<Relationship, 'conflict' | 'not-found' | Refusal>>;
 };
 
 /** Maps a row to what the Viewer may see: the one place NFR-10 acts. Each group's reads pass through one. */
@@ -33,6 +53,7 @@ export type TreeDeps = {
  */
 export type TreeRepository = {
   persons: PersonGroup;
+  relationships: RelationshipGroup;
   tree: Tree;
   viewer: Viewer;
 };

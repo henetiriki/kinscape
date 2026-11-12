@@ -13,7 +13,7 @@ export type Refusal =
   'cycle' | 'duplicate' | 'self' | 'third-biological-parent';
 
 /** A saved Relationship. */
-export type Relationship = RelationshipInput;
+export type Relationship = { version: number } & RelationshipInput;
 
 /** What a client saves for a Relationship. */
 export type RelationshipInput = z.output<typeof relationshipInputSchema>;

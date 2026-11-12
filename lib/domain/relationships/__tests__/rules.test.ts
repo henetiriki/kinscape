@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { PersonId, RelationshipId } from '@ks/lib/domain/ids/types.ts';
 import type {
   ParentSubtype,
-  Relationship,
+  RelationshipInput,
 } from '@ks/lib/domain/relationships/types.ts';
 
 import { checkRelationship } from '@ks/lib/domain/relationships/rules.mts';
@@ -18,7 +18,7 @@ const parent = (
   parentId: number,
   childId: number,
   subtype: ParentSubtype = 'biological'
-): Relationship => ({
+): RelationshipInput => ({
   childId: person(childId),
   id: rid(id),
   parentId: person(parentId),
@@ -26,14 +26,14 @@ const parent = (
   type: 'parent',
 });
 
-const spouse = (id: number, a: number, b: number): Relationship => ({
+const spouse = (id: number, a: number, b: number): RelationshipInput => ({
   id: rid(id),
   personAId: person(a),
   personBId: person(b),
   type: 'spouse',
 });
 
-const refusal = (input: Relationship, existing: Relationship[]) => {
+const refusal = (input: RelationshipInput, existing: RelationshipInput[]) => {
   const result = checkRelationship(input, existing);
 
   return result.ok ? undefined : result.error;

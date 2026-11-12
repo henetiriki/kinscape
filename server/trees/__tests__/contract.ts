@@ -1,7 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { AccountId, PersonId, TreeId } from '@ks/lib/domain/ids/types.ts';
+import type {
+  AccountId,
+  PersonId,
+  RelationshipId,
+  TreeId,
+} from '@ks/lib/domain/ids/types.ts';
 import type { PersonInput } from '@ks/lib/domain/persons/types.ts';
+import type { RelationshipInput } from '@ks/lib/domain/relationships/types.ts';
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
 
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
@@ -9,6 +15,7 @@ import {
   MAX_LISTED,
   personInputSchema,
 } from '@ks/lib/domain/persons/schemas.mts';
+import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
 import { openTree } from '@ks/server/trees/repository.mts';
@@ -609,6 +616,436 @@ export const runTreeStoreContract = (
             ID_2,
             ID_1,
           ]);
+        });
+      });
+    });
+
+    describe('relationships', () => {
+      const REL_1 = '01900000-0000-7000-9000-0000000000b1';
+      const REL_2 = '01900000-0000-7000-9000-0000000000b2';
+      const REL_3 = '01900000-0000-7000-9000-0000000000b3';
+
+      const relOf = (fields: Record<string, unknown>): RelationshipInput =>
+        relationshipInputSchema.parse(fields);
+      const parentOf = (id: string, parentId: string, childId: string) =>
+        relOf({ childId, id, parentId, subtype: 'biological', type: 'parent' });
+      const spouseOf = (
+        id: string,
+        personAId: string,
+        personBId: string,
+        dates: Record<string, unknown> = {}
+      ) => relOf({ id, personAId, personBId, type: 'spouse', ...dates });
+
+      /** Two Trees; Tree A holds Persons 1 to 3 and Tree B holds Person 4. */
+      const withPersons = async (store: TreeStore) => {
+        const trees = await twoTrees(store);
+
+        for (const id of [ID_1, ID_2, ID_3]) {
+          await store.addPerson({ ...trees.a, person: personOf(id, {}) });
+        }
+
+        await store.addPerson({ ...trees.b, person: personOf(ID_4, {}) });
+
+        return trees;
+      };
+
+      // PPL-02
+      it('reads back a spouse married ABT 1870 and divorced 1885', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+          const relationship = spouseOf(REL_1, ID_1, ID_2, {
+            divorce: '1885',
+            marriage: 'ABT 1870',
+          });
+          const expected = { ...relationship, version: 1 };
+
+          expect(relationship).toMatchObject({
+            divorce: { date1: '1885' },
+            marriage: { qualifier: 'ABT' },
+          });
+          expect(await store.addRelationship({ ...a, relationship })).toEqual({
+            ok: true,
+            value: expected,
+          });
+          expect(
+            await store.findRelationship({
+              ...a,
+              relationshipId: relationship.id,
+            })
+          ).toEqual(expected);
+          expect(await store.listRelationships(a)).toEqual([expected]);
+        });
+      });
+
+      // PPL-02
+      it('reads back a parent with its subtype and no dates', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+          const relationship = relOf({
+            childId: ID_2,
+            id: REL_1,
+            parentId: ID_1,
+            subtype: 'adoptive',
+            type: 'parent',
+          });
+
+          await store.addRelationship({ ...a, relationship });
+
+          expect(await store.listRelationships(a)).toEqual([
+            { ...relationship, version: 1 },
+          ]);
+        });
+      });
+
+      // NFR-09
+      it('refuses a Relationship that joins Persons of two Trees', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+
+          for (const relationship of [
+            parentOf(REL_1, ID_1, ID_4),
+            parentOf(REL_1, ID_4, ID_1),
+            spouseOf(REL_1, ID_1, ID_4),
+            parentOf(REL_1, ID_1, '01900000-0000-7000-8000-0000000000ff'),
+          ]) {
+            expect(await store.addRelationship({ ...a, relationship })).toEqual(
+              NOT_FOUND
+            );
+          }
+
+          expect(await store.listRelationships(a)).toEqual([]);
+        });
+      });
+
+      // NFR-09
+      it('gives Account B the result of a Relationship that does not exist', async () => {
+        await withStore(async store => {
+          const { a, b } = await withPersons(store);
+
+          await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1, ID_1, ID_2),
+          });
+
+          const cross = { accountId: b.accountId, treeId: a.treeId };
+
+          expect(
+            await store.findRelationship({
+              ...cross,
+              relationshipId: REL_1 as RelationshipId,
+            })
+          ).toEqual(
+            await store.findRelationship({
+              ...a,
+              relationshipId: REL_2 as RelationshipId,
+            })
+          );
+          expect(await store.listRelationships(cross)).toEqual([]);
+          expect(
+            await store.addRelationship({
+              ...cross,
+              relationship: parentOf(REL_2, ID_2, ID_3),
+            })
+          ).toEqual(NOT_FOUND);
+          expect(
+            await store.updateRelationship({
+              ...cross,
+              relationship: relOf({
+                childId: ID_2,
+                id: REL_1,
+                parentId: ID_1,
+                subtype: 'step',
+                type: 'parent',
+              }),
+              version: 1,
+            })
+          ).toEqual(NOT_FOUND);
+          expect(await store.listRelationships(a)).toHaveLength(1);
+        });
+      });
+
+      // NFR-09
+      it('keeps the same id apart in two Trees', async () => {
+        await withStore(async store => {
+          const { a, b } = await withPersons(store);
+
+          await store.addPerson({ ...b, person: personOf(ID_1, {}) });
+          await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1, ID_1, ID_2),
+          });
+          await store.addRelationship({
+            ...b,
+            relationship: spouseOf(REL_1, ID_1, ID_4),
+          });
+
+          expect((await store.listRelationships(a))[0].type).toBe('parent');
+          expect((await store.listRelationships(b))[0].type).toBe('spouse');
+        });
+      });
+
+      // NFR-09
+      it('ignores a repeated add with the same id', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+          const first = await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1, ID_1, ID_2),
+          });
+          const again = await store.addRelationship({
+            ...a,
+            relationship: spouseOf(REL_1, ID_2, ID_3),
+          });
+
+          expect(again).toEqual(first);
+          expect(await store.listRelationships(a)).toEqual([
+            first.ok && first.value,
+          ]);
+        });
+      });
+
+      // PPL-02
+      it('updates the subtype with the version read, and refuses a stale one', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+
+          await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1, ID_1, ID_2),
+          });
+
+          const step = relOf({
+            childId: ID_2,
+            id: REL_1,
+            parentId: ID_1,
+            subtype: 'step',
+            type: 'parent',
+          });
+          const updated = await store.updateRelationship({
+            ...a,
+            relationship: step,
+            version: 1,
+          });
+
+          expect(updated).toEqual({ ok: true, value: { ...step, version: 2 } });
+          expect(
+            await store.updateRelationship({
+              ...a,
+              relationship: parentOf(REL_1, ID_1, ID_2),
+              version: 1,
+            })
+          ).toEqual({ error: 'conflict', ok: false });
+          expect(
+            (await store.findRelationship({ ...a, relationshipId: step.id }))
+              ?.version
+          ).toBe(2);
+          expect(
+            await store.updateRelationship({
+              ...a,
+              relationship: parentOf(REL_2, ID_1, ID_2),
+              version: 1,
+            })
+          ).toEqual(NOT_FOUND);
+        });
+      });
+
+      // PPL-02
+      it('updates the dates, and removes one that an update leaves out', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+
+          await store.addRelationship({
+            ...a,
+            relationship: spouseOf(REL_1, ID_1, ID_2, {
+              divorce: '1885',
+              marriage: '1870',
+            }),
+          });
+
+          const next = spouseOf(REL_1, ID_1, ID_2, { marriage: 'ABT 1871' });
+          const updated = await store.updateRelationship({
+            ...a,
+            relationship: next,
+            version: 1,
+          });
+
+          expect(updated).toEqual({ ok: true, value: { ...next, version: 2 } });
+          expect(updated.ok && updated.value).not.toHaveProperty('divorce');
+        });
+      });
+
+      // PPL-02
+      it('refuses an update that names other Persons or another type', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+
+          await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1, ID_1, ID_2),
+          });
+
+          for (const relationship of [
+            parentOf(REL_1, ID_1, ID_3),
+            parentOf(REL_1, ID_2, ID_1),
+            spouseOf(REL_1, ID_1, ID_2),
+          ]) {
+            expect(
+              await store.updateRelationship({ ...a, relationship, version: 1 })
+            ).toEqual(NOT_FOUND);
+          }
+
+          expect(
+            (
+              await store.findRelationship({
+                ...a,
+                relationshipId: REL_1 as RelationshipId,
+              })
+            )?.version
+          ).toBe(1);
+        });
+      });
+
+      // NFR-09
+      it('lists by id', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+
+          for (const [id, parent, child] of [
+            [REL_3, ID_1, ID_3],
+            [REL_1, ID_1, ID_2],
+            [REL_2, ID_2, ID_3],
+          ]) {
+            await store.addRelationship({
+              ...a,
+              relationship: parentOf(id, parent, child),
+            });
+          }
+
+          expect((await store.listRelationships(a)).map(r => r.id)).toEqual([
+            REL_1,
+            REL_2,
+            REL_3,
+          ]);
+        });
+      });
+
+      // NFR-03
+      it('treats an id that is not a UUID as one that matches nothing', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+          const bad = { accountId: MALFORMED_ACCOUNT, treeId: a.treeId };
+          const badTree = { accountId: a.accountId, treeId: MALFORMED_TREE };
+          const badId = {
+            ...parentOf(REL_1, ID_1, ID_2),
+            id: 'nope',
+          } as RelationshipInput;
+          const badPerson = {
+            ...parentOf(REL_1, ID_1, ID_2),
+            childId: 'nope',
+          } as RelationshipInput;
+
+          expect(await store.listRelationships(bad)).toEqual([]);
+          expect(await store.listRelationships(badTree)).toEqual([]);
+          expect(
+            await store.findRelationship({
+              ...a,
+              relationshipId: 'nope' as RelationshipId,
+            })
+          ).toBeUndefined();
+
+          for (const relationship of [badId, badPerson]) {
+            expect(await store.addRelationship({ ...a, relationship })).toEqual(
+              NOT_FOUND
+            );
+            expect(
+              await store.updateRelationship({ ...a, relationship, version: 1 })
+            ).toEqual(NOT_FOUND);
+          }
+
+          expect(
+            await store.addRelationship({
+              ...badTree,
+              relationship: parentOf(REL_1, ID_1, ID_2),
+            })
+          ).toEqual(NOT_FOUND);
+          expect(await store.listRelationships(a)).toEqual([]);
+        });
+      });
+
+      // PPL-02
+      it('keeps one Relationship for an id in either case', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+
+          await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1.replace('b1', 'B1'), ID_1, ID_2),
+          });
+          await store.addRelationship({
+            ...a,
+            relationship: parentOf(REL_1, ID_1, ID_3),
+          });
+
+          const listed = await store.listRelationships(a);
+
+          expect(
+            listed.map(r => [r.id, r.type === 'parent' && r.childId])
+          ).toEqual([[REL_1, ID_2]]);
+        });
+      });
+
+      // NFR-09
+      it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
+        'gives conflict for the version %s',
+        async version => {
+          await withStore(async store => {
+            const { a } = await withPersons(store);
+
+            await store.addRelationship({
+              ...a,
+              relationship: parentOf(REL_1, ID_1, ID_2),
+            });
+
+            expect(
+              await store.updateRelationship({
+                ...a,
+                relationship: parentOf(REL_1, ID_1, ID_2),
+                version,
+              })
+            ).toEqual({ error: 'conflict', ok: false });
+          });
+        }
+      );
+
+      // NFR-09
+      it('returns copies that a caller may change', async () => {
+        await withStore(async store => {
+          const { a } = await withPersons(store);
+          const input = spouseOf(REL_1, ID_1, ID_2, { marriage: '1870' });
+          const added = await store.addRelationship({
+            ...a,
+            relationship: input,
+          });
+          const found = await store.findRelationship({
+            ...a,
+            relationshipId: input.id,
+          });
+          const [listed] = await store.listRelationships(a);
+
+          for (const copy of [added.ok && added.value, found, listed, input]) {
+            if (copy && copy.type === 'spouse' && copy.marriage) {
+              copy.marriage.date1 = '1900';
+            }
+          }
+
+          const saved = await store.findRelationship({
+            ...a,
+            relationshipId: input.id,
+          });
+
+          expect(saved?.type === 'spouse' && saved.marriage?.date1).toBe(
+            '1870'
+          );
         });
       });
     });

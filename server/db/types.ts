@@ -1,9 +1,15 @@
 import type { Generated } from 'kysely';
 
 import type { Qualifier } from '@ks/lib/domain/dates/types.ts';
-import type { AccountId, PersonId, TreeId } from '@ks/lib/domain/ids/types.ts';
+import type {
+  AccountId,
+  PersonId,
+  RelationshipId,
+  TreeId,
+} from '@ks/lib/domain/ids/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types.ts';
 import type { Sex } from '@ks/lib/domain/persons/types.ts';
+import type { ParentSubtype } from '@ks/lib/domain/relationships/types.ts';
 
 /** Tables as Kysely sees them: camelCase, mapped to snake_case by `CamelCasePlugin`. */
 export type Database = {
@@ -27,6 +33,18 @@ export type Database = {
     version: Generated<number>;
   } & FuzzyDateColumnsOf<'birth'> &
     FuzzyDateColumnsOf<'death'>;
+  relationship: {
+    createdAt: Generated<Date>;
+    id: RelationshipId;
+    personA: PersonId;
+    personB: PersonId;
+    subtype: null | ParentSubtype;
+    treeId: TreeId;
+    type: 'parent' | 'spouse';
+    updatedAt: Generated<Date>;
+    version: Generated<number>;
+  } & FuzzyDateColumnsOf<'end'> &
+    FuzzyDateColumnsOf<'start'>;
   schemaMigration: {
     appliedAt: Generated<Date>;
     checksum: string;

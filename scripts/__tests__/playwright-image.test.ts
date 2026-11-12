@@ -96,6 +96,14 @@ describe('the Playwright container image', () => {
       expect(npm?.patterns).toEqual(['@playwright/test']);
     });
 
+    // The other npm updates still need their own schedule and label.
+    it('keeps the schedule and label of the npm entry', () => {
+      expect(entry('npm', '/')).toMatchObject({
+        labels: ['dependencies'],
+        schedule: { interval: 'weekly' },
+      });
+    });
+
     it('keeps @playwright/test out of the development group', () => {
       expect(
         entry('npm', '/')?.groups?.development?.['exclude-patterns']

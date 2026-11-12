@@ -9,12 +9,17 @@ multi-ecosystem-groups:
     commit-message:
       prefix: chore
 updates:
+  # commit-message is a group-only option, so the group sets the prefix for every npm PR.
   - package-ecosystem: npm
     directory: /
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+    labels:
+      - dependencies
     multi-ecosystem-group: playwright
     patterns:
       - '@playwright/test'
-    versioning-strategy: increase
     # Held majors: see "Held packages" in docs/dependencies.md.
     ignore:
       - dependency-name: typescript

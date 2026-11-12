@@ -3,18 +3,23 @@ import { describe, expect, it } from 'vitest';
 import {
   parseAccountId,
   parsePersonId,
+  parseRelationshipId,
   parseTreeId,
 } from '@ks/lib/domain/ids/ids.mts';
 
 const UUID = '00000000-0000-4000-8000-0000000000a1';
 
-describe('parsePersonId', () => {
+describe.each([
+  ['parsePersonId', parsePersonId],
+  ['parseRelationshipId', parseRelationshipId],
+])('%s', (_name, parse) => {
   it('returns the id in lower case', () => {
-    expect(parsePersonId(UUID.replace('a1', 'A1'))).toBe(UUID);
+    expect(parse(UUID.replace('a1', 'A1'))).toBe(UUID);
   });
 });
 
 describe.each([
+  ['parseRelationshipId', parseRelationshipId],
   ['parseTreeId', parseTreeId],
   ['parsePersonId', parsePersonId],
   ['parseAccountId', parseAccountId],

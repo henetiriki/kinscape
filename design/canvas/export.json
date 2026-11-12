@@ -1,6 +1,9 @@
 {
   "icon": "/_blob/fc8efdb1b185576b872141e6e4fa37f8",
-  "links": { "Kit-menu-phone.dc.html": "design-kit-menu-phone" },
+  "links": {
+    "Kit-menu-phone.dc.html": "design-kit-menu-phone",
+    "Person-edit.dc.html": "person-edit"
+  },
   "snapshots": [
     {
       "file": "Sign-in.dc.html",

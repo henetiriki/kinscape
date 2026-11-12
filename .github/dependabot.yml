@@ -45,6 +45,19 @@ updates:
         update-types:
           - minor
           - patch
+  # Held at the major version: see "Held packages" in docs/dependencies.md.
+  - package-ecosystem: docker
+    directory: /.github/images/postgres
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
+    ignore:
+      - dependency-name: postgres
+        update-types:
+          - version-update:semver-major
   - package-ecosystem: github-actions
     directories:
       - /

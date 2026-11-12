@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
@@ -6,6 +7,7 @@ import { parse } from 'yaml';
 const root = process.cwd();
 const read = (file: string) => readFileSync(join(root, file), 'utf8');
 
+const DOCKERFILE = '.github/images/postgres/Dockerfile';
 const SCRIPT = 'scripts/ci-postgres.sh';
 const WORKFLOW = '.github/workflows/ci.yml';
 
@@ -23,11 +25,80 @@ const indexOf = (job: string, run: string) =>
 
 // NFR-09
 describe('the Postgres container of CI', () => {
-  it('is pinned by tag and digest', () => {
+  // Dependabot reads only the first FROM line, and moves the minor version in its own PR.
+  it(`is pinned by minor tag and digest, alone on the one FROM line of ${DOCKERFILE}`, () => {
+    const from = existsSync(join(root, DOCKERFILE))
+      ? read(DOCKERFILE)
+          .split('\n')
+          .filter(line => line.startsWith('FROM '))
+      : [];
+
     expect(
-      read(SCRIPT),
-      `${SCRIPT} needs IMAGE='postgres:17@sha256:<digest>'`
-    ).toMatch(/^IMAGE='postgres:17@sha256:[0-9a-f]{64}'$/m);
+      from,
+      `${DOCKERFILE} needs one FROM postgres:17.<minor>@sha256:<digest> line`
+    ).toHaveLength(1);
+    expect(from[0]).toMatch(/^FROM postgres:17\.\d+@sha256:[0-9a-f]{64}$/);
+  });
+
+  // The command and its file are one string: a comment that names the Dockerfile must not pass.
+  it(`is read by ${SCRIPT} from the FROM line`, () => {
+    expect(read(SCRIPT)).toContain(
+      `sed -n 's/^FROM //p' "$(dirname "$0")/../${DOCKERFILE}"`
+    );
+  });
+
+  // Plans are history: they name the old pins.
+  it('is named in its Dockerfile only', () => {
+    const { status, stdout } = spawnSync(
+      'git',
+      [
+        'grep',
+        '-I',
+        '-l',
+        '-E',
+        'postgres:[0-9]',
+        '--',
+        '.',
+        ':(exclude)plans',
+        ':(exclude).github/images',
+        ':(exclude)__tests__',
+        ':(exclude)*/__tests__/*',
+      ],
+      { cwd: root, encoding: 'utf8' }
+    );
+
+    // git grep exits 1 when nothing matches, and 128 when it fails.
+    expect(status).toBeLessThan(2);
+    expect(
+      stdout.trim().split('\n').filter(Boolean),
+      `these files name the image: read the FROM line of ${DOCKERFILE} instead`
+    ).toEqual([]);
+  });
+
+  it('is updated by Dependabot within its major version', () => {
+    const { updates } = parse(read('.github/dependabot.yml')) as {
+      updates: Record<string, unknown>[];
+    };
+
+    expect(
+      updates.find(
+        update =>
+          update['package-ecosystem'] === 'docker' &&
+          update.directory === '/.github/images/postgres'
+      )
+    ).toEqual({
+      'commit-message': { prefix: 'chore' },
+      directory: '/.github/images/postgres',
+      ignore: [
+        {
+          'dependency-name': 'postgres',
+          'update-types': ['version-update:semver-major'],
+        },
+      ],
+      labels: ['dependencies'],
+      'package-ecosystem': 'docker',
+      schedule: { interval: 'weekly' },
+    });
   });
 
   it.each([

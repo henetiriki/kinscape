@@ -50,7 +50,7 @@ describe('budgetFor', () => {
     ['docs/writing.md', 600],
     ['docs/how-we-work.md', 850],
     ['docs/building.md', 450],
-    ['docs/dependencies.md', 250],
+    ['docs/dependencies.md', 275],
     ['docs/repo-settings.md', 900],
     ['docs/infrastructure.md', 1000],
     ['docs/architecture.md', 850],

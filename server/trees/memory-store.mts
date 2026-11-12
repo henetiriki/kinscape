@@ -26,6 +26,7 @@ import {
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
+import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 /** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
@@ -164,9 +165,9 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
         )
         .slice(0, MAX_LISTED),
     listRelationships: async scope =>
-      structuredClone([...(relationshipsOf(scope)?.values() ?? [])]).sort(
-        (x, y) => compare(x.id, y.id)
-      ),
+      structuredClone([...(relationshipsOf(scope)?.values() ?? [])])
+        .sort((x, y) => compare(x.id, y.id))
+        .slice(0, MAX_RELATIONSHIPS),
     updatePerson: async ({ person, version, ...scope }) => {
       const owned = personsOf(scope);
       const saved = owned?.get(person.id);

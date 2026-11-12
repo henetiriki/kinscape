@@ -15,7 +15,10 @@ import {
   MAX_LISTED,
   personInputSchema,
 } from '@ks/lib/domain/persons/schemas.mts';
-import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
+import {
+  MAX_RELATIONSHIPS,
+  relationshipInputSchema,
+} from '@ks/lib/domain/relationships/schemas.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
 import { openTree } from '@ks/server/trees/repository.mts';
@@ -1314,6 +1317,56 @@ export const runTreeStoreContract = (
             ).toEqual(NOT_FOUND);
           });
         });
+
+        // PPL-02
+        it('lists no more than the cap, and refuses a write when the list is full', async () => {
+          await withStore(async store => {
+            const { a } = await twoTrees(store);
+            const opened = await openAs(store, a.accountId, a.treeId);
+
+            if (!opened.ok) {
+              throw new Error('setup failed');
+            }
+
+            const { persons, relationships } = opened.value;
+
+            for (const id of [ID_1, ID_2, ID_3]) {
+              await persons.create(personOf(id, {}));
+            }
+
+            // Seeded through the store: the group would refuse a repeated spouse pair.
+            const seed = (n: number) =>
+              store.addRelationship({
+                ...a,
+                relationship: spouseOf(
+                  n === 0
+                    ? REL_1
+                    : `01900000-0000-7000-9000-${(0x100000 + n).toString(16).padStart(12, '0')}`,
+                  ID_1,
+                  ID_2
+                ),
+              });
+
+            for (let n = 0; n < MAX_RELATIONSHIPS; n += 1) {
+              await seed(n);
+            }
+
+            const before = await relationships.list();
+
+            expect(before).toHaveLength(MAX_RELATIONSHIPS);
+            expect(
+              await relationships.create(parentOf(REL_2, ID_1, ID_3))
+            ).toEqual({ error: 'tree-full', ok: false });
+            expect(
+              await relationships.update(spouseOf(REL_1, ID_1, ID_2), 1)
+            ).toEqual({ error: 'tree-full', ok: false });
+            expect(await relationships.list()).toEqual(before);
+
+            await seed(MAX_RELATIONSHIPS);
+
+            expect(await relationships.list()).toEqual(before);
+          });
+        }, 120_000);
 
         // NFR-09
         it('gives not-found for a Person outside the Tree', async () => {

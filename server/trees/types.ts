@@ -27,14 +27,19 @@ export type RelationshipGroup = {
   /** Saves a new Relationship; a repeat of an id returns the one saved first. */
   create: (
     relationship: RelationshipInput
-  ) => Promise<Result<Relationship, 'not-found' | Refusal>>;
+  ) => Promise<Result<Relationship, 'not-found' | 'tree-full' | Refusal>>;
   get: (id: RelationshipId) => Promise<Relationship | undefined>;
   list: () => Promise<Relationship[]>;
-  /** `version` is the one the client read. A rule refusal shows before `conflict` or `not-found`. */
+  /**
+   * `version` is the one the client read. A rule refusal shows before `conflict` or `not-found`.
+   * `tree-full`: the Tree holds `MAX_RELATIONSHIPS`, so the rules cannot see every row.
+   */
   update: (
     relationship: RelationshipInput,
     version: number
-  ) => Promise<Result<Relationship, 'conflict' | 'not-found' | Refusal>>;
+  ) => Promise<
+    Result<Relationship, 'conflict' | 'not-found' | 'tree-full' | Refusal>
+  >;
 };
 
 /** Maps a row to what the Viewer may see: the one place NFR-10 acts. Each group's reads pass through one. */

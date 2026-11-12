@@ -4,6 +4,12 @@ import { fuzzyDateText } from '#ks/lib/domain/dates/schemas.mts';
 import { parsePersonId, parseRelationshipId } from '#ks/lib/domain/ids/ids.mts';
 import { idField } from '#ks/lib/domain/ids/schemas.mts';
 
+/**
+ * The most Relationships a list returns. A Tree holds about 2,000 Persons (NFR sizing) and about
+ * 4,000 Relationships, so this leaves 2.5 times headroom.
+ */
+export const MAX_RELATIONSHIPS = 10_000;
+
 const parentSchema = z.strictObject({
   childId: idField(parsePersonId),
   id: idField(parseRelationshipId),

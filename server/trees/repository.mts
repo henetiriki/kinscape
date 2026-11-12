@@ -1,4 +1,8 @@
 import type { TreeId } from '#ks/lib/domain/ids/types.ts';
+import type {
+  Refusal,
+  RelationshipInput,
+} from '#ks/lib/domain/relationships/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 import type { TreeStore, Viewer } from '#ks/lib/domain/trees/types.ts';
 import type {
@@ -10,6 +14,7 @@ import type {
 
 import { parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { checkRelationship } from '#ks/lib/domain/relationships/rules.mts';
+import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { sessionOf } from '#ks/server/auth/sessions.mts';
 import {
@@ -49,6 +54,22 @@ const personGroup = (
   };
 };
 
+/**
+ * Runs the rules on the Tree's Relationships. A list at the cap may be cut short, and the rules
+ * would then pass what they should refuse, so a full list refuses the write.
+ */
+const checkAgainstTree = async (
+  store: TreeStore,
+  scope: { accountId: Viewer['accountId']; treeId: TreeId },
+  relationship: RelationshipInput
+): Promise<Result<RelationshipInput, 'tree-full' | Refusal>> => {
+  const others = await store.listRelationships(scope);
+
+  return others.length >= MAX_RELATIONSHIPS
+    ? err('tree-full')
+    : checkRelationship(relationship, others);
+};
+
 /** The Relationships of one Tree, for one Viewer. */
 const relationshipGroup = (
   store: TreeStore,
@@ -59,10 +80,7 @@ const relationshipGroup = (
 
   return {
     create: async relationship => {
-      const checked = checkRelationship(
-        relationship,
-        await store.listRelationships(scope)
-      );
+      const checked = await checkAgainstTree(store, scope, relationship);
 
       if (!checked.ok) {
         return checked;
@@ -82,10 +100,7 @@ const relationshipGroup = (
         relationshipView(viewer, row)
       ),
     update: async (relationship, version) => {
-      const checked = checkRelationship(
-        relationship,
-        await store.listRelationships(scope)
-      );
+      const checked = await checkAgainstTree(store, scope, relationship);
 
       if (!checked.ok) {
         return checked;

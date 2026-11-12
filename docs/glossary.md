@@ -1,6 +1,6 @@
 # Glossary
 
-Use these terms exactly in code, UI and docs. Add each new term in its A to Z place.
+Add each new term in its A to Z place.
 
 ## Terms defined elsewhere
 
@@ -11,8 +11,8 @@ The linked file owns each meaning.
 | Account            | A sign-in, with no link to a Person                                       | [Key concepts](requirements.md#key-concepts)                    |
 | Address            | The location exactly as a record writes it                                | [Key concepts](requirements.md#key-concepts)                    |
 | Boundary version   | The shape of one Polity between two dates                                 | [Key concepts](requirements.md#key-concepts)                    |
-| Bug                | An issue that reports something broken                                    | [How we work](how-we-work.md#intent-spec-plan)                  |
-| Chore              | An issue that changes tooling, CI, docs, process or settings              | [How we work](how-we-work.md#intent-spec-plan)                  |
+| Bug                | An issue that reports something broken                                    | [How we work](how-we-work.md#which-issue-do-i-need)             |
+| Chore              | An issue that changes tooling, CI, docs, process or settings              | [How we work](how-we-work.md#which-issue-do-i-need)             |
 | Claude             | The role that drafts, builds, tests and fixes. It approves nothing.       | [How we work](how-we-work.md#roles-and-labels-whose-turn-is-it) |
 | Fuzzy date         | A genealogical date with a qualifier                                      | [Key concepts](requirements.md#key-concepts)                    |
 | Hand-back path     | A path that only the tech lead builds                                     | [Plan rules](../plans/README.md#hand-back)                      |
@@ -49,7 +49,7 @@ No other file defines these terms.
 | Install          | The copy of the design system on the canvas, in `project/ds/kinscape/`                                                                                             | —                           |
 | Local session    | A Claude Code session that the tech lead starts                                                                                                                    | —                           |
 | Page             | A tab on the canvas that groups boards, for example "Map states"                                                                                                   | tab                         |
-| Plan PR          | The draft PR that holds a plan until its approval                                                                                                                  | —                           |
+| Plan PR          | The draft PR that holds a plan until the tech lead approves it                                                                                                     | —                           |
 | Plan run         | A CI agent run that refreshes an issue and drafts its plan                                                                                                         | —                           |
 | Reference screen | A JPG in `design/`, rendered from a snapshot                                                                                                                       | screenshot                  |
 | Screen           | An app screen that `design/screens.json` names, for example `map-account-menu`                                                                                     | —                           |

@@ -64,16 +64,17 @@ Step 8 names `SKILL.md` only. Line 7 of `publish-design-system/tools.md` also cr
 
 ## Proof
 
-| Acceptance check | Proven by                        |
-| ---------------- | -------------------------------- |
-| Budget           | `npm test`, `npm run words`      |
-| Links            | The PR lists each target         |
-| Artifact names   | A claude.ai screenshot in the PR |
+| Acceptance check | Proven by                   |
+| ---------------- | --------------------------- |
+| Budget           | `npm test`, `npm run words` |
+| Links            | The PR lists each target    |
+| Artifact names   | The artifact list in the PR |
 
 ## Deviations
 
 - `SKILL.md` step 3.3 drops "titled" to stay in its 650-word budget.
-- The canvas name follows the `canvas.json` title, so a publish of that file renamed the canvas.
-- D2 adds the design system title in `lib/design/system.mts` and a publish.
+- The canvas name follows the `canvas.json` title. The canvas got the new name when the session published that file.
 - `scripts/doc-links.mts` adds `docs/glossary.md` to the `AGENTS.md` cycle entry: the `AGENTS.md` link makes new cycles through it.
 - The refresh compared sizes, then read only the two changed files. The exporter did not run: Chromium is not installed here.
+- The Proof row for the artifact names uses the artifact list text, not a screenshot.
+- The glossary row for Plan PR says "until the tech lead approves it" (STE rule 7).

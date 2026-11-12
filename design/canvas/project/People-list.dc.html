@@ -57,8 +57,8 @@
                     <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{p.name}}</x-import>
                     <sc-if value="{{p.hasNote}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{p.note}}</x-import></sc-if>
                   </span>
-                  <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Born </span><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.born}}</x-import></span>
-                  <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Died </span><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.died}}</x-import></span>
+                  <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">Born </span><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.born}}</x-import></span>
+                  <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">Died </span><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.died}}</x-import></span>
                   <span class="link" style="justify-self: end; display: inline-flex; align-items: center; gap: var(--space-4); color: var(--brand)">Edit<x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></span>
                 </a>
               </li>

@@ -12,12 +12,7 @@
 <x-dc>
 <helmet>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<style>
-body{margin:0}
-.ks-pfield{border:1px solid var(--field-border);padding:0 12px}
-.ks-pfield:hover{border-color:var(--ink-3)}
-.ks-pfield:focus{border:2px solid var(--brand);padding:0 11px;outline:none}
-</style>
+<style>body{margin:0}</style>
 </helmet>
 <div style="width: 1440px; height: 1240px; box-sizing: border-box; padding: var(--space-64); background: var(--surface); font-family: var(--font-body); color: var(--ink); display: flex; flex-direction: column; gap: var(--space-40)">
 
@@ -31,7 +26,7 @@ body{margin:0}
 
     <div style="width: 840px; flex: none; display: flex; flex-direction: column; gap: var(--space-12)">
       <table style="width: 100%; border-collapse: collapse; text-align: left">
-        <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">What the user types and what shows under the field</caption>
+        <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">What the user types and what shows under the field</caption>
         <thead>
           <tr style="border-bottom: 1px solid var(--line-strong); text-transform: uppercase; color: var(--ink-3)">
             <th scope="col" style="width: 180px; padding: 0 var(--space-16) var(--space-8) 0; font-weight: 600"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Case</x-import></th>
@@ -79,7 +74,7 @@ body{margin:0}
         <div style="display: flex; flex-direction: column; gap: var(--space-8)">
           <label for="fd-input" class="label" style="color: var(--ink)">Birth</label>
           <span style="position: relative; display: flex">
-            <input id="fd-input" class="ks-pfield" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{tryIt.invalid}}" aria-describedby="fd-input-msg" value="{{tryIt.text}}" onChange="{{tryIt.onInput}}" onBlur="{{tryIt.onBlur}}" onKeyDown="{{tryIt.onKey}}" style="{{tryIt.style}}">
+            <input id="fd-input" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{tryIt.invalid}}" aria-describedby="fd-input-msg" value="{{tryIt.text}}" onChange="{{tryIt.onInput}}" onBlur="{{tryIt.onBlur}}" onFocus="{{tryIt.onFocus}}" onMouseEnter="{{tryIt.onEnter}}" onMouseLeave="{{tryIt.onLeave}}" onKeyDown="{{tryIt.onKey}}" style="{{tryIt.style}}">
             <sc-if value="{{tryIt.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
           </span>
           <div id="fd-input-msg" aria-live="polite">
@@ -136,7 +131,7 @@ body{margin:0}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { text: 'ABT 1850', err: '' };
+    this.state = { text: 'ABT 1850', err: '', hovered: false, focused: false };
   }
 
   parseDate(raw) {
@@ -195,6 +190,10 @@ class Component extends DCLogic {
     const s = this.state;
     const r = this.parseDate(s.text);
     const check = () => this.setState((x) => ({ err: this.parseDate(x.text).error || '' }));
+    const look = s.err ? 'border: 2px solid var(--error-border); padding: 0 40px 0 11px' + (s.focused ? '; outline: none' : '')
+      : s.focused ? 'border: 2px solid var(--brand); padding: 0 11px; outline: none'
+      : s.hovered ? 'border: 1px solid var(--ink-3); padding: 0 12px'
+      : 'border: 1px solid var(--field-border); padding: 0 12px';
     return {
       qualifiers: q,
       errors: e,
@@ -206,9 +205,12 @@ class Component extends DCLogic {
         showReading: !s.err && !!r.reading,
         reading: r.reading || '',
         showHelp: !s.err && !r.reading,
-        style: 'flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px' + (s.err ? '; border: 2px solid var(--error-border); padding: 0 40px 0 11px' : ''),
+        style: 'flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px; ' + look,
         onInput: (ev) => this.setState({ text: ev.target.value }),
-        onBlur: check,
+        onBlur: () => { this.setState({ focused: false }); check(); },
+        onFocus: () => this.setState({ focused: true }),
+        onEnter: () => this.setState({ hovered: true }),
+        onLeave: () => this.setState({ hovered: false }),
         onKey: (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); check(); } }
       }
     };

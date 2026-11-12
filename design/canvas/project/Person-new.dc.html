@@ -12,14 +12,7 @@
 <x-dc>
 <helmet>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<style>
-body{margin:0}
-.ks-pfield{border:1px solid var(--field-border);padding:0 12px}
-.ks-pfield:hover{border-color:var(--ink-3)}
-.ks-pfield:focus{border:2px solid var(--brand);padding:0 11px;outline:none}
-.ks-parea{padding:10px 12px}
-.ks-parea:focus{padding:9px 11px}
-</style>
+<style>body{margin:0}</style>
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
@@ -60,7 +53,7 @@ body{margin:0}
             <div style="display: flex; flex-direction: column; gap: var(--space-8)">
               <label for="p-birth" class="label" style="color: var(--ink)">Birth</label>
               <span style="position: relative; display: flex">
-                <input id="p-birth" class="ks-pfield" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{birth.invalid}}" aria-describedby="p-birth-msg" value="{{birth.text}}" onChange="{{birth.onInput}}" onBlur="{{birth.onBlur}}" onKeyDown="{{birth.onKey}}" style="{{birth.style}}">
+                <input id="p-birth" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{birth.invalid}}" aria-describedby="p-birth-msg" value="{{birth.text}}" onChange="{{birth.onInput}}" onBlur="{{birth.onBlur}}" onFocus="{{birth.onFocus}}" onMouseEnter="{{birth.onEnter}}" onMouseLeave="{{birth.onLeave}}" onKeyDown="{{birth.onKey}}" style="{{birth.style}}">
                 <sc-if value="{{birth.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
               </span>
               <div id="p-birth-msg" aria-live="polite">
@@ -73,7 +66,7 @@ body{margin:0}
             <div style="display: flex; flex-direction: column; gap: var(--space-8)">
               <label for="p-death" class="label" style="color: var(--ink)">Death</label>
               <span style="position: relative; display: flex">
-                <input id="p-death" class="ks-pfield" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{death.invalid}}" aria-describedby="p-death-msg" value="{{death.text}}" onChange="{{death.onInput}}" onBlur="{{death.onBlur}}" onKeyDown="{{death.onKey}}" style="{{death.style}}">
+                <input id="p-death" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{death.invalid}}" aria-describedby="p-death-msg" value="{{death.text}}" onChange="{{death.onInput}}" onBlur="{{death.onBlur}}" onFocus="{{death.onFocus}}" onMouseEnter="{{death.onEnter}}" onMouseLeave="{{death.onLeave}}" onKeyDown="{{death.onKey}}" style="{{death.style}}">
                 <sc-if value="{{death.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
               </span>
               <div id="p-death-msg" aria-live="polite">
@@ -88,7 +81,7 @@ body{margin:0}
 
         <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0">
           <label for="p-notes"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Notes</x-import></label>
-          <textarea id="p-notes" class="ks-pfield ks-parea" aria-describedby="p-notes-help" value="{{notes}}" onChange="{{onNotes}}" style="flex: 1; min-height: 240px; resize: vertical; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-body); font-size: 15px; line-height: 22px; color: var(--ink)"></textarea>
+          <textarea id="p-notes" aria-describedby="p-notes-help" value="{{notes}}" onChange="{{onNotes}}" onFocus="{{notesUi.onFocus}}" onBlur="{{notesUi.onBlur}}" onMouseEnter="{{notesUi.onEnter}}" onMouseLeave="{{notesUi.onLeave}}" style="{{notesUi.style}}"></textarea>
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="p-notes-help">Sources, stories, anything the fields can't hold.</x-import>
         </div>
 
@@ -124,6 +117,7 @@ class Component extends DCLogic {
       given: b.given, surname: b.surname, maiden: b.maiden, variants: b.variants, sex: b.sex, deceased: b.deceased, notes: b.notes,
       birth: { text: b.birth, err: '' }, death: { text: b.death, err: '' },
       givenErr: '', surnameErr: '', givenDirty: false, surnameDirty: false, summary: false,
+      hovered: '', focused: '',
       toast: v === 'save-failed' ? 'failed' : ''
     };
     if (v === 'errors') {
@@ -189,10 +183,29 @@ class Component extends DCLogic {
     });
   }
 
+  fieldLook(key, err, area) {
+    const s = this.state;
+    const pad = (n) => area ? (10 - n) + 'px ' + (12 - n) + 'px' : '0 ' + (12 - n) + 'px';
+    if (err) return 'border: 2px solid var(--error-border); padding: ' + (area ? '9px 11px' : '0 40px 0 11px') + (s.focused === key ? '; outline: none' : '');
+    if (s.focused === key) return 'border: 2px solid var(--brand); padding: ' + pad(1) + '; outline: none';
+    if (s.hovered === key) return 'border: 1px solid var(--ink-3); padding: ' + pad(0);
+    return 'border: 1px solid var(--field-border); padding: ' + pad(0);
+  }
+
+  pointer(key) {
+    return {
+      onEnter: () => this.setState({ hovered: key }),
+      onLeave: () => this.setState((x) => (x.hovered === key ? { hovered: '' } : {})),
+      onFocus: () => this.setState({ focused: key }),
+      onBlur: () => this.setState((x) => (x.focused === key ? { focused: '' } : {}))
+    };
+  }
+
   dateView(key) {
     const f = this.state[key];
     const r = this.parseDate(f.text);
     const err = f.err;
+    const ui = this.pointer(key);
     const base = 'flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px';
     return {
       text: f.text,
@@ -202,9 +215,12 @@ class Component extends DCLogic {
       showReading: !err && !!r.reading,
       reading: r.reading || '',
       showHelp: !err && !r.reading,
-      style: base + (err ? '; border: 2px solid var(--error-border); padding: 0 40px 0 11px' : ''),
+      style: base + '; ' + this.fieldLook(key, err, false),
       onInput: (e) => { const t = e.target.value; this.setState((s) => ({ [key]: { text: t, err: s[key].err } })); },
-      onBlur: () => this.check(key),
+      onBlur: () => { ui.onBlur(); this.check(key); },
+      onFocus: ui.onFocus,
+      onEnter: ui.onEnter,
+      onLeave: ui.onLeave,
       onKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.check(key); } }
     };
   }
@@ -234,6 +250,7 @@ class Component extends DCLogic {
       onNotes: (e) => this.setState({ notes: e.target.value }),
       onSex: (e) => this.setState({ sex: e.target.value }),
       sexOptions: [{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }, { label: 'Intersex', value: 'intersex' }, { label: 'Unknown', value: 'unknown' }],
+      notesUi: Object.assign({}, this.pointer('notes'), { style: 'flex: 1; min-height: 240px; resize: vertical; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-body); font-size: 15px; line-height: 22px; color: var(--ink); ' + this.fieldLook('notes', '', true) }),
       birth: this.dateView('birth'),
       death: this.dateView('death'),
       deceased: s.deceased || deathTyped,

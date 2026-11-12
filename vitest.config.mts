@@ -15,6 +15,7 @@ const DATABASE_TESTS = [
   'server/trees/__tests__/database-store.test.ts',
   'scripts/__tests__/account-add.test.ts',
   'scripts/__tests__/db-migrate.test.ts',
+  'scripts/__tests__/seed-ci.test.ts',
 ];
 
 export default defineConfig({

@@ -28,7 +28,6 @@ vi.mock('@ks/app/components/auth/SignInForm', () => ({
 
 import { signInAction, signOutAction } from '@ks/app/sign-in/actions';
 import SignIn from '@ks/app/sign-in/page';
-import { SYNTHETIC } from '@ks/server/adapters.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { memorySignIn } from '@ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '@ks/server/auth/memory-throttle.mts';
@@ -38,6 +37,7 @@ import {
   sessionOf,
   startSession,
 } from '@ks/server/auth/sessions.mts';
+import { SYNTHETIC } from '@ks/server/auth/synthetic.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const fresh = () => {

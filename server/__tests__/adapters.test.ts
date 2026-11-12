@@ -11,7 +11,8 @@ describe('appAdapters', () => {
   it('uses the memory session and store together under the test-only variable', async () => {
     vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
 
-    const { appAdapters, SYNTHETIC } = await import('@ks/server/adapters.mts');
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { SYNTHETIC } = await import('@ks/server/auth/synthetic.mts');
     const { signIn } = await import('@ks/server/auth/sign-in.mts');
     const adapters = appAdapters();
 
@@ -65,6 +66,41 @@ describe('appAdapters', () => {
     const { appAdapters } = await import('@ks/server/adapters.mts');
 
     expect(() => appAdapters()).toThrow(/KINSCAPE_MEMORY_ADAPTERS/);
+  });
+
+  it('refuses to build the memory sign-in on Vercel', async () => {
+    vi.stubEnv('KINSCAPE_MEMORY_SIGN_IN', '1');
+    vi.stubEnv('KINSCAPE_DATABASE_URL', 'postgres://app@localhost:1/db');
+    vi.stubEnv('VERCEL_ENV', 'preview');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+
+    expect(() => appAdapters()).toThrow(/KINSCAPE_MEMORY_SIGN_IN/);
+  });
+
+  it('uses the memory sign-in with the database under KINSCAPE_MEMORY_SIGN_IN', async () => {
+    vi.stubEnv('KINSCAPE_MEMORY_SIGN_IN', '1');
+    vi.stubEnv('KINSCAPE_DATABASE_URL', 'postgres://app@localhost:1/db');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { SYNTHETIC } = await import('@ks/server/auth/synthetic.mts');
+    const { db } = await import('@ks/server/db/database.mts');
+    const fetch = vi.spyOn(globalThis, 'fetch');
+    const { sessions, signIn, store, throttle } = appAdapters();
+
+    expect(await signIn.verify(SYNTHETIC.email, SYNTHETIC.password)).toEqual({
+      issuer: SYNTHETIC.issuer,
+      subject: SYNTHETIC.subject,
+    });
+    expect(await signIn.verify(SYNTHETIC.email, 'wrong')).toBeUndefined();
+    expect(fetch).not.toHaveBeenCalled();
+    // Port 1 refuses the connection; a memory adapter would resolve.
+    await expect(store.findAccount('x', 'x')).rejects.toThrow();
+    await expect(sessions.find('x')).rejects.toThrow();
+    await expect(throttle.since('x', new Date())).rejects.toThrow();
+
+    fetch.mockRestore();
+    await db().destroy();
   });
 
   it('uses Supabase and the database otherwise', async () => {

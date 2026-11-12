@@ -1,11 +1,47 @@
+import type { TreeId } from '#ks/lib/domain/ids/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
-import type { Viewer } from '#ks/lib/domain/trees/types.ts';
-import type { TreeDeps, TreeRepository } from '#ks/server/trees/types.ts';
+import type { TreeStore, Viewer } from '#ks/lib/domain/trees/types.ts';
+import type {
+  PersonGroup,
+  TreeDeps,
+  TreeRepository,
+} from '#ks/server/trees/types.ts';
 
 import { parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { sessionOf } from '#ks/server/auth/sessions.mts';
-import { treeView } from '#ks/server/trees/views.mts';
+import { personView, treeView } from '#ks/server/trees/views.mts';
+
+/** The Persons of one Tree, for one Viewer. The Tree id comes from the opened Tree, never from the client. */
+const personGroup = (
+  store: TreeStore,
+  viewer: Viewer,
+  treeId: TreeId
+): PersonGroup => {
+  const scope = { accountId: viewer.accountId, treeId };
+
+  return {
+    create: async person => {
+      const saved = await store.addPerson({ ...scope, person });
+
+      return saved === undefined
+        ? err('not-found')
+        : ok(personView(viewer, saved));
+    },
+    get: async personId => {
+      const row = await store.findPerson({ ...scope, personId });
+
+      return row === undefined ? undefined : personView(viewer, row);
+    },
+    list: async () =>
+      (await store.listPersons(scope)).map(row => personView(viewer, row)),
+    update: async (person, version) => {
+      const saved = await store.updatePerson({ ...scope, person, version });
+
+      return saved.ok ? ok(personView(viewer, saved.value)) : saved;
+    },
+  };
+};
 
 /**
  * The only way to reach a Tree's data. It resumes the session from the token itself, so nothing
@@ -35,5 +71,9 @@ export const openTree = async (
 
   return row === undefined
     ? err('not-found')
-    : ok({ tree: treeView(viewer, row), viewer });
+    : ok({
+        persons: personGroup(store, viewer, row.id),
+        tree: treeView(viewer, row),
+        viewer,
+      });
 };

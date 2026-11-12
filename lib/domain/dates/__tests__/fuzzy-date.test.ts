@@ -6,6 +6,7 @@ import type { FuzzyDate } from '@ks/lib/domain/dates/types';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import {
   formatFuzzyDate,
+  fuzzyDateOf,
   parseFuzzyDate,
 } from '@ks/lib/domain/dates/fuzzy-date.mts';
 import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
@@ -23,6 +24,17 @@ const span = (text: string): [string, string] => {
 
   return [earliest, latest];
 };
+
+describe('fuzzyDateOf', () => {
+  it.each(['ABT 1850', 'BET 1848 AND MAR 1852', 'FROM 1 JAN 1850 TO 1851'])(
+    'rebuilds %s from its stored parts',
+    text => {
+      const date = parsed(text);
+
+      expect(fuzzyDateOf(date.qualifier, date.date1, date.date2)).toEqual(date);
+    }
+  );
+});
 
 describe('parseFuzzyDate qualifiers', () => {
   it.each(['ABT', 'EST', 'CAL'])('%s 1850 is 2 years either side', word => {

@@ -9,7 +9,6 @@ The code enforces layers: see [architecture.md](architecture.md#enforcement). Fe
 1. **Feature slices.** `people` and `pins`, each with `components/`, domain code, `queries`, `actions` and tests, per [architecture.md](architecture.md#where-does-x-go).
 2. **State ownership.** URL (shareable, MAP-10), then server, then a feature store, then local `useState`. `useMapState` reads `searchParams` through a schema.
 3. **Map layer `legendRow`.** A map layer also exports a `legendRow`; the first Spec that adds a second map layer carries it.
-4. **Domain primitives.** A branded `PersonId`.
 
 ## With Tree data and the API
 

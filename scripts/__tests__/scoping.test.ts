@@ -56,7 +56,14 @@ describe('the repo', () => {
 
 describe('treeMethods', () => {
   it('reads the Tree methods from the type, not the Account ones', () => {
-    expect(METHODS).toEqual(['findTree', 'findTrees']);
+    expect(METHODS).toEqual([
+      'addPerson',
+      'findPerson',
+      'findTree',
+      'findTrees',
+      'listPersons',
+      'updatePerson',
+    ]);
   });
 
   it('skips an index signature and any other type', () => {

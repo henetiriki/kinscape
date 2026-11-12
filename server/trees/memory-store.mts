@@ -1,14 +1,25 @@
 import { randomUUID } from 'node:crypto';
 
-import type { AccountId, TreeId } from '#ks/lib/domain/ids/types.ts';
+import type { AccountId, PersonId, TreeId } from '#ks/lib/domain/ids/types.ts';
+import type { Person } from '#ks/lib/domain/persons/types.ts';
 import type {
   SeedAccount,
   Tree,
+  TreeScope,
   TreeStore,
 } from '#ks/lib/domain/trees/types.ts';
 
-import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
+import {
+  parseAccountId,
+  parsePersonId,
+  parseTreeId,
+} from '#ks/lib/domain/ids/ids.mts';
+import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+
+/** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
+const compare = (x: string, y: string): number =>
+  Buffer.compare(Buffer.from(x), Buffer.from(y));
 
 const identityOf = (issuer: string, subject: string) =>
   JSON.stringify([issuer, subject]);
@@ -29,6 +40,13 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
   }
 
   const ownedBy = (accountId: AccountId) => [...(links.get(accountId) ?? [])];
+  const persons = new Map<TreeId, Map<PersonId, Person>>();
+
+  /** The Persons of a Tree the Account may access; undefined otherwise. */
+  const personsOf = ({ accountId, treeId }: TreeScope) =>
+    links.get(accountId)?.has(treeId) && trees.has(treeId)
+      ? (persons.get(treeId) ?? persons.set(treeId, new Map()).get(treeId)!)
+      : undefined;
 
   return {
     addAccount: async ({ issuer, subject, treeName }) => {
@@ -48,11 +66,26 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
 
       return ok({ accountId, treeId });
     },
+    addPerson: async ({ person, ...scope }) => {
+      const owned = personsOf(scope);
+
+      if (owned === undefined || parsePersonId(person.id) === undefined) {
+        return undefined;
+      }
+
+      if (!owned.has(person.id)) {
+        owned.set(person.id, { ...structuredClone(person), version: 1 });
+      }
+
+      return structuredClone(owned.get(person.id));
+    },
     findAccount: async (issuer, subject) => {
       const id = accounts.get(identityOf(issuer, subject));
 
       return id === undefined ? undefined : { id };
     },
+    findPerson: async ({ personId, ...scope }) =>
+      structuredClone(personsOf(scope)?.get(personId)),
     findTree: async ({ accountId, treeId }) => {
       const found = trees.get(treeId);
 
@@ -68,5 +101,32 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
 
           return { id, name };
         }),
+    listPersons: async scope =>
+      structuredClone([...(personsOf(scope)?.values() ?? [])])
+        .sort(
+          (x, y) =>
+            compare(x.surname, y.surname) ||
+            compare(x.givenNames, y.givenNames) ||
+            compare(x.id, y.id)
+        )
+        .slice(0, MAX_LISTED),
+    updatePerson: async ({ person, version, ...scope }) => {
+      const owned = personsOf(scope);
+      const saved = owned?.get(person.id);
+
+      if (owned === undefined || saved === undefined) {
+        return err('not-found');
+      }
+
+      if (saved.version !== version) {
+        return err('conflict');
+      }
+
+      const next = { ...structuredClone(person), version: version + 1 };
+
+      owned.set(person.id, next);
+
+      return ok(structuredClone(next));
+    },
   };
 };

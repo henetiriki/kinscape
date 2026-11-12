@@ -1,9 +1,14 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { AccountId, TreeId } from '@ks/lib/domain/ids/types.ts';
+import type { AccountId, PersonId, TreeId } from '@ks/lib/domain/ids/types.ts';
+import type { PersonInput } from '@ks/lib/domain/persons/types.ts';
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
 
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
+import {
+  MAX_LISTED,
+  personInputSchema,
+} from '@ks/lib/domain/persons/schemas.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
 import { openTree } from '@ks/server/trees/repository.mts';
@@ -14,6 +19,14 @@ const MISSING_TREE = parseTreeId('00000000-0000-4000-8000-000000000000')!;
 const MALFORMED_ACCOUNT = 'not-a-uuid' as AccountId;
 const MALFORMED_TREE = 'not-a-uuid' as TreeId;
 const NOW = new Date('2030-01-01T00:00:00Z');
+const ID_1 = '01900000-0000-7000-8000-0000000000a1' as PersonId;
+const ID_2 = '01900000-0000-7000-8000-0000000000a2' as PersonId;
+const ID_3 = '01900000-0000-7000-8000-0000000000a3' as PersonId;
+const ID_4 = '01900000-0000-7000-8000-0000000000a4' as PersonId;
+
+/** A synthetic Person as a client's text parses: the schema fills what `fields` omits. */
+const personOf = (id: string, fields: Record<string, unknown>): PersonInput =>
+  personInputSchema.parse({ ...fields, id });
 const NOT_FOUND = { error: 'not-found', ok: false };
 const NO_TREE: SeedAccount = {
   id: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
@@ -234,26 +247,373 @@ export const runTreeStoreContract = (
       });
     });
 
-    describe('openTree', () => {
-      const twoTrees = async (store: TreeStore) => {
-        const a = await store.addAccount({
-          issuer: 'test',
-          subject: 'a',
-          treeName: 'Tree A',
-        });
-        const b = await store.addAccount({
-          issuer: 'test',
-          subject: 'b',
-          treeName: 'Tree B',
-        });
+    const twoTrees = async (store: TreeStore) => {
+      const a = await store.addAccount({
+        issuer: 'test',
+        subject: 'a',
+        treeName: 'Tree A',
+      });
+      const b = await store.addAccount({
+        issuer: 'test',
+        subject: 'b',
+        treeName: 'Tree B',
+      });
 
-        if (!a.ok || !b.ok) {
-          throw new Error('setup failed');
+      if (!a.ok || !b.ok) {
+        throw new Error('setup failed');
+      }
+
+      return { a: a.value, b: b.value };
+    };
+
+    describe('persons', () => {
+      // PPL-01
+      it('reads back every field of a Person born ABT 1850', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const person = personOf(ID_1, {
+            birth: 'ABT 1850',
+            death: 'BET 1900 AND MAR 1910',
+            deceased: true,
+            givenNames: 'Ana',
+            maidenName: 'Dube',
+            notes: 'Synthetic.',
+            sex: 'F',
+            surname: 'Test',
+            variants: ['Anna', 'Ana'],
+          });
+
+          expect(person.birth?.qualifier).toBe('ABT');
+          expect(await store.addPerson({ ...a, person })).toEqual({
+            ...person,
+            version: 1,
+          });
+          expect(await store.findPerson({ ...a, personId: ID_1 })).toEqual({
+            ...person,
+            version: 1,
+          });
+          expect(await store.listPersons(a)).toEqual([
+            { ...person, version: 1 },
+          ]);
+        });
+      });
+
+      // PPL-01
+      it('saves a Person with no sex as unknown', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const saved = await store.addPerson({
+            ...a,
+            person: personOf(ID_1, {}),
+          });
+
+          expect(saved?.sex).toBe('U');
+          expect(saved?.birth).toBeUndefined();
+        });
+      });
+
+      // NFR-09
+      it('gives Account B the result of a Person that does not exist', async () => {
+        await withStore(async store => {
+          const { a, b } = await twoTrees(store);
+
+          await store.addPerson({ ...a, person: personOf(ID_1, {}) });
+
+          const cross = { accountId: b.accountId, treeId: a.treeId };
+          const missing = { ...a, personId: ID_2 };
+
+          expect(await store.findPerson({ ...cross, personId: ID_1 })).toEqual(
+            await store.findPerson(missing)
+          );
+          expect(await store.listPersons(cross)).toEqual([]);
+          expect(
+            await store.addPerson({ ...cross, person: personOf(ID_2, {}) })
+          ).toBeUndefined();
+          expect(
+            await store.updatePerson({
+              ...cross,
+              person: personOf(ID_1, { surname: 'Taken' }),
+              version: 1,
+            })
+          ).toEqual({ error: 'not-found', ok: false });
+          expect(await store.listPersons(a)).toHaveLength(1);
+          expect(
+            (await store.findPerson({ ...a, personId: ID_1 }))?.surname
+          ).toBe('');
+        });
+      });
+
+      // NFR-09
+      it('keeps the same id apart in two Trees', async () => {
+        await withStore(async store => {
+          const { a, b } = await twoTrees(store);
+
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: 'One' }),
+          });
+          await store.addPerson({
+            ...b,
+            person: personOf(ID_1, { surname: 'Two' }),
+          });
+
+          expect(
+            (await store.findPerson({ ...a, personId: ID_1 }))?.surname
+          ).toBe('One');
+          expect(
+            (await store.findPerson({ ...b, personId: ID_1 }))?.surname
+          ).toBe('Two');
+        });
+      });
+
+      // NFR-09
+      it('ignores a repeated create with the same id', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const first = await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: 'First' }),
+          });
+          const again = await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: 'Second' }),
+          });
+
+          expect(again).toEqual(first);
+          expect(await store.listPersons(a)).toEqual([first]);
+        });
+      });
+
+      // NFR-09
+      it('updates with the version read, and refuses a stale one', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: 'Old' }),
+          });
+
+          const update = (surname: string, version: number, id = ID_1) =>
+            store.updatePerson({
+              ...a,
+              person: personOf(id, { surname }),
+              version,
+            });
+          const updated = await update('New', 1);
+
+          expect(updated.ok && updated.value.version).toBe(2);
+          expect(updated.ok && updated.value.surname).toBe('New');
+          expect(await update('Stale', 1)).toEqual({
+            error: 'conflict',
+            ok: false,
+          });
+          expect(await update('Gone', 1, ID_2)).toEqual({
+            error: 'not-found',
+            ok: false,
+          });
+          expect(
+            (await store.findPerson({ ...a, personId: ID_1 }))?.surname
+          ).toBe('New');
+        });
+      });
+
+      // PPL-01
+      it('removes a date that an update leaves out', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { birth: '1850' }),
+          });
+
+          const updated = await store.updatePerson({
+            ...a,
+            person: personOf(ID_1, {}),
+            version: 1,
+          });
+
+          expect(updated.ok && updated.value.birth).toBeUndefined();
+        });
+      });
+
+      // NFR-09
+      it('lists by surname, given names, then id', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const ids = [ID_3, ID_1, ID_2, ID_4];
+          const names = [
+            ['Bee', 'Ann'],
+            ['Bee', 'Ann'],
+            ['Bee', 'Abe'],
+            ['Axe', 'Zed'],
+          ];
+
+          for (const [index, id] of ids.entries()) {
+            const [surname, givenNames] = names[index];
+
+            await store.addPerson({
+              ...a,
+              person: personOf(id, { givenNames, surname }),
+            });
+          }
+
+          expect((await store.listPersons(a)).map(p => p.id)).toEqual([
+            ID_4,
+            ID_2,
+            ID_1,
+            ID_3,
+          ]);
+        });
+      });
+
+      // PPL-01
+      it('lists no more than the cap', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          for (let n = 0; n <= MAX_LISTED; n += 1) {
+            await store.addPerson({
+              ...a,
+              person: personOf(
+                `01900000-0000-7000-8000-${String(n).padStart(12, '0')}`,
+                {}
+              ),
+            });
+          }
+
+          expect(await store.listPersons(a)).toHaveLength(MAX_LISTED);
+        });
+      }, 60_000);
+
+      // NFR-03
+      it('treats an id that is not a UUID as one that matches nothing', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const bad = { accountId: MALFORMED_ACCOUNT, treeId: a.treeId };
+          const badTree = { accountId: a.accountId, treeId: MALFORMED_TREE };
+
+          expect(await store.listPersons(bad)).toEqual([]);
+          expect(await store.listPersons(badTree)).toEqual([]);
+          expect(
+            await store.findPerson({
+              ...a,
+              personId: 'nope' as PersonId,
+            })
+          ).toBeUndefined();
+          expect(
+            await store.addPerson({ ...badTree, person: personOf(ID_1, {}) })
+          ).toBeUndefined();
+          expect(
+            await store.addPerson({
+              ...a,
+              person: { ...personOf(ID_1, {}), id: 'nope' as PersonId },
+            })
+          ).toBeUndefined();
+          expect(await store.listPersons(a)).toEqual([]);
+          expect(
+            await store.updatePerson({
+              ...a,
+              person: { ...personOf(ID_1, {}), id: 'nope' as PersonId },
+              version: 1,
+            })
+          ).toEqual({ error: 'not-found', ok: false });
+        });
+      });
+
+      // PPL-01
+      it('keeps one Person for an id in either case', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const upper = ID_1.replace('a1', 'A1');
+
+          await store.addPerson({
+            ...a,
+            person: personOf(upper, { surname: 'First' }),
+          });
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: 'Second' }),
+          });
+
+          const listed = await store.listPersons(a);
+
+          expect(listed.map(p => [p.id, p.surname])).toEqual([[ID_1, 'First']]);
+        });
+      });
+
+      // NFR-09
+      it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
+        'gives conflict for the version %s',
+        async version => {
+          await withStore(async store => {
+            const { a } = await twoTrees(store);
+
+            await store.addPerson({ ...a, person: personOf(ID_1, {}) });
+
+            expect(
+              await store.updatePerson({
+                ...a,
+                person: personOf(ID_1, { surname: 'New' }),
+                version,
+              })
+            ).toEqual({ error: 'conflict', ok: false });
+          });
         }
+      );
 
-        return { a: a.value, b: b.value };
-      };
+      // NFR-09
+      it('returns copies that a caller may change', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const input = personOf(ID_1, {
+            birth: '1850',
+            variants: ['Anna'],
+          });
+          const added = await store.addPerson({ ...a, person: input });
+          const found = await store.findPerson({ ...a, personId: ID_1 });
+          const [listed] = await store.listPersons(a);
 
+          for (const copy of [added, found, listed, input]) {
+            copy?.variants.push('Changed');
+
+            if (copy?.birth) {
+              copy.birth.date1 = '1900';
+            }
+          }
+
+          const saved = await store.findPerson({ ...a, personId: ID_1 });
+
+          expect(saved?.variants).toEqual(['Anna']);
+          expect(saved?.birth?.date1).toBe('1850');
+        });
+      });
+
+      // NFR-09
+      it('lists names in code-point order', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_1, { surname: '\u{1D504}' }),
+          });
+          await store.addPerson({
+            ...a,
+            person: personOf(ID_2, { surname: 'Ａ' }),
+          });
+
+          // U+FF21 (bytes EF BC A1) sorts before U+1D504 (bytes F0 9D 94 84).
+          expect((await store.listPersons(a)).map(p => p.id)).toEqual([
+            ID_2,
+            ID_1,
+          ]);
+        });
+      });
+    });
+
+    describe('openTree', () => {
       /** Opens as a signed-in Account; `at` is the clock when opening. */
       const openAs = async (
         store: TreeStore,
@@ -277,10 +637,10 @@ export const runTreeStoreContract = (
 
           expect(await openAs(store, a.accountId, a.treeId)).toEqual({
             ok: true,
-            value: {
+            value: expect.objectContaining({
               tree: { id: a.treeId, name: 'Tree A' },
               viewer: { accountId: a.accountId },
-            },
+            }),
           });
         });
       });
@@ -292,11 +652,104 @@ export const runTreeStoreContract = (
 
           expect(await openAs(store, a.accountId)).toEqual({
             ok: true,
-            value: {
+            value: expect.objectContaining({
               tree: { id: a.treeId, name: 'Tree A' },
               viewer: { accountId: a.accountId },
-            },
+            }),
           });
+        });
+      });
+
+      // PPL-01, NFR-10
+      it('gives each Person a living status from the death date and the deceased mark', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const opened = await openAs(store, a.accountId, a.treeId);
+
+          if (!opened.ok) {
+            throw new Error('setup failed');
+          }
+
+          const { persons } = opened.value;
+          const created = await persons.create(personOf(ID_1, {}));
+
+          await persons.create(personOf(ID_2, { death: '1900' }));
+          await persons.create(personOf(ID_3, { deceased: true }));
+
+          expect(created.ok && created.value.living).toBe(true);
+          expect((await persons.get(ID_2))?.living).toBe(false);
+          expect((await persons.get(ID_3))?.living).toBe(false);
+          expect((await persons.list()).map(p => p.living)).toEqual([
+            true,
+            false,
+            false,
+          ]);
+        });
+      });
+
+      // PPL-01
+      it('updates through the group, and refuses a stale version', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const opened = await openAs(store, a.accountId, a.treeId);
+
+          if (!opened.ok) {
+            throw new Error('setup failed');
+          }
+
+          const { persons } = opened.value;
+
+          await persons.create(personOf(ID_1, {}));
+
+          const first = await persons.update(
+            personOf(ID_1, { deceased: true }),
+            1
+          );
+
+          expect(first.ok && [first.value.version, first.value.living]).toEqual(
+            [2, false]
+          );
+          expect(
+            await persons.update(personOf(ID_1, { deceased: false }), 1)
+          ).toEqual({ error: 'conflict', ok: false });
+        });
+      });
+
+      // NFR-09
+      it('gives not-found when the store refuses a create', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const opened = await openAs(store, a.accountId, a.treeId);
+
+          if (!opened.ok) {
+            throw new Error('setup failed');
+          }
+
+          vi.spyOn(store, 'addPerson').mockResolvedValue(undefined);
+
+          expect(await opened.value.persons.create(personOf(ID_1, {}))).toEqual(
+            { error: 'not-found', ok: false }
+          );
+        });
+      });
+
+      // NFR-09
+      it('keeps a Person of Tree A out of Account B’s Tree', async () => {
+        await withStore(async store => {
+          const { a, b } = await twoTrees(store);
+          const asA = await openAs(store, a.accountId, a.treeId);
+          const asB = await openAs(store, b.accountId, b.treeId);
+
+          if (!asA.ok || !asB.ok) {
+            throw new Error('setup failed');
+          }
+
+          await asA.value.persons.create(personOf(ID_1, {}));
+
+          expect(await asB.value.persons.get(ID_1)).toEqual(
+            await asB.value.persons.get(ID_2)
+          );
+          expect(await asB.value.persons.list()).toEqual([]);
         });
       });
 

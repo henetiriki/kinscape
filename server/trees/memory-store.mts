@@ -25,6 +25,7 @@ import {
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 /** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
@@ -33,12 +34,6 @@ const compare = (x: string, y: string): number =>
 
 const identityOf = (issuer: string, subject: string) =>
   JSON.stringify([issuer, subject]);
-
-/** The Persons a Relationship joins: the parent then the child, or Person A then Person B. */
-const endsOf = (relationship: RelationshipInput): string[] =>
-  relationship.type === 'parent'
-    ? [relationship.parentId, relationship.childId]
-    : [relationship.personAId, relationship.personBId];
 
 /** A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree. */
 export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
@@ -139,7 +134,11 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
     findPerson: async ({ personId, ...scope }) =>
       structuredClone(personsOf(scope)?.get(personId)),
     findRelationship: async ({ relationshipId, ...scope }) =>
-      structuredClone(relationshipsOf(scope)?.get(relationshipId)),
+      structuredClone(
+        relationshipsOf(scope)?.get(
+          parseRelationshipId(relationshipId) as RelationshipId
+        )
+      ),
     findTree: async ({ accountId, treeId }) => {
       const found = trees.get(treeId);
 

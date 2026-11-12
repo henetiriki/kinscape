@@ -14,6 +14,14 @@ const MAX_BIOLOGICAL_PARENTS = 2;
 const isParent = (value: RelationshipInput): value is ParentRelationship =>
   value.type === 'parent';
 
+/** The Persons a Relationship joins: the parent then the child, or Person A then Person B. */
+export const endsOf = (
+  relationship: RelationshipInput
+): readonly [PersonId, PersonId] =>
+  relationship.type === 'parent'
+    ? [relationship.parentId, relationship.childId]
+    : [relationship.personAId, relationship.personBId];
+
 const isDuplicate = (input: RelationshipInput, other: RelationshipInput) => {
   if (input.type === 'parent') {
     return (
@@ -101,11 +109,9 @@ export const checkRelationship = (
 ): Result<RelationshipInput, Refusal> => {
   const others = existing.filter(other => other.id !== input.id);
 
-  if (
-    input.type === 'parent'
-      ? input.parentId === input.childId
-      : input.personAId === input.personBId
-  ) {
+  const [first, second] = endsOf(input);
+
+  if (first === second) {
     return err('self');
   }
 

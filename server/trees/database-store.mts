@@ -20,6 +20,7 @@ import {
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { isVersion } from '#ks/server/trees/version.mts';
 
@@ -85,12 +86,6 @@ const personOf = (row: Selectable<Database['person']>): Person => {
     version: row.version,
   };
 };
-
-/** The Persons a Relationship joins: the parent then the child, or Person A then Person B. */
-const endsOf = (relationship: RelationshipInput) =>
-  relationship.type === 'parent'
-    ? ([relationship.parentId, relationship.childId] as const)
-    : ([relationship.personAId, relationship.personBId] as const);
 
 /** The columns a save writes, apart from the Tree id, the id and the Persons. */
 const relationshipFieldsOf = (relationship: RelationshipInput) => ({
@@ -360,12 +355,13 @@ export const databaseStore = (db: Db): TreeStore => ({
     }
 
     // The row matches by Tree, id, type and both Persons: an update never changes them.
-    const match = () =>
-      selectRelationship(db, scope)
-        .where('id', '=', relationship.id)
-        .where('type', '=', relationship.type)
-        .where('personA', '=', ends[0])
-        .where('personB', '=', ends[1]);
+    const key = {
+      id: relationship.id,
+      personA: ends[0],
+      personB: ends[1],
+      treeId: scope.treeId,
+      type: relationship.type,
+    };
     // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
     const row = isVersion(version)
       ? await db
@@ -375,11 +371,7 @@ export const databaseStore = (db: Db): TreeStore => ({
             updatedAt: sql`now()`,
             version: sql`version + 1`,
           })
-          .where('treeId', '=', scope.treeId)
-          .where('id', '=', relationship.id)
-          .where('type', '=', relationship.type)
-          .where('personA', '=', ends[0])
-          .where('personB', '=', ends[1])
+          .where(eb => eb.and(key))
           .where('version', '=', version)
           .returningAll()
           .executeTakeFirst()
@@ -390,7 +382,10 @@ export const databaseStore = (db: Db): TreeStore => ({
     }
 
     // Zero rows: the Relationship is missing or differs in type or Persons, or its version changed.
-    const saved = await match().select('id').executeTakeFirst();
+    const saved = await selectRelationship(db, scope)
+      .where(eb => eb.and(key))
+      .select('id')
+      .executeTakeFirst();
 
     return err(saved === undefined ? 'not-found' : 'conflict');
   },

@@ -977,9 +977,15 @@ export const runTreeStoreContract = (
         await withStore(async store => {
           const { a } = await withPersons(store);
 
+          const upper = REL_1.toUpperCase();
+
+          // A cast skips the schema, which would make the id lower case first.
           await store.addRelationship({
             ...a,
-            relationship: parentOf(REL_1.replace('b1', 'B1'), ID_1, ID_2),
+            relationship: {
+              ...parentOf(REL_1, ID_1, ID_2),
+              id: upper,
+            } as RelationshipInput,
           });
           await store.addRelationship({
             ...a,
@@ -991,6 +997,14 @@ export const runTreeStoreContract = (
           expect(
             listed.map(r => [r.id, r.type === 'parent' && r.childId])
           ).toEqual([[REL_1, ID_2]]);
+          expect(
+            (
+              await store.findRelationship({
+                ...a,
+                relationshipId: upper as RelationshipId,
+              })
+            )?.id
+          ).toBe(REL_1);
         });
       });
 

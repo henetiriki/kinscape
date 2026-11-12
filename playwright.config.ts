@@ -18,7 +18,7 @@ const signedIn = 'test-results/.auth/state.json';
 
 // The CI `design` job runs the design project. So the CI `e2e` job sets this to drop that project,
 // and `perf` waits only for `chromium`. Every other run keeps all projects.
-const split = process.env.KINSCAPE_E2E_SPLIT === '1';
+const split = process.env.E2E_SPLIT === '1';
 
 export default defineConfig({
   // A stray `test.only` fails the run in CI instead of quietly running one test.

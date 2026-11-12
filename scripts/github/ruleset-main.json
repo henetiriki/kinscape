@@ -38,6 +38,7 @@
           { "context": "format", "integration_id": 15368 },
           { "context": "test", "integration_id": 15368 },
           { "context": "e2e", "integration_id": 15368 },
+          { "context": "design", "integration_id": 15368 },
           { "context": "boundaries", "integration_id": 15368 },
           { "context": "words", "integration_id": 15368 },
           { "context": "codecov/project", "integration_id": 254 },

@@ -65,13 +65,15 @@ export default defineConfig({
     },
     css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',
+    // The log prints each project name in a badge with black text. Vitest's default colours include
+    // magenta, which that text can't be read on, so each project names a light colour.
     projects: [
       {
         extends: true,
         test: {
           exclude: ['**/node_modules/**', REACT_18_TEST, ...DATABASE_TESTS],
           include: TESTS,
-          name: 'react-19',
+          name: { color: 'green', label: 'react-19' },
         },
       },
       {
@@ -79,7 +81,7 @@ export default defineConfig({
         extends: true,
         test: {
           include: DATABASE_TESTS,
-          name: 'database-pglite',
+          name: { color: 'yellow', label: 'database-pglite' },
           provide: { backend: 'pglite', databaseUrl: '' },
           testTimeout: 30_000,
         },
@@ -91,7 +93,7 @@ export default defineConfig({
               extends: true,
               test: {
                 include: CONTAINER_TESTS,
-                name: 'database-postgres',
+                name: { color: 'white' as const, label: 'database-postgres' },
                 provide: {
                   backend: 'postgres' as const,
                   databaseUrl: CONTAINER_URL,
@@ -144,7 +146,7 @@ export default defineConfig({
             },
           },
           include: [REACT_18_TEST],
-          name: 'react-18',
+          name: { color: 'cyan', label: 'react-18' },
         },
       },
     ],

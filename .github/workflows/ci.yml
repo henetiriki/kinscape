@@ -92,6 +92,9 @@ jobs:
           node-version-file: .nvmrc
       - name: Install the dependencies
         run: npm ci
+      # The contract suites run on this Postgres as well as on PGlite (scripts/ci-postgres.sh).
+      - name: Start Postgres
+        run: scripts/ci-postgres.sh test
       - name: Run the tests
         run: npm test
       - name: Upload the coverage report
@@ -169,16 +172,11 @@ jobs:
         id: pin
         run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
 
-  # Opens the app in a real browser and clicks through it, as a user would.
+  # Opens the app in a real browser and clicks through it, as a user would. It runs on the runner,
+  # not in the Playwright image: the Postgres script needs Docker, which the image lacks. It signs in
+  # with the memory sign-in and reads and writes the Postgres of scripts/ci-postgres.sh.
   e2e:
-    needs: image
     runs-on: ubuntu-latest
-    # The image has the browser and its system packages. Its version must match @playwright/test
-    # (scripts/__tests__/playwright-image.test.ts); bump the tag and digest together in
-    # .github/playwright-image, then run the design-shots workflow on the branch.
-    container:
-      image: ${{ needs.image.outputs.image }}
-      options: --user 1001
     steps:
       - name: Fetch the code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -189,6 +187,24 @@ jobs:
           node-version-file: .nvmrc
       - name: Install the dependencies
         run: npm ci
+      # The same key and path as setup-workspace and ci-playwright-cache.yml, which seeds main's cache.
+      - name: Read the Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache the Playwright browser
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
+          path: ~/.cache/ms-playwright
+      # The cache holds the browser, not the system packages it needs, so these install on every run.
+      - name: Install the browser
+        run: npm run e2e:install -- --with-deps
+      - name: Start Postgres
+        run: scripts/ci-postgres.sh e2e
+      - name: Migrate the database
+        run: npm run db:migrate
+      - name: Seed the synthetic Account and Tree
+        run: node scripts/seed-ci.mts
       # Keep Next.js's build cache. A source change still restores the last build for the same lockfile.
       - name: Cache the Next.js build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -201,6 +217,7 @@ jobs:
         run: npm run e2e
         env:
           E2E_SPLIT: '1'
+          KINSCAPE_MEMORY_SIGN_IN: '1'
 
   # Compares each built screen with its design snapshot, in parallel with e2e.
   design:

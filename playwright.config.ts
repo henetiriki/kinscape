@@ -20,6 +20,14 @@ const signedIn = 'test-results/.auth/state.json';
 // and `perf` waits only for `chromium`. Every other run keeps all projects.
 const split = process.env.E2E_SPLIT === '1';
 
+// How both servers sign in and store data. By default the memory adapters, which need no database.
+// With KINSCAPE_MEMORY_SIGN_IN=1 (the CI e2e job), the memory sign-in over the Postgres that
+// KINSCAPE_DATABASE_URL names. The empty KINSCAPE_MEMORY_ADAPTERS overrides a value in the shell.
+const adapters: Record<string, string> =
+  process.env.KINSCAPE_MEMORY_SIGN_IN === '1'
+    ? { KINSCAPE_MEMORY_ADAPTERS: '', KINSCAPE_MEMORY_SIGN_IN: '1' }
+    : { KINSCAPE_MEMORY_ADAPTERS: '1' };
+
 export default defineConfig({
   // A stray `test.only` fails the run in CI instead of quietly running one test.
   forbidOnly: !!process.env.CI,
@@ -76,7 +84,7 @@ export default defineConfig({
         // A production build hides the design kit and screens; the tests need them.
         KINSCAPE_DEV_PAGES: '1',
         // The server fails at start without Supabase and database variables; the memory adapters need neither.
-        KINSCAPE_MEMORY_ADAPTERS: '1',
+        ...adapters,
         NEXT_PUBLIC_E2E: '1',
       },
       reuseExistingServer: !process.env.CI,
@@ -91,7 +99,7 @@ export default defineConfig({
       env: {
         // Overrides any value exported in the shell.
         KINSCAPE_DEV_PAGES: '',
-        KINSCAPE_MEMORY_ADAPTERS: '1',
+        ...adapters,
         NEXT_PUBLIC_E2E: '1',
       },
       reuseExistingServer: !process.env.CI,

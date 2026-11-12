@@ -16,8 +16,8 @@ const use: Partial<PlaywrightWorkerOptions> = {
 // Where e2e/auth.setup.ts saves the signed-in session.
 const signedIn = 'test-results/.auth/state.json';
 
-// The CI `e2e` job sets this because the CI `design` job runs the design project, so `e2e`
-// leaves that project out and `perf` waits only for `chromium`. Every other run keeps all projects.
+// The CI `design` job runs the design project. So the CI `e2e` job sets this to drop that project,
+// and `perf` waits only for `chromium`. Every other run keeps all projects.
 const split = process.env.KINSCAPE_E2E_SPLIT === '1';
 
 export default defineConfig({
@@ -50,7 +50,7 @@ export default defineConfig({
     },
     // The timing tests, tagged @perf. They measure how fast the map redraws, so they
     // run alone, after the projects above finish (`dependencies`), and other
-    // workers don't slow them. If a dependency fails, this one is skipped.
+    // workers don't slow them. If a dependency fails, Playwright skips this one.
     {
       dependencies: split ? ['chromium'] : ['chromium', 'design'],
       grep: /@perf/,

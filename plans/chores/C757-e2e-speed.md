@@ -33,6 +33,8 @@ Copy the `e2e` job as `design`, which runs `npm run design:check`. Move the snap
 | `playwright.config.ts`             | changed       | `workers`; D1                      |
 | `scripts/github/ruleset-main.json` | changed       | The `design` check                 |
 | `.github/workflows/README.md`      | changed       | `npm run workflows:diagram` output |
+| `docs/infrastructure.md`           | changed       | A row for `KINSCAPE_E2E_SPLIT`     |
+| `design/CANVAS.md`                 | changed       | The `design` job exports again     |
 
 ## Order of work
 
@@ -53,3 +55,8 @@ Copy the `e2e` job as `design`, which runs `npm run design:check`. Move the snap
 | Wall time before and after    | The PR body                            |
 | Same design-check results     | The `design` job summary and `main`'s  |
 | `design` is a required check  | `scripts/check-github.sh` after step 3 |
+
+## Deviations
+
+- Review found two more files to change: `docs/infrastructure.md` gets a row for `KINSCAPE_E2E_SPLIT`, and `design/CANVAS.md` names the `design` job, not `e2e`, as the job that exports again.
+- The `design` job restores the Next.js cache with the `e2e` job's restore-keys prefix as its key, as `setup-workspace` does, so the `hashFiles` list exists once.

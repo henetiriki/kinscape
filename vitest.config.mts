@@ -17,6 +17,15 @@ const DATABASE_TESTS = [
   'scripts/__tests__/db-migrate.test.ts',
   'scripts/__tests__/seed-ci.test.ts',
 ];
+// The files that also run on the Postgres container: the three contract suites and the helper's test.
+const CONTAINER_TESTS = [
+  'server/auth/__tests__/database-sessions.test.ts',
+  'server/auth/__tests__/database-throttle.test.ts',
+  'server/db/__tests__/postgres.test.ts',
+  'server/trees/__tests__/database-store.test.ts',
+];
+// Set by CI's `test` job (scripts/ci-postgres.sh). Without it, only PGlite runs.
+const CONTAINER_URL = process.env.KINSCAPE_TEST_DATABASE_URL;
 
 export default defineConfig({
   resolve: {
@@ -70,10 +79,28 @@ export default defineConfig({
         extends: true,
         test: {
           include: DATABASE_TESTS,
-          name: 'database',
+          name: 'database-pglite',
+          provide: { backend: 'pglite', databaseUrl: '' },
           testTimeout: 30_000,
         },
       },
+      // The contract suites again, on the container. The project name labels each line of the log.
+      ...(CONTAINER_URL
+        ? [
+            {
+              extends: true,
+              test: {
+                include: CONTAINER_TESTS,
+                name: 'database-postgres',
+                provide: {
+                  backend: 'postgres' as const,
+                  databaseUrl: CONTAINER_URL,
+                },
+                testTimeout: 30_000,
+              },
+            },
+          ]
+        : []),
       {
         // The shared controls also run on React 18 (DS.5). The optimiser bundles Testing Library and
         // react-dom-18 with the aliased `react`, so there is one React in the run.

@@ -1,13 +1,11 @@
 import { sql } from 'kysely';
 import { randomUUID } from 'node:crypto';
 import { join } from 'node:path';
+import { inject } from 'vitest';
 
 import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
 import { createPgDb } from '@ks/server/db/database.mts';
 import { migrate } from '@ks/server/db/migrate.mts';
-
-/** What a database contract file needs from a backend: `sharedTestDb()`'s methods and a name. */
-type ContractDb = { name: string } & ReturnType<typeof sharedTestDb>;
 
 /**
  * One database of its own on the Postgres container, for one test file (NFR-09). Parallel files
@@ -50,8 +48,17 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
   };
 
   const close = async () => {
+    // A database that was never made needs no drop, and a second error would hide the first.
+    const made = await created?.then(
+      () => true,
+      () => false
+    );
+
     if (admin !== undefined) {
-      await sql`drop database ${sql.id(name)} with (force)`.execute(admin);
+      if (made) {
+        await sql`drop database ${sql.id(name)} with (force)`.execute(admin);
+      }
+
       await admin.destroy();
     }
   };
@@ -60,17 +67,11 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
 };
 
 /**
- * The backends a database contract file runs on: PGlite always, and the Postgres container when
- * `KINSCAPE_TEST_DATABASE_URL` is set (CI's `test` job, `scripts/ci-postgres.sh`). This helper
- * reads it, not `server/env.mts`, because only tests use it.
+ * The backend of the current Vitest project (`vitest.config.mts`): PGlite in `database-pglite` and
+ * the Postgres container in `database-postgres`. The project name labels the log, so the contract
+ * suites need no backend in their titles.
  */
-export const contractDbs = (
-  env: Record<string, string | undefined> = process.env
-): ContractDb[] => {
-  const url = env.KINSCAPE_TEST_DATABASE_URL;
-
-  return [
-    { ...sharedTestDb(), name: 'database (pglite)' },
-    ...(url ? [{ ...containerDb(url), name: 'database (postgres)' }] : []),
-  ];
-};
+export const contractDb = (): ReturnType<typeof sharedTestDb> =>
+  inject('backend') === 'postgres'
+    ? containerDb(inject('databaseUrl'))
+    : sharedTestDb();

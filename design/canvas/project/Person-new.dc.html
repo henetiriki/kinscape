@@ -48,7 +48,7 @@
 
         <div role="group" aria-labelledby="p-group-life" style="grid-column: 2; grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-items: start; min-width: 0">
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span" id="p-group-life">Life</x-import>
-            <x-import component-from-global-scope="KinScape.SelectField" label="Sex" options="{{sexOptions}}" value="{{sex}}" on-change="{{onSex}}"></x-import>
+            <x-import component-from-global-scope="KinScape.SelectField" label="Sex" options="{{sexOptions}}" default-value="{{sex}}" on-change="{{onSex}}"></x-import>
 
             <div style="display: flex; flex-direction: column; gap: var(--space-8)">
               <label for="p-birth" class="label" style="color: var(--ink)">Birth</label>
@@ -76,12 +76,26 @@
               </div>
             </div>
 
-            <x-import component-from-global-scope="KinScape.CheckboxField" label="Deceased" description="{{deceasedNote}}" checked="{{deceased}}" disabled="{{deceasedLocked}}" on-change="{{toggleDeceased}}"></x-import>
+            <sc-if value="{{deceasedLocked}}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-field-l)">
+                <span style="position: relative; display: inline-flex; flex: none; width: var(--size-checkbox); height: var(--size-checkbox)">
+                  <input id="p-deceased" type="checkbox" checked="{{deceased}}" disabled="{{deceasedLocked}}" aria-describedby="p-deceased-note" style="appearance: none; width: var(--size-checkbox); height: var(--size-checkbox); margin: 0; box-sizing: border-box; border: 1.5px solid var(--line-strong); border-radius: var(--radius-small); background: var(--line)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 3px; top: 3px; color: var(--ink-disabled); pointer-events: none"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                </span>
+                <span style="display: flex; flex-direction: column; min-width: 0">
+                  <label for="p-deceased" class="label" style="color: var(--ink-disabled)">Deceased</label>
+                  <span id="p-deceased-note" class="caption" style="color: var(--ink-disabled)">{{deceasedNote}}</span>
+                </span>
+              </div>
+            </sc-if>
+            <sc-if value="{{deceasedFree}}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="KinScape.CheckboxField" label="Deceased" description="{{deceasedNote}}" checked="{{deceased}}" disabled="{{deceasedLocked}}" on-change="{{toggleDeceased}}"></x-import>
+            </sc-if>
         </div>
 
         <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0">
           <label for="p-notes"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Notes</x-import></label>
-          <textarea id="p-notes" aria-describedby="p-notes-help" value="{{notes}}" onChange="{{onNotes}}" onFocus="{{notesUi.onFocus}}" onBlur="{{notesUi.onBlur}}" onMouseEnter="{{notesUi.onEnter}}" onMouseLeave="{{notesUi.onLeave}}" style="{{notesUi.style}}"></textarea>
+          <textarea id="p-notes" aria-describedby="p-notes-help" onChange="{{onNotes}}" onFocus="{{notesUi.onFocus}}" onBlur="{{notesUi.onBlur}}" onMouseEnter="{{notesUi.onEnter}}" onMouseLeave="{{notesUi.onLeave}}" style="{{notesUi.style}}">{{notes}}</textarea>
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="p-notes-help">Sources, stories, anything the fields can't hold.</x-import>
         </div>
 
@@ -109,7 +123,7 @@ class Component extends DCLogic {
     const filled = {
       given: 'Maria Magdalena', surname: 'du Toit', maiden: 'Rossouw', variants: ['Du Toit', 'Dutoit', 'Du Tois'],
       sex: 'female', birth: 'ABT 1856', death: '14 MAR 1930', deceased: true,
-      notes: 'Born on a farm near the Vaal River. Her baptism record spells the family name Rossau; her marriage record spells it Rossouw.\n\nMarried in 1878. Six children are named in the family Bible.'
+      notes: 'Her baptism record spells the family name Rossau.'
     };
     const blank = { given: '', surname: '', maiden: '', variants: [], sex: 'unknown', birth: '', death: '', deceased: false, notes: '' };
     const b = (v === 'edit' || v === 'save-failed') ? filled : blank;
@@ -255,6 +269,7 @@ class Component extends DCLogic {
       death: this.dateView('death'),
       deceased: s.deceased || deathTyped,
       deceasedLocked: deathTyped,
+      deceasedFree: !deathTyped,
       deceasedNote: deathTyped ? 'Ticked because a death date is entered.' : "Tick if this person has died but the date isn't known.",
       toggleDeceased: () => this.setState((x) => ({ deceased: !x.deceased })),
       save: () => {

@@ -36,21 +36,67 @@
         </thead>
         <tbody>
           <tr><th scope="rowgroup" colspan="3" style="padding: var(--space-20) 0 var(--space-8)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Qualifiers: one reading each</x-import></th></tr>
-          <sc-for list="{{qualifiers}}" as="r" hint-placeholder-count="8">
             <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">{{r.label}}</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">{{r.typed}}</td>
-              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">{{r.out}}</strong></p></td>
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Exact date</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">14 MAR 1850</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">On 14 March 1850</strong></p></td>
             </tr>
-          </sc-for>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">About</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">ABT 1850</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">About 1850</strong></p></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Before</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">BEF 1850</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Before 1850</strong></p></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">After</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">AFT 1850</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">After 1850</strong></p></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Between</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">BET 1850 AND 1855</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Between 1850 and 1855</strong></p></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Period</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">FROM 1850 TO 1855</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">From 1850 to 1855</strong></p></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Estimated</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">EST 1850</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Estimated as 1850</strong></p></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Calculated</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">CAL 1850</td>
+              <td style="padding: 0"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Calculated as 1850</strong></p></td>
+            </tr>
           <tr><th scope="rowgroup" colspan="3" style="padding: var(--space-24) 0 var(--space-8)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Errors: one message each, shown after Enter or leaving the field</x-import></th></tr>
-          <sc-for list="{{errors}}" as="r" hint-placeholder-count="4">
             <tr style="border-top: 1px solid var(--line)">
-              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">{{r.label}}</x-import></th>
-              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">{{r.typed}}</td>
-              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">{{r.out}}</x-import></span></td>
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Wrong format</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">14/03/1850</td>
+              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.</x-import></span></td>
             </tr>
-          </sc-for>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Year out of range</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">ABT 850</td>
+              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Use a year from 1000 to 2026.</x-import></span></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Day doesn't exist</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">31 FEB 1850</td>
+              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">February 1850 has 28 days.</x-import></span></td>
+            </tr>
+            <tr style="border-top: 1px solid var(--line)">
+              <th scope="row" style="height: 48px; padding: 0 var(--space-16) 0 0; font-weight: 400"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Range in reverse</x-import></th>
+              <td style="padding: 0 var(--space-16) 0 0; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px">BET 1855 AND 1850</td>
+              <td style="padding: var(--space-8) 0"><span style="display: flex; gap: var(--space-8); align-items: flex-start; color: var(--error-border)"><span aria-hidden="true" style="display: flex; padding-top: 1px"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span><x-import component-from-global-scope="KinScape.Text" variant="small" as="span" tone="error">Put the earlier date first: BET 1850 AND 1855.</x-import></span></td>
+            </tr>
         </tbody>
       </table>
       <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">An exact year or month reads "In 1850" or "In March 1850". FROM 1850 or TO 1855 on its own reads "From 1850" or "Until 1855". Lower case works too. Months are JAN to DEC. The last year allowed is the current year.</x-import>
@@ -180,13 +226,6 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const q = [
-      ['Exact date', '14 MAR 1850'], ['About', 'ABT 1850'], ['Before', 'BEF 1850'], ['After', 'AFT 1850'],
-      ['Between', 'BET 1850 AND 1855'], ['Period', 'FROM 1850 TO 1855'], ['Estimated', 'EST 1850'], ['Calculated', 'CAL 1850']
-    ].map((r) => ({ label: r[0], typed: r[1], out: this.parseDate(r[1]).reading }));
-    const e = [
-      ['Wrong format', '14/03/1850'], ['Year out of range', 'ABT 850'], ["Day doesn't exist", '31 FEB 1850'], ['Range in reverse', 'BET 1855 AND 1850']
-    ].map((r) => ({ label: r[0], typed: r[1], out: this.parseDate(r[1]).error }));
     const s = this.state;
     const r = this.parseDate(s.text);
     const check = () => this.setState((x) => ({ err: this.parseDate(x.text).error || '' }));
@@ -195,8 +234,6 @@ class Component extends DCLogic {
       : s.hovered ? 'border: 1px solid var(--ink-3); padding: 0 12px'
       : 'border: 1px solid var(--field-border); padding: 0 12px';
     return {
-      qualifiers: q,
-      errors: e,
       tryIt: {
         text: s.text,
         invalid: !!s.err,

@@ -1,7 +1,7 @@
 # Plan: C765: Add /build-local and /fix-review-local skills for a plan PR
 
 - **Spec:** #765
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ Each skill has the frontmatter from #765 and `argument-hint: <PR number>`. The b
 - **B.** Cut 20 words from other lines of `docs/building.md`.
 - **Other:** your own.
 
-Recommended: A, because B rewrites rules that #765 does not name.
+**Answer: A** (@henetiriki)
 
 **D2 · Where the shared steps go** · Decides: Tech lead
 
@@ -29,7 +29,7 @@ Recommended: A, because B rewrites rules that #765 does not name.
 - **B.** Each skill repeats them.
 - **Other:** your own.
 
-Recommended: A, because the writing rules say each fact once.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

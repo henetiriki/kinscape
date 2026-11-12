@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — People</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <header style="position: absolute; left: 0; right: 0; top: 0; height: 64px; box-sizing: border-box; padding: 0 var(--space-24); display: flex; align-items: center; gap: var(--space-16); background: var(--surface); border-bottom: 1px solid var(--line)">
+    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
+    <span style="width: 1px; height: 28px; background: var(--line)"></span>
+    <a href="Map.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>Map</a>
+    <span style="flex: 1"></span>
+    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
+  </header>
+
+  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto">
+    <div style="width: 960px; margin: 0 auto; padding: var(--space-32) 0 var(--space-48); display: flex; flex-direction: column; gap: var(--space-24)">
+
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-24)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+          <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">People</x-import>
+          <sc-if value="{{showCount}}" hint-placeholder-val="{{ true }}">
+            <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" role="status">{{countText}}</x-import>
+          </sc-if>
+        </div>
+        <x-import component-from-global-scope="KinScape.Button" variant="primary">Add a person</x-import>
+      </div>
+
+      <sc-if value="{{showFilter}}" hint-placeholder-val="{{ true }}">
+        <div style="width: 480px"><x-import component-from-global-scope="KinScape.TextField" type="search" label="Find a person" helper="Matches given names, surnames, maiden names and spelling variants." shortcut="/" value="{{query}}" on-change="{{onQuery}}" disabled="{{filterOff}}"></x-import></div>
+      </sc-if>
+
+      <sc-if value="{{showList}}" hint-placeholder-val="{{ true }}">
+        <section aria-label="People, by surname" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
+          <div aria-hidden="true" style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: var(--space-16); padding: var(--space-12) var(--space-20); text-transform: uppercase; color: var(--ink-3)">
+            <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Name</x-import>
+            <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Born</x-import>
+            <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Died</x-import>
+            <span></span>
+          </div>
+          <ul style="list-style: none; margin: 0; padding: 0">
+            <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
+              <li style="border-top: 1px solid var(--line)">
+                <a href="Person-edit.dc.html" style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: var(--space-16); align-items: center; min-height: var(--size-row-l); box-sizing: border-box; padding: var(--space-8) var(--space-20); color: var(--ink); text-decoration: none">
+                  <span style="display: flex; flex-direction: column; min-width: 0">
+                    <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{p.name}}</x-import>
+                    <sc-if value="{{p.hasNote}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{p.note}}</x-import></sc-if>
+                  </span>
+                  <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Born </span><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.born}}</x-import></span>
+                  <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Died </span><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.died}}</x-import></span>
+                  <span class="link" style="justify-self: end; display: inline-flex; align-items: center; gap: var(--space-4); color: var(--brand)">Edit<x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></span>
+                </a>
+              </li>
+            </sc-for>
+          </ul>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{showNoMatch}}" hint-placeholder-val="{{ false }}">
+        <div style="width: 420px; align-self: flex-start"><x-import component-from-global-scope="KinScape.NoticeCard" icon="search" title="{{noMatchTitle}}" actions="{{noMatchActions}}">Check the spelling, or add them with Add a person.</x-import></div>
+      </sc-if>
+
+      <sc-if value="{{showEmpty}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; justify-content: center; padding-top: var(--space-64)"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="place" title="No people yet">Use Add a person to start your Tree. Once people are in it, you can pin their lives to the map.</x-import></div>
+      </sc-if>
+
+      <sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-16); width: 560px">
+          <x-import component-from-global-scope="KinScape.Alert" tone="error" title="People didn't load">Check your connection, then try again. Nothing in your Tree has changed.</x-import>
+          <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{retry}}">Try again</x-import>
+        </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["list","no-match","empty","failed"],"default":"list"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const v = (props && props.variant) || 'list';
+    this.state = { view: v, query: v === 'no-match' ? 'Pretorius' : '' };
+  }
+  renderVals() {
+    const PEOPLE = [
+      { g: 'Hendrik Willem', s: 'Botha', m: '', v: ['Bota'], b: '1832', d: '1899' },
+      { g: 'Susanna', s: 'Botha', m: 'Fourie', v: [], b: 'c. 1835', d: '1901' },
+      { g: 'Maria Magdalena', s: 'du Toit', m: 'Rossouw', v: ['Du Toit', 'Dutoit', 'Du Tois'], b: 'c. 1856', d: '1930' },
+      { g: 'Pieter', s: 'Fourie', m: '', v: ['Fouri', 'Fourié'], b: 'bef. 1840', d: 'Deceased' },
+      { g: 'Anna Catharina', s: 'le Roux', m: '', v: ['Leroux', 'Le Rous'], b: '1871', d: '1948' },
+      { g: 'Cornelis Johannes', s: 'Nel', m: '', v: ['Nell'], b: '1868', d: 'aft. 1920' },
+      { g: 'Elsie', s: 'Nel', m: 'van Wyk', v: ['Nell'], b: '1874', d: '1952' },
+      { g: 'Jacobus', s: 'Rossouw', m: '', v: ['Rossau', 'Rousseau', 'Roussouw'], b: 'c. 1850', d: '1912' },
+      { g: 'Johanna Petronella', s: 'Rossouw', m: '', v: ['Rossau', 'Roussouw'], b: '1878', d: '—' },
+      { g: 'Willem', s: 'Rossouw', m: '', v: ['Rossau'], b: '1880–1885', d: '1961' },
+      { g: 'Gerrit', s: 'van Wyk', m: '', v: ['Van Wijk', 'Vanwyk'], b: '1845', d: '1910' },
+      { g: 'Aletta', s: 'Viljoen', m: 'Botha', v: ['Viljoe', 'Villion'], b: 'c. 1860', d: '—' }
+    ];
+    const view = this.state.view;
+    const cmp = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+    const all = view === 'empty' ? [] : PEOPLE.slice().sort((a, b) => cmp(a.s, b.s) || cmp(a.g, b.g));
+    const q = this.state.query.trim().toLowerCase();
+    const has = (t) => !!t && t.toLowerCase().indexOf(q) >= 0;
+    const rows = [];
+    all.forEach((p) => {
+      let note = p.m ? 'née ' + p.m : '';
+      if (q) {
+        const byName = has(p.g) || has(p.s) || has(p.g + ' ' + p.s) || has(p.s + ', ' + p.g);
+        const byMaiden = has(p.m);
+        const variant = p.v.filter((x) => has(x))[0];
+        if (!byName && !byMaiden && !variant) return;
+        if (!byName && !byMaiden) note = (note ? note + ' · ' : '') + 'Matches the spelling “' + variant + '”';
+      }
+      rows.push({ name: p.s + ', ' + p.g, note: note, hasNote: !!note, born: p.b, died: p.d });
+    });
+    const failed = view === 'failed';
+    return {
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      retry: () => this.setState({ view: 'list' }),
+      rows: rows,
+      showCount: !failed && all.length > 0,
+      countText: q ? rows.length + ' of ' + all.length + ' people match' : all.length + ' people in this Tree, by surname',
+      showFilter: view !== 'empty',
+      filterOff: failed,
+      showList: !failed && rows.length > 0,
+      showNoMatch: !failed && all.length > 0 && rows.length === 0,
+      noMatchTitle: 'No one matches “' + this.state.query.trim() + '”',
+      noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }],
+      showEmpty: view === 'empty',
+      showFailed: failed
+    };
+  }
+}
+</script>
+</body>
+</html>

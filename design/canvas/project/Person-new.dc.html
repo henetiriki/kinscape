@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Add a person</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.ks-pfield{border:1px solid var(--field-border);padding:0 12px}
+.ks-pfield:hover{border-color:var(--ink-3)}
+.ks-pfield:focus{border:2px solid var(--brand);padding:0 11px;outline:none}
+.ks-parea{padding:10px 12px}
+.ks-parea:focus{padding:9px 11px}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <header style="position: absolute; left: 0; right: 0; top: 0; height: 64px; box-sizing: border-box; padding: 0 var(--space-24); display: flex; align-items: center; gap: var(--space-16); background: var(--surface); border-bottom: 1px solid var(--line)">
+    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
+    <span style="width: 1px; height: 28px; background: var(--line)"></span>
+    <a href="People-list.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>People</a>
+    <span style="flex: 1"></span>
+    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
+  </header>
+
+  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 72px; overflow-y: auto">
+    <div style="width: 1088px; margin: 0 auto; padding: var(--space-20) 0 var(--space-24); display: flex; flex-direction: column; gap: var(--space-16)">
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+        <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">{{title}}</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Given names and surname are required. Everything else can wait.</x-import>
+      </div>
+
+      <sc-if value="{{showSummary}}" hint-placeholder-val="{{ false }}">
+        <div style="width: 640px"><x-import component-from-global-scope="KinScape.Alert" tone="error" title="{{summaryTitle}}">Nothing was saved. Each problem is marked at its field.</x-import></div>
+      </sc-if>
+
+      <div style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); padding: var(--space-24); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); column-gap: var(--space-40); row-gap: var(--space-16)">
+
+        <div role="group" aria-labelledby="p-group-name" style="grid-column: 1; grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-items: start; min-width: 0">
+            <x-import component-from-global-scope="KinScape.Text" variant="title" as="span" id="p-group-name">Name</x-import>
+            <x-import component-from-global-scope="KinScape.TextField" label="Given names" aria-required="true" autocomplete="off" value="{{given}}" error="{{givenErr}}" on-change="{{onGiven}}" on-blur="{{blurGiven}}"></x-import>
+            <x-import component-from-global-scope="KinScape.TextField" label="Surname" aria-required="true" autocomplete="off" value="{{surname}}" error="{{surnameErr}}" on-change="{{onSurname}}" on-blur="{{blurSurname}}"></x-import>
+            <x-import component-from-global-scope="KinScape.TextField" label="Maiden name" helper="Surname at birth, if it changed." autocomplete="off" value="{{maiden}}" on-change="{{onMaiden}}"></x-import>
+            <x-import component-from-global-scope="KinScape.TokenField" label="Spelling variants" helper="Other spellings in the records, up to 20. Press Enter after each." placeholder="Add a spelling" default-values="{{variants}}"></x-import>
+        </div>
+
+        <div role="group" aria-labelledby="p-group-life" style="grid-column: 2; grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-items: start; min-width: 0">
+            <x-import component-from-global-scope="KinScape.Text" variant="title" as="span" id="p-group-life">Life</x-import>
+            <x-import component-from-global-scope="KinScape.SelectField" label="Sex" options="{{sexOptions}}" value="{{sex}}" on-change="{{onSex}}"></x-import>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+              <label for="p-birth" class="label" style="color: var(--ink)">Birth</label>
+              <span style="position: relative; display: flex">
+                <input id="p-birth" class="ks-pfield" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{birth.invalid}}" aria-describedby="p-birth-msg" value="{{birth.text}}" onChange="{{birth.onInput}}" onBlur="{{birth.onBlur}}" onKeyDown="{{birth.onKey}}" style="{{birth.style}}">
+                <sc-if value="{{birth.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
+              </span>
+              <div id="p-birth-msg" aria-live="polite">
+                <sc-if value="{{birth.showError}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p" tone="error" role="alert">{{birth.error}}</x-import></sc-if>
+                <sc-if value="{{birth.showReading}}" hint-placeholder-val="{{ false }}"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">{{birth.reading}}</strong></p></sc-if>
+                <sc-if value="{{birth.showHelp}}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p">For example 1850, ABT 1850 or BET 1850 AND 1855.</x-import></sc-if>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-8)">
+              <label for="p-death" class="label" style="color: var(--ink)">Death</label>
+              <span style="position: relative; display: flex">
+                <input id="p-death" class="ks-pfield" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{death.invalid}}" aria-describedby="p-death-msg" value="{{death.text}}" onChange="{{death.onInput}}" onBlur="{{death.onBlur}}" onKeyDown="{{death.onKey}}" style="{{death.style}}">
+                <sc-if value="{{death.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
+              </span>
+              <div id="p-death-msg" aria-live="polite">
+                <sc-if value="{{death.showError}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p" tone="error" role="alert">{{death.error}}</x-import></sc-if>
+                <sc-if value="{{death.showReading}}" hint-placeholder-val="{{ false }}"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">{{death.reading}}</strong></p></sc-if>
+                <sc-if value="{{death.showHelp}}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Leave it empty if you don't know.</x-import></sc-if>
+              </div>
+            </div>
+
+            <x-import component-from-global-scope="KinScape.CheckboxField" label="Deceased" description="{{deceasedNote}}" checked="{{deceased}}" disabled="{{deceasedLocked}}" on-change="{{toggleDeceased}}"></x-import>
+        </div>
+
+        <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0">
+          <label for="p-notes"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Notes</x-import></label>
+          <textarea id="p-notes" class="ks-pfield ks-parea" aria-describedby="p-notes-help" value="{{notes}}" onChange="{{onNotes}}" style="flex: 1; min-height: 240px; resize: vertical; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-body); font-size: 15px; line-height: 22px; color: var(--ink)"></textarea>
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="p-notes-help">Sources, stories, anything the fields can't hold.</x-import>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: var(--surface); border-top: 1px solid var(--line)">
+    <div style="width: 1088px; height: 100%; margin: 0 auto; display: flex; align-items: center; gap: var(--space-8)">
+      <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{save}}">Save</x-import>
+      <x-import component-from-global-scope="KinScape.Button" variant="secondary">Cancel</x-import>
+    </div>
+  </div>
+
+  <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["new","edit","errors","save-failed"],"default":"new"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const v = (props && props.variant) || 'new';
+    const filled = {
+      given: 'Maria Magdalena', surname: 'du Toit', maiden: 'Rossouw', variants: ['Du Toit', 'Dutoit', 'Du Tois'],
+      sex: 'female', birth: 'ABT 1856', death: '14 MAR 1930', deceased: true,
+      notes: 'Born on a farm near the Vaal River. Her baptism record spells the family name Rossau; her marriage record spells it Rossouw.\n\nMarried in 1878. Six children are named in the family Bible.'
+    };
+    const blank = { given: '', surname: '', maiden: '', variants: [], sex: 'unknown', birth: '', death: '', deceased: false, notes: '' };
+    const b = (v === 'edit' || v === 'save-failed') ? filled : blank;
+    const st = {
+      given: b.given, surname: b.surname, maiden: b.maiden, variants: b.variants, sex: b.sex, deceased: b.deceased, notes: b.notes,
+      birth: { text: b.birth, err: '' }, death: { text: b.death, err: '' },
+      givenErr: '', surnameErr: '', givenDirty: false, surnameDirty: false, summary: false,
+      toast: v === 'save-failed' ? 'failed' : ''
+    };
+    if (v === 'errors') {
+      st.birth = { text: 'ABT 1850', err: '' };
+      st.death = { text: '31 FEB 1850', err: this.parseDate('31 FEB 1850').error };
+      st.givenErr = 'Enter the given names.';
+      st.surnameErr = 'Enter the surname.';
+      st.summary = true;
+    }
+    this.state = st;
+    this.variant = v;
+  }
+
+  parseDate(raw) {
+    const MON = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const NAME = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const FORMAT = 'Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.';
+    const s = String(raw || '').trim().toUpperCase().replace(/\s+/g, ' ');
+    if (!s) return { empty: true };
+    const one = (t) => {
+      const p = t.split(' ');
+      let d = 0;
+      let m = 0;
+      let y = 0;
+      if (p.length === 1 && /^\d{1,4}$/.test(p[0])) { y = +p[0]; }
+      else if (p.length === 2 && MON.indexOf(p[0]) >= 0 && /^\d{1,4}$/.test(p[1])) { m = MON.indexOf(p[0]) + 1; y = +p[1]; }
+      else if (p.length === 3 && /^\d{1,2}$/.test(p[0]) && MON.indexOf(p[1]) >= 0 && /^\d{1,4}$/.test(p[2])) { d = +p[0]; m = MON.indexOf(p[1]) + 1; y = +p[2]; }
+      else return { error: FORMAT };
+      if (y < 1000 || y > 2026) return { error: 'Use a year from 1000 to 2026.' };
+      if (d) {
+        const leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+        const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+        if (d < 1 || d > days) return { error: NAME[m - 1] + ' ' + y + ' has ' + days + ' days.' };
+      }
+      return { words: (d ? d + ' ' : '') + (m ? NAME[m - 1] + ' ' : '') + y, key: y * 10000 + m * 100 + d, day: !!d, text: t };
+    };
+    let mm = s.match(/^(BET) (.+) AND (.+)$/) || s.match(/^(FROM) (.+) TO (.+)$/);
+    if (mm) {
+      const a = one(mm[2]);
+      const z = one(mm[3]);
+      if (a.error) return a;
+      if (z.error) return z;
+      const join = mm[1] === 'BET' ? 'AND' : 'TO';
+      if (a.key > z.key) return { error: 'Put the earlier date first: ' + mm[1] + ' ' + z.text + ' ' + join + ' ' + a.text + '.' };
+      return { reading: (mm[1] === 'BET' ? 'Between ' : 'From ') + a.words + (mm[1] === 'BET' ? ' and ' : ' to ') + z.words };
+    }
+    mm = s.match(/^(ABT|BEF|AFT|EST|CAL|FROM|TO) (.+)$/);
+    if (mm) {
+      const a = one(mm[2]);
+      if (a.error) return a;
+      const lead = { ABT: 'About ', BEF: 'Before ', AFT: 'After ', EST: 'Estimated as ', CAL: 'Calculated as ', FROM: 'From ', TO: 'Until ' }[mm[1]];
+      return { reading: lead + a.words };
+    }
+    const a = one(s);
+    if (a.error) return a;
+    return { reading: (a.day ? 'On ' : 'In ') + a.words };
+  }
+
+  check(key) {
+    this.setState((s) => {
+      const r = this.parseDate(s[key].text);
+      return { [key]: { text: s[key].text, err: r.error || '' } };
+    });
+  }
+
+  dateView(key) {
+    const f = this.state[key];
+    const r = this.parseDate(f.text);
+    const err = f.err;
+    const base = 'flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px';
+    return {
+      text: f.text,
+      invalid: !!err,
+      showError: !!err,
+      error: err,
+      showReading: !err && !!r.reading,
+      reading: r.reading || '',
+      showHelp: !err && !r.reading,
+      style: base + (err ? '; border: 2px solid var(--error-border); padding: 0 40px 0 11px' : ''),
+      onInput: (e) => { const t = e.target.value; this.setState((s) => ({ [key]: { text: t, err: s[key].err } })); },
+      onBlur: () => this.check(key),
+      onKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.check(key); } }
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const deathTyped = s.death.text.trim() !== '';
+    const errCount = [s.givenErr, s.surnameErr, s.birth.err, s.death.err].filter(Boolean).length;
+    const fullName = (s.given.trim() + ' ' + s.surname.trim()).trim();
+    const isEdit = this.variant === 'edit' || this.variant === 'save-failed';
+    const toasts = {
+      failed: { tone: 'error', text: "Couldn't save. Your changes are still here.", action: 'Try again', onAction: () => this.setState({ toast: 'saved' }), onDismiss: () => this.setState({ toast: '' }) },
+      saved: { tone: 'success', text: 'Saved ' + (fullName || 'the person') + '.', action: undefined, onAction: undefined, onDismiss: () => this.setState({ toast: '' }) }
+    };
+    return {
+      title: isEdit ? 'Edit ' + fullName : 'Add a person',
+      showSummary: s.summary && errCount > 0,
+      summaryTitle: errCount === 1 ? '1 field needs fixing' : errCount + ' fields need fixing',
+      given: s.given, surname: s.surname, maiden: s.maiden, notes: s.notes, sex: s.sex, variants: s.variants,
+      givenErr: s.givenErr || undefined,
+      surnameErr: s.surnameErr || undefined,
+      onGiven: (e) => this.setState({ given: e.target.value, givenDirty: true }),
+      onSurname: (e) => this.setState({ surname: e.target.value, surnameDirty: true }),
+      blurGiven: () => this.setState((x) => ({ givenErr: x.given.trim() ? '' : (x.givenDirty || x.givenErr ? 'Enter the given names.' : '') })),
+      blurSurname: () => this.setState((x) => ({ surnameErr: x.surname.trim() ? '' : (x.surnameDirty || x.surnameErr ? 'Enter the surname.' : '') })),
+      onMaiden: (e) => this.setState({ maiden: e.target.value }),
+      onNotes: (e) => this.setState({ notes: e.target.value }),
+      onSex: (e) => this.setState({ sex: e.target.value }),
+      sexOptions: [{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }, { label: 'Intersex', value: 'intersex' }, { label: 'Unknown', value: 'unknown' }],
+      birth: this.dateView('birth'),
+      death: this.dateView('death'),
+      deceased: s.deceased || deathTyped,
+      deceasedLocked: deathTyped,
+      deceasedNote: deathTyped ? 'Ticked because a death date is entered.' : "Tick if this person has died but the date isn't known.",
+      toggleDeceased: () => this.setState((x) => ({ deceased: !x.deceased })),
+      save: () => {
+        const x = this.state;
+        const ge = x.given.trim() ? '' : 'Enter the given names.';
+        const se = x.surname.trim() ? '' : 'Enter the surname.';
+        const be = this.parseDate(x.birth.text).error || '';
+        const de = this.parseDate(x.death.text).error || '';
+        const n = [ge, se, be, de].filter(Boolean).length;
+        this.setState({ givenErr: ge, surnameErr: se, birth: { text: x.birth.text, err: be }, death: { text: x.death.text, err: de }, summary: n > 0, toast: n > 0 ? '' : 'saved' });
+      },
+      showToast: !!s.toast,
+      toast: toasts[s.toast] || toasts.saved
+    };
+  }
+}
+</script>
+</body>
+</html>

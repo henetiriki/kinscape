@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — People (phone)</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--surface); font-family: var(--font-body); color: var(--ink)">
+
+  <header style="position: absolute; left: 0; right: 0; top: 0; height: 60px; box-sizing: border-box; padding: 0 var(--space-16); display: flex; align-items: center; gap: var(--space-8); background: var(--surface); border-bottom: 1px solid var(--line)">
+    <x-import component-from-global-scope="KinScape.Wordmark" icon-only="{{ true }}" size="32"></x-import>
+    <a href="Map-phone.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>Map</a>
+    <span style="flex: 1"></span>
+    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
+  </header>
+
+  <main style="position: absolute; left: 0; right: 0; top: 60px; bottom: 0; overflow-y: auto; box-sizing: border-box; padding: var(--space-20) var(--space-16) var(--space-24); display: flex; flex-direction: column; gap: var(--space-16)">
+    <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+      <x-import component-from-global-scope="KinScape.Text" variant="h1Phone" as="h1">People</x-import>
+      <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" role="status">{{countText}}</x-import>
+    </div>
+
+    <x-import component-from-global-scope="KinScape.TextField" type="search" label="Find a person" helper="Matches names, maiden names and spelling variants." value="{{query}}" on-change="{{onQuery}}"></x-import>
+
+    <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">To add or edit people, use a computer.</x-import>
+
+    <ul aria-label="People, by surname" style="list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line)">
+      <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
+        <li style="display: flex; flex-direction: column; gap: 2px; min-height: 60px; box-sizing: border-box; padding: var(--space-8) 0; justify-content: center; border-top: 1px solid var(--line)">
+          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{p.name}}</x-import>
+          <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--space-12); color: var(--ink-3)">
+            <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.years}}</x-import>
+            <sc-if value="{{p.hasNote}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{p.note}}</x-import></sc-if>
+          </span>
+        </li>
+      </sc-for>
+    </ul>
+
+    <sc-if value="{{noMatch}}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="KinScape.NoticeCard" phone="{{ true }}" icon="search" title="{{noMatchTitle}}" actions="{{noMatchActions}}">Check the spelling, or try a variant.</x-import>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { query: '' };
+  }
+  renderVals() {
+    const PEOPLE = [
+      { g: 'Hendrik Willem', s: 'Botha', m: '', v: ['Bota'], b: '1832', d: '1899' },
+      { g: 'Susanna', s: 'Botha', m: 'Fourie', v: [], b: 'c. 1835', d: '1901' },
+      { g: 'Maria Magdalena', s: 'du Toit', m: 'Rossouw', v: ['Du Toit', 'Dutoit', 'Du Tois'], b: 'c. 1856', d: '1930' },
+      { g: 'Pieter', s: 'Fourie', m: '', v: ['Fouri', 'Fourié'], b: 'bef. 1840', d: 'Deceased' },
+      { g: 'Anna Catharina', s: 'le Roux', m: '', v: ['Leroux', 'Le Rous'], b: '1871', d: '1948' },
+      { g: 'Cornelis Johannes', s: 'Nel', m: '', v: ['Nell'], b: '1868', d: 'aft. 1920' },
+      { g: 'Elsie', s: 'Nel', m: 'van Wyk', v: ['Nell'], b: '1874', d: '1952' },
+      { g: 'Jacobus', s: 'Rossouw', m: '', v: ['Rossau', 'Rousseau', 'Roussouw'], b: 'c. 1850', d: '1912' },
+      { g: 'Johanna Petronella', s: 'Rossouw', m: '', v: ['Rossau', 'Roussouw'], b: '1878', d: '—' },
+      { g: 'Willem', s: 'Rossouw', m: '', v: ['Rossau'], b: '1880–1885', d: '1961' },
+      { g: 'Gerrit', s: 'van Wyk', m: '', v: ['Van Wijk', 'Vanwyk'], b: '1845', d: '1910' },
+      { g: 'Aletta', s: 'Viljoen', m: 'Botha', v: ['Viljoe', 'Villion'], b: 'c. 1860', d: '—' }
+    ];
+    const cmp = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+    const all = PEOPLE.slice().sort((a, b) => cmp(a.s, b.s) || cmp(a.g, b.g));
+    const q = this.state.query.trim().toLowerCase();
+    const has = (t) => !!t && t.toLowerCase().indexOf(q) >= 0;
+    const rows = [];
+    all.forEach((p) => {
+      let note = p.m ? 'née ' + p.m : '';
+      if (q) {
+        const byName = has(p.g) || has(p.s) || has(p.g + ' ' + p.s) || has(p.s + ', ' + p.g);
+        const byMaiden = has(p.m);
+        const variant = p.v.filter((x) => has(x))[0];
+        if (!byName && !byMaiden && !variant) return;
+        if (!byName && !byMaiden) note = (note ? note + ' · ' : '') + 'Matches “' + variant + '”';
+      }
+      const years = p.d === '—' ? 'Born ' + p.b : p.d === 'Deceased' ? p.b + ' – deceased' : p.b + ' – ' + p.d;
+      rows.push({ name: p.s + ', ' + p.g, years: years, note: note, hasNote: !!note });
+    });
+    return {
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      rows: rows,
+      countText: q ? rows.length + ' of ' + all.length + ' people match' : all.length + ' people in this Tree, by surname',
+      noMatch: rows.length === 0,
+      noMatchTitle: 'No one matches “' + this.state.query.trim() + '”',
+      noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }]
+    };
+  }
+}
+</script>
+</body>
+</html>

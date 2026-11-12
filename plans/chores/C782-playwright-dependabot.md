@@ -1,0 +1,72 @@
+# Plan: C782: Test a Dependabot Playwright image bump without a multi-ecosystem group
+
+- **Spec:** #782
+- **Requirement IDs:** None: CI tooling
+- **Status:** approved
+
+## Approach
+
+Move the Postgres Dockerfile to `docker/postgres/`. Add `docker/playwright/Dockerfile` with the `6e3fb7` pin. Both workflows read its `FROM` line. A plain `docker` entry for `/docker/playwright` has no group.
+
+## Decisions
+
+**D1 · The new `docker/` folder** · Decides: Tech lead
+
+`docs/code-rules.md` lists each new top-level folder in the architecture pattern table.
+
+- **A.** Add one pattern row for `docker/<image>/Dockerfile`.
+- **B.** Leave `docs/architecture.md` as it is.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D2 · Word budget of `docs/architecture.md`** · Decides: Tech lead
+
+The file is at its 850-word budget. The D1 row adds 22 words.
+
+- **A.** Raise the budget to 875.
+- **B.** Shorten other text.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+## Files that change
+
+| File                                                              | New / changed | What                                                                |
+| ----------------------------------------------------------------- | ------------- | ------------------------------------------------------------------- |
+| `docker/postgres/Dockerfile`                                      | moved         | From `.github/images/postgres/`                                     |
+| `scripts/ci-postgres.sh`, `scripts/__tests__/ci-postgres.test.ts` | changed       | The new path                                                        |
+| `docker/playwright/Dockerfile`                                    | new           | One `FROM` line                                                     |
+| `.github/playwright-image`                                        | deleted       |                                                                     |
+| `.github/dependabot.yml`                                          | changed       | The Postgres path; the Playwright entry                             |
+| `.github/workflows/ci.yml`, `design-agent-shots.yml`              | changed       | Read the `FROM` line; the `ci.yml` comment                          |
+| `scripts/__tests__/playwright-image.test.ts`                      | changed       | Pin, reader, `git grep` and Dependabot entry cases                  |
+| `docs/dependencies.md`                                            | changed       | The image step; shorter Overrides and review plugin text (issue D2) |
+| `docs/architecture.md`                                            | changed       | D1                                                                  |
+| `scripts/word-count.mts`, `scripts/__tests__/word-count.test.ts`  | changed       | D2                                                                  |
+| `scripts/__tests__/dockerfile.ts`                                 | new           | Shared test helper                                                  |
+| `scripts/vercel-ignore.mts`, its test                             | changed       | Skip `docker/`                                                      |
+
+## Order of work
+
+1. Change the tests. See them fail.
+2. Make the other changes.
+
+## Risks
+
+- A new Playwright release makes Dependabot move the version, not only the digest. The guard test then fails until the tech lead bumps `@playwright/test` on that PR.
+
+## Proof
+
+| Acceptance check                                 | Proven by                           |
+| ------------------------------------------------ | ----------------------------------- |
+| One `FROM` line; the pin file is gone            | `playwright-image.test.ts`          |
+| No other file names the image; workflows read it | `playwright-image.test.ts`          |
+| `dependabot.yml` accepted; the Dependabot PR     | "Check for updates" after the merge |
+| The image step, within budget                    | `npm run words`                     |
+
+## Deviations
+
+- The `docs/architecture.md` budget rises to 875 (D2), so `word-count.mts` and its test change.
+- Both image tests share `scripts/__tests__/dockerfile.ts`, so the `FROM` reader and `git grep` block are not copied.
+- `scripts/vercel-ignore.mts` skips `docker/`, so a Dependabot image PR starts no Vercel build.

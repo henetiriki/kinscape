@@ -45,9 +45,18 @@ updates:
         update-types:
           - minor
           - patch
+  # The Playwright image version must match @playwright/test: see "The Playwright image" in docs/dependencies.md.
+  - package-ecosystem: docker
+    directory: /docker/playwright
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
   # Dependabot keeps the major version: see "Held packages" in docs/dependencies.md.
   - package-ecosystem: docker
-    directory: /.github/images/postgres
+    directory: /docker/postgres
     schedule:
       interval: weekly
     labels:

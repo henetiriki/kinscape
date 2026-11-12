@@ -1,13 +1,14 @@
-import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
+import { filesNaming, fromLines } from '@ks/scripts/__tests__/dockerfile';
+
 const root = process.cwd();
 const read = (file: string) => readFileSync(join(root, file), 'utf8');
 
-const DOCKERFILE = '.github/images/postgres/Dockerfile';
+const DOCKERFILE = 'docker/postgres/Dockerfile';
 const SCRIPT = 'scripts/ci-postgres.sh';
 const WORKFLOW = '.github/workflows/ci.yml';
 
@@ -27,11 +28,7 @@ const indexOf = (job: string, run: string) =>
 describe('the Postgres container of CI', () => {
   // Dependabot reads only the first FROM line, and moves the minor version in its own PR.
   it(`is pinned by minor tag and digest, alone on the one FROM line of ${DOCKERFILE}`, () => {
-    const from = existsSync(join(root, DOCKERFILE))
-      ? read(DOCKERFILE)
-          .split('\n')
-          .filter(line => line.startsWith('FROM '))
-      : [];
+    const from = fromLines(DOCKERFILE);
 
     expect(
       from,
@@ -47,30 +44,9 @@ describe('the Postgres container of CI', () => {
     );
   });
 
-  // Plans are history: they name the old pins.
   it('is named in its Dockerfile only', () => {
-    const { status, stdout } = spawnSync(
-      'git',
-      [
-        'grep',
-        '-I',
-        '-l',
-        '-E',
-        'postgres(:[0-9]|@sha256:)',
-        '--',
-        '.',
-        ':(exclude)plans',
-        `:(exclude)${DOCKERFILE}`,
-        ':(exclude)__tests__',
-        ':(exclude)*/__tests__/*',
-      ],
-      { cwd: root, encoding: 'utf8' }
-    );
-
-    // git grep exits 1 when nothing matches, and 128 when it fails.
-    expect(status).toBeLessThan(2);
     expect(
-      stdout.trim().split('\n').filter(Boolean),
+      filesNaming('postgres(:[0-9]|@sha256:)', DOCKERFILE),
       `these files name the image: read the FROM line of ${DOCKERFILE} instead`
     ).toEqual([]);
   });
@@ -84,11 +60,11 @@ describe('the Postgres container of CI', () => {
       updates.find(
         update =>
           update['package-ecosystem'] === 'docker' &&
-          update.directory === '/.github/images/postgres'
+          update.directory === '/docker/postgres'
       )
     ).toEqual({
       'commit-message': { prefix: 'chore' },
-      directory: '/.github/images/postgres',
+      directory: '/docker/postgres',
       ignore: [
         {
           'dependency-name': 'postgres',

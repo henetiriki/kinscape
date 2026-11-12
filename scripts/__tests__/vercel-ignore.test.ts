@@ -50,6 +50,7 @@ describe('invisible', () => {
     'design/source/map.html',
     '.github/CODEOWNERS',
     '.github/workflows/ci.yml',
+    'docker/playwright/Dockerfile',
     '.claude/settings.json',
     '.husky/pre-commit',
     '.idea/workspace.xml',

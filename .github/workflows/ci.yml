@@ -158,6 +158,7 @@ jobs:
 
   # Reads the Playwright image from its one home. A job's container can't read a file, so this passes it on.
   image:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.pin.outputs.image }}

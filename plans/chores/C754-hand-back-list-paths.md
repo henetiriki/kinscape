@@ -1,7 +1,7 @@
 # Plan: C754: Label a hand-back plan PR when its Files that change is a list
 
 - **Spec:** #754
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ An item such as ``- `a.mts`, `b.mts`: what`` names two paths.
 - **B.** Count each backticked path before the first other word, as the table does.
 - **Other:** your own.
 
-Recommended: A, because the issue names one path per item.
+**Answer: A** (@henetiriki)
 
 **D2 · The last Constraint** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ The last Constraint ends after "Do not read the Chore issue".
 - **B.** The sentence means more. You finish it.
 - **Other:** your own.
 
-Recommended: A, because the script reads no issue now.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

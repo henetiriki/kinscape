@@ -2,7 +2,7 @@
 
 - **Spec:** #767 (Bug)
 - **Requirement IDs:** [NFR-09](../../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ A `pg` error message can name the host, and a server message can quote a value.
 - **B.** A fixed text and the error's `message`.
 - **Other:** your own.
 
-Recommended: A, because the security rules forbid secrets and Person data in logs, and only a fixed text is sure to hold neither.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -12,7 +12,7 @@ Restore the `playwright` group of #770 for `/docker/playwright`. The npm entry j
 
 **D1 · `commit-message` on the npm entry** · Decides: Tech lead
 
-In #770, `commit-message` was group-only: a group entry cannot set it. The Chore forbids changes to other entries.
+In #770, `commit-message` was group-only: a group entry cannot set it. The Chore forbids changes to other entries. [M0.7](../M0.7-dependabot.md) gave every npm PR the `chore` prefix.
 
 - **A.** Move it from the npm entry to the group, as #770 did. Other npm PRs can lose the `chore` prefix.
 - **B.** Keep it. If GitHub rejects the file, stop for A.
@@ -29,7 +29,7 @@ In #770, `commit-message` was group-only: a group entry cannot set it. The Chore
 | `docker/playwright/Dockerfile`               | changed       | The `1.64.1` line of the issue        |
 | `scripts/__tests__/playwright-image.test.ts` | changed       | The Dependabot case checks the group  |
 | `docs/dependencies.md`                       | changed       | One PR moves both                     |
-| `design/*.jpg`                               | changed       | If the snapshots workflow commits     |
+| `design/*.jpg`, `design/source/*.html`       | changed       | If the snapshots workflow commits     |
 
 ## Order of work
 

@@ -9,7 +9,7 @@ multi-ecosystem-groups:
     commit-message:
       prefix: chore
 updates:
-  # commit-message is a group-only option, so the group sets the prefix for every npm PR.
+  # A grouped entry cannot set commit-message, so only the playwright PR gets the chore prefix.
   - package-ecosystem: npm
     directory: /
     schedule:

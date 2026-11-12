@@ -53,7 +53,7 @@ describe('budgetFor', () => {
     ['docs/dependencies.md', 275],
     ['docs/repo-settings.md', 900],
     ['docs/infrastructure.md', 1000],
-    ['docs/architecture.md', 850],
+    ['docs/architecture.md', 875],
     ['docs/architecture-target.md', 650],
     ['design/DESIGN.md', 3000],
     ['design/CANVAS.md', 900],

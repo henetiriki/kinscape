@@ -43,7 +43,7 @@ jobs:
           REF: ${{ github.ref }}
       - name: Read the Playwright image
         id: pin
-        run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
+        run: echo "image=$(sed -n 's/^FROM //p' docker/playwright/Dockerfile)" >> "$GITHUB_OUTPUT"
 
   # Exports and renders the snapshots; fails if anything but design/source/*.html and design/*.jpg
   # changed. Holds no token that can push.

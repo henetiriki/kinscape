@@ -6,16 +6,26 @@
 
 ## Approach
 
-Move the Postgres Dockerfile to `docker/postgres/`. Add `docker/playwright/Dockerfile` with the `6e3fb7` pin. Both workflows read the image with `sed -n 's/^FROM //p' docker/playwright/Dockerfile`. A plain `docker` entry for `/docker/playwright` has no group. The tech lead builds this hand-back.
+Move the Postgres Dockerfile to `docker/postgres/`. Add `docker/playwright/Dockerfile` with the `6e3fb7` pin. Both workflows read its `FROM` line. A plain `docker` entry for `/docker/playwright` has no group.
 
 ## Decisions
 
 **D1 · The new `docker/` folder** · Decides: Tech lead
 
-`docs/code-rules.md` lists each new top-level folder in the architecture pattern table. The Chore does not name `docs/architecture.md`.
+`docs/code-rules.md` lists each new top-level folder in the architecture pattern table.
 
-- **A.** Add one pattern row: each CI image is the one `FROM` line of `docker/<image>/Dockerfile`. Its two tests enforce it.
+- **A.** Add one pattern row for `docker/<image>/Dockerfile`.
 - **B.** Leave `docs/architecture.md` as it is.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D2 · Word budget of `docs/architecture.md`** · Decides: Tech lead
+
+The file is at its 850-word budget. The D1 row adds 22 words.
+
+- **A.** Raise the budget to 875.
+- **B.** Shorten other text.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -33,6 +43,7 @@ Move the Postgres Dockerfile to `docker/postgres/`. Add `docker/playwright/Docke
 | `scripts/__tests__/playwright-image.test.ts`                      | changed       | Pin, reader, `git grep` and Dependabot entry cases                  |
 | `docs/dependencies.md`                                            | changed       | The image step; shorter Overrides and review plugin text (issue D2) |
 | `docs/architecture.md`                                            | changed       | D1                                                                  |
+| `scripts/word-count.mts`, `scripts/__tests__/word-count.test.ts`  | changed       | D2                                                                  |
 
 ## Order of work
 
@@ -52,3 +63,7 @@ Move the Postgres Dockerfile to `docker/postgres/`. Add `docker/playwright/Docke
 | No other file names the image; workflows read it | `playwright-image.test.ts`          |
 | `dependabot.yml` accepted; the Dependabot PR     | "Check for updates" after the merge |
 | The image step, within budget                    | `npm run words`                     |
+
+## Deviations
+
+- The `docs/architecture.md` budget rises to 875 (D2), so `word-count.mts` and its test change.

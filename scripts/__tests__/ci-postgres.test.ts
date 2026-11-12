@@ -7,7 +7,7 @@ import { parse } from 'yaml';
 const root = process.cwd();
 const read = (file: string) => readFileSync(join(root, file), 'utf8');
 
-const DOCKERFILE = '.github/images/postgres/Dockerfile';
+const DOCKERFILE = 'docker/postgres/Dockerfile';
 const SCRIPT = 'scripts/ci-postgres.sh';
 const WORKFLOW = '.github/workflows/ci.yml';
 
@@ -84,11 +84,11 @@ describe('the Postgres container of CI', () => {
       updates.find(
         update =>
           update['package-ecosystem'] === 'docker' &&
-          update.directory === '/.github/images/postgres'
+          update.directory === '/docker/postgres'
       )
     ).toEqual({
       'commit-message': { prefix: 'chore' },
-      directory: '/.github/images/postgres',
+      directory: '/docker/postgres',
       ignore: [
         {
           'dependency-name': 'postgres',

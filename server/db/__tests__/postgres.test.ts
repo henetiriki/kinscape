@@ -43,6 +43,20 @@ describe('contractDb', () => {
       await shared.close();
     });
 
+    it('destroys a handle that a failed test left open when it closes', async () => {
+      const shared = contractDb();
+      const left = await shared.fresh();
+      const destroyed = await shared.fresh();
+
+      await destroyed.destroy();
+      await shared.close();
+
+      // `pg` names a pool that was ended; a pool that the drop cut off gives another error.
+      await expect(sql`select 1`.execute(left)).rejects.toThrow(
+        /after calling end on the pool/
+      );
+    });
+
     it('gives each file its own migrated database on the container', async () => {
       const first = contractDb();
       const second = contractDb();

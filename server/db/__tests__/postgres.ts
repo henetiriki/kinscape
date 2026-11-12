@@ -10,12 +10,30 @@ import { migrate } from '@ks/server/db/migrate.mts';
 /**
  * One database of its own on the Postgres container, for one test file (NFR-09). Parallel files
  * reset each other's schema in a shared database. The first call makes it, and `close()` drops it.
- * A handle's `destroy()` closes that handle's pool, as on a real connection.
+ * A handle's `destroy()` closes that handle's pool, as on a real connection. A test that failed
+ * may leave its handle open, so `close()` destroys the open handles before the drop.
  */
 const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
   const name = `ks_test_${randomUUID().replaceAll('-', '')}`;
   let admin: ReturnType<typeof createPgDb> | undefined;
   let created: Promise<string> | undefined;
+
+  // The handles whose pools are open. Kysely adds no pool `error` listener, so the drop would end
+  // an open pool's connection and the unhandled event could hide the failure of the test.
+  const open = new Set<ReturnType<typeof createPgDb>>();
+
+  const track = (db: ReturnType<typeof createPgDb>) => {
+    const destroy = db.destroy.bind(db);
+
+    open.add(db);
+    // A second `end()` on a `pg` pool throws, so a handle that a test destroyed leaves the set.
+    db.destroy = async () => {
+      open.delete(db);
+      await destroy();
+    };
+
+    return db;
+  };
 
   const create = async () => {
     admin = createPgDb(adminUrl);
@@ -31,7 +49,7 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
   const empty = async () => {
     created ??= create();
 
-    const db = createPgDb(await created);
+    const db = track(createPgDb(await created));
 
     await sql`drop schema public cascade`.execute(db);
     await sql`create schema public`.execute(db);
@@ -53,6 +71,8 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
       () => true,
       () => false
     );
+
+    await Promise.all([...open].map(db => db.destroy()));
 
     if (admin !== undefined) {
       if (made) {

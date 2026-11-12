@@ -1,8 +1,9 @@
-import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
+
+import { filesNaming, fromLines } from '@ks/scripts/__tests__/dockerfile';
 
 const root = process.cwd();
 const read = (file: string) => readFileSync(join(root, file), 'utf8');
@@ -15,12 +16,7 @@ describe('the Playwright container image', () => {
   const playwright: string = JSON.parse(read('package.json')).devDependencies[
     '@playwright/test'
   ];
-  // Dependabot reads only the first FROM line.
-  const from = existsSync(join(root, DOCKERFILE))
-    ? read(DOCKERFILE)
-        .split('\n')
-        .filter(line => line.startsWith('FROM '))
-    : [];
+  const from = fromLines(DOCKERFILE);
 
   it(`is pinned by tag and digest, alone on the one FROM line of ${DOCKERFILE}`, () => {
     expect(
@@ -33,7 +29,7 @@ describe('the Playwright container image', () => {
   it('has the version of @playwright/test in package.json', () => {
     expect(
       from[0]?.match(FROM)?.[1],
-      `${DOCKERFILE} and package.json pin @playwright/test ${playwright}: bump both together`
+      `${DOCKERFILE} has ${from[0]} but package.json pins @playwright/test ${playwright}: bump both together`
     ).toBe(playwright);
   });
 
@@ -51,30 +47,9 @@ describe('the Playwright container image', () => {
     }
   );
 
-  // Plans are history: they name the old pins.
   it('is named in its Dockerfile only', () => {
-    const { status, stdout } = spawnSync(
-      'git',
-      [
-        'grep',
-        '-I',
-        '-l',
-        '-F',
-        'mcr.microsoft.com/playwright',
-        '--',
-        '.',
-        ':(exclude)plans',
-        `:(exclude)${DOCKERFILE}`,
-        ':(exclude)__tests__',
-        ':(exclude)*/__tests__/*',
-      ],
-      { cwd: root, encoding: 'utf8' }
-    );
-
-    // git grep exits 1 when nothing matches, and 128 when it fails.
-    expect(status).toBeLessThan(2);
     expect(
-      stdout.trim().split('\n').filter(Boolean),
+      filesNaming(String.raw`mcr\.microsoft\.com/playwright`, DOCKERFILE),
       `these files name the image: read the FROM line of ${DOCKERFILE} instead`
     ).toEqual([]);
   });

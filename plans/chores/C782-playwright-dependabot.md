@@ -44,12 +44,13 @@ The file is at its 850-word budget. The D1 row adds 22 words.
 | `docs/dependencies.md`                                            | changed       | The image step; shorter Overrides and review plugin text (issue D2) |
 | `docs/architecture.md`                                            | changed       | D1                                                                  |
 | `scripts/word-count.mts`, `scripts/__tests__/word-count.test.ts`  | changed       | D2                                                                  |
+| `scripts/__tests__/dockerfile.ts`                                 | new           | Shared test helper                                                  |
+| `scripts/vercel-ignore.mts`, its test                             | changed       | Skip `docker/`                                                      |
 
 ## Order of work
 
 1. Change the tests. See them fail.
 2. Make the other changes.
-3. After the merge, the tech lead runs "Check for updates" for the Playwright entry.
 
 ## Risks
 
@@ -67,3 +68,5 @@ The file is at its 850-word budget. The D1 row adds 22 words.
 ## Deviations
 
 - The `docs/architecture.md` budget rises to 875 (D2), so `word-count.mts` and its test change.
+- Both image tests share `scripts/__tests__/dockerfile.ts`, so the `FROM` reader and `git grep` block are not copied.
+- `scripts/vercel-ignore.mts` skips `docker/`, so a Dependabot image PR starts no Vercel build.

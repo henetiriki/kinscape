@@ -9,7 +9,7 @@ const LIMIT = 300;
 
 // Paths no user can see. Every other path deploys, so an unlisted one costs a redundant build, never a missed one.
 const INVISIBLE = [
-  /^(?:docs|plans|\.github|\.claude|\.husky|\.idea|e2e|scripts|design\/source)\//,
+  /^(?:docs|plans|docker|\.github|\.claude|\.husky|\.idea|e2e|scripts|design\/source)\//,
   /^[^/]+\.md$/,
   /^design\/(?:DESIGN|CANVAS|COMPONENTS)\.md$/,
   /^design\/[^/]+\.jpg$/,

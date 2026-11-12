@@ -20,6 +20,7 @@ export const ALLOWLIST: string[][] = [
     '.github/agent/fix-review.md',
     'AGENTS.md',
     'docs/building.md',
+    'docs/glossary.md',
     'docs/how-we-work.md',
     'docs/security.md',
   ],

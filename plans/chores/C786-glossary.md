@@ -75,3 +75,5 @@ Step 8 names `SKILL.md` only. Line 7 of `publish-design-system/tools.md` also cr
 - `SKILL.md` step 3.3 drops "titled" to stay in its 650-word budget.
 - The canvas name follows the `canvas.json` title, so a publish of that file renamed the canvas.
 - D2 adds the design system title in `lib/design/system.mts` and a publish.
+- `scripts/doc-links.mts` adds `docs/glossary.md` to the `AGENTS.md` cycle entry: the `AGENTS.md` link makes new cycles through it.
+- The refresh compared sizes, then read only the two changed files. The exporter did not run: Chromium is not installed here.

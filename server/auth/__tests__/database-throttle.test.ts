@@ -3,9 +3,9 @@ import { afterAll, describe, expect, it } from 'vitest';
 import { runThrottleContract } from '@ks/server/auth/__tests__/throttle-contract.ts';
 import { databaseThrottle } from '@ks/server/auth/database-throttle.mts';
 import { countFailure } from '@ks/server/auth/throttle.mts';
-import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
+import { contractDb } from '@ks/server/db/__tests__/postgres.ts';
 
-const shared = sharedTestDb();
+const shared = contractDb();
 
 afterAll(() => shared.close());
 

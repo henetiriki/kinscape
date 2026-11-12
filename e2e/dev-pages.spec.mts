@@ -3,7 +3,8 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 // The second server in playwright.config.ts: a production build without KINSCAPE_DEV_PAGES, so the
-// design kit and screens are hidden as on a production deployment. Its sessions are its own.
+// design kit and screens are hidden as on a production deployment. Each test starts with no session
+// (below) and forges or makes its own, as the two servers may share one `session` table.
 test.use({
   baseURL: 'http://localhost:3001',
   storageState: { cookies: [], origins: [] },

@@ -68,4 +68,11 @@ describe('the Playwright browser cache', () => {
       `${SEED} needs a "Cache the Playwright browser" step with the key and path of setup-workspace`
     ).toEqual(reference);
   });
+
+  it('is cached by the ci.yml e2e job under the same key and path as setup-workspace', () => {
+    expect(
+      keyAndPath('.github/workflows/ci.yml'),
+      'ci.yml needs a "Cache the Playwright browser" step with the key and path of setup-workspace, or e2e misses the cache that main saves'
+    ).toEqual(reference);
+  });
 });

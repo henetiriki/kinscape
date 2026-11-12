@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import pg from 'pg';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -12,6 +13,10 @@ const stubSupabase = () => {
 
 // NFR-03
 describe('poolConfig', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   const CA = '-----BEGIN CERTIFICATE-----\nCA\n-----END CERTIFICATE-----\n';
 
   it.each(['', '?sslmode=verify-full'])(
@@ -42,11 +47,43 @@ describe('poolConfig', () => {
     );
   });
 
+  // The CI `test` job sets KINSCAPE_DATABASE_CA_FILE, so this test stubs it empty.
   it('reads the checked-in CA by default', () => {
+    vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', '');
+
     expect(poolConfig('postgres://app@localhost/db').ssl.ca).toBe(
       readFileSync(join(process.cwd(), 'server/db/root-ca.crt'), 'utf8')
     );
     expect(rootCa()).toBe(rootCa());
+  });
+
+  it('reads the CA file that KINSCAPE_DATABASE_CA_FILE names', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ks-ca-'));
+    const first = join(dir, 'first.crt');
+    const second = join(dir, 'second.crt');
+
+    writeFileSync(first, 'first CA');
+    writeFileSync(second, 'second CA');
+
+    vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', first);
+    expect(rootCa()).toBe('first CA');
+    expect(poolConfig('postgres://app@localhost/db').ssl.ca).toBe('first CA');
+
+    // A later change to the variable takes effect after the first read.
+    vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', second);
+    expect(rootCa()).toBe('second CA');
+
+    // The memo answers for the first path after its file changes.
+    writeFileSync(first, 'changed');
+    vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', first);
+    expect(rootCa()).toBe('first CA');
+  });
+
+  it('refuses the CA file on Vercel', () => {
+    vi.stubEnv('KINSCAPE_DATABASE_CA_FILE', '/tmp/ca.crt');
+    vi.stubEnv('VERCEL_ENV', 'production');
+
+    expect(() => rootCa()).toThrow(/KINSCAPE_DATABASE_CA_FILE/);
   });
 });
 

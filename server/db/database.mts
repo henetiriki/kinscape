@@ -7,17 +7,29 @@ import pg from 'pg';
 
 import type { Database } from '#ks/server/db/types.ts';
 
-import { parseEnv } from '#ks/server/env.mts';
+import { parseCaFile, parseEnv } from '#ks/server/env.mts';
 
 /** Tables are snake_case in SQL and camelCase in code. */
 export const createDb = (dialect: Dialect) =>
   new Kysely<Database>({ dialect, plugins: [new CamelCasePlugin()] });
 
-let ca: string | undefined;
+const cas = new Map<string, string>();
 
-/** The database host's root certificate, read on first use. Public, not a secret. */
+/**
+ * The database host's root certificate, read once per path. Public, not a secret. It is
+ * `server/db/root-ca.crt` unless the test-only `KINSCAPE_DATABASE_CA_FILE` names another file.
+ */
 export const rootCa = () => {
-  ca ??= readFileSync(join(process.cwd(), 'server/db/root-ca.crt'), 'utf8');
+  const path =
+    parseCaFile(process.env) ?? join(process.cwd(), 'server/db/root-ca.crt');
+  let ca = cas.get(path);
+
+  if (ca === undefined) {
+    // The environment names the override at run time, so the bundler cannot trace it. The default file
+    // reaches the build through `outputFileTracingIncludes` in `next.config.ts`.
+    ca = readFileSync(/* turbopackIgnore: true */ path, 'utf8');
+    cas.set(path, ca);
+  }
 
   return ca;
 };

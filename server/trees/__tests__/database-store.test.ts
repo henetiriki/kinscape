@@ -1,10 +1,10 @@
 import { afterAll } from 'vitest';
 
-import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
+import { contractDb } from '@ks/server/db/__tests__/postgres.ts';
 import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
 import { databaseStore } from '@ks/server/trees/database-store.mts';
 
-const shared = sharedTestDb();
+const shared = contractDb();
 
 afterAll(() => shared.close());
 

@@ -8,9 +8,9 @@ import {
 } from '@ks/server/auth/__tests__/session-contract.ts';
 import { databaseSessions } from '@ks/server/auth/database-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
-import { sharedTestDb } from '@ks/server/db/__tests__/pglite.ts';
+import { contractDb } from '@ks/server/db/__tests__/postgres.ts';
 
-const shared = sharedTestDb();
+const shared = contractDb();
 
 afterAll(() => shared.close());
 

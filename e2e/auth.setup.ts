@@ -3,7 +3,7 @@ import { expect, test as setup } from '@playwright/test';
 // The path the other projects load (playwright.config.ts).
 const AUTH_STATE = 'test-results/.auth/state.json';
 
-// The synthetic user behind the test-only memory adapters (server/adapters.mts).
+// The synthetic Account behind the test-only memory sign-in (server/auth/synthetic.mts).
 const SYNTHETIC = {
   email: 'synthetic@example.test',
   password: 'synthetic-password',

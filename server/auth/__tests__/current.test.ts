@@ -21,7 +21,6 @@ vi.mock('@ks/server/adapters.mts', async importOriginal => ({
   appAdapters: () => adapters.current,
 }));
 
-import { SYNTHETIC } from '@ks/server/adapters.mts';
 import {
   currentSession,
   requireDevPage,
@@ -37,6 +36,7 @@ import {
   sessionOf,
   startSession,
 } from '@ks/server/auth/sessions.mts';
+import { SYNTHETIC } from '@ks/server/auth/synthetic.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const SESSION = { accountId: SYNTHETIC.accountId, email: 'a@example.test' };

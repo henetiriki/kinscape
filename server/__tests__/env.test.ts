@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseDirectUrl, parseEnv } from '@ks/server/env.mts';
+import { parseCaFile, parseDirectUrl, parseEnv } from '@ks/server/env.mts';
 
 const FULL = {
   KINSCAPE_DATABASE_URL: 'postgres://app@localhost/db',
@@ -20,6 +20,7 @@ describe('parseEnv', () => {
       databaseDirectUrl: 'postgres://direct@localhost/db',
       databaseUrl: 'postgres://app@localhost/db',
       memoryAdapters: false,
+      memorySignIn: false,
       supabasePublishableKey: 'publishable-key',
       supabaseUrl: 'https://example.supabase.co',
     });
@@ -147,6 +148,7 @@ describe('parseEnv with KINSCAPE_MEMORY_ADAPTERS', () => {
       databaseDirectUrl: undefined,
       databaseUrl: undefined,
       memoryAdapters: true,
+      memorySignIn: false,
       supabasePublishableKey: undefined,
       supabaseUrl: undefined,
     });
@@ -171,6 +173,125 @@ describe('parseEnv with KINSCAPE_MEMORY_ADAPTERS', () => {
 
   it('ignores VERCEL when the variable is off', () => {
     expect(parseEnv({ ...FULL, VERCEL: '1' }).memoryAdapters).toBe(false);
+  });
+});
+
+// NFR-03
+describe('parseEnv with KINSCAPE_MEMORY_SIGN_IN', () => {
+  const ON = {
+    KINSCAPE_DATABASE_URL: FULL.KINSCAPE_DATABASE_URL,
+    KINSCAPE_MEMORY_SIGN_IN: '1',
+  };
+
+  it('needs the database URL and no Supabase variable', () => {
+    expect(
+      parseEnv({
+        ...ON,
+        KINSCAPE_DATABASE_DIRECT_URL: 'postgres://direct@localhost/db',
+      })
+    ).toEqual({
+      databaseDirectUrl: 'postgres://direct@localhost/db',
+      databaseUrl: 'postgres://app@localhost/db',
+      memoryAdapters: false,
+      memorySignIn: true,
+      supabasePublishableKey: undefined,
+      supabaseUrl: undefined,
+    });
+  });
+
+  it('still needs the database URL', () => {
+    expect(() => parseEnv({ KINSCAPE_MEMORY_SIGN_IN: '1' })).toThrow(
+      /KINSCAPE_DATABASE_URL/
+    );
+  });
+
+  it('is off for any value but 1', () => {
+    expect(() => parseEnv({ ...ON, KINSCAPE_MEMORY_SIGN_IN: '0' })).toThrow(
+      /KINSCAPE_SUPABASE_PUBLISHABLE_KEY, KINSCAPE_SUPABASE_URL/
+    );
+  });
+
+  it('yields to KINSCAPE_MEMORY_ADAPTERS', () => {
+    expect(parseEnv({ ...ON, KINSCAPE_MEMORY_ADAPTERS: '1' })).toMatchObject({
+      memoryAdapters: true,
+      memorySignIn: false,
+    });
+  });
+
+  it.each([
+    ['VERCEL', '1'],
+    ['VERCEL', ''],
+    ['VERCEL_ENV', 'production'],
+    ['VERCEL_ENV', ''],
+  ])('refuses to start with %s=%j', (name, value) => {
+    expect(() => parseEnv({ ...ON, [name]: value })).toThrow(
+      /KINSCAPE_MEMORY_SIGN_IN/
+    );
+  });
+
+  it('ignores VERCEL when the variable is off', () => {
+    expect(parseEnv({ ...FULL, VERCEL: '1' }).memorySignIn).toBe(false);
+  });
+});
+
+// NFR-03
+describe('the guards on Vercel', () => {
+  // The CI `test` job sets KINSCAPE_DATABASE_CA_FILE, so a test of an older guard must still see its own error.
+  it.each([
+    ['KINSCAPE_MEMORY_ADAPTERS', {}],
+    ['KINSCAPE_MEMORY_SIGN_IN', FULL],
+  ])('names %s before the CA file', (name, rest) => {
+    expect(() =>
+      parseEnv({
+        ...rest,
+        KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt',
+        [name]: '1',
+        VERCEL_ENV: 'preview',
+      })
+    ).toThrow(new RegExp(name));
+  });
+});
+
+// NFR-03
+describe('parseCaFile', () => {
+  it.each([{}, { KINSCAPE_DATABASE_CA_FILE: '' }])(
+    'is undefined for %j',
+    source => {
+      expect(parseCaFile(source)).toBeUndefined();
+    }
+  );
+
+  it('returns the path', () => {
+    expect(parseCaFile({ KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt' })).toBe(
+      '/tmp/ca.crt'
+    );
+  });
+
+  it.each([
+    ['VERCEL', '1'],
+    ['VERCEL', ''],
+    ['VERCEL_ENV', 'production'],
+    ['VERCEL_ENV', ''],
+  ])('refuses to return it with %s=%j', (name, value) => {
+    expect(() =>
+      parseCaFile({ KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt', [name]: value })
+    ).toThrow(/KINSCAPE_DATABASE_CA_FILE/);
+  });
+
+  it('is checked by parseEnv', () => {
+    expect(
+      parseEnv({
+        ...FULL,
+        KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt',
+      }).memoryAdapters
+    ).toBe(false);
+    expect(() =>
+      parseEnv({
+        ...FULL,
+        KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt',
+        VERCEL: '1',
+      })
+    ).toThrow(/KINSCAPE_DATABASE_CA_FILE/);
   });
 });
 

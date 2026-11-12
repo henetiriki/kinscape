@@ -7,27 +7,17 @@ import type {
 } from '#ks/lib/domain/auth/types.ts';
 import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 
-import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 import { databaseSessions } from '#ks/server/auth/database-sessions.mts';
 import { databaseThrottle } from '#ks/server/auth/database-throttle.mts';
 import { memorySessions } from '#ks/server/auth/memory-sessions.mts';
 import { memorySignIn } from '#ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '#ks/server/auth/memory-throttle.mts';
 import { supabaseSignIn } from '#ks/server/auth/supabase-sign-in.mts';
+import { SYNTHETIC } from '#ks/server/auth/synthetic.mts';
 import { db } from '#ks/server/db/database.mts';
 import { parseEnv } from '#ks/server/env.mts';
 import { databaseStore } from '#ks/server/trees/database-store.mts';
 import { memoryStore } from '#ks/server/trees/memory-store.mts';
-
-/** The one synthetic user and Tree behind the test-only memory adapters. */
-export const SYNTHETIC = {
-  accountId: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
-  email: 'synthetic@example.test',
-  issuer: 'synthetic',
-  password: 'synthetic-password',
-  subject: 'synthetic-subject',
-  treeId: parseTreeId('00000000-0000-4000-8000-0000000000b1')!,
-};
 
 type Adapters = {
   sessions: SessionStore;
@@ -41,8 +31,9 @@ type Adapters = {
 const shared = globalThis as { kinscapeAdapters?: Adapters };
 
 /**
- * The sign-in port, session store, Tree store and throttle store, chosen together: memory under `KINSCAPE_MEMORY_ADAPTERS`
- * (`parseEnv` refuses that on Vercel), otherwise Supabase and the database.
+ * The sign-in port, session store, Tree store and throttle store. `KINSCAPE_MEMORY_ADAPTERS` makes all four
+ * memory. Otherwise the database holds the sessions, Trees and throttle. Sign-in is memory under
+ * `KINSCAPE_MEMORY_SIGN_IN` and Supabase if it is off. `parseEnv` refuses both flags on Vercel.
  */
 export const appAdapters = (): Adapters => {
   if (shared.kinscapeAdapters === undefined) {
@@ -57,17 +48,19 @@ export const appAdapters = (): Adapters => {
               id: SYNTHETIC.accountId,
               issuer: SYNTHETIC.issuer,
               subject: SYNTHETIC.subject,
-              trees: [{ id: SYNTHETIC.treeId, name: 'Synthetic Tree' }],
+              trees: [{ id: SYNTHETIC.treeId, name: SYNTHETIC.treeName }],
             },
           ]),
           throttle: memoryThrottle(),
         }
       : {
           sessions: databaseSessions(db()),
-          signIn: supabaseSignIn({
-            key: env.supabasePublishableKey,
-            url: env.supabaseUrl,
-          }),
+          signIn: env.memorySignIn
+            ? memorySignIn([SYNTHETIC])
+            : supabaseSignIn({
+                key: env.supabasePublishableKey,
+                url: env.supabaseUrl,
+              }),
           store: databaseStore(db()),
           throttle: databaseThrottle(db()),
         };

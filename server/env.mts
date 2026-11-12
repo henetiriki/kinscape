@@ -38,29 +38,85 @@ const fail = (issues: readonly { path: PropertyKey[] }[]): never => {
   );
 };
 
+const isOnVercel = (source: Record<string, string | undefined>) =>
+  source.VERCEL !== undefined || source.VERCEL_ENV !== undefined;
+
+/**
+ * The path of the CA file that replaces `server/db/root-ca.crt`, or `undefined` for the default.
+ * Test-only: CI names the self-signed certificate of its Postgres container. It stops the server
+ * if `VERCEL` or `VERCEL_ENV` is defined, even empty, because a CA of the caller's choice weakens TLS.
+ */
+export const parseCaFile = (source: Record<string, string | undefined>) => {
+  if (source.KINSCAPE_DATABASE_CA_FILE === undefined) {
+    return undefined;
+  }
+
+  if (isOnVercel(source)) {
+    throw new Error('KINSCAPE_DATABASE_CA_FILE must never be set on Vercel');
+  }
+
+  return source.KINSCAPE_DATABASE_CA_FILE === ''
+    ? undefined
+    : source.KINSCAPE_DATABASE_CA_FILE;
+};
+
 /**
  * Parses the server variables. A failure names each variable at fault, never its value.
- * `KINSCAPE_MEMORY_ADAPTERS=1` is test-only: it swaps in memory adapters, needs no database or
- * Supabase variable, and stops the server if `VERCEL` or `VERCEL_ENV` is defined, even empty.
- * So does test-only `KINSCAPE_DEV_PAGES`, which shows the design kit and screens (`dev-pages.mts`).
+ * `KINSCAPE_MEMORY_ADAPTERS=1` is test-only. It swaps in memory adapters and needs no database or
+ * Supabase variable. The server stops if `VERCEL` or `VERCEL_ENV` is defined, even empty.
+ * `KINSCAPE_MEMORY_SIGN_IN=1` is test-only too. It swaps in only the sign-in and needs the database
+ * variable. The server stops on Vercel in the same way.
+ * Test-only `KINSCAPE_DEV_PAGES` shows the design kit and screens (`dev-pages.mts`).
+ * `KINSCAPE_DATABASE_CA_FILE` (`parseCaFile`) follows the same Vercel rule.
  */
 export const parseEnv = (source: Record<string, string | undefined>) => {
-  const onVercel =
-    source.VERCEL !== undefined || source.VERCEL_ENV !== undefined;
+  const onVercel = isOnVercel(source);
 
   if (onVercel && source.KINSCAPE_DEV_PAGES !== undefined) {
     throw new Error('KINSCAPE_DEV_PAGES must never be set on Vercel');
   }
 
-  if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
-    if (onVercel) {
-      throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
-    }
+  if (onVercel && source.KINSCAPE_MEMORY_ADAPTERS === '1') {
+    throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
+  }
 
+  if (onVercel && source.KINSCAPE_MEMORY_SIGN_IN === '1') {
+    throw new Error('KINSCAPE_MEMORY_SIGN_IN must never be set on Vercel');
+  }
+
+  parseCaFile(source);
+
+  if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
     return {
       databaseDirectUrl: undefined,
       databaseUrl: undefined,
       memoryAdapters: true as const,
+      memorySignIn: false as const,
+      supabasePublishableKey: undefined,
+      supabaseUrl: undefined,
+    };
+  }
+
+  if (source.KINSCAPE_MEMORY_SIGN_IN === '1') {
+    const database = serverEnv
+      .pick({
+        KINSCAPE_DATABASE_DIRECT_URL: true,
+        KINSCAPE_DATABASE_URL: true,
+      })
+      .safeParse({
+        KINSCAPE_DATABASE_DIRECT_URL: source.KINSCAPE_DATABASE_DIRECT_URL,
+        KINSCAPE_DATABASE_URL: source.KINSCAPE_DATABASE_URL,
+      });
+
+    if (!database.success) {
+      return fail(database.error.issues);
+    }
+
+    return {
+      databaseDirectUrl: database.data.KINSCAPE_DATABASE_DIRECT_URL,
+      databaseUrl: database.data.KINSCAPE_DATABASE_URL,
+      memoryAdapters: false as const,
+      memorySignIn: true as const,
       supabasePublishableKey: undefined,
       supabaseUrl: undefined,
     };
@@ -81,6 +137,7 @@ export const parseEnv = (source: Record<string, string | undefined>) => {
     databaseDirectUrl: parsed.data.KINSCAPE_DATABASE_DIRECT_URL,
     databaseUrl: parsed.data.KINSCAPE_DATABASE_URL,
     memoryAdapters: false as const,
+    memorySignIn: false as const,
     supabasePublishableKey: parsed.data.KINSCAPE_SUPABASE_PUBLISHABLE_KEY,
     supabaseUrl: parsed.data.KINSCAPE_SUPABASE_URL,
   };

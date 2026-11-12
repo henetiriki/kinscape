@@ -54,24 +54,52 @@ describe('the Playwright container image', () => {
     ).toEqual([]);
   });
 
-  // No multi-ecosystem group: GitHub rejected the group's PR.
-  it('is updated by Dependabot on its own', () => {
-    const { updates } = parse(read('.github/dependabot.yml')) as {
-      updates: Record<string, unknown>[];
+  // One Dependabot PR moves the image and @playwright/test together.
+  describe('in dependabot.yml', () => {
+    const config = parse(read('.github/dependabot.yml')) as {
+      'multi-ecosystem-groups': Record<string, unknown>;
+      updates: {
+        [key: string]: unknown;
+        directory?: string;
+        groups?: Record<string, { 'exclude-patterns'?: string[] }>;
+        'package-ecosystem': string;
+      }[];
     };
-
-    expect(
-      updates.find(
+    const entry = (ecosystem: string, directory: string) =>
+      config.updates.find(
         update =>
-          update['package-ecosystem'] === 'docker' &&
-          update.directory === '/docker/playwright'
-      )
-    ).toEqual({
-      'commit-message': { prefix: 'chore' },
-      directory: '/docker/playwright',
-      labels: ['dependencies'],
-      'package-ecosystem': 'docker',
-      schedule: { interval: 'weekly' },
+          update['package-ecosystem'] === ecosystem &&
+          update.directory === directory
+      );
+
+    it('has the playwright group', () => {
+      expect(config['multi-ecosystem-groups'].playwright).toEqual({
+        'commit-message': { prefix: 'chore' },
+        labels: ['dependencies'],
+        schedule: { interval: 'weekly' },
+      });
+    });
+
+    it('puts the image entry in the group', () => {
+      expect(entry('docker', '/docker/playwright')).toEqual({
+        directory: '/docker/playwright',
+        'multi-ecosystem-group': 'playwright',
+        'package-ecosystem': 'docker',
+        patterns: ['*'],
+      });
+    });
+
+    it('puts only @playwright/test of the npm entry in the group', () => {
+      const npm = entry('npm', '/');
+
+      expect(npm?.['multi-ecosystem-group']).toBe('playwright');
+      expect(npm?.patterns).toEqual(['@playwright/test']);
+    });
+
+    it('keeps @playwright/test out of the development group', () => {
+      expect(
+        entry('npm', '/')?.groups?.development?.['exclude-patterns']
+      ).toEqual(['@playwright/test']);
     });
   });
 });

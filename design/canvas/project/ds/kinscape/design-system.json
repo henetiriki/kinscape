@@ -96,7 +96,7 @@
   },
   "blobs": {},
   "createdOnFiles": {
-    "at": "2026-11-12T18:22:39.000Z",
+    "at": "2026-11-12T20:39:57.000Z",
     "v": 1
   },
   "docs": {
@@ -109,10 +109,10 @@
     "Icons"
   ],
   "lastChange": {
-    "at": "2026-11-12T18:22:39.000Z",
+    "at": "2026-11-12T20:39:57.000Z",
     "by": "louw swart",
-    "note": "npm run design-system at f8d5ae7",
-    "via": "code · henetiriki/kinscape@f8d5ae7"
+    "note": "npm run design-system at 356e403",
+    "via": "code · henetiriki/kinscape@356e403"
   },
   "layout": "files",
   "libraries": [
@@ -127,6 +127,6 @@
   ],
   "namespace": "KinScape",
   "sections": {},
-  "title": "KinScape",
+  "title": "KinScape design system",
   "v": 3
 }

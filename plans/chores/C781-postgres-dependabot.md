@@ -30,6 +30,16 @@ The new row puts the file near or over its 250-word budget.
 
 **Answer: A** (@henetiriki)
 
+**D3 · Other forms of the image name** · Decides: Tech lead
+
+The `git grep` pattern `postgres:[0-9]` misses a digest-only reference such as `postgres@sha256:…`.
+
+- **A.** Widen the pattern to `postgres(:[0-9]|@sha256:)`.
+- **B.** Keep the pattern.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                                             | New / changed | What                                       |

@@ -1,6 +1,6 @@
 # Dependencies
 
-Dependabot opens security PRs when an advisory lands. It opens weekly updates for npm packages and GitHub Actions. It labels each PR `dependencies`. Nothing auto-merges: the tech lead reviews and merges each PR once CI passes, within:
+Dependabot opens security PRs when an advisory lands. It opens weekly updates for npm packages, GitHub Actions and the CI Postgres image. It labels each PR `dependencies`. Nothing auto-merges: the tech lead reviews and merges each PR once CI passes, within:
 
 | Severity         | Deadline              |
 | ---------------- | --------------------- |

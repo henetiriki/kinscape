@@ -6,6 +6,9 @@ import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 
 /** Images in `design/` with no `screens.json` entry yet. Remove a name when its slice adds the entry. */
 const NOT_BUILT = [
+  'fuzzy-date-readings',
+  'map-account-menu-people',
+  'map-account-menu-phone-people',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
   'map-date-invalid',
@@ -28,6 +31,16 @@ const NOT_BUILT = [
   'map-phone-layers',
   'map-sources',
   'map-sources-phone',
+  'people-empty',
+  'people-list',
+  'people-list-no-match',
+  'people-list-phone',
+  'people-load-failed',
+  'person-edit',
+  'person-errors',
+  'person-form-phone',
+  'person-new',
+  'person-save-failed',
   'sign-in-desktop-proposed',
   'sign-in-phone-error-proposed',
   'sign-in-phone-proposed',

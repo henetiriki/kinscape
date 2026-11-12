@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import { describe, expect, inject, it, vi } from 'vitest';
+import { describe, expect, inject, it, onTestFinished, vi } from 'vitest';
 
 import { contractDb } from '@ks/server/db/__tests__/postgres.ts';
 
@@ -59,6 +59,9 @@ describe('contractDb', () => {
 
     it('logs one line for a dropped idle connection and then queries again', async () => {
       const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      onTestFinished(() => log.mockRestore());
+
       const shared = contractDb();
       const db = await shared.fresh();
       const admin = await shared.fresh();
@@ -81,7 +84,6 @@ describe('contractDb', () => {
       await db.destroy();
       await admin.destroy();
       await shared.close();
-      log.mockRestore();
     });
 
     it('gives each file its own migrated database on the container', async () => {

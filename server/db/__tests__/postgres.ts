@@ -19,7 +19,8 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
   let created: Promise<string> | undefined;
 
   // The handles whose pools are open. A handle that a failed test left open must close before the
-  // drop, or the drop ends its connection and the logged pool error could hide the test's failure.
+  // drop. Otherwise, the drop ends its connection and the pool logs an error that can hide the
+  // failure of the test.
   const open = new Set<ReturnType<typeof createPgDb>>();
 
   const track = (db: ReturnType<typeof createPgDb>) => {

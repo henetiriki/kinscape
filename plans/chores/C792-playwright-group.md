@@ -2,7 +2,7 @@
 
 - **Spec:** #792
 - **Requirement IDs:** None: CI tooling
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ In #770, `commit-message` was group-only: a group entry cannot set it. The Chore
 - **B.** Keep it. If GitHub rejects the file, stop for A.
 - **Other:** your own.
 
-Recommended: A, because GitHub rejected only the group PR of #770.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

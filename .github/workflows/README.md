@@ -24,7 +24,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | CI<br>`ci.yml` | pull_request | `opened, synchronize, reopened, ready_for_review` | lint · typecheck · format · test · coverage · boundaries · words · image · e2e · design |
 | | push | `main` | |
 | Claude: Build<br>`claude-build.yml` · calls Claude: Run (shared) | pull_request_review | `submitted` | approve · build |
-| Claude: Review code<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**` | claude-review · summary |
+| Claude: Code review<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**` | claude-review · summary |
 | Claude: Audit denials<br>`claude-denial-audit.yml` | schedule | `0 7 * * 1` | audit |
 | | workflow_dispatch | | |
 | Claude: Fix review<br>`claude-fix-review.yml` · calls Claude: Run (shared) | pull_request | `labeled` | fix · unlabel |
@@ -60,7 +60,7 @@ flowchart TB
   ci_cache_cleanup["CI: Delete PR caches"]
   ci["CI"]
   claude_build["Claude: Build"]
-  claude_code_review["Claude: Review code"]
+  claude_code_review["Claude: Code review"]
   claude_fix_review["Claude: Fix review"]
   claude_hand_back["Claude: Hand back"]
   claude_resolve_conflict["Claude: Resolve conflict"]

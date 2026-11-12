@@ -189,6 +189,8 @@ jobs:
           node-version-file: .nvmrc
       - name: Install the dependencies
         run: npm ci
+      - name: Probe the runner cores
+        run: nproc && node -p "require('node:os').availableParallelism()" && free -m
       # Fails, naming the file, when a design/source snapshot differs from its design/canvas artboard.
       - name: Check that the HTML snapshots match the canvas
         run: npm run design:export && node scripts/design-shots-ci.mts source

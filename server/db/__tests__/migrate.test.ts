@@ -68,10 +68,12 @@ describe('migrate', () => {
       '0002_sessions.sql',
       '0003_sign_in_failures.sql',
       '0004_persons.sql',
+      '0005_relationships.sql',
     ]);
     expect(await tables()).toEqual([
       'account',
       'person',
+      'relationship',
       'schema_migration',
       'session',
       'sign_in_failure',

@@ -1,21 +1,28 @@
 import type { PersonId } from '#ks/lib/domain/ids/types.ts';
 import type {
   Refusal,
-  Relationship,
   RelationshipInput,
 } from '#ks/lib/domain/relationships/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
-type ParentRelationship = Extract<Relationship, { type: 'parent' }>;
+type ParentRelationship = Extract<RelationshipInput, { type: 'parent' }>;
 
 const MAX_BIOLOGICAL_PARENTS = 2;
 
-const isParent = (value: Relationship): value is ParentRelationship =>
+const isParent = (value: RelationshipInput): value is ParentRelationship =>
   value.type === 'parent';
 
-const isDuplicate = (input: RelationshipInput, other: Relationship) => {
+/** The Persons a Relationship joins: the parent then the child, or Person A then Person B. */
+export const endsOf = (
+  relationship: RelationshipInput
+): readonly [PersonId, PersonId] =>
+  relationship.type === 'parent'
+    ? [relationship.parentId, relationship.childId]
+    : [relationship.personAId, relationship.personBId];
+
+const isDuplicate = (input: RelationshipInput, other: RelationshipInput) => {
   if (input.type === 'parent') {
     return (
       isParent(other) &&
@@ -74,7 +81,7 @@ const reaches = (
 
 const parentRefusal = (
   input: ParentRelationship,
-  others: Relationship[]
+  others: RelationshipInput[]
 ): Refusal | undefined => {
   const parents = others.filter(isParent);
 
@@ -98,15 +105,13 @@ const parentRefusal = (
  */
 export const checkRelationship = (
   input: RelationshipInput,
-  existing: Relationship[]
+  existing: RelationshipInput[]
 ): Result<RelationshipInput, Refusal> => {
   const others = existing.filter(other => other.id !== input.id);
 
-  if (
-    input.type === 'parent'
-      ? input.parentId === input.childId
-      : input.personAId === input.personBId
-  ) {
+  const [first, second] = endsOf(input);
+
+  if (first === second) {
     return err('self');
   }
 

@@ -1,5 +1,14 @@
-import type { AccountId, PersonId, TreeId } from '@ks/lib/domain/ids/types.ts';
+import type {
+  AccountId,
+  PersonId,
+  RelationshipId,
+  TreeId,
+} from '@ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '@ks/lib/domain/persons/types.ts';
+import type {
+  Relationship,
+  RelationshipInput,
+} from '@ks/lib/domain/relationships/types.ts';
 import type { Result } from '@ks/lib/domain/result/types.ts';
 
 export type Account = { id: AccountId };
@@ -20,7 +29,7 @@ export type SeedAccount = {
 
 export type Tree = { id: TreeId; name: string };
 
-/** Whose Tree a Person method reads or writes. Every method checks that the Account may access the Tree. */
+/** Whose Tree a method reads or writes. Every method checks that the Account may access the Tree. */
 export type TreeScope = { accountId: AccountId; treeId: TreeId };
 
 /** Every read takes the Account id and joins `tree_account`, so no read skips the check. */
@@ -36,6 +45,14 @@ export type TreeStore = {
   addPerson: (
     input: { person: PersonInput } & TreeScope
   ) => Promise<Person | undefined>;
+  /**
+   * Saves a new Relationship at version 1 and returns it. A second call with the same id changes
+   * nothing and returns the Relationship already saved. `not-found` if either Person is not in the
+   * Tree, or the Account may not access the Tree, or an id is not a UUID.
+   */
+  addRelationship: (
+    input: { relationship: RelationshipInput } & TreeScope
+  ) => Promise<Result<Relationship, 'not-found'>>;
   /** The Account for a sign-in identity, or undefined. */
   findAccount: (
     issuer: string,
@@ -45,6 +62,10 @@ export type TreeStore = {
   findPerson: (
     input: { personId: PersonId } & TreeScope
   ) => Promise<Person | undefined>;
+  /** The Relationship, or undefined if missing, in another Tree or in a Tree the Account may not access. */
+  findRelationship: (
+    input: { relationshipId: RelationshipId } & TreeScope
+  ) => Promise<Relationship | undefined>;
   /** The Tree only if the Account may access it; otherwise undefined, as for a missing Tree or an id that isn't a UUID. */
   findTree: (ids: {
     accountId: AccountId;
@@ -57,6 +78,8 @@ export type TreeStore = {
    * may not access the Tree.
    */
   listPersons: (scope: TreeScope) => Promise<Person[]>;
+  /** The Tree's Relationships ordered by id. Empty if the Account may not access the Tree. */
+  listRelationships: (scope: TreeScope) => Promise<Relationship[]>;
   /**
    * Replaces the Person if `version` is the one saved. `conflict` for a stale version; `not-found`
    * for a missing Person, another Account's Tree or an id that isn't a UUID.
@@ -64,6 +87,14 @@ export type TreeStore = {
   updatePerson: (
     input: { person: PersonInput; version: number } & TreeScope
   ) => Promise<Result<Person, 'conflict' | 'not-found'>>;
+  /**
+   * Replaces the subtype or the dates if `version` is the one saved. The saved row must have the
+   * same type and Persons as the input. `conflict` for a stale version; `not-found` for a missing
+   * Relationship, one with other Persons or another type, another Account's Tree or an id that isn't a UUID.
+   */
+  updateRelationship: (
+    input: { relationship: RelationshipInput; version: number } & TreeScope
+  ) => Promise<Result<Relationship, 'conflict' | 'not-found'>>;
 };
 
 /** Whoever reads a Tree: an Account now; publishing adds anyone (NFR-10). Only `openTree` makes one. */

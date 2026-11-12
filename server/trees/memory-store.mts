@@ -1,7 +1,16 @@
 import { randomUUID } from 'node:crypto';
 
-import type { AccountId, PersonId, TreeId } from '#ks/lib/domain/ids/types.ts';
+import type {
+  AccountId,
+  PersonId,
+  RelationshipId,
+  TreeId,
+} from '#ks/lib/domain/ids/types.ts';
 import type { Person } from '#ks/lib/domain/persons/types.ts';
+import type {
+  Relationship,
+  RelationshipInput,
+} from '#ks/lib/domain/relationships/types.ts';
 import type {
   SeedAccount,
   Tree,
@@ -12,9 +21,11 @@ import type {
 import {
   parseAccountId,
   parsePersonId,
+  parseRelationshipId,
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 /** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
@@ -48,6 +59,28 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       ? (persons.get(treeId) ?? persons.set(treeId, new Map()).get(treeId)!)
       : undefined;
 
+  const relationships = new Map<TreeId, Map<RelationshipId, Relationship>>();
+
+  /** The Relationships of a Tree the Account may access; undefined otherwise. */
+  const relationshipsOf = (scope: TreeScope) =>
+    personsOf(scope) === undefined
+      ? undefined
+      : (relationships.get(scope.treeId) ??
+        relationships.set(scope.treeId, new Map()).get(scope.treeId)!);
+
+  /** The id of the Relationship, if the ids are UUIDs and both Persons are in the Tree. */
+  const joinable = (scope: TreeScope, input: RelationshipInput) => {
+    const id = parseRelationshipId(input.id);
+    const ends = endsOf(input).map(parsePersonId);
+    const owned = personsOf(scope);
+
+    return id !== undefined &&
+      owned !== undefined &&
+      ends.every(end => end !== undefined && owned.has(end))
+      ? id
+      : undefined;
+  };
+
   return {
     addAccount: async ({ issuer, subject, treeName }) => {
       const identity = identityOf(issuer, subject);
@@ -79,6 +112,20 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
 
       return structuredClone(owned.get(person.id));
     },
+    addRelationship: async ({ relationship, ...scope }) => {
+      const owned = relationshipsOf(scope);
+      const id = joinable(scope, relationship);
+
+      if (owned === undefined || id === undefined) {
+        return err('not-found');
+      }
+
+      if (!owned.has(id)) {
+        owned.set(id, { ...structuredClone(relationship), id, version: 1 });
+      }
+
+      return ok(structuredClone(owned.get(id)!));
+    },
     findAccount: async (issuer, subject) => {
       const id = accounts.get(identityOf(issuer, subject));
 
@@ -86,6 +133,12 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
     },
     findPerson: async ({ personId, ...scope }) =>
       structuredClone(personsOf(scope)?.get(personId)),
+    findRelationship: async ({ relationshipId, ...scope }) =>
+      structuredClone(
+        relationshipsOf(scope)?.get(
+          parseRelationshipId(relationshipId) as RelationshipId
+        )
+      ),
     findTree: async ({ accountId, treeId }) => {
       const found = trees.get(treeId);
 
@@ -110,6 +163,10 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
             compare(x.id, y.id)
         )
         .slice(0, MAX_LISTED),
+    listRelationships: async scope =>
+      structuredClone([...(relationshipsOf(scope)?.values() ?? [])]).sort(
+        (x, y) => compare(x.id, y.id)
+      ),
     updatePerson: async ({ person, version, ...scope }) => {
       const owned = personsOf(scope);
       const saved = owned?.get(person.id);
@@ -125,6 +182,35 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       const next = { ...structuredClone(person), version: version + 1 };
 
       owned.set(person.id, next);
+
+      return ok(structuredClone(next));
+    },
+    updateRelationship: async ({ relationship, version, ...scope }) => {
+      const owned = relationshipsOf(scope);
+      const id = joinable(scope, relationship);
+      const saved = id === undefined ? undefined : owned?.get(id);
+
+      if (
+        owned === undefined ||
+        id === undefined ||
+        saved === undefined ||
+        saved.type !== relationship.type ||
+        endsOf(saved).join() !== endsOf(relationship).join()
+      ) {
+        return err('not-found');
+      }
+
+      if (saved.version !== version) {
+        return err('conflict');
+      }
+
+      const next = {
+        ...structuredClone(relationship),
+        id,
+        version: version + 1,
+      };
+
+      owned.set(id, next);
 
       return ok(structuredClone(next));
     },

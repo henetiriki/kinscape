@@ -1,5 +1,5 @@
 import { sql } from 'kysely';
-import { describe, expect, inject, it } from 'vitest';
+import { describe, expect, inject, it, vi } from 'vitest';
 
 import { contractDb } from '@ks/server/db/__tests__/postgres.ts';
 
@@ -55,6 +55,33 @@ describe('contractDb', () => {
       await expect(sql`select 1`.execute(left)).rejects.toThrow(
         /driver has already been destroyed/
       );
+    });
+
+    it('logs one line for a dropped idle connection and then queries again', async () => {
+      const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const shared = contractDb();
+      const db = await shared.fresh();
+      const admin = await shared.fresh();
+
+      // Make the pool hold an idle client, then end that client's backend.
+      const { rows } = await sql<{
+        pid: number;
+      }>`select pg_backend_pid() as pid`.execute(db);
+
+      await sql`select pg_terminate_backend(${rows[0]?.pid})`.execute(admin);
+      await vi.waitFor(() => expect(log).toHaveBeenCalledTimes(1));
+
+      expect(log).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /^The database closed an idle connection \(\w+\)$/
+        )
+      );
+      expect(await db.selectFrom('tree').selectAll().execute()).toEqual([]);
+
+      await db.destroy();
+      await admin.destroy();
+      await shared.close();
+      log.mockRestore();
     });
 
     it('gives each file its own migrated database on the container', async () => {

@@ -52,11 +52,26 @@ export const poolConfig = (
   };
 };
 
+/**
+ * A `pg` pool that survives a dropped idle connection. Without an `error` listener, Node throws the
+ * event and stops the server. `pg` removes the broken client, so the next query opens a new one.
+ * The log line holds the error's code only: its message can name the host or quote a value.
+ */
+export const createPool = (connectionString: string) => {
+  const pool = new pg.Pool(poolConfig(connectionString));
+
+  pool.on('error', error => {
+    const code = 'code' in error ? String(error.code) : 'unknown';
+
+    console.error(`The database closed an idle connection (${code})`);
+  });
+
+  return pool;
+};
+
 /** A Kysely over `pg`, which sends no named prepared statements, as the transaction pooler needs. */
 export const createPgDb = (connectionString: string) =>
-  createDb(
-    new PostgresDialect({ pool: new pg.Pool(poolConfig(connectionString)) })
-  );
+  createDb(new PostgresDialect({ pool: createPool(connectionString) }));
 
 let instance: ReturnType<typeof createPgDb> | undefined;
 

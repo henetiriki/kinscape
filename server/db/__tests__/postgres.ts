@@ -18,8 +18,8 @@ const containerDb = (adminUrl: string): ReturnType<typeof sharedTestDb> => {
   let admin: ReturnType<typeof createPgDb> | undefined;
   let created: Promise<string> | undefined;
 
-  // The handles whose pools are open. Kysely adds no pool `error` listener, so the drop would end
-  // an open pool's connection and the unhandled event could hide the failure of the test.
+  // The handles whose pools are open. A handle that a failed test left open must close before the
+  // drop, or the drop ends its connection and the logged pool error could hide the test's failure.
   const open = new Set<ReturnType<typeof createPgDb>>();
 
   const track = (db: ReturnType<typeof createPgDb>) => {

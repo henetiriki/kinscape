@@ -60,6 +60,17 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Design kit boards menu open, phone                   | [design-kit-menu-phone.jpg](design-kit-menu-phone.jpg)                             |
 | Add a pin (provisional)                              | [add-pin.jpg](add-pin.jpg)                                                         |
 | Add a pin, phone (provisional)                       | [add-pin-phone.jpg](add-pin-phone.jpg)                                             |
+| People list                                          | [people-list.jpg](people-list.jpg)                                                 |
+| People list, filter finds nothing                    | [people-list-no-match.jpg](people-list-no-match.jpg)                               |
+| People list, no people yet                           | [people-empty.jpg](people-empty.jpg)                                               |
+| People list, failed to load                          | [people-load-failed.jpg](people-load-failed.jpg)                                   |
+| People list, phone, read-only                        | [people-list-phone.jpg](people-list-phone.jpg)                                     |
+| Person form, add                                     | [person-new.jpg](person-new.jpg)                                                   |
+| Person form, edit                                    | [person-edit.jpg](person-edit.jpg)                                                 |
+| Person form, errors after Save                       | [person-errors.jpg](person-errors.jpg)                                             |
+| Person form, save failed                             | [person-save-failed.jpg](person-save-failed.jpg)                                   |
+| Person form, phone, notice                           | [person-form-phone.jpg](person-form-phone.jpg)                                     |
+| Fuzzy dates, readings and messages                   | [fuzzy-date-readings.jpg](fuzzy-date-readings.jpg)                                 |
 
 ![Map, desktop](map-desktop.jpg)
 
@@ -71,7 +82,7 @@ People, pins and boundary shapes in the JPGs are illustrative, not data.
 
 ### Proposed screens
 
-Not built: see Google sign-in under [Components](#components).
+Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components). The two People rows show the People entry in the account menu. M2.9.2 builds it and swaps them in.
 
 | Screen                                   | File                                                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------- |
@@ -80,6 +91,8 @@ Not built: see Google sign-in under [Components](#components).
 | Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
 | Account menu, proposed                   | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
 | Account menu, phone, proposed            | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
+| Account menu with People                 | [map-account-menu-people.jpg](map-account-menu-people.jpg)                 |
+| Account menu with People, phone          | [map-account-menu-phone-people.jpg](map-account-menu-phone-people.jpg)     |
 
 ## Brand
 
@@ -299,7 +312,7 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 
 These have no design: see `AGENTS.md`.
 
-- The screens that add or edit people, relationships, pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
+- The screens that add or edit relationships, pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
 - The popup for a click inside a contested area: how it shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).
 - Person panel, life trail and migration view (EXP-05 to EXP-07).

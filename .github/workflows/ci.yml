@@ -158,6 +158,7 @@ jobs:
 
   # Reads the Playwright image from its one home. A job's container can't read a file, so this passes it on.
   image:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.pin.outputs.image }}
@@ -188,11 +189,6 @@ jobs:
           node-version-file: .nvmrc
       - name: Install the dependencies
         run: npm ci
-      - name: Probe the runner cores
-        run: nproc && node -p "require('node:os').availableParallelism()" && free -m
-      # Fails, naming the file, when a design/source snapshot differs from its design/canvas artboard.
-      - name: Check that the HTML snapshots match the canvas
-        run: npm run design:export && node scripts/design-shots-ci.mts source
       # Keep Next.js's build cache. A source change still restores the last build for the same lockfile.
       - name: Cache the Next.js build
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -200,8 +196,42 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'features/**', 'lib/**', 'server/**', 'data/**', 'types/**', 'design/tokens.*', 'next.config.ts', 'instrumentation.ts', 'proxy.ts') }}
           path: .next/cache
           restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+      # The design job runs the design check, so this run leaves that project out (playwright.config.ts).
       - name: Run the end-to-end tests
         run: npm run e2e
+        env:
+          KINSCAPE_E2E_SPLIT: '1'
+
+  # Compares each built screen with its design snapshot, in parallel with e2e.
+  design:
+    needs: image
+    runs-on: ubuntu-latest
+    # The same image as e2e: the snapshot export and the design check both launch Chromium.
+    container:
+      image: ${{ needs.image.outputs.image }}
+      options: --user 1001
+    steps:
+      - name: Fetch the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - name: Install the dependencies
+        run: npm ci
+      # Fails, naming the file, when a design/source snapshot differs from its design/canvas artboard.
+      - name: Check that the HTML snapshots match the canvas
+        run: npm run design:export && node scripts/design-shots-ci.mts source
+      # Only restores the cache that the e2e job saves, so the two jobs do not save one key.
+      - name: Restore the Next.js build cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**', 'features/**', 'lib/**', 'server/**', 'data/**', 'types/**', 'design/tokens.*', 'next.config.ts', 'instrumentation.ts', 'proxy.ts') }}
+          path: .next/cache
+          restore-keys: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+      - name: Run the design check
+        run: npm run design:check
       - name: Upload the design-check results
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ !cancelled() }}

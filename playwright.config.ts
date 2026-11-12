@@ -16,6 +16,10 @@ const use: Partial<PlaywrightWorkerOptions> = {
 // Where e2e/auth.setup.ts saves the signed-in session.
 const signedIn = 'test-results/.auth/state.json';
 
+// The CI `e2e` job sets this because the CI `design` job runs the design project, so `e2e`
+// leaves that project out and `perf` waits only for `chromium`. Every other run keeps all projects.
+const split = process.env.KINSCAPE_E2E_SPLIT === '1';
+
 export default defineConfig({
   // A stray `test.only` fails the run in CI instead of quietly running one test.
   forbidOnly: !!process.env.CI,
@@ -45,16 +49,16 @@ export default defineConfig({
       use: { ...use, storageState: signedIn },
     },
     // The timing tests, tagged @perf. They measure how fast the map redraws, so they
-    // run alone, after the two projects above finish (`dependencies`), and other
-    // workers don't slow them. If either dependency fails, this one is skipped.
+    // run alone, after the projects above finish (`dependencies`), and other
+    // workers don't slow them. If a dependency fails, this one is skipped.
     {
-      dependencies: ['chromium', 'design'],
+      dependencies: split ? ['chromium'] : ['chromium', 'design'],
       grep: /@perf/,
       name: 'perf',
       testIgnore: 'auth.setup.ts',
       use: { ...use, storageState: signedIn },
     },
-  ],
+  ].filter(({ name }) => !split || name !== 'design'),
   reporter: [
     ...(process.env.CI ? [['github'] as const] : []),
     ['list'],
@@ -95,6 +99,6 @@ export default defineConfig({
       url: 'http://localhost:3001/sign-in',
     },
   ],
-  // The CI runner has 2 cores; elsewhere Playwright picks.
-  workers: process.env.CI ? 2 : undefined,
+  // The CI runner has 4 cores; elsewhere Playwright picks.
+  workers: process.env.CI ? 4 : undefined,
 });

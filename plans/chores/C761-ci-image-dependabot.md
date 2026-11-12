@@ -1,7 +1,7 @@
 # Plan: C761: Let Dependabot bump the Playwright and Postgres CI images
 
 - **Spec:** #761
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The Chore keeps the package out of `development`, but forbids changes to the oth
 - **B.** Change no group. If the `development` PR holds the package, stop and report.
 - **Other:** your own.
 
-Recommended: A, because B finds the problem only after the merge.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

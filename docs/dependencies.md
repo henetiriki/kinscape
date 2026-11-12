@@ -1,6 +1,6 @@
 # Dependencies
 
-Dependabot opens security PRs when an advisory lands. It opens weekly updates for npm packages, GitHub Actions and the CI images. It labels each PR `dependencies`. Nothing auto-merges: the tech lead merges each PR once CI passes, within:
+Dependabot opens security PRs when an advisory lands. It opens weekly updates for npm packages, GitHub Actions and the CI images. It labels each PR `dependencies`. Nothing auto-merges: the tech lead reviews and merges each PR once CI passes, within:
 
 | Severity         | Deadline              |
 | ---------------- | --------------------- |
@@ -24,7 +24,7 @@ One Dependabot PR moves `@playwright/test` and its image. Before you merge it, r
 
 ## Overrides
 
-These `package.json` `overrides` replace deprecated transitive packages, widen a stale `eslint` peer range or lift a vulnerable version. Dependabot doesn't update them; bump by hand.
+These `package.json` `overrides` replace deprecated transitive packages, widen a stale `eslint` peer range or lift a vulnerable transitive version. Dependabot doesn't update them; bump by hand.
 
 | Package                  | Clears                                                                                                        | Remove when                                                               |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -38,4 +38,4 @@ These `package.json` `overrides` replace deprecated transitive packages, widen a
 
 ## The review plugin
 
-Dependabot can't track the pinned code-review plugin in `.github/claude-plugins`. Each Monday a workflow files an issue for newer changes. The tech lead reviews them and bumps the pin by hand.
+Dependabot can't track the pinned code-review plugin in `.github/claude-plugins`. Each Monday a workflow checks it and files an issue for newer changes. The tech lead reviews the changes and bumps the pin by hand.

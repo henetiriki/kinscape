@@ -43,15 +43,13 @@ describe('the Playwright container image', () => {
     expect(existsSync(join(root, '.github/playwright-image'))).toBe(false);
   });
 
+  // The command and its file are one string: a comment that names the Dockerfile must not pass.
   it.each([
-    ['.github/workflows/ci.yml', PLAYWRIGHT],
-    ['.github/workflows/design-agent-shots.yml', PLAYWRIGHT],
-    ['scripts/ci-postgres.sh', POSTGRES],
-  ])('is read by %s from the FROM line of %s', (file, dockerfile) => {
-    const text = read(file);
-
-    expect(text).toContain(dockerfile);
-    expect(text).toContain(READ_FROM);
+    ['.github/workflows/ci.yml', `${READ_FROM} ${PLAYWRIGHT}`],
+    ['.github/workflows/design-agent-shots.yml', `${READ_FROM} ${PLAYWRIGHT}`],
+    ['scripts/ci-postgres.sh', `${READ_FROM} "$(dirname "$0")/../${POSTGRES}"`],
+  ])('%s reads the FROM line of its Dockerfile', (file, command) => {
+    expect(read(file)).toContain(command);
   });
 });
 
@@ -145,7 +143,6 @@ describe('the Dependabot configuration of the CI images', () => {
   it('holds Postgres at its major version, outside the Playwright group', () => {
     const postgres = entry('docker', '/.github/images/postgres');
 
-    expect(postgres).toBeDefined();
     expect(postgres).not.toHaveProperty('multi-ecosystem-group');
     expect(postgres?.ignore).toEqual([
       {

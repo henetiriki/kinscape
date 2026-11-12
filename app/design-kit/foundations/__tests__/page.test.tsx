@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 // NFR-06
-it('shows the five sections in board order, and the nineteen icons', async () => {
+it('shows the five sections in board order, and the twenty icons', async () => {
   const { default: FoundationsKit } =
     await import('@ks/app/design-kit/foundations/page');
 
@@ -24,7 +24,7 @@ it('shows the five sections in board order, and the nineteen icons', async () =>
   const icons = screen.getByRole('region', { name: 'Icons' });
   const tiles = icons.querySelectorAll('svg');
 
-  expect(tiles).toHaveLength(19);
+  expect(tiles).toHaveLength(20);
   expect([...tiles].map(svg => svg.parentElement!.textContent)).toEqual([
     'search',
     'zoom in',
@@ -45,6 +45,7 @@ it('shows the five sections in board order, and the nineteen icons', async () =>
     'sign out',
     'eye',
     'eye off',
+    'people',
   ]);
   expect(tiles[0].getAttribute('width')).toBe('24');
   expect(

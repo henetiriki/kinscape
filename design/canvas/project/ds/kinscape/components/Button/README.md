@@ -12,7 +12,7 @@ An action: primary for the one main action in a view, secondary for the rest.
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
 | `full` | `boolean` | no | Fills the width of its container. |
-| `icon` | `"menu" \| "search" \| "alert" \| "back" \| "chevronDown" \| "close" \| "cloudOff" \| "copy" \| "document" \| "done" \| "error" \| "export" \| "eye" \| "eyeOff" \| "fit" \| "forward" \| "info" \| "layers" \| "place" \| "play" \| "signOut" \| "success" \| "warning" \| "zoomIn" \| "zoomOut"` | no | A leading icon, or the only content of an icon-only Button. |
+| `icon` | `"menu" \| "search" \| "alert" \| "back" \| "chevronDown" \| "close" \| "cloudOff" \| "copy" \| "document" \| "done" \| "error" \| "export" \| "eye" \| "eyeOff" \| "fit" \| "forward" \| "info" \| "layers" \| "people" \| "place" \| "play" \| "signOut" \| "success" \| "warning" \| "zoomIn" \| "zoomOut"` | no | A leading icon, or the only content of an icon-only Button. |
 | `label` | `string` | no |  |
 | `round` | `boolean` | no | Fully round, as Play. |
 | `size` | `"s" \| "l" \| "m" \| "xs"` | no | Heights 50, 44, 40 and 36. |

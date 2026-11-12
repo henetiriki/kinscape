@@ -3,7 +3,7 @@ import type { Shot } from '#ks/lib/design/types.ts';
 /** The phone boards are long pages; every other phone file is one screen. */
 const PHONE_BOARD = /^(?:style-\d.*|map-style|design-kit)-phone$/;
 
-/** Phone screens, style guide boards and the map style board each have their own size. */
+/** Phone screens, style guide boards, the map style board and the fuzzy-date reference each have their own size. */
 export const shotFor = (name: string): Shot => {
   if (name.includes('phone')) {
     return {
@@ -14,7 +14,11 @@ export const shotFor = (name: string): Shot => {
     };
   }
 
-  if (name.startsWith('style-') || name === 'map-style') {
+  if (
+    name.startsWith('style-') ||
+    name === 'map-style' ||
+    name === 'fuzzy-date-readings'
+  ) {
     return { fullPage: true, height: 900, scale: 1, width: 1440 };
   }
 

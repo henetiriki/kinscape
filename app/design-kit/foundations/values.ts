@@ -53,6 +53,7 @@ export const ICONS = [
   { label: 'sign out', name: 'signOut' },
   { label: 'eye', name: 'eye' },
   { label: 'eye off', name: 'eyeOff' },
+  { label: 'people', name: 'people' },
 ] as const satisfies readonly { label: string; name: IconName }[];
 
 export const MOTION = [

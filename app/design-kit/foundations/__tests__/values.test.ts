@@ -17,7 +17,7 @@ it('names a token for each row', () => {
   expect(MOTION.every(row => row.name in tokens.motion)).toBe(true);
 });
 
-it('lists the nineteen icons once each', () => {
-  expect(ICONS).toHaveLength(19);
-  expect(new Set(ICONS.map(icon => icon.name)).size).toBe(19);
+it('lists the twenty icons once each', () => {
+  expect(ICONS).toHaveLength(20);
+  expect(new Set(ICONS.map(icon => icon.name)).size).toBe(20);
 });

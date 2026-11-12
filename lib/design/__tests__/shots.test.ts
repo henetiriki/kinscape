@@ -12,6 +12,7 @@ describe('shotFor', () => {
     ['design-kit-phone', 390, 844, 2, true],
     ['style-4-states', 1440, 900, 1, true],
     ['map-style', 1440, 900, 1, true],
+    ['fuzzy-date-readings', 1440, 900, 1, true],
     ['map-desktop', 1440, 900, 1, false],
   ])('%s', (name, width, height, scale, fullPage) => {
     expect(shotFor(name)).toEqual({ fullPage, height, scale, width });

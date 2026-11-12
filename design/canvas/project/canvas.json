@@ -29,6 +29,10 @@
     {
       "id": "style-guide",
       "name": "Style guide"
+    },
+    {
+      "id": "people",
+      "name": "People"
     }
   ],
   "boards": {
@@ -490,6 +494,120 @@
       "h": 844,
       "title": "Sign in — phone, error state (proposed)",
       "page": "sign-in"
+    },
+    "People-list.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "People — list",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "People-list-no-match.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "People — filter finds nothing",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "People-empty.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "People — no Persons in the Tree yet",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "People-load-failed.dc.html": {
+      "x": 4560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "People — list didn't load",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "People-list-phone.dc.html": {
+      "x": 6080,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "People — phone, read-only list",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-new.dc.html": {
+      "x": 0,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — add (empty form)",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-edit.dc.html": {
+      "x": 1520,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — edit, every field filled",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-errors.dc.html": {
+      "x": 3040,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — errors after Save",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-save-failed.dc.html": {
+      "x": 4560,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — save failed, values kept",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-form-phone.dc.html": {
+      "x": 6080,
+      "y": 1320,
+      "w": 390,
+      "h": 844,
+      "title": "Person — phone opens a form address",
+      "page": "people"
+    },
+    "Fuzzy-date-readings.dc.html": {
+      "x": 0,
+      "y": 2640,
+      "w": 1440,
+      "h": 1240,
+      "title": "Fuzzy dates — readings and messages",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Map-account-people.dc.html": {
+      "x": 1520,
+      "y": 2640,
+      "w": 1440,
+      "h": 900,
+      "title": "Account menu with People (copy of Map-account)",
+      "page": "people"
+    },
+    "Map-phone-account-people.dc.html": {
+      "x": 3040,
+      "y": 2640,
+      "w": 390,
+      "h": 844,
+      "title": "Account menu with People, phone (copy of Map-phone-account)",
+      "page": "people"
     }
   },
   "order": [
@@ -548,16 +666,54 @@
     "SG-Surfaces-2.dc.html",
     "SG-Furniture.dc.html",
     "SG-Furniture-phone.dc.html",
-    "SG-Furniture-phone-2.dc.html"
+    "SG-Furniture-phone-2.dc.html",
+    "People-list.dc.html",
+    "People-list-no-match.dc.html",
+    "People-empty.dc.html",
+    "People-load-failed.dc.html",
+    "People-list-phone.dc.html",
+    "Person-new.dc.html",
+    "Person-edit.dc.html",
+    "Person-errors.dc.html",
+    "Person-save-failed.dc.html",
+    "Person-form-phone.dc.html",
+    "Fuzzy-date-readings.dc.html",
+    "Map-account-people.dc.html",
+    "Map-phone-account-people.dc.html"
   ],
-  "notes": {},
+  "notes": {
+    "people-list-title": {
+      "x": 0,
+      "y": -300,
+      "text": "People — list and its states",
+      "kind": "title1",
+      "maxW": 6470,
+      "page": "people"
+    },
+    "people-form-title": {
+      "x": 0,
+      "y": 1020,
+      "text": "Person — one form for add and edit",
+      "kind": "title1",
+      "maxW": 6470,
+      "page": "people"
+    },
+    "people-ref-title": {
+      "x": 0,
+      "y": 2340,
+      "text": "Fuzzy dates, and the way in from the map",
+      "kind": "title1",
+      "maxW": 3430,
+      "page": "people"
+    }
+  },
   "designSystems": [
     {
       "title": "KinScape",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1794425948-fdcd",
-      "copiedAt": "2026-11-11T19:41:03Z"
+      "version": "1794507808-5dae",
+      "copiedAt": "2026-11-12T18:28:14Z"
     }
   ]
 }

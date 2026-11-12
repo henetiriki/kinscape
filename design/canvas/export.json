@@ -1,6 +1,9 @@
 {
   "icon": "/_blob/fc8efdb1b185576b872141e6e4fa37f8",
-  "links": { "Kit-menu-phone.dc.html": "design-kit-menu-phone" },
+  "links": {
+    "Kit-menu-phone.dc.html": "design-kit-menu-phone",
+    "Person-edit.dc.html": "person-edit"
+  },
   "snapshots": [
     {
       "file": "Sign-in.dc.html",
@@ -318,6 +321,79 @@
     {
       "file": "SG-Furniture-phone-2.dc.html",
       "name": "style-8-components-map-2-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "People-list.dc.html",
+      "name": "people-list",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "People-list.dc.html",
+      "name": "people-list-no-match",
+      "props": { "variant": "no-match" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "People-list.dc.html",
+      "name": "people-empty",
+      "props": { "variant": "empty" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "People-list.dc.html",
+      "name": "people-load-failed",
+      "props": { "variant": "failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "People-list-phone.dc.html",
+      "name": "people-list-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Person-new.dc.html",
+      "name": "person-new",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-new.dc.html",
+      "name": "person-edit",
+      "props": { "variant": "edit" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-new.dc.html",
+      "name": "person-errors",
+      "props": { "variant": "errors" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-new.dc.html",
+      "name": "person-save-failed",
+      "props": { "variant": "save-failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-form-phone.dc.html",
+      "name": "person-form-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Fuzzy-date-readings.dc.html",
+      "name": "fuzzy-date-readings",
+      "viewport": { "height": 1240, "width": 1440 }
+    },
+    {
+      "file": "Map.dc.html",
+      "name": "map-account-menu-people",
+      "props": { "variant": "account-people" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-phone-states.dc.html",
+      "name": "map-account-menu-phone-people",
+      "props": { "variant": "account-people" },
       "viewport": { "height": 844, "width": 390 }
     }
   ]

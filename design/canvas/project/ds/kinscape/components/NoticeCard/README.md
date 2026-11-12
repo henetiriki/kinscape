@@ -10,7 +10,7 @@ Says what is going on in one line and offers at most two ways out.
 | --- | --- | --- | --- |
 | `actions` | `[Action, Action] \| [Action]` | no | Up to two buttons; the first is primary. |
 | `children` | `ReactNode` | yes | The one line. |
-| `icon` | `"menu" \| "search" \| "alert" \| "back" \| "chevronDown" \| "close" \| "cloudOff" \| "copy" \| "document" \| "done" \| "error" \| "export" \| "eye" \| "eyeOff" \| "fit" \| "forward" \| "info" \| "layers" \| "place" \| "play" \| "signOut" \| "success" \| "warning" \| "zoomIn" \| "zoomOut"` | no |  |
+| `icon` | `"menu" \| "search" \| "alert" \| "back" \| "chevronDown" \| "close" \| "cloudOff" \| "copy" \| "document" \| "done" \| "error" \| "export" \| "eye" \| "eyeOff" \| "fit" \| "forward" \| "info" \| "layers" \| "people" \| "place" \| "play" \| "signOut" \| "success" \| "warning" \| "zoomIn" \| "zoomOut"` | no |  |
 | `phone` | `boolean` | no | The kit's phone sample: 358 wide with 44 buttons. |
 | `progress` | `number` | no |  |
 | `size` | `"large"` | no | `large`: the icon on top, an H3 title, 380 wide. |

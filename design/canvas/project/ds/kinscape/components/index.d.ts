@@ -492,6 +492,7 @@ declare const PATHS: {
     info: import("react").JSX.Element;
     layers: import("react").JSX.Element;
     menu: import("react").JSX.Element;
+    people: import("react").JSX.Element;
     place: import("react").JSX.Element;
     play: import("react").JSX.Element;
     search: import("react").JSX.Element;

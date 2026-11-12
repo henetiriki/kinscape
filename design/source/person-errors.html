@@ -316,7 +316,7 @@
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="intersex">Intersex</option>
-                    <option value="unknown">Unknown</option>
+                    <option value="unknown" selected="">Unknown</option>
                   </select>
                   <span
                     class="_chevron_ym237_204"
@@ -415,30 +415,42 @@
               </div>
 
               <div
-                class="_row_27bnl_2"
-                data-disabled="true"
-                style="align-items: center; gap: 12px; min-height: 48px; display: flex;">
-                <input
-                  class="_checkbox_16lf0_3 _ring_180bu_3"
-                  type="checkbox"
-                  disabled=""
-                  aria-describedby=":r5:-description"
-                  id=":r5:"
-                  checked=""
-                  style="appearance: none; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(201, 207, 197); border: 1px solid rgb(201, 207, 197); border-radius: 4px; box-sizing: border-box; cursor: default; height: 20px; width: 20px; place-content: center; margin: 0px; display: grid; position: relative; flex: 0 0 auto;" />
+                style="display: flex; align-items: center; gap: 12px; min-height: 48px">
                 <span
-                  class="_text_27bnl_13"
-                  style="flex-direction: column; min-width: 0px; display: flex;">
+                  style="position: relative; display: inline-flex; flex: none; width: 20px; height: 20px">
+                  <input
+                    id="p-deceased"
+                    type="checkbox"
+                    checked=""
+                    disabled=""
+                    aria-describedby="p-deceased-note"
+                    style="appearance: none; width: 20px; height: 20px; margin: 0; box-sizing: border-box; border: 1.5px solid #c9cfc5; border-radius: 4px; background: #e2e5dd" />
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    style="position: absolute; left: 3px; top: 3px; color: #6e776f; pointer-events: none">
+                    <path d="M5 12.5l4.5 4.5L19 7.5"></path>
+                  </svg>
+                </span>
+                <span
+                  style="display: flex; flex-direction: column; min-width: 0">
                   <label
-                    class="_label_27bnl_19"
-                    for=":r5:"
-                    style='color: rgb(110, 119, 111); cursor: default; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; line-height: 20px;'>
+                    for="p-deceased"
+                    class="label"
+                    style='color: #6e776f; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
                     Deceased
                   </label>
                   <span
-                    class="_description_27bnl_28"
-                    id=":r5:-description"
-                    style="color: rgb(110, 119, 111); font-size: 12.5px; line-height: 18px; cursor: default;">
+                    id="p-deceased-note"
+                    class="caption"
+                    style='color: #6e776f; font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; line-height: 18px; font-weight: 400; letter-spacing: normal; font-style: normal;'>
                     Ticked because a death date is entered.
                   </span>
                 </span>
@@ -457,7 +469,6 @@
               <textarea
                 id="p-notes"
                 aria-describedby="p-notes-help"
-                value=""
                 style="flex: 1; min-height: 240px; resize: vertical; box-sizing: border-box; border-radius: 8px; background: #ffffff; font-family: 'Public Sans', system-ui, sans-serif; font-size: 15px; line-height: 22px; color: #18211b; border: 1px solid #8e978c; padding: 10px 12px"></textarea>
               <p
                 class="_small_1mu69_75"

@@ -235,6 +235,24 @@ describe('parseEnv with KINSCAPE_MEMORY_SIGN_IN', () => {
 });
 
 // NFR-03
+describe('the guards on Vercel', () => {
+  // The CI `test` job sets KINSCAPE_DATABASE_CA_FILE, so a test of an older guard must still see its own error.
+  it.each([
+    ['KINSCAPE_MEMORY_ADAPTERS', {}],
+    ['KINSCAPE_MEMORY_SIGN_IN', FULL],
+  ])('names %s before the CA file', (name, rest) => {
+    expect(() =>
+      parseEnv({
+        ...rest,
+        KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt',
+        [name]: '1',
+        VERCEL_ENV: 'preview',
+      })
+    ).toThrow(new RegExp(name));
+  });
+});
+
+// NFR-03
 describe('parseCaFile', () => {
   it.each([{}, { KINSCAPE_DATABASE_CA_FILE: '' }])(
     'is undefined for %j',
@@ -272,13 +290,6 @@ describe('parseCaFile', () => {
         ...FULL,
         KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt',
         VERCEL: '1',
-      })
-    ).toThrow(/KINSCAPE_DATABASE_CA_FILE/);
-    expect(() =>
-      parseEnv({
-        KINSCAPE_DATABASE_CA_FILE: '/tmp/ca.crt',
-        KINSCAPE_MEMORY_ADAPTERS: '1',
-        VERCEL_ENV: 'preview',
       })
     ).toThrow(/KINSCAPE_DATABASE_CA_FILE/);
   });

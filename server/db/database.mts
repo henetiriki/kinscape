@@ -25,7 +25,9 @@ export const rootCa = () => {
   let ca = cas.get(path);
 
   if (ca === undefined) {
-    ca = readFileSync(path, 'utf8');
+    // The environment names the override at run time, so the bundler cannot trace it. The default file
+    // reaches the build through `outputFileTracingIncludes` in `next.config.ts`.
+    ca = readFileSync(/* turbopackIgnore: true */ path, 'utf8');
     cas.set(path, ca);
   }
 

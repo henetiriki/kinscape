@@ -76,13 +76,17 @@ export const parseEnv = (source: Record<string, string | undefined>) => {
     throw new Error('KINSCAPE_DEV_PAGES must never be set on Vercel');
   }
 
+  if (onVercel && source.KINSCAPE_MEMORY_ADAPTERS === '1') {
+    throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
+  }
+
+  if (onVercel && source.KINSCAPE_MEMORY_SIGN_IN === '1') {
+    throw new Error('KINSCAPE_MEMORY_SIGN_IN must never be set on Vercel');
+  }
+
   parseCaFile(source);
 
   if (source.KINSCAPE_MEMORY_ADAPTERS === '1') {
-    if (onVercel) {
-      throw new Error('KINSCAPE_MEMORY_ADAPTERS must never be set on Vercel');
-    }
-
     return {
       databaseDirectUrl: undefined,
       databaseUrl: undefined,
@@ -94,10 +98,6 @@ export const parseEnv = (source: Record<string, string | undefined>) => {
   }
 
   if (source.KINSCAPE_MEMORY_SIGN_IN === '1') {
-    if (onVercel) {
-      throw new Error('KINSCAPE_MEMORY_SIGN_IN must never be set on Vercel');
-    }
-
     const database = serverEnv
       .pick({
         KINSCAPE_DATABASE_DIRECT_URL: true,

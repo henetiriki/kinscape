@@ -9,7 +9,7 @@
 # The password and the certificate are made for this run and held nowhere.
 set -euo pipefail
 
-# Same major version as the Supabase projects (docs/infrastructure.md). A person moves the pin:
+# Same major version as the hosted database projects (docs/infrastructure.md). A person moves the pin:
 # Dependabot does not read shell scripts.
 IMAGE='postgres:17@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f'
 NAME=ks-ci-postgres

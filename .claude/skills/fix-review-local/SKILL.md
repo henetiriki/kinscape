@@ -13,13 +13,12 @@ Run the [shared steps](../build-local/SKILL.md#shared-steps) of `build-local`, w
 
 ## Stop checks
 
-1. If the PR has the `fix-review` label, stop. Change nothing. CI fixes that review.
+1. If the PR has the `fix-review` label and no `hand-back` label, stop. Change nothing. CI fixes that review.
 
 ## Overrides
 
-- Take only the unresolved threads that the reviewer bot opened. Skip the reviewer's gaps comment.
-- Address a finding by editing the file it names, including the plan. Record a small departure under `## Deviations`. Ask the tech lead about a big departure.
+- Edit the file that a finding names, including the plan. Record a small departure under `## Deviations`. If a departure is big, ask the tech lead.
 - Prefix each `npm run review:threads` command with `GH_REPO=<owner>/<repo>`. Get the value from `gh repo view --json nameWithOwner`.
 - After the push, reply on every thread in one line: what changed, or why not. Use `gh api graphql` with the `addPullRequestReviewThreadReply` mutation and the thread `id` that `list` prints.
-- Resolve a thread only if it is fixed. Leave a judged-wrong thread and a thread for a person open.
+- If a thread is fixed, resolve it. Leave a judged-wrong thread and a thread for a person open.
 - Do not merge or push to `main`.

@@ -30,6 +30,26 @@ const ID_1 = '01900000-0000-7000-8000-0000000000a1' as PersonId;
 const ID_2 = '01900000-0000-7000-8000-0000000000a2' as PersonId;
 const ID_3 = '01900000-0000-7000-8000-0000000000a3' as PersonId;
 const ID_4 = '01900000-0000-7000-8000-0000000000a4' as PersonId;
+const ID_5 = '01900000-0000-7000-8000-0000000000a5';
+const REL_1 = '01900000-0000-7000-9000-0000000000b1';
+const REL_2 = '01900000-0000-7000-9000-0000000000b2';
+const REL_3 = '01900000-0000-7000-9000-0000000000b3';
+const REL_4 = '01900000-0000-7000-9000-0000000000b4';
+
+const relOf = (fields: Record<string, unknown>): RelationshipInput =>
+  relationshipInputSchema.parse(fields);
+const parentOf = (
+  id: string,
+  parentId: string,
+  childId: string,
+  subtype = 'biological'
+) => relOf({ childId, id, parentId, subtype, type: 'parent' });
+const spouseOf = (
+  id: string,
+  personAId: string,
+  personBId: string,
+  dates: Record<string, unknown> = {}
+) => relOf({ id, personAId, personBId, type: 'spouse', ...dates });
 
 /** A synthetic Person as a client's text parses: the schema fills what `fields` omits. */
 const personOf = (id: string, fields: Record<string, unknown>): PersonInput =>
@@ -621,21 +641,6 @@ export const runTreeStoreContract = (
     });
 
     describe('relationships', () => {
-      const REL_1 = '01900000-0000-7000-9000-0000000000b1';
-      const REL_2 = '01900000-0000-7000-9000-0000000000b2';
-      const REL_3 = '01900000-0000-7000-9000-0000000000b3';
-
-      const relOf = (fields: Record<string, unknown>): RelationshipInput =>
-        relationshipInputSchema.parse(fields);
-      const parentOf = (id: string, parentId: string, childId: string) =>
-        relOf({ childId, id, parentId, subtype: 'biological', type: 'parent' });
-      const spouseOf = (
-        id: string,
-        personAId: string,
-        personBId: string,
-        dates: Record<string, unknown> = {}
-      ) => relOf({ id, personAId, personBId, type: 'spouse', ...dates });
-
       /** Two Trees; Tree A holds Persons 1 to 3 and Tree B holds Person 4. */
       const withPersons = async (store: TreeStore) => {
         const trees = await twoTrees(store);
@@ -1167,33 +1172,6 @@ export const runTreeStoreContract = (
       });
 
       describe('relationships', () => {
-        const REL_1 = '01900000-0000-7000-9000-0000000000b1';
-        const REL_2 = '01900000-0000-7000-9000-0000000000b2';
-        const REL_3 = '01900000-0000-7000-9000-0000000000b3';
-        const REL_4 = '01900000-0000-7000-9000-0000000000b4';
-        const ID_5 = '01900000-0000-7000-8000-0000000000a5';
-
-        const parentOf = (
-          id: string,
-          parentId: string,
-          childId: string,
-          subtype = 'biological'
-        ) =>
-          relationshipInputSchema.parse({
-            childId,
-            id,
-            parentId,
-            subtype,
-            type: 'parent',
-          });
-        const spouseOf = (id: string, personAId: string, personBId: string) =>
-          relationshipInputSchema.parse({
-            id,
-            personAId,
-            personBId,
-            type: 'spouse',
-          });
-
         /** Opens Tree A with Persons 1 to 5. */
         const openWithPersons = async (store: TreeStore) => {
           const { a } = await twoTrees(store);

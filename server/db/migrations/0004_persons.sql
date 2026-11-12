@@ -1,5 +1,5 @@
 -- PPL-01, NFR-09. A Person in a Tree. A FuzzyDate is six columns under one prefix (birth_, death_).
--- `living` is not stored: the server derives it on read.
+-- The table has no `living` column: the server derives it on read.
 create table person (
   tree_id uuid not null references tree (id) on delete cascade,
   id uuid not null,

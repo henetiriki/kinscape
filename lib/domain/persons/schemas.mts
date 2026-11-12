@@ -33,9 +33,10 @@ const date = z
     }
 
     return parsed.value;
-  });
+  })
+  .optional();
 
-/** What a client may save (PPL-01): no field is required, text is trimmed and capped. */
+/** What a client may save (PPL-01): no field is required, and the schema trims and caps text. */
 export const personInputSchema = z.object({
   birth: date,
   death: date,

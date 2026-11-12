@@ -24,7 +24,7 @@ const ID_2 = '01900000-0000-7000-8000-0000000000a2' as PersonId;
 const ID_3 = '01900000-0000-7000-8000-0000000000a3' as PersonId;
 const ID_4 = '01900000-0000-7000-8000-0000000000a4' as PersonId;
 
-/** A synthetic Person as a client's text parses: the schema fills what `fields` leaves out. */
+/** A synthetic Person as a client's text parses: the schema fills what `fields` omits. */
 const personOf = (id: string, fields: Record<string, unknown>): PersonInput =>
   personInputSchema.parse({ ...fields, id });
 const NOT_FOUND = { error: 'not-found', ok: false };
@@ -247,29 +247,26 @@ export const runTreeStoreContract = (
       });
     });
 
+    const twoTrees = async (store: TreeStore) => {
+      const a = await store.addAccount({
+        issuer: 'test',
+        subject: 'a',
+        treeName: 'Tree A',
+      });
+      const b = await store.addAccount({
+        issuer: 'test',
+        subject: 'b',
+        treeName: 'Tree B',
+      });
+
+      if (!a.ok || !b.ok) {
+        throw new Error('setup failed');
+      }
+
+      return { a: a.value, b: b.value };
+    };
+
     describe('persons', () => {
-      const twoTrees = async (store: TreeStore) => {
-        const a = await store.addAccount({
-          issuer: 'test',
-          subject: 'a',
-          treeName: 'Tree A',
-        });
-        const b = await store.addAccount({
-          issuer: 'test',
-          subject: 'b',
-          treeName: 'Tree B',
-        });
-
-        if (!a.ok || !b.ok) {
-          throw new Error('setup failed');
-        }
-
-        return {
-          a: { ...a.value, scope: a.value },
-          b: { ...b.value, scope: b.value },
-        };
-      };
-
       // PPL-01
       it('reads back every field of a Person born ABT 1850', async () => {
         await withStore(async store => {
@@ -287,14 +284,15 @@ export const runTreeStoreContract = (
           });
 
           expect(person.birth?.qualifier).toBe('ABT');
-          expect(await store.addPerson({ ...a.scope, person })).toEqual({
+          expect(await store.addPerson({ ...a, person })).toEqual({
             ...person,
             version: 1,
           });
-          expect(
-            await store.findPerson({ ...a.scope, personId: ID_1 })
-          ).toEqual({ ...person, version: 1 });
-          expect(await store.listPersons(a.scope)).toEqual([
+          expect(await store.findPerson({ ...a, personId: ID_1 })).toEqual({
+            ...person,
+            version: 1,
+          });
+          expect(await store.listPersons(a)).toEqual([
             { ...person, version: 1 },
           ]);
         });
@@ -305,7 +303,7 @@ export const runTreeStoreContract = (
         await withStore(async store => {
           const { a } = await twoTrees(store);
           const saved = await store.addPerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, {}),
           });
 
@@ -319,10 +317,10 @@ export const runTreeStoreContract = (
         await withStore(async store => {
           const { a, b } = await twoTrees(store);
 
-          await store.addPerson({ ...a.scope, person: personOf(ID_1, {}) });
+          await store.addPerson({ ...a, person: personOf(ID_1, {}) });
 
           const cross = { accountId: b.accountId, treeId: a.treeId };
-          const missing = { ...a.scope, personId: ID_2 };
+          const missing = { ...a, personId: ID_2 };
 
           expect(await store.findPerson({ ...cross, personId: ID_1 })).toEqual(
             await store.findPerson(missing)
@@ -338,9 +336,9 @@ export const runTreeStoreContract = (
               version: 1,
             })
           ).toEqual({ error: 'not-found', ok: false });
-          expect(await store.listPersons(a.scope)).toHaveLength(1);
+          expect(await store.listPersons(a)).toHaveLength(1);
           expect(
-            (await store.findPerson({ ...a.scope, personId: ID_1 }))?.surname
+            (await store.findPerson({ ...a, personId: ID_1 }))?.surname
           ).toBe('');
         });
       });
@@ -351,19 +349,19 @@ export const runTreeStoreContract = (
           const { a, b } = await twoTrees(store);
 
           await store.addPerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, { surname: 'One' }),
           });
           await store.addPerson({
-            ...b.scope,
+            ...b,
             person: personOf(ID_1, { surname: 'Two' }),
           });
 
           expect(
-            (await store.findPerson({ ...a.scope, personId: ID_1 }))?.surname
+            (await store.findPerson({ ...a, personId: ID_1 }))?.surname
           ).toBe('One');
           expect(
-            (await store.findPerson({ ...b.scope, personId: ID_1 }))?.surname
+            (await store.findPerson({ ...b, personId: ID_1 }))?.surname
           ).toBe('Two');
         });
       });
@@ -373,16 +371,16 @@ export const runTreeStoreContract = (
         await withStore(async store => {
           const { a } = await twoTrees(store);
           const first = await store.addPerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, { surname: 'First' }),
           });
           const again = await store.addPerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, { surname: 'Second' }),
           });
 
           expect(again).toEqual(first);
-          expect(await store.listPersons(a.scope)).toEqual([first]);
+          expect(await store.listPersons(a)).toEqual([first]);
         });
       });
 
@@ -392,13 +390,13 @@ export const runTreeStoreContract = (
           const { a } = await twoTrees(store);
 
           await store.addPerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, { surname: 'Old' }),
           });
 
           const update = (surname: string, version: number, id = ID_1) =>
             store.updatePerson({
-              ...a.scope,
+              ...a,
               person: personOf(id, { surname }),
               version,
             });
@@ -415,7 +413,7 @@ export const runTreeStoreContract = (
             ok: false,
           });
           expect(
-            (await store.findPerson({ ...a.scope, personId: ID_1 }))?.surname
+            (await store.findPerson({ ...a, personId: ID_1 }))?.surname
           ).toBe('New');
         });
       });
@@ -426,12 +424,12 @@ export const runTreeStoreContract = (
           const { a } = await twoTrees(store);
 
           await store.addPerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, { birth: '1850' }),
           });
 
           const updated = await store.updatePerson({
-            ...a.scope,
+            ...a,
             person: personOf(ID_1, {}),
             version: 1,
           });
@@ -456,12 +454,12 @@ export const runTreeStoreContract = (
             const [surname, givenNames] = names[index];
 
             await store.addPerson({
-              ...a.scope,
+              ...a,
               person: personOf(id, { givenNames, surname }),
             });
           }
 
-          expect((await store.listPersons(a.scope)).map(p => p.id)).toEqual([
+          expect((await store.listPersons(a)).map(p => p.id)).toEqual([
             ID_4,
             ID_2,
             ID_1,
@@ -470,14 +468,14 @@ export const runTreeStoreContract = (
         });
       });
 
-      // NFR-04
+      // PPL-01
       it('lists no more than the cap', async () => {
         await withStore(async store => {
           const { a } = await twoTrees(store);
 
           for (let n = 0; n <= MAX_LISTED; n += 1) {
             await store.addPerson({
-              ...a.scope,
+              ...a,
               person: personOf(
                 `01900000-0000-7000-8000-${String(n).padStart(12, '0')}`,
                 {}
@@ -485,7 +483,7 @@ export const runTreeStoreContract = (
             });
           }
 
-          expect(await store.listPersons(a.scope)).toHaveLength(MAX_LISTED);
+          expect(await store.listPersons(a)).toHaveLength(MAX_LISTED);
         });
       }, 60_000);
 
@@ -500,7 +498,7 @@ export const runTreeStoreContract = (
           expect(await store.listPersons(badTree)).toEqual([]);
           expect(
             await store.findPerson({
-              ...a.scope,
+              ...a,
               personId: 'nope' as PersonId,
             })
           ).toBeUndefined();
@@ -509,7 +507,7 @@ export const runTreeStoreContract = (
           ).toBeUndefined();
           expect(
             await store.updatePerson({
-              ...a.scope,
+              ...a,
               person: { ...personOf(ID_1, {}), id: 'nope' as PersonId },
               version: 1,
             })
@@ -519,25 +517,6 @@ export const runTreeStoreContract = (
     });
 
     describe('openTree', () => {
-      const twoTrees = async (store: TreeStore) => {
-        const a = await store.addAccount({
-          issuer: 'test',
-          subject: 'a',
-          treeName: 'Tree A',
-        });
-        const b = await store.addAccount({
-          issuer: 'test',
-          subject: 'b',
-          treeName: 'Tree B',
-        });
-
-        if (!a.ok || !b.ok) {
-          throw new Error('setup failed');
-        }
-
-        return { a: a.value, b: b.value };
-      };
-
       /** Opens as a signed-in Account; `at` is the clock when opening. */
       const openAs = async (
         store: TreeStore,

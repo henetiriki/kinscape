@@ -222,7 +222,7 @@ export const databaseStore = (db: Db): TreeStore => ({
       return ok(personOf(row));
     }
 
-    // Zero rows: the Person is missing, or its version moved on.
+    // Zero rows: the Person is missing, or its version changed.
     const saved = await selectPerson(db, scope)
       .where('id', '=', person.id)
       .select('id')

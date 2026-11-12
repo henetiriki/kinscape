@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape — Fuzzy dates, readings and messages</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 1440px; height: 1240px; box-sizing: border-box; padding: 64px; background: #ffffff; font-family: 'Public Sans', system-ui, sans-serif; color: #18211b; display: flex; flex-direction: column; gap: 40px">
+      <div
+        style="display: flex; flex-direction: column; gap: 8px; max-width: 720px">
+        <span style="text-transform: uppercase; color: #4a544c">
+          <span
+            class="_overline_1mu69_95"
+            style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+            People · Birth and death
+          </span>
+        </span>
+        <h1
+          class="_h1_1mu69_12"
+          style='font-family: "Bricolage Grotesque", sans-serif; font-size: 32px; font-weight: 500; letter-spacing: -0.48px; line-height: 40px; margin: 0px;'>
+          Fuzzy dates
+        </h1>
+        <p
+          class="_body_1mu69_48"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+          Birth and death each take one line of GEDCOM-style text. Under the
+          field, a plain reading follows the typing. A problem shows only after
+          Enter or when focus leaves, as for the map date field.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 72px; align-items: flex-start">
+        <div
+          style="width: 840px; flex: none; display: flex; flex-direction: column; gap: 12px">
+          <table
+            style="width: 100%; border-collapse: collapse; text-align: left">
+            <caption
+              style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+              What the user types and what shows under the field
+            </caption>
+            <thead>
+              <tr
+                style="border-bottom: 1px solid #c9cfc5; text-transform: uppercase; color: #4a544c">
+                <th
+                  scope="col"
+                  style="width: 180px; padding: 0 16px 8px 0; font-weight: 600">
+                  <span
+                    class="_overline_1mu69_95"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                    Case
+                  </span>
+                </th>
+                <th
+                  scope="col"
+                  style="width: 220px; padding: 0 16px 8px 0; font-weight: 600">
+                  <span
+                    class="_overline_1mu69_95"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                    The user types
+                  </span>
+                </th>
+                <th scope="col" style="padding: 0 0 8px; font-weight: 600">
+                  <span
+                    class="_overline_1mu69_95"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                    Under the field
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="rowgroup" colspan="3" style="padding: 20px 0 8px">
+                  <span
+                    class="_title_1mu69_39"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                    Qualifiers: one reading each
+                  </span>
+                </th>
+              </tr>
+              <tr style="border-top: 1px solid #e2e5dd">
+                <th
+                  scope="row"
+                  style="height: 48px; padding: 0 16px 0 0; font-weight: 400">
+                  <span
+                    class="_label_1mu69_66"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'></span>
+                </th>
+                <td
+                  style="padding: 0 16px 0 0; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 15px; line-height: 22px"></td>
+                <td style="padding: 0">
+                  <p
+                    class="small"
+                    style='margin: 0px; color: #4a544c; font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; line-height: 20px; font-weight: 400; letter-spacing: normal; font-style: normal;'>
+                    Reads as
+                    <strong style="font-weight: 600; color: #18211b"></strong>
+                  </p>
+                </td>
+              </tr>
+
+              <tr>
+                <th scope="rowgroup" colspan="3" style="padding: 24px 0 8px">
+                  <span
+                    class="_title_1mu69_39"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                    Errors: one message each, shown after Enter or leaving the
+                    field
+                  </span>
+                </th>
+              </tr>
+              <tr style="border-top: 1px solid #e2e5dd">
+                <th
+                  scope="row"
+                  style="height: 48px; padding: 0 16px 0 0; font-weight: 400">
+                  <span
+                    class="_label_1mu69_66"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'></span>
+                </th>
+                <td
+                  style="padding: 0 16px 0 0; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 15px; line-height: 22px"></td>
+                <td style="padding: 8px 0">
+                  <span
+                    style="display: flex; gap: 8px; align-items: flex-start; color: #b4412f">
+                    <span
+                      aria-hidden="true"
+                      style="display: flex; padding-top: 1px">
+                      <svg
+                        aria-hidden="true"
+                        data-icon="alert"
+                        fill="none"
+                        height="18"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="18">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7.5v5.5M12 16.5v.01"></path>
+                      </svg>
+                    </span>
+                    <span
+                      class="_small_1mu69_75 _error_1mu69_216"
+                      style='color: rgb(126, 35, 22); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'></span>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p
+            class="_caption_1mu69_85"
+            style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: normal; line-height: 18px; margin: 0px;'>
+            An exact year or month reads "In 1850" or "In March 1850". FROM 1850
+            or TO 1855 on its own reads "From 1850" or "Until 1855". Lower case
+            works too. Months are JAN to DEC. The last year allowed is the
+            current year.
+          </p>
+        </div>
+
+        <div
+          style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+          <section
+            aria-labelledby="fd-rules"
+            style="display: flex; flex-direction: column; gap: 12px">
+            <h2
+              class="_h3_1mu69_30"
+              id="fd-rules"
+              style='font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; font-weight: 700; letter-spacing: normal; line-height: 28px; margin: 0px;'>
+              How it behaves
+            </h2>
+            <ol
+              style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px">
+              <li>
+                <span
+                  class="_body_1mu69_48"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                  The reading takes the helper's place and follows the typing.
+                  It's a polite live region, so it's read after a pause.
+                </span>
+              </li>
+              <li>
+                <span
+                  class="_body_1mu69_48"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                  Check on Enter or when focus leaves, never while the user
+                  types.
+                </span>
+              </li>
+              <li>
+                <span
+                  class="_body_1mu69_48"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                  A bad date keeps its text. The field gets a 2px error border,
+                  an error icon and aria-invalid. The message replaces the
+                  reading and is linked with aria-describedby.
+                </span>
+              </li>
+              <li>
+                <span
+                  class="_body_1mu69_48"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                  The message stays until the next check.
+                </span>
+              </li>
+              <li>
+                <span
+                  class="_body_1mu69_48"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                  Save checks every field. Nothing saves while one has an error,
+                  and an alert above the form counts them.
+                </span>
+              </li>
+              <li>
+                <span
+                  class="_body_1mu69_48"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                  A good date gets no success styling. The reading is the
+                  confirmation.
+                </span>
+              </li>
+            </ol>
+          </section>
+
+          <section
+            aria-labelledby="fd-try"
+            style="display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 12px; background: #f4f5f0">
+            <h2
+              class="_h3_1mu69_30"
+              id="fd-try"
+              style='font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; font-weight: 700; letter-spacing: normal; line-height: 28px; margin: 0px;'>
+              Try it
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <label
+                for="fd-input"
+                class="label"
+                style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+                Birth
+              </label>
+              <span style="position: relative; display: flex">
+                <input
+                  id="fd-input"
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-invalid="false"
+                  aria-describedby="fd-input-msg"
+                  value="ABT 1850"
+                  style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: 8px; background: #ffffff; color: #18211b; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 15px; line-height: 22px; border: 1px solid #8e978c; padding: 0 12px" />
+              </span>
+              <div id="fd-input-msg" aria-live="polite">
+                <p
+                  class="small"
+                  style='margin: 0px; color: #4a544c; font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; line-height: 20px; font-weight: 400; letter-spacing: normal; font-style: normal;'>
+                  Reads as
+                  <strong style="font-weight: 600; color: #18211b">
+                    About 1850
+                  </strong>
+                </p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section
+        aria-labelledby="fd-states"
+        style="display: flex; flex-direction: column; gap: 16px">
+        <h2
+          class="_h3_1mu69_30"
+          id="fd-states"
+          style='font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; font-weight: 700; letter-spacing: normal; line-height: 28px; margin: 0px;'>
+          The field's states
+        </h2>
+        <div
+          style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px">
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <p
+              class="_caption_1mu69_85"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: normal; line-height: 18px; margin: 0px;'>
+              Empty: the helper shows an example
+            </p>
+            <label
+              for="fd-s1"
+              class="label"
+              style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+              Birth
+            </label>
+            <input
+              id="fd-s1"
+              readonly=""
+              aria-describedby="fd-s1-msg"
+              value=""
+              style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8e978c; border-radius: 8px; background: #ffffff; font-family: 'JetBrains Mono', monospace; font-size: 15px" />
+            <p
+              class="_small_1mu69_75"
+              id="fd-s1-msg"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+              For example 1850, ABT 1850 or BET 1850 AND 1855.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <p
+              class="_caption_1mu69_85"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: normal; line-height: 18px; margin: 0px;'>
+              Typing, with focus: the reading follows
+            </p>
+            <label
+              for="fd-s2"
+              class="label"
+              style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+              Birth
+            </label>
+            <input
+              id="fd-s2"
+              readonly=""
+              aria-describedby="fd-s2-msg"
+              value="BET 1850 AND 18"
+              style="height: 44px; box-sizing: border-box; padding: 0 11px; border: 2px solid #264f29; border-radius: 8px; background: #ffffff; font-family: 'JetBrains Mono', monospace; font-size: 15px; outline: none" />
+            <p
+              class="_small_1mu69_75"
+              id="fd-s2-msg"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+              For example 1850, ABT 1850 or BET 1850 AND 1855.
+            </p>
+            <p
+              class="_caption_1mu69_85"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: normal; line-height: 18px; margin: 0px;'>
+              Not readable yet, so the example stays. No error while typing.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <p
+              class="_caption_1mu69_85"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: normal; line-height: 18px; margin: 0px;'>
+              Readable: the reading replaces the example
+            </p>
+            <label
+              for="fd-s3"
+              class="label"
+              style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+              Birth
+            </label>
+            <input
+              id="fd-s3"
+              readonly=""
+              aria-describedby="fd-s3-msg"
+              value="BET 1850 AND 1855"
+              style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid #8e978c; border-radius: 8px; background: #ffffff; font-family: 'JetBrains Mono', monospace; font-size: 15px" />
+            <p
+              id="fd-s3-msg"
+              class="small"
+              style='margin: 0px; color: #4a544c; font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; line-height: 20px; font-weight: 400; letter-spacing: normal; font-style: normal;'>
+              Reads as
+              <strong style="font-weight: 600; color: #18211b">
+                Between 1850 and 1855
+              </strong>
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <p
+              class="_caption_1mu69_85"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 12.5px; font-weight: 400; letter-spacing: normal; line-height: 18px; margin: 0px;'>
+              After Enter or leaving: the error
+            </p>
+            <label
+              for="fd-s4"
+              class="label"
+              style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+              Death
+            </label>
+            <span style="position: relative; display: flex">
+              <input
+                id="fd-s4"
+                readonly=""
+                aria-invalid="true"
+                aria-describedby="fd-s4-msg"
+                value="31 FEB 1850"
+                style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 40px 0 11px; border: 2px solid #b4412f; border-radius: 8px; background: #ffffff; font-family: 'JetBrains Mono', monospace; font-size: 15px" />
+              <span
+                aria-hidden="true"
+                style="position: absolute; right: 12px; top: 13px; display: flex; color: #b4412f">
+                <svg
+                  aria-hidden="true"
+                  data-icon="alert"
+                  fill="none"
+                  height="18"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="18">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <path d="M12 7.5v5.5M12 16.5v.01"></path>
+                </svg>
+              </span>
+            </span>
+            <p
+              class="_small_1mu69_75 _error_1mu69_216"
+              id="fd-s4-msg"
+              style='color: rgb(126, 35, 22); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+              February 1850 has 28 days.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

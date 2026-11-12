@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape — Add a person</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: #f4f5f0; font-family: 'Public Sans', system-ui, sans-serif; color: #18211b">
+      <header
+        style="position: absolute; left: 0; right: 0; top: 0; height: 64px; box-sizing: border-box; padding: 0 24px; display: flex; align-items: center; gap: 16px; background: #ffffff; border-bottom: 1px solid #e2e5dd">
+        <span
+          class="_wordmark_3vsks_1"
+          style="color: rgb(24, 33, 27); align-items: center; gap: 12px; display: inline-flex;">
+          <img
+            alt=""
+            class="_icon_3vsks_8"
+            height="32"
+            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMDAwIiBoZWlnaHQ9IjEwMDAiPjxtZXRhZGF0YT48cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+PHJkZjpEZXNjcmlwdGlvbj48ZGM6Y3JlYXRvcj5SZWFsRmF2aWNvbkdlbmVyYXRvcjwvZGM6Y3JlYXRvcj48ZGM6c291cmNlPmh0dHBzOi8vcmVhbGZhdmljb25nZW5lcmF0b3IubmV0PC9kYzpzb3VyY2U+PC9yZGY6RGVzY3JpcHRpb24+PC9yZGY6UkRGPjwvbWV0YWRhdGE+PGcgY2xpcC1wYXRoPSJ1cmwoI1N2Z2pzQ2xpcFBhdGgxMDcwKSI+PHJlY3Qgd2lkdGg9IjEwMDAiIGhlaWdodD0iMTAwMCIgZmlsbD0iI2ZmZmZmZiI+PC9yZWN0PjxnIHRyYW5zZm9ybT0ibWF0cml4KDAuNSwwLDAsMC41LDAsMCkiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMjAwMCAyMDAwIiB3aWR0aD0iMjAwMCIgaGVpZ2h0PSIyMDAwIj48cmVjdCB3aWR0aD0iMjAwMCIgaGVpZ2h0PSIyMDAwIiBmaWxsPSIjMjY0RjI5Ij48L3JlY3Q+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNNDM5LjAzLDE5OTguNzVDNDM5LjA1LDE5OTguMDYgNDM5LjcyLDE5OTMuOTAgNDQwLjUxLDE5ODkuNTBDNDQxLjMxLDE5ODUuMTAgNDQyLjIyLDE5NzYuNTUgNDQyLjU1LDE5NzAuNTBDNDQyLjg3LDE5NjQuNDUgNDQzLjU5LDE5NTcuMjUgNDQ0LjEzLDE5NTQuNTBDNDQ0LjY4LDE5NTEuNzUgNDQ1Ljc0LDE5NDQuMTAgNDQ2LjQ5LDE5MzcuNTBDNDQ3LjI0LDE5MzAuOTAgNDQ4LjMzLDE5MjEuNDUgNDQ4LjkwLDE5MTYuNTBDNDQ5LjQ3LDE5MTEuNTUgNDUwLjQwLDE5MDIuMzMgNDUwLjk1LDE4OTYuMDBDNDUyLjE1LDE4ODIuMjQgNDUzLjUxLDE4NjkuNzkgNDU1LjYxLDE4NTMuMjJDNDU2LjQ2LDE4NDYuNDcgNDU3LjU1LDE4MzIuMjkgNDU4LjAyLDE4MjEuNzJDNDU4LjQ5LDE4MTEuMTUgNDU5LjMyLDE3OTkuODAgNDU5Ljg2LDE3OTYuNTBDNDYwLjQxLDE3OTMuMjAgNDYxLjE1LDE3ODQuNDIgNDYxLjUxLDE3NzcuMDBDNDYxLjg3LDE3NjkuNTggNDYyLjc3LDE3NTkuNDUgNDYzLjUyLDE3NTQuNTBDNDY0LjI2LDE3NDkuNTUgNDY1LjE2LDE3MzYuMDUgNDY1LjUxLDE3MjQuNTBDNDY1Ljg2LDE3MTIuOTUgNDY2LjU3LDE3MDAuODAgNDY3LjA4LDE2OTcuNTBDNDY3LjU5LDE2OTQuMjAgNDY4LjQ3LDE2ODAuMjUgNDY5LjAzLDE2NjYuNTBDNDY5LjYwLDE2NTIuNzUgNDcwLjUwLDE2MzguODAgNDcxLjA0LDE2MzUuNTBDNDcxLjU4LDE2MzIuMjAgNDcyLjQ3LDE2MTEuMjggNDczLjAyLDE1ODkuMDBDNDczLjU2LDE1NjYuNzIgNDc0LjQ1LDE1NDMuMTAgNDc0Ljk4LDE1MzYuNTBDNDc2LjU2LDE1MTYuOTYgNDc2LjIxLDE0MjAuNDYgNDc0LjQ5LDE0MDAuNTBDNDczLjY5LDEzOTEuMTUgNDczLjAyLDEzNzkuMDAgNDczLjAxLDEzNzMuNTBDNDcyLjk5LDEzNjguMDAgNDcyLjMxLDEzNTkuMjIgNDcxLjQ5LDEzNTQuMDBDNDcwLjY3LDEzNDguNzggNDY5LjU1LDEzMzkuNDAgNDY5LjAwLDEzMzMuMTZDNDY4LjQ1LDEzMjYuOTIgNDY3Ljc5LDEzMjEuNDcgNDY3LjUzLDEzMjEuMDRDNDY3LjI2LDEzMjAuNjEgNDY2LjM3LDEzMTQuMTkgNDY1LjU1LDEzMDYuNzZDNDY0LjcyLDEyOTkuMzQgNDYzLjY2LDEyOTIuMTkgNDYzLjE4LDEyOTAuODhDNDYyLjcwLDEyODkuNTcgNDYxLjI4LDEyODMuMTAgNDYwLjAxLDEyNzYuNTBDNDM4LjQyLDExNjMuNzUgMzgwLjY0LDEwOTUuMDUgMjQ3LjAwLDEwMjMuMThDMjI4LjUxLDEwMTMuMjMgMTc0LjgwLDk4Ni4wMCAxNzMuNjcsOTg2LjAwQzE3My4zOSw5ODYuMDAgMTY1LjgwLDk4Mi41NyAxNTYuODIsOTc4LjM4QzEzMi40NCw5NjYuOTkgMTAwLjg0LDk1My4wOCA1MS4wMCw5MzEuNzhDNDEuOTIsOTI3LjkwIDI5LjMyLDkyMi41MCAyMy4wMCw5MTkuNzdDMTYuNjgsOTE3LjA0IDguOTEsOTEzLjg5IDUuNzUsOTEyLjc2TDAuMDAsOTEwLjcxTDAuMDAsODM2Ljg2QzAuMDAsNzk2LjI0IDAuMTgsNzYzLjAwIDAuNDAsNzYzLjAwQzAuNjEsNzYzLjAwIDUuNjgsNzY1LjMwIDExLjY1LDc2OC4xMkMxNy42Miw3NzAuOTMgMjYuNzcsNzc1LjE1IDMyLjAwLDc3Ny40OUMzNy4yMyw3NzkuODQgNTMuNjUsNzg3LjYwIDY4LjUwLDc5NC43NEMxMTQuOTUsODE3LjA4IDE1MS40MCw4MzQuMTEgMTkwLjAwLDg1MS41MEMxOTUuMjIsODUzLjg2IDIwMy41NSw4NTcuNjEgMjA4LjUwLDg1OS44NEMyMzQuNDIsODcxLjUyIDI3Ny42Nyw4ODkuODEgMjkxLjAwLDg5NC43M0MzMjQuMjksOTA3LjAxIDMyOS45OCw5MDguODQgMzUzLjAwLDkxNC42M0MzNjYuODcsOTE4LjEyIDQwNy42Niw5MTguMzMgNDE4LjQ2LDkxNC45NkM0NDMuMjQsOTA3LjIzIDQ1NS43OSw4OTUuNzMgNDU5LjExLDg3Ny43MEM0NjUuNjksODQyLjAyIDQwMy41OCw3MDUuODggMzI3LjY0LDU4OS41MEMzMjEuOTAsNTgwLjcwIDMxMy42OSw1NjguMTAgMzA5LjM5LDU2MS41MEMyOTAuMjMsNTMyLjAzIDI0Ni42Myw0NzMuMDMgMjMxLjAxLDQ1NS40MkMyMjguNTMsNDUyLjYyIDIyMi45MCw0NDYuMTIgMjE4LjUwLDQ0MC45OEMxNzguMzcsMzk0LjAyIDEyNC4xMCwzNTMuMDggNTguMzEsMzIwLjE1QzQ1LjExLDMxMy41MyAxMS45MSwyOTguNzkgNS4yMSwyOTYuNTdDMC4wMCwyOTQuODQgMC4wMCwyOTQuODQgMC4wMCwyMzkuODFDMC4wMCwxODQuNzggMC4wMCwxODQuNzggMi43MywxODUuNDdDNC4yMywxODUuODQgMTAuNjQsMTg4LjE3IDE2Ljk4LDE5MC42NUMyMy4zMSwxOTMuMTIgMzIuNTUsMTk2LjY4IDM3LjUwLDE5OC41NUM0Mi40NSwyMDAuNDMgNTQuMTUsMjA0Ljk1IDYzLjUwLDIwOC42MEM3Mi44NSwyMTIuMjUgODMuNDIsMjE2LjI4IDg3LjAwLDIxNy41NkM5MC41OCwyMTguODQgOTkuMTIsMjIxLjk4IDEwNi4wMCwyMjQuNTRDMTcxLjQyLDI0OC45MSAxOTguMDYsMjU2LjI3IDIyNi4wOSwyNTcuNzJDMjU2LjU4LDI1OS4zMCAyODIuMTUsMjQyLjQ4IDI4Ni44NSwyMTcuNzZDMjg3LjQ0LDIxNC43MCAyODguMTEsMTc4LjAzIDI4OC40NywxMzAuMDBDMjg4LjgwLDg0LjYyIDI4OS40OCw0NS4wMiAyODkuOTYsNDIuMDBDMjkwLjQ1LDM4Ljk4IDI5MS4xOCwyOC4yOSAyOTEuNTgsMTguMjVMMjkyLjMxLDAuMDBMMzUyLjY2LDAuMDBDNDIwLjQ2LDAuMDAgNDE0LjY2LC0xLjQyIDQxMS45OCwxNC41MEM0MTEuNDIsMTcuODAgNDEwLjUyLDMxLjUwIDQwOS45Nyw0NC45NUM0MDkuNDIsNTguNDAgNDA4LjUzLDczLjI1IDQwOC4wMCw3Ny45NUM0MDYuNzMsODguOTcgNDA2LjcwLDE2NS4wOSA0MDcuOTYsMTc1LjUzQzQwOC40OSwxNzkuOTEgNDA5LjQxLDE5NC4wNyA0MTAuMDEsMjA3LjAwQzQxMC42MCwyMTkuOTMgNDExLjQ5LDIzMi43NSA0MTEuOTgsMjM1LjUwQzQxMi40NywyMzguMjUgNDEzLjE2LDI0Ny4yNSA0MTMuNTIsMjU1LjUwQzQxMy44OCwyNjMuNzUgNDE0Ljc5LDI3NC4zMiA0MTUuNTMsMjc5LjAwQzQxNi4yNywyODMuNjggNDE3LjE4LDI5MC42NSA0MTcuNTUsMjk0LjUwQzQxNy45MSwyOTguMzUgNDE4Ljg0LDMwNC41NyA0MTkuNjEsMzA4LjMyQzQyMC4zNywzMTIuMDYgNDIxLjAwLDMxNi45MyA0MjEuMDAsMzE5LjEyQzQyMS4wMCwzMjEuMzIgNDIxLjg2LDMyNy40OCA0MjIuOTEsMzMyLjgxQzQyMy45NiwzMzguMTQgNDI1LjgyLDM0Ny45MCA0MjcuMDMsMzU0LjUwQzQzOC42OSw0MTcuNjcgNDQ5LjgyLDQ1My4xMCA0NjkuNzYsNDkwLjUwQzQ4Ni44Myw1MjIuNTEgNTQxLjc1LDYxMy42MSA1NjUuMzIsNjQ5LjAwQzYwNi41NCw3MTAuOTAgNjQxLjEwLDc0NC42NyA2NjYuMjUsNzQ3LjU5QzY4MS42Myw3NDkuMzkgNjk0LjUzLDc0Mi43OSA3MTQuODYsNzIyLjcxQzc1OC43OCw2NzkuMzcgNzk4Ljc0LDYxNS43MyA4MjYuNDYsNTQ1LjAwQzgzNC43OCw1MjMuNzcgODQ1LjE1LDQ5MC43NCA4NDcuOTYsNDc2LjUwQzg0OC42MSw0NzMuMjAgODQ5Ljk4LDQ2Ni45MCA4NTEuMDEsNDYyLjUwQzg1My44MCw0NTAuNTkgODU1LjgxLDQzOC40OCA4NTYuNTEsNDI5LjUwQzg1Ni44NSw0MjUuMTAgODU3Ljg4LDQxNy42OCA4NTguNzksNDEzLjAwQzg2MS4yMyw0MDAuNTYgODYxLjIxLDMyNC42MSA4NTguNzYsMzEyLjAwQzg1Ny44NiwzMDcuMzIgODU2Ljg0LDMwMC4xMiA4NTYuNDksMjk2LjAwQzg1NS44NSwyODguMjEgODU0LjM3LDI3OC45MSA4NTAuOTMsMjYxLjAwQzg0Ni44NSwyMzkuODEgODQ1Ljc0LDIzNC4zOCA4NDQuMjcsMjI4LjUwQzg0My40NCwyMjUuMjAgODQxLjUxLDIxNy4zMiA4MzkuOTgsMjExLjAwQzgyNi40NCwxNTUuMDkgNzk4LjUwLDc4Ljk5IDc2Ny40NywxMy41MEM3NjUuMTIsOC41NSA3NjIuOTAsMy40OSA3NjIuNTMsMi4yNUM3NjEuODcsMC4wMCA3NjEuODcsMC4wMCA4MzkuOTMsMC4wMEM5MDkuMjMsMC4wMCA5MTguMDAsMC4xNyA5MTguMDAsMS41MkM5MTguMDAsMi4zNiA5MjEuMzUsMTEuMjUgOTI1LjQ0LDIxLjI3QzkzMi45OCwzOS43NiA5NDEuMzQsNjIuNzQgOTQ2LjgxLDgwLjAwQzk1MS42MCw5NS4xNCA5NTcuODYsMTE2LjIzIDk1OC41MiwxMTkuNTBDOTU4Ljg1LDEyMS4xNSA5NjAuODYsMTI5LjcwIDk2Mi45NywxMzguNTBDOTY1LjA5LDE0Ny4zMCA5NjcuMzAsMTU3LjIwIDk2Ny44OSwxNjAuNTBDOTY4LjQ4LDE2My44MCA5NzAuMDcsMTcxLjg3IDk3MS40MiwxNzguNDRDOTcyLjc3LDE4NS4wMCA5NzQuMTYsMTkzLjMzIDk3NC41MSwxOTYuOTRDOTc0Ljg1LDIwMC41NSA5NzUuNzUsMjA2Ljg4IDk3Ni41MSwyMTEuMDBDOTc3LjI3LDIxNS4xMiA5NzguMTcsMjIxLjQzIDk3OC41MywyMjUuMDBDOTc4Ljg4LDIyOC41NyA5NzkuODAsMjM1LjI3IDk4MC41OCwyMzkuODhDOTgxLjM2LDI0NC40OSA5ODIuMDAsMjUzLjM0IDk4Mi4wMCwyNTkuNTVDOTgyLjAwLDI2NS43NiA5ODIuNTAsMjgxLjExIDk4My4xMCwyOTMuNjdDOTg0LjM4LDMyMC4yMiA5ODIuNzksMzg2Ljg5IDk4MC40OCw0MDMuNTBDOTc5LjcxLDQwOS4wMCA5NzguODEsNDE2LjY1IDk3OC40OCw0MjAuNTBDOTc4LjE0LDQyNC4zNSA5NzcuMjYsNDMwLjg4IDk3Ni41MSw0MzUuMDBDOTc1Ljc2LDQzOS4xMiA5NzQuODcsNDQ1Ljg4IDk3NC41NCw0NTAuMDBDOTc0LjIxLDQ1NC4xMiA5NzMuMzAsNDYwLjY1IDk3Mi41Myw0NjQuNTBDOTcxLjc2LDQ2OC4zNSA5NzAuMTcsNDc2LjQ1IDk2OS4wMSw0ODIuNTBDOTU3Ljg2LDU0MC43MCA5NDYuMDAsNTgyLjA1IDkxOS41OCw2NTQuOTBDOTEyLjEzLDY3NS40NyA5MTIuMDksNjgwLjExIDkxOS4zMiw2ODcuNzVDOTI4LjY5LDY5Ny42NiA5NTAuOTUsNjk3LjU2IDk5MS4wMCw2ODcuNDVDMTAyMS41NSw2NzkuNzQgMTA2Ni4yNyw2NjkuNTMgMTA3NC4wMCw2NjguNTFDMTA3OC4zNCw2NjcuOTMgMTA4Mi44NSw2NjcuMDEgMTEwMS4wMCw2NjMuMDBDMTEwNS42Nyw2NjEuOTcgMTExMS40NSw2NjAuODYgMTExMy44Myw2NjAuNTRDMTExNi4yMSw2NjAuMjEgMTEyNS42Niw2NTcuOTIgMTEzNC44Myw2NTUuNDNDMTE3MC41OCw2NDUuNzUgMTE5NS44Nyw2MjguOTkgMTIyMC4wMCw1OTkuMDBDMTIyMi44OCw1OTUuNDIgMTIzNS44Nyw1NzkuMjYgMTI0OC44Niw1NjMuMDhDMTI3Ny41Myw1MjcuNDAgMTI4NC44Niw1MTguNDcgMTMwMS4wMCw0OTkuNTdDMTMwNy44OCw0OTEuNTIgMTMxNi42NSw0ODEuMTggMTMyMC41MCw0NzYuNTlDMTMzNS43NSw0NTguNDIgMTM0OC43OCw0NDMuMTIgMTM1NS40OSw0MzUuNTBDMTM2NC4wNSw0MjUuNzggMTM5Mi4zMSwzOTEuOTYgMTQxMS44NSwzNjguMDZDMTQxOS43NCwzNTguNDAgMTQyOS4wMSwzNDcuMTIgMTQzMi40NCwzNDMuMDBDMTQ0MS4wMSwzMzIuNjggMTQ2Ny4yMiwzMDAuMDEgMTQ2OS4xNCwyOTcuMjRDMTQ3MS45MywyOTMuMjEgMTQ4OC4zNywyNzMuNjkgMTQ5My4xMSwyNjguNzdDMTQ5OS4wNywyNjIuNTkgMTUwMC44NywyNjIuNjEgMTUxNi42NSwyNjguOThDMTU0MS40NCwyNzkuMDAgMTU0My4yMiwyODIuMTAgMTUzNS4yMSwzMDEuNTBDMTUyMy42NywzMjkuNDcgMTQ5Ni4zNSwzNzEuMzQgMTQyMy42NCw0NzIuNTBDMTM4MC4xOSw1MzIuOTUgMTM0OC42MCw1ODkuNjMgMTM0Ny4yNCw2MDkuNThDMTM0Ni40Miw2MjEuNjAgMTM1MS41NCw2MjkuMjUgMTM2Mi42MSw2MzIuNThDMTM2OC41Niw2MzQuMzggMTM3My42Myw2MzQuMzcgMTM4OC4wMCw2MzIuNTRDMTM5NC4zMyw2MzEuNzQgMTQwNy42MCw2MzAuNTUgMTQxNy41MCw2MjkuOTFDMTQyNy40MCw2MjkuMjYgMTQzOS4zMyw2MjguMzggMTQ0NC4wMCw2MjcuOTVDMTQ0OC42Nyw2MjcuNTIgMTQ1Ni41NSw2MjcuMTMgMTQ2MS41MCw2MjcuMDhDMTQ2Ni40NSw2MjcuMDMgMTQ3NS4wMCw2MjYuMzAgMTQ4MC41MCw2MjUuNDZDMTQ4Ni4wMCw2MjQuNjEgMTQ5OC43MCw2MjMuNTMgMTUwOC43Miw2MjMuMDRDMTUxOC43NCw2MjIuNTYgMTUyNy4zNCw2MjEuOTEgMTUyNy44NCw2MjEuNjBDMTUyOC4zNCw2MjEuMjkgMTUzNS4yMiw2MjAuNTUgMTU0My4xMiw2MTkuOTZDMTU1MS4wMyw2MTkuMzcgMTU1OS4zOSw2MTguNDYgMTU2MS43MCw2MTcuOTVDMTU2NC4wMCw2MTcuNDQgMTU3MS44OCw2MTYuMzUgMTU3OS4yMCw2MTUuNTRDMTYwNS4xMSw2MTIuNjggMTYxNi41Nyw2MTEuMDkgMTYyMi40Niw2MDkuNTZDMTYyNS43NCw2MDguNzAgMTYyOS44OSw2MDguMDAgMTYzMS42OCw2MDguMDBDMTYzMy40OCw2MDguMDAgMTYzOC4yMiw2MDcuMzUgMTY0Mi4yMiw2MDYuNTVDMTY0Ni4yMiw2MDUuNzUgMTY1Mi40Miw2MDQuNjUgMTY1Ni4wMCw2MDQuMTBDMTY1OS41OCw2MDMuNTYgMTY2NS44OCw2MDIuNDIgMTY3MC4wMCw2MDEuNThDMTY3NC4xMiw2MDAuNzMgMTY4MS4xMCw1OTkuMzIgMTY4NS41MCw1OTguNDVDMTY4OS45MCw1OTcuNTcgMTY5Ni4yMCw1OTYuMjIgMTY5OS41MCw1OTUuNDRDMTcwMi44MCw1OTQuNjcgMTcxMC42Nyw1OTIuOTAgMTcxNy4wMCw1OTEuNTJDMTcyOC4zOCw1ODkuMDMgMTc0MS44Nyw1ODUuNTYgMTc3MC4wMCw1NzcuOTFDMTc5Mi43Miw1NzEuNzMgMTc5NC4zNyw1NzEuMjUgMTgxNC41MCw1NjQuODRDMTgzMi43Nyw1NTkuMDIgMTgzOC4wNSw1NTcuMjUgMTg2NC41MCw1NDguMDNDMTg5Ny4xNiw1MzYuNjUgMTk0Mi4wMyw1MTguNTEgMTk3OS41MSw1MDEuNTRDMTk4OC4zMiw0OTcuNTUgMTk5Ni41Myw0OTMuOTcgMTk5Ny43Niw0OTMuNThDMjAwMC4wMCw0OTIuODcgMjAwMC4wMCw0OTIuODcgMjAwMC4wMCw1NTAuNzlMMjAwMC4wMCw2MDguNzFMMTk5NC4yNSw2MTAuNzdDMTk5MS4wOSw2MTEuOTAgMTk4MC40MCw2MTYuMDUgMTk3MC41MCw2MjAuMDBDMTk1My4zNiw2MjYuODQgMTkyNy44Miw2MzYuNjAgMTkxMC41MCw2NDIuOTRDMTkwNi4xMCw2NDQuNTUgMTg5Ni40Miw2NDguMTAgMTg4OS4wMCw2NTAuODJDMTg0My4xOSw2NjcuNjIgMTc3MS44Miw2ODkuNTMgMTczMi4wMCw2OTkuMDJDMTcyMi4zOCw3MDEuMzIgMTcxMi4wMyw3MDMuODIgMTcwOS4wMCw3MDQuNThDMTcwMy44Myw3MDUuODkgMTY5MS42Nyw3MDguMzkgMTY2OC41MCw3MTIuOTFDMTY1MS44NSw3MTYuMTYgMTYzOS4wNyw3MTcuOTIgMTYyNy41MCw3MTguNTRDMTYyMS40NSw3MTguODcgMTYxMS43OCw3MTkuNzggMTYwNi4wMCw3MjAuNTZDMTU5Ni42OCw3MjEuODMgMTU4MC42MSw3MjIuNDQgMTUwMS4wMCw3MjQuNTZDMTQ4OS43Miw3MjQuODYgMTQ1NC44NSw3MjUuNTMgMTQyMy41MCw3MjYuMDVDMTM5Mi4xNSw3MjYuNTcgMTM2NC4wMyw3MjcuNDQgMTM2MS4wMCw3MjguMDBDMTM1Ny45Nyw3MjguNTUgMTM0Ny4zMCw3MjkuNDMgMTMzNy4yNyw3MjkuOTNDMTMyNy4yNCw3MzAuNDQgMTMxOC42MCw3MzEuMTMgMTMxOC4wNyw3MzEuNDZDMTMxNy41NCw3MzEuNzkgMTMwOS41NCw3MzIuNjkgMTMwMC4zMCw3MzMuNDZDMTI5MS4wNiw3MzQuMjMgMTI3OS4yMiw3MzUuNTggMTI3NC4wMCw3MzYuNDVDMTI2Mi4xNiw3MzguNDMgMTI0Ny42Niw3NDAuNjIgMTIzOC41MCw3NDEuODFDMTIzMC4wNyw3NDIuOTEgMTIwNy4zNiw3NDcuODggMTE4OS4zNCw3NTIuNTdDMTE4Mi4xMSw3NTQuNDYgMTE3NS41MCw3NTYuMDAgMTE3NC42Nyw3NTYuMDBDMTE3Mi4wMyw3NTYuMDAgMTEyNi4yMyw3NzAuNTUgMTEwNC41MCw3NzguMjlDMTA2MC42Nyw3OTMuOTEgOTk2LjU3LDgyNi42MSA5NjMuMDAsODUwLjUwQzk1OC4zMyw4NTMuODMgOTUyLjkyLDg1Ny41MiA5NTEuMDAsODU4LjcwQzk0OS4wOCw4NTkuODkgOTQyLjk1LDg2NC4zOCA5MzcuMzgsODY4LjY4Qzg5MS4yNyw5MDQuMzIgODU4LjYzLDk0MC4zOCA4MzQuMDYsOTgyLjg0QzgxNi41NywxMDEzLjA2IDgwMS45MiwxMDUyLjU3IDc5Ni4wOSwxMDg1LjI1Qzc5NC45NCwxMDkxLjcxIDc5My4xMCwxMTAyLjA2IDc5Mi4wMCwxMTA4LjI1Qzc4Ny4yNCwxMTM1LjAwIDc4Ny41MywxMjEwLjAzIDc5Mi41MCwxMjM4LjUwQzc5My4yNywxMjQyLjkwIDc5My45MiwxMjUwLjY0IDc5My45NSwxMjU1LjcwQzc5My45OCwxMjYwLjc2IDc5NC42NCwxMjY5Ljk4IDc5NS40MSwxMjc2LjIwQzc5Ni4xOSwxMjgyLjQxIDc5Ny4xMiwxMjkyLjAwIDc5Ny40OSwxMjk3LjUwQzc5Ny44NSwxMzAzLjAwIDc5OC42MCwxMzA5Ljc1IDc5OS4xNCwxMzEyLjUwQzc5OS42OSwxMzE1LjI1IDgwMC43NiwxMzI1LjE1IDgwMS41MiwxMzM0LjUwQzgwMy45MywxMzY0LjE5IDgwNS4yNywxMzc4LjE5IDgwNy45OCwxNDAyLjAwQzgwOC45NywxNDEwLjcyIDgxMC4xMSwxNDIzLjY5IDgxMi41MCwxNDUzLjUwQzgxMy4yNSwxNDYyLjg1IDgxNC4zMywxNDcyLjk3IDgxNC44OSwxNDc2LjAwQzgxNS40NSwxNDc5LjAzIDgxNi4zOCwxNDg4Ljg0IDgxNi45NCwxNDk3LjgyQzgxNy41MSwxNTA2LjgwIDgxOC4yMSwxNTE0LjUzIDgxOC41MCwxNTE1LjAxQzgxOC44MCwxNTE1LjQ4IDgxOS40OCwxNTI0Ljc5IDgyMC4wMiwxNTM1LjY4QzgyMC41NiwxNTQ2LjU4IDgyMS42NywxNTU5LjU1IDgyMi41MCwxNTY0LjUwQzgyMy4zMiwxNTY5LjQ1IDgyNC4wMiwxNTc3LjEwIDgyNC4wNSwxNTgxLjUwQzgyNC4wOCwxNTg1LjkwIDgyNC41NCwxNTkzLjEwIDgyNS4wNiwxNTk3LjUwQzgyNS41OCwxNjAxLjkwIDgyNi42NSwxNjE2LjMwIDgyNy40NCwxNjI5LjUwQzgyOC4yMywxNjQyLjcwIDgyOS4zNSwxNjU1Ljk3IDgyOS45MiwxNjU5LjAwQzgzMC40OSwxNjYyLjAzIDgzMS4zOCwxNjczLjE2IDgzMS45MSwxNjgzLjc0QzgzMi40NCwxNjk0LjMzIDgzMy4xNywxNzAzLjQ2IDgzMy41MywxNzA0LjA0QzgzMy44OCwxNzA0LjYyIDgzNC41OCwxNzE2Ljg5IDgzNS4wOCwxNzMxLjMwQzgzNS41NywxNzQ1LjcxIDgzNi40MSwxNzU5Ljk3IDgzNi45NCwxNzYzLjAwQzgzNy40OCwxNzY2LjAzIDgzOC4zOSwxNzc4Ljg1IDgzOC45OCwxNzkxLjUwQzgzOS41NywxODA0LjE1IDg0MC40OCwxODE3LjQyIDg0MC45OSwxODIxLjAwQzg0MS41MSwxODI0LjU4IDg0Mi4yMCwxODQwLjMzIDg0Mi41MywxODU2LjAwQzg0Mi44NywxODcxLjY3IDg0My43NywxODkwLjgwIDg0NC41NCwxODk4LjUwQzg0NS4zMSwxOTA2LjIwIDg0Ni4yMSwxOTIzLjc1IDg0Ni41NSwxOTM3LjUwQzg0Ni44OCwxOTUxLjI1IDg0Ny44MCwxOTcwLjUxIDg0OC41OCwxOTgwLjMxQzg0OS4zNiwxOTkwLjExIDg1MC4wMCwxOTk4LjU0IDg1MC4wMCwxOTk5LjA2Qzg1MC4wMCwxOTk5LjY0IDc3Mi4wNSwyMDAwLjAwIDY0NC41MCwyMDAwLjAwQzQ4MC43NSwyMDAwLjAwIDQzOS4wMSwxOTk5Ljc1IDQzOS4wMywxOTk4Ljc1WiI+PC9wYXRoPjwvc3ZnPjwvZz48L2c+PGRlZnM+PGNsaXBQYXRoIGlkPSJTdmdqc0NsaXBQYXRoMTA3MCI+PHJlY3Qgd2lkdGg9IjEwMDAiIGhlaWdodD0iMTAwMCIgeD0iMCIgeT0iMCIgcng9IjI1MCIgcnk9IjI1MCI+PC9yZWN0PjwvY2xpcFBhdGg+PC9kZWZzPjwvc3ZnPg=="
+            width="32"
+            style="border-radius: 8px; flex: 0 0 auto; display: block;" />
+          <span
+            class="_h3_1mu69_30"
+            style='font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; font-weight: 700; letter-spacing: normal; line-height: 28px; margin: 0px;'>
+            KinScape
+          </span>
+        </span>
+        <span style="width: 1px; height: 28px; background: #e2e5dd"></span>
+        <a
+          href="people-list.html"
+          class="control"
+          style='height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 12px 0 8px; border-radius: 8px; color: #18211b; text-decoration: none; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+          <svg
+            aria-hidden="true"
+            data-icon="back"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16">
+            <path d="M15 5l-7 7 7 7"></path>
+          </svg>
+          People
+        </a>
+        <span style="flex: 1"></span>
+        <button
+          aria-expanded="false"
+          aria-haspopup="menu"
+          aria-label="Account menu"
+          class="_avatar_x8byj_2 _ring_180bu_3"
+          type="button"
+          style='background: none 0% 0% / auto repeat scroll padding-box border-box rgb(38, 79, 41); border-radius: 999px; box-shadow: rgba(24, 33, 27, 0.08) 0px 1px 2px 0px, rgba(24, 33, 27, 0.12) 0px 6px 20px 0px; box-sizing: border-box; color: rgb(255, 255, 255); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; font-weight: 600; height: 44px; line-height: 24px; width: 44px; border: 0px rgb(255, 255, 255); justify-content: center; align-items: center; padding: 0px; display: inline-flex;'>
+          L
+        </button>
+      </header>
+
+      <main
+        style="position: absolute; left: 0; right: 0; top: 64px; bottom: 72px; overflow-y: auto">
+        <div
+          style="width: 1088px; margin: 0 auto; padding: 20px 0 24px; display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h1
+              class="_h1_1mu69_12"
+              style='font-family: "Bricolage Grotesque", sans-serif; font-size: 32px; font-weight: 500; letter-spacing: -0.48px; line-height: 40px; margin: 0px;'>
+              Add a person
+            </h1>
+            <p
+              class="_small_1mu69_75"
+              style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+              Given names and surname are required. Everything else can wait.
+            </p>
+          </div>
+
+          <div
+            style="background: #ffffff; border: 1px solid #e2e5dd; border-radius: 12px; padding: 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); column-gap: 40px; row-gap: 16px">
+            <div
+              role="group"
+              aria-labelledby="p-group-name"
+              style="grid-column: 1; grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-items: start; min-width: 0">
+              <span
+                class="_title_1mu69_39"
+                id="p-group-name"
+                style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                Name
+              </span>
+              <div
+                class="_field_ym237_1"
+                style="gap: 8px; flex-direction: column; display: flex;">
+                <label
+                  class="_label_1mu69_66"
+                  for=":r0:"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Given names
+                </label>
+                <span
+                  class="_box_ym237_8"
+                  style="background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative;">
+                  <input
+                    class="_input_ym237_71"
+                    aria-required="true"
+                    autocomplete="off"
+                    id=":r0:"
+                    type="text"
+                    value=""
+                    style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); outline: rgb(24, 33, 27) none 0px; flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
+                </span>
+              </div>
+              <div
+                class="_field_ym237_1"
+                style="gap: 8px; flex-direction: column; display: flex;">
+                <label
+                  class="_label_1mu69_66"
+                  for=":r1:"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Surname
+                </label>
+                <span
+                  class="_box_ym237_8"
+                  style="background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative;">
+                  <input
+                    class="_input_ym237_71"
+                    aria-required="true"
+                    autocomplete="off"
+                    id=":r1:"
+                    type="text"
+                    value=""
+                    style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); outline: rgb(24, 33, 27) none 0px; flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
+                </span>
+              </div>
+              <div
+                class="_field_ym237_1"
+                style="gap: 8px; flex-direction: column; display: flex;">
+                <label
+                  class="_label_1mu69_66"
+                  for=":r2:"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Maiden name
+                </label>
+                <span
+                  class="_box_ym237_8"
+                  style="background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative;">
+                  <input
+                    class="_input_ym237_71"
+                    autocomplete="off"
+                    aria-describedby=":r2:-message"
+                    id=":r2:"
+                    type="text"
+                    value=""
+                    style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); outline: rgb(24, 33, 27) none 0px; flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
+                </span>
+                <span
+                  class="_small_1mu69_75"
+                  id=":r2:-message"
+                  style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Surname at birth, if it changed.
+                </span>
+              </div>
+              <div
+                class="_field_ym237_1"
+                style="gap: 8px; flex-direction: column; display: flex;">
+                <label
+                  class="_label_1mu69_66"
+                  for=":r3:"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Spelling variants
+                </label>
+                <span
+                  class="_box_ym237_8 _tokens_ym237_214"
+                  role="group"
+                  style="background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative; gap: 8px; min-height: 44px; flex-wrap: wrap; padding-block: 0px;">
+                  <input
+                    aria-describedby=":r3:-helper"
+                    class="_input_ym237_71"
+                    id=":r3:"
+                    placeholder="Add a spelling"
+                    type="text"
+                    style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); outline: rgb(24, 33, 27) none 0px; flex: 1 1 100px; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px; min-height: 44px;' />
+                </span>
+                <span
+                  class="_panelHelper_ym237_223"
+                  id=":r3:-helper"
+                  style="color: rgb(74, 84, 76); font-size: 12.5px; line-height: 18px;">
+                  Other spellings in the records, up to 20. Press Enter after
+                  each.
+                </span>
+              </div>
+            </div>
+
+            <div
+              role="group"
+              aria-labelledby="p-group-life"
+              style="grid-column: 2; grid-row: 1 / span 5; display: grid; grid-template-rows: subgrid; align-items: start; min-width: 0">
+              <span
+                class="_title_1mu69_39"
+                id="p-group-life"
+                style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                Life
+              </span>
+              <div
+                class="_field_ym237_1"
+                style="gap: 8px; flex-direction: column; display: flex;">
+                <label
+                  class="_label_1mu69_66"
+                  for=":r4:"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Sex
+                </label>
+                <span
+                  class="_box_ym237_8"
+                  style="background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative;">
+                  <select
+                    class="_select_ym237_184"
+                    id=":r4:"
+                    style='appearance: none; color: rgb(24, 33, 27); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); outline: rgb(24, 33, 27) none 0px; flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;'>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="intersex">Intersex</option>
+                    <option value="unknown">Unknown</option>
+                  </select>
+                  <span
+                    class="_chevron_ym237_204"
+                    style="color: rgb(74, 84, 76); pointer-events: none;">
+                    <svg
+                      aria-hidden="true"
+                      data-icon="chevronDown"
+                      fill="none"
+                      height="18"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="18">
+                      <path d="M6 9l6 6 6-6"></path>
+                    </svg>
+                  </span>
+                </span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <label
+                  for="p-birth"
+                  class="label"
+                  style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+                  Birth
+                </label>
+                <span style="position: relative; display: flex">
+                  <input
+                    id="p-birth"
+                    type="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-invalid="false"
+                    aria-describedby="p-birth-msg"
+                    value=""
+                    style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: 8px; background: #ffffff; color: #18211b; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 15px; line-height: 22px; border: 1px solid #8e978c; padding: 0 12px" />
+                </span>
+                <div id="p-birth-msg" aria-live="polite">
+                  <p
+                    class="_small_1mu69_75"
+                    style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                    For example 1850, ABT 1850 or BET 1850 AND 1855.
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <label
+                  for="p-death"
+                  class="label"
+                  style='color: #18211b; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; font-style: normal;'>
+                  Death
+                </label>
+                <span style="position: relative; display: flex">
+                  <input
+                    id="p-death"
+                    type="text"
+                    autocomplete="off"
+                    spellcheck="false"
+                    aria-invalid="false"
+                    aria-describedby="p-death-msg"
+                    value=""
+                    style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: 8px; background: #ffffff; color: #18211b; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 15px; line-height: 22px; border: 1px solid #8e978c; padding: 0 12px" />
+                </span>
+                <div id="p-death-msg" aria-live="polite">
+                  <p
+                    class="_small_1mu69_75"
+                    style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                    Leave it empty if you don't know.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="_row_27bnl_2"
+                style="align-items: center; gap: 12px; min-height: 48px; display: flex;">
+                <input
+                  class="_checkbox_16lf0_3 _ring_180bu_3"
+                  type="checkbox"
+                  aria-describedby=":r5:-description"
+                  id=":r5:"
+                  style="appearance: none; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 4px; box-sizing: border-box; cursor: pointer; height: 20px; width: 20px; place-content: center; margin: 0px; display: grid; position: relative; flex: 0 0 auto;" />
+                <span
+                  class="_text_27bnl_13"
+                  style="flex-direction: column; min-width: 0px; display: flex;">
+                  <label
+                    class="_label_27bnl_19"
+                    for=":r5:"
+                    style='color: rgb(24, 33, 27); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; line-height: 20px;'>
+                    Deceased
+                  </label>
+                  <span
+                    class="_description_27bnl_28"
+                    id=":r5:-description"
+                    style="color: rgb(74, 84, 76); font-size: 12.5px; line-height: 18px;">
+                    Tick if this person has died but the date isn't known.
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div
+              style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <label for="p-notes">
+                <span
+                  class="_label_1mu69_66"
+                  style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                  Notes
+                </span>
+              </label>
+              <textarea
+                id="p-notes"
+                aria-describedby="p-notes-help"
+                value=""
+                style="flex: 1; min-height: 240px; resize: vertical; box-sizing: border-box; border-radius: 8px; background: #ffffff; font-family: 'Public Sans', system-ui, sans-serif; font-size: 15px; line-height: 22px; color: #18211b; border: 1px solid #8e978c; padding: 10px 12px"></textarea>
+              <p
+                class="_small_1mu69_75"
+                id="p-notes-help"
+                style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                Sources, stories, anything the fields can't hold.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div
+        style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: #ffffff; border-top: 1px solid #e2e5dd">
+        <div
+          style="width: 1088px; height: 100%; margin: 0 auto; display: flex; align-items: center; gap: 8px">
+          <button
+            class="_btn_183hp_1 _ring_180bu_3 _btnPrimary_183hp_72"
+            type="button"
+            style='border-radius: 8px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; align-items: center; gap: 8px; height: 44px; line-height: 22px; padding: 0px 16px; white-space: nowrap; justify-content: center; display: inline-flex; position: relative; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
+            Save
+          </button>
+          <button
+            class="_btn_183hp_1 _ring_180bu_3 _btnSecondary_183hp_101"
+            type="button"
+            style='border-radius: 8px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; align-items: center; gap: 8px; height: 44px; line-height: 22px; padding: 0px 16px; white-space: nowrap; justify-content: center; display: inline-flex; position: relative; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(255, 255, 255); border: 1px solid rgb(201, 207, 197); color: rgb(24, 33, 27);'>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

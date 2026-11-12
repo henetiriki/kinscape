@@ -23,6 +23,13 @@ const indexOf = (job: string, run: string) =>
 
 // NFR-09
 describe('the Postgres container of CI', () => {
+  it('is pinned by tag and digest', () => {
+    expect(
+      read(SCRIPT),
+      `${SCRIPT} needs IMAGE='postgres:17@sha256:<digest>'`
+    ).toMatch(/^IMAGE='postgres:17@sha256:[0-9a-f]{64}'$/m);
+  });
+
   it.each([
     ['test', 'npm test'],
     ['e2e', 'npm run e2e'],

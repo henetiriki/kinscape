@@ -1,14 +1,4 @@
 version: 2
-# One pull request moves @playwright/test and the Playwright image together, so the guard test passes.
-# commit-message is a group-only option: the npm entry that joins the group cannot set it.
-multi-ecosystem-groups:
-  playwright:
-    schedule:
-      interval: weekly
-    labels:
-      - dependencies
-    commit-message:
-      prefix: chore
 updates:
   - package-ecosystem: npm
     directory: /
@@ -17,9 +7,8 @@ updates:
     versioning-strategy: increase
     labels:
       - dependencies
-    multi-ecosystem-group: playwright
-    patterns:
-      - '@playwright/test'
+    commit-message:
+      prefix: chore
     # Held majors: see "Held packages" in docs/dependencies.md.
     ignore:
       - dependency-name: typescript
@@ -53,29 +42,9 @@ updates:
           - patch
       development:
         dependency-type: development
-        exclude-patterns:
-          - '@playwright/test'
         update-types:
           - minor
           - patch
-  - package-ecosystem: docker
-    directory: /.github/images/playwright
-    multi-ecosystem-group: playwright
-    patterns:
-      - '*'
-  # Held at the major version: see "Held packages" in docs/dependencies.md.
-  - package-ecosystem: docker
-    directory: /.github/images/postgres
-    schedule:
-      interval: weekly
-    labels:
-      - dependencies
-    commit-message:
-      prefix: chore
-    ignore:
-      - dependency-name: postgres
-        update-types:
-          - version-update:semver-major
   - package-ecosystem: github-actions
     directories:
       - /

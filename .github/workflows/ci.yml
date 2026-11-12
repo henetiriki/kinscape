@@ -174,7 +174,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Read the Playwright image
         id: pin
-        run: echo "image=$(sed -n 's/^FROM //p' .github/images/playwright/Dockerfile)" >> "$GITHUB_OUTPUT"
+        run: echo "image=$(cat .github/playwright-image)" >> "$GITHUB_OUTPUT"
 
   # Opens the app in a real browser and clicks through it, like a person. It runs on the runner,
   # not in the Playwright image: the Postgres script needs Docker, which the image lacks. It signs in
@@ -229,8 +229,8 @@ jobs:
     needs: image
     runs-on: ubuntu-latest
     # The image has the browser and its system packages, which the snapshot export and the design check
-    # need. Its version must match @playwright/test (scripts/__tests__/playwright-image.test.ts). Dependabot
-    # bumps the tag and digest in .github/images/playwright/Dockerfile with the package (docs/dependencies.md).
+    # need. Its version must match @playwright/test (scripts/__tests__/playwright-image.test.ts). Bump
+    # the tag and digest together in .github/playwright-image, then run the design-shots workflow on the branch.
     container:
       image: ${{ needs.image.outputs.image }}
       options: --user 1001

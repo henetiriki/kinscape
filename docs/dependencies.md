@@ -20,7 +20,7 @@ Dependabot ignores the major version of these. To lift a hold, remove its entry 
 
 ## The Playwright image
 
-If a Dependabot PR moves the image version, bump `@playwright/test` on that PR. Before the merge, run **Design: Render snapshots** on its branch.
+One Dependabot PR moves `@playwright/test` and the image. Before the merge, run **Design: Render snapshots** on its branch.
 
 ## Overrides
 

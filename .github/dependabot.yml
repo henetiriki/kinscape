@@ -1,5 +1,15 @@
 version: 2
+# One PR moves @playwright/test and the Playwright image: see "The Playwright image" in docs/dependencies.md.
+multi-ecosystem-groups:
+  playwright:
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore
 updates:
+  # A grouped entry cannot set commit-message, so only the playwright PR gets the chore prefix.
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -7,8 +17,9 @@ updates:
     versioning-strategy: increase
     labels:
       - dependencies
-    commit-message:
-      prefix: chore
+    multi-ecosystem-group: playwright
+    patterns:
+      - '@playwright/test'
     # Held majors: see "Held packages" in docs/dependencies.md.
     ignore:
       - dependency-name: typescript
@@ -42,18 +53,16 @@ updates:
           - patch
       development:
         dependency-type: development
+        exclude-patterns:
+          - '@playwright/test'
         update-types:
           - minor
           - patch
-  # The Playwright image version must match @playwright/test: see "The Playwright image" in docs/dependencies.md.
   - package-ecosystem: docker
     directory: /docker/playwright
-    schedule:
-      interval: weekly
-    labels:
-      - dependencies
-    commit-message:
-      prefix: chore
+    multi-ecosystem-group: playwright
+    patterns:
+      - '*'
   # Dependabot keeps the major version: see "Held packages" in docs/dependencies.md.
   - package-ecosystem: docker
     directory: /docker/postgres

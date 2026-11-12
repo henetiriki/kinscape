@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import pg from 'pg';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { db, poolConfig, rootCa } from '@ks/server/db/database.mts';
+import { createPool, db, poolConfig, rootCa } from '@ks/server/db/database.mts';
 
 const stubSupabase = () => {
   vi.stubEnv('KINSCAPE_SUPABASE_URL', 'https://example.supabase.co');
@@ -84,6 +84,42 @@ describe('poolConfig', () => {
     vi.stubEnv('VERCEL_ENV', 'production');
 
     expect(() => rootCa()).toThrow(/KINSCAPE_DATABASE_CA_FILE/);
+  });
+});
+
+// NFR-09
+describe('createPool', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('logs the code of an idle client error, not its message', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const pool = createPool('postgres://app:s3cret@db.internal:6543/db');
+
+    pool.emit(
+      'error',
+      Object.assign(new Error('read ECONNRESET db.internal s3cret'), {
+        code: '57P01',
+      })
+    );
+
+    expect(log).toHaveBeenCalledExactlyOnceWith(
+      'The database closed an idle connection (57P01)'
+    );
+    await pool.end();
+  });
+
+  it('logs "unknown" for an error without a code', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const pool = createPool('postgres://app@localhost:1/db');
+
+    pool.emit('error', new Error('db.internal'));
+
+    expect(log).toHaveBeenCalledExactlyOnceWith(
+      'The database closed an idle connection (unknown)'
+    );
+    await pool.end();
   });
 });
 

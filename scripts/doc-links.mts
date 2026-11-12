@@ -13,6 +13,16 @@ export const ALLOWLIST: string[][] = [
   ],
   ['design/CANVAS.md', 'design/COMPONENTS.md'],
   ['docs/building.md', 'docs/how-we-work.md'],
+  [
+    '.claude/skills/build-local/SKILL.md',
+    '.claude/skills/fix-review-local/SKILL.md',
+    '.github/agent/build.md',
+    '.github/agent/fix-review.md',
+    'AGENTS.md',
+    'docs/building.md',
+    'docs/how-we-work.md',
+    'docs/security.md',
+  ],
 ];
 
 const FENCE = /^ {0,3}(`{3,}|~{3,}).*\n[\s\S]*?^ {0,3}\1[`~]*[ \t]*$/gm;

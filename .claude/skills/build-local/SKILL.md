@@ -11,12 +11,12 @@ Build plan PR `<n>` in this checkout. The caller is the tech lead. Follow [`buil
 
 ## Shared steps
 
-[`fix-review-local`](../fix-review-local/SKILL.md) runs these steps too.
+`fix-review-local` runs these steps too.
 
 1. Run `gh pr view <n> --json title,body,headRefName,labels,isDraft,state,files`. If the PR is not open, stop.
 2. Run `git status --porcelain`. If it prints a line, stop. Change nothing.
 3. Run `git worktree list`. If another worktree holds the branch, stop. Change nothing.
-4. Run `git fetch origin <branch>`.
+4. Run `git fetch origin <branch>`. Then run `git fetch origin main`.
 5. Run the skill's stop checks.
 6. Run `git switch <branch>`, then `git pull --ff-only`.
 
@@ -41,5 +41,5 @@ Rules for every step:
 - Edit a hand-back path only if the plan's "Files that change" table names it. Any other hand-back path is a big departure: ask the tech lead.
 - Run `npm run e2e`. If the browser cannot start, write that under Evidence and name the CI e2e job as the check.
 - If the plan changes a design system input, run the steps that the [design-system rule](../../../plans/README.md#design-system) gives a local session. If a step needs a claude.ai sign-in that the session lacks, leave the PR a draft and ask the tech lead.
-- Push. Drop "(plan)" from the title. Rewrite the body. Run `gh pr ready <n>` unless `build.md` step 6 says to leave the draft.
+- Push. Drop "(plan)" from the title. Rewrite the body. Run `gh pr ready <n>` unless `build.md` step 6 says to leave the draft. Ignore its design-system bullet if the session ran every design-system step.
 - Do not merge, push to `main`, or change a label or a reviewer.

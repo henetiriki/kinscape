@@ -82,7 +82,8 @@ const parseDate = (text: string): Result<string, FuzzyDateError> => {
   return ok(`${yearText}-${pad(month, 2)}-${pad(day, 2)}`);
 };
 
-const build = (
+/** The FuzzyDate for stored parts: `date1` and `date2` are `1850`, `1850-03` or `1850-03-15`. */
+export const fuzzyDateOf = (
   qualifier: Qualifier,
   date1: string,
   date2?: string
@@ -138,7 +139,7 @@ const parseRange = (
   if (!date2.ok) return date2;
   if (firstDay(date1.value) > lastDay(date2.value)) return err('reversed');
 
-  return ok(build(qualifier, date1.value, date2.value));
+  return ok(fuzzyDateOf(qualifier, date1.value, date2.value));
 };
 
 /** Parses a GEDCOM date: years 1000–2999 only. Never throws. */
@@ -158,7 +159,7 @@ export const parseFuzzyDate = (
 
   if (!date.ok) return date;
 
-  return ok(build(qualified ? word : 'EXACT', date.value));
+  return ok(fuzzyDateOf(qualified ? word : 'EXACT', date.value));
 };
 
 const formatDate = (date: string): string => {

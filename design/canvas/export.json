@@ -375,6 +375,17 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "file": "Person-new.dc.html",
+      "name": "person-conflict",
+      "props": { "variant": "conflict" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-not-found.dc.html",
+      "name": "person-not-found",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
       "file": "Person-form-phone.dc.html",
       "name": "person-form-phone",
       "viewport": { "height": 844, "width": 390 }

@@ -14,8 +14,9 @@ import {
   parsePersonId,
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
-import { isVersion, MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { isVersion } from '#ks/server/trees/version.mts';
 
 type Db = ReturnType<typeof createDb>;
 

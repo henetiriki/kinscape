@@ -8,12 +8,6 @@ import { parsePersonId } from '#ks/lib/domain/ids/ids.mts';
 /** The most Persons a list returns: the NFR sizing of a Tree, so a response has a cap. */
 export const MAX_LISTED = 2000;
 
-const MAX_VERSION = 2_147_483_647;
-
-/** Whether `version` fits the `int4` column: Postgres throws on any other number. */
-export const isVersion = (version: number): boolean =>
-  Number.isInteger(version) && version >= 1 && version <= MAX_VERSION;
-
 const MAX_NAME = 200;
 const MAX_VARIANTS = 20;
 const MAX_NOTES = 10_000;

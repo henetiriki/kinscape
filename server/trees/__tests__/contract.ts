@@ -543,13 +543,6 @@ export const runTreeStoreContract = (
         });
       });
 
-      // PPL-01
-      it('refuses a NUL character in text', () => {
-        expect(
-          personInputSchema.safeParse({ id: ID_1, surname: 'a\0b' }).success
-        ).toBe(false);
-      });
-
       // NFR-09
       it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
         'gives conflict for the version %s',

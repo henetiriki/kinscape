@@ -1,7 +1,7 @@
 # Plan: C757: Speed up the CI e2e job
 
 - **Spec:** #757
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -15,7 +15,7 @@ Copy the `e2e` job as `design`, which runs `npm run design:check`. Move the snap
 - **B.** The config drops `design` when `GITHUB_JOB` is `e2e`. A job rename silently brings `design` back.
 - **Other:** your own.
 
-Recommended: A, because the step says what it does.
+**Answer: A** (@henetiriki)
 
 **D2 · Job names** · Decides: Tech lead
 
@@ -23,7 +23,7 @@ Recommended: A, because the step says what it does.
 - **B.** Use `e2e-app` and `e2e-design`. Then a comment in `next-build-cache.test.ts` names a missing job, but the Chore forbids unit test changes.
 - **Other:** your own.
 
-Recommended: A.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

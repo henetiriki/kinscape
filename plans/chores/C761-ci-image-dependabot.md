@@ -51,3 +51,10 @@ The Chore keeps the package out of `development`, but forbids changes to the oth
 | `dependabot.yml` accepted; one Playwright PR; `development` without it | "Check for updates" after the merge |
 | Postgres gets no major                                                 | `ignore`; the next Postgres PR      |
 | Hold row and design-shots step                                         | Review                              |
+
+## Deviations
+
+- D2 (tech lead: build as planned). `commit-message` is a group-only Dependabot option, so it moves from the npm entry to the `playwright` group. Whether the npm entry's other groups still open PRs is unproven until "Check for updates" after the merge. If they do not, revert.
+- The Postgres tag is `17.11`. Its digest equals the old `17` pin. Both come from `docker-library/repo-info`, because the sandbox cannot reach the registry.
+- The "names no image" test uses `git grep` and skips `__tests__` folders, which name the image to check it.
+- `docs/dependencies.md` needed 293 words. Its budget in `scripts/word-count.mts` and its test move from 250 to 300.

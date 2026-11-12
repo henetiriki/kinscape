@@ -9,9 +9,9 @@
 # Each run makes a new password and certificate, and keeps neither.
 set -euo pipefail
 
-# Same major version as the hosted database projects (docs/infrastructure.md). A person moves the pin:
-# Dependabot does not read shell scripts.
-IMAGE='postgres:17@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f'
+# The image has the same major version as the hosted database projects (docs/infrastructure.md).
+# Dependabot moves the minor version and the digest in the Dockerfile. It never moves the major version.
+IMAGE="$(sed -n 's/^FROM //p' "$(dirname "$0")/../.github/images/postgres/Dockerfile")"
 NAME=ks-ci-postgres
 DIR=/tmp/ci-postgres
 PORT=5432

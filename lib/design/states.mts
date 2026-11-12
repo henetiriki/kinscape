@@ -45,6 +45,7 @@ const ICONS = [
   'info',
   'layers',
   'menu',
+  'people',
   'place',
   'play',
   'search',

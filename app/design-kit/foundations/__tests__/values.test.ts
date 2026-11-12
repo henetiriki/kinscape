@@ -18,6 +18,6 @@ it('names a token for each row', () => {
 });
 
 it('lists the nineteen icons once each', () => {
-  expect(ICONS).toHaveLength(19);
-  expect(new Set(ICONS.map(icon => icon.name)).size).toBe(19);
+  expect(ICONS).toHaveLength(20);
+  expect(new Set(ICONS.map(icon => icon.name)).size).toBe(20);
 });

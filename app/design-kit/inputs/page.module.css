@@ -133,6 +133,10 @@
   width: 260px;
 }
 
+.dateField {
+  width: 320px;
+}
+
 /* A People-list row is 960 wide; the sample shows it at 640 with its own top and bottom lines. */
 .personRow {
   border-block: 1px solid var(--line);

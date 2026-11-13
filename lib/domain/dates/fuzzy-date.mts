@@ -7,23 +7,11 @@ import type { Precision } from '#ks/lib/domain/map/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
 import { asDay, fromDay, toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { MONTH_NAMES } from '#ks/lib/domain/dates/months.mts';
 import { coarserPrecision, PRECISIONS } from '#ks/lib/domain/map/map-date.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
-const MONTHS = [
-  'JAN',
-  'FEB',
-  'MAR',
-  'APR',
-  'MAY',
-  'JUN',
-  'JUL',
-  'AUG',
-  'SEP',
-  'OCT',
-  'NOV',
-  'DEC',
-];
+const MONTHS = MONTH_NAMES.map(name => name.slice(0, 3).toUpperCase());
 const MIN_YEAR = 1000;
 const MAX_YEAR = 2999;
 const NEAR_YEARS = 2;
@@ -33,7 +21,7 @@ const SINGLE: Qualifier[] = ['ABT', 'AFT', 'BEF', 'CAL', 'EST'];
 const pad = (value: number, width: number): string =>
   String(value).padStart(width, '0');
 
-const daysIn = (year: number, month: number): number =>
+export const daysIn = (year: number, month: number): number =>
   new Date(Date.UTC(year, month, 0)).getUTCDate();
 
 const precisionOf = (date: string): Precision =>
@@ -62,7 +50,8 @@ const shiftYears = (iso: string, years: number): string => {
 const shiftDays = (iso: string, days: number): string =>
   fromDay(asDay(toDay(iso) + days));
 
-const parseDate = (text: string): Result<string, FuzzyDateError> => {
+/** One date part (`14 MAR 1850`, `MAR 1850` or `1850`, in capitals) as `1850`, `1850-03` or `1850-03-14`. */
+export const parseDate = (text: string): Result<string, FuzzyDateError> => {
   const match = /^(?:(?:(\d{1,2}) )?([A-Z]{3}) )?(\d{1,4})$/.exec(text);
 
   if (!match) return err('syntax');
@@ -142,24 +131,38 @@ const parseRange = (
   return ok(fuzzyDateOf(qualifier, date1.value, date2.value));
 };
 
+/** The qualifier of typed text and its date parts, which are one or two (`BET` and `FROM`). */
+export const splitFuzzyDate = (
+  text: string
+): { qualifier: Qualifier; texts: string[] } => {
+  const clean = text.trim().replace(/\s+/g, ' ').toUpperCase();
+  const between = /^BET (.+) AND (.+)$/.exec(clean);
+
+  if (between) return { qualifier: 'BET', texts: between.slice(1) };
+  const from = /^FROM (.+) TO (.+)$/.exec(clean);
+
+  if (from) return { qualifier: 'FROM', texts: from.slice(1) };
+  const word = clean.slice(0, 3) as Qualifier;
+  const qualified = SINGLE.includes(word) && clean[3] === ' ';
+
+  return qualified
+    ? { qualifier: word, texts: [clean.slice(4)] }
+    : { qualifier: 'EXACT', texts: [clean] };
+};
+
 /** Parses a GEDCOM date: years 1000–2999 only. Never throws. */
 export const parseFuzzyDate = (
   text: string
 ): Result<FuzzyDate, FuzzyDateError> => {
-  const clean = text.trim().replace(/\s+/g, ' ').toUpperCase();
-  const between = /^BET (.+) AND (.+)$/.exec(clean);
+  const { qualifier, texts } = splitFuzzyDate(text);
 
-  if (between) return parseRange('BET', between.slice(1));
-  const from = /^FROM (.+) TO (.+)$/.exec(clean);
-
-  if (from) return parseRange('FROM', from.slice(1));
-  const word = clean.slice(0, 3) as Qualifier;
-  const qualified = SINGLE.includes(word) && clean[3] === ' ';
-  const date = parseDate(qualified ? clean.slice(4) : clean);
+  if (qualifier === 'BET' || qualifier === 'FROM')
+    return parseRange(qualifier, texts);
+  const date = parseDate(texts[0]);
 
   if (!date.ok) return date;
 
-  return ok(fuzzyDateOf(qualified ? word : 'EXACT', date.value));
+  return ok(fuzzyDateOf(qualifier, date.value));
 };
 
 const formatDate = (date: string): string => {

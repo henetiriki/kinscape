@@ -149,6 +149,8 @@ const dateField = (props: State['props'] = {}) => ({
   ...props,
 });
 
+const FUZZY_HELPER = 'For example 1850, ABT 1850 or BET 1850 AND 1855.';
+
 const BAD_DATES = [
   ['wrong format', '14/06/1901'],
   ['before 1652', '1650'],
@@ -462,6 +464,43 @@ export const CARDS: Card[] = [
         'DateField · notice',
         dateField({ notice: { text: 'Moved to 1652.', tone: 'warning' } })
       ),
+    ],
+  },
+  {
+    design: ['Fuzzy date field'],
+    group: 'Forms',
+    handlers: [],
+    height: 720,
+    name: 'FuzzyDateField',
+    pad: 0,
+    states: [
+      one('FuzzyDateField · empty', { helper: FUZZY_HELPER, label: 'Born' }),
+      one('FuzzyDateField · typing', {
+        defaultValue: 'BET 1850 AND 18',
+        helper: FUZZY_HELPER,
+        label: 'Born',
+        state: 'focus',
+      }),
+      one('FuzzyDateField · readable', {
+        defaultValue: 'BET 1850 AND 1855',
+        helper: FUZZY_HELPER,
+        label: 'Born',
+      }),
+      one('FuzzyDateField · focus', {
+        helper: FUZZY_HELPER,
+        label: 'Born',
+        state: 'focus',
+      }),
+      one('FuzzyDateField · error', {
+        defaultValue: '31 FEB 1850',
+        helper: FUZZY_HELPER,
+        label: 'Born',
+      }),
+      one('FuzzyDateField · disabled', {
+        disabled: true,
+        helper: FUZZY_HELPER,
+        label: 'Born',
+      }),
     ],
   },
   {

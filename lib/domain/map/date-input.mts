@@ -2,6 +2,7 @@ import type { Day } from '#ks/lib/domain/boundaries/types.ts';
 import type { Fix, Precision, Problem } from '#ks/lib/domain/map/types.ts';
 
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { MONTH_NAMES } from '#ks/lib/domain/dates/months.mts';
 import { shownDate } from '#ks/lib/domain/map/map-date.mts';
 
 type Check =
@@ -9,21 +10,6 @@ type Check =
   | { ok: false; problem: Problem };
 
 const FORMAT = /^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?$/;
-
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
 
 const pad = (n: number): string => String(n).padStart(2, '0');
 
@@ -64,7 +50,7 @@ export const checkDate = (text: string, min: Day, max: Day): Check => {
   if (date !== undefined && date > last) {
     const iso = `${typedYear}-${pad(month!)}-${pad(last)}`;
 
-    return fail(`${MONTHS[month! - 1]} ${year} has ${last} days.`, {
+    return fail(`${MONTH_NAMES[month! - 1]} ${year} has ${last} days.`, {
       day: toDay(iso),
       label: `Go to ${iso}`,
       precision: 'day',

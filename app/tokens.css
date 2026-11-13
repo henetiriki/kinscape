@@ -156,6 +156,11 @@
   --type-mono-l-line: 28px;
   --type-mono-l-weight: 500;
   --type-mono-l-tracking: 0;
+  --type-mono-m-font: var(--font-mono);
+  --type-mono-m-size: 15px;
+  --type-mono-m-line: 22px;
+  --type-mono-m-weight: 400;
+  --type-mono-m-tracking: 0;
   --type-mono-font: var(--font-mono);
   --type-mono-size: 12px;
   --type-mono-line: 16px;

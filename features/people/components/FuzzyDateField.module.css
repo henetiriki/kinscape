@@ -1,0 +1,29 @@
+.field {
+  composes: field from '@ks/app/components/forms/TextField.module.css';
+}
+
+/* The box takes the TextField looks: border, hover, focus, error and disabled. */
+.box {
+  composes: box from '@ks/app/components/forms/TextField.module.css';
+}
+
+.box > svg {
+  color: var(--error-border);
+}
+
+.input {
+  composes: input from '@ks/app/components/forms/TextField.module.css';
+  font-family: var(--type-mono-m-font);
+  font-size: var(--type-mono-m-size);
+  font-variant-ligatures: none;
+  font-weight: var(--type-mono-m-weight);
+  line-height: var(--type-mono-m-line);
+}
+
+/* 16 / 24 on phones, so the browser doesn't zoom in. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .input {
+    font-size: var(--type-body-l-size);
+    line-height: var(--type-body-l-line);
+  }
+}

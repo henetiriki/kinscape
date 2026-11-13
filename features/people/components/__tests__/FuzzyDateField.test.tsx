@@ -160,3 +160,12 @@ it('sets the input in 15 / 22 Mono from a token, ligatures off, and 16 / 24 on a
   expect(phone).toContain('font-size: var(--type-body-l-size)');
   expect(phone).toContain('line-height: var(--type-body-l-line)');
 });
+
+it('sets the reading in 600 weight and the ink colour, as the Fuzzy-date-readings board does', () => {
+  const reading = /^\.reading \{[^}]*\}/m.exec(css)?.[0] ?? '';
+
+  setup({ defaultValue: 'ABT 1850' });
+  expect(slot().querySelector('strong')!.className).toContain('reading');
+  expect(reading).toContain('color: var(--ink)');
+  expect(reading).toContain('font-weight: var(--type-label-weight)');
+});

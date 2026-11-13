@@ -96,7 +96,10 @@ export const FuzzyDateField = ({
           </Text>
         ) : parsed.ok ? (
           <Text variant='small'>
-            Reads as <strong>{readFuzzyDate(parsed.value)}</strong>
+            Reads as{' '}
+            <strong className={styles.reading}>
+              {readFuzzyDate(parsed.value)}
+            </strong>
           </Text>
         ) : (
           helper && <Text variant='small'>{helper}</Text>

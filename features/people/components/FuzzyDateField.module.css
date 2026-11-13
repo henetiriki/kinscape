@@ -11,6 +11,12 @@
   color: var(--error-border);
 }
 
+/* The reading is the confirmation: 600 in ink on the ink-3 helper line. */
+.reading {
+  color: var(--ink);
+  font-weight: var(--type-label-weight);
+}
+
 .input {
   composes: input from '@ks/app/components/forms/TextField.module.css';
   font-family: var(--type-mono-m-font);

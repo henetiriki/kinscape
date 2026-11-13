@@ -404,13 +404,13 @@ export type DateFieldProps = Parameters<typeof DateField>[0];
 
 /**
  * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
- * date that parses, or the error. It checks on Enter or when focus leaves, never while typing.
+ * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
  * An error stays with the text until the next check.
  */
 export declare const FuzzyDateField: ({ defaultValue, helper, label, state, ...rest }: {
-    /** Text to start with; it is checked on the first render, unless `state` is `focus`. */
+    /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
     defaultValue?: string;
-    /** Shown while the text is empty or does not read as a date yet. */
+    /** The slot shows it while the text is empty or does not read as a date. */
     helper?: ReactNode;
     label: string;
     state?: ControlState;

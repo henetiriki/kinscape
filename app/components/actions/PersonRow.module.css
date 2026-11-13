@@ -51,12 +51,18 @@
   width: 1px;
 }
 
+/* The link font, with no underline: the whole row is the link. */
 .edit {
-  composes: link from '@ks/app/components/foundation/Text.module.css';
   align-items: center;
+  color: var(--brand);
   display: inline-flex;
+  font-family: var(--type-link-font);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
   gap: var(--space-4);
   justify-self: end;
+  letter-spacing: var(--type-link-tracking);
+  line-height: var(--type-link-line);
 }
 
 .row:is(:active, [data-state='active']) .edit {

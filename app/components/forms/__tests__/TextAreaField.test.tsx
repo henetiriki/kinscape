@@ -65,6 +65,16 @@ it('fills a flex column that has a height, and keeps its rows without one', () =
 });
 
 // PPL-01
+it('puts the padding on the textarea, so the resize handle sits at the padded corner', () => {
+  const area = /^\.area \{[^}]*\}/m.exec(css)![0];
+  const box = /^\.field > \.box \{[^}]*\}/m.exec(css)![0];
+
+  expect(area).toContain('padding: 10px 12px');
+  expect(box).toContain('padding: 0;');
+  expect(css).toMatch(/:focus-within[^{]*\.area[^{]*\{[^}]*padding: 9px 11px/);
+});
+
+// PPL-01
 it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
   expect(css).toContain('padding: 10px 12px');

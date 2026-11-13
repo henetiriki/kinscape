@@ -77,16 +77,21 @@ it('takes a state', () => {
 });
 
 // PPL-01
-it('puts each date in a flex column, and gives Edit the link text style', () => {
+it('puts each date in a flex column, and sets Edit in the link font with no underline', () => {
   row();
   expect(screen.getByText('Born').parentElement!.className).toMatch(/date/);
   expect(screen.getByText('Died').parentElement!.className).toMatch(/date/);
   expect(css).toMatch(
     /\.date \{[^}]*display: flex;[^}]*flex-direction: column/
   );
-  expect(css).toMatch(
-    /\.edit \{[^}]*composes: link from '@ks\/app\/components\/foundation\/Text\.module\.css'/
-  );
+
+  const edit = /\.edit \{[^}]*\}/.exec(css)![0];
+
+  expect(edit).toContain('font-family: var(--type-link-font)');
+  expect(edit).toContain('font-size: var(--type-link-size)');
+  expect(edit).toContain('font-weight: var(--type-link-weight)');
+  expect(edit).toContain('line-height: var(--type-link-line)');
+  expect(edit).not.toMatch(/underline|composes/);
 });
 
 // PPL-01

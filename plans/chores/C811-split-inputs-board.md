@@ -9,30 +9,17 @@
 
 ## Decisions
 
-**D4 · Desktop parts** · Decides: Tech lead
-
-The 7500px rule gives 2, not the 3 of D2.
-
-- **A.** Use 2 desktop parts and 4 phone parts.
-
-**Answer: A** (Tech lead)
-
-**D5 · Phone order** · Decides: Tech lead
-
-The old phone order does not hold.
-
-- **A.** Accept the new order.
-
-**Answer: A** (Tech lead)
+D2 (2 desktop parts) and D4 (the phone order) of [#811](https://github.com/henetiriki/kinscape/issues/811) hold the answers.
 
 ## Deviations
 
 - Measured with `e2e/inputs.spec.ts`: each part is 7500px or less. Desktop part 1 holds Buttons to Key hints. Desktop part 2 holds Page header to Person row.
-- Phone parts: 1 Buttons, Text fields · 2 Chips, Button as a link, Long text field · 3 Tabs to Key hints · 4 Page header, Back link, Action bar, Fuzzy date field, Person row. Each part draws in app order (D5).
+- Phone parts: 1 Buttons, Text fields · 2 Chips, Button as a link, Long text field · 3 Tabs to Key hints · 4 Page header, Back link, Action bar, Fuzzy date field, Person row. Each part draws in app order (D4).
 - `?part=2` shows desktop part 2. `?part=3` and `?part=4` show desktop part 1.
 - `screens.json` heights come from the JPGs: 7285 and 6892 on a desktop, 5789, 5893, 6122 and 5979 on a phone.
 - The design agent first linked each board to the route of `page.tsx`. A snapshot link must be a board file, as on board 07, so the agent changed the 6 links.
 - The render workflow re-rendered `design/map-desktop.jpg`: 24 bytes larger. Nothing else changed in it.
+- The app lead of Button as a link drew `href` unstyled, 1px taller than the design. The old check hid it below row 8192. `.lead code` now draws 12px mono, and the space sits outside the code. The tech lead chose to fix the app, not the board.
 
 ## Files that change
 

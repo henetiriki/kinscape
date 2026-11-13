@@ -19,10 +19,17 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["Menu"];
   var handlers = ["onSelect"];
   var states = [{"label":"Menu · closed","props":{"email":"researcher@example.com","footer":"Last backup: today, 02:00","groups":[[{"detail":"JSON and GeoJSON","icon":"export","id":"export","label":"Export"},{"icon":"document","id":"sources","label":"Sources"}],[{"disabled":true,"icon":"signOut","id":"out","label":"Sign out"},{"icon":"info","id":"about","label":"About"}]],"initial":"L"}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

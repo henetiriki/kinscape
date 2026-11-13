@@ -19,10 +19,17 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["Popup"];
   var handlers = ["onClose","onCopied"];
   var states = [{"label":"Popup · floating","props":{"chain":[{"level":"District","name":"Kimberley"},{"detail":"Was Griqualand West until 1880","level":"Colony","name":"Cape Colony"}],"coordinates":"28.738° S · 24.764° E","form":"floating","pins":[{"date":"1901-03-14","event":"marriage","id":"marriage","people":"J. Rossouw & M. du Toit","title":"Marriage"}],"place":"Kimberley","year":1901}},{"label":"Popup · sheet","props":{"chain":[{"level":"District","name":"Kimberley"},{"detail":"Was Griqualand West until 1880","level":"Colony","name":"Cape Colony"}],"coordinates":"28.738° S · 24.764° E","form":"sheet","pins":[{"date":"1901-03-14","event":"marriage","id":"marriage","people":"J. Rossouw & M. du Toit","title":"Marriage"}],"place":"Kimberley","year":1901}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

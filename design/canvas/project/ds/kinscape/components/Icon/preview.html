@@ -19,10 +19,17 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["Icon"];
   var handlers = [];
   var states = [{"label":"Icon · alert","props":{"name":"alert"}},{"label":"Icon · back","props":{"name":"back"}},{"label":"Icon · chevronDown","props":{"name":"chevronDown"}},{"label":"Icon · close","props":{"name":"close"}},{"label":"Icon · cloudOff","props":{"name":"cloudOff"}},{"label":"Icon · copy","props":{"name":"copy"}},{"label":"Icon · document","props":{"name":"document"}},{"label":"Icon · done","props":{"name":"done"}},{"label":"Icon · error","props":{"name":"error"}},{"label":"Icon · export","props":{"name":"export"}},{"label":"Icon · eye","props":{"name":"eye"}},{"label":"Icon · eyeOff","props":{"name":"eyeOff"}},{"label":"Icon · fit","props":{"name":"fit"}},{"label":"Icon · forward","props":{"name":"forward"}},{"label":"Icon · info","props":{"name":"info"}},{"label":"Icon · layers","props":{"name":"layers"}},{"label":"Icon · menu","props":{"name":"menu"}},{"label":"Icon · people","props":{"name":"people"}},{"label":"Icon · place","props":{"name":"place"}},{"label":"Icon · play","props":{"name":"play"}},{"label":"Icon · search","props":{"name":"search"}},{"label":"Icon · signOut","props":{"name":"signOut"}},{"label":"Icon · success","props":{"name":"success"}},{"label":"Icon · warning","props":{"name":"warning"}},{"label":"Icon · zoomIn","props":{"name":"zoomIn"}},{"label":"Icon · zoomOut","props":{"name":"zoomOut"}},{"label":"Icon · search · 14","props":{"name":"search","size":14}},{"label":"Icon · search · 16","props":{"name":"search","size":16}},{"label":"Icon · search · 20","props":{"name":"search","size":20}},{"label":"Icon · search · 24","props":{"name":"search","size":24}},{"label":"Icon · search · 28","props":{"name":"search","size":28}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

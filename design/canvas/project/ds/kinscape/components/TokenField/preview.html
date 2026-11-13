@@ -19,10 +19,17 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["TokenField"];
   var handlers = [];
   var states = [{"label":"TokenField · default","props":{"defaultValues":["Birth","Death"],"disabled":false,"helper":"Press Enter to add.","label":"Event types","placeholder":"Add a type"}},{"label":"TokenField · active","props":{"defaultValues":["Birth","Death"],"disabled":false,"helper":"Press Enter to add.","label":"Event types","placeholder":"Add a type","state":"active"}},{"label":"TokenField · focus","props":{"defaultValues":["Birth","Death"],"disabled":false,"helper":"Press Enter to add.","label":"Event types","placeholder":"Add a type","state":"focus"}},{"label":"TokenField · hover","props":{"defaultValues":["Birth","Death"],"disabled":false,"helper":"Press Enter to add.","label":"Event types","placeholder":"Add a type","state":"hover"}},{"label":"TokenField · disabled","props":{"defaultValues":["Birth","Death"],"disabled":true,"helper":"Press Enter to add.","label":"Event types","placeholder":"Add a type"}},{"label":"TokenField · empty","props":{"label":"Event types","placeholder":"Add a type"}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

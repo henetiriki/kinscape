@@ -8,7 +8,7 @@ A pill that turns one filter on or off, such as an Event type.
 
 | Prop | Type | Required | Description |
 | --- | --- | --- | --- |
-| `glyph` | `"baptism" \| "birth" \| "burial" \| "death" \| "divorce" \| "land" \| "marriage" \| "occupation" \| "other" \| "residence"` | no | The Event type this chip filters on; its glyph leads the label. |
+| `glyph` | `"other" \| "baptism" \| "birth" \| "burial" \| "death" \| "divorce" \| "land" \| "marriage" \| "occupation" \| "residence"` | no | The Event type this chip filters on; its glyph leads the label. |
 | `on` | `boolean` | yes |  |
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
 

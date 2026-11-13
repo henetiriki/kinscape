@@ -1,7 +1,7 @@
 # Plan: C811: Split board 06 so each part is 7500px or less
 
 - **Spec:** #811
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

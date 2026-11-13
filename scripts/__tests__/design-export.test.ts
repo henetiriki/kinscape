@@ -60,7 +60,7 @@ describe('the real canvas export', () => {
     );
   });
 
-  it('reads artboards that exist and links to snapshots that exist', () => {
+  it('reads boards that exist and links to snapshots that exist', () => {
     const files = [
       ...canvas.snapshots.map(snapshot => snapshot.file),
       ...Object.keys(canvas.links),
@@ -89,7 +89,7 @@ describe('the real canvas export', () => {
 });
 
 describe('linkMap', () => {
-  it('links each artboard to its first plain snapshot, and the listed links', () => {
+  it('links each board to its first plain snapshot, and the listed links', () => {
     expect(
       linkMap({
         icon: '',
@@ -161,7 +161,7 @@ describe('prepare and finish', () => {
     );
   });
 
-  it('finish points the icon at the app and artboard links at snapshots', () => {
+  it('finish points the icon at the app and board links at snapshots', () => {
     expect(
       finish(
         '<img src="file:///r/icon0.svg"><a href="A.dc.html"></a><a href="B.dc.html"></a><a href="C.dc.html?x"></a>',
@@ -438,7 +438,7 @@ describe('fillTemplate', () => {
   renderVals() { return { ...this.props, ...this.state }; }
 }`;
 
-  const artboard = (body: string, script = COMPONENT, props?: string) => {
+  const putBoard = (body: string, script = COMPONENT, props?: string) => {
     document.head.innerHTML = '<title>T</title>';
     document.body.innerHTML = `<x-dc>${body}</x-dc><script type="text/x-dc" data-dc-script${props === undefined ? '' : ` data-props='${props}'`}>${script}</script>`;
   };
@@ -446,7 +446,7 @@ describe('fillTemplate', () => {
   const filled = () => document.querySelector('x-dc')?.innerHTML;
 
   it('fills text, attributes, loops and conditions from renderVals', () => {
-    artboard(
+    putBoard(
       [
         '<helmet><style>p{}</style></helmet>',
         '<p title="{{ title }}" class="a {{ kept }}">Hi {{ who.name }}{{ missing.deep }}!</p><p>plain</p><!-- note -->',
@@ -479,7 +479,7 @@ describe('fillTemplate', () => {
   });
 
   it("keeps each <x-import>'s props as values, with kebab-case names in camelCase", () => {
-    artboard(
+    putBoard(
       [
         '<x-import component-from-global-scope="K.B" variant="primary" default-value="v" aria-label="Go" data-id="a {{ who }}" on-toggle="{{ go }}" options="{{ opts }}" day="{{ n }}" full="{{ yes }}" style="flex: 1">Save {{ who }}</x-import>',
         '<x-import component-from-global-scope="K.G"><x-import component-from-global-scope="K.I" n="{{ n }}"></x-import></x-import>',
@@ -518,7 +518,7 @@ describe('fillTemplate', () => {
   });
 
   it('works without prop definitions or a helmet', () => {
-    artboard(
+    putBoard(
       '<p>{{ a }}</p>',
       'class Component extends DCLogic { renderVals() { return this.props; } }'
     );
@@ -529,19 +529,19 @@ describe('fillTemplate', () => {
     expect(filled()).toBe('<p>1</p>');
   });
 
-  it('rejects a page that is not an artboard', () => {
+  it('rejects a page that is not a board', () => {
     document.body.innerHTML = '<p>x</p>';
 
     expect(() => fillTemplate({ props: {}, state: {} })).toThrow(
-      'Not a canvas artboard'
+      'Not a canvas board'
     );
   });
 
   it('rejects a script with no Component', () => {
-    artboard('<p>x</p>', 'class Other {}');
+    putBoard('<p>x</p>', 'class Other {}');
 
     expect(() => fillTemplate({ props: {}, state: {} })).toThrow(
-      'The artboard script defines no Component'
+      'The board script defines no Component'
     );
   });
 
@@ -549,7 +549,7 @@ describe('fillTemplate', () => {
     ['<sc-if value="yes"><p>x</p></sc-if>', '<sc-if value>'],
     ['<sc-for><p>x</p></sc-for>', '<sc-for list>'],
   ])('rejects %s without one binding', (body, label) => {
-    artboard(body);
+    putBoard(body);
 
     expect(() => fillTemplate({ props: {}, state: {} })).toThrow(
       `${label} needs one {{…}} binding`
@@ -937,7 +937,7 @@ describe('pageHtml', () => {
     document.head.innerHTML = '';
     document.body.innerHTML = '';
 
-    expect(() => pageHtml()).toThrow('The artboard has no <title>');
+    expect(() => pageHtml()).toThrow('The board has no <title>');
   });
 });
 
@@ -1011,7 +1011,7 @@ describe('exportSnapshots', () => {
     );
   });
 
-  it('writes nothing and names the artboard and colour when a colour is not a token', async () => {
+  it('writes nothing and names the board and colour when a colour is not a token', async () => {
     setup('<p style="color: #123456">A</p>');
 
     await expect(exportSnapshots(root, [], { render })).rejects.toThrow(

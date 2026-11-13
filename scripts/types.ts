@@ -12,17 +12,17 @@ export type AssetRecord = {
   type: string;
 };
 
-/** `design/canvas/export.json`: how `npm run design:export` turns artboards into snapshots. */
+/** `design/canvas/export.json`: how `npm run design:export` turns boards into snapshots. */
 export type CanvasExport = {
   /** The canvas's path for the app icon; snapshots use `app/icon0.svg`. */
   icon: string;
-  /** Artboards with no plain snapshot of their own, and the snapshot a link to one opens. */
+  /** Boards with no plain snapshot of their own, and the snapshot a link to one opens. */
   links: Record<string, string>;
   snapshots: CanvasSnapshot[];
 };
 
 export type CanvasSnapshot = {
-  /** The artboard in `design/canvas/project/`. */
+  /** The board in `design/canvas/project/`. */
   file: string;
   name: string;
   props?: Record<string, unknown>;
@@ -40,7 +40,7 @@ export type Denial = {
 
 export type DesignExportDeps = {
   /**
-   * Loads the prepared artboard in Chromium, fills its template and returns the page's HTML.
+   * Loads the prepared board in Chromium, fills its template and returns the page's HTML.
    * `tokens` holds each token colour as `r,g,b`.
    */
   render: (

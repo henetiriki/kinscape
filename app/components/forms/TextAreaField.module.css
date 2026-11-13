@@ -1,5 +1,7 @@
+/* In a flex column that has a height, the field fills it. With none, the textarea keeps its rows. */
 .field {
   composes: field from '@ks/app/components/forms/TextField.module.css';
+  flex: 1 1 auto;
 }
 
 /* The box takes the TextField looks: border, hover, focus and disabled. It grows with the textarea. */
@@ -9,6 +11,7 @@
 
 .field > .box {
   align-items: stretch;
+  flex: 1 1 auto;
   height: auto;
   padding: 10px 12px;
 }

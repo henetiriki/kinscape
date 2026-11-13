@@ -77,6 +77,19 @@ it('takes a state', () => {
 });
 
 // PPL-01
+it('puts each date in a flex column, and gives Edit the link text style', () => {
+  row();
+  expect(screen.getByText('Born').parentElement!.className).toMatch(/date/);
+  expect(screen.getByText('Died').parentElement!.className).toMatch(/date/);
+  expect(css).toMatch(
+    /\.date \{[^}]*display: flex;[^}]*flex-direction: column/
+  );
+  expect(css).toMatch(
+    /\.edit \{[^}]*composes: link from '@ks\/app\/components\/foundation\/Text\.module\.css'/
+  );
+});
+
+// PPL-01
 it('is at least 52px tall on the People-list grid, and tints hover and pressed', () => {
   expect(css).toContain('min-height: var(--size-row-l)');
   expect(css).toContain(

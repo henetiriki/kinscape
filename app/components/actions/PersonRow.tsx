@@ -49,11 +49,11 @@ export const PersonRow = ({
         </Text>
         {note && <Text variant='small'>{note}</Text>}
       </span>
-      <span>
+      <span className={styles.date}>
         <span className={styles.hidden}>Born </span>
         <Text variant='mono'>{born}</Text>
       </span>
-      <span>
+      <span className={styles.date}>
         <span className={styles.hidden}>Died </span>
         <Text variant='mono'>{died || (deceased ? 'Deceased' : '—')}</Text>
       </span>

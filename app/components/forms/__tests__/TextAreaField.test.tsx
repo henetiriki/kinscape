@@ -59,6 +59,12 @@ it('grows only vertically, and scrolls long content inside the box', () => {
 });
 
 // PPL-01
+it('fills a flex column that has a height, and keeps its rows without one', () => {
+  expect(css).toMatch(/\.field \{[^}]*flex: 1 1 auto/);
+  expect(css).toMatch(/\.field > \.box \{[^}]*flex: 1 1 auto/);
+});
+
+// PPL-01
 it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");
   expect(css).toContain('padding: 10px 12px');

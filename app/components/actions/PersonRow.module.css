@@ -33,6 +33,12 @@
   min-width: 0;
 }
 
+/* A column, so the 12 / 16 mono text does not sit on a 15 / 22 line. */
+.date {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Names the date for a screen reader. */
 .hidden {
   border: 0;
@@ -46,8 +52,8 @@
 }
 
 .edit {
+  composes: link from '@ks/app/components/foundation/Text.module.css';
   align-items: center;
-  color: var(--brand);
   display: inline-flex;
   gap: var(--space-4);
   justify-self: end;

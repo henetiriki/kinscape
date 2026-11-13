@@ -8,6 +8,23 @@ export type Person = { version: number } & PersonInput;
 /** What a client saves. A name or note with nothing in it is the empty string. */
 export type PersonInput = z.output<typeof personInputSchema>;
 
+/**
+ * One row of the People list. The server shortens the dates to text and leaves out the notes, so
+ * a notes text never reaches the browser.
+ */
+export type PersonSummary = {
+  /** Short text for the birth date, or "—". */
+  born: string;
+  deceased: boolean;
+  /** Short text for the death date, or the empty string. */
+  died: string;
+  givenNames: string;
+  id: string;
+  maidenName: string;
+  surname: string;
+  variants: string[];
+};
+
 /** A Person as a Viewer sees it. The server derives `living` on read and never stores it. */
 export type PersonView = { living: boolean } & Person;
 

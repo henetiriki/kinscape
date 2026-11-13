@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
+import {
+  personFormSchema,
+  personInputSchema,
+} from '@ks/lib/domain/persons/schemas.mts';
 
 const ID = '01900000-0000-7000-8000-0000000000a1';
 
@@ -51,6 +54,19 @@ describe('personInputSchema', () => {
     ['a NUL in a variant', { id: ID, variants: ['a\0b'] }],
   ])('refuses %s', (_what, input) => {
     expect(personInputSchema.safeParse(input).success).toBe(false);
+  });
+
+  it('personFormSchema requires given names and surname', () => {
+    const result = personFormSchema.safeParse({ givenNames: ' ', id: ID });
+
+    expect(result.error?.issues.map(issue => issue.path[0])).toEqual([
+      'givenNames',
+      'surname',
+    ]);
+    expect(
+      personFormSchema.safeParse({ givenNames: 'Ana', id: ID, surname: 'Smit' })
+        .success
+    ).toBe(true);
   });
 
   it('accepts the limits', () => {

@@ -267,10 +267,11 @@ export const ButtonLinks = () => (
     desktopPart={2}
     lead={
       <>
-        With an {code('href')}a button is a link: the same look and states, no
-        underline, and no disabled state, because a link can&apos;t be disabled.
-        Use it when pressing goes to another page, like Cancel on a form. Drawn
-        by hand: the design system&apos;s Button can&apos;t be a link yet.
+        With an <code>href</code> a button is a link: the same look and states,
+        no underline, and no disabled state, because a link can&apos;t be
+        disabled. Use it when pressing goes to another page, like Cancel on a
+        form. Drawn by hand: the design system&apos;s Button can&apos;t be a
+        link yet.
       </>
     }
     part={2}

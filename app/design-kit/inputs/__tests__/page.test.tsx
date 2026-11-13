@@ -173,8 +173,8 @@ it('shows part 1 by default, with a link to part 2 on each width', async () => {
     [expect.stringMatching(/^Part 2: /), '/design-kit/inputs?part=2'],
     [expect.stringMatching(/^Part 2: /), '/design-kit/inputs?part=2'],
   ]);
-  expect(screen.getByText(/part 1 of 4/)).toBeTruthy();
-  expect(screen.getByText(/part 1 of 2/)).toBeTruthy();
+  expect(screen.getByText(/part 1 of 4/).textContent).toBe(' · part 1 of 4');
+  expect(screen.getByText(/part 1 of 2/).textContent).toBe(' · part 1 of 2');
 });
 
 it.each([
@@ -196,8 +196,12 @@ it.each([
       href(nextPhone),
       href(nextDesktop),
     ]);
-    expect(screen.getByText(new RegExp(`part ${param} of 4`))).toBeTruthy();
-    expect(screen.getByText(new RegExp(`part ${desktop} of 2`))).toBeTruthy();
+    expect(screen.getByText(new RegExp(`part ${param} of 4`)).textContent).toBe(
+      ` · part ${param} of 4`
+    );
+    expect(
+      screen.getByText(new RegExp(`part ${desktop} of 2`)).textContent
+    ).toBe(` · part ${desktop} of 2`);
   }
 );
 

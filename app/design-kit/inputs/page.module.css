@@ -16,9 +16,10 @@
   margin: 0;
 }
 
-/* Each width shows one part at a time: a desktop one of two, a phone one of four. */
+/* Each width shows one part at a time: a desktop one of two, a phone one of four. Boards 07 and 08 still use `.otherPart` for their link. */
 .partOf,
 .nextPhone,
+.otherPart,
 .phoneOnly {
   display: none;
 }
@@ -480,7 +481,8 @@
 }
 
 .definition code,
-.fact code {
+.fact code,
+.lead code {
   font-family: var(--type-mono-font);
   font-size: var(--type-mono-size);
 }
@@ -501,12 +503,14 @@
     display: none;
   }
 
-  .nextPhone {
+  .nextPhone,
+  .otherPart {
     display: inline-flex;
   }
 
   /* The link itself is the 44px row, its text centred in it. */
-  .nextPhone > * {
+  .nextPhone > *,
+  .otherPart > * {
     align-items: center;
     display: inline-flex;
     min-height: var(--size-touch);

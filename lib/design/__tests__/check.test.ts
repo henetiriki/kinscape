@@ -71,7 +71,7 @@ describe('parseConfig', () => {
     ).toThrow('map-desktop: unknown state "gone"');
   });
 
-  it('accepts a height of 8192 and rejects a taller screen, which the canvas cannot draw', () => {
+  it('accepts a height of 8192 and rejects a taller screen, which the capture cannot show', () => {
     expect(
       parseConfig(
         { screens: [{ ...screen, height: 8192 }], threshold: 1 },

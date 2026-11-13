@@ -21,7 +21,7 @@ type Screen = {
   width: number;
 };
 
-/** The tallest screen: a canvas frame draws no more than this. */
+/** The tallest screen: the browser that `design:check` uses captures no more than this. */
 const MAX_HEIGHT = 8192;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>

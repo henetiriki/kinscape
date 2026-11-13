@@ -33,7 +33,7 @@ import styles from '@ks/app/design-kit/inputs/page.module.css';
 
 export const metadata: Metadata = { title: boardTitle('inputs') };
 
-// The sections of each part, in the order they are drawn: the link out of a part names them.
+// The sections of each part, in the order the page draws them: the link out of a part names them.
 const PHONE_PARTS: Record<PhonePart, string[]> = {
   1: ['Buttons', 'Text fields'],
   2: ['Chips', 'Button as a link', 'Long text field'],

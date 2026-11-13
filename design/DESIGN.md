@@ -69,7 +69,7 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Person form, edit                                    | [person-edit.jpg](person-edit.jpg)                                                 |
 | Person form, errors after Save                       | [person-errors.jpg](person-errors.jpg)                                             |
 | Person form, save failed                             | [person-save-failed.jpg](person-save-failed.jpg)                                   |
-| Person form, changed while editing                   | [person-conflict.jpg](person-conflict.jpg)                                         |
+| Person form, changed by another edit                 | [person-conflict.jpg](person-conflict.jpg)                                         |
 | Person not found                                     | [person-not-found.jpg](person-not-found.jpg)                                       |
 | Person form, phone, notice                           | [person-form-phone.jpg](person-form-phone.jpg)                                     |
 | Fuzzy dates, readings and messages                   | [fuzzy-date-readings.jpg](fuzzy-date-readings.jpg)                                 |

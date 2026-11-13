@@ -4,7 +4,7 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot in `source/` from its artboard in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After you edit an artboard, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After you edit a board, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
 ## Changing the design system
 
@@ -15,10 +15,10 @@ The exporter writes each HTML snapshot in `source/` from its artboard in `canvas
   2. Run `npm run design-system`.
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
   4. Run "Updating the install" (4.1 to 4.7).
-  5. Run "Refreshing the copy" (5.1 to 5.5), then commit `design/canvas/` alone.
+  5. Run "Refreshing the canvas copy" (5.1 to 5.5), then commit `design/canvas/` alone.
   6. Push the branch. If a board shows the change, steps 7 to 9 apply.
   7. The design agent swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
-  8. Run "Refreshing the copy" again (5.1 to 5.5). This adds the swapped boards.
+  8. Run "Refreshing the canvas copy" again (5.1 to 5.5). This adds the swapped boards.
   9. Push the branch, then run the workflow Design: Render snapshots on it.
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 9 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session needs a signed-in account.
@@ -50,7 +50,7 @@ If nothing differs, say so and stop.
 Change nothing else on the canvas. Touch no board. Leave the repo alone.
 ```
 
-## Refreshing the copy
+## Refreshing the canvas copy
 
 Refresh `canvas/` after a board changes and after each install update. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
 
@@ -66,7 +66,7 @@ To run the steps, paste this prompt into Claude Code:
 
 ```text
 Use the Artifact tool to refresh design/canvas/.
-Follow "Refreshing the copy" in design/CANVAS.md, steps 5.1 to 5.5.
+Follow "Refreshing the canvas copy" in design/CANVAS.md, steps 5.1 to 5.5.
 ```
 
 ## Handing off a board

@@ -37,7 +37,7 @@ Text follows these 16 rules of Simplified Technical English (ASD-STE100). Code, 
 2. Keep an instruction to 20 words or fewer, and a description sentence to 25.
 3. Use the active voice.
 4. Give each word one meaning.
-5. The [_Key concepts_](requirements.md#key-concepts) terms are approved technical names.
+5. The [_Key concepts_](requirements.md#key-concepts) and [glossary](glossary.md) terms are approved technical names.
 6. Use no more than three nouns in a noun cluster.
 7. Use a verb, not a noun, for an action.
 8. Do not use an -ing form for an action.

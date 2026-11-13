@@ -1,7 +1,7 @@
 # Plan: C796: Replace the avoided words with the glossary terms
 
 - **Spec:** #796
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Replace each same-meaning use of an [**Avoid** word](../../docs/glossary.md#glos
 - **B.** Skip all steps.
 - **Other:** your own.
 
-Recommended: A, because step 3.6 proves that nothing changed.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

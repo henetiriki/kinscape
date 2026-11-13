@@ -10,7 +10,8 @@ import { Icon } from '@ks/app/components/foundation/Icon';
 
 import styles from '@ks/app/components/feedback/NoticeCard.module.css';
 
-type Action = { label: string; onClick?: () => void };
+/** With an `href` the action is a link. */
+type Action = { href?: string; label: string; onClick?: () => void };
 
 /**
  * Says what is going on in one line and offers at most two ways out. It never takes focus.
@@ -65,15 +66,24 @@ export const NoticeCard = ({
       </div>
       {actions && (
         <div className={styles.actions}>
-          {actions.map(({ label, onClick }, i) => (
-            <Button
-              key={label}
-              onClick={onClick}
-              size='s'
-              variant={i === 0 ? 'primary' : 'secondary'}>
-              {label}
-            </Button>
-          ))}
+          {actions.map(({ href, label, onClick }, i) => {
+            const variant = i === 0 ? 'primary' : 'secondary';
+
+            return href === undefined ? (
+              <Button key={label} onClick={onClick} size='s' variant={variant}>
+                {label}
+              </Button>
+            ) : (
+              <Button
+                href={href}
+                key={label}
+                onClick={onClick}
+                size='s'
+                variant={variant}>
+                {label}
+              </Button>
+            );
+          })}
         </div>
       )}
     </div>

@@ -140,6 +140,16 @@ describe('previewHtml', () => {
     expect(() => checkPreview('Toast', html)).not.toThrow();
   });
 
+  it('draws a control in a slot or in the children from window.KinScape', () => {
+    const bar = CARDS.find(({ name }) => name === 'ActionBar')!;
+    const header = CARDS.find(({ name }) => name === 'PageHeader')!;
+
+    expect(previewHtml(bar)).toContain('"control":"Button"');
+    expect(previewHtml(bar)).toContain('contain: layout');
+    expect(previewHtml(header)).toContain('"slots":{"avatar":');
+    expect(html).not.toContain('contain: layout');
+  });
+
   it('keeps text from ending the script', () => {
     const tricky = previewHtml({
       ...card,
@@ -197,11 +207,11 @@ describe('CARDS', () => {
     );
   });
 
-  it('has the groups of app/components: 9 Actions, 6 Feedback, 6 Forms, 6 Foundation and 9 Overlays', () => {
+  it('has the groups of app/components: 10 Actions, 6 Feedback, 6 Forms, 8 Foundation and 9 Overlays', () => {
     const count = (group: string) =>
       CARDS.filter(card => card.group === group).length;
 
-    expect(GROUPS.map(count)).toEqual([9, 6, 6, 6, 9]);
+    expect(GROUPS.map(count)).toEqual([10, 6, 6, 8, 9]);
   });
 
   it.each(CARDS.map(card => [card.name, card] as const))(

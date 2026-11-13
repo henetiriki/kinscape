@@ -1,5 +1,7 @@
 /** What a control's design system card shows (Spec #450). */
 export type Card = {
+  /** The state boxes hold a fixed bar: each is the containing block of its `position: fixed` part. */
+  contain?: boolean;
   /** The `DESIGN.md` › Components bullets the README holds, by their bold name. */
   design: string[];
   group: Group;
@@ -53,12 +55,21 @@ export type Shot = {
   width: number;
 };
 
-/** One state a preview mounts. */
-export type State = {
+/** A control inside a state: its name on `window.KinScape`, its props and its text. */
+export type Slot = {
   children?: string;
+  control: string;
+  props: Record<string, unknown>;
+};
+
+/** One state a preview mounts. A slot holds a control; a preview draws it from `window.KinScape`. */
+export type State = {
+  children?: Slot[] | string;
   /** Matches the design kit case of the same label in `react-18.test.tsx`. */
   label: string;
   props: Record<string, unknown>;
+  /** A control for each prop that takes an element, by prop name. */
+  slots?: Record<string, Slot>;
 };
 
 /** A font file `app/layout.tsx` loads: its path under `app/` and the face it declares. */

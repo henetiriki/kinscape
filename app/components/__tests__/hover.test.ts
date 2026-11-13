@@ -54,7 +54,7 @@ it('has every :hover rule inside @media (hover: hover)', () => {
 
 // A scan that finds no files passes without checking anything.
 it('reads every component stylesheet', () => {
-  expect(STYLESHEETS).toHaveLength(50);
+  expect(STYLESHEETS).toHaveLength(52);
 });
 
 it('finds a :hover rule outside the media query, and not one inside it', () => {

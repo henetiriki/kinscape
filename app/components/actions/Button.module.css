@@ -14,6 +14,7 @@
   line-height: var(--type-control-line);
   padding: 0 var(--space-16);
   position: relative;
+  text-decoration: none;
   transition:
     background var(--motion-press),
     border-color var(--motion-press);

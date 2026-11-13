@@ -67,6 +67,34 @@ it('names an icon-only button, and the type check rejects one without a name', (
   render(<Button icon='play' />);
 });
 
+// PPL-01
+it('draws a link with the button look when it has an href', () => {
+  render(
+    <Button href='/people' icon='copy' variant='primary'>
+      See all people
+    </Button>
+  );
+
+  const link = screen.getByRole('link', { name: 'See all people' });
+
+  expect(link.tagName).toBe('A');
+  expect(link.getAttribute('href')).toBe('/people');
+  expect(link.className).toBe('btn btnPrimary');
+  expect(link.hasAttribute('type')).toBe(false);
+  expect(link.querySelector('svg')).not.toBeNull();
+  expect(screen.queryByRole('button')).toBeNull();
+});
+
+// PPL-01
+it('rejects disabled on a link at type check', () => {
+  render(
+    // @ts-expect-error A link cannot be disabled.
+    <Button disabled href='/people'>
+      Cancel
+    </Button>
+  );
+});
+
 it('names an icon button and passes clicks on', () => {
   const onClick = vi.fn();
 

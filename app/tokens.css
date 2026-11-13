@@ -220,6 +220,9 @@
   --layout-credits-bottom: 6px;
   --layout-popup-gap: 14px;
   --layout-popup-point-y: 114px;
+  --layout-page-header: 64px;
+  --layout-page-header-phone: 60px;
+  --layout-action-bar: 72px;
   --layout-sign-in-hero: 560px;
   --layout-sign-in-hero-min: 420px;
   --layout-sign-in-hero-phone: 188px;
@@ -241,6 +244,7 @@
   --breakpoint-phone-width: 639.98px;
   --breakpoint-phone-height: 499.98px;
   --z-furniture: 1;
+  --z-action-bar: 5;
   --z-menu: 10;
   --kit-title-font: var(--font-display);
   --kit-title-size: 44px;

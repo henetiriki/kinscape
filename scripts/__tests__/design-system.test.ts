@@ -260,7 +260,7 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(36);
+    expect(names).toHaveLength(39);
   });
 
   it.each(names)(
@@ -325,7 +325,7 @@ describe('the control cards', () => {
 
   it('says which props each form of Button requires', () => {
     expect(card('Button', 'README.md')).toContain(
-      'Required props: `children`; or `icon`, `label`.'
+      'Required props: `children`, `href`; or `children`; or `href`, `icon`, `label`; or `icon`, `label`.'
     );
     expect(card('Toast', 'README.md')).not.toContain('forms');
   });

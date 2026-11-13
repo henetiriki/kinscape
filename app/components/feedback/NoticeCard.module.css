@@ -95,7 +95,7 @@
   width: 358px;
 }
 
-.card[data-phone] .actions > button {
+.card[data-phone] .actions > :is(button, a) {
   font-size: var(--type-control-size);
   height: var(--size-touch);
   line-height: var(--type-control-line);
@@ -107,7 +107,7 @@
     width: 100%;
   }
 
-  .card .actions > button {
+  .card .actions > :is(button, a) {
     font-size: var(--type-control-size);
     height: var(--size-touch);
     line-height: var(--type-control-line);

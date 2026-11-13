@@ -1,0 +1,74 @@
+.header {
+  align-items: center;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-16);
+  height: var(--layout-page-header);
+  padding: 0 var(--size-gutter);
+}
+
+.icon {
+  display: none;
+}
+
+.divider {
+  background: var(--line);
+  height: 28px;
+  width: 1px;
+}
+
+.grow {
+  flex: 1;
+}
+
+.back {
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
+  align-items: center;
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: inline-flex;
+  font-family: var(--type-control-font);
+  font-size: var(--type-control-size);
+  font-weight: var(--type-control-weight);
+  gap: var(--space-8);
+  height: var(--size-touch);
+  line-height: var(--type-control-line);
+  padding: 0 var(--space-12) 0 var(--space-8);
+  text-decoration: none;
+  transition: background var(--motion-press);
+}
+
+@media (hover: hover) {
+  .back:hover {
+    background: var(--surface-2);
+  }
+}
+
+.back[data-state='hover'] {
+  background: var(--surface-2);
+}
+
+.back:is(:active, [data-state='active']) {
+  background: var(--brand-tint);
+  color: var(--brand-hover);
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .header {
+    gap: var(--space-8);
+    height: var(--layout-page-header-phone);
+    padding: 0 var(--size-gutter-phone);
+  }
+
+  .full,
+  .divider {
+    display: none;
+  }
+
+  .icon {
+    display: inline-flex;
+  }
+}

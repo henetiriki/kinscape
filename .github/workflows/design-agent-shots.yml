@@ -3,7 +3,7 @@ name: 'Design: Render snapshots'
 # Exports the HTML snapshots (design/source/*.html) from design/canvas/, renders every JPG
 # (design/*.jpg) in the Playwright image that the design check runs in, and commits the files that
 # changed to the branch it was run on. Run it by hand from the Actions tab (or
-# `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a canvas artboard,
+# `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a canvas board,
 # or when the design check fails on text edges. Nobody exports or renders snapshots locally.
 #
 # The commit is pushed with the bot's token, so CI runs on it. A push never starts this workflow,

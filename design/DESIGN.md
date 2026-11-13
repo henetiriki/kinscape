@@ -1,6 +1,6 @@
 # KinScape design
 
-The look of KinScape: fonts, colours, components and the map style. The JPGs in this folder are the reference screens. Claude Design made them on the [design canvas](https://claude.ai/artifact/KNh9aZWeMNtsNSWtWLCbzU). [`docs/requirements.md`](../docs/requirements.md) holds behaviour. The [design system](https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi) holds the same tokens, fonts and icons for Claude.
+The look of KinScape: fonts, colours, components and the map style. The JPGs in this folder are the reference screens. The design agent made them on the [design canvas](https://claude.ai/artifact/KNh9aZWeMNtsNSWtWLCbzU). [`docs/requirements.md`](../docs/requirements.md) holds behaviour. The [design system](https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi) holds the same tokens, fonts and icons for Claude.
 
 ## Screens
 

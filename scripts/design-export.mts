@@ -13,7 +13,7 @@ import { format, resolveConfig } from 'prettier';
 
 import type { CanvasExport, DesignExportDeps } from '#ks/scripts/types.ts';
 
-const ARTBOARD_DIR = 'design/canvas/project';
+const BOARD_DIR = 'design/canvas/project';
 const EXPORT_FILE = 'design/canvas/export.json';
 const SOURCE_DIR = 'design/source';
 const ICON_PATH = '../../app/icon0.svg';
@@ -135,7 +135,7 @@ const COLOUR =
 export const readCanvasExport = (root: string): CanvasExport =>
   JSON.parse(readFileSync(join(root, EXPORT_FILE), 'utf8')) as CanvasExport;
 
-/** Where each artboard link in a snapshot goes: the artboard's first snapshot without props or state. */
+/** Where each board link in a snapshot goes: the board's first snapshot without props or state. */
 export const linkMap = (canvas: CanvasExport): Record<string, string> => {
   const links: Record<string, string> = {};
 
@@ -153,7 +153,7 @@ export const linkMap = (canvas: CanvasExport): Record<string, string> => {
 };
 
 /**
- * The artboard as Chromium loads it: local fonts and icon, and no canvas `support.js`. With a
+ * The board as Chromium loads it: local fonts and icon, and no canvas `support.js`. With a
  * `system`, its tokens and scripts load from files, React 18 first, and its CSS is a `<style>`
  * the page can read (a `file:` stylesheet is cross-origin to a `file:` page).
  */
@@ -190,7 +190,7 @@ export const prepare = (
         .replaceAll('"ds/kinscape/', () => `"${system.design}`);
 };
 
-/** The page's HTML with the icon and artboard links pointing at repo files. */
+/** The page's HTML with the icon and board links pointing at repo files. */
 export const finish = (
   html: string,
   iconUrl: string,
@@ -266,7 +266,7 @@ type Component = new (props: Scope) => {
 type Scope = Record<string, unknown>;
 
 /**
- * Runs in the page: fills the artboard's template (`{{…}}`, `sc-for`, `sc-if`, `data-props`
+ * Runs in the page: fills the board's template (`{{…}}`, `sc-for`, `sc-if`, `data-props`
  * defaults) from its Component's `renderVals()`. Playwright sends only this function's source,
  * so it uses nothing from the module.
  */
@@ -281,10 +281,10 @@ export const fillTemplate = ({
   const source = document.querySelector('script[data-dc-script]');
 
   if (!template || !source) {
-    throw new Error('Not a canvas artboard: no <x-dc> or data-dc-script');
+    throw new Error('Not a canvas board: no <x-dc> or data-dc-script');
   }
 
-  // The artboard's own script, run as a script element in a block so it leaves no globals;
+  // The board's own script, run as a script element in a block so it leaves no globals;
   // it hands its Component back on the element.
   const run = document.createElement('script') as {
     component?: Component;
@@ -300,10 +300,10 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
 }`;
   document.body.append(run);
 
-  const Artboard = run.component;
+  const Board = run.component;
 
-  if (!Artboard) {
-    throw new Error('The artboard script defines no Component');
+  if (!Board) {
+    throw new Error('The board script defines no Component');
   }
 
   const definitions = JSON.parse(
@@ -317,7 +317,7 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
     }
   }
 
-  const component = new Artboard({ ...merged, ...props });
+  const component = new Board({ ...merged, ...props });
 
   Object.assign(component.state, state);
 
@@ -461,14 +461,14 @@ document.currentScript.component = typeof Component === 'undefined' ? undefined 
 };
 
 /**
- * Runs in the page: the filled artboard as a snapshot, with scripts, links and `<x-dc>` gone,
+ * Runs in the page: the filled board as a snapshot, with scripts, links and `<x-dc>` gone,
  * `calc()` resolved and `fonts.css` loaded. Uses nothing from the module, as `fillTemplate`.
  */
 export const pageHtml = (): string => {
   const title = document.querySelector('title');
 
   if (!title) {
-    throw new Error('The artboard has no <title>');
+    throw new Error('The board has no <title>');
   }
 
   for (const script of document.querySelectorAll('script')) {
@@ -697,7 +697,7 @@ export const inlineStyles = (tokens: string[]): void => {
 
   if (!bundle?.sheet) {
     if (document.querySelector('x-import')) {
-      throw new Error('The artboard has <x-import> but no bundle <style>');
+      throw new Error('The board has <x-import> but no bundle <style>');
     }
 
     return;
@@ -763,8 +763,8 @@ const fileUrl = (root: string, path: string) =>
   pathToFileURL(resolve(root, path)).href;
 
 /**
- * The design system as an artboard that uses it loads it: the canvas copy, and React 18 from
- * `node_modules`. Its CSS is the text styles in `tokens.css` (`.h2`, `.label`), which an artboard
+ * The design system as a board that uses it loads it: the canvas copy, and React 18 from
+ * `node_modules`. Its CSS is the text styles in `tokens.css` (`.h2`, `.label`), which a board
  * uses as classes, then the controls' own. The `@font-face` blocks stay out: the linked `tokens.css`
  * loads the fonts.
  */
@@ -818,15 +818,12 @@ export const exportSnapshots = async (
       continue;
     }
 
-    const artboard = readFileSync(
-      join(root, ARTBOARD_DIR, snapshot.file),
-      'utf8'
-    );
+    const board = readFileSync(join(root, BOARD_DIR, snapshot.file), 'utf8');
     const target = join(root, SOURCE_DIR, `${snapshot.name}.html`);
     const rendered = await deps.render(
-      prepare(artboard, canvas.icon, {
+      prepare(board, canvas.icon, {
         ...urls,
-        ...(artboard.includes('<x-import') && {
+        ...(board.includes('<x-import') && {
           system: designSystem(root),
         }),
       }),

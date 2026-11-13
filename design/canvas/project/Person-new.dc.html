@@ -16,13 +16,7 @@
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
-  <header style="position: absolute; left: 0; right: 0; top: 0; height: 64px; box-sizing: border-box; padding: 0 var(--space-24); display: flex; align-items: center; gap: var(--space-16); background: var(--surface); border-bottom: 1px solid var(--line)">
-    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
-    <span style="width: 1px; height: 28px; background: var(--line)"></span>
-    <a href="People-list.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>People</a>
-    <span style="flex: 1"></span>
-    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
-  </header>
+  <x-import component-from-global-scope="KinScape.PageHeader" back-href="People-list.dc.html" back-label="People" avatar="{{avatar}}"></x-import>
 
   <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 72px; overflow-y: auto">
     <div style="width: 1088px; margin: 0 auto; padding: var(--space-20) 0 var(--space-24); display: flex; flex-direction: column; gap: var(--space-16)">
@@ -110,12 +104,10 @@
     </div>
   </main>
 
-  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: var(--surface); border-top: 1px solid var(--line)">
-    <div style="width: 1088px; height: 100%; margin: 0 auto; display: flex; align-items: center; gap: var(--space-8)">
-      <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{save}}">Save</x-import>
-      <x-import component-from-global-scope="KinScape.Button" variant="secondary">Cancel</x-import>
-    </div>
-  </div>
+  <x-import component-from-global-scope="KinScape.ActionBar" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; contain: layout">
+    <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{save}}">Save</x-import>
+    <x-import component-from-global-scope="KinScape.Button" variant="secondary" href="People-list.dc.html">Cancel</x-import>
+  </x-import>
 
   <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
     <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
@@ -261,6 +253,7 @@ class Component extends DCLogic {
       saved: { tone: 'success', text: 'Saved ' + (fullName || 'the person') + '.', action: undefined, onAction: undefined, onDismiss: () => this.setState({ toast: '' }) }
     };
     return {
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
       title: isEdit ? 'Edit ' + fullName : 'Add a person',
       showSummary: s.summary && errCount > 0,
       showConflict: !!s.conflict,

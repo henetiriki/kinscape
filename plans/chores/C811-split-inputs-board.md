@@ -17,6 +17,14 @@ The 7500px rule gives 2, not the 3 of D2.
 
 **Answer: A** (Tech lead)
 
+## Deviations
+
+- Measured with `e2e/inputs.spec.ts`: each part is 7500px or less. Desktop part 1 holds Buttons to Key hints. Desktop part 2 holds Page header to Person row.
+- Phone parts: 1 Buttons, Text fields · 2 Chips, Button as a link, Long text field · 3 Tabs to Key hints · 4 Page header, Back link, Action bar, Fuzzy date field, Person row. Each part draws in app order.
+- `?part=2` shows desktop part 2. `?part=3` and `?part=4` show desktop part 1.
+- `screens.json` holds the 3 old screens at a provisional height of 7500. The 3 new screens join it at step 5, when their snapshots exist.
+- Until step 9, 7 tests fail: they read the snapshots, JPGs and boards that the design agent makes.
+
 ## Files that change
 
 - `app/design-kit/inputs/*`, `e2e/inputs.spec.ts`.

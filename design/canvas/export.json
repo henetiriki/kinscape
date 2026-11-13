@@ -279,6 +279,11 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "file": "SG-Inputs-2.dc.html",
+      "name": "style-6-components-inputs-2",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
       "file": "SG-Inputs-phone.dc.html",
       "name": "style-6-components-inputs-phone",
       "viewport": { "height": 844, "width": 390 }
@@ -286,6 +291,16 @@
     {
       "file": "SG-Inputs-phone-2.dc.html",
       "name": "style-6-components-inputs-2-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Inputs-phone-3.dc.html",
+      "name": "style-6-components-inputs-3-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "SG-Inputs-phone-4.dc.html",
+      "name": "style-6-components-inputs-4-phone",
       "viewport": { "height": 844, "width": 390 }
     },
     {

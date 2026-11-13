@@ -122,12 +122,28 @@ test.describe('on a desktop', () => {
     await expect(layers).toBeFocused();
   });
 
-  test('a desktop shows both parts and no part link', async ({ page }) => {
-    await page.goto('/design-kit/inputs');
-    await expect(section(page, 'Buttons')).toBeVisible();
-    await expect(section(page, 'Key hints')).toBeVisible();
-    await expect(page.getByRole('link', { name: /^Part 2/ })).toBeHidden();
-  });
+  for (const [part, url, shown, hidden, next] of [
+    [1, '/design-kit/inputs', 'Key hints', 'Page header', 2],
+    [2, '/design-kit/inputs?part=2', 'Person row', 'Buttons', 1],
+  ] as const) {
+    test(`part ${part} shows its sections and links to part ${next}, in 7500px or less`, async ({
+      page,
+    }) => {
+      await page.goto(url);
+      await expect(section(page, shown)).toBeVisible();
+      await expect(section(page, hidden)).toBeHidden();
+      await expect(
+        page.getByRole('link', { name: new RegExp(`^Part ${next}:`) })
+      ).toBeVisible();
+      await expect(page.getByText(`part ${part} of 2`)).toBeVisible();
+
+      const height = await page.evaluate(
+        () => document.documentElement.scrollHeight
+      );
+
+      expect(height).toBeLessThanOrEqual(7500);
+    });
+  }
 });
 
 test.describe('on a phone', () => {
@@ -138,8 +154,6 @@ test.describe('on a phone', () => {
   }) => {
     await page.goto('/design-kit/inputs');
 
-    const chips = section(page, 'Chips');
-
     expect(
       await heightOf(
         section(page, 'Buttons')
@@ -147,6 +161,11 @@ test.describe('on a phone', () => {
           .first()
       )
     ).toBe(44);
+
+    await page.goto('/design-kit/inputs?part=2');
+
+    const chips = section(page, 'Chips');
+
     expect(
       await heightOf(chips.getByRole('button', { name: 'Birth' }).first())
     ).toBe(44);
@@ -157,26 +176,31 @@ test.describe('on a phone', () => {
     ).toBe(36);
   });
 
-  for (const [part, url, first, other] of [
-    [1, '/design-kit/inputs', 'Buttons', 'Key hints'],
-    [2, '/design-kit/inputs?part=2', 'Tabs', 'Buttons'],
+  for (const [part, url, first, other, next] of [
+    [1, '/design-kit/inputs', 'Buttons', 'Chips', 2],
+    [2, '/design-kit/inputs?part=2', 'Chips', 'Buttons', 3],
+    [3, '/design-kit/inputs?part=3', 'Tabs', 'Chips', 4],
+    [4, '/design-kit/inputs?part=4', 'Page header', 'Tabs', 1],
   ] as const) {
-    test(`part ${part} shows its sections, links to the other and does not scroll sideways`, async ({
+    test(`part ${part} shows its sections, links to part ${next}, is 7500px or less and does not scroll sideways`, async ({
       page,
     }) => {
       await page.goto(url);
       await expect(section(page, first)).toBeVisible();
       await expect(section(page, other)).toBeHidden();
       await expect(
-        page.getByRole('link', { name: part === 1 ? /^Part 2/ : /^Part 1/ })
+        page.getByRole('link', { name: new RegExp(`^Part ${next}:`) })
       ).toBeVisible();
+      await expect(page.getByText(`part ${part} of 4`)).toBeVisible();
 
-      const widths = await page.evaluate(() => ({
+      const size = await page.evaluate(() => ({
         client: document.documentElement.clientWidth,
+        height: document.documentElement.scrollHeight,
         scroll: document.documentElement.scrollWidth,
       }));
 
-      expect(widths.scroll).toBe(widths.client);
+      expect(size.scroll).toBe(size.client);
+      expect(size.height).toBeLessThanOrEqual(7500);
     });
 
     test(`part ${part} keeps a 44px target on every control`, async ({

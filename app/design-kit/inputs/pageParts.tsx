@@ -54,8 +54,9 @@ const HeaderShot = ({
 
 export const PageHeaderSection = () => (
   <Section
+    desktopPart={2}
     lead='The bar at the top of every page away from the map: the Wordmark, a divider, a link back to the page above, and the Avatar at the right. Drawn by hand: the design system has no PageHeader yet.'
-    part={2}
+    part={4}
     phoneLead='The bar at the top of every page away from the map: the Wordmark icon, a link back to the page above, and the Avatar at the right. Drawn by hand: the design system has no PageHeader yet.'
     title='Page header'>
     <div className={styles.stack}>
@@ -114,8 +115,9 @@ export const PageHeaderSection = () => (
 
 export const BackLinkSection = () => (
   <Section
+    desktopPart={2}
     lead='Goes up one level: from People to the map, from a person to People. It is a link, so it can open in a new tab. Its states come from IconButton and the focus ring: no new colour.'
-    part={2}
+    part={4}
     title='Back link'>
     <Matrix
       columns={LINK_COLUMNS}
@@ -192,8 +194,9 @@ export const BackLinkSection = () => (
 
 export const ActionBarSection = () => (
   <Section
+    desktopPart={2}
     lead='The row of buttons that saves or leaves a form page: the primary button, then the secondary one. It stays at the bottom of the window while the form scrolls under it. Drawn by hand: the design system has no ActionBar yet.'
-    part={2}
+    part={4}
     phoneLead='The row of buttons that saves or leaves a form page: the primary button, then the secondary one, side by side as on desktop. No phone screen uses it yet: the person form on a phone has no Save or Cancel today. Drawn by hand: the design system has no ActionBar yet.'
     title='Action bar'>
     <Shot
@@ -261,6 +264,7 @@ export const ActionBarSection = () => (
 
 export const ButtonLinks = () => (
   <Section
+    desktopPart={2}
     lead={
       <>
         With an {code('href')}a button is a link: the same look and states, no
@@ -269,7 +273,7 @@ export const ButtonLinks = () => (
         by hand: the design system&apos;s Button can&apos;t be a link yet.
       </>
     }
-    part={1}
+    part={2}
     title='Button as a link'>
     <Matrix
       columns={LINK_COLUMNS}

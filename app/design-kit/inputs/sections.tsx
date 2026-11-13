@@ -18,6 +18,7 @@ import { Surface } from '@ks/app/components/foundation/Surface';
 import { SheetPanel } from '@ks/app/components/overlays/Sheet';
 import {
   ByViewport,
+  code,
   DesktopOnly,
   Facts,
   Matrix,
@@ -30,9 +31,6 @@ import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 
 import styles from '@ks/app/design-kit/inputs/page.module.css';
-
-// The board keeps the space after a code inside it, so the space is set in mono too.
-const code = (text: string) => <code>{`${text} `}</code>;
 
 // The Tabs samples sit on the map's sea colour, as the board draws them.
 const { map } = resolveTokens(rawTokens);

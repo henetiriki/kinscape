@@ -65,7 +65,8 @@
           <a
             href="style-6-components-inputs-2-phone.html"
             style="display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; line-height: 22px; border-radius: 2px; color: #264F29; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
-            Part 2: tabs, checkbox fields, alerts, dividers and key hints
+            Part 2: tabs, checkbox fields, alerts, dividers, key hints, page
+            header, back link and action bar
           </a>
         </header>
 
@@ -2260,6 +2261,402 @@
                 </dt>
                 <dd style="margin: 0; min-width: 0; color: #2E3A33">
                   Tab between chips, Space or Enter toggles.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
+          aria-label="Button as a link"
+          style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Button as a link
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">
+              With an
+              <code
+                style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                href
+              </code>
+              a button is a link: the same look and states, no underline, and no
+              disabled state, because a link can't be disabled. Use it when
+              pressing goes to another page, like Cancel on a form. Drawn by
+              hand: the design system's Button can't be a link yet.
+            </p>
+          </div>
+          <figure
+            aria-label="Button link states"
+            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
+            <section
+              style="display: flex; flex-direction: column; gap: 12px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span style="display: flex; flex-direction: column; gap: 2px">
+                <span
+                  style="font-size: 15px; line-height: 22px; font-weight: 600">
+                  Primary
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  M 44 · a page action
+                </span>
+              </span>
+              <div
+                style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px">
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Default
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #264F29">
+                      Add a person
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Hover
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #1D3E20">
+                      Add a person
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Focus
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #264F29; outline: 2px solid #264F29; outline-offset: 2px">
+                      Add a person
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Pressed
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #163019; transform: translateY(1px)">
+                      Add a person
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </section>
+            <section
+              style="display: flex; flex-direction: column; gap: 12px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span style="display: flex; flex-direction: column; gap: 2px">
+                <span
+                  style="font-size: 15px; line-height: 22px; font-weight: 600">
+                  Secondary
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  M 44 · Cancel in the action bar
+                </span>
+              </span>
+              <div
+                style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px">
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Default
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; background: #FFFFFF; border: 1px solid #C9CFC5; color: #18211B">
+                      Cancel
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Hover
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; background: #F4F5F0; border: 1px solid #8E978C; color: #18211B">
+                      Cancel
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Focus
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; background: #FFFFFF; border: 1px solid #C9CFC5; color: #18211B; outline: 2px solid #264F29; outline-offset: 2px">
+                      Cancel
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Pressed
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; background: #E6EEE4; border: 1px solid #264F29; color: #1D3E20">
+                      Cancel
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </section>
+            <section
+              style="display: flex; flex-direction: column; gap: 12px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span style="display: flex; flex-direction: column; gap: 2px">
+                <span
+                  style="font-size: 15px; line-height: 22px; font-weight: 600">
+                  Primary, card
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  M 44 on a phone · a notice card action
+                </span>
+              </span>
+              <div
+                style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px">
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Default
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #264F29">
+                      See all people
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Hover
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #1D3E20">
+                      See all people
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Focus
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #264F29; outline: 2px solid #264F29; outline-offset: 2px">
+                      See all people
+                    </span>
+                  </span>
+                </div>
+                <div
+                  style="display: flex; flex-direction: column; gap: 8px; min-width: 0; max-width: 100%">
+                  <span
+                    style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Pressed
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; justify-self: start">
+                    <span
+                      style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; white-space: nowrap; text-decoration: none; font-size: 15px; line-height: 22px; font-weight: 600; border: 0; color: #FFFFFF; background: #163019; transform: translateY(1px)">
+                      See all people
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </section>
+            <figcaption
+              style="font-size: 12.5px; line-height: 18px; color: #4A544C; padding-top: 8px">
+              Drawn by hand: the link form is not in the design system yet. It
+              copies the real Button exactly. No disabled state: a link has
+              none.
+            </figcaption>
+          </figure>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Measurements
+            </h3>
+            <ul
+              aria-label="Button as a link measurements"
+              style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Height
+                  </strong>
+                  · M 44 · S 40 inside desktop cards (M 44 on a phone)
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  size.control · size.control-s
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Padding
+                  </strong>
+                  · 0 16
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  space.16
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Label
+                  </strong>
+                  · M 15 / 22 · S 14 / 20, all 600, no underline
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  type.control · type.button-s
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    States
+                  </strong>
+                  · the Button's: hover, focus ring, pressed
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  colour.brand-hover · colour.brand-pressed · colour.brand-tint
+                </span>
+              </li>
+              <li
+                style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
+                <span
+                  style="font-size: 13px; line-height: 20px; color: #2E3A33">
+                  <strong style="font-weight: 600; color: #18211B">
+                    Disabled
+                  </strong>
+                  · none: a link is never disabled
+                </span>
+                <span
+                  style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                  —
+                </span>
+              </li>
+            </ul>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <h3
+              style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              Accessibility
+            </h3>
+            <dl
+              style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Role
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  A real
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    a
+                  </code>
+                  with an
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    href
+                  </code>
+                  , not a
+                  <code
+                    style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                    button.
+                  </code>
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Name
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  The visible label.
+                </dd>
+              </div>
+              <div
+                style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                <dt
+                  style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">
+                  Keyboard
+                </dt>
+                <dd style="margin: 0; min-width: 0; color: #2E3A33">
+                  Tab to reach, Enter to follow. Space scrolls the page, as on
+                  any link.
                 </dd>
               </div>
             </dl>

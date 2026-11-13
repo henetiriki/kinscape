@@ -58,6 +58,8 @@ describe('shortFuzzyDate', () => {
     ['AFT 1920', 'aft. 1920'],
     ['BET 1880 AND 1885', '1880–1885'],
     ['FROM 1 MAR 1880 TO 1885', '1880–1885'],
+    ['BET JAN 1880 AND MAR 1880', '1880'],
+    ['FROM 1 JAN 1880 TO 31 DEC 1880', '1880'],
   ])('%s reads %s', (text, expected) => {
     const parsed = parseFuzzyDate(text);
 

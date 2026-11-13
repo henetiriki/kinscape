@@ -20,22 +20,27 @@ test('the hidden Born and Died labels stay inside their row', async ({
 
   expect(await rows.count()).toBe(12);
 
-  const outside = await rows.evaluateAll(links =>
-    links.flatMap(link => {
+  const found = await rows.evaluateAll(links =>
+    links.map(link => {
       const row = link.getBoundingClientRect();
-
-      return [...link.querySelectorAll('span')]
+      const labels = [...link.querySelectorAll('span')]
         .filter(span => ['Born', 'Died'].includes(span.textContent.trim()))
-        .map(span => span.getBoundingClientRect())
-        .filter(
+        .map(span => span.getBoundingClientRect());
+
+      return {
+        labels: labels.length,
+        outside: labels.filter(
           box =>
             box.top < row.top ||
             box.bottom > row.bottom ||
             box.left < row.left ||
             box.right > row.right
-        ).length;
+        ).length,
+      };
     })
   );
 
-  expect(outside.every(count => count === 0)).toBe(true);
+  // Two labels in each of the 12 rows: a count of 0 would pass the check below for nothing.
+  expect(found.reduce((total, { labels }) => total + labels, 0)).toBe(24);
+  expect(found.reduce((total, { outside }) => total + outside, 0)).toBe(0);
 });

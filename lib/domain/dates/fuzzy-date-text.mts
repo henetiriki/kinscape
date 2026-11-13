@@ -60,12 +60,19 @@ const SHORT_BEFORE: Partial<Record<Qualifier, string>> = {
   EST: 'c. ',
 };
 
-/** A reading of years for a list cell: `1850`, `c. 1850`, `bef. 1840` or `1880–1885`. */
+/**
+ * A reading of years for a list cell: `1850`, `c. 1850`, `bef. 1840` or `1880–1885`.
+ * A range inside one year reads as that year.
+ */
 export const shortFuzzyDate = (date: FuzzyDate): string => {
   const year = (text: string) => text.slice(0, 4);
 
-  return date.date2 === undefined
-    ? `${SHORT_BEFORE[date.qualifier] ?? ''}${year(date.date1)}`
+  if (date.date2 === undefined) {
+    return `${SHORT_BEFORE[date.qualifier] ?? ''}${year(date.date1)}`;
+  }
+
+  return year(date.date1) === year(date.date2)
+    ? year(date.date1)
     : `${year(date.date1)}–${year(date.date2)}`;
 };
 

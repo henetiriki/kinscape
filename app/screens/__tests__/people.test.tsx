@@ -25,21 +25,37 @@ describe('the People screens', () => {
     expect(screen.getByRole('status').textContent).toBe(
       '12 people in this Tree, by surname'
     );
-    expect(SAMPLE_PEOPLE.toSorted(byName)).toEqual(SAMPLE_PEOPLE);
+
+    const names = SAMPLE_PEOPLE.toSorted(byName).map(
+      ({ givenNames, surname }) => `${surname}, ${givenNames}`
+    );
+
+    expect(
+      screen
+        .getAllByRole('listitem')
+        .map((row, at) => row.textContent?.slice(0, names[at]?.length))
+    ).toEqual(names);
   });
 
   it('show the same list for the no-match state, which the check filters', async () => {
     render(await NoMatch());
-    expect(screen.getByRole('searchbox')).toBeDefined();
+
+    expect(screen.getByRole<HTMLInputElement>('searchbox').value).toBe('');
+    expect(screen.getAllByRole('listitem')).toHaveLength(SAMPLE_PEOPLE.length);
   });
 
   it('show the empty notice', async () => {
     render(await Empty());
-    expect(screen.getByText('No people yet')).toBeDefined();
+
+    expect(screen.getByRole('status').textContent).toContain('No people yet');
+    expect(screen.queryByRole('searchbox')).toBeNull();
   });
 
   it('show the load-failed alert', async () => {
     render(await LoadFailed());
-    expect(screen.getByRole('alert')).toBeDefined();
+
+    expect(screen.getByRole('alert').textContent).toContain(
+      "People didn't load"
+    );
   });
 });

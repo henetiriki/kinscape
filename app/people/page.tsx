@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { unstable_rethrow } from 'next/navigation';
 import { z } from 'zod';
 
 import { signOutAction } from '@ks/app/sign-in/actions';
@@ -27,17 +28,32 @@ const listPeople = treeAction(z.undefined(), async tree =>
   )
 );
 
-/** The People page (PPL-01). A read that throws or finds no Tree shows the load-failed state. */
+/**
+ * Next's own errors, such as the sign-in redirect, pass through. Any other error leaves a log of
+ * its name only: its message can hold Person data. The page then shows the load-failed state.
+ */
+const failed = (error: unknown): undefined => {
+  unstable_rethrow(error);
+  console.error(
+    'People page failed:',
+    error instanceof Error ? error.name : 'unknown'
+  );
+};
+
+/**
+ * The People page (PPL-01). A lookup or read that throws, or finds no Tree, shows the load-failed
+ * state. With no session, the Avatar has no initial and its menu no email.
+ */
 const People = async () => {
-  const session = await requireSession();
-  const people = await listPeople(undefined).catch(() => undefined);
+  const session = await requireSession().catch(failed);
+  const people = session && (await listPeople(undefined).catch(failed));
 
   return (
     <PeopleList
-      email={session.email}
+      email={session?.email ?? ''}
       failed={people?.ok !== true}
       // An Account has no name, so the Avatar shows the first letter of the email.
-      initial={session.email.charAt(0).toUpperCase()}
+      initial={session?.email.charAt(0).toUpperCase() ?? '?'}
       onSignOut={signOutAction}
       people={people?.ok ? people.value : []}
     />

@@ -122,7 +122,9 @@ describe('PeopleList', () => {
     open();
     filter('hend');
     expect(screen.getByRole('status').textContent).toBe('1 of 3 people match');
-    expect(screen.getByText('Botha, Hendrik')).toBeDefined();
+    expect(
+      screen.getByText('Botha, Hendrik').closest('a')!.getAttribute('href')
+    ).toBe('/people/hendrik');
     expect(screen.queryByText('Cloete, Anna')).toBeNull();
   });
 
@@ -130,26 +132,32 @@ describe('PeopleList', () => {
     open();
     filter('v.d.');
     expect(screen.getByRole('status').textContent).toBe('1 of 3 people match');
-    expect(screen.getByText('Matches the spelling “v.d. Merwe”')).toBeDefined();
+    expect(
+      screen.getByText('Matches the spelling “v.d. Merwe”').closest('a')!
+        .textContent
+    ).toBe(
+      'du Toit, MariaMatches the spelling “v.d. Merwe”Born 1850Died —Edit'
+    );
   });
 
   it('shows the maiden name as a note', () => {
     open();
-    expect(screen.getByText('née Pretorius')).toBeDefined();
+    expect(screen.getByText('née Pretorius').closest('a')!.textContent).toBe(
+      'Cloete, Annanée PretoriusBorn —Died DeceasedEdit'
+    );
   });
 
   it('offers the filter with its helper and the / shortcut', () => {
     open();
-    expect(
-      screen
-        .getByRole('searchbox', { name: 'Find a person' })
-        .getAttribute('aria-keyshortcuts')
-    ).toBe('/');
-    expect(
+
+    const box = screen.getByRole('searchbox', { name: 'Find a person' });
+
+    expect(box.getAttribute('aria-keyshortcuts')).toBe('/');
+    expect(box.getAttribute('aria-describedby')).toBe(
       screen.getByText(
         'Matches given names, surnames, maiden names and spelling variants.'
-      )
-    ).toBeDefined();
+      ).id
+    );
   });
 
   it('says no one matches, with the query, and clears the filter', () => {
@@ -159,28 +167,36 @@ describe('PeopleList', () => {
     expect(screen.getAllByRole('status')[0].textContent).toBe(
       '0 of 3 people match'
     );
-    expect(screen.getByText('No one matches “Zzz”')).toBeDefined();
-    expect(
-      screen.getByText('Check the spelling, or add them with Add a person.')
-    ).toBeDefined();
+
+    const notice = screen.getAllByRole('status')[1].textContent;
+
+    expect(notice).toContain('No one matches “Zzz”');
+    expect(notice).toContain(
+      'Check the spelling, or add them with Add a person.'
+    );
     expect(screen.queryByText('Botha, Hendrik')).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Clear the filter' }));
 
-    expect(screen.getByText('Botha, Hendrik')).toBeDefined();
+    expect(
+      screen.getByText('Botha, Hendrik').closest('a')!.getAttribute('href')
+    ).toBe('/people/hendrik');
     expect(screen.getByRole<HTMLInputElement>('searchbox').value).toBe('');
   });
 
   it('shows the empty notice and no filter with no Persons', () => {
     open({ people: [] });
-    expect(screen.getByText('No people yet')).toBeDefined();
-    expect(
-      screen.getByText(
-        'Use Add a person to start your Tree. Once people are in it, you can pin their lives to the map.'
-      )
-    ).toBeDefined();
+
+    const notice = screen.getByRole('status').textContent;
+
+    expect(notice).toContain('No people yet');
+    expect(notice).toContain(
+      'Use Add a person to start your Tree. Once people are in it, you can pin their lives to the map.'
+    );
     expect(screen.queryByRole('searchbox')).toBeNull();
-    expect(screen.getByRole('link', { name: 'Add a person' })).toBeDefined();
+    expect(
+      screen.getByRole('link', { name: 'Add a person' }).getAttribute('href')
+    ).toBe('/people/new');
   });
 
   it('shows an alert and a disabled filter when the load failed, and reloads on Try again', () => {

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({ get: vi.fn() }));
 const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
@@ -9,10 +9,19 @@ const redirect = vi.hoisted(() =>
     throw new Error(`redirect:${to}`);
   })
 );
+// Next's own errors pass through; here that is the redirect.
+const rethrow = vi.hoisted(() =>
+  vi.fn((error: unknown) => {
+    if (error instanceof Error && error.message.startsWith('redirect:')) {
+      throw error;
+    }
+  })
+);
 
 vi.mock('next/headers', () => ({ cookies: async () => jar }));
 vi.mock('next/navigation', () => ({
   redirect,
+  unstable_rethrow: rethrow,
   useRouter: () => ({ refresh: vi.fn() }),
 }));
 vi.mock('@ks/server/adapters.mts', () => ({
@@ -90,8 +99,15 @@ const setup = async () => {
   return { store };
 };
 
+const log = vi.hoisted(() => ({ error: vi.fn() }));
+
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.spyOn(console, 'error').mockImplementation(log.error);
+});
+
+afterEach(() => {
+  vi.mocked(console.error).mockRestore();
 });
 
 // PPL-01, NFR-09
@@ -100,9 +116,9 @@ describe('the People page', () => {
     await setup();
     render(await People());
 
-    expect(screen.getByText('Botha, Hendrik')).toBeDefined();
-    expect(screen.getByText('c. 1832')).toBeDefined();
-    expect(screen.getByText('1880–1885')).toBeDefined();
+    expect(screen.getByText('Botha, Hendrik').closest('a')!.textContent).toBe(
+      'Botha, HendrikBorn c. 1832Died 1880–1885Edit'
+    );
     expect(screen.queryByText(/Stranger|Nel/)).toBeNull();
     expect(screen.queryByText(/private note/)).toBeNull();
   });
@@ -130,7 +146,9 @@ describe('the People page', () => {
     jar.get.mockReturnValue({ value: 'x'.repeat(43) });
     render(await People());
 
-    expect(screen.getByRole('alert')).toBeDefined();
+    expect(screen.getByRole('alert').textContent).toContain(
+      "People didn't load"
+    );
     expect(screen.queryByText('Botha, Hendrik')).toBeNull();
   });
 
@@ -145,9 +163,52 @@ describe('the People page', () => {
     );
   });
 
+  it('logs the name of a failed read, never its message', async () => {
+    const { store } = await setup();
+
+    vi.spyOn(store, 'listPersons').mockRejectedValue(
+      new TypeError('Botha is down')
+    );
+    render(await People());
+
+    expect(log.error).toHaveBeenCalledExactlyOnceWith(
+      'People page failed:',
+      'TypeError'
+    );
+  });
+
+  it('logs "unknown" for a thrown value that is no Error', async () => {
+    const { store } = await setup();
+
+    vi.spyOn(store, 'listPersons').mockRejectedValue('Botha is down');
+    render(await People());
+
+    expect(log.error).toHaveBeenCalledExactlyOnceWith(
+      'People page failed:',
+      'unknown'
+    );
+  });
+
+  it('shows the load-failed state, with no Avatar initial, when the session lookup throws', async () => {
+    session.mockRejectedValue(new Error('store down'));
+    render(await People());
+
+    expect(screen.getByRole('alert').textContent).toContain(
+      "People didn't load"
+    );
+    expect(
+      screen.getByRole('button', { name: 'Account menu' }).textContent
+    ).toBe('?');
+    expect(log.error).toHaveBeenCalledExactlyOnceWith(
+      'People page failed:',
+      'Error'
+    );
+  });
+
   it('sends a visitor with no session to the sign-in page', async () => {
     session.mockRejectedValue(new Error('redirect:/sign-in'));
 
     await expect(People()).rejects.toThrow('redirect:/sign-in');
+    expect(log.error).not.toHaveBeenCalled();
   });
 });

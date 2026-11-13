@@ -128,7 +128,7 @@ class Component extends DCLogic {
       noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }],
       showEmpty: view === 'empty',
       showFailed: failed,
-      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Menu, { email: 'researcher@example.com', initial: 'L', groups: [[{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]], onSelect: () => {} }) : null
     };
   }
 }

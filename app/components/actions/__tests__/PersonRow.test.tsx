@@ -80,6 +80,13 @@ it('shows a date it is given before Deceased', () => {
 });
 
 // PPL-01
+it('anchors the hidden labels to the row, so they add no scroll height to a list', () => {
+  expect(/\.row \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
+  expect(/\.hidden \{[^}]*\}/.exec(css)![0]).toContain('position: absolute');
+  expect(css).not.toMatch(/clip-path|clip:/);
+});
+
+// PPL-01
 it('takes a state', () => {
   row({ state: 'hover' });
   expect(screen.getByRole('link').dataset.state).toBe('hover');

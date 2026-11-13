@@ -1,0 +1,46 @@
+import { expect, test } from '@playwright/test';
+
+// PPL-01, NFR-09
+test('the People page is never cached', async ({ page }) => {
+  const response = await page.goto('/people');
+
+  expect(response?.headers()['cache-control']).toBe('private, no-store');
+  await expect(page.getByRole('heading', { name: 'People' })).toBeVisible();
+});
+
+// PPL-01
+test('the hidden Born and Died labels stay inside their row', async ({
+  page,
+}) => {
+  await page.goto('/screens/people-list');
+
+  const rows = page
+    .getByRole('region', { name: 'People, by surname' })
+    .getByRole('link');
+
+  expect(await rows.count()).toBe(12);
+
+  const found = await rows.evaluateAll(links =>
+    links.map(link => {
+      const row = link.getBoundingClientRect();
+      const labels = [...link.querySelectorAll('span')]
+        .filter(span => ['Born', 'Died'].includes(span.textContent.trim()))
+        .map(span => span.getBoundingClientRect());
+
+      return {
+        labels: labels.length,
+        outside: labels.filter(
+          box =>
+            box.top < row.top ||
+            box.bottom > row.bottom ||
+            box.left < row.left ||
+            box.right > row.right
+        ).length,
+      };
+    })
+  );
+
+  // Two labels in each of the 12 rows: a count of 0 would pass the check below for nothing.
+  expect(found.reduce((total, { labels }) => total + labels, 0)).toBe(24);
+  expect(found.reduce((total, { outside }) => total + outside, 0)).toBe(0);
+});

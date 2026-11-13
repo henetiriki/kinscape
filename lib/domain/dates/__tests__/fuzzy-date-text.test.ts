@@ -6,6 +6,7 @@ import type { FuzzyDateError } from '@ks/lib/domain/dates/types';
 import {
   fuzzyDateMessage,
   readFuzzyDate,
+  shortFuzzyDate,
 } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { parseFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
 
@@ -42,6 +43,29 @@ describe('readFuzzyDate', () => {
     ['29 FEB 1904', 'On 29 February 1904'],
   ])('%s reads %s', (text, expected) => {
     expect(reading(text)).toBe(expected);
+  });
+});
+
+// PPL-01
+describe('shortFuzzyDate', () => {
+  it.each([
+    ['1850', '1850'],
+    ['14 MAR 1850', '1850'],
+    ['ABT 1850', 'c. 1850'],
+    ['EST 1850', 'c. 1850'],
+    ['CAL 3 JUN 1850', 'c. 1850'],
+    ['BEF 1840', 'bef. 1840'],
+    ['AFT 1920', 'aft. 1920'],
+    ['BET 1880 AND 1885', '1880–1885'],
+    ['FROM 1 MAR 1880 TO 1885', '1880–1885'],
+    ['BET JAN 1880 AND MAR 1880', '1880'],
+    ['FROM 1 JAN 1880 TO 31 DEC 1880', '1880'],
+  ])('%s reads %s', (text, expected) => {
+    const parsed = parseFuzzyDate(text);
+
+    if (!parsed.ok) throw new Error(`${text}: ${parsed.error}`);
+
+    expect(shortFuzzyDate(parsed.value)).toBe(expected);
   });
 });
 

@@ -65,6 +65,7 @@ import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import { CHAIN, PINS } from '@ks/app/design-kit/surfaces/data';
 import { DateField } from '@ks/features/map/components/DateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
+import { LONG_NOTES } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
@@ -210,11 +211,6 @@ const slotted = (value: unknown): unknown =>
     : Array.isArray(value)
       ? value.map(slotted)
       : value;
-
-const LONG_NOTES = Array.from(
-  { length: 7 },
-  (_, line) => `Line ${line + 1} of the notes.`
-).join('\n');
 
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (

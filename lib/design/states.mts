@@ -2,7 +2,7 @@
 
 import type { Card, State } from '#ks/lib/design/types.ts';
 
-import { CHAIN, PINS } from '#ks/lib/design/samples.mts';
+import { CHAIN, LONG_NOTES, PINS } from '#ks/lib/design/samples.mts';
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
@@ -137,12 +137,6 @@ const one = (
   props,
   slots,
 });
-
-/** Seven lines, so the box of the long content state scrolls. */
-const LONG_NOTES = Array.from(
-  { length: 7 },
-  (_, line) => `Line ${line + 1} of the notes.`
-).join('\n');
 
 const AVATAR = { control: 'Avatar', props: { initial: 'L' } };
 

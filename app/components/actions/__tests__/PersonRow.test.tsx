@@ -36,8 +36,8 @@ it('is one link to edit, named by the name, the dates and Edit', () => {
 // PPL-01
 it('names the dates for a screen reader and shows no note without one', () => {
   row();
-  expect(screen.getByText('Born')).toBeTruthy();
-  expect(screen.getByText('Died')).toBeTruthy();
+  expect(screen.getByText('Born').className).toMatch(/hidden/);
+  expect(screen.getByText('Died').className).toMatch(/hidden/);
   expect(screen.queryByText(/née|Matches/)).toBeNull();
 });
 
@@ -49,11 +49,18 @@ it('shows the maiden name, then the matched variant, in one line', () => {
   );
 });
 
+// PPL-01
 it('shows the maiden name alone, and the matched variant alone', () => {
-  row({ maidenName: 'Rossouw' });
-  expect(screen.getByText('née Rossouw')).toBeTruthy();
+  const { unmount } = row({ maidenName: 'Rossouw' });
+
+  expect(screen.getByRole('link').textContent).toBe(
+    'Botha, Hendrik Willemnée RossouwBorn 1832Died 1899Edit'
+  );
+  unmount();
   row({ matchedVariant: 'Nell' });
-  expect(screen.getByText('Matches the spelling “Nell”')).toBeTruthy();
+  expect(screen.getByRole('link').textContent).toBe(
+    'Botha, Hendrik WillemMatches the spelling “Nell”Born 1832Died 1899Edit'
+  );
 });
 
 // PPL-01
@@ -66,11 +73,13 @@ it('reads Died as a dash with no date, and as Deceased when marked deceased', ()
   expect(screen.getByRole('link').textContent).toContain('Died Deceased');
 });
 
+// PPL-01
 it('shows a date it is given before Deceased', () => {
   row({ deceased: true, died: 'aft. 1920' });
   expect(screen.getByRole('link').textContent).toContain('Died aft. 1920');
 });
 
+// PPL-01
 it('takes a state', () => {
   row({ state: 'hover' });
   expect(screen.getByRole('link').dataset.state).toBe('hover');

@@ -9,17 +9,12 @@ import {
   Variant,
   Variants,
 } from '@ks/app/design-kit/inputs/Board';
+import { LONG_NOTES } from '@ks/lib/design/samples.mts';
 
 import styles from '@ks/app/design-kit/inputs/page.module.css';
 
 // The samples link to a page that exists; a click on one is not part of the board.
 const HREF = '/';
-
-// Seven lines, so the box of the long content state scrolls.
-const LONG = Array.from(
-  { length: 7 },
-  (_, line) => `Line ${line + 1} of the notes about this Person.`
-).join('\n');
 
 const HELPER = 'Up to 10,000 characters.';
 
@@ -67,7 +62,7 @@ export const LongTextFields = () => (
       <Variant caption='Long content · the text scrolls inside the box. The handle moves the bottom edge up and down.'>
         <div className={styles.areaField}>
           <TextAreaField
-            defaultValue={LONG}
+            defaultValue={LONG_NOTES}
             helper={HELPER}
             label='Notes, long content'
             maxLength={10000}

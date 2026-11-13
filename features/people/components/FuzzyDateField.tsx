@@ -91,18 +91,22 @@ export const FuzzyDateField = ({
       </span>
       <div aria-live='polite' id={slotId}>
         {error ? (
-          <Text role='alert' tone='error' variant='small'>
+          <Text as='p' role='alert' tone='error' variant='small'>
             {error}
           </Text>
         ) : parsed.ok ? (
-          <Text variant='small'>
+          <Text as='p' variant='small'>
             Reads as{' '}
             <strong className={styles.reading}>
               {readFuzzyDate(parsed.value)}
             </strong>
           </Text>
         ) : (
-          helper && <Text variant='small'>{helper}</Text>
+          helper && (
+            <Text as='p' variant='small'>
+              {helper}
+            </Text>
+          )
         )}
       </div>
     </div>

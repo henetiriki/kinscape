@@ -161,6 +161,17 @@ it('sets the input in 15 / 22 Mono from a token, ligatures off, and 16 / 24 on a
   expect(phone).toContain('line-height: var(--type-body-l-line)');
 });
 
+it('draws the line under the box as a paragraph, so a block of 20px sits under it and not an inline span in a taller line', () => {
+  const field = setup();
+
+  expect(slot().firstElementChild!.tagName).toBe('P');
+  type(field, 'BET 1850 AND 1855');
+  expect(slot().firstElementChild!.tagName).toBe('P');
+  type(field, '31 FEB 1850');
+  fireEvent.blur(field);
+  expect(slot().firstElementChild!.tagName).toBe('P');
+});
+
 it('sets the reading in 600 weight and the ink colour, as the Fuzzy-date-readings board does', () => {
   const reading = /^\.reading \{[^}]*\}/m.exec(css)?.[0] ?? '';
 

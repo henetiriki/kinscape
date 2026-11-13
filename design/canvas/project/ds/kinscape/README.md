@@ -80,7 +80,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states, and it has no disabled state.
 - **Page header:** a 64px white bar (60px on a phone) with a bottom `--line` border. It holds the Wordmark (icon only on a phone), a divider, the back link and the Avatar at the right.
-- **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the secondary button.
+- **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the icon button.
 - **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.
 - **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
 - **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.

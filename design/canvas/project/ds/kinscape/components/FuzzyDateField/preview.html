@@ -1,0 +1,41 @@
+<!-- @dsCard group="Forms" height=720 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+body { margin: 0; padding: 16px; font-family: var(--font-body); }
+#root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 0px 0; }
+.ks-label { color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var h = React.createElement;
+  var noop = function () {};
+  var Control = window.KinScape["FuzzyDateField"];
+  var handlers = [];
+  var states = [{"label":"FuzzyDateField · empty","props":{"helper":"For example 1850, ABT 1850 or BET 1850 AND 1855.","label":"Born"}},{"label":"FuzzyDateField · typing","props":{"defaultValue":"BET 1850 AND 18","helper":"For example 1850, ABT 1850 or BET 1850 AND 1855.","label":"Born","state":"focus"}},{"label":"FuzzyDateField · readable","props":{"defaultValue":"BET 1850 AND 1855","helper":"For example 1850, ABT 1850 or BET 1850 AND 1855.","label":"Born"}},{"label":"FuzzyDateField · focus","props":{"helper":"For example 1850, ABT 1850 or BET 1850 AND 1855.","label":"Born","state":"focus"}},{"label":"FuzzyDateField · error","props":{"defaultValue":"31 FEB 1850","helper":"For example 1850, ABT 1850 or BET 1850 AND 1855.","label":"Born"}},{"label":"FuzzyDateField · disabled","props":{"disabled":true,"helper":"For example 1850, ABT 1850 or BET 1850 AND 1855.","label":"Born"}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
+  var items = states.map(function (state, index) {
+    var props = Object.assign({ key: index }, state.props);
+    handlers.forEach(function (handler) { props[handler] = noop; });
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
+    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
+  });
+  ReactDOM.flushSync(function () {
+    ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));
+  });
+})();
+</script>
+</body>
+</html>

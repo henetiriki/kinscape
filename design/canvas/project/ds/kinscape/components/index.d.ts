@@ -402,6 +402,21 @@ export declare const DateField: ({ after, before, day, defaultText, fill, keepPr
 }) => import("react").JSX.Element;
 export type DateFieldProps = Parameters<typeof DateField>[0];
 
+/**
+ * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
+ * date that parses, or the error. It checks on Enter or when focus leaves, never while typing.
+ * An error stays with the text until the next check.
+ */
+export declare const FuzzyDateField: ({ defaultValue, helper, label, state, ...rest }: {
+    /** Text to start with; it is checked on the first render, unless `state` is `focus`. */
+    defaultValue?: string;
+    /** Shown while the text is empty or does not read as a date yet. */
+    helper?: ReactNode;
+    label: string;
+    state?: ControlState;
+} & Omit<ComponentProps<"input">, "className" | "defaultValue" | "id" | "onBlur" | "onChange" | "onKeyDown" | "type" | "value">) => import("react").JSX.Element;
+export type FuzzyDateFieldProps = Parameters<typeof FuzzyDateField>[0];
+
 /** A native select with its label and a drawn chevron. The open list is the browser's. */
 export declare const SelectField: ({ hideLabel, label, options, state, ...rest }: {
     /** Names the select without showing the label. */

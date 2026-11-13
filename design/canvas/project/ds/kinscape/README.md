@@ -37,6 +37,7 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Control  | Public Sans 15 / 22 · 600                  | 44px buttons and controls      |
 | Button S | Public Sans 14 / 20 · 600                  | 40px and 36px buttons          |
 | Mono L   | JetBrains Mono 22 / 28 · 500               | Map date field                 |
+| Mono M   | JetBrains Mono 15 / 22 · 400               | Fuzzy date field               |
 | Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
 
 Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
@@ -85,6 +86,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
 - **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
 - **Long text field:** a label, a textarea and a helper. 1px `--field-border`, radius 8, padding 10 12, `type.body` (`type.body-l` on phones). It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border.
+- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono-m` (`type.body-l` size on phones), ligatures off. 1px `--field-border`, radius 8. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
 - **Person row:** the whole row is a link to edit. Grid: name, Born, Died, then "Edit" with the forward icon. Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. Born and Died are `type.mono`. Died shows "—" with no date, and "Deceased" when marked deceased. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
@@ -146,6 +148,15 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 | Doesn't exist           | February 1901 has 28 days.                     | Go to the last valid day |
 | No borders for the date | No borders are mapped for 1750 yet. (warning)  |                          |
 | More precise than set   | Switched to month precision. (info, 4 seconds) |                          |
+
+### Fuzzy date field
+
+`/design-kit/inputs` shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
+
+1. The line is one `aria-live="polite"` slot. It shows the helper, "Reads as **{reading}**", or the error message.
+2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.
+3. An error keeps the text. It shows a 2px `--error-border` and an error icon inside the field. Set `aria-invalid` and link the message with `aria-describedby`.
+4. Empty text shows the helper, not an error. A good date gets no success styling.
 
 ## Event glyphs
 

@@ -1,7 +1,7 @@
 # Plan: C806: Check Spec edits for drift before the agent posts them
 
 - **Spec:** #806
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ A respond run on a PR has the PR head checked out. `docs/security.md` says never
 - **B.** It reads `refresh.md` in the checkout.
 - **Other:** your own.
 
-Recommended: A, because it also gives the checks that run against `origin/main`, and it changes no workflow.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

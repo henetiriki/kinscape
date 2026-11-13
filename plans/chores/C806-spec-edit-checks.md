@@ -5,43 +5,42 @@
 
 ## Approach
 
-In `refresh.md`, step 4 keeps its drift rule and adds the four checks as a sub-list. Its last line says to finish every check, then post the one comment of step 5. In `respond.md`, one new bullet applies after an issue body edit. It links to step 4 of `refresh.md` and copies no check. `word-count.mts` gets a 400-word line for `refresh.md` above the 300-word `.github/agent` line.
+A new `.github/agent/spec-checks.md` holds the four checks. In `refresh.md`, step 4 keeps its drift rule. It then runs the checks before the one comment of step 5. In `respond.md`, one new bullet applies after the agent edits an issue body. It links to `spec-checks.md` and copies no check. The refresh, plan and respond runs load the file into the system prompt from `main`. A test fails if a run loads `refresh.md` or `respond.md` without it.
 
 ## Decisions
 
-**D1 · Where the respond agent reads step 4** · Decides: Tech lead
+**D1 · Where the four checks live** · Decides: Tech lead
 
-A respond run on a PR has the PR head checked out. `docs/security.md` says never to read a prompt file from the PR head.
+A respond run on a PR has a checkout of the PR head. `docs/security.md` says never to read a prompt file from the PR head. Runs load `agent_files` from `main`.
 
-- **A.** `respond.md` says to read it with `git show origin/main:.github/agent/refresh.md`, after `git fetch origin main`.
-- **B.** It reads `refresh.md` in the checkout.
+- **A.** A new `spec-checks.md`, loaded by the three runs. This changes three workflows.
+- **B.** The checks stay in `refresh.md`. `respond.md` reads them with `git show origin/main:.github/agent/refresh.md`.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
 ## Files that change
 
-| File                       | New / changed | What                            |
-| -------------------------- | ------------- | ------------------------------- |
-| `.github/agent/refresh.md` | changed       | The four checks in step 4       |
-| `.github/agent/respond.md` | changed       | Run step 4 after a body edit    |
-| `scripts/word-count.mts`   | changed       | A 400-word limit for refresh.md |
+| File                                          | New / changed | What                                  |
+| --------------------------------------------- | ------------- | ------------------------------------- |
+| `.github/agent/spec-checks.md`                | new           | The four checks                       |
+| `.github/agent/refresh.md`                    | changed       | Step 4 runs them                      |
+| `.github/agent/respond.md`                    | changed       | Run them after a body edit            |
+| `.github/workflows/claude-{plan,respond}.yml` | changed       | Load `spec-checks.md`                 |
+| `.github/workflows/claude-unblock.yml`        | changed       | Load `spec-checks.md`                 |
+| `scripts/__tests__/load-agent-files.test.ts`  | changed       | Pin the lists; fail on a missing load |
 
 ## Risks
 
-- `.github/agent/**` is a hand-back path. The tech lead builds.
-- `refresh.md` is near 300 words now. The checks must fit in 400.
+- `.github/agent/**` and the workflows are hand-back paths. The tech lead builds.
+- Issue #806 says no workflow change and names a `word-count.mts` limit. The tech lead edits it.
 
 ## Proof
 
-| Done check                                      | Proven by                                          |
-| ----------------------------------------------- | -------------------------------------------------- |
-| Step 4 lists four checks, then one comment      | The diff                                           |
-| `respond.md` runs the checks and fixes its text | The diff                                           |
-| The 400 limit, and `npm run words` passes       | `npm run words`                                    |
-| Lint, format and tests pass                     | `npm run lint`, `npm run format:check`, `npm test` |
-| Three files and the plan only                   | `git diff --stat origin/main`                      |
-
-## Out of scope
-
-- A `word-count.test.ts` row for the new limit: the diff holds no other file.
+| Done check                                | Proven by                                                           |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| Step 4 runs the checks, then one comment  | The diff                                                            |
+| `respond.md` runs them and fixes its text | The diff                                                            |
+| A run without the file fails              | `npm test -- scripts/__tests__/load-agent-files.test.ts`            |
+| Words, lint, format and tests pass        | `npm run words`, `npm run lint`, `npm run format:check`, `npm test` |
+| Files in the table only                   | `git diff --stat origin/main`                                       |

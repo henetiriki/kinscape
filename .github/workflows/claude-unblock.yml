@@ -97,7 +97,7 @@ jobs:
       - name: Load the refresh rules and settings
         uses: henetiriki/kinscape/.github/actions/load-agent-files@19ef1cd5cc8efc5d2edd4f079376346e9cd84dd4
         with:
-          files: rules.md refresh.md
+          files: rules.md refresh.md spec-checks.md
           settings: refresh-settings.json
           token: ${{ github.token }}
 

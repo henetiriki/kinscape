@@ -71,6 +71,21 @@ describe('parseConfig', () => {
     ).toThrow('map-desktop: unknown state "gone"');
   });
 
+  it('accepts a height of 8192 and rejects a taller screen, which the capture cannot show', () => {
+    expect(
+      parseConfig(
+        { screens: [{ ...screen, height: 8192 }], threshold: 1 },
+        known
+      ).screens[0].height
+    ).toBe(8192);
+    expect(() =>
+      parseConfig(
+        { screens: [{ ...screen, height: 8193 }], threshold: 1 },
+        known
+      )
+    ).toThrow('map-desktop: height must be 8192 or less');
+  });
+
   it('reports every problem with a screen', () => {
     expect(() =>
       parseConfig(

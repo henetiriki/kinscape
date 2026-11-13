@@ -1,7 +1,11 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
-import type { Column } from '@ks/app/design-kit/inputs/types';
+import type {
+  Column,
+  DesktopPart,
+  PhonePart,
+} from '@ks/app/design-kit/inputs/types';
 
 import styles from '@ks/app/design-kit/inputs/page.module.css';
 
@@ -51,22 +55,29 @@ export const PhoneOnly = ({ children }: { children: ReactNode }) => (
   <div className={styles.phoneOnly}>{children}</div>
 );
 
-/** One section of the board. Part 1 and part 2 are the two phone pages; a desktop shows both. */
+/** One section of the board. `desktopPart` is the page of two that shows it on a desktop. `part` is the page of four that shows it on a phone. */
 export const Section = ({
   children,
+  desktopPart,
   lead,
   part,
   phoneLead,
   title,
 }: {
   children: ReactNode;
+  /** Boards 07 and 08 give none: their own styles choose what a desktop shows. */
+  desktopPart?: DesktopPart;
   lead: ReactNode;
-  part: 1 | 2;
+  part: PhonePart;
   /** The lead a phone shows instead. */
   phoneLead?: string;
   title: string;
 }) => (
-  <section aria-label={title} className={styles.section} data-part={part}>
+  <section
+    aria-label={title}
+    className={styles.section}
+    data-desktop-part={desktopPart}
+    data-part={part}>
     <div className={styles.intro}>
       <h2 className={styles.h2}>{title}</h2>
       <p className={styles.lead}>

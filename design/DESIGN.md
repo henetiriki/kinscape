@@ -45,9 +45,12 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Style guide 04: component states, phone              | [style-4-states-phone.jpg](style-4-states-phone.jpg)                               |
 | Style guide 05: feedback and validation              | [style-5-feedback.jpg](style-5-feedback.jpg)                                       |
 | Style guide 05: feedback and validation, phone       | [style-5-feedback-phone.jpg](style-5-feedback-phone.jpg)                           |
-| Style guide 06: inputs and actions                   | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     |
+| Style guide 06: inputs and actions, part 1           | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     |
+| Style guide 06: inputs and actions, part 2           | [style-6-components-inputs-2.jpg](style-6-components-inputs-2.jpg)                 |
 | Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         |
 | Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     |
+| Style guide 06: inputs and actions, phone, part 3    | [style-6-components-inputs-3-phone.jpg](style-6-components-inputs-3-phone.jpg)     |
+| Style guide 06: inputs and actions, phone, part 4    | [style-6-components-inputs-4-phone.jpg](style-6-components-inputs-4-phone.jpg)     |
 | Style guide 07: surfaces and overlays, part 1        | [style-7-components-surfaces.jpg](style-7-components-surfaces.jpg)                 |
 | Style guide 07: surfaces and overlays, part 2        | [style-7-components-surfaces-2.jpg](style-7-components-surfaces-2.jpg)             |
 | Style guide 07: surfaces and overlays, phone, part 1 | [style-7-components-surfaces-phone.jpg](style-7-components-surfaces-phone.jpg)     |

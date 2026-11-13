@@ -16,11 +16,19 @@
   margin: 0;
 }
 
-/* Only a phone shows one part at a time. */
+/* Each width shows one part at a time: a desktop one of two, a phone one of four. Boards 07 and 08 still use `.otherPart` for their link. */
 .partOf,
+.nextPhone,
 .otherPart,
 .phoneOnly {
   display: none;
+}
+
+@media (min-width: 640px) and (min-height: 500px) {
+  .kit[data-desktop-part='1'] .section[data-desktop-part='2'],
+  .kit[data-desktop-part='2'] .section[data-desktop-part='1'] {
+    display: none;
+  }
 }
 
 .section {
@@ -473,7 +481,8 @@
 }
 
 .definition code,
-.fact code {
+.fact code,
+.lead code {
   font-family: var(--type-mono-font);
   font-size: var(--type-mono-size);
 }
@@ -489,11 +498,18 @@
     display: inline;
   }
 
+  .desktopPartOf,
+  .nextDesktop {
+    display: none;
+  }
+
+  .nextPhone,
   .otherPart {
     display: inline-flex;
   }
 
   /* The link itself is the 44px row, its text centred in it. */
+  .nextPhone > *,
   .otherPart > * {
     align-items: center;
     display: inline-flex;
@@ -511,8 +527,10 @@
     display: none;
   }
 
-  .kit[data-part='1'] .section[data-part='2'],
-  .kit[data-part='2'] .section[data-part='1'] {
+  .kit[data-part='1'] .section:not([data-part='1']),
+  .kit[data-part='2'] .section:not([data-part='2']),
+  .kit[data-part='3'] .section:not([data-part='3']),
+  .kit[data-part='4'] .section:not([data-part='4']) {
     display: none;
   }
 

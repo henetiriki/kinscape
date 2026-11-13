@@ -39,6 +39,7 @@ const HitTag = () => <span className={styles.hitTag}>44 × 44 hit area</span>;
 
 export const Buttons = () => (
   <Section
+    desktopPart={1}
     lead='Primary for the one action a view is for, secondary for everything else. Pick the height from where the button sits, not from how important it is.'
     part={1}
     title='Buttons'>
@@ -222,6 +223,7 @@ const TYPED = 'field-notes-1901';
 
 export const TextFields = () => (
   <Section
+    desktopPart={1}
     lead='For anything typed or picked. Two sizes: L 48 on sign-in, M 44 everywhere in the app.'
     part={1}
     title='Text fields'>
@@ -499,8 +501,9 @@ const EVENTS: { label: string; on: boolean; type: EventType }[] = [
 
 export const Chips = () => (
   <Section
+    desktopPart={1}
     lead='Event type filters, each with its glyph, and the removable chip a token field holds.'
-    part={1}
+    part={2}
     title='Chips'>
     <Variants>
       <Variant
@@ -715,8 +718,9 @@ const tabStates = (selected: string, column: Column) => {
 
 export const TabsSection = () => (
   <Section
+    desktopPart={1}
     lead='Switch between the Layers and Filters panels. The badge counts the filters that are on.'
-    part={2}
+    part={3}
     title='Tabs'>
     <Variants>
       <Variant
@@ -835,8 +839,9 @@ const PINS = 'Pins';
 
 export const CheckboxFields = () => (
   <Section
+    desktopPart={1}
     lead='A checkbox with its name, and on layer rows a line of live detail. Sign-in uses the plain label form.'
-    part={2}
+    part={3}
     title='Checkbox field'>
     <Variants>
       <Variant caption='Layer row, on. Name 14 / 600, description in ink-3.'>
@@ -983,8 +988,9 @@ export const CheckboxFields = () => (
 
 export const Alerts = () => (
   <Section
+    desktopPart={1}
     lead='For a problem with one part of the screen. Use the untitled form when the one line says it all.'
-    part={2}
+    part={3}
     title='Alerts'>
     <Variants>
       <Variant caption='Without a title · sign-in, above the fields. The same look as the titled alert on board 05: 1px error-border, 20px filled icon, one 13 / 20 line. For the titled form, see board 05.'>
@@ -1035,8 +1041,9 @@ export const Alerts = () => (
 
 export const Dividers = () => (
   <Section
+    desktopPart={1}
     lead="Separate groups that sit close together. Use space first; reach for a line when space alone doesn't read."
-    part={2}
+    part={3}
     title='Dividers'>
     <Variants>
       <Variant caption='Hairline · 1px line. Between menu groups, panel rows, popup rows.'>
@@ -1091,8 +1098,9 @@ export const Dividers = () => (
 
 export const KeyHints = () => (
   <Section
+    desktopPart={1}
     lead='Show a keyboard shortcut next to what it does. Desktop only: phones have no keyboard to hint at.'
-    part={2}
+    part={3}
     phoneLead='Desktop only: phones have no keyboard to hint at. See the desktop board.'
     title='Key hints'>
     <DesktopOnly>

@@ -21,8 +21,9 @@ const HELPER = 'Up to 10,000 characters.';
 
 export const LongTextFields = () => (
   <Section
+    desktopPart={2}
     lead='For a note of several lines, such as the notes on a Person. It has the look of a text field, resizes up and down only, and scrolls long content inside the box.'
-    part={1}
+    part={2}
     title='Long text field'>
     <Variants>
       <Variant caption='Default · label 14 / 20 · 600, 8 above; 1px field-border, radius 8, padding 10 12; text 15 / 22 (16 / 24 on a phone). Helper under it.'>
@@ -124,8 +125,9 @@ export const LongTextFields = () => (
 
 export const FuzzyDateFields = () => (
   <Section
+    desktopPart={2}
     lead='For a date typed as GEDCOM text, such as a Person’s birth. A reading follows the typing. An error shows when the user leaves the field or presses Enter.'
-    part={1}
+    part={4}
     title='Fuzzy date field'>
     <Variants>
       <Variant caption='Empty · the helper under the field.'>
@@ -228,8 +230,9 @@ export const FuzzyDateFields = () => (
 
 export const PersonRows = () => (
   <Section
+    desktopPart={2}
     lead='A row of the people list. The whole row is one link to edit the Person: name, Born, Died, then Edit.'
-    part={1}
+    part={4}
     phoneLead='Desktop only: the phone form of the row comes with the phone people list. See the desktop board.'
     title='Person row'>
     <DesktopOnly>

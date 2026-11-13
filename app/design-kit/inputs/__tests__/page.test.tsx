@@ -157,32 +157,106 @@ it('shows every button form, field form and chip', async () => {
   ).toHaveLength(1);
 });
 
-it('links to part 2 and marks part 1 for a phone by default', async () => {
+const links = () =>
+  screen
+    .getAllByRole('link', { name: /^Part \d:/ })
+    .map(link => [link.textContent, link.getAttribute('href')]);
+
+it('shows part 1 by default, with a link to part 2 on each width', async () => {
   await show();
 
   const main = screen.getByRole('main');
 
   expect(main.dataset.part).toBe('1');
-  expect(
-    screen.getByRole('link', { name: /^Part 2: tabs/ }).getAttribute('href')
-  ).toBe('/design-kit/inputs?part=2');
-  expect(screen.getByText(/part 1 of 2/)).toBeTruthy();
+  expect(main.dataset.desktopPart).toBe('1');
+  expect(links()).toEqual([
+    [expect.stringMatching(/^Part 2: /), '/design-kit/inputs?part=2'],
+    [expect.stringMatching(/^Part 2: /), '/design-kit/inputs?part=2'],
+  ]);
+  expect(screen.getByText(/part 1 of 4/).textContent).toBe(' · part 1 of 4');
+  expect(screen.getByText(/part 1 of 2/).textContent).toBe(' · part 1 of 2');
 });
 
-it('shows part 2 for ?part=2, linked back to part 1', async () => {
-  await show('2');
+it.each([
+  ['2', '2', '3', '1'],
+  ['3', '1', '4', '2'],
+  ['4', '1', '1', '2'],
+])(
+  'shows ?part=%s as desktop part %s, linked on to phone part %s and desktop part %s',
+  async (param, desktop, nextPhone, nextDesktop) => {
+    await show(param);
 
-  expect(screen.getByRole('main').dataset.part).toBe('2');
+    const main = screen.getByRole('main');
+    const href = (part: string) =>
+      part === '1' ? '/design-kit/inputs' : `/design-kit/inputs?part=${part}`;
+
+    expect(main.dataset.part).toBe(param);
+    expect(main.dataset.desktopPart).toBe(desktop);
+    expect(links().map(([, to]) => to)).toEqual([
+      href(nextPhone),
+      href(nextDesktop),
+    ]);
+    expect(screen.getByText(new RegExp(`part ${param} of 4`)).textContent).toBe(
+      ` · part ${param} of 4`
+    );
+    expect(
+      screen.getByText(new RegExp(`part ${desktop} of 2`)).textContent
+    ).toBe(` · part ${desktop} of 2`);
+  }
+);
+
+it.each([undefined, '9', '0', '2.5', ['2', '1']])(
+  'treats the part %j as part 1',
+  async part => {
+    await show(part);
+
+    expect(screen.getByRole('main').dataset.part).toBe('1');
+    expect(screen.getByRole('main').dataset.desktopPart).toBe('1');
+  }
+);
+
+it('gives each section one phone part and one desktop part, in the part its link names', async () => {
+  const { unmount } = await show();
+
+  const sections = screen.getAllByRole('region');
+  const titlesOf = (attribute: string, part: number) =>
+    sections
+      .filter(section => section.getAttribute(attribute) === String(part))
+      .map(section => section.getAttribute('aria-label'));
+
+  expect(sections).toHaveLength(15);
   expect(
-    screen.getByRole('link', { name: /^Part 1: buttons/ }).getAttribute('href')
-  ).toBe('/design-kit/inputs');
-  expect(screen.getByText(/part 2 of 2/)).toBeTruthy();
-});
+    [1, 2, 3, 4].flatMap(part => titlesOf('data-part', part))
+  ).toHaveLength(15);
+  expect(
+    [1, 2].flatMap(part => titlesOf('data-desktop-part', part))
+  ).toHaveLength(15);
+  // Each phone part has a section, and so does each desktop part.
+  expect(
+    [1, 2, 3, 4].map(part => titlesOf('data-part', part).length)
+  ).not.toContain(0);
 
-it('treats any other part as part 1', async () => {
-  await show(['2', '1']);
+  unmount();
 
-  expect(screen.getByRole('main').dataset.part).toBe('1');
+  for (const [param, next] of [
+    [undefined, 2],
+    ['2', 3],
+    ['3', 4],
+    ['4', 1],
+  ] as const) {
+    const view = await show(param);
+
+    expect(links()[0][0]).toBe(
+      `Part ${next}: ${titlesOf('data-part', next).join(', ')}`
+    );
+    view.unmount();
+  }
+
+  await show();
+
+  expect(links()[1][0]).toBe(
+    `Part 2: ${titlesOf('data-desktop-part', 2).join(', ')}`
+  );
 });
 
 // PPL-01
@@ -356,23 +430,32 @@ it('draws Person row in five forms and four states, as links that are only drawn
   expect(section.querySelector('.desktopOnly')).toBeTruthy();
 });
 
-it('puts the button links, the long text field and Person row in part 1 and the page parts in part 2', async () => {
+it('puts each section in one of four phone parts and one of two desktop parts', async () => {
   await show();
 
-  const part = (name: string) =>
-    screen.getByRole('region', { name }).getAttribute('data-part');
-
   expect(
-    [
-      'Button as a link',
-      'Long text field',
-      'Fuzzy date field',
-      'Person row',
-    ].map(part)
-  ).toEqual(['1', '1', '1', '1']);
-  expect(['Page header', 'Back link', 'Action bar'].map(part)).toEqual([
-    '2',
-    '2',
-    '2',
+    screen
+      .getAllByRole('region')
+      .map(section => [
+        section.getAttribute('aria-label'),
+        section.getAttribute('data-part'),
+        section.getAttribute('data-desktop-part'),
+      ])
+  ).toEqual([
+    ['Buttons', '1', '1'],
+    ['Text fields', '1', '1'],
+    ['Chips', '2', '1'],
+    ['Tabs', '3', '1'],
+    ['Checkbox field', '3', '1'],
+    ['Alerts', '3', '1'],
+    ['Dividers', '3', '1'],
+    ['Key hints', '3', '1'],
+    ['Page header', '4', '2'],
+    ['Back link', '4', '2'],
+    ['Action bar', '4', '2'],
+    ['Button as a link', '2', '2'],
+    ['Long text field', '2', '2'],
+    ['Fuzzy date field', '4', '2'],
+    ['Person row', '4', '2'],
   ]);
 });

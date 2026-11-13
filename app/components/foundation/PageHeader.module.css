@@ -9,6 +9,11 @@
   padding: 0 var(--size-gutter);
 }
 
+/* A flex row, so the Wordmark is 32 tall: a block span would add a line box around it. */
+.full {
+  display: inline-flex;
+}
+
 .icon {
   display: none;
 }

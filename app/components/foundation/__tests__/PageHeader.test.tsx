@@ -68,6 +68,12 @@ it('takes its heights and the 44px link from tokens', () => {
 });
 
 // PPL-01
+it('draws the desktop Wordmark in a flex row, so a line box does not make it taller than 32', () => {
+  expect(css).toMatch(/\.full \{\s+display: inline-flex;/);
+  expect(css.indexOf('.full {')).toBeLessThan(css.indexOf('@media'));
+});
+
+// PPL-01
 it('has a focus ring and the icon button hover and press looks on the back link', () => {
   expect(css).toContain(
     "composes: ring from '@ks/app/components/foundation/focus.module.css'"

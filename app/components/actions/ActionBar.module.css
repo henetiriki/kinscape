@@ -25,7 +25,8 @@
   gap: var(--space-8);
   height: 100%;
   margin: 0 auto;
-  max-width: 1088px;
+  /* The content is 1088 wide, as the page's form column; the gutter stays on a narrower window. */
+  max-width: calc(1088px + 2 * var(--size-gutter));
   padding: 0 var(--size-gutter);
 }
 

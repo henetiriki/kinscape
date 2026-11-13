@@ -43,6 +43,7 @@ it('is fixed to the bottom, takes its height and stacking from tokens, and adds 
   expect(css).toContain('var(--layout-action-bar)');
   expect(css).toContain('z-index: var(--z-action-bar)');
   expect(css).toContain('env(safe-area-inset-bottom)');
+  expect(css).toContain('max-width: calc(1088px + 2 * var(--size-gutter))');
   expect(css).not.toMatch(/\b72px/);
 });
 

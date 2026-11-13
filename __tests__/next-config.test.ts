@@ -11,9 +11,9 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-// NFR-03
+// NFR-03, NFR-09
 describe('next.config', () => {
-  it('sends noindex and the security headers on every response', async () => {
+  it('sends noindex and the security headers on every response, and no-store on /people', async () => {
     expect(await nextConfig.headers?.()).toEqual([
       {
         headers: [
@@ -21,6 +21,10 @@ describe('next.config', () => {
           ...securityHeaders({ dev: false, preview: false }),
         ],
         source: '/:path*',
+      },
+      {
+        headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
+        source: '/people',
       },
     ]);
   });

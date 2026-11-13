@@ -10,6 +10,8 @@
   grid-template-columns: minmax(0, 1fr) 160px 160px 72px;
   min-height: var(--size-row-l);
   padding: var(--space-8) var(--space-20);
+  /* The anchor of the hidden labels: they stay inside the row. */
+  position: relative;
   text-decoration: none;
 }
 

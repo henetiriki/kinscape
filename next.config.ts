@@ -60,6 +60,11 @@ const nextConfig: NextConfig = {
       ],
       source: '/:path*',
     },
+    {
+      // Tree data: no shared cache may keep it (docs/security.md).
+      headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
+      source: '/people',
+    },
   ],
   // `server/db/database.mts` reads the CA at runtime; the trace doesn't see a readFileSync path.
   // The key is a picomatch route glob: `/**` matches `/` and nested routes, `/*` would not.

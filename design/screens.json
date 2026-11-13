@@ -228,6 +228,35 @@
       "mode": "blocking"
     },
     {
+      "name": "people-list",
+      "route": "/screens/people-list",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "people-list-no-match",
+      "route": "/screens/people-list-no-match",
+      "state": "people-no-match",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "people-empty",
+      "route": "/screens/people-empty",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "people-load-failed",
+      "route": "/screens/people-load-failed",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "sign-in-desktop",
       "route": "/sign-in",
       "state": "sign-in-filled",

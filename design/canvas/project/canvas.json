@@ -361,7 +361,7 @@
       "x": 0,
       "y": 22098,
       "w": 1440,
-      "h": 13175,
+      "h": 13968,
       "title": "Style guide 06 — Inputs and actions",
       "page": "style-guide"
     },
@@ -369,7 +369,7 @@
       "x": 1520,
       "y": 22098,
       "w": 390,
-      "h": 11227,
+      "h": 13026,
       "title": "Style guide 06 — Inputs and actions, phone (part 1 of 2)",
       "page": "style-guide"
     },
@@ -383,7 +383,7 @@
     },
     "SG-Surfaces.dc.html": {
       "x": 0,
-      "y": 35393,
+      "y": 36186,
       "w": 1440,
       "h": 4623,
       "title": "Style guide 07 — Surfaces and overlays (part 1 of 2)",
@@ -391,7 +391,7 @@
     },
     "SG-Surfaces-phone.dc.html": {
       "x": 1520,
-      "y": 35393,
+      "y": 36186,
       "w": 390,
       "h": 7716,
       "title": "Style guide 07 — Surfaces and overlays, phone (part 1 of 2)",
@@ -399,7 +399,7 @@
     },
     "SG-Surfaces-phone-2.dc.html": {
       "x": 1990,
-      "y": 35393,
+      "y": 36186,
       "w": 390,
       "h": 7019,
       "title": "Style guide 07 — Surfaces and overlays, phone (part 2 of 2)",
@@ -407,7 +407,7 @@
     },
     "SG-Furniture.dc.html": {
       "x": 0,
-      "y": 43229,
+      "y": 44022,
       "w": 1440,
       "h": 5893,
       "title": "Style guide 08 — Map furniture",
@@ -415,7 +415,7 @@
     },
     "SG-Furniture-phone.dc.html": {
       "x": 1520,
-      "y": 43229,
+      "y": 44022,
       "w": 390,
       "h": 4100,
       "title": "Style guide 08 — Map furniture, phone (part 1 of 2)",
@@ -423,7 +423,7 @@
     },
     "SG-Surfaces-2.dc.html": {
       "x": 2460,
-      "y": 35393,
+      "y": 36186,
       "w": 1440,
       "h": 4384,
       "title": "Style guide 07 — Surfaces and overlays (part 2 of 2)",
@@ -431,7 +431,7 @@
     },
     "SG-Furniture-phone-2.dc.html": {
       "x": 1990,
-      "y": 43229,
+      "y": 44022,
       "w": 390,
       "h": 4784,
       "title": "Style guide 08 — Map furniture, phone (part 2 of 2)",
@@ -731,8 +731,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1794572312-c7d8",
-      "copiedAt": "2026-11-13T12:21:12Z"
+      "version": "1794589369-4045",
+      "copiedAt": "2026-11-13T17:05:25Z"
     }
   ]
 }

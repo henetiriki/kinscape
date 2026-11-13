@@ -324,6 +324,15 @@
   font-style: normal;
 }
 
+.mono-m {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-style: normal;
+}
+
 .mono {
   font-family: var(--font-mono);
   font-size: 12px;

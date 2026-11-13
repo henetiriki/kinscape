@@ -64,6 +64,7 @@ import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import { CHAIN, PINS } from '@ks/app/design-kit/surfaces/data';
 import { DateField } from '@ks/features/map/components/DateField';
+import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { LONG_NOTES } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -165,6 +166,7 @@ const COMPONENTS = {
   Dialog,
   DialogPanel,
   Divider,
+  FuzzyDateField,
   Icon,
   IconButton,
   KeyHint,
@@ -220,6 +222,16 @@ const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (
     min={MIN_DAY}
     onChange={noop}
     precision='day'
+    {...props}
+  />
+);
+
+const fuzzyDateField = (
+  props: Partial<Parameters<typeof FuzzyDateField>[0]> = {}
+) => (
+  <FuzzyDateField
+    helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
+    label='Born'
     {...props}
   />
 );
@@ -410,6 +422,18 @@ const CASES: [string, ReactElement][] = [
     'DateField · notice',
     dateField({ notice: { text: 'Moved to 1652.', tone: 'warning' } }),
   ],
+  ['FuzzyDateField · empty', fuzzyDateField()],
+  [
+    'FuzzyDateField · typing',
+    fuzzyDateField({ defaultValue: 'BET 1850 AND 18', state: 'focus' }),
+  ],
+  [
+    'FuzzyDateField · readable',
+    fuzzyDateField({ defaultValue: 'BET 1850 AND 1855' }),
+  ],
+  ['FuzzyDateField · focus', fuzzyDateField({ state: 'focus' })],
+  ['FuzzyDateField · error', fuzzyDateField({ defaultValue: '31 FEB 1850' })],
+  ['FuzzyDateField · disabled', fuzzyDateField({ disabled: true })],
   ...states('SelectField', (state, disabled) => (
     <SelectField
       disabled={disabled}

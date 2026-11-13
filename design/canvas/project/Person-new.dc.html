@@ -51,31 +51,8 @@
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span" id="p-group-life">Life</x-import>
             <x-import component-from-global-scope="KinScape.SelectField" label="Sex" options="{{sexOptions}}" default-value="{{sex}}" on-change="{{onSex}}"></x-import>
 
-            <div style="display: flex; flex-direction: column; gap: var(--space-8)">
-              <label for="p-birth" class="label" style="color: var(--ink)">Birth</label>
-              <span style="position: relative; display: flex">
-                <input id="p-birth" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{birth.invalid}}" aria-describedby="p-birth-msg" value="{{birth.text}}" onChange="{{birth.onInput}}" onBlur="{{birth.onBlur}}" onFocus="{{birth.onFocus}}" onMouseEnter="{{birth.onEnter}}" onMouseLeave="{{birth.onLeave}}" onKeyDown="{{birth.onKey}}" style="{{birth.style}}">
-                <sc-if value="{{birth.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
-              </span>
-              <div id="p-birth-msg" aria-live="polite">
-                <sc-if value="{{birth.showError}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p" tone="error" role="alert">{{birth.error}}</x-import></sc-if>
-                <sc-if value="{{birth.showReading}}" hint-placeholder-val="{{ false }}"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">{{birth.reading}}</strong></p></sc-if>
-                <sc-if value="{{birth.showHelp}}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p">For example 1850, ABT 1850 or BET 1850 AND 1855.</x-import></sc-if>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: var(--space-8)">
-              <label for="p-death" class="label" style="color: var(--ink)">Death</label>
-              <span style="position: relative; display: flex">
-                <input id="p-death" type="text" autocomplete="off" spellcheck="false" aria-invalid="{{death.invalid}}" aria-describedby="p-death-msg" value="{{death.text}}" onChange="{{death.onInput}}" onBlur="{{death.onBlur}}" onFocus="{{death.onFocus}}" onMouseEnter="{{death.onEnter}}" onMouseLeave="{{death.onLeave}}" onKeyDown="{{death.onKey}}" style="{{death.style}}">
-                <sc-if value="{{death.invalid}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span></sc-if>
-              </span>
-              <div id="p-death-msg" aria-live="polite">
-                <sc-if value="{{death.showError}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p" tone="error" role="alert">{{death.error}}</x-import></sc-if>
-                <sc-if value="{{death.showReading}}" hint-placeholder-val="{{ false }}"><p class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">{{death.reading}}</strong></p></sc-if>
-                <sc-if value="{{death.showHelp}}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Leave it empty if you don't know.</x-import></sc-if>
-              </div>
-            </div>
+            <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" helper="For example 1850, ABT 1850 or BET 1850 AND 1855." default-value="{{birthStart}}" autocomplete="off" spell-check="false" on-input="{{onBirth}}"></x-import>
+            <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Death" helper="Leave it empty if you don't know." default-value="{{deathStart}}" autocomplete="off" spell-check="false" on-input="{{onDeath}}"></x-import>
 
             <sc-if value="{{deceasedLocked}}" hint-placeholder-val="{{ false }}">
               <div style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-field-l)">
@@ -126,15 +103,15 @@ class Component extends DCLogic {
     const b = (v === 'edit' || v === 'save-failed' || v === 'conflict') ? filled : blank;
     const st = {
       given: b.given, surname: b.surname, maiden: b.maiden, variants: b.variants, sex: b.sex, deceased: b.deceased, notes: b.notes,
-      birth: { text: b.birth, err: '' }, death: { text: b.death, err: '' },
+      birth: b.birth, death: b.death, birthErr: false, deathErr: false,
       givenErr: '', surnameErr: '', givenDirty: false, surnameDirty: false, summary: false,
-      hovered: '', focused: '',
       toast: v === 'save-failed' ? 'failed' : '',
       conflict: v === 'conflict'
     };
     if (v === 'errors') {
-      st.birth = { text: 'ABT 1850', err: '' };
-      st.death = { text: '31 FEB 1850', err: this.parseDate('31 FEB 1850').error };
+      st.birth = 'ABT 1850';
+      st.death = '31 FEB 1850';
+      st.deathErr = !!this.parseDate(st.death).error;
       st.givenErr = 'Enter the given names.';
       st.surnameErr = 'Enter the surname.';
       st.summary = true;
@@ -143,6 +120,8 @@ class Component extends DCLogic {
       st.notes = 'Her baptism record spells the family name Rossau. Six children are named in the family Bible.';
     }
     this.state = st;
+    // The fields take these once; after that each keeps its own text.
+    this.start = { birth: st.birth, death: st.death };
     this.variant = v;
   }
 
@@ -191,59 +170,10 @@ class Component extends DCLogic {
     return { reading: (a.day ? 'On ' : 'In ') + a.words };
   }
 
-  check(key) {
-    this.setState((s) => {
-      const r = this.parseDate(s[key].text);
-      return { [key]: { text: s[key].text, err: r.error || '' } };
-    });
-  }
-
-  fieldLook(key, err, area) {
-    const s = this.state;
-    const pad = (n) => area ? (10 - n) + 'px ' + (12 - n) + 'px' : '0 ' + (12 - n) + 'px';
-    if (err) return 'border: 2px solid var(--error-border); padding: ' + (area ? '9px 11px' : '0 40px 0 11px') + (s.focused === key ? '; outline: none' : '');
-    if (s.focused === key) return 'border: 2px solid var(--brand); padding: ' + pad(1) + '; outline: none';
-    if (s.hovered === key) return 'border: 1px solid var(--ink-3); padding: ' + pad(0);
-    return 'border: 1px solid var(--field-border); padding: ' + pad(0);
-  }
-
-  pointer(key) {
-    return {
-      onEnter: () => this.setState({ hovered: key }),
-      onLeave: () => this.setState((x) => (x.hovered === key ? { hovered: '' } : {})),
-      onFocus: () => this.setState({ focused: key }),
-      onBlur: () => this.setState((x) => (x.focused === key ? { focused: '' } : {}))
-    };
-  }
-
-  dateView(key) {
-    const f = this.state[key];
-    const r = this.parseDate(f.text);
-    const err = f.err;
-    const ui = this.pointer(key);
-    const base = 'flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-family: var(--font-mono); font-variant-ligatures: none; font-size: 15px; line-height: 22px';
-    return {
-      text: f.text,
-      invalid: !!err,
-      showError: !!err,
-      error: err,
-      showReading: !err && !!r.reading,
-      reading: r.reading || '',
-      showHelp: !err && !r.reading,
-      style: base + '; ' + this.fieldLook(key, err, false),
-      onInput: (e) => { const t = e.target.value; this.setState((s) => ({ [key]: { text: t, err: s[key].err } })); },
-      onBlur: () => { ui.onBlur(); this.check(key); },
-      onFocus: ui.onFocus,
-      onEnter: ui.onEnter,
-      onLeave: ui.onLeave,
-      onKey: (e) => { if (e.key === 'Enter') { e.preventDefault(); this.check(key); } }
-    };
-  }
-
   renderVals() {
     const s = this.state;
-    const deathTyped = s.death.text.trim() !== '';
-    const errCount = [s.givenErr, s.surnameErr, s.birth.err, s.death.err].filter(Boolean).length;
+    const deathTyped = s.death.trim() !== '';
+    const errCount = [s.givenErr, s.surnameErr, s.birthErr, s.deathErr].filter(Boolean).length;
     const fullName = (s.given.trim() + ' ' + s.surname.trim()).trim();
     const isEdit = this.variant === 'edit' || this.variant === 'save-failed' || this.variant === 'conflict';
     const toasts = {
@@ -268,8 +198,10 @@ class Component extends DCLogic {
       onNotes: (e) => this.setState({ notes: e.target.value }),
       onSex: (e) => this.setState({ sex: e.target.value }),
       sexOptions: [{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }, { label: 'Intersex', value: 'intersex' }, { label: 'Unknown', value: 'unknown' }],
-      birth: this.dateView('birth'),
-      death: this.dateView('death'),
+      birthStart: this.start.birth,
+      deathStart: this.start.death,
+      onBirth: (e) => this.setState({ birth: e.target.value }),
+      onDeath: (e) => this.setState({ death: e.target.value }),
       deceased: s.deceased || deathTyped,
       deceasedLocked: deathTyped,
       deceasedFree: !deathTyped,
@@ -282,10 +214,10 @@ class Component extends DCLogic {
         }
         const ge = x.given.trim() ? '' : 'Enter the given names.';
         const se = x.surname.trim() ? '' : 'Enter the surname.';
-        const be = this.parseDate(x.birth.text).error || '';
-        const de = this.parseDate(x.death.text).error || '';
+        const be = this.parseDate(x.birth).error || '';
+        const de = this.parseDate(x.death).error || '';
         const n = [ge, se, be, de].filter(Boolean).length;
-        this.setState({ givenErr: ge, surnameErr: se, birth: { text: x.birth.text, err: be }, death: { text: x.death.text, err: de }, summary: n > 0, toast: n > 0 ? '' : 'saved' });
+        this.setState({ givenErr: ge, surnameErr: se, birthErr: !!be, deathErr: !!de, summary: n > 0, toast: n > 0 ? '' : 'saved' });
       },
       showToast: !!s.toast,
       toast: toasts[s.toast] || toasts.saved

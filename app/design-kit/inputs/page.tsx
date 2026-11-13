@@ -8,7 +8,11 @@ import {
   ButtonLinks,
   PageHeaderSection,
 } from '@ks/app/design-kit/inputs/pageParts';
-import { LongTextFields, PersonRows } from '@ks/app/design-kit/inputs/people';
+import {
+  FuzzyDateFields,
+  LongTextFields,
+  PersonRows,
+} from '@ks/app/design-kit/inputs/people';
 import {
   Alerts,
   Buttons,
@@ -85,6 +89,7 @@ const InputsKit = async ({
       <ActionBarSection />
       <ButtonLinks />
       <LongTextFields />
+      <FuzzyDateFields />
       <PersonRows />
     </main>
   );

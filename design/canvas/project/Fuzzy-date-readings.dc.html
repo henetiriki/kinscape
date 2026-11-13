@@ -139,34 +139,23 @@
 
       <div style="display: flex; flex-direction: column; gap: var(--space-8)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Empty: the helper shows an example</x-import>
-        <label for="fd-s1" class="label" style="color: var(--ink)">Birth</label>
-        <input id="fd-s1" readonly aria-describedby="fd-s1-msg" value="" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid var(--field-border); border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-mono); font-size: 15px">
-        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="fd-s1-msg">For example 1850, ABT 1850 or BET 1850 AND 1855.</x-import>
+        <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" helper="For example 1850, ABT 1850 or BET 1850 AND 1855."></x-import>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: var(--space-8)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Typing, with focus: the reading follows</x-import>
-        <label for="fd-s2" class="label" style="color: var(--ink)">Birth</label>
-        <input id="fd-s2" readonly aria-describedby="fd-s2-msg" value="BET 1850 AND 18" style="height: 44px; box-sizing: border-box; padding: 0 11px; border: 2px solid var(--brand); border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-mono); font-size: 15px; outline: none">
-        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="fd-s2-msg">For example 1850, ABT 1850 or BET 1850 AND 1855.</x-import>
+        <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" default-value="BET 1850 AND 18" state="focus" helper="For example 1850, ABT 1850 or BET 1850 AND 1855."></x-import>
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Not readable yet, so the example stays. No error while typing.</x-import>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: var(--space-8)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">Readable: the reading replaces the example</x-import>
-        <label for="fd-s3" class="label" style="color: var(--ink)">Birth</label>
-        <input id="fd-s3" readonly aria-describedby="fd-s3-msg" value="BET 1850 AND 1855" style="height: 44px; box-sizing: border-box; padding: 0 12px; border: 1px solid var(--field-border); border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-mono); font-size: 15px">
-        <p id="fd-s3-msg" class="small" style="margin: 0; color: var(--ink-3)">Reads as <strong style="font-weight: 600; color: var(--ink)">Between 1850 and 1855</strong></p>
+        <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" default-value="BET 1850 AND 1855"></x-import>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: var(--space-8)">
         <x-import component-from-global-scope="KinScape.Text" variant="caption" as="p">After Enter or leaving: the error</x-import>
-        <label for="fd-s4" class="label" style="color: var(--ink)">Death</label>
-        <span style="position: relative; display: flex">
-          <input id="fd-s4" readonly aria-invalid="true" aria-describedby="fd-s4-msg" value="31 FEB 1850" style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; padding: 0 40px 0 11px; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-mono); font-size: 15px">
-          <span aria-hidden="true" style="position: absolute; right: 12px; top: 13px; display: flex; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="alert" size="18"></x-import></span>
-        </span>
-        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" tone="error" id="fd-s4-msg">February 1850 has 28 days.</x-import>
+        <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Death" default-value="31 FEB 1850"></x-import>
       </div>
 
     </div>

@@ -33,6 +33,10 @@ export const CONTROLS: Control[] = [
   { name: 'Checkbox', path: 'app/components/forms/Checkbox.tsx' },
   { name: 'CheckboxField', path: 'app/components/forms/CheckboxField.tsx' },
   { name: 'DateField', path: 'features/map/components/DateField.tsx' },
+  {
+    name: 'FuzzyDateField',
+    path: 'features/people/components/FuzzyDateField.tsx',
+  },
   { name: 'SelectField', path: 'app/components/forms/SelectField.tsx' },
   { name: 'TokenField', path: 'app/components/forms/TokenField.tsx' },
   { name: 'Alert', path: 'app/components/feedback/Alert.tsx' },

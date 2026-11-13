@@ -15,6 +15,10 @@ export const LONG_NOTES = Array.from(
   (_, line) => `Line ${line + 1} of the notes.`
 ).join('\n');
 
+/** The line under an empty or unreadable fuzzy date field, in the kit and on its card. */
+export const FUZZY_DATE_HELPER =
+  'For example 1850, ABT 1850 or BET 1850 AND 1855.';
+
 export const PINS = [
   {
     date: '1901-03-14',

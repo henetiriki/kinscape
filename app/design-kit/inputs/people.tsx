@@ -9,7 +9,8 @@ import {
   Variant,
   Variants,
 } from '@ks/app/design-kit/inputs/Board';
-import { LONG_NOTES } from '@ks/lib/design/samples.mts';
+import { FuzzyDateField } from '@ks/features/people';
+import { FUZZY_DATE_HELPER, LONG_NOTES } from '@ks/lib/design/samples.mts';
 
 import styles from '@ks/app/design-kit/inputs/page.module.css';
 
@@ -116,6 +117,110 @@ export const LongTextFields = () => (
         ],
         ['Label', '14 / 20 · 600, 8 above the field', 'type.label · space.8'],
         ['Resize', 'Vertical only', '—'],
+      ]}
+    />
+  </Section>
+);
+
+export const FuzzyDateFields = () => (
+  <Section
+    lead='For a date typed as GEDCOM text, such as a Person’s birth. A reading follows the typing. An error shows when the user leaves the field or presses Enter.'
+    part={1}
+    title='Fuzzy date field'>
+    <Variants>
+      <Variant caption='Empty · the helper under the field.'>
+        <div className={styles.dateField}>
+          <FuzzyDateField helper={FUZZY_DATE_HELPER} label='Born' />
+        </div>
+      </Variant>
+      <Variant caption='Typing, not readable · the text and the same helper. No error while the user types.'>
+        <div className={styles.dateField} inert>
+          <FuzzyDateField
+            defaultValue='BET 1850 AND 18'
+            helper={FUZZY_DATE_HELPER}
+            label='Born, typing'
+            state='focus'
+          />
+        </div>
+      </Variant>
+      <Variant caption='Readable · “Reads as” and the reading in bold. A good date gets no success styling.'>
+        <div className={styles.dateField}>
+          <FuzzyDateField
+            defaultValue='BET 1850 AND 1855'
+            helper={FUZZY_DATE_HELPER}
+            label='Born, readable'
+          />
+        </div>
+      </Variant>
+      <Variant caption='Focus · a 2px brand border.'>
+        <div className={styles.dateField} inert>
+          <FuzzyDateField
+            helper={FUZZY_DATE_HELPER}
+            label='Born, focus'
+            state='focus'
+          />
+        </div>
+      </Variant>
+      <Variant caption='Error · the text stays. A 2px error-border, the error icon inside and the message under it.'>
+        <div className={styles.dateField} inert>
+          <FuzzyDateField
+            defaultValue='31 FEB 1850'
+            helper={FUZZY_DATE_HELPER}
+            label='Born, error'
+          />
+        </div>
+      </Variant>
+      <Variant caption='Disabled · surface-2 fill, line border, ink-disabled text.'>
+        <div className={styles.dateField}>
+          <FuzzyDateField
+            disabled
+            helper={FUZZY_DATE_HELPER}
+            label='Born, disabled'
+          />
+        </div>
+      </Variant>
+    </Variants>
+    <Facts
+      accessibility={[
+        [
+          'Label',
+          <>
+            A visible {code('<label for>')}on a real {code('input.')}
+          </>,
+        ],
+        [
+          'Message',
+          <>
+            One {code('aria-live="polite"')}slot holds the helper, the reading
+            or the error. The error is {code('role="alert"')}and the input has{' '}
+            {code('aria-invalid')}and {code('aria-describedby')}for the slot.
+          </>,
+        ],
+        [
+          'Keyboard',
+          'Tab to reach. Enter checks the text. Focus shows the 2px brand border.',
+        ],
+      ]}
+      label='Fuzzy date field'
+      measurements={[
+        [
+          'Border',
+          '1px field-border; focus 2px brand; error 2px error-border',
+          'colour.field-border · colour.brand · colour.error-border',
+        ],
+        ['Radius', '8', 'radius.control'],
+        ['Height', '44', 'size.field'],
+        [
+          'Text',
+          <ByViewport
+            desktop='JetBrains Mono 15 / 22 · 400, ligatures off'
+            key='value'
+            phone='16 / 24, so the browser does not zoom in'
+          />,
+          'type.mono-m · type.body-l',
+        ],
+        ['Label', '14 / 20 · 600, 8 above the field', 'type.label · space.8'],
+        ['Message', '13 / 20, 8 under the field', 'type.small · space.8'],
       ]}
     />
   </Section>

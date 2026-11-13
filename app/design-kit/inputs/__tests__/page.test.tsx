@@ -9,7 +9,7 @@ const show = async (part?: string | string[]) =>
   render(await InputsKit({ searchParams: Promise.resolve({ part }) }));
 
 // NFR-06
-it('shows the fourteen sections in board order, each with Measurements and Accessibility', async () => {
+it('shows the fifteen sections in board order, each with Measurements and Accessibility', async () => {
   await show();
 
   expect(
@@ -31,11 +31,12 @@ it('shows the fourteen sections in board order, each with Measurements and Acces
     'Action bar',
     'Button as a link',
     'Long text field',
+    'Fuzzy date field',
     'Person row',
   ]);
   expect(
     screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
-  ).toEqual(Array(14).fill(['Measurements', 'Accessibility']).flat());
+  ).toEqual(Array(15).fill(['Measurements', 'Accessibility']).flat());
 });
 
 it('draws each interactive component in five states, in the order drawn', async () => {
@@ -291,6 +292,47 @@ it('draws the long text field in its five states, each with a 10,000 character l
   expect((areas[4] as HTMLTextAreaElement).value.split('\n')).toHaveLength(7);
 });
 
+// PIN-04
+it('draws the fuzzy date field in its six states, after the long text field', async () => {
+  await show();
+
+  const section = within(
+    screen.getByRole('region', { name: 'Fuzzy date field' })
+  );
+  const inputs = section.getAllByRole('textbox') as HTMLInputElement[];
+
+  expect(inputs.map(input => input.value)).toEqual([
+    '',
+    'BET 1850 AND 18',
+    'BET 1850 AND 1855',
+    '',
+    '31 FEB 1850',
+    '',
+  ]);
+  expect(inputs.map(input => input.parentElement!.dataset.state)).toEqual([
+    undefined,
+    'focus',
+    undefined,
+    'focus',
+    undefined,
+    undefined,
+  ]);
+  expect(inputs[4].getAttribute('aria-invalid')).toBe('true');
+  expect(section.getByRole('alert').textContent).toBe(
+    'February 1850 has 28 days.'
+  );
+  expect(inputs[2].closest('div')!.textContent).toContain(
+    'Reads as Between 1850 and 1855'
+  );
+  expect(inputs[5].disabled).toBe(true);
+  expect(
+    screen
+      .getAllByRole('region')
+      .map(region => region.getAttribute('aria-label'))
+      .slice(-3)
+  ).toEqual(['Long text field', 'Fuzzy date field', 'Person row']);
+});
+
 // PPL-01
 it('draws Person row in five forms and four states, as links that are only drawn', async () => {
   await show();
@@ -321,8 +363,13 @@ it('puts the button links, the long text field and Person row in part 1 and the 
     screen.getByRole('region', { name }).getAttribute('data-part');
 
   expect(
-    ['Button as a link', 'Long text field', 'Person row'].map(part)
-  ).toEqual(['1', '1', '1']);
+    [
+      'Button as a link',
+      'Long text field',
+      'Fuzzy date field',
+      'Person row',
+    ].map(part)
+  ).toEqual(['1', '1', '1', '1']);
   expect(['Page header', 'Back link', 'Action bar'].map(part)).toEqual([
     '2',
     '2',

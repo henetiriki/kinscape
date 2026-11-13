@@ -1,4 +1,4 @@
-/** Synthetic Popup samples: the design kit's boards and the design system's Popup cards both draw them. */
+/** Synthetic samples: the design kit's boards and the design system's cards both draw them. */
 
 export const CHAIN = [
   { level: 'District', name: 'Kimberley' },
@@ -8,6 +8,12 @@ export const CHAIN = [
     name: 'Cape Colony',
   },
 ];
+
+/** Seven lines, so the box of a long text field's long content state scrolls. */
+export const LONG_NOTES = Array.from(
+  { length: 7 },
+  (_, line) => `Line ${line + 1} of the notes.`
+).join('\n');
 
 export const PINS = [
   {

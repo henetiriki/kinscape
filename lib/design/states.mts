@@ -2,7 +2,7 @@
 
 import type { Card, State } from '#ks/lib/design/types.ts';
 
-import { CHAIN, PINS } from '#ks/lib/design/samples.mts';
+import { CHAIN, LONG_NOTES, PINS } from '#ks/lib/design/samples.mts';
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
@@ -325,6 +325,25 @@ export const CARDS: Card[] = [
     })),
   },
   {
+    design: ['Person row'],
+    group: 'Actions',
+    handlers: [],
+    height: 400,
+    name: 'PersonRow',
+    pad: 0,
+    states: linkGrid('PersonRow', state => ({
+      props: {
+        born: 'c. 1835',
+        died: '1901',
+        givenNames: 'Susanna',
+        href: '/people/1',
+        maidenName: 'Fourie',
+        state,
+        surname: 'Botha',
+      },
+    })),
+  },
+  {
     design: ['Text field'],
     group: 'Forms',
     handlers: [],
@@ -343,6 +362,38 @@ export const CARDS: Card[] = [
         type: 'search',
       }),
       one('TextField · password', { label: 'Password', type: 'password' }),
+    ],
+  },
+  {
+    design: ['Long text field'],
+    group: 'Forms',
+    handlers: [],
+    height: 760,
+    name: 'TextAreaField',
+    pad: 0,
+    states: [
+      one('TextAreaField · default', { helper: 'Helper text', label: 'Notes' }),
+      one('TextAreaField · hover', {
+        helper: 'Helper text',
+        label: 'Notes',
+        state: 'hover',
+      }),
+      one('TextAreaField · focus', {
+        helper: 'Helper text',
+        label: 'Notes',
+        state: 'focus',
+      }),
+      one('TextAreaField · disabled', {
+        disabled: true,
+        helper: 'Helper text',
+        label: 'Notes',
+      }),
+      one('TextAreaField · long content', {
+        defaultValue: LONG_NOTES,
+        helper: 'Helper text',
+        label: 'Notes',
+        maxLength: 10000,
+      }),
     ],
   },
   {

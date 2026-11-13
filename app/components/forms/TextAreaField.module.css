@@ -1,0 +1,61 @@
+/* In a flex column that has a height, the field fills it. With none, the textarea keeps its rows. */
+.field {
+  composes: field from '@ks/app/components/forms/TextField.module.css';
+  flex: 1 1 auto;
+}
+
+/* The box takes the TextField looks: border, hover, focus and disabled. It grows with the textarea. */
+.box {
+  composes: box from '@ks/app/components/forms/TextField.module.css';
+}
+
+.field > .box {
+  align-items: stretch;
+  flex: 1 1 auto;
+  height: auto;
+  padding: 0;
+}
+
+/* The padding is on the textarea, so the browser draws the resize handle at the padded corner.
+   The 2px focus border takes 1px from it, so the text stays still. */
+.field > .box:is(:focus-within, [data-state='focus']) {
+  padding: 0;
+}
+
+.field > .box:is(:focus-within, [data-state='focus']) .area {
+  padding: 9px 11px;
+}
+
+/* Only a vertical resize; content past the height scrolls inside the box. */
+.area {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  flex: 1;
+  font-family: var(--type-body-l-font);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  min-width: 0;
+  outline: 0;
+  overflow-y: auto;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.area::placeholder {
+  color: var(--ink-3);
+}
+
+.area:disabled {
+  cursor: default;
+  resize: none;
+}
+
+/* 16px on phones, so the browser doesn't zoom in. */
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .area {
+    font-size: var(--type-body-l-size);
+    line-height: var(--type-body-l-line);
+  }
+}

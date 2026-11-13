@@ -5451,6 +5451,1335 @@
             </div>
           </div>
         </section>
+
+        <section
+          aria-label="Long text field"
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Long text field
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
+              For text that runs past one line, like Notes on the person form. A
+              label, a textarea and a helper. The user drags it taller or
+              shorter, never wider, and long text scrolls inside the box.
+            </p>
+          </div>
+          <div
+            style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start">
+                <span
+                  style="display: flex; flex-direction: column; gap: 8px; width: 360px">
+                  <span
+                    class="_label_1mu69_66"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                    Notes
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style="position: relative; display: block; box-sizing: border-box; width: 360px; height: 110px; padding: 10px 12px; border: 1px solid #8e978c; border-radius: 8px; background: #ffffff; font-size: 15px; line-height: 22px; color: #18211b; overflow: hidden">
+                    Her baptism record spells the family name Rossau.
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      aria-hidden="true"
+                      style="position: absolute; right: 4px; bottom: 4px; color: #4a544c">
+                      <path d="M2 5h8M2 8.5h8"></path>
+                    </svg>
+                  </span>
+                  <span
+                    class="_small_1mu69_75"
+                    style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                    Sources, stories, anything the fields can't hold.
+                  </span>
+                </span>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                M · app. Label 14 / 20 · 600, 8 above; text 15 / 22 (16 / 24 on
+                a phone); padding 10 12; helper 13 / 20 in ink-3, 8 below.
+              </figcaption>
+            </figure>
+            <figure
+              style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+              <div style="display: flex; align-items: flex-start; gap: 12px">
+                <span
+                  aria-hidden="true"
+                  style="position: relative; display: block; box-sizing: border-box; width: 360px; height: 154px; padding: 10px 12px; border: 1px solid #4a544c; border-radius: 8px; background: #ffffff; font-size: 15px; line-height: 22px; color: #18211b; overflow: hidden">
+                  Her baptism record spells the family name Rossau. Six children
+                  are named in the family Bible.
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    style="position: absolute; right: 4px; bottom: 4px; color: #4a544c">
+                    <path d="M2 5h8M2 8.5h8"></path>
+                  </svg>
+                </span>
+                <svg
+                  width="20"
+                  height="154"
+                  viewBox="0 0 20 154"
+                  fill="none"
+                  stroke="#4A544C"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true">
+                  <path d="M10 112v38M5 117l5-5 5 5M5 145l5 5 5-5"></path>
+                </svg>
+              </div>
+              <figcaption
+                style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                Resizing. The handle at the bottom right drags the box up or
+                down only; the width follows the form. Under the pointer the
+                border takes the hover colour.
+              </figcaption>
+            </figure>
+          </div>
+          <figure
+            aria-label="Long text field states"
+            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
+            <div
+              style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; padding: 12px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              <span>Component</span>
+              <span>Default</span>
+              <span>Hover</span>
+              <span>Focus (keyboard)</span>
+              <span>Disabled</span>
+              <span>Long content</span>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; align-items: center; min-height: 80px; padding: 16px 0; border-bottom: 1px solid #E2E5DD">
+              <span style="display: flex; flex-direction: column; gap: 2px">
+                <span
+                  style="font-size: 14px; line-height: 20px; font-weight: 600">
+                  Long text field
+                </span>
+                <span
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C">
+                  Notes · drawn 4 lines tall
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-self: start">
+                <span
+                  style="position: relative; display: block; box-sizing: border-box; width: 190px; height: 110px; padding: 10px 12px; border: 1px solid #8e978c; border-radius: 8px; background: #ffffff; font-size: 15px; line-height: 22px; color: #18211b; overflow: hidden">
+                  Her baptism record spells the family name Rossau.
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    style="position: absolute; right: 4px; bottom: 4px; color: #4a544c">
+                    <path d="M2 5h8M2 8.5h8"></path>
+                  </svg>
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-self: start">
+                <span
+                  style="position: relative; display: block; box-sizing: border-box; width: 190px; height: 110px; padding: 10px 12px; border: 1px solid #4a544c; border-radius: 8px; background: #ffffff; font-size: 15px; line-height: 22px; color: #18211b; overflow: hidden">
+                  Her baptism record spells the family name Rossau.
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    style="position: absolute; right: 4px; bottom: 4px; color: #4a544c">
+                    <path d="M2 5h8M2 8.5h8"></path>
+                  </svg>
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-self: start">
+                <span
+                  style="position: relative; display: block; box-sizing: border-box; width: 190px; height: 110px; padding: 9px 11px; border: 2px solid #264f29; border-radius: 8px; background: #ffffff; font-size: 15px; line-height: 22px; color: #18211b; overflow: hidden">
+                  Her baptism record spells the family name Rossau.
+                  <span
+                    style="display: inline-block; width: 1px; height: 20px; margin-left: 1px; vertical-align: -4px; background: #18211b"></span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    style="position: absolute; right: 3px; bottom: 3px; color: #4a544c">
+                    <path d="M2 5h8M2 8.5h8"></path>
+                  </svg>
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-self: start">
+                <span
+                  style="position: relative; display: block; box-sizing: border-box; width: 190px; height: 110px; padding: 10px 12px; border: 1px solid #e2e5dd; border-radius: 8px; background: #f4f5f0; font-size: 15px; line-height: 22px; color: #6e776f; overflow: hidden">
+                  Her baptism record spells the family name Rossau.
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    style="position: absolute; right: 4px; bottom: 4px; color: #6e776f">
+                    <path d="M2 5h8M2 8.5h8"></path>
+                  </svg>
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: inline-flex; align-items: center; gap: 8px; width: 100%; justify-self: start">
+                <span
+                  style="position: relative; display: block; box-sizing: border-box; width: 190px; height: 110px; padding: 10px 12px; border: 1px solid #8e978c; border-radius: 8px; background: #ffffff; font-size: 15px; line-height: 22px; color: #18211b; overflow: hidden">
+                  Her baptism record spells the family name Rossau. Six children
+                  are named in the family Bible. The farm passed to the eldest
+                  son.
+                  <span
+                    style="position: absolute; right: 3px; top: 6px; width: 4px; height: 44px; border-radius: 2px; background: #8e978c"></span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    style="position: absolute; right: 4px; bottom: 4px; color: #4a544c">
+                    <path d="M2 5h8M2 8.5h8"></path>
+                  </svg>
+                </span>
+              </span>
+            </div>
+          </figure>
+          <p
+            style="margin: 0; font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 780px">
+            Drawn by hand: the design system has no long text field yet. The box
+            copies the real TextField exactly: border, radius, text, and the
+            hover, focus and disabled colours. The label and helper are the real
+            Text. Long content scrolls inside the box; the box never grows by
+            itself.
+          </p>
+          <div
+            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <h3
+                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                Measurements
+              </h3>
+              <div
+                role="table"
+                aria-label="Long text field measurements"
+                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Height
+                  </span>
+                  <span role="cell">
+                    The screen sets where it starts (240 on the person form).
+                    Drawn here 4 lines tall: 4 × 22 + 10 + 10 + 2
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    <span style="font-style: italic; color: #4A544C">
+                      no token
+                    </span>
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Border
+                  </span>
+                  <span role="cell">
+                    1px field-border; hover 1px ink-3; focus 2px brand, padding
+                    1 less to keep the text still; disabled 1px line
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    colour.field-border · colour.ink-3 · colour.brand ·
+                    colour.line
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Radius
+                  </span>
+                  <span role="cell">8, as the text field</span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    radius.control
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Padding
+                  </span>
+                  <span role="cell">10 12 · 9 11 on focus</span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    space.12
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Text
+                  </span>
+                  <span role="cell">
+                    15 / 22 in ink, 16 / 24 on a phone; disabled ink-disabled on
+                    surface-2
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    type.body · type.body-l · colour.ink-disabled ·
+                    colour.surface-2
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Label, helper
+                  </span>
+                  <span role="cell">
+                    Label 14 / 20 · 600, 8 above · helper 13 / 20 in ink-3, 8
+                    below. An error replaces the helper, as on the text field
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    type.label · type.small · space.8
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Resize
+                  </span>
+                  <span role="cell">
+                    Up and down only. Handle 12 × 12, 4 from the bottom right,
+                    in ink-3 (ink-disabled when disabled)
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    colour.ink-3 · colour.ink-disabled
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Long content
+                  </span>
+                  <span role="cell">
+                    Scrolls inside the box. Drawn scroll thumb 4 wide in
+                    field-border
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    colour.field-border
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <h3
+                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                Accessibility
+              </h3>
+              <dl
+                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Label
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    A real
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      &lt;textarea&gt;
+                    </code>
+                    with a visible
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      &lt;label for&gt;.
+                    </code>
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Helper
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      aria-describedby
+                    </code>
+                    points at the helper, or at the error when there is one.
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Length
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    It takes a
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      maxLength.
+                    </code>
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Keyboard
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    Tab to reach. Enter starts a new line and never submits the
+                    form. The handle is for a pointer only: the text scrolls, so
+                    nothing is out of reach without it.
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Focus
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    The 2px brand border is the focus mark, as on the text
+                    field. No outline.
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-label="Person row"
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Person row
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
+              One person in the People list. The whole row is a link to edit
+              them. A second line shows only when it helps: a maiden name, or
+              the spelling a search matched.
+            </p>
+          </div>
+          <figure
+            style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+            <div style="display: flex; align-items: flex-start">
+              <section
+                aria-label="Person rows"
+                style="flex: none; width: 960px; background: #ffffff; border: 1px solid #e2e5dd; border-radius: 12px; overflow: hidden">
+                <div
+                  aria-hidden="true"
+                  style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; padding: 12px 20px; text-transform: uppercase; color: #4a544c">
+                  <span
+                    class="_overline_1mu69_95"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                    Name
+                  </span>
+                  <span
+                    class="_overline_1mu69_95"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                    Born
+                  </span>
+                  <span
+                    class="_overline_1mu69_95"
+                    style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                    Died
+                  </span>
+                  <span></span>
+                </div>
+                <ul style="list-style: none; margin: 0; padding: 0">
+                  <li style="border-top: 1px solid #e2e5dd">
+                    <a
+                      href="person-edit.html"
+                      style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none">
+                      <span
+                        style="display: flex; flex-direction: column; min-width: 0">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Hendrik Willem
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Born
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1832
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Died
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1899
+                        </span>
+                      </span>
+                      <span
+                        class="link"
+                        style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                        Edit
+                        <svg
+                          aria-hidden="true"
+                          data-icon="forward"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li style="border-top: 1px solid #e2e5dd">
+                    <a
+                      href="person-edit.html"
+                      style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none">
+                      <span
+                        style="display: flex; flex-direction: column; min-width: 0">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Susanna
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          née Fourie
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Born
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          c. 1835
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Died
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1901
+                        </span>
+                      </span>
+                      <span
+                        class="link"
+                        style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                        Edit
+                        <svg
+                          aria-hidden="true"
+                          data-icon="forward"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li style="border-top: 1px solid #e2e5dd">
+                    <a
+                      href="person-edit.html"
+                      style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none">
+                      <span
+                        style="display: flex; flex-direction: column; min-width: 0">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          du Toit, Maria Magdalena
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          née Rossouw · Matches the spelling “Dutoit”
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Born
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          c. 1856
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Died
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1930
+                        </span>
+                      </span>
+                      <span
+                        class="link"
+                        style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                        Edit
+                        <svg
+                          aria-hidden="true"
+                          data-icon="forward"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li style="border-top: 1px solid #e2e5dd">
+                    <a
+                      href="person-edit.html"
+                      style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none">
+                      <span
+                        style="display: flex; flex-direction: column; min-width: 0">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Rossouw, Johanna Petronella
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Born
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1878
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Died
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          —
+                        </span>
+                      </span>
+                      <span
+                        class="link"
+                        style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                        Edit
+                        <svg
+                          aria-hidden="true"
+                          data-icon="forward"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                  <li style="border-top: 1px solid #e2e5dd">
+                    <a
+                      href="person-edit.html"
+                      style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none">
+                      <span
+                        style="display: flex; flex-direction: column; min-width: 0">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Fourie, Pieter
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Born
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          bef. 1840
+                        </span>
+                      </span>
+                      <span style="display: flex; flex-direction: column">
+                        <span
+                          style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                          Died
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          Deceased
+                        </span>
+                      </span>
+                      <span
+                        class="link"
+                        style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                        Edit
+                        <svg
+                          aria-hidden="true"
+                          data-icon="forward"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16">
+                          <path d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <figcaption
+              style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 780px">
+              The rows, at the People list's 960 width: plain; with a maiden
+              name; with a maiden name and the matched spelling; no death date;
+              marked deceased with no date.
+            </figcaption>
+          </figure>
+          <figure
+            aria-label="Person row states"
+            style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
+            <div
+              style="display: grid; grid-template-columns: 190px minmax(0, 960px); gap: 16px; padding: 12px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+              <span>State</span>
+              <span>Person row</span>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 190px minmax(0, 960px); gap: 16px; align-items: center; min-height: 80px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="font-size: 14px; line-height: 20px; font-weight: 600">
+                Default
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: block; border-top: 1px solid #e2e5dd; border-bottom: 1px solid #e2e5dd">
+                <span
+                  style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none; background: #ffffff">
+                  <span
+                    style="display: flex; flex-direction: column; min-width: 0">
+                    <span
+                      class="_title_1mu69_39"
+                      style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                      Botha, Susanna
+                    </span>
+                    <span
+                      class="_small_1mu69_75"
+                      style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                      née Fourie
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Born
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      c. 1835
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Died
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      1901
+                    </span>
+                  </span>
+                  <span
+                    class="link"
+                    style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                    Edit
+                    <svg
+                      aria-hidden="true"
+                      data-icon="forward"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="16">
+                      <path d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </span>
+                </span>
+              </span>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 190px minmax(0, 960px); gap: 16px; align-items: center; min-height: 80px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="font-size: 14px; line-height: 20px; font-weight: 600">
+                Hover
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: block; border-top: 1px solid #e2e5dd; border-bottom: 1px solid #e2e5dd">
+                <span
+                  style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none; background: #f4f5f0">
+                  <span
+                    style="display: flex; flex-direction: column; min-width: 0">
+                    <span
+                      class="_title_1mu69_39"
+                      style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                      Botha, Susanna
+                    </span>
+                    <span
+                      class="_small_1mu69_75"
+                      style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                      née Fourie
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Born
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      c. 1835
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Died
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      1901
+                    </span>
+                  </span>
+                  <span
+                    class="link"
+                    style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                    Edit
+                    <svg
+                      aria-hidden="true"
+                      data-icon="forward"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="16">
+                      <path d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </span>
+                </span>
+              </span>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 190px minmax(0, 960px); gap: 16px; align-items: center; min-height: 80px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="font-size: 14px; line-height: 20px; font-weight: 600">
+                Focus (keyboard)
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: block; border-top: 1px solid #e2e5dd; border-bottom: 1px solid #e2e5dd">
+                <span
+                  style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none; background: #ffffff; outline: 2px solid #264f29; outline-offset: 2px">
+                  <span
+                    style="display: flex; flex-direction: column; min-width: 0">
+                    <span
+                      class="_title_1mu69_39"
+                      style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                      Botha, Susanna
+                    </span>
+                    <span
+                      class="_small_1mu69_75"
+                      style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                      née Fourie
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Born
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      c. 1835
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Died
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      1901
+                    </span>
+                  </span>
+                  <span
+                    class="link"
+                    style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #264f29; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                    Edit
+                    <svg
+                      aria-hidden="true"
+                      data-icon="forward"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="16">
+                      <path d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </span>
+                </span>
+              </span>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 190px minmax(0, 960px); gap: 16px; align-items: center; min-height: 80px; padding: 12px 0; border-bottom: 1px solid #E2E5DD">
+              <span
+                style="font-size: 14px; line-height: 20px; font-weight: 600">
+                Pressed
+              </span>
+              <span
+                aria-hidden="true"
+                style="display: block; border-top: 1px solid #e2e5dd; border-bottom: 1px solid #e2e5dd">
+                <span
+                  style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: 16px; align-items: center; min-height: 52px; box-sizing: border-box; padding: 8px 20px; color: #18211b; text-decoration: none; background: #eef0ea">
+                  <span
+                    style="display: flex; flex-direction: column; min-width: 0">
+                    <span
+                      class="_title_1mu69_39"
+                      style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                      Botha, Susanna
+                    </span>
+                    <span
+                      class="_small_1mu69_75"
+                      style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                      née Fourie
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Born
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      c. 1835
+                    </span>
+                  </span>
+                  <span style="display: flex; flex-direction: column">
+                    <span
+                      style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">
+                      Died
+                    </span>
+                    <span
+                      class="_mono_1mu69_114"
+                      style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                      1901
+                    </span>
+                  </span>
+                  <span
+                    class="link"
+                    style='justify-self: end; display: inline-flex; align-items: center; gap: 4px; color: #163019; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; line-height: 22px; font-weight: 500; letter-spacing: normal; font-style: normal;'>
+                    Edit
+                    <svg
+                      aria-hidden="true"
+                      data-icon="forward"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="16">
+                      <path d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </span>
+                </span>
+              </span>
+            </div>
+          </figure>
+          <p
+            style="margin: 0; font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 780px">
+            Drawn by hand: the design system has no PersonRow yet. It copies the
+            People list row exactly. The name, second line and dates are the
+            real Text, and the arrow is the real Icon. No disabled state: a link
+            has none.
+          </p>
+          <div
+            style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <h3
+                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                Measurements
+              </h3>
+              <div
+                role="table"
+                aria-label="Person row measurements"
+                style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Height
+                  </span>
+                  <span role="cell">min 52; a second line makes it taller</span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    size.row-l
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Grid
+                  </span>
+                  <span role="cell">
+                    name 1fr · Born 160 · Died 160 · Edit 72; gap 16
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    space.16
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Padding
+                  </span>
+                  <span role="cell">8 20</span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    space.8 · space.20
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Name
+                  </span>
+                  <span role="cell">
+                    “Surname, Given names”, 15 / 22 · 600 in ink
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    type.title
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Second line
+                  </span>
+                  <span role="cell">
+                    13 / 20 in ink-3, only when needed: “née {maiden}”, then
+                    “Matches the spelling “{variant}”” when a search matched a
+                    variant; joined with “ · ”
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    type.small
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Born, Died
+                  </span>
+                  <span role="cell">
+                    12 / 16 mono. Died shows “—” with no date and “Deceased”
+                    when marked deceased
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    type.mono
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Edit
+                  </span>
+                  <span role="cell">
+                    15 / 22 · 500 in brand, forward icon 16, 4 apart
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    type.link · space.4 · colour.brand
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Rows
+                  </span>
+                  <span role="cell">
+                    1px line between rows; the list is a white panel, radius 12,
+                    1px line border
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    colour.line · radius.panel
+                  </span>
+                </div>
+                <div
+                  role="row"
+                  style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <span
+                    role="rowheader"
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    States
+                  </span>
+                  <span role="cell">
+                    hover surface-2 · pressed segment, Edit in brand-pressed ·
+                    focus the 2px ring, 2 out
+                  </span>
+                  <span
+                    role="cell"
+                    style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                    colour.surface-2 · colour.segment · colour.brand-pressed ·
+                    focus.ring
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <h3
+                style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                Accessibility
+              </h3>
+              <dl
+                style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Role
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    One real
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      a
+                    </code>
+                    with an
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      href
+                    </code>
+                    to the edit page wraps the whole row. “Edit” is part of it,
+                    not a second link.
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Name
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    The link reads the name, the second line, then “Born 1832”,
+                    “Died 1899” and “Edit”. “Born” and “Died” are visually
+                    hidden: the column heads are
+                    <code
+                      style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                      aria-hidden.
+                    </code>
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Keyboard
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    Tab to reach, Enter to follow.
+                  </dd>
+                </div>
+                <div
+                  style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                  <dt
+                    style="font-size: 14px; line-height: 20px; font-weight: 600">
+                    Phone
+                  </dt>
+                  <dd style="margin: 0; color: #2E3A33">
+                    Not drawn here: the phone row comes with M2.9.7.
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </body>

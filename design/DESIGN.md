@@ -172,14 +172,14 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 `docs/architecture.md` has the component-folder rule. Import a component as `@ks/app/components/<folder>/<Name>`. These folders hold the shared components:
 
-| Folder       | Holds                                                                              |
-| ------------ | ---------------------------------------------------------------------------------- |
-| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                  |
-| `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
-| `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField                        |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                             |
-| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                     |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                         |
+| Folder       | Holds                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                             |
+| `actions`    | Button, IconButton, TextLink, PersonRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
+| `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                    |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                        |
+| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                                |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                    |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
@@ -191,6 +191,8 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.
 - **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
 - **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
+- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, radius 8, padding 10 12, `type.body` (`type.body-l` on phones). It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border.
+- **Person row:** the whole row is a link to edit. Grid: name, Born, Died, then "Edit" with the forward icon. Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. Born and Died are `type.mono`. Died shows "—" with no date, and "Deceased" when marked deceased. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.

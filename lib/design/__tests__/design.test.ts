@@ -49,7 +49,7 @@ describe('colour literals', () => {
   ).toSorted();
 
   it('finds the components and the CSS modules', () => {
-    expect(components).toHaveLength(59);
+    expect(components).toHaveLength(61);
     expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 

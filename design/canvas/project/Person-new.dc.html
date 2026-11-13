@@ -95,9 +95,7 @@
         </div>
 
         <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0">
-          <label for="p-notes"><x-import component-from-global-scope="KinScape.Text" variant="label" as="span">Notes</x-import></label>
-          <textarea id="p-notes" aria-describedby="p-notes-help" onChange="{{onNotes}}" onFocus="{{notesUi.onFocus}}" onBlur="{{notesUi.onBlur}}" onMouseEnter="{{notesUi.onEnter}}" onMouseLeave="{{notesUi.onLeave}}" style="{{notesUi.style}}">{{notes}}</textarea>
-          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="p-notes-help">Sources, stories, anything the fields can't hold.</x-import>
+          <x-import component-from-global-scope="KinScape.TextAreaField" label="Notes" helper="Sources, stories, anything the fields can't hold." value="{{notes}}" on-change="{{onNotes}}"></x-import>
         </div>
 
       </div>
@@ -270,7 +268,6 @@ class Component extends DCLogic {
       onNotes: (e) => this.setState({ notes: e.target.value }),
       onSex: (e) => this.setState({ sex: e.target.value }),
       sexOptions: [{ label: 'Male', value: 'male' }, { label: 'Female', value: 'female' }, { label: 'Intersex', value: 'intersex' }, { label: 'Unknown', value: 'unknown' }],
-      notesUi: Object.assign({}, this.pointer('notes'), { style: 'flex: 1; min-height: 240px; resize: vertical; box-sizing: border-box; border-radius: var(--radius-control); background: var(--surface); font-family: var(--font-body); font-size: 15px; line-height: 22px; color: var(--ink); ' + this.fieldLook('notes', '', true) }),
       birth: this.dateView('birth'),
       death: this.dateView('death'),
       deceased: s.deceased || deathTyped,

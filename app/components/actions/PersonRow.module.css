@@ -1,0 +1,70 @@
+/* The People-list row: name, Born, Died and Edit. Its border and the list's header belong to the page. */
+.row {
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: minmax(0, 1fr) 160px 160px 72px;
+  min-height: var(--size-row-l);
+  padding: var(--space-8) var(--space-20);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .row:hover {
+    background: var(--surface-2);
+  }
+}
+
+.row[data-state='hover'] {
+  background: var(--surface-2);
+}
+
+.row:is(:active, [data-state='active']) {
+  background: var(--segment);
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* A column, so the 12 / 16 mono text does not sit on a 15 / 22 line. */
+.date {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Names the date for a screen reader. */
+.hidden {
+  border: 0;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+/* The link font, with no underline: the whole row is the link. */
+.edit {
+  align-items: center;
+  color: var(--brand);
+  display: inline-flex;
+  font-family: var(--type-link-font);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+  gap: var(--space-4);
+  justify-self: end;
+  letter-spacing: var(--type-link-tracking);
+  line-height: var(--type-link-line);
+}
+
+.row:is(:active, [data-state='active']) .edit {
+  color: var(--brand-pressed);
+}

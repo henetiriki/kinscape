@@ -298,6 +298,25 @@ export declare const ActionBar: ({ children }: {
 }) => import("react").JSX.Element;
 export type ActionBarProps = Parameters<typeof ActionBar>[0];
 
+/**
+ * One row of the people list, and one link to edit the Person. The page gives the dates as text.
+ * Died reads `died`, then "Deceased" when `deceased`, then "—".
+ */
+export declare const PersonRow: ({ born, deceased, died, givenNames, maidenName, matchedVariant, state, surname, ...rest }: {
+    born: string;
+    /** Marked deceased with no date. */
+    deceased?: boolean;
+    died?: string;
+    givenNames: string;
+    href: string;
+    maidenName?: string;
+    /** A spelling variant that matched the filter when the name did not. */
+    matchedVariant?: string;
+    state?: ControlState;
+    surname: string;
+} & Omit<ComponentProps<"a">, "children" | "className" | "href">) => import("react").JSX.Element;
+export type PersonRowProps = Parameters<typeof PersonRow>[0];
+
 /** A single-line field with its label and, below it, helper text or an error that replaces it. */
 export declare const TextField: ({ date, defaultShown, error, helper, hideLabel, label, mark, shortcut, size, state, type, ...rest }: {
     /** The map date look: 188px wide, mono, centred. `fill` takes the width of its container instead. */
@@ -320,6 +339,14 @@ export declare const TextField: ({ date, defaultShown, error, helper, hideLabel,
     type?: "email" | "password" | "search" | "text";
 } & Omit<ComponentProps<"input">, "className" | "id" | "size" | "type">) => import("react").JSX.Element;
 export type TextFieldProps = Parameters<typeof TextField>[0];
+
+/** A multi-line field with its label and helper text. It resizes up and down only; long content scrolls inside it. */
+export declare const TextAreaField: ({ helper, label, state, ...rest }: {
+    helper?: ReactNode;
+    label: string;
+    state?: ControlState;
+} & Omit<ComponentProps<"textarea">, "className" | "id">) => import("react").JSX.Element;
+export type TextAreaFieldProps = Parameters<typeof TextAreaField>[0];
 
 /** A checkbox with no label of its own: name it with `aria-label`, or use `CheckboxField`. */
 export declare const Checkbox: ({ state, ...rest }: {

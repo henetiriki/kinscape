@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 import { Button } from '@ks/app/components/actions/Button';
 
 type Props = Omit<
-  ComponentProps<typeof Button>,
+  Extract<ComponentProps<typeof Button>, { href?: undefined }>,
   'children' | 'icon' | 'label' | 'variant'
 >;
 

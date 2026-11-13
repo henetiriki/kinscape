@@ -13,6 +13,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as React from 'react';
+import { isValidElement } from 'react';
 import * as ReactDOM from 'react-dom';
 import {
   afterAll,
@@ -26,6 +27,7 @@ import {
 } from 'vitest';
 
 import { standInDom } from '@ks/__tests__/dom-stand-ins';
+import { ActionBar } from '@ks/app/components/actions/ActionBar';
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
@@ -48,6 +50,7 @@ import { TokenField } from '@ks/app/components/forms/TokenField';
 import { Avatar } from '@ks/app/components/foundation/Avatar';
 import { Divider } from '@ks/app/components/foundation/Divider';
 import { Icon, PATHS } from '@ks/app/components/foundation/Icon';
+import { BackLink, PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
@@ -104,6 +107,16 @@ const states = (
   [`${name} · disabled`, make(undefined, true)],
 ];
 
+/** A link has no disabled state: default, then the three states. */
+const links = (
+  name: string,
+  make: (state: (typeof STATES)[number] | undefined) => ReactElement
+): [string, ReactElement][] =>
+  [undefined, ...STATES].map(state => [
+    `${name} · ${state ?? 'default'}`,
+    make(state),
+  ]);
+
 const GROUPS = [
   [
     {
@@ -132,6 +145,68 @@ const HEADINGS = [
 ] as const;
 const OTHERS = Object.keys(DEFAULT_TAG) as (keyof typeof DEFAULT_TAG)[];
 
+const COMPONENTS = {
+  ActionBar,
+  Alert,
+  Avatar,
+  BackLink,
+  Banner,
+  BottomSheet,
+  Button,
+  Callout,
+  Checkbox,
+  CheckboxField,
+  Chip,
+  ChipGroup,
+  DateField,
+  Dialog,
+  DialogPanel,
+  Divider,
+  Icon,
+  IconButton,
+  KeyHint,
+  Menu,
+  MenuPanel,
+  Modal,
+  NoticeCard,
+  PageHeader,
+  Popup,
+  ProgressBar,
+  RemovableChip,
+  Segmented,
+  SelectField,
+  Sheet,
+  SheetPanel,
+  Surface,
+  Tabs,
+  Text,
+  TextField,
+  TextLink,
+  Toast,
+  TokenField,
+  Wordmark,
+};
+
+/** A control in a prop or in the children, as a card lists it. */
+const toSlot = (element: ReactElement<{ children?: string }>) => {
+  const { children, ...props } = element.props;
+
+  return {
+    children,
+    control: Object.entries(COMPONENTS).find(
+      ([, type]) => type === element.type
+    )![0],
+    props,
+  };
+};
+
+const slotted = (value: unknown): unknown =>
+  isValidElement(value)
+    ? toSlot(value as ReactElement<{ children?: string }>)
+    : Array.isArray(value)
+      ? value.map(slotted)
+      : value;
+
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (
   <DateField
@@ -153,6 +228,16 @@ const CASES: [string, ReactElement][] = [
   ...states('Button secondary', (state, disabled) => (
     <Button disabled={disabled} icon='copy' state={state}>
       Copy chain
+    </Button>
+  )),
+  ...links('Button link', state => (
+    <Button href='/people' state={state} variant='primary'>
+      See all people
+    </Button>
+  )),
+  ...links('Button link secondary', state => (
+    <Button href='/people' state={state}>
+      Cancel
     </Button>
   )),
   ...states('IconButton', (state, disabled) => (
@@ -207,6 +292,15 @@ const CASES: [string, ReactElement][] = [
     <TextLink href='/sources' key='small' size='small'>
       Sources
     </TextLink>,
+  ],
+  [
+    'ActionBar · save and cancel',
+    <ActionBar key='bar'>
+      <Button form='person' type='submit' variant='primary'>
+        Save
+      </Button>
+      <Button href='/people'>Cancel</Button>
+    </ActionBar>,
   ],
   ['KeyHint · key', <KeyHint key='key'>/</KeyHint>],
   [
@@ -361,6 +455,16 @@ const CASES: [string, ReactElement][] = [
     </NoticeCard>,
   ],
   [
+    'NoticeCard · link action',
+    <NoticeCard
+      actions={[{ href: '/people', label: 'See all people' }]}
+      icon='info'
+      key='link'
+      title='No match'>
+      Nobody has this name.
+    </NoticeCard>,
+  ],
+  [
     'NoticeCard · loading',
     <NoticeCard key='loading' progress={40} title='Loading boundaries'>
       1910 of 1994.
@@ -436,6 +540,18 @@ const CASES: [string, ReactElement][] = [
     <Wordmark key={size} size={size} />,
   ]),
   ['Wordmark · icon only', <Wordmark iconOnly key='icon' />],
+  ...(['Map', 'People'] as const).map((name): [string, ReactElement] => [
+    `PageHeader · ${name}`,
+    <PageHeader
+      avatar={<Avatar initial='L' />}
+      backHref={`/${name.toLowerCase()}`}
+      backLabel={name}
+      key={name}
+    />,
+  ]),
+  ...links('BackLink', state => (
+    <BackLink href='/map' label='Map' state={state} />
+  )),
   [
     'Menu · closed',
     <Menu {...ACCOUNT} initial='L' key='menu' onSelect={noop} />,
@@ -571,44 +687,6 @@ describe('states', () => {
 });
 
 describe('bundle', () => {
-  const COMPONENTS = {
-    Alert,
-    Avatar,
-    Banner,
-    BottomSheet,
-    Button,
-    Callout,
-    Checkbox,
-    CheckboxField,
-    Chip,
-    ChipGroup,
-    DateField,
-    Dialog,
-    DialogPanel,
-    Divider,
-    Icon,
-    IconButton,
-    KeyHint,
-    Menu,
-    MenuPanel,
-    Modal,
-    NoticeCard,
-    Popup,
-    ProgressBar,
-    RemovableChip,
-    Segmented,
-    SelectField,
-    Sheet,
-    SheetPanel,
-    Surface,
-    Tabs,
-    Text,
-    TextField,
-    TextLink,
-    Toast,
-    TokenField,
-    Wordmark,
-  };
   const read = (path: string) => readFileSync(path, 'utf8');
   const problems: string[] = [];
   let out: string;
@@ -694,7 +772,9 @@ describe('bundle', () => {
   describe('previews', () => {
     const noFunctions = (props: object) =>
       Object.fromEntries(
-        Object.entries(props).filter(([, value]) => typeof value !== 'function')
+        Object.entries(props)
+          .filter(([, value]) => typeof value !== 'function')
+          .map(([key, value]) => [key, slotted(value)])
       );
 
     it.each(CARDS.map(card => [card.name, card] as const))(
@@ -709,7 +789,11 @@ describe('bundle', () => {
           cases.map(([label]) => label)
         );
         expect(
-          card.states.map(({ children, props }) => ({ ...props, children }))
+          card.states.map(({ children, props, slots }) => ({
+            ...props,
+            ...slots,
+            children,
+          }))
         ).toEqual(
           cases.map(([, element]) => noFunctions(element.props as object))
         );

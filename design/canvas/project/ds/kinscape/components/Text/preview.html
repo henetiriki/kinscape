@@ -19,10 +19,17 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["Text"];
   var handlers = [];
   var states = [{"children":"Sample","label":"Text · display","props":{"as":"h1","variant":"display"}},{"children":"Sample","label":"Text · h1","props":{"as":"h1","variant":"h1"}},{"children":"Sample","label":"Text · h2","props":{"as":"h2","variant":"h2"}},{"children":"Sample","label":"Text · h3","props":{"as":"h3","variant":"h3"}},{"children":"Sample","label":"Text · body","props":{"variant":"body"}},{"children":"Sample","label":"Text · bodyL","props":{"variant":"bodyL"}},{"children":"Sample","label":"Text · button","props":{"variant":"button"}},{"children":"Sample","label":"Text · buttonS","props":{"variant":"buttonS"}},{"children":"Sample","label":"Text · caption","props":{"variant":"caption"}},{"children":"Sample","label":"Text · chip","props":{"variant":"chip"}},{"children":"Sample","label":"Text · chipOff","props":{"variant":"chipOff"}},{"children":"Sample","label":"Text · control","props":{"variant":"control"}},{"children":"Sample","label":"Text · credits","props":{"variant":"credits"}},{"children":"Sample","label":"Text · h1Phone","props":{"variant":"h1Phone"}},{"children":"Sample","label":"Text · label","props":{"variant":"label"}},{"children":"Sample","label":"Text · link","props":{"variant":"link"}},{"children":"Sample","label":"Text · linkS","props":{"variant":"linkS"}},{"children":"Sample","label":"Text · mono","props":{"variant":"mono"}},{"children":"Sample","label":"Text · monoL","props":{"variant":"monoL"}},{"children":"Sample","label":"Text · overline","props":{"variant":"overline"}},{"children":"Sample","label":"Text · small","props":{"variant":"small"}},{"children":"Sample","label":"Text · title","props":{"variant":"title"}},{"children":"Sample","label":"Text · body · error","props":{"tone":"error","variant":"body"}},{"children":"Sample","label":"Text · body · info","props":{"tone":"info","variant":"body"}},{"children":"Sample","label":"Text · body · warning","props":{"tone":"warning","variant":"body"}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

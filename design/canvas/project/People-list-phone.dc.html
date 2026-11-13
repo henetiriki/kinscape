@@ -16,12 +16,7 @@
 </helmet>
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--surface); font-family: var(--font-body); color: var(--ink)">
 
-  <header style="position: absolute; left: 0; right: 0; top: 0; height: 60px; box-sizing: border-box; padding: 0 var(--space-16); display: flex; align-items: center; gap: var(--space-8); background: var(--surface); border-bottom: 1px solid var(--line)">
-    <x-import component-from-global-scope="KinScape.Wordmark" icon-only="{{ true }}" size="32"></x-import>
-    <a href="Map-phone.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>Map</a>
-    <span style="flex: 1"></span>
-    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
-  </header>
+  <x-import component-from-global-scope="KinScape.PageHeader" back-href="Map-phone.dc.html" back-label="Map" avatar="{{avatar}}"></x-import>
 
   <main style="position: absolute; left: 0; right: 0; top: 60px; bottom: 0; overflow-y: auto; box-sizing: border-box; padding: var(--space-20) var(--space-16) var(--space-24); display: flex; flex-direction: column; gap: var(--space-16)">
     <div style="display: flex; flex-direction: column; gap: var(--space-4)">
@@ -90,6 +85,7 @@ class Component extends DCLogic {
       rows.push({ name: p.s + ', ' + p.g, years: years, note: note, hasNote: !!note });
     });
     return {
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
       query: this.state.query,
       onQuery: (e) => this.setState({ query: e.target.value }),
       rows: rows,

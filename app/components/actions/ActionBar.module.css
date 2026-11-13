@@ -1,0 +1,47 @@
+.wrap {
+  display: block;
+}
+
+.bar {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  bottom: 0;
+  box-sizing: border-box;
+  height: var(--layout-action-bar);
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: var(--z-action-bar);
+}
+
+.spacer {
+  height: var(--layout-action-bar);
+}
+
+.inner {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-8);
+  height: 100%;
+  margin: 0 auto;
+  /* The content is as wide as the page's form column; the gutter stays on a narrower window. */
+  max-width: calc(var(--layout-content-width) + 2 * var(--size-gutter));
+  padding: 0 var(--size-gutter);
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .bar {
+    height: calc(var(--layout-action-bar) + env(safe-area-inset-bottom));
+  }
+
+  .spacer {
+    height: calc(var(--layout-action-bar) + env(safe-area-inset-bottom));
+  }
+
+  .inner {
+    align-items: flex-start;
+    height: var(--layout-action-bar);
+    padding: var(--space-12) var(--size-gutter-phone) 0;
+  }
+}

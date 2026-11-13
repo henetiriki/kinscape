@@ -16,13 +16,7 @@
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
-  <header style="position: absolute; left: 0; right: 0; top: 0; height: 64px; box-sizing: border-box; padding: 0 var(--space-24); display: flex; align-items: center; gap: var(--space-16); background: var(--surface); border-bottom: 1px solid var(--line)">
-    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
-    <span style="width: 1px; height: 28px; background: var(--line)"></span>
-    <a href="Map.dc.html" class="control" style="height: 44px; display: inline-flex; align-items: center; gap: var(--space-8); padding: 0 var(--space-12) 0 var(--space-8); border-radius: var(--radius-control); color: var(--ink); text-decoration: none"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import>Map</a>
-    <span style="flex: 1"></span>
-    <x-import component-from-global-scope="KinScape.Avatar" initial="L"></x-import>
-  </header>
+  <x-import component-from-global-scope="KinScape.PageHeader" back-href="Map.dc.html" back-label="Map" avatar="{{avatar}}"></x-import>
 
   <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto">
     <div style="width: 960px; margin: 0 auto; padding: var(--space-32) 0 var(--space-48); display: flex; flex-direction: column; gap: var(--space-24)">
@@ -34,7 +28,7 @@
             <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" role="status">{{countText}}</x-import>
           </sc-if>
         </div>
-        <x-import component-from-global-scope="KinScape.Button" variant="primary">Add a person</x-import>
+        <x-import component-from-global-scope="KinScape.Button" variant="primary" href="Person-new.dc.html">Add a person</x-import>
       </div>
 
       <sc-if value="{{showFilter}}" hint-placeholder-val="{{ true }}">
@@ -140,7 +134,8 @@ class Component extends DCLogic {
       noMatchTitle: 'No one matches “' + this.state.query.trim() + '”',
       noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }],
       showEmpty: view === 'empty',
-      showFailed: failed
+      showFailed: failed,
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null
     };
   }
 }

@@ -100,14 +100,16 @@ const data = (value: unknown): string =>
   JSON.stringify(value).replaceAll('<', '\\u003c');
 
 const STYLE = (
-  pad: number
+  pad: number,
+  contain: boolean
 ) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
-.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0; }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
 .ks-label { color: var(--ink-3); }`;
 
 /** The card's preview: a root and one script that mounts each state of `window.KinScape.<name>`. */
 export const previewHtml = ({
+  contain = false,
   group,
   handlers,
   height,
@@ -121,7 +123,7 @@ export const previewHtml = ({
 <head>
 <meta charset="utf-8" />
 <style>
-${STYLE(pad)}
+${STYLE(pad, contain)}
 </style>
 </head>
 <body>
@@ -133,10 +135,17 @@ ${STYLE(pad)}
   var Control = window.${NAMESPACE}[${data(name)}];
   var handlers = ${data(handlers)};
   var states = ${data(states)};
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.${NAMESPACE}[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

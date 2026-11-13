@@ -172,20 +172,23 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 `docs/architecture.md` has the component-folder rule. Import a component as `@ks/app/components/<folder>/<Name>`. These folders hold the shared components:
 
-| Folder       | Holds                                                                   |
-| ------------ | ----------------------------------------------------------------------- |
-| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark                   |
-| `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint |
-| `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField             |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                  |
-| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                          |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm              |
+| Folder       | Holds                                                                              |
+| ------------ | ---------------------------------------------------------------------------------- |
+| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                  |
+| `actions`    | Button, IconButton, TextLink, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
+| `forms`      | TextField, SelectField, TokenField, Checkbox, CheckboxField                        |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                             |
+| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                     |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                         |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
-- **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
+- **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states, and it has no disabled state.
+- **Page header:** a 64px white bar (60px on a phone) with a bottom `--line` border. It holds the Wordmark (icon only on a phone), a divider, the back link and the Avatar at the right.
+- **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the icon button.
+- **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.
 - **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
 - **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
@@ -195,7 +198,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - **Date dock:** step back, a typed date field, step forward, Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that is the 1652–today slider with epoch ticks and the contested years hatched. The thumb snaps to each step at the chosen precision. The date field is the only date readout. Then "Jump to" epoch buttons and keyboard hints.
 - **Phone date sheet:** a non-modal bottom sheet, 152px collapsed and 432px expanded, with a grabber ("Expand the sheet"). Collapsed: the stepper around the date field and a round Play. Expanded adds the slider. No precision, speed, Jump to or hints.
 - **Jurisdiction popup:** "On this spot in {year}", the place name valid on that date, coordinates in mono, then the jurisdiction chain as level / name rows, then pins at that spot.
-- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. It shows empty and loading states.
+- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. A button can be a link. It shows empty and loading states.
 - **Banner:** `--ink` background, white text, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.
 - **Dialog:** centred over a `--scrim`, radius 12, close button top right.

@@ -4,14 +4,16 @@ An action: primary for the one main action in a view, secondary for the rest.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
-- **Secondary button:** white, 1px `--line-strong` border, `--ink` text.
+- **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states, and it has no disabled state.
 
 ## Props
 
 | Prop | Type | Required | Description |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | no |  |
+| `disabled` | `boolean` | no |  |
 | `full` | `boolean` | no | Fills the width of its container. |
+| `href` | `string` | no |  |
 | `icon` | `"menu" \| "search" \| "alert" \| "back" \| "chevronDown" \| "close" \| "cloudOff" \| "copy" \| "document" \| "done" \| "error" \| "export" \| "eye" \| "eyeOff" \| "fit" \| "forward" \| "info" \| "layers" \| "people" \| "place" \| "play" \| "signOut" \| "success" \| "warning" \| "zoomIn" \| "zoomOut"` | no | A leading icon, or the only content of an icon-only Button. |
 | `label` | `string` | no |  |
 | `round` | `boolean` | no | Fully round, as Play. |
@@ -19,6 +21,6 @@ An action: primary for the one main action in a view, secondary for the rest.
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
 | `variant` | `"primary" \| "secondary"` | no |  |
 
-It takes one of these forms. Required props: `children`; or `icon`, `label`.
+It takes one of these forms. Required props: `children`, `href`; or `children`; or `href`, `icon`, `label`; or `icon`, `label`.
 
 The other attributes of its HTML element go to the element.

@@ -116,11 +116,29 @@ const grid = (name: string, make: Make): State[] => [
   { label: `${name} · disabled`, ...make(undefined, true) },
 ];
 
-const one = (label: string, props: State['props'], children?: string) => ({
+/** A link has no disabled state: default, then the three states. */
+const linkGrid = (
+  name: string,
+  make: (state: (typeof FOCUS)[number] | undefined) => Omit<State, 'label'>
+): State[] =>
+  [undefined, ...FOCUS].map(state => ({
+    label: `${name} · ${state ?? 'default'}`,
+    ...make(state),
+  }));
+
+const one = (
+  label: string,
+  props: State['props'],
+  children?: State['children'],
+  slots?: State['slots']
+) => ({
   children,
   label,
   props,
+  slots,
 });
+
+const AVATAR = { control: 'Avatar', props: { initial: 'L' } };
 
 const dateField = (props: State['props'] = {}) => ({
   // The first Map date, today, and a day between.
@@ -149,7 +167,7 @@ export const CARDS: Card[] = [
     design: ['Buttons', 'Primary button', 'Secondary button'],
     group: 'Actions',
     handlers: [],
-    height: 220,
+    height: 520,
     name: 'Button',
     pad: 0,
     states: [
@@ -160,6 +178,14 @@ export const CARDS: Card[] = [
       ...grid('Button secondary', (state, disabled) => ({
         children: 'Copy chain',
         props: { disabled, icon: 'copy', state },
+      })),
+      ...linkGrid('Button link', state => ({
+        children: 'See all people',
+        props: { href: '/people', state, variant: 'primary' },
+      })),
+      ...linkGrid('Button link secondary', state => ({
+        children: 'Cancel',
+        props: { href: '/people', state },
       })),
     ],
   },
@@ -266,6 +292,25 @@ export const CARDS: Card[] = [
     states: [
       one('KeyHint · key', {}, '/'),
       one('KeyHint · decorative', { decorative: true }, '/'),
+    ],
+  },
+  {
+    contain: true,
+    design: ['Action bar'],
+    group: 'Actions',
+    handlers: [],
+    height: 240,
+    name: 'ActionBar',
+    pad: 0,
+    states: [
+      one('ActionBar · save and cancel', {}, [
+        {
+          children: 'Save',
+          control: 'Button',
+          props: { form: 'person', type: 'submit', variant: 'primary' },
+        },
+        { children: 'Cancel', control: 'Button', props: { href: '/people' } },
+      ]),
     ],
   },
   {
@@ -460,7 +505,7 @@ export const CARDS: Card[] = [
     design: ['Notice card'],
     group: 'Feedback',
     handlers: [],
-    height: 580,
+    height: 680,
     name: 'NoticeCard',
     pad: 0,
     states: [
@@ -481,6 +526,15 @@ export const CARDS: Card[] = [
           title: 'Map not loaded',
         },
         'Check your connection.'
+      ),
+      one(
+        'NoticeCard · link action',
+        {
+          actions: [{ href: '/people', label: 'See all people' }],
+          icon: 'info',
+          title: 'No match',
+        },
+        'Nobody has this name.'
       ),
       one(
         'NoticeCard · loading',
@@ -600,6 +654,33 @@ export const CARDS: Card[] = [
       ...[32, 36, 44].map(size => one(`Wordmark · ${size}`, { size })),
       one('Wordmark · icon only', { iconOnly: true }),
     ],
+  },
+  {
+    design: ['Page header'],
+    group: 'Foundation',
+    handlers: [],
+    height: 260,
+    name: 'PageHeader',
+    pad: 0,
+    states: ['Map', 'People'].map(name =>
+      one(
+        `PageHeader · ${name}`,
+        { backHref: `/${name.toLowerCase()}`, backLabel: name },
+        undefined,
+        { avatar: AVATAR }
+      )
+    ),
+  },
+  {
+    design: ['Back link'],
+    group: 'Foundation',
+    handlers: [],
+    height: 260,
+    name: 'BackLink',
+    pad: 0,
+    states: linkGrid('BackLink', state => ({
+      props: { href: '/map', label: 'Map', state },
+    })),
   },
   {
     design: ['Menu'],

@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <title>KinScape style guide — Surfaces and overlays — part 1 of 2</title>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
 </head>
 <body>
 <x-dc>
@@ -97,6 +100,10 @@
     <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
       <div style="display: flex; align-items: flex-start"><div style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap"><div style="width: 380px; box-sizing: border-box; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; padding: 20px; gap: 8px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#264F29" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">No pins yet</span><span style="font-size: 15px; line-height: 22px; color: #2E3A33">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</span></div></div></div>
       <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Large · no pins in the tree: 28 icon on top, H3 title (22 / 28). Sits in the middle of the map.</figcaption>
+    </figure>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <div style="display: flex; align-items: flex-start"><div style="padding: 24px; border-radius: 12px; background: #C9D5D2; display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap"><div style="width: 360px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); display: flex; flex-direction: column; padding: var(--space-16); gap: var(--space-12)"><div style="display: flex; gap: var(--space-12); align-items: flex-start"><span style="flex: none; display: inline-flex; margin-top: 1px; color: var(--pin)"><x-import component-from-global-scope="KinScape.Icon" name="people" size="20"></x-import></span><div style="display: flex; flex-direction: column; gap: 4px"><span class="title" style="color: var(--ink)">Nobody matches your search</span><span class="body" style="color: var(--ink-2)">Clear the search to see everyone in the tree.</span></div></div><div style="display: flex; gap: var(--space-8); padding-left: var(--space-32)"><a href="People-list.dc.html" class="button-s" style="display: inline-flex; align-items: center; justify-content: center; gap: var(--space-8); height: 40px; padding: 0 var(--space-16); box-sizing: border-box; border-radius: var(--radius-control); white-space: nowrap; text-decoration: none; border: 0; color: var(--white); background: var(--brand)">See all people</a></div></div></div></div>
+      <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Action as a link · See all people opens the people list, so the action is a link that looks like the button. Drawn by hand: the NoticeCard action can't be a link in the design system yet. It copies the real NoticeCard and Button exactly; the people icon is the real Icon.</figcaption>
     </figure>
   </div>
 
@@ -199,7 +206,7 @@
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4309}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":4623}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

@@ -3,6 +3,12 @@ import type { Metadata } from 'next';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { boardTitle } from '@ks/app/design-kit/boards';
 import {
+  ActionBarSection,
+  BackLinkSection,
+  ButtonLinks,
+  PageHeaderSection,
+} from '@ks/app/design-kit/inputs/pageParts';
+import {
   Alerts,
   Buttons,
   CheckboxFields,
@@ -23,11 +29,11 @@ export const metadata: Metadata = { title: boardTitle('inputs') };
 const OTHER_PART = {
   1: {
     href: '/design-kit/inputs',
-    text: 'Part 1: buttons, text fields, chips',
+    text: 'Part 1: buttons, text fields, chips and button links',
   },
   2: {
     href: '/design-kit/inputs?part=2',
-    text: 'Part 2: tabs, checkbox fields, alerts, dividers and key hints',
+    text: 'Part 2: tabs, checkbox fields, alerts, dividers, key hints, page header, back link and action bar',
   },
 } as const;
 
@@ -73,6 +79,10 @@ const InputsKit = async ({
       <Alerts />
       <Dividers />
       <KeyHints />
+      <PageHeaderSection />
+      <BackLinkSection />
+      <ActionBarSection />
+      <ButtonLinks />
     </main>
   );
 };

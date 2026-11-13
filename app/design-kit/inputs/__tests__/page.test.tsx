@@ -9,7 +9,7 @@ const show = async (part?: string | string[]) =>
   render(await InputsKit({ searchParams: Promise.resolve({ part }) }));
 
 // NFR-06
-it('shows the eight sections in board order, each with Measurements and Accessibility', async () => {
+it('shows the twelve sections in board order, each with Measurements and Accessibility', async () => {
   await show();
 
   expect(
@@ -26,10 +26,14 @@ it('shows the eight sections in board order, each with Measurements and Accessib
     'Alerts',
     'Dividers',
     'Key hints',
+    'Page header',
+    'Back link',
+    'Action bar',
+    'Button as a link',
   ]);
   expect(
     screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
-  ).toEqual(Array(8).fill(['Measurements', 'Accessibility']).flat());
+  ).toEqual(Array(12).fill(['Measurements', 'Accessibility']).flat());
 });
 
 it('draws each interactive component in five states, in the order drawn', async () => {
@@ -176,4 +180,102 @@ it('treats any other part as part 1', async () => {
   await show(['2', '1']);
 
   expect(screen.getByRole('main').dataset.part).toBe('1');
+});
+
+// PPL-01
+it('draws the page header with the back text, a header and the Avatar, twice', async () => {
+  await show();
+
+  const header = within(screen.getByRole('region', { name: 'Page header' }));
+  const backs = header.getAllByRole('link');
+
+  expect(backs.map(link => link.textContent)).toEqual(['Map', 'People']);
+  expect(header.getAllByRole('button', { name: 'Account menu' })).toHaveLength(
+    2
+  );
+  expect(
+    header.getAllByText('Back to', { exact: false }).length
+  ).toBeGreaterThan(0);
+});
+
+// PPL-01
+it('draws the back link in four states and never disabled, as links that are only drawn', async () => {
+  await show();
+
+  const matrix = screen.getByRole('figure', { name: 'Back link states' });
+
+  expect(
+    [...matrix.querySelectorAll('.stateLabel')].map(label => label.textContent)
+  ).toEqual([
+    'Default',
+    'Hover',
+    'Focus',
+    'Pressed',
+    'Default',
+    'Hover',
+    'Focus',
+    'Pressed',
+  ]);
+  expect(matrix.querySelectorAll('a')).toHaveLength(8);
+  expect(
+    [...matrix.querySelectorAll('a')].map(a => a.getAttribute('data-state'))
+  ).toEqual(Array(2).fill([null, 'hover', 'focus', 'active']).flat());
+  expect(matrix.querySelectorAll('.cell[inert]')).toHaveLength(8);
+  expect(matrix.querySelector('figcaption')!.textContent).toMatch(
+    /^Drawn by hand with the real back Icon/
+  );
+});
+
+// PPL-01
+it('draws the action bar with Save, then Cancel as a link, and the safe area', async () => {
+  await show();
+
+  const bar = within(screen.getByRole('region', { name: 'Action bar' }));
+  const buttons = bar.getAllByRole('button');
+
+  expect(buttons.map(button => button.textContent)).toEqual(['Save']);
+  expect(bar.getByRole('link', { name: 'Cancel' }).getAttribute('href')).toBe(
+    '/'
+  );
+  expect(bar.getByText('Bottom of the window').className).toBe('barLabel');
+  expect(
+    bar.getByText('Safe area of the device').parentElement!.className
+  ).toBe('safeArea');
+});
+
+// PPL-01
+it('draws the Button link in three forms and four states, with no disabled column', async () => {
+  await show();
+
+  const matrix = screen.getByRole('figure', { name: 'Button link states' });
+
+  expect(
+    [
+      ...matrix.querySelectorAll('.row:not(.columns) > .name > :first-child'),
+    ].map(name => name.textContent)
+  ).toEqual(['Primary', 'Secondary', 'Primary, card']);
+  expect(matrix.querySelectorAll('a[href]')).toHaveLength(12);
+  expect(matrix.querySelectorAll('button')).toHaveLength(0);
+  expect(matrix.textContent).not.toContain('Disabled');
+  expect(
+    [...matrix.querySelectorAll('a')].map(a => a.textContent).slice(0, 12)
+  ).toEqual([
+    ...Array(4).fill('Add a person'),
+    ...Array(4).fill('Cancel'),
+    ...Array(4).fill('See all people'),
+  ]);
+});
+
+it('puts the button links in part 1 and the page parts in part 2', async () => {
+  await show();
+
+  const part = (name: string) =>
+    screen.getByRole('region', { name }).getAttribute('data-part');
+
+  expect(part('Button as a link')).toBe('1');
+  expect(['Page header', 'Back link', 'Action bar'].map(part)).toEqual([
+    '2',
+    '2',
+    '2',
+  ]);
 });

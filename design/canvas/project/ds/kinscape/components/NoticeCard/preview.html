@@ -1,4 +1,4 @@
-<!-- @dsCard group="Feedback" height=580 -->
+<!-- @dsCard group="Feedback" height=680 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,11 +18,18 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["NoticeCard"];
   var handlers = [];
-  var states = [{"children":"The 1910 provinces are off.","label":"NoticeCard · one action","props":{"actions":[{"label":"Undo"}],"icon":"info","title":"Layer hidden"}},{"children":"Check your connection.","label":"NoticeCard · two actions","props":{"actions":[{"label":"Retry"},{"label":"Dismiss"}],"icon":"warning","title":"Map not loaded"}},{"children":"1910 of 1994.","label":"NoticeCard · loading","props":{"progress":40,"title":"Loading boundaries"}},{"children":"Add a Person to see them on the map.","label":"NoticeCard · large","props":{"icon":"info","size":"large","title":"No ancestors yet"}},{"children":"The 1910 provinces are off.","label":"NoticeCard · phone","props":{"actions":[{"label":"Undo"}],"icon":"info","phone":true,"title":"Layer hidden"}}];
+  var states = [{"children":"The 1910 provinces are off.","label":"NoticeCard · one action","props":{"actions":[{"label":"Undo"}],"icon":"info","title":"Layer hidden"}},{"children":"Check your connection.","label":"NoticeCard · two actions","props":{"actions":[{"label":"Retry"},{"label":"Dismiss"}],"icon":"warning","title":"Map not loaded"}},{"children":"Nobody has this name.","label":"NoticeCard · link action","props":{"actions":[{"href":"/people","label":"See all people"}],"icon":"info","title":"No match"}},{"children":"1910 of 1994.","label":"NoticeCard · loading","props":{"progress":40,"title":"Loading boundaries"}},{"children":"Add a Person to see them on the map.","label":"NoticeCard · large","props":{"icon":"info","size":"large","title":"No ancestors yet"}},{"children":"The 1910 provinces are off.","label":"NoticeCard · phone","props":{"actions":[{"label":"Undo"}],"icon":"info","phone":true,"title":"Layer hidden"}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

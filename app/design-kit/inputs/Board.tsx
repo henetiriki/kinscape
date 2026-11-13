@@ -16,8 +16,16 @@ const COLUMNS: MatrixColumn[] = [
   { column: 'disabled', title: 'Disabled' },
 ];
 
+/** The columns of a link: it is never disabled. */
+export const LINK_COLUMNS = COLUMNS.filter(
+  ({ column }) => column !== 'disabled'
+);
+
 export const stateOf = (column: Column): ControlState | undefined =>
   column === 'default' || column === 'disabled' ? undefined : column;
+
+// The board keeps the space after a code inside it, so the space is set in mono too.
+export const code = (text: string) => <code>{`${text} `}</code>;
 
 /** Draws `desktop` on a desktop and `phone` on a phone, where the board says or draws them differently. */
 export const ByViewport = ({
@@ -52,7 +60,7 @@ export const Section = ({
   title,
 }: {
   children: ReactNode;
-  lead: string;
+  lead: ReactNode;
   part: 1 | 2;
   /** The lead a phone shows instead. */
   phoneLead?: string;
@@ -99,10 +107,13 @@ export const Variants = ({ children }: { children: ReactNode }) => (
 export const Matrix = ({
   columns = COLUMNS,
   label,
+  note,
   rows,
 }: {
   columns?: MatrixColumn[];
   label: string;
+  /** The line under the last row. */
+  note?: ReactNode;
   rows: {
     /** Drawn on a desktop only. */
     desktop?: boolean;
@@ -129,7 +140,7 @@ export const Matrix = ({
       <div
         className={styles.row}
         data-desktop={desktop || undefined}
-        key={name}>
+        key={`${name} ${hint}`}>
         <span className={styles.name}>
           <span>{name}</span>
           <span className={styles.hint}>
@@ -150,6 +161,7 @@ export const Matrix = ({
         ))}
       </div>
     ))}
+    {note && <figcaption className={styles.matrixNote}>{note}</figcaption>}
   </figure>
 );
 

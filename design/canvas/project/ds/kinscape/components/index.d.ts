@@ -192,7 +192,7 @@ type Base = {
     size?: 'l' | 'm' | 's' | 'xs';
     state?: ControlState;
     variant?: 'primary' | 'secondary';
-} & Omit<ComponentProps<'button'>, 'aria-label' | 'children' | 'className'>;
+};
 type Content = {
     children: ReactNode;
     label?: string;
@@ -201,8 +201,18 @@ type Content = {
     icon: IconName;
     label: string;
 };
-/** An action: primary for the one main action in a view, secondary for the rest. */
-export declare const Button: ({ children, full, icon, label, round, size, state, variant, ...rest }: Base & Content) => import("react").JSX.Element;
+type ElementProps = ({
+    disabled?: never;
+    href: string;
+} & Base & Omit<ComponentProps<'a'>, 'href' | Omitted>) | ({
+    href?: never;
+} & Base & Omit<ComponentProps<'button'>, Omitted>);
+type Omitted = 'aria-label' | 'children' | 'className';
+/**
+ * An action: primary for the one main action in a view, secondary for the rest.
+ * With an `href` it draws a plain `<a>` with the same look and states.
+ */
+export declare const Button: ({ children, full, icon, label, round, size, state, variant, ...rest }: Content & ElementProps) => import("react").JSX.Element;
 export type ButtonProps = Parameters<typeof Button>[0];
 
 /** An action shown only as an icon, such as zoom, close or step, named by its `label`. */
@@ -277,6 +287,16 @@ export declare const KeyHint: ({ children, decorative, }: {
     decorative?: boolean;
 }) => import("react").JSX.Element;
 export type KeyHintProps = Parameters<typeof KeyHint>[0];
+
+/**
+ * The bar fixed to the bottom of the window, with the page's buttons as children: a primary, then a secondary.
+ * Save is `type='submit'` with a `form` attribute, because the bar sits outside the page's form.
+ * It draws a spacer of its own height, so the end of the page is not behind it.
+ */
+export declare const ActionBar: ({ children }: {
+    children: ReactNode;
+}) => import("react").JSX.Element;
+export type ActionBarProps = Parameters<typeof ActionBar>[0];
 
 /** A single-line field with its label and, below it, helper text or an error that replaces it. */
 export declare const TextField: ({ date, defaultShown, error, helper, hideLabel, label, mark, shortcut, size, state, type, ...rest }: {
@@ -430,7 +450,9 @@ declare const CalloutPointer: ({ className }: {
 }) => import("react").JSX.Element;
 export type CalloutProps = Parameters<typeof Callout>[0];
 
+/** With an `href` the action is a link. */
 type Action = {
+    href?: string;
     label: string;
     onClick?: () => void;
 };
@@ -559,6 +581,24 @@ export declare const Wordmark: ({ iconOnly, size, }: {
     size?: keyof typeof NAME;
 }) => import("react").JSX.Element;
 export type WordmarkProps = Parameters<typeof Wordmark>[0];
+
+/** The 44px link back to the page above, with the back icon. It is an anchor, not `next/link`. */
+export declare const BackLink: ({ href, label, state, }: {
+    href: string;
+    label: string;
+    state?: ControlState;
+}) => import("react").JSX.Element;
+/**
+ * The bar at the top of a page: the Wordmark, a divider, the back link and the Avatar at the right.
+ * The page passes the Avatar in and decides what it opens. A phone shows the icon-only Wordmark.
+ */
+export declare const PageHeader: ({ avatar, backHref, backLabel, }: {
+    avatar?: ReactNode;
+    backHref: string;
+    backLabel: string;
+}) => import("react").JSX.Element;
+export type PageHeaderProps = Parameters<typeof PageHeader>[0];
+export type BackLinkProps = Parameters<typeof BackLink>[0];
 
 /** One row: an icon and a label, with a second line if `detail` is set. A look when `state` is. */
 declare const MenuItem: ({ entry, onSelect, state, }: {

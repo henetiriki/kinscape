@@ -1,4 +1,4 @@
-<!-- @dsCard group="Actions" height=220 -->
+<!-- @dsCard group="Actions" height=520 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,11 +18,18 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["Button"];
   var handlers = [];
-  var states = [{"label":"Button · default","children":"Sign in","props":{"disabled":false,"variant":"primary"}},{"label":"Button · active","children":"Sign in","props":{"disabled":false,"state":"active","variant":"primary"}},{"label":"Button · focus","children":"Sign in","props":{"disabled":false,"state":"focus","variant":"primary"}},{"label":"Button · hover","children":"Sign in","props":{"disabled":false,"state":"hover","variant":"primary"}},{"label":"Button · disabled","children":"Sign in","props":{"disabled":true,"variant":"primary"}},{"label":"Button secondary · default","children":"Copy chain","props":{"disabled":false,"icon":"copy"}},{"label":"Button secondary · active","children":"Copy chain","props":{"disabled":false,"icon":"copy","state":"active"}},{"label":"Button secondary · focus","children":"Copy chain","props":{"disabled":false,"icon":"copy","state":"focus"}},{"label":"Button secondary · hover","children":"Copy chain","props":{"disabled":false,"icon":"copy","state":"hover"}},{"label":"Button secondary · disabled","children":"Copy chain","props":{"disabled":true,"icon":"copy"}}];
+  var states = [{"label":"Button · default","children":"Sign in","props":{"disabled":false,"variant":"primary"}},{"label":"Button · active","children":"Sign in","props":{"disabled":false,"state":"active","variant":"primary"}},{"label":"Button · focus","children":"Sign in","props":{"disabled":false,"state":"focus","variant":"primary"}},{"label":"Button · hover","children":"Sign in","props":{"disabled":false,"state":"hover","variant":"primary"}},{"label":"Button · disabled","children":"Sign in","props":{"disabled":true,"variant":"primary"}},{"label":"Button secondary · default","children":"Copy chain","props":{"disabled":false,"icon":"copy"}},{"label":"Button secondary · active","children":"Copy chain","props":{"disabled":false,"icon":"copy","state":"active"}},{"label":"Button secondary · focus","children":"Copy chain","props":{"disabled":false,"icon":"copy","state":"focus"}},{"label":"Button secondary · hover","children":"Copy chain","props":{"disabled":false,"icon":"copy","state":"hover"}},{"label":"Button secondary · disabled","children":"Copy chain","props":{"disabled":true,"icon":"copy"}},{"label":"Button link · default","children":"See all people","props":{"href":"/people","variant":"primary"}},{"label":"Button link · active","children":"See all people","props":{"href":"/people","state":"active","variant":"primary"}},{"label":"Button link · focus","children":"See all people","props":{"href":"/people","state":"focus","variant":"primary"}},{"label":"Button link · hover","children":"See all people","props":{"href":"/people","state":"hover","variant":"primary"}},{"label":"Button link secondary · default","children":"Cancel","props":{"href":"/people"}},{"label":"Button link secondary · active","children":"Cancel","props":{"href":"/people","state":"active"}},{"label":"Button link secondary · focus","children":"Cancel","props":{"href":"/people","state":"focus"}},{"label":"Button link secondary · hover","children":"Cancel","props":{"href":"/people","state":"hover"}}];
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
     handlers.forEach(function (handler) { props[handler] = noop; });
-    var control = state.children === undefined ? h(Control, props) : h(Control, props, state.children);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
     return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {

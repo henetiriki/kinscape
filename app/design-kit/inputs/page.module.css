@@ -306,6 +306,82 @@
   display: none;
 }
 
+/* The page header and action bar samples: the part on the grey of the page, in a rounded frame. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.shot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+}
+
+.shotCaption,
+.matrixNote {
+  color: var(--ink-3);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line);
+  max-width: 780px;
+}
+
+.matrixNote {
+  padding-top: var(--space-24);
+}
+
+.frame,
+.barStage {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+
+.frameFoot {
+  height: 48px;
+}
+
+.barStage {
+  height: 200px;
+  position: relative;
+}
+
+.barLabel,
+.safeArea span {
+  color: var(--ink-3);
+  font-size: var(--type-overline-size);
+  font-weight: var(--type-overline-weight);
+  letter-spacing: var(--type-overline-tracking);
+  line-height: var(--type-overline-line);
+  text-transform: uppercase;
+}
+
+.barLabel {
+  left: var(--space-24);
+  position: absolute;
+  top: var(--space-16);
+}
+
+/* The bar is fixed to the window; `contain` makes this box its window. */
+.barBox {
+  bottom: 0;
+  contain: layout;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* Only a phone draws the safe area below the 72. */
+.safeArea {
+  display: none;
+}
+
 .facts {
   align-items: start;
   display: grid;
@@ -485,8 +561,52 @@
     width: 100%;
   }
 
+  .stack {
+    gap: var(--space-20);
+  }
+
+  .shotCaption,
+  .matrixNote {
+    max-width: none;
+  }
+
+  .matrixNote {
+    padding-top: var(--space-8);
+  }
+
+  .frameFoot {
+    height: 32px;
+  }
+
+  .barStage {
+    height: 240px;
+  }
+
+  .barLabel {
+    left: var(--space-16);
+    top: var(--space-12);
+  }
+
+  .barBox {
+    bottom: 34px;
+  }
+
+  .safeArea {
+    align-items: center;
+    background: var(--surface);
+    border-top: 1px dashed var(--line-strong);
+    bottom: 0;
+    box-sizing: border-box;
+    display: flex;
+    height: 34px;
+    justify-content: center;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+
   /* A card's buttons are 44 tall on a phone, with the 15 / 22 label. */
-  .cardButton button[data-size] {
+  .cardButton :is(button, a)[data-size] {
     font-size: var(--type-control-size);
     height: var(--size-control);
     line-height: var(--type-control-line);

@@ -228,6 +228,26 @@ export const NoticeCards = () => (
           </NoticeCard>
         </Stage>
       </Variant>
+      <Variant
+        caption={
+          <>
+            Action as a link · See all people opens the people list, so the
+            action is a link that looks like the button. Drawn by hand: the
+            NoticeCard action can&apos;t be a link in the design system yet. It
+            copies the real NoticeCard and Button exactly; the people icon is
+            the real Icon.
+            <ByViewport desktop='' phone=' 44 tall on a phone.' />
+          </>
+        }>
+        <Stage compact>
+          <NoticeCard
+            actions={[{ href: '/', label: 'See all people' }]}
+            icon='people'
+            title='Nobody matches your search'>
+            Clear the search to see everyone in the tree.
+          </NoticeCard>
+        </Stage>
+      </Variant>
     </Variants>
     <Facts
       accessibility={[

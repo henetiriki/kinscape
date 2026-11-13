@@ -34,6 +34,28 @@ it('is a status that never takes focus, with its buttons in reading order', () =
   expect(screen.queryByRole('progressbar')).toBeNull();
 });
 
+// PPL-01
+it('draws an action with an href as a link and one without as a button', () => {
+  render(
+    <NoticeCard
+      actions={[
+        { href: '/people', label: 'See all people' },
+        { label: 'Hide' },
+      ]}
+      title='No match'>
+      Nobody has this name.
+    </NoticeCard>
+  );
+
+  const link = screen.getByRole('link', { name: 'See all people' });
+
+  expect(link.getAttribute('href')).toBe('/people');
+  expect(link.className).toContain('btnPrimary');
+  expect(screen.getAllByRole('button').map(b => b.textContent)).toEqual([
+    'Hide',
+  ]);
+});
+
 it('draws the plain, phone and large forms', () => {
   const { rerender } = render(<NoticeCard title='Title'>Line</NoticeCard>);
   const card = () => screen.getByRole('status');

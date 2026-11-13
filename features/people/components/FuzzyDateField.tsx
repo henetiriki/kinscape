@@ -26,7 +26,7 @@ const problemOf = (text: string): null | string => {
 
 /**
  * A GEDCOM date typed as text. Under the input, one slot shows the helper, the reading of a
- * date that parses, or the error. It checks on Enter or when focus leaves, never while typing.
+ * date that parses, or the error. It checks on Enter or when focus leaves, never while the user types.
  * An error stays with the text until the next check.
  */
 export const FuzzyDateField = ({
@@ -36,9 +36,9 @@ export const FuzzyDateField = ({
   state,
   ...rest
 }: {
-  /** Text to start with; it is checked on the first render, unless `state` is `focus`. */
+  /** Text to start with. The field checks it on the first render, unless `state` is `focus`. */
   defaultValue?: string;
-  /** Shown while the text is empty or does not read as a date yet. */
+  /** The slot shows it while the text is empty or does not read as a date. */
   helper?: ReactNode;
   label: string;
   state?: ControlState;
@@ -59,8 +59,13 @@ export const FuzzyDateField = ({
   const [error, setError] = useState<null | string>(() =>
     state === 'focus' ? null : problemOf(defaultValue)
   );
+  // A new count at each check gives the error a new element, so a screen reader reads a repeat.
+  const [checks, setChecks] = useState(0);
   const parsed = parseFuzzyDate(text);
-  const check = () => setError(problemOf(text));
+  const check = () => {
+    setError(problemOf(text));
+    setChecks(count => count + 1);
+  };
 
   return (
     <div className={styles.field}>
@@ -82,7 +87,11 @@ export const FuzzyDateField = ({
           onBlur={check}
           onChange={event => setText(event.target.value)}
           onKeyDown={event => {
-            if (event.key === 'Enter') check();
+            if (event.key !== 'Enter') return;
+
+            // In a form, Enter also submits the date that the check rejects.
+            if (problemOf(text) !== null) event.preventDefault();
+            check();
           }}
           type='text'
           value={text}
@@ -91,7 +100,7 @@ export const FuzzyDateField = ({
       </span>
       <div aria-live='polite' id={slotId}>
         {error ? (
-          <Text as='p' role='alert' tone='error' variant='small'>
+          <Text as='p' key={checks} role='alert' tone='error' variant='small'>
             {error}
           </Text>
         ) : parsed.ok ? (

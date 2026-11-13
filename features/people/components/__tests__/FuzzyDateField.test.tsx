@@ -93,6 +93,34 @@ it('checks on Enter, not on another key', () => {
   );
 });
 
+it('stops a form from submitting a bad date on Enter, and no other date or key', () => {
+  const field = setup();
+
+  type(field, '31 FEB 1850');
+  expect(fireEvent.keyDown(field, { key: 'Enter' })).toBe(false);
+  expect(fireEvent.keyDown(field, { key: 'a' })).toBe(true);
+  type(field, 'ABT 1850');
+  expect(fireEvent.keyDown(field, { key: 'Enter' })).toBe(true);
+  type(field, '');
+  expect(fireEvent.keyDown(field, { key: 'Enter' })).toBe(true);
+});
+
+it('draws a new alert at each check, so a screen reader reads a repeat error again', () => {
+  const field = setup();
+
+  type(field, '31 FEB 1850');
+  fireEvent.blur(field);
+
+  const first = screen.getByRole('alert');
+
+  fireEvent.blur(field);
+
+  const second = screen.getByRole('alert');
+
+  expect(second).not.toBe(first);
+  expect(second.textContent).toBe(first.textContent);
+});
+
 it('keeps the error while typing, and the next check replaces it', () => {
   const field = setup();
 
@@ -161,7 +189,7 @@ it('sets the input in 15 / 22 Mono from a token, ligatures off, and 16 / 24 on a
   expect(phone).toContain('line-height: var(--type-body-l-line)');
 });
 
-it('draws the line under the box as a paragraph, so a block of 20px sits under it and not an inline span in a taller line', () => {
+it('draws the line under the box as a 20px paragraph, not an inline span in a taller line', () => {
   const field = setup();
 
   expect(slot().firstElementChild!.tagName).toBe('P');

@@ -10,7 +10,7 @@ import {
   Variants,
 } from '@ks/app/design-kit/inputs/Board';
 import { FuzzyDateField } from '@ks/features/people';
-import { LONG_NOTES } from '@ks/lib/design/samples.mts';
+import { FUZZY_DATE_HELPER, LONG_NOTES } from '@ks/lib/design/samples.mts';
 
 import styles from '@ks/app/design-kit/inputs/page.module.css';
 
@@ -122,8 +122,6 @@ export const LongTextFields = () => (
   </Section>
 );
 
-const DATE_HELPER = 'For example 1850, ABT 1850 or BET 1850 AND 1855.';
-
 export const FuzzyDateFields = () => (
   <Section
     lead='For a date typed as GEDCOM text, such as a Person’s birth. A reading follows the typing. An error shows when the user leaves the field or presses Enter.'
@@ -132,14 +130,14 @@ export const FuzzyDateFields = () => (
     <Variants>
       <Variant caption='Empty · the helper under the field.'>
         <div className={styles.dateField}>
-          <FuzzyDateField helper={DATE_HELPER} label='Born' />
+          <FuzzyDateField helper={FUZZY_DATE_HELPER} label='Born' />
         </div>
       </Variant>
       <Variant caption='Typing, not readable · the text and the same helper. No error while the user types.'>
         <div className={styles.dateField} inert>
           <FuzzyDateField
             defaultValue='BET 1850 AND 18'
-            helper={DATE_HELPER}
+            helper={FUZZY_DATE_HELPER}
             label='Born, typing'
             state='focus'
           />
@@ -149,7 +147,7 @@ export const FuzzyDateFields = () => (
         <div className={styles.dateField}>
           <FuzzyDateField
             defaultValue='BET 1850 AND 1855'
-            helper={DATE_HELPER}
+            helper={FUZZY_DATE_HELPER}
             label='Born, readable'
           />
         </div>
@@ -157,7 +155,7 @@ export const FuzzyDateFields = () => (
       <Variant caption='Focus · a 2px brand border.'>
         <div className={styles.dateField} inert>
           <FuzzyDateField
-            helper={DATE_HELPER}
+            helper={FUZZY_DATE_HELPER}
             label='Born, focus'
             state='focus'
           />
@@ -167,7 +165,7 @@ export const FuzzyDateFields = () => (
         <div className={styles.dateField} inert>
           <FuzzyDateField
             defaultValue='31 FEB 1850'
-            helper={DATE_HELPER}
+            helper={FUZZY_DATE_HELPER}
             label='Born, error'
           />
         </div>
@@ -176,7 +174,7 @@ export const FuzzyDateFields = () => (
         <div className={styles.dateField}>
           <FuzzyDateField
             disabled
-            helper={DATE_HELPER}
+            helper={FUZZY_DATE_HELPER}
             label='Born, disabled'
           />
         </div>

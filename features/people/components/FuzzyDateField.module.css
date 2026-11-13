@@ -26,7 +26,7 @@
   line-height: var(--type-mono-m-line);
 }
 
-/* 16 / 24 on phones, so the browser doesn't zoom in. */
+/* 16 / 24 on phones, so the browser does not zoom in. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .input {
     font-size: var(--type-body-l-size);

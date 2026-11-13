@@ -2,7 +2,12 @@
 
 import type { Card, State } from '#ks/lib/design/types.ts';
 
-import { CHAIN, LONG_NOTES, PINS } from '#ks/lib/design/samples.mts';
+import {
+  CHAIN,
+  FUZZY_DATE_HELPER,
+  LONG_NOTES,
+  PINS,
+} from '#ks/lib/design/samples.mts';
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
@@ -148,8 +153,6 @@ const dateField = (props: State['props'] = {}) => ({
   precision: 'day',
   ...props,
 });
-
-const FUZZY_HELPER = 'For example 1850, ABT 1850 or BET 1850 AND 1855.';
 
 const BAD_DATES = [
   ['wrong format', '14/06/1901'],
@@ -474,31 +477,34 @@ export const CARDS: Card[] = [
     name: 'FuzzyDateField',
     pad: 0,
     states: [
-      one('FuzzyDateField · empty', { helper: FUZZY_HELPER, label: 'Born' }),
+      one('FuzzyDateField · empty', {
+        helper: FUZZY_DATE_HELPER,
+        label: 'Born',
+      }),
       one('FuzzyDateField · typing', {
         defaultValue: 'BET 1850 AND 18',
-        helper: FUZZY_HELPER,
+        helper: FUZZY_DATE_HELPER,
         label: 'Born',
         state: 'focus',
       }),
       one('FuzzyDateField · readable', {
         defaultValue: 'BET 1850 AND 1855',
-        helper: FUZZY_HELPER,
+        helper: FUZZY_DATE_HELPER,
         label: 'Born',
       }),
       one('FuzzyDateField · focus', {
-        helper: FUZZY_HELPER,
+        helper: FUZZY_DATE_HELPER,
         label: 'Born',
         state: 'focus',
       }),
       one('FuzzyDateField · error', {
         defaultValue: '31 FEB 1850',
-        helper: FUZZY_HELPER,
+        helper: FUZZY_DATE_HELPER,
         label: 'Born',
       }),
       one('FuzzyDateField · disabled', {
         disabled: true,
-        helper: FUZZY_HELPER,
+        helper: FUZZY_DATE_HELPER,
         label: 'Born',
       }),
     ],

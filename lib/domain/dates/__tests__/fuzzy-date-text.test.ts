@@ -70,6 +70,15 @@ describe('fuzzyDateMessage', () => {
     expect(message(text)).toBe(expected);
   });
 
+  it.each(['0 MAR 1850', '00 MAR 1850', 'ABT 0 MAR 1850'])(
+    '%s gets the syntax message, because day 0 is in no month',
+    text => {
+      expect(message(text)).toBe(
+        'Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.'
+      );
+    }
+  );
+
   it.each([
     ['BET 1855 AND 1850', 'Put the earlier date first: BET 1850 AND 1855.'],
     [

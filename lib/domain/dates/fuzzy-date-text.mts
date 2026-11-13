@@ -57,7 +57,13 @@ const noSuchDay = (texts: string[]): null | string => {
     const parsed = parseDate(text);
 
     if (!parsed.ok && parsed.error === 'no-such-day') {
-      const [, month, year] = /([A-Z]{3}) (\d{1,4})$/.exec(text)!;
+      const [, day, month, year] = /^(\d{1,2}) ([A-Z]{3}) (\d{1,4})$/.exec(
+        text
+      )!;
+
+      // Day 0 is in no month, so no month length says what to change.
+      if (Number(day) < 1) return null;
+
       const index = MONTH_NAMES.findIndex(
         name => name.slice(0, 3).toUpperCase() === month
       );
@@ -80,7 +86,7 @@ const reversed = (text: string): null | string => {
 
 /**
  * The message for an error of `parseFuzzyDate`. `no-such-day` and `reversed` read `text` again,
- * because the error kind does not say which month or dates are meant.
+ * because the error kind does not say which month or dates the text names.
  */
 export const fuzzyDateMessage = (
   error: FuzzyDateError,

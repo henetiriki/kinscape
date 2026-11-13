@@ -608,6 +608,23 @@
       "h": 844,
       "title": "Account menu with People, phone (copy of Map-phone-account)",
       "page": "people"
+    },
+    "Person-conflict.dc.html": {
+      "x": 6550,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — edit, changed while editing",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-not-found.dc.html": {
+      "x": 8070,
+      "y": 1320,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — not found",
+      "page": "people"
     }
   },
   "order": [
@@ -679,7 +696,9 @@
     "Person-form-phone.dc.html",
     "Fuzzy-date-readings.dc.html",
     "Map-account-people.dc.html",
-    "Map-phone-account-people.dc.html"
+    "Map-phone-account-people.dc.html",
+    "Person-conflict.dc.html",
+    "Person-not-found.dc.html"
   ],
   "notes": {
     "people-list-title": {
@@ -695,7 +714,7 @@
       "y": 1020,
       "text": "Person — one form for add and edit",
       "kind": "title1",
-      "maxW": 6470,
+      "maxW": 9510,
       "page": "people"
     },
     "people-ref-title": {

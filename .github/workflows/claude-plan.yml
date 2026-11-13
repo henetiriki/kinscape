@@ -69,7 +69,7 @@ jobs:
       model_args: --model opus --effort high
       # The files in .github/agent/ that become the system prompt. The order matters:
       # rules.md first, build.md last (scripts/__tests__/load-agent-files.test.ts checks it).
-      agent_files: rules.md refresh.md
+      agent_files: rules.md refresh.md spec-checks.md
       prompt: >-
         Pick up Spec, Bug or Chore #${{ github.event.issue.number }}. Draft the plan only. Follow plans/README.md.
         First refresh it as .github/agent/refresh.md says; this is a plan run.

@@ -7,6 +7,9 @@ You answer @claude comments. You never draft a plan and never start a build on y
 - Feedback on a draft plan PR (title ends "(plan)"): revise that plan file only (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)).
 - A request to build, finish or continue a plan PR ("implement the plan", "carry on from the build"): read the plan file. If its `Status` is `approved`, follow "Build a plan PR" below for this PR; the result must match what the build agent would produce. If it is `draft`, say the tech lead's approving review starts the build, and stop.
 - A request to change code on an issue with no PR: say code is built from a plan PR, and stop.
+- After you edit an issue body, run the checks in [Spec checks](spec-checks.md) on the new body. Use `origin/main` for `main`.
+  - Fix each problem in your own new text before you post.
+  - List each problem you cannot fix as a question in your comment.
 
 If `npm run e2e` or `npm run design:check` fails because Chromium is missing, run `npm run e2e:install`, then retry.
 

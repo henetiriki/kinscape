@@ -85,10 +85,11 @@ jobs:
       playwright: true
       # The files in .github/agent/ that become the system prompt. The order matters: respond.md
       # points to build.md "below", so build.md comes after it.
-      agent_files: rules.md respond.md build.md
-      # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules and the
-      # respond and build instructions are the system prompt. Planning is the hard thinking, so a
-      # plan PR (its title ends "(plan)") gets the stronger Opus model and everything else Sonnet.
+      agent_files: rules.md respond.md spec-checks.md build.md
+      # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules, the
+      # respond and build instructions and the Spec checks are the system prompt. Planning is
+      # the hard thinking, so a plan PR (its title ends "(plan)") gets the stronger Opus model
+      # and everything else Sonnet.
       model_args: >-
         ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
     secrets:

@@ -649,14 +649,14 @@ describe('the refresh job of claude-unblock.yml', () => {
       step.uses?.startsWith('anthropics/claude-code-action@')
     );
 
-  it('loads rules.md and refresh.md with refresh-settings.json, once', () => {
+  it('loads rules.md, refresh.md and spec-checks.md with refresh-settings.json, once', () => {
     const loaders = refresh().steps.filter(step =>
       step.uses?.includes('load-agent-files')
     );
 
     expect(loaders).toHaveLength(1);
     expect(loaders[0].with).toMatchObject({
-      files: 'rules.md refresh.md',
+      files: 'rules.md refresh.md spec-checks.md',
       settings: 'refresh-settings.json',
       token: '${{ github.token }}',
     });
@@ -746,7 +746,9 @@ describe('the plan run', () => {
   it('loads refresh.md and tells Claude this is a plan run', () => {
     const plan = read('claude-plan.yml');
 
-    expect(plan).toMatch(/^\s*agent_files: rules\.md refresh\.md$/m);
+    expect(plan).toMatch(
+      /^\s*agent_files: rules\.md refresh\.md spec-checks\.md$/m
+    );
     expect(plan).toContain(
       'First refresh it as .github/agent/refresh.md says; this is a plan run.'
     );
@@ -1528,14 +1530,32 @@ describe('the composite actions', () => {
 // A typo is a 404 on the first live run; the order is the order Claude reads them, with
 // rules.md first and build.md last (respond.md points to build.md "below").
 describe('the agent files a workflow loads', () => {
-  it.each([
+  const lists = [
     ['claude-respond.yml', /^\s*agent_files: (.+)$/m],
     ['claude-plan.yml', /^\s*agent_files: (.+)$/m],
     ['claude-build.yml', /^\s*agent_files: (.+)$/m],
     ['claude-fix-review.yml', /^\s*agent_files: (.+)$/m],
     ['claude-resolve-conflict.yml', /^\s*agent_files: (.+)$/m],
     ['claude-unblock.yml', /^\s*files: (.+)$/m],
-  ] as const)(
+  ] as const;
+
+  // spec-checks.md holds the checks that the refresh and the respond agent run on a Spec's body.
+  // A run that loads one of those prompts without it skips the checks and fails no step.
+  it.each(lists)(
+    'load spec-checks.md exactly when they load refresh.md or respond.md, in %s',
+    (file, pattern) => {
+      const names = read(file).match(pattern)?.[1].split(' ') ?? [];
+      const runsChecks =
+        names.includes('refresh.md') || names.includes('respond.md');
+
+      expect(
+        names.includes('spec-checks.md'),
+        `${file} must load spec-checks.md exactly when it loads refresh.md or respond.md`
+      ).toBe(runsChecks);
+    }
+  );
+
+  it.each(lists)(
     'are in .github/agent/, rules.md first and build.md last, in %s',
     (file, pattern) => {
       const names = read(file).match(pattern)?.[1].split(' ') ?? [];

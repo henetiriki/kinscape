@@ -15,7 +15,7 @@ The exporter writes each HTML snapshot in `source/` from its board in `canvas/`.
   2. Run `npm run design-system`.
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
   4. Run "Updating the install" (4.1 to 4.7).
-  5. Run "Refreshing the canvas copy" (5.1 to 5.5), then commit `design/canvas/` alone.
+  5. Run "Refreshing the canvas copy" (5.1 to 5.5).
   6. Push the branch. If a board shows the change, steps 7 to 9 apply.
   7. The design agent swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
   8. Run "Refreshing the canvas copy" again (5.1 to 5.5). This adds the swapped boards.

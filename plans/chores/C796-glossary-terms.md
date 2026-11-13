@@ -50,6 +50,11 @@ Replace each same-meaning use of an [**Avoid** word](../../docs/glossary.md#glos
 | Renamed-heading links resolve    | `npm test` (`doc-links` checks anchors)                                          |
 | `npm run words` passes           | `npm run words`                                                                  |
 
+## Deviations
+
+- `.claude/skills/refine/SKILL.md` line 45 drops "Don't edit the table." to stay in its word budget; line 43 already forbids repo edits (8c005e6).
+- `design/CANVAS.md` step 5 drops "then commit `design/canvas/` alone" to stay in its word budget; step 5.5 says it (the commit that adds this line).
+
 ## Out of scope
 
 Uses with another meaning stay: "frame" (JPEG, render), "tab" (GitHub, map Tabs), "kit" (`/design-kit`, UI kit), "screenshot" (PR), "DS.5" (Spec id), "the copy" (file copies).

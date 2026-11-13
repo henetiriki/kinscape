@@ -33,6 +33,7 @@ import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
 import { IconButton } from '@ks/app/components/actions/IconButton';
 import { KeyHint } from '@ks/app/components/actions/KeyHint';
+import { PersonRow } from '@ks/app/components/actions/PersonRow';
 import { Segmented } from '@ks/app/components/actions/Segmented';
 import { Tabs } from '@ks/app/components/actions/Tabs';
 import { TextLink } from '@ks/app/components/actions/TextLink';
@@ -45,6 +46,7 @@ import { Toast } from '@ks/app/components/feedback/Toast';
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
 import { SelectField } from '@ks/app/components/forms/SelectField';
+import { TextAreaField } from '@ks/app/components/forms/TextAreaField';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { TokenField } from '@ks/app/components/forms/TokenField';
 import { Avatar } from '@ks/app/components/foundation/Avatar';
@@ -170,6 +172,7 @@ const COMPONENTS = {
   Modal,
   NoticeCard,
   PageHeader,
+  PersonRow,
   Popup,
   ProgressBar,
   RemovableChip,
@@ -180,6 +183,7 @@ const COMPONENTS = {
   Surface,
   Tabs,
   Text,
+  TextAreaField,
   TextField,
   TextLink,
   Toast,
@@ -206,6 +210,11 @@ const slotted = (value: unknown): unknown =>
     : Array.isArray(value)
       ? value.map(slotted)
       : value;
+
+const LONG_NOTES = Array.from(
+  { length: 7 },
+  (_, line) => `Line ${line + 1} of the notes.`
+).join('\n');
 
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (
@@ -312,6 +321,17 @@ const CASES: [string, ReactElement][] = [
   ...states('RemovableChip', (state, disabled) => (
     <RemovableChip disabled={disabled} state={state} value='Birth' />
   )),
+  ...links('PersonRow', state => (
+    <PersonRow
+      born='c. 1835'
+      died='1901'
+      givenNames='Susanna'
+      href='/people/1'
+      maidenName='Fourie'
+      state={state}
+      surname='Botha'
+    />
+  )),
   ...states('TextField', (state, disabled) => (
     <TextField
       disabled={disabled}
@@ -333,6 +353,18 @@ const CASES: [string, ReactElement][] = [
     'TextField · password',
     <TextField key='p' label='Password' type='password' />,
   ],
+  ...(
+    [
+      ['default', {}],
+      ['hover', { state: 'hover' }],
+      ['focus', { state: 'focus' }],
+      ['disabled', { disabled: true }],
+      ['long content', { defaultValue: LONG_NOTES, maxLength: 10000 }],
+    ] as const
+  ).map(([name, props]): [string, ReactElement] => [
+    `TextAreaField · ${name}`,
+    <TextAreaField helper='Helper text' key={name} label='Notes' {...props} />,
+  ]),
   ...[false, true].flatMap(checked =>
     states(`Checkbox ${checked ? 'on' : 'off'}`, (state, disabled) => (
       <Checkbox

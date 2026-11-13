@@ -8,6 +8,7 @@ import {
   ButtonLinks,
   PageHeaderSection,
 } from '@ks/app/design-kit/inputs/pageParts';
+import { LongTextFields, PersonRows } from '@ks/app/design-kit/inputs/people';
 import {
   Alerts,
   Buttons,
@@ -83,6 +84,8 @@ const InputsKit = async ({
       <BackLinkSection />
       <ActionBarSection />
       <ButtonLinks />
+      <LongTextFields />
+      <PersonRows />
     </main>
   );
 };

@@ -129,6 +129,16 @@
   width: 200px;
 }
 
+.areaField {
+  width: 260px;
+}
+
+/* A People-list row is 960 wide; the sample shows it at 640 with its own top and bottom lines. */
+.personRow {
+  border-block: 1px solid var(--line);
+  width: 640px;
+}
+
 /* The box is 260; the helper or error under it runs as wide as it needs. */
 .messageField span:has(> input) {
   width: 260px;

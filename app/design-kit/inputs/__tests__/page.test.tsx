@@ -9,7 +9,7 @@ const show = async (part?: string | string[]) =>
   render(await InputsKit({ searchParams: Promise.resolve({ part }) }));
 
 // NFR-06
-it('shows the twelve sections in board order, each with Measurements and Accessibility', async () => {
+it('shows the fourteen sections in board order, each with Measurements and Accessibility', async () => {
   await show();
 
   expect(
@@ -30,10 +30,12 @@ it('shows the twelve sections in board order, each with Measurements and Accessi
     'Back link',
     'Action bar',
     'Button as a link',
+    'Long text field',
+    'Person row',
   ]);
   expect(
     screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
-  ).toEqual(Array(12).fill(['Measurements', 'Accessibility']).flat());
+  ).toEqual(Array(14).fill(['Measurements', 'Accessibility']).flat());
 });
 
 it('draws each interactive component in five states, in the order drawn', async () => {
@@ -266,13 +268,61 @@ it('draws the Button link in three forms and four states, with no disabled colum
   ]);
 });
 
-it('puts the button links in part 1 and the page parts in part 2', async () => {
+// PPL-01
+it('draws the long text field in its five states, each with a 10,000 character limit', async () => {
+  await show();
+
+  const section = within(
+    screen.getByRole('region', { name: 'Long text field' })
+  );
+  const areas = section.getAllByRole('textbox');
+
+  expect(areas.map(area => area.getAttribute('maxlength'))).toEqual(
+    Array(5).fill('10000')
+  );
+  expect(areas.map(area => area.parentElement!.dataset.state)).toEqual([
+    undefined,
+    'hover',
+    'focus',
+    undefined,
+    undefined,
+  ]);
+  expect((areas[3] as HTMLTextAreaElement).disabled).toBe(true);
+  expect((areas[4] as HTMLTextAreaElement).value.split('\n')).toHaveLength(7);
+});
+
+// PPL-01
+it('draws Person row in five forms and four states, as links that are only drawn', async () => {
+  await show();
+
+  const section = screen.getByRole('region', { name: 'Person row' });
+  const rows = [...section.querySelectorAll('a')];
+
+  expect(rows.map(row => row.dataset.state)).toEqual([
+    ...Array(5).fill(undefined),
+    undefined,
+    'hover',
+    'focus',
+    'active',
+  ]);
+  expect(rows.every(row => row.closest('[inert]'))).toBe(true);
+  expect(section.textContent).toContain(
+    'née Rossouw · Matches the spelling “Dutoit”'
+  );
+  expect(section.textContent).toContain('Died —');
+  expect(section.textContent).toContain('Died Deceased');
+  expect(section.querySelector('.desktopOnly')).toBeTruthy();
+});
+
+it('puts the button links, the long text field and Person row in part 1 and the page parts in part 2', async () => {
   await show();
 
   const part = (name: string) =>
     screen.getByRole('region', { name }).getAttribute('data-part');
 
-  expect(part('Button as a link')).toBe('1');
+  expect(
+    ['Button as a link', 'Long text field', 'Person row'].map(part)
+  ).toEqual(['1', '1', '1']);
   expect(['Page header', 'Back link', 'Action bar'].map(part)).toEqual([
     '2',
     '2',

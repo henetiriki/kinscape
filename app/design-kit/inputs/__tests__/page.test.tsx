@@ -237,8 +237,10 @@ it('draws the action bar with Save, then Cancel as a link, and the safe area', a
   expect(bar.getByRole('link', { name: 'Cancel' }).getAttribute('href')).toBe(
     '/'
   );
-  expect(bar.getByText('Bottom of the window')).toBeTruthy();
-  expect(bar.getByText('Safe area of the device')).toBeTruthy();
+  expect(bar.getByText('Bottom of the window').className).toBe('barLabel');
+  expect(
+    bar.getByText('Safe area of the device').parentElement!.className
+  ).toBe('safeArea');
 });
 
 // PPL-01

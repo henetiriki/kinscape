@@ -15,7 +15,7 @@
 
 .divider {
   background: var(--line);
-  height: 28px;
+  height: var(--layout-page-header-divider);
   width: 1px;
 }
 

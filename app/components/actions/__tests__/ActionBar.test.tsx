@@ -26,7 +26,9 @@ it('holds its buttons and an in-flow spacer of its own height', () => {
 
   expect(save.getAttribute('type')).toBe('submit');
   expect(save.getAttribute('form')).toBe('person');
-  expect(screen.getByRole('link', { name: 'Cancel' })).toBeTruthy();
+  expect(
+    screen.getByRole('link', { name: 'Cancel' }).getAttribute('href')
+  ).toBe('/people');
   expect(container.querySelectorAll('[data-spacer]')).toHaveLength(1);
   expect(container.querySelector('[data-spacer]')!.textContent).toBe('');
   expect(

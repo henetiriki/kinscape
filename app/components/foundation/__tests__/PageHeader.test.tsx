@@ -23,14 +23,16 @@ it('is a header with one back link that shows the back icon', () => {
 
   const links = screen.getAllByRole('link');
 
-  expect(screen.getByRole('banner')).toBeTruthy();
+  expect(screen.getByRole('banner').tagName).toBe('HEADER');
   expect(links).toHaveLength(1);
   expect(links[0]!.textContent).toBe('Map');
   expect(links[0]!.getAttribute('href')).toBe('/map');
   expect(links[0]!.querySelector('svg')!.getAttribute('data-icon')).toBe(
     'back'
   );
-  expect(screen.getByRole('button', { name: 'Account menu' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Account menu' }).textContent).toBe(
+    'L'
+  );
 });
 
 // PPL-01
@@ -60,11 +62,13 @@ it('takes its heights and the 44px link from tokens', () => {
   expect(css).toMatch(
     /@media \(max-width: 639\.98px\), \(max-height: 499\.98px\)/
   );
+  expect(css).toContain('height: var(--layout-page-header-divider)');
+  expect(css).not.toMatch(/^\s+height:\s*\d/m);
   expect(css).not.toMatch(/\b(64|60)px/);
 });
 
 // PPL-01
-it('has a focus ring and the Button hover and press looks on the back link', () => {
+it('has a focus ring and the icon button hover and press looks on the back link', () => {
   expect(css).toContain(
     "composes: ring from '@ks/app/components/foundation/focus.module.css'"
   );

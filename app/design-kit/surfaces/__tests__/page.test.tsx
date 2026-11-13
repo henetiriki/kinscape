@@ -67,8 +67,10 @@ it('draws every variant board 07 shows, in the order drawn', async () => {
   expect(notices[4].getAttribute('data-size')).toBe('large');
   // PPL-01: its action is a link.
   expect(
-    within(notices[5]).getByRole('link', { name: 'See all people' })
-  ).toBeTruthy();
+    within(notices[5])
+      .getByRole('link', { name: 'See all people' })
+      .getAttribute('href')
+  ).toBe('/');
 
   const bars = within(
     screen.getByRole('region', { name: 'Progress bar' })

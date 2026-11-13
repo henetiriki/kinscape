@@ -361,29 +361,53 @@
       "x": 0,
       "y": 22098,
       "w": 1440,
-      "h": 13968,
-      "title": "Style guide 06 — Inputs and actions",
+      "h": 7285,
+      "title": "Style guide 06 — Inputs and actions (part 1 of 2)",
       "page": "style-guide"
     },
     "SG-Inputs-phone.dc.html": {
       "x": 1520,
       "y": 22098,
       "w": 390,
-      "h": 13026,
-      "title": "Style guide 06 — Inputs and actions, phone (part 1 of 2)",
+      "h": 5789,
+      "title": "Style guide 06 — Inputs and actions, phone (part 1 of 4)",
       "page": "style-guide"
     },
     "SG-Inputs-phone-2.dc.html": {
       "x": 1990,
       "y": 22098,
       "w": 390,
-      "h": 9848,
-      "title": "Style guide 06 — Inputs and actions, phone (part 2 of 2)",
+      "h": 5893,
+      "title": "Style guide 06 — Inputs and actions, phone (part 2 of 4)",
+      "page": "style-guide"
+    },
+    "SG-Inputs-phone-3.dc.html": {
+      "x": 2460,
+      "y": 22098,
+      "w": 390,
+      "h": 6122,
+      "title": "Style guide 06 — Inputs and actions, phone (part 3 of 4)",
+      "page": "style-guide"
+    },
+    "SG-Inputs-phone-4.dc.html": {
+      "x": 2930,
+      "y": 22098,
+      "w": 390,
+      "h": 5979,
+      "title": "Style guide 06 — Inputs and actions, phone (part 4 of 4)",
+      "page": "style-guide"
+    },
+    "SG-Inputs-2.dc.html": {
+      "x": 3400,
+      "y": 22098,
+      "w": 1440,
+      "h": 6892,
+      "title": "Style guide 06 — Inputs and actions (part 2 of 2)",
       "page": "style-guide"
     },
     "SG-Surfaces.dc.html": {
       "x": 0,
-      "y": 36186,
+      "y": 29503,
       "w": 1440,
       "h": 4623,
       "title": "Style guide 07 — Surfaces and overlays (part 1 of 2)",
@@ -391,7 +415,7 @@
     },
     "SG-Surfaces-phone.dc.html": {
       "x": 1520,
-      "y": 36186,
+      "y": 29503,
       "w": 390,
       "h": 7716,
       "title": "Style guide 07 — Surfaces and overlays, phone (part 1 of 2)",
@@ -399,7 +423,7 @@
     },
     "SG-Surfaces-phone-2.dc.html": {
       "x": 1990,
-      "y": 36186,
+      "y": 29503,
       "w": 390,
       "h": 7019,
       "title": "Style guide 07 — Surfaces and overlays, phone (part 2 of 2)",
@@ -407,7 +431,7 @@
     },
     "SG-Furniture.dc.html": {
       "x": 0,
-      "y": 44022,
+      "y": 37339,
       "w": 1440,
       "h": 5893,
       "title": "Style guide 08 — Map furniture",
@@ -415,7 +439,7 @@
     },
     "SG-Furniture-phone.dc.html": {
       "x": 1520,
-      "y": 44022,
+      "y": 37339,
       "w": 390,
       "h": 4100,
       "title": "Style guide 08 — Map furniture, phone (part 1 of 2)",
@@ -423,7 +447,7 @@
     },
     "SG-Surfaces-2.dc.html": {
       "x": 2460,
-      "y": 36186,
+      "y": 29503,
       "w": 1440,
       "h": 4384,
       "title": "Style guide 07 — Surfaces and overlays (part 2 of 2)",
@@ -431,7 +455,7 @@
     },
     "SG-Furniture-phone-2.dc.html": {
       "x": 1990,
-      "y": 44022,
+      "y": 37339,
       "w": 390,
       "h": 4784,
       "title": "Style guide 08 — Map furniture, phone (part 2 of 2)",
@@ -677,6 +701,9 @@
     "SG-Inputs.dc.html",
     "SG-Inputs-phone.dc.html",
     "SG-Inputs-phone-2.dc.html",
+    "SG-Inputs-2.dc.html",
+    "SG-Inputs-phone-3.dc.html",
+    "SG-Inputs-phone-4.dc.html",
     "SG-Surfaces.dc.html",
     "SG-Surfaces-phone.dc.html",
     "SG-Surfaces-phone-2.dc.html",

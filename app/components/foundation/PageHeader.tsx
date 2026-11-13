@@ -19,7 +19,7 @@ export const BackLink = ({
 }) => (
   <a className={styles.back} data-state={state} href={href}>
     <Icon name='back' size={16} />
-    {label}
+    <span className={styles.label}>{label}</span>
   </a>
 );
 

@@ -74,6 +74,21 @@ it('draws the desktop Wordmark in a flex row, so a line box does not make it tal
 });
 
 // PPL-01
+it('ends a long back label in an ellipsis, so it stays on one line in the 44px link', () => {
+  render(<BackLink href='/people' label='Back to the people list' />);
+
+  const link = screen.getByRole('link', { name: 'Back to the people list' });
+  const label = link.querySelector('span')!;
+
+  expect(label.textContent).toBe('Back to the people list');
+  expect(label.className).toBe('label');
+  expect(css).toMatch(
+    /\.label \{\s+min-width: 0;\s+overflow: hidden;\s+text-overflow: ellipsis;\s+white-space: nowrap;/
+  );
+  expect(css).toMatch(/\.back svg \{\s+flex: none;/);
+});
+
+// PPL-01
 it('has a focus ring and the icon button hover and press looks on the back link', () => {
   expect(css).toContain(
     "composes: ring from '@ks/app/components/foundation/focus.module.css'"

@@ -41,9 +41,22 @@
   gap: var(--space-8);
   height: var(--size-touch);
   line-height: var(--type-control-line);
+  min-width: 0;
   padding: 0 var(--space-12) 0 var(--space-8);
   text-decoration: none;
   transition: background var(--motion-press);
+}
+
+.back svg {
+  flex: none;
+}
+
+/* A long label ends in an ellipsis: it does not wrap out of the 44px link or run under the Avatar. */
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (hover: hover) {

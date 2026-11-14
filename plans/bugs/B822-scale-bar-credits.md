@@ -15,63 +15,61 @@ On desktop, the `Stage` puts the `dock` and `credits` slots in one bottom column
 **Answer: Other** (tech lead). The credits collapse to one line with an expand control. The design agent draws it. Requirements:
 
 - One line from 640 to 1920px. It never covers the dock.
-- One control expands it to the attribution text of the sources on screen. A keyboard user reaches it, and it sets `aria-expanded`.
-- Expanding moves nothing: the dock, the Layers panel and `freeArea` stay in place.
-- The "Attributions" link to the dialog stays (NFR-08).
-- The design agent decides the rest: label, icon, place, phone layout.
+- One control expands it to the attribution text. A keyboard user reaches it, and it sets `aria-expanded`.
+- Expanding moves nothing.
+- The "Attributions" link stays (NFR-08).
+- The design agent decides the rest.
 
 ~~**A.** Credits under the dock; the dock moves up.~~ ~~**B.** Credits gutter to gutter.~~
 
 **D2 · Where the scale bar sits on desktop** · Decides: Tech lead
 
-- **A.** Under the Layers panel: left at the gutter, bottom at `credits-bottom`.
-- **B.** In the free map area, at `dock-left`, 8px above the dock.
-- **Other:** your own.
-
-**Answer: A** (@henetiriki)
+**Answer: A** (@henetiriki). Under the Layers panel: left at the gutter, bottom at `credits-bottom`. ~~**B.** In the free map area.~~
 
 **D3 · How the scale bar looks** · Decides: Tech lead
 
-- **A.** `type.credits` in `--credits` on a `--white-60` fill, with a 1px `--credits` rule on the left, bottom and right. MapLibre sets the distance and the width.
-- **B.** The same, in `type.mono`.
-- **Other:** your own.
-
-**Answer: Other:** - let the design step decide (@henetiriki)
+**Answer: Other** (@henetiriki). The design step decides. ~~**A.** `type.credits` on `--white-60`, 1px rule.~~ ~~**B.** The same, in `type.mono`.~~
 
 **D4 · Which boards show the design** · Decides: Tech lead
 
-- **A.** The design agent adds the scale bar to `Map.dc.html`. It draws a new board, `Map-credits-narrow.dc.html`: the bottom 120px of the map at 800px wide, with the credits collapsed and expanded. The phone boards follow D1.
-- **B.** The design agent adds the two to `SG-Furniture.dc.html`. The build adds them to `/design-kit/map-furniture`, and the blocking `style-8-components-map` snapshot checks them.
-- **Other:** your own.
+**Answer: A** (@henetiriki). The design agent adds the scale bar to `Map.dc.html`. It draws `Map-credits-narrow.dc.html`: the bottom 120px at 800px wide, collapsed and expanded. ~~**B.** `SG-Furniture.dc.html`.~~
 
-**Answer: A** (@henetiriki)
+**D5 · Share the dismiss logic** · Decides: Tech lead
+
+**Answer: A** (@henetiriki, in the review). One `useDismiss` hook serves `Menu`, `DateField` and `Credits`. ~~**B.** Dismiss the finding; file a Chore.~~ ~~**C.** A hook for `Credits` only.~~
 
 ## Files that change
 
-| File                                                       | New / changed | What                                                |
-| ---------------------------------------------------------- | ------------- | --------------------------------------------------- |
-| `features/map/components/Stage.tsx`, `.module.css`, test   | changed       | The bottom column                                   |
-| `features/map/components/Credits.tsx`, `.module.css`, test | changed       | The expand control (D1)                             |
-| `features/map/components/MapShell.tsx`, test               | changed       | `collapsible={!phone}`                              |
-| `e2e/smoke.spec.ts`                                        | changed       | The "Credits" button                                |
-| `lib/design/__tests__/`, `scripts/__tests__/` design tests | changed       | 92 snapshots                                        |
-| `design/DESIGN.md`                                         | changed       | The Attributions credits rule                       |
-| `app/globals.css`                                          | changed       | The scale bar (D2, D3)                              |
-| `e2e/map-desktop.spec.ts`                                  | new           | The desktop rows in Proof                           |
-| `e2e/map-phone.spec.ts`                                    | changed       | The phone hides the scale bar                       |
-| `design/canvas/project/` D4 boards, `VERSION`              | changed, new  | The design agent, then "Refreshing the canvas copy" |
-| `design/source/` D4 snapshots, their JPGs                  | changed, new  | Design: Render snapshots                            |
+| File                                                       | New / changed | What                                    |
+| ---------------------------------------------------------- | ------------- | --------------------------------------- |
+| `features/map/components/Stage.tsx`, `.module.css`, test   | changed       | The bottom column                       |
+| `features/map/components/Credits.tsx`, `.module.css`, test | changed       | The expand control (D1)                 |
+| `features/map/components/MapShell.tsx`, test               | changed       | `collapsible={!phone}`                  |
+| `app/components/overlays/useDismiss.ts`, test              | new           | Esc and press-outside close (D5)        |
+| `Menu.tsx`, `DateField.tsx`                                | changed       | Use `useDismiss`                        |
+| `design/canvas/project/ds/`                                | changed       | The bundle (design system steps 2 to 5) |
+| `e2e/smoke.spec.ts`                                        | changed       | The "Credits" button                    |
+| `lib/design/__tests__/`, `scripts/__tests__/` design tests | changed       | 92 snapshots                            |
+| `design/DESIGN.md`                                         | changed       | The Attributions credits rule           |
+| `app/globals.css`                                          | changed       | The scale bar (D2, D3)                  |
+| `e2e/map-desktop.spec.ts`                                  | new           | The desktop rows in Proof               |
+| `e2e/map-phone.spec.ts`                                    | changed       | The phone hides the scale bar           |
+| `design/canvas/project/` D4 boards, `VERSION`              | changed, new  | Design agent, then canvas refresh       |
+| `design/source/` D4 snapshots, their JPGs                  | changed, new  | Design: Render snapshots                |
 
 ## Order of work
 
 1. Write `e2e/map-desktop.spec.ts` at 640, 800, 1024, 1279, 1440 and 1920px wide. Run it on `main`. Record each failing width under Deviations.
 2. Change `Stage`, then `app/globals.css`, then the phone check.
 3. Push. The PR stays a draft. The tech lead has the design agent draw the D4 boards, then runs "Refreshing the canvas copy" and the render workflow.
-4. Change `Credits` to match the snapshots, and update `design/DESIGN.md`. Run the checks in `AGENTS.md` › Commands and `npm run design:check`.
+4. Change `Credits` to match the snapshots, and update `design/DESIGN.md`.
+5. Add `useDismiss` and use it in `Menu`, `DateField` and `Credits` (D5). Run steps 2 to 6 of Changing the design system.
+6. Run the checks in `AGENTS.md` › Commands and `npm run design:check`.
 
 ## Risks
 
 - A later source whose licence needs always-visible credit breaks the collapsed line. Each licence check (NFR-08) catches it.
+- D5 changes the design system bundle: one publish cycle, no board change.
 
 ## Proof
 

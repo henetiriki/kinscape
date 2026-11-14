@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
+import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 
 import styles from '@ks/features/map/components/Credits.module.css';
 
@@ -36,43 +37,15 @@ export const Credits = ({
 }) => {
   const [open, setOpen] = useState(false);
   const cardId = useId();
+  const line = useRef<HTMLDivElement>(null);
   const credits = [
     ...new Set(
       sourcesOnScreen(sources, showPolities).map(source => source.attribution)
     ),
   ];
 
-  useEffect(() => {
-    if (!open) return;
-
-    // A dialog owns its own Esc, so the card stays open behind it.
-    const onEsc = (event: KeyboardEvent) => {
-      if (
-        event.key === 'Escape' &&
-        !(
-          event.target instanceof Element &&
-          event.target.closest('dialog, [role=dialog]')
-        )
-      )
-        setOpen(false);
-    };
-    const onPressOutside = (event: PointerEvent) => {
-      if (
-        !(event.target as Element).closest(
-          '[data-credits], dialog, [role=dialog]'
-        )
-      )
-        setOpen(false);
-    };
-
-    document.addEventListener('keydown', onEsc);
-    document.addEventListener('pointerdown', onPressOutside);
-
-    return () => {
-      document.removeEventListener('keydown', onEsc);
-      document.removeEventListener('pointerdown', onPressOutside);
-    };
-  }, [open]);
+  // A dialog owns its own Esc and presses, so the card stays open behind it.
+  useDismiss(open, () => setOpen(false), { escape: true, outside: line });
 
   const attributions = (
     <button onClick={onOpenAttributions} type='button'>
@@ -90,7 +63,7 @@ export const Credits = ({
   }
 
   return (
-    <div className={styles.line} data-credits=''>
+    <div className={styles.line} ref={line}>
       <button
         aria-controls={cardId}
         aria-expanded={open}

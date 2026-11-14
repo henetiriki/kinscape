@@ -2,7 +2,7 @@
 
 import type { ComponentProps, ReactNode } from 'react';
 
-import { useEffect, useId, useState } from 'react';
+import { useId, useState } from 'react';
 
 import type { ControlState, Tone } from '@ks/app/components/foundation/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
@@ -11,6 +11,7 @@ import type { Precision, Problem } from '@ks/lib/domain/map/types';
 import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { Text } from '@ks/app/components/foundation/Text';
+import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 import { checkDate } from '@ks/lib/domain/map/date-input.mts';
 import { finerPrecision, shownDate } from '@ks/lib/domain/map/map-date.mts';
 
@@ -85,28 +86,15 @@ export const DateField = ({
   }
 
   // Esc restores the last good date after focus has left the field, unless another control owns that Esc.
-  useEffect(() => {
-    if (!problem || !checked) return;
-
-    const onEsc = (event: KeyboardEvent) => {
-      if (
-        event.key !== 'Escape' ||
-        event.defaultPrevented ||
-        (event.target as Element).closest(
-          'dialog, [role=dialog], textarea, input:not([type=checkbox], [type=radio], [type=range])'
-        )
-      )
-        return;
-
+  useDismiss(
+    problem !== null && checked,
+    () => {
       setText(shown);
       setProblem(null);
       setChecked(false);
-    };
-
-    document.addEventListener('keydown', onEsc);
-
-    return () => document.removeEventListener('keydown', onEsc);
-  }, [problem, checked, shown]);
+    },
+    { escape: true }
+  );
 
   const goTo = (to: Day, wanted: Precision) => {
     const at = keepPrecision ? precision : wanted;

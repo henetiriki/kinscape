@@ -2,7 +2,11 @@ import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 
 import { saveConflict, saveFailed } from '@ks/app/screens/person-actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
-import { PersonForm, PersonNotFound } from '@ks/features/people';
+import {
+  EditOnComputer,
+  PersonForm,
+  PersonNotFound,
+} from '@ks/features/people';
 import { parseFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
 
@@ -44,13 +48,15 @@ export const PersonScreen = ({
   person?: PersonView;
   save?: 'conflict' | 'failed';
 }) => (
-  <PersonForm
-    {...ACCOUNT}
-    create={saveFailed}
-    onSignOut={signOutAction}
-    person={person}
-    update={save === 'conflict' ? saveConflict : saveFailed}
-  />
+  <EditOnComputer {...ACCOUNT} onSignOut={signOutAction}>
+    <PersonForm
+      {...ACCOUNT}
+      create={saveFailed}
+      onSignOut={signOutAction}
+      person={person}
+      update={save === 'conflict' ? saveConflict : saveFailed}
+    />
+  </EditOnComputer>
 );
 
 /** The not-found page with a synthetic Account. */

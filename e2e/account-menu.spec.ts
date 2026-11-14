@@ -22,13 +22,14 @@ test.describe('desktop, 1280 × 800', () => {
   test.use({ viewport: { height: 800, width: 1280 } });
 
   // NFR-03
-  test('the menu shows the email and two items, and no Export or backup', async ({
+  test('the menu shows the email and three items, and no Export or backup', async ({
     page,
   }) => {
     await openMenu(page);
 
     await expect(page.getByText(SYNTHETIC.email)).toBeVisible();
     await expect(items(page)).toHaveText([
+      'PeopleAdd and edit the people in your Tree',
       'Sources and attributions',
       'Sign out',
     ]);
@@ -40,8 +41,17 @@ test.describe('desktop, 1280 × 800', () => {
     page,
   }) => {
     await openMenu(page);
-    await items(page).first().click();
+    await page
+      .getByRole('menuitem', { name: 'Sources and attributions' })
+      .click();
     await expect(page.getByRole('dialog', { name: /sources/i })).toBeVisible();
+  });
+
+  // PPL-01
+  test('People leads to the People page', async ({ page }) => {
+    await openMenu(page);
+    await items(page).first().click();
+    await expect(page).toHaveURL(url => url.pathname === '/people');
   });
 });
 
@@ -85,7 +95,14 @@ test.describe('phone, 390 × 844', () => {
     await expect(
       page.getByRole('search').getByRole('menu', { name: 'Account' })
     ).toBeVisible();
-    await expect(items(page)).toHaveCount(2);
+    await expect(items(page)).toHaveCount(3);
+  });
+
+  // PPL-01, NFR-05
+  test('People leads to the People page', async ({ page }) => {
+    await openMenu(page);
+    await items(page).first().tap();
+    await expect(page).toHaveURL(url => url.pathname === '/people');
   });
 
   // NFR-06

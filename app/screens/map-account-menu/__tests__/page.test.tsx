@@ -4,6 +4,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import Page, { metadata } from '@ks/app/screens/map-account-menu/page';
 
 vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
 const desktop = window.matchMedia;
 
@@ -29,7 +30,7 @@ it('puts the menu in the account slot on desktop, with no Layers button', async 
   expect(screen.getByText('Signed in as').parentElement?.textContent).toContain(
     'researcher@example.com'
   );
-  expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+  expect(screen.getAllByRole('menuitem')).toHaveLength(3);
   // The items do nothing on this sample screen but close the menu.
   fireEvent.click(
     screen.getByRole('menuitem', { name: 'Sources and attributions' })

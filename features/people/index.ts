@@ -1,3 +1,4 @@
+export { EditOnComputer } from '@ks/features/people/components/EditOnComputer';
 export { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 export { PeopleList } from '@ks/features/people/components/PeopleList';
 export { PersonForm } from '@ks/features/people/components/PersonForm';

@@ -7,14 +7,25 @@ import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/actions/PersonRow.module.css';
 
+/** The phone line: a range, a range that ends in "deceased", or "Born" and the date. */
+const phoneLine = (born: string, died?: string, deceased?: boolean) => {
+  if (died) {
+    return `${born} – ${died}`;
+  }
+
+  return deceased ? `${born} – deceased` : `Born ${born}`;
+};
+
 /**
  * One row of the people list, and one link to edit the Person. The page gives the dates as text.
- * Died reads `died`, then "Deceased" when `deceased`, then "—".
+ * Died reads `died`, then "Deceased" when `deceased`, then "—". With `form='phone'` the row is a
+ * read-only `div`: the name, then one line of dates and the note.
  */
 export const PersonRow = ({
   born,
   deceased,
   died,
+  form,
   givenNames,
   maidenName,
   matchedVariant,
@@ -26,6 +37,8 @@ export const PersonRow = ({
   /** Marked deceased with no date. */
   deceased?: boolean;
   died?: string;
+  /** `phone`: a row that is no link. */
+  form?: 'phone';
   givenNames: string;
   href: string;
   maidenName?: string;
@@ -40,6 +53,20 @@ export const PersonRow = ({
   ]
     .filter(Boolean)
     .join(' · ');
+
+  if (form === 'phone') {
+    return (
+      <div className={styles.phone}>
+        <Text as='span' variant='title'>
+          {surname}, {givenNames}
+        </Text>
+        <span className={styles.line}>
+          <Text variant='mono'>{phoneLine(born, died, deceased)}</Text>
+          {note && <Text variant='small'>{note}</Text>}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <a className={styles.row} data-state={state} {...rest}>

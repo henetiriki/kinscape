@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 
+import { useRouter } from 'next/navigation';
 import { startTransition } from 'react';
 
 import type { MenuEntry } from '@ks/app/components/overlays/types';
@@ -9,7 +10,17 @@ import type { MenuEntry } from '@ks/app/components/overlays/types';
 import { Menu } from '@ks/app/components/overlays/Menu';
 import { SearchBar } from '@ks/features/map/components/SearchBar';
 
-const GROUPS: MenuEntry[][] = [
+const groups = (phone?: boolean): MenuEntry[][] => [
+  [
+    {
+      detail: phone
+        ? 'Look up the people in your Tree'
+        : 'Add and edit the people in your Tree',
+      icon: 'people',
+      id: 'people',
+      label: 'People',
+    },
+  ],
   [{ icon: 'document', id: 'sources', label: 'Sources and attributions' }],
   [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }],
 ];
@@ -35,14 +46,17 @@ export const AccountMenu = ({
   onSignOut: () => Promise<unknown>;
   phone?: boolean;
 }) => {
+  const router = useRouter();
   const menu = (
     <Menu
       email={email}
       form={phone ? 'phone' : undefined}
-      groups={GROUPS}
+      groups={groups(phone)}
       initial={initial}
       onSelect={id => {
-        if (id === 'sources') {
+        if (id === 'people') {
+          router.push('/people');
+        } else if (id === 'sources') {
           onOpenSources();
         } else {
           startTransition(async () => {

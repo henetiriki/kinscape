@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { PersonRow } from '@ks/app/components/actions/PersonRow';
 
@@ -84,6 +84,40 @@ it('anchors the hidden labels to the row, so they add no scroll height to a list
   expect(/\.row \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
   expect(/\.hidden \{[^}]*\}/.exec(css)![0]).toContain('position: absolute');
   expect(css).not.toMatch(/clip-path|clip:/);
+});
+
+// PPL-01
+describe('on a phone', () => {
+  const phoneRow = (props: Partial<Parameters<typeof PersonRow>[0]> = {}) =>
+    row({ form: 'phone', ...props });
+
+  it('is no link and has no Edit', () => {
+    phoneRow();
+    expect(screen.queryByRole('link')).toBeNull();
+    expect(screen.queryByText('Edit')).toBeNull();
+    expect(screen.getByText('Botha, Hendrik Willem')).toBeTruthy();
+  });
+
+  it('reads one line: "Born" alone, a range, or a range ending in deceased', () => {
+    const { unmount } = phoneRow({ born: '1878', died: undefined });
+
+    expect(screen.getByText('Born 1878')).toBeTruthy();
+    unmount();
+
+    const second = phoneRow();
+
+    expect(screen.getByText('1832 – 1899')).toBeTruthy();
+    second.unmount();
+    phoneRow({ born: 'bef. 1840', deceased: true, died: undefined });
+    expect(screen.getByText('bef. 1840 – deceased')).toBeTruthy();
+  });
+
+  it('shows the note beside the dates', () => {
+    phoneRow({ maidenName: 'Fourie', matchedVariant: 'Bota' });
+    expect(screen.getByText(/^née Fourie/).textContent).toBe(
+      'née Fourie · Matches the spelling “Bota”'
+    );
+  });
 });
 
 // PPL-01

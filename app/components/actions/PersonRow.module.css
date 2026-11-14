@@ -41,6 +41,27 @@
   flex-direction: column;
 }
 
+/* The phone form: no link, so no hover, no Edit and no grid. */
+.phone {
+  border-top: 1px solid var(--line);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: center;
+  min-height: 60px;
+  padding: var(--space-8) 0;
+}
+
+.line {
+  align-items: baseline;
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--space-12);
+}
+
 /* Names the date for a screen reader. */
 .hidden {
   border: 0;

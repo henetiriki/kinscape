@@ -152,6 +152,7 @@ describe('createPersonAction', () => {
   });
 });
 
+// PPL-01, NFR-09
 describe('updatePersonAction', () => {
   it('saves a change that names the version read', async () => {
     await setup();

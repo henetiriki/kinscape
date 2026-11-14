@@ -8,13 +8,6 @@ import type { Result } from '#ks/lib/domain/result/types.ts';
 import { personFormSchema } from '#ks/lib/domain/persons/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
-const DATE_ERRORS: string[] = [
-  'no-such-day',
-  'reversed',
-  'syntax',
-  'year',
-] satisfies FuzzyDateError[];
-
 /**
  * Checks a Person from the form (PPL-01). A blank name, too many spelling variants or a bad date
  * gives an error for that field. Any other bad input gives `invalid` for the whole input. An
@@ -51,8 +44,7 @@ export const checkPerson = (
     if (
       path.length === 1 &&
       (field === 'birth' || field === 'death') &&
-      code === 'custom' &&
-      DATE_ERRORS.includes(message)
+      code === 'custom'
     ) {
       fields[field] = message as FuzzyDateError;
       continue;

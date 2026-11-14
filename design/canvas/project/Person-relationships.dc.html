@@ -223,7 +223,7 @@ class Component extends DCLogic {
       const isPick = d.step === 'pick';
       dialog = {
         title: d.edit ? (d.kind === 'spouse' ? 'Edit marriage' : 'Edit ' + KIND[d.kind][1] + ' link') : KIND[d.kind][0],
-        subtitle: d.edit ? 'Change the type or the dates.' : isPick ? 'Step 1 of 2. Choose the person.' : 'Step 2 of 2. Say how they are linked.',
+        subtitle: d.edit ? (d.kind === 'spouse' ? 'Change the dates.' : 'Change the type.') : isPick ? 'Step 1 of 2. Choose the person.' : 'Step 2 of 2. Say how they are linked.',
         isPick: isPick,
         isDetails: !isPick,
         matches: matches,

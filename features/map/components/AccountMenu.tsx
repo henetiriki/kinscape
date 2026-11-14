@@ -13,9 +13,7 @@ import { SearchBar } from '@ks/features/map/components/SearchBar';
 const groups = (phone?: boolean): MenuEntry[][] => [
   [
     {
-      detail: phone
-        ? 'Look up the people in your Tree'
-        : 'Add and edit the people in your Tree',
+      detail: phone ? 'Look up the people in your Tree' : 'Add and edit people',
       icon: 'people',
       id: 'people',
       label: 'People',

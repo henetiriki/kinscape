@@ -506,7 +506,7 @@ class Component extends DCLogic {
       ks: { loadingProgress: 45, emptyDateActions: [{ label: 'Jump to 1898' }, { label: 'Clear filters' }] },
       chrome: variant !== 'account',
       avatarExpanded: variant === 'account' ? true : undefined,
-      accountMenu: { groups: [[{ icon: 'people', id: 'people', label: 'People', detail: 'Add and edit the people in your Tree' }], [{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]] },
+      accountMenu: { groups: [[{ icon: 'people', id: 'people', label: 'People', detail: 'Add and edit people' }], [{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]] },
       v: {
         popup: variant === 'default', emptyDate: variant === 'empty-date', emptyTree: variant === 'empty-tree',
         loading: loading, offline: variant === 'offline', account: variant === 'account', accountProposed: variant === 'account-proposed', sources: variant === 'sources'

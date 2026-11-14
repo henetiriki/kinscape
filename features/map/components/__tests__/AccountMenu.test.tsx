@@ -45,9 +45,7 @@ describe('AccountMenu on desktop', () => {
         .getAllByRole('menuitem')
         .map(item => item.textContent)
         .join('|')
-    ).toBe(
-      'PeopleAdd and edit the people in your Tree|Sources and attributions|Sign out'
-    );
+    ).toBe('PeopleAdd and edit people|Sources and attributions|Sign out');
     expect(screen.queryByText(/export/i)).toBeNull();
     expect(screen.queryByText(/backup/i)).toBeNull();
     expect(screen.queryByRole('search')).toBeNull();

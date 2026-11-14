@@ -29,7 +29,7 @@ test.describe('desktop, 1280 × 800', () => {
 
     await expect(page.getByText(SYNTHETIC.email)).toBeVisible();
     await expect(items(page)).toHaveText([
-      'PeopleAdd and edit the people in your Tree',
+      'PeopleAdd and edit people',
       'Sources and attributions',
       'Sign out',
     ]);

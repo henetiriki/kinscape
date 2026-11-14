@@ -49,3 +49,8 @@ The since-diff step reads only runs with `--status success`. After a red run, th
 | `AGENTS.md` › Commands      | Their output               |
 
 ## Deviations
+
+- `scripts/__tests__/run-script.ts` is new. It holds `runScript`, which moved out of `load-agent-files.test.ts`, so both tests use one copy.
+- "Report a missing review" skips a plans-only PR through its `if:`, not through an early `exit 0`.
+- The since-diff step drops `--status success`. Its `--jq` keeps runs with conclusion `success` or `failure`, so a cancelled run stays out.
+- Two other sentences in `review.md` are shorter, to keep it within its word budget.

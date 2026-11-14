@@ -13,6 +13,8 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
+import { runScript } from '@ks/scripts/__tests__/run-script';
+
 const root = process.cwd();
 const read = (file: string) =>
   readFileSync(join(root, '.github/workflows', file), 'utf8');
@@ -288,41 +290,6 @@ const runnerSteps = () =>
 const runnerStep = (name: string) =>
   runnerSteps().find(step => step.name === name);
 
-// Runs a step's script with fake commands first on PATH. A fake is a shell script body, and
-// it appends to "$LOG". Returns the exit status, stdout, what the fakes logged and what the
-// script wrote to GITHUB_OUTPUT.
-const runScript = (
-  run: string | undefined,
-  fakes: Record<string, string>,
-  env: Record<string, string>
-) => {
-  const dir = mkdtempSync(join(tmpdir(), 'run-script-'));
-  const log = join(dir, 'log');
-  const output = join(dir, 'output');
-
-  for (const [name, body] of Object.entries(fakes)) {
-    writeFileSync(join(dir, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 });
-  }
-
-  const result = spawnSync('bash', ['-e', '-c', run ?? ''], {
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      ...env,
-      GITHUB_OUTPUT: output,
-      LOG: log,
-      PATH: `${dir}:${process.env.PATH}`,
-    },
-  });
-  const contents = (file: string) =>
-    existsSync(file) ? readFileSync(file, 'utf8') : '';
-  const logged = contents(log);
-  const outputs = contents(output);
-
-  rmSync(dir, { force: true, recursive: true });
-
-  return { ...result, log: logged, outputs };
-};
 const reviewSteps = () =>
   Object.values(
     (
@@ -2225,9 +2192,11 @@ describe('the review job of claude-code-review.yml', () => {
         'Show that the review started',
         'Write the changes since the last review',
       ]) {
-        expect(step(name).if, name).toBe("steps.same.outputs.same == 'true'");
+        expect(step(name).if, name).toContain(
+          "steps.same.outputs.same == 'true'"
+        );
       }
-      expect(claude().if).toBe("steps.same.outputs.same == 'true'");
+      expect(claude().if).toContain("steps.same.outputs.same == 'true'");
     });
 
     it("says same=true for main's copy and same=false for another", () => {

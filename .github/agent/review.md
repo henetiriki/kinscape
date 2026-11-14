@@ -29,11 +29,11 @@ For each answered Decision, check that the Spec's Behaviour and Acceptance check
 - If `.since-last-review.diff` exists, it holds the changes since the last review. Give it to the review agents, not `gh pr diff`. Flag a defect only on a line that both diffs have. Check the plan against the whole PR.
 - Label each finding **CONFIRMED** (you checked it in the code) or **PLAUSIBLE** (say what would confirm it).
 - A smell or placement finding ([`docs/code-rules.md`](../../docs/code-rules.md)) is a defect, not a nit. Label it **PLAUSIBLE** when the fix needs a design decision.
-- Post at most ten findings, one comment each. Post them in this order:
+- Post at most ten findings, one comment each, in this order:
   - Code defects and rule breaks: at most eight, most severe first. Smell, placement and test-quality findings count here, at most three of them.
   - Plan departures: at most two.
 - Skip style nits and what a linter catches.
 - Skip the content of `design/source/*.html` and `design/*.jpg`. The workflow [Design: Render snapshots](../../design/CANVAS.md#making-the-snapshots-and-jpgs) writes them. If a non-merge commit whose message is not `chore: export and render design snapshots` changes them, report one finding.
 - If Claude commented before, ignore the command's stop. Review every push. Do not repeat a finding that is still on the PR as a new comment.
-- After the first review, open with one comment. Write "All earlier findings addressed", or link each open finding with a one-line reason. Check each finding against the current code, not only `.since-last-review.diff`. A finding is addressed if the code fixes it, or if the author's reply gives a reason that you accept. A resolved thread alone does not address it.
+- After the first review, open with one comment. Start it with `Open findings: <n>`, the number of earlier findings still open. Then write "All earlier findings addressed", or link each open finding with a one-line reason. Check each finding against the current code, not only `.since-last-review.diff`. A fix, or an author's reply with a reason that you accept, addresses a finding. A resolved thread alone does not count.
 - Never post "No issues" alone. List the plan items and rules you checked.

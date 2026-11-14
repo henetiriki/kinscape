@@ -63,6 +63,11 @@
   display: flex;
   flex-direction: column;
   left: var(--layout-dock-left);
+  /* One line: the slot never grows up into the dock. */
+  max-height: calc(
+    var(--layout-furniture-bottom) - var(--layout-credits-bottom)
+  );
+  overflow: hidden;
   right: var(--size-gutter);
 }
 

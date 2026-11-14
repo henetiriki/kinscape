@@ -35,6 +35,21 @@ body {
   top: var(--layout-furniture-top);
 }
 
+/* The scale bar sits under the Layers panel, at the credits line's bottom edge. */
+.map .maplibregl-ctrl-bottom-left {
+  bottom: var(--layout-credits-bottom);
+  left: var(--size-gutter);
+}
+
+.map .maplibregl-ctrl-bottom-left .maplibregl-ctrl-scale {
+  background-color: var(--white-60);
+  border-color: var(--credits);
+  color: var(--credits);
+  font-family: var(--font-body);
+  font-size: var(--type-credits-size);
+  margin: 0;
+}
+
 /* A phone zooms by pinch: MapLibre's zoom buttons (top right) and scale (bottom left) would sit under the Layers button and the sheet. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .map .maplibregl-ctrl-top-right,

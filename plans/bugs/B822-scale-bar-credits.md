@@ -84,3 +84,6 @@ On desktop, the `Stage` puts the `dock` and `credits` slots in one bottom column
 | Blocking snapshots                                | `npm run design:check`                                  |
 
 ## Deviations
+
+- Step 1 on `main`: the credits check failed at 640, 800 and 1024px. The scale bar check failed at every width.
+- Steps 2 to 4 are not done: the D4 boards do not exist yet. The `Stage` credits slot now holds one line, and the `Credits` expand control waits for the boards. Until then a wrapped credits line clips.

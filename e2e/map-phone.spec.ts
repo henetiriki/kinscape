@@ -92,6 +92,7 @@ test.describe('phone, 390 × 844', () => {
     expect(layers.x).toBeGreaterThan(195);
     await expect(page.getByRole('radiogroup')).toHaveCount(0);
     await expect(page.locator('.maplibregl-ctrl-zoom-in')).toBeHidden();
+    await expect(page.locator('.maplibregl-ctrl-scale')).toBeHidden();
   });
 
   // MAP-03

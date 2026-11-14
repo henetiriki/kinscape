@@ -5,7 +5,7 @@
 
 ## Approach
 
-In `agent-unblock.mts`, a freed `type: spec` issue gets a design check before its comment and label edit. A failed `gh` call thus throws into the loop's `catch` and leaves `status: blocked`. Its blockers are the set that the refresh output lists. A helper, `designBlockers`, finds their merged PRs (D5) and reads files with `--paginate --jq '.[].filename'`. A helper, `refineArg`, reads the Intent box (D6).
+In `agent-unblock.mts`, a freed `type: spec` issue gets a design check before its comment and label edit. A failed `gh` call throws into the loop's `catch` and leaves `status: blocked`. The blockers are those the refresh output lists. A helper, `designBlockers`, finds their merged PRs (D5) and reads files with `--paginate --jq '.[].filename'`. A helper, `refineArg`, reads the Intent box (D6).
 
 ## Decisions
 
@@ -17,7 +17,7 @@ The repo has 478 merged PRs.
 - **B.** One `--search <blocker>` call for each blocker. No cap.
 - **Other:** your own.
 
-**Answer: A** (@henetiriki)
+**Answer: A** (@henetiriki). #829 names the cap.
 
 **D6 · A readable Intent box** · Decides: Tech lead
 
@@ -31,22 +31,23 @@ The box is untrusted text in a comment.
 
 **D7 · Word budget** · Decides: Tech lead
 
-The line 97 change takes `docs/how-we-work.md` to 958 words. Its budget is 950.
+Line 97 takes `docs/how-we-work.md` to 958 words. The budget is 950.
 
-- **A.** Raise the budget to 960 in `scripts/word-count.mts`.
-- **B.** Cut 8 words from another line.
+- **A.** Raise it to 960.
+- **B.** Cut 8 words elsewhere.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
 ## Files that change
 
-| File                                      | New / changed | What                                   |
-| ----------------------------------------- | ------------- | -------------------------------------- |
-| `scripts/agent-unblock.mts`               | Changed       | Two helpers, `draft`, header comment   |
-| `scripts/__tests__/agent-unblock.test.ts` | Changed       | Fake reads PRs, files, body; new tests |
-| `.github/workflows/claude-unblock.yml`    | Changed       | Header comment                         |
-| `docs/how-we-work.md`                     | Changed       | Line 97                                |
+| File                                                             | New / changed | What                                   |
+| ---------------------------------------------------------------- | ------------- | -------------------------------------- |
+| `scripts/agent-unblock.mts`                                      | Changed       | Helpers, `draft`, header comment       |
+| `scripts/__tests__/agent-unblock.test.ts`                        | Changed       | Fake reads PRs, files, body; new tests |
+| `.github/workflows/claude-unblock.yml`                           | Changed       | Header comment                         |
+| `docs/how-we-work.md`                                            | Changed       | Line 97                                |
+| `scripts/word-count.mts`, `scripts/__tests__/word-count.test.ts` | Changed       | Budget 960 (D7)                        |
 
 ## Risks
 
@@ -65,3 +66,4 @@ The line 97 change takes `docs/how-we-work.md` to 958 words. Its budget is 950.
 ## Deviations
 
 - `scripts/word-count.mts` changes: the budget of `docs/how-we-work.md` goes from 950 to 960 (D7).
+- `scripts/agent-unblock.mts` also has `readyLines` and `swapLabel`, which keep `run` shorter.

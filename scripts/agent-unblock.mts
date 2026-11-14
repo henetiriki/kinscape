@@ -7,19 +7,20 @@ import type { Gh } from '#ks/scripts/types.ts';
 // by" links) that has no other open blocker left:
 //   - labelled `status: blocked`: say so, mention the repo owner, and swap the label for
 //     `status: ready-for-dev`; the tech lead then sets `status: ready-for-agent`
-//   - a `type: spec` whose closed blocker's merged PR changed a path under `design/canvas/`: the label
-//     becomes `status: draft` instead, and the comment tells the owner to run `/refine spec`, because
-//     a design change makes the Spec's size and checks stale
+//   - a `type: spec` whose closed blocker's merged PR changed a path under `design/canvas/`: swap the
+//     label for `status: draft` instead. The comment tells the owner to run `/refine spec`. A design
+//     change makes the Spec's size and checks stale.
 //   - with an open PR that closes it (a plan PR whose build the gate stopped): comment on the PR
 // Usage: node scripts/agent-unblock.mts <closed issue number>, with GH_REPO and GH_OWNER set.
 // KINSCAPE_BOT_LOGIN, the agent App's login (`kinscape-agent[bot]`), is optional. If it is unset, the
 // script trusts no bot.
 // An https RUN_URL, if set, is linked at the end of each comment.
-// With GITHUB_OUTPUT set it writes `unblocked=[{"number":8,"blockers":[5]}]`: the issues just swapped
-// to `status: ready-for-dev` or `status: draft` whose author is the owner, a member, a collaborator or the bot, and the
-// issues that blocked each. claude-unblock.yml refreshes each against main (.github/agent/refresh.md).
-// A failed `gh` call for one issue, including a read of a blocker's PR, is logged and the exit code is 1;
-// that issue keeps `status: blocked` and the other issues still go on.
+// With GITHUB_OUTPUT set it writes `unblocked=[{"number":8,"blockers":[5]}]`.
+// The list holds each swapped issue whose author is the owner, a member, a collaborator or the bot.
+// Each entry names the issues that blocked it. claude-unblock.yml refreshes each against main
+// (.github/agent/refresh.md).
+// If a `gh` call for one issue fails, the script logs it and sets exit code 1. This includes a read of a
+// blocker's PR. That issue keeps `status: blocked`. The script continues with the other issues.
 
 type Linked = {
   author_association?: string;
@@ -37,7 +38,7 @@ const BOT = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}(?:\[bot\])?$/i;
 const RUN_URL = /^https:\/\/\S+$/;
 const TRUSTED = ['OWNER', 'MEMBER', 'COLLABORATOR'];
 const DESIGN_PATH = 'design/canvas/';
-// The Spec form's "Intent or milestone" box. Only `#<n>` or `M<n>` is read: the body is untrusted text.
+// The Spec form's "Intent or milestone" box. The script reads only `#<n>` or `M<n>`. The body is untrusted text.
 const INTENT = /^### Intent or milestone\s+(?:#(\d+)|(M\d+))\s*$/m;
 
 type Pr = { closingIssuesReferences: { number: number }[]; number: number };
@@ -99,6 +100,12 @@ const refineArg = (body: null | string | undefined): string | undefined => {
   return issue ?? milestone;
 };
 
+const readyLines = (closed: number, owner: string): string[] => [
+  `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
+  '',
+  `@${owner}: set \`status: ready-for-agent\` to start the plan.`,
+];
+
 const draftLines = (
   closed: number,
   design: number[],
@@ -117,6 +124,37 @@ const draftLines = (
     '',
     `@${owner}: run ${command}. Then set the status.`,
   ];
+};
+
+// Comments on a freed issue and swaps its `status: blocked` label: `status: draft` if a blocker
+// changed the design, else `status: ready-for-dev`.
+const swapLabel = (
+  gh: Gh,
+  comment: (thread: number, lines: string[]) => void,
+  {
+    closed,
+    design,
+    issue,
+    owner,
+  }: { closed: number; design: number[]; issue: Linked; owner: string }
+): void => {
+  const draft = design.length > 0;
+
+  comment(
+    issue.number,
+    draft
+      ? draftLines(closed, design, owner, issue.body)
+      : readyLines(closed, owner)
+  );
+  gh([
+    'issue',
+    'edit',
+    String(issue.number),
+    '--remove-label',
+    'status: blocked',
+    '--add-label',
+    draft ? 'status: draft' : 'status: ready-for-dev',
+  ]);
 };
 
 export const run = (
@@ -171,7 +209,7 @@ export const run = (
   }
 
   const openPrs = prs(gh, 'open', 200);
-  // Read on the first freed Spec, inside its `try`, so a failed call leaves that Spec blocked.
+  // The first freed Spec reads the list inside its `try`. A failed call leaves that Spec blocked.
   let merged: Pr[] | undefined;
   const mergedPrs = (): Pr[] => (merged ??= prs(gh, 'merged', 1000));
 
@@ -199,25 +237,7 @@ export const run = (
           ? designBlockers(gh, repo, mergedPrs(), blockers)
           : [];
 
-        comment(
-          issue.number,
-          design.length > 0
-            ? draftLines(closed, design, owner, issue.body)
-            : [
-                `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
-                '',
-                `@${owner}: set \`status: ready-for-agent\` to start the plan.`,
-              ]
-        );
-        gh([
-          'issue',
-          'edit',
-          String(issue.number),
-          '--remove-label',
-          'status: blocked',
-          '--add-label',
-          design.length > 0 ? 'status: draft' : 'status: ready-for-dev',
-        ]);
+        swapLabel(gh, comment, { closed, design, issue, owner });
         console.log(`#${issue.number} is unblocked.`);
 
         if (

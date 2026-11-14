@@ -467,7 +467,7 @@ describe('run', () => {
       expect(comments().map(([args]) => args[2])).toEqual(['8', '9']);
     });
   });
-  // A Spec that a design change frees goes back to `status: draft`, so the owner sizes it again.
+  // A Spec that a design change frees gets `status: draft`, so the owner sizes it again.
   describe('a Spec freed by a design change', () => {
     const WITH_OUTPUT = { ...ENV, GITHUB_OUTPUT: OUTPUT };
     const BLOCKED = ['type: spec', 'status: blocked'];
@@ -631,7 +631,7 @@ describe('run', () => {
       ['a number with no #', intent('12')],
       ['code in backticks', intent('`rm -rf /`')],
       ['a milestone with text', intent('M0; echo')],
-    ])('falls back to plain /refine spec for %s', (_, body) => {
+    ])('names plain /refine spec for %s', (_, body) => {
       fakeGh({ ...DESIGN, blocking: [{ body, labels: BLOCKED, number: 8 }] });
       run(['5'], ENV, gh, append);
 
@@ -725,7 +725,7 @@ describe('run', () => {
       expect(unblocked()).toEqual([]);
     });
 
-    it('leaves the label and exits 1 when a PR file read fails, and goes on to the next Spec', () => {
+    it('leaves the label and exits 1 when a PR file read fails, and handles the next Spec', () => {
       fakeGh({
         blockedBy: {
           8: [

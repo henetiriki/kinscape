@@ -1,8 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-import type { Layer, LayerId } from '@ks/features/map/types';
+import type {
+  Layer,
+  LayerId,
+  MapHandle,
+  ZoomLimits,
+} from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Validity } from '@ks/lib/domain/validity/types.ts';
@@ -24,6 +29,7 @@ import {
 import { MapView } from '@ks/features/map/components/MapView';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 import { freeArea, Stage } from '@ks/features/map/components/Stage';
+import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
 import { todayDay, yearOf } from '@ks/lib/domain/map/map-date.mts';
@@ -60,6 +66,11 @@ export const MapShell = ({
   const [showSources, setShowSources] = useState(false);
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [showLayers, setShowLayers] = useState(false);
+  const map = useRef<MapHandle>(null);
+  const [limits, setLimits] = useState<ZoomLimits>({
+    atMax: false,
+    atMin: false,
+  });
 
   const credits = (
     <Credits
@@ -139,10 +150,23 @@ export const MapShell = ({
           ) : undefined
         }
         overlayAt='top'
-        panel={phone ? undefined : <LayersPanel {...layerProps} />}>
+        panel={phone ? undefined : <LayersPanel {...layerProps} />}
+        zoom={
+          phone ? undefined : (
+            <ZoomControls
+              atMax={limits.atMax}
+              atMin={limits.atMin}
+              onFit={() => map.current?.fit()}
+              onZoomIn={() => map.current?.zoomIn()}
+              onZoomOut={() => map.current?.zoomOut()}
+            />
+          )
+        }>
         <MapView
+          handle={map}
           layers={layers}
           mapDay={mapDay}
+          onZoomLimits={setLimits}
           padding={freeArea(phone)}
           visible={visible}
         />

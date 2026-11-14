@@ -27,3 +27,13 @@ export type Layer = {
 
 /** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
 export type LayerId = string;
+
+/** What `MapShell` calls to drive the map from the zoom card. */
+export type MapHandle = {
+  fit: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+};
+
+/** Whether the map zoom is at its minimum or maximum. */
+export type ZoomLimits = { atMax: boolean; atMin: boolean };

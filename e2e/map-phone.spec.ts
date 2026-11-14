@@ -91,7 +91,7 @@ test.describe('phone, 390 × 844', () => {
     expect(layers.x + layers.width).toBeLessThanOrEqual(390 - 16 + 1);
     expect(layers.x).toBeGreaterThan(195);
     await expect(page.getByRole('radiogroup')).toHaveCount(0);
-    await expect(page.locator('.maplibregl-ctrl-zoom-in')).toBeHidden();
+    await expect(page.getByRole('button', { name: 'Zoom in' })).toHaveCount(0);
   });
 
   // MAP-03
@@ -243,6 +243,6 @@ test.describe('desktop, 1280 × 800', () => {
     await expect(
       page.getByRole('button', { name: 'Attributions' })
     ).toBeVisible();
-    await expect(page.locator('.maplibregl-ctrl-zoom-in')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Zoom in' })).toBeVisible();
   });
 });

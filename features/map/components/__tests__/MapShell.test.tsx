@@ -1,23 +1,39 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import type { Ref } from 'react';
+
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { Layer } from '@ks/features/map/types';
+import type { Layer, MapHandle } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
 import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { dayOf } from '@ks/lib/domain/map/map-date.mts';
 
 const mapView = vi.hoisted(() => vi.fn());
+const handle = vi.hoisted(() => ({
+  fit: vi.fn(),
+  zoomIn: vi.fn(),
+  zoomOut: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
-vi.mock('@ks/features/map/components/MapView', () => ({
-  MapView: (props: { mapDay: number; visible: Record<string, boolean> }) => {
-    mapView(props);
+vi.mock('@ks/features/map/components/MapView', async () => {
+  const { useImperativeHandle } = await import('react');
 
-    return <div data-testid='map-view' />;
-  },
-}));
+  return {
+    MapView: (props: {
+      handle: Ref<MapHandle>;
+      mapDay: number;
+      visible: Record<string, boolean>;
+    }) => {
+      mapView(props);
+      useImperativeHandle(props.handle, () => handle);
+
+      return <div data-testid='map-view' />;
+    },
+  };
+});
 
 import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { MapShell } from '@ks/features/map/components/MapShell';
@@ -94,11 +110,62 @@ it('shows the map for today with Polity borders on', () => {
   );
 
   expect(screen.getByTestId('map-view')).toBeTruthy();
-  expect(lastProps()).toEqual({
+  expect(lastProps()).toMatchObject({
     layers,
     mapDay: dayOf(new Date()),
     padding: freeArea(false),
     visible: { [polityLayer.id]: true },
+  });
+});
+
+// MAP-01
+describe('the zoom card', () => {
+  const renderShell = () =>
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        sources={sources}
+      />
+    );
+
+  it('drives the map from its three buttons', () => {
+    renderShell();
+    fireEvent.click(screen.getByRole('button', { name: 'Zoom in' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Zoom out' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Fit South Africa' }));
+    expect(handle.zoomIn).toHaveBeenCalledOnce();
+    expect(handle.zoomOut).toHaveBeenCalledOnce();
+    expect(handle.fit).toHaveBeenCalledOnce();
+  });
+
+  it('disables Zoom out and Zoom in at the limits the map reports', () => {
+    renderShell();
+    act(() => lastProps().onZoomLimits({ atMax: false, atMin: true }));
+    expect(screen.getByRole('button', { name: 'Zoom out' }).ariaDisabled).toBe(
+      'true'
+    );
+    expect(
+      screen.getByRole('button', { name: 'Zoom in' }).ariaDisabled
+    ).toBeNull();
+    act(() => lastProps().onZoomLimits({ atMax: true, atMin: false }));
+    expect(screen.getByRole('button', { name: 'Zoom in' }).ariaDisabled).toBe(
+      'true'
+    );
+  });
+
+  it('shows no card on a phone', () => {
+    const query = window.matchMedia;
+
+    window.matchMedia = (() => ({
+      addEventListener: () => {},
+      matches: true,
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+    renderShell();
+    window.matchMedia = query;
+    expect(screen.queryByRole('button', { name: 'Zoom in' })).toBeNull();
   });
 });
 

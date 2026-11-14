@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({ get: vi.fn() }));
 const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
+const revalidate = vi.hoisted(() => vi.fn());
 
 vi.mock('next/headers', () => ({ cookies: async () => jar }));
+vi.mock('next/cache', () => ({ revalidatePath: revalidate }));
 vi.mock('@ks/server/adapters.mts', () => ({
   appAdapters: () => adapters.current,
 }));
@@ -132,6 +134,20 @@ describe('createPersonAction', () => {
     expect(await listFor('a')).toEqual([created.ok && created.value]);
   });
 
+  // PPL-01: Back to a cached page must not show the Person from before the save.
+  it('revalidates the people pages after a save, and after nothing else', async () => {
+    await setup();
+
+    await createPersonAction({ ...person, surname: '' });
+    await createPersonAction({ ...person, sex: 'Q' });
+
+    expect(revalidate).not.toHaveBeenCalled();
+
+    await createPersonAction(person);
+
+    expect(revalidate).toHaveBeenCalledExactlyOnceWith('/people', 'layout');
+  });
+
   it('saves one Person for the same create twice', async () => {
     const { listFor } = await setup();
 
@@ -167,6 +183,31 @@ describe('updatePersonAction', () => {
       surname: 'Botha',
       version: 2,
     });
+  });
+
+  // PPL-01
+  it('revalidates the people pages after a saved change, not after a conflict', async () => {
+    await setup();
+    await createPersonAction(person);
+    revalidate.mockClear();
+
+    await updatePersonAction({
+      person: { ...person, surname: '' },
+      version: 1,
+    });
+    await updatePersonAction({
+      person: { ...person, surname: 'Botha' },
+      version: 9,
+    });
+
+    expect(revalidate).not.toHaveBeenCalled();
+
+    await updatePersonAction({
+      person: { ...person, surname: 'Botha' },
+      version: 1,
+    });
+
+    expect(revalidate).toHaveBeenCalledExactlyOnceWith('/people', 'layout');
   });
 
   it('gives conflict for an old version', async () => {

@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import type {
@@ -17,6 +18,18 @@ type Saved<E extends string> = Result<
 >;
 
 /**
+ * After a save, drops the cached pages under `/people`. Back to `/people/{id}` then reads the
+ * saved Person, so its form holds the new `version` and the next Save is not a false conflict.
+ */
+const revalidated = <T extends { ok: boolean }>(saved: T): T => {
+  if (saved.ok) {
+    revalidatePath('/people', 'layout');
+  }
+
+  return saved;
+};
+
+/**
  * Saves a new Person from the form (PPL-01). The raw input reaches `checkPerson`, which gives an
  * error for each bad field. A repeat of the same id returns the Person saved first.
  */
@@ -25,7 +38,9 @@ export const createPersonAction = treeAction(
   async (tree, raw): Promise<Saved<never>> => {
     const checked = checkPerson(raw);
 
-    return checked.ok ? tree.persons.create(checked.value) : checked;
+    return checked.ok
+      ? revalidated(await tree.persons.create(checked.value))
+      : checked;
   }
 );
 
@@ -38,6 +53,8 @@ export const updatePersonAction = treeAction(
   async (tree, { person, version }): Promise<Saved<'conflict'>> => {
     const checked = checkPerson(person);
 
-    return checked.ok ? tree.persons.update(checked.value, version) : checked;
+    return checked.ok
+      ? revalidated(await tree.persons.update(checked.value, version))
+      : checked;
   }
 );

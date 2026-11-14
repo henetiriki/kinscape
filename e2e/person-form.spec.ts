@@ -49,6 +49,31 @@ test('an edit stays after a reload', async ({ page }) => {
 });
 
 // PPL-01
+test('Back to an edit page after a save shows the saved values and saves again', async ({
+  page,
+}) => {
+  const family = surname();
+
+  await create(page, family);
+  await page.getByText(`${family}, Ana`).click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}$/);
+  await page.getByLabel('Maiden name').fill('Botha');
+  await page.getByRole('button', { name: 'Save' }).click();
+  await page.waitForURL(url => url.pathname === '/people');
+  await page.goBack();
+
+  await expect(page.getByLabel('Maiden name')).toHaveValue('Botha');
+
+  await page.getByLabel('Maiden name').fill('Joubert');
+  await page.getByRole('button', { name: 'Save' }).click();
+  await page.waitForURL(url => url.pathname === '/people');
+
+  await expect(
+    page.getByText('This person changed while you were editing')
+  ).toHaveCount(0);
+});
+
+// PPL-01
 test('Cancel after a change leaves at once and drops the change', async ({
   page,
 }) => {

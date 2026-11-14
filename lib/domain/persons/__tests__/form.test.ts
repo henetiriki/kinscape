@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkPerson } from '@ks/lib/domain/persons/form.mts';
+import {
+  checkPerson,
+  personFieldMessages,
+} from '@ks/lib/domain/persons/form.mts';
 
 const ID = '01900000-0000-7000-8000-0000000000a1';
 const valid = { givenNames: 'Ana', id: ID, surname: 'Smit' };
@@ -86,5 +89,36 @@ describe('checkPerson', () => {
     ['a bad id with a field error', { ...valid, givenNames: '', id: 'nope' }],
   ])('gives invalid for %s', (_what, input) => {
     expect(checkPerson(input)).toEqual({ error: 'invalid', ok: false });
+  });
+});
+
+// PPL-01
+describe('personFieldMessages', () => {
+  it('words each kind of field error', () => {
+    expect(
+      personFieldMessages(
+        {
+          birth: 'no-such-day',
+          death: 'syntax',
+          givenNames: 'required',
+          surname: 'required',
+          variants: 'too-many',
+        },
+        { birth: '31 FEB 1850', death: 'SOMETIME' }
+      )
+    ).toEqual({
+      birth: 'February 1850 has 28 days.',
+      death:
+        'Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.',
+      givenNames: 'Enter the given names.',
+      surname: 'Enter the surname.',
+      variants: 'Use at most 20 spellings.',
+    });
+  });
+
+  it('words only the fields that failed', () => {
+    expect(
+      personFieldMessages({ surname: 'required' }, { birth: '', death: '' })
+    ).toEqual({ surname: 'Enter the surname.' });
   });
 });

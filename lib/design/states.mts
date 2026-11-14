@@ -549,6 +549,13 @@ export const CARDS: Card[] = [
         label: 'Event types',
         placeholder: 'Add a type',
       }),
+      one('TokenField · error', {
+        defaultValues: ['Birth', 'Death'],
+        error: 'Use at most 20 spellings.',
+        helper: 'Press Enter to add.',
+        label: 'Event types',
+        placeholder: 'Add a type',
+      }),
     ],
   },
   {

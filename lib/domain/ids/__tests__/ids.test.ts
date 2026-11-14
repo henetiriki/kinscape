@@ -5,6 +5,7 @@ import {
   parsePersonId,
   parseRelationshipId,
   parseTreeId,
+  uuidV7,
 } from '@ks/lib/domain/ids/ids.mts';
 
 const UUID = '00000000-0000-4000-8000-0000000000a1';
@@ -35,4 +36,23 @@ describe.each([
       expect(parse(text)).toBeUndefined();
     }
   );
+});
+
+// PPL-01
+describe('uuidV7', () => {
+  it('writes version 7, variant 10 and the time in the first 48 bits', () => {
+    const id = uuidV7(Date.UTC(2026, 10, 14));
+
+    expect(id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+    );
+    expect(Number.parseInt(id.replace('-', '').slice(0, 12), 16)).toBe(
+      Date.UTC(2026, 10, 14)
+    );
+    expect(parsePersonId(id)).toBe(id);
+  });
+
+  it('gives a new id at each call', () => {
+    expect(uuidV7()).not.toBe(uuidV7());
+  });
 });

@@ -5,8 +5,24 @@ import type {
 } from '#ks/lib/domain/persons/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
+import { fuzzyDateMessage } from '#ks/lib/domain/dates/fuzzy-date-text.mts';
 import { personFormSchema } from '#ks/lib/domain/persons/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+
+/**
+ * The message of each field error. A date message reads the field's text in `texts`, because the
+ * error kind does not say which month or dates the text names.
+ */
+export const personFieldMessages = (
+  fields: PersonFieldErrors['fields'],
+  texts: { birth: string; death: string }
+): Partial<Record<keyof PersonFieldErrors['fields'], string>> => ({
+  ...(fields.birth && { birth: fuzzyDateMessage(fields.birth, texts.birth) }),
+  ...(fields.death && { death: fuzzyDateMessage(fields.death, texts.death) }),
+  ...(fields.givenNames && { givenNames: 'Enter the given names.' }),
+  ...(fields.surname && { surname: 'Enter the surname.' }),
+  ...(fields.variants && { variants: 'Use at most 20 spellings.' }),
+});
 
 /**
  * Checks a Person from the form (PPL-01). A blank name, too many spelling variants or a bad date

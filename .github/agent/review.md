@@ -9,9 +9,9 @@ Where `review.md` or `review-code.md` (what to look for) disagrees with the revi
 
 ## The plan
 
-Find the PR's plan: a file under `plans/` changed in the PR. Read it. Read issue `#N` (`gh issue view`) from its `Spec:` line.
+Read the PR's plan, the file under `plans/` that the PR changes. Read issue `#N` (`gh issue view`) from its `Spec:` line.
 
-If the PR has no plan file, report the missing plan file. Do not report it on head branch `bot/update-action-pins` or `revert-*`.
+Report a missing plan file, except on head branch `bot/update-action-pins` or `revert-*`.
 
 Report each of these:
 
@@ -34,6 +34,6 @@ For each answered Decision, check that the Spec's Behaviour and Acceptance check
   - Plan departures: at most two.
 - Skip style nits and what a linter catches.
 - Skip the content of `design/source/*.html` and `design/*.jpg`. The workflow [Design: Render snapshots](../../design/CANVAS.md#making-the-snapshots-and-jpgs) writes them. If a non-merge commit whose message is not `chore: export and render design snapshots` changes them, report one finding.
-- If Claude commented before, ignore the command's stop. Review every push. Do not repeat a finding that is still on the PR as a new comment.
-- After the first review, open with one comment. Start it with `Open findings: <n>`, the number of earlier findings still open. Then write "All earlier findings addressed", or link each open finding with a one-line reason. Check each finding against the current code, not only `.since-last-review.diff`. A fix, or an author's reply with a reason that you accept, addresses a finding. A resolved thread alone does not count.
+- If Claude commented before, ignore the command's stop. Review every push. Do not repeat a finding that is still on the PR.
+- Open every review with a comment that starts `Open findings: <n>`. Count each earlier finding still open and each finding with no line to hold it (a missing plan file), but no unlikely case. After the first review, write "All earlier findings addressed", or link each open finding with a one-line reason. Check each finding against the current code, not only `.since-last-review.diff`. A fix, or an author's reply with a reason that you accept, addresses a finding. A resolved thread alone does not count.
 - Never post "No issues" alone. List the plan items and rules you checked.

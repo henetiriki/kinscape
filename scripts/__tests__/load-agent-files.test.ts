@@ -13,6 +13,15 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
+import type { Step } from '@ks/scripts/__tests__/types';
+
+import {
+  MAIN_COPY_CHECK,
+  NOT_PLANS_ONLY,
+  reviewJob,
+  stepIndex,
+  stepNamed,
+} from '@ks/scripts/__tests__/review-workflow';
 import { runScript } from '@ks/scripts/__tests__/run-script';
 
 const root = process.cwd();
@@ -262,17 +271,6 @@ describe('the run-summary action', () => {
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
 const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 
-type Step = {
-  'continue-on-error'?: boolean;
-  env?: Record<string, string>;
-  id?: string;
-  if?: string;
-  name?: string;
-  run?: string;
-  shell?: string;
-  uses?: string;
-  with?: Record<string, unknown>;
-};
 const runClaudeSteps = () =>
   (
     parse(
@@ -2078,17 +2076,14 @@ describe('the load-agent-files script', () => {
 // from approving (docs/repo-settings.md), and reads its rules, settings and plugin from main
 // (plans/chores/C588-review-config-from-main.md).
 describe('the review job of claude-code-review.yml', () => {
-  type Job = { permissions?: Record<string, string>; steps: Step[] };
   const ACTION_NAME = 'anthropics/claude-code-action@';
   const LOAD = 'Load the review rules and settings';
-  const CHECK = "Check that this workflow is main's";
+  const CHECK = MAIN_COPY_CHECK;
   const COPY = "Put main's rule files in the checkout";
-  const job = () =>
-    (parse(read('claude-code-review.yml')) as { jobs: Record<string, Job> })
-      .jobs['claude-review'];
+  const job = reviewJob;
   const steps = () => job().steps;
-  const at = (name: string) => steps().findIndex(step => step.name === name);
-  const step = (name: string) => steps()[at(name)];
+  const at = stepIndex;
+  const step = stepNamed;
   const claudeAt = () =>
     steps().findIndex(step => step.uses?.startsWith(ACTION_NAME));
   const claude = () => steps()[claudeAt()];
@@ -2192,11 +2187,9 @@ describe('the review job of claude-code-review.yml', () => {
         'Show that the review started',
         'Write the changes since the last review',
       ]) {
-        expect(step(name).if, name).toContain(
-          "steps.same.outputs.same == 'true'"
-        );
+        expect(step(name).if, name).toBe(NOT_PLANS_ONLY);
       }
-      expect(claude().if).toContain("steps.same.outputs.same == 'true'");
+      expect(claude().if).toBe(NOT_PLANS_ONLY);
     });
 
     it("says same=true for main's copy and same=false for another", () => {

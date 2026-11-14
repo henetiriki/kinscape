@@ -7,9 +7,9 @@ name: 'Claude: Code review'
 # owner, a member, a collaborator or the bot, "Skipped Review: <PR title>" for a draft, Dependabot, the
 # bot's action-pin PR or an outsider's PR. The pin PR is the bot's PR from the head branch
 # bot/update-action-pins, and the bot itself pushed the change: a person's push to it is reviewed.
-# A PR that changes only plans/** gets "Review: <PR title>" too: its job runs, skips Claude and ends
-# green (the `Review` check is required). Repeats the `claude-review` job's `if:` (run-name cannot
-# see job results): change them together.
+# A PR that changes only plans/** gets "Review: <PR title>" too. Its job runs, skips Claude and ends
+# green, because the `Review` check is required. Repeats the `claude-review` job's `if:` (run-name
+# cannot see job results): change them together.
 run-name: >-
   ${{
     github.actor != 'dependabot[bot]' && !github.event.pull_request.draft &&
@@ -160,16 +160,22 @@ jobs:
             echo "A re-run: reviewing the whole PR."
             exit 0
           fi
-          # Runs that ended green or red, newest first: the gate below turns a run red when its review has
-          # open findings. A cancelled run is left out. One counts as a review only if it uploaded
-          # Claude's summary (kept 7 days): a run where Claude didn't start, as on a PR changing this file
-          # or one changing only plans/**, succeeds too.
+          # Runs that ended green or red, newest first. A cancelled run is left out. The limit is high
+          # because gh lists 20 by default, and cancelled and plans-only runs could fill them.
+          # A red run counts only if its gate step failed. The gate turns a run red when the review has
+          # open findings, and a Claude failure is red too. A run counts as a review only if it uploaded
+          # Claude's summary (kept 7 days). A run where Claude didn't start succeeds without one.
           last=""
-          for run in $(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request \
-            --json conclusion,databaseId,headSha --jq '.[] | select(.headSha != env.HEAD_SHA and (.conclusion == "success" or .conclusion == "failure")) | "\(.databaseId):\(.headSha)"'); do
-            if [ -n "$(gh api "repos/$GH_REPO/actions/runs/${run%%:*}/artifacts" \
+          for run in $(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request --limit 100 \
+            --json conclusion,databaseId,headSha --jq '.[] | select(.headSha != env.HEAD_SHA and (.conclusion == "success" or .conclusion == "failure")) | "\(.databaseId):\(.headSha):\(.conclusion)"'); do
+            IFS=: read -r id sha conclusion <<< "$run"
+            if [ "$conclusion" = failure ] && [ "$(gh api "repos/$GH_REPO/actions/runs/$id/jobs" \
+              --jq '.jobs[] | select(.name == "Review") | .steps[] | select(.name == "Fail on open findings") | .conclusion')" != failure ]; then
+              continue
+            fi
+            if [ -n "$(gh api "repos/$GH_REPO/actions/runs/$id/artifacts" \
               --jq '.artifacts[] | select(.name == "claude-execution-output" and (.expired | not)) | .id')" ]; then
-              last="${run#*:}"
+              last="$sha"
               break
             fi
           done
@@ -264,11 +270,13 @@ jobs:
           fi
 
       # Last, so that the output, the working comment and the missing-review report are done before the job
-      # turns red. This job is the required check `Review`: it is red while the review has open findings, so
-      # the PR can't merge. A finding is an inline comment of the bot on the head commit, from any run
-      # (a re-run doesn't repeat a finding that is still on the PR), plus the earlier findings that the
-      # latest "Open findings: <n>" comment (review.md › Findings) says are open. A push that fixes them, or
-      # that the author's reply explains, gets a review that says 0. A failed call fails the step.
+      # turns red. This job is the required check `Review`. It is red while the review has open findings,
+      # so the PR can't merge.
+      # An open finding is an inline comment of the bot on the head commit, from any run: a re-run doesn't
+      # repeat a finding that is still on the PR. The count in the latest `Open findings: <n>` comment
+      # (review.md › Findings) adds earlier findings that are still open, and findings with no line to hold
+      # them. A fix, or an author's reply that the review accepts, gives a review that says 0.
+      # A failed call fails the step.
       - name: Fail on open findings
         if: steps.claude-review.outcome == 'success'
         shell: bash
@@ -280,12 +288,13 @@ jobs:
         run: |
           # original_commit_id, because commit_id moves to the head of the PR.
           inline=$(gh api --paginate "repos/$GH_REPO/pulls/$PR_NUMBER/comments" \
-            --jq '.[] | select(.user.login == "github-actions[bot]" and .in_reply_to_id == null and .original_commit_id == env.HEAD_SHA) | .id' | wc -l)
+            --jq '.[] | select(.user.login == "github-actions[bot]" and .in_reply_to_id == null and .original_commit_id == env.HEAD_SHA) | .id' | wc -l | tr -d ' ')
+          # The comment starts with the line. Claude may wrap it in markdown: `, *, _, # or >.
           earlier=$(gh api --paginate "repos/$GH_REPO/issues/$PR_NUMBER/comments" \
-            --jq '.[] | select(.user.login == "github-actions[bot]") | .body | capture("\\AOpen findings: (?<n>[0-9]+)") | .n' | tail -n 1)
+            --jq '.[] | select(.user.login == "github-actions[bot]") | .body | capture("\\A[\\s*_`#>]*Open findings:[\\s*_`]*(?<n>[0-9]+)") | .n' | tail -n 1)
           total=$((inline + ${earlier:-0}))
           if [ "$total" -gt 0 ]; then
-            echo "::error::The review has $total open findings: $inline inline on this commit, ${earlier:-0} still open from earlier ones."
+            echo "::error::The review has open findings: $total ($inline inline on this commit, ${earlier:-0} in its Open findings comment)."
             exit 1
           fi
           echo "The review has no open findings."

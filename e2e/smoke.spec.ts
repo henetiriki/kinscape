@@ -69,10 +69,16 @@ test('the map pans and zooms', async ({ page }) => {
   await expect(canvas).toBeVisible();
 });
 
-const creditsLine = (page: Page) =>
-  page
-    .getByRole('paragraph')
-    .filter({ has: page.getByRole('button', { name: 'Attributions' }) });
+/** On desktop the credits text sits behind the "Credits" button. A press outside the card closes it, so this opens it again when needed. */
+const creditsText = async (page: Page) => {
+  const card = page.locator('[data-slot="credits"] p');
+
+  if (!(await card.isVisible())) {
+    await page.getByRole('button', { exact: true, name: 'Credits' }).click();
+  }
+
+  return card;
+};
 
 // MAP-02
 test('the Polity borders row toggles and drops its credits', async ({
@@ -81,16 +87,15 @@ test('the Polity borders row toggles and drops its credits', async ({
   await page.goto('/');
 
   const row = page.getByRole('checkbox', { name: 'Polity borders' });
-  const credits = creditsLine(page);
 
   await expect(row).toBeChecked();
-  await expect(credits).toContainText('Public Sans');
+  await expect(await creditsText(page)).toContainText('Public Sans');
   await row.click();
   await expect(row).not.toBeChecked();
-  await expect(credits).not.toContainText('Public Sans');
+  await expect(await creditsText(page)).not.toContainText('Public Sans');
   await row.click();
   await expect(row).toBeChecked();
-  await expect(credits).toContainText('Public Sans');
+  await expect(await creditsText(page)).toContainText('Public Sans');
 });
 
 // NFR-08
@@ -98,7 +103,9 @@ test('the credits line opens the sources and attributions dialog', async ({
   page,
 }) => {
   await page.goto('/');
-  await expect(creditsLine(page)).toContainText('Made with Natural Earth');
+  await expect(await creditsText(page)).toContainText(
+    'Made with Natural Earth'
+  );
   await page.getByRole('button', { name: 'Attributions' }).click();
 
   const dialog = page.getByRole('dialog', { name: 'Sources and attributions' });

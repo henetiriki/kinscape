@@ -398,7 +398,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
-  <p style="position: absolute; right: 24px; bottom: 6px; margin: 0; font-size: 11px; color: #24302B">Boundaries: KinScape data, sources per layer · Terrain: [DEM SOURCE] · Coast &amp; rivers: [SOURCE] · <a href="#" style="color: #1D3E20">Attributions</a></p>
+  <div style="position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
+  <div style="position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
+    <button type="button" aria-expanded="false" aria-controls="credits-text" style="display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="info" size="14"></x-import>Credits</button>
+    <span aria-hidden="true">·</span>
+    <a href="#" style="color: #1D3E20">Attributions</a>
+  </div>
   </sc-if>
 
   <sc-if value="{{v.accountProposed}}" hint-placeholder-val="{{ false }}">

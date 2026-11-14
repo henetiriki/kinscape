@@ -93,6 +93,17 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "file": "Map-credits-narrow.dc.html",
+      "name": "map-credits-narrow",
+      "viewport": { "height": 120, "width": 800 }
+    },
+    {
+      "file": "Map-credits-narrow.dc.html",
+      "name": "map-credits-narrow-open",
+      "props": { "variant": "open" },
+      "viewport": { "height": 120, "width": 800 }
+    },
+    {
       "file": "Map.dc.html",
       "name": "map-date-invalid",
       "props": { "variant": "date-invalid" },

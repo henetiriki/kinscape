@@ -8,6 +8,8 @@ import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 const NOT_BUILT = [
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
+  'map-credits-narrow',
+  'map-credits-narrow-open',
   'map-date-invalid',
   'map-date-invalid-phone',
   'map-desktop',

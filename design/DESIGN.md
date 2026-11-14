@@ -31,6 +31,8 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Account menu, phone (M2)                             | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                           |
 | Sources and attributions                             | [map-sources.jpg](map-sources.jpg)                                                 |
 | Sources and attributions, phone                      | [map-sources-phone.jpg](map-sources-phone.jpg)                                     |
+| Credits at 800px, collapsed                          | [map-credits-narrow.jpg](map-credits-narrow.jpg)                                   |
+| Credits at 800px, expanded                           | [map-credits-narrow-open.jpg](map-credits-narrow-open.jpg)                         |
 | Map style: MapLibre layer stack                      | [map-style.jpg](map-style.jpg)                                                     |
 | Map style, phone                                     | [map-style-phone.jpg](map-style-phone.jpg)                                         |
 | Invalid date typed in the dock                       | [map-date-invalid.jpg](map-date-invalid.jpg)                                       |
@@ -286,7 +288,9 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 NFR-08 requires the app to credit every source. The design fixes the format. The licence checks (NFR-08, BND-06) supply the text.
 
 - One sources file in the repo lists each source: layer, title, author, licence, licence link, attribution text and the date of the check. After you check its licence, add a source to the map.
-- The credits line under the date dock joins the attribution text of the sources on screen with " · " and ends with an "Attributions" link. 11px, `--credits`.
+- The credits line under the date dock is one line at every desktop width: a "Credits" button with the `info` icon, " · " and an "Attributions" link. 11px, `--credits`.
+- The "Credits" button sets `aria-expanded`. It opens a card above the line with the attribution text of the sources on screen, joined with " · ". The card covers the dock's corner and moves nothing. A second press, a press outside it or Esc closes it. A dialog on top keeps the card open.
+- The scale bar sits under the Layers panel: left at the gutter, bottom at `credits-bottom`. It uses 11px `--credits` on `--white-60`, with a 1px `--credits` rule on the left, bottom and right. MapLibre sets the distance and the width. A phone hides it.
 - The "Sources and attributions" dialog opens from that link or the account menu. It lists every source as layer, source (with its detail line), licence and date checked.
 - The JPGs show `[Source]` and `[Licence]` until someone completes the checks. Do not replace them with guesses.
 

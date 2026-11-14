@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Map credits at 800px</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#264F29}a:hover{color:#1D3E20}
+button{font:inherit}
+button:focus-visible{outline:2px solid #264F29;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 800px; height: 120px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+
+  <aside aria-hidden="true" style="position: absolute; left: 24px; bottom: 28px; width: 320px; height: 200px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.1)"></aside>
+  <section aria-hidden="true" style="position: absolute; left: 368px; right: 24px; bottom: 28px; height: 176px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)"></section>
+
+  <div style="position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
+
+  <div style="position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
+    <button type="button" aria-expanded="{{expanded}}" aria-controls="credits-text" style="display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="info" size="14"></x-import>Credits</button>
+    <span aria-hidden="true">·</span>
+    <a href="#" style="color: #1D3E20">Attributions</a>
+  </div>
+
+  <sc-if value="{{v.open}}" hint-placeholder-val="{{ false }}">
+    <div id="credits-text" style="position: absolute; right: var(--size-gutter); bottom: 30px; width: 300px; box-sizing: border-box; padding: 10px 14px; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating); font-size: 11px; line-height: 16px; color: var(--credits)">Boundaries: KinScape data, sources per layer · Terrain: [DEM SOURCE] · Coast &amp; rivers: [SOURCE]</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["default","open"],"default":"default"},"$preview":{"width":800,"height":120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const open = (this.props.variant ?? 'default') === 'open';
+    return {
+      expanded: open ? 'true' : 'false',
+      v: { open: open }
+    };
+  }
+}
+</script>
+</body>
+</html>

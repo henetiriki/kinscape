@@ -10,6 +10,7 @@ import type { MenuEntry } from '@ks/app/components/overlays/types';
 import { Avatar } from '@ks/app/components/foundation/Avatar';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Surface } from '@ks/app/components/foundation/Surface';
+import { useDismiss } from '@ks/app/components/overlays/useDismiss';
 
 import styles from '@ks/app/components/overlays/Menu.module.css';
 
@@ -134,21 +135,7 @@ export const Menu = ({
   }, [open]);
 
   // A pointer outside closes the menu.
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    const close = (event: PointerEvent) => {
-      if (!anchor.current!.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', close);
-
-    return () => document.removeEventListener('pointerdown', close);
-  }, [open]);
+  useDismiss(open, () => setOpen(false), { outside: anchor });
 
   const closeToAvatar = () => {
     // A `ref` on Avatar does not reach its button in React 18, so the anchor finds it.

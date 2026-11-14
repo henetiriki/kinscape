@@ -46,3 +46,4 @@ A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `ling
 ## Deviations
 
 - `.gitattributes` uses the bare `linguist-generated`, not `linguist-generated=true`: `git check-attr` prints `set` only for the bare form, and the done checks name `set`. GitHub treats both the same. The tech lead chose this.
+- `review.md` gains 32 words, not a word-for-word swap as the issue says: the plan counted them against the 500-word budget, and `npm run words` passes.

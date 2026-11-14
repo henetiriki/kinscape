@@ -89,7 +89,7 @@ On desktop, the `Stage` puts the `dock` and `credits` slots in one bottom column
 - `Stage` does not change. The collapsed line never wraps, so the slot never grows. The one-line clip in `Stage.module.css` is gone, because it hid the expanded card.
 - At the tech lead's request, a local session drew the D4 boards (canvas version 1794689008-e1f4), then built `Credits`.
 - `Credits` takes `collapsible`. The phone keeps the full text line, because the Bug says #104 keeps the phone.
-- Two more test edits: `lib/design/__tests__/screens.test.ts` (two `NOT_BUILT` names) and `scripts/__tests__/design-export.test.ts` (92 snapshots, not 90). Both follow the two new boards.
+- Three more test edits follow the two new boards: `lib/design/__tests__/screens.test.ts` (two `NOT_BUILT` names), `scripts/__tests__/design-export.test.ts` and `lib/design/__tests__/design.test.ts` (92 snapshots, not 90).
 - `e2e/smoke.spec.ts` changed: the credits text sits behind the "Credits" button on desktop.
 - The `DESIGN.md` edit needs no design-system publish. After `npm run design-system`, every published file matches the canvas copy.
 - D3 design: `type.credits` in `--credits` on `--white-60`, with a 1px `--credits` rule on the left, bottom and right.

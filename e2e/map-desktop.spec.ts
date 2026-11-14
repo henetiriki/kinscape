@@ -67,6 +67,25 @@ for (const width of WIDTHS) {
     });
 
     // NFR-05
+    test('the scale bar takes the credits type, colour and place from the design', async ({
+      page,
+    }) => {
+      const scale = page.locator('.maplibregl-ctrl-scale');
+
+      await expect(scale).toHaveCSS('font-size', '11px');
+      await expect(scale).toHaveCSS('color', 'rgb(36, 48, 43)');
+      await expect(scale).toHaveCSS(
+        'background-color',
+        'rgba(255, 255, 255, 0.6)'
+      );
+
+      const { height, x, y } = await box(scale);
+
+      expect(x).toBeCloseTo(24, 0);
+      expect(800 - (y + height)).toBeCloseTo(6, 0);
+    });
+
+    // NFR-05
     test('the scale bar clears the Layers panel, the dock and the credits', async ({
       page,
     }) => {

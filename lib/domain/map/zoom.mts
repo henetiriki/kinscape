@@ -1,7 +1,7 @@
 /** MapLibre's world is 512 px wide at zoom 0 and doubles at each zoom level. */
 const WORLD_PX = 512;
 
-const mercatorY = (latitude: number) =>
+export const mercatorY = (latitude: number) =>
   Math.log(Math.tan(Math.PI / 4 + (latitude * Math.PI) / 360));
 
 /**

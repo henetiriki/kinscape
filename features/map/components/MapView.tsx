@@ -18,6 +18,7 @@ import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import { PHONE } from '@ks/app/components/foundation/usePhone';
 import { freeArea } from '@ks/features/map/components/Stage';
 import { buildStyle } from '@ks/features/map/style';
+import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 import { coverZoom } from '@ks/lib/domain/map/zoom.mts';
 
 type Padding = ReturnType<typeof freeArea>;
@@ -26,12 +27,6 @@ type Padding = ReturnType<typeof freeArea>;
 setWorkerUrl(
   new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).href
 );
-
-/** South Africa, Lesotho and eSwatini: west, south, east, north. */
-export const FIRST_VIEW: [[number, number], [number, number]] = [
-  [16, -35.5],
-  [33.5, -21.5],
-];
 
 /** Panning stops at the edge of this box, so the map can't be lost. */
 export const MAX_BOUNDS: [[number, number], [number, number]] = [

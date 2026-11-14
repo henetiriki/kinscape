@@ -2,6 +2,8 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import { centreOf, FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
+
 // MAP-01: the zoom card in the map's `zoom` slot.
 
 type TestWindow = {
@@ -26,17 +28,11 @@ const fit = (page: Page) =>
   page.getByRole('button', { name: 'Fit South Africa' });
 const zoomOf = (page: Page) =>
   page.evaluate(() => (window as unknown as TestWindow).kinscapeMap.getZoom());
+// Where the middle of the first view sits on screen.
 const viewOf = (page: Page) =>
-  page.evaluate(() => {
+  page.evaluate((centre: [number, number]) => {
     const { kinscapeMap } = window as unknown as TestWindow;
-    // Where the middle of the first view sits on screen: the middle in longitude, and in Mercator for latitude.
-    const mercator = (lat: number) =>
-      Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
-    const middle =
-      (2 * Math.atan(Math.exp((mercator(-35.5) + mercator(-21.5)) / 2)) -
-        Math.PI / 2) *
-      (180 / Math.PI);
-    const { x, y } = kinscapeMap.project([24.75, middle]);
+    const { x, y } = kinscapeMap.project(centre);
 
     return {
       padding: kinscapeMap.getPadding(),
@@ -44,7 +40,7 @@ const viewOf = (page: Page) =>
       y,
       zoom: kinscapeMap.getZoom(),
     };
-  });
+  }, centreOf(FIRST_VIEW));
 const settled = async (page: Page) => {
   await page.waitForFunction(() => {
     const { kinscapeMap } = window as unknown as {
@@ -202,11 +198,18 @@ test.describe('on a desktop, 1440 × 900', () => {
 
     await expect(menu).toBeVisible();
 
+    // The menu role wraps the items, not the header, so probe 8px below the top of the first item.
     const cardBox = (await page.locator('[data-slot="zoom"]').boundingBox())!;
+    const menuBox = (await menu.boundingBox())!;
+    const point = { x: cardBox.x + cardBox.width / 2, y: menuBox.y + 8 };
+
+    // The point must be over the card, or the check cannot fail.
+    expect(point.y).toBeGreaterThan(cardBox.y);
+    expect(point.y).toBeLessThan(cardBox.y + cardBox.height);
+
     const hit = await menu.evaluate(
-      (node, point) =>
-        node.contains(document.elementFromPoint(point.x, point.y)),
-      { x: cardBox.x + cardBox.width / 2, y: cardBox.y + 8 }
+      (node, { x, y }) => node.contains(document.elementFromPoint(x, y)),
+      point
     );
 
     expect(hit).toBe(true);

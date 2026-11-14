@@ -186,7 +186,7 @@ describe('the step that writes the changes since the last review', () => {
     jobs: {
       jobs: [
         {
-          name: 'Review',
+          name: reviewJob().name,
           steps: [{ conclusion: gate, name: GATE }],
         },
       ],
@@ -235,6 +235,14 @@ describe('the step that writes the changes since the last review', () => {
 
   it('lists up to 100 runs, since gh lists 20 and cancelled runs would fill them', () => {
     expect(since([]).log).toContain('--limit 100');
+  });
+
+  // Renaming the job also renames the required check, so the step must follow it.
+  it('looks for the gate step by the names that the workflow has', () => {
+    const { run } = stepNamed(SINCE);
+
+    expect(run).toContain(`select(.name == "${reviewJob().name}")`);
+    expect(run).toContain(`select(.name == "${stepNamed(GATE).name}")`);
   });
 
   it('reviews the changes since the last green run that has Claude’s summary', () => {
@@ -384,6 +392,8 @@ describe('the step that fails on open findings', () => {
   it.each([
     '**Open findings: 2**',
     '**Open findings:** 2',
+    '**Open findings**: 2',
+    '`Open findings`: 2',
     '## Open findings: 2',
     '`Open findings: 2`',
     '> Open findings: 2',

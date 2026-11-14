@@ -53,6 +53,6 @@ The since-diff step reads only runs with `--status success`. After a red run, th
 ## Deviations
 
 - `run-script.ts`, `review-workflow.ts` and `types.ts` in `scripts/__tests__/` are new. The two tests share them.
-- Every review writes an `Open findings: <n>` line, which the issue does not name. It counts a finding with no line to hold it. The gate allows markdown around it.
+- Every review writes an `Open findings: <n>` line, which the issue does not name. It counts a finding with no line to hold it, and leaves out an inline finding on the head commit, which the gate counts itself. The gate allows markdown around it.
 - The since-diff step lists 100 runs, not `--status success`. A `failure` run counts only if its "Fail on open findings" step failed.
 - Other `review.md` sentences are shorter, for its word budget.

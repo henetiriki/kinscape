@@ -5,7 +5,11 @@ import { parse } from 'yaml';
 import type { Step } from '@ks/scripts/__tests__/types';
 
 // The steps of the review job in claude-code-review.yml, for the tests that read them.
-type Job = { permissions?: Record<string, string>; steps: Step[] };
+type Job = {
+  name?: string;
+  permissions?: Record<string, string>;
+  steps: Step[];
+};
 type Workflow = {
   jobs: Record<string, Job>;
   on: { pull_request: Record<string, unknown> };

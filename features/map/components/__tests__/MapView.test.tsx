@@ -1,8 +1,9 @@
 import { render } from '@testing-library/react';
+import { createRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { buildStyle } from '@ks/features/map/style';
-import type { Layer } from '@ks/features/map/types';
+import type { Layer, MapHandle } from '@ks/features/map/types';
 
 import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { polityLayer } from '@ks/features/map/layers/polities';
@@ -10,30 +11,43 @@ import { polityLayer } from '@ks/features/map/layers/polities';
 const maplibre = vi.hoisted(() => {
   const map = {
     addControl: vi.fn(),
+    fitBounds: vi.fn(),
+    getMinZoom: vi.fn(() => 3),
+    getZoom: vi.fn(() => 5),
     isStyleLoaded: vi.fn(() => true),
     off: vi.fn(),
+    on: vi.fn(),
     once: vi.fn(),
     remove: vi.fn(),
     setFilter: vi.fn(),
     setLayoutProperty: vi.fn(),
+    setMinZoom: vi.fn(),
     setPadding: vi.fn(),
+    zoomIn: vi.fn(),
+    zoomOut: vi.fn(),
   };
 
   return {
     Map: vi.fn(
       class {
         addControl = map.addControl;
+        fitBounds = map.fitBounds;
+        getMinZoom = map.getMinZoom;
+        getZoom = map.getZoom;
         isStyleLoaded = map.isStyleLoaded;
         off = map.off;
+        on = map.on;
         once = map.once;
         remove = map.remove;
         setFilter = map.setFilter;
         setLayoutProperty = map.setLayoutProperty;
+        setMinZoom = map.setMinZoom;
         setPadding = map.setPadding;
+        zoomIn = map.zoomIn;
+        zoomOut = map.zoomOut;
       }
     ),
     map,
-    NavigationControl: vi.fn(),
     ScaleControl: vi.fn(),
     setWorkerUrl: vi.fn(),
   };
@@ -49,6 +63,7 @@ import {
 } from '@ks/features/map/components/MapView';
 import { freeArea } from '@ks/features/map/components/Stage';
 import { asDay } from '@ks/lib/domain/boundaries/model.mts';
+import { coverZoom } from '@ks/lib/domain/map/zoom.mts';
 
 const FIVE = asDay(5);
 const NINE = asDay(9);
@@ -169,14 +184,111 @@ describe('MapView', () => {
     expect(maplibre.map.setPadding).toHaveBeenLastCalledWith(freeArea(true));
   });
 
-  it('adds the navigation and scale controls', () => {
+  it('adds only the scale control: the zoom card replaces the navigation control', () => {
     render(
       <MapView layers={layers} mapDay={FIVE} padding={padding} visible={on} />
     );
 
-    expect(maplibre.map.addControl).toHaveBeenCalledTimes(2);
-    expect(maplibre.NavigationControl).toHaveBeenCalledOnce();
+    expect(maplibre.map.addControl).toHaveBeenCalledOnce();
     expect(maplibre.ScaleControl).toHaveBeenCalledOnce();
+  });
+
+  // MAP-01
+  it('drives the map through its handle', () => {
+    const handle = createRef<MapHandle>();
+
+    render(
+      <MapView
+        handle={handle}
+        layers={layers}
+        mapDay={FIVE}
+        padding={padding}
+        visible={on}
+      />
+    );
+    handle.current!.zoomIn();
+    handle.current!.zoomOut();
+    handle.current!.fit();
+
+    expect(maplibre.map.zoomIn).toHaveBeenCalledOnce();
+    expect(maplibre.map.zoomOut).toHaveBeenCalledOnce();
+    expect(maplibre.map.fitBounds).toHaveBeenCalledWith(FIRST_VIEW);
+  });
+
+  // MAP-01
+  it('reports whether the zoom is at a limit after each zoom and resize', () => {
+    const onZoomLimits = vi.fn();
+
+    render(
+      <MapView
+        layers={layers}
+        mapDay={FIVE}
+        onZoomLimits={onZoomLimits}
+        padding={padding}
+        visible={on}
+      />
+    );
+
+    const events = maplibre.map.on.mock.calls.map(([event]) => event);
+
+    expect(events).toEqual(['zoomend', 'resize']);
+
+    const [, report] = maplibre.map.on.mock.calls[0];
+
+    report();
+    expect(onZoomLimits).toHaveBeenLastCalledWith({
+      atMax: false,
+      atMin: false,
+    });
+    maplibre.map.getZoom.mockReturnValue(3);
+    report();
+    expect(onZoomLimits).toHaveBeenLastCalledWith({
+      atMax: false,
+      atMin: true,
+    });
+    maplibre.map.getZoom.mockReturnValue(10);
+    report();
+    expect(onZoomLimits).toHaveBeenLastCalledWith({
+      atMax: true,
+      atMin: false,
+    });
+    maplibre.map.getZoom.mockReturnValue(5);
+  });
+
+  // MAP-01
+  it('keeps MIN_ZOOM as the minimum when the window is too small to need more', () => {
+    render(
+      <MapView layers={layers} mapDay={FIVE} padding={padding} visible={on} />
+    );
+
+    const [, report] = maplibre.map.on.mock.calls[0];
+
+    report();
+    expect(maplibre.map.setMinZoom).toHaveBeenLastCalledWith(3);
+  });
+
+  // MAP-01
+  it('raises the minimum zoom to the cover zoom of a large window', () => {
+    const size = vi
+      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+      .mockReturnValue(1440);
+    const height = vi
+      .spyOn(HTMLElement.prototype, 'clientHeight', 'get')
+      .mockReturnValue(900);
+
+    render(
+      <MapView layers={layers} mapDay={FIVE} padding={padding} visible={on} />
+    );
+
+    const [, report] = maplibre.map.on.mock.calls[0];
+
+    report();
+    expect(maplibre.map.setMinZoom).toHaveBeenLastCalledWith(
+      coverZoom(MAX_BOUNDS, 1440, 900)
+    );
+    expect(coverZoom(MAX_BOUNDS, 1440, 900)).toBeGreaterThan(3);
+    size.mockRestore();
+    height.mockRestore();
   });
 
   it('shows all the polity layers together', () => {

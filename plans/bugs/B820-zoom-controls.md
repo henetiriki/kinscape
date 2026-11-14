@@ -81,3 +81,7 @@
 - The scale bar and credits line (#822).
 
 ## Deviations
+
+- `MapHandle` and `ZoomLimits` live in `features/map/types.ts`: a lint rule needs exported types there.
+- Fit calls `fitBounds(FIRST_VIEW)` with no padding option: the map's own padding already leaves the free area, and a second padding shifts the view.
+- The Fit test checks that the first view's middle sits in the middle of the free area. The load view fits without the map padding, so its middle sits a little off.

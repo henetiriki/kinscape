@@ -25,7 +25,7 @@ const SPOUSE = {
 // No `part`: a phone has no form of these rows, so no part of a phone shows them.
 export const RelationshipRows = () => (
   <Section
-    desktopPart={2}
+    desktopPart={3}
     lead='One relationship of a Person: the other Person, the line of dates, and Edit. It has no remove control.'
     title='Relationship row'>
     <DesktopOnly>
@@ -102,7 +102,7 @@ export const RelationshipRows = () => (
 
 export const PickerRows = () => (
   <Section
-    desktopPart={2}
+    desktopPart={3}
     lead='One Person in a picker: the name, the note, and the line of dates. The whole row is one button that picks the Person.'
     title='Picker row'>
     <DesktopOnly>

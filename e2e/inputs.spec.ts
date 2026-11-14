@@ -124,7 +124,8 @@ test.describe('on a desktop', () => {
 
   for (const [part, url, shown, hidden, next, limit] of [
     [1, '/design-kit/inputs', 'Key hints', 'Page header', 2, 7600],
-    [2, '/design-kit/inputs?part=2', 'Picker row', 'Buttons', 1, 9500],
+    [2, '/design-kit/inputs?part=2', 'Person row', 'Buttons', 3, 8100],
+    [3, '/design-kit/inputs?part=3', 'Picker row', 'Person row', 1, 3000],
   ] as const) {
     test(`part ${part} shows its sections and links to part ${next}, in ${limit}px or less`, async ({
       page,
@@ -135,7 +136,7 @@ test.describe('on a desktop', () => {
       await expect(
         page.getByRole('link', { name: new RegExp(`^Part ${next}:`) })
       ).toBeVisible();
-      await expect(page.getByText(`part ${part} of 2`)).toBeVisible();
+      await expect(page.getByText(`part ${part} of 3`)).toBeVisible();
 
       const height = await page.evaluate(
         () => document.documentElement.scrollHeight

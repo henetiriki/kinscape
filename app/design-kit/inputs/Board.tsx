@@ -55,7 +55,7 @@ export const PhoneOnly = ({ children }: { children: ReactNode }) => (
   <div className={styles.phoneOnly}>{children}</div>
 );
 
-/** One section of the board. `desktopPart` is the page of two that shows it on a desktop. `part` is the page of four that shows it on a phone. */
+/** One section of the board. `desktopPart` is the page of three that shows it on a desktop. `part` is the page of four that shows it on a phone. */
 export const Section = ({
   children,
   desktopPart,

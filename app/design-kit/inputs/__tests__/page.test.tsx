@@ -177,12 +177,12 @@ it('shows part 1 by default, with a link to part 2 on each width', async () => {
     [expect.stringMatching(/^Part 2: /), '/design-kit/inputs?part=2'],
   ]);
   expect(screen.getByText(/part 1 of 4/).textContent).toBe(' · part 1 of 4');
-  expect(screen.getByText(/part 1 of 2/).textContent).toBe(' · part 1 of 2');
+  expect(screen.getByText(/part 1 of 3/).textContent).toBe(' · part 1 of 3');
 });
 
 it.each([
-  ['2', '2', '3', '1'],
-  ['3', '1', '4', '2'],
+  ['2', '2', '3', '3'],
+  ['3', '3', '4', '1'],
   ['4', '1', '1', '2'],
 ])(
   'shows ?part=%s as desktop part %s, linked on to phone part %s and desktop part %s',
@@ -203,8 +203,8 @@ it.each([
       ` · part ${param} of 4`
     );
     expect(
-      screen.getByText(new RegExp(`part ${desktop} of 2`)).textContent
-    ).toBe(` · part ${desktop} of 2`);
+      screen.getByText(new RegExp(`part ${desktop} of 3`)).textContent
+    ).toBe(` · part ${desktop} of 3`);
   }
 );
 
@@ -233,11 +233,14 @@ it('gives each section one phone part and one desktop part, in the part its link
     [1, 2, 3, 4].flatMap(part => titlesOf('data-part', part))
   ).toHaveLength(15);
   expect(
-    [1, 2].flatMap(part => titlesOf('data-desktop-part', part))
+    [1, 2, 3].flatMap(part => titlesOf('data-desktop-part', part))
   ).toHaveLength(17);
   // Each phone part has a section, and so does each desktop part.
   expect(
     [1, 2, 3, 4].map(part => titlesOf('data-part', part).length)
+  ).not.toContain(0);
+  expect(
+    [1, 2, 3].map(part => titlesOf('data-desktop-part', part).length)
   ).not.toContain(0);
 
   unmount();
@@ -256,13 +259,18 @@ it('gives each section one phone part and one desktop part, in the part its link
     view.unmount();
   }
 
-  await show();
+  for (const [param, next] of [
+    [undefined, 2],
+    ['2', 3],
+    ['3', 1],
+  ] as const) {
+    const view = await show(param);
 
-  expect(links()[1][0]).toBe(
-    `Part 2: ${titlesOf('data-desktop-part', 2)
-      .filter(title => !['Picker row', 'Relationship row'].includes(title!))
-      .join(', ')}`
-  );
+    expect(links()[1][0]).toBe(
+      `Part ${next}: ${titlesOf('data-desktop-part', next).join(', ')}`
+    );
+    view.unmount();
+  }
 });
 
 // PPL-01
@@ -471,7 +479,7 @@ it('draws Person row on a phone as the six lines and a note, as rows that are no
   );
 });
 
-it('puts each section in one of four phone parts and one of two desktop parts', async () => {
+it('puts each section in one of four phone parts and one of three desktop parts', async () => {
   await show();
 
   expect(
@@ -498,8 +506,8 @@ it('puts each section in one of four phone parts and one of two desktop parts', 
     ['Long text field', '2', '2'],
     ['Fuzzy date field', '4', '2'],
     ['Person row', '4', '2'],
-    ['Relationship row', null, '2'],
-    ['Picker row', null, '2'],
+    ['Relationship row', null, '3'],
+    ['Picker row', null, '3'],
   ]);
 });
 

@@ -300,13 +300,16 @@ export type ActionBarProps = Parameters<typeof ActionBar>[0];
 
 /**
  * One row of the people list, and one link to edit the Person. The page gives the dates as text.
- * Died reads `died`, then "Deceased" when `deceased`, then "—".
+ * Died reads `died`, then "Deceased" when `deceased`, then "—". With `form='phone'` the row is a
+ * read-only `div`: the name, then one line of dates and the note.
  */
-export declare const PersonRow: ({ born, deceased, died, givenNames, maidenName, matchedVariant, state, surname, ...rest }: {
+export declare const PersonRow: ({ born, deceased, died, form, givenNames, maidenName, matchedVariant, state, surname, ...rest }: {
     born: string;
     /** Marked deceased with no date. */
     deceased?: boolean;
     died?: string;
+    /** `phone`: a row that is no link. */
+    form?: "phone";
     givenNames: string;
     href: string;
     maidenName?: string;

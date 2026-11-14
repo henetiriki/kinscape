@@ -1,21 +1,25 @@
 'use client';
 
-import {
-  Map as MapLibreMap,
-  NavigationControl,
-  ScaleControl,
-  setWorkerUrl,
-} from 'maplibre-gl';
-import { useEffect, useRef } from 'react';
+import type { Ref } from 'react';
+
+import { Map as MapLibreMap, ScaleControl, setWorkerUrl } from 'maplibre-gl';
+import { useEffect, useImperativeHandle, useRef } from 'react';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-import type { Layer, LayerId } from '@ks/features/map/types';
+import type {
+  Layer,
+  LayerId,
+  MapHandle,
+  ZoomLimits,
+} from '@ks/features/map/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 
 import { PHONE } from '@ks/app/components/foundation/usePhone';
 import { freeArea } from '@ks/features/map/components/Stage';
 import { buildStyle } from '@ks/features/map/style';
+import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
+import { coverZoom } from '@ks/lib/domain/map/zoom.mts';
 
 type Padding = ReturnType<typeof freeArea>;
 
@@ -23,12 +27,6 @@ type Padding = ReturnType<typeof freeArea>;
 setWorkerUrl(
   new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).href
 );
-
-/** South Africa, Lesotho and eSwatini: west, south, east, north. */
-export const FIRST_VIEW: [[number, number], [number, number]] = [
-  [16, -35.5],
-  [33.5, -21.5],
-];
 
 /** Panning stops at the edge of this box, so the map can't be lost. */
 export const MAX_BOUNDS: [[number, number], [number, number]] = [
@@ -39,15 +37,24 @@ export const MAX_BOUNDS: [[number, number], [number, number]] = [
 export const MIN_ZOOM = 3;
 export const MAX_ZOOM = 10;
 
+/** The map zoom is a float, so "at a limit" allows this much slack. */
+const ZOOM_TOLERANCE = 0.001;
+
 export const MapView = ({
+  handle,
   layers,
   mapDay,
+  onZoomLimits,
   padding,
   visible,
 }: {
+  /** `MapView` fills it with the zoom calls once the map exists. */
+  handle?: Ref<MapHandle>;
   /** The layers the map draws; the Map date filters each and `visible` shows or hides them. */
   layers: Layer[];
   mapDay: Day;
+  /** `MapView` calls it on load and after each zoom and resize, with whether the zoom is at a limit. */
+  onZoomLimits?: (limits: ZoomLimits) => void;
   /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
   padding: Padding;
   /** Each layer is on unless its entry is `false`. */
@@ -55,6 +62,24 @@ export const MapView = ({
 }) => {
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
+  const onZoomLimitsRef = useRef(onZoomLimits);
+
+  useEffect(() => {
+    onZoomLimitsRef.current = onZoomLimits;
+  });
+
+  useImperativeHandle(handle, () => ({
+    fit: () => {
+      // The map's own padding (set below) already leaves the free area; more would shift the view.
+      map.current?.fitBounds(FIRST_VIEW);
+    },
+    zoomIn: () => {
+      map.current?.zoomIn();
+    },
+    zoomOut: () => {
+      map.current?.zoomOut();
+    },
+  }));
   // The first style uses the values from the first render; later changes go through the effect below.
   const initial = useRef({ layers, mapDay, visible });
   // `load` fires once. After it, isStyleLoaded() is false while tiles reload, so it can't gate later changes.
@@ -82,11 +107,36 @@ export const MapView = ({
       ),
     });
 
-    created.addControl(new NavigationControl());
     created.addControl(new ScaleControl());
     created.once('load', () => {
       loaded.current = true;
     });
+
+    // The bounds clamp zoom out above `MIN_ZOOM` on a large window; the card must know the real limit.
+    const reportLimits = () => {
+      const element = container.current;
+
+      /* v8 ignore next -- the container outlives the map; the guard only narrows the type */
+      if (!element) return;
+
+      created.setMinZoom(
+        Math.max(
+          MIN_ZOOM,
+          coverZoom(MAX_BOUNDS, element.clientWidth, element.clientHeight)
+        )
+      );
+
+      const zoom = created.getZoom();
+
+      onZoomLimitsRef.current?.({
+        atMax: zoom >= MAX_ZOOM - ZOOM_TOLERANCE,
+        atMin: zoom <= created.getMinZoom() + ZOOM_TOLERANCE,
+      });
+    };
+
+    created.on('zoomend', reportLimits);
+    created.on('resize', reportLimits);
+    created.once('load', reportLimits);
     map.current = created;
 
     // Only builds made for the browser tests (NEXT_PUBLIC_E2E=1) expose the map.

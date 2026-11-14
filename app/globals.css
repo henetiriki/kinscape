@@ -23,18 +23,6 @@ body {
   outline-offset: var(--focus-offset);
 }
 
-/* MapLibre's control buttons set their own focus style; give them the same ring. */
-.map .maplibregl-ctrl-group button:focus:focus-visible {
-  box-shadow: none;
-  outline: var(--focus-width) solid var(--focus-ring);
-  outline-offset: var(--focus-offset);
-}
-
-/* MapLibre's zoom buttons sit under the account Avatar, in the `zoom` slot's place, until a Spec fills that slot. */
-.map .maplibregl-ctrl-top-right {
-  top: var(--layout-furniture-top);
-}
-
 /* The scale bar sits under the Layers panel, at the credits line's bottom edge. */
 .map .maplibregl-ctrl-bottom-left {
   bottom: var(--layout-credits-bottom);
@@ -50,9 +38,8 @@ body {
   margin: 0;
 }
 
-/* A phone zooms by pinch: MapLibre's zoom buttons (top right) and scale (bottom left) would sit under the Layers button and the sheet. */
+/* A phone zooms by pinch: MapLibre's scale (bottom left) sits under the Layers button and the sheet. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
-  .map .maplibregl-ctrl-top-right,
   .map .maplibregl-ctrl-bottom-left {
     display: none;
   }

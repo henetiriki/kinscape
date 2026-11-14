@@ -42,3 +42,7 @@ A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `ling
 | The next design PR collapses the files          | The tech lead, on that PR                   |
 | A hand edit gives one finding                   | The tech lead, on a test PR after the merge |
 | `lint`, `format:check`, `test`                  | CI                                          |
+
+## Deviations
+
+- `.gitattributes` uses the bare `linguist-generated`, not `linguist-generated=true`: `git check-attr` prints `set` only for the bare form, and the done checks name `set`. GitHub treats both the same. The tech lead chose this.

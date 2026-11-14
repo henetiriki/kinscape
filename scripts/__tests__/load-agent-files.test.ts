@@ -209,6 +209,33 @@ describe('the load-agent-files action', () => {
   );
 });
 
+// The generated design files are collapsed in the PR diff (.gitattributes). The review skips their
+// content, and reports a commit by anyone but the render workflow that changes them.
+describe('the generated design files in review.md', () => {
+  it('has the review skip them and report a change that the render workflow did not make', () => {
+    const review = agent('review.md');
+
+    expect(review).toContain(
+      'Skip the content of `design/source/*.html` and `design/*.jpg`.'
+    );
+    expect(review).toContain(
+      'The workflow Design: Render snapshots writes them.'
+    );
+    expect(review).toContain(
+      'If a commit whose message is not `chore: export and render design snapshots` changes them, report one finding.'
+    );
+  });
+
+  it('names the workflow and the commit message that design-agent-shots.yml has', () => {
+    const workflow = read('design-agent-shots.yml');
+
+    expect(workflow).toContain("name: 'Design: Render snapshots'");
+    expect(workflow).toContain(
+      "git commit -m 'chore: export and render design snapshots'"
+    );
+  });
+});
+
 // The run-summary action writes the result section of every Claude run page. Like load-agent-files,
 // callers pin it to a main commit, so a branch can't change the script that reports on it.
 const SUMMARY_ACTION = 'henetiriki/kinscape/.github/actions/run-summary';

@@ -81,8 +81,9 @@
   width: 220px;
 }
 
+/* This cell has no class, so it sets all its padding. The browser's 1px would make the row 1px taller than the board. */
 .head th:last-child {
-  padding-bottom: var(--space-8);
+  padding: 0 0 var(--space-8);
 }
 .group {
   padding: var(--space-20) 0 var(--space-8);

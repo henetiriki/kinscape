@@ -24,7 +24,7 @@ describe('next.config', () => {
       },
       {
         headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
-        source: '/people',
+        source: '/people/:path*',
       },
     ]);
   });

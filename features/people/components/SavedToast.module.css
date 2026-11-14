@@ -1,0 +1,15 @@
+/* The toast floats at the bottom centre, above the Action bar's height. */
+.place {
+  bottom: calc(var(--layout-action-bar) + var(--space-16));
+  display: flex;
+  justify-content: center;
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  z-index: var(--z-action-bar);
+}
+
+.place > * {
+  pointer-events: auto;
+}

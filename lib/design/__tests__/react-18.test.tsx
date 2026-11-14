@@ -460,6 +460,17 @@ const CASES: [string, ReactElement][] = [
     'TokenField · empty',
     <TokenField key='empty' label='Event types' placeholder='Add a type' />,
   ],
+  [
+    'TokenField · error',
+    <TokenField
+      defaultValues={['Birth', 'Death']}
+      error='Use at most 20 spellings.'
+      helper='Press Enter to add.'
+      key='error'
+      label='Event types'
+      placeholder='Add a type'
+    />,
+  ],
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,

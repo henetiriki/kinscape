@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { startTransition, useState } from 'react';
+import { useState } from 'react';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
@@ -12,14 +12,10 @@ import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
-import { Menu } from '@ks/app/components/overlays/Menu';
+import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { byName, matchesQuery } from '@ks/lib/domain/persons/list.mts';
 
 import styles from '@ks/features/people/components/PeopleList.module.css';
-
-const MENU = [
-  [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }],
-] as const;
 
 const plural = (count: number) => (count === 1 ? 'person' : 'people');
 
@@ -63,16 +59,7 @@ export const PeopleList = ({
     <div className={styles.page}>
       <PageHeader
         avatar={
-          <Menu
-            email={email}
-            groups={MENU.map(group => [...group])}
-            initial={initial}
-            onSelect={() => {
-              startTransition(async () => {
-                await onSignOut();
-              });
-            }}
-          />
+          <AccountMenu email={email} initial={initial} onSignOut={onSignOut} />
         }
         backHref='/'
         backLabel='Map'

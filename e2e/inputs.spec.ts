@@ -126,7 +126,7 @@ test.describe('on a desktop', () => {
     [1, '/design-kit/inputs', 'Key hints', 'Page header', 2],
     [2, '/design-kit/inputs?part=2', 'Person row', 'Buttons', 1],
   ] as const) {
-    test(`part ${part} shows its sections and links to part ${next}, in 7500px or less`, async ({
+    test(`part ${part} shows its sections and links to part ${next}, in 7600px or less`, async ({
       page,
     }) => {
       await page.goto(url);
@@ -141,7 +141,7 @@ test.describe('on a desktop', () => {
         () => document.documentElement.scrollHeight
       );
 
-      expect(height).toBeLessThanOrEqual(7500);
+      expect(height).toBeLessThanOrEqual(7600);
     });
   }
 });

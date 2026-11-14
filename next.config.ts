@@ -61,9 +61,10 @@ const nextConfig: NextConfig = {
       source: '/:path*',
     },
     {
-      // Tree data: no shared cache may keep it (docs/security.md).
+      // Tree data: no shared cache may keep it (docs/security.md). `:path*` covers `/people`,
+      // `/people/new` and `/people/{id}`.
       headers: [{ key: 'Cache-Control', value: 'private, no-store' }],
-      source: '/people',
+      source: '/people/:path*',
     },
   ],
   // `server/db/database.mts` reads the CA at runtime; the trace doesn't see a readFileSync path.

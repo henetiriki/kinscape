@@ -361,7 +361,7 @@
       "x": 0,
       "y": 22098,
       "w": 1440,
-      "h": 7285,
+      "h": 7483,
       "title": "Style guide 06 — Inputs and actions (part 1 of 2)",
       "page": "style-guide"
     },
@@ -407,7 +407,7 @@
     },
     "SG-Surfaces.dc.html": {
       "x": 0,
-      "y": 29503,
+      "y": 29701,
       "w": 1440,
       "h": 4623,
       "title": "Style guide 07 — Surfaces and overlays (part 1 of 2)",
@@ -415,7 +415,7 @@
     },
     "SG-Surfaces-phone.dc.html": {
       "x": 1520,
-      "y": 29503,
+      "y": 29701,
       "w": 390,
       "h": 7716,
       "title": "Style guide 07 — Surfaces and overlays, phone (part 1 of 2)",
@@ -423,7 +423,7 @@
     },
     "SG-Surfaces-phone-2.dc.html": {
       "x": 1990,
-      "y": 29503,
+      "y": 29701,
       "w": 390,
       "h": 7019,
       "title": "Style guide 07 — Surfaces and overlays, phone (part 2 of 2)",
@@ -431,7 +431,7 @@
     },
     "SG-Furniture.dc.html": {
       "x": 0,
-      "y": 37339,
+      "y": 37537,
       "w": 1440,
       "h": 5893,
       "title": "Style guide 08 — Map furniture",
@@ -439,7 +439,7 @@
     },
     "SG-Furniture-phone.dc.html": {
       "x": 1520,
-      "y": 37339,
+      "y": 37537,
       "w": 390,
       "h": 4100,
       "title": "Style guide 08 — Map furniture, phone (part 1 of 2)",
@@ -447,7 +447,7 @@
     },
     "SG-Surfaces-2.dc.html": {
       "x": 2460,
-      "y": 29503,
+      "y": 29701,
       "w": 1440,
       "h": 4384,
       "title": "Style guide 07 — Surfaces and overlays (part 2 of 2)",
@@ -455,7 +455,7 @@
     },
     "SG-Furniture-phone-2.dc.html": {
       "x": 1990,
-      "y": 37339,
+      "y": 37537,
       "w": 390,
       "h": 4784,
       "title": "Style guide 08 — Map furniture, phone (part 2 of 2)",
@@ -758,8 +758,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1794602449-86d1",
-      "copiedAt": "2026-11-13T20:42:06Z"
+      "version": "1794633577-aff6",
+      "copiedAt": "2026-11-14T05:20:10Z"
     }
   ]
 }

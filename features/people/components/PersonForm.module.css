@@ -1,0 +1,95 @@
+/* The Person form: the header, a scrolling main and the Action bar, as the person-* boards draw it. */
+.page {
+  background: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin: 0 auto;
+  padding: var(--space-20) 0 var(--space-24);
+  width: min(var(--layout-content-width), 100%);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* An alert, with the Reload button of the conflict beside it. */
+.alert {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.alert > :first-child {
+  width: 640px;
+}
+
+/* Name and Life share five rows through a subgrid, so the fields line up across the columns. */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  column-gap: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(5, auto);
+  padding: var(--space-24);
+  row-gap: var(--space-16);
+}
+
+.group {
+  align-items: start;
+  display: grid;
+  grid-row: 1 / span 5;
+  grid-template-rows: subgrid;
+  min-width: 0;
+}
+
+.group[data-column='1'] {
+  grid-column: 1;
+}
+
+.group[data-column='2'] {
+  grid-column: 2;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  grid-column: 3;
+  grid-row: 2 / span 4;
+  min-width: 0;
+}
+
+.notes > * {
+  flex: 1;
+}
+
+.toast {
+  bottom: calc(var(--layout-action-bar) + var(--space-16));
+  display: flex;
+  justify-content: center;
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  z-index: var(--z-action-bar);
+}
+
+.toast > * {
+  pointer-events: auto;
+}

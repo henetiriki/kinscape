@@ -431,9 +431,11 @@ export declare const SelectField: ({ hideLabel, label, options, state, ...rest }
 export type SelectFieldProps = Parameters<typeof SelectField>[0];
 
 /** A field of removable chips with an input that adds the next one on Enter. */
-export declare const TokenField: ({ defaultValues, disabled, helper, label, onChange, placeholder, state, values: controlled, }: {
+export declare const TokenField: ({ defaultValues, disabled, error, helper, label, onChange, placeholder, state, values: controlled, }: {
     defaultValues?: string[];
     disabled?: boolean;
+    /** The problem, shown under the field in place of `helper`. Marks the field as in error. */
+    error?: ReactNode;
     helper?: ReactNode;
     label: string;
     onChange?: (values: string[]) => void;

@@ -1,0 +1,189 @@
+/* The fuzzy-date-readings board: 1440 wide, 64px of padding, on the page surface. */
+.page {
+  background: var(--surface);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+  min-height: 100dvh;
+  padding: var(--space-64);
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 720px;
+}
+
+/* The board nests the overline in a span that sets the line height, so the line is 19px tall. */
+.kicker {
+  color: var(--ink-3);
+  font-family: var(--font-body);
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.columns {
+  align-items: flex-start;
+  display: flex;
+  gap: 72px;
+}
+
+.cases {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-12);
+  width: 840px;
+}
+
+.table {
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+}
+
+.caption {
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.head {
+  border-bottom: 1px solid var(--line-strong);
+  color: var(--ink-3);
+}
+
+/* As the board: the 11px overline sits in a 16px line, so the row is 2px taller than its text. */
+.head th {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  text-align: left;
+}
+
+.caseHead,
+.typedHead {
+  padding: 0 var(--space-16) var(--space-8) 0;
+}
+
+.caseHead {
+  width: 180px;
+}
+
+.typedHead {
+  width: 220px;
+}
+
+/* This cell has no class, so it sets all its padding. The browser's 1px would make the row 1px taller than the board. */
+.head th:last-child {
+  padding: 0 0 var(--space-8);
+}
+.group {
+  padding: var(--space-20) 0 var(--space-8);
+  text-align: left;
+}
+
+.groupLate {
+  padding: var(--space-24) 0 var(--space-8);
+  text-align: left;
+}
+
+.row {
+  border-top: 1px solid var(--line);
+}
+
+.case {
+  font-weight: 400;
+  height: 48px;
+  padding: 0 var(--space-16) 0 0;
+  text-align: left;
+}
+
+.typed {
+  font-family: var(--type-mono-m-font);
+  font-size: var(--type-mono-m-size);
+  font-variant-ligatures: none;
+  line-height: var(--type-mono-m-line);
+  padding: 0 var(--space-16) 0 0;
+}
+
+.row td:last-child {
+  padding: 0;
+}
+
+.row:has(.error) td:last-child {
+  padding: var(--space-8) 0;
+}
+
+.reading {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.error {
+  align-items: flex-start;
+  color: var(--error-border);
+  display: flex;
+  gap: var(--space-8);
+}
+
+.error > svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.side {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-32);
+  min-width: 0;
+}
+
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding-left: var(--space-20);
+}
+
+.try {
+  background: var(--surface-2);
+  border-radius: var(--radius-panel);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-20);
+}
+
+.states {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-32);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}

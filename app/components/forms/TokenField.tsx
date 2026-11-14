@@ -7,6 +7,7 @@ import { useId, useRef, useState } from 'react';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
 import { RemovableChip } from '@ks/app/components/actions/Chip';
+import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/forms/TextField.module.css';
@@ -15,6 +16,7 @@ import styles from '@ks/app/components/forms/TextField.module.css';
 export const TokenField = ({
   defaultValues = [],
   disabled,
+  error,
   helper,
   label,
   onChange,
@@ -24,6 +26,8 @@ export const TokenField = ({
 }: {
   defaultValues?: string[];
   disabled?: boolean;
+  /** The problem, shown under the field in place of `helper`. Marks the field as in error. */
+  error?: ReactNode;
   helper?: ReactNode;
   label: string;
   onChange?: (values: string[]) => void;
@@ -37,6 +41,7 @@ export const TokenField = ({
   const [own, setValues] = useState(defaultValues);
   const values = controlled ?? own;
   const helperId = `${id}-helper`;
+  const message = error ?? helper;
 
   const change = (next: string[]) => {
     setValues(next);
@@ -58,6 +63,7 @@ export const TokenField = ({
       </Text>
       <span
         className={`${styles.box} ${styles.tokens}`}
+        data-mark={error ? 'error' : undefined}
         data-state={state}
         role='group'>
         {values.map(value => (
@@ -72,7 +78,8 @@ export const TokenField = ({
           />
         ))}
         <input
-          aria-describedby={helper ? helperId : undefined}
+          aria-describedby={message ? helperId : undefined}
+          aria-invalid={error ? true : undefined}
           className={styles.input}
           disabled={disabled}
           id={id}
@@ -91,11 +98,18 @@ export const TokenField = ({
           ref={input}
           type='text'
         />
+        {error && <Icon name='error' />}
       </span>
-      {helper && (
-        <span className={styles.panelHelper} id={helperId}>
-          {helper}
-        </span>
+      {error ? (
+        <Text id={helperId} role='alert' tone='error' variant='small'>
+          {error}
+        </Text>
+      ) : (
+        helper && (
+          <span className={styles.panelHelper} id={helperId}>
+            {helper}
+          </span>
+        )
       )}
     </div>
   );

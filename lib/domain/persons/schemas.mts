@@ -7,9 +7,10 @@ import { idField } from '#ks/lib/domain/ids/schemas.mts';
 /** The most Persons a list returns: the NFR sizing of a Tree, so a response has a cap. */
 export const MAX_LISTED = 2000;
 
-const MAX_NAME = 200;
+/** The caps of a name and of notes, so a form can stop typing at the same point. */
+export const MAX_NAME = 200;
+export const MAX_NOTES = 10_000;
 const MAX_VARIANTS = 20;
-const MAX_NOTES = 10_000;
 
 /** Postgres `text` refuses a NUL character, so the schema refuses it for both stores. */
 const text = (max: number) =>

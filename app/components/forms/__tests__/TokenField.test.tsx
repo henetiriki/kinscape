@@ -87,6 +87,34 @@ it('shows the values it is given and only reports changes', () => {
   expect(screen.queryAllByRole('button')).toHaveLength(0);
 });
 
+// PPL-01
+it('shows an error in place of the helper, with the error look and aria-invalid', () => {
+  render(
+    <TokenField
+      error='Use at most 20 spellings.'
+      helper='Up to 20.'
+      label='Spelling variants'
+    />
+  );
+
+  const input = screen.getByLabelText('Spelling variants');
+  const message = screen.getByRole('alert');
+
+  expect(message.textContent).toBe('Use at most 20 spellings.');
+  expect(screen.queryByText('Up to 20.')).toBeNull();
+  expect(input.getAttribute('aria-invalid')).toBe('true');
+  expect(input.getAttribute('aria-describedby')).toBe(message.id);
+  expect(screen.getByRole('group').dataset.mark).toBe('error');
+});
+
+it('sets no aria-invalid without an error', () => {
+  render(<TokenField label='Spelling variants' />);
+
+  expect(
+    screen.getByLabelText('Spelling variants').getAttribute('aria-invalid')
+  ).toBeNull();
+});
+
 it('disables the input and the ×, and shows a state and placeholder', () => {
   render(
     <TokenField

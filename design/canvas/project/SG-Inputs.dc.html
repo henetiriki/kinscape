@@ -152,6 +152,10 @@
       <div style="display: flex; align-items: flex-start"><span style="display: inline-flex; gap: 20px; flex-wrap: wrap"><span style="display: flex; flex-direction: column; gap: 8px; width: auto"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Email</span><span style="display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 12px; box-sizing: border-box; border: 1px solid #8E978C; border-radius: 8px; background: #FFFFFF; font-size: 16px; line-height: 24px; color: #18211B; width: 260px; min-width: 0; white-space: nowrap; overflow: hidden">researcher@example.com</span><span style="font-size: 13px; line-height: 20px; color: #4A544C">Helper text sits here in ink-3.</span></span><span style="display: flex; flex-direction: column; gap: 8px; width: auto"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Email</span><span style="position: relative; display: inline-flex; width: 260px"><span style="display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 40px 0 11px; box-sizing: border-box; border: 2px solid #B4412F; border-radius: 8px; background: #FFFFFF; font-size: 16px; line-height: 24px; color: #18211B; width: 260px; min-width: 0; white-space: nowrap; overflow: hidden">researcher@example</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4412F" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; right: 12px; top: 15px"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.01"></path></svg></span><span style="font-size: 13px; line-height: 20px; color: #7E2316">Add the rest of the address, like name@example.com.</span></span></span></div>
       <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Helper and error text, as board 05. The error replaces the helper; 2px error-border and icon.</figcaption>
     </figure>
+    <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+      <div style="display: flex; align-items: flex-start"><div style="width: 300px"><x-import component-from-global-scope="KinScape.TokenField" label="Spelling variants" default-values="{{variants}}" error="Use at most 20 spellings." placeholder="Add a spelling"></x-import></div></div>
+      <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Token field · Spelling variants, error state.</figcaption>
+    </figure>
   </div>
   <figure aria-label="Field states" style="margin: 0; display: flex; flex-direction: column; border-top: 2px solid #18211B">
     <div style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; padding: 12px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C"><span>Component</span><span>Default</span><span>Hover</span><span>Focus (keyboard)</span><span>Pressed</span><span>Disabled</span></div>
@@ -478,10 +482,10 @@
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7285}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7483}}'>
 class Component extends DCLogic {
   renderVals() {
-    return {};
+    return { variants: ['Rossouw', 'Rossau', 'Rosseau'] };
   }
 }
 </script>

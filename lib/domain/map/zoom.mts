@@ -6,7 +6,8 @@ const mercatorY = (latitude: number) =>
 
 /**
  * The smallest zoom at which a window of `width` × `height` px fits inside `bounds` (west, south,
- * east, north). Below it, MapLibre's `maxBounds` clamp shows more than the bounds.
+ * east, north). Below it, the window shows more than the bounds, so MapLibre's `maxBounds` clamp
+ * stops zoom out at it.
  */
 export const coverZoom = (
   [[west, south], [east, north]]: [[number, number], [number, number]],

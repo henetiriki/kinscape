@@ -23,7 +23,7 @@ body {
   outline-offset: var(--focus-offset);
 }
 
-/* A phone zooms by pinch: MapLibre's scale (bottom left) would sit under the Layers button and the sheet. */
+/* A phone zooms by pinch: MapLibre's scale (bottom left) sits under the Layers button and the sheet. */
 @media (max-width: 639.98px), (max-height: 499.98px) {
   .map .maplibregl-ctrl-bottom-left {
     display: none;

@@ -105,7 +105,7 @@ test.describe('on a desktop, 1440 × 900', () => {
       avatarBox.x + avatarBox.width,
       0
     );
-    expect(cardBox.y).toBeGreaterThanOrEqual(top);
+    expect(cardBox.y).toBeCloseTo(top, 0);
     expect(cardBox.y).toBeGreaterThanOrEqual(avatarBox.y + avatarBox.height);
   });
 
@@ -202,11 +202,11 @@ test.describe('on a desktop, 1440 × 900', () => {
 
     await expect(menu).toBeVisible();
 
-    const box = (await menu.boundingBox())!;
+    const cardBox = (await page.locator('[data-slot="zoom"]').boundingBox())!;
     const hit = await menu.evaluate(
       (node, point) =>
         node.contains(document.elementFromPoint(point.x, point.y)),
-      { x: box.x + box.width / 2, y: box.y + 8 }
+      { x: cardBox.x + cardBox.width / 2, y: cardBox.y + 8 }
     );
 
     expect(hit).toBe(true);

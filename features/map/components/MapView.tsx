@@ -53,12 +53,12 @@ export const MapView = ({
   padding,
   visible,
 }: {
-  /** Filled with the zoom calls once the map exists. */
+  /** `MapView` fills it with the zoom calls once the map exists. */
   handle?: Ref<MapHandle>;
   /** The layers the map draws; the Map date filters each and `visible` shows or hides them. */
   layers: Layer[];
   mapDay: Day;
-  /** Called after each zoom and resize with whether the zoom is at a limit. */
+  /** `MapView` calls it on load and after each zoom and resize, with whether the zoom is at a limit. */
   onZoomLimits?: (limits: ZoomLimits) => void;
   /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
   padding: Padding;

@@ -257,6 +257,58 @@
       "mode": "blocking"
     },
     {
+      "name": "person-new",
+      "route": "/screens/person-new",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-edit",
+      "route": "/screens/person-edit",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-errors",
+      "route": "/screens/person-new",
+      "state": "person-errors",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-save-failed",
+      "route": "/screens/person-save-failed",
+      "state": "person-saved-nothing",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-conflict",
+      "route": "/screens/person-conflict",
+      "state": "person-saved-nothing",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-not-found",
+      "route": "/screens/person-not-found",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "fuzzy-date-readings",
+      "route": "/screens/fuzzy-date-readings",
+      "width": 1440,
+      "height": 1255,
+      "mode": "blocking"
+    },
+    {
       "name": "sign-in-desktop",
       "route": "/sign-in",
       "state": "sign-in-filled",

@@ -24,6 +24,21 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
       .getByRole('searchbox', { name: 'Find a person' })
       .fill('Pretorius');
   },
+  // The board's dates sit beside two blank names: Save marks all three fields.
+  'person-errors': async page => {
+    await page.getByLabel('Birth').fill('ABT 1850');
+    await page.getByLabel('Death').fill('31 FEB 1850');
+    await page.getByRole('button', { name: 'Save' }).click();
+    await page.getByText('3 fields need fixing').waitFor();
+  },
+  // The stand-in action returns an error, so Save shows the toast or the conflict alert.
+  'person-saved-nothing': async page => {
+    await page.getByRole('button', { name: 'Save' }).click();
+    await page
+      .getByRole('alert')
+      .filter({ hasText: /Couldn't save|changed while/ })
+      .waitFor();
+  },
   // The sign-in snapshot's password; the email stays empty and shows its placeholder.
   'sign-in-filled': async page => {
     await page.getByLabel('Password', { exact: true }).fill('example-password');

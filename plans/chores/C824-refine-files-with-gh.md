@@ -1,7 +1,7 @@
 # Plan: C824: File refined issues with gh by default
 
 - **Spec:** #824
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ What goes under the `###` heading of an empty optional box (Constraints, Behavio
 - **B.** `None`.
 - **Other:** your own.
 
-Recommended: A, because a filed issue then matches a form-filed one.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

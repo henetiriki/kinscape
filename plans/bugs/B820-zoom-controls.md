@@ -2,7 +2,7 @@
 
 - **Spec:** #820
 - **Requirement IDs:** [MAP-01](../../docs/requirements.md#map-01)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@
 - **C.** `MapShell` holds the MapLibre map. This breaks the "only `MapView` drives the map" pattern.
 - **Other:** your own.
 
-Recommended: A, because it keeps the architecture pattern, and `MapShell` keeps all slot content.
+**Answer: A** (@henetiriki)
 
 **D2 · Where Zoom out stops** · Decides: Tech lead
 
@@ -32,7 +32,7 @@ Recommended: A, because it keeps the architecture pattern, and `MapShell` keeps 
 - **B.** Zoom out is `aria-disabled` only at `MIN_ZOOM`. At desktop sizes it never disables. The acceptance check changes.
 - **Other:** your own.
 
-Recommended: A, because only A meets the acceptance check.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

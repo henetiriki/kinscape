@@ -293,6 +293,8 @@ export const PersonRows = () => (
           </div>
         </Variant>
       </Variants>
+    </PhoneOnly>
+    <PhoneOnly>
       <Facts
         accessibility={[
           [

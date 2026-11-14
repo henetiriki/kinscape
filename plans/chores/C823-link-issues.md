@@ -1,7 +1,7 @@
 # Plan: C823: Link issues with blocked-by and relates-to
 
 - **Spec:** #823
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ How does the agent learn the blockers?
 - **B.** Use only the blockers that the interview or the slice order settled.
 - **Other:** your own.
 
-Recommended: A, because only `spec.md` settles an order.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

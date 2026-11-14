@@ -2,7 +2,7 @@
 
 - **Spec:** #821 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ Step 1 runs the width check on `main` and confirms this list.
 - **B.** The board's `main` gets `data-narrow`, and `kit.module.css` gives its header the phone form there too.
 - **Other:** your own.
 
-Recommended: A, because the desktop header fits from 640px.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

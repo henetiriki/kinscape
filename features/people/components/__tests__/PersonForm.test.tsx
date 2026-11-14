@@ -88,24 +88,16 @@ describe('a new Person', () => {
   it('shows the title, the hint, the helpers and Unknown', () => {
     open();
 
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Add a person' })
-    ).toBeTruthy();
-    expect(
-      screen.getByText(
-        'Given names and surname are required. Everything else can wait.'
-      )
-    ).toBeTruthy();
-    expect(screen.getByText('Surname at birth, if it changed.')).toBeTruthy();
-    expect(
-      screen.getByText('For example 1850, ABT 1850 or BET 1850 AND 1855.')
-    ).toBeTruthy();
-    expect(screen.getByText("Leave it empty if you don't know.")).toBeTruthy();
-    expect(
-      screen.getByText(
-        'Other spellings in the records, up to 20. Press Enter after each.'
-      )
-    ).toBeTruthy();
+    screen.getByRole('heading', { level: 1, name: 'Add a person' });
+    screen.getByText(
+      'Given names and surname are required. Everything else can wait.'
+    );
+    screen.getByText('Surname at birth, if it changed.');
+    screen.getByText('For example 1850, ABT 1850 or BET 1850 AND 1855.');
+    screen.getByText("Leave it empty if you don't know.");
+    screen.getByText(
+      'Other spellings in the records, up to 20. Press Enter after each.'
+    );
     expect((screen.getByLabelText('Sex') as HTMLSelectElement).value).toBe('U');
     expect(
       screen
@@ -187,7 +179,7 @@ describe('validation', () => {
     type('Given names', 'A');
     type('Given names', '  ');
     fireEvent.blur(screen.getByLabelText('Given names'));
-    expect(screen.getByText('Enter the given names.')).toBeTruthy();
+    screen.getByText('Enter the given names.');
     expect(
       screen.getByLabelText('Given names').getAttribute('aria-invalid')
     ).toBe('true');
@@ -210,14 +202,10 @@ describe('validation', () => {
     await save();
 
     expect(create).not.toHaveBeenCalled();
-    expect(screen.getByText('Enter the given names.')).toBeTruthy();
-    expect(screen.getByText('Enter the surname.')).toBeTruthy();
-    expect(screen.getByText('2 fields need fixing')).toBeTruthy();
-    expect(
-      screen.getByText(
-        'Nothing was saved. Each problem is marked at its field.'
-      )
-    ).toBeTruthy();
+    screen.getByText('Enter the given names.');
+    screen.getByText('Enter the surname.');
+    screen.getByText('2 fields need fixing');
+    screen.getByText('Nothing was saved. Each problem is marked at its field.');
   });
 
   it('says "1 field needs fixing" for one error', async () => {
@@ -225,7 +213,7 @@ describe('validation', () => {
     type('Given names', 'Ana');
     await save();
 
-    expect(screen.getByText('1 field needs fixing')).toBeTruthy();
+    screen.getByText('1 field needs fixing');
   });
 
   it('saves nothing for a birth of 31 FEB 1850 and shows its message', async () => {
@@ -240,7 +228,7 @@ describe('validation', () => {
 
     expect(create).not.toHaveBeenCalled();
     expect(screen.getAllByText('February 1850 has 28 days.')).toHaveLength(1);
-    expect(screen.getByText('1 field needs fixing')).toBeTruthy();
+    screen.getByText('1 field needs fixing');
   });
 
   it('shows the message of a bad birth that never lost focus when Save checks it', async () => {
@@ -286,7 +274,7 @@ describe('validation', () => {
     await save();
 
     expect(update).not.toHaveBeenCalled();
-    expect(screen.getByText('Use at most 20 spellings.')).toBeTruthy();
+    screen.getByText('Use at most 20 spellings.');
     expect(
       screen.getByLabelText('Spelling variants').getAttribute('aria-invalid')
     ).toBe('true');
@@ -301,18 +289,14 @@ describe('Deceased', () => {
     const box = screen.getByLabelText('Deceased') as HTMLInputElement;
 
     expect(box.checked).toBe(false);
-    expect(
-      screen.getByText("Tick if this person has died but the date isn't known.")
-    ).toBeTruthy();
+    screen.getByText("Tick if this person has died but the date isn't known.");
 
     fireEvent.input(screen.getByLabelText('Death'), {
       target: { value: '1930' },
     });
     expect(box.checked).toBe(true);
     expect(box.disabled).toBe(true);
-    expect(
-      screen.getByText('Ticked because a death date is entered.')
-    ).toBeTruthy();
+    screen.getByText('Ticked because a death date is entered.');
 
     fireEvent.input(screen.getByLabelText('Death'), { target: { value: '' } });
     expect(box.checked).toBe(false);
@@ -337,12 +321,10 @@ describe('an existing Person', () => {
   it('shows the title and the saved values', () => {
     open({ person: saved });
 
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: 'Edit Maria Magdalena du Toit',
-      })
-    ).toBeTruthy();
+    screen.getByRole('heading', {
+      level: 1,
+      name: 'Edit Maria Magdalena du Toit',
+    });
     expect(
       (screen.getByLabelText('Given names') as HTMLInputElement).value
     ).toBe('Maria Magdalena');
@@ -350,7 +332,7 @@ describe('an existing Person', () => {
       'ABT 1856'
     );
     expect((screen.getByLabelText('Sex') as HTMLSelectElement).value).toBe('F');
-    expect(screen.getByRole('button', { name: 'Remove Dutoit' })).toBeTruthy();
+    screen.getByRole('button', { name: 'Remove Dutoit' });
     expect((screen.getByLabelText('Notes') as HTMLTextAreaElement).value).toBe(
       'A note.'
     );
@@ -375,14 +357,10 @@ describe('an existing Person', () => {
 
     await save();
 
-    expect(
-      screen.getByText('This person changed while you were editing')
-    ).toBeTruthy();
-    expect(
-      screen.getByText(
-        'Nothing was saved. Reload to see the latest version, then make your changes again.'
-      )
-    ).toBeTruthy();
+    screen.getByText('This person changed while you were editing');
+    screen.getByText(
+      'Nothing was saved. Reload to see the latest version, then make your changes again.'
+    );
     expect(nav.push).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: 'Reload' }));
@@ -400,9 +378,7 @@ describe('a failed save', () => {
     fill();
     await save();
 
-    expect(
-      screen.getByText("Couldn't save. Your changes are still here.")
-    ).toBeTruthy();
+    screen.getByText("Couldn't save. Your changes are still here.");
     expect((screen.getByLabelText('Surname') as HTMLInputElement).value).toBe(
       'Smit'
     );
@@ -422,9 +398,7 @@ describe('a failed save', () => {
     await save();
 
     expect(create).not.toHaveBeenCalled();
-    expect(
-      screen.getByText("Couldn't save. Your changes are still here.")
-    ).toBeTruthy();
+    screen.getByText("Couldn't save. Your changes are still here.");
   });
 
   it('shows the toast when the action throws, and Esc dismisses it', async () => {
@@ -447,8 +421,8 @@ describe('a failed save', () => {
     fill();
     await save();
 
-    expect(screen.getByText('Enter the surname.')).toBeTruthy();
-    expect(screen.getByText('1 field needs fixing')).toBeTruthy();
+    screen.getByText('Enter the surname.');
+    screen.getByText('1 field needs fixing');
   });
 });
 

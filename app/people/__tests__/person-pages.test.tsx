@@ -93,9 +93,7 @@ describe('/people/new', () => {
     await setup();
     render(await NewPerson());
 
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Add a person' })
-    ).toBeTruthy();
+    screen.getByRole('heading', { level: 1, name: 'Add a person' });
     expect(
       screen.getByRole('button', { name: 'Account menu' }).textContent
     ).toBe('A');
@@ -112,9 +110,7 @@ describe('/people/{id}', () => {
     await setup();
     await edit(MINE);
 
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Edit Hendrik Botha' })
-    ).toBeTruthy();
+    screen.getByRole('heading', { level: 1, name: 'Edit Hendrik Botha' });
     expect((screen.getByLabelText('Surname') as HTMLInputElement).value).toBe(
       'Botha'
     );
@@ -128,7 +124,7 @@ describe('/people/{id}', () => {
     await setup();
     await edit(id);
 
-    expect(screen.getByText('Person not found')).toBeTruthy();
+    screen.getByText('Person not found');
     expect(screen.queryByText(/Stranger|Nel/)).toBeNull();
   });
 
@@ -137,7 +133,7 @@ describe('/people/{id}', () => {
     jar.get.mockReturnValue({ value: 'x'.repeat(43) });
     await edit(MINE);
 
-    expect(screen.getByText('Person not found')).toBeTruthy();
+    screen.getByText('Person not found');
   });
 
   it('covers the whole screen, for the safe area', () => {
@@ -154,6 +150,6 @@ describe('the layout', () => {
       </PeopleLayout>
     );
 
-    expect(screen.getByText('The page')).toBeTruthy();
+    screen.getByText('The page');
   });
 });

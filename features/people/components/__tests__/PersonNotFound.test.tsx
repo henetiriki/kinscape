@@ -13,12 +13,10 @@ it('says the person was not found and links to the list', () => {
     />
   );
 
-  expect(screen.getByText('Person not found')).toBeTruthy();
-  expect(
-    screen.getByText(
-      'No one in your Tree has this address. The person may have been deleted, or the link is wrong.'
-    )
-  ).toBeTruthy();
+  screen.getByText('Person not found');
+  screen.getByText(
+    'No one in your Tree has this address. The person may have been deleted, or the link is wrong.'
+  );
   expect(
     screen.getByRole('link', { name: 'Go to People' }).getAttribute('href')
   ).toBe('/people');

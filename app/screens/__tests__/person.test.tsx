@@ -23,7 +23,7 @@ describe('the Person screens', () => {
   it('show the empty form', async () => {
     render(await New());
 
-    expect(screen.getByRole('heading', { name: 'Add a person' })).toBeTruthy();
+    screen.getByRole('heading', { name: 'Add a person' });
   });
 
   it.each([
@@ -33,15 +33,13 @@ describe('the Person screens', () => {
   ])('%s shows the synthetic Person', async (_name, Page) => {
     render(await Page());
 
-    expect(
-      screen.getByRole('heading', { name: 'Edit Maria Magdalena du Toit' })
-    ).toBeTruthy();
+    screen.getByRole('heading', { name: 'Edit Maria Magdalena du Toit' });
   });
 
   it('show the not-found state', async () => {
     render(await NotFound());
 
-    expect(screen.getByText('Person not found')).toBeTruthy();
+    screen.getByText('Person not found');
   });
 
   it('give Save an outcome that saves nothing', async () => {

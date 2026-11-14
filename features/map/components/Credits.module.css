@@ -5,7 +5,21 @@
   margin: 0;
 }
 
-.credits button {
+/* One line that never wraps, so the slot never grows up into the dock. */
+.line {
+  align-items: center;
+  align-self: flex-end;
+  color: var(--credits);
+  display: flex;
+  font-size: var(--type-credits-size);
+  gap: 6px;
+  line-height: var(--type-credits-line);
+  position: relative;
+  white-space: nowrap;
+}
+
+.credits button,
+.line button {
   background: none;
   border: 0;
   color: inherit;
@@ -13,4 +27,25 @@
   font: inherit;
   padding: 0;
   text-decoration: underline;
+}
+
+.line button:first-child {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--space-4);
+}
+
+/* The card floats over the dock's corner and moves nothing. */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-panel);
+  bottom: calc(100% + var(--space-8));
+  box-shadow: var(--shadow-floating);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 14px;
+  position: absolute;
+  right: 0;
+  white-space: normal;
+  width: 300px;
 }

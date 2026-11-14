@@ -172,6 +172,24 @@ it('opens and closes the sources dialog from the credits line', () => {
   expect(screen.queryByRole('dialog')).toBeNull();
 });
 
+// NFR-05, NFR-08
+it('collapses the credits to one line on desktop', () => {
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
+
+  expect(
+    screen
+      .getByRole('button', { name: 'Credits' })
+      .getAttribute('aria-expanded')
+  ).toBe('false');
+});
+
 describe('on a phone', () => {
   const desktop = window.matchMedia;
 
@@ -221,6 +239,7 @@ describe('on a phone', () => {
       screen.getByRole('button', { name: 'Layers and filters' })
     ).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Attributions' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Credits' })).toBeNull();
     expect(screen.queryByRole('complementary', { name: 'Layers' })).toBeNull();
     expect(screen.queryByRole('radiogroup')).toBeNull();
     expect(lastProps().padding).toEqual(freeArea(true));

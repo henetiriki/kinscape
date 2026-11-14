@@ -28,15 +28,42 @@ for (const width of WIDTHS) {
     test('the credits line clears the dock and keeps the Attributions link', async ({
       page,
     }) => {
-      const credits = page
-        .getByRole('paragraph')
-        .filter({ has: page.getByRole('button', { name: 'Attributions' }) });
+      const credits = page.locator('[data-slot="credits"]');
       const dock = page.locator('[data-slot="dock"]');
 
       await expect(
         page.getByRole('button', { name: 'Attributions' })
       ).toBeVisible();
       expect(apart(await box(credits), await box(dock))).toBe(true);
+    });
+
+    // NFR-05, NFR-08
+    test('the Credits button shows every attribution and moves nothing', async ({
+      page,
+    }) => {
+      const button = page.getByRole('button', { exact: true, name: 'Credits' });
+      const card = page.locator('[data-slot="credits"] p');
+      const fixed = [
+        page.locator('[data-slot="dock"]'),
+        page.locator('[data-slot="panel"]'),
+      ];
+      const before = [await box(fixed[0]), await box(fixed[1])];
+
+      await expect(card).toBeHidden();
+      await button.click();
+      await expect(button).toHaveAttribute('aria-expanded', 'true');
+      await expect(card).toContainText('Made with Natural Earth');
+      await expect(card).toContainText('Public Sans');
+      await expect(card).toContainText('MapLibre');
+      expect([await box(fixed[0]), await box(fixed[1])]).toEqual(before);
+
+      const cardBox = await box(card);
+
+      expect(cardBox.x).toBeGreaterThanOrEqual(0);
+      expect(cardBox.y).toBeGreaterThanOrEqual(0);
+
+      await page.keyboard.press('Escape');
+      await expect(card).toBeHidden();
     });
 
     // NFR-05
@@ -52,9 +79,7 @@ for (const width of WIDTHS) {
       for (const other of [
         page.locator('[data-slot="panel"]'),
         page.locator('[data-slot="dock"]'),
-        page
-          .getByRole('paragraph')
-          .filter({ has: page.getByRole('button', { name: 'Attributions' }) }),
+        page.locator('[data-slot="credits"]'),
       ]) {
         expect(apart(scaleBox, await box(other))).toBe(true);
       }

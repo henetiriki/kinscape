@@ -60,3 +60,64 @@ it('opens the dialog from the Attributions link', () => {
 
   expect(open).toHaveBeenCalledOnce();
 });
+
+const collapsible = (open = vi.fn()) =>
+  render(
+    <Credits
+      collapsible
+      onOpenAttributions={open}
+      showPolities
+      sources={sources}
+    />
+  );
+
+// NFR-08
+it('collapsed, shows one line: a Credits button and the Attributions link', () => {
+  const { container } = collapsible();
+
+  expect(container.textContent).toBe('Credits·Attributions');
+  expect(
+    screen
+      .getByRole('button', { name: 'Credits' })
+      .getAttribute('aria-expanded')
+  ).toBe('false');
+  expect(screen.queryByText(/Public Sans/)).toBeNull();
+});
+
+// NFR-08
+it('opens the credits text in a card, once each, and closes it on a second press', () => {
+  collapsible();
+
+  const button = screen.getByRole('button', { name: 'Credits' });
+
+  fireEvent.click(button);
+  expect(button.getAttribute('aria-expanded')).toBe('true');
+  expect(
+    screen.getByText('Made with Natural Earth · Public Sans · MapLibre').id
+  ).toBe(button.getAttribute('aria-controls'));
+
+  fireEvent.click(button);
+  expect(button.getAttribute('aria-expanded')).toBe('false');
+  expect(screen.queryByText(/Public Sans/)).toBeNull();
+});
+
+it('closes the card on Esc and ignores other keys', () => {
+  collapsible();
+
+  const button = screen.getByRole('button', { name: 'Credits' });
+
+  fireEvent.click(button);
+  fireEvent.keyDown(document, { key: 'a' });
+  expect(button.getAttribute('aria-expanded')).toBe('true');
+  fireEvent.keyDown(document, { key: 'Escape' });
+  expect(button.getAttribute('aria-expanded')).toBe('false');
+});
+
+it('opens the dialog from the Attributions link while collapsed', () => {
+  const open = vi.fn();
+
+  collapsible(open);
+  fireEvent.click(screen.getByRole('button', { name: 'Attributions' }));
+
+  expect(open).toHaveBeenCalledOnce();
+});

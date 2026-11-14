@@ -69,10 +69,12 @@ test('the map pans and zooms', async ({ page }) => {
   await expect(canvas).toBeVisible();
 });
 
-const creditsLine = (page: Page) =>
-  page
-    .getByRole('paragraph')
-    .filter({ has: page.getByRole('button', { name: 'Attributions' }) });
+/** On desktop the credits text sits behind the "Credits" button. */
+const creditsText = async (page: Page) => {
+  await page.getByRole('button', { exact: true, name: 'Credits' }).click();
+
+  return page.locator('[data-slot="credits"] p');
+};
 
 // MAP-02
 test('the Polity borders row toggles and drops its credits', async ({
@@ -81,7 +83,7 @@ test('the Polity borders row toggles and drops its credits', async ({
   await page.goto('/');
 
   const row = page.getByRole('checkbox', { name: 'Polity borders' });
-  const credits = creditsLine(page);
+  const credits = await creditsText(page);
 
   await expect(row).toBeChecked();
   await expect(credits).toContainText('Public Sans');
@@ -98,7 +100,9 @@ test('the credits line opens the sources and attributions dialog', async ({
   page,
 }) => {
   await page.goto('/');
-  await expect(creditsLine(page)).toContainText('Made with Natural Earth');
+  await expect(await creditsText(page)).toContainText(
+    'Made with Natural Earth'
+  );
   await page.getByRole('button', { name: 'Attributions' }).click();
 
   const dialog = page.getByRole('dialog', { name: 'Sources and attributions' });

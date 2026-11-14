@@ -63,6 +63,7 @@ export const MapShell = ({
 
   const credits = (
     <Credits
+      collapsible={!phone}
       onOpenAttributions={() => setShowSources(true)}
       showPolities={showPolities}
       sources={sources}

@@ -70,6 +70,7 @@
 
 .caseHead,
 .typedHead {
+  box-sizing: content-box;
   padding: 0 var(--space-16) var(--space-8) 0;
 }
 
@@ -100,6 +101,7 @@
 }
 
 .case {
+  box-sizing: content-box;
   font-weight: 400;
   height: 48px;
   padding: 0 var(--space-16) 0 0;

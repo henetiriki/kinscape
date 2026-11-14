@@ -1,4 +1,4 @@
-/* The header and two-column notes shared by the design kit boards */
+/* The header and two-column notes shared by the design kit boards. A board whose desktop sizes need 1280px takes its phone form below `breakpoint.desktop-width`. */
 
 .kitHeader {
   display: flex;

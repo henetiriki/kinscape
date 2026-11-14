@@ -1,5 +1,12 @@
 /* The custom properties come from tokens.css, written from design/tokens.json. */
 
+/* One sizing model: padding and borders stay inside a width, so a 100% box never overflows its parent. */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;

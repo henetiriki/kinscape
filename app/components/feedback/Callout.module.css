@@ -19,6 +19,7 @@
   background: var(--error-bg);
   border-bottom: 1px solid var(--error-border);
   border-right: 1px solid var(--error-border);
+  box-sizing: content-box;
   height: 12px;
   position: absolute;
   rotate: 45deg;

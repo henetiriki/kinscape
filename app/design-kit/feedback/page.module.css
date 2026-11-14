@@ -246,8 +246,8 @@
   max-width: none;
 }
 
-/* A phone (Intent 104, D1): one column inside 16px gutters, the date sheet in place of the dock */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+/* Phone (Intent 104 D1) and below desktop-width (Bug 821 D1 B): one column inside 16px gutters, the date sheet in place of the dock */
+@media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     gap: 40px;
     min-height: 0;

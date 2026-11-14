@@ -20,6 +20,7 @@
 .kitRow {
   align-items: center;
   border-bottom: 1px solid var(--line);
+  box-sizing: content-box;
   display: grid;
   gap: var(--space-16);
   grid-template-columns: 190px repeat(5, minmax(0, 1fr));
@@ -72,8 +73,8 @@
   display: none;
 }
 
-/* A phone (Intent 104, D1): one column inside 16px gutters, each cell labelled with its state */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+/* Phone (Intent 104 D1) and below desktop-width (Bug 821 D1 B): one column inside 16px gutters, each cell labelled with its state */
+@media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     gap: var(--space-32);
     min-height: 0;

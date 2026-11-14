@@ -893,11 +893,69 @@ test.describe('the other boards on a phone', () => {
   test.describe('at 800 wide and 900 tall', () => {
     test.use({ viewport: { height: 900, width: 800 } });
 
-    test('map style keeps its column headers', async ({ page }) => {
+    test('map style takes the phone layout', async ({ page }) => {
       await page.goto('/design-kit/map-style');
       await expect(
         page.getByRole('columnheader', { name: 'Layer id' })
+      ).toBeHidden();
+      await expect(
+        page.getByRole('cell').getByText('Source / filter').first()
       ).toBeVisible();
+    });
+
+    test('type is one column', async ({ page }) => {
+      await page.goto('/design-kit/type');
+      await expect(
+        page.getByRole('columnheader', { name: 'Style' })
+      ).toBeHidden();
+
+      const lefts = await page
+        .getByRole('row')
+        .evaluateAll(rows =>
+          rows
+            .filter(row => row.checkVisibility())
+            .map(row => row.getBoundingClientRect().left)
+        );
+
+      expect(lefts.length).toBeGreaterThan(0);
+      expect(new Set(lefts).size).toBe(1);
+    });
+
+    test('states is one column and no two cells overlap', async ({ page }) => {
+      await page.goto('/design-kit/states');
+
+      const matrix = page.getByRole('figure', { name: 'State matrix' });
+
+      await expect(matrix.getByText('Component', { exact: true })).toBeHidden();
+      // Only the phone form shows each cell's state label.
+      await expect(
+        matrix.getByText('Hover', { exact: true }).last()
+      ).toBeVisible();
+
+      const overlaps = await matrix.evaluate(figure => {
+        let count = 0;
+
+        for (const row of figure.children) {
+          const boxes = [...row.children]
+            .filter(cell => cell.checkVisibility())
+            .map(cell => cell.getBoundingClientRect());
+
+          boxes.forEach((a, i) =>
+            boxes.slice(i + 1).forEach(b => {
+              if (
+                Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
+                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1
+              ) {
+                count += 1;
+              }
+            })
+          );
+        }
+
+        return count;
+      });
+
+      expect(overlaps).toBe(0);
     });
 
     test('colour keeps five swatches in a row', async ({ page }) => {

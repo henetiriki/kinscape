@@ -53,6 +53,7 @@
 .row {
   align-items: center;
   border-bottom: 1px solid var(--line);
+  box-sizing: content-box;
   display: grid;
   font-size: var(--type-small-size);
   gap: var(--space-16);
@@ -129,8 +130,8 @@
   display: none;
 }
 
-/* A phone (Intent 104, D1): each layer is a card, its last three fields labelled */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+/* Phone (Intent 104 D1) and below desktop-width (Bug 821 D1 B): each layer is a card, its last three fields labelled */
+@media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     min-height: 0;
     padding: var(--space-32) var(--size-gutter-phone) var(--space-48);

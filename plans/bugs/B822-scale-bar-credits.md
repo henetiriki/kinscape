@@ -6,19 +6,21 @@
 
 ## Approach
 
-On desktop, the `Stage` puts the `dock` and `credits` slots in one bottom column, with the credits under the dock (D1 A). The `credits` slot is at least `furniture-bottom` minus `credits-bottom` tall, so one line leaves the dock where it is now. Each extra line moves the dock up. `app/globals.css` places and styles MapLibre's scale bar from tokens (D2, D3). After the build, the design agent draws the design on the D4 boards.
-
-By the CSS, two lines need 26px, and the credits have 22px. Step 1 checks this in a browser.
+On desktop, the `Stage` puts the `dock` and `credits` slots in one bottom column. The credits collapse to one line with an expand control (D1), so the dock stays put. The design agent draws both states (D4) before the build of `Credits`.
 
 ## Decisions
 
 **D1 · Where the credits line goes when it wraps** · Decides: Tech lead
 
-- **A.** The credits stay under the dock, and the dock moves up by each extra line. The Layers panel and `freeArea` do not move.
-- **B.** The credits run from gutter to gutter, right-aligned, as in the `map-desktop` snapshot. Below about 820px they still wrap, and the panel and the dock both move up. The scale bar then takes D2 B.
-- **Other:** your own.
+**Answer: Other** (tech lead). The credits collapse to one line with an expand control. The design agent draws it. Requirements:
 
-Recommended: A, because it keeps the 1440px view the same.
+- One line from 640 to 1920px. It never covers the dock.
+- One control expands it to the attribution text of the sources on screen. A keyboard user reaches it, and it sets `aria-expanded`.
+- Expanding moves nothing: the dock, the Layers panel and `freeArea` stay in place.
+- The "Attributions" link to the dialog stays (NFR-08).
+- The design agent decides the rest: label, icon, place, phone layout.
+
+~~**A.** Credits under the dock; the dock moves up.~~ ~~**B.** Credits gutter to gutter.~~
 
 **D2 · Where the scale bar sits on desktop** · Decides: Tech lead
 
@@ -38,7 +40,7 @@ Recommended: A, because it matches the credits line beside it.
 
 **D4 · Which boards show the design** · Decides: Tech lead
 
-- **A.** The design agent adds the scale bar to `Map.dc.html`. It draws a new board, `Map-credits-narrow.dc.html`: the bottom 120px of the map at 800px wide.
+- **A.** The design agent adds the scale bar to `Map.dc.html`. It draws a new board, `Map-credits-narrow.dc.html`: the bottom 120px of the map at 800px wide, with the credits collapsed and expanded. The phone boards follow D1.
 - **B.** The design agent adds the two to `SG-Furniture.dc.html`. The build adds them to `/design-kit/map-furniture`, and the blocking `style-8-components-map` snapshot checks them.
 - **Other:** your own.
 
@@ -46,38 +48,39 @@ Recommended: A, because it adds no kit code.
 
 ## Files that change
 
-| File                                               | New / changed | What                                                |
-| -------------------------------------------------- | ------------- | --------------------------------------------------- |
-| `features/map/components/Stage.tsx`, `.module.css` | changed       | The bottom column; the credits' minimum height      |
-| `features/map/components/__tests__/Stage.test.tsx` | changed       | The column and the minimum height                   |
-| `app/globals.css`                                  | changed       | The scale bar (D2, D3)                              |
-| `e2e/map-desktop.spec.ts`                          | new           | The desktop rows in Proof                           |
-| `e2e/map-phone.spec.ts`                            | changed       | The phone hides the scale bar                       |
-| `design/canvas/project/` D4 boards, `VERSION`      | changed, new  | The design agent, then "Refreshing the canvas copy" |
-| `design/source/` D4 snapshots, their JPGs          | changed, new  | Design: Render snapshots                            |
+| File                                                       | New / changed | What                                                |
+| ---------------------------------------------------------- | ------------- | --------------------------------------------------- |
+| `features/map/components/Stage.tsx`, `.module.css`, test   | changed       | The bottom column                                   |
+| `features/map/components/Credits.tsx`, `.module.css`, test | changed       | The expand control (D1)                             |
+| `design/DESIGN.md`                                         | changed       | The Attributions credits rule                       |
+| `app/globals.css`                                          | changed       | The scale bar (D2, D3)                              |
+| `e2e/map-desktop.spec.ts`                                  | new           | The desktop rows in Proof                           |
+| `e2e/map-phone.spec.ts`                                    | changed       | The phone hides the scale bar                       |
+| `design/canvas/project/` D4 boards, `VERSION`              | changed, new  | The design agent, then "Refreshing the canvas copy" |
+| `design/source/` D4 snapshots, their JPGs                  | changed, new  | Design: Render snapshots                            |
 
 ## Order of work
 
 1. Write `e2e/map-desktop.spec.ts` at 640, 800, 1024, 1279, 1440 and 1920px wide. Run it on `main`. Record each failing width under Deviations.
 2. Change `Stage`, then `app/globals.css`, then the phone check.
-3. Run the checks in `AGENTS.md` › Commands and `npm run design:check`.
-4. Push. The PR stays a draft. The tech lead has the design agent draw the D4 boards, then runs "Refreshing the canvas copy" and the render workflow.
+3. Push. The PR stays a draft. The tech lead has the design agent draw the D4 boards, then runs "Refreshing the canvas copy" and the render workflow.
+4. Change `Credits` to match the snapshots, and update `design/DESIGN.md`. Run the checks in `AGENTS.md` › Commands and `npm run design:check`.
 
 ## Risks
 
-- At 640px the credits take about four lines, so the dock moves up about 48px.
+- A later source whose licence needs always-visible credit breaks the collapsed line. Each licence check (NFR-08) catches it.
 
 ## Proof
 
-| Acceptance check                                 | Proven by                                               |
-| ------------------------------------------------ | ------------------------------------------------------- |
-| Credits clear of the dock, 640 to 1920px         | `e2e/map-desktop.spec.ts`                               |
-| Every attribution and the link show and work     | `e2e/map-desktop.spec.ts` at 640px; `e2e/smoke.spec.ts` |
-| Scale bar font, colour, place; clear of the rest | `e2e/map-desktop.spec.ts`                               |
-| #104 on a phone                                  | `e2e/map-phone.spec.ts`                                 |
-| #261 `Stage` slots                               | `Stage.test.tsx`, `MapShell.test.tsx`                   |
-| NFR-08, BND-06, `SourcesDialog`                  | `Credits.test.tsx`, `SourcesDialog.test.tsx`, smoke     |
-| Dock message 12px above the dock                 | `e2e/date-dock.spec.ts`                                 |
-| Blocking snapshots                               | `npm run design:check`                                  |
+| Acceptance check                                  | Proven by                                               |
+| ------------------------------------------------- | ------------------------------------------------------- |
+| Credits clear of the dock, 640 to 1920px          | `e2e/map-desktop.spec.ts`                               |
+| Every attribution shows on expand; the link works | `e2e/map-desktop.spec.ts` at 640px; `e2e/smoke.spec.ts` |
+| Scale bar font, colour, place; clear of the rest  | `e2e/map-desktop.spec.ts`                               |
+| #104 on a phone                                   | `e2e/map-phone.spec.ts`                                 |
+| #261 `Stage` slots                                | `Stage.test.tsx`, `MapShell.test.tsx`                   |
+| NFR-08, BND-06, `SourcesDialog`                   | `Credits.test.tsx`, `SourcesDialog.test.tsx`, smoke     |
+| Dock message 12px above the dock                  | `e2e/date-dock.spec.ts`                                 |
+| Blocking snapshots                                | `npm run design:check`                                  |
 
 ## Deviations

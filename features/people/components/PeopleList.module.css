@@ -82,3 +82,33 @@
 .item {
   border-top: 1px solid var(--line);
 }
+
+/* The phone form: rows with no panel, and a single column. */
+.phoneRows {
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 639.98px), (max-height: 499.98px) {
+  .page {
+    background: var(--surface);
+  }
+
+  .heading {
+    gap: 0;
+  }
+
+  .content {
+    gap: var(--space-16);
+    padding: var(--space-16) var(--space-16) var(--space-48);
+    width: 100%;
+  }
+
+  .filter,
+  .noMatch,
+  .failed {
+    width: 100%;
+  }
+}

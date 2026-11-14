@@ -9,6 +9,8 @@ import { dayOf } from '@ks/lib/domain/map/map-date.mts';
 
 const mapView = vi.hoisted(() => vi.fn());
 
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
+
 vi.mock('@ks/features/map/components/MapView', () => ({
   MapView: (props: { mapDay: number; visible: Record<string, boolean> }) => {
     mapView(props);

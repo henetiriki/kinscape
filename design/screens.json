@@ -128,7 +128,7 @@
       "width": 390
     },
     {
-      "height": 5979,
+      "height": 6952,
       "mode": "blocking",
       "name": "style-6-components-inputs-4-phone",
       "route": "/design-kit/inputs?part=4",
@@ -235,6 +235,13 @@
       "mode": "blocking"
     },
     {
+      "name": "people-list-phone",
+      "route": "/screens/people-list",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
+    },
+    {
       "name": "people-list-no-match",
       "route": "/screens/people-list-no-match",
       "state": "people-no-match",
@@ -261,6 +268,13 @@
       "route": "/screens/person-new",
       "width": 1440,
       "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-form-phone",
+      "route": "/screens/person-new",
+      "width": 390,
+      "height": 844,
       "mode": "blocking"
     },
     {

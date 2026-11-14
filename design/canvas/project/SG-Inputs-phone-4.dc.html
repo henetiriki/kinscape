@@ -205,13 +205,51 @@
     <section aria-label="Person row" style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px; border-top: 1px solid #C9CFC5">
       <div style="display: flex; flex-direction: column; gap: 4px">
         <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">Person row</h2>
-        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">Desktop only: the phone form of the row comes with the phone people list. See the desktop board.</p>
+        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">A row of the people list on a phone. It is not a link: the name, then one line of dates.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 20px">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1832" died="1899" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">A plain row · the name in Title, then the dates in one Mono line.</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="c. 1835" died="1901" form="phone" given-names="Susanna" href="/" maiden-name="Fourie" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Maiden name · a Small note after the dates, "née {maiden}".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1878" form="phone" given-names="Johanna Petronella" href="/" surname="Rossouw"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">No death date · the line reads "Born 1878".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="bef. 1840" deceased="{{ true }}" form="phone" given-names="Pieter" href="/" surname="Fourie"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Marked deceased with no date · the line reads "bef. 1840 – deceased".</figcaption>
+        </figure>
+      </div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Measurements</h3>
+          <ul aria-label="Person row on a phone measurements" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+            <li style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD"><span style="font-size: 13px; line-height: 20px; color: #2E3A33"><strong style="font-weight: 600; color: #18211B">Height</strong> · At least 60</span><span style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">—</span></li>
+            <li style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD"><span style="font-size: 13px; line-height: 20px; color: #2E3A33"><strong style="font-weight: 600; color: #18211B">Padding</strong> · 8 0</span><span style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">space.8</span></li>
+            <li style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD"><span style="font-size: 13px; line-height: 20px; color: #2E3A33"><strong style="font-weight: 600; color: #18211B">Name</strong> · Title</span><span style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.title</span></li>
+            <li style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD"><span style="font-size: 13px; line-height: 20px; color: #2E3A33"><strong style="font-weight: 600; color: #18211B">Dates</strong> · Mono, with the note in Small after it, 12 apart</span><span style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.mono · type.small · space.12</span></li>
+            <li style="display: flex; flex-direction: column; gap: 4px; padding: 8px 0; border-bottom: 1px solid #E2E5DD"><span style="font-size: 13px; line-height: 20px; color: #2E3A33"><strong style="font-weight: 600; color: #18211B">Top line</strong> · 1px line</span><span style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">colour.line</span></li>
+          </ul>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Accessibility</h3>
+          <dl style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+            <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Role</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">One <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">div </code>with no link and no Edit. The name and the dates are its text.</dd></div>
+            <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">One line: "Born 1878", "1832 – 1899" or "bef. 1840 – deceased".</dd></div>
+            <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Keyboard</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">No stop: the row is not a link.</dd></div>
+          </dl>
+        </div>
       </div>
     </section>
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":5979}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":6952}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

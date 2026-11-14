@@ -401,10 +401,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <p style="position: absolute; right: 24px; bottom: 6px; margin: 0; font-size: 11px; color: #24302B">Boundaries: KinScape data, sources per layer · Terrain: [DEM SOURCE] · Coast &amp; rivers: [SOURCE] · <a href="#" style="color: #1D3E20">Attributions</a></p>
   </sc-if>
 
-  <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; right: var(--size-gutter); top: calc(var(--space-24) + var(--size-touch) + var(--space-8))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="sources"></x-import></div>
-  </sc-if>
-
   <sc-if value="{{v.accountProposed}}" hint-placeholder-val="{{ false }}">
     <div role="menu" aria-label="Account" style="position: absolute; right: 24px; top: 76px; width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
       <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
@@ -429,8 +425,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </div>
   </sc-if>
 
-  <sc-if value="{{v.accountPeople}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; right: var(--size-gutter); top: calc(var(--space-24) + var(--size-touch) + var(--space-8))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.peopleGroups}}" hovered="people"></x-import></div>
+  <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; right: var(--size-gutter); top: calc(var(--space-24) + var(--size-touch) + var(--space-8))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
   </sc-if>
 
   <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">
@@ -461,7 +457,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["default","loading","empty-tree","empty-date","districts","offline","account","account-proposed","account-people","sources","date-invalid"],"default":"default"},"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["default","loading","empty-tree","empty-date","districts","offline","account","account-proposed","sources","date-invalid"],"default":"default"},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -508,12 +504,12 @@ class Component extends DCLogic {
     ].map((r) => ({ layer: r[0], source: r[1], licence: r[2], checked: r[3], style: r[4] }));
     return {
       ks: { loadingProgress: 45, emptyDateActions: [{ label: 'Jump to 1898' }, { label: 'Clear filters' }] },
-      chrome: variant !== 'account' && variant !== 'account-people',
-      avatarExpanded: (variant === 'account' || variant === 'account-people') ? true : undefined,
-      accountMenu: { groups: [[{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]], peopleGroups: [[{ icon: 'people', id: 'people', label: 'People', detail: 'Add and edit the people in your Tree' }], [{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]] },
+      chrome: variant !== 'account',
+      avatarExpanded: variant === 'account' ? true : undefined,
+      accountMenu: { groups: [[{ icon: 'people', id: 'people', label: 'People', detail: 'Add and edit people' }], [{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]] },
       v: {
         popup: variant === 'default', emptyDate: variant === 'empty-date', emptyTree: variant === 'empty-tree',
-        loading: loading, offline: variant === 'offline', account: variant === 'account', accountProposed: variant === 'account-proposed', accountPeople: variant === 'account-people', sources: variant === 'sources'
+        loading: loading, offline: variant === 'offline', account: variant === 'account', accountProposed: variant === 'account-proposed', sources: variant === 'sources'
       },
       sources: sources,
       d: {

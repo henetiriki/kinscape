@@ -4,7 +4,11 @@ import { z } from 'zod';
 
 import { createPersonAction, updatePersonAction } from '@ks/app/people/actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
-import { PersonForm, PersonNotFound } from '@ks/features/people';
+import {
+  EditOnComputer,
+  PersonForm,
+  PersonNotFound,
+} from '@ks/features/people';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
@@ -42,13 +46,15 @@ const EditPerson = async ({ params }: { params: Promise<{ id: string }> }) => {
   return person === undefined ? (
     <PersonNotFound {...header} />
   ) : (
-    <PersonForm
-      {...header}
-      create={createPersonAction}
-      key={person.version}
-      person={person}
-      update={updatePersonAction}
-    />
+    <EditOnComputer {...header}>
+      <PersonForm
+        {...header}
+        create={createPersonAction}
+        key={person.version}
+        person={person}
+        update={updatePersonAction}
+      />
+    </EditOnComputer>
   );
 };
 

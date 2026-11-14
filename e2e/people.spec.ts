@@ -8,6 +8,35 @@ test('the People page is never cached', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'People' })).toBeVisible();
 });
 
+test.describe('phone, 390 × 844', () => {
+  test.use({ hasTouch: true, viewport: { height: 844, width: 390 } });
+
+  // NFR-05
+  test('the People page is a look-up, with the note and no add or edit control', async ({
+    page,
+  }) => {
+    await page.goto('/screens/people-list');
+    await expect(
+      page.getByText('To add or edit people, use a computer.')
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Add a person' })).toHaveCount(
+      0
+    );
+    await expect(page.getByText('Edit', { exact: true })).toHaveCount(0);
+  });
+
+  // NFR-05
+  test('/people/new shows the notice and a link back to the list', async ({
+    page,
+  }) => {
+    await page.goto('/people/new');
+    await expect(page.getByRole('form')).toHaveCount(0);
+    await expect(page.getByText('Edit people on a computer')).toBeVisible();
+    await page.getByRole('link', { name: 'See all people' }).click();
+    await expect(page).toHaveURL(url => url.pathname === '/people');
+  });
+});
+
 // PPL-01
 test('the hidden Born and Died labels stay inside their row', async ({
   page,

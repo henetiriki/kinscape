@@ -11,6 +11,7 @@ One row of the people list, and one link to edit the Person.
 | `born` | `string` | yes |  |
 | `deceased` | `boolean` | no | Marked deceased with no date. |
 | `died` | `string` | no |  |
+| `form` | `"phone"` | no | `phone`: a row that is no link. |
 | `givenNames` | `string` | yes |  |
 | `href` | `string` | yes |  |
 | `maidenName` | `string` | no |  |

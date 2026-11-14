@@ -12,6 +12,7 @@ import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
+import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { byName, matchesQuery } from '@ks/lib/domain/persons/list.mts';
 
@@ -37,6 +38,7 @@ export const PeopleList = ({
   people: PersonSummary[];
 }) => {
   const router = useRouter();
+  const phone = usePhone();
   const [query, setQuery] = useState('');
   const total = people.length;
   const empty = total === 0 && !failed;
@@ -77,22 +79,31 @@ export const PeopleList = ({
                 </Text>
               )}
             </div>
-            <Button href='/people/new' size='m' variant='primary'>
-              Add a person
-            </Button>
+            {!phone && (
+              <Button href='/people/new' size='m' variant='primary'>
+                Add a person
+              </Button>
+            )}
           </div>
           {!empty && (
             <div className={styles.filter}>
               <TextField
                 disabled={failed}
-                helper='Matches given names, surnames, maiden names and spelling variants.'
+                helper={
+                  phone
+                    ? 'Matches names, maiden names and spelling variants.'
+                    : 'Matches given names, surnames, maiden names and spelling variants.'
+                }
                 label='Find a person'
                 onChange={event => setQuery(event.target.value)}
-                shortcut='/'
+                shortcut={phone ? undefined : '/'}
                 type='search'
                 value={query}
               />
             </div>
+          )}
+          {phone && !empty && (
+            <Text variant='small'>To add or edit people, use a computer.</Text>
           )}
           {failed && (
             <div className={styles.failed}>
@@ -106,8 +117,9 @@ export const PeopleList = ({
           {empty && (
             <div className={styles.empty}>
               <NoticeCard icon='people' size='large' title='No people yet'>
-                Use Add a person to start your Tree. Once people are in it, you
-                can pin their lives to the map.
+                {phone
+                  ? 'Add people on a computer. Once people are in it, you can pin their lives to the map.'
+                  : 'Use Add a person to start your Tree. Once people are in it, you can pin their lives to the map.'}
               </NoticeCard>
             </div>
           )}
@@ -119,11 +131,32 @@ export const PeopleList = ({
                 ]}
                 icon='search'
                 title={`No one matches “${query.trim()}”`}>
-                Check the spelling, or add them with Add a person.
+                {phone
+                  ? 'Check the spelling.'
+                  : 'Check the spelling, or add them with Add a person.'}
               </NoticeCard>
             </div>
           )}
-          {shown.length > 0 && (
+          {shown.length > 0 && phone && (
+            <ul aria-label='People, by surname' className={styles.phoneRows}>
+              {shown.map(({ match, person }) => (
+                <li key={person.id}>
+                  <PersonRow
+                    born={person.born}
+                    deceased={person.deceased}
+                    died={person.died}
+                    form='phone'
+                    givenNames={person.givenNames}
+                    href={`/people/${person.id}`}
+                    maidenName={person.maidenName}
+                    matchedVariant={match.variant}
+                    surname={person.surname}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+          {shown.length > 0 && !phone && (
             <section aria-label='People, by surname' className={styles.list}>
               <div aria-hidden='true' className={styles.heads}>
                 <Text variant='overline'>Name</Text>

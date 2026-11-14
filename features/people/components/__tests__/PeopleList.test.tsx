@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
@@ -213,6 +213,79 @@ describe('PeopleList', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
 
     expect(refresh).toHaveBeenCalledOnce();
+  });
+
+  describe('on a phone', () => {
+    const desktop = window.matchMedia;
+
+    beforeEach(() => {
+      window.matchMedia = (() => ({
+        addEventListener: () => {},
+        matches: true,
+        removeEventListener: () => {},
+      })) as unknown as typeof window.matchMedia;
+    });
+
+    afterEach(() => {
+      window.matchMedia = desktop;
+    });
+
+    // NFR-05
+    it('is a look-up: the note, no Add a person, no link and no Edit', () => {
+      open();
+      screen.getByText('To add or edit people, use a computer.');
+      expect(screen.queryByRole('link', { name: 'Add a person' })).toBeNull();
+      expect(screen.queryByText('Edit')).toBeNull();
+      expect(
+        within(
+          screen.getByRole('list', { name: 'People, by surname' })
+        ).queryAllByRole('link')
+      ).toHaveLength(0);
+    });
+
+    // PPL-01
+    it('reads one line for each Person', () => {
+      open();
+      expect(
+        within(screen.getByRole('list', { name: 'People, by surname' }))
+          .getAllByRole('listitem')
+          .map(item => item.textContent)
+      ).toEqual([
+        'Botha, Hendrikc. 1832 – 1880–1885',
+        'Cloete, Anna— – deceasednée Pretorius',
+        'du Toit, MariaBorn 1850',
+      ]);
+    });
+
+    // PPL-01
+    it('filters, with the phone helper and no Add a person in the no-match notice', () => {
+      open();
+      screen.getByText('Matches names, maiden names and spelling variants.');
+      filter('Zzz');
+
+      const notice = screen.getAllByRole('status')[1].textContent;
+
+      expect(notice).toContain('Check the spelling.');
+      expect(notice).not.toContain('Add a person');
+    });
+
+    // NFR-05
+    it('says to add people on a computer when there are none', () => {
+      open({ people: [] });
+      expect(screen.getByRole('status').textContent).toContain(
+        'Add people on a computer. Once people are in it, you can pin their lives to the map.'
+      );
+      expect(
+        screen.queryByText('To add or edit people, use a computer.')
+      ).toBeNull();
+    });
+
+    // PPL-01
+    it('keeps the alert when the load failed', () => {
+      open({ failed: true, people: [] });
+      screen.getByRole('alert');
+      screen.getByRole('button', { name: 'Try again' });
+    });
   });
 
   it('opens the account menu and signs out', async () => {

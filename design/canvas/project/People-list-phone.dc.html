@@ -30,12 +30,8 @@
 
     <ul aria-label="People, by surname" style="list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line)">
       <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
-        <li style="display: flex; flex-direction: column; gap: 2px; min-height: 60px; box-sizing: border-box; padding: var(--space-8) 0; justify-content: center; border-top: 1px solid var(--line)">
-          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{p.name}}</x-import>
-          <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px var(--space-12); color: var(--ink-3)">
-            <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{p.years}}</x-import>
-            <sc-if value="{{p.hasNote}}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{p.note}}</x-import></sc-if>
-          </span>
+        <li>
+          <x-import component-from-global-scope="KinScape.PersonRow" form="phone" href="/" surname="{{p.surname}}" given-names="{{p.given}}" born="{{p.born}}" died="{{p.died}}" deceased="{{p.deceased}}" maiden-name="{{p.maiden}}" matched-variant="{{p.variant}}"></x-import>
         </li>
       </sc-for>
     </ul>
@@ -73,16 +69,16 @@ class Component extends DCLogic {
     const has = (t) => !!t && t.toLowerCase().indexOf(q) >= 0;
     const rows = [];
     all.forEach((p) => {
-      let note = p.m ? 'née ' + p.m : '';
+      let matched = '';
       if (q) {
         const byName = has(p.g) || has(p.s) || has(p.g + ' ' + p.s) || has(p.s + ', ' + p.g);
         const byMaiden = has(p.m);
         const variant = p.v.filter((x) => has(x))[0];
         if (!byName && !byMaiden && !variant) return;
-        if (!byName && !byMaiden) note = (note ? note + ' · ' : '') + 'Matches “' + variant + '”';
+        if (!byName && !byMaiden) matched = variant;
       }
-      const years = p.d === '—' ? 'Born ' + p.b : p.d === 'Deceased' ? p.b + ' – deceased' : p.b + ' – ' + p.d;
-      rows.push({ name: p.s + ', ' + p.g, years: years, note: note, hasNote: !!note });
+      const deceased = p.d === 'Deceased';
+      rows.push({ surname: p.s, given: p.g, born: p.b, died: deceased || p.d === '—' ? '' : p.d, deceased: deceased, maiden: p.m, variant: matched });
     });
     return {
       avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,

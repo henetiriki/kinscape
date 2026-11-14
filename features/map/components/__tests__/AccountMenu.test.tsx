@@ -1,7 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const push = vi.hoisted(() => vi.fn());
+
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
 
 import { AccountMenu } from '@ks/features/map/components/AccountMenu';
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 const open = () =>
   fireEvent.click(screen.getByRole('button', { name: /account/i }));
@@ -37,10 +45,21 @@ describe('AccountMenu on desktop', () => {
         .getAllByRole('menuitem')
         .map(item => item.textContent)
         .join('|')
-    ).toBe('Sources and attributions|Sign out');
+    ).toBe('PeopleAdd and edit people|Sources and attributions|Sign out');
     expect(screen.queryByText(/export/i)).toBeNull();
     expect(screen.queryByText(/backup/i)).toBeNull();
     expect(screen.queryByRole('search')).toBeNull();
+  });
+
+  // PPL-01
+  it('goes to People from People', () => {
+    const { onOpenSources, onSignOut } = setup();
+
+    open();
+    fireEvent.click(screen.getByRole('menuitem', { name: /^People/ }));
+    expect(push).toHaveBeenCalledExactlyOnceWith('/people');
+    expect(onOpenSources).not.toHaveBeenCalled();
+    expect(onSignOut).not.toHaveBeenCalled();
   });
 
   it('opens the Sources dialog from Sources and attributions', () => {
@@ -73,7 +92,19 @@ describe('AccountMenu on a phone', () => {
     expect(screen.queryByRole('menu')).toBeNull();
     open();
     expect(pill.contains(screen.getByRole('menu'))).toBe(true);
-    expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+    expect(screen.getAllByRole('menuitem')).toHaveLength(3);
+  });
+
+  // PPL-01, NFR-05
+  it('puts People first, with the look-up detail, and goes to People', () => {
+    setup({ phone: true });
+    open();
+
+    const [people] = screen.getAllByRole('menuitem');
+
+    expect(people.textContent).toBe('PeopleLook up the people in your Tree');
+    fireEvent.click(people);
+    expect(push).toHaveBeenCalledExactlyOnceWith('/people');
   });
 
   it('routes the items as on desktop', () => {

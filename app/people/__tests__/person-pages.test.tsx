@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({ get: vi.fn() }));
 const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
@@ -151,5 +151,42 @@ describe('the layout', () => {
     );
 
     screen.getByText('The page');
+  });
+});
+
+// NFR-05
+describe('on a phone', () => {
+  const desktop = window.matchMedia;
+
+  beforeEach(() => {
+    window.matchMedia = (() => ({
+      addEventListener: () => {},
+      matches: true,
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia;
+  });
+
+  afterEach(() => {
+    window.matchMedia = desktop;
+  });
+
+  it('/people/new shows the notice and no form', async () => {
+    await setup();
+    render(await NewPerson());
+
+    expect(screen.getByRole('status').textContent).toContain(
+      'Edit people on a computer'
+    );
+    expect(screen.queryByLabelText('Surname')).toBeNull();
+  });
+
+  it('/people/{id} shows the notice and no form', async () => {
+    await setup();
+    await edit(MINE);
+
+    expect(screen.getByRole('status').textContent).toContain(
+      'Edit people on a computer'
+    );
+    expect(screen.queryByLabelText('Surname')).toBeNull();
   });
 });

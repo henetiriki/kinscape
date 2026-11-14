@@ -140,6 +140,20 @@ it('keeps the card open when Esc closes a dialog', () => {
   expect(button.getAttribute('aria-expanded')).toBe('true');
 });
 
+it('keeps the card open for a press inside a dialog', () => {
+  collapsible();
+
+  const button = screen.getByRole('button', { name: 'Credits' });
+  const dialog = document.createElement('dialog');
+
+  document.body.append(dialog);
+  fireEvent.click(button);
+  fireEvent.pointerDown(dialog);
+  dialog.remove();
+
+  expect(button.getAttribute('aria-expanded')).toBe('true');
+});
+
 it('opens the dialog from the Attributions link while collapsed', () => {
   const open = vi.fn();
 

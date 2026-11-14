@@ -74,6 +74,8 @@ for (const width of WIDTHS) {
 
       await expect(scale).toHaveCSS('font-size', '11px');
       await expect(scale).toHaveCSS('color', 'rgb(36, 48, 43)');
+      await expect(scale).toHaveCSS('border-bottom-width', '1px');
+      await expect(scale).toHaveCSS('line-height', '16px');
       await expect(scale).toHaveCSS(
         'background-color',
         'rgba(255, 255, 255, 0.6)'

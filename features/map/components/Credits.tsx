@@ -57,7 +57,12 @@ export const Credits = ({
         setOpen(false);
     };
     const onPressOutside = (event: PointerEvent) => {
-      if (!(event.target as Element).closest('[data-credits]')) setOpen(false);
+      if (
+        !(event.target as Element).closest(
+          '[data-credits], dialog, [role=dialog]'
+        )
+      )
+        setOpen(false);
     };
 
     document.addEventListener('keydown', onEsc);

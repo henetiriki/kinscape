@@ -32,10 +32,13 @@ body {
 .map .maplibregl-ctrl-bottom-left .maplibregl-ctrl-scale {
   background-color: var(--white-60);
   border-color: var(--credits);
+  border-width: 0 1px 1px;
   color: var(--credits);
   font-family: var(--font-body);
   font-size: var(--type-credits-size);
+  line-height: var(--type-credits-line);
   margin: 0;
+  padding: 0 var(--space-4);
 }
 
 /* A phone zooms by pinch: MapLibre's scale (bottom left) sits under the Layers button and the sheet. */

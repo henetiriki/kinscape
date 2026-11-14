@@ -336,17 +336,27 @@ export const CARDS: Card[] = [
     height: 400,
     name: 'PersonRow',
     pad: 0,
-    states: linkGrid('PersonRow', state => ({
-      props: {
-        born: 'c. 1835',
-        died: '1901',
-        givenNames: 'Susanna',
+    states: [
+      ...linkGrid('PersonRow', state => ({
+        props: {
+          born: 'c. 1835',
+          died: '1901',
+          givenNames: 'Susanna',
+          href: '/people/1',
+          maidenName: 'Fourie',
+          state,
+          surname: 'Botha',
+        },
+      })),
+      one('PersonRow · phone', {
+        born: '1832',
+        died: '1899',
+        form: 'phone',
+        givenNames: 'Hendrik Willem',
         href: '/people/1',
-        maidenName: 'Fourie',
-        state,
         surname: 'Botha',
-      },
-    })),
+      }),
+    ],
   },
   {
     design: ['Text field'],

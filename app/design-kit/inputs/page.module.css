@@ -731,3 +731,9 @@
     grid-template-columns: 80px minmax(0, 1fr);
   }
 }
+
+/* A phone row has its top line; the sample adds the bottom one. */
+.phoneRow {
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+}

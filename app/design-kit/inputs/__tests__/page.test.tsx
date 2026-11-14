@@ -34,9 +34,10 @@ it('shows the fifteen sections in board order, each with Measurements and Access
     'Fuzzy date field',
     'Person row',
   ]);
+  // Person row draws its facts twice, once for each form of the row.
   expect(
     screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)
-  ).toEqual(Array(15).fill(['Measurements', 'Accessibility']).flat());
+  ).toEqual(Array(16).fill(['Measurements', 'Accessibility']).flat());
 });
 
 it('draws each interactive component in five states, in the order drawn', async () => {
@@ -428,6 +429,29 @@ it('draws Person row in five forms and four states, as links that are only drawn
   expect(section.textContent).toContain('Died —');
   expect(section.textContent).toContain('Died Deceased');
   expect(section.querySelector('.desktopOnly')).toBeTruthy();
+});
+
+// PPL-01
+it('draws Person row on a phone as four rows that are no links', async () => {
+  await show();
+
+  const section = screen.getByRole('region', { name: 'Person row' });
+  const rows = [...section.querySelectorAll('figure[data-phone] .sample')];
+
+  expect(rows.map(row => row.textContent)).toEqual([
+    'Botha, Hendrik Willem1832 – 1899',
+    'Botha, Susannac. 1835 – 1901née Fourie',
+    'Rossouw, Johanna PetronellaBorn 1878',
+    'Fourie, Pieterbef. 1840 – deceased',
+  ]);
+  expect(
+    rows.every(row => row.closest('[inert]') || row.querySelector('[inert]'))
+  ).toBe(true);
+  expect(section.querySelectorAll('figure[data-phone] a')).toHaveLength(0);
+  expect(section.querySelector('.phoneOnly')).toBeTruthy();
+  expect(section.textContent).toContain(
+    'A row of the people list on a phone. It is not a link: the name, then one line of dates.'
+  );
 });
 
 it('puts each section in one of four phone parts and one of two desktop parts', async () => {

@@ -5,6 +5,7 @@ import {
   code,
   DesktopOnly,
   Facts,
+  PhoneOnly,
   Section,
   Variant,
   Variants,
@@ -233,8 +234,94 @@ export const PersonRows = () => (
     desktopPart={2}
     lead='A row of the people list. The whole row is one link to edit the Person: name, Born, Died, then Edit.'
     part={4}
-    phoneLead='Desktop only: the phone form of the row comes with the phone people list. See the desktop board.'
+    phoneLead='A row of the people list on a phone. It is not a link: the name, then one line of dates.'
     title='Person row'>
+    <PhoneOnly>
+      <Variants>
+        <Variant
+          caption='A plain row · the name in Title, then the dates in one Mono line.'
+          phone>
+          <div className={styles.phoneRow} inert>
+            <PersonRow
+              born='1832'
+              died='1899'
+              form='phone'
+              givenNames='Hendrik Willem'
+              href={HREF}
+              surname='Botha'
+            />
+          </div>
+        </Variant>
+        <Variant
+          caption='Maiden name · a Small note after the dates, "née {maiden}".'
+          phone>
+          <div className={styles.phoneRow} inert>
+            <PersonRow
+              born='c. 1835'
+              died='1901'
+              form='phone'
+              givenNames='Susanna'
+              href={HREF}
+              maidenName='Fourie'
+              surname='Botha'
+            />
+          </div>
+        </Variant>
+        <Variant caption='No death date · the line reads "Born 1878".' phone>
+          <div className={styles.phoneRow} inert>
+            <PersonRow
+              born='1878'
+              form='phone'
+              givenNames='Johanna Petronella'
+              href={HREF}
+              surname='Rossouw'
+            />
+          </div>
+        </Variant>
+        <Variant
+          caption='Marked deceased with no date · the line reads "bef. 1840 – deceased".'
+          phone>
+          <div className={styles.phoneRow} inert>
+            <PersonRow
+              born='bef. 1840'
+              deceased
+              form='phone'
+              givenNames='Pieter'
+              href={HREF}
+              surname='Fourie'
+            />
+          </div>
+        </Variant>
+      </Variants>
+      <Facts
+        accessibility={[
+          [
+            'Role',
+            <>
+              One {code('div')}with no link and no Edit. The name and the dates
+              are its text.
+            </>,
+          ],
+          [
+            'Dates',
+            'One line: "Born 1878", "1832 – 1899" or "bef. 1840 – deceased".',
+          ],
+          ['Keyboard', 'No stop: the row is not a link.'],
+        ]}
+        label='Person row on a phone'
+        measurements={[
+          ['Height', 'At least 60', '—'],
+          ['Padding', '8 0', 'space.8'],
+          ['Name', 'Title', 'type.title'],
+          [
+            'Dates',
+            'Mono, with the note in Small after it, 12 apart',
+            'type.mono · type.small · space.12',
+          ],
+          ['Top line', '1px line', 'colour.line'],
+        ]}
+      />
+    </PhoneOnly>
     <DesktopOnly>
       <Variants>
         <Variant caption='A plain row · name in Title; Born and Died in Mono.'>

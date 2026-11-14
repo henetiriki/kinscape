@@ -340,6 +340,18 @@ const CASES: [string, ReactElement][] = [
       surname='Botha'
     />
   )),
+  [
+    'PersonRow · phone',
+    <PersonRow
+      born='1832'
+      died='1899'
+      form='phone'
+      givenNames='Hendrik Willem'
+      href='/people/1'
+      key='phone'
+      surname='Botha'
+    />,
+  ],
   ...states('TextField', (state, disabled) => (
     <TextField
       disabled={disabled}

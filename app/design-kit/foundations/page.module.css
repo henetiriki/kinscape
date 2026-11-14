@@ -134,7 +134,7 @@
   padding: var(--space-8) 0;
 }
 
-/* Below desktop-width (#821 D1 B): a spacing bar shrinks to its column. */
+/* Below desktop-width (Bug 821 D1 B): a spacing bar shrinks to its column. */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .spaceRow {
     grid-template-columns: 70px minmax(0, 1fr) 200px;
@@ -145,7 +145,7 @@
   }
 }
 
-/* Below desktop-width (#821 D1 B): a motion row puts its use on a second line. */
+/* Below desktop-width (Bug 821 D1 B): a motion row puts its use on a second line. */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .motionRow {
     gap: var(--space-4) var(--space-12);

@@ -274,7 +274,7 @@
   margin: 0;
 }
 
-/* Phone (#104 D1) and below desktop-width (#821 D1 B). */
+/* Phone (Intent 104 D1) and below desktop-width (Bug 821 D1 B). */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .compact {
     padding: var(--space-16);

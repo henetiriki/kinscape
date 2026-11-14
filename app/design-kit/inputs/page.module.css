@@ -496,7 +496,7 @@
   font-size: var(--type-mono-size);
 }
 
-/* Phone (#104 D1) and below desktop-width (#821 D1 B): one part at a time, a link to the other, one column */
+/* Phone (Intent 104 D1) and below desktop-width (Bug 821 D1 B): one part at a time, a link to the other, one column */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     gap: var(--space-40);

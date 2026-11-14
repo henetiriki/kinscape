@@ -36,7 +36,7 @@ Show one heading per box of `.github/ISSUE_TEMPLATE/4-chore.yml`, in order. If t
 >
 > **How we'll know it's done**
 >
-> **Constraints** (optional; omit if none)
+> **Constraints** (optional; write `_No response_` if none)
 
 The box ids are `title`, `change`, `why`, `done` and `constraints`.
 
@@ -44,6 +44,6 @@ Write each box in [STE](../../../docs/writing.md#ste). Then run the check round 
 
 ## Hand-over
 
-Give **one link** for form `4-chore.yml`, as _Prefilled links_ in [SKILL.md](SKILL.md) describes. If a link doesn't work: **Issues → New issue → Chore**, and copy each block into the box with the same name.
+File the Chore with form `4-chore.yml`, as [filing.md](filing.md) says.
 
-The tech lead files it and sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.
+The tech lead sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.

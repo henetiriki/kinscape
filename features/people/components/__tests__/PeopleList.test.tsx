@@ -257,6 +257,7 @@ describe('PeopleList', () => {
       ]);
     });
 
+    // PPL-01
     it('filters, with the phone helper and no Add a person in the no-match notice', () => {
       open();
       screen.getByText('Matches names, maiden names and spelling variants.');
@@ -268,6 +269,7 @@ describe('PeopleList', () => {
       expect(notice).not.toContain('Add a person');
     });
 
+    // NFR-05
     it('says to add people on a computer when there are none', () => {
       open({ people: [] });
       expect(screen.getByRole('status').textContent).toContain(
@@ -278,6 +280,7 @@ describe('PeopleList', () => {
       ).toBeNull();
     });
 
+    // PPL-01
     it('keeps the alert when the load failed', () => {
       open({ failed: true, people: [] });
       screen.getByRole('alert');

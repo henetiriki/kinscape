@@ -11,7 +11,7 @@ import styles from '@ks/features/people/components/EditOnComputer.module.css';
 
 /**
  * Shows its form on desktop. On a phone it shows a notice and a link to the list instead, because
- * a phone only looks people up (PPL-01, NFR-05).
+ * a phone only finds and reads people (PPL-01, NFR-05).
  */
 export const EditOnComputer = ({
   children,

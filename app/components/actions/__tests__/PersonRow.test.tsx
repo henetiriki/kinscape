@@ -95,21 +95,25 @@ describe('on a phone', () => {
     phoneRow();
     expect(screen.queryByRole('link')).toBeNull();
     expect(screen.queryByText('Edit')).toBeNull();
-    expect(screen.getByText('Botha, Hendrik Willem')).toBeTruthy();
+    expect(screen.getByText('Botha, Hendrik Willem').textContent).toBe(
+      'Botha, Hendrik Willem'
+    );
   });
 
   it('reads one line: "Born" alone, a range, or a range ending in deceased', () => {
     const { unmount } = phoneRow({ born: '1878', died: undefined });
 
-    expect(screen.getByText('Born 1878')).toBeTruthy();
+    expect(screen.getByText('Born 1878').textContent).toBe('Born 1878');
     unmount();
 
     const second = phoneRow();
 
-    expect(screen.getByText('1832 – 1899')).toBeTruthy();
+    expect(screen.getByText('1832 – 1899').textContent).toBe('1832 – 1899');
     second.unmount();
     phoneRow({ born: 'bef. 1840', deceased: true, died: undefined });
-    expect(screen.getByText('bef. 1840 – deceased')).toBeTruthy();
+    expect(screen.getByText('bef. 1840 – deceased').textContent).toBe(
+      'bef. 1840 – deceased'
+    );
   });
 
   it('shows the note beside the dates', () => {

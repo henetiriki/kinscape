@@ -115,7 +115,7 @@ Every control has the five states in style-4-states.jpg. Hover darkens or tints.
 | No pins on this date | A notice card at the top reads "No pins in {year}" and "Jump to {nearest year}". When filters are on, it also has "Clear filters". The Pins row reads "0 of N true on this date". |
 | Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                        |
 | Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                    |
-| Account menu         | Signed-in email, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                              |
+| Account menu         | Signed-in email, People, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                      |
 | Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                            |
 
 ## Feedback and validation

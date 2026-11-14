@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Relationship messages</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+  <div style="width: 1136px; margin: 0 auto; padding: var(--space-32) 0; display: flex; flex-direction: column; gap: var(--space-16)">
+
+    <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+      <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationship messages</x-import>
+      <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Each message shows in an alert at the top of the add and edit dialog. The dialog stays open, keeps the picks and saves nothing.</x-import>
+    </div>
+
+    <div role="table" aria-label="Relationship messages" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); padding: var(--space-12) var(--space-20); text-transform: uppercase; color: var(--ink-3)">
+        <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Reason</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Message</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Action</x-import>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">self</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="A person can't be their own relative">Choose someone else.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">cycle</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="This link isn't possible">This would make {name} their own ancestor.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">biological parents</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="Too many biological parents">A person has at most two. Choose adoptive or step, or edit a link.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">duplicate</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Refusal</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="These people are already linked">They already have this link. Edit it from the list.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">tree-full</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="Your Tree holds the most links it can">Nothing was saved.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">None</x-import>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">conflict</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="This link changed while you were editing">Nothing was saved. Reload to see the latest version, then make your changes again.</x-import>
+        <div><x-import component-from-global-scope="KinScape.Button" variant="secondary">Reload</x-import></div>
+      </div>
+
+      <div role="row" style="display: grid; grid-template-columns: 200px minmax(0, 1fr) 176px; gap: var(--space-24); align-items: start; padding: var(--space-8) var(--space-20); border-top: 1px solid var(--line)">
+        <div style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">not-found</x-import><x-import component-from-global-scope="KinScape.Text" variant="small" as="span">Error</x-import></div>
+        <x-import component-from-global-scope="KinScape.Alert" tone="error" title="This person or link no longer exists">Nothing was saved. It may have been deleted.</x-import>
+        <div><x-import component-from-global-scope="KinScape.Button" variant="secondary" href="People-list.dc.html">Go to People</x-import></div>
+      </div>
+    </div>
+
+    <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Any other failed save shows an error toast, “Couldn't save the link. Your picks are still here.”, with “Try again”.</x-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

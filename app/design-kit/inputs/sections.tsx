@@ -340,6 +340,16 @@ export const TextFields = () => (
           </div>
         </span>
       </Variant>
+      <Variant caption='Token field · Spelling variants, error state.' desktop>
+        <div className={styles.tokens}>
+          <TokenField
+            defaultValues={['Rossouw', 'Rossau', 'Rosseau']}
+            error='Use at most 20 spellings.'
+            label='Spelling variants'
+            placeholder='Add a spelling'
+          />
+        </div>
+      </Variant>
     </Variants>
     <Matrix
       label='Field states'

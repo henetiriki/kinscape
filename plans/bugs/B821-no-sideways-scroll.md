@@ -45,7 +45,7 @@ With the rule, `npm run design:check` fails 13 blocking screens.
 | `app/design-kit/map-furniture/page.module.css`                                                      | changed       | `.glyphGrid` has `max-width: 100%`                                                                            |
 | `e2e/widths.spec.ts`                                                                                | new           | The width check and the cases in Proof                                                                        |
 | `e2e/design-kit.spec.ts`                                                                            | changed       | "map style keeps its column headers" checks the phone layout; `states` and `type` at 800 × 900 are one column |
-| `design/canvas/project/ds/`, `canvas.json`, `VERSION`                                               | changed       | Design system steps 3 to 5                                                                                    |
+| `design/canvas/project/ds/`, `canvas.json`, `VERSION`                                               | changed       | Design system steps 3 to 9                                                                                    |
 
 ## Order of work
 
@@ -55,7 +55,7 @@ With the rule, `npm run design:check` fails 13 blocking screens.
 4. Change the board queries and the glyph grid. Fix the three overflows.
 5. Change `e2e/design-kit.spec.ts`.
 6. Run the checks in `AGENTS.md` › Commands and `npm run design:check`.
-7. Run `npm run design-system` (step 2). Push. Ask the tech lead, or a local session that they start, to run steps 3 to 5. The PR stays a draft until then.
+7. Run `npm run design-system` (step 2). Push. Ask the tech lead, or a local session that they start, to run steps 3 to 9. The PR stays a draft until then.
 
 ## Risks
 
@@ -84,6 +84,7 @@ With the rule, `npm run design:check` fails 13 blocking screens.
 
 ## Deviations
 
-- Step 1 on `main`: the check failed for `foundations`, `surfaces`, `states`, `feedback`, `inputs`, both `map-furniture` parts and `map-style`. The People card sat 16px past its gutter.
-- `surfaces`, `feedback` and `inputs` take the phone layout below 1280px, as the plan said they likely would.
+- Step 1 on `main`: the check failed for `foundations`, `surfaces`, `states`, `feedback`, `inputs`, `map-furniture` and `map-style`.
+- `surfaces`, `feedback` and `inputs` take the phone layout below 1280px.
 - `.desktopOnly` has `min-width: 0` so the glyph grid shrinks. `foundations` uses a compact motion row and a shrinking bar below 1280px.
+- Step 9 re-rendered 14 snapshots, because the boards embed the bundle.

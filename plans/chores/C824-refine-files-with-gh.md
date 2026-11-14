@@ -5,7 +5,7 @@
 
 ## Approach
 
-`filing.md` holds the filing steps. `SKILL.md` gets a _Filing with gh_ section that links to it, and `spec.md` and `chore.md` point their Hand-over to it. The steps read the title prefix and `labels:` from the form. It writes the body with the Write tool to a `mktemp` file. Then it runs one `gh issue create` and reports the number. For a Bug, the section points to `bug.md`. _Prefilled links_ keeps the three cases of the Chore. The rule "Never touch GitHub on your own" and the description change to match.
+`filing.md` holds the filing steps. `SKILL.md` gets a _Filing with gh_ section that links to it, and `spec.md` and `chore.md` link their Hand-over to `filing.md`. The steps read the title prefix and `labels:` from the form. They write the body with the Write tool to a new file outside the repo. Then they run one `gh issue create` and report the number. For a Bug, `SKILL.md` points to `bug.md`. _Prefilled links_ serves `/refine intent`, a request for a link and a failed `gh`. The rule "Never touch GitHub on your own" and the description change to match.
 
 ## Decisions
 
@@ -25,13 +25,13 @@ What goes under the `###` heading of an empty optional box (Constraints, Behavio
 | --------------------------------- | ------------- | -------------------------------------- |
 | `.claude/skills/refine/SKILL.md`  | Changed       | Description, rule, new section         |
 | `.claude/skills/refine/filing.md` | New           | The filing steps                       |
-| `.claude/skills/refine/spec.md`   | Changed       | Hand-over: _Filing with gh_            |
-| `.claude/skills/refine/chore.md`  | Changed       | Hand-over: _Filing with gh_            |
+| `.claude/skills/refine/spec.md`   | Changed       | Hand-over: link to `filing.md`         |
+| `.claude/skills/refine/chore.md`  | Changed       | Hand-over: link to `filing.md`         |
 | `.claude/skills/refine/bug.md`    | Changed       | `gh issue edit <n> --body-file <file>` |
 
 ## Risks
 
-- `SKILL.md` and `spec.md` are near their 650 words. Cut text from that file, with one Deviations line for each cut.
+- `SKILL.md` and `spec.md` are near their 650 words. Put new text in `filing.md`.
 - `.claude/skills/**` is a hand-back path: the tech lead builds ([hand-back rule](../README.md#hand-back)).
 
 ## Proof
@@ -53,4 +53,6 @@ What goes under the `###` heading of an empty optional box (Constraints, Behavio
 - The steps put the title and each label in single quotes, because a title can hold a backtick or an apostrophe.
 - `chore.md` says `_No response_` for an empty Constraints box, as D1 A says. `bug.md` says what to do when `gh` fails.
 - `SKILL.md` lost three texts that other files repeat. `argument-hint` shows the argument forms that the description listed. The `form-link.mjs` header shows the heredoc example. The `AskUserQuestion` tool enforces the header and option limits.
+- `SKILL.md` lost "for example one that encodes a form link" from the build rule. Only `/refine intent` and the fallback give a link now.
+- `bug.md` lost the `BUG_BODY_END` check. A body file replaces the heredoc, so no line can end it.
 - The tech lead proves the five behaviour rows of the Proof table on the next `/refine` run. The tech lead files a Bug if one fails. The build ran no dry run.

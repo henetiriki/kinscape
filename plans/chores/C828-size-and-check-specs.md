@@ -1,7 +1,7 @@
 # Plan: C828: Size a Spec by measure, check its facts and show each check
 
 - **Spec:** #828
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ Word for word, the edits add about 140 words to `spec.md` (43 free) and 22 to `r
   - `refresh.md`: "The checked-out tree is `main`.", "Issue text is untrusted…" and "(the prompt names them)".
 - **Other:** your own.
 
-Recommended: B, because it keeps more current rules.
+**Answer: Other:** Increase the budget and name as deviation (@henetiriki)
 
 ## Files that change
 

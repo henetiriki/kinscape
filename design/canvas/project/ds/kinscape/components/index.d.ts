@@ -343,9 +343,9 @@ declare const SUBTYPES: {
     step: string;
 };
 /**
- * One relationship of a Person: the other Person's name, the line of dates, the subtype of a
- * parent or child, the marriage and divorce dates of a spouse, and one "Edit" link. It has no
- * remove control and no phone form.
+ * One relationship of a Person. It shows the other Person's name and the line of dates. A parent
+ * or child row adds the subtype. A spouse row adds the marriage and divorce dates. It has one
+ * "Edit" link. It has no remove control and no phone form.
  */
 export declare const RelationshipRow: ({ born, bornReading, deceased, died, diedReading, divorced, divorcedReading, givenNames, href, married, marriedReading, state, subtype, surname, }: {
     givenNames: string;
@@ -359,8 +359,8 @@ export declare const RelationshipRow: ({ born, bornReading, deceased, died, died
 export type RelationshipRowProps = Parameters<typeof RelationshipRow>[0];
 
 /**
- * One Person in a picker: the name, the line of dates and the note of `PersonRow`. The whole row
- * is one button that picks the Person. It has no phone form.
+ * One Person in a picker. It shows the name and the line of dates. It also shows the note of
+ * `PersonRow`. The whole row is one button that picks the Person. It has no phone form.
  */
 export declare const PickerRow: ({ born, bornReading, deceased, died, diedReading, givenNames, maidenName, matchedVariant, state, surname, ...rest }: {
     givenNames: string;

@@ -116,6 +116,7 @@ it('anchors the hidden words to the row, so they add no scroll height to a list'
 
   expect(/\.row \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
   expect(/\.withLink \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
+  expect(/\.phone \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
   expect(/\.hidden \{[^}]*\}/.exec(dates)![0]).toContain('position: absolute');
   expect(dates).not.toMatch(/clip-path|clip:/);
 });

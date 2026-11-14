@@ -440,10 +440,18 @@ it('draws Person row as the six lines, two notes, the Relationships link and fou
     'née Rossouw · Matches the spelling “Dutoit”'
   );
   expect(
-    ['1889 –', '? –', '1889 – ?', '? – ?', '? – 1932', '1889 – 1932'].map(
-      text => section.textContent.includes(text)
-    )
-  ).toEqual(Array(6).fill(true));
+    [...section.querySelectorAll('a [aria-hidden="true"]')]
+      .map(line => line.textContent)
+      .filter(Boolean)
+  ).toEqual([
+    '1889 –',
+    '? –',
+    '1889 – ?',
+    '? – ?',
+    '? – 1932',
+    '1889 – 1932',
+    ...Array(7).fill('1889 – 1932'),
+  ]);
   expect(section.textContent).toContain(
     'Relationships, Botha, Hendrik Willem'.replace(
       'Botha, Hendrik Willem',

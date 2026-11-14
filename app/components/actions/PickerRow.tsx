@@ -14,8 +14,8 @@ import { Text } from '@ks/app/components/foundation/Text';
 import styles from '@ks/app/components/actions/PickerRow.module.css';
 
 /**
- * One Person in a picker: the name, the line of dates and the note of `PersonRow`. The whole row
- * is one button that picks the Person. It has no phone form.
+ * One Person in a picker. It shows the name and the line of dates. It also shows the note of
+ * `PersonRow`. The whole row is one button that picks the Person. It has no phone form.
  */
 export const PickerRow = ({
   born,

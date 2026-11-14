@@ -23,9 +23,9 @@ const SUBTYPES = {
 };
 
 /**
- * One relationship of a Person: the other Person's name, the line of dates, the subtype of a
- * parent or child, the marriage and divorce dates of a spouse, and one "Edit" link. It has no
- * remove control and no phone form.
+ * One relationship of a Person. It shows the other Person's name and the line of dates. A parent
+ * or child row adds the subtype. A spouse row adds the marriage and divorce dates. It has one
+ * "Edit" link. It has no remove control and no phone form.
  */
 export const RelationshipRow = ({
   born,

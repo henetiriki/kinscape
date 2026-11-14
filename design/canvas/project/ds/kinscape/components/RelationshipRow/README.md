@@ -1,4 +1,4 @@
-One relationship of a Person: the other Person's name, the line of dates, the subtype of a parent or child, the marriage and divorce dates of a spouse, and one "Edit" link.
+One relationship of a Person.
 
 ## Design
 

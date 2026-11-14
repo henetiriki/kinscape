@@ -1,4 +1,4 @@
-One Person in a picker: the name, the line of dates and the note of `PersonRow`.
+One Person in a picker.
 
 ## Design
 

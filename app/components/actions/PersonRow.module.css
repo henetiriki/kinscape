@@ -61,6 +61,8 @@
   justify-content: center;
   min-height: 60px;
   padding: var(--space-8) 0;
+  /* The anchor of the hidden labels: they stay inside the row. */
+  position: relative;
 }
 
 .line {

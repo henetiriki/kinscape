@@ -68,7 +68,8 @@ export const Section = ({
   /** Boards 07 and 08 give none: their own styles choose what a desktop shows. */
   desktopPart?: DesktopPart;
   lead: ReactNode;
-  part: PhonePart;
+  /** None: no part of a phone shows the section. */
+  part?: PhonePart;
   /** The lead a phone shows instead. */
   phoneLead?: string;
   title: string;

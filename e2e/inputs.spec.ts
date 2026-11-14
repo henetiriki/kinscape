@@ -122,11 +122,11 @@ test.describe('on a desktop', () => {
     await expect(layers).toBeFocused();
   });
 
-  for (const [part, url, shown, hidden, next] of [
-    [1, '/design-kit/inputs', 'Key hints', 'Page header', 2],
-    [2, '/design-kit/inputs?part=2', 'Person row', 'Buttons', 1],
+  for (const [part, url, shown, hidden, next, limit] of [
+    [1, '/design-kit/inputs', 'Key hints', 'Page header', 2, 7600],
+    [2, '/design-kit/inputs?part=2', 'Picker row', 'Buttons', 1, 9500],
   ] as const) {
-    test(`part ${part} shows its sections and links to part ${next}, in 7600px or less`, async ({
+    test(`part ${part} shows its sections and links to part ${next}, in ${limit}px or less`, async ({
       page,
     }) => {
       await page.goto(url);
@@ -141,7 +141,7 @@ test.describe('on a desktop', () => {
         () => document.documentElement.scrollHeight
       );
 
-      expect(height).toBeLessThanOrEqual(7600);
+      expect(height).toBeLessThanOrEqual(limit);
     });
   }
 });

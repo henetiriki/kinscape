@@ -28,6 +28,11 @@ export const CONTROLS: Control[] = [
   { name: 'ActionBar', path: 'app/components/actions/ActionBar.tsx' },
   { name: 'RemovableChip', path: 'app/components/actions/Chip.tsx' },
   { name: 'PersonRow', path: 'app/components/actions/PersonRow.tsx' },
+  {
+    name: 'RelationshipRow',
+    path: 'app/components/actions/RelationshipRow.tsx',
+  },
+  { name: 'PickerRow', path: 'app/components/actions/PickerRow.tsx' },
   { name: 'TextField', path: 'app/components/forms/TextField.tsx' },
   { name: 'TextAreaField', path: 'app/components/forms/TextAreaField.tsx' },
   { name: 'Checkbox', path: 'app/components/forms/Checkbox.tsx' },

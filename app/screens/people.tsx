@@ -3,6 +3,18 @@ import type { PersonSummary } from '@ks/lib/domain/persons/types';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PeopleList } from '@ks/features/people';
 
+/** The full reading of one of the short dates below. */
+const reading = (short: string): string => {
+  const [from, to] = short.split('–');
+
+  if (to) return `Between ${from} and ${to}`;
+  if (short.startsWith('c. ')) return `About ${short.slice(3)}`;
+  if (short.startsWith('bef. ')) return `Before ${short.slice(5)}`;
+  if (short.startsWith('aft. ')) return `After ${short.slice(5)}`;
+
+  return short && `In ${short}`;
+};
+
 const person = (
   id: string,
   surname: string,
@@ -12,8 +24,10 @@ const person = (
   more: Partial<PersonSummary> = {}
 ): PersonSummary => ({
   born,
+  bornReading: reading(born),
   deceased: false,
   died,
+  diedReading: reading(died),
   givenNames,
   id,
   maidenName: '',

@@ -1,4 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
@@ -10,9 +12,11 @@ const refresh = vi.hoisted(() => vi.fn());
 vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh }) }));
 
 const person = (fields: Partial<PersonSummary>): PersonSummary => ({
-  born: '—',
+  born: '',
+  bornReading: '',
   deceased: false,
   died: '',
+  diedReading: '',
   givenNames: 'Given',
   id: 'p',
   maidenName: '',
@@ -24,6 +28,7 @@ const person = (fields: Partial<PersonSummary>): PersonSummary => ({
 const people = [
   person({
     born: '1850',
+    bornReading: 'In 1850',
     givenNames: 'Maria',
     id: 'maria',
     surname: 'du Toit',
@@ -31,7 +36,9 @@ const people = [
   }),
   person({
     born: 'c. 1832',
+    bornReading: 'About 1832',
     died: '1880–1885',
+    diedReading: 'Between 1880 and 1885',
     givenNames: 'Hendrik',
     id: 'hendrik',
     surname: 'Botha',
@@ -67,7 +74,7 @@ beforeEach(() => {
 
 // PPL-01
 describe('PeopleList', () => {
-  it('lists the Persons by surname with their years and a link to each', () => {
+  it('lists the Persons by surname with their dates and a link to each, and no Relationships link', () => {
     open();
 
     const links = within(
@@ -75,10 +82,11 @@ describe('PeopleList', () => {
     ).getAllByRole('link');
 
     expect(links.map(link => link.textContent)).toEqual([
-      'Botha, HendrikBorn c. 1832Died 1880–1885Edit',
-      'Cloete, Annanée PretoriusBorn —Died DeceasedEdit',
-      'du Toit, MariaBorn 1850Died —Edit',
+      'Botha, HendrikBorn about 1832, died between 1880 and 1885c. 1832 – 1880–1885Edit',
+      'Cloete, Annanée PretoriusBorn unknown, died unknown? – ?Edit',
+      'du Toit, MariaBorn in 18501850 –Edit',
     ]);
+    expect(screen.queryByText(/Relationships/)).toBeNull();
     expect(links.map(link => link.getAttribute('href'))).toEqual([
       '/people/hendrik',
       '/people/anna',
@@ -136,14 +144,31 @@ describe('PeopleList', () => {
       screen.getByText('Matches the spelling “v.d. Merwe”').closest('a')!
         .textContent
     ).toBe(
-      'du Toit, MariaMatches the spelling “v.d. Merwe”Born 1850Died —Edit'
+      'du Toit, MariaMatches the spelling “v.d. Merwe”Born in 18501850 –Edit'
     );
+  });
+
+  // PPL-01
+  it('has a Name and a Dates header, and no Born or Died header', () => {
+    open();
+
+    const heads = screen.getByRole('region', {
+      name: 'People, by surname',
+    }).firstElementChild!;
+
+    expect(heads.textContent).toBe('NameDates');
+    expect(
+      readFileSync(
+        join(process.cwd(), 'features/people/components/PeopleList.module.css'),
+        'utf8'
+      )
+    ).toContain('grid-template-columns: minmax(0, 1fr) 200px 72px');
   });
 
   it('shows the maiden name as a note', () => {
     open();
     expect(screen.getByText('née Pretorius').closest('a')!.textContent).toBe(
-      'Cloete, Annanée PretoriusBorn —Died DeceasedEdit'
+      'Cloete, Annanée PretoriusBorn unknown, died unknown? – ?Edit'
     );
   });
 
@@ -251,9 +276,9 @@ describe('PeopleList', () => {
           .getAllByRole('listitem')
           .map(item => item.textContent)
       ).toEqual([
-        'Botha, Hendrikc. 1832 – 1880–1885',
-        'Cloete, Anna— – deceasednée Pretorius',
-        'du Toit, MariaBorn 1850',
+        'Botha, HendrikBorn about 1832, died between 1880 and 1885c. 1832 – 1880–1885',
+        'Cloete, AnnaBorn unknown, died unknown? – ?née Pretorius',
+        'du Toit, MariaBorn in 18501850 –',
       ]);
     });
 

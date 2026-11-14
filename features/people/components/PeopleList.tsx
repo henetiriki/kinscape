@@ -143,8 +143,10 @@ export const PeopleList = ({
                 <li key={person.id}>
                   <PersonRow
                     born={person.born}
+                    bornReading={person.bornReading}
                     deceased={person.deceased}
                     died={person.died}
+                    diedReading={person.diedReading}
                     form='phone'
                     givenNames={person.givenNames}
                     href={`/people/${person.id}`}
@@ -160,8 +162,7 @@ export const PeopleList = ({
             <section aria-label='People, by surname' className={styles.list}>
               <div aria-hidden='true' className={styles.heads}>
                 <Text variant='overline'>Name</Text>
-                <Text variant='overline'>Born</Text>
-                <Text variant='overline'>Died</Text>
+                <Text variant='overline'>Dates</Text>
                 <span />
               </div>
               <ul className={styles.rows}>
@@ -169,8 +170,10 @@ export const PeopleList = ({
                   <li className={styles.item} key={person.id}>
                     <PersonRow
                       born={person.born}
+                      bornReading={person.bornReading}
                       deceased={person.deceased}
                       died={person.died}
+                      diedReading={person.diedReading}
                       givenNames={person.givenNames}
                       href={`/people/${person.id}`}
                       maidenName={person.maidenName}

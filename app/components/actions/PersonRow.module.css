@@ -1,4 +1,4 @@
-/* The People-list row: name, Born, Died and Edit. Its border and the list's header belong to the page. */
+/* The People-list row: name, Dates and Edit. Its border and the list's header belong to the page. */
 .row {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   align-items: center;
@@ -7,7 +7,7 @@
   cursor: pointer;
   display: grid;
   gap: var(--space-16);
-  grid-template-columns: minmax(0, 1fr) 160px 160px 72px;
+  grid-template-columns: minmax(0, 1fr) 200px 72px;
   min-height: var(--size-row-l);
   padding: var(--space-8) var(--space-20);
   /* The anchor of the hidden labels: they stay inside the row. */
@@ -35,10 +35,19 @@
   min-width: 0;
 }
 
-/* A column, so the 12 / 16 mono text does not sit on a 15 / 22 line. */
-.date {
+/* The row with a Relationships link: the edit link takes the width, the link sits at its end. */
+.withLink {
+  align-items: center;
   display: flex;
-  flex-direction: column;
+  gap: var(--space-16);
+  /* The anchor of the hidden text of the Relationships link. */
+  padding-right: var(--space-20);
+  position: relative;
+}
+
+.withLink .row {
+  flex: 1;
+  min-width: 0;
 }
 
 /* The phone form: no link, so no hover, no Edit and no grid. */
@@ -62,16 +71,9 @@
   gap: 2px var(--space-12);
 }
 
-/* Names the date for a screen reader. */
+/* Names the Relationships link for a screen reader. */
 .hidden {
-  border: 0;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
+  composes: hidden from '@ks/app/components/actions/DateText.module.css';
 }
 
 /* The link font, with no underline: the whole row is the link. */

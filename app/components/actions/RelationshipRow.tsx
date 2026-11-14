@@ -1,0 +1,81 @@
+import type {
+  PersonDates,
+  SpouseDates,
+} from '@ks/app/components/actions/types';
+import type { ControlState } from '@ks/app/components/foundation/types';
+
+import {
+  dateLine,
+  dateWords,
+  spouseLine,
+  spouseWords,
+} from '@ks/app/components/actions/dates';
+import { DateText } from '@ks/app/components/actions/DateText';
+import { TextLink } from '@ks/app/components/actions/TextLink';
+import { Text } from '@ks/app/components/foundation/Text';
+
+import styles from '@ks/app/components/actions/RelationshipRow.module.css';
+
+const SUBTYPES = {
+  adoptive: 'Adoptive',
+  biological: 'Biological',
+  step: 'Step',
+};
+
+/**
+ * One relationship of a Person: the other Person's name, the line of dates, the subtype of a
+ * parent or child, the marriage and divorce dates of a spouse, and one "Edit" link. It has no
+ * remove control and no phone form.
+ */
+export const RelationshipRow = ({
+  born,
+  bornReading,
+  deceased,
+  died,
+  diedReading,
+  divorced,
+  divorcedReading,
+  givenNames,
+  href,
+  married,
+  marriedReading,
+  state,
+  subtype,
+  surname,
+}: {
+  givenNames: string;
+  /** The edit page of the relationship. */
+  href: string;
+  state?: ControlState;
+  /** A parent or child link. A spouse link has none. */
+  subtype?: keyof typeof SUBTYPES;
+  surname: string;
+} & PersonDates &
+  SpouseDates) => {
+  const spouse = { divorced, divorcedReading, married, marriedReading };
+  const marriage = spouseLine(spouse);
+
+  return (
+    <div className={styles.row}>
+      <span className={styles.name}>
+        <Text as='span' variant='title'>
+          {surname}, {givenNames}
+        </Text>
+        {subtype && <Text variant='small'>{SUBTYPES[subtype]}</Text>}
+      </span>
+      <span className={styles.dates}>
+        <DateText
+          line={dateLine({ born, deceased, died })}
+          words={dateWords({ born, bornReading, deceased, died, diedReading })}
+        />
+        {marriage && <DateText line={marriage} words={spouseWords(spouse)} />}
+      </span>
+      <TextLink href={href} state={state}>
+        Edit
+        <span className={styles.hidden}>
+          , {surname}, {givenNames}
+        </span>
+      </TextLink>
+    </div>
+  );
+};

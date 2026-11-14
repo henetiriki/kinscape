@@ -15,6 +15,7 @@ import {
   LongTextFields,
   PersonRows,
 } from '@ks/app/design-kit/inputs/people';
+import { PickerRows, RelationshipRows } from '@ks/app/design-kit/inputs/rows';
 import {
   Alerts,
   Buttons,
@@ -47,6 +48,7 @@ const PHONE_PARTS: Record<PhonePart, string[]> = {
   ],
 };
 
+// The link on part 1 stops at Person row: the board's part 1 header, which the snapshot draws, stays as it is. Relationship row and Picker row follow Person row in part 2.
 const DESKTOP_PARTS: Record<DesktopPart, string[]> = {
   1: [
     'Buttons',
@@ -146,6 +148,8 @@ const InputsKit = async ({
       <LongTextFields />
       <FuzzyDateFields />
       <PersonRows />
+      <RelationshipRows />
+      <PickerRows />
     </main>
   );
 };

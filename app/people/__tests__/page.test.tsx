@@ -117,7 +117,7 @@ describe('the People page', () => {
     render(await People());
 
     expect(screen.getByText('Botha, Hendrik').closest('a')!.textContent).toBe(
-      'Botha, HendrikBorn c. 1832Died 1880–1885Edit'
+      'Botha, HendrikBorn about 1832, died between 1880 and 1885c. 1832 – 1880–1885Edit'
     );
     expect(screen.queryByText(/Stranger|Nel/)).toBeNull();
     expect(screen.queryByText(/private note/)).toBeNull();
@@ -132,12 +132,12 @@ describe('the People page', () => {
     ).toBe('A');
   });
 
-  it('shows a dash for a date the Person lacks', async () => {
+  it('shows a question mark for a date the Person lacks', async () => {
     await setup();
     render(await People());
 
     expect(screen.getByText('Cloete, Anna').closest('a')!.textContent).toBe(
-      'Cloete, AnnaBorn —Died —Edit'
+      'Cloete, AnnaBorn unknown? –Edit'
     );
   });
 

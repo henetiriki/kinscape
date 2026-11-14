@@ -5,9 +5,11 @@ import type { PersonSummary } from '@ks/lib/domain/persons/types';
 import { byName, matchesQuery } from '@ks/lib/domain/persons/list.mts';
 
 const person = (fields: Partial<PersonSummary>): PersonSummary => ({
-  born: '—',
+  born: '',
+  bornReading: '',
   deceased: false,
   died: '',
+  diedReading: '',
   givenNames: '',
   id: 'p',
   maidenName: '',

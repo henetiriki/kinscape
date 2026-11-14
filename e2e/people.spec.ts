@@ -38,7 +38,7 @@ test.describe('phone, 390 × 844', () => {
 });
 
 // PPL-01
-test('the hidden Born and Died labels stay inside their row', async ({
+test('the hidden words for the dates stay inside their row', async ({
   page,
 }) => {
   await page.goto('/screens/people-list');
@@ -53,7 +53,10 @@ test('the hidden Born and Died labels stay inside their row', async ({
     links.map(link => {
       const row = link.getBoundingClientRect();
       const labels = [...link.querySelectorAll('span')]
-        .filter(span => ['Born', 'Died'].includes(span.textContent.trim()))
+        .filter(
+          span =>
+            span.className.includes('hidden') && /^Born /.test(span.textContent)
+        )
         .map(span => span.getBoundingClientRect());
 
       return {
@@ -69,7 +72,7 @@ test('the hidden Born and Died labels stay inside their row', async ({
     })
   );
 
-  // Two labels in each of the 12 rows: a count of 0 would pass the check below for nothing.
-  expect(found.reduce((total, { labels }) => total + labels, 0)).toBe(24);
+  // One text in each of the 12 rows: a count of 0 would pass the check below for nothing.
+  expect(found.reduce((total, { labels }) => total + labels, 0)).toBe(12);
   expect(found.reduce((total, { outside }) => total + outside, 0)).toBe(0);
 });

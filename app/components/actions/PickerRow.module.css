@@ -1,0 +1,40 @@
+/* A Person in a picker: name and dates, in the states of PersonRow. */
+.row {
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
+  align-items: center;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  gap: var(--space-16);
+  grid-template-columns: minmax(0, 1fr) 200px;
+  min-height: var(--size-row-l);
+  padding: var(--space-8) var(--space-20);
+  /* The anchor of the hidden words: they stay inside the row. */
+  position: relative;
+  text-align: start;
+  width: 100%;
+}
+
+@media (hover: hover) {
+  .row:hover {
+    background: var(--surface-2);
+  }
+}
+
+.row[data-state='hover'] {
+  background: var(--surface-2);
+}
+
+.row:is(:active, [data-state='active']) {
+  background: var(--segment);
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}

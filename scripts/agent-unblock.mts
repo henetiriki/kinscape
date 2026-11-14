@@ -7,18 +7,24 @@ import type { Gh } from '#ks/scripts/types.ts';
 // by" links) that has no other open blocker left:
 //   - labelled `status: blocked`: say so, mention the repo owner, and swap the label for
 //     `status: ready-for-dev`; the tech lead then sets `status: ready-for-agent`
+//   - a `type: spec` whose closed blocker's merged PR changed a path under `design/canvas/`: swap the
+//     label for `status: draft` instead. The comment tells the owner to run `/refine spec`. A design
+//     change makes the Spec's size and checks stale.
 //   - with an open PR that closes it (a plan PR whose build the gate stopped): comment on the PR
 // Usage: node scripts/agent-unblock.mts <closed issue number>, with GH_REPO and GH_OWNER set.
 // KINSCAPE_BOT_LOGIN, the agent App's login (`kinscape-agent[bot]`), is optional. If it is unset, the
 // script trusts no bot.
 // An https RUN_URL, if set, is linked at the end of each comment.
-// With GITHUB_OUTPUT set it writes `unblocked=[{"number":8,"blockers":[5]}]`: the issues just swapped
-// to `status: ready-for-dev` whose author is the owner, a member, a collaborator or the bot, and the
-// issues that blocked each. claude-unblock.yml refreshes each against main (.github/agent/refresh.md).
-// A failed `gh` call for one issue is logged and the exit code is 1; the other issues still go on.
+// With GITHUB_OUTPUT set it writes `unblocked=[{"number":8,"blockers":[5]}]`.
+// The list holds each swapped issue whose author is the owner, a member, a collaborator or the bot.
+// Each entry names the issues that blocked it. claude-unblock.yml refreshes each against main
+// (.github/agent/refresh.md).
+// If a `gh` call for one issue fails, the script logs it and sets exit code 1. This includes a read of a
+// blocker's PR. That issue keeps `status: blocked`. The script continues with the other issues.
 
 type Linked = {
   author_association?: string;
+  body?: null | string;
   labels?: { name: string }[];
   number: number;
   state: string;
@@ -31,11 +37,125 @@ const LOGIN = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
 const BOT = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}(?:\[bot\])?$/i;
 const RUN_URL = /^https:\/\/\S+$/;
 const TRUSTED = ['OWNER', 'MEMBER', 'COLLABORATOR'];
+const DESIGN_PATH = 'design/canvas/';
+// The Spec form's "Intent or milestone" box. The script reads only `#<n>` or `M<n>`. The body is untrusted text.
+const INTENT = /^### Intent or milestone\s+(?:#(\d+)|(M\d+))\s*$/m;
+
+type Pr = { closingIssuesReferences: { number: number }[]; number: number };
 
 const api = (gh: Gh, path: string): Linked[] => JSON.parse(gh(['api', path]));
 
 const open = (issues: Linked[]): Linked[] =>
   issues.filter(({ state }) => state === 'open');
+
+const hasLabel = ({ labels }: Linked, name: string): boolean =>
+  labels?.some(label => label.name === name) ?? false;
+
+const prs = (gh: Gh, state: 'merged' | 'open', limit: number): Pr[] =>
+  JSON.parse(
+    gh([
+      'pr',
+      'list',
+      '--state',
+      state,
+      '--limit',
+      String(limit),
+      '--json',
+      'number,closingIssuesReferences',
+    ])
+  );
+
+// The blockers with a merged PR that changed a path under `design/canvas/`. A blocker with no
+// merged PR is not one. A failed `gh` call throws.
+const designBlockers = (
+  gh: Gh,
+  repo: string,
+  merged: Pr[],
+  blockers: number[]
+): number[] =>
+  [...blockers]
+    .sort((a, b) => a - b)
+    .filter(blocker =>
+      merged
+        .filter(({ closingIssuesReferences }) =>
+          closingIssuesReferences.some(({ number }) => number === blocker)
+        )
+        .some(({ number }) =>
+          gh([
+            'api',
+            `repos/${repo}/pulls/${number}/files`,
+            '--paginate',
+            '--jq',
+            '.[].filename',
+          ])
+            .split('\n')
+            .some(path => path.startsWith(DESIGN_PATH))
+        )
+    );
+
+// The argument of `/refine spec` that the Spec's Intent box gives: `12` for `#12`, `M0` for `M0`.
+const refineArg = (body: null | string | undefined): string | undefined => {
+  const [, issue, milestone] = INTENT.exec(body ?? '') ?? [];
+
+  return issue ?? milestone;
+};
+
+const readyLines = (closed: number, owner: string): string[] => [
+  `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
+  '',
+  `@${owner}: set \`status: ready-for-agent\` to start the plan.`,
+];
+
+const draftLines = (
+  closed: number,
+  design: number[],
+  owner: string,
+  body: null | string | undefined
+): string[] => {
+  const arg = refineArg(body);
+  const command =
+    arg === undefined
+      ? '`/refine spec` with the Intent or milestone of this Spec'
+      : `\`/refine spec ${arg}\``;
+
+  return [
+    `#${closed} is closed, so nothing blocks this any more.`,
+    `${design.map(number => `#${number}`).join(', ')} changed the design in \`${DESIGN_PATH}\`, so this Spec needs a new size and a new check. The label is now \`status: draft\`.`,
+    '',
+    `@${owner}: run ${command}. Then set the status.`,
+  ];
+};
+
+// Comments on a freed issue and swaps its `status: blocked` label: `status: draft` if a blocker
+// changed the design, else `status: ready-for-dev`.
+const swapLabel = (
+  gh: Gh,
+  comment: (thread: number, lines: string[]) => void,
+  {
+    closed,
+    design,
+    issue,
+    owner,
+  }: { closed: number; design: number[]; issue: Linked; owner: string }
+): void => {
+  const draft = design.length > 0;
+
+  comment(
+    issue.number,
+    draft
+      ? draftLines(closed, design, owner, issue.body)
+      : readyLines(closed, owner)
+  );
+  gh([
+    'issue',
+    'edit',
+    String(issue.number),
+    '--remove-label',
+    'status: blocked',
+    '--add-label',
+    draft ? 'status: draft' : 'status: ready-for-dev',
+  ]);
+};
 
 export const run = (
   args: string[],
@@ -88,21 +208,10 @@ export const run = (
     return 0;
   }
 
-  const prs: {
-    closingIssuesReferences: { number: number }[];
-    number: number;
-  }[] = JSON.parse(
-    gh([
-      'pr',
-      'list',
-      '--state',
-      'open',
-      '--limit',
-      '200',
-      '--json',
-      'number,closingIssuesReferences',
-    ])
-  );
+  const openPrs = prs(gh, 'open', 200);
+  // The first freed Spec reads the list inside its `try`. A failed call leaves that Spec blocked.
+  let merged: Pr[] | undefined;
+  const mergedPrs = (): Pr[] => (merged ??= prs(gh, 'merged', 1000));
 
   for (const issue of blocking) {
     try {
@@ -119,37 +228,27 @@ export const run = (
         continue;
       }
 
-      if (issue.labels?.some(({ name }) => name === 'status: blocked')) {
-        comment(issue.number, [
-          `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
-          '',
-          `@${owner}: set \`status: ready-for-agent\` to start the plan.`,
-        ]);
-        gh([
-          'issue',
-          'edit',
-          String(issue.number),
-          '--remove-label',
-          'status: blocked',
-          '--add-label',
-          'status: ready-for-dev',
-        ]);
+      if (hasLabel(issue, 'status: blocked')) {
+        const blockers = [
+          ...new Set([closed, ...blockedBy.map(({ number }) => number)]),
+        ];
+
+        const design = hasLabel(issue, 'type: spec')
+          ? designBlockers(gh, repo, mergedPrs(), blockers)
+          : [];
+
+        swapLabel(gh, comment, { closed, design, issue, owner });
         console.log(`#${issue.number} is unblocked.`);
 
         if (
           TRUSTED.includes(issue.author_association ?? '') ||
           (bot !== '' && issue.user?.login === bot)
         ) {
-          unblocked.push({
-            blockers: [
-              ...new Set([closed, ...blockedBy.map(({ number }) => number)]),
-            ],
-            number: issue.number,
-          });
+          unblocked.push({ blockers, number: issue.number });
         }
       }
 
-      for (const pr of prs.filter(({ closingIssuesReferences }) =>
+      for (const pr of openPrs.filter(({ closingIssuesReferences }) =>
         closingIssuesReferences.some(({ number }) => number === issue.number)
       )) {
         comment(pr.number, [

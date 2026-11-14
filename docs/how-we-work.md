@@ -94,7 +94,7 @@ An open decision is not `blocked`: the ball is with whoever decides it.
 
 ## Linking issues
 
-- If an open issue must close first, set GitHub's "blocked by" link. It stops the plan and build. When the blocker closes, `blocked` becomes `ready-for-dev`.
+- If an open issue must close first, set GitHub's "blocked by" link. It stops the plan and build. When the blocker closes, `blocked` becomes `ready-for-dev`, or `draft` for a Spec whose blocker's PR changed `design/canvas/`.
 - On a blocked Bug or Chore, also set `status: blocked`. A draft Spec keeps `status: draft`.
 - If an earlier issue is the reason for this one, set the "relates to" link. For a Bug, it is the cause. For a Spec or Chore, it is the issue that it continues.
 - Write no `Blocked by #n` or `Relates to #n` in a body. If a reader would misuse a link, write the reason.

@@ -13,29 +13,56 @@ type World = {
   // the issues the closed one blocks
   blocking?: {
     author_association?: string;
+    body?: string;
     labels: string[];
     login?: string;
     number: number;
     state?: string;
   }[];
+  // the merged PRs and the paths of each, by PR number
+  mergedPrs?: {
+    closingIssuesReferences: { number: number }[];
+    number: number;
+  }[];
   openPrs?: { closingIssuesReferences: { number: number }[]; number: number }[];
+  prFiles?: Record<number, string[]>;
 };
 
 describe('run', () => {
   let append: ReturnType<typeof vi.fn<(file: string, text: string) => void>>;
   let gh: ReturnType<typeof vi.fn<Gh>>;
 
-  const fakeGh = ({ blockedBy = {}, blocking = [], openPrs = [] }: World) => {
+  const fakeGh = ({
+    blockedBy = {},
+    blocking = [],
+    mergedPrs = [],
+    openPrs = [],
+    prFiles = {},
+  }: World) => {
     gh = vi.fn<Gh>(args => {
       if (args[0] === 'api') {
+        const files = /pulls\/(\d+)\/files/.exec(args[1]);
+
+        if (files) {
+          return (prFiles[Number(files[1])] ?? []).join('\n');
+        }
+
         const [, issue, kind] =
           /issues\/(\d+)\/dependencies\/(\w+)/.exec(args[1]) ?? [];
 
         return JSON.stringify(
           kind === 'blocking'
             ? blocking.map(
-                ({ author_association, labels, login, number, state }) => ({
+                ({
                   author_association,
+                  body,
+                  labels,
+                  login,
+                  number,
+                  state,
+                }) => ({
+                  author_association,
+                  body,
                   labels: labels.map(name => ({ name })),
                   number,
                   state: state ?? 'open',
@@ -46,13 +73,21 @@ describe('run', () => {
         );
       }
 
-      return args[0] === 'pr' ? JSON.stringify(openPrs) : '';
+      if (args[0] === 'pr') {
+        return JSON.stringify(args.includes('merged') ? mergedPrs : openPrs);
+      }
+
+      return '';
     });
   };
 
   const comments = () =>
     gh.mock.calls.filter(([args]) => args[1] === 'comment');
   const edits = () => gh.mock.calls.filter(([args]) => args[1] === 'edit');
+  const prReads = () =>
+    gh.mock.calls.filter(
+      ([args]) => args.includes('merged') || args[1]?.includes('/pulls/')
+    );
 
   // The list claude-unblock.yml reads, from what the run appended to GITHUB_OUTPUT.
   const unblocked = () =>
@@ -430,6 +465,301 @@ describe('run', () => {
       expect(console.error).toHaveBeenCalledWith('#8: HTTP 502');
       expect(unblocked()).toEqual([{ blockers: [5], number: 9 }]);
       expect(comments().map(([args]) => args[2])).toEqual(['8', '9']);
+    });
+  });
+  // A Spec that a design change frees gets `status: draft`, so the owner sizes it again.
+  describe('a Spec freed by a design change', () => {
+    const WITH_OUTPUT = { ...ENV, GITHUB_OUTPUT: OUTPUT };
+    const BLOCKED = ['type: spec', 'status: blocked'];
+    const intent = (value: string) =>
+      `### Intent or milestone\n\n${value}\n\n### Requirement IDs covered\n\nMAP-01`;
+    const DESIGN = {
+      mergedPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 60 }],
+      prFiles: { 60: ['app/page.tsx', 'design/canvas/project/board.jsx'] },
+    };
+
+    it('swaps the label for draft, names the blocker and gives the refine command', () => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [
+          {
+            author_association: 'OWNER',
+            body: intent('#12'),
+            labels: BLOCKED,
+            number: 8,
+          },
+        ],
+      });
+
+      expect(run(['5'], WITH_OUTPUT, gh, append)).toBe(0);
+
+      const [args, body] = comments()[0];
+
+      expect(args).toEqual(['issue', 'comment', '8', '--body-file', '-']);
+      expect(body).toContain('#5 is closed');
+      expect(body).toContain('#5 changed the design');
+      expect(body).toContain('a new size and a new check');
+      expect(body).toContain('`status: draft`');
+      expect(body).not.toContain('ready-for-dev');
+      expect(body).toContain('@tech-lead: run `/refine spec 12`');
+      expect(edits()[0][0]).toEqual([
+        'issue',
+        'edit',
+        '8',
+        '--remove-label',
+        'status: blocked',
+        '--add-label',
+        'status: draft',
+      ]);
+      expect(unblocked()).toEqual([{ blockers: [5], number: 8 }]);
+    });
+
+    it('reads the merged PRs once and each PR file list with --paginate', () => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [
+          { labels: BLOCKED, number: 8 },
+          { labels: BLOCKED, number: 9 },
+        ],
+      });
+      run(['5'], ENV, gh, append);
+
+      expect(prReads().map(([args]) => args)).toEqual([
+        [
+          'pr',
+          'list',
+          '--state',
+          'merged',
+          '--limit',
+          '1000',
+          '--json',
+          'number,closingIssuesReferences',
+        ],
+        [
+          'api',
+          'repos/owner/repo/pulls/60/files',
+          '--paginate',
+          '--jq',
+          '.[].filename',
+        ],
+        [
+          'api',
+          'repos/owner/repo/pulls/60/files',
+          '--paginate',
+          '--jq',
+          '.[].filename',
+        ],
+      ]);
+    });
+
+    it('goes to draft when the design blocker closed first and another closes last', () => {
+      fakeGh({
+        ...DESIGN,
+        blockedBy: {
+          8: [
+            { number: 5, state: 'closed' },
+            { number: 6, state: 'closed' },
+          ],
+        },
+        blocking: [{ author_association: 'OWNER', labels: BLOCKED, number: 8 }],
+      });
+      run(['6'], WITH_OUTPUT, gh, append);
+
+      const [, body] = comments()[0];
+
+      expect(body).toContain('#6 is closed');
+      expect(body).toContain('#5 changed the design');
+      expect(body).not.toContain('#6 changed');
+      expect(edits()[0][0].at(-1)).toBe('status: draft');
+      expect(unblocked()).toEqual([{ blockers: [6, 5], number: 8 }]);
+    });
+
+    it('names each design blocker', () => {
+      fakeGh({
+        blockedBy: {
+          8: [
+            { number: 5, state: 'closed' },
+            { number: 6, state: 'closed' },
+          ],
+        },
+        blocking: [{ labels: BLOCKED, number: 8 }],
+        mergedPrs: [
+          { closingIssuesReferences: [{ number: 5 }], number: 60 },
+          { closingIssuesReferences: [{ number: 6 }], number: 61 },
+        ],
+        prFiles: { 60: ['design/canvas/a'], 61: ['design/canvas/b'] },
+      });
+      run(['6'], ENV, gh, append);
+
+      expect(comments()[0][1]).toContain('#5, #6 changed the design');
+    });
+
+    it('checks every merged PR that closes a blocker', () => {
+      fakeGh({
+        blocking: [{ labels: BLOCKED, number: 8 }],
+        mergedPrs: [
+          { closingIssuesReferences: [{ number: 5 }], number: 60 },
+          { closingIssuesReferences: [{ number: 5 }], number: 61 },
+        ],
+        prFiles: { 60: ['app/page.tsx'], 61: ['design/canvas/a'] },
+      });
+      run(['5'], ENV, gh, append);
+
+      expect(edits()[0][0].at(-1)).toBe('status: draft');
+    });
+
+    it.each([
+      ['#12', '/refine spec 12'],
+      ['M0', '/refine spec M0'],
+      ['M2', '/refine spec M2'],
+    ])('reads the Intent box %j', (value, command) => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [{ body: intent(value), labels: BLOCKED, number: 8 }],
+      });
+      run(['5'], ENV, gh, append);
+
+      expect(comments()[0][1]).toContain(`run \`${command}\`.`);
+    });
+
+    it.each([
+      ['no body', undefined],
+      ['no box', 'Some text'],
+      ['an empty box', intent('')],
+      ['a link', intent('https://example.com/issues/12')],
+      ['text after the number', intent('#12 and more')],
+      ['a number with no #', intent('12')],
+      ['code in backticks', intent('`rm -rf /`')],
+      ['a milestone with text', intent('M0; echo')],
+    ])('names plain /refine spec for %s', (_, body) => {
+      fakeGh({ ...DESIGN, blocking: [{ body, labels: BLOCKED, number: 8 }] });
+      run(['5'], ENV, gh, append);
+
+      expect(comments()[0][1]).toContain(
+        'run `/refine spec` with the Intent or milestone of this Spec.'
+      );
+      expect(comments()[0][1]).not.toContain('/refine spec 12');
+    });
+
+    it.each([
+      [
+        'a merged PR that changed no path under design/canvas/',
+        {
+          mergedPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 60 }],
+          prFiles: { 60: ['design/DESIGN.md', 'design/canvas-notes/a.md'] },
+        },
+      ],
+      [
+        'a merged PR with no files',
+        {
+          mergedPrs: [{ closingIssuesReferences: [{ number: 5 }], number: 60 }],
+        },
+      ],
+      [
+        'no merged PR',
+        {
+          mergedPrs: [{ closingIssuesReferences: [{ number: 9 }], number: 61 }],
+          prFiles: { 61: ['design/canvas/a'] },
+        },
+      ],
+    ])('goes to ready-for-dev for %s', (_, world) => {
+      fakeGh({ ...world, blocking: [{ labels: BLOCKED, number: 8 }] });
+      run(['5'], ENV, gh, append);
+
+      expect(comments()[0][1]).toContain('`status: ready-for-dev`');
+      expect(comments()[0][1]).toContain(
+        '@tech-lead: set `status: ready-for-agent`'
+      );
+      expect(edits()[0][0].at(-1)).toBe('status: ready-for-dev');
+    });
+
+    it.each(['type: bug', 'type: chore'])(
+      'sends a freed %s to ready-for-dev and reads no PR',
+      type => {
+        fakeGh({
+          ...DESIGN,
+          blocking: [{ labels: [type, 'status: blocked'], number: 8 }],
+        });
+        run(['5'], ENV, gh, append);
+
+        expect(edits()[0][0].at(-1)).toBe('status: ready-for-dev');
+        expect(prReads()).toHaveLength(0);
+      }
+    );
+
+    it('reads no PR for an issue that is not blocked', () => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [{ labels: ['type: spec', 'status: draft'], number: 8 }],
+      });
+      run(['5'], ENV, gh, append);
+
+      expect(prReads()).toHaveLength(0);
+      expect(edits()).toHaveLength(0);
+    });
+
+    it('leaves the label, sends no comment and exits 1 when the merged PR list fails', () => {
+      fakeGh({
+        ...DESIGN,
+        blocking: [
+          { author_association: 'OWNER', labels: BLOCKED, number: 8 },
+          { author_association: 'OWNER', labels: BLOCKED, number: 9 },
+        ],
+      });
+
+      const working = gh.getMockImplementation() as Gh;
+
+      gh.mockImplementation((args, input) => {
+        if (args.includes('merged')) {
+          throw new Error('HTTP 502');
+        }
+
+        return working(args, input);
+      });
+
+      expect(run(['5'], WITH_OUTPUT, gh, append)).toBe(1);
+      expect(console.error).toHaveBeenCalledWith('#8: HTTP 502');
+      expect(console.error).toHaveBeenCalledWith('#9: HTTP 502');
+      expect(comments()).toHaveLength(0);
+      expect(edits()).toHaveLength(0);
+      expect(unblocked()).toEqual([]);
+    });
+
+    it('leaves the label and exits 1 when a PR file read fails, and handles the next Spec', () => {
+      fakeGh({
+        blockedBy: {
+          8: [
+            { number: 5, state: 'closed' },
+            { number: 6, state: 'closed' },
+          ],
+          9: [{ number: 5, state: 'closed' }],
+        },
+        blocking: [
+          { author_association: 'OWNER', labels: BLOCKED, number: 8 },
+          { author_association: 'OWNER', labels: BLOCKED, number: 9 },
+        ],
+        mergedPrs: [
+          { closingIssuesReferences: [{ number: 5 }], number: 60 },
+          { closingIssuesReferences: [{ number: 6 }], number: 61 },
+        ],
+        prFiles: { 60: ['design/canvas/a'] },
+      });
+
+      const working = gh.getMockImplementation() as Gh;
+
+      gh.mockImplementation((args, input) => {
+        if (args[1]?.includes('/pulls/61/')) {
+          throw new Error('HTTP 404');
+        }
+
+        return working(args, input);
+      });
+
+      expect(run(['5'], WITH_OUTPUT, gh, append)).toBe(1);
+      expect(console.error).toHaveBeenCalledWith('#8: HTTP 404');
+      expect(comments().map(([args]) => args[2])).toEqual(['9']);
+      expect(edits().map(([args]) => args[2])).toEqual(['9']);
+      expect(unblocked()).toEqual([{ blockers: [5], number: 9 }]);
     });
   });
 });

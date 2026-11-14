@@ -2,7 +2,7 @@
 
 - **Spec:** #822 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05), [NFR-08](../../docs/requirements.md#nfr-08)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -28,7 +28,7 @@ On desktop, the `Stage` puts the `dock` and `credits` slots in one bottom column
 - **B.** In the free map area, at `dock-left`, 8px above the dock.
 - **Other:** your own.
 
-Recommended: A, because the strip under the panel is empty.
+**Answer: A** (@henetiriki)
 
 **D3 · How the scale bar looks** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Recommended: A, because the strip under the panel is empty.
 - **B.** The same, in `type.mono`.
 - **Other:** your own.
 
-Recommended: A, because it matches the credits line beside it.
+**Answer: Other:** - let the design step decide (@henetiriki)
 
 **D4 · Which boards show the design** · Decides: Tech lead
 
@@ -44,7 +44,7 @@ Recommended: A, because it matches the credits line beside it.
 - **B.** The design agent adds the two to `SG-Furniture.dc.html`. The build adds them to `/design-kit/map-furniture`, and the blocking `style-8-components-map` snapshot checks them.
 - **Other:** your own.
 
-Recommended: A, because it adds no kit code.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

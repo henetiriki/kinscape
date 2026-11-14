@@ -49,3 +49,7 @@ How does the agent learn the blockers?
 | No second link on a re-run | Evidence: `/refine bug` twice; `relatesTo` count stays  |
 | #820 to #822               | Evidence: each body, and its `relatesTo` from `graphql` |
 | `words`, `format:check`    | CI                                                      |
+
+## Deviations
+
+- `scripts/word-count.mts` and its test: the `docs/how-we-work.md` budget goes from 850 to 950. "Linking issues" is 93 words over the old budget. The tech lead chose this in the build session.

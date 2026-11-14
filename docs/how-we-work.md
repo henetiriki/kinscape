@@ -90,4 +90,12 @@ Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status*
 | `status: ready-for-agent` | Claude's turn; the tech lead's label starts a plan         | Claude                                 |
 | `status: blocked`         | Waiting on someone outside the team, or a failed agent run | Whoever is named in the latest comment |
 
-An open decision is not `blocked`: the ball is with whoever decides it. An open "blocked by" stops its plan and build. When it closes, `blocked` becomes `ready-for-dev`.
+An open decision is not `blocked`: the ball is with whoever decides it.
+
+## Linking issues
+
+- Set GitHub's "blocked by" link when an open issue must close before this one starts. It stops the plan and build. When it closes, `blocked` becomes `ready-for-dev`.
+- On a blocked Bug or Chore, set `status: blocked`. A draft Spec keeps `status: draft`.
+- Set the "relates to" link when an earlier issue is the reason for this one: the cause of a Bug, or the issue that a Spec or Chore follows up.
+- Write no `Blocked by #n` or `Relates to #n` line in a body. If a reader would misuse a link, write the reason.
+- Set a link in the issue sidebar, or with the `addBlockedBy` and `addRelatesTo` GraphQL mutations. Run each `gh api graphql` call alone.

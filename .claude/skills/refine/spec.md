@@ -49,6 +49,4 @@ Write each box in [STE](../../../docs/writing.md#ste). Then run the check round 
 
 File each Spec with form `2-spec.yml`, as [filing.md](filing.md) says. A workflow links it to the Intent. Otherwise, add the link by hand.
 
-The tech lead sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.
-
-If a Spec needs another merged first, offer `gh api -X POST repos/<repo>/issues/<Spec>/dependencies/blocked_by -F issue_id=<other's id>`.
+The tech lead sets the status label, except `status: blocked`, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.

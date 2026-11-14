@@ -1,7 +1,7 @@
 # Plan: C836: Fail the code review check on findings and require it
 
 - **Spec:** #836
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ The since-diff step reads only runs with `--status success`. After a red run, th
 - **B.** Keep `--status success`.
 - **Other:** your own.
 
-Recommended: A, because a red run is a full review.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

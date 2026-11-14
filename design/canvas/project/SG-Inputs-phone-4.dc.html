@@ -209,20 +209,32 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 20px">
         <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
-          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1832" died="1899" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
-          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">A plain row · the name in Title, then the dates in one Mono line.</figcaption>
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1889" born-reading="In 1889" died="" died-reading="" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Born only · "1889 –", with nothing after the dash for a living Person.</figcaption>
         </figure>
         <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
-          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="c. 1835" died="1901" form="phone" given-names="Susanna" href="/" maiden-name="Fourie" surname="Botha"></x-import></div></div>
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="" born-reading="" died="" died-reading="" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">No dates · "? –".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1889" born-reading="In 1889" died="" died-reading="" deceased="{{ true }}" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Marked deceased, no death date · "1889 – ?".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="" born-reading="" died="" died-reading="" deceased="{{ true }}" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Marked deceased, no dates · "? – ?".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="" born-reading="" died="1932" died-reading="In 1932" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Death only · "? – 1932".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" form="phone" given-names="Hendrik Willem" href="/" surname="Botha"></x-import></div></div>
+          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Both dates · "1889 – 1932".</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
+          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" form="phone" given-names="Susanna" href="/" maiden-name="Fourie" surname="Botha"></x-import></div></div>
           <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Maiden name · a Small note after the dates, "née {maiden}".</figcaption>
-        </figure>
-        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
-          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="1878" form="phone" given-names="Johanna Petronella" href="/" surname="Rossouw"></x-import></div></div>
-          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">No death date · the line reads "Born 1878".</figcaption>
-        </figure>
-        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%">
-          <div style="display: flex; align-items: flex-start; min-width: 0; width: 100%"><div inert style="border-bottom: 1px solid var(--line); width: 100%"><x-import component-from-global-scope="KinScape.PersonRow" born="bef. 1840" deceased="{{ true }}" form="phone" given-names="Pieter" href="/" surname="Fourie"></x-import></div></div>
-          <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C">Marked deceased with no date · the line reads "bef. 1840 – deceased".</figcaption>
         </figure>
       </div>
       <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px">
@@ -240,7 +252,7 @@
           <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Accessibility</h3>
           <dl style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
             <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Role</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">One <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">div </code>with no link and no Edit. The name and the dates are its text.</dd></div>
-            <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">One line: "Born 1878", "1832 – 1899" or "bef. 1840 – deceased".</dd></div>
+            <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">One line, such as "1889 –", "? – ?" or "bef. 1840 – ?". A hidden text reads the dates in words.</dd></div>
             <div style="display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="flex: none; width: 80px; font-size: 14px; line-height: 20px; font-weight: 600">Keyboard</dt><dd style="margin: 0; min-width: 0; color: #2E3A33">No stop: the row is not a link.</dd></div>
           </dl>
         </div>
@@ -249,7 +261,7 @@
   </main>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":6952}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":7313}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

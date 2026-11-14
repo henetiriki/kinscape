@@ -31,7 +31,7 @@
     <ul aria-label="People, by surname" style="list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line)">
       <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
         <li>
-          <x-import component-from-global-scope="KinScape.PersonRow" form="phone" href="/" surname="{{p.surname}}" given-names="{{p.given}}" born="{{p.born}}" died="{{p.died}}" deceased="{{p.deceased}}" maiden-name="{{p.maiden}}" matched-variant="{{p.variant}}"></x-import>
+          <x-import component-from-global-scope="KinScape.PersonRow" form="phone" href="/" surname="{{p.surname}}" given-names="{{p.given}}" born="{{p.born}}" born-reading="{{p.bornReading}}" died="{{p.died}}" died-reading="{{p.diedReading}}" deceased="{{p.deceased}}" maiden-name="{{p.maiden}}" matched-variant="{{p.variant}}"></x-import>
         </li>
       </sc-for>
     </ul>
@@ -63,6 +63,14 @@ class Component extends DCLogic {
       { g: 'Gerrit', s: 'van Wyk', m: '', v: ['Van Wijk', 'Vanwyk'], b: '1845', d: '1910' },
       { g: 'Aletta', s: 'Viljoen', m: 'Botha', v: ['Viljoe', 'Villion'], b: 'c. 1860', d: '—' }
     ];
+    const reading = (short) => {
+      const parts = short.split('–');
+      if (parts[1]) return 'Between ' + parts[0] + ' and ' + parts[1];
+      if (short.indexOf('c. ') === 0) return 'About ' + short.slice(3);
+      if (short.indexOf('bef. ') === 0) return 'Before ' + short.slice(5);
+      if (short.indexOf('aft. ') === 0) return 'After ' + short.slice(5);
+      return short && 'In ' + short;
+    };
     const cmp = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
     const all = PEOPLE.slice().sort((a, b) => cmp(a.s, b.s) || cmp(a.g, b.g));
     const q = this.state.query.trim().toLowerCase();
@@ -78,7 +86,8 @@ class Component extends DCLogic {
         if (!byName && !byMaiden) matched = variant;
       }
       const deceased = p.d === 'Deceased';
-      rows.push({ surname: p.s, given: p.g, born: p.b, died: deceased || p.d === '—' ? '' : p.d, deceased: deceased, maiden: p.m, variant: matched });
+      const died = deceased || p.d === '—' ? '' : p.d;
+      rows.push({ surname: p.s, given: p.g, born: p.b, bornReading: reading(p.b), died: died, diedReading: reading(died), deceased: deceased, maiden: p.m, variant: matched });
     });
     return {
       avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,

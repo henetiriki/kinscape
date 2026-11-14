@@ -114,7 +114,7 @@
       "width": 390
     },
     {
-      "height": 6892,
+      "height": 8192,
       "mode": "blocking",
       "name": "style-6-components-inputs-2",
       "route": "/design-kit/inputs?part=2",
@@ -128,7 +128,7 @@
       "width": 390
     },
     {
-      "height": 6952,
+      "height": 7313,
       "mode": "blocking",
       "name": "style-6-components-inputs-4-phone",
       "route": "/design-kit/inputs?part=4",

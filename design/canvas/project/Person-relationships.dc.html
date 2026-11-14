@@ -45,13 +45,8 @@
             </sc-if>
             <ul style="list-style: none; margin: 0; padding: 0">
               <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
-                <li style="display: grid; grid-template-columns: minmax(0, 1fr) 220px 88px; align-items: center; gap: var(--space-16); min-height: 52px; box-sizing: border-box; padding: var(--space-4) var(--space-20); border-top: 1px solid var(--line)">
-                  <div style="display: flex; flex-direction: column; min-width: 0">
-                    <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{r.name}}</x-import>
-                    <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{r.years}}</x-import>
-                  </div>
-                  <x-import component-from-global-scope="KinScape.Text" variant="{{r.detailVariant}}" as="span">{{r.detail}}</x-import>
-                  <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{r.onEdit}}">Edit</x-import>
+                <li style="border-top: 1px solid var(--line)">
+                  <x-import component-from-global-scope="KinScape.RelationshipRow" href="Person-edit.dc.html" surname="{{r.surname}}" given-names="{{r.givenNames}}" subtype="{{r.subtype}}" born="{{r.born}}" born-reading="{{r.bornReading}}" died="{{r.died}}" died-reading="{{r.diedReading}}" deceased="{{r.deceased}}" married="{{r.married}}" married-reading="{{r.marriedReading}}" divorced="{{r.divorced}}" divorced-reading="{{r.divorcedReading}}"></x-import>
                 </li>
               </sc-for>
             </ul>
@@ -76,15 +71,7 @@
             <ul style="list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-control); overflow: hidden">
               <sc-for list="{{dialog.matches}}" as="m" hint-placeholder-count="3">
                 <li style="border-top: 1px solid var(--line)">
-                  <button type="button" onclick="{{m.onPick}}" style="display: grid; grid-template-columns: minmax(0, 1fr) 176px; align-items: center; gap: var(--space-12); width: 100%; min-height: 56px; box-sizing: border-box; padding: var(--space-8) var(--space-16); margin: 0; border: 0; background: var(--surface); font-family: var(--font-body); color: var(--ink); text-align: left; cursor: pointer">
-                    <span style="display: flex; flex-direction: column; min-width: 0">
-                      <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{m.name}}</x-import>
-                      <sc-if value="{{m.hasNote}}" hint-placeholder-val="{{ false }}">
-                        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{m.note}}</x-import>
-                      </sc-if>
-                    </span>
-                    <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{m.years}}</x-import>
-                  </button>
+                  <x-import component-from-global-scope="KinScape.PickerRow" surname="{{m.surname}}" given-names="{{m.givenNames}}" maiden-name="{{m.maiden}}" matched-variant="{{m.variant}}" born="{{m.born}}" born-reading="{{m.bornReading}}" died="{{m.died}}" died-reading="{{m.diedReading}}" deceased="{{m.deceased}}" on-click="{{m.onPick}}"></x-import>
                 </li>
               </sc-for>
             </ul>
@@ -103,7 +90,7 @@
         <sc-if value="{{dialog.isDetails}}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; flex-direction: column; gap: var(--space-4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-12) var(--space-16)">
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{dialog.who.name}}</x-import>
-            <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.years}}</x-import>
+            <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.line}}</x-import>
           </div>
           <sc-if value="{{dialog.isSubtype}}" hint-placeholder-val="{{ true }}">
             <x-import component-from-global-scope="KinScape.Segmented" label="{{dialog.subtypeLabel}}" name="subtype" options="{{subtypeOptions}}" value="{{subtype}}" on-change="{{onSubtype}}"></x-import>
@@ -155,29 +142,38 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state;
     const empty = s.view === 'empty';
+    const P = (name, born, died, more) => Object.assign({ name: name, born: born, died: died, v: [] }, more);
     const ALL = {
-      'rossouw-jacobus': { name: 'Rossouw, Jacobus', years: '1822–1889', v: [] },
-      'nel-johanna': { name: 'Nel, Johanna Petronella', years: 'c. 1828–1901', v: [] },
-      'visser-cornelis': { name: 'Visser, Cornelis', years: '1819–1890', v: [] },
-      'dutoit-hendrik': { name: 'du Toit, Hendrik Willem', years: '1878–1951', v: [] },
-      'dutoit-susanna': { name: 'du Toit, Susanna', years: '1881–1948', v: [] },
-      'vanwyk-gerrit': { name: 'van Wyk, Gerrit', years: '1845–1910', v: ['Van Wijk', 'Vanwyk'] },
-      'fourie-pieter': { name: 'Fourie, Pieter', years: 'bef. 1840, deceased', v: ['Fouri'] },
-      'botha-hendrik': { name: 'Botha, Hendrik Willem', years: '1832–1899', v: ['Bota'] },
-      'botha-susanna': { name: 'Botha, Susanna', maiden: 'Fourie', years: 'c. 1835–1901', v: [] },
-      'foury-maria': { name: 'Foury, Maria Elizabeth', years: '1858–1933', v: ['Fourie'] },
-      'leroux-anna': { name: 'le Roux, Anna Catharina', years: '1871–1948', v: ['Leroux', 'Le Rous'] },
-      'nel-cornelis': { name: 'Nel, Cornelis Johannes', years: '1868–aft. 1920', v: ['Nell'] }
+      'rossouw-jacobus': P('Rossouw, Jacobus', '1822', '1889'),
+      'nel-johanna': P('Nel, Johanna Petronella', 'c. 1828', '1901'),
+      'visser-cornelis': P('Visser, Cornelis', '1819', '1890'),
+      'dutoit-hendrik': P('du Toit, Hendrik Willem', '1878', '1951'),
+      'dutoit-susanna': P('du Toit, Susanna', '1881', '1948'),
+      'vanwyk-gerrit': P('van Wyk, Gerrit', '1845', '1910', { v: ['Van Wijk', 'Vanwyk'] }),
+      'fourie-pieter': P('Fourie, Pieter', 'bef. 1840', '', { deceased: true, v: ['Fouri'] }),
+      'botha-hendrik': P('Botha, Hendrik Willem', '1832', '1899', { v: ['Bota'] }),
+      'botha-susanna': P('Botha, Susanna', 'c. 1835', '1901', { maiden: 'Fourie' }),
+      'foury-maria': P('Foury, Maria Elizabeth', '1858', '1933', { v: ['Fourie'] }),
+      'leroux-anna': P('le Roux, Anna Catharina', '1871', '1948', { v: ['Leroux', 'Le Rous'] }),
+      'nel-cornelis': P('Nel, Cornelis Johannes', '1868', 'aft. 1920', { v: ['Nell'] })
     };
+    const reading = (short) => {
+      if (short.indexOf('c. ') === 0) return 'About ' + short.slice(3);
+      if (short.indexOf('bef. ') === 0) return 'Before ' + short.slice(5);
+      if (short.indexOf('aft. ') === 0) return 'After ' + short.slice(5);
+      return short && 'In ' + short;
+    };
+    const lineOf = (p) => (p.born || '?') + ' –' + (p.died || p.deceased ? ' ' + (p.died || '?') : '');
+    const dated = (p) => ({ born: p.born, bornReading: reading(p.born), died: p.died, diedReading: reading(p.died), deceased: !!p.deceased });
     const GROUPS = [
       { id: 'parents', title: 'Parents', one: 'parent', none: 'No parents yet.', kind: 'parent', rows: [
-        { id: 'rossouw-jacobus', detail: 'Biological' }, { id: 'nel-johanna', detail: 'Adoptive' }, { id: 'visser-cornelis', detail: 'Step' }] },
+        { id: 'rossouw-jacobus', subtype: 'biological' }, { id: 'nel-johanna', subtype: 'adoptive' }, { id: 'visser-cornelis', subtype: 'step' }] },
       { id: 'children', title: 'Children', one: 'child', none: 'No children yet.', kind: 'child', rows: [
-        { id: 'dutoit-hendrik', detail: 'Biological' }, { id: 'dutoit-susanna', detail: 'Adoptive' }] },
+        { id: 'dutoit-hendrik', subtype: 'biological' }, { id: 'dutoit-susanna', subtype: 'adoptive' }] },
       { id: 'spouses', title: 'Spouses', one: 'spouse', none: 'No spouses yet.', kind: 'spouse', rows: [
-        { id: 'vanwyk-gerrit', detail: 'm. 1875 – div. 1890', dates: true },
-        { id: 'fourie-pieter', detail: 'm. 1875', dates: true },
-        { id: 'botha-hendrik', detail: '', dates: true }] }
+        { id: 'vanwyk-gerrit', married: '1875', divorced: '1890' },
+        { id: 'fourie-pieter', married: '1875' },
+        { id: 'botha-hendrik' }] }
     ];
     const open = (kind, step, edit, who) => this.setState({ dialog: { kind: kind, step: step, edit: !!edit }, who: who || null, query: '', alert: '', subtype: 'biological' });
     const groups = GROUPS.map((g) => {
@@ -189,13 +185,19 @@ class Component extends DCLogic {
         isEmpty: rows.length === 0,
         emptyLine: g.none,
         onAdd: () => open(g.kind, 'pick', false, null),
-        rows: rows.map((r) => ({
-          name: ALL[r.id].name,
-          years: ALL[r.id].years,
-          detail: r.detail,
-          detailVariant: r.dates ? 'mono' : 'body',
-          onEdit: () => open(g.kind, 'details', true, r.id)
-        }))
+        rows: rows.map((r) => {
+          const p = ALL[r.id];
+          const name = p.name.split(', ');
+          return Object.assign({
+            surname: name[0],
+            givenNames: name[1],
+            subtype: r.subtype || '',
+            married: r.married || '',
+            marriedReading: reading(r.married || ''),
+            divorced: r.divorced || '',
+            divorcedReading: reading(r.divorced || '')
+          }, dated(p));
+        })
       };
     });
     const d = s.dialog;
@@ -205,21 +207,21 @@ class Component extends DCLogic {
     const matches = [];
     others.forEach((id) => {
       const p = ALL[id];
+      const name = p.name.split(', ');
+      const row = Object.assign({ surname: name[0], givenNames: name[1], maiden: p.maiden || '', variant: '', onPick: () => this.setState({ dialog: Object.assign({}, d, { step: 'details' }), who: id }) }, dated(p));
       if (q) {
-        const parts = p.name.split(', ');
-        const byName = has(p.name) || has(parts[1] + ' ' + parts[0]);
+        const byName = has(p.name) || has(name[1] + ' ' + name[0]);
         const byMaiden = has(p.maiden);
         const variant = p.v.filter((x) => has(x))[0];
         if (!byName && !byMaiden && !variant) return;
-        matches.push({ name: p.name, years: p.years, hasNote: !!(byMaiden || (!byName && variant)), note: !byName && variant ? 'Matches the spelling “' + variant + '”' : 'née ' + p.maiden, onPick: () => this.setState({ dialog: Object.assign({}, d, { step: 'details' }), who: id }) });
-      } else {
-        matches.push({ name: p.name, years: p.years, hasNote: !!p.maiden, note: 'née ' + p.maiden, onPick: () => this.setState({ dialog: Object.assign({}, d, { step: 'details' }), who: id }) });
+        if (!byName && !byMaiden) row.variant = variant;
       }
+      matches.push(row);
     });
     const KIND = { parent: ['Add a parent', 'parent', 'Type of parent'], child: ['Add a child', 'child', 'Type of child'], spouse: ['Add a spouse', 'spouse', ''] };
     let dialog = null;
     if (d) {
-      const who = s.who ? ALL[s.who] : null;
+      const who = s.who ? Object.assign({ line: lineOf(ALL[s.who]) }, ALL[s.who]) : null;
       const isPick = d.step === 'pick';
       dialog = {
         title: d.edit ? (d.kind === 'spouse' ? 'Edit marriage' : 'Edit ' + KIND[d.kind][1] + ' link') : KIND[d.kind][0],
@@ -233,7 +235,7 @@ class Component extends DCLogic {
         noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }],
         noOthers: isPick && others.length === 0,
         noOthersActions: [{ label: 'Add a person', href: 'Person-new.dc.html' }],
-        who: who || { name: '', years: '' },
+        who: who || { name: '', line: '' },
         isSubtype: d.kind !== 'spouse',
         isDates: d.kind === 'spouse',
         subtypeLabel: KIND[d.kind][2],

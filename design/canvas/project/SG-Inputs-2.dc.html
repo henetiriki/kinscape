@@ -302,46 +302,62 @@
 <section aria-label="Person row" style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
   <div style="display: flex; flex-direction: column; gap: 4px">
     <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">Person row</h2>
-    <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">A row of the people list. The whole row is one link to edit the Person: name, Born, Died, then Edit.</p>
+    <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">A row of the people list. The whole row is one link to edit the Person: name, Dates, then Edit. An optional Relationships link follows it.</p>
   </div>
   <div>
     <div style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1832" died="1899" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
-        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A plain row · name in Title; Born and Died in Mono.</figcaption>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="" died-reading="" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Born only · "1889 –", with nothing after the dash for a living Person.</figcaption>
       </figure>
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="c. 1835" died="1901" given-names="Susanna" maiden-name="Fourie" surname="Botha"></x-import></div></div>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="" born-reading="" died="" died-reading="" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">No dates · "? –".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="" died-reading="" deceased="{{ true }}" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Marked deceased, no death date · "1889 – ?".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="" born-reading="" died="" died-reading="" deceased="{{ true }}" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Marked deceased, no dates · "? – ?".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="" born-reading="" died="1932" died-reading="In 1932" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Death only · "? – 1932".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Both dates · "1889 – 1932".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Susanna" maiden-name="Fourie" surname="Botha"></x-import></div></div>
         <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Maiden name · a Small line, "née {maiden}".</figcaption>
       </figure>
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="c. 1856" died="1930" given-names="Maria Magdalena" maiden-name="Rossouw" matched-variant="Dutoit" surname="du Toit"></x-import></div></div>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Maria Magdalena" maiden-name="Rossouw" matched-variant="Dutoit" surname="du Toit"></x-import></div></div>
         <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Maiden name and a matched variant · both notes, in that order, on one line.</figcaption>
       </figure>
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1878" given-names="Johanna Petronella" surname="Rossouw"></x-import></div></div>
-        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">No death date · Died shows "—".</figcaption>
-      </figure>
-      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="bef. 1840" deceased="{{ true }}" given-names="Pieter" surname="Fourie"></x-import></div></div>
-        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Marked deceased with no date · Died shows "Deceased".</figcaption>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" relationships-href="Person-edit.dc.html" surname="le Roux"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">The Relationships link · a text link after the row link.</figcaption>
       </figure>
     </div>
     <div style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1871" died="1948" given-names="Anna Catharina" surname="le Roux"></x-import></div></div>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux"></x-import></div></div>
         <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Default</figcaption>
       </figure>
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1871" died="1948" given-names="Anna Catharina" surname="le Roux" state="hover"></x-import></div></div>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux" state="hover"></x-import></div></div>
         <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Hover · surface-2 fill</figcaption>
       </figure>
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1871" died="1948" given-names="Anna Catharina" surname="le Roux" state="focus"></x-import></div></div>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux" state="focus"></x-import></div></div>
         <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Focus (keyboard) · the focus ring</figcaption>
       </figure>
       <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
-        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1871" died="1948" given-names="Anna Catharina" surname="le Roux" state="active"></x-import></div></div>
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux" state="active"></x-import></div></div>
         <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Pressed · segment fill, brand-pressed Edit</figcaption>
       </figure>
     </div>
@@ -352,7 +368,7 @@
         <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Measurements</h3>
         <div role="table" aria-label="Person row measurements" style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
           <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Height</span><span role="cell">At least 52</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">size.row-l</span></div>
-          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Grid</span><span role="cell">Name, 160 Born, 160 Died, 72 Edit; gap 16; padding 8 20</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">space.16 · space.8 · space.20</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Grid</span><span role="cell">Name, 200 Dates, 72 Edit; gap 16; padding 8 20</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">space.16 · space.8 · space.20</span></div>
           <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Name</span><span role="cell">Title, with the note in Small</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.title · type.small</span></div>
           <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Dates</span><span role="cell">Mono</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.mono</span></div>
           <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Edit</span><span role="cell">Brand, with the forward icon 16, 4 apart</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">colour.brand · space.4</span></div>
@@ -365,17 +381,135 @@
         <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Accessibility</h3>
         <dl style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
           <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Role</dt><dd style="margin: 0; color: #2E3A33">One <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">a </code>with an <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">href </code>to the edit page. The name, the dates and Edit are its name.</dd></div>
-          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; color: #2E3A33">A hidden &quot;Born&quot; and &quot;Died&quot; name each date. Died reads &quot;—&quot; with no date.</dd></div>
+          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; color: #2E3A33">The line is hidden from a screen reader. A hidden text reads the dates in words, such as &quot;Born in 1889, died unknown&quot;. The Relationships link reads &quot;Relationships, Surname, Given names&quot;.</dd></div>
           <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Keyboard</dt><dd style="margin: 0; color: #2E3A33">Tab to reach, Enter to follow. Focus shows the ring only on <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">:focus-visible. </code></dd></div>
         </dl>
       </div>
     </div>
   </div>
 </section>
+
+<section aria-label="Relationship row" style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">Relationship row</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">One relationship of a Person: the other Person, the line of dates, and Edit. It has no remove control.</p>
+  </div>
+  <div>
+    <div style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.RelationshipRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" subtype="biological" surname="le Roux"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A parent or child · the biological subtype in Small.</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.RelationshipRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" subtype="adoptive" surname="le Roux"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A parent or child · the adoptive subtype in Small.</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.RelationshipRow" href="Person-edit.dc.html" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" subtype="step" surname="le Roux"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A parent or child · the step subtype in Small.</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.RelationshipRow" born="c. 1835" born-reading="About 1835" died="" died-reading="" given-names="Susanna" divorced="1890" divorced-reading="In 1890" married="1875" married-reading="In 1875" href="Person-edit.dc.html" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A spouse with both dates · "m. 1875 – div. 1890".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.RelationshipRow" born="c. 1835" born-reading="About 1835" died="" died-reading="" given-names="Susanna" married="c. 1875" married-reading="About 1875" href="Person-edit.dc.html" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A spouse with one date · "m. c. 1875".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.RelationshipRow" born="c. 1835" born-reading="About 1835" died="" died-reading="" given-names="Susanna" href="Person-edit.dc.html" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">A spouse with no date · no date text.</figcaption>
+      </figure>
+    </div>
+  <div>
+    <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Measurements</h3>
+        <div role="table" aria-label="Relationship row measurements" style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Height</span><span role="cell">At least 52</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">size.row-l</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Grid</span><span role="cell">Name, 240 dates, 72 Edit; gap 16; padding 8 20</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">space.16 · space.8 · space.20</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Dates</span><span role="cell">Mono; the spouse line under the other</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.mono</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Subtype</span><span role="cell">Small, under the name</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.small</span></div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Accessibility</h3>
+        <dl style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Link</dt><dd style="margin: 0; color: #2E3A33">One <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">a </code>reads &quot;Edit, Surname, Given names&quot;.</dd></div>
+          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; color: #2E3A33">The lines are hidden from a screen reader. A hidden text reads them in words, such as "Mar. about 1875, div. in 1890".</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<section aria-label="Picker row" style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+  <div style="display: flex; flex-direction: column; gap: 4px">
+    <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">Picker row</h2>
+    <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">One Person in a picker: the name, the note, and the line of dates. The whole row is one button that picks the Person.</p>
+  </div>
+  <div>
+    <div style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Hendrik Willem" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">No note · the name and the line.</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Susanna" maiden-name="Fourie" surname="Botha"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Maiden name · "née {maiden}".</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Maria Magdalena" maiden-name="Rossouw" matched-variant="Dutoit" surname="du Toit"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Both notes · joined by " · ".</figcaption>
+      </figure>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Default</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux" state="hover"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Hover · surface-2 fill</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux" state="focus"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Focus (keyboard) · the focus ring</figcaption>
+      </figure>
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <div style="display: flex; align-items: flex-start"><div inert style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px"><x-import component-from-global-scope="KinScape.PickerRow" born="1889" born-reading="In 1889" died="1932" died-reading="In 1932" given-names="Anna Catharina" surname="le Roux" state="active"></x-import></div></div>
+        <figcaption style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">Pressed · segment fill</figcaption>
+      </figure>
+    </div>
+  <div>
+    <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Measurements</h3>
+        <div role="table" aria-label="Picker row measurements" style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Height</span><span role="cell">At least 52</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">size.row-l</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Grid</span><span role="cell">Name, 200 dates; gap 16; padding 8 20</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">space.16 · space.8 · space.20</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Name</span><span role="cell">Title, with the note in Small</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">type.title · type.small</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Hover</span><span role="cell">surface-2 fill</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">colour.surface-2</span></div>
+          <div role="row" style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><span role="rowheader" style="font-size: 14px; line-height: 20px; font-weight: 600">Pressed</span><span role="cell">segment fill</span><span role="cell" style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">colour.segment</span></div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <h3 style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Accessibility</h3>
+        <dl style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Role</dt><dd style="margin: 0; color: #2E3A33">One <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">button </code>of type <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">button </code>that picks the Person.</dd></div>
+          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Dates</dt><dd style="margin: 0; color: #2E3A33">The line is hidden from a screen reader. A hidden text reads the dates in words.</dd></div>
+          <div style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px"><dt style="font-size: 14px; line-height: 20px; font-weight: 600">Keyboard</dt><dd style="margin: 0; color: #2E3A33">Tab to reach, Enter or Space to pick. Focus shows the ring only on <code style="font-family: 'JetBrains Mono', monospace; font-size: 12px">:focus-visible. </code></dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6892}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":7483}}'>
 class Component extends DCLogic {
   renderVals() {
     return {};

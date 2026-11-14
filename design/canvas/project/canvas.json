@@ -393,7 +393,7 @@
       "x": 2930,
       "y": 22098,
       "w": 390,
-      "h": 5979,
+      "h": 6971,
       "title": "Style guide 06 — Inputs and actions, phone (part 4 of 4)",
       "page": "style-guide"
     },
@@ -617,22 +617,6 @@
       "is_interactive": true,
       "page": "people"
     },
-    "Map-account-people.dc.html": {
-      "x": 1520,
-      "y": 2640,
-      "w": 1440,
-      "h": 900,
-      "title": "Account menu with People (copy of Map-account)",
-      "page": "people"
-    },
-    "Map-phone-account-people.dc.html": {
-      "x": 3040,
-      "y": 2640,
-      "w": 390,
-      "h": 844,
-      "title": "Account menu with People, phone (copy of Map-phone-account)",
-      "page": "people"
-    },
     "Person-conflict.dc.html": {
       "x": 6550,
       "y": 1320,
@@ -722,8 +706,6 @@
     "Person-save-failed.dc.html",
     "Person-form-phone.dc.html",
     "Fuzzy-date-readings.dc.html",
-    "Map-account-people.dc.html",
-    "Map-phone-account-people.dc.html",
     "Person-conflict.dc.html",
     "Person-not-found.dc.html"
   ],

@@ -24,7 +24,7 @@
   display: none;
 }
 
-@media (min-width: 640px) and (min-height: 500px) {
+@media (min-width: 1280px) and (min-height: 500px) {
   .kit[data-desktop-part='1'] .section[data-desktop-part='2'],
   .kit[data-desktop-part='2'] .section[data-desktop-part='1'] {
     display: none;
@@ -85,6 +85,11 @@
   display: flex;
 }
 
+/* Shrinks to the board when a drawing is wider than the window. */
+.desktopOnly {
+  min-width: 0;
+}
+
 .caption {
   color: var(--ink-3);
   font-size: var(--type-caption-size);
@@ -120,6 +125,7 @@
   align-items: center;
   border: 1px dashed var(--ink-3);
   border-radius: var(--radius-small);
+  box-sizing: content-box;
   color: var(--ink-2);
   display: inline-flex;
   font-size: var(--type-caption-size);
@@ -267,6 +273,7 @@
 .row {
   align-items: center;
   border-bottom: 1px solid var(--line);
+  box-sizing: content-box;
   display: grid;
   gap: var(--space-16);
   grid-template-columns: 190px repeat(var(--columns, 5), minmax(0, 1fr));
@@ -321,6 +328,7 @@
 
 .cellCheckbox {
   flex: none;
+  max-width: 100%;
   width: 310px;
 }
 
@@ -361,6 +369,7 @@
   background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: var(--radius-panel);
+  box-sizing: content-box;
   overflow: hidden;
 }
 
@@ -487,8 +496,8 @@
   font-size: var(--type-mono-size);
 }
 
-/* A phone (Intent 104, D1): one part at a time inside 16px gutters, a link to the other, and one column */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+/* A phone, or a window under 1280 wide where the desktop sizes do not fit (Intent 104, D1): one part at a time inside 16px gutters, a link to the other, and one column */
+@media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     gap: var(--space-40);
     padding: var(--space-32) var(--size-gutter-phone) var(--space-48);

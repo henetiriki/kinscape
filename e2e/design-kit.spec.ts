@@ -893,11 +893,30 @@ test.describe('the other boards on a phone', () => {
   test.describe('at 800 wide and 900 tall', () => {
     test.use({ viewport: { height: 900, width: 800 } });
 
-    test('map style keeps its column headers', async ({ page }) => {
+    test('map style takes the phone layout', async ({ page }) => {
       await page.goto('/design-kit/map-style');
       await expect(
         page.getByRole('columnheader', { name: 'Layer id' })
+      ).toBeHidden();
+      await expect(
+        page.getByRole('cell').getByText('Source / filter').first()
       ).toBeVisible();
+    });
+
+    test('type is one column', async ({ page }) => {
+      await page.goto('/design-kit/type');
+      await expect(
+        page.getByRole('columnheader', { name: 'Style' })
+      ).toBeHidden();
+    });
+
+    test('states is one column', async ({ page }) => {
+      await page.goto('/design-kit/states');
+      await expect(
+        page
+          .getByRole('figure', { name: 'State matrix' })
+          .getByText('Component', { exact: true })
+      ).toBeHidden();
     });
 
     test('colour keeps five swatches in a row', async ({ page }) => {

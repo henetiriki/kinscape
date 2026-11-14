@@ -51,6 +51,7 @@
 }
 
 .chip {
+  box-sizing: content-box;
   height: 72px;
 }
 

@@ -32,6 +32,7 @@
   display: grid;
   gap: var(--space-12);
   grid-template-columns: repeat(10, minmax(0, 1fr));
+  max-width: 100%;
   width: 1296px;
 }
 
@@ -103,6 +104,7 @@ div:has(> .glyphList) {
 .glyphRow {
   align-items: center;
   border-bottom: 1px solid var(--line);
+  box-sizing: content-box;
   min-height: 40px;
 }
 
@@ -161,8 +163,8 @@ div:has(> .glyphList) {
   width: 390px;
 }
 
-/* A phone: the glyph grid wraps to three columns and nothing is wider than the screen. */
-@media (max-width: 639.98px), (max-height: 499.98px) {
+/* A phone, or a window under 1280 wide where the desktop sizes do not fit: the glyph grid wraps to three columns and nothing is wider than the screen. */
+@media (max-width: 1279.98px), (max-height: 499.98px) {
   .sheetStage,
   .legendSheet {
     max-width: 100%;

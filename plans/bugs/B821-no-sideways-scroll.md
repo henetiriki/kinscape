@@ -34,17 +34,18 @@ With the rule, `npm run design:check` fails 13 blocking screens.
 
 ## Files that change
 
-| File                                                  | New / changed | What                                                                                                          |
-| ----------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------- |
-| `design/tokens.json`, `app/tokens.css`                | changed       | `breakpoint.desktop-width`; `npm run tokens`                                                                  |
-| `lib/design/__tests__/design.test.ts`                 | changed       | The media query test accepts `desktop-width` (max) and + 0.02 (min)                                           |
-| `app/globals.css`                                     | changed       | `*, ::before, ::after { box-sizing: border-box; }`                                                            |
-| `app/components/feedback/NoticeCard.module.css`       | changed       | `.card` has `max-width: 100%`                                                                                 |
-| `app/design-kit/<board>/page.module.css`              | changed       | Each listed board's queries use `desktop-width`; `content-box` on failing elements; the three overflows       |
-| `app/design-kit/map-furniture/page.module.css`        | changed       | `.glyphGrid` has `max-width: 100%`                                                                            |
-| `e2e/widths.spec.ts`                                  | new           | The width check and the cases in Proof                                                                        |
-| `e2e/design-kit.spec.ts`                              | changed       | "map style keeps its column headers" checks the phone layout; `states` and `type` at 800 × 900 are one column |
-| `design/canvas/project/ds/`, `canvas.json`, `VERSION` | changed       | Design system steps 3 to 5                                                                                    |
+| File                                                                                                | New / changed | What                                                                                                          |
+| --------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------- |
+| `design/tokens.json`, `app/tokens.css`                                                              | changed       | `breakpoint.desktop-width`; `npm run tokens`                                                                  |
+| `lib/design/__tests__/design.test.ts`                                                               | changed       | The media query test accepts `desktop-width` (max) and + 0.02 (min)                                           |
+| `app/globals.css`                                                                                   | changed       | `*, ::before, ::after { box-sizing: border-box; }`                                                            |
+| `app/components/feedback/NoticeCard.module.css`                                                     | changed       | `.card` has `max-width: 100%`; `.actions` wraps                                                               |
+| `app/design-kit/<board>/page.module.css`                                                            | changed       | Each listed board's queries use `desktop-width`; `content-box` on failing elements; the three overflows       |
+| `app/components/feedback/Callout.module.css`, `app/screens/fuzzy-date-readings/readings.module.css` | changed       | `content-box` on each element that fails                                                                      |
+| `app/design-kit/map-furniture/page.module.css`                                                      | changed       | `.glyphGrid` has `max-width: 100%`                                                                            |
+| `e2e/widths.spec.ts`                                                                                | new           | The width check and the cases in Proof                                                                        |
+| `e2e/design-kit.spec.ts`                                                                            | changed       | "map style keeps its column headers" checks the phone layout; `states` and `type` at 800 × 900 are one column |
+| `design/canvas/project/ds/`, `canvas.json`, `VERSION`                                               | changed       | Design system steps 3 to 5                                                                                    |
 
 ## Order of work
 
@@ -82,3 +83,7 @@ With the rule, `npm run design:check` fails 13 blocking screens.
 - Side gutters on People and the Person form from 640 to 1087px.
 
 ## Deviations
+
+- Step 1 on `main`: the check failed for `foundations`, `surfaces`, `states`, `feedback`, `inputs`, both `map-furniture` parts and `map-style`. The People card sat 16px past its gutter.
+- `surfaces`, `feedback` and `inputs` take the phone layout below 1280px, as the plan said they likely would.
+- `.desktopOnly` has `min-width: 0` so the glyph grid shrinks. `foundations` uses a compact motion row and a shrinking bar below 1280px.

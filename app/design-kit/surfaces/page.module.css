@@ -1,7 +1,7 @@
 /* Samples of the /design-kit/surfaces page; the layout is the Inputs and actions board's. */
 
 /* Board 07 is two pages on every width: one part, and a link to the other. */
-@media (min-width: 640px) and (min-height: 500px) {
+@media (min-width: 1280px) and (min-height: 500px) {
   .paged .shown {
     display: inline;
   }
@@ -204,6 +204,7 @@
   align-items: center;
   border: 1px dashed var(--ink-3);
   border-radius: var(--radius-small);
+  box-sizing: content-box;
   color: var(--ink-2);
   display: inline-flex;
   font-size: var(--type-caption-size);
@@ -273,7 +274,8 @@
   margin: 0;
 }
 
-@media (max-width: 639.98px), (max-height: 499.98px) {
+/* A phone, or a window under 1280 wide where the desktop sizes do not fit. */
+@media (max-width: 1279.98px), (max-height: 499.98px) {
   .compact {
     padding: var(--space-16);
   }

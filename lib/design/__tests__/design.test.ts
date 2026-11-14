@@ -137,11 +137,21 @@ describe('layout tokens', () => {
 
   // A media query can't read var(), so each one must match breakpoint (the desktop side is + 0.02px).
   it('writes every media query size from breakpoint', () => {
+    const { breakpoint } = tokens;
     const allowed = new Map([
-      ['max-height', px(tokens.breakpoint['phone-height'])],
-      ['max-width', px(tokens.breakpoint['phone-width'])],
-      ['min-height', px(tokens.breakpoint['phone-height']) + 0.02],
-      ['min-width', px(tokens.breakpoint['phone-width']) + 0.02],
+      ['max-height', [px(breakpoint['phone-height'])]],
+      [
+        'max-width',
+        [px(breakpoint['phone-width']), px(breakpoint['desktop-width'])],
+      ],
+      ['min-height', [px(breakpoint['phone-height']) + 0.02]],
+      [
+        'min-width',
+        [
+          px(breakpoint['phone-width']) + 0.02,
+          px(breakpoint['desktop-width']) + 0.02,
+        ],
+      ],
     ]);
     const found: string[] = [];
 
@@ -154,7 +164,11 @@ describe('layout tokens', () => {
         .flatMap(([query]) => [
           ...query.matchAll(/\((m(?:in|ax)-(?:width|height)):\s*([\d.]+)px\)/g),
         ])) {
-        if (Math.abs(Number(value) - (allowed.get(feature) ?? NaN)) > 0.001) {
+        if (
+          !allowed
+            .get(feature)!
+            .some(size => Math.abs(Number(value) - size) <= 0.001)
+        ) {
           found.push(`${path}: ${feature}: ${value}px`);
         }
       }

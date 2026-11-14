@@ -24,7 +24,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | CI<br>`ci.yml` | pull_request | `opened, synchronize, reopened, ready_for_review` | lint · typecheck · format · test · coverage · boundaries · words · image · e2e · design |
 | | push | `main` | |
 | Claude: Build<br>`claude-build.yml` · calls Claude: Run (shared) | pull_request_review | `submitted` | approve · build |
-| Claude: Code review<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened · paths-ignore: plans/**` | claude-review · summary |
+| Claude: Code review<br>`claude-code-review.yml` | pull_request | `opened, synchronize, ready_for_review, reopened` | claude-review · summary |
 | Claude: Audit denials<br>`claude-denial-audit.yml` | schedule | `0 7 * * 1` | audit |
 | | workflow_dispatch | | |
 | Claude: Fix review<br>`claude-fix-review.yml` · calls Claude: Run (shared) | pull_request | `labeled` | fix · unlabel |

@@ -7,8 +7,9 @@ name: 'Claude: Code review'
 # owner, a member, a collaborator or the bot, "Skipped Review: <PR title>" for a draft, Dependabot, the
 # bot's action-pin PR or an outsider's PR. The pin PR is the bot's PR from the head branch
 # bot/update-action-pins, and the bot itself pushed the change: a person's push to it is reviewed.
-# A PR that changes only plans/** starts no run, so has no title at all. Repeats the `claude-review`
-# job's `if:` (run-name cannot see job results): change them together.
+# A PR that changes only plans/** gets "Review: <PR title>" too. Its job runs, skips Claude and ends
+# green, because the `Review` check is required. Repeats the `claude-review` job's `if:` (run-name
+# cannot see job results): change them together.
 run-name: >-
   ${{
     github.actor != 'dependabot[bot]' && !github.event.pull_request.draft &&
@@ -24,10 +25,8 @@ run-name: >-
 
 on:
   pull_request:
+    # No path filter: a required check that a filter skips stays pending, and the PR can't merge.
     types: [opened, synchronize, ready_for_review, reopened]
-    # Skipped only when every changed file matches.
-    paths-ignore:
-      - 'plans/**'
 
 # One review per PR: a new push cancels the older, now-stale review.
 concurrency:
@@ -105,10 +104,27 @@ jobs:
           cp "$RUNNER_TEMP/agent/main/docs/code-rules.md" docs/code-rules.md
           git status --short -- AGENTS.md docs/security.md docs/writing.md docs/code-rules.md
 
+      # `Review` is a required check, which a path filter would leave pending on a PR that changes only
+      # plans/**. So the job always runs, and skips Claude for such a PR: the job then ends green. If the
+      # list of files fails, Claude runs.
+      - name: Find a PR that changes only plans
+        id: plans
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          plans_only=false
+          if files=$(gh api --paginate "repos/$GH_REPO/pulls/$PR_NUMBER/files" --jq '.[].filename') &&
+            [ -n "$files" ] && ! grep -qv '^plans/' <<< "$files"; then
+            plans_only=true
+          fi
+          echo "plans_only=$plans_only" >> "$GITHUB_OUTPUT"
+
       # Agent mode posts nothing until Claude does, so mark the PR as picked up: :eyes: stays, the
       # "Working" comment is deleted when the run ends. Neither is worth failing the run for.
       - name: Show that the review started
-        if: steps.same.outputs.same == 'true'
+        if: steps.same.outputs.same == 'true' && steps.plans.outputs.plans_only != 'true'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -128,7 +144,7 @@ jobs:
       # written and the whole PR is reviewed. Only a written diff sets `scope=since`.
       - name: Write the changes since the last review
         id: since
-        if: steps.same.outputs.same == 'true'
+        if: steps.same.outputs.same == 'true' && steps.plans.outputs.plans_only != 'true'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -144,14 +160,22 @@ jobs:
             echo "A re-run: reviewing the whole PR."
             exit 0
           fi
-          # Successful runs, newest first. One counts as a review only if it uploaded Claude's summary
-          # (kept 7 days): a run where Claude didn't start, as on a PR changing this file, succeeds too.
+          # Runs that ended green or red, newest first. A cancelled run is left out. The limit is high
+          # because gh lists 20 by default, and cancelled and plans-only runs could fill them.
+          # A red run counts only if its gate step failed. The gate turns a run red when the review has
+          # open findings, and a Claude failure is red too. A run counts as a review only if it uploaded
+          # Claude's summary (kept 7 days). A run where Claude didn't start succeeds without one.
           last=""
-          for run in $(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request --status success \
-            --json databaseId,headSha --jq '.[] | select(.headSha != env.HEAD_SHA) | "\(.databaseId):\(.headSha)"'); do
-            if [ -n "$(gh api "repos/$GH_REPO/actions/runs/${run%%:*}/artifacts" \
+          for run in $(gh run list --workflow claude-code-review.yml --branch "$HEAD_REF" --event pull_request --limit 100 \
+            --json conclusion,databaseId,headSha --jq '.[] | select(.headSha != env.HEAD_SHA and (.conclusion == "success" or .conclusion == "failure")) | "\(.databaseId):\(.headSha):\(.conclusion)"'); do
+            IFS=: read -r id sha conclusion <<< "$run"
+            if [ "$conclusion" = failure ] && [ "$(gh api "repos/$GH_REPO/actions/runs/$id/jobs" \
+              --jq '.jobs[] | select(.name == "Review") | .steps[] | select(.name == "Fail on open findings") | .conclusion')" != failure ]; then
+              continue
+            fi
+            if [ -n "$(gh api "repos/$GH_REPO/actions/runs/$id/artifacts" \
               --jq '.artifacts[] | select(.name == "claude-execution-output" and (.expired | not)) | .id')" ]; then
-              last="${run#*:}"
+              last="$sha"
               break
             fi
           done
@@ -171,7 +195,7 @@ jobs:
 
       - name: Run Claude Code
         id: claude-review
-        if: steps.same.outputs.same == 'true'
+        if: steps.same.outputs.same == 'true' && steps.plans.outputs.plans_only != 'true'
         uses: anthropics/claude-code-action@9eb012b6d0900c2b9eede65ee1758cec4d2973e9 # v1.0.270
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -218,9 +242,10 @@ jobs:
       # On a PR that changes this file Claude never starts (the check above). That known cause comments on
       # the PR (it needs a human review); any other missing review fails the job. !cancelled(): a failed step
       # above also lands here, as when this file changes before the action on main takes a new input; a run
-      # cancelled by a newer push (concurrency) does not.
+      # cancelled by a newer push (concurrency) does not. A PR that changes only plans/** has no review
+      # to miss.
       - name: Report a missing review
-        if: "!cancelled() && steps.claude-review.outputs.conclusion == ''"
+        if: "!cancelled() && steps.claude-review.outputs.conclusion == '' && steps.plans.outputs.plans_only != 'true'"
         # bash with pipefail, so a failed comment lookup isn't read as no comment.
         shell: bash
         env:
@@ -243,6 +268,37 @@ jobs:
           else
             gh api "repos/$GH_REPO/issues/$PR_NUMBER/comments" -f body="$msg" --silent || echo "::warning::$msg"
           fi
+
+      # Last, so that the output, the working comment and the missing-review report are done before the job
+      # turns red. This job is the required check `Review`. It is red while the review has open findings,
+      # so the PR can't merge.
+      # An open finding is an inline comment of the bot on the head commit, from any run. A re-run doesn't
+      # repeat a finding that is still on the PR. The count in the latest `Open findings: <n>` comment
+      # (review.md › Findings) adds earlier findings that are still open, and findings with no line to hold
+      # them. A push that fixes a finding, or that follows a reply the review accepts, gets a review that
+      # says 0. A failed call fails the step.
+      - name: Fail on open findings
+        if: steps.claude-review.outcome == 'success'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # original_commit_id, because commit_id moves to the head of the PR.
+          inline=$(gh api --paginate "repos/$GH_REPO/pulls/$PR_NUMBER/comments" \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and .in_reply_to_id == null and .original_commit_id == env.HEAD_SHA) | .id' | wc -l | tr -d ' ')
+          # The comment starts with the line. Claude may wrap it in markdown: `, *, _, # or >, around the
+          # label or the number.
+          earlier=$(gh api --paginate "repos/$GH_REPO/issues/$PR_NUMBER/comments" \
+            --jq '.[] | select(.user.login == "github-actions[bot]") | .body | capture("\\A[\\s*_`#>]*Open findings[*_`]*:[\\s*_`]*(?<n>[0-9]+)") | .n' | tail -n 1)
+          total=$((inline + ${earlier:-0}))
+          if [ "$total" -gt 0 ]; then
+            echo "::error::The review has open findings: $total ($inline inline on this commit, ${earlier:-0} in its Open findings comment)."
+            exit 1
+          fi
+          echo "The review has no open findings."
 
   # With show_full_output off, the log above stops at the start of the review. This writes the run
   # page from the summary of Claude's transcript (the run-summary action, from main), as claude-run.yml does for

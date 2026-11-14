@@ -96,8 +96,6 @@ Not built. The sign-in rows and the first account menu rows show Google sign-in:
 | Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
 | Account menu, proposed                   | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
 | Account menu, phone, proposed            | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
-| Account menu with People                 | [map-account-menu-people.jpg](map-account-menu-people.jpg)                 |
-| Account menu with People, phone          | [map-account-menu-phone-people.jpg](map-account-menu-phone-people.jpg)     |
 
 ## Brand
 

@@ -52,8 +52,8 @@ describe('the real canvas export', () => {
   const canvas = readCanvasExport('.');
   const names = canvas.snapshots.map(snapshot => snapshot.name).toSorted();
 
-  it('names the 77 snapshots of the Screens table and design/source', () => {
-    expect(names).toHaveLength(77);
+  it('names the 75 snapshots of the Screens table and design/source', () => {
+    expect(names).toHaveLength(75);
     expect(names).toEqual(snapshotNames('.'));
     expect(names).toEqual(
       screenNames(readFileSync('design/DESIGN.md', 'utf8')).toSorted()

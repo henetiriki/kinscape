@@ -34,3 +34,11 @@ export const personInputSchema = z.object({
   surname: name,
   variants: z.array(text(MAX_NAME)).max(MAX_VARIANTS).default([]),
 });
+
+const requiredName = name.refine(value => value !== '', 'required');
+
+/** What the form saves (PPL-01): `personInputSchema` with given names and surname required. */
+export const personFormSchema = personInputSchema.extend({
+  givenNames: requiredName,
+  surname: requiredName,
+});

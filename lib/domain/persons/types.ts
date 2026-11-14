@@ -1,9 +1,21 @@
 import type { z } from 'zod';
 
+import type { FuzzyDateError } from '@ks/lib/domain/dates/types.ts';
 import type { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
 
 /** A saved Person. `version` counts saves; an update names the one it read. */
 export type Person = { version: number } & PersonInput;
+
+/** The error kind of each form field that failed. A kind never holds input text. */
+export type PersonFieldErrors = {
+  fields: {
+    birth?: FuzzyDateError;
+    death?: FuzzyDateError;
+    givenNames?: 'required';
+    surname?: 'required';
+    variants?: 'too-many';
+  };
+};
 
 /** What a client saves. A name or note with nothing in it is the empty string. */
 export type PersonInput = z.output<typeof personInputSchema>;

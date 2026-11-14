@@ -2,7 +2,7 @@
 
 - **Spec:** #821 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

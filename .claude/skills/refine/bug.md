@@ -23,7 +23,7 @@ Show the four sections as `###` headings, in the order above, as the form shows 
 
 ## Hand-over
 
-A Bug is already filed, so give no form link. Ask "Edit #<number> now?" as its own question. Only after a yes to that question, run one `gh issue edit <number> --body-file - <<'BUG_BODY_END'`. First check that no line of the new body is `BUG_BODY_END`.
+A Bug is already filed, so give no form link. Ask "Edit #<number> now?" as its own question. Only after a yes to that question, write the new body to a new file outside the repo, in the scratchpad or `$TMPDIR`. Then run one `gh issue edit <number> --body-file <file>`.
 
 The new body is the exact body up to any `<!-- refine bug -->` line, unchanged. Then comes that line, then the four sections. So a later run replaces only its own sections.
 

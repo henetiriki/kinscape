@@ -44,3 +44,14 @@ What goes under the `###` heading of an empty optional box (Constraints, Behavio
 | The user asks for a link                 | Evidence: a dry run; no issue filed                             |
 | `/refine intent`                         | Evidence: a dry run ends with a link; `intent.md` unchanged     |
 | `npm run words`, `npm run format:check`  | CI                                                              |
+
+## Deviations
+
+- `SKILL.md` writes the body to a new file in the scratchpad or `$TMPDIR`, not to a `mktemp` file. The Write tool cannot fill an existing file that it has not read.
+- `SKILL.md` was at its 650-word budget. The build cut the lines that follow. Each cut text is in another file, in `AGENTS.md`, or enforced by a tool.
+- Cut from the description: the full list of argument forms. `argument-hint` shows them.
+- Cut from the mode list: "For the tech lead", the one-line summaries and "Any text after `intent`". Each mode file says them.
+- Cut from the method: the header and option limits of `AskUserQuestion`, which the tool enforces, and "The picker adds **Other**".
+- Cut from the method: "Skip questions an answer already settled", "Never fill a gap silently", "If a question arises while you draft, ask it" and "Summarise what you agreed in a few lines".
+- Cut from the rules: "Cite requirement IDs" and the _Key concepts_ sentence. `AGENTS.md` says both.
+- Cut from _Prefilled links_: the `form-link.mjs` example, which its header shows, and "Reprint a block only if it changed".

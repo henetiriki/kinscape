@@ -7,6 +7,7 @@ import type { SaveResult } from '@ks/features/people/components/types.ts';
 import type {
   PersonFieldErrors,
   PersonView,
+  Sex,
 } from '@ks/lib/domain/persons/types.ts';
 
 import { ActionBar } from '@ks/app/components/actions/ActionBar';
@@ -29,18 +30,22 @@ import {
   checkPerson,
   personFieldMessages,
 } from '@ks/lib/domain/persons/form.mts';
+import { MAX_NAME, MAX_NOTES } from '@ks/lib/domain/persons/schemas.mts';
 
 import styles from '@ks/features/people/components/PersonForm.module.css';
 
-const SEX = [
-  { label: 'Male', value: 'M' },
-  { label: 'Female', value: 'F' },
-  { label: 'Intersex', value: 'X' },
-  { label: 'Unknown', value: 'U' },
-];
+// A code with no label fails the type check, so the list holds every code the schema accepts.
+const SEX_LABELS: Record<Sex, string> = {
+  F: 'Female',
+  M: 'Male',
+  U: 'Unknown',
+  X: 'Intersex',
+};
 
-const MAX_NAME = 200;
-const MAX_NOTES = 10_000;
+const SEX = (Object.keys(SEX_LABELS) as Sex[]).map(value => ({
+  label: SEX_LABELS[value],
+  value,
+}));
 
 type Name = 'givenNames' | 'surname';
 

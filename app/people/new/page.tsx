@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { createPersonAction, updatePersonAction } from '@ks/app/people/actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonForm } from '@ks/features/people';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { requireSession } from '@ks/server/auth/current.mts';
 
 export const metadata: Metadata = { title: 'Add a person' };
@@ -18,8 +19,7 @@ const NewPerson = async () => {
     <PersonForm
       create={createPersonAction}
       email={session.email}
-      // An Account has no name, so the Avatar shows the first letter of the email.
-      initial={session.email.charAt(0).toUpperCase()}
+      initial={accountInitial(session.email)}
       onSignOut={signOutAction}
       update={updatePersonAction}
     />

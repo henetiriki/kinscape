@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { createPersonAction, updatePersonAction } from '@ks/app/people/actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonForm, PersonNotFound } from '@ks/features/people';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
@@ -34,8 +35,7 @@ const EditPerson = async ({ params }: { params: Promise<{ id: string }> }) => {
   const person = found.ok ? found.value : undefined;
   const header = {
     email: session.email,
-    // An Account has no name, so the Avatar shows the first letter of the email.
-    initial: session.email.charAt(0).toUpperCase(),
+    initial: accountInitial(session.email),
     onSignOut: signOutAction,
   };
 

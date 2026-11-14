@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PeopleList } from '@ks/features/people';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { shortFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
@@ -52,8 +53,7 @@ const People = async () => {
     <PeopleList
       email={session?.email ?? ''}
       failed={people?.ok !== true}
-      // An Account has no name, so the Avatar shows the first letter of the email.
-      initial={session?.email.charAt(0).toUpperCase() ?? '?'}
+      initial={session ? accountInitial(session.email) : '?'}
       onSignOut={signOutAction}
       people={people?.ok ? people.value : []}
     />

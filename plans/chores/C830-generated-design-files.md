@@ -1,7 +1,7 @@
 # Plan: C830: Leave generated design files out of the review
 
 - **Spec:** #830
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `ling
 - **B.** Add `scripts/__tests__/gitattributes.test.ts`: it runs `git check-attr` on the four done-check paths. Add a `review.md` case to `load-agent-files.test.ts`.
 - **Other:** your own.
 
-Recommended: B, because a later edit can drop a line, and no check fails.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

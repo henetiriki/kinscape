@@ -13,6 +13,16 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
+import type { Step } from '@ks/scripts/__tests__/types';
+
+import {
+  MAIN_COPY_CHECK,
+  reviewJob,
+  stepIndex,
+  stepNamed,
+} from '@ks/scripts/__tests__/review-workflow';
+import { runScript } from '@ks/scripts/__tests__/run-script';
+
 const root = process.cwd();
 const read = (file: string) =>
   readFileSync(join(root, '.github/workflows', file), 'utf8');
@@ -260,17 +270,6 @@ describe('the run-summary action', () => {
 // file Claude then reads, so a wrong one would run a build with another agent's tools.
 const RUN_CLAUDE = 'henetiriki/kinscape/.github/actions/run-claude';
 
-type Step = {
-  'continue-on-error'?: boolean;
-  env?: Record<string, string>;
-  id?: string;
-  if?: string;
-  name?: string;
-  run?: string;
-  shell?: string;
-  uses?: string;
-  with?: Record<string, unknown>;
-};
 const runClaudeSteps = () =>
   (
     parse(
@@ -288,41 +287,6 @@ const runnerSteps = () =>
 const runnerStep = (name: string) =>
   runnerSteps().find(step => step.name === name);
 
-// Runs a step's script with fake commands first on PATH. A fake is a shell script body, and
-// it appends to "$LOG". Returns the exit status, stdout, what the fakes logged and what the
-// script wrote to GITHUB_OUTPUT.
-const runScript = (
-  run: string | undefined,
-  fakes: Record<string, string>,
-  env: Record<string, string>
-) => {
-  const dir = mkdtempSync(join(tmpdir(), 'run-script-'));
-  const log = join(dir, 'log');
-  const output = join(dir, 'output');
-
-  for (const [name, body] of Object.entries(fakes)) {
-    writeFileSync(join(dir, name), `#!/bin/sh\n${body}\n`, { mode: 0o755 });
-  }
-
-  const result = spawnSync('bash', ['-e', '-c', run ?? ''], {
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      ...env,
-      GITHUB_OUTPUT: output,
-      LOG: log,
-      PATH: `${dir}:${process.env.PATH}`,
-    },
-  });
-  const contents = (file: string) =>
-    existsSync(file) ? readFileSync(file, 'utf8') : '';
-  const logged = contents(log);
-  const outputs = contents(output);
-
-  rmSync(dir, { force: true, recursive: true });
-
-  return { ...result, log: logged, outputs };
-};
 const reviewSteps = () =>
   Object.values(
     (
@@ -2111,24 +2075,17 @@ describe('the load-agent-files script', () => {
 // from approving (docs/repo-settings.md), and reads its rules, settings and plugin from main
 // (plans/chores/C588-review-config-from-main.md).
 describe('the review job of claude-code-review.yml', () => {
-  type Job = { permissions?: Record<string, string>; steps: Step[] };
   const ACTION_NAME = 'anthropics/claude-code-action@';
   const LOAD = 'Load the review rules and settings';
-  const CHECK = "Check that this workflow is main's";
   const COPY = "Put main's rule files in the checkout";
-  const job = () =>
-    (parse(read('claude-code-review.yml')) as { jobs: Record<string, Job> })
-      .jobs['claude-review'];
-  const steps = () => job().steps;
-  const at = (name: string) => steps().findIndex(step => step.name === name);
-  const step = (name: string) => steps()[at(name)];
+  const steps = () => reviewJob().steps;
   const claudeAt = () =>
     steps().findIndex(step => step.uses?.startsWith(ACTION_NAME));
   const claude = () => steps()[claudeAt()];
 
   it('runs Claude with the workflow token and the fewest permissions', () => {
     expect(claude().with?.github_token).toBe('${{ github.token }}');
-    expect(job().permissions).toEqual({
+    expect(reviewJob().permissions).toEqual({
       actions: 'read',
       contents: 'read',
       issues: 'read',
@@ -2137,9 +2094,9 @@ describe('the review job of claude-code-review.yml', () => {
   });
 
   it('loads the files CLAUDE.md imports, the marketplace and this file from main, right after checkout', () => {
-    expect(at(LOAD)).toBe(1);
-    expect(step(LOAD).uses).toContain('load-agent-files');
-    expect(step(LOAD).with?.main_files).toBe(mainFiles().join(' '));
+    expect(stepIndex(LOAD)).toBe(1);
+    expect(stepNamed(LOAD).uses).toContain('load-agent-files');
+    expect(stepNamed(LOAD).with?.main_files).toBe(mainFiles().join(' '));
     expect(mainFiles().filter(path => !existsSync(join(root, path)))).toEqual(
       []
     );
@@ -2155,12 +2112,12 @@ describe('the review job of claude-code-review.yml', () => {
   // copy step takes it too.
   it("puts main's copies of the imports in the checkout before Claude", () => {
     for (const path of [...imports(), CODE_RULES]) {
-      expect(step(COPY).run).toContain(
+      expect(stepNamed(COPY).run).toContain(
         `cp "$RUNNER_TEMP/agent/main/${path}" ${path}`
       );
     }
-    expect(at(LOAD)).toBeLessThan(at(COPY));
-    expect(at(COPY)).toBeLessThan(claudeAt());
+    expect(stepIndex(LOAD)).toBeLessThan(stepIndex(COPY));
+    expect(stepIndex(COPY)).toBeLessThan(claudeAt());
   });
 
   it('installs the plugin from the marketplace loaded from main', () => {
@@ -2193,7 +2150,7 @@ describe('the review job of claude-code-review.yml', () => {
         }
         const { status, stdout } = spawnSync(
           'bash',
-          ['-e', '-o', 'pipefail', '-c', step(CHECK).run ?? ''],
+          ['-e', '-o', 'pipefail', '-c', stepNamed(MAIN_COPY_CHECK).run ?? ''],
           {
             cwd: root,
             encoding: 'utf8',
@@ -2216,18 +2173,12 @@ describe('the review job of claude-code-review.yml', () => {
       }
     };
 
-    it('comes right after the load, calls nothing, and gates Claude and the steps that would post', () => {
-      expect(at(CHECK)).toBe(at(LOAD) + 1);
-      expect(step(CHECK).id).toBe('same');
-      expect(step(CHECK).env).toBeUndefined();
-      expect(step(CHECK).run).not.toContain('gh ');
-      for (const name of [
-        'Show that the review started',
-        'Write the changes since the last review',
-      ]) {
-        expect(step(name).if, name).toBe("steps.same.outputs.same == 'true'");
-      }
-      expect(claude().if).toBe("steps.same.outputs.same == 'true'");
+    // review-gate.test.ts holds the `if:` of the steps that this check gates.
+    it('comes right after the load and calls nothing', () => {
+      expect(stepIndex(MAIN_COPY_CHECK)).toBe(stepIndex(LOAD) + 1);
+      expect(stepNamed(MAIN_COPY_CHECK).id).toBe('same');
+      expect(stepNamed(MAIN_COPY_CHECK).env).toBeUndefined();
+      expect(stepNamed(MAIN_COPY_CHECK).run).not.toContain('gh ');
     });
 
     it("says same=true for main's copy and same=false for another", () => {
@@ -2252,7 +2203,7 @@ describe('the review job of claude-code-review.yml', () => {
 
     // Only the check's explicit "not main's" gets the comment; a failed check or a failed Claude fails the job.
     it('has the report step comment only when the check said the file differs', () => {
-      const report = step('Report a missing review');
+      const report = stepNamed('Report a missing review');
 
       expect(report.env?.SAME).toBe('${{ steps.same.outputs.same }}');
       expect(report.run).toContain('if [ "$SAME" != false ]; then');

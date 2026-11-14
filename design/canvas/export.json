@@ -401,6 +401,92 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "file": "Person-relationships.dc.html",
+      "name": "person-relationships",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "person-relationships-empty",
+      "props": { "variant": "empty" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "person-relationships-load-failed",
+      "props": { "variant": "load-failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-pick",
+      "props": { "variant": "pick" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-pick-no-match",
+      "props": { "variant": "pick-no-match" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-pick-empty",
+      "props": { "variant": "pick-empty" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-details-parent",
+      "props": { "variant": "details-parent" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-details-spouse",
+      "props": { "variant": "details-spouse" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-edit-spouse",
+      "props": { "variant": "edit-spouse" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-cycle",
+      "props": { "variant": "cycle" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-relationships.dc.html",
+      "name": "relationship-save-failed",
+      "props": { "variant": "save-failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Relationship-messages.dc.html",
+      "name": "relationship-messages",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-edit-relationships.dc.html",
+      "name": "person-edit-relationships",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Person-edit-relationships.dc.html",
+      "name": "person-edit-relationships-leave",
+      "props": { "variant": "leave" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "People-list-relationships.dc.html",
+      "name": "people-list-relationships",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
       "file": "Person-form-phone.dc.html",
       "name": "person-form-phone",
       "viewport": { "height": 844, "width": 390 }

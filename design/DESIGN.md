@@ -76,6 +76,19 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Person not found                                     | [person-not-found.jpg](person-not-found.jpg)                                       |
 | Person form, phone, notice                           | [person-form-phone.jpg](person-form-phone.jpg)                                     |
 | Fuzzy dates, readings and messages                   | [fuzzy-date-readings.jpg](fuzzy-date-readings.jpg)                                 |
+| Relationships, page, three groups                    | [person-relationships.jpg](person-relationships.jpg)                               |
+| Relationships, no links yet                          | [person-relationships-empty.jpg](person-relationships-empty.jpg)                   |
+| Relationships, failed to load                        | [person-relationships-load-failed.jpg](person-relationships-load-failed.jpg)       |
+| Relationship dialog, step 1, pick a person           | [relationship-pick.jpg](relationship-pick.jpg)                                     |
+| Relationship dialog, step 1, filter finds nothing    | [relationship-pick-no-match.jpg](relationship-pick-no-match.jpg)                   |
+| Relationship dialog, step 1, no other person         | [relationship-pick-empty.jpg](relationship-pick-empty.jpg)                         |
+| Relationship dialog, step 2, parent                  | [relationship-details-parent.jpg](relationship-details-parent.jpg)                 |
+| Relationship dialog, step 2, spouse                  | [relationship-details-spouse.jpg](relationship-details-spouse.jpg)                 |
+| Relationship dialog, edit a spouse link              | [relationship-edit-spouse.jpg](relationship-edit-spouse.jpg)                       |
+| Relationship dialog, cycle refused                   | [relationship-cycle.jpg](relationship-cycle.jpg)                                   |
+| Relationship dialog, save failed                     | [relationship-save-failed.jpg](relationship-save-failed.jpg)                       |
+| Relationship messages                                | [relationship-messages.jpg](relationship-messages.jpg)                             |
+| Person form, edit, leave warning                     | [person-edit-relationships-leave.jpg](person-edit-relationships-leave.jpg)         |
 
 ![Map, desktop](map-desktop.jpg)
 
@@ -87,15 +100,17 @@ People, pins and boundary shapes in the JPGs are illustrative, not data.
 
 ### Proposed screens
 
-Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components).
+Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components). The two relationship rows replace the Person form, edit and the People list when M2.11.2 builds them.
 
-| Screen                                   | File                                                                       |
-| ---------------------------------------- | -------------------------------------------------------------------------- |
-| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)               |
-| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)                   |
-| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
-| Account menu, proposed                   | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
-| Account menu, phone, proposed            | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
+| Screen                                         | File                                                                       |
+| ---------------------------------------------- | -------------------------------------------------------------------------- |
+| Sign in, desktop, proposed                     | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)               |
+| Sign in, phone, proposed                       | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)                   |
+| Sign in, phone, wrong password, proposed       | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
+| Account menu, proposed                         | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
+| Account menu, phone, proposed                  | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
+| Person form, edit, with the Relationships link | [person-edit-relationships.jpg](person-edit-relationships.jpg)             |
+| People list, with the Relationships link       | [people-list-relationships.jpg](people-list-relationships.jpg)             |
 
 ## Brand
 
@@ -331,7 +346,7 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 
 These have no design: see `AGENTS.md`.
 
-- The screens that add or edit relationships, pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
+- The screens that add or edit pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
 - The popup for a click inside a contested area: how it shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).
 - Person panel, life trail and migration view (EXP-05 to EXP-07).

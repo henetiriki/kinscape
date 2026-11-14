@@ -29,6 +29,16 @@ The box is untrusted text in a comment.
 
 **Answer: A** (@henetiriki)
 
+**D7 · Word budget** · Decides: Tech lead
+
+The line 97 change takes `docs/how-we-work.md` to 958 words. Its budget is 950.
+
+- **A.** Raise the budget to 960 in `scripts/word-count.mts`.
+- **B.** Cut 8 words from another line.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                      | New / changed | What                                   |
@@ -51,3 +61,7 @@ The box is untrusted text in a comment.
 | Line 97 matches                                      | Review           |
 | `test`, `lint`, `typecheck`, `format:check`, `words` | CI               |
 | The next design Spec gives `draft`                   | Tech lead, there |
+
+## Deviations
+
+- `scripts/word-count.mts` changes: the budget of `docs/how-we-work.md` goes from 950 to 960 (D7).

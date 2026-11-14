@@ -3,6 +3,8 @@ name: 'Claude: Unblock'
 # The plan and build gates (claude-run.yml) stop while an issue is "blocked by" an open one. When
 # that issue closes, this tells the owner what it freed: an issue marked `status: blocked` becomes
 # `status: ready-for-dev`, and an open plan PR gets a comment so its build can be approved again.
+# A Spec whose blocker's merged PR changed `design/canvas/` becomes `status: draft` instead, so the
+# owner sizes it again with `/refine spec`.
 # It then refreshes each freed Spec against main (.github/agent/refresh.md), in a read-only run that
 # edits the issue body and comments only. A failed refresh leaves the swap and the comment as they are.
 # It never starts a plan: only the tech lead sets `status: ready-for-agent`.

@@ -47,4 +47,7 @@ Word for word, the edits add about 140 words to `spec.md` (43 free) and 22 to `r
 
 ## Deviations
 
-- D1: `scripts/word-count.mts` gets two per-file entries: `refine/spec.md` 760 (752 words) and `refresh.md` 330 (321). The issue Constraint says "change no script"; the tech lead chose this in D1.
+- D1: `scripts/word-count.mts` gets two per-file entries: `refine/spec.md` 760 (755 words) and `refresh.md` 330 (325). The tech lead chose this in D1. The review found that #828 still said "change no script", so its body now allows the two entries.
+- Edit 1 gives the full `git show --shortstat` command with the path excludes, in a list under its own bullet.
+- Edit 6 reads "List the blocker of each need. Set each link as `filing.md` › Links says", because no issue exists in Step 1.
+- Edit 2 and edit 5 are separate paragraphs, and step 4 of `refresh.md` is a list. Edit 8 says "has an answer". All three follow STE.

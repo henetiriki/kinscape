@@ -32,17 +32,25 @@ Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decis
 Confirm the slices before you draft. Discuss slice size only here.
 
 - Each slice is one pull request with something to check on a preview. Prefer thin vertical slices to layers.
-- Cap each slice at about 600 changed lines. Do not count lockfiles, data files, fonts and the plan. Estimate from a merged Spec of the same kind. Run `git show --shortstat` on its merge commit. Do not count `design/canvas/`, `design/source/` or `design/*.jpg`. If no merged Spec has the same kind, write `Estimate: about N lines, no comparable Spec`. Ask the tech lead to confirm N before you draft. Slice a Spec that passes the cap now. Never write that the plan splits it.
+- Cap each slice at about 600 changed lines. Do not count lockfiles, data files, fonts and the plan. Slice a Spec that passes the cap now. Never write that the plan splits it.
+- Estimate each slice from a merged Spec of the same kind:
+  - Run `git show --shortstat <merge commit> -- . ':!design/canvas/' ':!design/source/' ':!design/*.jpg' ':!package-lock.json'`.
+  - If no merged Spec has the same kind, write `Estimate: about N lines, no comparable Spec`.
+  - Ask the tech lead to confirm N before you draft.
 - A slice is one kind: UI, data, or tooling and refactors. A dependency the slice needs may come with it.
 - A question that blocks the build (an unknown data source or licence, say) is its own decision slice, and comes first.
 - Give each an id (`M0.1`, …), a short name, its kind, a line estimate and its requirement IDs. Say whether it changes what the user sees or is engineering-only. Say which comes first and why.
-- For each slice, list what it needs from the other slices. Set a blocker link for each need. Order the slices by need, not by number.
+- For each slice, list what it needs from the other slices. List the blocker of each need. Set each link as [filing.md](filing.md) › Links says. Order the slices by need, not by number.
 - Every behaviour lands in exactly one slice, or you list it as carried forward.
 - After the user confirms the slices, post the list as a comment on the Intent issue before you draft. Offer `gh issue comment <number> --body-file <file>`, or print the list to paste.
 
 ## Step 2: draft each Spec
 
-Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order, after the title (`Spec: M0.1 Hello Vercel`). Fill each box as its description says. Put the line `Estimate: about N lines, measured on <Spec> (#n)` under Flagged concerns. Grep each file, board, code and name before you write it into a Spec. Do not take it from a plan, an issue or memory.
+Show one heading per box of `.github/ISSUE_TEMPLATE/2-spec.yml`, in order, after the title (`Spec: M0.1 Hello Vercel`). Fill each box as its description says.
+
+Put the line `Estimate: about N lines, measured on <Spec> (#n)` under Flagged concerns.
+
+Grep each file, board, code and name before you write it into a Spec. Do not take it from a plan, an issue or memory.
 
 Write each box in [STE](../../../docs/writing.md#ste). Then run the check round on _Acceptance checks_.
 

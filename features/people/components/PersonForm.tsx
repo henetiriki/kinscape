@@ -105,6 +105,8 @@ export const PersonForm = ({
   const [conflict, setConflict] = useState(false);
   const [failed, setFailed] = useState(false);
   const [saving, setSaving] = useState(false);
+  // A date field checks its text when it mounts, so a new count shows the error of a date that never lost focus.
+  const [checks, setChecks] = useState(0);
   // A name field shows "required" on blur only after the user typed in it.
   const [edited, setEdited] = useState<Name[]>([]);
   const dead = values.death.trim() !== '';
@@ -151,6 +153,7 @@ export const PersonForm = ({
         setFailed(true);
       } else {
         setErrors(checked.error.fields);
+        setChecks(count => count + 1);
       }
 
       return;
@@ -287,12 +290,14 @@ export const PersonForm = ({
               <FuzzyDateField
                 defaultValue={values.birth}
                 helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
+                key={errors.birth ? `birth-${checks}` : 'birth'}
                 label='Birth'
                 onInput={event => set({ birth: event.currentTarget.value })}
               />
               <FuzzyDateField
                 defaultValue={values.death}
                 helper="Leave it empty if you don't know."
+                key={errors.death ? `death-${checks}` : 'death'}
                 label='Death'
                 onInput={event => set({ death: event.currentTarget.value })}
               />

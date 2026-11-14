@@ -243,6 +243,38 @@ describe('validation', () => {
     expect(screen.getByText('1 field needs fixing')).toBeTruthy();
   });
 
+  it('shows the message of a bad birth that never lost focus when Save checks it', async () => {
+    const { create } = open();
+
+    fill();
+    fireEvent.input(screen.getByLabelText('Birth'), {
+      target: { value: '31 FEB 1850' },
+    });
+    await save();
+
+    expect(create).not.toHaveBeenCalled();
+    expect(screen.getAllByText('February 1850 has 28 days.')).toHaveLength(1);
+    expect(screen.getByLabelText('Birth').getAttribute('aria-invalid')).toBe(
+      'true'
+    );
+  });
+
+  it('shows the message of a bad death that never lost focus when Save checks it', async () => {
+    const { create } = open();
+
+    fill();
+    fireEvent.input(screen.getByLabelText('Death'), {
+      target: { value: '31 FEB 1850' },
+    });
+    await save();
+
+    expect(create).not.toHaveBeenCalled();
+    expect(screen.getAllByText('February 1850 has 28 days.')).toHaveLength(1);
+    expect(screen.getByLabelText('Death').getAttribute('aria-invalid')).toBe(
+      'true'
+    );
+  });
+
   it('shows 21 spelling variants as an error with aria-invalid', async () => {
     const { update } = open({
       person: {

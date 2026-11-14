@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Person relationships</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <x-import component-from-global-scope="KinScape.PageHeader" back-href="Person-edit-relationships.dc.html" back-label="Edit person" avatar="{{avatar}}"></x-import>
+
+  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto">
+    <div style="width: 960px; margin: 0 auto; padding: var(--space-24) 0 var(--space-32); display: flex; flex-direction: column; gap: var(--space-16)">
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+        <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationships</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">{{who}} Each change saves at once.</x-import>
+      </div>
+
+      <sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; justify-content: center; padding-top: var(--space-48)"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="cloudOff" title="Relationships didn't load" actions="{{retryActions}}">Check your connection, then try again. Nothing in your Tree has changed.</x-import></div>
+      </sc-if>
+
+      <sc-if value="{{showGroups}}" hint-placeholder-val="{{ true }}">
+        <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+          <section aria-labelledby="{{g.headId}}" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-16); height: 60px; box-sizing: border-box; padding: 0 var(--space-20)">
+              <div style="display: flex; align-items: baseline; gap: var(--space-12)">
+                <x-import component-from-global-scope="KinScape.Text" variant="h3" as="h2" id="{{g.headId}}">{{g.title}}</x-import>
+                <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{g.count}}</x-import>
+              </div>
+              <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{g.onAdd}}">Add</x-import>
+            </div>
+            <sc-if value="{{g.isEmpty}}" hint-placeholder-val="{{ false }}">
+              <div style="border-top: 1px solid var(--line); padding: var(--space-16) var(--space-20)"><x-import component-from-global-scope="KinScape.Text" variant="body" as="p">{{g.emptyLine}}</x-import></div>
+            </sc-if>
+            <ul style="list-style: none; margin: 0; padding: 0">
+              <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
+                <li style="display: grid; grid-template-columns: minmax(0, 1fr) 220px 88px; align-items: center; gap: var(--space-16); min-height: 52px; box-sizing: border-box; padding: var(--space-4) var(--space-20); border-top: 1px solid var(--line)">
+                  <div style="display: flex; flex-direction: column; min-width: 0">
+                    <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{r.name}}</x-import>
+                    <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{r.years}}</x-import>
+                  </div>
+                  <x-import component-from-global-scope="KinScape.Text" variant="{{r.detailVariant}}" as="span">{{r.detail}}</x-import>
+                  <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{r.onEdit}}">Edit</x-import>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+        </sc-for>
+      </sc-if>
+
+    </div>
+  </main>
+
+  <sc-if value="{{showDialog}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center">
+      <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="{{dialog.title}}" subtitle="{{dialog.subtitle}}" title-id="rel-dialog-title" on-close="{{closeDialog}}">
+
+        <sc-if value="{{dialog.showAlert}}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="KinScape.Alert" tone="error" title="{{dialog.alertTitle}}">{{dialog.alertText}}</x-import>
+        </sc-if>
+
+        <sc-if value="{{dialog.isPick}}" hint-placeholder-val="{{ true }}">
+          <x-import component-from-global-scope="KinScape.TextField" type="search" label="Find a person" helper="Matches given names, surnames, maiden names and spelling variants." value="{{query}}" on-change="{{onQuery}}"></x-import>
+          <sc-if value="{{dialog.hasMatches}}" hint-placeholder-val="{{ true }}">
+            <ul style="list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-control); overflow: hidden">
+              <sc-for list="{{dialog.matches}}" as="m" hint-placeholder-count="3">
+                <li style="border-top: 1px solid var(--line)">
+                  <button type="button" onclick="{{m.onPick}}" style="display: grid; grid-template-columns: minmax(0, 1fr) 176px; align-items: center; gap: var(--space-12); width: 100%; min-height: 56px; box-sizing: border-box; padding: var(--space-8) var(--space-16); margin: 0; border: 0; background: var(--surface); font-family: var(--font-body); color: var(--ink); text-align: left; cursor: pointer">
+                    <span style="display: flex; flex-direction: column; min-width: 0">
+                      <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{m.name}}</x-import>
+                      <sc-if value="{{m.hasNote}}" hint-placeholder-val="{{ false }}">
+                        <x-import component-from-global-scope="KinScape.Text" variant="small" as="span">{{m.note}}</x-import>
+                      </sc-if>
+                    </span>
+                    <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{m.years}}</x-import>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </sc-if>
+          <sc-if value="{{dialog.noMatch}}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; justify-content: center"><x-import component-from-global-scope="KinScape.NoticeCard" icon="search" title="{{dialog.noMatchTitle}}" actions="{{dialog.noMatchActions}}">Check the spelling, or add them first with Add a person.</x-import></div>
+          </sc-if>
+          <sc-if value="{{dialog.noOthers}}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; justify-content: center"><x-import component-from-global-scope="KinScape.NoticeCard" icon="people" title="No other people in your Tree" actions="{{dialog.noOthersActions}}">Add another person first, then link them here.</x-import></div>
+          </sc-if>
+          <div style="display: flex; gap: var(--space-12)">
+            <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{closeDialog}}">Cancel</x-import>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{dialog.isDetails}}" hint-placeholder-val="{{ false }}">
+          <div style="display: flex; flex-direction: column; gap: var(--space-4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-12) var(--space-16)">
+            <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{dialog.who.name}}</x-import>
+            <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.years}}</x-import>
+          </div>
+          <sc-if value="{{dialog.isSubtype}}" hint-placeholder-val="{{ true }}">
+            <x-import component-from-global-scope="KinScape.Segmented" label="{{dialog.subtypeLabel}}" name="subtype" options="{{subtypeOptions}}" value="{{subtype}}" on-change="{{onSubtype}}"></x-import>
+          </sc-if>
+          <sc-if value="{{dialog.isDates}}" hint-placeholder-val="{{ false }}">
+            <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Marriage" helper="For example 1875, ABT 1875 or BET 1875 AND 1877." default-value="{{marriage}}" autocomplete="off" spell-check="false"></x-import>
+            <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Divorce" helper="Leave it empty if they did not divorce." default-value="{{divorce}}" autocomplete="off" spell-check="false"></x-import>
+          </sc-if>
+          <div style="display: flex; gap: var(--space-12)">
+            <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{closeDialog}}">Save</x-import>
+            <sc-if value="{{dialog.canGoBack}}" hint-placeholder-val="{{ true }}">
+              <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{goBack}}">Back</x-import>
+            </sc-if>
+            <sc-if value="{{dialog.isEdit}}" hint-placeholder-val="{{ false }}">
+              <x-import component-from-global-scope="KinScape.Button" variant="secondary" on-click="{{closeDialog}}">Cancel</x-import>
+            </sc-if>
+          </div>
+        </sc-if>
+
+      </x-import>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="error" action="Try again" on-action="{{closeToast}}" on-dismiss="{{closeToast}}">Couldn't save the link. Your picks are still here.</x-import></div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["list","empty","load-failed","pick","pick-no-match","pick-empty","details-parent","details-spouse","edit-spouse","cycle","save-failed"],"default":"list"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const v = (props && props.variant) || 'list';
+    const st = { view: 'list', dialog: null, query: '', subtype: 'biological', marriage: '', divorce: '', alert: '', toast: false, who: null };
+    if (v === 'empty' || v === 'pick-empty') st.view = 'empty';
+    if (v === 'load-failed') st.view = 'failed';
+    if (v === 'pick') { st.dialog = { kind: 'parent', step: 'pick' }; st.query = 'Fourie'; }
+    if (v === 'pick-no-match') { st.dialog = { kind: 'parent', step: 'pick' }; st.query = 'Pretorius'; }
+    if (v === 'pick-empty') st.dialog = { kind: 'parent', step: 'pick' };
+    if (v === 'details-parent') { st.dialog = { kind: 'parent', step: 'details' }; st.who = 'fourie-pieter'; }
+    if (v === 'details-spouse') { st.dialog = { kind: 'spouse', step: 'details' }; st.who = 'botha-hendrik'; st.marriage = 'ABT 1875'; }
+    if (v === 'edit-spouse') { st.dialog = { kind: 'spouse', step: 'details', edit: true }; st.who = 'vanwyk-gerrit'; st.marriage = '1875'; st.divorce = '1890'; }
+    if (v === 'cycle') { st.dialog = { kind: 'parent', step: 'details' }; st.who = 'dutoit-hendrik'; st.alert = 'cycle'; }
+    if (v === 'save-failed') { st.dialog = { kind: 'child', step: 'details' }; st.who = 'leroux-anna'; st.toast = true; }
+    this.state = st;
+    this.variant = v;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const empty = s.view === 'empty';
+    const ALL = {
+      'rossouw-jacobus': { name: 'Rossouw, Jacobus', years: '1822–1889', v: [] },
+      'nel-johanna': { name: 'Nel, Johanna Petronella', years: 'c. 1828–1901', v: [] },
+      'visser-cornelis': { name: 'Visser, Cornelis', years: '1819–1890', v: [] },
+      'dutoit-hendrik': { name: 'du Toit, Hendrik Willem', years: '1878–1951', v: [] },
+      'dutoit-susanna': { name: 'du Toit, Susanna', years: '1881–1948', v: [] },
+      'vanwyk-gerrit': { name: 'van Wyk, Gerrit', years: '1845–1910', v: ['Van Wijk', 'Vanwyk'] },
+      'fourie-pieter': { name: 'Fourie, Pieter', years: 'bef. 1840, deceased', v: ['Fouri'] },
+      'botha-hendrik': { name: 'Botha, Hendrik Willem', years: '1832–1899', v: ['Bota'] },
+      'botha-susanna': { name: 'Botha, Susanna', maiden: 'Fourie', years: 'c. 1835–1901', v: [] },
+      'foury-maria': { name: 'Foury, Maria Elizabeth', years: '1858–1933', v: ['Fourie'] },
+      'leroux-anna': { name: 'le Roux, Anna Catharina', years: '1871–1948', v: ['Leroux', 'Le Rous'] },
+      'nel-cornelis': { name: 'Nel, Cornelis Johannes', years: '1868–aft. 1920', v: ['Nell'] }
+    };
+    const GROUPS = [
+      { id: 'parents', title: 'Parents', one: 'parent', none: 'No parents yet.', kind: 'parent', rows: [
+        { id: 'rossouw-jacobus', detail: 'Biological' }, { id: 'nel-johanna', detail: 'Adoptive' }, { id: 'visser-cornelis', detail: 'Step' }] },
+      { id: 'children', title: 'Children', one: 'child', none: 'No children yet.', kind: 'child', rows: [
+        { id: 'dutoit-hendrik', detail: 'Biological' }, { id: 'dutoit-susanna', detail: 'Adoptive' }] },
+      { id: 'spouses', title: 'Spouses', one: 'spouse', none: 'No spouses yet.', kind: 'spouse', rows: [
+        { id: 'vanwyk-gerrit', detail: 'm. 1875 – div. 1890', dates: true },
+        { id: 'fourie-pieter', detail: 'm. 1875', dates: true },
+        { id: 'botha-hendrik', detail: '', dates: true }] }
+    ];
+    const open = (kind, step, edit, who) => this.setState({ dialog: { kind: kind, step: step, edit: !!edit }, who: who || null, query: '', alert: '', subtype: 'biological' });
+    const groups = GROUPS.map((g) => {
+      const rows = empty ? [] : g.rows;
+      return {
+        headId: 'rel-' + g.id,
+        title: g.title,
+        count: rows.length === 1 ? '1 link' : rows.length + ' links',
+        isEmpty: rows.length === 0,
+        emptyLine: g.none,
+        onAdd: () => open(g.kind, 'pick', false, null),
+        rows: rows.map((r) => ({
+          name: ALL[r.id].name,
+          years: ALL[r.id].years,
+          detail: r.detail,
+          detailVariant: r.dates ? 'mono' : 'body',
+          onEdit: () => open(g.kind, 'details', true, r.id)
+        }))
+      };
+    });
+    const d = s.dialog;
+    const q = s.query.trim().toLowerCase();
+    const has = (t) => !!t && t.toLowerCase().indexOf(q) >= 0;
+    const others = empty ? [] : Object.keys(ALL);
+    const matches = [];
+    others.forEach((id) => {
+      const p = ALL[id];
+      if (q) {
+        const parts = p.name.split(', ');
+        const byName = has(p.name) || has(parts[1] + ' ' + parts[0]);
+        const byMaiden = has(p.maiden);
+        const variant = p.v.filter((x) => has(x))[0];
+        if (!byName && !byMaiden && !variant) return;
+        matches.push({ name: p.name, years: p.years, hasNote: !!(byMaiden || (!byName && variant)), note: !byName && variant ? 'Matches the spelling “' + variant + '”' : 'née ' + p.maiden, onPick: () => this.setState({ dialog: Object.assign({}, d, { step: 'details' }), who: id }) });
+      } else {
+        matches.push({ name: p.name, years: p.years, hasNote: !!p.maiden, note: 'née ' + p.maiden, onPick: () => this.setState({ dialog: Object.assign({}, d, { step: 'details' }), who: id }) });
+      }
+    });
+    const KIND = { parent: ['Add a parent', 'parent', 'Type of parent'], child: ['Add a child', 'child', 'Type of child'], spouse: ['Add a spouse', 'spouse', ''] };
+    let dialog = null;
+    if (d) {
+      const who = s.who ? ALL[s.who] : null;
+      const isPick = d.step === 'pick';
+      dialog = {
+        title: d.edit ? (d.kind === 'spouse' ? 'Edit marriage' : 'Edit ' + KIND[d.kind][1] + ' link') : KIND[d.kind][0],
+        subtitle: d.edit ? (d.kind === 'spouse' ? 'Change the dates.' : 'Change the type.') : isPick ? 'Step 1 of 2. Choose the person.' : 'Step 2 of 2. Say how they are linked.',
+        isPick: isPick,
+        isDetails: !isPick,
+        matches: matches,
+        hasMatches: isPick && matches.length > 0,
+        noMatch: isPick && others.length > 0 && matches.length === 0,
+        noMatchTitle: 'No one matches “' + s.query.trim() + '”',
+        noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }],
+        noOthers: isPick && others.length === 0,
+        noOthersActions: [{ label: 'Add a person', href: 'Person-new.dc.html' }],
+        who: who || { name: '', years: '' },
+        isSubtype: d.kind !== 'spouse',
+        isDates: d.kind === 'spouse',
+        subtypeLabel: KIND[d.kind][2],
+        canGoBack: !d.edit,
+        isEdit: !!d.edit,
+        showAlert: s.alert === 'cycle',
+        alertTitle: "This link isn't possible",
+        alertText: 'This would make ' + (who ? who.name.split(', ')[1] + ' ' + who.name.split(', ')[0] : '') + ' their own ancestor.'
+      };
+    }
+    return {
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
+      who: 'Maria Magdalena du Toit, c. 1856–1930.',
+      showFailed: s.view === 'failed',
+      retryActions: [{ label: 'Try again', onClick: () => this.setState({ view: 'list' }) }],
+      showGroups: s.view !== 'failed',
+      groups: groups,
+      showDialog: !!d,
+      dialog: dialog || {},
+      query: s.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      subtype: s.subtype,
+      subtypeOptions: [{ label: 'Biological', value: 'biological' }, { label: 'Adoptive', value: 'adoptive' }, { label: 'Step', value: 'step' }],
+      onSubtype: (value) => this.setState({ subtype: value }),
+      marriage: s.marriage,
+      divorce: s.divorce,
+      goBack: () => this.setState({ dialog: Object.assign({}, d, { step: 'pick' }), alert: '' }),
+      closeDialog: () => this.setState({ dialog: null, toast: false, alert: '' }),
+      showToast: s.toast,
+      closeToast: () => this.setState({ toast: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -633,6 +633,140 @@
       "h": 900,
       "title": "Person — not found",
       "page": "people"
+    },
+    "Person-relationships.dc.html": {
+      "x": 0,
+      "y": 4200,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationships — page, three groups",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-relationships-empty.dc.html": {
+      "x": 1520,
+      "y": 4200,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationships — no links yet",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-relationships-load-failed.dc.html": {
+      "x": 3040,
+      "y": 4200,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationships — links didn't load",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-pick.dc.html": {
+      "x": 0,
+      "y": 5520,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — pick a person (step 1)",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-pick-no-match.dc.html": {
+      "x": 1520,
+      "y": 5520,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — pick, filter finds nothing",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-pick-empty.dc.html": {
+      "x": 3040,
+      "y": 5520,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — pick, no other person in the Tree",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-details-parent.dc.html": {
+      "x": 0,
+      "y": 6840,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — details, parent (step 2)",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-details-spouse.dc.html": {
+      "x": 1520,
+      "y": 6840,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — details, spouse (step 2)",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-edit-spouse.dc.html": {
+      "x": 3040,
+      "y": 6840,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — edit a spouse link",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-cycle.dc.html": {
+      "x": 4560,
+      "y": 6840,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — cycle refused",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-save-failed.dc.html": {
+      "x": 6080,
+      "y": 6840,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — save failed, picks kept",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Relationship-messages.dc.html": {
+      "x": 0,
+      "y": 8160,
+      "w": 1440,
+      "h": 900,
+      "title": "Relationship — every refusal and error message",
+      "page": "people"
+    },
+    "Person-edit-relationships.dc.html": {
+      "x": 1520,
+      "y": 8160,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — edit, with the Relationships link",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "Person-edit-relationships-leave.dc.html": {
+      "x": 3040,
+      "y": 8160,
+      "w": 1440,
+      "h": 900,
+      "title": "Person — edit, leave warning",
+      "is_interactive": true,
+      "page": "people"
+    },
+    "People-list-relationships.dc.html": {
+      "x": 4560,
+      "y": 8160,
+      "w": 1440,
+      "h": 900,
+      "title": "People — list, with the Relationships link",
+      "is_interactive": true,
+      "page": "people"
     }
   },
   "order": [
@@ -707,7 +841,22 @@
     "Person-form-phone.dc.html",
     "Fuzzy-date-readings.dc.html",
     "Person-conflict.dc.html",
-    "Person-not-found.dc.html"
+    "Person-not-found.dc.html",
+    "Person-relationships.dc.html",
+    "Person-relationships-empty.dc.html",
+    "Person-relationships-load-failed.dc.html",
+    "Relationship-pick.dc.html",
+    "Relationship-pick-no-match.dc.html",
+    "Relationship-pick-empty.dc.html",
+    "Relationship-details-parent.dc.html",
+    "Relationship-details-spouse.dc.html",
+    "Relationship-edit-spouse.dc.html",
+    "Relationship-cycle.dc.html",
+    "Relationship-save-failed.dc.html",
+    "Relationship-messages.dc.html",
+    "Person-edit-relationships.dc.html",
+    "Person-edit-relationships-leave.dc.html",
+    "People-list-relationships.dc.html"
   ],
   "notes": {
     "people-list-title": {
@@ -732,6 +881,30 @@
       "text": "Fuzzy dates, and the way in from the map",
       "kind": "title1",
       "maxW": 3430,
+      "page": "people"
+    },
+    "relationships-page-title": {
+      "x": 0,
+      "y": 3900,
+      "text": "Relationships — the page and its states",
+      "kind": "title1",
+      "maxW": 4480,
+      "page": "people"
+    },
+    "relationships-dialog-title": {
+      "x": 0,
+      "y": 5220,
+      "text": "Relationships — add and edit dialog",
+      "kind": "title1",
+      "maxW": 7520,
+      "page": "people"
+    },
+    "relationships-ref-title": {
+      "x": 0,
+      "y": 7860,
+      "text": "Relationships — messages and the way in",
+      "kind": "title1",
+      "maxW": 6000,
       "page": "people"
     }
   },

@@ -6,3 +6,5 @@ Run these four checks on the whole body of a Spec, Bug or Chore. Finish every ch
 - Each thing that a Decision option or answer says the Spec gets is in the body.
 - No two parts of the body name different boards, values or orders for one thing.
 - Each step that the body puts before the plan is done on `main`, or the body says the build does it.
+
+End the comment with one line for each check: `Checked: <files read>` or `Not checked: <reason>`. Write a question for each `Not checked`.

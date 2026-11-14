@@ -28,6 +28,7 @@ Word for word, the edits add about 140 words to `spec.md` (43 free) and 22 to `r
 | `.claude/skills/refine/spec.md` | changed       | Edits 1, 2 and 4 to 7; D1 |
 | `.github/agent/spec-checks.md`  | changed       | Edit 3                    |
 | `.github/agent/refresh.md`      | changed       | Edit 8; D1                |
+| `scripts/word-count.mts`        | changed       | D1: two budget entries    |
 
 ## Risks
 
@@ -43,3 +44,7 @@ Word for word, the edits add about 140 words to `spec.md` (43 free) and 22 to `r
 | Words, format and lint pass                    | `npm run words`, `npm run format:check`, `npm run lint` |
 | Files in the table only                        | `git diff --stat origin/main`                           |
 | The next Drift comment numbers on and checks   | The tech lead reads it on the issue                     |
+
+## Deviations
+
+- D1: `scripts/word-count.mts` gets two per-file entries: `refine/spec.md` 760 (752 words) and `refresh.md` 330 (321). The issue Constraint says "change no script"; the tech lead chose this in D1.

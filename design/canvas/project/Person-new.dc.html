@@ -54,21 +54,7 @@
             <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Birth" helper="For example 1850, ABT 1850 or BET 1850 AND 1855." default-value="{{birthStart}}" autocomplete="off" spell-check="false" on-input="{{onBirth}}"></x-import>
             <x-import component-from-global-scope="KinScape.FuzzyDateField" label="Death" helper="Leave it empty if you don't know." default-value="{{deathStart}}" autocomplete="off" spell-check="false" on-input="{{onDeath}}"></x-import>
 
-            <sc-if value="{{deceasedLocked}}" hint-placeholder-val="{{ false }}">
-              <div style="display: flex; align-items: center; gap: var(--space-12); min-height: var(--size-field-l)">
-                <span style="position: relative; display: inline-flex; flex: none; width: var(--size-checkbox); height: var(--size-checkbox)">
-                  <input id="p-deceased" type="checkbox" checked="{{deceased}}" disabled="{{deceasedLocked}}" aria-describedby="p-deceased-note" style="appearance: none; width: var(--size-checkbox); height: var(--size-checkbox); margin: 0; box-sizing: border-box; border: 1.5px solid var(--line-strong); border-radius: var(--radius-small); background: var(--line)">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 3px; top: 3px; color: var(--ink-disabled); pointer-events: none"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
-                </span>
-                <span style="display: flex; flex-direction: column; min-width: 0">
-                  <label for="p-deceased" class="label" style="color: var(--ink-disabled)">Deceased</label>
-                  <span id="p-deceased-note" class="caption" style="color: var(--ink-disabled)">{{deceasedNote}}</span>
-                </span>
-              </div>
-            </sc-if>
-            <sc-if value="{{deceasedFree}}" hint-placeholder-val="{{ true }}">
-              <x-import component-from-global-scope="KinScape.CheckboxField" label="Deceased" description="{{deceasedNote}}" checked="{{deceased}}" disabled="{{deceasedLocked}}" on-change="{{toggleDeceased}}"></x-import>
-            </sc-if>
+            <x-import component-from-global-scope="KinScape.CheckboxField" label="Deceased" description="{{deceasedNote}}" checked="{{deceased}}" disabled="{{deceasedLocked}}" on-change="{{toggleDeceased}}"></x-import>
         </div>
 
         <div style="grid-column: 3; grid-row: 2 / span 4; display: flex; flex-direction: column; gap: var(--space-8); min-width: 0">

@@ -295,6 +295,11 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "file": "SG-Inputs-3.dc.html",
+      "name": "style-6-components-inputs-3",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
       "file": "SG-Inputs-phone.dc.html",
       "name": "style-6-components-inputs-phone",
       "viewport": { "height": 844, "width": 390 }

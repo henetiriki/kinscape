@@ -49,6 +49,7 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Style guide 05: feedback and validation, phone       | [style-5-feedback-phone.jpg](style-5-feedback-phone.jpg)                           |
 | Style guide 06: inputs and actions, part 1           | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     |
 | Style guide 06: inputs and actions, part 2           | [style-6-components-inputs-2.jpg](style-6-components-inputs-2.jpg)                 |
+| Style guide 06: inputs and actions, part 3           | [style-6-components-inputs-3.jpg](style-6-components-inputs-3.jpg)                 |
 | Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         |
 | Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     |
 | Style guide 06: inputs and actions, phone, part 3    | [style-6-components-inputs-3-phone.jpg](style-6-components-inputs-3-phone.jpg)     |

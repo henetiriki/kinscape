@@ -5,7 +5,7 @@
 
 ## Approach
 
-A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `linguist-generated=true`, so GitHub collapses them. A new bullet under Findings in `review.md` holds the issue's three sentences. These are the patterns that `design-agent-shots.yml` commits. The file has about 462 counted words, so the 32 new words fit its 500-word budget.
+A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `linguist-generated`, so GitHub collapses them. A new bullet under Findings in `review.md` holds the issue's three sentences. These are the patterns that `design-agent-shots.yml` commits. The file has about 462 counted words, so the 32 new words fit its 500-word budget.
 
 ## Decisions
 
@@ -18,6 +18,18 @@ A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `ling
 - **Other:** your own.
 
 **Answer: B** (@henetiriki)
+
+**D2 · The attribute form** · Decides: Tech lead
+
+The issue says `linguist-generated=true`, but its done check needs `set`. Only the bare form prints `set`.
+
+- **A.** The bare `linguist-generated`.
+- **B.** `linguist-generated=true`. The done check changes to `true`.
+- **Other:** your own.
+
+Recommended: A, because both done checks pass.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 
@@ -45,5 +57,6 @@ A root `.gitattributes` marks `design/source/*.html` and `design/*.jpg` as `ling
 
 ## Deviations
 
-- `.gitattributes` uses the bare `linguist-generated`, not `linguist-generated=true`: `git check-attr` prints `set` only for the bare form, and the done checks name `set`. GitHub treats both the same. The tech lead chose this.
-- `review.md` gains 32 words, not a word-for-word swap as the issue says: the plan counted them against the 500-word budget, and `npm run words` passes.
+- `.gitattributes` uses the bare `linguist-generated`, not `linguist-generated=true` (D2).
+- The `review.md` bullet says "a non-merge commit": a merge of `main` changes files that nobody edited. It links the workflow doc.
+- `review.md` gains 32 words, not a swap. The budget allows them.

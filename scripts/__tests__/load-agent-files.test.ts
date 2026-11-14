@@ -209,7 +209,7 @@ describe('the load-agent-files action', () => {
   );
 });
 
-// The generated design files are collapsed in the PR diff (.gitattributes). The review skips their
+// .gitattributes collapses the generated design files in the PR diff. The review skips their
 // content, and reports a commit by anyone but the render workflow that changes them.
 describe('the generated design files in review.md', () => {
   it('has the review skip them and report a change that the render workflow did not make', () => {
@@ -219,10 +219,10 @@ describe('the generated design files in review.md', () => {
       'Skip the content of `design/source/*.html` and `design/*.jpg`.'
     );
     expect(review).toContain(
-      'The workflow Design: Render snapshots writes them.'
+      'The workflow [Design: Render snapshots](../../design/CANVAS.md#making-the-snapshots-and-jpgs) writes them.'
     );
     expect(review).toContain(
-      'If a commit whose message is not `chore: export and render design snapshots` changes them, report one finding.'
+      'If a non-merge commit whose message is not `chore: export and render design snapshots` changes them, report one finding.'
     );
   });
 

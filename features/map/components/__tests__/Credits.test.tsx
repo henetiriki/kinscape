@@ -113,6 +113,33 @@ it('closes the card on Esc and ignores other keys', () => {
   expect(button.getAttribute('aria-expanded')).toBe('false');
 });
 
+it('closes the card on a press outside it, and keeps it for a press inside', () => {
+  collapsible();
+
+  const button = screen.getByRole('button', { name: 'Credits' });
+
+  fireEvent.click(button);
+  fireEvent.pointerDown(screen.getByText(/Public Sans/));
+  expect(button.getAttribute('aria-expanded')).toBe('true');
+  fireEvent.pointerDown(document.body);
+  expect(button.getAttribute('aria-expanded')).toBe('false');
+});
+
+it('keeps the card open when Esc closes a dialog', () => {
+  collapsible();
+
+  const button = screen.getByRole('button', { name: 'Credits' });
+  const dialog = document.createElement('div');
+
+  dialog.setAttribute('role', 'dialog');
+  document.body.append(dialog);
+  fireEvent.click(button);
+  fireEvent.keyDown(dialog, { key: 'Escape' });
+  dialog.remove();
+
+  expect(button.getAttribute('aria-expanded')).toBe('true');
+});
+
 it('opens the dialog from the Attributions link while collapsed', () => {
   const open = vi.fn();
 

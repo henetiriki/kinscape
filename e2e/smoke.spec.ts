@@ -69,11 +69,15 @@ test('the map pans and zooms', async ({ page }) => {
   await expect(canvas).toBeVisible();
 });
 
-/** On desktop the credits text sits behind the "Credits" button. */
+/** On desktop the credits text sits behind the "Credits" button. A press outside the card closes it, so this opens it again when needed. */
 const creditsText = async (page: Page) => {
-  await page.getByRole('button', { exact: true, name: 'Credits' }).click();
+  const card = page.locator('[data-slot="credits"] p');
 
-  return page.locator('[data-slot="credits"] p');
+  if (!(await card.isVisible())) {
+    await page.getByRole('button', { exact: true, name: 'Credits' }).click();
+  }
+
+  return card;
 };
 
 // MAP-02
@@ -83,16 +87,15 @@ test('the Polity borders row toggles and drops its credits', async ({
   await page.goto('/');
 
   const row = page.getByRole('checkbox', { name: 'Polity borders' });
-  const credits = await creditsText(page);
 
   await expect(row).toBeChecked();
-  await expect(credits).toContainText('Public Sans');
+  await expect(await creditsText(page)).toContainText('Public Sans');
   await row.click();
   await expect(row).not.toBeChecked();
-  await expect(credits).not.toContainText('Public Sans');
+  await expect(await creditsText(page)).not.toContainText('Public Sans');
   await row.click();
   await expect(row).toBeChecked();
-  await expect(credits).toContainText('Public Sans');
+  await expect(await creditsText(page)).toContainText('Public Sans');
 });
 
 // NFR-08

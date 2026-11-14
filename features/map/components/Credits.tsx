@@ -20,7 +20,7 @@ export const sourcesOnScreen = (
 
 /**
  * The credits line. `collapsible` (desktop) keeps it to one line: a "Credits" button opens the
- * attribution text in a card above the line, and Esc or a second press closes it.
+ * attribution text in a card above the line. A second press, a press outside or Esc closes it.
  * Without it (the phone) the text shows in full.
  */
 export const Credits = ({
@@ -45,13 +45,28 @@ export const Credits = ({
   useEffect(() => {
     if (!open) return;
 
+    // A dialog owns its own Esc, so the card stays open behind it.
     const onEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (
+        event.key === 'Escape' &&
+        !(
+          event.target instanceof Element &&
+          event.target.closest('dialog, [role=dialog]')
+        )
+      )
+        setOpen(false);
+    };
+    const onPressOutside = (event: PointerEvent) => {
+      if (!(event.target as Element).closest('[data-credits]')) setOpen(false);
     };
 
     document.addEventListener('keydown', onEsc);
+    document.addEventListener('pointerdown', onPressOutside);
 
-    return () => document.removeEventListener('keydown', onEsc);
+    return () => {
+      document.removeEventListener('keydown', onEsc);
+      document.removeEventListener('pointerdown', onPressOutside);
+    };
   }, [open]);
 
   const attributions = (
@@ -70,7 +85,7 @@ export const Credits = ({
   }
 
   return (
-    <div className={styles.line}>
+    <div className={styles.line} data-credits=''>
       <button
         aria-controls={cardId}
         aria-expanded={open}

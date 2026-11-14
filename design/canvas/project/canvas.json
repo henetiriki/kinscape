@@ -767,6 +767,22 @@
       "title": "People — list, with the Relationships link",
       "is_interactive": true,
       "page": "people"
+    },
+    "Map-credits-narrow.dc.html": {
+      "x": 0,
+      "y": 8160,
+      "w": 800,
+      "h": 120,
+      "title": "Credits at 800px — collapsed",
+      "page": "states"
+    },
+    "Map-credits-narrow-open.dc.html": {
+      "x": 880,
+      "y": 8160,
+      "w": 800,
+      "h": 120,
+      "title": "Credits at 800px — expanded",
+      "page": "states"
     }
   },
   "order": [
@@ -801,6 +817,8 @@
     "Map-phone-sources.dc.html",
     "Map-date-invalid.dc.html",
     "Map-phone-date-invalid.dc.html",
+    "Map-credits-narrow.dc.html",
+    "Map-credits-narrow-open.dc.html",
     "Map-style.dc.html",
     "Map-style-phone.dc.html",
     "Kit-index.dc.html",

@@ -107,7 +107,7 @@
   padding: var(--space-4) var(--space-8);
 }
 
-/* A phone, or a window under 1280 wide where the desktop sizes do not fit (Intent 104, D1): one column inside 16px gutters, name and use on one line */
+/* Phone (#104 D1) and below desktop-width (#821 D1 B): one column inside 16px gutters, name and use on one line */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     gap: var(--space-32);

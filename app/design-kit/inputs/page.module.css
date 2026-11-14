@@ -496,7 +496,7 @@
   font-size: var(--type-mono-size);
 }
 
-/* A phone, or a window under 1280 wide where the desktop sizes do not fit (Intent 104, D1): one part at a time inside 16px gutters, a link to the other, and one column */
+/* Phone (#104 D1) and below desktop-width (#821 D1 B): one part at a time, a link to the other, one column */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .kit {
     gap: var(--space-40);

@@ -163,7 +163,7 @@ div:has(> .glyphList) {
   width: 390px;
 }
 
-/* A phone, or a window under 1280 wide where the desktop sizes do not fit: the glyph grid wraps to three columns and nothing is wider than the screen. */
+/* Phone (#104 D1) and below desktop-width (#821 D1 B): the glyph grid wraps to three columns. */
 @media (max-width: 1279.98px), (max-height: 499.98px) {
   .sheetStage,
   .legendSheet {

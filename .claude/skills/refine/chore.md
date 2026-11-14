@@ -46,4 +46,4 @@ Write each box in [STE](../../../docs/writing.md#ste). Then run the check round 
 
 File the Chore with form `4-chore.yml`, as [filing.md](filing.md) says.
 
-The tech lead sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.
+The tech lead sets the status label, except `status: blocked`, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.

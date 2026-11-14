@@ -82,12 +82,20 @@ Answer with `D1: B` or `D1: other, <your option>`:
 
 Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status** label; the status tells you whose turn it is.
 
-| Label                     | Meaning                                                    | Ball is with                           |
-| ------------------------- | ---------------------------------------------------------- | -------------------------------------- |
-| `status: draft`           | Still being written                                        | Author                                 |
-| `status: ready-for-po`    | Needs the PO to read, answer, approve or try a preview     | **PO**                                 |
-| `status: ready-for-dev`   | Approved; a person picks it up                             | Tech lead                              |
-| `status: ready-for-agent` | Claude's turn; the tech lead's label starts a plan         | Claude                                 |
-| `status: blocked`         | Waiting on someone outside the team, or a failed agent run | Whoever is named in the latest comment |
+| Label                     | Meaning                                                              | Ball is with                                             |
+| ------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------- |
+| `status: draft`           | Still being written                                                  | Author                                                   |
+| `status: ready-for-po`    | Needs the PO to read, answer, approve or try a preview               | **PO**                                                   |
+| `status: ready-for-dev`   | Approved; a person picks it up                                       | Tech lead                                                |
+| `status: ready-for-agent` | Claude's turn; the tech lead's label starts a plan                   | Claude                                                   |
+| `status: blocked`         | Waiting on someone outside the team, a failed agent run or a blocker | Whoever the latest comment names, or the blocker's owner |
 
-An open decision is not `blocked`: the ball is with whoever decides it. An open "blocked by" stops its plan and build. When it closes, `blocked` becomes `ready-for-dev`.
+An open decision is not `blocked`: the ball is with whoever decides it.
+
+## Linking issues
+
+- If an open issue must close first, set GitHub's "blocked by" link. It stops the plan and build. When the blocker closes, `blocked` becomes `ready-for-dev`.
+- On a blocked Bug or Chore, also set `status: blocked`. A draft Spec keeps `status: draft`.
+- If an earlier issue is the reason for this one, set the "relates to" link. For a Bug, it is the cause. For a Spec or Chore, it is the issue that it continues.
+- Write no `Blocked by #n` or `Relates to #n` in a body. If a reader would misuse a link, write the reason.
+- Use the issue sidebar, `gh issue edit <n> --add-blocked-by <m>`, or the `addRelatesTo` mutation. Run each `gh api graphql` call alone.

@@ -1,7 +1,7 @@
 # Plan: C829: Send a Spec freed by a design change back to draft
 
 - **Spec:** #829
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The repo has 478 merged PRs.
 - **B.** One `--search <blocker>` call for each blocker. No cap.
 - **Other:** your own.
 
-Recommended: A, because the issue names that command.
+**Answer: A** (@henetiriki)
 
 **D6 · A readable Intent box** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ The box is untrusted text in a comment.
 - **B.** Any first line, in backticks.
 - **Other:** your own.
 
-Recommended: A, because no unchecked text goes into the comment.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

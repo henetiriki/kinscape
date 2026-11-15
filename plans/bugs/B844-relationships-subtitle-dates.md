@@ -2,7 +2,7 @@
 
 - **Spec:** #844 (Bug; boards of M2.11.1, #818; line of M2.11.2, #536)
 - **Requirement IDs:** [PPL-02](../../docs/requirements.md#ppl-02), [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ AGENTS.md lets only the design agent, or an agent that runs the refresh steps, e
 - **B.** The CI build agent edits the board in the repo and runs the workflow. Then the tech lead copies the board to the canvas. The repo copy then leads the canvas, against the AGENTS.md rule.
 - **Other:** your own.
 
-Recommended: A, because the repo copy then comes from the canvas, and no step breaks a rule.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

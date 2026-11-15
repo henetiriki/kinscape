@@ -16,6 +16,7 @@
 
 - **A.** A `@map` slot in the root layout, as the Approach says.
 - **B.** Enable `cacheComponents`. Next hides pages in `<Activity>`, which removes the map.
+- **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
@@ -23,6 +24,7 @@
 
 - **A.** `PageHeader` with the "Map" back link and no Avatar, the "People" H1, and a `NoticeCard` "Loading people" with no progress bar.
 - **B.** `PageHeader`, the H1, and the column heads over grey row blocks.
+- **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
@@ -33,6 +35,7 @@ The phone boards draw `h1Phone`. The page drew `h1`.
 - **A.** `PeopleList` and `PeopleLoading` use `h1Phone` on a phone.
 - **B.** Only `PeopleLoading` does. A Bug fixes `PeopleList`.
 - **C.** Redraw the board with `h1`.
+- **Other:** your own.
 
 **Answer: A** (tech lead, in the session)
 
@@ -41,6 +44,7 @@ The phone boards draw `h1Phone`. The page drew `h1`.
 - **A.** Move the list route into `app/people/(list)/`, so a hard load of a form shows no list header.
 - **B.** Draw loading screens for the forms.
 - **C.** Leave it.
+- **Other:** your own.
 
 **Answer: A** (tech lead, in the session)
 
@@ -51,6 +55,7 @@ A long list prefetches each row in view.
 - **A.** `Links` turns `prefetch` off. `AccountMenu` keeps its own `router.prefetch('/people')`.
 - **B.** Leave it, and record the cost.
 - **C.** Measure first.
+- **Other:** your own.
 
 **Answer: A** (tech lead, in the session)
 
@@ -72,7 +77,7 @@ A long list prefetches each row in view.
 
 ## Order of work
 
-1. Run the design system steps. The agent runs 2 and 9. The tech lead, or a local session with a signed-in account, runs 3 to 5 and 8. The design agent draws the board (7).
+1. Run the design system steps. The agent runs 2 and 9. A local session runs 3 to 5 and 8. The design agent draws the board (7).
 
 ## Deviations
 
@@ -81,7 +86,6 @@ A long list prefetches each row in view.
 - `app/people/layout.tsx` checks the session, so a redirect comes before the 200 status. It passes any other error to the page, which shows its load-failed state. The map `AccountMenu` prefetches `/people`, so a slow server shows the loading screen.
 - `currentSession` uses React `cache`. The `@map` page, the People layout and the page then make one session lookup for each request. `current-cache.test.ts` checks it.
 - Two design tests count 95 snapshots, not 93, and 72 components, not 71.
-- `app/@map/default.tsx` and `app/people/(list)/loading.tsx` each have a test, for 100% coverage.
 
 ## Risks
 
@@ -98,7 +102,6 @@ A long list prefetches each row in view.
 | Hidden map                                 | `MapHost.test.tsx`; `navigation.spec.ts` Tab         |
 | Direct `/people` loads no map files        | `navigation.spec.ts` request log                     |
 | Sign out, sign in: fresh map               | `navigation.spec.ts`; `MapHost.test.tsx`             |
-| Architecture rows                          | `npm run words`; review                              |
 | NFR-03 checks, `proxy.ts`                  | `gate.test.ts`, `e2e/gate.spec.mts`                  |
 | `Cache-Control` on `/people`               | `__tests__/next-config.test.ts`                      |
 | NFR-01, #104, #261                         | `@perf` tests; `map-phone.spec.ts`, `Stage.test.tsx` |

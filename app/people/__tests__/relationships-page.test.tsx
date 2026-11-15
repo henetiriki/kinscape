@@ -205,7 +205,32 @@ describe('/people/{id}/relationships', () => {
     group('Spouses').getByText('No spouses yet.');
   });
 
-  it('omits a Relationship when the list of Persons has no Person for its other end', async () => {
+  it('omits a Relationship when no read finds the Person at its other end', async () => {
+    const { store } = await setup();
+
+    adapters.current = {
+      ...(adapters.current as object),
+      store: {
+        ...store,
+        findPerson: async (scope: { personId: string }) =>
+          scope.personId === uuid(8, 3)
+            ? undefined
+            : store.findPerson(scope as never),
+        listPersons: async (scope: never) =>
+          (await store.listPersons(scope)).filter(
+            person => person.id !== uuid(8, 3)
+          ),
+      },
+    };
+    await open();
+
+    expect(rows('Parents')).toEqual([
+      expect.stringContaining('Rossouw, Jacobus'),
+    ]);
+    expect(screen.queryByText(/Nel, Johanna/)).toBeNull();
+  });
+
+  it('reads a related Person that the list of Persons lacks, as in a Tree past the list cap', async () => {
     const { store } = await setup();
 
     adapters.current = {
@@ -221,9 +246,9 @@ describe('/people/{id}/relationships', () => {
     await open();
 
     expect(rows('Parents')).toEqual([
+      expect.stringContaining('Nel, Johanna'),
       expect.stringContaining('Rossouw, Jacobus'),
     ]);
-    expect(screen.queryByText(/Nel, Johanna/)).toBeNull();
   });
 
   it('lists every other Person of the Tree in the picker, and no one of another Tree', async () => {

@@ -4,11 +4,16 @@ import type {
 } from '@ks/features/people';
 import type { FuzzyDate } from '@ks/lib/domain/dates/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
+import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonRelationships } from '@ks/features/people';
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
-import { personDates, spouseDates } from '@ks/lib/domain/persons/dates.mts';
+import {
+  personDates,
+  personSummary,
+  spouseDates,
+} from '@ks/lib/domain/persons/dates.mts';
 
 const exact = (year: string) => fuzzyDateOf('EXACT', year);
 
@@ -132,15 +137,16 @@ const sample = (
   givenNames: string,
   dates: Parameters<typeof personDates>[0],
   more: Partial<Pick<PersonSummary, 'maidenName' | 'variants'>> = {}
-): PersonSummary => ({
-  ...personDates(dates),
-  givenNames,
-  id,
-  maidenName: '',
-  surname,
-  variants: [],
-  ...more,
-});
+): PersonSummary =>
+  personSummary({
+    ...dates,
+    givenNames,
+    id,
+    maidenName: '',
+    surname,
+    variants: [],
+    ...more,
+  });
 
 /** The synthetic Persons of the Tree, other than the subject: the picker's rows. */
 const SAMPLE_PEOPLE: PersonSummary[] = [
@@ -240,7 +246,7 @@ export const RelationshipsScreen = ({
 }: {
   empty?: boolean;
   failed?: boolean;
-  picking?: { group: 'children' | 'parents' | 'spouses'; query?: string };
+  picking?: { group: RelationshipGroup; query?: string };
 }) => {
   const account = {
     email: 'researcher@example.com',

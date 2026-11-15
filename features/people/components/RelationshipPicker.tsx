@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
+import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { PickerRow } from '@ks/app/components/actions/PickerRow';
@@ -14,27 +15,30 @@ import { findPeople } from '@ks/lib/domain/persons/list.mts';
 
 import styles from '@ks/features/people/components/RelationshipPicker.module.css';
 
-const TITLES = {
+const TITLES: Record<RelationshipGroup, string> = {
   children: 'Add a child',
   parents: 'Add a parent',
   spouses: 'Add a spouse',
-} as const;
+};
 
 /**
  * Step 1 of "Add" on the Relationships page (PPL-02): a dialog that lists the other Persons, with
  * the filter of the People list. A row has no action until step 2 exists (M2.11.4.3). The page
- * mounts the picker when "Add" opens it, so each opening starts with an empty filter.
+ * gives the picker a new `key` each time "Add" opens it, so the filter is empty each time.
  * `initialQuery` is for the screen boards.
  */
 export const RelationshipPicker = ({
   group,
   initialQuery = '',
   onClose,
+  open,
   people,
 }: {
-  group: keyof typeof TITLES;
+  group: RelationshipGroup;
   initialQuery?: string;
   onClose: () => void;
+  /** The page keeps the picker mounted after it closes: the browser returns focus on close only. */
+  open: boolean;
   /** Every Person of the Tree except the one whose page it is. */
   people: PersonSummary[];
 }) => {
@@ -44,7 +48,7 @@ export const RelationshipPicker = ({
   return (
     <Dialog
       onClose={onClose}
-      open
+      open={open}
       subtitle='Step 1 of 2. Choose the person.'
       title={TITLES[group]}>
       <TextField

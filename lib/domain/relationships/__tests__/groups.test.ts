@@ -4,7 +4,10 @@ import type { PersonView } from '@ks/lib/domain/persons/types';
 import type { Relationship } from '@ks/lib/domain/relationships/types';
 
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
-import { groupRelationships } from '@ks/lib/domain/relationships/groups.mts';
+import {
+  groupRelationships,
+  relatedPersonIds,
+} from '@ks/lib/domain/relationships/groups.mts';
 
 const id = (n: number) =>
   parsePersonId(`01900000-0000-7000-8000-${String(n).padStart(12, '0')}`)!;
@@ -59,6 +62,21 @@ const names = (entries: { person: PersonView }[]) =>
   entries.map(
     ({ person: { givenNames, surname } }) => `${surname}, ${givenNames}`
   );
+
+// PPL-02
+describe('relatedPersonIds', () => {
+  it('lists the Person at the other end of each Relationship of the Person, once', () => {
+    expect(
+      relatedPersonIds(id(1), [
+        parent(1, 2, 1),
+        parent(2, 1, 4),
+        spouse(3, 6, 1),
+        spouse(4, 1, 6),
+        parent(5, 4, 5),
+      ])
+    ).toEqual([id(2), id(4), id(6)]);
+  });
+});
 
 // PPL-02
 describe('groupRelationships', () => {

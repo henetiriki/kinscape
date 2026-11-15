@@ -19,7 +19,10 @@ import {
   personSummary,
   spouseDates,
 } from '@ks/lib/domain/persons/dates.mts';
-import { groupRelationships } from '@ks/lib/domain/relationships/groups.mts';
+import {
+  groupRelationships,
+  relatedPersonIds,
+} from '@ks/lib/domain/relationships/groups.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
 import { requireSession } from '@ks/server/auth/current.mts';
@@ -45,8 +48,9 @@ const entryOf = ({
 });
 
 /**
- * The Relationships of one Person, in three groups, and every other Person for the picker. It
- * reads the Persons once. It sends only names, dates and spelling variants.
+ * The Relationships of one Person, in three groups, and every other Person for the picker. The
+ * list of Persons stops at `MAX_LISTED`, so it reads each related Person that the list lacks. It
+ * sends only names, dates and spelling variants.
  */
 const readRelationships = treeAction(
   idField(parsePersonId),
@@ -55,10 +59,22 @@ const readRelationships = treeAction(
       tree.relationships.list(),
       tree.persons.list(),
     ]);
+    const listed = new Map(persons.map(person => [person.id, person]));
+    const lacking = relatedPersonIds(id, relationships).filter(
+      other => !listed.has(other)
+    );
+    const read = await Promise.all(
+      lacking.map(other => tree.persons.get(other))
+    );
     const groups = groupRelationships(
       id,
       relationships,
-      new Map(persons.map(person => [person.id, person]))
+      new Map([
+        ...listed,
+        ...read.flatMap(person =>
+          person ? [[person.id, person] as const] : []
+        ),
+      ])
     );
 
     return ok({

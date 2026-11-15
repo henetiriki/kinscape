@@ -232,8 +232,22 @@ describe('the groups', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
       expect(screen.queryByRole('heading', { name: title })).toBeNull();
+      expect(document.querySelector('dialog')?.open).toBe(false);
     }
   );
+
+  it('clears the filter when "Add" opens the picker again', () => {
+    open();
+
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'Pretorius' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+
+    expect(screen.getByRole('searchbox')).toHaveProperty('value', '');
+  });
 
   it('opens with a filter when the screen board says so', () => {
     open({ picking: { group: 'parents', query: 'Pretorius' } });

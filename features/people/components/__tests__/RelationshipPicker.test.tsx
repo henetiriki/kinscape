@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
+import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
 import { RelationshipPicker } from '@ks/features/people/components/RelationshipPicker';
 
@@ -40,7 +41,7 @@ const maria = person({
 
 const open = (
   people: PersonSummary[],
-  group: 'children' | 'parents' | 'spouses' = 'parents',
+  group: RelationshipGroup = 'parents',
   query?: string
 ) => {
   const onClose = vi.fn();
@@ -50,6 +51,7 @@ const open = (
       group={group}
       initialQuery={query}
       onClose={onClose}
+      open
       people={people}
     />
   );

@@ -3,6 +3,7 @@ import type { PersonView } from '#ks/lib/domain/persons/types.ts';
 import type {
   RelatedPerson,
   Relationship,
+  RelationshipGroup,
 } from '#ks/lib/domain/relationships/types.ts';
 
 import { byName } from '#ks/lib/domain/persons/list.mts';
@@ -11,7 +12,7 @@ import { byName } from '#ks/lib/domain/persons/list.mts';
 const otherEnd = (
   id: PersonId,
   relationship: Relationship
-): [PersonId, 'children' | 'parents' | 'spouses'] | undefined => {
+): [PersonId, RelationshipGroup] | undefined => {
   if (relationship.type === 'parent') {
     if (relationship.childId === id) return [relationship.parentId, 'parents'];
     if (relationship.parentId === id) return [relationship.childId, 'children'];
@@ -26,6 +27,23 @@ const otherEnd = (
 };
 
 /**
+ * The Persons at the other end of the Relationships of one Person, each once. Read these, then
+ * group.
+ */
+export const relatedPersonIds = (
+  id: PersonId,
+  relationships: Relationship[]
+): PersonId[] => [
+  ...new Set(
+    relationships.flatMap(relationship => {
+      const end = otherEnd(id, relationship);
+
+      return end ? [end[0]] : [];
+    })
+  ),
+];
+
+/**
  * The Relationships of one Person, in three groups, each sorted by surname, then given names
  * (PPL-02). `groupRelationships` omits a Relationship of another Person, and a Relationship whose
  * other Person is not in `people`.
@@ -34,8 +52,8 @@ export const groupRelationships = (
   id: PersonId,
   relationships: Relationship[],
   people: ReadonlyMap<PersonId, PersonView>
-): Record<'children' | 'parents' | 'spouses', RelatedPerson[]> => {
-  const groups: Record<'children' | 'parents' | 'spouses', RelatedPerson[]> = {
+): Record<RelationshipGroup, RelatedPerson[]> => {
+  const groups: Record<RelationshipGroup, RelatedPerson[]> = {
     children: [],
     parents: [],
     spouses: [],

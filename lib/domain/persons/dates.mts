@@ -25,7 +25,7 @@ export const personDates = (person: {
   diedReading: reading(person.death),
 });
 
-/** One row of the People list for a Person. The notes stay out. */
+/** One row of the People list for a Person. The row has no notes. */
 export const personSummary = (
   person: Parameters<typeof personDates>[0] &
     Pick<

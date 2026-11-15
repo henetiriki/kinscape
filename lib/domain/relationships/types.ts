@@ -19,6 +19,9 @@ export type RelatedPerson = { person: PersonView; relationship: Relationship };
 /** A saved Relationship. */
 export type Relationship = { version: number } & RelationshipInput;
 
+/** The three groups of the Relationships of a Person. */
+export type RelationshipGroup = 'children' | 'parents' | 'spouses';
+
 /** What a client saves for a Relationship. */
 export type RelationshipInput = z.output<typeof relationshipInputSchema>;
 

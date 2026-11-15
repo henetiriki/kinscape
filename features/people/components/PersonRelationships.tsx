@@ -8,6 +8,7 @@ import type {
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
+import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { DateText } from '@ks/app/components/actions/DateText';
@@ -27,8 +28,6 @@ const GROUPS = [
   { key: 'children', title: 'Children' },
 ] as const;
 
-type GroupKey = (typeof GROUPS)[number]['key'];
-
 /** The board words a Relationship "link" in the count; the code calls it a Relationship. */
 const count = (relationships: number) =>
   `${relationships} ${relationships === 1 ? 'link' : 'links'}`;
@@ -37,7 +36,8 @@ const count = (relationships: number) =>
  * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
  * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
  * load that failed may have no `person`, so the subtitle is then the save note only. "Add" opens
- * the picker of its group; the save is not built yet. "Edit" points at this page until the edit dialog exists.
+ * the picker of its group. The picker has no save. "Edit" points at this page until the edit
+ * dialog exists. The picker stays mounted after it closes, so the browser returns focus to "Add".
  */
 export const PersonRelationships = ({
   email,
@@ -62,16 +62,18 @@ export const PersonRelationships = ({
     }
   | {
       failed?: false;
-      groups: Record<GroupKey, RelationshipEntry[]>;
+      groups: Record<RelationshipGroup, RelationshipEntry[]>;
       /** Every Person of the Tree except `person`, for the picker. */
       people: PersonSummary[];
       person: RelationshipsPerson;
       /** Opens the picker of a group at the start, with a filter. For the screen boards. */
-      picking?: { group: GroupKey; query?: string };
+      picking?: { group: RelationshipGroup; query?: string };
     }
 )) => {
   const router = useRouter();
   const [adding, setAdding] = useState(picking?.group);
+  const [open, setOpen] = useState(picking !== undefined);
+  const [opened, setOpened] = useState(0);
   const query = picking?.query;
 
   return (
@@ -135,7 +137,13 @@ export const PersonRelationships = ({
                       </Text>
                       <Text variant='small'>{count(groups[key].length)}</Text>
                     </div>
-                    <Button onClick={() => setAdding(key)} variant='secondary'>
+                    <Button
+                      onClick={() => {
+                        setAdding(key);
+                        setOpen(true);
+                        setOpened(times => times + 1);
+                      }}
+                      variant='secondary'>
                       Add
                     </Button>
                   </div>
@@ -164,7 +172,9 @@ export const PersonRelationships = ({
           <RelationshipPicker
             group={adding}
             initialQuery={query}
-            onClose={() => setAdding(undefined)}
+            key={opened}
+            onClose={() => setOpen(false)}
+            open={open}
             people={people}
           />
         )}

@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   findProblems,
-  LAUNCH_ARGS,
+  launch,
   render,
   screenNames,
   snapshotNames,
@@ -120,9 +120,15 @@ describe('findProblems', () => {
   });
 });
 
-describe('LAUNCH_ARGS', () => {
-  it('pins Chromium to one raster thread', () => {
-    expect(LAUNCH_ARGS).toContain('--num-raster-threads=1');
+describe('launch', () => {
+  it('starts the browser with one raster thread', async () => {
+    const browser = {};
+    const browserType = { launch: vi.fn(async () => browser) };
+
+    expect(await launch(browserType)).toBe(browser);
+    expect(browserType.launch).toHaveBeenCalledWith({
+      args: ['--num-raster-threads=1'],
+    });
   });
 });
 

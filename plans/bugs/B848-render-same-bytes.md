@@ -5,7 +5,7 @@
 
 ## Approach
 
-The data point to the render, not to the runner. Each flip changed one JPG, but 24 map snapshots draw the same filters. A change of CPU between runners changes all 24. So one page can raster its filter tiles in a different order on each run. `scripts/design-shots.mts` launches Chromium with `--num-raster-threads=1` (D1), from a new constant `LAUNCH_ARGS`. `render` and its byte compare do not change.
+The data point to the render, not to the runner. Each flip changed one JPG, but 24 map snapshots draw the same filters. A change of CPU between runners changes all 24. `scripts/design-shots.mts` launches Chromium with `--num-raster-threads=1` (D1), from a new constant `LAUNCH_ARGS`. `render` does not change.
 
 ## Decisions
 
@@ -38,6 +38,17 @@ Two of 10 Render commits flipped a JPG. At that rate, the unfixed render passes 
 
 **Answer: B** (@henetiriki)
 
+**D4 · How to test the launch flag** · Decides: Tech lead
+
+No test fails if `chromium.launch`, in a `v8 ignore` block, drops the flag.
+
+- **A.** Move the call into an exported `launch(browserType)`. A test checks its arguments.
+- **B.** Inject `launch` as a dep.
+- **C.** Accept the gap.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - Compare pixels with a tolerance. The Tech lead line in "Expected per" forbids it.
@@ -45,25 +56,25 @@ Two of 10 Render commits flipped a JPG. At that rate, the unfixed render passes 
 
 ## Files that change
 
-| File                                     | New / changed | What                                       |
-| ---------------------------------------- | ------------- | ------------------------------------------ |
-| `plans/bugs/B848-render-same-bytes.md`   | New           | This plan                                  |
-| `scripts/design-shots.mts`               | Changed       | `LAUNCH_ARGS`, passed to `chromium.launch` |
-| `scripts/__tests__/design-shots.test.ts` | Changed       | A test that `LAUNCH_ARGS` has the flag     |
-| `design/*.jpg`                           | Changed       | Workflow output, only under D2 A           |
+| File                                     | New / changed | What                                   |
+| ---------------------------------------- | ------------- | -------------------------------------- |
+| `plans/bugs/B848-render-same-bytes.md`   | New           | This plan                              |
+| `scripts/design-shots.mts`               | Changed       | `LAUNCH_ARGS`, passed by `launch` (D4) |
+| `scripts/__tests__/design-shots.test.ts` | Changed       | A test that `launch` passes the flag   |
+| `design/*.jpg`                           | Changed       | Workflow output, only under D2 A       |
 
 ## Order of work
 
 1. Commit this plan: `plan(B848): approved by @<tech lead>`.
-2. Write the `LAUNCH_ARGS` test and see it fail. Then add the constant.
+2. Write the `launch` test and see it fail. Then add `LAUNCH_ARGS` and `launch`.
 3. Run the last acceptance check's commands. Push.
-4. The CI agent cannot start a workflow. So the tech lead runs **Design: Render snapshots** on the branch, as D3 says. Start each run after the commit of the last run.
+4. The tech lead runs **Design: Render snapshots** on the branch, as D3 says. Start each run after the last run's commit.
 5. Paste each run's "Check which files changed" summary in the PR's Evidence. If run 1 lists a JPG, follow D2.
 6. Check that only `chore: export and render design snapshots` commits change `design/*.jpg` or `design/source/*.html`.
 
 ## Risks
 
-- If a later run lists a JPG, the flag is not the cause. The build stops ([big-departures rule](../README.md#big-departures)) and returns to D1.
+- If a later run lists a JPG, the flag is not the cause. The build returns to D1 ([big-departures rule](../README.md#big-departures)).
 
 ## Proof
 
@@ -83,3 +94,7 @@ Two of 10 Render commits flipped a JPG. At that rate, the unfixed render passes 
 ## Out of scope
 
 - `design-agent-shots.yml` and `design-shots-ci.mts` (hand-back paths).
+
+## Deviations
+
+- The edited-board check has a unit test as proof, not a Render run. No proof run edited a board.

@@ -1,7 +1,7 @@
 # Plan: C855: Raise the word budgets of plans by 50%
 
 - **Spec:** #855
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

@@ -8,15 +8,19 @@ import styles from '@ks/app/components/actions/IconButton.module.css';
 export const IconButton = ({
   label,
   state,
+  variant,
   ...rest
 }: {
   label: string;
   state?: ControlState;
+  /** `raised` is 48px with a shadow and no border, for a button over the map. */
+  variant?: 'raised';
 } & Omit<ComponentProps<'button'>, 'aria-label' | 'className'>) => (
   <button
     aria-label={label}
     className={styles.iconBtn}
     data-state={state}
+    data-variant={variant}
     type='button'
     {...rest}
   />

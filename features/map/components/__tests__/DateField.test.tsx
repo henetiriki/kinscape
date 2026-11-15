@@ -305,7 +305,6 @@ it('leaves a half-typed date unchecked', () => {
   expect(screen.queryByRole('alert')).toBeNull();
 });
 
-// The design system bundle orders TextLink's rules after `.fix`, so only a data attribute keeps the link small.
 it.each(['above', 'below'] as const)(
   'sets the fix link to the small TextLink size, with the message %s the field',
   placement => {

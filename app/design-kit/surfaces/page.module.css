@@ -121,14 +121,10 @@
   left: 50%;
 }
 
+/* Holds the "Go to" TextLink. */
 .goTo {
-  composes: textLink from '@ks/app/components/actions/TextLink.module.css';
-  background: none;
   align-self: flex-start;
-  border: 0;
-  font-size: var(--type-small-size);
-  line-height: var(--type-small-line);
-  padding: 0;
+  display: flex;
 }
 
 .itemSample {

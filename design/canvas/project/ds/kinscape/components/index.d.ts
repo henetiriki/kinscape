@@ -238,9 +238,11 @@ export declare const Button: ({ children, full, icon, label, round, size, state,
 export type ButtonProps = Parameters<typeof Button>[0];
 
 /** An action shown only as an icon, such as zoom, close or step, named by its `label`. */
-export declare const IconButton: ({ label, state, ...rest }: {
+export declare const IconButton: ({ label, state, variant, ...rest }: {
     label: string;
     state?: ControlState;
+    /** `raised` is 48px with a shadow and no border, for a button over the map. */
+    variant?: "raised";
 } & Omit<ComponentProps<"button">, "aria-label" | "className">) => import("react").JSX.Element;
 export type IconButtonProps = Parameters<typeof IconButton>[0];
 
@@ -294,15 +296,19 @@ export declare const Tabs: ({ disabled, fill, label, onSelect, selected, tabs, }
 }) => import("react").JSX.Element;
 export type TabsProps = Parameters<typeof Tabs>[0];
 
-/** An anchor has no disabled state, so a disabled link is plain text that says so. */
-export declare const TextLink: ({ children, disabled, href, size, state, ...rest }: {
+/**
+ * An anchor has no disabled state, so a disabled link is plain text that says so.
+ * With `onClick` and no `href` it is a `<button>` with the same look.
+ */
+export declare const TextLink: ({ children, disabled, href, onClick, size, state, ...rest }: {
     disabled?: boolean;
-    /** Required unless `disabled`. */
+    /** Required unless `disabled` or `onClick`. */
     href?: string;
+    onClick?: () => void;
     /** `small` is 13 / 20, for dense surfaces such as the Sources dialog. */
     size?: "small";
     state?: ControlState;
-} & Omit<ComponentProps<"a">, "className">) => import("react").JSX.Element;
+} & Omit<ComponentProps<"a">, "className" | "onClick">) => import("react").JSX.Element;
 export type TextLinkProps = Parameters<typeof TextLink>[0];
 
 /** With `href` it is a link and takes the attributes of one. Without it, it is a label and takes none. */

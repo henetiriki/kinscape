@@ -2,9 +2,8 @@ import type { ComponentProps } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { IconButton } from '@ks/app/components/actions/IconButton';
 import { Icon } from '@ks/app/components/foundation/Icon';
-
-import styles from '@ks/features/map/components/LayersButton.module.css';
 
 /** The phone's one 48px button that opens Layers and filters. */
 export const LayersButton = ({
@@ -16,12 +15,11 @@ export const LayersButton = ({
   ComponentProps<'button'>,
   'aria-label' | 'children' | 'className'
 >) => (
-  <button
-    aria-label='Layers and filters'
-    className={styles.button}
-    data-state={state}
-    type='button'
+  <IconButton
+    label='Layers and filters'
+    state={state}
+    variant='raised'
     {...rest}>
     <Icon name='layers' size={24} />
-  </button>
+  </IconButton>
 );

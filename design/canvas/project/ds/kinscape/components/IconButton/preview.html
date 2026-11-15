@@ -1,4 +1,4 @@
-<!-- @dsCard group="Actions" height=120 -->
+<!-- @dsCard group="Actions" height=240 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,7 +18,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["IconButton"];
   var handlers = [];
-  var states = [{"label":"IconButton · default","children":"+","props":{"disabled":false,"label":"Zoom in"}},{"label":"IconButton · active","children":"+","props":{"disabled":false,"label":"Zoom in","state":"active"}},{"label":"IconButton · focus","children":"+","props":{"disabled":false,"label":"Zoom in","state":"focus"}},{"label":"IconButton · hover","children":"+","props":{"disabled":false,"label":"Zoom in","state":"hover"}},{"label":"IconButton · disabled","children":"+","props":{"disabled":true,"label":"Zoom in"}}];
+  var states = [{"label":"IconButton · default","children":"+","props":{"disabled":false,"label":"Zoom in"}},{"label":"IconButton · active","children":"+","props":{"disabled":false,"label":"Zoom in","state":"active"}},{"label":"IconButton · focus","children":"+","props":{"disabled":false,"label":"Zoom in","state":"focus"}},{"label":"IconButton · hover","children":"+","props":{"disabled":false,"label":"Zoom in","state":"hover"}},{"label":"IconButton · disabled","children":"+","props":{"disabled":true,"label":"Zoom in"}},{"label":"IconButton raised · default","children":"+","props":{"disabled":false,"label":"Layers","variant":"raised"}},{"label":"IconButton raised · active","children":"+","props":{"disabled":false,"label":"Layers","state":"active","variant":"raised"}},{"label":"IconButton raised · focus","children":"+","props":{"disabled":false,"label":"Layers","state":"focus","variant":"raised"}},{"label":"IconButton raised · hover","children":"+","props":{"disabled":false,"label":"Layers","state":"hover","variant":"raised"}},{"label":"IconButton raised · disabled","children":"+","props":{"disabled":true,"label":"Layers","variant":"raised"}}];
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
     var part = window.KinScape[slot.control];

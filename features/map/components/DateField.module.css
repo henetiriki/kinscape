@@ -16,13 +16,10 @@
   position: relative;
 }
 
-/* A text link that is a button: the fix for a date that is out of range. */
+/* Holds the fix button, a TextLink, for a date that is out of range. */
 .fix {
-  composes: textLink from '@ks/app/components/actions/TextLink.module.css';
   align-self: flex-start;
-  background: none;
-  border: 0;
-  padding: 0;
+  display: flex;
 }
 
 .anchor[data-fill] {
@@ -61,6 +58,6 @@
   }
 
   .phoneFix {
-    display: block;
+    display: flex;
   }
 }

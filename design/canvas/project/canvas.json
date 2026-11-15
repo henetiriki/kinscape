@@ -329,7 +329,7 @@
       "x": 0,
       "y": 13323,
       "w": 1440,
-      "h": 1675,
+      "h": 1772,
       "title": "Style guide 04 — Component states",
       "page": "style-guide"
     },
@@ -337,7 +337,7 @@
       "x": 1520,
       "y": 13323,
       "w": 390,
-      "h": 4589,
+      "h": 4948,
       "title": "Style guide 04 — Component states, phone",
       "page": "style-guide"
     },
@@ -960,8 +960,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1794740003-3d5c",
-      "copiedAt": "2026-11-15T10:54:28Z"
+      "version": "1794746824-6724",
+      "copiedAt": "2026-11-15T12:47:26Z"
     }
   ]
 }

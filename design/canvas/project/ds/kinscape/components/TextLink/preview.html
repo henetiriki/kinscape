@@ -1,4 +1,4 @@
-<!-- @dsCard group="Actions" height=160 -->
+<!-- @dsCard group="Actions" height=200 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,8 +17,8 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var h = React.createElement;
   var noop = function () {};
   var Control = window.KinScape["TextLink"];
-  var handlers = [];
-  var states = [{"label":"TextLink · default","children":"Sources","props":{"disabled":false,"href":"/sources"}},{"label":"TextLink · active","children":"Sources","props":{"disabled":false,"href":"/sources","state":"active"}},{"label":"TextLink · focus","children":"Sources","props":{"disabled":false,"href":"/sources","state":"focus"}},{"label":"TextLink · hover","children":"Sources","props":{"disabled":false,"href":"/sources","state":"hover"}},{"label":"TextLink · disabled","children":"Sources","props":{"disabled":true,"href":"/sources"}},{"children":"Sources","label":"TextLink · small","props":{"href":"/sources","size":"small"}}];
+  var handlers = ["onClick"];
+  var states = [{"label":"TextLink · default","children":"Sources","props":{"disabled":false,"href":"/sources"}},{"label":"TextLink · active","children":"Sources","props":{"disabled":false,"href":"/sources","state":"active"}},{"label":"TextLink · focus","children":"Sources","props":{"disabled":false,"href":"/sources","state":"focus"}},{"label":"TextLink · hover","children":"Sources","props":{"disabled":false,"href":"/sources","state":"hover"}},{"label":"TextLink · disabled","children":"Sources","props":{"disabled":true,"href":"/sources"}},{"children":"Sources","label":"TextLink · small","props":{"href":"/sources","size":"small"}},{"children":"Go to 1901-02-28","label":"TextLink · button","props":{"size":"small"}}];
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
     var part = window.KinScape[slot.control];

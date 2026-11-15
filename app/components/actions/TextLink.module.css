@@ -12,6 +12,14 @@
   text-underline-offset: 3px;
 }
 
+/* The button form: undo the button's own look, so it reads as the link. */
+.textLink:where(button) {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+}
+
 .textLink[data-size='small'] {
   font-size: var(--type-link-s-size);
   line-height: var(--type-link-s-line);

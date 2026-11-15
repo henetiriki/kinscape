@@ -64,7 +64,10 @@ it('names the layers button and calls its handler', () => {
   const onClick = vi.fn();
 
   render(<LayersButton onClick={onClick} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Layers and filters' }));
+  const button = screen.getByRole('button', { name: 'Layers and filters' });
+
+  fireEvent.click(button);
 
   expect(onClick).toHaveBeenCalledOnce();
+  expect(button.getAttribute('data-variant')).toBe('raised');
 });

@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { expect, it } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
 
 import { TextLink } from '@ks/app/components/actions/TextLink';
 
@@ -31,6 +31,46 @@ it('has a small size, also when disabled', () => {
 
   expect(screen.getByRole('link', { name: 'Live' }).dataset.size).toBe('small');
   expect(screen.getByText('Off').dataset.size).toBe('small');
+});
+
+it('is a button with onClick and no href', () => {
+  const onClick = vi.fn();
+
+  render(
+    <TextLink onClick={onClick} size='small' state='hover'>
+      Go to 1901
+    </TextLink>
+  );
+
+  const button = screen.getByRole('button', { name: 'Go to 1901' });
+
+  fireEvent.click(button);
+
+  expect(onClick).toHaveBeenCalledOnce();
+  expect(button.getAttribute('type')).toBe('button');
+  expect(button.dataset.size).toBe('small');
+  expect(button.dataset.state).toBe('hover');
+  expect(screen.queryByRole('link')).toBeNull();
+});
+
+it('passes the other attributes to the button, except those only an anchor has', () => {
+  render(
+    <TextLink
+      aria-describedby='message'
+      id='fix'
+      onClick={vi.fn()}
+      rel='noreferrer'
+      target='_blank'>
+      Go to 1901
+    </TextLink>
+  );
+
+  const button = screen.getByRole('button', { name: 'Go to 1901' });
+
+  expect(button.getAttribute('aria-describedby')).toBe('message');
+  expect(button.id).toBe('fix');
+  expect(button.hasAttribute('target')).toBe(false);
+  expect(button.hasAttribute('rel')).toBe(false);
 });
 
 it('is plain text marked disabled when disabled', () => {

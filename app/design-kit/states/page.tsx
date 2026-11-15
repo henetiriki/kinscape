@@ -12,6 +12,7 @@ import { Tabs } from '@ks/app/components/actions/Tabs';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { TextField } from '@ks/app/components/forms/TextField';
+import { Icon } from '@ks/app/components/foundation/Icon';
 import { boardTitle } from '@ks/app/design-kit/boards';
 import { requireDevPage } from '@ks/server/auth/current.mts';
 
@@ -90,6 +91,19 @@ const ROWS: {
         label='Zoom in'
         state={stateOf(column)}>
         <Plus />
+      </IconButton>
+    ),
+  },
+  {
+    hint: 'Over the map: the phone Layers button',
+    name: 'Raised icon button',
+    render: column => (
+      <IconButton
+        disabled={column === 'disabled'}
+        label='Layers and filters'
+        state={stateOf(column)}
+        variant='raised'>
+        <Icon name='layers' size={24} />
       </IconButton>
     ),
   },

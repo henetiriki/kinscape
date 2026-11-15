@@ -45,7 +45,7 @@
         <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="5">
           <span aria-hidden="true" style="{{c.wrap}}">
             <sc-for list="{{c.parts}}" as="p" hint-placeholder-count="1">
-              <span style="{{p.style}}"><sc-if value="{{p.plus}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></sc-if><sc-if value="{{p.check}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>{{p.text}}<sc-if value="{{p.arrow}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></sc-if></span>
+              <span style="{{p.style}}"><sc-if value="{{p.plus}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></sc-if><sc-if value="{{p.layers}}" hint-placeholder-val="{{ false }}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"></path><path d="M3 13l9 5 9-5"></path></svg></sc-if><sc-if value="{{p.check}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>{{p.text}}<sc-if value="{{p.arrow}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></sc-if></span>
             </sc-for>
           </span>
         </sc-for>
@@ -75,14 +75,15 @@
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1675}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1772}}'>
 class Component extends DCLogic {
   renderVals() {
     const F = '; outline: 2px solid #264F29; outline-offset: 2px';
-    const cell = (parts, wrap) => ({ wrap: (wrap || 'display: inline-flex; align-items: center; gap: 12px') + '; justify-self: start', parts: parts.map((p) => Object.assign({ arrow: false }, p)) });
+    const cell = (parts, wrap) => ({ wrap: (wrap || 'display: inline-flex; align-items: center; gap: 12px') + '; justify-self: start', parts: parts.map((p) => Object.assign({ arrow: false, layers: false }, p)) });
     const one = (style, text, extra) => cell([Object.assign({ style: style, text: text || '', plus: false, check: false }, extra || {})]);
     const btn = 'display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; font-size: 15px; line-height: 22px; font-weight: 600; ';
     const icon = 'display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 8px; ';
+    const raised = 'display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; box-sizing: border-box; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); ';
     const link = 'font-size: 15px; line-height: 22px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; border-radius: 2px; ';
     const arrow = 'display: inline-flex; align-items: center; gap: 4px; font-size: 15px; line-height: 22px; font-weight: 500; border-radius: 2px; ';
     const arw = (style) => one(arrow + style, 'Edit', { arrow: true });
@@ -117,6 +118,12 @@ class Component extends DCLogic {
         one(icon + 'background: #FFFFFF; border: 1px solid #E2E5DD; color: #18211B' + F, '', { plus: true }),
         one(icon + 'background: #E6EEE4; border: 1px solid #E2E5DD; color: #1D3E20', '', { plus: true }),
         one(icon + 'background: #FFFFFF; border: 1px solid #E2E5DD; color: #A3AAA1', '', { plus: true })]],
+      ['Raised icon button', 'Over the map: the phone Layers button', [
+        one(raised + 'background: #FFFFFF; color: #18211B', '', { layers: true }),
+        one(raised + 'background: #F4F5F0; color: #18211B', '', { layers: true }),
+        one(raised + 'background: #FFFFFF; color: #18211B' + F, '', { layers: true }),
+        one(raised + 'background: #E6EEE4; color: #1D3E20', '', { layers: true }),
+        one(raised + 'background: #FFFFFF; color: #A3AAA1', '', { layers: true })]],
       ['Link', 'In text and popups', [
         one(link + 'color: #264F29; text-decoration-thickness: 1px', 'Attributions'),
         one(link + 'color: #1D3E20; text-decoration-thickness: 2px', 'Attributions'),

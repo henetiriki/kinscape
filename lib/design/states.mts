@@ -198,13 +198,19 @@ export const CARDS: Card[] = [
     design: [],
     group: 'Actions',
     handlers: [],
-    height: 120,
+    height: 240,
     name: 'IconButton',
     pad: 0,
-    states: grid('IconButton', (state, disabled) => ({
-      children: '+',
-      props: { disabled, label: 'Zoom in', state },
-    })),
+    states: [
+      ...grid('IconButton', (state, disabled) => ({
+        children: '+',
+        props: { disabled, label: 'Zoom in', state },
+      })),
+      ...grid('IconButton raised', (state, disabled) => ({
+        children: '+',
+        props: { disabled, label: 'Layers', state, variant: 'raised' },
+      })),
+    ],
   },
   {
     design: ['Chips'],
@@ -275,8 +281,8 @@ export const CARDS: Card[] = [
   {
     design: [],
     group: 'Actions',
-    handlers: [],
-    height: 160,
+    handlers: ['onClick'],
+    height: 200,
     name: 'TextLink',
     pad: 0,
     states: [
@@ -285,6 +291,7 @@ export const CARDS: Card[] = [
         props: { disabled, href: '/sources', state },
       })),
       one('TextLink · small', { href: '/sources', size: 'small' }, 'Sources'),
+      one('TextLink · button', { size: 'small' }, 'Go to 1901-02-28'),
     ],
   },
   {

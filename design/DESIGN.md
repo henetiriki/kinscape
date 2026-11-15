@@ -208,6 +208,8 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
 - **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states, and it has no disabled state.
+- **Icon button:** raised variant: 48px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
+- **Text link:** with `onClick` and no `href`, it is a button with the same look.
 - **Page header:** a 64px white bar (60px on a phone) with a bottom `--line` border. It holds the Wordmark (icon only on a phone), a divider, the back link and the Avatar at the right.
 - **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the icon button.
 - **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.

@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <title>KinScape style guide — Feedback and validation (phone)</title>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
 </head>
 <body>
 <x-dc>
@@ -42,7 +45,7 @@
               <span style="{{f.msg}}"><span style="flex: 1">{{f.text}}</span></span>
             </sc-if>
             <sc-if value="{{f.hasAction}}" hint-placeholder-val="{{ false }}">
-              <a href="#" style="align-self: flex-start; font-size: 13px; line-height: 20px; font-weight: 500; border-radius: 2px; color: #264F29; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">{{f.action}}</a>
+              <span style="align-self: flex-start; display: flex"><x-import component-from-global-scope="KinScape.TextLink" size="small" on-click="{{noop}}">{{f.action}}</x-import></span>
             </sc-if>
             <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{f.note}}</span>
           </div>
@@ -55,7 +58,7 @@
       <div style="position: relative; height: 296px; border-radius: 12px; background: #C9D5D2; overflow: hidden">
         <div role="alert" id="sheet-err" style="position: absolute; left: 16px; right: 16px; top: 16px; box-sizing: border-box; padding: 12px 16px; border-radius: 8px; background: #FBEDEA; border: 1px solid #B4412F; color: #7E2316; font-size: 13px; line-height: 20px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); display: flex; flex-direction: column">
           <span><strong style="font-weight: 600">February 1901 has 28 days.</strong> The map still shows 1901-02-28.</span>
-          <a href="#" style="align-self: flex-start; font-size: 13px; line-height: 20px; font-weight: 500; border-radius: 2px; color: #264F29; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">Go to 1901-02-28</a>
+          <span style="align-self: flex-start; display: flex"><x-import component-from-global-scope="KinScape.TextLink" size="small" on-click="{{noop}}">Go to 1901-02-28</x-import></span>
           <span style="position: absolute; left: 141px; bottom: -7px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span>
         </div>
         <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 144px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; display: flex; flex-direction: column; gap: 12px">
@@ -170,6 +173,7 @@ class Component extends DCLogic {
       ['Info', 'info', '1901-06', 'Switched to month precision.', '', 'Explains something the app did for you.']
     ];
     return {
+      noop: () => {},
       fields: list.map((l) => {
         const k = kinds[l[1]];
         return {

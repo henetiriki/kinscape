@@ -4,6 +4,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import {
   AccountMenu,
   CopyChainPopup,
+  GoTo,
 } from '@ks/app/design-kit/surfaces/Samples';
 
 afterEach(() => {
@@ -14,6 +15,17 @@ const pick = (name: string) => {
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
   fireEvent.click(screen.getByRole('menuitem', { name }));
 };
+
+// NFR-06
+it('shows the Go to fix as a small TextLink button that does nothing', () => {
+  render(<GoTo>Go to 1901-02-28</GoTo>);
+
+  const button = screen.getByRole('button', { name: 'Go to 1901-02-28' });
+
+  fireEvent.click(button);
+
+  expect(button.dataset.size).toBe('small');
+});
 
 // NFR-05, NFR-06
 it('opens the Sources dialog from "Sources and attributions" and closes it again', () => {

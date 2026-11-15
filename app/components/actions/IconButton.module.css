@@ -15,6 +15,15 @@
   width: var(--size-control);
 }
 
+/* Raised: the 48px button that floats over the map. */
+.iconBtn[data-variant='raised'] {
+  border: 0;
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-raised);
+  height: var(--size-field-l);
+  width: var(--size-field-l);
+}
+
 @media (hover: hover) {
   .iconBtn:hover:not(:disabled, [aria-disabled='true']) {
     background: var(--surface-2);

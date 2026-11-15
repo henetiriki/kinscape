@@ -1,7 +1,7 @@
 # Plan: C872: The Review check counts every unresolved finding thread
 
 - **Spec:** #872
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ A resolved thread does not start the `Review` job. Which run turns the check gre
 - **B.** Add a `pull_request_review_thread` trigger. This changes scope, so the Chore needs an edit first.
 - **Other:** your own.
 
-Recommended: A, because it fits the Constraints and adds no trigger.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

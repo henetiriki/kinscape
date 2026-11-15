@@ -18,7 +18,7 @@ Ask as `SKILL.md` says. Typical branches:
 - **Behaviour:** what the user sees and does.
 - **Design:** for a UI slice, the branches in [design.md](design.md).
 - **Design system:** does a slice build or change a shared component, or change another [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, add the done checks from that section's _Issue text_ to _Acceptance checks_. Use that section's Constraint sentence.
-- **Components:** name the component of each part of a screen. List a missing part under **Flagged concerns** with a decision: build it here or in its own Spec.
+- **Components:** name the component of each element of a screen. List a missing component under **Flagged concerns** with a decision: build it here or in its own Spec.
 - **Outside formats:** map each output field to its source. Ask about each field with no source.
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_. Each is a tech-lead decision.
 - **Data:** anything that stores people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).

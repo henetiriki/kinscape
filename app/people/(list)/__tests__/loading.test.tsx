@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import Loading from '@ks/app/people/loading';
+import Loading from '@ks/app/people/(list)/loading';
 
 // PPL-01
 it('shows the loading screen for a People page', () => {

@@ -271,6 +271,20 @@
       "mode": "blocking"
     },
     {
+      "name": "people-loading",
+      "route": "/screens/people-loading",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "people-loading-phone",
+      "route": "/screens/people-loading",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
+    },
+    {
       "name": "person-new",
       "route": "/screens/person-new",
       "width": 1440,

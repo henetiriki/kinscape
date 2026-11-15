@@ -17,7 +17,7 @@ The exporter writes each HTML snapshot in `source/` from its board in `canvas/`.
   4. Run "Updating the install" (4.1 to 4.7).
   5. Run "Refreshing the canvas copy" (5.1 to 5.5).
   6. Push the branch. If a board shows the change, step 7 applies.
-  7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)), runs "Refreshing the canvas copy" (5.1 to 5.5) and pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
+  7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)). It runs "Refreshing the canvas copy" (5.1 to 5.5). It pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local session. The session needs a signed-in account.
 

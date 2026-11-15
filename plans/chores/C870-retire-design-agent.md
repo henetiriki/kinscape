@@ -63,4 +63,5 @@ The issue names no section for the rule. "Reading a board" is about a build, and
 - The build deletes "Don't use Export." with the Hand off menu step, because that sentence names the menu.
 - `design/COMPONENTS.md` loses the whole paragraph, including "Run one swap at a time", as the issue says.
 - "Reading a board" names the canvas link, and line 7 of `design/CANVAS.md` says the tech lead runs the workflow, so it agrees with step 7. The issue text has neither edit. Review findings in PR 871 asked for both.
+- Step 7 of "Changing the design system" has one sentence for each action, to obey STE rule 1. The issue text has all three actions in one sentence.
 - To fit the 900-word budget, "Who" in `design/CANVAS.md` says "a local session" and drops "Claude Code" and "that the tech lead starts".

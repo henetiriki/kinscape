@@ -23,7 +23,7 @@
 
       <div style="display: flex; flex-direction: column; gap: var(--space-4)">
         <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationships</x-import>
-        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">{{who}} Each change saves at once.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">{{subtitle.name}}, <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{subtitle.words}}</span><span style="display: inline-flex"><span aria-hidden="true"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{subtitle.line}}</x-import></span><span>.</span></span> Each change saves at once.</x-import>
       </div>
 
       <sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
@@ -90,7 +90,8 @@
         <sc-if value="{{dialog.isDetails}}" hint-placeholder-val="{{ false }}">
           <div style="display: flex; flex-direction: column; gap: var(--space-4); background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-control); padding: var(--space-12) var(--space-16)">
             <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{dialog.who.name}}</x-import>
-            <x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.line}}</x-import>
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{dialog.who.words}}</span>
+            <span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span" style="color: var(--ink-3)">{{dialog.who.line}}</x-import></span>
           </div>
           <sc-if value="{{dialog.isSubtype}}" hint-placeholder-val="{{ true }}">
             <x-import component-from-global-scope="KinScape.Segmented" label="{{dialog.subtypeLabel}}" name="subtype" options="{{subtypeOptions}}" value="{{subtype}}" on-change="{{onSubtype}}"></x-import>
@@ -164,6 +165,13 @@ class Component extends DCLogic {
       return short && 'In ' + short;
     };
     const lineOf = (p) => (p.born || '?') + ' –' + (p.died || p.deceased ? ' ' + (p.died || '?') : '');
+    const lower = (text) => text.charAt(0).toLowerCase() + text.slice(1);
+    const words = (p) => {
+      const born = 'Born ' + (p.born ? lower(reading(p.born)) : 'unknown');
+      if (p.died) return born + ', died ' + lower(reading(p.died));
+      return p.deceased ? born + ', died unknown' : born;
+    };
+    const SELF = P('du Toit, Maria Magdalena', 'c. 1856', '1930', { deceased: true });
     const dated = (p) => ({ born: p.born, bornReading: reading(p.born), died: p.died, diedReading: reading(p.died), deceased: !!p.deceased });
     const GROUPS = [
       { id: 'parents', title: 'Parents', one: 'parent', none: 'No parents yet.', kind: 'parent', rows: [
@@ -221,7 +229,7 @@ class Component extends DCLogic {
     const KIND = { parent: ['Add a parent', 'parent', 'Type of parent'], child: ['Add a child', 'child', 'Type of child'], spouse: ['Add a spouse', 'spouse', ''] };
     let dialog = null;
     if (d) {
-      const who = s.who ? Object.assign({ line: lineOf(ALL[s.who]) }, ALL[s.who]) : null;
+      const who = s.who ? Object.assign({ line: lineOf(ALL[s.who]), words: words(ALL[s.who]) }, ALL[s.who]) : null;
       const isPick = d.step === 'pick';
       dialog = {
         title: d.edit ? (d.kind === 'spouse' ? 'Edit marriage' : 'Edit ' + KIND[d.kind][1] + ' link') : KIND[d.kind][0],
@@ -235,7 +243,7 @@ class Component extends DCLogic {
         noMatchActions: [{ label: 'Clear the filter', onClick: () => this.setState({ query: '' }) }],
         noOthers: isPick && others.length === 0,
         noOthersActions: [{ label: 'Add a person', href: 'Person-new.dc.html' }],
-        who: who || { name: '', line: '' },
+        who: who || { name: '', line: '', words: '' },
         isSubtype: d.kind !== 'spouse',
         isDates: d.kind === 'spouse',
         subtypeLabel: KIND[d.kind][2],
@@ -248,7 +256,7 @@ class Component extends DCLogic {
     }
     return {
       avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
-      who: 'Maria Magdalena du Toit, c. 1856–1930.',
+      subtitle: { name: SELF.name.split(', ')[1] + ' ' + SELF.name.split(', ')[0], line: lineOf(SELF), words: words(SELF) },
       showFailed: s.view === 'failed',
       retryActions: [{ label: 'Try again', onClick: () => this.setState({ view: 'list' }) }],
       showGroups: s.view !== 'failed',

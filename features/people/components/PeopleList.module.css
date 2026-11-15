@@ -96,13 +96,9 @@
     background: var(--surface);
   }
 
-  .heading {
-    gap: 0;
-  }
-
   .content {
     gap: var(--space-16);
-    padding: var(--space-16) var(--space-16) var(--space-48);
+    padding: var(--space-20) var(--space-16) var(--space-48);
     width: 100%;
   }
 

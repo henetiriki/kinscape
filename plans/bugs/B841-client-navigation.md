@@ -28,6 +28,16 @@
 
 **Answer: A** (@henetiriki)
 
+**D4 · The phone heading** · Decides: Tech lead
+
+The phone boards draw `h1Phone`. The page drew `h1` at every width, so `people-loading-phone` failed at 0.91%.
+
+- **A.** `PeopleList` and `PeopleLoading` use `h1Phone` on a phone.
+- **B.** Only `PeopleLoading` does. A Bug fixes `PeopleList`.
+- **C.** Redraw the board with `h1`.
+
+**Answer: A** (tech lead, in the session)
+
 ## Files that change
 
 | File                                                                      | New / changed | What                                 |

@@ -105,17 +105,15 @@ People, pins and boundary shapes in the JPGs are illustrative, not data.
 
 ### Proposed screens
 
-Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components). The two relationship rows replace the Person form, edit and the People list when M2.11.2 builds them.
+Not built. The sign-in rows and the first account menu rows show Google sign-in: see [Components](#components).
 
-| Screen                                         | File                                                                       |
-| ---------------------------------------------- | -------------------------------------------------------------------------- |
-| Sign in, desktop, proposed                     | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)               |
-| Sign in, phone, proposed                       | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)                   |
-| Sign in, phone, wrong password, proposed       | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
-| Account menu, proposed                         | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
-| Account menu, phone, proposed                  | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
-| Person form, edit, with the Relationships link | [person-edit-relationships.jpg](person-edit-relationships.jpg)             |
-| People list, with the Relationships link       | [people-list-relationships.jpg](people-list-relationships.jpg)             |
+| Screen                                   | File                                                                       |
+| ---------------------------------------- | -------------------------------------------------------------------------- |
+| Sign in, desktop, proposed               | [sign-in-desktop-proposed.jpg](sign-in-desktop-proposed.jpg)               |
+| Sign in, phone, proposed                 | [sign-in-phone-proposed.jpg](sign-in-phone-proposed.jpg)                   |
+| Sign in, phone, wrong password, proposed | [sign-in-phone-error-proposed.jpg](sign-in-phone-error-proposed.jpg)       |
+| Account menu, proposed                   | [map-account-menu-proposed.jpg](map-account-menu-proposed.jpg)             |
+| Account menu, phone, proposed            | [map-account-menu-phone-proposed.jpg](map-account-menu-phone-proposed.jpg) |
 
 ## Brand
 

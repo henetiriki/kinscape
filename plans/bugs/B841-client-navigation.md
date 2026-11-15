@@ -2,7 +2,7 @@
 
 - **Spec:** #841
 - **Requirement IDs:** [PPL-01](../../docs/requirements.md#ppl-01), [NFR-01](../../docs/requirements.md#nfr-01), [NFR-02](../../docs/requirements.md#nfr-02), [NFR-03](../../docs/requirements.md#nfr-03)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@
 - **B.** Turn on `cacheComponents`, so Next hides each page in `<Activity>`. The hide runs the `MapView` cleanup, which removes the map. Next keeps 3 routes only.
 - **Other:** your own.
 
-Recommended: A, because B creates a new map on each return.
+**Answer: A** (@henetiriki)
 
 **D3 · The People loading screen** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Recommended: A, because B creates a new map on each return.
 - **B.** `PageHeader`, the H1, and the column heads over grey row blocks. The blocks are a missing component.
 - **Other:** your own.
 
-Recommended: A, because the server sends no progress and A needs no new component.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

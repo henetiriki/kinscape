@@ -68,3 +68,5 @@ A resolved thread does not start the `Review` job. Which run turns the check gre
 - `fix-review.md` has a budget of 360 words, not 350. The change is in `scripts/word-count.mts` and `scripts/__tests__/word-count.test.ts`. The reply step needs the words.
 - The gate fails on a page that has a next page and no cursor. `review-threads.mts` stops the read there instead.
 - `review.md` keeps its design-snapshot sentences as they are. A test pins them, so other lines are shorter.
+- Two tests name the old label to prove that the review text and the gate no longer use it. The `git grep` finds only them.
+- The summary comment also holds the gaps that no committed file's input reaches, as before.

@@ -4,7 +4,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { RelationshipSaveResult } from '@ks/features/people/components/types';
 import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
-import { alertCodes } from '@ks/features/people/components/relationship-messages';
+import {
+  alertCodes,
+  messageOf,
+} from '@ks/features/people/components/relationship-messages';
 import { RelationshipDetails } from '@ks/features/people/components/RelationshipDetails';
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
 import { parsePersonId, parseRelationshipId } from '@ks/lib/domain/ids/ids.mts';
@@ -307,6 +310,31 @@ describe('an edit', () => {
     });
   });
 
+  it('keeps the ends of a spouse in their stored order when this Person is end B', async () => {
+    const { update } = open(
+      {
+        existing: {
+          ...spouse,
+          personAId: spouse.personBId,
+          personBId: spouse.personAId,
+        },
+        onBack: undefined,
+      },
+      'spouses'
+    );
+
+    save();
+
+    await waitFor(() => expect(update).toHaveBeenCalledTimes(1));
+    expect(update).toHaveBeenCalledWith({
+      relationship: expect.objectContaining({
+        personAId: OTHER,
+        personBId: SELF,
+      }),
+      version: 2,
+    });
+  });
+
   it('starts a spouse with no dates as empty fields', () => {
     open(
       { existing: { ...spouse, divorce: undefined, marriage: undefined } },
@@ -333,8 +361,10 @@ describe('a refusal or an error', () => {
 
       const alert = await screen.findByRole('alert');
 
-      expect(alert.textContent).not.toBe('');
-      expect(alert.textContent).not.toContain("Couldn't save the link");
+      const message = messageOf(code, 'Hendrik Willem du Toit');
+
+      expect(alert.textContent).toContain(message.title);
+      expect(alert.textContent).toContain(message.line);
       expect(onClose).not.toHaveBeenCalled();
       expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull();
     }
@@ -454,6 +484,42 @@ describe('any other failure', () => {
       "Couldn't save the link. Your picks are still here."
     );
     expect(create).not.toHaveBeenCalled();
+  });
+
+  it('keeps the toast when "Try again" fails the date check again', async () => {
+    open({}, 'spouses');
+
+    fireEvent.input(screen.getByLabelText('Marriage'), {
+      target: { value: 'soon' },
+    });
+    save();
+    await screen.findByText(
+      "Couldn't save the link. Your picks are still here."
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+
+    await screen.findByText(
+      "Couldn't save the link. Your picks are still here."
+    );
+  });
+
+  it('hides the toast when the user dismisses it', async () => {
+    open({}, 'spouses');
+
+    fireEvent.input(screen.getByLabelText('Marriage'), {
+      target: { value: 'soon' },
+    });
+    save();
+    await screen.findByText(
+      "Couldn't save the link. Your picks are still here."
+    );
+
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Try again' }), {
+      key: 'Escape',
+    });
+
+    expect(screen.queryByText(/Couldn't save the link/)).toBeNull();
   });
 });
 

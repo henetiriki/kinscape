@@ -38,7 +38,7 @@ export const RelationshipPicker = ({
   group: RelationshipGroup;
   initialQuery?: string;
   onClose: () => void;
-  /** Called with the Person of the row that the user chose. */
+  /** The picker calls it with the Person of the row that the user chose. */
   onPick: (person: PersonSummary) => void;
   /** The page keeps the picker mounted after it closes: the browser returns focus on close only. */
   open: boolean;

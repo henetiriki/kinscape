@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import type {
   AlertCode,
@@ -59,17 +59,23 @@ const TYPE_LABELS: Record<'children' | 'parents', string> = {
 const inputOf = (
   group: RelationshipGroup,
   ids: { id: string; other: string; self: string },
-  values: { divorce: string; marriage: string; subtype: string }
+  values: { divorce: string; marriage: string; subtype: string },
+  existing?: Relationship
 ) => {
   const { divorce, marriage, subtype } = values;
 
   if (group === 'spouses') {
+    // An update keeps the ends in the order of the stored link: the stores match them in order.
+    const ends =
+      existing?.type === 'spouse'
+        ? { personAId: existing.personAId, personBId: existing.personBId }
+        : { personAId: ids.self, personBId: ids.other };
+
     return {
       divorce,
       id: ids.id,
       marriage,
-      personAId: ids.self,
-      personBId: ids.other,
+      ...ends,
       type: 'spouse',
     };
   }
@@ -138,32 +144,39 @@ export const RelationshipDetails = ({
   const [code, setCode] = useState<AlertCode | undefined>(
     shown === 'failed' ? undefined : shown
   );
-  const [failed, setFailed] = useState(shown === 'failed');
+  // The number of the attempt whose toast shows, or 0. "Try again" starts the next attempt, so its
+  // dismiss of the old toast cannot hide the toast of the new one.
+  const [failed, setFailed] = useState(shown === 'failed' ? 1 : 0);
+  const attempts = useRef(1);
   const [saving, setSaving] = useState(false);
   const name = `${other.givenNames} ${other.surname}`;
   const message = code && messageOf(code, name);
 
-  const fail = (error: RelationshipSaveError) => {
+  const fail = (error: RelationshipSaveError, attempt: number) => {
     if (error === 'invalid') {
-      setFailed(true);
+      setFailed(attempt);
     } else {
       setCode(error);
     }
   };
 
   const submit = async () => {
+    attempts.current += 1;
+
+    const attempt = attempts.current;
     const input = inputOf(
       group,
       { id: existing?.id ?? newId, other: other.id, self },
-      values
+      values,
+      existing
     );
     const checked = checkRelationshipInput(input);
 
     setCode(undefined);
-    setFailed(false);
+    setFailed(0);
 
     if (!checked.ok) {
-      fail(checked.error);
+      fail(checked.error, attempt);
 
       return;
     }
@@ -188,7 +201,7 @@ export const RelationshipDetails = ({
     if (result?.ok) {
       onClose();
     } else {
-      fail(result ? result.error : 'invalid');
+      fail(result ? result.error : 'invalid', attempt);
     }
   };
 
@@ -270,12 +283,14 @@ export const RelationshipDetails = ({
           )}
         </div>
       </form>
-      {failed && (
+      {failed > 0 && (
         <div className={styles.toast}>
           <Toast
             action='Try again'
             onAction={() => void submit()}
-            onDismiss={() => setFailed(false)}
+            onDismiss={() =>
+              setFailed(current => (current === failed ? 0 : current))
+            }
             tone='error'>
             {"Couldn't save the link. Your picks are still here."}
           </Toast>

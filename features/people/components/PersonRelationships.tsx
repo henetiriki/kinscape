@@ -10,11 +10,9 @@ import type {
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
+import type { PersonId } from '@ks/lib/domain/ids/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
-import type {
-  Relationship,
-  RelationshipGroup,
-} from '@ks/lib/domain/relationships/types';
+import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { DateText } from '@ks/app/components/actions/DateText';
@@ -26,6 +24,7 @@ import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { EditOnComputer } from '@ks/features/people/components/EditOnComputer';
 import { RelationshipDetails } from '@ks/features/people/components/RelationshipDetails';
 import { RelationshipPicker } from '@ks/features/people/components/RelationshipPicker';
+import { otherEnd } from '@ks/lib/domain/relationships/groups.mts';
 
 import styles from '@ks/features/people/components/PersonRelationships.module.css';
 
@@ -38,19 +37,6 @@ const GROUPS = [
 /** The board words a Relationship "link" in the count; the code calls it a Relationship. */
 const count = (relationships: number) =>
   `${relationships} ${relationships === 1 ? 'link' : 'links'}`;
-
-/** The id of the Person at the other end of `relationship`, seen from the Person `self`. */
-const otherId = (relationship: Relationship, self: string): string => {
-  if (relationship.type === 'parent') {
-    return relationship.parentId === self
-      ? relationship.childId
-      : relationship.parentId;
-  }
-
-  return relationship.personAId === self
-    ? relationship.personBId
-    : relationship.personAId;
-};
 
 /** The entry of `id` and its group, or undefined if no group holds it. */
 const findEntry = (
@@ -143,7 +129,17 @@ export const PersonRelationships = ({
   const query = picking?.query;
   const editing = findEntry(groups, edit);
   const here = person ? `/people/${person.id}/relationships` : '/people';
-  const closeEdit = () => router.replace(here);
+  // The refresh after a save still holds `?edit`: the dialog stays closed until the address drops it.
+  const [closedEdit, setClosedEdit] = useState<string>();
+
+  if (closedEdit && !edit) {
+    setClosedEdit(undefined);
+  }
+
+  const closeEdit = () => {
+    setClosedEdit(edit);
+    router.replace(here);
+  };
 
   return (
     <EditOnComputer email={email} initial={initial} onSignOut={onSignOut}>
@@ -272,10 +268,12 @@ export const PersonRelationships = ({
             group={editing.group}
             key={`${editing.entry.id}-${editing.entry.relationship.version}`}
             onClose={closeEdit}
-            open
+            open={closedEdit !== edit}
             other={otherOf(
               editing.entry,
-              otherId(editing.entry.relationship, person.id)
+              // The entry comes from a group of this Person, so `otherEnd` finds an end.
+
+              otherEnd(person.id as PersonId, editing.entry.relationship)![0]
             )}
             self={person.id}
           />

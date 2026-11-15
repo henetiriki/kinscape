@@ -69,31 +69,32 @@ const create = vi.fn(async (): Promise<unknown> => ({ ok: true, value: {} }));
 const update = vi.fn(async (): Promise<unknown> => ({ ok: true, value: {} }));
 
 /** The page of Maria with no Relationships; `props` changes any prop, so a case can fail the load. */
-const open = (props: Record<string, unknown> = {}) =>
-  render(
-    <PersonRelationships
-      {...({
-        actions: { create, update },
-        email: 'a@example.test',
-        groups: empty,
-        initial: 'A',
-        onSignOut: () => Promise.resolve(),
-        people: [
-          {
-            ...none,
-            deceased: false,
-            givenNames: 'Pieter',
-            id: PIETER,
-            maidenName: '',
-            surname: 'Fourie',
-            variants: [],
-          },
-        ],
-        person: person(),
-        ...props,
-      } as Props)}
-    />
-  );
+const page = (props: Record<string, unknown> = {}) => (
+  <PersonRelationships
+    {...({
+      actions: { create, update },
+      email: 'a@example.test',
+      groups: empty,
+      initial: 'A',
+      onSignOut: () => Promise.resolve(),
+      people: [
+        {
+          ...none,
+          deceased: false,
+          givenNames: 'Pieter',
+          id: PIETER,
+          maidenName: '',
+          surname: 'Fourie',
+          variants: [],
+        },
+      ],
+      person: person(),
+      ...props,
+    } as Props)}
+  />
+);
+
+const open = (props: Record<string, unknown> = {}) => render(page(props));
 
 const group = (name: string) => within(screen.getByRole('region', { name }));
 
@@ -477,7 +478,7 @@ describe('"Edit"', () => {
     ['A', { personAId: MARIA, personBId: GERRIT }],
     ['B', { personAId: GERRIT, personBId: MARIA }],
   ])(
-    'opens a spouse that this Person is end %s of, with the other end fixed',
+    'opens a spouse that this Person is end %s of, and updates with the ends in their stored order',
     async (_end, ends) => {
       open({
         edit: RELATION,
@@ -497,15 +498,30 @@ describe('"Edit"', () => {
       screen.getByRole('heading', { name: 'Edit marriage' });
       await waitFor(() =>
         expect(update).toHaveBeenCalledWith({
-          relationship: expect.objectContaining({
-            personAId: MARIA,
-            personBId: GERRIT,
-          }),
+          relationship: expect.objectContaining(ends),
           version: 1,
         })
       );
     }
   );
+
+  it('stays closed after a save until the address drops `edit`', async () => {
+    const props = { edit: RELATION, groups: { ...empty, parents } };
+
+    const { rerender } = open(props);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(replace).toHaveBeenCalled());
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    rerender(page(props));
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    rerender(page({ ...props, edit: undefined }));
+    rerender(page(props));
+    screen.getByRole('dialog');
+  });
 });
 
 // PPL-02

@@ -32,7 +32,7 @@ const SAMPLE_SUBJECT: RelationshipsPerson = {
   surname: 'du Toit',
 };
 
-// The sample ids are not UUIDs, so the brands are asserted: nothing here reaches a store.
+// The sample ids are not UUIDs, so the code asserts the brands: nothing here reaches a store.
 const personId = (id: string) => id as PersonId;
 const relationshipId = (id: string) => id as RelationshipId;
 

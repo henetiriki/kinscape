@@ -9,7 +9,7 @@ import type {
 import { byName } from '#ks/lib/domain/persons/list.mts';
 
 /** The id at the other end of a Relationship, and its group. */
-const otherEnd = (
+export const otherEnd = (
   id: PersonId,
   relationship: Relationship
 ): [PersonId, RelationshipGroup] | undefined => {

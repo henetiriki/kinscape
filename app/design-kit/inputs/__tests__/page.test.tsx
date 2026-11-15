@@ -534,11 +534,11 @@ it('draws Relationship row and Picker row on a desktop only, with every state', 
     'A parent or child · the biological subtype in Small.',
     'A parent or child · the adoptive subtype in Small.',
     'A parent or child · the step subtype in Small.',
-    'A spouse with both dates · "m. 1875 – div. 1890".',
-    'A spouse with one date · "m. c. 1875".',
+    'A spouse with both dates · "Mar. 1875, div. 1890".',
+    'A spouse with one date · "Mar. c. 1875".',
     'A spouse with no date · no date text.',
   ]);
-  expect(relationship.textContent).toContain('m. 1875 – div. 1890');
+  expect(relationship.textContent).toContain('Mar. 1875, div. 1890');
   expect(
     [...picker.querySelectorAll('button')].map(button => button.dataset.state)
   ).toEqual([

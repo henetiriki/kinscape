@@ -38,21 +38,24 @@ export const dateWords = ({
   return deceased ? `${born}, died unknown` : born;
 };
 
-/** "m. 1875 – div. 1890", "m. 1875", "div. 1890", or the empty string. */
+/** "Mar. 1875, div. 1890", "Mar. 1875", "Div. 1890", or the empty string. */
 export const spouseLine = ({ divorced, married }: SpouseDates): string =>
-  [married && `m. ${married}`, divorced && `div. ${divorced}`]
+  [
+    married && `Mar. ${married}`,
+    divorced && `${married ? 'div.' : 'Div.'} ${divorced}`,
+  ]
     .filter(Boolean)
-    .join(' – ');
+    .join(', ');
 
-/** The spouse dates in words, for a screen reader: "Mar. about 1875, div. in 1890". */
+/** The spouse dates in words, for a screen reader: "Married about 1875, divorced in 1890". */
 export const spouseWords = ({
   divorcedReading,
   marriedReading,
 }: SpouseDates): string =>
   [
-    marriedReading && `Mar. ${lower(marriedReading)}`,
+    marriedReading && `Married ${lower(marriedReading)}`,
     divorcedReading &&
-      `${marriedReading ? 'div.' : 'Div.'} ${lower(divorcedReading)}`,
+      `${marriedReading ? 'divorced' : 'Divorced'} ${lower(divorcedReading)}`,
   ]
     .filter(Boolean)
     .join(', ');

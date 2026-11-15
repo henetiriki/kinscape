@@ -56,12 +56,12 @@ describe('the spouse dates', () => {
   };
 
   it('shows both dates, one date, or no text', () => {
-    expect(spouseLine(both)).toBe('m. 1875 – div. 1890');
+    expect(spouseLine(both)).toBe('Mar. 1875, div. 1890');
     expect(spouseLine({ married: '1875', marriedReading: 'In 1875' })).toBe(
-      'm. 1875'
+      'Mar. 1875'
     );
     expect(spouseLine({ divorced: '1890', divorcedReading: 'In 1890' })).toBe(
-      'div. 1890'
+      'Div. 1890'
     );
     expect(spouseLine({})).toBe('');
     expect(spouseWords({})).toBe('');
@@ -70,11 +70,11 @@ describe('the spouse dates', () => {
   it('shows a Fuzzy date as short text and reads its full reading', () => {
     const dates = { married: 'c. 1875', marriedReading: 'About 1875' };
 
-    expect(spouseLine(dates)).toBe('m. c. 1875');
-    expect(spouseWords(dates)).toBe('Mar. about 1875');
-    expect(spouseWords(both)).toBe('Mar. in 1875, div. in 1890');
+    expect(spouseLine(dates)).toBe('Mar. c. 1875');
+    expect(spouseWords(dates)).toBe('Married about 1875');
+    expect(spouseWords(both)).toBe('Married in 1875, divorced in 1890');
     expect(spouseWords({ divorced: '1890', divorcedReading: 'In 1890' })).toBe(
-      'Div. in 1890'
+      'Divorced in 1890'
     );
   });
 });

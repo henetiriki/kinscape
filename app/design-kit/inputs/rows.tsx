@@ -45,7 +45,7 @@ export const RelationshipRows = () => (
             </div>
           </Variant>
         ))}
-        <Variant caption='A spouse with both dates · "m. 1875 – div. 1890".'>
+        <Variant caption='A spouse with both dates · "Mar. 1875, div. 1890".'>
           <div className={styles.personRow} inert>
             <RelationshipRow
               {...SPOUSE}
@@ -57,7 +57,7 @@ export const RelationshipRows = () => (
             />
           </div>
         </Variant>
-        <Variant caption='A spouse with one date · "m. c. 1875".'>
+        <Variant caption='A spouse with one date · "Mar. c. 1875".'>
           <div className={styles.personRow} inert>
             <RelationshipRow
               {...SPOUSE}
@@ -81,7 +81,7 @@ export const RelationshipRows = () => (
           ],
           [
             'Dates',
-            'The lines are hidden from a screen reader. A hidden text reads them in words, such as "Mar. about 1875, div. in 1890".',
+            'The lines are hidden from a screen reader. A hidden text reads them in words, such as "Married about 1875, divorced in 1890".',
           ],
         ]}
         label='Relationship row'

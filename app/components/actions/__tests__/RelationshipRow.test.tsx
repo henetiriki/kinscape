@@ -64,21 +64,21 @@ describe('a relationship row', () => {
       marriedReading: 'In 1875',
     });
 
-    expect(screen.getByText('m. 1875 – div. 1890')).toBeInstanceOf(
+    expect(screen.getByText('Mar. 1875, div. 1890')).toBeInstanceOf(
       HTMLSpanElement
     );
-    expect(screen.getByText('Mar. in 1875, div. in 1890').className).toMatch(
-      /hidden/
-    );
+    expect(
+      screen.getByText('Married in 1875, divorced in 1890').className
+    ).toMatch(/hidden/);
     unmount();
     row({ married: '1875', marriedReading: 'In 1875' });
-    expect(screen.getByText('m. 1875')).toBeInstanceOf(HTMLSpanElement);
+    expect(screen.getByText('Mar. 1875')).toBeInstanceOf(HTMLSpanElement);
   });
 
   it('shows a Fuzzy marriage date as short text and reads its full reading', () => {
     row({ married: 'c. 1875', marriedReading: 'About 1875' });
-    expect(screen.getByText('m. c. 1875')).toBeInstanceOf(HTMLSpanElement);
-    expect(screen.getByText('Mar. about 1875').className).toMatch(/hidden/);
+    expect(screen.getByText('Mar. c. 1875')).toBeInstanceOf(HTMLSpanElement);
+    expect(screen.getByText('Married about 1875').className).toMatch(/hidden/);
   });
 
   it('takes a state on the link', () => {

@@ -305,16 +305,25 @@ export declare const TextLink: ({ children, disabled, href, size, state, ...rest
 } & Omit<ComponentProps<"a">, "className">) => import("react").JSX.Element;
 export type TextLinkProps = Parameters<typeof TextLink>[0];
 
+/** With `href` it is a link and takes the attributes of one. Without it, it is a label and takes none. */
+type ArrowLinkForm = ({
+    [Name in keyof LinkAttributes]?: never;
+} & {
+    children?: ReactNode;
+    href?: undefined;
+    state?: undefined;
+}) | ({
+    children?: ReactNode;
+    href: string;
+    state?: ControlState;
+} & LinkAttributes);
+type LinkAttributes = Omit<ComponentProps<'a'>, 'children' | 'className' | 'href' | 'key'>;
 /**
  * A text and the forward icon, in the link font with no underline. With `href` it is a link. Without
  * `href` it is a label, for use inside a row that is one link: it turns `--brand-pressed` while that
  * link is pressed.
  */
-export declare const ArrowLink: ({ children, href, state, ...rest }: {
-    /** A label has none. */
-    href?: string;
-    state?: ControlState;
-} & Omit<ComponentProps<"a">, "className" | "href">) => import("react").JSX.Element;
+export declare const ArrowLink: (props: ArrowLinkForm) => import("react").JSX.Element;
 export type ArrowLinkProps = Parameters<typeof ArrowLink>[0];
 
 /** A keyboard key, drawn in mono. In a sentence it is read as part of it; `decorative` hides it when the control carries `aria-keyshortcuts`. */

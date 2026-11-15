@@ -8,7 +8,10 @@ A text and the forward icon, in the link font with no underline.
 
 | Prop | Type | Required | Description |
 | --- | --- | --- | --- |
-| `href` | `string` | no | A label has none. |
+| `children` | `ReactNode` | no |  |
+| `href` | `string` | no |  |
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
+
+It takes one of these forms. Required props: none; or `href`.
 
 The other attributes of its HTML element go to the element.

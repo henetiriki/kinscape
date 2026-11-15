@@ -52,6 +52,7 @@ Each kit page must match a board snapshot, and no board draws `ArrowLink`.
 - The kit row shows the label in the Disabled column, because a link has no disabled state.
 - **D2 · A label with link attributes:** the tech lead chose a union type. A label takes `children` only.
 - **D3 · Who owns the rule:** the tech lead chose `plans/README.md`. `AGENTS.md`, `spec.md` and `code-rules.md` link to it. `spec.md` links to the page rule in `DESIGN.md`.
-- **D4 · The `spec.md` cuts:** the tech lead chose to restore "Say which comes first and why." and "say". The cuts "The PO already approved it." and "Discuss slice size only here." stay, to keep the budget.
+- **D4 · The `spec.md` cuts:** the tech lead chose to restore "Say which comes first and why." and "say". The new Components bullet adds 26 words, so these cuts stay to keep the 760-word budget: "The PO already approved it."; "Discuss slice size only here."; "Look at the repository as far as the topic needs." is now "Read the repository as needed."; "Ask questions as described in `SKILL.md`." is now "Ask as `SKILL.md` says."; "or print the list to paste" loses "to paste"; "Then run the check round" loses "Then".
+- `AGENTS.md` loses "(fonts, colours, map style)" from the `DESIGN.md` line. The link line adds 11 words, and the file is at its 700-word budget.
 - Step 3: the searches ran. [#854](https://github.com/henetiriki/kinscape/issues/854) is the follow-up issue.
 - The CI `design` job ran `npm run design:check` and `npm run design:export` on the render commit, and passed.

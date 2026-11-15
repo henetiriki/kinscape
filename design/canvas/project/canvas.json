@@ -785,15 +785,6 @@
       "is_interactive": true,
       "page": "people"
     },
-    "People-list-relationships.dc.html": {
-      "x": 4560,
-      "y": 8160,
-      "w": 1440,
-      "h": 900,
-      "title": "People — list, with the Relationships link",
-      "is_interactive": true,
-      "page": "people"
-    },
     "Map-credits-narrow.dc.html": {
       "x": 0,
       "y": 8160,
@@ -902,8 +893,7 @@
     "Relationship-save-failed.dc.html",
     "Relationship-messages.dc.html",
     "Person-edit-relationships.dc.html",
-    "Person-edit-relationships-leave.dc.html",
-    "People-list-relationships.dc.html"
+    "Person-edit-relationships-leave.dc.html"
   ],
   "notes": {
     "people-list-title": {

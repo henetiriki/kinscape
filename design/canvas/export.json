@@ -498,18 +498,8 @@
     },
     {
       "file": "Person-edit-relationships.dc.html",
-      "name": "person-edit-relationships",
-      "viewport": { "height": 900, "width": 1440 }
-    },
-    {
-      "file": "Person-edit-relationships.dc.html",
       "name": "person-edit-relationships-leave",
       "props": { "variant": "leave" },
-      "viewport": { "height": 900, "width": 1440 }
-    },
-    {
-      "file": "People-list-relationships.dc.html",
-      "name": "people-list-relationships",
       "viewport": { "height": 900, "width": 1440 }
     },
     {

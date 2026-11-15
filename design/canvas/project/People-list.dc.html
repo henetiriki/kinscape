@@ -37,15 +37,16 @@
 
       <sc-if value="{{showList}}" hint-placeholder-val="{{ true }}">
         <section aria-label="People, by surname" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
-          <div aria-hidden="true" style="display: grid; grid-template-columns: minmax(0, 1fr) 200px 72px; gap: var(--space-16); padding: var(--space-12) var(--space-20); text-transform: uppercase; color: var(--ink-3)">
+          <div aria-hidden="true" style="display: grid; grid-template-columns: minmax(0, 1fr) 200px 72px max-content; gap: var(--space-16); padding: var(--space-12) var(--space-20); text-transform: uppercase; color: var(--ink-3)">
             <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Name</x-import>
             <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Dates</x-import>
             <span></span>
+            <span class="link" style="padding-left: var(--space-20); text-transform: none; visibility: hidden">Relationships</span>
           </div>
           <ul style="list-style: none; margin: 0; padding: 0">
             <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
               <li style="border-top: 1px solid var(--line)">
-                <x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" surname="{{p.surname}}" given-names="{{p.givenNames}}" maiden-name="{{p.maidenName}}" matched-variant="{{p.matchedVariant}}" born="{{p.born}}" born-reading="{{p.bornReading}}" died="{{p.died}}" died-reading="{{p.diedReading}}" deceased="{{p.deceased}}"></x-import>
+                <x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" relationships-href="Person-relationships.dc.html" surname="{{p.surname}}" given-names="{{p.givenNames}}" maiden-name="{{p.maidenName}}" matched-variant="{{p.matchedVariant}}" born="{{p.born}}" born-reading="{{p.bornReading}}" died="{{p.died}}" died-reading="{{p.diedReading}}" deceased="{{p.deceased}}"></x-import>
               </li>
             </sc-for>
           </ul>

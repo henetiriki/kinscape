@@ -1,0 +1,41 @@
+/* The link font, with no underline. A grid parent puts it at the end of its column. */
+.arrowLink {
+  align-items: center;
+  color: var(--brand);
+  display: inline-flex;
+  font-family: var(--type-link-font);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+  gap: var(--space-4);
+  justify-self: end;
+  letter-spacing: var(--type-link-tracking);
+  line-height: var(--type-link-line);
+}
+
+/* A label inside a row that is one link follows the pressed look of that link. */
+a:is(:active, [data-state='active']) .arrowLink {
+  color: var(--brand-pressed);
+}
+
+/* With an `href` it is a link of its own, so it adds the focus ring and the hover and pressed colours. */
+.link {
+  composes: arrowLink;
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
+  border-radius: var(--radius-link);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--brand-hover);
+  }
+}
+
+.link[data-state='hover'] {
+  color: var(--brand-hover);
+}
+
+.link:is(:active, [data-state='active']) {
+  color: var(--brand-pressed);
+}

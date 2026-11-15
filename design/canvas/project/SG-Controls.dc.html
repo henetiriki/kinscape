@@ -39,13 +39,13 @@
     <div style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; padding: 12px 0; border-bottom: 1px solid #C9CFC5; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
       <span>Component</span><span>Default</span><span>Hover</span><span>Focus (keyboard)</span><span>Pressed</span><span>Disabled</span>
     </div>
-    <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
       <div style="display: grid; grid-template-columns: 190px repeat(5, minmax(0, 1fr)); gap: 16px; align-items: center; min-height: 80px; padding: 8px 0; border-bottom: 1px solid #E2E5DD">
         <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; line-height: 20px; font-weight: 600">{{r.name}}</span><span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{r.note}}</span></span>
         <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="5">
           <span aria-hidden="true" style="{{c.wrap}}">
             <sc-for list="{{c.parts}}" as="p" hint-placeholder-count="1">
-              <span style="{{p.style}}"><sc-if value="{{p.plus}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></sc-if><sc-if value="{{p.check}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>{{p.text}}</span>
+              <span style="{{p.style}}"><sc-if value="{{p.plus}}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></sc-if><sc-if value="{{p.check}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>{{p.text}}<sc-if value="{{p.arrow}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></sc-if></span>
             </sc-for>
           </span>
         </sc-for>
@@ -75,15 +75,17 @@
 </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1578}}'>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1675}}'>
 class Component extends DCLogic {
   renderVals() {
     const F = '; outline: 2px solid #264F29; outline-offset: 2px';
-    const cell = (parts, wrap) => ({ wrap: (wrap || 'display: inline-flex; align-items: center; gap: 12px') + '; justify-self: start', parts: parts });
+    const cell = (parts, wrap) => ({ wrap: (wrap || 'display: inline-flex; align-items: center; gap: 12px') + '; justify-self: start', parts: parts.map((p) => Object.assign({ arrow: false }, p)) });
     const one = (style, text, extra) => cell([Object.assign({ style: style, text: text || '', plus: false, check: false }, extra || {})]);
     const btn = 'display: inline-flex; align-items: center; height: 44px; padding: 0 16px; box-sizing: border-box; border-radius: 8px; font-size: 15px; line-height: 22px; font-weight: 600; ';
     const icon = 'display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; box-sizing: border-box; border-radius: 8px; ';
     const link = 'font-size: 15px; line-height: 22px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; border-radius: 2px; ';
+    const arrow = 'display: inline-flex; align-items: center; gap: 4px; font-size: 15px; line-height: 22px; font-weight: 500; border-radius: 2px; ';
+    const arw = (style) => one(arrow + style, 'Edit', { arrow: true });
     const field = 'display: inline-flex; align-items: center; width: 190px; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 8px; font-size: 15px; line-height: 22px; background: #FFFFFF; ';
     const box = 'display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; box-sizing: border-box; border-radius: 4px; ';
     const chip = 'display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; box-sizing: border-box; border-radius: 18px; font-size: 13.5px; line-height: 20px; ';
@@ -121,6 +123,12 @@ class Component extends DCLogic {
         one(link + 'color: #264F29; text-decoration-thickness: 1px' + F, 'Attributions'),
         one(link + 'color: #163019; text-decoration-thickness: 2px', 'Attributions'),
         one(link + 'color: #6E776F; text-decoration: none', 'Attributions')]],
+      ['Arrow link', 'Disabled column: the label, no link', [
+        arw('color: #264F29'),
+        arw('color: #1D3E20'),
+        arw('color: #264F29' + F),
+        arw('color: #163019'),
+        arw('color: #264F29')]],
       ['Text field', 'Pressed column shows it filled', [
         one(field + 'border: 1px solid #8E978C; color: #4A544C', 'Search places'),
         one(field + 'border: 1px solid #4A544C; color: #4A544C', 'Search places'),

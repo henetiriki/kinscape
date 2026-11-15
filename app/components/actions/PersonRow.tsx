@@ -3,10 +3,10 @@ import type { ComponentProps } from 'react';
 import type { PersonDates } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { ArrowLink } from '@ks/app/components/actions/ArrowLink';
 import { personNote } from '@ks/app/components/actions/dates';
 import { DateText } from '@ks/app/components/actions/DateText';
 import { TextLink } from '@ks/app/components/actions/TextLink';
-import { Icon } from '@ks/app/components/foundation/Icon';
 import { KitLink } from '@ks/app/components/foundation/link';
 import { Text } from '@ks/app/components/foundation/Text';
 
@@ -76,10 +76,7 @@ export const PersonRow = ({
         {note && <Text variant='small'>{note}</Text>}
       </span>
       {dates}
-      <span className={styles.edit}>
-        Edit
-        <Icon name='forward' size={16} />
-      </span>
+      <ArrowLink>Edit</ArrowLink>
     </KitLink>
   );
 

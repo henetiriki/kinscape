@@ -15,7 +15,7 @@ it('shows every control in five states', async () => {
   expect(
     matrix.querySelectorAll('.kitCell:not([inert]) .btnPrimary')
   ).toHaveLength(2);
-  expect(matrix.querySelectorAll('.kitRow:not(.kitColumns)')).toHaveLength(9);
+  expect(matrix.querySelectorAll('.kitRow:not(.kitColumns)')).toHaveLength(10);
 });
 
 it('labels every cell with its state for a phone', async () => {
@@ -23,7 +23,7 @@ it('labels every cell with its state for a phone', async () => {
 
   const rows = document.querySelectorAll('.kitRow:not(.kitColumns)');
 
-  expect(rows).toHaveLength(9);
+  expect(rows).toHaveLength(10);
 
   for (const row of rows) {
     expect(
@@ -39,8 +39,8 @@ it('keeps the pointer-state cells out of the tab order and the accessibility tre
 
   const inert = document.querySelectorAll('.kitCell[inert]');
 
-  // Hover, Focus and Pressed in each of the nine rows.
-  expect(inert).toHaveLength(9 * 3);
+  // Hover, Focus and Pressed in each of the ten rows.
+  expect(inert).toHaveLength(10 * 3);
   expect(
     [...inert].every(
       cell =>
@@ -63,4 +63,19 @@ it('shows the Text field with a placeholder at rest, text when typed and filled,
     row.querySelectorAll('.kitCell:not([inert]) input:not(:disabled)')
   ).toHaveLength(1);
   expect(row.querySelectorAll('input:disabled')).toHaveLength(1);
+});
+
+// PPL-01
+it('shows the Arrow link as a link in four columns and as a label in Disabled', async () => {
+  render(await StatesKit());
+
+  const row = screen.getByText('Arrow link').closest('.kitRow')!;
+
+  expect(
+    [...row.querySelectorAll('.kitCell')].map(
+      cell => cell.querySelector('a')?.dataset.state ?? cell.tagName
+    )
+  ).toEqual(['SPAN', 'hover', 'focus', 'active', 'SPAN']);
+  expect(row.querySelectorAll('a')).toHaveLength(4);
+  expect(row.querySelectorAll('svg[data-icon="forward"]')).toHaveLength(5);
 });

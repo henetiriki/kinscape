@@ -337,6 +337,27 @@
       "mode": "blocking"
     },
     {
+      "name": "person-relationships",
+      "route": "/screens/person-relationships",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-relationships-empty",
+      "route": "/screens/person-relationships-empty",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "person-relationships-load-failed",
+      "route": "/screens/person-relationships-load-failed",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "fuzzy-date-readings",
       "route": "/screens/fuzzy-date-readings",
       "width": 1440,

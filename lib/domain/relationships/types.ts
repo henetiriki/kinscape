@@ -1,6 +1,10 @@
 import type { z } from 'zod';
 
+import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 import type { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
+
+/** A link of one Person, with the Person at its other end. */
+export type LinkedPerson = { person: PersonView; relationship: Relationship };
 
 /** How a parent is related to a child. */
 export type ParentSubtype = Extract<

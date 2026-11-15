@@ -1,5 +1,7 @@
 import type { PersonSummary } from '#ks/lib/domain/persons/types.ts';
 
+type NameOf = Pick<PersonSummary, 'givenNames' | 'surname'>;
+
 const collator = new Intl.Collator('en', { sensitivity: 'base' });
 
 /** Lower case, no accents, one space between words. */
@@ -12,7 +14,7 @@ const plain = (text: string): string =>
     .trim();
 
 /** Orders Persons by surname, then given names, ignoring case and accents. */
-export const byName = (a: PersonSummary, b: PersonSummary): number =>
+export const byName = (a: NameOf, b: NameOf): number =>
   collator.compare(a.surname, b.surname) ||
   collator.compare(a.givenNames, b.givenNames);
 

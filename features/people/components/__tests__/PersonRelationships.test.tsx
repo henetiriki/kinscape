@@ -1,4 +1,5 @@
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -513,13 +514,27 @@ describe('"Edit"', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => expect(replace).toHaveBeenCalled());
-    expect(screen.queryByRole('dialog')).toBeNull();
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 
     rerender(page(props));
     expect(screen.queryByRole('dialog')).toBeNull();
 
     rerender(page({ ...props, edit: undefined }));
     rerender(page(props));
+    screen.getByRole('dialog');
+  });
+
+  it('opens again on "Edit" while the address still holds `edit`', async () => {
+    open({ edit: RELATION, groups: { ...empty, parents } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await act(async () => {});
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole('link', { name: 'Edit, Rossouw, Jacobus' })
+    );
+
     screen.getByRole('dialog');
   });
 });

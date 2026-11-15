@@ -218,7 +218,11 @@ export const PersonRelationships = ({
                       <Text variant='body'>No {key} yet.</Text>
                     </div>
                   ) : (
-                    <ul className={styles.rows}>
+                    // A click on "Edit" opens the dialog again, even if the address still holds `?edit` from the last close.
+
+                    <ul
+                      className={styles.rows}
+                      onClickCapture={() => setClosedEdit(undefined)}>
                       {groups[key].map(entry => (
                         <li className={styles.item} key={entry.id}>
                           <RelationshipRow

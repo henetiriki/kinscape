@@ -30,7 +30,7 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 450, pattern: /^plans\/chores\/[^/]+\.md$/, plan: true },
   { limit: 500, pattern: /^\.github\/agent\/review\.md$/ },
   { limit: 750, pattern: /^\.github\/agent\/review-code\.md$/ },
-  { limit: 350, pattern: /^\.github\/agent\/fix-review\.md$/ },
+  { limit: 360, pattern: /^\.github\/agent\/fix-review\.md$/ },
   { limit: 330, pattern: /^\.github\/agent\/refresh\.md$/ },
   { limit: 300, pattern: /^\.github\/agent\/[^/]+\.md$/ },
   { limit: 760, pattern: /^\.claude\/skills\/refine\/spec\.md$/ },

@@ -65,7 +65,6 @@ describe('the steps of the review job that gate Review', () => {
     }
     expect(stepNamed(GATE).env).toMatchObject({
       GH_REPO: '${{ github.repository }}',
-      HEAD_SHA: '${{ github.event.pull_request.head.sha }}',
       PR_NUMBER: '${{ github.event.pull_request.number }}',
     });
   });
@@ -126,6 +125,11 @@ const GH_FIXTURES = `echo "$*" >> "$LOG"
 [ -z "$FAIL" ] || exit 1
 args="$*"
 case "$args" in
+  "api graphql "*)
+    case "$args" in
+      *" after="*) after="\${args##* after=}"; file="$FIX/threads-\${after%% *}.json" ;;
+      *) file="$FIX/threads.json" ;;
+    esac ;;
   "run list "*) file="$FIX/runs.json" ;;
   *"/compare/"*) echo DIFF; exit 0 ;;
   "pr view "*) file="$FIX/commits.json" ;;
@@ -135,7 +139,6 @@ case "$args" in
       *"/artifacts"*) file="$FIX/artifacts-$id.json" ;;
       *"/jobs"*) file="$FIX/jobs-$id.json" ;;
     esac ;;
-  *"/pulls/7/comments"*) file="$FIX/inline.json" ;;
   *"/pulls/7/files"*) file="$FIX/files.json" ;;
   *"/issues/7/comments"*) file="$FIX/issue.json" ;;
 esac
@@ -302,121 +305,216 @@ describe('the step that writes the changes since the last review', () => {
 
 describe('the step that fails on open findings', () => {
   const BOT = 'github-actions[bot]';
-  const inline = (
-    login: string,
-    commit: string,
-    reply: null | number = null
+  // A review thread, as the GraphQL query answers it: the authors of its comments, first to last.
+  const thread = (
+    authors: [login: string, type: string][] = [['github-actions', 'Bot']],
+    { outdated = false, resolved = false } = {}
   ) => ({
-    id: 1,
-    in_reply_to_id: reply,
-    original_commit_id: commit,
-    user: { login },
+    comments: {
+      nodes: authors.map(([login, type]) => ({
+        author: { __typename: type, login },
+      })),
+    },
+    isOutdated: outdated,
+    isResolved: resolved,
   });
+  const page = (
+    nodes: object[],
+    pageInfo: { endCursor: null | string; hasNextPage: boolean }
+  ) => ({
+    data: {
+      repository: { pullRequest: { reviewThreads: { nodes, pageInfo } } },
+    },
+  });
+  // Pages of threads: the first is `threads.json`, the next `threads-c0.json`, `threads-c1.json`.
+  const pagesOf = (...groups: object[][]) =>
+    Object.fromEntries(
+      groups.map((nodes, index) => [
+        index === 0 ? 'threads.json' : `threads-c${index - 1}.json`,
+        page(nodes, {
+          endCursor: `c${index}`,
+          hasNextPage: index < groups.length - 1,
+        }),
+      ])
+    );
   const issue = (login: string, body: string) => ({ body, user: { login } });
 
   const gate = (
-    inlineComments: object[],
+    threads: Record<string, unknown>,
     issueComments: object[] = [],
     fail = ''
   ) =>
-    withFixtures(
-      { 'inline.json': inlineComments, 'issue.json': issueComments },
-      fix =>
-        runScript(
-          stepNamed(GATE).run,
-          { gh: GH_FIXTURES },
-          {
-            FAIL: fail,
-            FIX: fix,
-            GH_REPO: 'owner/repo',
-            HEAD_SHA: HEAD,
-            PR_NUMBER: '7',
-          },
-          ['-e', '-o', 'pipefail']
-        )
+    withFixtures({ ...threads, 'issue.json': issueComments }, fix =>
+      runScript(
+        stepNamed(GATE).run,
+        { gh: GH_FIXTURES },
+        {
+          FAIL: fail,
+          FIX: fix,
+          GH_REPO: 'owner/repo',
+          PR_NUMBER: '7',
+        },
+        ['-e', '-o', 'pipefail']
+      )
     );
-  const error = (total: number, inlineCount: number, earlier: number) =>
-    `::error::The review has open findings: ${total} (${inlineCount} inline on this commit, ${earlier} in its Open findings comment).`;
+  const error = (total: number, threads: number, earlier: number) =>
+    `::error::The review has open findings: ${total} (${threads} unresolved threads, ${earlier} in its Earlier findings still open comment).`;
 
   it('passes a review with nothing open', () => {
     expect(
-      gate([], [issue(BOT, 'Open findings: 0\n\nAll addressed.')])
+      gate(pagesOf([]), [
+        issue(BOT, 'Earlier findings still open: 0\n\nAll addressed.'),
+      ])
     ).toMatchObject({
       status: 0,
       stdout: 'The review has no open findings.\n',
     });
   });
 
-  it('fails on each inline comment of the bot on the head commit, from any run', () => {
-    const { status, stdout } = gate([inline(BOT, HEAD), inline(BOT, HEAD)]);
+  it('reads the threads of the PR by owner, name and number', () => {
+    const { log } = gate(pagesOf([]));
+
+    expect(log).toContain('api graphql');
+    expect(log).toContain('owner=owner');
+    expect(log).toContain('name=repo');
+    expect(log).toContain('number=7');
+    expect(log).toContain('reviewThreads(first: 100, after: $after)');
+    expect(log).not.toContain('after=');
+  });
+
+  it('fails on each unresolved thread that the reviewer started', () => {
+    const { status, stdout } = gate(pagesOf([thread(), thread()]));
 
     expect(status).toBe(1);
     expect(stdout).toBe(`${error(2, 2, 0)}\n`);
   });
 
-  it.each([
-    ['one on an earlier commit', [inline(BOT, OLD)]],
-    ['a reply', [inline(BOT, HEAD, 123)]],
-    ['one by someone else', [inline('kinscape-agent[bot]', HEAD)]],
-  ])('does not count %s', (_, comments) => {
-    expect(gate(comments).status).toBe(0);
+  // A push after a review, such as the one of the snapshot bot, moves the head. The thread stays.
+  it('counts an outdated thread, whatever commit it was posted on', () => {
+    expect(gate(pagesOf([thread(undefined, { outdated: true })])).stdout).toBe(
+      `${error(1, 1, 0)}\n`
+    );
   });
 
-  it('counts the findings that the Open findings comment names, as a first review does', () => {
+  // PR 840: the review of the snapshot commit wrote 0 and the check went green.
+  it('fails on an unresolved thread when the review says no earlier finding is open', () => {
     const { status, stdout } = gate(
-      [],
-      [issue(BOT, 'Open findings: 1\n\nNo plan file.')]
+      pagesOf([thread(undefined, { outdated: true })]),
+      [
+        issue(
+          BOT,
+          'Earlier findings still open: 0\n\nNo new findings on this push.'
+        ),
+      ]
     );
+
+    expect(status).toBe(1);
+    expect(stdout).toBe(`${error(1, 1, 0)}\n`);
+  });
+
+  it.each([
+    ['a resolved thread', thread(undefined, { resolved: true })],
+    [
+      'a thread that a person started',
+      thread([
+        ['someone', 'User'],
+        ['github-actions', 'Bot'],
+      ]),
+    ],
+    ['a thread of another bot', thread([['kinscape-agent', 'Bot']])],
+    [
+      'a thread of a person named like the reviewer',
+      thread([['github-actions', 'User']]),
+    ],
+  ])('does not count %s', (_, one) => {
+    expect(gate(pagesOf([one])).status).toBe(0);
+  });
+
+  it('counts the threads on every page', () => {
+    const { log, stdout } = gate(
+      pagesOf(
+        [thread(undefined, { resolved: true })],
+        [thread(), thread(undefined, { resolved: true })],
+        [thread()]
+      )
+    );
+
+    expect(stdout).toBe(`${error(2, 2, 0)}\n`);
+    expect(log.match(/api graphql/g)).toHaveLength(3);
+    expect(log).toContain('after=c0');
+    expect(log).toContain('after=c1');
+  });
+
+  it('fails on a page that says there is more but names no cursor', () => {
+    const { status, stdout } = gate({
+      'threads.json': page([], { endCursor: null, hasNextPage: true }),
+    });
+
+    expect(status).toBe(1);
+    expect(stdout).toBe(
+      '::error::A page of review threads has a next page but no cursor.\n'
+    );
+  });
+
+  it('counts the findings that the Earlier findings still open comment names, as a first review does', () => {
+    const { status, stdout } = gate(pagesOf([]), [
+      issue(BOT, 'Earlier findings still open: 1\n\nNo plan file.'),
+    ]);
 
     expect(status).toBe(1);
     expect(stdout).toBe(`${error(1, 0, 1)}\n`);
   });
 
-  it('adds them to the inline ones', () => {
-    const { stdout } = gate(
-      [inline(BOT, HEAD)],
-      [issue(BOT, 'Open findings: 2')]
-    );
+  it('adds them to the unresolved threads', () => {
+    const { stdout } = gate(pagesOf([thread()]), [
+      issue(BOT, 'Earlier findings still open: 2'),
+    ]);
 
     expect(stdout).toBe(`${error(3, 1, 2)}\n`);
   });
 
-  it('reads only the latest Open findings comment', () => {
+  it('reads only the latest Earlier findings still open comment', () => {
     expect(
-      gate([], [issue(BOT, 'Open findings: 2'), issue(BOT, 'Open findings: 0')])
-        .status
+      gate(pagesOf([]), [
+        issue(BOT, 'Earlier findings still open: 2'),
+        issue(BOT, 'Earlier findings still open: 0'),
+      ]).status
     ).toBe(0);
   });
 
   // Claude writes the line in the markdown it likes.
   it.each([
-    '**Open findings: 2**',
-    '**Open findings:** 2',
-    '**Open findings**: 2',
-    '`Open findings`: 2',
-    '## Open findings: 2',
-    '`Open findings: 2`',
-    '> Open findings: 2',
-    'Open findings:   2',
+    '**Earlier findings still open: 2**',
+    '**Earlier findings still open:** 2',
+    '**Earlier findings still open**: 2',
+    '`Earlier findings still open`: 2',
+    '## Earlier findings still open: 2',
+    '`Earlier findings still open: 2`',
+    '> Earlier findings still open: 2',
+    'Earlier findings still open:   2',
   ])('reads %s', line => {
-    expect(gate([], [issue(BOT, `${line}\n\nSee the threads.`)]).stdout).toBe(
-      `${error(2, 0, 2)}\n`
-    );
+    expect(
+      gate(pagesOf([]), [issue(BOT, `${line}\n\nSee the threads.`)]).stdout
+    ).toBe(`${error(2, 0, 2)}\n`);
   });
 
   it.each([
-    ['one by a person', issue('someone', 'Open findings: 3')],
-    ['one that does not start the comment', issue(BOT, 'See Open findings: 3')],
+    ['one by a person', issue('someone', 'Earlier findings still open: 3')],
+    [
+      'one that does not start the comment',
+      issue(BOT, 'See Earlier findings still open: 3'),
+    ],
     [
       'one on a later line',
-      issue(BOT, 'Earlier findings are open.\nOpen findings: 3'),
+      issue(BOT, 'Earlier findings are open.\nEarlier findings still open: 3'),
     ],
+    ['the old label', issue(BOT, 'Open findings: 3')],
     ['a comment with no count', issue(BOT, 'Reviewing…')],
   ])('ignores %s', (_, comment) => {
-    expect(gate([], [comment]).status).toBe(0);
+    expect(gate(pagesOf([]), [comment]).status).toBe(0);
   });
 
   it('fails when a call fails, so a broken gate never passes', () => {
-    expect(gate([], [], '1').status).not.toBe(0);
+    expect(gate(pagesOf([]), [], '1').status).not.toBe(0);
   });
 });

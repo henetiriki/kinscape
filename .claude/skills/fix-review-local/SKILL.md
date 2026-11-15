@@ -20,5 +20,5 @@ Run the [shared steps](../build-local/SKILL.md#shared-steps) of `build-local`, w
 - Edit the file that a finding names, including the plan. Record a small departure under `## Deviations`. If a departure is big, ask the tech lead.
 - Prefix each `npm run review:threads` command with `GH_REPO=<owner>/<repo>`. Get the value from `gh repo view --json nameWithOwner`.
 - After the push, reply on every thread in one line: what changed, or why not. Use `gh api graphql` with the `addPullRequestReviewThreadReply` mutation and the thread `id` that `list` prints.
-- If a thread is fixed, resolve it. Leave a judged-wrong thread and a thread for a person open.
+- Before the push, resolve each thread that you fixed or judged wrong. Leave a thread for a person open.
 - Do not merge or push to `main`.

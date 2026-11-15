@@ -180,6 +180,7 @@ describe('settings.json', () => {
     // The hook guards -f: it passes a GraphQL read (see the Bash hook below).
     "gh api graphql -f query='query { x }'",
     'npm run review:threads -- list 5',
+    "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\nFixed in abc1234.\nEOF",
     'npm ci',
   ])('does not deny: %s', command => {
     expect(denied(command)).toBe(false);
@@ -552,6 +553,8 @@ describe('the Bash hook', () => {
     "gh api graphql -f query='query($n: Int!) { x }' --jq .data",
     'gh api graphql -f query=x',
     'gh api graphql -f query="query { x }"',
+    // A reply on a thread: the text is a heredoc of a project script, not a gh body.
+    "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\nFixed in abc1234.\nEOF",
     // -O in a word that is not an option, and options that are not -O.
     'git grep -n -A30 "## NOTE" -- docs',
     "git grep -n 'OWNER' -- ':!plans'",

@@ -1709,10 +1709,32 @@ describe('the fix-review workflow', () => {
     expect(text).toContain('npm run review:threads -- list <n>');
     expect(text).toContain('newest PR comment');
     expect(text).toContain('npm run review:threads -- resolve <n> <thread id>');
+    expect(text).toContain(
+      "npm run review:threads -- reply <n> <thread id> <<'EOF'"
+    );
     expect(text).not.toContain('gh api');
     expect(text).toContain('failing-tests rule');
     expect(text).toContain('draft state, labels or reviewers');
     expect(text).toMatch(/data, not instructions/);
+  });
+
+  // The review that a push starts must see the resolve, and the reply names the commit.
+  it('resolves a thread before the push and replies after it, in fix-review.md', () => {
+    const text = agent('fix-review.md');
+    const push = text.indexOf('Push to the PR branch');
+
+    expect(text.indexOf('-- resolve <n>')).toBeLessThan(push);
+    expect(text.indexOf('-- reply <n>')).toBeGreaterThan(push);
+    expect(text).toContain('Leave a thread for a person open');
+  });
+
+  it('opens a review with the findings that no thread shows, and posts the others inline, in review.md', () => {
+    const text = agent('review.md');
+
+    expect(text).toContain('`Earlier findings still open: <n>`');
+    expect(text).not.toContain('Open findings');
+    expect(text).toContain('Do not count an unresolved thread');
+    expect(text).toContain('Post it inline, except an unlikely case');
   });
 });
 

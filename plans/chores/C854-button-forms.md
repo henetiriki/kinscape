@@ -55,6 +55,11 @@ The variant holds its whole look.
 - `.iconBtn` has `position: relative`, so the Layers button paints later. `npm run design:check` shows a shadow change.
 - A `<button>` has its own font and text rules. `npm run design:check` on the Feedback and Surfaces boards shows a change.
 
+## Deviations
+
+- The kit page is a server component, so `GoTo` in `Samples.tsx` (client) holds its `TextLink` button.
+- `IconButton.test.tsx` is new: no test file for `IconButton` existed.
+
 ## Proof
 
 | Acceptance check         | Proven by                                      |

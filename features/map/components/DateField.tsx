@@ -8,6 +8,7 @@ import type { ControlState, Tone } from '@ks/app/components/foundation/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { Precision, Problem } from '@ks/lib/domain/map/types';
 
+import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Callout, CalloutPointer } from '@ks/app/components/feedback/Callout';
 import { TextField } from '@ks/app/components/forms/TextField';
 import { Text } from '@ks/app/components/foundation/Text';
@@ -163,13 +164,13 @@ export const DateField = ({
               <span className={styles.esc}> Press Esc to go back to it.</span>
             </span>
             {problem.fix && (
-              <button
-                className={`${styles.fix} ${styles.phoneFix}`}
-                data-size='small'
-                onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
-                type='button'>
-                {problem.fix.label}
-              </button>
+              <span className={`${styles.fix} ${styles.phoneFix}`}>
+                <TextLink
+                  onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
+                  size='small'>
+                  {problem.fix.label}
+                </TextLink>
+              </span>
             )}
           </Callout>
         )}
@@ -180,13 +181,13 @@ export const DateField = ({
         </Text>
       )}
       {problem?.fix && !above && (
-        <button
-          className={styles.fix}
-          data-size='small'
-          onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
-          type='button'>
-          {problem.fix.label}
-        </button>
+        <span className={styles.fix}>
+          <TextLink
+            onClick={() => goTo(problem.fix!.day, problem.fix!.precision)}
+            size='small'>
+            {problem.fix.label}
+          </TextLink>
+        </span>
       )}
       {!problem && notice && (
         <Text id={messageId} role='status' tone={notice.tone} variant='small'>

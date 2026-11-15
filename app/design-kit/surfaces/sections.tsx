@@ -35,6 +35,7 @@ import {
 import {
   AccountMenu,
   CopyChainPopup,
+  GoTo,
 } from '@ks/app/design-kit/surfaces/Samples';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
@@ -915,9 +916,7 @@ export const Callouts = () => (
           <div className={`${styles.callout} ${styles.phoneCallout}`}>
             <Callout className={styles.sheetCallout} id='callout-sheet'>
               <span>{MESSAGE}</span>
-              <button className={styles.goTo} type='button'>
-                Go to 1901-02-28
-              </button>
+              <GoTo>Go to 1901-02-28</GoTo>
             </Callout>
             <CalloutPointer
               className={`${styles.pointer} ${styles.sheetPointer}`}
@@ -932,9 +931,7 @@ export const Callouts = () => (
           <div className={`${styles.callout} ${styles.phoneCallout}`}>
             <Callout className={styles.sheetCallout} id='callout-phone'>
               <span>{MESSAGE}</span>
-              <button className={styles.goTo} type='button'>
-                Go to 1901-02-28
-              </button>
+              <GoTo>Go to 1901-02-28</GoTo>
             </Callout>
             <CalloutPointer
               className={`${styles.pointer} ${styles.sheetPointer}`}

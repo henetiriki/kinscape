@@ -268,6 +268,15 @@ const CASES: [string, ReactElement][] = [
       +
     </IconButton>
   )),
+  ...states('IconButton raised', (state, disabled) => (
+    <IconButton
+      disabled={disabled}
+      label='Layers'
+      state={state}
+      variant='raised'>
+      +
+    </IconButton>
+  )),
   ...states('Chip', (state, disabled) => (
     <Chip disabled={disabled} glyph='birth' on state={state}>
       Birth
@@ -314,6 +323,12 @@ const CASES: [string, ReactElement][] = [
     'TextLink · small',
     <TextLink href='/sources' key='small' size='small'>
       Sources
+    </TextLink>,
+  ],
+  [
+    'TextLink · button',
+    <TextLink key='button' onClick={noop} size='small'>
+      Go to 1901-02-28
     </TextLink>,
   ],
   ...links('ArrowLink', state => (

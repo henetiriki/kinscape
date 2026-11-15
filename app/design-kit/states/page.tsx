@@ -94,6 +94,19 @@ const ROWS: {
     ),
   },
   {
+    hint: '48px, over the map',
+    name: 'Raised icon button',
+    render: column => (
+      <IconButton
+        disabled={column === 'disabled'}
+        label='Layers and filters'
+        state={stateOf(column)}
+        variant='raised'>
+        <Plus />
+      </IconButton>
+    ),
+  },
+  {
     hint: 'In text and popups',
     name: 'Link',
     render: column => (

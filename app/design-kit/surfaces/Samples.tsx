@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
+import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Toast } from '@ks/app/components/feedback/Toast';
 import { Menu } from '@ks/app/components/overlays/Menu';
 import {
@@ -40,6 +41,15 @@ export const AccountMenu = ({ sources }: { sources: Source[] }) => {
     </>
   );
 };
+
+/** The "Go to" fix on a phone Callout. It does nothing: the board shows the look. */
+export const GoTo = ({ children }: { children: string }) => (
+  <span className={styles.goTo}>
+    <TextLink onClick={() => undefined} size='small'>
+      {children}
+    </TextLink>
+  </span>
+);
 
 /** The desktop Popup with Copy chain, and the Toast that says whether it worked. */
 export const CopyChainPopup = () => {

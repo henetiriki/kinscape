@@ -1,7 +1,7 @@
 # Plan: C870: Retire the design agent role; a local session owns the canvas
 
 - **Spec:** #870
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The issue names no section for the rule. "Reading a board" is about a build, and
 - **B.** Add the rule as the last paragraph of "Reading a board".
 - **Other:** your own.
 
-Recommended: A, because a reader who must draw a board finds the rule by its heading.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

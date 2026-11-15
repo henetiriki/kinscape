@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
-import { personDates, spouseDates } from '@ks/lib/domain/persons/dates.mts';
+import {
+  personDates,
+  personSummary,
+  spouseDates,
+} from '@ks/lib/domain/persons/dates.mts';
 
 // PPL-01
 describe('personDates', () => {
@@ -28,6 +32,35 @@ describe('personDates', () => {
       deceased: false,
       died: '',
       diedReading: '',
+    });
+  });
+});
+
+// PPL-01
+describe('personSummary', () => {
+  it('gives the row of the People list and leaves the notes out', () => {
+    const view = {
+      birth: fuzzyDateOf('EXACT', '1900'),
+      deceased: false,
+      givenNames: 'Anna',
+      id: 'p1',
+      maidenName: 'Nel',
+      notes: 'private',
+      surname: 'Botha',
+      variants: ['Bota'],
+    };
+
+    expect(personSummary(view)).toEqual({
+      born: '1900',
+      bornReading: 'In 1900',
+      deceased: false,
+      died: '',
+      diedReading: '',
+      givenNames: 'Anna',
+      id: 'p1',
+      maidenName: 'Nel',
+      surname: 'Botha',
+      variants: ['Bota'],
     });
   });
 });

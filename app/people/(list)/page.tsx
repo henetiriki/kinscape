@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PeopleList } from '@ks/features/people';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
-import { personDates } from '@ks/lib/domain/persons/dates.mts';
+import { personSummary } from '@ks/lib/domain/persons/dates.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
 import { requireSession } from '@ks/server/auth/current.mts';
@@ -15,16 +15,7 @@ export const metadata: Metadata = { title: 'People' };
 
 /** The Viewer's Persons, as rows. The notes stay on the server. */
 const listPeople = treeAction(z.undefined(), async tree =>
-  ok(
-    (await tree.persons.list()).map(person => ({
-      ...personDates(person),
-      givenNames: person.givenNames,
-      id: person.id,
-      maidenName: person.maidenName,
-      surname: person.surname,
-      variants: person.variants,
-    }))
-  )
+  ok((await tree.persons.list()).map(personSummary))
 );
 
 /**

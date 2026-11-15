@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
-import { describe, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@ks/server/auth/current.mts', () => ({
   requireDevPage: vi.fn(),
@@ -13,6 +13,9 @@ vi.mock('next/navigation', () => ({
 import Empty from '@ks/app/screens/person-relationships-empty/page';
 import LoadFailed from '@ks/app/screens/person-relationships-load-failed/page';
 import Board from '@ks/app/screens/person-relationships/page';
+import PickEmpty from '@ks/app/screens/relationship-pick-empty/page';
+import NoMatch from '@ks/app/screens/relationship-pick-no-match/page';
+import Pick from '@ks/app/screens/relationship-pick/page';
 
 // PPL-02
 describe('the Relationships screens', () => {
@@ -37,6 +40,34 @@ describe('the Relationships screens', () => {
     screen.getByText('No parents yet.');
     screen.getByText('No children yet.');
     screen.getByText('No spouses yet.');
+  });
+
+  it('relationship-pick shows the matches of "Fourie", by name', async () => {
+    render(await Pick());
+
+    expect(
+      within(screen.getByRole('dialog'))
+        .getAllByRole('listitem')
+        .map(item => item.textContent)
+    ).toEqual([
+      expect.stringContaining('Botha, Susanna'),
+      expect.stringContaining('Fourie, Pieter'),
+      expect.stringContaining('Foury, Maria Elizabeth'),
+    ]);
+    screen.getByText('née Fourie');
+    screen.getByText('Matches the spelling “Fourie”');
+  });
+
+  it('relationship-pick-no-match shows the notice of its board', async () => {
+    render(await NoMatch());
+
+    screen.getByText('No one matches “Pretorius”');
+  });
+
+  it('relationship-pick-empty shows the notice of its board', async () => {
+    render(await PickEmpty());
+
+    screen.getByText('No other people in your Tree');
   });
 
   it('person-relationships-load-failed shows the notice', async () => {

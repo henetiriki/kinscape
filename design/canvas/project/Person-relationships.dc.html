@@ -228,6 +228,8 @@ class Component extends DCLogic {
       }
       matches.push(row);
     });
+    const collate = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+    matches.sort((a, b) => collate(a.surname, b.surname) || collate(a.givenNames, b.givenNames));
     const KIND = { parent: ['Add a parent', 'parent', 'Type of parent'], child: ['Add a child', 'child', 'Type of child'], spouse: ['Add a spouse', 'spouse', ''] };
     let dialog = null;
     if (d) {

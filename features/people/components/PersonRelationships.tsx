@@ -1,11 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import type {
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
+import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { DateText } from '@ks/app/components/actions/DateText';
@@ -15,6 +17,7 @@ import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { EditOnComputer } from '@ks/features/people/components/EditOnComputer';
+import { RelationshipPicker } from '@ks/features/people/components/RelationshipPicker';
 
 import styles from '@ks/features/people/components/PersonRelationships.module.css';
 
@@ -24,6 +27,8 @@ const GROUPS = [
   { key: 'children', title: 'Children' },
 ] as const;
 
+type GroupKey = (typeof GROUPS)[number]['key'];
+
 /** The board words a Relationship "link" in the count; the code calls it a Relationship. */
 const count = (relationships: number) =>
   `${relationships} ${relationships === 1 ? 'link' : 'links'}`;
@@ -31,8 +36,8 @@ const count = (relationships: number) =>
 /**
  * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
  * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
- * load that failed may have no `person`, so the subtitle is then the save note only. "Add" does
- * nothing yet. "Edit" points at this page until the edit dialog exists.
+ * load that failed may have no `person`, so the subtitle is then the save note only. "Add" opens
+ * the picker of its group; the save is not built yet. "Edit" points at this page until the edit dialog exists.
  */
 export const PersonRelationships = ({
   email,
@@ -40,20 +45,34 @@ export const PersonRelationships = ({
   groups,
   initial,
   onSignOut,
+  people,
   person,
+  picking,
 }: {
   email: string;
   initial: string;
   onSignOut: () => Promise<unknown>;
 } & (
-  | { failed: true; groups?: undefined; person?: RelationshipsPerson }
+  | {
+      failed: true;
+      groups?: undefined;
+      people?: undefined;
+      person?: RelationshipsPerson;
+      picking?: undefined;
+    }
   | {
       failed?: false;
-      groups: Record<(typeof GROUPS)[number]['key'], RelationshipEntry[]>;
+      groups: Record<GroupKey, RelationshipEntry[]>;
+      /** Every Person of the Tree except `person`, for the picker. */
+      people: PersonSummary[];
       person: RelationshipsPerson;
+      /** Opens the picker of a group at the start, with a filter. For the screen boards. */
+      picking?: { group: GroupKey; query?: string };
     }
 )) => {
   const router = useRouter();
+  const [adding, setAdding] = useState(picking?.group);
+  const query = picking?.query;
 
   return (
     <EditOnComputer email={email} initial={initial} onSignOut={onSignOut}>
@@ -116,7 +135,9 @@ export const PersonRelationships = ({
                       </Text>
                       <Text variant='small'>{count(groups[key].length)}</Text>
                     </div>
-                    <Button variant='secondary'>Add</Button>
+                    <Button onClick={() => setAdding(key)} variant='secondary'>
+                      Add
+                    </Button>
                   </div>
                   {groups[key].length === 0 ? (
                     <div className={styles.none}>
@@ -139,6 +160,14 @@ export const PersonRelationships = ({
             )}
           </div>
         </main>
+        {adding && !failed && (
+          <RelationshipPicker
+            group={adding}
+            initialQuery={query}
+            onClose={() => setAdding(undefined)}
+            people={people}
+          />
+        )}
       </div>
     </EditOnComputer>
   );

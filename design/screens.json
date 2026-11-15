@@ -344,6 +344,27 @@
       "mode": "blocking"
     },
     {
+      "name": "relationship-pick",
+      "route": "/screens/relationship-pick",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-pick-no-match",
+      "route": "/screens/relationship-pick-no-match",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-pick-empty",
+      "route": "/screens/relationship-pick-empty",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "person-relationships-empty",
       "route": "/screens/person-relationships-empty",
       "width": 1440,

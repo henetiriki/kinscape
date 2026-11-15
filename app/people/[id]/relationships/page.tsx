@@ -14,11 +14,12 @@ import { PersonNotFound, PersonRelationships } from '@ks/features/people';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
 import { idField } from '@ks/lib/domain/ids/schemas.mts';
-import { personDates, spouseDates } from '@ks/lib/domain/persons/dates.mts';
 import {
-  groupRelationships,
-  relatedPersonIds,
-} from '@ks/lib/domain/relationships/groups.mts';
+  personDates,
+  personSummary,
+  spouseDates,
+} from '@ks/lib/domain/persons/dates.mts';
+import { groupRelationships } from '@ks/lib/domain/relationships/groups.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
 import { requireSession } from '@ks/server/auth/current.mts';
@@ -44,26 +45,29 @@ const entryOf = ({
 });
 
 /**
- * The Relationships of one Person, in three groups. It reads only the Persons at the other ends,
- * and sends only their names and dates.
+ * The Relationships of one Person, in three groups, and every other Person for the picker. It
+ * reads the Persons once. It sends only names, dates and spelling variants.
  */
 const readRelationships = treeAction(
   idField(parsePersonId),
   async (tree, id) => {
-    const relationships = await tree.relationships.list();
-    const others = relatedPersonIds(id, relationships);
-    const read = await Promise.all(
-      others.map(other => tree.persons.get(other))
+    const [relationships, persons] = await Promise.all([
+      tree.relationships.list(),
+      tree.persons.list(),
+    ]);
+    const groups = groupRelationships(
+      id,
+      relationships,
+      new Map(persons.map(person => [person.id, person]))
     );
-    const people = new Map(
-      read.flatMap(person => (person ? [[person.id, person] as const] : []))
-    );
-    const groups = groupRelationships(id, relationships, people);
 
     return ok({
-      children: groups.children.map(entryOf),
-      parents: groups.parents.map(entryOf),
-      spouses: groups.spouses.map(entryOf),
+      groups: {
+        children: groups.children.map(entryOf),
+        parents: groups.parents.map(entryOf),
+        spouses: groups.spouses.map(entryOf),
+      },
+      people: persons.filter(person => person.id !== id).map(personSummary),
     });
   }
 );
@@ -122,7 +126,8 @@ const RelationshipsPage = async ({
   return related?.ok ? (
     <PersonRelationships
       {...header}
-      groups={related.value}
+      groups={related.value.groups}
+      people={related.value.people}
       person={headingOf(person)}
     />
   ) : (

@@ -26,23 +26,6 @@ const otherEnd = (
 };
 
 /**
- * The Persons at the other end of the Relationships of one Person, each once. Read these, then
- * group.
- */
-export const relatedPersonIds = (
-  id: PersonId,
-  relationships: Relationship[]
-): PersonId[] => [
-  ...new Set(
-    relationships.flatMap(relationship => {
-      const end = otherEnd(id, relationship);
-
-      return end ? [end[0]] : [];
-    })
-  ),
-];
-
-/**
  * The Relationships of one Person, in three groups, each sorted by surname, then given names
  * (PPL-02). `groupRelationships` omits a Relationship of another Person, and a Relationship whose
  * other Person is not in `people`.

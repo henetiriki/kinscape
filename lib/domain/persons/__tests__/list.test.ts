@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
-import { byName, matchesQuery } from '@ks/lib/domain/persons/list.mts';
+import {
+  byName,
+  findPeople,
+  matchesQuery,
+} from '@ks/lib/domain/persons/list.mts';
 
 const person = (fields: Partial<PersonSummary>): PersonSummary => ({
   born: '',
@@ -67,6 +71,54 @@ describe('byName', () => {
       'Hendrik',
       'Maria',
     ]);
+  });
+});
+
+// PPL-01, PPL-02
+describe('findPeople', () => {
+  const pieter = person({
+    givenNames: 'Pieter',
+    id: 'a',
+    surname: 'Fourie',
+    variants: ['Fouri'],
+  });
+  const susanna = person({
+    givenNames: 'Susanna',
+    id: 'b',
+    maidenName: 'Fourie',
+    surname: 'Botha',
+  });
+  const mariaE = person({
+    givenNames: 'Maria',
+    id: 'c',
+    surname: 'Foury',
+    variants: ['Fourie'],
+  });
+
+  it('sorts by name, then keeps each match', () => {
+    expect(findPeople([mariaE, pieter, susanna], 'fourie')).toEqual([
+      { match: {}, person: susanna },
+      { match: {}, person: pieter },
+      { match: { variant: 'Fourie' }, person: mariaE },
+    ]);
+  });
+
+  it('lists everyone on a blank filter', () => {
+    expect(
+      findPeople([pieter, susanna], ' ').map(row => row.person.id)
+    ).toEqual(['b', 'a']);
+  });
+
+  it('gives no rows when nothing matches', () => {
+    expect(findPeople([pieter], 'zzz')).toEqual([]);
+  });
+
+  it('leaves its input in order', () => {
+    const list = [pieter, susanna];
+
+    findPeople(list, '');
+
+    expect(list).toEqual([pieter, susanna]);
   });
 });
 

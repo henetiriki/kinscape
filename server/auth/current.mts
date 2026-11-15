@@ -1,6 +1,7 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
+import { cache } from 'react';
 
 import type { Session } from '#ks/lib/domain/auth/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
@@ -23,12 +24,13 @@ import { devPagesVisible } from '#ks/server/dev-pages.mts';
 const now = () => new Date();
 
 /** The session behind the request's cookie, or undefined; the check every gated page and route makes. */
-export const currentSession = async () =>
+export const currentSession = cache(async () =>
   sessionOf(
     appAdapters().sessions,
     now,
     (await cookies()).get(SESSION_COOKIE)?.value
-  );
+  )
+);
 
 /**
  * The session, or the sign-in page. Every page calls it before it renders anything: a layout's

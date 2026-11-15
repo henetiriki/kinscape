@@ -7,6 +7,7 @@ import { personNote } from '@ks/app/components/actions/dates';
 import { DateText } from '@ks/app/components/actions/DateText';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Icon } from '@ks/app/components/foundation/Icon';
+import { KitLink } from '@ks/app/components/foundation/link';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/actions/PersonRow.module.css';
@@ -25,6 +26,7 @@ export const PersonRow = ({
   diedReading,
   form,
   givenNames,
+  href,
   maidenName,
   matchedVariant,
   relationshipsHref,
@@ -68,7 +70,7 @@ export const PersonRow = ({
   }
 
   const row = (
-    <a className={styles.row} data-state={state} {...rest}>
+    <KitLink className={styles.row} data-state={state} href={href} {...rest}>
       <span className={styles.name}>
         {name}
         {note && <Text variant='small'>{note}</Text>}
@@ -78,7 +80,7 @@ export const PersonRow = ({
         Edit
         <Icon name='forward' size={16} />
       </span>
-    </a>
+    </KitLink>
   );
 
   if (!relationshipsHref) return row;

@@ -1,4 +1,4 @@
-import type { ComponentProps, KeyboardEvent, ReactNode, Ref } from 'react';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentType, KeyboardEvent, ReactNode, Ref } from 'react';
 import type { z } from 'zod';
 import { z } from 'zod';
 
@@ -47,6 +47,10 @@ export type FilledIconName = keyof typeof MARKS;
 export type Heading = 'display' | 'h1' | 'h2' | 'h3';
 export type IconName = keyof typeof PATHS;
 export type IconSize = 14 | 16 | 18 | 20 | 24 | 28;
+/** What a kit link renders: a plain anchor, or a component that takes the anchor props. */
+export type LinkComponent = 'a' | ComponentType<{
+    href: string;
+} & ComponentPropsWithoutRef<'a'>>;
 export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'small' | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type TextVariant = Heading | Other;
@@ -228,7 +232,7 @@ type ElementProps = ({
 type Omitted = 'aria-label' | 'children' | 'className';
 /**
  * An action: primary for the one main action in a view, secondary for the rest.
- * With an `href` it draws a plain `<a>` with the same look and states.
+ * With an `href` it draws the `LinkContext` link with the same look and states.
  */
 export declare const Button: ({ children, full, icon, label, round, size, state, variant, ...rest }: Content & ElementProps) => import("react").JSX.Element;
 export type ButtonProps = Parameters<typeof Button>[0];
@@ -291,8 +295,10 @@ export declare const Tabs: ({ disabled, fill, label, onSelect, selected, tabs, }
 export type TabsProps = Parameters<typeof Tabs>[0];
 
 /** An anchor has no disabled state, so a disabled link is plain text that says so. */
-export declare const TextLink: ({ children, disabled, size, state, ...rest }: {
+export declare const TextLink: ({ children, disabled, href, size, state, ...rest }: {
     disabled?: boolean;
+    /** Required unless `disabled`. */
+    href?: string;
     /** `small` is 13 / 20, for dense surfaces such as the Sources dialog. */
     size?: "small";
     state?: ControlState;
@@ -322,7 +328,7 @@ export type ActionBarProps = Parameters<typeof ActionBar>[0];
  * "Relationships" link, so it is a `div` with two links. With `form='phone'` the row is a
  * read-only `div`: the name, then the line of dates and the note.
  */
-export declare const PersonRow: ({ born, bornReading, deceased, died, diedReading, form, givenNames, maidenName, matchedVariant, relationshipsHref, state, surname, ...rest }: {
+export declare const PersonRow: ({ born, bornReading, deceased, died, diedReading, form, givenNames, href, maidenName, matchedVariant, relationshipsHref, state, surname, ...rest }: {
     /** `phone`: a row that is no link. */
     form?: "phone";
     givenNames: string;
@@ -681,7 +687,7 @@ export declare const Wordmark: ({ iconOnly, size, }: {
 }) => import("react").JSX.Element;
 export type WordmarkProps = Parameters<typeof Wordmark>[0];
 
-/** The 44px link back to the page above, with the back icon. It is an anchor, not `next/link`. */
+/** The 44px link back to the page above, with the back icon. It renders the `LinkContext` link. */
 export declare const BackLink: ({ href, label, state, }: {
     href: string;
     label: string;

@@ -1,9 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const push = vi.hoisted(() => vi.fn());
+const router = vi.hoisted(() => ({ prefetch: vi.fn(), push: vi.fn() }));
+const { push } = router;
 
-vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }));
+vi.mock('next/navigation', () => ({ useRouter: () => router }));
 
 import { AccountMenu } from '@ks/features/map/components/AccountMenu';
 
@@ -49,6 +50,13 @@ describe('AccountMenu on desktop', () => {
     expect(screen.queryByText(/export/i)).toBeNull();
     expect(screen.queryByText(/backup/i)).toBeNull();
     expect(screen.queryByRole('search')).toBeNull();
+  });
+
+  // PPL-01
+  it('prefetches People, so a slow server shows its loading screen', () => {
+    setup();
+
+    expect(router.prefetch).toHaveBeenCalledWith('/people');
   });
 
   // PPL-01

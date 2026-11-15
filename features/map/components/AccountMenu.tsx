@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 
 import { useRouter } from 'next/navigation';
-import { startTransition } from 'react';
+import { startTransition, useEffect } from 'react';
 
 import type { MenuEntry } from '@ks/app/components/overlays/types';
 
@@ -45,6 +45,12 @@ export const AccountMenu = ({
   phone?: boolean;
 }) => {
   const router = useRouter();
+
+  // A prefetch holds the People loading screen, so a slow server shows it at once.
+  useEffect(() => {
+    router.prefetch('/people');
+  }, [router]);
+
   const menu = (
     <Menu
       email={email}

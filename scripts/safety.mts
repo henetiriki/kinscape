@@ -168,7 +168,7 @@ const METADATA: Record<string, string> = {
   'sitemap.ts': 'sitemap.xml',
 };
 
-/** The URL a route file serves: a `[param]` becomes `x`, a `(group)` drops out. */
+/** The URL a route file serves: a `[param]` becomes `x`; a `(group)` and an `@slot` drop out. */
 export const routeOf = (file: string): AppRoute | undefined => {
   const match = ROUTE_FILE.exec(file);
 
@@ -179,7 +179,10 @@ export const routeOf = (file: string): AppRoute | undefined => {
   const [, dir = '', name] = match;
   const segments = dir
     .split('/')
-    .filter(segment => segment !== '' && !/^\(.*\)$/.test(segment))
+    .filter(
+      segment =>
+        segment !== '' && !/^\(.*\)$/.test(segment) && !segment.startsWith('@')
+    )
     .map(segment => (segment.startsWith('[') ? 'x' : segment));
   // A metadata image is served under its own name; a page or route handler at its folder.
   const image = /^(icon|apple-icon|opengraph-image|twitter-image)\.tsx$/.exec(

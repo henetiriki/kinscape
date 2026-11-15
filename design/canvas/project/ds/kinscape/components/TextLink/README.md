@@ -5,6 +5,7 @@ An anchor has no disabled state, so a disabled link is plain text that says so.
 | Prop | Type | Required | Description |
 | --- | --- | --- | --- |
 | `disabled` | `boolean` | no |  |
+| `href` | `string` | no | Required unless `disabled`. |
 | `size` | `"small"` | no | `small` is 13 / 20, for dense surfaces such as the Sources dialog. |
 | `state` | `"active" \| "focus" \| "hover"` | no |  |
 

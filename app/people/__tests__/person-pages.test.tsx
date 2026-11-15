@@ -6,7 +6,13 @@ const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
 const session = vi.hoisted(() => vi.fn());
 
 vi.mock('next/headers', () => ({ cookies: async () => jar }));
+// Next's own errors pass through; here that is the redirect.
 vi.mock('next/navigation', () => ({
+  unstable_rethrow: (error: unknown) => {
+    if (error instanceof Error && error.message.startsWith('redirect:')) {
+      throw error;
+    }
+  },
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
 }));
 vi.mock('@ks/server/adapters.mts', () => ({
@@ -143,12 +149,30 @@ describe('/people/{id}', () => {
 
 // PPL-01
 describe('the layout', () => {
-  it('renders its page', () => {
+  it('renders its page for a signed-in Account', async () => {
     render(
-      <PeopleLayout>
-        <p>The page</p>
-      </PeopleLayout>
+      await PeopleLayout({
+        children: <p>The page</p>,
+      })
     );
+
+    screen.getByText('The page');
+  });
+
+  // NFR-03
+  it('sends a visitor with no session to the sign-in page before it renders', async () => {
+    session.mockRejectedValueOnce(new Error('redirect:/sign-in'));
+
+    await expect(PeopleLayout({ children: <p>The page</p> })).rejects.toThrow(
+      'redirect:/sign-in'
+    );
+  });
+
+  // NFR-03
+  it('renders its page when the session lookup fails, so the page shows its own state', async () => {
+    session.mockRejectedValueOnce(new Error('store down'));
+
+    render(await PeopleLayout({ children: <p>The page</p> }));
 
     screen.getByText('The page');
   });

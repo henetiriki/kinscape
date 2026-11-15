@@ -15,6 +15,7 @@ import Empty from '@ks/app/screens/people-empty/page';
 import NoMatch from '@ks/app/screens/people-list-no-match/page';
 import List from '@ks/app/screens/people-list/page';
 import LoadFailed from '@ks/app/screens/people-load-failed/page';
+import Loading from '@ks/app/screens/people-loading/page';
 import { byName } from '@ks/lib/domain/persons/list.mts';
 
 // PPL-01
@@ -49,6 +50,18 @@ describe('the People screens', () => {
 
     expect(screen.getByRole('status').textContent).toContain('No people yet');
     expect(screen.queryByRole('searchbox')).toBeNull();
+  });
+
+  it('show the loading notice with no Avatar and no progress bar', async () => {
+    render(await Loading());
+
+    screen.getByRole('heading', { name: 'People' });
+    expect(screen.getByRole('status').textContent).toContain('Loading people');
+    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.queryByRole('button')).toBeNull();
+    expect(screen.getByRole('link', { name: 'Map' }).getAttribute('href')).toBe(
+      '/'
+    );
   });
 
   it('show the load-failed alert', async () => {

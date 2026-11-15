@@ -383,6 +383,16 @@
       "viewport": { "height": 844, "width": 390 }
     },
     {
+      "file": "People-loading.dc.html",
+      "name": "people-loading",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "People-loading-phone.dc.html",
+      "name": "people-loading-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
       "file": "Person-new.dc.html",
       "name": "person-new",
       "viewport": { "height": 900, "width": 1440 }

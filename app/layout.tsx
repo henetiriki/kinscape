@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 
 import localFont from 'next/font/local';
 
+import { Links } from '@ks/app/Links';
+import { MapHost } from '@ks/app/MapHost';
+
 import '@ks/app/tokens.css';
 import '@ks/app/globals.css';
 
@@ -118,11 +121,26 @@ export const metadata: Metadata = {
   title: 'KinScape',
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => (
+/**
+ * `map` is the `@map` slot. A client-side move keeps it mounted, so the Map date, layers and view
+ * survive a visit to People. `MapHost` decides where the slot shows.
+ */
+const RootLayout = ({
+  children,
+  map,
+}: {
+  children: React.ReactNode;
+  map: React.ReactNode;
+}) => (
   <html
     className={`${bricolage.variable} ${publicSans.variable} ${jetbrainsMono.variable}`}
     lang='en'>
-    <body>{children}</body>
+    <body>
+      <Links>
+        <MapHost>{map}</MapHost>
+        {children}
+      </Links>
+    </body>
   </html>
 );
 

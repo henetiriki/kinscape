@@ -1,7 +1,7 @@
 # Plan: C854: Add a button form of TextLink and a raised IconButton
 
 - **Spec:** #854
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ With `onClick` and no `href`, `TextLink` renders a `<button type="button">` with
 - **B.** `TextLink` takes a `className`. Its design system props change.
 - **Other:** your own.
 
-Recommended: A, because the props stay closed and a flex `span` adds no height.
+**Answer: A** (@henetiriki)
 
 **D3 · `LayersButton.module.css`** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ The variant holds its whole look.
 - **B.** Keep its size rules there, and leave them out of the variant.
 - **Other:** your own.
 
-Recommended: A, because a module with no rules is dead code.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

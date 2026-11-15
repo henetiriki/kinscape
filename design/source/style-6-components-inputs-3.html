@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape style guide — Inputs and actions — part 3 of 3</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 1440px; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+      <header
+        style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 32px; padding: 16px 64px; border-bottom: 1px solid #E2E5DD; background: #FFFFFF">
+        <a
+          href="design-kit.html"
+          style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; color: #18211B; text-decoration: none; border-radius: 2px">
+          KinScape design kit
+        </a>
+        <nav aria-label="Boards">
+          <ul
+            style="display: flex; flex-wrap: wrap; gap: 24px; list-style: none; margin: 0; padding: 0">
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-1-type.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Typography
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-2-colour.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Colour
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-3-foundations.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Foundations
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-4-states.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Component states
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-5-feedback.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Feedback
+              </a>
+            </li>
+            <li>
+              <a
+                href="style-6-components-inputs.html"
+                aria-current="page"
+                style="font-size: 15px; line-height: 22px; border-radius: 2px; color: #18211B; font-weight: 600; text-decoration: none">
+                Inputs
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-7-components-surfaces.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Surfaces
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="style-8-components-map.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Map furniture
+              </a>
+            </li>
+            <li>
+              <a
+                class="_textLink_1ff16_1 _ring_180bu_3"
+                href="map-style.html"
+                style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                Map style
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <div
+        style="width: 1440px; box-sizing: border-box; padding: 64px 72px; background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B; display: flex; flex-direction: column; gap: 48px">
+        <header
+          style="display: flex; flex-direction: column; gap: 12px; max-width: 780px">
+          <span
+            style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+            Style guide · 06 · part 3 of 3
+          </span>
+          <h1
+            style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 44px; line-height: 48px; letter-spacing: -0.02em">
+            Inputs and actions
+          </h1>
+          <p
+            style="margin: 0; font-size: 16px; line-height: 24px; color: #2E3A33">
+            Every button, field, chip, tab and checkbox row the sign-in and map
+            screens use, at the sizes they use them, with their states.
+          </p>
+          <p
+            style="margin: 0; font-size: 13px; line-height: 20px; color: #4A544C">
+            States not drawn here follow board 04: hover tints, a 2px focus
+            ring, disabled colours. A tap target under 44 keeps a 44 × 44 hit
+            area.
+          </p>
+          <a
+            href="style-6-components-inputs.html"
+            style="font-size: 15px; line-height: 22px; border-radius: 2px; color: #264F29; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px">
+            Part 1: Buttons, Text fields, Chips, Tabs, Checkbox field, Alerts,
+            Dividers, Key hints
+          </a>
+        </header>
+
+        <section
+          aria-label="Relationship row"
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Relationship row
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
+              One relationship of a Person: the other Person, the line of dates,
+              and Edit. It has no remove control.
+            </p>
+          </div>
+          <div>
+            <div
+              style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <div
+                      class="_row_bi4cu_2"
+                      style="box-sizing: border-box; color: rgb(24, 33, 27); align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; grid-template-columns: 256px 240px 72px; display: grid; position: relative;">
+                      <span
+                        class="_name_bi4cu_15"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          Biological
+                        </span>
+                      </span>
+                      <span
+                        class="_dates_bi4cu_21"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Born in 1889, died in 1932
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            1889 – 1932
+                          </span>
+                        </span>
+                      </span>
+                      <a
+                        class="_textLink_1ff16_1 _ring_180bu_3"
+                        href="person-edit.html"
+                        style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                        Edit
+                        <span
+                          class="_hidden_bi4cu_27 _hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(38, 79, 41); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          , le Roux, Anna Catharina
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  A parent or child · the biological subtype in Small.
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <div
+                      class="_row_bi4cu_2"
+                      style="box-sizing: border-box; color: rgb(24, 33, 27); align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; grid-template-columns: 256px 240px 72px; display: grid; position: relative;">
+                      <span
+                        class="_name_bi4cu_15"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          Adoptive
+                        </span>
+                      </span>
+                      <span
+                        class="_dates_bi4cu_21"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Born in 1889, died in 1932
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            1889 – 1932
+                          </span>
+                        </span>
+                      </span>
+                      <a
+                        class="_textLink_1ff16_1 _ring_180bu_3"
+                        href="person-edit.html"
+                        style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                        Edit
+                        <span
+                          class="_hidden_bi4cu_27 _hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(38, 79, 41); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          , le Roux, Anna Catharina
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  A parent or child · the adoptive subtype in Small.
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <div
+                      class="_row_bi4cu_2"
+                      style="box-sizing: border-box; color: rgb(24, 33, 27); align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; grid-template-columns: 256px 240px 72px; display: grid; position: relative;">
+                      <span
+                        class="_name_bi4cu_15"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          Step
+                        </span>
+                      </span>
+                      <span
+                        class="_dates_bi4cu_21"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Born in 1889, died in 1932
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            1889 – 1932
+                          </span>
+                        </span>
+                      </span>
+                      <a
+                        class="_textLink_1ff16_1 _ring_180bu_3"
+                        href="person-edit.html"
+                        style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                        Edit
+                        <span
+                          class="_hidden_bi4cu_27 _hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(38, 79, 41); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          , le Roux, Anna Catharina
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  A parent or child · the step subtype in Small.
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <div
+                      class="_row_bi4cu_2"
+                      style="box-sizing: border-box; color: rgb(24, 33, 27); align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; grid-template-columns: 256px 240px 72px; display: grid; position: relative;">
+                      <span
+                        class="_name_bi4cu_15"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Susanna
+                        </span>
+                      </span>
+                      <span
+                        class="_dates_bi4cu_21"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Born about 1835
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            c. 1835 –
+                          </span>
+                        </span>
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Married in 1875, divorced in 1890
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            Mar. 1875, div. 1890
+                          </span>
+                        </span>
+                      </span>
+                      <a
+                        class="_textLink_1ff16_1 _ring_180bu_3"
+                        href="person-edit.html"
+                        style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                        Edit
+                        <span
+                          class="_hidden_bi4cu_27 _hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(38, 79, 41); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          , Botha, Susanna
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  A spouse with both dates · "Mar. 1875, div. 1890".
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <div
+                      class="_row_bi4cu_2"
+                      style="box-sizing: border-box; color: rgb(24, 33, 27); align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; grid-template-columns: 256px 240px 72px; display: grid; position: relative;">
+                      <span
+                        class="_name_bi4cu_15"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Susanna
+                        </span>
+                      </span>
+                      <span
+                        class="_dates_bi4cu_21"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Born about 1835
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            c. 1835 –
+                          </span>
+                        </span>
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Married about 1875
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            Mar. c. 1875
+                          </span>
+                        </span>
+                      </span>
+                      <a
+                        class="_textLink_1ff16_1 _ring_180bu_3"
+                        href="person-edit.html"
+                        style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                        Edit
+                        <span
+                          class="_hidden_bi4cu_27 _hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(38, 79, 41); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          , Botha, Susanna
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  A spouse with one date · "Mar. c. 1875".
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <div
+                      class="_row_bi4cu_2"
+                      style="box-sizing: border-box; color: rgb(24, 33, 27); align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; grid-template-columns: 256px 240px 72px; display: grid; position: relative;">
+                      <span
+                        class="_name_bi4cu_15"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Susanna
+                        </span>
+                      </span>
+                      <span
+                        class="_dates_bi4cu_21"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_date_1ilo4_2"
+                          style="flex-direction: column; display: flex;">
+                          <span
+                            class="_hidden_1ilo4_8"
+                            style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                            Born about 1835
+                          </span>
+                          <span
+                            class="_mono_1mu69_114"
+                            aria-hidden="true"
+                            style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                            c. 1835 –
+                          </span>
+                        </span>
+                      </span>
+                      <a
+                        class="_textLink_1ff16_1 _ring_180bu_3"
+                        href="person-edit.html"
+                        style='border-radius: 2px; color: rgb(38, 79, 41); cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 500; line-height: 22px; text-underline-offset: 3px; text-decoration: underline 1px rgb(38, 79, 41);'>
+                        Edit
+                        <span
+                          class="_hidden_bi4cu_27 _hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(38, 79, 41); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          , Botha, Susanna
+                        </span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  A spouse with no date · no date text.
+                </figcaption>
+              </figure>
+            </div>
+            <div>
+              <div
+                style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <h3
+                    style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Measurements
+                  </h3>
+                  <div
+                    role="table"
+                    aria-label="Relationship row measurements"
+                    style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Height
+                      </span>
+                      <span role="cell">At least 52</span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        size.row-l
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Grid
+                      </span>
+                      <span role="cell">
+                        Name, 240 dates, 72 Edit; gap 16; padding 8 20
+                      </span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        space.16 · space.8 · space.20
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Dates
+                      </span>
+                      <span role="cell">
+                        Mono; the spouse line under the other
+                      </span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        type.mono
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Subtype
+                      </span>
+                      <span role="cell">Small, under the name</span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        type.small
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <h3
+                    style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Accessibility
+                  </h3>
+                  <dl
+                    style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                    <div
+                      style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <dt
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Link
+                      </dt>
+                      <dd style="margin: 0; color: #2E3A33">
+                        One
+                        <code
+                          style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                          a
+                        </code>
+                        reads "Edit, Surname, Given names".
+                      </dd>
+                    </div>
+                    <div
+                      style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <dt
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Dates
+                      </dt>
+                      <dd style="margin: 0; color: #2E3A33">
+                        The lines are hidden from a screen reader. A hidden text
+                        reads them in words, such as "Married about 1875,
+                        divorced in 1890".
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-label="Picker row"
+          style="display: flex; flex-direction: column; gap: 24px; padding-top: 24px; border-top: 1px solid #C9CFC5">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2
+              style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px">
+              Picker row
+            </h2>
+            <p
+              style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33; max-width: 780px">
+              One Person in a picker: the name, the note, and the line of dates.
+              The whole row is one button that picks the Person.
+            </p>
+          </div>
+          <div>
+            <div
+              style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Hendrik Willem
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  No note · the name and the line.
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          Botha, Susanna
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          née Fourie
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  Maiden name · "née {maiden}".
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          du Toit, Maria Magdalena
+                        </span>
+                        <span
+                          class="_small_1mu69_75"
+                          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+                          née Rossouw · Matches the spelling “Dutoit”
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  Both notes · joined by " · ".
+                </figcaption>
+              </figure>
+            </div>
+            <div
+              style="display: flex; flex-wrap: wrap; gap: 32px 40px; align-items: flex-start">
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  Default
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      data-state="hover"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(244, 245, 240); border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  Hover · surface-2 fill
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      data-state="focus"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0px 0px / auto repeat scroll padding-box border-box transparent; border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative; outline: rgb(38, 79, 41) solid 2px; outline-offset: 2px;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  Focus (keyboard) · the focus ring
+                </figcaption>
+              </figure>
+              <figure
+                style="margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0">
+                <div style="display: flex; align-items: flex-start">
+                  <div
+                    inert=""
+                    style="border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD; width: 640px">
+                    <button
+                      class="_row_68xud_2 _ring_180bu_3"
+                      data-state="active"
+                      type="button"
+                      style='box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; font: 400 16px "Public Sans", system-ui, sans-serif; align-items: center; gap: 16px; min-height: 52px; padding: 8px 20px; text-align: start; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(238, 240, 234); border: 0px rgb(24, 33, 27); grid-template-columns: 384px 200px; width: 640px; display: grid; position: relative;'>
+                      <span
+                        class="_name_68xud_36"
+                        style="flex-direction: column; min-width: 0px; display: flex;">
+                        <span
+                          class="_title_1mu69_39"
+                          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+                          le Roux, Anna Catharina
+                        </span>
+                      </span>
+                      <span
+                        class="_date_1ilo4_2"
+                        style="flex-direction: column; display: flex;">
+                        <span
+                          class="_hidden_1ilo4_8"
+                          style="white-space: nowrap; border: 0px rgb(24, 33, 27); width: 1px; height: 1px; margin: -1px; padding: 0px; position: absolute; overflow: hidden;">
+                          Born in 1889, died in 1932
+                        </span>
+                        <span
+                          class="_mono_1mu69_114"
+                          aria-hidden="true"
+                          style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                          1889 – 1932
+                        </span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <figcaption
+                  style="font-size: 12.5px; line-height: 18px; color: #4A544C; max-width: 400px">
+                  Pressed · segment fill
+                </figcaption>
+              </figure>
+            </div>
+            <div>
+              <div
+                style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: start">
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <h3
+                    style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Measurements
+                  </h3>
+                  <div
+                    role="table"
+                    aria-label="Picker row measurements"
+                    style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Height
+                      </span>
+                      <span role="cell">At least 52</span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        size.row-l
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Grid
+                      </span>
+                      <span role="cell">
+                        Name, 200 dates; gap 16; padding 8 20
+                      </span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        space.16 · space.8 · space.20
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Name
+                      </span>
+                      <span role="cell">Title, with the note in Small</span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        type.title · type.small
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Hover
+                      </span>
+                      <span role="cell">surface-2 fill</span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        colour.surface-2
+                      </span>
+                    </div>
+                    <div
+                      role="row"
+                      style="display: grid; grid-template-columns: 150px minmax(0, 1fr) 210px; gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <span
+                        role="rowheader"
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Pressed
+                      </span>
+                      <span role="cell">segment fill</span>
+                      <span
+                        role="cell"
+                        style="font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 12px; line-height: 16px; color: #2E3A33">
+                        colour.segment
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <h3
+                    style="margin: 0; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
+                    Accessibility
+                  </h3>
+                  <dl
+                    style="margin: 0; display: flex; flex-direction: column; border-top: 1px solid #C9CFC5">
+                    <div
+                      style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <dt
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Role
+                      </dt>
+                      <dd style="margin: 0; color: #2E3A33">
+                        One
+                        <code
+                          style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                          button
+                        </code>
+                        of type
+                        <code
+                          style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                          button
+                        </code>
+                        that picks the Person.
+                      </dd>
+                    </div>
+                    <div
+                      style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <dt
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Dates
+                      </dt>
+                      <dd style="margin: 0; color: #2E3A33">
+                        The line is hidden from a screen reader. A hidden text
+                        reads the dates in words.
+                      </dd>
+                    </div>
+                    <div
+                      style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 8px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
+                      <dt
+                        style="font-size: 14px; line-height: 20px; font-weight: 600">
+                        Keyboard
+                      </dt>
+                      <dd style="margin: 0; color: #2E3A33">
+                        Tab to reach, Enter or Space to pick. Focus shows the
+                        ring only on
+                        <code
+                          style="font-family: 'JetBrains Mono', monospace; font-size: 12px">
+                          :focus-visible.
+                        </code>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

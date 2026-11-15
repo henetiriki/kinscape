@@ -37,16 +37,15 @@
 
       <sc-if value="{{showList}}" hint-placeholder-val="{{ true }}">
         <section aria-label="People, by surname" style="background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-panel); overflow: hidden">
-          <div aria-hidden="true" style="display: grid; grid-template-columns: minmax(0, 1fr) 160px 160px 72px; gap: var(--space-16); padding: var(--space-12) var(--space-20); text-transform: uppercase; color: var(--ink-3)">
+          <div aria-hidden="true" style="display: grid; grid-template-columns: minmax(0, 1fr) 200px 72px; gap: var(--space-16); padding: var(--space-12) var(--space-20); text-transform: uppercase; color: var(--ink-3)">
             <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Name</x-import>
-            <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Born</x-import>
-            <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Died</x-import>
+            <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Dates</x-import>
             <span></span>
           </div>
           <ul style="list-style: none; margin: 0; padding: 0">
             <sc-for list="{{rows}}" as="p" hint-placeholder-count="8">
               <li style="border-top: 1px solid var(--line)">
-                <x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" surname="{{p.surname}}" given-names="{{p.givenNames}}" maiden-name="{{p.maidenName}}" matched-variant="{{p.matchedVariant}}" born="{{p.born}}" died="{{p.died}}" deceased="{{p.deceased}}"></x-import>
+                <x-import component-from-global-scope="KinScape.PersonRow" href="Person-edit.dc.html" surname="{{p.surname}}" given-names="{{p.givenNames}}" maiden-name="{{p.maidenName}}" matched-variant="{{p.matchedVariant}}" born="{{p.born}}" born-reading="{{p.bornReading}}" died="{{p.died}}" died-reading="{{p.diedReading}}" deceased="{{p.deceased}}"></x-import>
               </li>
             </sc-for>
           </ul>
@@ -94,6 +93,14 @@ class Component extends DCLogic {
       { g: 'Gerrit', s: 'van Wyk', m: '', v: ['Van Wijk', 'Vanwyk'], b: '1845', d: '1910' },
       { g: 'Aletta', s: 'Viljoen', m: 'Botha', v: ['Viljoe', 'Villion'], b: 'c. 1860', d: '—' }
     ];
+    const reading = (short) => {
+      const parts = short.split('–');
+      if (parts[1]) return 'Between ' + parts[0] + ' and ' + parts[1];
+      if (short.indexOf('c. ') === 0) return 'About ' + short.slice(3);
+      if (short.indexOf('bef. ') === 0) return 'Before ' + short.slice(5);
+      if (short.indexOf('aft. ') === 0) return 'After ' + short.slice(5);
+      return short && 'In ' + short;
+    };
     const view = this.state.view;
     const cmp = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
     const all = view === 'empty' ? [] : PEOPLE.slice().sort((a, b) => cmp(a.s, b.s) || cmp(a.g, b.g));
@@ -110,7 +117,7 @@ class Component extends DCLogic {
         if (!byName && !byMaiden) matchedVariant = variant;
       }
       const dated = p.d !== '—' && p.d !== 'Deceased';
-      rows.push({ surname: p.s, givenNames: p.g, maidenName: p.m || undefined, matchedVariant: matchedVariant, born: p.b, died: dated ? p.d : undefined, deceased: p.d === 'Deceased' });
+      rows.push({ surname: p.s, givenNames: p.g, maidenName: p.m || undefined, matchedVariant: matchedVariant, born: p.b, bornReading: reading(p.b), died: dated ? p.d : '', diedReading: dated ? reading(p.d) : '', deceased: p.d === 'Deceased' });
     });
     const failed = view === 'failed';
     return {

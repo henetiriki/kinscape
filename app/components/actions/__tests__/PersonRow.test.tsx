@@ -14,7 +14,9 @@ const row = (props: Partial<Parameters<typeof PersonRow>[0]> = {}) =>
   render(
     <PersonRow
       born='1832'
+      bornReading='In 1832'
       died='1899'
+      diedReading='In 1899'
       givenNames='Hendrik Willem'
       href='/people/1'
       surname='Botha'
@@ -23,22 +25,64 @@ const row = (props: Partial<Parameters<typeof PersonRow>[0]> = {}) =>
   );
 
 // PPL-01
-it('is one link to edit, named by the name, the dates and Edit', () => {
+it('is one link to edit, named by the name, the words for the dates and Edit', () => {
   row();
 
   const link = screen.getByRole('link');
 
   expect(screen.getAllByRole('link')).toHaveLength(1);
   expect(link.getAttribute('href')).toBe('/people/1');
-  expect(link.textContent).toBe('Botha, Hendrik WillemBorn 1832Died 1899Edit');
+  expect(link.textContent).toBe(
+    'Botha, Hendrik WillemBorn in 1832, died in 18991832 – 1899Edit'
+  );
 });
 
 // PPL-01
-it('names the dates for a screen reader and shows no note without one', () => {
+it('hides the line from a screen reader and reads the words', () => {
   row();
-  expect(screen.getByText('Born').className).toMatch(/hidden/);
-  expect(screen.getByText('Died').className).toMatch(/hidden/);
+  expect(screen.getByText('1832 – 1899').getAttribute('aria-hidden')).toBe(
+    'true'
+  );
+  expect(screen.getByText('Born in 1832, died in 1899').className).toMatch(
+    /hidden/
+  );
   expect(screen.queryByText(/née|Matches/)).toBeNull();
+});
+
+// PPL-01
+it.each([
+  [{ died: '', diedReading: '' }, '1832 –', 'Born in 1832'],
+  [
+    { born: '', bornReading: '', died: '', diedReading: '' },
+    '? –',
+    'Born unknown',
+  ],
+  [
+    { deceased: true, died: '', diedReading: '' },
+    '1832 – ?',
+    'Born in 1832, died unknown',
+  ],
+  [
+    { born: '', bornReading: '', deceased: true, died: '', diedReading: '' },
+    '? – ?',
+    'Born unknown, died unknown',
+  ],
+  [{ born: '', bornReading: '' }, '? – 1899', 'Born unknown, died in 1899'],
+  [
+    {
+      born: 'bef. 1840',
+      bornReading: 'Before 1840',
+      deceased: true,
+      died: '',
+      diedReading: '',
+    },
+    'bef. 1840 – ?',
+    'Born before 1840, died unknown',
+  ],
+])('%j reads %s and %s', (props, line, words) => {
+  row(props);
+  expect(screen.getByText(line).getAttribute('aria-hidden')).toBe('true');
+  expect(screen.getByText(words).className).toMatch(/hidden/);
 });
 
 // PPL-01
@@ -54,36 +98,27 @@ it('shows the maiden name alone, and the matched variant alone', () => {
   const { unmount } = row({ maidenName: 'Rossouw' });
 
   expect(screen.getByRole('link').textContent).toBe(
-    'Botha, Hendrik Willemnée RossouwBorn 1832Died 1899Edit'
+    'Botha, Hendrik Willemnée RossouwBorn in 1832, died in 18991832 – 1899Edit'
   );
   unmount();
   row({ matchedVariant: 'Nell' });
   expect(screen.getByRole('link').textContent).toBe(
-    'Botha, Hendrik WillemMatches the spelling “Nell”Born 1832Died 1899Edit'
+    'Botha, Hendrik WillemMatches the spelling “Nell”Born in 1832, died in 18991832 – 1899Edit'
   );
 });
 
 // PPL-01
-it('reads Died as a dash with no date, and as Deceased when marked deceased', () => {
-  const { container, unmount } = row({ died: undefined });
+it('anchors the hidden words to the row, so they add no scroll height to a list', () => {
+  const dates = readFileSync(
+    join(process.cwd(), 'app/components/actions/DateText.module.css'),
+    'utf8'
+  );
 
-  expect(container.textContent).toContain('Died —');
-  unmount();
-  row({ deceased: true, died: undefined });
-  expect(screen.getByRole('link').textContent).toContain('Died Deceased');
-});
-
-// PPL-01
-it('shows a date it is given before Deceased', () => {
-  row({ deceased: true, died: 'aft. 1920' });
-  expect(screen.getByRole('link').textContent).toContain('Died aft. 1920');
-});
-
-// PPL-01
-it('anchors the hidden labels to the row, so they add no scroll height to a list', () => {
   expect(/\.row \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
-  expect(/\.hidden \{[^}]*\}/.exec(css)![0]).toContain('position: absolute');
-  expect(css).not.toMatch(/clip-path|clip:/);
+  expect(/\.withLink \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
+  expect(/\.phone \{[^}]*\}/.exec(css)![0]).toContain('position: relative');
+  expect(/\.hidden \{[^}]*\}/.exec(dates)![0]).toContain('position: absolute');
+  expect(dates).not.toMatch(/clip-path|clip:/);
 });
 
 // PPL-01
@@ -100,27 +135,52 @@ describe('on a phone', () => {
     );
   });
 
-  it('reads one line: "Born" alone, a range, or a range ending in deceased', () => {
-    const { unmount } = phoneRow({ born: '1878', died: undefined });
+  it('reads the line under the name, with no "Born" or "deceased" text', () => {
+    const { unmount } = phoneRow({ died: '', diedReading: '' });
 
-    expect(screen.getByText('Born 1878').textContent).toBe('Born 1878');
+    expect(screen.getByText('1832 –').textContent).toBe('1832 –');
+    expect(screen.queryByText(/^Born \d/)).toBeNull();
     unmount();
-
-    const second = phoneRow();
-
-    expect(screen.getByText('1832 – 1899').textContent).toBe('1832 – 1899');
-    second.unmount();
-    phoneRow({ born: 'bef. 1840', deceased: true, died: undefined });
-    expect(screen.getByText('bef. 1840 – deceased').textContent).toBe(
-      'bef. 1840 – deceased'
-    );
+    phoneRow({
+      born: 'bef. 1840',
+      bornReading: 'Before 1840',
+      deceased: true,
+      died: '',
+      diedReading: '',
+    });
+    expect(screen.getByText('bef. 1840 – ?').textContent).toBe('bef. 1840 – ?');
+    expect(screen.queryByText(/deceased/)).toBeNull();
   });
 
-  it('shows the note beside the dates', () => {
+  it('shows the note after the line', () => {
     phoneRow({ maidenName: 'Fourie', matchedVariant: 'Bota' });
     expect(screen.getByText(/^née Fourie/).textContent).toBe(
       'née Fourie · Matches the spelling “Bota”'
     );
+  });
+});
+
+// PPL-01
+describe('with a Relationships link', () => {
+  it('has two links, and the new one names the Person for a screen reader', () => {
+    const { container } = row({ relationshipsHref: '/people/1/relationships' });
+
+    expect(screen.getAllByRole('link')).toHaveLength(2);
+    expect(container.firstElementChild!.tagName).toBe('DIV');
+
+    const link = screen.getByRole('link', { name: /^Relationships/ });
+
+    expect(link.getAttribute('href')).toBe('/people/1/relationships');
+    expect(link.textContent).toBe('Relationships, Botha, Hendrik Willem');
+    expect(
+      screen.getByRole('link', { name: /Edit/ }).getAttribute('href')
+    ).toBe('/people/1');
+  });
+
+  it('is one link without it', () => {
+    row();
+    expect(screen.queryByText(/Relationships/)).toBeNull();
+    expect(screen.getAllByRole('link')).toHaveLength(1);
   });
 });
 
@@ -131,14 +191,7 @@ it('takes a state', () => {
 });
 
 // PPL-01
-it('puts each date in a flex column, and sets Edit in the link font with no underline', () => {
-  row();
-  expect(screen.getByText('Born').parentElement!.className).toMatch(/date/);
-  expect(screen.getByText('Died').parentElement!.className).toMatch(/date/);
-  expect(css).toMatch(
-    /\.date \{[^}]*display: flex;[^}]*flex-direction: column/
-  );
-
+it('sets Edit in the link font with no underline', () => {
   const edit = /\.edit \{[^}]*\}/.exec(css)![0];
 
   expect(edit).toContain('font-family: var(--type-link-font)');
@@ -151,9 +204,7 @@ it('puts each date in a flex column, and sets Edit in the link font with no unde
 // PPL-01
 it('is at least 52px tall on the People-list grid, and tints hover and pressed', () => {
   expect(css).toContain('min-height: var(--size-row-l)');
-  expect(css).toContain(
-    'grid-template-columns: minmax(0, 1fr) 160px 160px 72px'
-  );
+  expect(css).toContain('grid-template-columns: minmax(0, 1fr) 200px 72px');
   expect(css).toMatch(/hover[\s\S]*?background: var\(--surface-2\)/);
   expect(css).toMatch(/active[\s\S]*?background: var\(--segment\)/);
   expect(css).toContain('color: var(--brand-pressed)');

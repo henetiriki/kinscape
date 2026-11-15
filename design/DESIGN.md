@@ -49,6 +49,7 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Style guide 05: feedback and validation, phone       | [style-5-feedback-phone.jpg](style-5-feedback-phone.jpg)                           |
 | Style guide 06: inputs and actions, part 1           | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     |
 | Style guide 06: inputs and actions, part 2           | [style-6-components-inputs-2.jpg](style-6-components-inputs-2.jpg)                 |
+| Style guide 06: inputs and actions, part 3           | [style-6-components-inputs-3.jpg](style-6-components-inputs-3.jpg)                 |
 | Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         |
 | Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     |
 | Style guide 06: inputs and actions, phone, part 3    | [style-6-components-inputs-3-phone.jpg](style-6-components-inputs-3-phone.jpg)     |
@@ -191,14 +192,14 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 `docs/architecture.md` has the component-folder rule. Import a component as `@ks/app/components/<folder>/<Name>`. These folders hold the shared components:
 
-| Folder       | Holds                                                                                         |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                             |
-| `actions`    | Button, IconButton, TextLink, PersonRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
-| `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                    |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                        |
-| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                                |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                    |
+| Folder       | Holds                                                                                                                     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                                                         |
+| `actions`    | Button, IconButton, TextLink, PersonRow, RelationshipRow, PickerRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
+| `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                                    |
+| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                                                            |
+| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                                                |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
 
@@ -212,7 +213,9 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see [Feedback and validation](#feedback-and-validation). Clear the password after a failed sign-in.
 - **Long text field:** a label, a textarea and a helper. 1px `--field-border`, radius 8, padding 10 12, `type.body` (`type.body-l` on phones). It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border.
 - **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono-m` (`type.body-l` size on phones), ligatures off. 1px `--field-border`, radius 8. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see [Fuzzy date field](#fuzzy-date-field).
-- **Person row:** the whole row is a link to edit. Grid: name, Born, Died, then "Edit" with the forward icon. Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. Born and Died are `type.mono`. Died shows "—" with no date, and "Deceased" when marked deceased. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
+- **Person row:** the whole row is a link to edit. Grid: name, a 200px Dates column, then "Edit" with the forward icon. Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. The dates are one `type.mono` line: "1889 – 1932", "1889 –", "? – 1932", "1889 – ?" or "? – ?". A missing death date reads "?" only when the Person is marked deceased. A screen reader skips the line and hears the dates in words. An optional "Relationships" text link sits after the row link. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
+- **Relationship row:** the other Person's name, the Person row's line of dates, and an "Edit" text link. A parent or child row adds a `type.small` subtype: Biological, Adoptive or Step. A spouse row adds a second `type.mono` line: "Mar. 1875, div. 1890", "Mar. 1875" or "Div. 1890". It has no remove control and no phone form.
+- **Picker row:** the whole row is a button that picks the Person. It shows the name, the same note as the Person row and the same line of dates. It has the Person row's default, hover, focus and pressed states. It has no phone form.
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.

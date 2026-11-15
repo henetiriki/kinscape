@@ -1,0 +1,29 @@
+/* A relationship of a Person: name, dates, Edit. The border between rows belongs to the page. */
+.row {
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--ink);
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: minmax(0, 1fr) 240px 72px;
+  min-height: var(--size-row-l);
+  padding: var(--space-8) var(--space-20);
+  /* The anchor of the hidden words: they stay inside the row. */
+  position: relative;
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dates {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Names the Edit link for a screen reader. */
+.hidden {
+  composes: hidden from '@ks/app/components/actions/DateText.module.css';
+}

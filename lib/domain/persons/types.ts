@@ -25,11 +25,15 @@ export type PersonInput = z.output<typeof personInputSchema>;
  * a notes text never reaches the browser.
  */
 export type PersonSummary = {
-  /** Short text for the birth date, or "—". */
+  /** Short text for the birth date. Empty is unknown. */
   born: string;
+  /** Full reading of the birth date, such as "Before 1840". Empty is unknown. */
+  bornReading: string;
   deceased: boolean;
-  /** Short text for the death date, or the empty string. */
+  /** Short text for the death date. Empty is unknown. */
   died: string;
+  /** Full reading of the death date. Empty is unknown. */
+  diedReading: string;
   givenNames: string;
   id: string;
   maidenName: string;

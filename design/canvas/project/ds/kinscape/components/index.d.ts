@@ -8,10 +8,28 @@ export type ChipOption = {
     label: string;
     value: string;
 };
+/** The dates of a Person, as the page sends them. An empty text is an unknown date. */
+export type PersonDates = {
+    /** Short text of the birth date, such as "bef. 1840". */
+    born: string;
+    /** Full reading of the birth date, such as "Before 1840". */
+    bornReading: string;
+    /** Marked deceased. */
+    deceased?: boolean;
+    died: string;
+    diedReading: string;
+};
 export type Segment = {
     label: string;
     state?: ControlState;
     value: string;
+};
+/** The marriage and divorce dates of a spouse link, in the same two forms. */
+export type SpouseDates = {
+    divorced?: string;
+    divorcedReading?: string;
+    married?: string;
+    marriedReading?: string;
 };
 export type Tab = {
     /** The id of the tabpanel this tab shows; the panel belongs to the screen. */
@@ -299,15 +317,12 @@ export declare const ActionBar: ({ children }: {
 export type ActionBarProps = Parameters<typeof ActionBar>[0];
 
 /**
- * One row of the people list, and one link to edit the Person. The page gives the dates as text.
- * Died reads `died`, then "Deceased" when `deceased`, then "—". With `form='phone'` the row is a
- * read-only `div`: the name, then one line of dates and the note.
+ * One row of the people list, and one link to edit the Person. The page gives each date as short
+ * text and as a reading (see `PersonDates`). With `relationshipsHref` the row also has a
+ * "Relationships" link, so it is a `div` with two links. With `form='phone'` the row is a
+ * read-only `div`: the name, then the line of dates and the note.
  */
-export declare const PersonRow: ({ born, deceased, died, form, givenNames, maidenName, matchedVariant, state, surname, ...rest }: {
-    born: string;
-    /** Marked deceased with no date. */
-    deceased?: boolean;
-    died?: string;
+export declare const PersonRow: ({ born, bornReading, deceased, died, diedReading, form, givenNames, maidenName, matchedVariant, relationshipsHref, state, surname, ...rest }: {
     /** `phone`: a row that is no link. */
     form?: "phone";
     givenNames: string;
@@ -315,10 +330,47 @@ export declare const PersonRow: ({ born, deceased, died, form, givenNames, maide
     maidenName?: string;
     /** A spelling variant that matched the filter when the name did not. */
     matchedVariant?: string;
+    /** Adds a "Relationships" link beside the edit link. */
+    relationshipsHref?: string;
     state?: ControlState;
     surname: string;
-} & Omit<ComponentProps<"a">, "children" | "className" | "href">) => import("react").JSX.Element;
+} & Omit<ComponentProps<"a">, "children" | "className" | "href"> & PersonDates) => import("react").JSX.Element;
 export type PersonRowProps = Parameters<typeof PersonRow>[0];
+
+declare const SUBTYPES: {
+    adoptive: string;
+    biological: string;
+    step: string;
+};
+/**
+ * One relationship of a Person. It shows the other Person's name and the line of dates. A parent
+ * or child row adds the subtype. A spouse row adds the marriage and divorce dates. It has one
+ * "Edit" link. It has no remove control and no phone form.
+ */
+export declare const RelationshipRow: ({ born, bornReading, deceased, died, diedReading, divorced, divorcedReading, givenNames, href, married, marriedReading, state, subtype, surname, }: {
+    givenNames: string;
+    /** The edit page of the relationship. */
+    href: string;
+    state?: ControlState;
+    /** A parent or child link. A spouse link has none. */
+    subtype?: keyof typeof SUBTYPES;
+    surname: string;
+} & PersonDates & SpouseDates) => import("react").JSX.Element;
+export type RelationshipRowProps = Parameters<typeof RelationshipRow>[0];
+
+/**
+ * One Person in a picker. It shows the name and the line of dates. It also shows the note of
+ * `PersonRow`. The whole row is one button that picks the Person. It has no phone form.
+ */
+export declare const PickerRow: ({ born, bornReading, deceased, died, diedReading, givenNames, maidenName, matchedVariant, state, surname, ...rest }: {
+    givenNames: string;
+    maidenName?: string;
+    /** A spelling variant that matched the filter. */
+    matchedVariant?: string;
+    state?: ControlState;
+    surname: string;
+} & Omit<ComponentProps<"button">, "children" | "className" | "type"> & PersonDates) => import("react").JSX.Element;
+export type PickerRowProps = Parameters<typeof PickerRow>[0];
 
 /** A single-line field with its label and, below it, helper text or an error that replaces it. */
 export declare const TextField: ({ date, defaultShown, error, helper, hideLabel, label, mark, shortcut, size, state, type, ...rest }: {

@@ -1,3 +1,5 @@
+import type { PersonDates } from '@ks/app/components/actions/types';
+
 import { PersonRow } from '@ks/app/components/actions/PersonRow';
 import { TextAreaField } from '@ks/app/components/forms/TextAreaField';
 import {
@@ -17,6 +19,38 @@ import styles from '@ks/app/design-kit/inputs/page.module.css';
 
 // The samples link to a page that exists; a click on one is not part of the board.
 const HREF = '/';
+
+const NO_DATE: PersonDates = {
+  born: '',
+  bornReading: '',
+  died: '',
+  diedReading: '',
+};
+const BORN = { born: '1889', bornReading: 'In 1889' };
+const DIED = { died: '1932', diedReading: 'In 1932' };
+
+export const DATES = { none: NO_DATE, range: { ...NO_DATE, ...BORN, ...DIED } };
+
+const line = (caption: string, props: Partial<PersonDates>) => ({
+  caption,
+  props: { ...NO_DATE, ...props },
+});
+
+/** The six lines of the Spec, each with its reading. */
+const LINES = [
+  line(
+    'Born only · "1889 –", with nothing after the dash for a living Person.',
+    BORN
+  ),
+  line('No dates · "? –".', {}),
+  line('Marked deceased, no death date · "1889 – ?".', {
+    ...BORN,
+    deceased: true,
+  }),
+  line('Marked deceased, no dates · "? – ?".', { deceased: true }),
+  line('Death only · "? – 1932".', DIED),
+  line('Both dates · "1889 – 1932".', { ...BORN, ...DIED }),
+];
 
 const HELPER = 'Up to 10,000 characters.';
 
@@ -232,63 +266,36 @@ export const FuzzyDateFields = () => (
 export const PersonRows = () => (
   <Section
     desktopPart={2}
-    lead='A row of the people list. The whole row is one link to edit the Person: name, Born, Died, then Edit.'
+    lead='A row of the people list. The whole row is one link to edit the Person: name, Dates, then Edit. An optional Relationships link follows it.'
     part={4}
     phoneLead='A row of the people list on a phone. It is not a link: the name, then one line of dates.'
     title='Person row'>
     <PhoneOnly>
       <Variants>
-        <Variant
-          caption='A plain row · the name in Title, then the dates in one Mono line.'
-          phone>
-          <div className={styles.phoneRow} inert>
-            <PersonRow
-              born='1832'
-              died='1899'
-              form='phone'
-              givenNames='Hendrik Willem'
-              href={HREF}
-              surname='Botha'
-            />
-          </div>
-        </Variant>
+        {LINES.map(({ caption, props }) => (
+          <Variant caption={caption} key={caption} phone>
+            <div className={styles.phoneRow} inert>
+              <PersonRow
+                {...props}
+                form='phone'
+                givenNames='Hendrik Willem'
+                href={HREF}
+                surname='Botha'
+              />
+            </div>
+          </Variant>
+        ))}
         <Variant
           caption='Maiden name · a Small note after the dates, "née {maiden}".'
           phone>
           <div className={styles.phoneRow} inert>
             <PersonRow
-              born='c. 1835'
-              died='1901'
+              {...DATES.range}
               form='phone'
               givenNames='Susanna'
               href={HREF}
               maidenName='Fourie'
               surname='Botha'
-            />
-          </div>
-        </Variant>
-        <Variant caption='No death date · the line reads "Born 1878".' phone>
-          <div className={styles.phoneRow} inert>
-            <PersonRow
-              born='1878'
-              form='phone'
-              givenNames='Johanna Petronella'
-              href={HREF}
-              surname='Rossouw'
-            />
-          </div>
-        </Variant>
-        <Variant
-          caption='Marked deceased with no date · the line reads "bef. 1840 – deceased".'
-          phone>
-          <div className={styles.phoneRow} inert>
-            <PersonRow
-              born='bef. 1840'
-              deceased
-              form='phone'
-              givenNames='Pieter'
-              href={HREF}
-              surname='Fourie'
             />
           </div>
         </Variant>
@@ -306,7 +313,7 @@ export const PersonRows = () => (
           ],
           [
             'Dates',
-            'One line: "Born 1878", "1832 – 1899" or "bef. 1840 – deceased".',
+            'One line, such as "1889 –", "? – ?" or "bef. 1840 – ?". A hidden text reads the dates in words.',
           ],
           ['Keyboard', 'No stop: the row is not a link.'],
         ]}
@@ -326,22 +333,22 @@ export const PersonRows = () => (
     </PhoneOnly>
     <DesktopOnly>
       <Variants>
-        <Variant caption='A plain row · name in Title; Born and Died in Mono.'>
-          <div className={styles.personRow} inert>
-            <PersonRow
-              born='1832'
-              died='1899'
-              givenNames='Hendrik Willem'
-              href={HREF}
-              surname='Botha'
-            />
-          </div>
-        </Variant>
+        {LINES.map(({ caption, props }) => (
+          <Variant caption={caption} key={caption}>
+            <div className={styles.personRow} inert>
+              <PersonRow
+                {...props}
+                givenNames='Hendrik Willem'
+                href={HREF}
+                surname='Botha'
+              />
+            </div>
+          </Variant>
+        ))}
         <Variant caption='Maiden name · a Small line, "née {maiden}".'>
           <div className={styles.personRow} inert>
             <PersonRow
-              born='c. 1835'
-              died='1901'
+              {...DATES.range}
               givenNames='Susanna'
               href={HREF}
               maidenName='Fourie'
@@ -352,8 +359,7 @@ export const PersonRows = () => (
         <Variant caption='Maiden name and a matched variant · both notes, in that order, on one line.'>
           <div className={styles.personRow} inert>
             <PersonRow
-              born='c. 1856'
-              died='1930'
+              {...DATES.range}
               givenNames='Maria Magdalena'
               href={HREF}
               maidenName='Rossouw'
@@ -362,24 +368,14 @@ export const PersonRows = () => (
             />
           </div>
         </Variant>
-        <Variant caption='No death date · Died shows "—".'>
+        <Variant caption='The Relationships link · a text link after the row link.'>
           <div className={styles.personRow} inert>
             <PersonRow
-              born='1878'
-              givenNames='Johanna Petronella'
+              {...DATES.range}
+              givenNames='Anna Catharina'
               href={HREF}
-              surname='Rossouw'
-            />
-          </div>
-        </Variant>
-        <Variant caption='Marked deceased with no date · Died shows "Deceased".'>
-          <div className={styles.personRow} inert>
-            <PersonRow
-              born='bef. 1840'
-              deceased
-              givenNames='Pieter'
-              href={HREF}
-              surname='Fourie'
+              relationshipsHref={HREF}
+              surname='le Roux'
             />
           </div>
         </Variant>
@@ -396,8 +392,7 @@ export const PersonRows = () => (
           <Variant caption={caption} key={caption}>
             <div className={styles.personRow} inert>
               <PersonRow
-                born='1871'
-                died='1948'
+                {...DATES.range}
                 givenNames='Anna Catharina'
                 href={HREF}
                 state={state}
@@ -421,8 +416,10 @@ export const PersonRows = () => (
           [
             'Dates',
             <>
-              A hidden &quot;Born&quot; and &quot;Died&quot; name each date.
-              Died reads &quot;—&quot; with no date.
+              The line is hidden from a screen reader. A hidden text reads the
+              dates in words, such as &quot;Born in 1889, died unknown&quot;.
+              The Relationships link reads &quot;Relationships, Surname, Given
+              names&quot;.
             </>,
           ],
           [
@@ -438,7 +435,7 @@ export const PersonRows = () => (
           ['Height', 'At least 52', 'size.row-l'],
           [
             'Grid',
-            'Name, 160 Born, 160 Died, 72 Edit; gap 16; padding 8 20',
+            'Name, 200 Dates, 72 Edit; gap 16; padding 8 20',
             'space.16 · space.8 · space.20',
           ],
           ['Name', 'Title, with the note in Small', 'type.title · type.small'],

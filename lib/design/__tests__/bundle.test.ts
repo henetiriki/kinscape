@@ -16,7 +16,7 @@ import {
 const NAMES = CONTROLS.map(({ name }) => name);
 
 describe('CONTROLS', () => {
-  it('lists the 42 shared controls, each from a file that exists', () => {
+  it('lists the 44 shared controls, each from a file that exists', () => {
     expect(NAMES).toEqual([
       'Button',
       'IconButton',
@@ -29,6 +29,8 @@ describe('CONTROLS', () => {
       'ActionBar',
       'RemovableChip',
       'PersonRow',
+      'RelationshipRow',
+      'PickerRow',
       'TextField',
       'TextAreaField',
       'Checkbox',
@@ -73,7 +75,12 @@ const ROLE_FOLDERS = [
   'overlays',
 ].map(role => `app/components/${role}`);
 
-const EXCLUDED: { path: string; reason: string }[] = [];
+const EXCLUDED: { path: string; reason: string }[] = [
+  {
+    path: 'app/components/actions/DateText.tsx',
+    reason: 'An inner part of PersonRow, RelationshipRow and PickerRow.',
+  },
+];
 
 /** The `.tsx` files in a folder and its subfolders, except `__tests__`. */
 const sourceFiles = (folder: string): string[] =>

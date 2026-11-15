@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import type { PersonDates } from '@ks/app/components/actions/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
 import { Button } from '@ks/app/components/actions/Button';
@@ -19,6 +20,20 @@ import { byName, matchesQuery } from '@ks/lib/domain/persons/list.mts';
 import styles from '@ks/features/people/components/PeopleList.module.css';
 
 const plural = (count: number) => (count === 1 ? 'person' : 'people');
+
+const datesOf = ({
+  born,
+  bornReading,
+  deceased,
+  died,
+  diedReading,
+}: PersonSummary): PersonDates => ({
+  born,
+  bornReading,
+  deceased,
+  died,
+  diedReading,
+});
 
 /**
  * The People page (PPL-01): the header, the count, the filter and the rows, or the notice or alert
@@ -142,9 +157,7 @@ export const PeopleList = ({
               {shown.map(({ match, person }) => (
                 <li key={person.id}>
                   <PersonRow
-                    born={person.born}
-                    deceased={person.deceased}
-                    died={person.died}
+                    {...datesOf(person)}
                     form='phone'
                     givenNames={person.givenNames}
                     href={`/people/${person.id}`}
@@ -160,17 +173,14 @@ export const PeopleList = ({
             <section aria-label='People, by surname' className={styles.list}>
               <div aria-hidden='true' className={styles.heads}>
                 <Text variant='overline'>Name</Text>
-                <Text variant='overline'>Born</Text>
-                <Text variant='overline'>Died</Text>
+                <Text variant='overline'>Dates</Text>
                 <span />
               </div>
               <ul className={styles.rows}>
                 {shown.map(({ match, person }) => (
                   <li className={styles.item} key={person.id}>
                     <PersonRow
-                      born={person.born}
-                      deceased={person.deceased}
-                      died={person.died}
+                      {...datesOf(person)}
                       givenNames={person.givenNames}
                       href={`/people/${person.id}`}
                       maidenName={person.maidenName}

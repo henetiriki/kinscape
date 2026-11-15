@@ -34,6 +34,8 @@ import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
 import { IconButton } from '@ks/app/components/actions/IconButton';
 import { KeyHint } from '@ks/app/components/actions/KeyHint';
 import { PersonRow } from '@ks/app/components/actions/PersonRow';
+import { PickerRow } from '@ks/app/components/actions/PickerRow';
+import { RelationshipRow } from '@ks/app/components/actions/RelationshipRow';
 import { Segmented } from '@ks/app/components/actions/Segmented';
 import { Tabs } from '@ks/app/components/actions/Tabs';
 import { TextLink } from '@ks/app/components/actions/TextLink';
@@ -176,8 +178,10 @@ const COMPONENTS = {
   NoticeCard,
   PageHeader,
   PersonRow,
+  PickerRow,
   Popup,
   ProgressBar,
+  RelationshipRow,
   RemovableChip,
   Segmented,
   SelectField,
@@ -332,7 +336,9 @@ const CASES: [string, ReactElement][] = [
   ...links('PersonRow', state => (
     <PersonRow
       born='c. 1835'
+      bornReading='About 1835'
       died='1901'
+      diedReading='In 1901'
       givenNames='Susanna'
       href='/people/1'
       maidenName='Fourie'
@@ -341,10 +347,26 @@ const CASES: [string, ReactElement][] = [
     />
   )),
   [
+    'PersonRow · relationships link',
+    <PersonRow
+      born='1832'
+      bornReading='In 1832'
+      died='1899'
+      diedReading='In 1899'
+      givenNames='Hendrik Willem'
+      href='/people/1'
+      key='relationships'
+      relationshipsHref='/people/1/relationships'
+      surname='Botha'
+    />,
+  ],
+  [
     'PersonRow · phone',
     <PersonRow
       born='1832'
+      bornReading='In 1832'
       died='1899'
+      diedReading='In 1899'
       form='phone'
       givenNames='Hendrik Willem'
       href='/people/1'
@@ -352,6 +374,50 @@ const CASES: [string, ReactElement][] = [
       surname='Botha'
     />,
   ],
+  [
+    'RelationshipRow · child',
+    <RelationshipRow
+      born='1871'
+      bornReading='In 1871'
+      died='1948'
+      diedReading='In 1948'
+      givenNames='Anna Catharina'
+      href='/people/2/relationships/1'
+      key='child'
+      subtype='biological'
+      surname='le Roux'
+    />,
+  ],
+  [
+    'RelationshipRow · spouse',
+    <RelationshipRow
+      born='c. 1835'
+      bornReading='About 1835'
+      died=''
+      diedReading=''
+      divorced='1890'
+      divorcedReading='In 1890'
+      givenNames='Susanna'
+      href='/people/2/relationships/3'
+      key='spouse'
+      married='c. 1875'
+      marriedReading='About 1875'
+      surname='Botha'
+    />,
+  ],
+  ...links('PickerRow', state => (
+    <PickerRow
+      born='c. 1856'
+      bornReading='About 1856'
+      died='1930'
+      diedReading='In 1930'
+      givenNames='Maria Magdalena'
+      maidenName='Rossouw'
+      matchedVariant='Dutoit'
+      state={state}
+      surname='du Toit'
+    />
+  )),
   ...states('TextField', (state, disabled) => (
     <TextField
       disabled={disabled}

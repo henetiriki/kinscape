@@ -68,7 +68,7 @@
   color: var(--ink-3);
   display: grid;
   gap: var(--space-16);
-  grid-template-columns: minmax(0, 1fr) 160px 160px 72px;
+  grid-template-columns: minmax(0, 1fr) 200px 72px;
   padding: var(--space-12) var(--space-20);
   text-transform: uppercase;
 }

@@ -6,7 +6,10 @@ import { z } from 'zod';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PeopleList } from '@ks/features/people';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
-import { shortFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
+import {
+  readFuzzyDate,
+  shortFuzzyDate,
+} from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
 import { requireSession } from '@ks/server/auth/current.mts';
@@ -17,9 +20,11 @@ export const metadata: Metadata = { title: 'People' };
 const listPeople = treeAction(z.undefined(), async tree =>
   ok(
     (await tree.persons.list()).map(person => ({
-      born: person.birth ? shortFuzzyDate(person.birth) : '—',
+      born: person.birth ? shortFuzzyDate(person.birth) : '',
+      bornReading: person.birth ? readFuzzyDate(person.birth) : '',
       deceased: person.deceased,
       died: person.death ? shortFuzzyDate(person.death) : '',
+      diedReading: person.death ? readFuzzyDate(person.death) : '',
       givenNames: person.givenNames,
       id: person.id,
       maidenName: person.maidenName,

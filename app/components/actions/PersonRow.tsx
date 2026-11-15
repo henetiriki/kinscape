@@ -1,42 +1,37 @@
 import type { ComponentProps } from 'react';
 
+import type { PersonDates } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { personNote } from '@ks/app/components/actions/dates';
+import { DateText } from '@ks/app/components/actions/DateText';
+import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/actions/PersonRow.module.css';
 
-/** The phone line: a range, a range that ends in "deceased", or "Born" and the date. */
-const phoneLine = (born: string, died?: string, deceased?: boolean) => {
-  if (died) {
-    return `${born} – ${died}`;
-  }
-
-  return deceased ? `${born} – deceased` : `Born ${born}`;
-};
-
 /**
- * One row of the people list, and one link to edit the Person. The page gives the dates as text.
- * Died reads `died`, then "Deceased" when `deceased`, then "—". With `form='phone'` the row is a
- * read-only `div`: the name, then one line of dates and the note.
+ * One row of the people list, and one link to edit the Person. The page gives each date as short
+ * text and as a reading (see `PersonDates`). With `relationshipsHref` the row also has a
+ * "Relationships" link, so it is a `div` with two links. With `form='phone'` the row is a
+ * read-only `div`: the name, then the line of dates and the note.
  */
 export const PersonRow = ({
   born,
+  bornReading,
   deceased,
   died,
+  diedReading,
   form,
   givenNames,
   maidenName,
   matchedVariant,
+  relationshipsHref,
   state,
   surname,
   ...rest
 }: {
-  born: string;
-  /** Marked deceased with no date. */
-  deceased?: boolean;
-  died?: string;
   /** `phone`: a row that is no link. */
   form?: 'phone';
   givenNames: string;
@@ -44,50 +39,59 @@ export const PersonRow = ({
   maidenName?: string;
   /** A spelling variant that matched the filter when the name did not. */
   matchedVariant?: string;
+  /** Adds a "Relationships" link beside the edit link. */
+  relationshipsHref?: string;
   state?: ControlState;
   surname: string;
-} & Omit<ComponentProps<'a'>, 'children' | 'className' | 'href'>) => {
-  const note = [
-    maidenName && `née ${maidenName}`,
-    matchedVariant && `Matches the spelling “${matchedVariant}”`,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+} & Omit<ComponentProps<'a'>, 'children' | 'className' | 'href'> &
+  PersonDates) => {
+  const note = personNote(maidenName, matchedVariant);
+  const dates = (
+    <DateText dates={{ born, bornReading, deceased, died, diedReading }} />
+  );
+  const name = (
+    <Text as='span' variant='title'>
+      {surname}, {givenNames}
+    </Text>
+  );
 
   if (form === 'phone') {
     return (
       <div className={styles.phone}>
-        <Text as='span' variant='title'>
-          {surname}, {givenNames}
-        </Text>
+        {name}
         <span className={styles.line}>
-          <Text variant='mono'>{phoneLine(born, died, deceased)}</Text>
+          {dates}
           {note && <Text variant='small'>{note}</Text>}
         </span>
       </div>
     );
   }
 
-  return (
+  const row = (
     <a className={styles.row} data-state={state} {...rest}>
       <span className={styles.name}>
-        <Text as='span' variant='title'>
-          {surname}, {givenNames}
-        </Text>
+        {name}
         {note && <Text variant='small'>{note}</Text>}
       </span>
-      <span className={styles.date}>
-        <span className={styles.hidden}>Born </span>
-        <Text variant='mono'>{born}</Text>
-      </span>
-      <span className={styles.date}>
-        <span className={styles.hidden}>Died </span>
-        <Text variant='mono'>{died || (deceased ? 'Deceased' : '—')}</Text>
-      </span>
+      {dates}
       <span className={styles.edit}>
         Edit
         <Icon name='forward' size={16} />
       </span>
     </a>
+  );
+
+  if (!relationshipsHref) return row;
+
+  return (
+    <div className={styles.withLink}>
+      {row}
+      <TextLink href={relationshipsHref}>
+        Relationships
+        <span className={styles.hidden}>
+          , {surname}, {givenNames}
+        </span>
+      </TextLink>
+    </div>
   );
 };

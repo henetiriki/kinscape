@@ -16,7 +16,7 @@
   margin: 0;
 }
 
-/* Each width shows one part at a time: a desktop one of two, a phone one of four. Boards 07 and 08 still use `.otherPart` for their link. */
+/* Each width shows one part at a time: a desktop one of three, a phone one of four. Boards 07 and 08 still use `.otherPart` for their link. */
 .partOf,
 .nextPhone,
 .otherPart,
@@ -25,8 +25,12 @@
 }
 
 @media (min-width: 1280px) and (min-height: 500px) {
-  .kit[data-desktop-part='1'] .section[data-desktop-part='2'],
-  .kit[data-desktop-part='2'] .section[data-desktop-part='1'] {
+  .kit[data-desktop-part='1']
+    .section:is([data-desktop-part='2'], [data-desktop-part='3']),
+  .kit[data-desktop-part='2']
+    .section:is([data-desktop-part='1'], [data-desktop-part='3']),
+  .kit[data-desktop-part='3']
+    .section:is([data-desktop-part='1'], [data-desktop-part='2']) {
     display: none;
   }
 }

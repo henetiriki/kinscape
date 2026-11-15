@@ -25,7 +25,7 @@ describe('the design snapshots', () => {
   );
 
   it('are all checked', () => {
-    expect(snapshots).toHaveLength(92);
+    expect(snapshots).toHaveLength(93);
   });
 
   it.each(snapshots)('%s uses only token colours', name => {
@@ -49,7 +49,7 @@ describe('colour literals', () => {
   ).toSorted();
 
   it('finds the components and the CSS modules', () => {
-    expect(components).toHaveLength(68);
+    expect(components).toHaveLength(71);
     expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 

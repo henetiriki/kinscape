@@ -15,6 +15,7 @@ import {
   LongTextFields,
   PersonRows,
 } from '@ks/app/design-kit/inputs/people';
+import { PickerRows, RelationshipRows } from '@ks/app/design-kit/inputs/rows';
 import {
   Alerts,
   Buttons,
@@ -67,6 +68,7 @@ const DESKTOP_PARTS: Record<DesktopPart, string[]> = {
     'Fuzzy date field',
     'Person row',
   ],
+  3: ['Relationship row', 'Picker row'],
 };
 
 const hrefOf = (part: number) =>
@@ -85,9 +87,9 @@ const partOf = (raw: string | string[] | undefined): PhonePart =>
   raw === '2' || raw === '3' || raw === '4' ? (Number(raw) as PhonePart) : 1;
 
 /**
- * Board 06. A desktop shows one of two parts and a phone one of four. `?part=2`, `3` or `4` is
- * that phone part; a desktop shows part 2 for `?part=2` and part 1 for anything else. A link on
- * each width leads to the next part of that width.
+ * Board 06. A desktop shows one of three parts and a phone one of four. `?part=2`, `3` or `4` is
+ * that phone part; a desktop shows part 2 for `?part=2`, part 3 for `?part=3` and part 1 for
+ * anything else. A link on each width leads to the next part of that width.
  */
 const InputsKit = async ({
   searchParams,
@@ -97,7 +99,7 @@ const InputsKit = async ({
   await requireDevPage();
 
   const part = partOf((await searchParams).part);
-  const desktopPart: DesktopPart = part === 2 ? 2 : 1;
+  const desktopPart: DesktopPart = part === 2 || part === 3 ? part : 1;
   const nextPhone = nextLink(PHONE_PARTS, part);
   const nextDesktop = nextLink(DESKTOP_PARTS, desktopPart);
 
@@ -112,7 +114,7 @@ const InputsKit = async ({
           <span className={styles.partOf}> · part {part} of 4</span>
           <span className={styles.desktopPartOf}>
             {' '}
-            · part {desktopPart} of 2
+            · part {desktopPart} of 3
           </span>
         </span>
         <h1 className={kit.kitTitle}>Inputs and actions</h1>
@@ -146,6 +148,8 @@ const InputsKit = async ({
       <LongTextFields />
       <FuzzyDateFields />
       <PersonRows />
+      <RelationshipRows />
+      <PickerRows />
     </main>
   );
 };

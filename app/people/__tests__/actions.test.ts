@@ -456,6 +456,23 @@ describe('createRelationshipAction', () => {
     expect(await relationshipsFor('a')).toEqual([]);
   });
 
+  it('gives not-found for a Person in another Account, or a missing one', async () => {
+    const { relationshipsFor, signInAs } = await setupWithPersons();
+    const missingPerson = '01900000-0000-7000-8000-0000000000a9';
+
+    signInAs('b');
+
+    expect(await createRelationshipAction(parent(R1, P1, P2))).toEqual({
+      error: 'not-found',
+      ok: false,
+    });
+    expect(
+      await createRelationshipAction(parent(R1, P1, missingPerson))
+    ).toEqual({ error: 'not-found', ok: false });
+    expect(await relationshipsFor('a')).toEqual([]);
+    expect(await relationshipsFor('b')).toEqual([]);
+  });
+
   it('revalidates the people pages after a save, and after nothing else', async () => {
     await setupWithPersons();
 
@@ -542,16 +559,21 @@ describe('updateRelationshipAction', () => {
   it('gives a refusal and changes nothing', async () => {
     const { relationshipsFor } = await setupWithPersons();
 
-    await createRelationshipAction(parent(R1, P1, P2));
-    await createRelationshipAction(parent(R2, P2, P3));
+    await createRelationshipAction(parent(R1, P1, P4));
+    await createRelationshipAction(parent(R2, P2, P4));
+    await createRelationshipAction(parent(R3, P3, P4, 'step'));
 
     expect(
       await updateRelationshipAction({
-        relationship: parent(R2, P2, P1),
+        relationship: parent(R3, P3, P4),
         version: 1,
       })
-    ).toEqual({ error: 'cycle', ok: false });
-    expect(await relationshipsFor('a')).toHaveLength(2);
+    ).toEqual({ error: 'third-biological-parent', ok: false });
+    expect(await relationshipsFor('a')).toHaveLength(3);
+    expect(await relationshipsFor('a')).toContainEqual({
+      ...parent(R3, P3, P4, 'step'),
+      version: 1,
+    });
   });
 
   it('gives divorce-before-marriage and changes nothing', async () => {

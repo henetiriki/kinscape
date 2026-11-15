@@ -40,6 +40,16 @@ describe('a relationship row', () => {
     expect(screen.queryByText(/remove/i)).toBeNull();
   });
 
+  it('ends the row with the Edit link and its arrow, as the People row does', () => {
+    row();
+
+    const link = screen.getByRole('link');
+
+    expect(link.className).toMatch(/edit/);
+    expect(link.parentElement?.lastElementChild).toBe(link);
+    expect(link.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+  });
+
   it.each(['adoptive', 'biological', 'step'] as const)(
     'shows the %s subtype',
     subtype => {

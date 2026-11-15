@@ -95,6 +95,14 @@ test('an id with no Person shows the not-found state', async ({ page }) => {
   await expect(page.getByText('Person not found')).toBeVisible();
 });
 
+// PPL-02, NFR-09
+test('the Relationships page is never cached', async ({ page }) => {
+  const response = await page.goto('/people/nope/relationships');
+
+  expect(response?.headers()['cache-control']).toBe('private, no-store');
+  await expect(page.getByText('Person not found')).toBeVisible();
+});
+
 // PPL-01, NFR-09
 for (const path of ['/people/new', '/people/nope']) {
   test(`${path} is never cached and covers the whole screen`, async ({

@@ -1,0 +1,73 @@
+/* The page frame comes from `PeoplePage.module.css`; the rest is the three groups. */
+.page {
+  composes: page from '@ks/features/people/components/PeoplePage.module.css';
+}
+
+.main {
+  composes: main from '@ks/features/people/components/PeoplePage.module.css';
+}
+
+/* Not composed: the frame's padding and gap differ from this board's, and a composed rule wins. */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin: 0 auto;
+  padding: var(--space-24) 0 var(--space-32);
+  width: min(960px, 100%);
+}
+
+/* The name has the colour of a row name, not the grey of the save note beside it. */
+.person {
+  color: var(--ink);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.group {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+
+.head {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--space-16);
+  height: 60px;
+  justify-content: space-between;
+  padding: 0 var(--space-20);
+}
+
+.title {
+  align-items: baseline;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item,
+.none {
+  border-top: 1px solid var(--line);
+}
+
+.none {
+  padding: var(--space-16) var(--space-20);
+}
+
+.failed {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-48);
+}

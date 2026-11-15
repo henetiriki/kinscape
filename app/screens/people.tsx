@@ -3,11 +3,8 @@ import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PeopleList } from '@ks/features/people';
-import {
-  readFuzzyDate,
-  shortFuzzyDate,
-} from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
+import { personDates } from '@ks/lib/domain/persons/dates.mts';
 
 const exact = (date: string) => fuzzyDateOf('EXACT', date);
 
@@ -19,11 +16,7 @@ const person = (
   died: FuzzyDate | undefined,
   more: Partial<PersonSummary> = {}
 ): PersonSummary => ({
-  born: shortFuzzyDate(born),
-  bornReading: readFuzzyDate(born),
-  deceased: false,
-  died: died ? shortFuzzyDate(died) : '',
-  diedReading: died ? readFuzzyDate(died) : '',
+  ...personDates({ birth: born, death: died, deceased: false }),
   givenNames,
   id,
   maidenName: '',

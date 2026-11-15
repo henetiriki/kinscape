@@ -23,7 +23,8 @@
 
       <div style="display: flex; flex-direction: column; gap: var(--space-4)">
         <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationships</x-import>
-        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">{{subtitle.name}}, <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{subtitle.words}}</span><span style="display: inline-flex"><span aria-hidden="true"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{subtitle.line}}</x-import></span><span>.</span></span> Each change saves at once.</x-import>
+        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p"><span style="display: inline-flex; align-items: baseline"><span style="color: var(--ink)"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">{{subtitle.name}}</x-import></span><span>.</span></span> Each change saves at once.</x-import>
+        <span style="display: flex; flex-direction: column"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; white-space: nowrap; margin: -1px; padding: 0; border: 0">{{subtitle.words}}</span><span aria-hidden="true" style="display: contents"><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">{{subtitle.line}}</x-import></span></span>
       </div>
 
       <sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
@@ -176,13 +177,13 @@ class Component extends DCLogic {
     const dated = (p) => ({ born: p.born, bornReading: reading(p.born), died: p.died, diedReading: reading(p.died), deceased: !!p.deceased });
     const GROUPS = [
       { id: 'parents', title: 'Parents', one: 'parent', none: 'No parents yet.', kind: 'parent', rows: [
-        { id: 'rossouw-jacobus', subtype: 'biological' }, { id: 'nel-johanna', subtype: 'adoptive' }, { id: 'visser-cornelis', subtype: 'step' }] },
-      { id: 'children', title: 'Children', one: 'child', none: 'No children yet.', kind: 'child', rows: [
-        { id: 'dutoit-hendrik', subtype: 'biological' }, { id: 'dutoit-susanna', subtype: 'adoptive' }] },
+        { id: 'nel-johanna', subtype: 'adoptive' }, { id: 'rossouw-jacobus', subtype: 'biological' }, { id: 'visser-cornelis', subtype: 'step' }] },
       { id: 'spouses', title: 'Spouses', one: 'spouse', none: 'No spouses yet.', kind: 'spouse', rows: [
-        { id: 'vanwyk-gerrit', married: '1875', divorced: '1890' },
+        { id: 'botha-hendrik' },
         { id: 'fourie-pieter', married: '1875' },
-        { id: 'botha-hendrik' }] }
+        { id: 'vanwyk-gerrit', married: '1875', divorced: '1890' }] },
+      { id: 'children', title: 'Children', one: 'child', none: 'No children yet.', kind: 'child', rows: [
+        { id: 'dutoit-hendrik', subtype: 'biological' }, { id: 'dutoit-susanna', subtype: 'adoptive' }] }
     ];
     const open = (kind, step, edit, who) => this.setState({ dialog: { kind: kind, step: step, edit: !!edit }, who: who || null, query: '', alert: '', subtype: 'biological' });
     const groups = GROUPS.map((g) => {

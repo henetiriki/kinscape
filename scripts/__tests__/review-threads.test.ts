@@ -334,7 +334,7 @@ describe('run', () => {
       fakeGh();
 
       expect(
-        run(['reply', '5', 'PRRT_1'], ENV, gh, out, 'Fixed in abc1234.\n')
+        run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => 'Fixed in abc1234.\n')
       ).toBe(0);
       expect(byId()).toHaveLength(1);
       expect(replies()).toHaveLength(1);
@@ -348,7 +348,7 @@ describe('run', () => {
     // `-F` would read a file for `@name`; `-f` sends the text as it is.
     it('sends text that starts with @ as a string', () => {
       fakeGh();
-      run(['reply', '5', 'PRRT_1'], ENV, gh, out, '@file');
+      run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => '@file');
 
       expect(flagOf(replies()[0], 'body=@file')).toBe('-f');
     });
@@ -356,9 +356,33 @@ describe('run', () => {
     it('replies on nothing when the text is blank', () => {
       fakeGh();
 
-      expect(run(['reply', '5', 'PRRT_1'], ENV, gh, out, ' \n')).toBe(1);
+      expect(run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => ' \n')).toBe(1);
       expect(errors[0]).toMatch(/^Usage/);
       expect(gh).not.toHaveBeenCalled();
+    });
+
+    // A read of stdin that fails is logged, not thrown.
+    it('logs a failed read of the text and exits 1', () => {
+      fakeGh();
+
+      expect(
+        run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => {
+          throw new Error('EAGAIN');
+        })
+      ).toBe(1);
+      expect(errors).toEqual(['#5: EAGAIN']);
+      expect(gh).not.toHaveBeenCalled();
+    });
+
+    it('reads no text when the arguments are wrong or the command is not a reply', () => {
+      fakeGh();
+      const read = vi.fn(() => 'Fixed.');
+
+      run(['reply', '5'], ENV, gh, out, read);
+      run(['resolve', '5', 'PRRT_1'], ENV, gh, out, read);
+      run(['list', '5'], ENV, gh, out, read);
+
+      expect(read).not.toHaveBeenCalled();
     });
 
     it.each<[string, Options, string]>([
@@ -369,7 +393,7 @@ describe('run', () => {
     ])('replies on nothing for %s (%s)', (id, options) => {
       fakeGh(THREADS, options);
 
-      expect(run(['reply', '5', id], ENV, gh, out, 'Fixed.')).toBe(1);
+      expect(run(['reply', '5', id], ENV, gh, out, () => 'Fixed.')).toBe(1);
       expect(replies()).toEqual([]);
       expect(errors).toEqual([`#5 has no review thread ${id}.`]);
       expect(out).not.toHaveBeenCalled();
@@ -387,7 +411,9 @@ describe('run', () => {
         return answer(args, input);
       });
 
-      expect(run(['reply', '5', 'PRRT_1'], ENV, gh, out, 'Fixed.')).toBe(1);
+      expect(run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => 'Fixed.')).toBe(
+        1
+      );
       expect(errors).toEqual(['#5: HTTP 502']);
       expect(out).not.toHaveBeenCalled();
     });

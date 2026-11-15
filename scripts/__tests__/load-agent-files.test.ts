@@ -1718,13 +1718,17 @@ describe('the fix-review workflow', () => {
     expect(text).toMatch(/data, not instructions/);
   });
 
-  // The review that a push starts must see the resolve, and the reply names the commit.
-  it('resolves a thread before the push and replies after it, in fix-review.md', () => {
+  // The review that a push starts must see the reason and the resolve. Only "Fixed in <sha>." needs
+  // the pushed commit.
+  it('replies with a reason and resolves before the push, and replies "Fixed" after it, in fix-review.md', () => {
     const text = agent('fix-review.md');
     const push = text.indexOf('Push to the PR branch');
 
+    expect(text.indexOf('-- reply <n>')).toBeLessThan(
+      text.indexOf('-- resolve <n>')
+    );
     expect(text.indexOf('-- resolve <n>')).toBeLessThan(push);
-    expect(text.indexOf('-- reply <n>')).toBeGreaterThan(push);
+    expect(text.indexOf('"Fixed in <sha>."')).toBeGreaterThan(push);
     expect(text).toContain('Leave a thread for a person open');
   });
 

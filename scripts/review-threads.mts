@@ -128,16 +128,20 @@ const comment = ({ author, body, createdAt }: Comment) => ({
   ...(createdAt === undefined ? {} : { createdAt }),
 });
 
+const USAGE =
+  'Usage: review-threads list|resolve|reply <PR number> [<thread id>], with GH_REPO or GITHUB_REPOSITORY=<owner>/<repo> set; reply reads its text from stdin';
+
+// `readBody` reads the text of a reply from stdin. It runs only for a reply whose arguments are
+// valid, and a failed read is logged like a failed `gh` call.
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh,
   out: (text: string) => void,
-  body = ''
+  readBody: () => string = () => ''
 ): number => {
   const [command, raw, id] = args;
   const repo = env.GH_REPO || env.GITHUB_REPOSITORY || '';
-  const text = body.trim();
   const onThread = command === 'resolve' || command === 'reply';
 
   if (
@@ -145,12 +149,9 @@ export const run = (
     !NUMBER.test(raw ?? '') ||
     !REPO.test(repo) ||
     onThread !== (id !== undefined) ||
-    (id !== undefined && !ID.test(id)) ||
-    (command === 'reply' && text === '')
+    (id !== undefined && !ID.test(id))
   ) {
-    console.error(
-      'Usage: review-threads list|resolve|reply <PR number> [<thread id>], with GH_REPO or GITHUB_REPOSITORY=<owner>/<repo> set; reply reads its text from stdin'
-    );
+    console.error(USAGE);
 
     return 1;
   }
@@ -159,6 +160,14 @@ export const run = (
   const pr = { name, number: Number(raw), owner };
 
   try {
+    const text = command === 'reply' ? readBody().trim() : '';
+
+    if (command === 'reply' && text === '') {
+      console.error(USAGE);
+
+      return 1;
+    }
+
     if (command === 'list') {
       out(
         JSON.stringify(
@@ -215,6 +224,6 @@ if (import.meta.main) {
         maxBuffer: 16 * 1024 * 1024,
       }),
     text => console.log(text),
-    process.argv[2] === 'reply' ? readFileSync(0, 'utf8') : ''
+    () => readFileSync(0, 'utf8')
   );
 }

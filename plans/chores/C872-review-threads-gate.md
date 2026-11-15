@@ -70,3 +70,5 @@ A resolved thread does not start the `Review` job. Which run turns the check gre
 - `review.md` keeps its design-snapshot sentences as they are. A test pins them, so other lines are shorter.
 - Two tests name the old label to prove that the review text and the gate no longer use it. The `git grep` finds only them.
 - The summary comment also holds the gaps that no committed file's input reaches, as before.
+- Both fixers reply with the reason before the push, for a judged-wrong thread and a thread for a person. They reply "Fixed in <sha>." after it. The review that the push starts must see the reason.
+- `reply` reads its text inside the `try` of `run`, after the arguments validate. A failed read exits 1.

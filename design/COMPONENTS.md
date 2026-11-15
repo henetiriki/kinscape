@@ -9,9 +9,7 @@ Add the component to `CONTROLS`. Run the steps of [Changing the design system](C
 
 ## Board swap prompt
 
-Run the design agent on the same machine as the Claude Code session, in the clone that has the branch. Do not use a design agent that has its own copy of the repository: its copy can be on `main`, with a different exporter. Run one swap at a time in that clone.
-
-Paste this prompt into the design agent:
+Paste this prompt into a local session:
 
 ```text
 Do not edit design/source/ or the JPGs.

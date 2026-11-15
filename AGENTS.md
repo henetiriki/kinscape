@@ -5,8 +5,9 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 ## Source of truth
 
 - `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
-- `design/DESIGN.md`: how things look (fonts, colours, map style), component folders and page rule. If a screen has no design, list it under **Flagged concerns**. Don't invent the UI.
-- Only the design agent, or a person or an agent they ask to run the [refresh steps](design/CANVAS.md#refreshing-the-canvas-copy), edits `design/canvas/`. A [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't hide the difference in code. Raise a Bug that names the screen and the difference. A change to the design system's inputs follows [Changing the design system](design/CANVAS.md#changing-the-design-system).
+- `design/DESIGN.md`: how things look, component folders and page rule. If a screen has no design, list it under **Flagged concerns**. Don't invent the UI.
+- A screen that needs a missing part says so the same way. Copy no style from another part.
+- Only the design agent, or a person or an agent they ask to run the [refresh steps](design/CANVAS.md#refreshing-the-canvas-copy), edits `design/canvas/`. A [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't hide it in code. Raise a Bug that names the screen and the difference. A change to the design system's inputs follows [Changing the design system](design/CANVAS.md#changing-the-design-system).
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) holds proposals, not rules.
 - [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs. File a `type: intent` issue for a new idea or requirement change.
 - Use the terms in the [glossary](docs/glossary.md) exactly in code, UI and docs: no `User` for Account, `Marker` for Pin or `Region` for Polity.
@@ -14,12 +15,12 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 ## Workflow rules
 
 - Only build from a Spec, Bug or Chore labelled `status: ready-for-dev` or `status: ready-for-agent`. If the issue does not cover something, ask. Don't invent requirements.
-- Work on a branch and open a PR using the template. Never push to `main`, never merge, never deploy to production.
-- Before you change anything, check that the change belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
+- Work on a branch and open a PR using the template. Never push to `main`, merge or deploy to production.
+- Before you change anything, check that it belongs on the checked-out branch. For a new branch, run `git fetch origin main` and branch from `origin/main`. Put worktrees in `.claude/worktrees/`.
 - Never choose silently. Write each PO or tech-lead decision in the [decision format](docs/how-we-work.md#decisions) (Spec: **Decisions**; Intent: _Open questions_; plan: `## Decisions`); risks go under **Flagged concerns**. When someone answers a Spec decision, update the issue body as it says.
 - Never use `--no-verify`. If a hook fails, fix the code.
 - Set status labels as the workflow says.
-- A case is unlikely if no shown input, user path or past incident reaches it. For an unlikely case (a race, a security edge case or an extra guard), write no code. Write the failure, its likelihood and the cost of a fix. Put them in the Spec under **Flagged concerns**, in the plan under **Risks**, or in a PR comment. The tech lead decides whether to build it. `docs/security.md`, the Data rules and acceptance checks are never unlikely: build them.
+- A case is unlikely if no shown input, user path or past incident reaches it. For an unlikely case (a race, a security edge case or an extra guard), write no code. Write the failure, its likelihood and its fix cost. Put them in the Spec under **Flagged concerns**, in the plan under **Risks**, or in a PR comment. The tech lead decides whether to build it. `docs/security.md`, the Data rules and acceptance checks are never unlikely: build them.
 
 ## Plans
 
@@ -31,7 +32,7 @@ One plan per Spec, Bug or Chore, under `plans/` (paths: the [plans-committed-fir
 - [`docs/code-rules.md`](docs/code-rules.md)
 - Your own plan
 
-Other plans are history. Open one only to learn why we did something.
+Open another plan only to learn why we did something.
 
 ## Data rules
 

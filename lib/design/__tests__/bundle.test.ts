@@ -16,7 +16,7 @@ import {
 const NAMES = CONTROLS.map(({ name }) => name);
 
 describe('CONTROLS', () => {
-  it('lists the 44 shared controls, each from a file that exists', () => {
+  it('lists the 45 shared controls, each from a file that exists', () => {
     expect(NAMES).toEqual([
       'Button',
       'IconButton',
@@ -25,6 +25,7 @@ describe('CONTROLS', () => {
       'Segmented',
       'Tabs',
       'TextLink',
+      'ArrowLink',
       'KeyHint',
       'ActionBar',
       'RemovableChip',

@@ -288,6 +288,21 @@ export const CARDS: Card[] = [
     ],
   },
   {
+    design: ['Arrow link'],
+    group: 'Actions',
+    handlers: [],
+    height: 200,
+    name: 'ArrowLink',
+    pad: 0,
+    states: [
+      ...linkGrid('ArrowLink', state => ({
+        children: 'Edit',
+        props: { href: '/people/1', state },
+      })),
+      one('ArrowLink · label', {}, 'Edit'),
+    ],
+  },
+  {
     design: [],
     group: 'Actions',
     handlers: [],

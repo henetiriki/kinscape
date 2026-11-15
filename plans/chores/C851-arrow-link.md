@@ -45,3 +45,9 @@ Each kit page must match a board snapshot, and no board draws `ArrowLink`.
 | Rows, kit, coverage      | `npm test`; `npm run design:check` |
 | Design system and export | Step 4.6; `npm run design:export`  |
 | The rule                 | `npm run words`                    |
+
+## Deviations
+
+- The tests that count or list the controls change for the new part: `lib/design/__tests__/`, `scripts/__tests__/design-system.test.ts` and `app/components/__tests__/hover.test.ts`.
+- The kit row shows the label in the Disabled column, because a link has no disabled state.
+- `AGENTS.md` and `.claude/skills/refine/spec.md` lose filler words to stay in budget.

@@ -1,7 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { RelationshipRow } from '@ks/app/components/actions/RelationshipRow';
+
+const css = readFileSync(
+  join(process.cwd(), 'app/components/actions/RelationshipRow.module.css'),
+  'utf8'
+);
 
 const row = (props: Partial<Parameters<typeof RelationshipRow>[0]> = {}) =>
   render(
@@ -40,14 +47,15 @@ describe('a relationship row', () => {
     expect(screen.queryByText(/remove/i)).toBeNull();
   });
 
-  it('ends the row with the Edit link and its arrow, as the People row does', () => {
+  it('ends the row with the Edit link and its arrow, an ArrowLink', () => {
     row();
 
     const link = screen.getByRole('link');
 
-    expect(link.className).toMatch(/edit/);
+    expect(link.className).toMatch(/link/);
     expect(link.parentElement?.lastElementChild).toBe(link);
     expect(link.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+    expect(css).not.toContain('.edit');
   });
 
   it.each(['adoptive', 'biological', 'step'] as const)(

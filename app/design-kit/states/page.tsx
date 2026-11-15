@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { ArrowLink } from '@ks/app/components/actions/ArrowLink';
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip } from '@ks/app/components/actions/Chip';
 import { IconButton } from '@ks/app/components/actions/IconButton';
@@ -103,6 +104,18 @@ const ROWS: {
         Attributions
       </TextLink>
     ),
+  },
+  {
+    hint: 'Disabled column: the label, no link',
+    name: 'Arrow link',
+    render: column =>
+      column === 'disabled' ? (
+        <ArrowLink>Edit</ArrowLink>
+      ) : (
+        <ArrowLink href='#edit' state={stateOf(column)}>
+          Edit
+        </ArrowLink>
+      ),
   },
   {
     hint: 'Pressed column shows it filled',

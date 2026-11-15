@@ -4,10 +4,9 @@ import type {
 } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
+import { ArrowLink } from '@ks/app/components/actions/ArrowLink';
 import { spouseLine } from '@ks/app/components/actions/dates';
 import { DateText } from '@ks/app/components/actions/DateText';
-import { Icon } from '@ks/app/components/foundation/Icon';
-import { KitLink } from '@ks/app/components/foundation/link';
 import { Text } from '@ks/app/components/foundation/Text';
 
 import styles from '@ks/app/components/actions/RelationshipRow.module.css';
@@ -63,13 +62,12 @@ export const RelationshipRow = ({
         <DateText dates={{ born, bornReading, deceased, died, diedReading }} />
         {marriage && <DateText spouse={spouse} />}
       </span>
-      <KitLink className={styles.edit} data-state={state} href={href}>
+      <ArrowLink href={href} state={state}>
         Edit
-        <Icon name='forward' size={16} />
         <span className={styles.hidden}>
           , {surname}, {givenNames}
         </span>
-      </KitLink>
+      </ArrowLink>
     </div>
   );
 };

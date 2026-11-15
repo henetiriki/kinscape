@@ -24,6 +24,7 @@ export const CONTROLS: Control[] = [
   { name: 'Segmented', path: 'app/components/actions/Segmented.tsx' },
   { name: 'Tabs', path: 'app/components/actions/Tabs.tsx' },
   { name: 'TextLink', path: 'app/components/actions/TextLink.tsx' },
+  { name: 'ArrowLink', path: 'app/components/actions/ArrowLink.tsx' },
   { name: 'KeyHint', path: 'app/components/actions/KeyHint.tsx' },
   { name: 'ActionBar', path: 'app/components/actions/ActionBar.tsx' },
   { name: 'RemovableChip', path: 'app/components/actions/Chip.tsx' },

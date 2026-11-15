@@ -23,33 +23,6 @@
   flex-direction: column;
 }
 
-/*
- * "Edit" and its arrow, at the right edge of the column: in line with the "Add" button above the
- * rows. The look comes from the People row. Here "Edit" is a link of its own, not the label of a
- * row that is one link, so it adds the focus ring and the hover and pressed colours.
- */
-.edit {
-  composes: ring from '@ks/app/components/foundation/focus.module.css';
-  composes: edit from '@ks/app/components/actions/PersonRow.module.css';
-  border-radius: var(--radius-link);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-@media (hover: hover) {
-  .edit:hover {
-    color: var(--brand-hover);
-  }
-}
-
-.edit[data-state='hover'] {
-  color: var(--brand-hover);
-}
-
-.edit:is(:active, [data-state='active']) {
-  color: var(--brand-pressed);
-}
-
 /* Names the Edit link for a screen reader. */
 .hidden {
   composes: hidden from '@ks/app/components/actions/DateText.module.css';

@@ -28,6 +28,7 @@ import {
 
 import { standInDom } from '@ks/__tests__/dom-stand-ins';
 import { ActionBar } from '@ks/app/components/actions/ActionBar';
+import { ArrowLink } from '@ks/app/components/actions/ArrowLink';
 import { Button } from '@ks/app/components/actions/Button';
 import { Chip, RemovableChip } from '@ks/app/components/actions/Chip';
 import { ChipGroup } from '@ks/app/components/actions/ChipGroup';
@@ -154,6 +155,7 @@ const OTHERS = Object.keys(DEFAULT_TAG) as (keyof typeof DEFAULT_TAG)[];
 const COMPONENTS = {
   ActionBar,
   Alert,
+  ArrowLink,
   Avatar,
   BackLink,
   Banner,
@@ -314,6 +316,12 @@ const CASES: [string, ReactElement][] = [
       Sources
     </TextLink>,
   ],
+  ...links('ArrowLink', state => (
+    <ArrowLink href='/people/1' state={state}>
+      Edit
+    </ArrowLink>
+  )),
+  ['ArrowLink · label', <ArrowLink key='label'>Edit</ArrowLink>],
   [
     'ActionBar · save and cancel',
     <ActionBar key='bar'>

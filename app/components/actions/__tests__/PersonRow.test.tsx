@@ -191,14 +191,15 @@ it('takes a state', () => {
 });
 
 // PPL-01
-it('sets Edit in the link font with no underline', () => {
-  const edit = /\.edit \{[^}]*\}/.exec(css)![0];
+it('shows Edit as an ArrowLink label, with no rule of its own', () => {
+  row();
 
-  expect(edit).toContain('font-family: var(--type-link-font)');
-  expect(edit).toContain('font-size: var(--type-link-size)');
-  expect(edit).toContain('font-weight: var(--type-link-weight)');
-  expect(edit).toContain('line-height: var(--type-link-line)');
-  expect(edit).not.toMatch(/underline|composes/);
+  const edit = screen.getByText('Edit');
+
+  expect(edit).toBeInstanceOf(HTMLSpanElement);
+  expect(edit.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+  expect(edit.parentElement).toBe(screen.getByRole('link'));
+  expect(css).not.toContain('.edit');
 });
 
 // PPL-01
@@ -207,7 +208,6 @@ it('is at least 52px tall on the People-list grid, and tints hover and pressed',
   expect(css).toContain('grid-template-columns: minmax(0, 1fr) 200px 72px');
   expect(css).toMatch(/hover[\s\S]*?background: var\(--surface-2\)/);
   expect(css).toMatch(/active[\s\S]*?background: var\(--segment\)/);
-  expect(css).toContain('color: var(--brand-pressed)');
   expect(css).toContain(
     "composes: ring from '@ks/app/components/foundation/focus.module.css'"
   );

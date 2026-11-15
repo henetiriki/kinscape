@@ -1,7 +1,7 @@
 # Plan: C851: Make "Edit" with an arrow a shared part
 
 - **Spec:** #851
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ Each kit page must match a board snapshot, and no board draws `ArrowLink`.
 - **B.** A section on `/design-kit/inputs?part=3`, on `SG-Inputs-3.dc.html`.
 - **Other:** your own.
 
-Recommended: A, because that board shows the states of each control.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -22,7 +22,7 @@ test('creating a Person shows the toast and lists them', async ({ page }) => {
   await expect(
     page.getByRole('status').filter({ hasText: 'Saved' })
   ).toHaveText(`Saved Ana ${family}.`);
-  await expect(page.getByText(`${family}, Ana`)).toBeVisible();
+  await expect(page.getByText(`${family}, Ana`, { exact: true })).toBeVisible();
 });
 
 // PPL-01
@@ -30,7 +30,7 @@ test('an edit stays after a reload', async ({ page }) => {
   const family = surname();
 
   await create(page, family);
-  await page.getByText(`${family}, Ana`).click();
+  await page.getByText(`${family}, Ana`, { exact: true }).click();
   await page.waitForURL(/\/people\/[0-9a-f-]{36}$/);
 
   const edit = page.url();
@@ -55,7 +55,7 @@ test('Back to an edit page after a save shows the saved values and saves again',
   const family = surname();
 
   await create(page, family);
-  await page.getByText(`${family}, Ana`).click();
+  await page.getByText(`${family}, Ana`, { exact: true }).click();
   await page.waitForURL(/\/people\/[0-9a-f-]{36}$/);
   await page.getByLabel('Maiden name').fill('Botha');
   await page.getByRole('button', { name: 'Save' }).click();
@@ -85,7 +85,44 @@ test('Cancel after a change leaves at once and drops the change', async ({
   await page.getByRole('link', { name: 'Cancel' }).click();
   await page.waitForURL(url => url.pathname === '/people');
 
-  await expect(page.getByText(`${family}, Ana`)).toHaveCount(0);
+  await expect(page.getByText(`${family}, Ana`, { exact: true })).toHaveCount(
+    0
+  );
+});
+
+// PPL-02
+test('the Relationships link of a list row and of the edit page reach the page', async ({
+  page,
+}) => {
+  const family = surname();
+
+  await create(page, family);
+  await page
+    .getByRole('link', { name: new RegExp(`^Relationships.*${family}, Ana$`) })
+    .click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}\/relationships$/);
+  await expect(
+    page.getByRole('heading', { name: 'Relationships' })
+  ).toBeVisible();
+
+  await page.goBack();
+  await page.getByText(`${family}, Ana`, { exact: true }).click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}$/);
+  await page.getByRole('link', { name: 'Relationships' }).click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}\/relationships$/);
+  await expect(
+    page.getByRole('heading', { name: 'Relationships' })
+  ).toBeVisible();
+});
+
+// PPL-02
+test('/people/new has no Relationships link', async ({ page }) => {
+  await page.goto('/people/new');
+
+  await expect(page.getByLabel('Given names')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Relationships' })).toHaveCount(
+    0
+  );
 });
 
 // PPL-01

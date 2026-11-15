@@ -21,9 +21,14 @@
   <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 72px; overflow-y: auto">
     <div style="width: 1088px; margin: 0 auto; padding: var(--space-20) 0 var(--space-24); display: flex; flex-direction: column; gap: var(--space-16)">
 
-      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
-        <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">{{title}}</x-import>
-        <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Given names and surname are required. Everything else can wait.</x-import>
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-24)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+          <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">{{title}}</x-import>
+          <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Given names and surname are required. Everything else can wait.</x-import>
+        </div>
+        <sc-if value="{{showRelationships}}" hint-placeholder-val="{{ false }}">
+          <x-import component-from-global-scope="KinScape.TextLink" href="Person-relationships.dc.html">Relationships</x-import>
+        </sc-if>
       </div>
 
       <sc-if value="{{showSummary}}" hint-placeholder-val="{{ false }}">
@@ -169,6 +174,7 @@ class Component extends DCLogic {
     return {
       avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
       title: isEdit ? 'Edit ' + fullName : 'Add a person',
+      showRelationships: isEdit,
       showSummary: s.summary && errCount > 0,
       showConflict: !!s.conflict,
       reload: () => this.setState({ conflict: false, notes: 'Her baptism record spells the family name Rossau.', toast: '' }),

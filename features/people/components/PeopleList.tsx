@@ -157,6 +157,7 @@ export const PeopleList = ({
                 <Text variant='overline'>Name</Text>
                 <Text variant='overline'>Dates</Text>
                 <span />
+                <span className={styles.linkSlot} />
               </div>
               <ul className={styles.rows}>
                 {shown.map(({ match, person }) => (
@@ -167,6 +168,7 @@ export const PeopleList = ({
                       href={`/people/${person.id}`}
                       maidenName={person.maidenName}
                       matchedVariant={match.variant}
+                      relationshipsHref={`/people/${person.id}/relationships`}
                       surname={person.surname}
                     />
                   </li>

@@ -102,7 +102,7 @@ test.describe('desktop, 1280 × 800', () => {
     const link = page.getByRole('link', { name: 'Map' });
 
     for (const options of [
-      { modifiers: ['Control' as const] },
+      { modifiers: ['ControlOrMeta' as const] },
       { button: 'middle' as const },
     ]) {
       const opened = context.waitForEvent('page');

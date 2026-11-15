@@ -1,7 +1,7 @@
 # Plan: <spec-id>: <name>
 
 <!--
-Copy to plans/<spec-id>-<slug>.md. Rules: plans/README.md. Budget: 600 words.
+Copy to plans/<spec-id>-<slug>.md. Rules: plans/README.md. Budget: 900 words.
 Omit any section that would only say "none".
 -->
 

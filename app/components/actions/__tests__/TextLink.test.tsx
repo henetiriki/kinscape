@@ -1,7 +1,22 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, it, vi } from 'vitest';
 
 import { TextLink } from '@ks/app/components/actions/TextLink';
+
+const css = readFileSync(
+  join(process.cwd(), 'app/components/actions/TextLink.module.css'),
+  'utf8'
+);
+
+// NFR-06
+it('gives the button form a touch-size minimum height', () => {
+  const button = /\.textLink:where\(button\) \{[^}]*\}/.exec(css)![0];
+
+  expect(button).toContain('min-height: var(--size-touch)');
+  expect(/\.textLink \{[^}]*\}/.exec(css)![0]).not.toContain('min-height');
+});
 
 // NFR-06
 it('is a link with a given state', () => {

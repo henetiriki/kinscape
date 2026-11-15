@@ -51,7 +51,7 @@
       "width": 1440
     },
     {
-      "height": 1967,
+      "height": 2015,
       "mode": "blocking",
       "name": "style-5-feedback",
       "route": "/design-kit/feedback",
@@ -72,7 +72,7 @@
       "width": 390
     },
     {
-      "height": 4283,
+      "height": 4355,
       "mode": "blocking",
       "name": "style-5-feedback-phone",
       "route": "/design-kit/feedback",
@@ -156,7 +156,7 @@
       "width": 1440
     },
     {
-      "height": 6845,
+      "height": 6869,
       "mode": "blocking",
       "name": "style-7-components-surfaces-2-phone",
       "route": "/design-kit/surfaces?part=2",
@@ -194,7 +194,7 @@
       "name": "style-7-components-surfaces-2",
       "route": "/design-kit/surfaces?part=2",
       "width": 1440,
-      "height": 4368,
+      "height": 4390,
       "mode": "blocking"
     },
     {

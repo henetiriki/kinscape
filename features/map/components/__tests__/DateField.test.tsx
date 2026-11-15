@@ -1,9 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, it, vi } from 'vitest';
 
 import { DateField } from '@ks/features/map/components/DateField';
 import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
+
+// MAP-03
+it('gives the phone callout 4px bottom padding', () => {
+  const css = readFileSync(
+    join(process.cwd(), 'features/map/components/DateField.module.css'),
+    'utf8'
+  );
+
+  const phone =
+    /@media \(max-width: 639\.98px\)[^{]*\{\s*\.row > \.callout \{[^}]*\}/.exec(
+      css
+    )![0];
+
+  expect(phone).toContain(
+    'padding: var(--space-12) var(--space-16) var(--space-4)'
+  );
+});
 
 const TODAY = toDay('2026-10-21');
 const JUNE = toDay('1901-06-14');

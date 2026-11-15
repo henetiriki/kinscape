@@ -181,9 +181,9 @@
   display: none;
 }
 
-/* The phone date sheet, drawn over the map's sea. */
+/* The phone date sheet, drawn over the map's sea. The board anchors its callout at the top; 74px puts the callout tip where the board has it. */
 .seaSheet {
-  --callout-lift: 90px;
+  --callout-lift: 74px;
 
   border-radius: var(--radius-panel);
   height: 296px;

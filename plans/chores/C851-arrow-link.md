@@ -27,6 +27,7 @@ Each kit page must match a board snapshot, and no board draws `ArrowLink`.
 | `PersonRow`, `RelationshipRow`: each file and test                                    | Changed       | Use `ArrowLink`   |
 | `lib/design/bundle.mts`, `lib/design/states.mts`, `design/DESIGN.md`, the D1 kit page | Changed       | Add the component |
 | `AGENTS.md`, `.claude/skills/refine/spec.md`, `plans/README.md`, `docs/code-rules.md` | Changed       | The rule          |
+| The tests that count the controls, the kit page test, `design/screens.json`           | Changed       | New counts, sizes |
 
 ## Order of work
 
@@ -48,6 +49,9 @@ Each kit page must match a board snapshot, and no board draws `ArrowLink`.
 
 ## Deviations
 
-- The tests that count or list the controls change for the new component: `lib/design/__tests__/`, `scripts/__tests__/design-system.test.ts` and `app/components/__tests__/hover.test.ts`.
 - The kit row shows the label in the Disabled column, because a link has no disabled state.
-- `AGENTS.md` and `.claude/skills/refine/spec.md` lose filler words to stay in budget.
+- **D2 · A label with link attributes:** the tech lead chose a union type. A label takes `children` only.
+- **D3 · Who owns the rule:** the tech lead chose `plans/README.md`. `AGENTS.md`, `spec.md` and `code-rules.md` link to it. `spec.md` links to the page rule in `DESIGN.md`.
+- **D4 · The `spec.md` cuts:** the tech lead chose to restore "Say which comes first and why." and "say". The cuts "The PO already approved it." and "Discuss slice size only here." stay, to keep the budget.
+- Step 3: the searches ran. [#854](https://github.com/henetiriki/kinscape/issues/854) is the follow-up issue.
+- The CI `design` job ran `npm run design:check` and `npm run design:export` on the render commit, and passed.

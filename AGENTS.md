@@ -6,7 +6,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 - `docs/requirements.md`: the baseline requirements; each has an ID (`MAP-03`). Cite IDs in plans, commits and PRs.
 - `design/DESIGN.md`: how things look, component folders and page rule. If a screen has no design, list it under **Flagged concerns**. Don't invent the UI.
-- A screen that needs a missing component says so the same way. Copy no style from another component.
+- A screen that needs a missing component follows the [missing-components rule](plans/README.md#missing-components).
 - Only the design agent, or a person or an agent they ask to run the [refresh steps](design/CANVAS.md#refreshing-the-canvas-copy), edits `design/canvas/`. A [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/` and `design/*.jpg` from it. Never edit those two. If the app can't match a snapshot, or one looks wrong, don't hide it in code. Raise a Bug that names the screen and the difference. A change to the design system's inputs follows [Changing the design system](design/CANVAS.md#changing-the-design-system).
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) holds proposals, not rules.
 - [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs. File a `type: intent` issue for a new idea or requirement change.

@@ -65,6 +65,14 @@ describe('without an href', () => {
     expect(label.querySelector('svg[data-icon="forward"]')).not.toBeNull();
   });
 
+  it('takes no attribute and no state, so none is dropped without a warning', () => {
+    // @ts-expect-error A label takes no attribute.
+    render(<ArrowLink title='Edit Botha'>Edit</ArrowLink>);
+    // @ts-expect-error A label takes no state.
+    render(<ArrowLink state='hover'>Edit</ArrowLink>);
+    expect(screen.getAllByText('Edit')).toHaveLength(2);
+  });
+
   it('turns brand-pressed inside a pressed link', () => {
     expect(css).toMatch(
       /a:is\(:active, \[data-state='active'\]\) \.arrowLink \{\s*color: var\(--brand-pressed\)/

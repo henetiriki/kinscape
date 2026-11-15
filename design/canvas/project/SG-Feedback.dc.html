@@ -56,7 +56,7 @@
             <span style="{{f.msg}}"><span style="flex: 1">{{f.text}}</span></span>
           </sc-if>
           <sc-if value="{{f.hasAction}}" hint-placeholder-val="{{ false }}">
-            <x-import component-from-global-scope="KinScape.TextLink" href="#" size="small" style="align-self: flex-start; display: flex">{{f.action}}</x-import>
+            <span style="align-self: flex-start; display: flex"><x-import component-from-global-scope="KinScape.TextLink" size="small" on-click="{{noop}}">{{f.action}}</x-import></span>
           </sc-if>
           <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">{{f.note}}</span>
         </div>
@@ -187,6 +187,7 @@ class Component extends DCLogic {
       ['Info', 'info', '1901-06', 'Switched to month precision.', '', 'Explains something the app did for you.']
     ];
     return {
+      noop: () => {},
       fields: list.map((l) => {
         const k = kinds[l[1]];
         return {

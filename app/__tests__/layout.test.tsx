@@ -14,6 +14,8 @@ interface FontOptions {
 // next/font/local reads the files at build time, so the unit tests stand in for it.
 const { calls } = vi.hoisted(() => ({ calls: [] as FontOptions[] }));
 
+vi.mock('next/navigation', () => ({ usePathname: () => '/' }));
+
 vi.mock('next/font/local', () => ({
   default: (options: FontOptions) => {
     calls.push(options);
@@ -26,15 +28,15 @@ const withVariable = () => calls.filter(options => options.variable);
 const declaration = (options: FontOptions, prop: string) =>
   options.declarations?.find(d => d.prop === prop)?.value;
 
-it('wraps the children in an English document', () => {
+it('wraps the children in an English document, after the map slot', () => {
   const html = renderToStaticMarkup(
-    <RootLayout>
+    <RootLayout map={<p>slot</p>}>
       <p>child</p>
     </RootLayout>
   );
 
   expect(html).toContain('lang="en"');
-  expect(html).toContain('<body><p>child</p></body>');
+  expect(html).toMatch(/<body>.*<p>slot<\/p>.*<p>child<\/p><\/body>/);
 });
 
 // NFR-03
@@ -104,7 +106,7 @@ it('adds a latin-ext face to the same family, with its own unicode-range', () =>
 });
 
 it('puts the font variables on <html>', () => {
-  const html = renderToStaticMarkup(<RootLayout>{null}</RootLayout>);
+  const html = renderToStaticMarkup(<RootLayout map={null}>{null}</RootLayout>);
 
   for (const { variable } of withVariable()) {
     expect(html).toContain(`class-${variable}`);

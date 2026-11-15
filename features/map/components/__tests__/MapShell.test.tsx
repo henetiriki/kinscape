@@ -16,7 +16,9 @@ const handle = vi.hoisted(() => ({
   zoomOut: vi.fn(),
 }));
 
-vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ prefetch: vi.fn(), push: vi.fn() }),
+}));
 
 vi.mock('@ks/features/map/components/MapView', async () => {
   const { useImperativeHandle } = await import('react');

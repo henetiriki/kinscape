@@ -6,6 +6,7 @@ import type {
 } from '@ks/app/components/foundation/types';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
+import { KitLink } from '@ks/app/components/foundation/link';
 
 import styles from '@ks/app/components/actions/Button.module.css';
 
@@ -42,7 +43,7 @@ const ICON_SIZE = { l: 20, m: 16, s: 16, xs: 14 } as const;
 
 /**
  * An action: primary for the one main action in a view, secondary for the rest.
- * With an `href` it draws a plain `<a>` with the same look and states.
+ * With an `href` it draws the `LinkContext` link with the same look and states.
  */
 export const Button = ({
   children,
@@ -73,9 +74,9 @@ export const Button = ({
 
   if (rest.href !== undefined) {
     return (
-      <a {...shared} {...rest}>
+      <KitLink {...shared} {...rest} href={rest.href}>
         {content}
-      </a>
+      </KitLink>
     );
   }
 

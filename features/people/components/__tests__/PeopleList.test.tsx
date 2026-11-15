@@ -74,6 +74,14 @@ beforeEach(() => {
 
 // PPL-01
 describe('PeopleList', () => {
+  // PPL-01
+  it('draws the heading as the page title', () => {
+    open();
+    expect(screen.getByRole('heading', { name: 'People' }).className).toBe(
+      'h1'
+    );
+  });
+
   it('lists the Persons by surname with their dates and a link to each, and no Relationships link', () => {
     open();
 
@@ -253,6 +261,14 @@ describe('PeopleList', () => {
 
     afterEach(() => {
       window.matchMedia = desktop;
+    });
+
+    // PPL-01
+    it('draws the heading as the phone page title', () => {
+      open();
+      expect(screen.getByRole('heading', { name: 'People' }).className).toBe(
+        'h1Phone'
+      );
     });
 
     // NFR-05

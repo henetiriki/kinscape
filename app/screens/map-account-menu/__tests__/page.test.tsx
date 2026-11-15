@@ -4,7 +4,9 @@ import { afterEach, expect, it, vi } from 'vitest';
 import Page, { metadata } from '@ks/app/screens/map-account-menu/page';
 
 vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
-vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ prefetch: vi.fn(), push: vi.fn() }),
+}));
 
 const desktop = window.matchMedia;
 

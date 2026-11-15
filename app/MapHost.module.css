@@ -1,0 +1,9 @@
+/* Fixed at the window's size in each state, so hiding the map never resizes it. */
+.host {
+  inset: 0;
+  position: fixed;
+}
+
+.host[data-hidden] {
+  visibility: hidden;
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — People, loading</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+
+  <x-import component-from-global-scope="KinScape.PageHeader" back-href="Map.dc.html" back-label="Map"></x-import>
+
+  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto">
+    <div style="width: 960px; margin: 0 auto; padding: var(--space-32) 0 var(--space-48); display: flex; flex-direction: column; gap: var(--space-24)">
+
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-24)">
+        <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">People</x-import>
+      </div>
+
+      <div style="display: flex; justify-content: center; padding-top: var(--space-64)"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="people" title="Loading people">Your Tree is on its way.</x-import></div>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

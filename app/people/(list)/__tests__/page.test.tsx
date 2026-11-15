@@ -32,7 +32,7 @@ vi.mock('@ks/server/auth/current.mts', () => ({
   signOut: vi.fn(),
 }));
 
-import People from '@ks/app/people/page';
+import People from '@ks/app/people/(list)/page';
 import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';

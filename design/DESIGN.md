@@ -70,6 +70,8 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | People list, filter finds nothing                    | [people-list-no-match.jpg](people-list-no-match.jpg)                               |
 | People list, no people yet                           | [people-empty.jpg](people-empty.jpg)                                               |
 | People list, failed to load                          | [people-load-failed.jpg](people-load-failed.jpg)                                   |
+| People list, loading                                 | [people-loading.jpg](people-loading.jpg)                                           |
+| People list, loading, phone                          | [people-loading-phone.jpg](people-loading-phone.jpg)                               |
 | People list, phone, read-only                        | [people-list-phone.jpg](people-list-phone.jpg)                                     |
 | Person form, add                                     | [person-new.jpg](person-new.jpg)                                                   |
 | Person form, edit                                    | [person-edit.jpg](person-edit.jpg)                                                 |

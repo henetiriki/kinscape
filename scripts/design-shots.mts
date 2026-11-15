@@ -94,6 +94,9 @@ export const findProblems = (root: string): string[] => {
   return problems;
 };
 
+/** One raster thread: several threads can tile a page in a different order on each run, which changes the JPG bytes. */
+export const LAUNCH_ARGS = ['--num-raster-threads=1'];
+
 const sameBytes = (path: string, bytes: Uint8Array): boolean =>
   existsSync(path) && Buffer.compare(readFileSync(path), bytes) === 0;
 
@@ -129,7 +132,7 @@ export const render = async (
 /* v8 ignore start -- launches Chromium; only runs when invoked directly */
 if (import.meta.main) {
   const { chromium } = await import('@playwright/test');
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: LAUNCH_ARGS });
 
   try {
     const changed = await render('.', process.argv.slice(2), {

@@ -11,6 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   findProblems,
+  LAUNCH_ARGS,
   render,
   screenNames,
   snapshotNames,
@@ -116,6 +117,12 @@ describe('findProblems', () => {
       'a.html: missing.svg does not resolve',
       'a.html: #nope matches no id',
     ]);
+  });
+});
+
+describe('LAUNCH_ARGS', () => {
+  it('pins Chromium to one raster thread', () => {
+    expect(LAUNCH_ARGS).toContain('--num-raster-threads=1');
   });
 });
 

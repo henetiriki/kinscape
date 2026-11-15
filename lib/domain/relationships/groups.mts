@@ -7,7 +7,7 @@ import type {
 
 import { byName } from '#ks/lib/domain/persons/list.mts';
 
-/** The id at the other end of a link, and the group it falls in. */
+/** The id at the other end of a link, and its group. */
 const otherEnd = (
   id: PersonId,
   link: Relationship
@@ -40,8 +40,9 @@ export const linkedPersonIds = (
 ];
 
 /**
- * The links of one Person, in three groups, each sorted by surname, then given names (PPL-02). A
- * link of another Person, or one whose other Person is not in `people`, is left out.
+ * The links of one Person, in three groups, each sorted by surname, then given names (PPL-02).
+ * `groupRelationships` omits a link of another Person, and a link whose other Person is not in
+ * `people`.
  */
 export const groupRelationships = (
   id: PersonId,

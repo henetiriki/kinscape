@@ -6,7 +6,7 @@ const adapters = vi.hoisted(() => ({ current: undefined as unknown }));
 const session = vi.hoisted(() => vi.fn());
 
 vi.mock('next/headers', () => ({ cookies: async () => jar }));
-// Next's own errors pass through; here that is the redirect.
+// Next's own errors continue; here that is the redirect.
 vi.mock('next/navigation', () => ({
   unstable_rethrow: (error: unknown) => {
     if (error instanceof Error && error.message.startsWith('redirect:')) {
@@ -199,7 +199,7 @@ describe('/people/{id}/relationships', () => {
     group('Spouses').getByText('No spouses yet.');
   });
 
-  it('leaves out a link whose other Person cannot be read', async () => {
+  it('omits a link when the read of its other Person returns nothing', async () => {
     const { store } = await setup();
 
     adapters.current = {
@@ -304,7 +304,7 @@ describe('a read that fails', () => {
     log.mockRestore();
   });
 
-  it('lets a redirect of Next pass through', async () => {
+  it('rethrows a redirect of Next', async () => {
     const { store } = await setup();
 
     adapters.current = {

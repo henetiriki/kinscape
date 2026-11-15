@@ -114,7 +114,7 @@ describe('groupRelationships', () => {
     ]);
   });
 
-  it('leaves out the links of other Persons', () => {
+  it('omits the links of other Persons', () => {
     const groups = groupRelationships(
       id(1),
       [parent(1, 4, 5), spouse(2, 6, 7)],

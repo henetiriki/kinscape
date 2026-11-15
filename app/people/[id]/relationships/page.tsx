@@ -64,8 +64,8 @@ const readLinks = treeAction(idField(parsePersonId), async (tree, id) => {
 });
 
 /**
- * Next's own errors, such as the sign-in redirect, pass through. Any other error leaves a log of
- * its name only: its message can hold Person data. The page then shows the load-failed state.
+ * Next's own errors, such as the sign-in redirect, continue. Any other error leaves a log of its
+ * name only: its message can hold Person data. The page then shows the load-failed state.
  */
 const failed = (error: unknown): undefined => {
   unstable_rethrow(error);

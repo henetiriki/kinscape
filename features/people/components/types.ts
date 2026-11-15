@@ -1,22 +1,21 @@
-import type {
-  PersonDates,
-  SpouseDates,
-} from '@ks/app/components/actions/types';
+import type { ComponentProps } from 'react';
+
+import type { RelationshipRow } from '@ks/app/components/actions/RelationshipRow';
+import type { PersonDates } from '@ks/app/components/actions/types';
 import type {
   PersonFieldErrors,
   PersonView,
 } from '@ks/lib/domain/persons/types.ts';
 import type { Result } from '@ks/lib/domain/result/types.ts';
 
-/** One link of the Relationships page, as the server sends it. A spouse link has no `subtype`. */
+/**
+ * One link of the Relationships page, as the server sends it. A spouse link has no `subtype`. The
+ * `id` is a plain string, because the id crosses to the client.
+ */
 export type RelationshipEntry = {
-  givenNames: string;
   /** The id of the link. */
   id: string;
-  subtype?: 'adoptive' | 'biological' | 'step';
-  surname: string;
-} & PersonDates &
-  SpouseDates;
+} & Omit<ComponentProps<typeof RelationshipRow>, 'href' | 'state'>;
 
 /** The Person of the Relationships page: the name and the dates under the title. */
 export type RelationshipsPerson = {

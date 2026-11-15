@@ -6,7 +6,7 @@
 
 ## Approach
 
-The design agent redraws one board, `design/canvas/project/Person-relationships.dc.html`, on the canvas (D2). The board script gets the Person of the page as data: `du Toit, Maria Magdalena`, born `c. 1856`, died `1930`. A new `words(p)` gives the line in words from `reading`, with the rules of `dateWords` in `app/components/actions/dates.ts`. For example, it gives "Born before 1840, died unknown". The subtitle and the Person card of the dialog both take `lineOf(p)` and `words(p)`. Each one shows the line in `KinScape.Text` `mono` inside a `<span aria-hidden="true">`. Before the line, a visually hidden `<span>` holds the words. The hidden span uses the inline style of the caption in `Fuzzy-date-readings.dc.html`. The fixed `who` string goes.
+The design agent redraws one board, `design/canvas/project/Person-relationships.dc.html`, on the canvas (D2). The board script gets the Person of the page as data: `du Toit, Maria Magdalena`, born `c. 1856`, died `1930`. A new `words(p)` gives the line in words from `reading`, with the rules of `dateWords` in `app/components/actions/dates.ts`. For example, it gives "Born before 1840, died unknown". The subtitle and the Person card of the dialog both take `lineOf(p)` and `words(p)`. Each one shows the line in `KinScape.Text` `mono` inside a `<span aria-hidden="true">`. Before the line, a visually hidden `<span>` holds the words. The hidden span uses the inline style of the caption in `Fuzzy-date-readings.dc.html`. The board removes the fixed `who` string.
 
 ## Decisions
 
@@ -63,7 +63,8 @@ AGENTS.md lets only the design agent, or an agent that runs the refresh steps, e
 
 ## Deviations
 
-- D2 A gave the board edit to the design agent. The tech lead asked a local Claude Code session to make it, as part of the design agent experiment. The session published the board to the canvas and read no other board.
+- D2 A told the design agent to edit the board. The tech lead asked a local Claude Code session to make it, as part of the design agent experiment. The session published the board to the canvas and read no other board.
 - The subtitle puts the line and the full stop in a `display: inline-flex` span. The exporter formats with `htmlWhitespaceSensitivity: ignore`, so a plain span puts a space before the full stop.
 - The Person card wraps the line in a `display: contents` span, so the card layout does not change.
-- `VERSION` line 2 is the canvas version `1794726266-9ced`, the version after the board publish. The merge of `main` (B841, #843) kept it.
+- `VERSION` line 2 is the canvas version of the last publish. When the branch merged `main` (B841, #843), the line stayed.
+- The Render workflow re-rendered `design/map-desktop-filters.jpg`, which this Bug does not change. A hand commit (`2f69ddd`) restored it from `main`, so the PR changes no other JPG. The tech lead chose this. Bug #848 names the difference that Render makes.

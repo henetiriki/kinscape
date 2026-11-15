@@ -44,6 +44,7 @@ The issue names no section for the rule. "Reading a board" is about a build, and
 - `design/CANVAS.md` is near its budget of 900 words. If `npm run words` fails, the build shortens other text in the file and lists it under _Deviations_.
 - No link points at `#handing-off-a-board`, so the rename breaks no link.
 - The search for "2 to 9" finds #870 until the merge closes it.
+- Two local sessions can swap boards for two branches at the same time. The refresh on one branch then copies the boards of the other. The issue deletes "Run one swap at a time". Likelihood: low, as no past incident shows it. A fix is one sentence in `design/COMPONENTS.md`. The tech lead chose not to build it.
 
 ## Proof
 
@@ -58,6 +59,8 @@ The issue names no section for the rule. "Reading a board" is about a build, and
 
 ## Deviations
 
-- The design prompt rule in `design/CANVAS.md` is three short sentences, not one long one, to keep to STE rule 2. Its meaning is the same.
-- "Don't use Export." left with the Hand off menu step, because it names that menu.
+- The design prompt rule in `design/CANVAS.md` has three short sentences, not one long one, to obey STE rule 2. The last one tells the reader to skip the chat lines.
+- The build deletes "Don't use Export." with the Hand off menu step, because that sentence names the menu.
 - `design/COMPONENTS.md` loses the whole paragraph, including "Run one swap at a time", as the issue says.
+- "Reading a board" names the canvas link, and line 7 of `design/CANVAS.md` says the tech lead runs the workflow, so it agrees with step 7. The issue text has neither edit. Review findings in PR 871 asked for both.
+- To fit the 900-word budget, "Who" in `design/CANVAS.md` says "a local session" and drops "Claude Code" and "that the tech lead starts".

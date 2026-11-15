@@ -4,7 +4,7 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After you edit a board, push the branch and run the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
 ## Changing the design system
 
@@ -19,7 +19,7 @@ The exporter writes each HTML snapshot in `source/` from its board in `canvas/`.
   6. Push the branch. If a board shows the change, step 7 applies.
   7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)), runs "Refreshing the canvas copy" (5.1 to 5.5) and pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
-- **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session needs a signed-in account.
+- **Who.** The tech lead, or a local session. The session needs a signed-in account.
 
 ## Updating the install
 
@@ -69,8 +69,8 @@ Follow "Refreshing the canvas copy" in design/CANVAS.md, steps 5.1 to 5.5.
 
 ## Reading a board
 
-A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>` with `read` and `paths` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked.
+A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>` on the canvas (link: line 1 of `canvas/VERSION`) with `read` and `paths` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked.
 
 ## Drawing a board
 
-A Spec's design prompt is the brief for the drawing. A local session, or a subagent that it starts, follows it. Skip the chat lines of the prompt (link the repository to the chat, edit no file in the repository).
+A Spec's design prompt is the brief for the drawing. A local session, or a subagent it starts, follows it. Skip the chat lines of the prompt (link the repository to the chat, edit no file in the repository).

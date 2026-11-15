@@ -1,38 +1,41 @@
 import type { PersonId } from '#ks/lib/domain/ids/types.ts';
 import type { PersonView } from '#ks/lib/domain/persons/types.ts';
 import type {
-  LinkedPerson,
+  RelatedPerson,
   Relationship,
 } from '#ks/lib/domain/relationships/types.ts';
 
 import { byName } from '#ks/lib/domain/persons/list.mts';
 
-/** The id at the other end of a link, and its group. */
+/** The id at the other end of a Relationship, and its group. */
 const otherEnd = (
   id: PersonId,
-  link: Relationship
+  relationship: Relationship
 ): [PersonId, 'children' | 'parents' | 'spouses'] | undefined => {
-  if (link.type === 'parent') {
-    if (link.childId === id) return [link.parentId, 'parents'];
-    if (link.parentId === id) return [link.childId, 'children'];
+  if (relationship.type === 'parent') {
+    if (relationship.childId === id) return [relationship.parentId, 'parents'];
+    if (relationship.parentId === id) return [relationship.childId, 'children'];
 
     return undefined;
   }
 
-  if (link.personAId === id) return [link.personBId, 'spouses'];
-  if (link.personBId === id) return [link.personAId, 'spouses'];
+  if (relationship.personAId === id) return [relationship.personBId, 'spouses'];
+  if (relationship.personBId === id) return [relationship.personAId, 'spouses'];
 
   return undefined;
 };
 
-/** The Persons at the other end of the links of one Person, each once. Read these, then group. */
-export const linkedPersonIds = (
+/**
+ * The Persons at the other end of the Relationships of one Person, each once. Read these, then
+ * group.
+ */
+export const relatedPersonIds = (
   id: PersonId,
   relationships: Relationship[]
 ): PersonId[] => [
   ...new Set(
-    relationships.flatMap(link => {
-      const end = otherEnd(id, link);
+    relationships.flatMap(relationship => {
+      const end = otherEnd(id, relationship);
 
       return end ? [end[0]] : [];
     })
@@ -40,16 +43,16 @@ export const linkedPersonIds = (
 ];
 
 /**
- * The links of one Person, in three groups, each sorted by surname, then given names (PPL-02).
- * `groupRelationships` omits a link of another Person, and a link whose other Person is not in
- * `people`.
+ * The Relationships of one Person, in three groups, each sorted by surname, then given names
+ * (PPL-02). `groupRelationships` omits a Relationship of another Person, and a Relationship whose
+ * other Person is not in `people`.
  */
 export const groupRelationships = (
   id: PersonId,
   relationships: Relationship[],
   people: ReadonlyMap<PersonId, PersonView>
-): Record<'children' | 'parents' | 'spouses', LinkedPerson[]> => {
-  const groups: Record<'children' | 'parents' | 'spouses', LinkedPerson[]> = {
+): Record<'children' | 'parents' | 'spouses', RelatedPerson[]> => {
+  const groups: Record<'children' | 'parents' | 'spouses', RelatedPerson[]> = {
     children: [],
     parents: [],
     spouses: [],

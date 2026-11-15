@@ -31,10 +31,10 @@ const spouse = (
   surname: string,
   givenNames: string,
   person: Parameters<typeof personDates>[0],
-  link: Parameters<typeof spouseDates>[0]
+  relationship: Parameters<typeof spouseDates>[0]
 ): RelationshipEntry => ({
   ...personDates(person),
-  ...spouseDates(link),
+  ...spouseDates(relationship),
   givenNames,
   id,
   surname,
@@ -52,8 +52,8 @@ const SAMPLE_SUBJECT: RelationshipsPerson = {
   surname: 'du Toit',
 };
 
-/** The synthetic links of the `person-relationships` board. */
-const SAMPLE_LINKS = {
+/** The synthetic Relationships of the `person-relationships` board. */
+const SAMPLE_RELATIONSHIPS = {
   children: [
     parentOrChild(
       'c1',
@@ -74,20 +74,20 @@ const SAMPLE_LINKS = {
   ],
   parents: [
     parentOrChild(
-      'p1',
-      'Rossouw',
-      'Jacobus',
-      'biological',
-      exact('1822'),
-      exact('1889')
-    ),
-    parentOrChild(
       'p2',
       'Nel',
       'Johanna Petronella',
       'adoptive',
       fuzzyDateOf('ABT', '1828'),
       exact('1901')
+    ),
+    parentOrChild(
+      'p1',
+      'Rossouw',
+      'Jacobus',
+      'biological',
+      exact('1822'),
+      exact('1889')
     ),
     parentOrChild(
       'p3',
@@ -100,11 +100,11 @@ const SAMPLE_LINKS = {
   ],
   spouses: [
     spouse(
-      's1',
-      'van Wyk',
-      'Gerrit',
-      { birth: exact('1845'), death: exact('1910'), deceased: true },
-      { divorce: exact('1890'), marriage: fuzzyDateOf('EXACT', '1875-03') }
+      's3',
+      'Botha',
+      'Hendrik Willem',
+      { birth: exact('1832'), death: exact('1899'), deceased: true },
+      {}
     ),
     spouse(
       's2',
@@ -114,20 +114,20 @@ const SAMPLE_LINKS = {
       { marriage: fuzzyDateOf('EXACT', '1875-03') }
     ),
     spouse(
-      's3',
-      'Botha',
-      'Hendrik Willem',
-      { birth: exact('1832'), death: exact('1899'), deceased: true },
-      {}
+      's1',
+      'van Wyk',
+      'Gerrit',
+      { birth: exact('1845'), death: exact('1910'), deceased: true },
+      { divorce: exact('1890'), marriage: fuzzyDateOf('EXACT', '1875-03') }
     ),
   ],
 };
 
-const NO_LINKS = { children: [], parents: [], spouses: [] };
+const NO_RELATIONSHIPS = { children: [], parents: [], spouses: [] };
 
 /**
  * The Relationships page in one state, with a synthetic Account. `empty` is a Person with no
- * links. `failed` is a load that threw.
+ * Relationships. `failed` is a load that threw.
  */
 export const RelationshipsScreen = ({
   empty,
@@ -147,7 +147,7 @@ export const RelationshipsScreen = ({
   ) : (
     <PersonRelationships
       {...account}
-      groups={empty ? NO_LINKS : SAMPLE_LINKS}
+      groups={empty ? NO_RELATIONSHIPS : SAMPLE_RELATIONSHIPS}
       person={SAMPLE_SUBJECT}
     />
   );

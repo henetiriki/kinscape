@@ -17,9 +17,9 @@
   width: min(960px, 100%);
 }
 
-/* The dates sit in the sentence; `DateText` alone would break the line. */
-.dates {
-  display: inline-flex;
+/* The name has the colour of a row name, not the grey of the save note beside it. */
+.person {
+  color: var(--ink);
 }
 
 .heading {

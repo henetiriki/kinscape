@@ -9,11 +9,11 @@ import type {
 import type { Result } from '@ks/lib/domain/result/types.ts';
 
 /**
- * One link of the Relationships page, as the server sends it. A spouse link has no `subtype`. The
- * `id` is a plain string, because the id crosses to the client.
+ * One Relationship of the Relationships page, as the server sends it. A spouse Relationship has no
+ * `subtype`. The `id` is a plain string, because the id crosses to the client.
  */
 export type RelationshipEntry = {
-  /** The id of the link. */
+  /** The id of the Relationship. */
   id: string;
 } & Omit<ComponentProps<typeof RelationshipRow>, 'href' | 'state'>;
 

@@ -20,16 +20,19 @@ import styles from '@ks/features/people/components/PersonRelationships.module.cs
 
 const GROUPS = [
   { key: 'parents', title: 'Parents' },
-  { key: 'children', title: 'Children' },
   { key: 'spouses', title: 'Spouses' },
+  { key: 'children', title: 'Children' },
 ] as const;
 
-const count = (links: number) => `${links} ${links === 1 ? 'link' : 'links'}`;
+/** The board words a Relationship "link" in the count; the code calls it a Relationship. */
+const count = (relationships: number) =>
+  `${relationships} ${relationships === 1 ? 'link' : 'links'}`;
 
 /**
- * The Relationships page of a Person (PPL-02): three groups of links, or the notice of a load that
- * failed. A load that failed may have no `person`, so the subtitle is then the second sentence
- * only. "Add" does nothing yet. "Edit" points at this page until the edit dialog exists.
+ * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
+ * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
+ * load that failed may have no `person`, so the subtitle is then the save note only. "Add" does
+ * nothing yet. "Edit" points at this page until the edit dialog exists.
  */
 export const PersonRelationships = ({
   email,
@@ -75,15 +78,17 @@ export const PersonRelationships = ({
               <Text variant='small'>
                 {person && (
                   <>
-                    {person.givenNames} {person.surname},{' '}
-                    <span className={styles.dates}>
-                      <DateText dates={person} />
+                    <span className={styles.person}>
+                      <Text variant='title'>
+                        {person.givenNames} {person.surname}
+                      </Text>
                     </span>
                     .{' '}
                   </>
                 )}
                 Each change saves at once.
               </Text>
+              {person && <DateText dates={person} />}
             </div>
             {failed ? (
               <div className={styles.failed}>

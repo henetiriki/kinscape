@@ -19,7 +19,7 @@ describe('the Relationships screens', () => {
   it('person-relationships shows the three groups of the board', async () => {
     render(await Board());
 
-    screen.getByText(/Maria Magdalena du Toit,/);
+    screen.getByText('Maria Magdalena du Toit');
     within(screen.getByRole('region', { name: 'Parents' })).getByText(
       '3 links'
     );

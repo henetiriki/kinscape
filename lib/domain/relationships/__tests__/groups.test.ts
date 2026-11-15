@@ -6,7 +6,7 @@ import type { Relationship } from '@ks/lib/domain/relationships/types';
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
 import {
   groupRelationships,
-  linkedPersonIds,
+  relatedPersonIds,
 } from '@ks/lib/domain/relationships/groups.mts';
 
 const id = (n: number) =>
@@ -64,10 +64,10 @@ const names = (entries: { person: PersonView }[]) =>
   );
 
 // PPL-02
-describe('linkedPersonIds', () => {
-  it('lists the Person at the other end of each link of the Person, once', () => {
+describe('relatedPersonIds', () => {
+  it('lists the Person at the other end of each Relationship of the Person, once', () => {
     expect(
-      linkedPersonIds(id(1), [
+      relatedPersonIds(id(1), [
         parent(1, 2, 1),
         parent(2, 1, 4),
         spouse(3, 6, 1),
@@ -80,7 +80,7 @@ describe('linkedPersonIds', () => {
 
 // PPL-02
 describe('groupRelationships', () => {
-  it('splits the links of a Person into parents, children and spouses', () => {
+  it('splits the Relationships of a Person into parents, children and spouses', () => {
     const groups = groupRelationships(
       id(1),
       [parent(1, 2, 1), parent(2, 1, 4), spouse(3, 6, 1), spouse(4, 1, 7)],
@@ -106,15 +106,15 @@ describe('groupRelationships', () => {
     expect(names(groups.children)).toEqual(['Botha, Anna', 'Botha, Hendrik']);
   });
 
-  it('keeps the link with its Person', () => {
-    const link = parent(1, 2, 1);
+  it('keeps the Relationship with its Person', () => {
+    const relationship = parent(1, 2, 1);
 
-    expect(groupRelationships(id(1), [link], people).parents).toEqual([
-      { person: people.get(id(2)), relationship: link },
+    expect(groupRelationships(id(1), [relationship], people).parents).toEqual([
+      { person: people.get(id(2)), relationship },
     ]);
   });
 
-  it('omits the links of other Persons', () => {
+  it('omits the Relationships of other Persons', () => {
     const groups = groupRelationships(
       id(1),
       [parent(1, 4, 5), spouse(2, 6, 7)],
@@ -124,7 +124,7 @@ describe('groupRelationships', () => {
     expect(groups).toEqual({ children: [], parents: [], spouses: [] });
   });
 
-  it('skips a link whose other Person is not in the map', () => {
+  it('skips a Relationship whose other Person is not in the map', () => {
     const groups = groupRelationships(id(1), [parent(1, 99, 1)], people);
 
     expect(groups.parents).toEqual([]);

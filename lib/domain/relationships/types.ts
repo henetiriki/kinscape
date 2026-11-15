@@ -3,9 +3,6 @@ import type { z } from 'zod';
 import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 import type { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
 
-/** A link of one Person, with the Person at its other end. */
-export type LinkedPerson = { person: PersonView; relationship: Relationship };
-
 /** How a parent is related to a child. */
 export type ParentSubtype = Extract<
   RelationshipInput,
@@ -15,6 +12,9 @@ export type ParentSubtype = Extract<
 /** Why `checkRelationship` refuses an input. */
 export type Refusal =
   'cycle' | 'duplicate' | 'self' | 'third-biological-parent';
+
+/** A Relationship of one Person, with the Person at its other end. */
+export type RelatedPerson = { person: PersonView; relationship: Relationship };
 
 /** A saved Relationship. */
 export type Relationship = { version: number } & RelationshipInput;

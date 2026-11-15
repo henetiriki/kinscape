@@ -7,7 +7,7 @@ import type {
   RelationshipsPerson,
 } from '@ks/features/people';
 import type { PersonView } from '@ks/lib/domain/persons/types.ts';
-import type { LinkedPerson } from '@ks/lib/domain/relationships/types.ts';
+import type { RelatedPerson } from '@ks/lib/domain/relationships/types.ts';
 
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonNotFound, PersonRelationships } from '@ks/features/people';
@@ -17,7 +17,7 @@ import { idField } from '@ks/lib/domain/ids/schemas.mts';
 import { personDates, spouseDates } from '@ks/lib/domain/persons/dates.mts';
 import {
   groupRelationships,
-  linkedPersonIds,
+  relatedPersonIds,
 } from '@ks/lib/domain/relationships/groups.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
 import { treeAction } from '@ks/server/action.mts';
@@ -33,7 +33,7 @@ const readPerson = treeAction(idField(parsePersonId), async (tree, id) =>
 const entryOf = ({
   person,
   relationship,
-}: LinkedPerson): RelationshipEntry => ({
+}: RelatedPerson): RelationshipEntry => ({
   ...personDates(person),
   ...(relationship.type === 'parent'
     ? { subtype: relationship.subtype }
@@ -44,24 +44,29 @@ const entryOf = ({
 });
 
 /**
- * The links of one Person, in three groups. It reads only the Persons at the other ends, and sends
- * only their names and dates.
+ * The Relationships of one Person, in three groups. It reads only the Persons at the other ends,
+ * and sends only their names and dates.
  */
-const readLinks = treeAction(idField(parsePersonId), async (tree, id) => {
-  const relationships = await tree.relationships.list();
-  const others = linkedPersonIds(id, relationships);
-  const read = await Promise.all(others.map(other => tree.persons.get(other)));
-  const people = new Map(
-    read.flatMap(person => (person ? [[person.id, person] as const] : []))
-  );
-  const groups = groupRelationships(id, relationships, people);
+const readRelationships = treeAction(
+  idField(parsePersonId),
+  async (tree, id) => {
+    const relationships = await tree.relationships.list();
+    const others = relatedPersonIds(id, relationships);
+    const read = await Promise.all(
+      others.map(other => tree.persons.get(other))
+    );
+    const people = new Map(
+      read.flatMap(person => (person ? [[person.id, person] as const] : []))
+    );
+    const groups = groupRelationships(id, relationships, people);
 
-  return ok({
-    children: groups.children.map(entryOf),
-    parents: groups.parents.map(entryOf),
-    spouses: groups.spouses.map(entryOf),
-  });
-});
+    return ok({
+      children: groups.children.map(entryOf),
+      parents: groups.parents.map(entryOf),
+      spouses: groups.spouses.map(entryOf),
+    });
+  }
+);
 
 /**
  * Next's own errors, such as the sign-in redirect, continue. Any other error leaves a log of its
@@ -85,17 +90,22 @@ const headingOf = (person: PersonView): RelationshipsPerson => ({
 /**
  * The Relationships page of a Person (PPL-02). An id that is no UUID, names no Person, or names one
  * in another Account's Tree shows the not-found state. A read that throws shows the load-failed
- * notice. If the read of the Person throws, the notice has no name.
+ * notice. If the read of the session or of the Person throws, the notice has no name. With no
+ * session, the Avatar has no initial and its menu no email, as on the People page.
  */
-const PersonLinks = async ({ params }: { params: Promise<{ id: string }> }) => {
+const RelationshipsPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   const { id } = await params;
-  const session = await requireSession();
+  const session = await requireSession().catch(failed);
   const header = {
-    email: session.email,
-    initial: accountInitial(session.email),
+    email: session?.email ?? '',
+    initial: session ? accountInitial(session.email) : '?',
     onSignOut: signOutAction,
   };
-  const found = await readPerson(id).catch(failed);
+  const found = session && (await readPerson(id).catch(failed));
 
   if (found === undefined) {
     return <PersonRelationships {...header} failed />;
@@ -107,12 +117,12 @@ const PersonLinks = async ({ params }: { params: Promise<{ id: string }> }) => {
     return <PersonNotFound {...header} />;
   }
 
-  const links = await readLinks(person.id).catch(failed);
+  const related = await readRelationships(person.id).catch(failed);
 
-  return links?.ok ? (
+  return related?.ok ? (
     <PersonRelationships
       {...header}
-      groups={links.value}
+      groups={related.value}
       person={headingOf(person)}
     />
   ) : (
@@ -120,4 +130,4 @@ const PersonLinks = async ({ params }: { params: Promise<{ id: string }> }) => {
   );
 };
 
-export default PersonLinks;
+export default RelationshipsPage;

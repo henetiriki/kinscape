@@ -51,10 +51,10 @@ const PEOPLE: [number, string, string, object?][] = [
 type Seed = { store: ReturnType<typeof memoryStore>; token: string };
 
 /**
- * Two Accounts. The first one holds Maria with her links; the second one holds one Person who
+ * Two Accounts. The first one holds Maria with her Relationships; the second one holds one Person who
  * must never show. The cookie is the first Account's.
  */
-const setup = async ({ links = true } = {}): Promise<Seed> => {
+const setup = async ({ relationships = true } = {}): Promise<Seed> => {
   const store = memoryStore();
   const sessions = memorySessions();
   const accounts = [];
@@ -102,7 +102,11 @@ const setup = async ({ links = true } = {}): Promise<Seed> => {
       ...scope(a),
       relationship: relationshipInputSchema.parse(relationship),
     });
-  const parentLink = (n: number, parentId: number, childId: number) => ({
+  const parentRelationship = (
+    n: number,
+    parentId: number,
+    childId: number
+  ) => ({
     childId: uuid(8, childId),
     id: uuid(9, n),
     parentId: uuid(8, parentId),
@@ -110,11 +114,11 @@ const setup = async ({ links = true } = {}): Promise<Seed> => {
     type: 'parent',
   });
 
-  if (links) {
-    await add(parentLink(1, 2, 1));
-    await add(parentLink(2, 3, 1));
-    await add(parentLink(3, 1, 4));
-    await add(parentLink(4, 1, 5));
+  if (relationships) {
+    await add(parentRelationship(1, 2, 1));
+    await add(parentRelationship(2, 3, 1));
+    await add(parentRelationship(3, 1, 4));
+    await add(parentRelationship(4, 1, 5));
     await add({
       id: uuid(9, 6),
       marriage: '1875',
@@ -182,16 +186,18 @@ describe('/people/{id}/relationships', () => {
     await setup();
     await open();
 
-    expect(
-      screen.getByText(/Each change saves at once\./).textContent
-    ).toContain('Maria du Toit, Born about 1856, died in 1930c. 1856 – 1930.');
+    expect(screen.getByText(/Each change saves at once\./).textContent).toBe(
+      'Maria du Toit. Each change saves at once.'
+    );
+    screen.getByText('Born about 1856, died in 1930');
+    screen.getByText('c. 1856 – 1930');
     expect(
       screen.getByRole('link', { name: 'Edit person' }).getAttribute('href')
     ).toBe(`/people/${ME}`);
   });
 
-  it('shows the empty line of each group for a Person with no links', async () => {
-    await setup({ links: false });
+  it('shows the empty line of each group for a Person with no Relationships', async () => {
+    await setup({ relationships: false });
     await open();
 
     group('Parents').getByText('No parents yet.');
@@ -199,7 +205,7 @@ describe('/people/{id}/relationships', () => {
     group('Spouses').getByText('No spouses yet.');
   });
 
-  it('omits a link when the read of its other Person returns nothing', async () => {
+  it('omits a Relationship when the read of its other Person returns nothing', async () => {
     const { store } = await setup();
 
     adapters.current = {
@@ -257,7 +263,7 @@ describe('a read that fails', () => {
     };
   };
 
-  it('shows the notice with the name when the links do not load, and logs the error name only', async () => {
+  it('shows the notice with the name when the Relationships do not load, and logs the error name only', async () => {
     const log = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     await failing('listRelationships');
@@ -267,7 +273,7 @@ describe('a read that fails', () => {
     screen.getByRole('button', { name: 'Try again' });
     expect(screen.queryByRole('region')).toBeNull();
     expect(screen.getByText(/Each change saves at once\./).textContent).toMatch(
-      /^Maria du Toit,/
+      /^Maria du Toit\./
     );
     expect(log.mock.calls).toEqual([['Relationships page failed:', 'Error']]);
     log.mockRestore();
@@ -277,6 +283,21 @@ describe('a read that fails', () => {
     const log = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     await failing('findPerson');
+    await open();
+
+    screen.getByText("Relationships didn't load");
+    expect(screen.getByText(/Each change saves at once\./).textContent).toBe(
+      'Each change saves at once.'
+    );
+    expect(log.mock.calls).toEqual([['Relationships page failed:', 'Error']]);
+    log.mockRestore();
+  });
+
+  it('shows the notice with no name when the read of the session throws', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await setup();
+    session.mockRejectedValue(new Error('secret Botha'));
     await open();
 
     screen.getByText("Relationships didn't load");
@@ -335,7 +356,7 @@ describe('on a phone', () => {
     window.matchMedia = desktop;
   });
 
-  it('shows the notice and no links', async () => {
+  it('shows the notice and no Relationships', async () => {
     await setup();
     await open();
 

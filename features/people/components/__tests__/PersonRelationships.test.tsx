@@ -24,7 +24,7 @@ const person = (fields: Partial<RelationshipsPerson> = {}) => ({
   ...fields,
 });
 
-const link = (fields: Partial<RelationshipEntry>): RelationshipEntry => ({
+const entry = (fields: Partial<RelationshipEntry>): RelationshipEntry => ({
   ...none,
   givenNames: 'Given',
   id: 'r',
@@ -36,7 +36,7 @@ const empty = { children: [], parents: [], spouses: [] };
 
 type Props = Parameters<typeof PersonRelationships>[0];
 
-/** The page of Maria with no links; `props` changes any prop, so a case can fail the load. */
+/** The page of Maria with no Relationships; `props` changes any prop, so a case can fail the load. */
 const open = (props: Record<string, unknown> = {}) =>
   render(
     <PersonRelationships
@@ -80,8 +80,32 @@ describe('the subtitle', () => {
     screen.getByText(line);
     expect(screen.getByText(words).className).toMatch(/hidden/);
     expect(screen.getByText(/Each change saves at once\./).textContent).toBe(
-      `Maria Magdalena du Toit, ${words}${line}. Each change saves at once.`
+      'Maria Magdalena du Toit. Each change saves at once.'
     );
+  });
+
+  it('sets the name apart from the save note', () => {
+    open();
+
+    const name = screen.getByText('Maria Magdalena du Toit');
+
+    expect(name.className).toMatch(/title/);
+    expect(name.parentElement?.className).toMatch(/person/);
+    expect(name.parentElement?.parentElement?.textContent).toBe(
+      'Maria Magdalena du Toit. Each change saves at once.'
+    );
+  });
+
+  it('shows the dates on a line below the name', () => {
+    open({ person: person({ ...b1889 }) });
+
+    const sentence = screen.getByText(/Each change saves at once\./);
+    const dates = screen.getByText('1889 –');
+
+    expect(sentence.contains(dates)).toBe(false);
+    expect(
+      sentence.compareDocumentPosition(dates) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   });
 
   it('shows the second sentence only when the Person did not load', () => {
@@ -120,18 +144,18 @@ describe('the header', () => {
 
 // PPL-02
 describe('the groups', () => {
-  it('lists the links of each group, with a count', () => {
+  it('lists the Relationships of each group, with a count', () => {
     open({
       groups: {
-        children: [link({ givenNames: 'Anna', id: 'c1', surname: 'Botha' })],
+        children: [entry({ givenNames: 'Anna', id: 'c1', surname: 'Botha' })],
         parents: [
-          link({
+          entry({
             givenNames: 'Jacobus',
             id: 'p1',
             subtype: 'biological',
             surname: 'Rossouw',
           }),
-          link({
+          entry({
             givenNames: 'Johanna',
             id: 'p2',
             subtype: 'adoptive',
@@ -139,7 +163,7 @@ describe('the groups', () => {
           }),
         ],
         spouses: [
-          link({
+          entry({
             givenNames: 'Gerrit',
             id: 's1',
             married: '1875',
@@ -150,7 +174,11 @@ describe('the groups', () => {
       },
     });
 
-    screen.getByRole('heading', { level: 2, name: 'Parents' });
+    expect(
+      screen
+        .getAllByRole('heading', { level: 2 })
+        .map(heading => heading.textContent)
+    ).toEqual(['Parents', 'Spouses', 'Children']);
     group('Parents').getByText('2 links');
     group('Children').getByText('1 link');
     group('Spouses').getByText('1 link');
@@ -174,7 +202,7 @@ describe('the groups', () => {
     }
   });
 
-  it('shows the empty line of each group that has no link', () => {
+  it('shows the empty line of each group that has no Relationship', () => {
     open();
 
     group('Parents').getByText('No parents yet.');
@@ -187,7 +215,7 @@ describe('the groups', () => {
     open({
       groups: {
         ...empty,
-        parents: [link({ givenNames: 'Jacobus', surname: 'Rossouw' })],
+        parents: [entry({ givenNames: 'Jacobus', surname: 'Rossouw' })],
       },
     });
 
@@ -232,9 +260,9 @@ describe('on a phone', () => {
     window.matchMedia = desktop;
   });
 
-  it('shows the notice and no links', () => {
+  it('shows the notice and no Relationships', () => {
     open({
-      groups: { ...empty, parents: [link({ surname: 'Rossouw' })] },
+      groups: { ...empty, parents: [entry({ surname: 'Rossouw' })] },
     });
 
     expect(screen.getByRole('status').textContent).toContain(

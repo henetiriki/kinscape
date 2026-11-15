@@ -60,3 +60,10 @@ AGENTS.md lets only the design agent, or an agent that runs the refresh steps, e
 | #536: the rows and the dialog line                       | The board diff keeps them                                                 |
 | `NOT_BUILT` and the 93 snapshots                         | `screens.test.ts` and `design.test.ts`                                    |
 | No design system step                                    | The diff has no `CONTROLS`, `tokens.json` or `DESIGN.md`                  |
+
+## Deviations
+
+- D2 A gave the board edit to the design agent. The tech lead asked a local Claude Code session to make it, as part of the design agent experiment. The session published the board to the canvas and read no other board.
+- The subtitle puts the line and the full stop in a `display: inline-flex` span. The exporter formats with `htmlWhitespaceSensitivity: ignore`, so a plain span puts a space before the full stop.
+- The Person card wraps the line in a `display: contents` span, so the card layout does not change.
+- `VERSION` line 2 is the canvas version `1794726266-9ced`. The canvas also holds the People loading boards of B841 (#843), which this branch does not carry.

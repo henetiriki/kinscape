@@ -25,6 +25,22 @@ export const personDates = (person: {
   diedReading: reading(person.death),
 });
 
+/** One row of the People list for a Person. The row has no notes. */
+export const personSummary = (
+  person: Parameters<typeof personDates>[0] &
+    Pick<
+      PersonSummary,
+      'givenNames' | 'id' | 'maidenName' | 'surname' | 'variants'
+    >
+): PersonSummary => ({
+  ...personDates(person),
+  givenNames: person.givenNames,
+  id: person.id,
+  maidenName: person.maidenName,
+  surname: person.surname,
+  variants: person.variants,
+});
+
 /** The marriage and divorce dates of a spouse link as texts. An unknown date is the empty string. */
 export const spouseDates = (link: {
   divorce?: FuzzyDate;

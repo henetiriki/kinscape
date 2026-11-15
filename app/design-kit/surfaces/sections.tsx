@@ -454,8 +454,8 @@ export const Dialogs = ({ sources }: { sources: Source[] }) => (
         ],
         [
           'Body',
-          'Scrolls under the title; a line-strong rule on top; table and footnote 16 apart',
-          'colour.line-strong · space.16',
+          'Scrolls under the title; a line-strong rule on top, then 16 (12 on a phone) before the content; table and footnote 16 apart',
+          'colour.line-strong · space.16 · space.12',
         ],
         [
           'Phone',

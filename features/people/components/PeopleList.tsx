@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import type { PersonDates } from '@ks/app/components/actions/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
 import { Button } from '@ks/app/components/actions/Button';
@@ -15,25 +14,12 @@ import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
-import { byName, matchesQuery } from '@ks/lib/domain/persons/list.mts';
+import { datesOf } from '@ks/features/people/components/dates';
+import { findPeople } from '@ks/lib/domain/persons/list.mts';
 
 import styles from '@ks/features/people/components/PeopleList.module.css';
 
 const plural = (count: number) => (count === 1 ? 'person' : 'people');
-
-const datesOf = ({
-  born,
-  bornReading,
-  deceased,
-  died,
-  diedReading,
-}: PersonSummary): PersonDates => ({
-  born,
-  bornReading,
-  deceased,
-  died,
-  diedReading,
-});
 
 /**
  * The People page (PPL-01): the header, the count, the filter and the rows, or the notice or alert
@@ -57,11 +43,7 @@ export const PeopleList = ({
   const [query, setQuery] = useState('');
   const total = people.length;
   const empty = total === 0 && !failed;
-  const shown = people.toSorted(byName).flatMap(person => {
-    const match = matchesQuery(person, query);
-
-    return match === undefined ? [] : [{ match, person }];
-  });
+  const shown = findPeople(people, query);
   const filtering = query.trim() !== '';
 
   let count: null | string = null;

@@ -71,7 +71,7 @@
           <sc-if value="{{dialog.hasMatches}}" hint-placeholder-val="{{ true }}">
             <ul style="list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-control); overflow: hidden">
               <sc-for list="{{dialog.matches}}" as="m" hint-placeholder-count="3">
-                <li style="border-top: 1px solid var(--line)">
+                <li style="border-top: {{m.top}}">
                   <x-import component-from-global-scope="KinScape.PickerRow" surname="{{m.surname}}" given-names="{{m.givenNames}}" maiden-name="{{m.maiden}}" matched-variant="{{m.variant}}" born="{{m.born}}" born-reading="{{m.bornReading}}" died="{{m.died}}" died-reading="{{m.diedReading}}" deceased="{{m.deceased}}" on-click="{{m.onPick}}"></x-import>
                 </li>
               </sc-for>
@@ -228,6 +228,9 @@ class Component extends DCLogic {
       }
       matches.push(row);
     });
+    const collate = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
+    matches.sort((a, b) => collate(a.surname, b.surname) || collate(a.givenNames, b.givenNames));
+    matches.forEach((m, i) => { m.top = i ? '1px solid var(--line)' : '0'; });
     const KIND = { parent: ['Add a parent', 'parent', 'Type of parent'], child: ['Add a child', 'child', 'Type of child'], spouse: ['Add a spouse', 'spouse', ''] };
     let dialog = null;
     if (d) {

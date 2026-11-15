@@ -1,11 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import type {
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
+import type { PersonSummary } from '@ks/lib/domain/persons/types';
+import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { DateText } from '@ks/app/components/actions/DateText';
@@ -15,6 +18,7 @@ import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { EditOnComputer } from '@ks/features/people/components/EditOnComputer';
+import { RelationshipPicker } from '@ks/features/people/components/RelationshipPicker';
 
 import styles from '@ks/features/people/components/PersonRelationships.module.css';
 
@@ -31,8 +35,9 @@ const count = (relationships: number) =>
 /**
  * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
  * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
- * load that failed may have no `person`, so the subtitle is then the save note only. "Add" does
- * nothing yet. "Edit" points at this page until the edit dialog exists.
+ * load that failed may have no `person`, so the subtitle is then the save note only. "Add" opens
+ * the picker of its group. The picker has no save. "Edit" points at this page until the edit
+ * dialog exists. The picker stays mounted after it closes, so the browser returns focus to "Add".
  */
 export const PersonRelationships = ({
   email,
@@ -40,20 +45,36 @@ export const PersonRelationships = ({
   groups,
   initial,
   onSignOut,
+  people,
   person,
+  picking,
 }: {
   email: string;
   initial: string;
   onSignOut: () => Promise<unknown>;
 } & (
-  | { failed: true; groups?: undefined; person?: RelationshipsPerson }
+  | {
+      failed: true;
+      groups?: undefined;
+      people?: undefined;
+      person?: RelationshipsPerson;
+      picking?: undefined;
+    }
   | {
       failed?: false;
-      groups: Record<(typeof GROUPS)[number]['key'], RelationshipEntry[]>;
+      groups: Record<RelationshipGroup, RelationshipEntry[]>;
+      /** Every Person of the Tree except `person`, for the picker. */
+      people: PersonSummary[];
       person: RelationshipsPerson;
+      /** Opens the picker of a group at the start, with a filter. For the screen boards. */
+      picking?: { group: RelationshipGroup; query?: string };
     }
 )) => {
   const router = useRouter();
+  const [adding, setAdding] = useState(picking?.group);
+  const [open, setOpen] = useState(picking !== undefined);
+  const [opened, setOpened] = useState(0);
+  const query = picking?.query;
 
   return (
     <EditOnComputer email={email} initial={initial} onSignOut={onSignOut}>
@@ -116,7 +137,15 @@ export const PersonRelationships = ({
                       </Text>
                       <Text variant='small'>{count(groups[key].length)}</Text>
                     </div>
-                    <Button variant='secondary'>Add</Button>
+                    <Button
+                      onClick={() => {
+                        setAdding(key);
+                        setOpen(true);
+                        setOpened(times => times + 1);
+                      }}
+                      variant='secondary'>
+                      Add
+                    </Button>
                   </div>
                   {groups[key].length === 0 ? (
                     <div className={styles.none}>
@@ -139,6 +168,16 @@ export const PersonRelationships = ({
             )}
           </div>
         </main>
+        {adding && !failed && (
+          <RelationshipPicker
+            group={adding}
+            initialQuery={query}
+            key={opened}
+            onClose={() => setOpen(false)}
+            open={open}
+            people={people}
+          />
+        )}
       </div>
     </EditOnComputer>
   );

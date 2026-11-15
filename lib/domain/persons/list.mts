@@ -45,3 +45,14 @@ export const matchesQuery = (
 
   return variant === undefined ? undefined : { variant };
 };
+
+/** The Persons that match the query, sorted by name, each with its match. The input keeps its order. */
+export const findPeople = <T extends PersonSummary>(
+  people: readonly T[],
+  query: string
+): { match: { variant?: string }; person: T }[] =>
+  people.toSorted(byName).flatMap(person => {
+    const match = matchesQuery(person, query);
+
+    return match === undefined ? [] : [{ match, person }];
+  });

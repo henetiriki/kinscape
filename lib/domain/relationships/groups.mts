@@ -3,6 +3,7 @@ import type { PersonView } from '#ks/lib/domain/persons/types.ts';
 import type {
   RelatedPerson,
   Relationship,
+  RelationshipGroup,
 } from '#ks/lib/domain/relationships/types.ts';
 
 import { byName } from '#ks/lib/domain/persons/list.mts';
@@ -11,7 +12,7 @@ import { byName } from '#ks/lib/domain/persons/list.mts';
 const otherEnd = (
   id: PersonId,
   relationship: Relationship
-): [PersonId, 'children' | 'parents' | 'spouses'] | undefined => {
+): [PersonId, RelationshipGroup] | undefined => {
   if (relationship.type === 'parent') {
     if (relationship.childId === id) return [relationship.parentId, 'parents'];
     if (relationship.parentId === id) return [relationship.childId, 'children'];
@@ -51,8 +52,8 @@ export const groupRelationships = (
   id: PersonId,
   relationships: Relationship[],
   people: ReadonlyMap<PersonId, PersonView>
-): Record<'children' | 'parents' | 'spouses', RelatedPerson[]> => {
-  const groups: Record<'children' | 'parents' | 'spouses', RelatedPerson[]> = {
+): Record<RelationshipGroup, RelatedPerson[]> => {
+  const groups: Record<RelationshipGroup, RelatedPerson[]> = {
     children: [],
     parents: [],
     spouses: [],

@@ -45,6 +45,17 @@ const open = (props: Record<string, unknown> = {}) =>
         groups: empty,
         initial: 'A',
         onSignOut: () => Promise.resolve(),
+        people: [
+          {
+            ...none,
+            deceased: false,
+            givenNames: 'Pieter',
+            id: 'pieter',
+            maidenName: '',
+            surname: 'Fourie',
+            variants: [],
+          },
+        ],
         person: person(),
         ...props,
       } as Props)}
@@ -200,6 +211,48 @@ describe('the groups', () => {
     for (const name of ['Parents', 'Children', 'Spouses']) {
       group(name).getByRole('button', { name: 'Add' });
     }
+  });
+
+  it.each([
+    ['Parents', 'Add a parent'],
+    ['Spouses', 'Add a spouse'],
+    ['Children', 'Add a child'],
+  ])(
+    'opens the picker of %s with "Add", and "Cancel" closes it',
+    (name, title) => {
+      open();
+
+      expect(screen.queryByRole('heading', { name: title })).toBeNull();
+
+      fireEvent.click(group(name).getByRole('button', { name: 'Add' }));
+
+      screen.getByRole('heading', { name: title });
+      screen.getByText('Fourie, Pieter');
+
+      fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+      expect(screen.queryByRole('heading', { name: title })).toBeNull();
+      expect(document.querySelector('dialog')?.open).toBe(false);
+    }
+  );
+
+  it('clears the filter when "Add" opens the picker again', () => {
+    open();
+
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'Pretorius' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+
+    expect(screen.getByRole('searchbox')).toHaveProperty('value', '');
+  });
+
+  it('opens with a filter when the screen board says so', () => {
+    open({ picking: { group: 'parents', query: 'Pretorius' } });
+
+    screen.getByText('No one matches “Pretorius”');
   });
 
   it('shows the empty line of each group that has no Relationship', () => {

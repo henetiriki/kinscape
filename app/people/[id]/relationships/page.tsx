@@ -14,7 +14,11 @@ import { PersonNotFound, PersonRelationships } from '@ks/features/people';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
 import { idField } from '@ks/lib/domain/ids/schemas.mts';
-import { personDates, spouseDates } from '@ks/lib/domain/persons/dates.mts';
+import {
+  personDates,
+  personSummary,
+  spouseDates,
+} from '@ks/lib/domain/persons/dates.mts';
 import {
   groupRelationships,
   relatedPersonIds,
@@ -44,26 +48,42 @@ const entryOf = ({
 });
 
 /**
- * The Relationships of one Person, in three groups. It reads only the Persons at the other ends,
- * and sends only their names and dates.
+ * The Relationships of one Person, in three groups, and every other Person for the picker. The
+ * list of Persons stops at `MAX_LISTED`, so it reads each related Person that the list lacks. It
+ * sends only names, dates and spelling variants.
  */
 const readRelationships = treeAction(
   idField(parsePersonId),
   async (tree, id) => {
-    const relationships = await tree.relationships.list();
-    const others = relatedPersonIds(id, relationships);
+    const [relationships, persons] = await Promise.all([
+      tree.relationships.list(),
+      tree.persons.list(),
+    ]);
+    const listed = new Map(persons.map(person => [person.id, person]));
+    const lacking = relatedPersonIds(id, relationships).filter(
+      other => !listed.has(other)
+    );
     const read = await Promise.all(
-      others.map(other => tree.persons.get(other))
+      lacking.map(other => tree.persons.get(other))
     );
-    const people = new Map(
-      read.flatMap(person => (person ? [[person.id, person] as const] : []))
+    const groups = groupRelationships(
+      id,
+      relationships,
+      new Map([
+        ...listed,
+        ...read.flatMap(person =>
+          person ? [[person.id, person] as const] : []
+        ),
+      ])
     );
-    const groups = groupRelationships(id, relationships, people);
 
     return ok({
-      children: groups.children.map(entryOf),
-      parents: groups.parents.map(entryOf),
-      spouses: groups.spouses.map(entryOf),
+      groups: {
+        children: groups.children.map(entryOf),
+        parents: groups.parents.map(entryOf),
+        spouses: groups.spouses.map(entryOf),
+      },
+      people: persons.filter(person => person.id !== id).map(personSummary),
     });
   }
 );
@@ -122,7 +142,8 @@ const RelationshipsPage = async ({
   return related?.ok ? (
     <PersonRelationships
       {...header}
-      groups={related.value}
+      groups={related.value.groups}
+      people={related.value.people}
       person={headingOf(person)}
     />
   ) : (

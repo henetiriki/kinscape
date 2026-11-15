@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({ get: vi.fn() }));
@@ -205,17 +205,21 @@ describe('/people/{id}/relationships', () => {
     group('Spouses').getByText('No spouses yet.');
   });
 
-  it('omits a Relationship when the read of its other Person returns nothing', async () => {
+  it('omits a Relationship when no read finds the Person at its other end', async () => {
     const { store } = await setup();
 
     adapters.current = {
       ...(adapters.current as object),
       store: {
         ...store,
-        findPerson: (input: { personId: string }) =>
-          input.personId === uuid(8, 3)
-            ? Promise.resolve(undefined)
-            : store.findPerson(input as never),
+        findPerson: async (scope: { personId: string }) =>
+          scope.personId === uuid(8, 3)
+            ? undefined
+            : store.findPerson(scope as never),
+        listPersons: async (scope: never) =>
+          (await store.listPersons(scope)).filter(
+            person => person.id !== uuid(8, 3)
+          ),
       },
     };
     await open();
@@ -224,6 +228,65 @@ describe('/people/{id}/relationships', () => {
       expect.stringContaining('Rossouw, Jacobus'),
     ]);
     expect(screen.queryByText(/Nel, Johanna/)).toBeNull();
+  });
+
+  it('reads a related Person that the list of Persons lacks, as in a Tree past the list cap', async () => {
+    const { store } = await setup();
+
+    adapters.current = {
+      ...(adapters.current as object),
+      store: {
+        ...store,
+        listPersons: async (scope: never) =>
+          (await store.listPersons(scope)).filter(
+            person => person.id !== uuid(8, 3)
+          ),
+      },
+    };
+    await open();
+
+    expect(rows('Parents')).toEqual([
+      expect.stringContaining('Nel, Johanna'),
+      expect.stringContaining('Rossouw, Jacobus'),
+    ]);
+  });
+
+  it('lists every other Person of the Tree in the picker, and no one of another Tree', async () => {
+    await setup();
+    await open();
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+
+    const dialog = within(screen.getByRole('dialog'));
+
+    expect(
+      dialog.getAllByRole('listitem').map(item => item.textContent)
+    ).toEqual([
+      expect.stringContaining('Botha, Anna'),
+      expect.stringContaining('Botha, Hendrik'),
+      expect.stringContaining('Nel, Johanna'),
+      expect.stringContaining('Rossouw, Jacobus'),
+      expect.stringContaining('van Wyk, Gerrit'),
+    ]);
+    expect(dialog.queryByText(/du Toit|Pretorius/)).toBeNull();
+  });
+
+  it('shows the no-other notice in the picker of a Tree with one Person', async () => {
+    const { store } = await setup();
+
+    adapters.current = {
+      ...(adapters.current as object),
+      store: {
+        ...store,
+        listPersons: async (scope: never) =>
+          (await store.listPersons(scope)).filter(person => person.id === ME),
+      },
+    };
+    await open();
+    fireEvent.click(group('Spouses').getByRole('button', { name: 'Add' }));
+
+    within(screen.getByRole('dialog')).getByText(
+      'No other people in your Tree'
+    );
   });
 
   it.each([
@@ -249,7 +312,9 @@ describe('/people/{id}/relationships', () => {
 
 // PPL-02
 describe('a read that fails', () => {
-  const failing = async (read: 'findPerson' | 'listRelationships') => {
+  const failing = async (
+    read: 'findPerson' | 'listPersons' | 'listRelationships'
+  ) => {
     const { store } = await setup();
 
     adapters.current = {
@@ -272,6 +337,20 @@ describe('a read that fails', () => {
     screen.getByText("Relationships didn't load");
     screen.getByRole('button', { name: 'Try again' });
     expect(screen.queryByRole('region')).toBeNull();
+    expect(screen.getByText(/Each change saves at once\./).textContent).toMatch(
+      /^Maria du Toit\./
+    );
+    expect(log.mock.calls).toEqual([['Relationships page failed:', 'Error']]);
+    log.mockRestore();
+  });
+
+  it('shows the notice with the name when the list of Persons does not load', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await failing('listPersons');
+    await open();
+
+    screen.getByText("Relationships didn't load");
     expect(screen.getByText(/Each change saves at once\./).textContent).toMatch(
       /^Maria du Toit\./
     );

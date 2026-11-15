@@ -142,14 +142,14 @@
       "width": 390
     },
     {
-      "height": 7670,
+      "height": 7702,
       "mode": "blocking",
       "name": "style-7-components-surfaces-phone",
       "route": "/design-kit/surfaces",
       "width": 390
     },
     {
-      "height": 4603,
+      "height": 4623,
       "mode": "blocking",
       "name": "style-7-components-surfaces",
       "route": "/design-kit/surfaces",
@@ -339,6 +339,27 @@
     {
       "name": "person-relationships",
       "route": "/screens/person-relationships",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-pick",
+      "route": "/screens/relationship-pick",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-pick-no-match",
+      "route": "/screens/relationship-pick-no-match",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-pick-empty",
+      "route": "/screens/relationship-pick-empty",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

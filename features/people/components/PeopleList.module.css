@@ -53,9 +53,24 @@
   color: var(--ink-3);
   display: grid;
   gap: var(--space-16);
-  grid-template-columns: minmax(0, 1fr) 200px 72px;
+  grid-template-columns: minmax(0, 1fr) 200px 72px max-content;
   padding: var(--space-12) var(--space-20);
   text-transform: uppercase;
+}
+
+/* An empty cell the width of a Relationships link, so Name and Dates stay above their columns.
+   The padding is the row's right padding, which sits before the link. */
+.linkSlot {
+  padding-left: var(--space-20);
+}
+
+.linkSlot::after {
+  content: 'Relationships';
+  font-family: var(--type-link-font);
+  font-size: var(--type-link-size);
+  font-weight: var(--type-link-weight);
+  text-transform: none;
+  visibility: hidden;
 }
 
 .rows {

@@ -82,7 +82,8 @@ describe('PeopleList', () => {
     );
   });
 
-  it('lists the Persons by surname with their dates and a link to each, and no Relationships link', () => {
+  // PPL-02
+  it('lists the Persons by surname with their dates, an edit link and a Relationships link for each', () => {
     open();
 
     const links = within(
@@ -91,14 +92,19 @@ describe('PeopleList', () => {
 
     expect(links.map(link => link.textContent)).toEqual([
       'Botha, HendrikBorn about 1832, died between 1880 and 1885c. 1832 – 1880–1885Edit',
+      'Relationships, Botha, Hendrik',
       'Cloete, Annanée PretoriusBorn unknown, died unknown? – ?Edit',
+      'Relationships, Cloete, Anna',
       'du Toit, MariaBorn in 18501850 –Edit',
+      'Relationships, du Toit, Maria',
     ]);
-    expect(screen.queryByText(/Relationships/)).toBeNull();
     expect(links.map(link => link.getAttribute('href'))).toEqual([
       '/people/hendrik',
+      '/people/hendrik/relationships',
       '/people/anna',
+      '/people/anna/relationships',
       '/people/maria',
+      '/people/maria/relationships',
     ]);
   });
 
@@ -277,6 +283,7 @@ describe('PeopleList', () => {
       screen.getByText('To add or edit people, use a computer.');
       expect(screen.queryByRole('link', { name: 'Add a person' })).toBeNull();
       expect(screen.queryByText('Edit')).toBeNull();
+      expect(screen.queryByText(/Relationships/)).toBeNull();
       expect(
         within(
           screen.getByRole('list', { name: 'People, by surname' })

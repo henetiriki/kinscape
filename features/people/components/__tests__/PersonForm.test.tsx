@@ -98,6 +98,8 @@ describe('a new Person', () => {
     screen.getByText(
       'Other spellings in the records, up to 20. Press Enter after each.'
     );
+    // PPL-02
+    expect(screen.queryByRole('link', { name: 'Relationships' })).toBeNull();
     expect((screen.getByLabelText('Sex') as HTMLSelectElement).value).toBe('U');
     expect(
       screen
@@ -336,6 +338,15 @@ describe('an existing Person', () => {
     expect((screen.getByLabelText('Notes') as HTMLTextAreaElement).value).toBe(
       'A note.'
     );
+  });
+
+  // PPL-02
+  it('links to the Relationships page of the Person', () => {
+    open({ person: saved });
+
+    expect(
+      screen.getByRole('link', { name: 'Relationships' }).getAttribute('href')
+    ).toBe(`/people/${ID}/relationships`);
   });
 
   it('updates with the version it read', async () => {

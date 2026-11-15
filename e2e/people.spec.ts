@@ -23,6 +23,7 @@ test.describe('phone, 390 × 844', () => {
       0
     );
     await expect(page.getByText('Edit', { exact: true })).toHaveCount(0);
+    await expect(page.getByText('Relationships')).toHaveCount(0);
   });
 
   // NFR-05
@@ -32,8 +33,18 @@ test.describe('phone, 390 × 844', () => {
     await page.goto('/people/new');
     await expect(page.getByRole('form')).toHaveCount(0);
     await expect(page.getByText('Edit people on a computer')).toBeVisible();
+    await expect(page.getByText('Relationships')).toHaveCount(0);
     await page.getByRole('link', { name: 'See all people' }).click();
     await expect(page).toHaveURL(url => url.pathname === '/people');
+  });
+
+  // NFR-05
+  test('/people/{id} shows the notice and no Relationships link', async ({
+    page,
+  }) => {
+    await page.goto('/screens/person-edit');
+    await expect(page.getByText('Edit people on a computer')).toBeVisible();
+    await expect(page.getByText('Relationships')).toHaveCount(0);
   });
 });
 
@@ -45,7 +56,8 @@ test('the hidden words for the dates stay inside their row', async ({
 
   const rows = page
     .getByRole('region', { name: 'People, by surname' })
-    .getByRole('link');
+    .getByRole('link')
+    .filter({ hasNotText: 'Relationships' });
 
   expect(await rows.count()).toBe(12);
 

@@ -12,6 +12,7 @@ import type {
 
 import { ActionBar } from '@ks/app/components/actions/ActionBar';
 import { Button } from '@ks/app/components/actions/Button';
+import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Alert } from '@ks/app/components/feedback/Alert';
 import { Toast } from '@ks/app/components/feedback/Toast';
 import { CheckboxField } from '@ks/app/components/forms/CheckboxField';
@@ -204,15 +205,22 @@ export const PersonForm = ({
       />
       <main className={styles.main}>
         <div className={styles.content}>
-          <div className={styles.heading}>
-            <Text as='h1' variant='h1'>
-              {person
-                ? `Edit ${person.givenNames} ${person.surname}`
-                : 'Add a person'}
-            </Text>
-            <Text variant='small'>
-              Given names and surname are required. Everything else can wait.
-            </Text>
+          <div className={styles.top}>
+            <div className={styles.heading}>
+              <Text as='h1' variant='h1'>
+                {person
+                  ? `Edit ${person.givenNames} ${person.surname}`
+                  : 'Add a person'}
+              </Text>
+              <Text variant='small'>
+                Given names and surname are required. Everything else can wait.
+              </Text>
+            </div>
+            {person && (
+              <TextLink href={`/people/${person.id}/relationships`}>
+                Relationships
+              </TextLink>
+            )}
           </div>
           {count > 0 && (
             <div className={styles.alert}>

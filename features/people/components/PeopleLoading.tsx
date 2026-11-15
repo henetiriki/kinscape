@@ -9,7 +9,7 @@ import styles from '@ks/features/people/components/PeopleList.module.css';
 
 /**
  * The People page while the server renders it (PPL-01): the header with no Avatar, the heading
- * and a notice. The page's own header comes in when the list arrives.
+ * and a notice. The list page draws its own header when it arrives.
  */
 export const PeopleLoading = () => {
   const phone = usePhone();

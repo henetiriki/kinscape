@@ -1,6 +1,6 @@
 import { PeopleLoading } from '@ks/features/people';
 
-/** Shown while the server renders a People page. */
+/** The loading screen of the People list. A form route has none. */
 const Loading = () => <PeopleLoading />;
 
 export default Loading;

@@ -200,7 +200,11 @@ test.describe('desktop, 1280 × 800', () => {
     await expect(page.getByRole('heading', { name: 'People' })).toBeVisible();
     await page.waitForLoadState('networkidle');
 
-    expect(requests.filter(path => path.includes('/data/'))).toEqual([]);
+    expect(
+      requests.filter(
+        path => path.includes('/data/') || path.startsWith('/map/')
+      )
+    ).toEqual([]);
     await expect(page.locator('canvas.maplibregl-canvas')).toHaveCount(0);
   });
 });
@@ -235,7 +239,8 @@ test.describe('own session', () => {
     viewport: { height: 800, width: 1280 },
   });
 
-  // NFR-03
+  // NFR-03: sign-out loads a new document, so this proves the result a user sees. `MapHost.test.tsx`
+  // proves that `MapHost` drops the map off its routes.
   test('after sign-out and sign-in the map starts at today with every layer on', async ({
     page,
   }) => {

@@ -44,7 +44,7 @@ describe('the map slot page', () => {
 
     const { getByTestId } = render(await MapSlot());
 
-    expect(getByTestId('map-shell')).toBeTruthy();
+    getByTestId('map-shell');
     expect(shell.mock.calls[0][0].sources.length).toBeGreaterThan(0);
     expect(shell.mock.calls[0][0].coverage.length).toBeGreaterThan(0);
     expect(shell.mock.calls[0][0].layers).toEqual([{ name: 'polity layer' }]);

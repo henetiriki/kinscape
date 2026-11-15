@@ -55,7 +55,7 @@ describe('the People screens', () => {
   it('show the loading notice with no Avatar and no progress bar', async () => {
     render(await Loading());
 
-    expect(screen.getByRole('heading', { name: 'People' })).toBeTruthy();
+    screen.getByRole('heading', { name: 'People' });
     expect(screen.getByRole('status').textContent).toContain('Loading people');
     expect(screen.queryByRole('progressbar')).toBeNull();
     expect(screen.queryByRole('button')).toBeNull();

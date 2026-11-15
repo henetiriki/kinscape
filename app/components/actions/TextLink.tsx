@@ -6,6 +6,23 @@ import { KitLink } from '@ks/app/components/foundation/link';
 
 import styles from '@ks/app/components/actions/TextLink.module.css';
 
+// What an anchor takes and a button does not.
+const ANCHOR_ONLY = new Set([
+  'download',
+  'hrefLang',
+  'media',
+  'ping',
+  'referrerPolicy',
+  'rel',
+  'target',
+  'type',
+]);
+
+const buttonAttributes = (attributes: Record<string, unknown>) =>
+  Object.fromEntries(
+    Object.entries(attributes).filter(([name]) => !ANCHOR_ONLY.has(name))
+  );
+
 /**
  * An anchor has no disabled state, so a disabled link is plain text that says so.
  * With `onClick` and no `href` it is a `<button>` with the same look.
@@ -33,6 +50,7 @@ export const TextLink = ({
     </span>
   ) : href === undefined && onClick ? (
     <button
+      {...buttonAttributes(rest)}
       className={styles.textLink}
       data-size={size}
       data-state={state}

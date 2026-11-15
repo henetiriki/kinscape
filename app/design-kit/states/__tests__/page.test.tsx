@@ -72,6 +72,13 @@ it('shows the raised icon button in each of the five columns', async () => {
 
   expect(row.querySelectorAll('button[data-variant="raised"]')).toHaveLength(5);
   expect(row.querySelectorAll('button:disabled')).toHaveLength(1);
+  // The board's hint and icon, word for word (SG-Controls).
+  expect(
+    screen.getByText('Over the map: the phone Layers button')
+  ).toBeTruthy();
+  expect(
+    row.querySelectorAll('button[data-variant="raised"] svg[width="24"]')
+  ).toHaveLength(5);
 });
 
 // PPL-01

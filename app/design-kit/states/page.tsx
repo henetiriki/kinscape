@@ -12,6 +12,7 @@ import { Tabs } from '@ks/app/components/actions/Tabs';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Checkbox } from '@ks/app/components/forms/Checkbox';
 import { TextField } from '@ks/app/components/forms/TextField';
+import { Icon } from '@ks/app/components/foundation/Icon';
 import { boardTitle } from '@ks/app/design-kit/boards';
 import { requireDevPage } from '@ks/server/auth/current.mts';
 
@@ -94,7 +95,7 @@ const ROWS: {
     ),
   },
   {
-    hint: '48px, over the map',
+    hint: 'Over the map: the phone Layers button',
     name: 'Raised icon button',
     render: column => (
       <IconButton
@@ -102,7 +103,7 @@ const ROWS: {
         label='Layers and filters'
         state={stateOf(column)}
         variant='raised'>
-        <Plus />
+        <Icon name='layers' size={24} />
       </IconButton>
     ),
   },

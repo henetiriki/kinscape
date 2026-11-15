@@ -53,6 +53,26 @@ it('is a button with onClick and no href', () => {
   expect(screen.queryByRole('link')).toBeNull();
 });
 
+it('passes the other attributes to the button, except those only an anchor has', () => {
+  render(
+    <TextLink
+      aria-describedby='message'
+      id='fix'
+      onClick={vi.fn()}
+      rel='noreferrer'
+      target='_blank'>
+      Go to 1901
+    </TextLink>
+  );
+
+  const button = screen.getByRole('button', { name: 'Go to 1901' });
+
+  expect(button.getAttribute('aria-describedby')).toBe('message');
+  expect(button.id).toBe('fix');
+  expect(button.hasAttribute('target')).toBe(false);
+  expect(button.hasAttribute('rel')).toBe(false);
+});
+
 it('is plain text marked disabled when disabled', () => {
   render(<TextLink disabled>Attributions</TextLink>);
   expect(screen.queryByRole('link')).toBeNull();

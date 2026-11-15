@@ -1,0 +1,20 @@
+/* The page frame comes from `PeoplePage.module.css`. */
+.page {
+  composes: page from '@ks/features/people/components/PeoplePage.module.css';
+}
+
+.main {
+  composes: main from '@ks/features/people/components/PeoplePage.module.css';
+}
+
+.content {
+  composes: content from '@ks/features/people/components/PeoplePage.module.css';
+}
+
+.top {
+  composes: top from '@ks/features/people/components/PeoplePage.module.css';
+}
+
+.empty {
+  composes: empty from '@ks/features/people/components/PeoplePage.module.css';
+}

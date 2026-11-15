@@ -71,7 +71,7 @@ A long list prefetches each row in view.
 | `app/people/(list)/`, `features/people/components/PeopleLoading.tsx`      | New, moved    | The loading screen; `page.tsx` moves |
 | `app/screens/people-loading/page.tsx`, `design/screens.json`, `DESIGN.md` | New, changed  | Desktop and phone, blocking          |
 | `scripts/safety.mts`                                                      | Changed       | `routeOf` drops an `@slot` segment   |
-| `server/auth/current.mts`, two design count tests                         | Changed       | `cache`; the snapshot counts         |
+| `server/auth/current.mts`, three count tests                              | Changed       | `cache`; the snapshot counts         |
 | `e2e/navigation.spec.ts`, `docs/architecture.md`                          | New, changed  | The checks; two Patterns rows        |
 | `__tests__/` beside each file                                             | New, changed  | `app/__tests__/page.test.tsx` moves  |
 
@@ -85,7 +85,9 @@ A long list prefetches each row in view.
 - `MapHost` is in `app/MapHost.tsx`. The `features/map` index in the root layout loads every map stylesheet on every page.
 - `app/people/layout.tsx` checks the session, so a redirect comes before the 200 status. It passes any other error to the page, which shows its load-failed state. The map `AccountMenu` prefetches `/people`, so a slow server shows the loading screen.
 - `currentSession` uses React `cache`. The `@map` page, the People layout and the page then make one session lookup for each request. `current-cache.test.ts` checks it.
-- Two design tests count 95 snapshots, not 93, and 72 components, not 71.
+- Two design tests count 95 snapshots, not 93, and 72 components, not 71. `hover.test.ts` counts 65 stylesheets, not 63.
+- `PeopleList` and `PeopleLoading` take the page frame from `PeoplePage.module.css` with `composes`, so the two screens share one rule.
+- Accepted by the tech lead: the `navigation.spec.ts` check on `/people` cannot see a dropped map, because the `MapView` cleanup leaves `window.kinscapeMap`. The checks after the return to `/` catch a remount. `MapHost.test.tsx` proves that the map stays mounted under `/people`.
 
 ## Risks
 

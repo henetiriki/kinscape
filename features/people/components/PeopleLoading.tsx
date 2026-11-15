@@ -5,7 +5,7 @@ import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 
-import styles from '@ks/features/people/components/PeopleList.module.css';
+import styles from '@ks/features/people/components/PeopleLoading.module.css';
 
 /**
  * The People page while the server renders it (PPL-01): the header with no Avatar, the heading

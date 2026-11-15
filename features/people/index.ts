@@ -7,6 +7,7 @@ export { PersonNotFound } from '@ks/features/people/components/PersonNotFound';
 export { PersonRelationships } from '@ks/features/people/components/PersonRelationships';
 export { SavedToast } from '@ks/features/people/components/SavedToast';
 export type {
+  RelationshipActions,
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';

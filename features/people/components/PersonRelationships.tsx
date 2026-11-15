@@ -4,11 +4,17 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import type {
+  DetailsShown,
+  OtherPerson,
+  RelationshipActions,
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
-import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
+import type {
+  Relationship,
+  RelationshipGroup,
+} from '@ks/lib/domain/relationships/types';
 
 import { Button } from '@ks/app/components/actions/Button';
 import { DateText } from '@ks/app/components/actions/DateText';
@@ -18,6 +24,7 @@ import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { EditOnComputer } from '@ks/features/people/components/EditOnComputer';
+import { RelationshipDetails } from '@ks/features/people/components/RelationshipDetails';
 import { RelationshipPicker } from '@ks/features/people/components/RelationshipPicker';
 
 import styles from '@ks/features/people/components/PersonRelationships.module.css';
@@ -32,14 +39,56 @@ const GROUPS = [
 const count = (relationships: number) =>
   `${relationships} ${relationships === 1 ? 'link' : 'links'}`;
 
+/** The id of the Person at the other end of `relationship`, seen from the Person `self`. */
+const otherId = (relationship: Relationship, self: string): string => {
+  if (relationship.type === 'parent') {
+    return relationship.parentId === self
+      ? relationship.childId
+      : relationship.parentId;
+  }
+
+  return relationship.personAId === self
+    ? relationship.personBId
+    : relationship.personAId;
+};
+
+/** The entry of `id` and its group, or undefined if no group holds it. */
+const findEntry = (
+  groups: Record<RelationshipGroup, RelationshipEntry[]> | undefined,
+  id: string | undefined
+) => {
+  for (const { key } of GROUPS) {
+    const entry = groups?.[key].find(candidate => candidate.id === id);
+
+    if (entry) {
+      return { entry, group: key };
+    }
+  }
+};
+
+/** The other Person of a dialog: a name, the dates and the id of the Person at the other end. */
+const otherOf = (from: Omit<OtherPerson, 'id'>, id: string): OtherPerson => ({
+  born: from.born,
+  bornReading: from.bornReading,
+  deceased: from.deceased,
+  died: from.died,
+  diedReading: from.diedReading,
+  givenNames: from.givenNames,
+  id,
+  surname: from.surname,
+});
+
 /**
  * The Relationships page of a Person (PPL-02): three groups of Relationships, or the notice of a
  * load that failed. The subtitle is the name and a save note, with the dates on a line below. A
  * load that failed may have no `person`, so the subtitle is then the save note only. "Add" opens
- * the picker of its group. The picker has no save. "Edit" points at this page until the edit
- * dialog exists. The picker stays mounted after it closes, so the browser returns focus to "Add".
+ * the picker of its group, and a pick opens the details dialog. "Edit" is a link to this page with
+ * `?edit={id}`, and the page opens the details dialog of that Relationship. The picker stays
+ * mounted after it closes, so the browser returns focus to "Add".
  */
 export const PersonRelationships = ({
+  actions,
+  edit,
   email,
   failed,
   groups,
@@ -54,27 +103,47 @@ export const PersonRelationships = ({
   onSignOut: () => Promise<unknown>;
 } & (
   | {
+      actions: RelationshipActions;
+      /** The id of the Relationship to edit, from the `edit` search param. */
+      edit?: string;
+      failed?: false;
+      groups: Record<RelationshipGroup, RelationshipEntry[]>;
+      /** Every Person of the Tree except `person`, for the picker. */
+      people: PersonSummary[];
+      person: RelationshipsPerson;
+      /**
+       * Opens the dialog of a group at the start, for the screen boards: with a filter, or at step 2
+       * with a Person picked, a marriage text and a result to show.
+       */
+      picking?: {
+        group: RelationshipGroup;
+        marriage?: string;
+        picked?: string;
+        query?: string;
+        shown?: DetailsShown;
+      };
+    }
+  | {
+      actions?: undefined;
+      edit?: undefined;
       failed: true;
       groups?: undefined;
       people?: undefined;
       person?: RelationshipsPerson;
       picking?: undefined;
     }
-  | {
-      failed?: false;
-      groups: Record<RelationshipGroup, RelationshipEntry[]>;
-      /** Every Person of the Tree except `person`, for the picker. */
-      people: PersonSummary[];
-      person: RelationshipsPerson;
-      /** Opens the picker of a group at the start, with a filter. For the screen boards. */
-      picking?: { group: RelationshipGroup; query?: string };
-    }
 )) => {
   const router = useRouter();
   const [adding, setAdding] = useState(picking?.group);
   const [open, setOpen] = useState(picking !== undefined);
   const [opened, setOpened] = useState(0);
+  const [picked, setPicked] = useState(() =>
+    people?.find(candidate => candidate.id === picking?.picked)
+  );
   const query = picking?.query;
+  const editing = findEntry(groups, edit);
+  const here = person ? `/people/${person.id}/relationships` : '/people';
+  const closeEdit = () => router.replace(here);
 
   return (
     <EditOnComputer email={email} initial={initial} onSignOut={onSignOut}>
@@ -140,6 +209,7 @@ export const PersonRelationships = ({
                     <Button
                       onClick={() => {
                         setAdding(key);
+                        setPicked(undefined);
                         setOpen(true);
                         setOpened(times => times + 1);
                       }}
@@ -153,11 +223,11 @@ export const PersonRelationships = ({
                     </div>
                   ) : (
                     <ul className={styles.rows}>
-                      {groups[key].map(({ id, ...link }) => (
-                        <li className={styles.item} key={id}>
+                      {groups[key].map(entry => (
+                        <li className={styles.item} key={entry.id}>
                           <RelationshipRow
-                            {...link}
-                            href={`/people/${person.id}/relationships`}
+                            {...entry}
+                            href={`${here}?edit=${entry.id}`}
                           />
                         </li>
                       ))}
@@ -173,9 +243,41 @@ export const PersonRelationships = ({
             group={adding}
             initialQuery={query}
             key={opened}
+            onClose={() => {
+              if (!picked) setOpen(false);
+            }}
+            onPick={other => setPicked(other)}
+            open={open && !picked}
+            people={people}
+          />
+        )}
+        {adding && picked && !failed && (
+          <RelationshipDetails
+            actions={actions}
+            group={adding}
+            key={`${opened}-${picked.id}`}
+            onBack={() => setPicked(undefined)}
             onClose={() => setOpen(false)}
             open={open}
-            people={people}
+            other={otherOf(picked, picked.id)}
+            self={person.id}
+            shown={picking?.shown}
+            startMarriage={picking?.marriage}
+          />
+        )}
+        {editing && !failed && (
+          <RelationshipDetails
+            actions={actions}
+            existing={editing.entry.relationship}
+            group={editing.group}
+            key={`${editing.entry.id}-${editing.entry.relationship.version}`}
+            onClose={closeEdit}
+            open
+            other={otherOf(
+              editing.entry,
+              otherId(editing.entry.relationship, person.id)
+            )}
+            self={person.id}
           />
         )}
       </div>

@@ -144,8 +144,13 @@ const setup = async ({ relationships = true } = {}): Promise<Seed> => {
   return { store, token };
 };
 
-const open = async (id = ME) =>
-  render(await Relationships({ params: Promise.resolve({ id }) }));
+const open = async (id = ME, edit?: string | string[]) =>
+  render(
+    await Relationships({
+      params: Promise.resolve({ id }),
+      searchParams: Promise.resolve({ edit }),
+    })
+  );
 
 const group = (name: string) => within(screen.getByRole('region', { name }));
 
@@ -287,6 +292,38 @@ describe('/people/{id}/relationships', () => {
     within(screen.getByRole('dialog')).getByText(
       'No other people in your Tree'
     );
+  });
+
+  it('links "Edit" of each row to the page with its Relationship id', async () => {
+    await setup();
+    await open();
+
+    expect(
+      group('Spouses').getByRole('link', { name: /Edit/ }).getAttribute('href')
+    ).toBe(`/people/${ME}/relationships?edit=${uuid(9, 6)}`);
+  });
+
+  it('opens the edit dialog of the Relationship that `edit` names, with the Person fixed', async () => {
+    await setup();
+    await open(ME, uuid(9, 6));
+
+    const dialog = within(screen.getByRole('dialog'));
+
+    dialog.getByRole('heading', { name: 'Edit marriage' });
+    dialog.getByText('van Wyk, Gerrit');
+    expect(dialog.getByLabelText('Marriage')).toHaveProperty('value', '1875');
+    expect(dialog.queryByRole('button', { name: 'Back' })).toBeNull();
+  });
+
+  it.each([
+    ['an id that is no UUID', 'nope'],
+    ['an id that no group holds', uuid(9, 99)],
+    ['two values', [uuid(9, 6), uuid(9, 5)]],
+  ])('opens no dialog for %s in `edit`', async (_what, edit) => {
+    await setup();
+    await open(ME, edit);
+
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 
   it.each([

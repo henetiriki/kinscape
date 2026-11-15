@@ -23,20 +23,23 @@ const TITLES: Record<RelationshipGroup, string> = {
 
 /**
  * Step 1 of "Add" on the Relationships page (PPL-02): a dialog that lists the other Persons, with
- * the filter of the People list. A row has no action until step 2 exists (M2.11.4.3). The page
- * gives the picker a new `key` each time "Add" opens it, so the filter is empty each time.
+ * the filter of the People list. A row calls `onPick`, and step 2 follows. The page gives the
+ * picker a new `key` each time "Add" opens it, so the filter is empty each time.
  * `initialQuery` is for the screen boards.
  */
 export const RelationshipPicker = ({
   group,
   initialQuery = '',
   onClose,
+  onPick,
   open,
   people,
 }: {
   group: RelationshipGroup;
   initialQuery?: string;
   onClose: () => void;
+  /** Called with the Person of the row that the user chose. */
+  onPick: (person: PersonSummary) => void;
   /** The page keeps the picker mounted after it closes: the browser returns focus on close only. */
   open: boolean;
   /** Every Person of the Tree except the one whose page it is. */
@@ -67,6 +70,7 @@ export const RelationshipPicker = ({
                 givenNames={person.givenNames}
                 maidenName={person.maidenName}
                 matchedVariant={match.variant}
+                onClick={() => onPick(person)}
                 surname={person.surname}
               />
             </li>

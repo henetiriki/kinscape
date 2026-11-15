@@ -1,16 +1,32 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type {
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people/components/types';
+import type { Relationship } from '@ks/lib/domain/relationships/types';
 
 import { PersonRelationships } from '@ks/features/people/components/PersonRelationships';
 
 const refresh = vi.hoisted(() => vi.fn());
+const replace = vi.hoisted(() => vi.fn());
 
-vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh }) }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh, replace }),
+}));
+
+const MARIA = '01900000-0000-7000-8000-000000000001';
+const PIETER = '01900000-0000-7000-8000-000000000002';
+const GERRIT = '01900000-0000-7000-8000-000000000003';
+const ANNA = '01900000-0000-7000-8000-000000000004';
+const RELATION = '01900000-0000-7000-9000-000000000001';
 
 const none = { born: '', bornReading: '', died: '', diedReading: '' };
 const b1889 = { born: '1889', bornReading: 'In 1889' };
@@ -19,15 +35,28 @@ const d1932 = { died: '1932', diedReading: 'In 1932' };
 const person = (fields: Partial<RelationshipsPerson> = {}) => ({
   ...none,
   givenNames: 'Maria Magdalena',
-  id: 'maria',
+  id: MARIA,
   surname: 'du Toit',
   ...fields,
 });
 
+/** A Relationship with plain ids: the page only compares them. */
+const link = (fields: Record<string, unknown>) =>
+  ({
+    childId: MARIA,
+    id: RELATION,
+    parentId: PIETER,
+    subtype: 'biological',
+    type: 'parent',
+    version: 1,
+    ...fields,
+  }) as unknown as Relationship;
+
 const entry = (fields: Partial<RelationshipEntry>): RelationshipEntry => ({
   ...none,
   givenNames: 'Given',
-  id: 'r',
+  id: RELATION,
+  relationship: link({}),
   surname: 'Surname',
   ...fields,
 });
@@ -36,11 +65,15 @@ const empty = { children: [], parents: [], spouses: [] };
 
 type Props = Parameters<typeof PersonRelationships>[0];
 
+const create = vi.fn(async (): Promise<unknown> => ({ ok: true, value: {} }));
+const update = vi.fn(async (): Promise<unknown> => ({ ok: true, value: {} }));
+
 /** The page of Maria with no Relationships; `props` changes any prop, so a case can fail the load. */
 const open = (props: Record<string, unknown> = {}) =>
   render(
     <PersonRelationships
       {...({
+        actions: { create, update },
         email: 'a@example.test',
         groups: empty,
         initial: 'A',
@@ -50,7 +83,7 @@ const open = (props: Record<string, unknown> = {}) =>
             ...none,
             deceased: false,
             givenNames: 'Pieter',
-            id: 'pieter',
+            id: PIETER,
             maidenName: '',
             surname: 'Fourie',
             variants: [],
@@ -135,7 +168,7 @@ describe('the header', () => {
 
     expect(
       screen.getByRole('link', { name: 'Edit person' }).getAttribute('href')
-    ).toBe('/people/maria');
+    ).toBe(`/people/${MARIA}`);
   });
 
   it('links back to the list when the Person did not load', () => {
@@ -274,9 +307,205 @@ describe('the groups', () => {
 
     const edit = screen.getByRole('link', { name: 'Edit, Rossouw, Jacobus' });
 
-    expect(edit.getAttribute('href')).toBe('/people/maria/relationships');
+    expect(edit.getAttribute('href')).toBe(
+      `/people/${MARIA}/relationships?edit=${RELATION}`
+    );
     expect(screen.queryByRole('button', { name: /Remove|Delete/ })).toBeNull();
   });
+});
+
+// PPL-02
+describe('step 2 of "Add"', () => {
+  const pick = () => {
+    open();
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+    fireEvent.click(screen.getByRole('button', { name: /Fourie, Pieter/ }));
+  };
+
+  it('shows the details of the picked Person, in place of the picker', () => {
+    pick();
+
+    screen.getByRole('heading', { name: 'Add a parent' });
+    screen.getByText('Step 2 of 2. Say how they are linked.');
+    within(screen.getByRole('dialog')).getByText('Fourie, Pieter');
+    screen.getByRole('radiogroup', { name: 'Type of parent' });
+    expect(screen.queryByRole('searchbox')).toBeNull();
+  });
+
+  it('shows the picker again with "Back", and keeps the filter', () => {
+    open();
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'Fourie' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /Fourie, Pieter/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+
+    screen.getByText('Step 1 of 2. Choose the person.');
+    expect(screen.getByRole('searchbox')).toHaveProperty('value', 'Fourie');
+    expect(screen.queryByRole('radiogroup')).toBeNull();
+  });
+
+  it('saves, then closes the dialog with no toast', async () => {
+    pick();
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(document.querySelector('dialog')?.open).toBe(false)
+    );
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({ childId: MARIA, parentId: PIETER })
+    );
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('keeps step 2 open when the browser reports that the picker closed after the pick', () => {
+    pick();
+    fireEvent(
+      document.querySelectorAll('dialog')[0],
+      new Event('close', { bubbles: false })
+    );
+
+    expect(
+      screen.getByRole('radiogroup', { name: 'Type of parent' })
+    ).not.toBeNull();
+    expect(document.querySelectorAll('dialog[open]')).toHaveLength(1);
+  });
+
+  it('closes with "Close", and the next "Add" starts at the picker', () => {
+    pick();
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+
+    screen.getByText('Step 1 of 2. Choose the person.');
+  });
+
+  it('opens at step 2 when the screen board says so', () => {
+    open({ picking: { group: 'spouses', marriage: '1875', picked: PIETER } });
+
+    screen.getByRole('heading', { name: 'Add a spouse' });
+    expect(screen.getByLabelText('Marriage')).toHaveProperty('value', '1875');
+  });
+
+  it('opens at the picker when the picked Person is not in the Tree', () => {
+    open({ picking: { group: 'spouses', picked: 'nobody' } });
+
+    screen.getByText('Step 1 of 2. Choose the person.');
+  });
+});
+
+// PPL-02
+describe('"Edit"', () => {
+  const parents = [
+    entry({
+      givenNames: 'Jacobus',
+      id: RELATION,
+      relationship: link({ subtype: 'step', version: 4 }),
+      subtype: 'step',
+      surname: 'Rossouw',
+    }),
+  ];
+
+  it('opens the dialog at step 2 with the Person fixed, the type filled, and no "Back"', () => {
+    open({ edit: RELATION, groups: { ...empty, parents } });
+
+    screen.getByRole('heading', { name: 'Edit parent' });
+    screen.getByText('Change the type.');
+    within(screen.getByRole('dialog')).getByText('Rossouw, Jacobus');
+    expect(screen.getByRole('radio', { name: 'Step' })).toHaveProperty(
+      'checked',
+      true
+    );
+    expect(screen.queryByRole('button', { name: 'Back' })).toBeNull();
+  });
+
+  it('names the version that the page read, then replaces the address without `edit`', async () => {
+    open({ edit: RELATION, groups: { ...empty, parents } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(replace).toHaveBeenCalledWith(`/people/${MARIA}/relationships`)
+    );
+    expect(update).toHaveBeenCalledWith({
+      relationship: expect.objectContaining({ id: RELATION, subtype: 'step' }),
+      version: 4,
+    });
+  });
+
+  it('replaces the address on "Cancel"', () => {
+    open({ edit: RELATION, groups: { ...empty, parents } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    expect(replace).toHaveBeenCalledWith(`/people/${MARIA}/relationships`);
+  });
+
+  it('opens no dialog for an id that no group holds', () => {
+    open({ edit: 'nobody', groups: { ...empty, parents } });
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('opens a child, where this Person is the parent, with the child fixed', async () => {
+    open({
+      edit: RELATION,
+      groups: {
+        ...empty,
+        children: [
+          entry({
+            givenNames: 'Anna',
+            relationship: link({ childId: ANNA, parentId: MARIA }),
+            surname: 'Botha',
+          }),
+        ],
+      },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    screen.getByRole('heading', { name: 'Edit child' });
+    await waitFor(() =>
+      expect(update).toHaveBeenCalledWith({
+        relationship: expect.objectContaining({
+          childId: ANNA,
+          parentId: MARIA,
+        }),
+        version: 1,
+      })
+    );
+  });
+
+  it.each([
+    ['A', { personAId: MARIA, personBId: GERRIT }],
+    ['B', { personAId: GERRIT, personBId: MARIA }],
+  ])(
+    'opens a spouse that this Person is end %s of, with the other end fixed',
+    async (_end, ends) => {
+      open({
+        edit: RELATION,
+        groups: {
+          ...empty,
+          spouses: [
+            entry({
+              givenNames: 'Gerrit',
+              relationship: link({ ...ends, type: 'spouse' }),
+              surname: 'van Wyk',
+            }),
+          ],
+        },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+      screen.getByRole('heading', { name: 'Edit marriage' });
+      await waitFor(() =>
+        expect(update).toHaveBeenCalledWith({
+          relationship: expect.objectContaining({
+            personAId: MARIA,
+            personBId: GERRIT,
+          }),
+          version: 1,
+        })
+      );
+    }
+  );
 });
 
 // PPL-02

@@ -1,11 +1,14 @@
+import type { ComponentProps } from 'react';
+
 import type {
   RelationshipEntry,
   RelationshipsPerson,
 } from '@ks/features/people';
 import type { FuzzyDate } from '@ks/lib/domain/dates/types';
+import type { PersonId, RelationshipId } from '@ks/lib/domain/ids/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
-import type { RelationshipGroup } from '@ks/lib/domain/relationships/types';
 
+import { saveNothing } from '@ks/app/screens/relationship-actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonRelationships } from '@ks/features/people';
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
@@ -16,35 +19,6 @@ import {
 } from '@ks/lib/domain/persons/dates.mts';
 
 const exact = (year: string) => fuzzyDateOf('EXACT', year);
-
-const parentOrChild = (
-  id: string,
-  surname: string,
-  givenNames: string,
-  subtype: NonNullable<RelationshipEntry['subtype']>,
-  born: FuzzyDate,
-  died: FuzzyDate
-): RelationshipEntry => ({
-  ...personDates({ birth: born, death: died, deceased: false }),
-  givenNames,
-  id,
-  subtype,
-  surname,
-});
-
-const spouse = (
-  id: string,
-  surname: string,
-  givenNames: string,
-  person: Parameters<typeof personDates>[0],
-  relationship: Parameters<typeof spouseDates>[0]
-): RelationshipEntry => ({
-  ...personDates(person),
-  ...spouseDates(relationship),
-  givenNames,
-  id,
-  surname,
-});
 
 /** The synthetic Person of the `person-relationships` boards. */
 const SAMPLE_SUBJECT: RelationshipsPerson = {
@@ -58,55 +32,123 @@ const SAMPLE_SUBJECT: RelationshipsPerson = {
   surname: 'du Toit',
 };
 
+// The sample ids are not UUIDs, so the brands are asserted: nothing here reaches a store.
+const personId = (id: string) => id as PersonId;
+const relationshipId = (id: string) => id as RelationshipId;
+
+/** `other` is the id of the Person at the other end: the parent in a parents row, the child in a children row. */
+const parentOrChild = (
+  id: string,
+  other: string,
+  surname: string,
+  givenNames: string,
+  subtype: NonNullable<RelationshipEntry['subtype']>,
+  born: FuzzyDate,
+  died: FuzzyDate,
+  group: 'children' | 'parents'
+): RelationshipEntry => ({
+  ...personDates({ birth: born, death: died, deceased: false }),
+  givenNames,
+  id,
+  relationship: {
+    childId: personId(group === 'parents' ? SAMPLE_SUBJECT.id : other),
+    id: relationshipId(id),
+    parentId: personId(group === 'parents' ? other : SAMPLE_SUBJECT.id),
+    subtype,
+    type: 'parent',
+    version: 1,
+  },
+  subtype,
+  surname,
+});
+
+const spouse = (
+  id: string,
+  other: string,
+  surname: string,
+  givenNames: string,
+  person: Parameters<typeof personDates>[0],
+  relationship: {
+    divorce?: FuzzyDate;
+    marriage?: FuzzyDate;
+  } & Parameters<typeof spouseDates>[0]
+): RelationshipEntry => ({
+  ...personDates(person),
+  ...spouseDates(relationship),
+  givenNames,
+  id,
+  relationship: {
+    divorce: relationship.divorce,
+    id: relationshipId(id),
+    marriage: relationship.marriage,
+    personAId: personId(SAMPLE_SUBJECT.id),
+    personBId: personId(other),
+    type: 'spouse',
+    version: 1,
+  },
+  surname,
+});
+
 /** The synthetic Relationships of the `person-relationships` board. */
 const SAMPLE_RELATIONSHIPS = {
   children: [
     parentOrChild(
       'c1',
+      'o4',
       'du Toit',
       'Hendrik Willem',
       'biological',
       exact('1878'),
-      exact('1951')
+      exact('1951'),
+      'children'
     ),
     parentOrChild(
       'c2',
+      'o5',
       'du Toit',
       'Susanna',
       'adoptive',
       exact('1881'),
-      exact('1948')
+      exact('1948'),
+      'children'
     ),
   ],
   parents: [
     parentOrChild(
       'p2',
+      'o2',
       'Nel',
       'Johanna Petronella',
       'adoptive',
       fuzzyDateOf('ABT', '1828'),
-      exact('1901')
+      exact('1901'),
+      'parents'
     ),
     parentOrChild(
       'p1',
+      'o1',
       'Rossouw',
       'Jacobus',
       'biological',
       exact('1822'),
-      exact('1889')
+      exact('1889'),
+      'parents'
     ),
     parentOrChild(
       'p3',
+      'o3',
       'Visser',
       'Cornelis',
       'step',
       exact('1819'),
-      exact('1890')
+      exact('1890'),
+      'parents'
     ),
   ],
   spouses: [
     spouse(
       's3',
+      'o8',
       'Botha',
       'Hendrik Willem',
       { birth: exact('1832'), death: exact('1899'), deceased: true },
@@ -114,6 +156,7 @@ const SAMPLE_RELATIONSHIPS = {
     ),
     spouse(
       's2',
+      'o7',
       'Fourie',
       'Pieter',
       { birth: fuzzyDateOf('BEF', '1840'), deceased: true },
@@ -121,6 +164,7 @@ const SAMPLE_RELATIONSHIPS = {
     ),
     spouse(
       's1',
+      'o6',
       'van Wyk',
       'Gerrit',
       { birth: exact('1845'), death: exact('1910'), deceased: true },
@@ -237,16 +281,19 @@ const SAMPLE_PEOPLE: PersonSummary[] = [
 /**
  * The Relationships page in one state, with a synthetic Account. `empty` is a Person with no
  * Relationships, and with no other Person in the Tree. `failed` is a load that threw. `picking`
- * opens the picker of a group, with a filter.
+ * opens the dialog of a group: the picker with a filter, or step 2 with a Person picked. `edit`
+ * opens the dialog of a Relationship. The actions are stand-ins that save nothing.
  */
 export const RelationshipsScreen = ({
+  edit,
   empty,
   failed,
   picking,
 }: {
+  edit?: string;
   empty?: boolean;
   failed?: boolean;
-  picking?: { group: RelationshipGroup; query?: string };
+  picking?: ComponentProps<typeof PersonRelationships>['picking'];
 }) => {
   const account = {
     email: 'researcher@example.com',
@@ -259,6 +306,8 @@ export const RelationshipsScreen = ({
   ) : (
     <PersonRelationships
       {...account}
+      actions={{ create: saveNothing, update: saveNothing }}
+      edit={edit}
       groups={empty ? NO_RELATIONSHIPS : SAMPLE_RELATIONSHIPS}
       people={empty ? [] : SAMPLE_PEOPLE}
       person={SAMPLE_SUBJECT}

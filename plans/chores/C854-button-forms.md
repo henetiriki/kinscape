@@ -59,6 +59,10 @@ The variant holds its whole look.
 
 - The kit page is a server component, so `GoTo` in `Samples.tsx` (client) holds its `TextLink` button.
 - `IconButton.test.tsx` is new: no test file for `IconButton` existed.
+- Five boards did not load the design system: `SG-Furniture`, `SG-Furniture-phone`, `SG-Feedback-phone`, `SG-Surfaces-2` and `SG-Surfaces-phone-2`. Each now loads it, so the swaps can mount components.
+- `SG-Feedback` already mounted `TextLink` as a link. It now mounts the button form, as `DateField` does.
+- The heights of `style-4-states` and `style-4-states-phone` in `design/screens.json` and on the boards grow for the new row.
+- The design agent left one drawing: the fix link on `Map-phone-states`. A swap changes pixels. Follow-up: #864.
 
 ## Proof
 

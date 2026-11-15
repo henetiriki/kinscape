@@ -4,12 +4,7 @@ import type {
 } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
-import {
-  dateLine,
-  dateWords,
-  spouseLine,
-  spouseWords,
-} from '@ks/app/components/actions/dates';
+import { spouseLine } from '@ks/app/components/actions/dates';
 import { DateText } from '@ks/app/components/actions/DateText';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Text } from '@ks/app/components/foundation/Text';
@@ -64,11 +59,8 @@ export const RelationshipRow = ({
         {subtype && <Text variant='small'>{SUBTYPES[subtype]}</Text>}
       </span>
       <span className={styles.dates}>
-        <DateText
-          line={dateLine({ born, deceased, died })}
-          words={dateWords({ born, bornReading, deceased, died, diedReading })}
-        />
-        {marriage && <DateText line={marriage} words={spouseWords(spouse)} />}
+        <DateText dates={{ born, bornReading, deceased, died, diedReading }} />
+        {marriage && <DateText spouse={spouse} />}
       </span>
       <TextLink href={href} state={state}>
         Edit

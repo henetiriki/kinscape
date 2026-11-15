@@ -3,11 +3,7 @@ import type { ComponentProps } from 'react';
 import type { PersonDates } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
-import {
-  dateLine,
-  dateWords,
-  personNote,
-} from '@ks/app/components/actions/dates';
+import { personNote } from '@ks/app/components/actions/dates';
 import { DateText } from '@ks/app/components/actions/DateText';
 import { Text } from '@ks/app/components/foundation/Text';
 
@@ -48,10 +44,7 @@ export const PickerRow = ({
         </Text>
         {note && <Text variant='small'>{note}</Text>}
       </span>
-      <DateText
-        line={dateLine({ born, deceased, died })}
-        words={dateWords({ born, bornReading, deceased, died, diedReading })}
-      />
+      <DateText dates={{ born, bornReading, deceased, died, diedReading }} />
     </button>
   );
 };

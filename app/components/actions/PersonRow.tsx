@@ -3,11 +3,7 @@ import type { ComponentProps } from 'react';
 import type { PersonDates } from '@ks/app/components/actions/types';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
-import {
-  dateLine,
-  dateWords,
-  personNote,
-} from '@ks/app/components/actions/dates';
+import { personNote } from '@ks/app/components/actions/dates';
 import { DateText } from '@ks/app/components/actions/DateText';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Icon } from '@ks/app/components/foundation/Icon';
@@ -51,10 +47,7 @@ export const PersonRow = ({
   PersonDates) => {
   const note = personNote(maidenName, matchedVariant);
   const dates = (
-    <DateText
-      line={dateLine({ born, deceased, died })}
-      words={dateWords({ born, bornReading, deceased, died, diedReading })}
-    />
+    <DateText dates={{ born, bornReading, deceased, died, diedReading }} />
   );
   const name = (
     <Text as='span' variant='title'>

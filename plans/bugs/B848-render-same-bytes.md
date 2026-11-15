@@ -5,7 +5,7 @@
 
 ## Approach
 
-The data point to the render, not to the runner. Each flip changed one JPG, but 24 map snapshots draw the same filters. A change of CPU between runners would change all 24. So one page can raster its filter tiles in a different order on each run. `scripts/design-shots.mts` launches Chromium with `--num-raster-threads=1` (D1), from a new constant `LAUNCH_ARGS`. `render` and its byte compare do not change.
+The data point to the render, not to the runner. Each flip changed one JPG, but 24 map snapshots draw the same filters. A change of CPU between runners changes all 24. So one page can raster its filter tiles in a different order on each run. `scripts/design-shots.mts` launches Chromium with `--num-raster-threads=1` (D1), from a new constant `LAUNCH_ARGS`. `render` and its byte compare do not change.
 
 ## Decisions
 
@@ -40,7 +40,7 @@ Two of 10 Render commits flipped a JPG. At that rate, the unfixed render passes 
 
 ## Alternatives considered
 
-- Compare pixels with a tolerance. The Tech lead line in "Expected per" rules it out.
+- Compare pixels with a tolerance. The Tech lead line in "Expected per" forbids it.
 - Change the board filters. The render is at fault.
 
 ## Files that change
@@ -69,8 +69,8 @@ Two of 10 Render commits flipped a JPG. At that rate, the unfixed render passes 
 
 | Acceptance check                               | Proven by                                                    |
 | ---------------------------------------------- | ------------------------------------------------------------ |
-| Same bytes in separate runs; runs 2 and 3      | The run summaries list no JPG                                |
-| Only the edited board's JPG changes            | The run summaries; `rewrites a changed JPG`                  |
+| Same bytes in separate runs; runs 2 to 10      | The run summaries list no JPG                                |
+| Only the edited board's JPG changes            | `design-shots.test.ts` › `rewrites a changed JPG`            |
 | `render` still writes a changed JPG            | `design-shots.test.ts` › `rewrites a changed JPG`            |
 | No hand commit of a JPG or HTML snapshot       | Step 6                                                       |
 | Tests, lint, typecheck, format check, words    | Their output in the PR                                       |

@@ -10,7 +10,16 @@ vi.mock('@ks/server/adapters.mts', () => ({
   appAdapters: () => adapters.current,
 }));
 
-import { createPersonAction, updatePersonAction } from '@ks/app/people/actions';
+import type { TreeScope } from '@ks/lib/domain/trees/types.ts';
+
+import {
+  createPersonAction,
+  createRelationshipAction,
+  updatePersonAction,
+  updateRelationshipAction,
+} from '@ks/app/people/actions';
+import { checkRelationshipInput } from '@ks/lib/domain/relationships/form.mts';
+import { MAX_RELATIONSHIPS } from '@ks/lib/domain/relationships/schemas.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
@@ -23,6 +32,7 @@ const setup = async () => {
   const store = memoryStore();
   const sessions = memorySessions();
   const tokens: Record<string, string> = {};
+  let scopeA: TreeScope | undefined;
 
   for (const subject of ['a', 'b']) {
     const added = await store.addAccount({
@@ -33,6 +43,10 @@ const setup = async () => {
 
     if (!added.ok) {
       throw new Error('setup failed');
+    }
+
+    if (subject === 'a') {
+      scopeA = added.value;
     }
 
     tokens[subject] = await startSession(sessions, () => new Date(), {
@@ -55,8 +69,20 @@ const setup = async () => {
 
       return opened.value.persons.list();
     },
+    /** The Relationships that an Account's Tree holds, read outside the actions. */
+    relationshipsFor: async (subject: 'a' | 'b') => {
+      const opened = await openTree({ sessions, store }, tokens[subject]);
+
+      if (!opened.ok) {
+        throw new Error('open failed');
+      }
+
+      return opened.value.relationships.list();
+    },
+    scopeA: scopeA as TreeScope,
     signInAs: (subject: 'a' | 'b') =>
       jar.get.mockReturnValue({ value: tokens[subject] }),
+    store,
   };
 };
 
@@ -263,5 +289,348 @@ describe('updatePersonAction', () => {
     expect(missing).toEqual({ error: 'not-found', ok: false });
     expect(await updatePersonAction({ person, version: 1 })).toEqual(missing);
     expect(await listFor('a')).toHaveLength(1);
+  });
+});
+
+const P1 = '01900000-0000-7000-8000-0000000000a1';
+const P2 = '01900000-0000-7000-8000-0000000000a2';
+const P3 = '01900000-0000-7000-8000-0000000000a3';
+const P4 = '01900000-0000-7000-8000-0000000000a4';
+const R1 = '01900000-0000-7000-8000-0000000000c1';
+const R2 = '01900000-0000-7000-8000-0000000000c2';
+const R3 = '01900000-0000-7000-8000-0000000000c3';
+
+const parent = (
+  id: string,
+  parentId: string,
+  childId: string,
+  subtype = 'biological'
+) => ({
+  childId,
+  id,
+  parentId,
+  subtype,
+  type: 'parent',
+});
+const spouse = (id: string, personAId: string, personBId: string) => ({
+  id,
+  personAId,
+  personBId,
+  type: 'spouse',
+});
+
+/** Sets up two Accounts and four Persons in Account A's Tree. */
+const setupWithPersons = async () => {
+  const context = await setup();
+
+  for (const id of [P1, P2, P3, P4]) {
+    await createPersonAction({ ...person, id });
+  }
+
+  revalidate.mockClear();
+
+  return context;
+};
+
+// PPL-02, NFR-09
+describe('createRelationshipAction', () => {
+  it('saves an adoptive parent link and reads it back equal', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+    const created = await createRelationshipAction(
+      parent(R1, P1, P2, 'adoptive')
+    );
+
+    expect(created).toEqual({
+      ok: true,
+      value: { ...parent(R1, P1, P2, 'adoptive'), version: 1 },
+    });
+    expect(await relationshipsFor('a')).toEqual([created.ok && created.value]);
+  });
+
+  it('reads back both dates of a spouse link', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+    const created = await createRelationshipAction({
+      ...spouse(R1, P1, P2),
+      divorce: '1900',
+      marriage: '14 MAR 1890',
+    });
+
+    expect(created.ok && created.value).toMatchObject({
+      divorce: { date1: '1900' },
+      marriage: { date1: '1890-03-14' },
+      version: 1,
+    });
+    expect(await relationshipsFor('a')).toEqual([created.ok && created.value]);
+  });
+
+  it('saves one Relationship for the same create twice', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    await createRelationshipAction(parent(R1, P1, P2));
+    await createRelationshipAction(parent(R1, P1, P2));
+
+    expect(await relationshipsFor('a')).toHaveLength(1);
+  });
+
+  it.each([
+    ['self', parent(R2, P1, P1), []],
+    ['cycle', parent(R2, P2, P1), [parent(R1, P1, P2)]],
+    [
+      'third-biological-parent',
+      parent(R3, P3, P4),
+      [parent(R1, P1, P4), parent(R2, P2, P4)],
+    ],
+    ['duplicate', parent(R2, P1, P2, 'step'), [parent(R1, P1, P2)]],
+    ['duplicate', spouse(R2, P2, P1), [spouse(R1, P1, P2)]],
+    ['duplicate', spouse(R2, P1, P2), [spouse(R1, P1, P2)]],
+  ])('gives %s and saves nothing', async (code, input, existing) => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    for (const link of existing) {
+      await createRelationshipAction(link);
+    }
+
+    expect(await createRelationshipAction(input)).toEqual({
+      error: code,
+      ok: false,
+    });
+    expect(await relationshipsFor('a')).toHaveLength(existing.length);
+  });
+
+  it('gives tree-full for one more link in a full Tree', async () => {
+    const { relationshipsFor, scopeA, store } = await setupWithPersons();
+    const spouseInput = (n: number) => {
+      const checked = checkRelationshipInput(
+        spouse(
+          n === 0
+            ? R1
+            : `01900000-0000-7000-9000-${(0x100000 + n).toString(16).padStart(12, '0')}`,
+          P1,
+          P2
+        )
+      );
+
+      if (!checked.ok) {
+        throw new Error('setup failed');
+      }
+
+      return checked.value;
+    };
+
+    for (let n = 0; n < MAX_RELATIONSHIPS; n += 1) {
+      await store.addRelationship({ ...scopeA, relationship: spouseInput(n) });
+    }
+
+    expect(await createRelationshipAction(parent(R2, P1, P3))).toEqual({
+      error: 'tree-full',
+      ok: false,
+    });
+    expect(await relationshipsFor('a')).toHaveLength(MAX_RELATIONSHIPS);
+  }, 120_000);
+
+  it('gives divorce-before-marriage and saves nothing', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    expect(
+      await createRelationshipAction({
+        ...spouse(R1, P1, P2),
+        divorce: '1890',
+        marriage: '1900',
+      })
+    ).toEqual({ error: 'divorce-before-marriage', ok: false });
+    expect(await relationshipsFor('a')).toEqual([]);
+  });
+
+  it.each([
+    ['a bad id', { ...parent(R1, P1, P2), id: 'nope' }],
+    ['a bad type', { ...parent(R1, P1, P2), type: 'sibling' }],
+    ['a bad subtype', parent(R1, P1, P2, 'foster')],
+    ['no object', 'parent'],
+  ])('gives invalid for %s', async (_what, input) => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    expect(await createRelationshipAction(input)).toEqual({
+      error: 'invalid',
+      ok: false,
+    });
+    expect(await relationshipsFor('a')).toEqual([]);
+  });
+
+  it('revalidates the people pages after a save, and after nothing else', async () => {
+    await setupWithPersons();
+
+    await createRelationshipAction(parent(R1, P1, P1));
+    await createRelationshipAction({ ...parent(R1, P1, P2), type: 'x' });
+
+    expect(revalidate).not.toHaveBeenCalled();
+
+    await createRelationshipAction(parent(R1, P1, P2));
+
+    expect(revalidate).toHaveBeenCalledExactlyOnceWith('/people', 'layout');
+  });
+});
+
+// PPL-02, NFR-09
+describe('updateRelationshipAction', () => {
+  it('saves a change of the subtype and reads it back', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    await createRelationshipAction(parent(R1, P1, P2));
+
+    const updated = await updateRelationshipAction({
+      relationship: parent(R1, P1, P2, 'adoptive'),
+      version: 1,
+    });
+
+    expect(updated).toEqual({
+      ok: true,
+      value: { ...parent(R1, P1, P2, 'adoptive'), version: 2 },
+    });
+    expect(await relationshipsFor('a')).toEqual([updated.ok && updated.value]);
+  });
+
+  it('saves a change of a date and reads it back', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    await createRelationshipAction({ ...spouse(R1, P1, P2), marriage: '1890' });
+
+    const updated = await updateRelationshipAction({
+      relationship: {
+        ...spouse(R1, P1, P2),
+        divorce: '1900',
+        marriage: '1891',
+      },
+      version: 1,
+    });
+
+    expect(updated.ok && updated.value).toMatchObject({
+      divorce: { date1: '1900' },
+      marriage: { date1: '1891' },
+      version: 2,
+    });
+    expect(await relationshipsFor('a')).toEqual([updated.ok && updated.value]);
+  });
+
+  it('gives conflict for an old version', async () => {
+    await setupWithPersons();
+    await createRelationshipAction(parent(R1, P1, P2));
+    await updateRelationshipAction({
+      relationship: parent(R1, P1, P2, 'step'),
+      version: 1,
+    });
+
+    expect(
+      await updateRelationshipAction({
+        relationship: parent(R1, P1, P2),
+        version: 1,
+      })
+    ).toEqual({ error: 'conflict', ok: false });
+  });
+
+  it.each([
+    ['the type', spouse(R1, P1, P2)],
+    ['a Person', parent(R1, P1, P3)],
+  ])('gives not-found for a change of %s', async (_what, relationship) => {
+    await setupWithPersons();
+    await createRelationshipAction(parent(R1, P1, P2));
+
+    expect(
+      await updateRelationshipAction({ relationship, version: 1 })
+    ).toEqual({ error: 'not-found', ok: false });
+  });
+
+  it('gives a refusal and changes nothing', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    await createRelationshipAction(parent(R1, P1, P2));
+    await createRelationshipAction(parent(R2, P2, P3));
+
+    expect(
+      await updateRelationshipAction({
+        relationship: parent(R2, P2, P1),
+        version: 1,
+      })
+    ).toEqual({ error: 'cycle', ok: false });
+    expect(await relationshipsFor('a')).toHaveLength(2);
+  });
+
+  it('gives divorce-before-marriage and changes nothing', async () => {
+    const { relationshipsFor } = await setupWithPersons();
+
+    await createRelationshipAction(spouse(R1, P1, P2));
+
+    expect(
+      await updateRelationshipAction({
+        relationship: {
+          ...spouse(R1, P1, P2),
+          divorce: '1890',
+          marriage: '1900',
+        },
+        version: 1,
+      })
+    ).toEqual({ error: 'divorce-before-marriage', ok: false });
+    expect((await relationshipsFor('a'))[0]).toMatchObject({ version: 1 });
+  });
+
+  it.each([
+    ['a zero version', { relationship: parent(R1, P1, P2), version: 0 }],
+    ['a text version', { relationship: parent(R1, P1, P2), version: '1' }],
+    ['no version', { relationship: parent(R1, P1, P2) }],
+    [
+      'a bad id',
+      { relationship: { ...parent(R1, P1, P2), id: 'nope' }, version: 1 },
+    ],
+    [
+      'a bad type',
+      { relationship: { ...parent(R1, P1, P2), type: 'x' }, version: 1 },
+    ],
+    [
+      'a bad subtype',
+      { relationship: parent(R1, P1, P2, 'foster'), version: 1 },
+    ],
+  ])('gives invalid for %s', async (_what, input) => {
+    await setupWithPersons();
+
+    expect(await updateRelationshipAction(input)).toEqual({
+      error: 'invalid',
+      ok: false,
+    });
+  });
+
+  it('gives Account B the result of a Relationship that does not exist', async () => {
+    const { relationshipsFor, signInAs } = await setupWithPersons();
+    const input = { relationship: parent(R1, P1, P2), version: 1 };
+    const missing = await updateRelationshipAction(input);
+
+    await createRelationshipAction(parent(R1, P1, P2));
+    signInAs('b');
+
+    expect(missing).toEqual({ error: 'not-found', ok: false });
+    expect(await updateRelationshipAction(input)).toEqual(missing);
+    expect(await relationshipsFor('a')).toHaveLength(1);
+  });
+
+  it('revalidates the people pages after a saved change, not after a refusal', async () => {
+    await setupWithPersons();
+    await createRelationshipAction(parent(R1, P1, P2));
+    revalidate.mockClear();
+
+    await updateRelationshipAction({
+      relationship: parent(R1, P1, P1),
+      version: 1,
+    });
+    await updateRelationshipAction({
+      relationship: parent(R1, P1, P2, 'step'),
+      version: 9,
+    });
+
+    expect(revalidate).not.toHaveBeenCalled();
+
+    await updateRelationshipAction({
+      relationship: parent(R1, P1, P2, 'step'),
+      version: 1,
+    });
+
+    expect(revalidate).toHaveBeenCalledExactlyOnceWith('/people', 'layout');
   });
 });

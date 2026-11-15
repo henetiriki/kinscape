@@ -10,6 +10,9 @@ import { idField } from '#ks/lib/domain/ids/schemas.mts';
  */
 export const MAX_RELATIONSHIPS = 10_000;
 
+/** The issue message of a divorce before the marriage; `checkRelationshipInput` reads it. */
+export const DIVORCE_BEFORE_MARRIAGE = 'divorce is before marriage';
+
 const parentSchema = z.strictObject({
   childId: idField(parsePersonId),
   id: idField(parseRelationshipId),
@@ -32,7 +35,7 @@ const spouseSchema = z
       divorce === undefined ||
       marriage === undefined ||
       divorce.latestDay >= marriage.earliestDay,
-    { message: 'divorce is before marriage', path: ['divorce'] }
+    { message: DIVORCE_BEFORE_MARRIAGE, path: ['divorce'] }
   );
 
 /** What a client saves for a Relationship (PPL-02): a parent has a subtype, a spouse has dates. */

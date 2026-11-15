@@ -7,9 +7,14 @@ import type {
   PersonFieldErrors,
   PersonView,
 } from '@ks/lib/domain/persons/types.ts';
+import type {
+  Relationship,
+  RelationshipSaveError,
+} from '@ks/lib/domain/relationships/types.ts';
 import type { Result } from '@ks/lib/domain/result/types.ts';
 
 import { checkPerson } from '@ks/lib/domain/persons/form.mts';
+import { checkRelationshipInput } from '@ks/lib/domain/relationships/form.mts';
 import { treeAction } from '@ks/server/action.mts';
 
 type Saved<E extends string> = Result<
@@ -55,6 +60,42 @@ export const updatePersonAction = treeAction(
 
     return checked.ok
       ? revalidated(await tree.persons.update(checked.value, version))
+      : checked;
+  }
+);
+
+type RelationshipSaved = Result<Relationship, RelationshipSaveError>;
+
+/**
+ * Saves a new Relationship (PPL-02). A rule refusal, a full Tree or a bad input gives its code and
+ * saves nothing. A repeat of the same id returns the Relationship saved first.
+ */
+export const createRelationshipAction = treeAction(
+  z.unknown(),
+  async (tree, raw): Promise<RelationshipSaved> => {
+    const checked = checkRelationshipInput(raw);
+
+    return checked.ok
+      ? revalidated(await tree.relationships.create(checked.value))
+      : checked;
+  }
+);
+
+/**
+ * Saves a change to a Relationship. `version` is the one the client read; a stale one gives
+ * `conflict`. A change of type or of a Person, or another Account's Relationship, gives
+ * `not-found`.
+ */
+export const updateRelationshipAction = treeAction(
+  z.object({
+    relationship: z.unknown(),
+    version: z.number().int().positive(),
+  }),
+  async (tree, { relationship, version }): Promise<RelationshipSaved> => {
+    const checked = checkRelationshipInput(relationship);
+
+    return checked.ok
+      ? revalidated(await tree.relationships.update(checked.value, version))
       : checked;
   }
 );

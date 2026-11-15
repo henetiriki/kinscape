@@ -14,7 +14,12 @@ it('gives the phone callout 4px bottom padding', () => {
     'utf8'
   );
 
-  expect(css).toContain(
+  const phone =
+    /@media \(max-width: 639\.98px\)[^{]*\{\s*\.row > \.callout \{[^}]*\}/.exec(
+      css
+    )![0];
+
+  expect(phone).toContain(
     'padding: var(--space-12) var(--space-16) var(--space-4)'
   );
 });

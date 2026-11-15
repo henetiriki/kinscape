@@ -39,19 +39,19 @@
 
 1. Write the CSS tests, as `ArrowLink.test.tsx` reads its module. See them fail. Change the two modules.
 2. Run steps 2 to 7 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system). The tech lead, or a local Claude Code session that the tech lead starts, runs steps 3 to 5.
-3. In step 7, the session swaps only the `date-invalid` fix link on `Map-phone-states`. Tell it that the swap changes pixels on purpose: keep the swap if the export passes. The callout keeps its padding.
+3. In step 7, the session swaps only the `date-invalid` fix link on `Map-phone-states`. Tell it that the swap changes pixels on purpose. If the export passes, keep the swap. The callout keeps its padding.
 4. The tech lead runs Design: Render snapshots. These snapshots change:
    - `style-5-feedback`, `style-5-feedback-phone`
    - `style-7-components-surfaces-2`, `style-7-components-surfaces-2-phone`
    - `add-pin`, `add-pin-phone` (D3)
    - `map-date-invalid-phone`
+   - `people-list-relationships`, `person-edit-relationships`, `person-edit-relationships-leave`, `style-6-components-inputs`, `-2` and `-3`: the `TextLink` class name changes
 5. Run `npm run design:check` on the six screens of the done check.
 
 ## Risks
 
 - The Surfaces kit sample of the phone callout keeps 12px under the link, as `SG-Surfaces-2` does. The map callout has 4px. The Constraints keep that board. A follow-up Chore can align the two.
-- D1 adds `SG-Feedback-phone` to the Constraints of the issue. The tech lead updates them.
-- A page that grows can push content past its `screens.json` height. Step 5 shows it; raise the height to the board's.
+- A page that grows can pass its `screens.json` height. Step 5 shows it. Raise the height to the board's.
 
 ## Deviations
 

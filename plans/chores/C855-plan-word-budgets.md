@@ -5,14 +5,24 @@
 
 ## Approach
 
-In `BUDGETS` in `scripts/word-count.mts`, the three plan entries change: Spec plans 600 to 900, Bug plans 600 to 900, chore plans 300 to 450. `plans/TEMPLATE.md` line 4 says "Budget: 900 words". No other entry, comment or rule changes.
+In `BUDGETS` in `scripts/word-count.mts`, the three plan entries change:
+
+- Spec plans: 600 to 900.
+- Bug plans: 600 to 900.
+- Chore plans: 300 to 450.
+
+`plans/TEMPLATE.md` line 4 says "Budget: 900 words". No other entry, comment or rule changes.
 
 In `scripts/__tests__/word-count.test.ts`, each number that comes from a plan budget changes with it:
 
-- The `budgetFor` cases for `plans/M0.1-hello-vercel.md`, `plans/TEMPLATE.md`, `plans/bugs/B1-x.md` and `plans/chores/C1-x.md`.
+- The `budgetFor` cases for these paths:
+  - `plans/M0.1-hello-vercel.md`
+  - `plans/TEMPLATE.md`
+  - `plans/bugs/B1-x.md`
+  - `plans/chores/C1-x.md`
 - The two boundary tests become one `it.each` over a Spec, Bug and chore plan. Each case checks that a file at the budget passes and one word over fails. `main` has no boundary test for a Spec plan.
 - The Deviations cases.
-- "counts the sections around a Deviations section": 200 and 251 words, so the error says 451 words, budget 450.
+- "counts the sections around a Deviations section": 200 and 251 words, so the error says 452 words, budget 450. The word "Risks" in `## Risks` adds one word.
 - "checks every tracked file" and "checks only the paths given": 901 and 451 words, so each file is still one word over.
 
 ## Files that change
@@ -38,4 +48,9 @@ In `scripts/__tests__/word-count.test.ts`, each number that comes from a plan bu
 
 ## Out of scope
 
-- Other budgets, the `## Deviations` exclusion, the too-big rule, merged plans, `plans/README.md` and `docs/writing.md`.
+- Other budgets.
+- The `## Deviations` exclusion.
+- The too-big rule.
+- Merged plans.
+- `plans/README.md`.
+- `docs/writing.md`.

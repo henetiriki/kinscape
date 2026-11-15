@@ -80,6 +80,8 @@ describe('routeOf', () => {
     ['app/people/page.js', '/people'],
     ['app/people/[id]/opengraph-image.tsx', '/people/x/opengraph-image'],
     ['app/icon.tsx', '/icon'],
+    ['app/@map/page.tsx', '/'],
+    ['app/people/@modal/new/page.tsx', '/people/new'],
   ])('serves %s at %s', (file, path) => {
     expect(routeOf(file)).toEqual({ file, path });
   });

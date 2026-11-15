@@ -3,11 +3,12 @@ import type { ReactNode } from 'react';
 import type { ControlState } from '@ks/app/components/foundation/types';
 
 import { Icon } from '@ks/app/components/foundation/Icon';
+import { KitLink } from '@ks/app/components/foundation/link';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 
 import styles from '@ks/app/components/foundation/PageHeader.module.css';
 
-/** The 44px link back to the page above, with the back icon. It is an anchor, not `next/link`. */
+/** The 44px link back to the page above, with the back icon. It renders the `LinkContext` link. */
 export const BackLink = ({
   href,
   label,
@@ -17,10 +18,10 @@ export const BackLink = ({
   label: string;
   state?: ControlState;
 }) => (
-  <a className={styles.back} data-state={state} href={href}>
+  <KitLink className={styles.back} data-state={state} href={href}>
     <Icon name='back' size={16} />
     <span className={styles.label}>{label}</span>
-  </a>
+  </KitLink>
 );
 
 /**

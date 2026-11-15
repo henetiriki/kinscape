@@ -143,14 +143,23 @@ describe('/people/{id}', () => {
 
 // PPL-01
 describe('the layout', () => {
-  it('renders its page', () => {
+  it('renders its page for a signed-in Account', async () => {
     render(
-      <PeopleLayout>
-        <p>The page</p>
-      </PeopleLayout>
+      await PeopleLayout({
+        children: <p>The page</p>,
+      })
     );
 
     screen.getByText('The page');
+  });
+
+  // NFR-03
+  it('sends a visitor with no session to the sign-in page before it renders', async () => {
+    session.mockRejectedValueOnce(new Error('redirect:/sign-in'));
+
+    await expect(PeopleLayout({ children: <p>The page</p> })).rejects.toThrow(
+      'redirect:/sign-in'
+    );
   });
 });
 

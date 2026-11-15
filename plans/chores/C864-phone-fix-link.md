@@ -33,6 +33,7 @@
 | `design/screens.json`                        | Changed       | The height of a page that grows         |
 | `Map-phone-states.dc.html`                   | Changed       | The swap, and a `noop` handler (step 7) |
 | `SG-Feedback-phone.dc.html`                  | Changed       | The 4px bottom padding (D1)             |
+| `app/design-kit/feedback/page.module.css`    | Changed       | The phone callout lift, 90px to 74px    |
 
 ## Order of work
 
@@ -49,8 +50,12 @@
 ## Risks
 
 - The Surfaces kit sample of the phone callout keeps 12px under the link, as `SG-Surfaces-2` does. The map callout has 4px. The Constraints keep that board. A follow-up Chore can align the two.
-- The issue Constraints name only `Map-phone-states`. D1 adds `SG-Feedback-phone`. The tech lead updates the Constraints of the issue.
+- D1 adds `SG-Feedback-phone` to the Constraints of the issue. The tech lead updates them.
 - A page that grows can push content past its `screens.json` height. Step 5 shows it; raise the height to the board's.
+
+## Deviations
+
+- The board anchors its callout at the top, and the kit page anchors it at the bottom. A 44px link moved the callout 16px. The lift is now 74px.
 
 ## Proof
 

@@ -1,18 +1,22 @@
 import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
-// Reads and resolves a PR's review threads for the fix-review run (.github/agent/fix-review.md).
-// GraphQL is the only way to see whether a thread is resolved, or to resolve one, and the agent's
-// settings deny `gh api` a body, so the run calls this instead.
+// Reads, resolves and answers a PR's review threads for the fix-review run (.github/agent/fix-review.md).
+// GraphQL is the only way to see whether a thread is resolved, to resolve one, or to reply on one,
+// and the agent's settings deny `gh api` a body, so the run calls this instead.
 //   list <PR number>                 prints JSON: `threads`, the unresolved review threads, and
 //                                    `comments`, the PR's last comments; each comment carries its
 //                                    author's `login` and `bot`, so the prompt can tell the reviewer apart
-//   resolve <PR number> <thread id>  resolves that thread, which must be one of the PR's
-// Usage: node scripts/review-threads.mts list|resolve <PR number> [<thread id>], with GH_REPO or
+//   resolve <PR number> <thread id>  resolves that thread, which must be one of the PR's that the
+//                                    reviewer started
+//   reply <PR number> <thread id>    replies on that thread, with the same limit, with the text on
+//                                    stdin
+// Usage: node scripts/review-threads.mts list|resolve|reply <PR number> [<thread id>], with GH_REPO or
 // GITHUB_REPOSITORY (which Actions sets) naming the repo. A failed `gh` call is logged and the
-// exit code is 1. The threads are read page by page; the comments are the last 50; a resolve asks
-// the thread itself which PR it is on.
+// exit code is 1. The threads are read page by page; the comments are the last 50; a resolve or a
+// reply asks the thread itself which PR it is on.
 
 type Author = { __typename: string; login: string } | null;
 type Comment = { author: Author; body: string; createdAt?: string };
@@ -26,6 +30,8 @@ type Thread = {
   path: string;
 };
 
+// The review posts with the workflow token: its author is `github-actions` of type Bot.
+const REVIEWER = 'github-actions';
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 // A GraphQL node id, as `list` prints it.
@@ -50,11 +56,17 @@ const COMMENTS = `query($owner: String!, $name: String!, $number: Int!) {
 }`;
 const THREAD = `query($id: ID!) {
   node(id: $id) {
-    ... on PullRequestReviewThread { pullRequest { number repository { nameWithOwner } } }
+    ... on PullRequestReviewThread {
+      pullRequest { number repository { nameWithOwner } }
+      comments(first: 1) { nodes { author { login __typename } } }
+    }
   }
 }`;
 const RESOLVE = `mutation($id: ID!) {
   resolveReviewThread(input: { threadId: $id }) { thread { isResolved } }
+}`;
+const REPLY = `mutation($id: ID!, $body: String!) {
+  addPullRequestReviewThreadReply(input: { pullRequestReviewThreadId: $id, body: $body }) { comment { id } }
 }`;
 
 // A string variable goes in with `-f`; `-F` types its value, which `$number: Int!` needs and a
@@ -102,15 +114,21 @@ const commentsOf = (gh: Gh, pr: Record<string, number | string>): Comment[] =>
   graphql<Pr<{ comments: { nodes: Comment[] } }>>(gh, COMMENTS, pr).repository
     .pullRequest.comments.nodes;
 
-// The PR a review thread is on, as "<owner>/<repo>#<number>"; '' for an id that is no thread.
+// The PR a review thread is on, as "<owner>/<repo>#<number>"; '' for an id that is no thread, and
+// for a thread that the reviewer did not start: a thread of a person is left for a person.
 const threadOn = (gh: Gh, id: string): string => {
-  const on = graphql<{
+  const node = graphql<{
     node: {
+      comments?: { nodes: { author: Author }[] };
       pullRequest?: { number: number; repository: { nameWithOwner: string } };
     } | null;
-  }>(gh, THREAD, { id }).node?.pullRequest;
+  }>(gh, THREAD, { id }).node;
+  const on = node?.pullRequest;
+  const author = node?.comments?.nodes[0]?.author;
 
-  return on === undefined
+  return on === undefined ||
+    author?.login !== REVIEWER ||
+    author.__typename !== 'Bot'
     ? ''
     : `${on.repository.nameWithOwner}#${on.number}`.toLowerCase();
 };
@@ -122,25 +140,30 @@ const comment = ({ author, body, createdAt }: Comment) => ({
   ...(createdAt === undefined ? {} : { createdAt }),
 });
 
+const USAGE =
+  'Usage: review-threads list|resolve|reply <PR number> [<thread id>], with GH_REPO or GITHUB_REPOSITORY=<owner>/<repo> set; reply reads its text from stdin';
+
+// `readBody` reads the text of a reply from stdin. It runs only for a reply whose arguments are
+// valid, and a failed read is logged like a failed `gh` call.
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
   gh: Gh,
-  out: (text: string) => void
+  out: (text: string) => void,
+  readBody: () => string = () => ''
 ): number => {
   const [command, raw, id] = args;
   const repo = env.GH_REPO || env.GITHUB_REPOSITORY || '';
+  const onThread = command === 'resolve' || command === 'reply';
 
   if (
-    (command !== 'list' && command !== 'resolve') ||
+    (command !== 'list' && !onThread) ||
     !NUMBER.test(raw ?? '') ||
     !REPO.test(repo) ||
-    (command === 'resolve') !== (id !== undefined) ||
+    onThread !== (id !== undefined) ||
     (id !== undefined && !ID.test(id))
   ) {
-    console.error(
-      'Usage: review-threads list|resolve <PR number> [<thread id>], with GH_REPO or GITHUB_REPOSITORY=<owner>/<repo> set'
-    );
+    console.error(USAGE);
 
     return 1;
   }
@@ -149,6 +172,14 @@ export const run = (
   const pr = { name, number: Number(raw), owner };
 
   try {
+    const text = command === 'reply' ? readBody().trim() : '';
+
+    if (command === 'reply' && text === '') {
+      console.error(USAGE);
+
+      return 1;
+    }
+
     if (command === 'list') {
       out(
         JSON.stringify(
@@ -172,13 +203,20 @@ export const run = (
     }
 
     if (threadOn(gh, id as string) !== `${repo}#${raw}`.toLowerCase()) {
-      console.error(`#${raw} has no review thread ${id}.`);
+      console.error(
+        `#${raw} has no review thread ${id} that the reviewer started.`
+      );
 
       return 1;
     }
 
-    graphql(gh, RESOLVE, { id: id as string });
-    out(`Resolved ${id} on #${raw}.`);
+    if (command === 'reply') {
+      graphql(gh, REPLY, { body: text, id: id as string });
+      out(`Replied on ${id} of #${raw}.`);
+    } else {
+      graphql(gh, RESOLVE, { id: id as string });
+      out(`Resolved ${id} on #${raw}.`);
+    }
 
     return 0;
   } catch (error) {
@@ -188,7 +226,7 @@ export const run = (
   }
 };
 
-/* v8 ignore next 10 -- only true when run directly with node, not when imported */
+/* v8 ignore next 11 -- only true when run directly with node, not when imported */
 if (import.meta.main) {
   process.exitCode = run(
     process.argv.slice(2),
@@ -199,6 +237,7 @@ if (import.meta.main) {
         input,
         maxBuffer: 16 * 1024 * 1024,
       }),
-    text => console.log(text)
+    text => console.log(text),
+    () => readFileSync(0, 'utf8')
   );
 }

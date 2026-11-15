@@ -18,11 +18,13 @@ type Thread = {
 
 const bot: Author = { __typename: 'Bot', login: 'claude' };
 const person: Author = { __typename: 'User', login: 'claude' };
+// The workflow token posts the review: the script shows the reviewer as `github-actions`.
+const reviewer: Author = { __typename: 'Bot', login: 'github-actions' };
 
 const THREADS: Thread[] = [
   {
     comments: [
-      { author: bot, body: 'Unused import.' },
+      { author: reviewer, body: 'Unused import.' },
       { author: person, body: 'Fixed.' },
     ],
     id: 'PRRT_1',
@@ -43,6 +45,13 @@ const THREADS: Thread[] = [
     isResolved: false,
     line: null,
     path: 'README.md',
+  },
+  {
+    comments: [{ author: person, body: 'Please check the date.' }],
+    id: 'PRRT_4',
+    isResolved: true,
+    line: 8,
+    path: 'app/page.tsx',
   },
 ];
 const COMMENTS = [
@@ -83,8 +92,14 @@ describe('run', () => {
 
       if (query.includes('node(id:')) {
         const id = args.find(arg => arg.startsWith('id='))?.slice(3);
-        const node = threads.some(thread => thread.id === id)
+        const found = threads.find(thread => thread.id === id);
+        const node = found
           ? {
+              comments: {
+                nodes: found.comments
+                  .slice(0, 1)
+                  .map(({ author }) => ({ author })),
+              },
               pullRequest: {
                 number: on.number,
                 repository: { nameWithOwner: on.repo },
@@ -142,6 +157,7 @@ describe('run', () => {
   const commentQueries = () => about('comments(last');
   const byId = () => about('node(id:');
   const mutations = () => about('resolveReviewThread');
+  const replies = () => about('addPullRequestReviewThreadReply');
   // The flag before a variable: `-f` sends it as a string, `-F` as a typed value.
   const flagOf = (args: string[], variable: string) =>
     args[args.indexOf(variable) - 1];
@@ -173,6 +189,9 @@ describe('run', () => {
       [['list', '5', 'PRRT_1'], ENV],
       [['resolve', '5'], ENV],
       [['resolve', '5', 'PRRT_1; rm'], ENV],
+      [['reply', '5'], ENV],
+      [['reply', '5', 'PRRT_1; rm'], ENV],
+      [['reply', '5', 'PRRT_1'], ENV],
       [['list', '5'], { GH_REPO: 'no-slash' }],
       [['list', '5'], {}],
     ])('rejects %j with env %j', (args, env) => {
@@ -230,7 +249,7 @@ describe('run', () => {
         threads: [
           {
             comments: [
-              { body: 'Unused import.', bot: true, login: 'claude' },
+              { body: 'Unused import.', bot: true, login: 'github-actions' },
               { body: 'Fixed.', bot: false, login: 'claude' },
             ],
             id: 'PRRT_1',
@@ -315,12 +334,112 @@ describe('run', () => {
       ['PR_1', {}, 'a node that is no thread'],
       ['PRRT_1', { on: { number: 7, repo: 'owner/repo' } }, 'another PR'],
       ['PRRT_1', { on: { number: 5, repo: 'owner/fork' } }, 'another repo'],
+      ['PRRT_2', {}, 'a thread of another bot'],
+      ['PRRT_3', {}, 'a thread of a deleted account'],
+      ['PRRT_4', {}, 'a thread that a person started'],
     ])('resolves nothing for %s (%s)', (id, options) => {
       fakeGh(THREADS, options);
 
       expect(run(['resolve', '5', id], ENV, gh, out)).toBe(1);
       expect(mutations()).toEqual([]);
-      expect(errors).toEqual([`#5 has no review thread ${id}.`]);
+      expect(errors).toEqual([
+        `#5 has no review thread ${id} that the reviewer started.`,
+      ]);
+      expect(out).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('reply', () => {
+    it('posts the text as a reply on a thread of the PR, and resolves nothing', () => {
+      fakeGh();
+
+      expect(
+        run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => 'Fixed in abc1234.\n')
+      ).toBe(0);
+      expect(byId()).toHaveLength(1);
+      expect(replies()).toHaveLength(1);
+      expect(flagOf(replies()[0], 'id=PRRT_1')).toBe('-f');
+      expect(flagOf(replies()[0], 'body=Fixed in abc1234.')).toBe('-f');
+      expect(mutations()).toEqual([]);
+      expect(threadQueries()).toEqual([]);
+      expect(out).toHaveBeenCalledWith('Replied on PRRT_1 of #5.');
+    });
+
+    // `-F` would read a file for `@name`; `-f` sends the text as it is.
+    it('sends text that starts with @ as a string', () => {
+      fakeGh();
+      run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => '@file');
+
+      expect(flagOf(replies()[0], 'body=@file')).toBe('-f');
+    });
+
+    it('replies on nothing when the text is blank', () => {
+      fakeGh();
+
+      expect(run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => ' \n')).toBe(1);
+      expect(errors[0]).toMatch(/^Usage/);
+      expect(gh).not.toHaveBeenCalled();
+    });
+
+    // A read of stdin that fails is logged, not thrown.
+    it('logs a failed read of the text and exits 1', () => {
+      fakeGh();
+
+      expect(
+        run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => {
+          throw new Error('EAGAIN');
+        })
+      ).toBe(1);
+      expect(errors).toEqual(['#5: EAGAIN']);
+      expect(gh).not.toHaveBeenCalled();
+    });
+
+    it('reads no text when the arguments are wrong or the command is not a reply', () => {
+      fakeGh();
+      const read = vi.fn(() => 'Fixed.');
+
+      run(['reply', '5'], ENV, gh, out, read);
+      run(['resolve', '5', 'PRRT_1'], ENV, gh, out, read);
+      run(['list', '5'], ENV, gh, out, read);
+
+      expect(read).not.toHaveBeenCalled();
+    });
+
+    it.each<[string, Options, string]>([
+      ['PRRT_9', {}, 'an unknown id'],
+      ['PR_1', {}, 'a node that is no thread'],
+      ['PRRT_1', { on: { number: 7, repo: 'owner/repo' } }, 'another PR'],
+      ['PRRT_1', { on: { number: 5, repo: 'owner/fork' } }, 'another repo'],
+      ['PRRT_2', {}, 'a thread of another bot'],
+      ['PRRT_3', {}, 'a thread of a deleted account'],
+      ['PRRT_4', {}, 'a thread that a person started'],
+    ])('replies on nothing for %s (%s)', (id, options) => {
+      fakeGh(THREADS, options);
+
+      expect(run(['reply', '5', id], ENV, gh, out, () => 'Fixed.')).toBe(1);
+      expect(replies()).toEqual([]);
+      expect(errors).toEqual([
+        `#5 has no review thread ${id} that the reviewer started.`,
+      ]);
+      expect(out).not.toHaveBeenCalled();
+    });
+
+    it('logs a failed reply and exits 1', () => {
+      fakeGh();
+      const answer = gh.getMockImplementation() as Gh;
+
+      gh.mockImplementation((args, input) => {
+        if (args.some(arg => arg.includes('addPullRequestReviewThreadReply'))) {
+          throw new Error('HTTP 502');
+        }
+
+        return answer(args, input);
+      });
+
+      expect(run(['reply', '5', 'PRRT_1'], ENV, gh, out, () => 'Fixed.')).toBe(
+        1
+      );
+      expect(errors).toEqual(['#5: HTTP 502']);
       expect(out).not.toHaveBeenCalled();
     });
   });

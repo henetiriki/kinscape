@@ -272,30 +272,53 @@ jobs:
       # Last, so that the output, the working comment and the missing-review report are done before the job
       # turns red. This job is the required check `Review`. It is red while the review has open findings,
       # so the PR can't merge.
-      # An open finding is an inline comment of the bot on the head commit, from any run. A re-run doesn't
-      # repeat a finding that is still on the PR. The count in the latest `Open findings: <n>` comment
-      # (review.md › Findings) adds earlier findings that are still open, and findings with no line to hold
-      # them. A push that fixes a finding, or that follows a reply the review accepts, gets a review that
-      # says 0. A failed call fails the step.
+      # An open finding is a review thread that the reviewer started and nobody resolved, on any commit: a
+      # push after a review (the snapshot bot's too) moves the head, and the thread stays. A re-run doesn't
+      # repeat a finding that is still on the PR. The count in the latest `Earlier findings still open: <n>`
+      # comment (review.md › Findings) adds the findings that a thread can't show: a resolved thread whose
+      # defect is still in the code, and a finding with no line. A fixer resolves a thread before it pushes
+      # (fix-review.md), so the review that the push starts sees it. A thread that a person resolves starts
+      # no run: they re-run the job. A failed call fails the step.
       - name: Fail on open findings
         if: steps.claude-review.outcome == 'success'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          # original_commit_id, because commit_id moves to the head of the PR.
-          inline=$(gh api --paginate "repos/$GH_REPO/pulls/$PR_NUMBER/comments" \
-            --jq '.[] | select(.user.login == "github-actions[bot]" and .in_reply_to_id == null and .original_commit_id == env.HEAD_SHA) | .id' | wc -l | tr -d ' ')
+          # One page of 100 threads in each pass. The first comment of a thread names who started it:
+          # the reviewer is `github-actions` of type Bot.
+          threads=0
+          cursor=''
+          while :; do
+            args=(-f owner="${GH_REPO%/*}" -f name="${GH_REPO#*/}" -F number="$PR_NUMBER")
+            [ -z "$cursor" ] || args+=(-f after="$cursor")
+            page=$(gh api graphql "${args[@]}" -f query='query($owner: String!, $name: String!, $number: Int!, $after: String) {
+              repository(owner: $owner, name: $name) {
+                pullRequest(number: $number) {
+                  reviewThreads(first: 100, after: $after) {
+                    pageInfo { endCursor hasNextPage }
+                    nodes { isResolved comments(first: 1) { nodes { author { login __typename } } } }
+                  }
+                }
+              }
+            }' --jq '.data.repository.pullRequest.reviewThreads | [([.nodes[] | select(.isResolved | not) | .comments.nodes[0].author | select(.login == "github-actions" and .__typename == "Bot")] | length), .pageInfo.hasNextPage, (.pageInfo.endCursor // "")] | @tsv')
+            IFS=$'\t' read -r count more cursor <<<"$page"
+            threads=$((threads + count))
+            [ "$more" = true ] || break
+            if [ -z "$cursor" ]; then
+              echo "::error::A page of review threads has a next page but no cursor."
+              exit 1
+            fi
+          done
           # The comment starts with the line. Claude may wrap it in markdown: `, *, _, # or >, around the
           # label or the number.
           earlier=$(gh api --paginate "repos/$GH_REPO/issues/$PR_NUMBER/comments" \
-            --jq '.[] | select(.user.login == "github-actions[bot]") | .body | capture("\\A[\\s*_`#>]*Open findings[*_`]*:[\\s*_`]*(?<n>[0-9]+)") | .n' | tail -n 1)
-          total=$((inline + ${earlier:-0}))
+            --jq '.[] | select(.user.login == "github-actions[bot]") | .body | capture("\\A[\\s*_`#>]*Earlier findings still open[*_`]*:[\\s*_`]*(?<n>[0-9]+)") | .n' | tail -n 1)
+          total=$((threads + ${earlier:-0}))
           if [ "$total" -gt 0 ]; then
-            echo "::error::The review has open findings: $total ($inline inline on this commit, ${earlier:-0} in its Open findings comment)."
+            echo "::error::The review has open findings: $total ($threads unresolved threads, ${earlier:-0} in its Earlier findings still open comment)."
             exit 1
           fi
           echo "The review has no open findings."

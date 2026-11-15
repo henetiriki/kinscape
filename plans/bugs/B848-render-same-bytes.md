@@ -1,7 +1,7 @@
 # Plan: B848: The Render workflow changes the map-desktop-filters JPG on a branch that does not touch it
 
 - **Spec:** #848 (Bug; found on PR #847)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -16,7 +16,7 @@ The data point to the render, not to the runner. Each flip changed one JPG, but 
 - **C.** A, and `--disable-skia-runtime-opts` to pin the CPU path. Most JPGs then get new bytes once, with the 11 relationship JPGs.
 - **Other:** your own.
 
-Recommended: A, because the data point to the render.
+**Answer: A** (@henetiriki)
 
 **D2 · If proof run 1 rewrites JPGs** · Decides: Tech lead
 
@@ -26,7 +26,7 @@ Run 1, the first with the flag, can rewrite JPGs whose board did not change.
 - **B.** Stop, and return to D1.
 - **Other:** your own.
 
-Recommended: A, because the workflow makes the commit, not a hand.
+**Answer: A** (@henetiriki)
 
 **D3 · How many proof runs** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Two of 10 Render commits flipped a JPG. At that rate, the unfixed render passes 
 - **B.** 10 runs. A false pass falls to about 13%.
 - **Other:** your own.
 
-Recommended: B, because 3 runs prove too little.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

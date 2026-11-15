@@ -17,3 +17,12 @@ export type Relationship = { version: number } & RelationshipInput;
 
 /** What a client saves for a Relationship. */
 export type RelationshipInput = z.output<typeof relationshipInputSchema>;
+
+/** Every result code of the Relationship actions: a refusal, a store error or an input error. */
+export type RelationshipSaveError =
+  | 'conflict'
+  | 'divorce-before-marriage'
+  | 'invalid'
+  | 'not-found'
+  | 'tree-full'
+  | Refusal;

@@ -12,7 +12,7 @@ const create = async (page: Page, family: string, given: string) => {
   await page.getByLabel('Surname').fill(family);
   await page.getByRole('button', { name: 'Save' }).click();
   await page.waitForURL(url => url.pathname === '/people');
-  await page.getByText(`${family}, ${given}`).click();
+  await page.getByText(`${family}, ${given}`, { exact: true }).click();
   await page.waitForURL(/\/people\/[0-9a-f-]{36}$/);
 
   return `${new URL(page.url()).pathname}/relationships`;

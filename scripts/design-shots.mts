@@ -94,6 +94,14 @@ export const findProblems = (root: string): string[] => {
   return problems;
 };
 
+/** One raster thread: several threads can tile a page in a different order on each run, which changes the JPG bytes. */
+const LAUNCH_ARGS = ['--num-raster-threads=1'];
+
+/** Starts the browser with `LAUNCH_ARGS`; takes the browser type so a test can check the arguments. */
+export const launch = <Browser,>(browserType: {
+  launch: (options: { args: string[] }) => Promise<Browser>;
+}): Promise<Browser> => browserType.launch({ args: LAUNCH_ARGS });
+
 const sameBytes = (path: string, bytes: Uint8Array): boolean =>
   existsSync(path) && Buffer.compare(readFileSync(path), bytes) === 0;
 
@@ -129,7 +137,7 @@ export const render = async (
 /* v8 ignore start -- launches Chromium; only runs when invoked directly */
 if (import.meta.main) {
   const { chromium } = await import('@playwright/test');
-  const browser = await chromium.launch();
+  const browser = await launch(chromium);
 
   try {
     const changed = await render('.', process.argv.slice(2), {

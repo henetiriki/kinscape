@@ -47,6 +47,7 @@ A resolved thread does not start the `Review` job. Which run turns the check gre
 - `review.md` and `fix-review.md` are near their word budgets. The build makes other sentences shorter.
 - This PR changes `claude-code-review.yml`, so Claude does not review it.
 - If the push fails after a resolve, a thread stays resolved with no fix. The reviewer counts it in `<n>` on the next push.
+- The reviewer can count a finding in `<n>` after a fixer resolved its thread as wrong. No unresolved thread is left for the next fixer run. A person handles it.
 
 ## Proof
 
@@ -72,3 +73,4 @@ A resolved thread does not start the `Review` job. Which run turns the check gre
 - The summary comment also holds the gaps that no committed file's input reaches, as before.
 - Both fixers reply with the reason before the push, for a judged-wrong thread and a thread for a person. They reply "Fixed in <sha>." after it. The review that the push starts must see the reason.
 - `reply` reads its text inside the `try` of `run`, after the arguments validate. A failed read exits 1.
+- `resolve` and `reply` refuse a thread that the reviewer did not start. The prompt alone left a person's thread to the fixer.

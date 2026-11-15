@@ -9,9 +9,10 @@ import type { Gh } from '#ks/scripts/types.ts';
 //   list <PR number>                 prints JSON: `threads`, the unresolved review threads, and
 //                                    `comments`, the PR's last comments; each comment carries its
 //                                    author's `login` and `bot`, so the prompt can tell the reviewer apart
-//   resolve <PR number> <thread id>  resolves that thread, which must be one of the PR's
-//   reply <PR number> <thread id>    replies on that thread, which must be one of the PR's, with the
-//                                    text on stdin
+//   resolve <PR number> <thread id>  resolves that thread, which must be one of the PR's that the
+//                                    reviewer started
+//   reply <PR number> <thread id>    replies on that thread, with the same limit, with the text on
+//                                    stdin
 // Usage: node scripts/review-threads.mts list|resolve|reply <PR number> [<thread id>], with GH_REPO or
 // GITHUB_REPOSITORY (which Actions sets) naming the repo. A failed `gh` call is logged and the
 // exit code is 1. The threads are read page by page; the comments are the last 50; a resolve or a
@@ -29,6 +30,8 @@ type Thread = {
   path: string;
 };
 
+// The review posts with the workflow token: its author is `github-actions` of type Bot.
+const REVIEWER = 'github-actions';
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 // A GraphQL node id, as `list` prints it.
@@ -53,7 +56,10 @@ const COMMENTS = `query($owner: String!, $name: String!, $number: Int!) {
 }`;
 const THREAD = `query($id: ID!) {
   node(id: $id) {
-    ... on PullRequestReviewThread { pullRequest { number repository { nameWithOwner } } }
+    ... on PullRequestReviewThread {
+      pullRequest { number repository { nameWithOwner } }
+      comments(first: 1) { nodes { author { login __typename } } }
+    }
   }
 }`;
 const RESOLVE = `mutation($id: ID!) {
@@ -108,15 +114,21 @@ const commentsOf = (gh: Gh, pr: Record<string, number | string>): Comment[] =>
   graphql<Pr<{ comments: { nodes: Comment[] } }>>(gh, COMMENTS, pr).repository
     .pullRequest.comments.nodes;
 
-// The PR a review thread is on, as "<owner>/<repo>#<number>"; '' for an id that is no thread.
+// The PR a review thread is on, as "<owner>/<repo>#<number>"; '' for an id that is no thread, and
+// for a thread that the reviewer did not start: a thread of a person is left for a person.
 const threadOn = (gh: Gh, id: string): string => {
-  const on = graphql<{
+  const node = graphql<{
     node: {
+      comments?: { nodes: { author: Author }[] };
       pullRequest?: { number: number; repository: { nameWithOwner: string } };
     } | null;
-  }>(gh, THREAD, { id }).node?.pullRequest;
+  }>(gh, THREAD, { id }).node;
+  const on = node?.pullRequest;
+  const author = node?.comments?.nodes[0]?.author;
 
-  return on === undefined
+  return on === undefined ||
+    author?.login !== REVIEWER ||
+    author.__typename !== 'Bot'
     ? ''
     : `${on.repository.nameWithOwner}#${on.number}`.toLowerCase();
 };
@@ -191,7 +203,9 @@ export const run = (
     }
 
     if (threadOn(gh, id as string) !== `${repo}#${raw}`.toLowerCase()) {
-      console.error(`#${raw} has no review thread ${id}.`);
+      console.error(
+        `#${raw} has no review thread ${id} that the reviewer started.`
+      );
 
       return 1;
     }

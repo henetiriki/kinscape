@@ -18,11 +18,13 @@ type Thread = {
 
 const bot: Author = { __typename: 'Bot', login: 'claude' };
 const person: Author = { __typename: 'User', login: 'claude' };
+// The workflow token posts the review: the script shows the reviewer as `github-actions`.
+const reviewer: Author = { __typename: 'Bot', login: 'github-actions' };
 
 const THREADS: Thread[] = [
   {
     comments: [
-      { author: bot, body: 'Unused import.' },
+      { author: reviewer, body: 'Unused import.' },
       { author: person, body: 'Fixed.' },
     ],
     id: 'PRRT_1',
@@ -43,6 +45,13 @@ const THREADS: Thread[] = [
     isResolved: false,
     line: null,
     path: 'README.md',
+  },
+  {
+    comments: [{ author: person, body: 'Please check the date.' }],
+    id: 'PRRT_4',
+    isResolved: true,
+    line: 8,
+    path: 'app/page.tsx',
   },
 ];
 const COMMENTS = [
@@ -83,8 +92,14 @@ describe('run', () => {
 
       if (query.includes('node(id:')) {
         const id = args.find(arg => arg.startsWith('id='))?.slice(3);
-        const node = threads.some(thread => thread.id === id)
+        const found = threads.find(thread => thread.id === id);
+        const node = found
           ? {
+              comments: {
+                nodes: found.comments
+                  .slice(0, 1)
+                  .map(({ author }) => ({ author })),
+              },
               pullRequest: {
                 number: on.number,
                 repository: { nameWithOwner: on.repo },
@@ -234,7 +249,7 @@ describe('run', () => {
         threads: [
           {
             comments: [
-              { body: 'Unused import.', bot: true, login: 'claude' },
+              { body: 'Unused import.', bot: true, login: 'github-actions' },
               { body: 'Fixed.', bot: false, login: 'claude' },
             ],
             id: 'PRRT_1',
@@ -319,12 +334,17 @@ describe('run', () => {
       ['PR_1', {}, 'a node that is no thread'],
       ['PRRT_1', { on: { number: 7, repo: 'owner/repo' } }, 'another PR'],
       ['PRRT_1', { on: { number: 5, repo: 'owner/fork' } }, 'another repo'],
+      ['PRRT_2', {}, 'a thread of another bot'],
+      ['PRRT_3', {}, 'a thread of a deleted account'],
+      ['PRRT_4', {}, 'a thread that a person started'],
     ])('resolves nothing for %s (%s)', (id, options) => {
       fakeGh(THREADS, options);
 
       expect(run(['resolve', '5', id], ENV, gh, out)).toBe(1);
       expect(mutations()).toEqual([]);
-      expect(errors).toEqual([`#5 has no review thread ${id}.`]);
+      expect(errors).toEqual([
+        `#5 has no review thread ${id} that the reviewer started.`,
+      ]);
       expect(out).not.toHaveBeenCalled();
     });
   });
@@ -390,12 +410,17 @@ describe('run', () => {
       ['PR_1', {}, 'a node that is no thread'],
       ['PRRT_1', { on: { number: 7, repo: 'owner/repo' } }, 'another PR'],
       ['PRRT_1', { on: { number: 5, repo: 'owner/fork' } }, 'another repo'],
+      ['PRRT_2', {}, 'a thread of another bot'],
+      ['PRRT_3', {}, 'a thread of a deleted account'],
+      ['PRRT_4', {}, 'a thread that a person started'],
     ])('replies on nothing for %s (%s)', (id, options) => {
       fakeGh(THREADS, options);
 
       expect(run(['reply', '5', id], ENV, gh, out, () => 'Fixed.')).toBe(1);
       expect(replies()).toEqual([]);
-      expect(errors).toEqual([`#5 has no review thread ${id}.`]);
+      expect(errors).toEqual([
+        `#5 has no review thread ${id} that the reviewer started.`,
+      ]);
       expect(out).not.toHaveBeenCalled();
     });
 

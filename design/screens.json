@@ -365,6 +365,41 @@
       "mode": "blocking"
     },
     {
+      "name": "relationship-details-parent",
+      "route": "/screens/relationship-details-parent",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-details-spouse",
+      "route": "/screens/relationship-details-spouse",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-edit-spouse",
+      "route": "/screens/relationship-edit-spouse",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-cycle",
+      "route": "/screens/relationship-cycle",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "relationship-save-failed",
+      "route": "/screens/relationship-save-failed",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "person-relationships-empty",
       "route": "/screens/person-relationships-empty",
       "width": 1440,

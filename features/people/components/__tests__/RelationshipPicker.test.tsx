@@ -45,18 +45,20 @@ const open = (
   query?: string
 ) => {
   const onClose = vi.fn();
+  const onPick = vi.fn();
 
   render(
     <RelationshipPicker
       group={group}
       initialQuery={query}
       onClose={onClose}
+      onPick={onPick}
       open
       people={people}
     />
   );
 
-  return onClose;
+  return Object.assign(onClose, { onPick });
 };
 
 const names = () =>
@@ -133,6 +135,15 @@ describe('RelationshipPicker', () => {
       screen.getByRole('link', { name: 'Add a person' }).getAttribute('href')
     ).toBe('/people/new');
     expect(names()).toEqual([]);
+  });
+
+  it('calls onPick with the Person of the row that the user clicks', () => {
+    const { onPick } = open([pieter, susanna]);
+
+    fireEvent.click(screen.getByRole('button', { name: /Fourie, Pieter/ }));
+
+    expect(onPick).toHaveBeenCalledTimes(1);
+    expect(onPick).toHaveBeenCalledWith(pieter);
   });
 
   it('runs onClose on "Cancel"', () => {

@@ -9,10 +9,14 @@ import type {
 import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 import type { RelatedPerson } from '@ks/lib/domain/relationships/types.ts';
 
+import {
+  createRelationshipAction,
+  updateRelationshipAction,
+} from '@ks/app/people/actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonNotFound, PersonRelationships } from '@ks/features/people';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
-import { parsePersonId } from '@ks/lib/domain/ids/ids.mts';
+import { parsePersonId, parseRelationshipId } from '@ks/lib/domain/ids/ids.mts';
 import { idField } from '@ks/lib/domain/ids/schemas.mts';
 import {
   personDates,
@@ -44,6 +48,7 @@ const entryOf = ({
     : spouseDates(relationship)),
   givenNames: person.givenNames,
   id: relationship.id,
+  relationship,
   surname: person.surname,
 });
 
@@ -111,14 +116,18 @@ const headingOf = (person: PersonView): RelationshipsPerson => ({
  * The Relationships page of a Person (PPL-02). An id that is no UUID, names no Person, or names one
  * in another Account's Tree shows the not-found state. A read that throws shows the load-failed
  * notice. If the read of the session or of the Person throws, the notice has no name. With no
- * session, the Avatar has no initial and its menu no email, as on the People page.
+ * session, the Avatar has no initial and its menu no email, as on the People page. A valid `edit`
+ * search param opens the dialog of that Relationship, if one of the groups holds it.
  */
 const RelationshipsPage = async ({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ edit?: string | string[] }>;
 }) => {
   const { id } = await params;
+  const { edit } = await searchParams;
   const session = await requireSession().catch(failed);
   const header = {
     email: session?.email ?? '',
@@ -142,6 +151,11 @@ const RelationshipsPage = async ({
   return related?.ok ? (
     <PersonRelationships
       {...header}
+      actions={{
+        create: createRelationshipAction,
+        update: updateRelationshipAction,
+      }}
+      edit={typeof edit === 'string' ? parseRelationshipId(edit) : undefined}
       groups={related.value.groups}
       people={related.value.people}
       person={headingOf(person)}

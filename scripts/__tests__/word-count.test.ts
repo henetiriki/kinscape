@@ -60,10 +60,10 @@ describe('budgetFor', () => {
     ['design/CANVAS.md', 900],
     ['design/COMPONENTS.md', 600],
     ['plans/README.md', 900],
-    ['plans/M0.1-hello-vercel.md', 600],
-    ['plans/TEMPLATE.md', 600],
-    ['plans/bugs/B1-x.md', 600],
-    ['plans/chores/C1-x.md', 300],
+    ['plans/M0.1-hello-vercel.md', 900],
+    ['plans/TEMPLATE.md', 900],
+    ['plans/bugs/B1-x.md', 900],
+    ['plans/chores/C1-x.md', 450],
     ['.github/agent/rules.md', 300],
     ['.github/agent/fix-review.md', 350],
     ['.github/agent/review.md', 500],
@@ -121,30 +121,24 @@ describe('checkFiles and run', () => {
     expect(checkFiles(root, ['CLAUDE.md'])).toEqual([]);
   });
 
-  it('budgets a bug plan at 600 words', () => {
-    write('plans/bugs/B1-x.md', words(600));
-    expect(checkFiles(root, ['plans/bugs/B1-x.md'])).toEqual([]);
+  it.each([
+    ['plans/M0.1-x.md', 900],
+    ['plans/bugs/B1-x.md', 900],
+    ['plans/chores/C1-x.md', 450],
+  ])('budgets %s at %i words', (path, budget) => {
+    write(path, words(budget));
+    expect(checkFiles(root, [path])).toEqual([]);
 
-    write('plans/bugs/B1-x.md', words(601));
-    expect(checkFiles(root, ['plans/bugs/B1-x.md'])).toEqual([
-      'plans/bugs/B1-x.md: 601 words, budget 600',
-    ]);
-  });
-
-  it('budgets a chore plan at 300 words', () => {
-    write('plans/chores/C1-x.md', words(300));
-    expect(checkFiles(root, ['plans/chores/C1-x.md'])).toEqual([]);
-
-    write('plans/chores/C1-x.md', words(301));
-    expect(checkFiles(root, ['plans/chores/C1-x.md'])).toEqual([
-      'plans/chores/C1-x.md: 301 words, budget 300',
+    write(path, words(budget + 1));
+    expect(checkFiles(root, [path])).toEqual([
+      `${path}: ${budget + 1} words, budget ${budget}`,
     ]);
   });
 
   it.each([
-    ['plans/M0.1-x.md', 600],
-    ['plans/bugs/B1-x.md', 600],
-    ['plans/chores/C1-x.md', 300],
+    ['plans/M0.1-x.md', 900],
+    ['plans/bugs/B1-x.md', 900],
+    ['plans/chores/C1-x.md', 450],
   ])('does not count the Deviations section of %s', (path, budget) => {
     const deviations = Array(5)
       .fill(`- ${words(20)}`)
@@ -158,11 +152,11 @@ describe('checkFiles and run', () => {
   it('counts the sections around a Deviations section', () => {
     write(
       'plans/chores/C1-x.md',
-      `${words(200)}\n## Deviations\n${words(500)}\n## Risks\n${words(101)}`
+      `${words(200)}\n## Deviations\n${words(500)}\n## Risks\n${words(251)}`
     );
 
     expect(checkFiles(root, ['plans/chores/C1-x.md'])).toEqual([
-      'plans/chores/C1-x.md: 302 words, budget 300',
+      'plans/chores/C1-x.md: 452 words, budget 450',
     ]);
   });
 
@@ -201,9 +195,9 @@ describe('checkFiles and run', () => {
     write('README.md', words(301));
     write('docs/README.md', words(201));
     write('plans/a.md', words(10));
-    write('plans/b.md', words(601));
-    write('plans/bugs/B1-x.md', words(601));
-    write('plans/chores/C1-x.md', words(301));
+    write('plans/b.md', words(901));
+    write('plans/bugs/B1-x.md', words(901));
+    write('plans/chores/C1-x.md', words(451));
     write('.github/agent/rules.md', words(301));
     write('.claude/skills/x/SKILL.md', words(651));
     write('.claude/skills/x/NOTICE.md', words(5000));
@@ -246,7 +240,7 @@ describe('checkFiles and run', () => {
 
   it('checks only the paths given', () => {
     write('CLAUDE.md', words(151));
-    write('plans/a.md', words(601));
+    write('plans/a.md', words(901));
 
     expect(run(root, ['plans/a.md'], '')).toBe(1);
     expect(console.error).toHaveBeenCalledTimes(1);

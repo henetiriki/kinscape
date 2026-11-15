@@ -9,18 +9,16 @@ The exporter writes each HTML snapshot in `source/` from its board in `canvas/`.
 ## Changing the design system
 
 - **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
-- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in step 9 each commit.
+- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in step 7 each commit.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
   4. Run "Updating the install" (4.1 to 4.7).
   5. Run "Refreshing the canvas copy" (5.1 to 5.5).
-  6. Push the branch. If a board shows the change, steps 7 to 9 apply.
-  7. The design agent swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
-  8. Run "Refreshing the canvas copy" again (5.1 to 5.5). This adds the swapped boards.
-  9. Push the branch, then run the workflow Design: Render snapshots on it.
-- **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 9 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
+  6. Push the branch. If a board shows the change, step 7 applies.
+  7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)), runs "Refreshing the canvas copy" (5.1 to 5.5) and pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
+- **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local Claude Code session that the tech lead starts. The session needs a signed-in account.
 
 ## Updating the install
@@ -58,7 +56,7 @@ Refresh `canvas/` after a board changes and after each install update. Keep the 
 - **5.2** `read` each file with `paths` into `canvas/project/` (long files in parts). Compare its `sha256` from `read` with `shasum -a 256` of the repo copy. Files under `project/ds/kinscape/` come from `.design-system/project/`.
 - **5.3** Set line 2 of `canvas/VERSION` to the version that `list` reports.
 - **5.4** Run `npm run design:export`. It prints "No snapshot changed" unless a board changed. With no Chromium, skip it.
-- **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes: step 9 renders the snapshots.
+- **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes: step 7 renders the snapshots.
 
 Fallback, without the `Artifact` tool: use `list_files` and `read_file`. If `list_files` refuses with "written to by someone outside your organization", ask Claude in a chat on the canvas to read each changed file and give it to you.
 
@@ -69,6 +67,10 @@ Use the Artifact tool to refresh design/canvas/.
 Follow "Refreshing the canvas copy" in design/CANVAS.md, steps 5.1 to 5.5.
 ```
 
-## Handing off a board
+## Reading a board
 
-A Spec names the board's file (for example `Map.dc.html`). Open the canvas's main menu › **Hand off to Claude Code**. Name the board under "Add instructions". Send the prompt it opens. The prompt holds the canvas link. Read the board through that link with `read` and `paths` on `project/<board>` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked. Don't use Export.
+A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>` with `read` and `paths` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked.
+
+## Drawing a board
+
+A Spec's design prompt is the brief for the drawing. A local session, or a subagent that it starts, follows it. Skip the chat lines of the prompt (link the repository to the chat, edit no file in the repository).

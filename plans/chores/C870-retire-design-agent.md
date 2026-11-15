@@ -55,3 +55,9 @@ The issue names no section for the rule. "Reading a board" is about a build, and
 | `design/CANVAS.md` names the design prompt rule      | The diff                                                            |
 | `COMPONENTS.md#board-swap-prompt` resolves           | `npm test` (`doc-links.test.ts`)                                    |
 | Lint, format, words and tests pass                   | `npm run lint`, `npm run format:check`, `npm run words`, `npm test` |
+
+## Deviations
+
+- The design prompt rule in `design/CANVAS.md` is three short sentences, not one long one, to keep to STE rule 2. Its meaning is the same.
+- "Don't use Export." left with the Hand off menu step, because it names that menu.
+- `design/COMPONENTS.md` loses the whole paragraph, including "Run one swap at a time", as the issue says.

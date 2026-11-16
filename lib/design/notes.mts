@@ -7,13 +7,16 @@ import { coloursIn } from '#ks/lib/design/css.mts';
 
 /** Groups where every token needs a note. `type` needs one per style, `map` one per colour. */
 const GROUPS = new Set([
+  'breakpoint',
   'colour',
   'focus',
   'font',
+  'layout',
   'radius',
   'shadow',
   'size',
   'space',
+  'z',
 ]);
 
 type Entry<T> = [string, T];

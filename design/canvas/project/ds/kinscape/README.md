@@ -50,6 +50,18 @@ The `kit.*` tokens set the design kit's board titles, page padding and intro wid
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
+## Layout
+
+- Desktop first. The map fills the window and everything else floats on it with a 24px gutter.
+- Desktop: search bar top left. The Layers / Filters panel sits below it, 320px wide. The date dock runs along the bottom, right of the panel. Account and zoom controls are top right. The credits line sits under the dock.
+- Phone: search pill on top, a layers button under it, and a bottom sheet. When collapsed, the sheet holds only the date stepper and Play. When the user taps the map, the sheet opens with the look-up result. A user cannot edit on a phone.
+- Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`. A media query can't read a variable, so a test checks each against `breakpoint`.
+- The `Stage` places the search, account, zoom, panel, dock, credits and overlay slots from those tokens. On a phone only, it also places a Layers button. Its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`), with the pointer on its right edge.
+- A notice centres in the free map area, not the window.
+- `AuthLayout` places the sign-in hero and form from `layout.sign-in`. On desktop the hero is left, and the form pane is at least 440 wide with a form of at most 360. On a phone, a 188px hero with the wordmark over it comes first, then the form. `SignInHero`'s coast and border lines are a hand-drawn sketch, traced from no dataset (NFR-08).
+- `ColumnLayout` frames the People screens: a header, one centred column that scrolls and an optional action bar. `column` sets the width, gap and padding. `list` and `detail` are `layout.list-width` wide; `form` is `layout.content-width` wide.
+- Pass MapLibre `padding` so the map centres in the space the panel and dock leave.
+
 ## Shape and depth
 
 `/design-kit/foundations` shows these with spacing and motion.

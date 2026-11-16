@@ -121,8 +121,10 @@ export type SystemToken = {
 
 /** The design system's `tokens.json`. */
 export type SystemTokens = {
+  breakpoint: { tokens: SystemToken[] };
   color: { themes: { id: string; name: string }[]; tokens: SystemToken[] };
   focus: { tokens: SystemToken[] };
+  layout: { tokens: SystemToken[] };
   name: string;
   radius: { tokens: SystemToken[] };
   shadow: { tokens: SystemToken[] };
@@ -134,4 +136,5 @@ export type SystemTokens = {
     groups: SystemGroup[];
   };
   version: number;
+  z: { tokens: SystemToken[] };
 };

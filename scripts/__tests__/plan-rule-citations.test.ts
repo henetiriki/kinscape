@@ -6,14 +6,12 @@ import { describe, expect, it } from 'vitest';
 // list would leave every number wrong and no check would fail.
 const PLAN_RULES = 'plans/README.md';
 const RULE_NAMES = [
-  'draft-before-code',
   'plans-committed-first',
   'plan-pr-flow',
   'chores',
   'small-departures',
   'big-departures',
   'too-big',
-  'approval',
   'missing-components',
   'failing-tests',
   'stale-facts',
@@ -21,23 +19,24 @@ const RULE_NAMES = [
   'test-first',
   'hand-back',
   'design-system',
-  'canvas-follow-up',
   'ready-check',
   'build-ownership',
 ];
+// An owner is a file that a run or a session loads: an agent file, a Claude workflow, a skill or
+// AGENTS.md. A rule that no owner cites has no step that points at it, so no run applies it.
+const OWNERS = [
+  '.github/agent/*.md',
+  '.github/workflows/claude-*.yml',
+  '.claude/skills/**/*.md',
+  'AGENTS.md',
+];
+// The other files that cite a plan rule. A cite here does not make the file an owner.
 const IN_SCOPE = [
   'plans/README.md',
-  'AGENTS.md',
   'docs/building.md',
   '.github/pull_request_template.md',
-  '.claude/skills/refine/chore.md',
   'eslint.config.mjs',
   'scripts/agent-approve.mts',
-  '.github/workflows/claude-plan.yml',
-  '.github/workflows/claude-build.yml',
-  '.github/workflows/claude-fix-review.yml',
-  '.github/workflows/claude-hand-back.yml',
-  '.github/workflows/claude-resolve-conflict.yml',
   '.github/ISSUE_TEMPLATE/4-chore.yml',
   'scripts/hand-back.mts',
   'scripts/__tests__/load-agent-files.test.ts',
@@ -71,10 +70,19 @@ const citedNames = (text: string, inRules = false) => [
 const missingAnchors = (text: string, known: string[], inRules = false) =>
   [...new Set(citedNames(text, inRules))].filter(name => !known.includes(name));
 
-const trackedAgentFiles = () =>
-  execFileSync('git', ['ls-files', '.github/agent/*.md'], {
-    encoding: 'utf8',
-  })
+// Rule names that no owner text cites.
+const unowned = (names: string[], ownerTexts: string[]) => {
+  const cited = new Set(ownerTexts.flatMap(text => citedNames(text)));
+
+  return names.filter(name => !cited.has(name));
+};
+
+const ownerFiles = () =>
+  execFileSync(
+    'git',
+    ['ls-files', '--', ...OWNERS.map(glob => `:(glob)${glob}`)],
+    { encoding: 'utf8' }
+  )
     .split('\n')
     .filter(Boolean);
 
@@ -126,11 +134,41 @@ describe('plan rule citations (fixtures)', () => {
     ]);
     expect(missingAnchors('see [the rule](#too-big)', [])).toEqual([]);
   });
+
+  it('names a rule that no owner cites', () => {
+    expect(
+      unowned(
+        ['too-big', 'test-first', 'hand-back'],
+        [
+          'the [test-first rule](../../plans/README.md#test-first)',
+          'as plans/README.md, hand-back rule says',
+        ]
+      )
+    ).toEqual(['too-big']);
+  });
 });
 
 describe('plan rule citations (repo)', () => {
   const rules = readFileSync(PLAN_RULES, 'utf8');
-  const files = [...new Set([...IN_SCOPE, ...trackedAgentFiles()])];
+  const owners = ownerFiles();
+  const files = [...new Set([...IN_SCOPE, ...owners])];
+
+  it('finds each kind of owner', () => {
+    expect(owners).toContain('AGENTS.md');
+    expect(owners).toContain('.github/agent/build.md');
+    expect(owners).toContain('.github/workflows/claude-plan.yml');
+    expect(owners).toContain('.claude/skills/build-local/SKILL.md');
+    expect(owners.filter(path => path.startsWith('docs/'))).toEqual([]);
+  });
+
+  it('an owner cites each rule in plans/README.md', () => {
+    expect(
+      unowned(
+        anchors(rules),
+        owners.map(path => readFileSync(path, 'utf8'))
+      )
+    ).toEqual([]);
+  });
 
   it('plans/README.md has one named anchor in each rule', () => {
     expect(unanchoredItems(rules)).toEqual([]);

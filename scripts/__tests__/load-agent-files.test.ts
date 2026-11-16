@@ -936,6 +936,41 @@ describe('the reword step of build.md', () => {
       );
     }
   );
+
+  // A build checkout is the PR branch, so without this line the Spec checks read its files for `main`.
+  it('uses origin/main for main in the Spec checks', () => {
+    expect(build()).toContain(
+      'Run the [Spec checks](spec-checks.md) on each new body. Use `origin/main` for `main`.'
+    );
+  });
+});
+
+// A CI build checks the issue against main before it writes code, as a local build does
+// (plans/chores/C888-plan-rule-owners.md).
+describe('the stale-facts step of build.md', () => {
+  const build = () => agent('build.md');
+
+  // A build checkout holds one commit of the PR branch, so it has no origin/main until it fetches.
+  it('fetches main after the first command and before the steps', () => {
+    const fetch = build().indexOf('Then run `git fetch origin main`.');
+
+    expect(fetch).toBeGreaterThan(build().indexOf('Your first command is'));
+    expect(fetch).toBeLessThan(build().indexOf('## Steps'));
+  });
+
+  it('is step 2, after the reword and before the tests run', () => {
+    expect(build()).toMatch(
+      /^2\. \*\*Stale facts\.\*\* .*plans\/README\.md#stale-facts/m
+    );
+    expect(build().indexOf('**Stale facts.**')).toBeLessThan(
+      build().indexOf('Run the full `npm test`')
+    );
+  });
+
+  it('checks only what the issue cites as existing, and stops with a PR comment', () => {
+    expect(build()).toContain('only what the issue cites as existing');
+    expect(build()).toContain('Comment each mismatch on the PR.');
+  });
 });
 
 // A run that pushed a commit and left no comment gets its own text, so a build that passed does

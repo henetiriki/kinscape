@@ -2,7 +2,7 @@
 
 - **Spec:** #898
 - **Requirement IDs:** None. This Spec changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

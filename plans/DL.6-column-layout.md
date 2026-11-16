@@ -6,13 +6,13 @@
 
 ## Approach
 
-`ColumnLayout` renders the frame that the six People components draw today: a `header` slot, a `<main>` that scrolls, the `children` and an optional `actions` slot that it wraps in `ActionBar`. `column` sets `data-column`, and one rule per value in its stylesheet copies today's width, gap, padding and phone background. `list` and `detail` take `var(--layout-list-width)`. Each People component keeps its own content rules (`.top`, `.empty`, the groups). The card shows each `column` value at 1440 wide, with a fixed state height (D3).
+`ColumnLayout` renders the frame that the six People components draw today. It has a `header` slot, a `<main>` that scrolls, the `children` and an optional `actions` slot that it wraps in `ActionBar`. `column` sets `data-column`, and one rule per value in its stylesheet copies today's width, gap, padding and phone background. `list` and `detail` take `var(--layout-list-width)`. Each People component keeps its own content rules (`.top`, `.empty`, the groups). The card shows each `column` value at 1440 wide, with a fixed state height (D3).
 
 ## Decisions
 
 **D3 · How a card state bounds the frame height** · Decides: Tech lead
 
-The frame is `height: 100dvh`. In a gallery file each of the six states is then 900px tall, and the card passes the 4000px limit of `checkPreview`. #923 and #924 say: "set it in the card and not in the component".
+The frame is `height: 100dvh`. In a gallery file each of the six states is then 900px tall. The card then exceeds the 4000px limit of `checkPreview`. #923 and #924 say: "set it in the card and not in the component".
 
 - **A.** `Card` gets an optional `frame` (px). `previewHtml` writes `.ks-case > :last-child { height: <frame>px; }`, which beats the one-class rule of the component. The card sets `frame: 480`.
 - **B.** The frame reads `height: var(--column-layout-height, 100dvh)`, and the card sets the variable. The component holds a hook that only the card uses.
@@ -95,5 +95,5 @@ As the Spec says. A `frame` for `SignInLayout` or `MapLayout`: #923 and #924.
 - `detail` and `form` have no phone rule: their desktop width already is `100%` on a phone.
 - The card height is 3400px, and `ColumnLayout` has `width: 1440` as the Spec says.
 - `ColumnLayout` sets `box-sizing: border-box` on its column. The design system ships no global reset, so a board or card overflowed by the column padding.
-- On the `Person-new` board, the frame has `contain: layout` and the scrim and the toast have `z-index: 10`, above the action bar (the design system has no z tokens until DL.12). The fixed action bar then stays inside the frame and under both, as before.
+- On the `Person-new` board, the frame has `contain: layout`. The scrim and the toast have `z-index: 10`, so the fixed action bar stays inside the frame and under both. The design system has no z tokens until DL.12.
 - `columns.mts` and `types.ts` hold the `column` values once. The component and its card read them, so they cannot differ.

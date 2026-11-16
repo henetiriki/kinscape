@@ -9,6 +9,7 @@ export const GROUPS = [
   'Actions',
   'Feedback',
   'Forms',
+  'Map',
   'Foundation',
   'Overlays',
 ];

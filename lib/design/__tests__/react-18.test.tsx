@@ -67,6 +67,9 @@ import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import { CHAIN, PINS } from '@ks/app/design-kit/surfaces/data';
 import { DateField } from '@ks/features/map/components/DateField';
+import { LayersButton } from '@ks/features/map/components/LayersButton';
+import { SearchBar } from '@ks/features/map/components/SearchBar';
+import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { LONG_NOTES } from '@ks/lib/design/samples.mts';
@@ -174,6 +177,7 @@ const COMPONENTS = {
   Icon,
   IconButton,
   KeyHint,
+  LayersButton,
   Menu,
   MenuPanel,
   Modal,
@@ -185,6 +189,7 @@ const COMPONENTS = {
   ProgressBar,
   RelationshipRow,
   RemovableChip,
+  SearchBar,
   Segmented,
   SelectField,
   Sheet,
@@ -198,6 +203,7 @@ const COMPONENTS = {
   Toast,
   TokenField,
   Wordmark,
+  ZoomControls,
 };
 
 /** A control in a prop or in the children, as a card lists it. */
@@ -572,6 +578,56 @@ const CASES: [string, ReactElement][] = [
       placeholder='Add a type'
     />,
   ],
+  ['SearchBar · bar', <SearchBar form='bar' key='bar' />],
+  [
+    'SearchBar · bar with text',
+    <SearchBar defaultValue='Kimberley' form='bar' key='bar-text' />,
+  ],
+  [
+    'SearchBar · pill',
+    <SearchBar account={<Avatar initial='R' />} form='pill' key='pill' />,
+  ],
+  [
+    'SearchBar · pill with text',
+    <SearchBar
+      account={<Avatar initial='R' />}
+      defaultValue='Kimberley'
+      form='pill'
+      key='pill-text'
+    />,
+  ],
+  ...links('ZoomControls', state => (
+    <ZoomControls
+      key={state}
+      onFit={noop}
+      onZoomIn={noop}
+      onZoomOut={noop}
+      state={state}
+    />
+  )),
+  [
+    'ZoomControls · most zoom',
+    <ZoomControls
+      atMax
+      key='most'
+      onFit={noop}
+      onZoomIn={noop}
+      onZoomOut={noop}
+    />,
+  ],
+  [
+    'ZoomControls · least zoom',
+    <ZoomControls
+      atMin
+      key='least'
+      onFit={noop}
+      onZoomIn={noop}
+      onZoomOut={noop}
+    />,
+  ],
+  ...states('LayersButton', (state, disabled) => (
+    <LayersButton disabled={disabled} state={state} />
+  )),
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,

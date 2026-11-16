@@ -659,6 +659,54 @@ export const CARDS: Card[] = [
     ],
   },
   {
+    design: [],
+    group: 'Map',
+    handlers: [],
+    height: 360,
+    name: 'SearchBar',
+    pad: 0,
+    states: [
+      one('SearchBar · bar', { form: 'bar' }),
+      one('SearchBar · bar with text', {
+        defaultValue: 'Kimberley',
+        form: 'bar',
+      }),
+      one('SearchBar · pill', { form: 'pill' }, undefined, {
+        account: AVATAR,
+      }),
+      one(
+        'SearchBar · pill with text',
+        { defaultValue: 'Kimberley', form: 'pill' },
+        undefined,
+        { account: AVATAR }
+      ),
+    ],
+  },
+  {
+    design: [],
+    group: 'Map',
+    handlers: ['onFit', 'onZoomIn', 'onZoomOut'],
+    height: 240,
+    name: 'ZoomControls',
+    pad: 0,
+    states: [
+      ...linkGrid('ZoomControls', state => ({ props: { state } })),
+      one('ZoomControls · most zoom', { atMax: true }),
+      one('ZoomControls · least zoom', { atMin: true }),
+    ],
+  },
+  {
+    design: [],
+    group: 'Map',
+    handlers: [],
+    height: 140,
+    name: 'LayersButton',
+    pad: 0,
+    states: grid('LayersButton', (state, disabled) => ({
+      props: { disabled, state },
+    })),
+  },
+  {
     design: ['Alert'],
     group: 'Feedback',
     handlers: [],

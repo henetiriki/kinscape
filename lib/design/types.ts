@@ -31,7 +31,7 @@ export type Docs = {
 };
 
 export type Group =
-  'Actions' | 'Feedback' | 'Forms' | 'Foundation' | 'Overlays';
+  'Actions' | 'Feedback' | 'Forms' | 'Foundation' | 'Map' | 'Overlays';
 
 export type Outcome = 'blocked' | 'matches';
 

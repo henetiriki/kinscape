@@ -534,6 +534,37 @@ export declare const TokenField: ({ defaultValues, disabled, error, helper, labe
 }) => import("react").JSX.Element;
 export type TokenFieldProps = Parameters<typeof TokenField>[0];
 
+/**
+ * The map's search. `bar` is the desktop form: the Wordmark, a divider and the field, which owns "/".
+ * `pill` is the phone's: the icon, the bare field and an `account` slot. It has no results.
+ */
+export declare const SearchBar: ({ account, form, ...rest }: {
+    /** The pill's trailing slot: the Avatar. */
+    account?: ReactNode;
+    form: "bar" | "pill";
+} & Omit<ComponentProps<"input">, "aria-label" | "className" | "id" | "onKeyDown" | "size" | "type">) => import("react").JSX.Element;
+export type SearchBarProps = Parameters<typeof SearchBar>[0];
+
+/**
+ * The card of Zoom in, Zoom out and Fit South Africa. At a limit a button is `aria-disabled`, stays in
+ * the Tab order and skips its handler. `state` shows a look on Zoom in, for the design kit.
+ */
+export declare const ZoomControls: ({ atMax, atMin, onFit, onZoomIn, onZoomOut, state, }: {
+    atMax?: boolean;
+    atMin?: boolean;
+    onFit?: () => void;
+    onZoomIn?: () => void;
+    onZoomOut?: () => void;
+    state?: ControlState;
+}) => import("react").JSX.Element;
+export type ZoomControlsProps = Parameters<typeof ZoomControls>[0];
+
+/** The phone's one 48px button that opens Layers and filters. */
+export declare const LayersButton: ({ state, ...rest }: {
+    state?: ControlState;
+} & Omit<ComponentProps<"button">, "aria-label" | "children" | "className">) => import("react").JSX.Element;
+export type LayersButtonProps = Parameters<typeof LayersButton>[0];
+
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export declare const Alert: ({ aside, children, title, tone, }: {
     /** A note at the right of the title line. */

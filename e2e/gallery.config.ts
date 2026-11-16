@@ -25,7 +25,7 @@ export default defineConfig({
     },
   ],
   reporter: [...(process.env.CI ? [['github'] as const] : []), ['list']],
-  // `{testDir}` is e2e/, so the template goes up one folder to reach CARD_IMAGES.
+  // `{testDir}` is e2e/, so the template names the parent folder, then CARD_IMAGES.
   snapshotPathTemplate: `{testDir}/../${CARD_IMAGES}/{arg}{ext}`,
   testDir: '.',
   testMatch: 'design-gallery.spec.ts',

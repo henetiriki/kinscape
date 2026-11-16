@@ -169,15 +169,6 @@ export const CARD_IMAGES = 'design/cards';
 export const cardImage = (name: string, width: number): string =>
   `${name}-${width}.png`;
 
-/** The files of `CARD_IMAGES` that are not the image of one of the cards at a width. */
-export const strayCardImages = (files: string[], names: string[]): string[] => {
-  const wanted = new Set(
-    names.flatMap(name => CARD_WIDTHS.map(width => cardImage(name, width)))
-  );
-
-  return files.filter(file => !wanted.has(file)).toSorted();
-};
-
 /** Whether this is the Playwright image of the `design` job: the Microsoft image sets this path. */
 export const pinnedImage = (env: Record<string, string | undefined>): boolean =>
   env.PLAYWRIGHT_BROWSERS_PATH === '/ms-playwright';

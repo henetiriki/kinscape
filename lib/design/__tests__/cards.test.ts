@@ -15,7 +15,6 @@ import {
   GROUPS,
   pinnedImage,
   previewHtml,
-  strayCardImages,
 } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 
@@ -266,6 +265,15 @@ describe('cardImage', () => {
     expect(cardImage('Button', 390)).toBe('Button-390.png');
   });
 });
+
+/** The files of `CARD_IMAGES` that are not the image of one of the cards at a width. */
+const strayCardImages = (files: string[], names: string[]): string[] => {
+  const wanted = new Set(
+    names.flatMap(name => CARD_WIDTHS.map(width => cardImage(name, width)))
+  );
+
+  return files.filter(file => !wanted.has(file)).toSorted();
+};
 
 describe('strayCardImages', () => {
   const names = ['Alert', 'Button'];

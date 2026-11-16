@@ -95,3 +95,6 @@ Each item of the Spec's "Out of scope / carried forward".
 - `design/CANVAS.md` › "Where" says "steps 6 and 7", because step 6 runs the workflow (D2 A).
 - The gallery config prints the skip line, not the spec: the main config loads the spec.
 - Each `parseStatus` test gains `cards: []`.
+- `.github/agent/review.md` also skips `design/cards/*.png`, so it matches `AGENTS.md`. `load-agent-files.test.ts` expects the new text. The `review.md` budget becomes 550. `word-count.test.ts` expects the two new budgets (1000 and 550). The tech lead chose these.
+- `strayCardImages` lives in `cards.test.ts`, not `cards.mts`: only that test calls it, and the code rules want each export wired.
+- The comparison keeps the Playwright colour threshold of 0.2: "no pixel tolerance" in Approach means `maxDiffPixels` 0. The tech lead chose the default (unlikely case).

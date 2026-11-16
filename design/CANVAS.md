@@ -4,7 +4,9 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, and renders every JPG and every card image in the pinned Playwright image. It commits those that changed. The card images are in `design/cards/`: nobody edits them by hand. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+
+The workflow also renders the card image of each component card in the pinned Playwright image. It commits those that changed. The card images are in `design/cards/`. Nobody edits them by hand.
 
 ## Changing the design system
 

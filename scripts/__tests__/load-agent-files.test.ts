@@ -227,7 +227,7 @@ describe('the generated design files in review.md', () => {
     const review = agent('review.md');
 
     expect(review).toContain(
-      'Skip the content of `design/source/*.html` and `design/*.jpg`.'
+      'Skip the content of `design/source/*.html`, `design/*.jpg` and `design/cards/*.png`.'
     );
     expect(review).toContain(
       'The workflow [Design: Render snapshots](../../design/CANVAS.md#making-the-snapshots-and-jpgs) writes them.'

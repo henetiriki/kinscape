@@ -107,3 +107,30 @@ for (const width of WIDTHS) {
     });
   });
 }
+
+// NFR-05, NFR-06: the controls on the map carry hashed class names, not the plain ones.
+test.describe('hashed class names on /', () => {
+  test.use({ viewport: { height: 800, width: 1440 } });
+
+  test('the live controls carry hashed class names, not the plain ones', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.getByRole('radiogroup').first()).toBeVisible();
+
+    for (const [control, plain] of [
+      [page.getByRole('button', { name: 'Zoom in' }), 'iconBtn'],
+      // The Sources dialog is closed, so its links are in the DOM but hidden.
+      [page.locator('table a'), 'textLink'],
+      [page.getByRole('checkbox', { name: 'Polity borders' }), 'checkbox'],
+      [page.locator('label', { hasText: 'Month' }), 'segItem'],
+    ] as const) {
+      const tokens = await control
+        .first()
+        .evaluate(node => Array.from(node.classList));
+
+      expect(tokens.some(token => token.includes(plain))).toBe(true);
+      expect(tokens).not.toContain(plain);
+    }
+  });
+});

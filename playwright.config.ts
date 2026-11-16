@@ -38,9 +38,9 @@ export default defineConfig({
   projects: [
     // Signs in once through the form and saves the session; the projects below load it.
     { name: 'setup', testMatch: 'auth.setup.ts', use },
-    // The everyday checks: every spec file except the design check and the gallery spec, and every
-    // test except the ones tagged @perf (those get their own project below). The gallery spec has
-    // its own config, e2e/gallery.config.ts.
+    // The everyday checks: every spec file except the design check and the two gallery specs.
+    // Every test runs except the ones tagged @perf (those get their own project below).
+    // The gallery specs have their own config, e2e/gallery.config.ts.
     {
       dependencies: ['setup'],
       grepInvert: /@perf/,
@@ -49,6 +49,7 @@ export default defineConfig({
         'auth.setup.ts',
         'design-check.spec.ts',
         'design-gallery.spec.ts',
+        'gallery-looks.spec.ts',
         // The fixture Accounts exist only under the memory adapters.
         ...(process.env.KINSCAPE_MEMORY_SIGN_IN === '1'
           ? ['fixture-accounts.spec.ts']

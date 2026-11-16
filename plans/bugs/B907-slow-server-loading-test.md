@@ -2,7 +2,7 @@
 
 - **Spec:** #907 (Bug)
 - **Requirement IDs:** [PPL-01](../../docs/requirements.md#ppl-01)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ The Bug says "waits for the prefetch response of `/people`". The prefetch has tw
 - **C.** Wait until both requests end. The test must then know the count of requests, which also depends on Next.
 - **Other:** your own.
 
-Recommended: A, because only request 2 holds the loading screen.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

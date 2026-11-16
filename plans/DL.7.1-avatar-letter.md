@@ -2,7 +2,7 @@
 
 - **Spec:** #901
 - **Requirement IDs:** None. The Spec changes the canvas, sample data and dev pages only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

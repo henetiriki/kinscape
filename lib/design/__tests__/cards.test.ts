@@ -279,6 +279,33 @@ const strayCardImages = (files: string[], names: string[]): string[] => {
   return files.filter(file => !wanted.has(file)).toSorted();
 };
 
+/** CSS that makes a component change with the viewport width. A fixed overlay with no such rule is listed by hand. */
+const WIDTH_RULE =
+  /@media[^{]*(?:(?:min|max)-width|\bwidth\s*[<>])|@container|\d(?:dvh|dvw|lvh|lvw|svh|svw|vh|vw)\b/;
+
+describe('the width rule of a component', () => {
+  it.each([
+    '@media (min-width: 640px) { a { top: 0 } }',
+    '@media (max-width: 639.98px), (max-height: 499.98px) { a { top: 0 } }',
+    '@media (width <= 640px) { a { top: 0 } }',
+    '@media (width > 640px) { a { top: 0 } }',
+    '@container (inline-size > 20em) { a { top: 0 } }',
+    'a { max-height: calc(100dvh - 80px); }',
+    'a { width: 90vw; }',
+  ])('matches %s', css => {
+    expect(WIDTH_RULE.test(css)).toBe(true);
+  });
+
+  it.each([
+    '@media (hover: hover) { a { top: 0 } }',
+    '@media (prefers-reduced-motion: no-preference) { a { top: 0 } }',
+    'a { width: 100%; inset: 0; }',
+    'a { line-height: 1.5; }',
+  ])('does not match %s', css => {
+    expect(WIDTH_RULE.test(css)).toBe(false);
+  });
+});
+
 describe('cardImageWidths', () => {
   it('is the desktop width for a card, and the phone width too for a card in PHONE_CARDS', () => {
     expect(cardImageWidths('Divider')).toEqual([1440]);
@@ -291,16 +318,15 @@ describe('cardImageWidths', () => {
     expect(PHONE_CARDS.filter(name => !names.includes(name))).toEqual([]);
   });
 
-  it('names each card whose component CSS has a width query', () => {
+  it('names each card whose component CSS has a width rule', () => {
     const files = readdirSync('app/components', { recursive: true }).map(
       String
     );
-    const query = /@media[^{]*(?:min|max)-width|@container/;
     const responsive = CARDS.map(({ name }) => name).filter(name =>
       files
         .filter(file => file.endsWith(`/${name}.module.css`))
         .some(file =>
-          query.test(readFileSync(`app/components/${file}`, 'utf8'))
+          WIDTH_RULE.test(readFileSync(`app/components/${file}`, 'utf8'))
         )
     );
 

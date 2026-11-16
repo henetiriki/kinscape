@@ -937,7 +937,7 @@ describe('the reword step of build.md', () => {
     }
   );
 
-  // A build checkout is the PR branch, so the Spec checks would read its files for `main`.
+  // A build checkout is the PR branch, so without this line the Spec checks read its files for `main`.
   it('uses origin/main for main in the Spec checks', () => {
     expect(build()).toContain(
       'Run the [Spec checks](spec-checks.md) on each new body. Use `origin/main` for `main`.'

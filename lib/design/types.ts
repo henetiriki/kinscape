@@ -12,11 +12,11 @@ export type Card = {
   /** Space above and below each state, for a message that opens outside its control. */
   pad: number;
   states: State[];
-  /** The px width at which the design system lays the card out. */
+  /** The px width at which the design system shows the card. */
   width?: number;
 };
 
-/** A shared control:its name and source file. */
+/** A shared control: its name and source file. */
 export type Control = { name: string; path: string };
 
 /**

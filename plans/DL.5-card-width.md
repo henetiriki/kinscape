@@ -14,7 +14,7 @@ This change edits no [design system input](../design/CANVAS.md#changing-the-desi
 
 | File                                      | New / changed | What                                                                                                                                                                                     |
 | ----------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/design/types.ts`                     | changed       | `Card` gets `width?: number`, with a doc comment: the px width at which the design system lays the card out.                                                                             |
+| `lib/design/types.ts`                     | changed       | `Card` gets `width?: number`, with a doc comment: the px width at which the design system shows the card.                                                                                |
 | `lib/design/cards.mts`                    | changed       | `LINE_ONE` takes an optional ` width=(\S+)`. `previewHtml` writes ` width=N` for a card with a `width`. `checkPreview` throws `has a width that is not a whole number from 320 to 1920`. |
 | `lib/design/__tests__/cards.test.ts`      | changed       | Tests for Acceptance checks 1 to 3, and for the limits 320 and 1920.                                                                                                                     |
 | `scripts/__tests__/design-system.test.ts` | changed       | The expected line 1 adds ` width=N` when the card has a `width`. Thus DL.6 needs no edit to this test.                                                                                   |
@@ -31,7 +31,7 @@ This change edits no [design system input](../design/CANVAS.md#changing-the-desi
 ## Risks
 
 - Step 5 compares the output with the committed canvas copy, not with a second run on `main`, because the CI build writes no scratch files. If a change to the canvas copy merges before the build, the list of step 5 can change. Then the build runs step 5 on `main` again and compares the two lists.
-- Nobody saw the artifact lay a card out at a stated width (a flagged concern of the Spec). This Spec gives no card a width, so the artifact does not change. DL.6 is the first test of it.
+- Nobody saw the artifact show a card at a stated width (a flagged concern of the Spec). This Spec gives no card a width, so the artifact does not change. DL.6 is the first test of it.
 
 ## Proof
 

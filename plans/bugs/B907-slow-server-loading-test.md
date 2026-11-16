@@ -53,10 +53,6 @@ The Bug says "waits for the prefetch response of `/people`". The prefetch has tw
 - **A click before the prefetch ends.** A user who chooses "People" before request 2 ends sees no loading screen. The screen waits with no feedback until the server responds, as in #841. This is likely only on a slow server, in the first seconds after the map loads. A fix changes the app, for example a pending state in `AccountMenu`, with a design and a test. It needs its own Bug or Spec.
 - **Decode after the request ends.** Next decodes the response into its cache after `requestfinished`. The two clicks after the poll take longer than the decode. If a gap exists, step 5 shows it. A fix needs a router state that Next does not expose.
 
-## Deviations
-
-- Step 2: `prefetched` takes a `path` parameter, so the helper does not hard-code `/people`.
-
 ## Proof
 
 | Acceptance check                                            | Proven by                                                       |

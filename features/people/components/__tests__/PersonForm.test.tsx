@@ -451,3 +451,87 @@ describe('leaving', () => {
     ).toBe('/people');
   });
 });
+
+// PPL-02, NFR-05
+describe('the leave warning', () => {
+  const link = () => screen.getByRole('link', { name: 'Relationships' });
+
+  it('shows no dialog for the link before an edit', () => {
+    open({ person: saved });
+
+    expect(fireEvent.click(link())).toBe(true);
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it.each([
+    ['Given names', 'Ana'],
+    ['Maiden name', 'Botha'],
+    ['Sex', 'M'],
+    ['Notes', 'Other'],
+  ])('stops the link and warns after a change to %s', (label, value) => {
+    open({ person: saved });
+    type(label, value);
+
+    expect(fireEvent.click(link())).toBe(false);
+    screen.getByRole('dialog', { name: 'Leave without saving?' });
+    screen.getByText(
+      'You changed this person. If you leave now, the changes are lost.'
+    );
+  });
+
+  it('warns after an input to a date field', () => {
+    open({ person: saved });
+    fireEvent.input(screen.getByLabelText('Birth'), {
+      target: { value: '1850' },
+    });
+
+    expect(fireEvent.click(link())).toBe(false);
+    screen.getByRole('dialog');
+  });
+
+  it('closes on Keep editing and keeps the changes', () => {
+    open({ person: saved });
+    type('Surname', 'Smit');
+    fireEvent.click(link());
+    fireEvent.click(screen.getByRole('button', { name: 'Keep editing' }));
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect((screen.getByLabelText('Surname') as HTMLInputElement).value).toBe(
+      'Smit'
+    );
+  });
+
+  it('closes on the Close button', () => {
+    open({ person: saved });
+    type('Surname', 'Smit');
+    fireEvent.click(link());
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('gives Leave without saving the link of the page', () => {
+    open({ person: saved });
+    type('Surname', 'Smit');
+    fireEvent.click(link());
+
+    expect(
+      screen
+        .getByRole('link', { name: 'Leave without saving' })
+        .getAttribute('href')
+    ).toBe(`/people/${ID}/relationships`);
+  });
+
+  it('shows no dialog for Cancel or the back link after an edit', () => {
+    open({ person: saved });
+    type('Surname', 'Smit');
+
+    expect(fireEvent.click(screen.getByRole('link', { name: 'Cancel' }))).toBe(
+      true
+    );
+    expect(fireEvent.click(screen.getByRole('link', { name: 'People' }))).toBe(
+      true
+    );
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+});

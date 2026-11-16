@@ -31,6 +31,12 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await page.getByRole('button', { name: 'Save' }).click();
     await page.getByText('3 fields need fixing').waitFor();
   },
+  // The board edits Notes, then chooses "Relationships", so the leave warning shows.
+  'person-leave': async page => {
+    await page.getByLabel('Notes').fill('Sources to check.');
+    await page.getByRole('link', { name: 'Relationships' }).click();
+    await page.getByRole('dialog', { name: 'Leave without saving?' }).waitFor();
+  },
   // The stand-in action returns an error, so Save shows the toast or the conflict alert.
   'person-saved-nothing': async page => {
     await page.getByRole('button', { name: 'Save' }).click();

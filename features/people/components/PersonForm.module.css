@@ -29,6 +29,16 @@
   justify-content: space-between;
 }
 
+/* The span that catches the click adds no box. */
+.linkHolder {
+  display: contents;
+}
+
+.dialogActions {
+  display: flex;
+  gap: var(--space-12);
+}
+
 .heading {
   display: flex;
   flex-direction: column;

@@ -115,6 +115,83 @@ test('the Relationships link of a list row and of the edit page reach the page',
   ).toBeVisible();
 });
 
+const openEdit = async (page: Page, family: string) => {
+  await create(page, family);
+  await page.getByText(`${family}, Ana`, { exact: true }).click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}$/);
+
+  return page.url();
+};
+
+// PPL-02, NFR-05
+test('Relationships after no edit reaches the page with no warning', async ({
+  page,
+}) => {
+  await openEdit(page, surname());
+  await page.getByRole('link', { name: 'Relationships' }).click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}\/relationships$/);
+
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+});
+
+// PPL-02, NFR-05
+test('Relationships after an edit warns, and Keep editing keeps the change', async ({
+  page,
+}) => {
+  const edit = await openEdit(page, surname());
+
+  await page.getByLabel('Maiden name').fill('Botha');
+  await page.getByRole('link', { name: 'Relationships' }).click();
+
+  const dialog = page.getByRole('dialog', { name: 'Leave without saving?' });
+
+  await expect(dialog).toBeVisible();
+  await expect(
+    dialog.getByRole('button', { name: 'Keep editing' })
+  ).toBeVisible();
+  await expect(
+    dialog.getByRole('link', { name: 'Leave without saving' })
+  ).toBeVisible();
+
+  await dialog.getByRole('button', { name: 'Keep editing' }).click();
+
+  await expect(dialog).toBeHidden();
+  await expect(page).toHaveURL(edit);
+  await expect(page.getByLabel('Maiden name')).toHaveValue('Botha');
+});
+
+// PPL-02, NFR-05
+test('Leave without saving reaches the page and drops the change', async ({
+  page,
+}) => {
+  const edit = await openEdit(page, surname());
+
+  await page.getByLabel('Maiden name').fill('Botha');
+  await page.getByRole('link', { name: 'Relationships' }).click();
+  await page.getByRole('link', { name: 'Leave without saving' }).click();
+  await page.waitForURL(/\/people\/[0-9a-f-]{36}\/relationships$/);
+  await page.goto(edit);
+
+  await expect(page.getByLabel('Maiden name')).toHaveValue('');
+});
+
+// PPL-02, NFR-05
+test('Cancel and the back link after an edit show no warning', async ({
+  page,
+}) => {
+  const edit = await openEdit(page, surname());
+
+  await page.getByLabel('Maiden name').fill('Botha');
+  await page.getByRole('link', { name: 'Cancel' }).click();
+  await page.waitForURL(url => url.pathname === '/people');
+  await page.goto(edit);
+  await page.getByLabel('Maiden name').fill('Botha');
+  await page.getByRole('link', { name: 'People' }).click();
+  await page.waitForURL(url => url.pathname === '/people');
+
+  await expect(page.getByRole('dialog')).toHaveCount(0);
+});
+
 // PPL-02
 test('/people/new has no Relationships link', async ({ page }) => {
   await page.goto('/people/new');

@@ -12,7 +12,7 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
    - Put `Closes #<issue>` in its body.
    - Stop.
 
-   Only the tech lead's approving review approves the plan. `@claude` comments are feedback: revise the plan only. If an answer changes the Spec's text, update its issue body as [how we work](../docs/how-we-work.md#decisions) says. Note it in one line in the PR body. On approval, the build agent drops `(plan)` from the title, rewrites the PR body and marks the PR ready. The title and body describe the PR as it would merge now (except Evidence, [test-first rule](#test-first)).
+   Only the tech lead's approving review approves the plan. `@claude` comments are feedback: revise the plan only. A respond run records a plan answer in the plan only. The build rewords the issues ([reword step](../.github/agent/build.md#reword)). On approval, the build agent drops `(plan)` from the title, rewrites the PR body and marks the PR ready. The title and body describe the PR as it would merge now (except Evidence, [test-first rule](#test-first)).
 
 4. <a id="chores"></a>**Chores.** Every chore is a Chore issue and commits `plans/chores/C<n>-<slug>.md`. These rules apply: [plans-committed-first](#plans-committed-first), [plan-pr-flow](#plan-pr-flow), [small-departures](#small-departures), [big-departures](#big-departures), [too-big](#too-big) and [approval](#approval). Use id `C<n>` and branch `chore/C<n>-<slug>`. The plan PR is titled `C.<n>: <title without "Chore: "> (plan)`. The build drops `(plan)`. The tech lead plans and builds a hand-back ([hand-back rule](#hand-back)). Only Dependabot's PRs, `actions-pin-update.yml`'s and reverts need no issue or plan.
 5. <a id="small-departures"></a>**Small departures** that don't change the plan's intent (file names, step order, an extra helper): update the plan in the same commit as the code, with one line under `## Deviations`.
@@ -27,7 +27,7 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
     - The parent Intent (a Bug, a Chore or a milestone Spec has none).
     - Each open sub-issue of the parent that shares a requirement ID.
 
-    In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Edit no related issue.
+    In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Only the build edits a related issue.
 
 13. <a id="test-first"></a>**Test first.** For logic a unit test covers, see the test fail on the behaviour (not an import error) before writing the code; paste that failing line in the PR's Evidence.
 14. <a id="hand-back"></a>**Hand back, don't build.** A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and isn't in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits one, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore needing a secret or too big ([too-big rule](#too-big)) gets no plan PR. With no plan PR, comment why on the issue.

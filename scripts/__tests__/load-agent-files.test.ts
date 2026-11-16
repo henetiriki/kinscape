@@ -46,6 +46,7 @@ const callsRunner = (job: WorkflowJob) =>
 const MARKETPLACE = '.github/claude-plugins/.claude-plugin/marketplace.json';
 const REVIEW_WORKFLOW = '.github/workflows/claude-code-review.yml';
 const CODE_RULES = 'docs/code-rules.md';
+const SPEC_CHECKS = '.github/agent/spec-checks.md';
 const imports = () =>
   readFileSync(join(root, 'CLAUDE.md'), 'utf8')
     .match(/^@(\S+)$/gm)
@@ -601,12 +602,19 @@ describe('the main_files input of the run-claude action', () => {
         .filter(callsRunner)
         .map(job => job.with?.main_files);
 
-    it.each([
-      'claude-build.yml',
-      'claude-fix-review.yml',
-      'claude-resolve-conflict.yml',
-    ])('%s names the files CLAUDE.md imports and the code rules', file => {
-      expect(given(file)).toEqual([[...imports(), CODE_RULES].join(' ')]);
+    it.each(['claude-fix-review.yml', 'claude-resolve-conflict.yml'])(
+      '%s names the files CLAUDE.md imports and the code rules',
+      file => {
+        expect(given(file)).toEqual([[...imports(), CODE_RULES].join(' ')]);
+      }
+    );
+
+    // The reword step of build.md runs the Spec checks, and a build loads that file in no prompt.
+    it('claude-build.yml names those files and the Spec checks', () => {
+      expect(given('claude-build.yml')).toEqual([
+        [...imports(), CODE_RULES, SPEC_CHECKS].join(' '),
+      ]);
+      expect(existsSync(join(root, SPEC_CHECKS))).toBe(true);
     });
 
     it.each(['claude-plan.yml', 'claude-respond.yml'])(
@@ -898,6 +906,36 @@ describe('the approved-commit check', () => {
       expect(comments).toContain('Approve the plan again.');
     });
   });
+});
+
+// The build rewords the issues that a plan answer changes, before it writes code
+// (plans/chores/C886-reword-step.md).
+describe('the reword step of build.md', () => {
+  const build = () => agent('build.md');
+
+  it('is step 1, before the tests run', () => {
+    expect(build()).toMatch(/^1\. <a id="reword"><\/a>\*\*Reword\.\*\*/m);
+    expect(build().indexOf('<a id="reword">')).toBeLessThan(
+      build().indexOf('Run the full `npm test`')
+    );
+  });
+
+  it('runs the Spec checks, finds a plan PR and skips a body that holds the answer', () => {
+    expect(build()).toContain('[Spec checks](spec-checks.md)');
+    expect(build()).toContain(
+      'gh pr list --state open --search "Closes #<n> in:body"'
+    );
+    expect(build()).toContain('already holds the new text and its cite');
+  });
+
+  it.each(['plans/README.md', 'docs/how-we-work.md'])(
+    '%s links to the step',
+    file => {
+      expect(readFileSync(join(root, file), 'utf8')).toContain(
+        '.github/agent/build.md#reword'
+      );
+    }
+  );
 });
 
 // A run that pushed a commit and left no comment gets its own text, so a build that passed does

@@ -10,7 +10,7 @@ import { idField } from '#ks/lib/domain/ids/schemas.mts';
 import { MAX_NOTES } from '#ks/lib/domain/persons/schemas.mts';
 import { textField } from '#ks/lib/domain/text/schemas.mts';
 
-/** The caps of a Pin's address and sources, so a form can stop typing at the same point. */
+/** The caps of a Pin's address and sources. A form uses them to set the same limit. */
 export const MAX_ADDRESS = 500;
 export const MAX_SOURCES = 10_000;
 

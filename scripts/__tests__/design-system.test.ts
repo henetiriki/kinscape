@@ -276,10 +276,10 @@ describe('the control cards', () => {
 
   it.each(names)('%s: preview names its group and links nothing', name => {
     const html = card(name, 'preview.html');
-    const { group, height } = CARDS.find(each => each.name === name)!;
+    const { group, height, width } = CARDS.find(each => each.name === name)!;
 
     expect(html.split('\n')[0]).toBe(
-      `<!-- @dsCard group="${group}" height=${height} -->`
+      `<!-- @dsCard group="${group}" height=${height}${width === undefined ? '' : ` width=${width}`} -->`
     );
     expect(() => checkPreview(name, html)).not.toThrow();
   });

@@ -84,3 +84,4 @@ Each note names the component or screen that uses the token, from a `git grep` o
 ## Deviations
 
 - `lib/design/__tests__/format.test.ts` also changed: its fixture gains the three families, and the family count 17 becomes 20.
+- DL.6 (#899) merged and added `layout.list-width`. It gets a note, so there are 46 notes, 40 `layout` tokens and 172 tokens in `system.test.ts`.

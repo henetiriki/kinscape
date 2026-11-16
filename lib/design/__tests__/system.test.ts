@@ -87,7 +87,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(171);
+    expect(all(system).length).toBe(172);
   });
 
   it('has the layout, breakpoint and z families, each token with a name, a value and a usage', () => {
@@ -95,7 +95,7 @@ describe('systemTokens', () => {
       system.layout.tokens.length,
       system.breakpoint.tokens.length,
       system.z.tokens.length,
-    ]).toEqual([39, 3, 3]);
+    ]).toEqual([40, 3, 3]);
 
     for (const { name, usage, value } of [
       ...system.layout.tokens,

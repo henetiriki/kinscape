@@ -42,16 +42,20 @@ The Bug says "waits for the prefetch response of `/people`". The prefetch has tw
 ## Order of work
 
 1. Commit this plan: `plan(B907): approved by @<tech lead>`.
-2. Add `prefetched(page)` beside `mark`. It returns a function that is true after request 2 ends with an OK status.
+2. Add `prefetched(page, path)` beside `mark`. It returns a function that is true after request 2 ends with an OK status.
 3. In the slow-server test, call it before `page.goto('/')`. After `mark`, poll it for up to 10 s with a message. Then add the delay route.
-4. Change the helper path to `/none` for one local run. Paste the failure message in the PR, then revert the change.
+4. Change the helper path to `/none` for one local run. Paste the failure message in the PR. Then revert the change.
 5. Run step 1 of _Steps to reproduce_ with `npm run e2e`. Paste the result in the PR's Evidence.
 6. Run the checks in `AGENTS.md` › Commands.
 
 ## Risks
 
 - **A click before the prefetch ends.** A user who chooses "People" before request 2 ends sees no loading screen. The screen waits with no feedback until the server responds, as in #841. This is likely only on a slow server, in the first seconds after the map loads. A fix changes the app, for example a pending state in `AccountMenu`, with a design and a test. It needs its own Bug or Spec.
-- **Decode after the request ends.** Next decodes the response into its cache after `requestfinished`. The two clicks after the poll take longer than the decode. Step 5 shows a gap. A fix needs a router state that Next does not expose.
+- **Decode after the request ends.** Next decodes the response into its cache after `requestfinished`. The two clicks after the poll take longer than the decode. If a gap exists, step 5 shows it. A fix needs a router state that Next does not expose.
+
+## Deviations
+
+- Step 2: `prefetched` takes a `path` parameter, so the helper does not hard-code `/people`.
 
 ## Proof
 

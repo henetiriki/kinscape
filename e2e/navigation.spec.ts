@@ -34,7 +34,7 @@ const same = (page: Page) =>
   });
 
 /**
- * Returns a function that is true once the loading-boundary prefetch of a path has ended.
+ * Returns a function that is true after the loading-boundary prefetch of a path ends.
  * Next sends it with `Next-Router-Prefetch` and no segment header; its response holds the
  * loading screen. Call this before `page.goto`.
  */

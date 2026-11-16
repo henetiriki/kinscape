@@ -4,7 +4,8 @@ import { CARD_IMAGES, pinnedImage } from '@ks/lib/design/cards.mts';
 import { LAUNCH_ARGS } from '@ks/lib/design/shots.mts';
 
 // The main config loads the spec too, so the config of the gallery prints this, not the spec.
-if (!pinnedImage(process.env)) {
+// Each worker loads this config again and has a TEST_WORKER_INDEX: only the runner prints.
+if (!pinnedImage(process.env) && process.env.TEST_WORKER_INDEX === undefined) {
   console.log(
     'Card images: skipped. Another machine draws text differently. The design job and "Design: Render snapshots" compare them.'
   );

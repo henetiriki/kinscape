@@ -67,7 +67,7 @@
   </x-import>
 
   <sc-if value="{{showLeave}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center">
+    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: var(--z-menu); background: var(--scrim); display: flex; align-items: center; justify-content: center">
       <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="Leave without saving?" title-id="leave-dialog-title" on-close="{{keepEditing}}">
         <x-import component-from-global-scope="KinScape.Text" variant="body" as="p">You changed this person. If you leave now, the changes are lost.</x-import>
         <div style="display: flex; gap: var(--space-12)">

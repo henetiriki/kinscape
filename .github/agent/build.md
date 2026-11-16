@@ -19,18 +19,18 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
 ## Steps
 
 1. <a id="reword"></a>**Reword.** Before you write code, do this for each answered decision in the plan:
-   - Reword the Summary, Behaviour and Acceptance checks that the answer changes, in the Spec and in each related issue that the chosen option names.
+   - Reword the Summary, Behaviour and Acceptance checks that the answer changes. Do this in the Spec and in each issue that the chosen option names.
    - Change no other text and no Decisions box. End each changed line with a cite, as "(#537 plan D5)".
    - Skip a closed related issue, and a body that already holds the new text and its cite.
-   - Run the [Spec checks](spec-checks.md) on each new body, and fix your new text.
-   - If the issue has an open plan PR (`gh pr list --state open --search "Closes #<n> in:body"`), comment there with the new value and a link.
+   - Run the [Spec checks](spec-checks.md) on each new body. Fix your new text.
+   - If a reworded issue has an open plan PR (`gh pr list --state open --search "Closes #<n> in:body"`), comment there with the new value and a link.
    - If a reword fails, leave that issue and continue.
-   - Name each reworded, closed and failed issue in the PR body. Name each failure and each remaining problem in your final comment.
+   - In the PR body and your final comment, name each reworded, closed and failed issue, and each problem.
 2. Run the full `npm test` and `npm run e2e` once.
 3. Push.
 4. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work).
 5. If every check passes, run the [ready check](../../plans/README.md#ready-check).
-6. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)).
+6. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)). Keep the reword line.
 7. If one of these is true, leave the PR a draft. If none is true, run `gh pr ready <n>`.
    - A check failed.
    - The ready check stops you.

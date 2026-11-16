@@ -32,7 +32,7 @@ A build loads only `rules.md` and `build.md` from `main`. Its checkout is the PR
 
 **D3 · A Spec check that fails after a reword** · Decides: Tech lead
 
-- **A.** Do as `respond.md` says: fix the new text, and ask about each problem that stays in the final PR comment.
+- **A.** Do as `respond.md` says. Fix the new text. In the final PR comment, ask about each problem that stays.
 - **B.** Undo the edit. Name the issue as a failed reword.
 - **Other:** your own.
 

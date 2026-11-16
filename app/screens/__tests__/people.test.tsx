@@ -39,8 +39,13 @@ describe('the People screens', () => {
     ).toEqual(names);
   });
 
-  it('show the avatar letter of the sample email', async () => {
-    render(await List());
+  it.each([
+    ['people-list', List],
+    ['people-list-no-match', NoMatch],
+    ['people-empty', Empty],
+    ['people-load-failed', LoadFailed],
+  ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
+    render(await Page());
 
     expect(
       screen.getByRole('button', { name: 'Account menu' }).textContent

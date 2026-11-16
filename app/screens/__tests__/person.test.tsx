@@ -40,6 +40,8 @@ describe('the Person screens', () => {
   it.each([
     ['person-new', New],
     ['person-edit', Edit],
+    ['person-save-failed', SaveFailed],
+    ['person-conflict', Conflict],
     ['person-not-found', NotFound],
   ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
     render(await Page());

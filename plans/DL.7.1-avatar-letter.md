@@ -34,7 +34,7 @@ The CI build changes the code first. A new constant `SAMPLE_ACCOUNT` in `app/scr
 1. Add the letter assertions to the four screen tests. See each fail on "L" against "R" ([test-first rule](README.md#test-first)).
 2. Add `SAMPLE_ACCOUNT` and change the four screen files.
 3. Change `states.mts`, the design-kit files and the other tests that hold "L".
-4. Run `npm run design-system` (step 2) and the checks in `AGENTS.md` › Commands. Push. Keep the PR a draft, and ask the tech lead in the PR for steps 2 to 7.
+4. Run `npm run design-system` (step 2) and the checks in `AGENTS.md` › Commands. Push. Keep the PR a draft. Ask the tech lead in the PR for steps 2 to 7.
 5. The tech lead, or a local Claude Code session that the tech lead starts, runs steps 2 to 5 of [Changing the design system](../design/CANVAS.md#changing-the-design-system). The session needs a signed-in account.
 6. Step 6: push the branch.
 7. Step 7: the same person or session changes the letter on the 15 boards above. It runs 5.1 to 5.5 and pushes. The tech lead then runs "Design: Render snapshots".

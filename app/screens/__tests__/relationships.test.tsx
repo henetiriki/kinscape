@@ -41,8 +41,20 @@ describe('the Relationships screens', () => {
     );
   });
 
-  it('person-relationships shows the avatar letter of the sample email', async () => {
-    render(await Board());
+  it.each([
+    ['person-relationships', Board],
+    ['person-relationships-empty', Empty],
+    ['person-relationships-load-failed', LoadFailed],
+    ['relationship-pick', Pick],
+    ['relationship-pick-no-match', NoMatch],
+    ['relationship-pick-empty', PickEmpty],
+    ['relationship-details-parent', Details],
+    ['relationship-details-spouse', DetailsSpouse],
+    ['relationship-cycle', Cycle],
+    ['relationship-edit-spouse', EditSpouse],
+    ['relationship-save-failed', SaveFailed],
+  ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
+    render(await Page());
 
     expect(
       screen.getByRole('button', { name: 'Account menu' }).textContent

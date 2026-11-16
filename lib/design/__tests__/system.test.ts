@@ -42,6 +42,9 @@ const all = (tokens: SystemTokens) =>
     ...tokens.shadow.tokens,
     ...tokens.size.tokens,
     ...tokens.focus.tokens,
+    ...tokens.layout.tokens,
+    ...tokens.breakpoint.tokens,
+    ...tokens.z.tokens,
   ].toSorted((a, b) => a.name.localeCompare(b.name));
 
 describe('systemTokens', () => {
@@ -54,13 +57,16 @@ describe('systemTokens', () => {
       return target === undefined ? value : follow(String(byName.get(target)));
     };
     const expected = [
+      'breakpoint',
       'colour',
       'focus',
+      'layout',
       'map',
       'radius',
       'shadow',
       'size',
       'space',
+      'z',
     ].flatMap(group =>
       leaves(resolved[group] as Tree, [group]).flatMap(([path, value]) => {
         const usage = path.reduce<unknown>(
@@ -81,7 +87,34 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(126);
+    expect(all(system).length).toBe(171);
+  });
+
+  it('has the layout, breakpoint and z families, each token with a name, a value and a usage', () => {
+    expect([
+      system.layout.tokens.length,
+      system.breakpoint.tokens.length,
+      system.z.tokens.length,
+    ]).toEqual([39, 3, 3]);
+
+    for (const { name, usage, value } of [
+      ...system.layout.tokens,
+      ...system.breakpoint.tokens,
+      ...system.z.tokens,
+    ]) {
+      expect([name, usage, value].every(text => text !== '')).toBe(true);
+    }
+
+    expect(system.layout.tokens.map(({ name }) => name)).not.toContain(
+      'layout-dialog-top'
+    );
+  });
+
+  it('writes layout-menu-offset as a resolved value, not an alias', () => {
+    expect(
+      system.layout.tokens.find(({ name }) => name === 'layout-menu-offset')
+        ?.value
+    ).toBe('8px');
   });
 
   it('puts the map colours beside the colours, with aliases as converted names', () => {
@@ -272,6 +305,13 @@ describe('systemCss', () => {
     );
   });
 
+  it('holds the layout, breakpoint and z tokens in :root', () => {
+    expect(css).toContain('  --layout-menu-offset: 8px;');
+    expect(css).toContain('  --breakpoint-phone-width: 639.98px;');
+    expect(css).toContain('  --z-menu: 10;');
+    expect(css).not.toContain('--layout-dialog-top');
+  });
+
   it('has a class per style and a @font-face per font', () => {
     expect(css).toContain(
       '.h1 {\n  font-family: var(--font-display);\n  font-size: 32px;\n  line-height: 40px;\n  font-weight: 500;\n  letter-spacing: -0.015em;\n  font-style: normal;\n}'
@@ -302,7 +342,7 @@ describe('readme', () => {
     ]);
     expect(text).toContain('Colour never carries meaning alone');
     expect(text).toContain('### Map date field');
-    expect(text).not.toContain('## Layout');
+    expect(text.match(/^## Layout$/gm)).toHaveLength(1);
     expect(text).not.toContain('## Map style');
   });
 

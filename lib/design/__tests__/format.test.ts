@@ -5,6 +5,11 @@ import type { SystemTokens } from '@ks/lib/design/types.ts';
 import { formatProblems } from '@ks/lib/design/format.mts';
 
 const valid = (): SystemTokens => ({
+  breakpoint: {
+    tokens: [
+      { name: 'breakpoint-phone-width', usage: 'Phones.', value: '639.98px' },
+    ],
+  },
   color: {
     themes: [{ id: 'light', name: 'Light' }],
     tokens: [
@@ -18,6 +23,9 @@ const valid = (): SystemTokens => ({
     ],
   },
   focus: { tokens: [{ name: 'focus-width', usage: 'Outline.', value: '2px' }] },
+  layout: {
+    tokens: [{ name: 'layout-dock-left', usage: 'Dock.', value: '368px' }],
+  },
   name: 'KinScape',
   radius: {
     tokens: [{ name: 'radius-panel', usage: 'Panels.', value: '12px' }],
@@ -63,6 +71,7 @@ const valid = (): SystemTokens => ({
     ],
   },
   version: 1,
+  z: { tokens: [{ name: 'z-menu', usage: 'Menus.', value: '10' }] },
 });
 
 const colours = (tokens: SystemTokens, ...more: [string, string][]) => {
@@ -300,7 +309,7 @@ describe('formatProblems', () => {
       'size: 61 tokens, over the 60 cap',
       'type: 13 groups, over the 12 cap',
       'type: 81 styles, over the 80 cap',
-      'tokens.json: 17 families other than type, over the 12 cap',
+      'tokens.json: 20 families other than type, over the 12 cap',
     ]);
   });
 });

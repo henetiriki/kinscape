@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { noteProblems } from '@ks/lib/design/notes.mts';
 
 const tokens = {
+  breakpoint: { 'phone-width': '639.98px' },
   colour: { brand: '#264f29', focus: '{colour.brand}', white: '#ffffff' },
   focus: { width: '2px' },
   font: { body: "'Public Sans', system-ui, sans-serif" },
@@ -20,9 +21,11 @@ const tokens = {
   size: { touch: '44px' },
   space: { '4': '4px' },
   type: { body: { font: '{font.body}', size: '15px' } },
+  z: { dock: 5 },
 };
 
 const notes = {
+  breakpoint: { 'phone-width': 'Phone layout starts below this width.' },
   colour: {
     brand: 'Primary buttons.',
     focus: 'Focus outline.',
@@ -30,6 +33,7 @@ const notes = {
   },
   focus: { width: 'Outline thickness.' },
   font: { body: 'All UI text.' },
+  layout: { 'dock-left': 'Left edge of the dock.' },
   map: {
     coastline: { colour: 'Coast line.' },
     hillshade: { shadow: 'Shaded slopes.' },
@@ -41,6 +45,7 @@ const notes = {
   size: { touch: 'Smallest target.' },
   space: { '4': 'The smallest step.' },
   type: { body: 'Panels and popups.' },
+  z: { dock: 'Stacks the dock above the map.' },
 };
 
 describe('noteProblems', () => {
@@ -67,7 +72,7 @@ describe('noteProblems', () => {
   });
 
   it('names every token when there is no notes group', () => {
-    expect(noteProblems(tokens)).toHaveLength(14);
+    expect(noteProblems(tokens)).toHaveLength(17);
     expect(noteProblems(tokens)).toContain('colour.brand has no note');
   });
 
@@ -111,7 +116,6 @@ describe('noteProblems', () => {
         ...tokens,
         notes: {
           ...notes,
-          layout: { 'dock-left': 'Left of the gutter.' },
           map: {
             ...notes.map,
             coastline: { ...notes.map.coastline, width: 'Line width.' },
@@ -125,8 +129,20 @@ describe('noteProblems', () => {
       'notes.map.coastline.width names no token that needs a note',
       'notes.map.hillshade.exaggeration names no token that needs a note',
       'notes.map.pin.halo-width names no token that needs a note',
-      'notes.layout.dock-left names no token that needs a note',
       'notes.motion.press names no token that needs a note',
+    ]);
+  });
+
+  it('names a layout, breakpoint or z token with no note', () => {
+    expect(
+      noteProblems({
+        ...tokens,
+        notes: { ...notes, breakpoint: {}, layout: {}, z: {} },
+      })
+    ).toEqual([
+      'breakpoint.phone-width has no note',
+      'layout.dock-left has no note',
+      'z.dock has no note',
     ]);
   });
 

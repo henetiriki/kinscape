@@ -9,7 +9,7 @@ import type {
   SystemTokens,
 } from '#ks/lib/design/types.ts';
 
-import { isTree, REFERENCE } from '#ks/design/tokens.mts';
+import { isTree, REFERENCE, resolveTokens } from '#ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
 import { cssName, familyName } from '#ks/lib/design/css.mts';
 
@@ -18,6 +18,7 @@ export const README_SECTIONS = [
   'Brand',
   'Fonts',
   'Colours',
+  'Layout',
   'Shape and depth',
   'Components',
   'States',
@@ -134,13 +135,20 @@ export const systemTokens = (raw: Tree, fonts: SystemFont[]): SystemTokens => {
     Object.entries(raw).filter(([group]) => group !== 'notes')
   );
   const list = (...groups: string[]) => noted(unresolved, notes, groups);
+  const resolved = resolveTokens(unresolved);
+  /** The format rules allow an alias only in `color`, so these families hold values. */
+  const valued = (group: string) => ({
+    tokens: noted(resolved, notes, [group]),
+  });
 
   return {
+    breakpoint: valued('breakpoint'),
     color: {
       themes: [{ id: 'light', name: 'Light' }],
       tokens: list('colour', 'map'),
     },
     focus: { tokens: list('focus') },
+    layout: valued('layout'),
     name: 'KinScape',
     radius: { tokens: list('radius') },
     shadow: { tokens: list('shadow') },
@@ -152,6 +160,7 @@ export const systemTokens = (raw: Tree, fonts: SystemFont[]): SystemTokens => {
       groups: keys.map(key => groupFor(unresolved, notes, key)),
     },
     version: 1,
+    z: valued('z'),
   };
 };
 
@@ -211,6 +220,9 @@ export const systemCss = (
       ...declarations(system.radius.tokens),
       ...declarations(system.size.tokens),
       ...declarations(system.focus.tokens),
+      ...declarations(system.layout.tokens),
+      ...declarations(system.breakpoint.tokens),
+      ...declarations(system.z.tokens),
       ...Object.entries(system.type.families).map(
         ([key, stack]) => `  --font-${key}: ${stack};`
       ),

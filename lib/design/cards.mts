@@ -159,6 +159,10 @@ ${STYLE(pad, contain)}
 </html>
 `;
 
+/** The folder that `npm run design-system` writes, and the folder in it that holds the gallery files. */
+export const OUTPUT = '.design-system';
+export const GALLERY = 'gallery';
+
 /** The React 18 files that a gallery file loads: the package and its file under `umd/`. */
 export const VENDOR = [
   { file: 'react.development.js', pkg: 'react-18' },
@@ -173,8 +177,8 @@ const GALLERY_TAGS = [
 ].join('\n');
 
 /**
- * The page that a browser opens from `gallery/` next to `project/`: the preview after its card
- * comment, with the local React, the tokens and the controls' bundle loaded first in its head.
+ * The page that a browser opens from `gallery/` next to `project/`. It is the preview after its
+ * card comment. Its head loads the local React, the tokens and the controls' bundle first.
  */
 export const galleryHtml = (preview: string): string =>
   preview

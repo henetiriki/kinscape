@@ -2,13 +2,14 @@ import { expect, test } from '@playwright/test';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import { GALLERY, OUTPUT } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 
 // Each component card opens from disk, with no app and no network, at a desktop and at a phone width.
-// Its gallery file is written by `npm run design-system` (`design:gallery` runs that first).
+// `npm run design-system` writes the gallery files (`design:gallery` runs it first).
 
 const WIDTHS = [1440, 390];
-const gallery = join(process.cwd(), '.design-system/gallery');
+const gallery = join(process.cwd(), OUTPUT, GALLERY);
 
 for (const { name, states } of CARDS) {
   for (const width of WIDTHS) {

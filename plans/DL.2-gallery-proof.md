@@ -16,7 +16,7 @@ The gallery spec `e2e/design-gallery.spec.ts` runs from its own config, `e2e/gal
 
 Behaviour 2 says that a gallery file loads "the body of the card's `preview.html`". Each `preview.html` on `main` also has a `<style>` in its `<head>`, which sets the layout of the cases (`lib/design/cards.mts`, `STYLE`). DL.3 (#896) takes its card images from the gallery files.
 
-- **A.** Keep the whole preview after line 1: its `<head>` style and its `<body>`. The five tags go first in the `<head>`. A gallery file then lays the cases out as the design system does, and DL.3 images show that layout.
+- **A.** Keep the whole preview after line 1: its `<head>` style and its `<body>`. The five tags go first in the `<head>`. A gallery file then arranges the cases as the design system does, and DL.3 images show that layout.
 - **B.** Keep only the `<body>`. The cases show with no gap, padding or wrap, and DL.3 images show that layout.
 - **Other:** your own.
 

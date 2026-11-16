@@ -38,9 +38,9 @@ export default defineConfig({
   projects: [
     // Signs in once through the form and saves the session; the projects below load it.
     { name: 'setup', testMatch: 'auth.setup.ts', use },
-    // The everyday checks: every spec file except the design check and the gallery spec (it has
-    // its own config, e2e/gallery.config.ts), and every test except the ones tagged @perf (those
-    // get their own project below).
+    // The everyday checks: every spec file except the design check and the gallery spec, and every
+    // test except the ones tagged @perf (those get their own project below). The gallery spec has
+    // its own config, e2e/gallery.config.ts.
     {
       dependencies: ['setup'],
       grepInvert: /@perf/,

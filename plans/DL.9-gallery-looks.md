@@ -92,3 +92,7 @@ The [failing-tests rule](README.md#failing-tests) covers the moved and deleted t
 ## Out of scope
 
 Each item of the Spec's "Out of scope / carried forward". The hashed-class test checks no Button, Chip or Tabs: no app route mounts one (#910 D3, plan D1).
+
+## Deviations
+
+- The Tab test expects the focus border of `TextField · error` (`rgb(180, 65, 47)`) and `TextField · warning` (`rgb(183, 121, 31)`), not the brand colour. The old test never met those states.

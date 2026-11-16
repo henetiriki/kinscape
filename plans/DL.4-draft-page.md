@@ -31,16 +31,28 @@ Does the path name them?
 
 **D4 · Who deletes the snapshot and the JPG of a draft board** · Decides: Tech lead
 
-Step 4 of the path deletes the draft board, its snapshot and its JPG. `AGENTS.md` says that a workflow makes `design/source/` and `design/*.jpg`, and that nobody edits them. No workflow removes a snapshot whose board is gone, and `design-export.test.ts` fails on one.
+Step 4 deletes the draft board, its snapshot and its JPG. `AGENTS.md` says that nobody edits the snapshot and the JPG, and no workflow removes them. `design-export.test.ts` fails on a snapshot with no board.
 
 Who deletes the two files?
 
 - **A.** Step 4 names the tech lead, or a local session that the tech lead starts. No code changes.
-- ~~**B.** The workflow "Design: Render snapshots" removes them. A new Spec builds that.~~
-- ~~**C.** Step 4 deletes only the board. The snapshot and the JPG stay until a later Spec.~~
+- ~~**B.** The render workflow removes them. A new Spec builds that.~~
+- ~~**C.** Step 4 deletes only the board.~~
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
+
+**D5 · The `AGENTS.md` rule on generated design files** · Decides: Tech lead
+
+`AGENTS.md` says "Never edit" `design/source/` and `design/*.jpg`. D4 allows one deletion. This plan does not list `AGENTS.md`, a hand-back path.
+
+Does this PR change `AGENTS.md`?
+
+- ~~**A.** Add the exception, and link to it from step 4.~~
+- **B.** No. A later Chore aligns `AGENTS.md`.
+- **Other:** your own.
+
+**Answer: B** (@henetiriki)
 
 ## Files that change
 
@@ -92,6 +104,6 @@ Each item of the Spec's "Out of scope / carried forward".
 
 ## Deviations
 
-- `design/COMPONENTS.md`: the opening lines are one line that names the two sections, so the file gives each fact once.
-- D4 is new. Step 4 of the path names who deletes the snapshot and the JPG.
-- The build reworded Behaviour 2 of #897 for D3 and D4. It did this after the first push.
+- `design/COMPONENTS.md`: the opening is one line that names the two sections.
+- The build reworded Behaviour 2 of #897 for D3 and D4.
+- `AGENTS.md` says "Never edit" the snapshot and the JPG, and D4 allows one deletion (D5). A later Chore aligns it.

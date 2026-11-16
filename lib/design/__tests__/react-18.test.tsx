@@ -870,8 +870,6 @@ const CASES: [string, ReactElement][] = [
       ['list', 'People'],
       ['detail', 'Relationships'],
       ['form', 'Add a person'],
-      ['notice', 'Person not found'],
-      ['phone-notice', 'Edit people on a computer'],
     ] as const
   ).map(([column, title]): [string, ReactElement] => [
     `ColumnLayout · ${column}`,
@@ -885,6 +883,43 @@ const CASES: [string, ReactElement][] = [
       <Text variant='small'>Each change saves at once.</Text>
     </ColumnLayout>,
   ]),
+  [
+    'ColumnLayout · notice',
+    <ColumnLayout
+      column='notice'
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key='notice'>
+      {[
+        <NoticeCard
+          actions={[{ href: '/people', label: 'Go to People' }]}
+          icon='people'
+          key='card'
+          size='large'
+          title='Person not found'>
+          No one in your Tree has this address. The person may have been
+          deleted, or the link is wrong.
+        </NoticeCard>,
+      ]}
+    </ColumnLayout>,
+  ],
+  [
+    'ColumnLayout · phone-notice',
+    <ColumnLayout
+      column='phone-notice'
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key='phone-notice'>
+      {[
+        <NoticeCard
+          actions={[{ href: '/people', label: 'See all people' }]}
+          key='card'
+          phone
+          title='Edit people on a computer'>
+          People are added and edited on a larger screen. On a phone you can
+          look them up.
+        </NoticeCard>,
+      ]}
+    </ColumnLayout>,
+  ],
   [
     'ColumnLayout · form with an action bar',
     <ColumnLayout

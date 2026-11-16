@@ -152,15 +152,6 @@ const HEADER = {
   props: { backHref: '/people', backLabel: 'People' },
 };
 
-/** The heading that the `ColumnLayout` state of each `column` value shows. */
-const COLUMN_TITLES: Record<Column, string> = {
-  detail: 'Relationships',
-  form: 'Add a person',
-  list: 'People',
-  notice: 'Person not found',
-  'phone-notice': 'Edit people on a computer',
-};
-
 /** The heading and the line of text that a `ColumnLayout` state holds. */
 const columnText = (title: string): Slot[] => [
   { children: title, control: 'Text', props: { as: 'h1', variant: 'h1' } },
@@ -170,6 +161,35 @@ const columnText = (title: string): Slot[] => [
     props: { variant: 'small' },
   },
 ];
+
+/** The one `NoticeCard` that a notice column holds: a notice column centres a single child. */
+const columnNotice = (props: State['props'], text: string): Slot[] => [
+  { children: text, control: 'NoticeCard', props },
+];
+
+/** What the `ColumnLayout` state of each `column` value holds, as the People screens fill it. */
+const COLUMN_CONTENT: Record<Column, Slot[]> = {
+  detail: columnText('Relationships'),
+  form: columnText('Add a person'),
+  list: columnText('People'),
+  notice: columnNotice(
+    {
+      actions: [{ href: '/people', label: 'Go to People' }],
+      icon: 'people',
+      size: 'large',
+      title: 'Person not found',
+    },
+    'No one in your Tree has this address. The person may have been deleted, or the link is wrong.'
+  ),
+  'phone-notice': columnNotice(
+    {
+      actions: [{ href: '/people', label: 'See all people' }],
+      phone: true,
+      title: 'Edit people on a computer',
+    },
+    'People are added and edited on a larger screen. On a phone you can look them up.'
+  ),
+};
 
 const dateField = (props: State['props'] = {}) => ({
   // The first Map date, today, and a day between.
@@ -1096,12 +1116,9 @@ export const CARDS: Card[] = [
     pad: 0,
     states: [
       ...COLUMNS.map(column =>
-        one(
-          `ColumnLayout · ${column}`,
-          { column },
-          columnText(COLUMN_TITLES[column]),
-          { header: HEADER }
-        )
+        one(`ColumnLayout · ${column}`, { column }, COLUMN_CONTENT[column], {
+          header: HEADER,
+        })
       ),
       one(
         'ColumnLayout · form with an action bar',

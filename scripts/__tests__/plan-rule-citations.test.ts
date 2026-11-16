@@ -17,6 +17,7 @@ const RULE_NAMES = [
   'missing-components',
   'failing-tests',
   'stale-facts',
+  'related-issues',
   'test-first',
   'hand-back',
   'design-system',

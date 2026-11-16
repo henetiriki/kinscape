@@ -306,6 +306,14 @@
       "mode": "blocking"
     },
     {
+      "name": "person-edit-leave",
+      "route": "/screens/person-edit",
+      "state": "person-leave",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
       "name": "person-errors",
       "route": "/screens/person-new",
       "state": "person-errors",

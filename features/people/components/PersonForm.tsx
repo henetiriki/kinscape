@@ -22,6 +22,7 @@ import { TextField } from '@ks/app/components/forms/TextField';
 import { TokenField } from '@ks/app/components/forms/TokenField';
 import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
+import { Dialog } from '@ks/app/components/overlays/Dialog';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 import { useSavedToast } from '@ks/features/people/components/SavedToast';
@@ -111,6 +112,9 @@ export const PersonForm = ({
   const [conflict, setConflict] = useState(false);
   const [failed, setFailed] = useState(false);
   const [saving, setSaving] = useState(false);
+  // Every field change goes through `set`, so the flag means "the user edited a field".
+  const [changed, setChanged] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   // A date field checks its text when it mounts, so a new count shows the error of a date that never lost focus.
   const [checks, setChecks] = useState(0);
   // A name field shows "required" on blur only after the user typed in it.
@@ -122,7 +126,10 @@ export const PersonForm = ({
   });
   const count = Object.keys(errors).length;
 
-  const set = (next: Partial<Values>) => setValues({ ...values, ...next });
+  const set = (next: Partial<Values>) => {
+    setChanged(true);
+    setValues({ ...values, ...next });
+  };
 
   const name = (field: Name) => ({
     'aria-required': true,
@@ -217,9 +224,20 @@ export const PersonForm = ({
               </Text>
             </div>
             {person && (
-              <TextLink href={`/people/${person.id}/relationships`}>
-                Relationships
-              </TextLink>
+              // The capture handler runs before the link's own click handler. `next/link` skips a
+              // prevented click, and the kit's TextLink cannot cancel one.
+              <span
+                className={styles.linkHolder}
+                onClickCapture={event => {
+                  if (changed) {
+                    event.preventDefault();
+                    setLeaving(true);
+                  }
+                }}>
+                <TextLink href={`/people/${person.id}/relationships`}>
+                  Relationships
+                </TextLink>
+              </span>
             )}
           </div>
           {count > 0 && (
@@ -338,6 +356,24 @@ export const PersonForm = ({
           </form>
         </div>
       </main>
+      {person && (
+        <Dialog
+          onClose={() => setLeaving(false)}
+          open={leaving}
+          title='Leave without saving?'>
+          <Text as='p' variant='body'>
+            You changed this person. If you leave now, the changes are lost.
+          </Text>
+          <div className={styles.dialogActions}>
+            <Button onClick={() => setLeaving(false)} variant='primary'>
+              Keep editing
+            </Button>
+            <Button href={`/people/${person.id}/relationships`}>
+              Leave without saving
+            </Button>
+          </div>
+        </Dialog>
+      )}
       {failed && (
         <div className={styles.toast}>
           <Toast

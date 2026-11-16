@@ -93,7 +93,7 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Relationship dialog, cycle refused                   | [relationship-cycle.jpg](relationship-cycle.jpg)                                   |
 | Relationship dialog, save failed                     | [relationship-save-failed.jpg](relationship-save-failed.jpg)                       |
 | Relationship messages                                | [relationship-messages.jpg](relationship-messages.jpg)                             |
-| Person form, edit, leave warning                     | [person-edit-relationships-leave.jpg](person-edit-relationships-leave.jpg)         |
+| Person form, edit, leave warning                     | [person-edit-leave.jpg](person-edit-leave.jpg)                                     |
 
 ![Map, desktop](map-desktop.jpg)
 

@@ -1,7 +1,7 @@
 # Plan: C886: The build rewords the Spec and the related issues that a plan answer changes
 
 - **Spec:** #886
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ A build loads only `rules.md` and `build.md` from `main`. Its checkout is the PR
 - **B.** The step runs `git show origin/main:.github/agent/spec-checks.md`. A build checkout can lack `origin/main`.
 - **Other:** your own.
 
-Recommended: A, because the run copies rule files this way.
+**Answer: A** (@henetiriki)
 
 **D2 · "Edit no related issue" in the related-issues rule** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because the run copies rule files this way.
 - **B.** Keep it. It applies only before a plan.
 - **Other:** your own.
 
-Recommended: A, because a reader can apply it to the build.
+**Answer: A** (@henetiriki)
 
 **D3 · A Spec check that fails after a reword** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Recommended: A, because a reader can apply it to the build.
 - **B.** Undo the edit. Name the issue as a failed reword.
 - **Other:** your own.
 
-Recommended: A, because a respond run does the same.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

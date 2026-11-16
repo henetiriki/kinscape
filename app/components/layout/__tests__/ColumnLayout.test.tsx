@@ -113,6 +113,11 @@ it('sizes the list and detail columns from the list-width token', () => {
   expect(rule(desktop, '.page')).toContain('height: 100dvh');
 });
 
+// The design system ships no global reset, so a 100% wide column with padding must size itself.
+it('sizes the column by its border box, with no global reset', () => {
+  expect(rule(desktop, '.content')).toContain('box-sizing: border-box');
+});
+
 it('changes only the list column at the phone breakpoint', () => {
   expect(media.match(/data-column='(\w|-)+'\]/g)).toEqual([
     "data-column='list']",

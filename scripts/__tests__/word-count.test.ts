@@ -59,7 +59,7 @@ describe('budgetFor', () => {
     ['design/DESIGN.md', 4000],
     ['design/CANVAS.md', 900],
     ['design/COMPONENTS.md', 600],
-    ['plans/README.md', 900],
+    ['plans/README.md', 1000],
     ['plans/M0.1-hello-vercel.md', 900],
     ['plans/TEMPLATE.md', 900],
     ['plans/bugs/B1-x.md', 900],
@@ -162,7 +162,7 @@ describe('checkFiles and run', () => {
 
   it.each([
     ['CLAUDE.md', 150],
-    ['plans/README.md', 900],
+    ['plans/README.md', 1000],
   ])(
     'counts a Deviations section in %s, which is not a plan',
     (path, budget) => {

@@ -65,3 +65,6 @@
 - `.github/agent/refresh.md`, `spec-checks.md` and `settings.json`.
 
 ## Deviations
+
+- The rule has 98 words, not about 85. `plans/README.md` has 996 words, within the 1,000 budget.
+- The `claude-plan.yml` prompt runs `sub_issues` only if the issue has a parent, so the three commands read as three instructions.

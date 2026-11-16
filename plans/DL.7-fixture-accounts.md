@@ -2,7 +2,7 @@
 
 - **Spec:** #900
 - **Requirement IDs:** [NFR-03](../docs/requirements.md#nfr-03), [NFR-09](../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ The CI `e2e` job uses `KINSCAPE_MEMORY_SIGN_IN`, so it has no fixture Account. T
 - **C.** No browser test. `adapters.test.ts` alone proves check 1.
 - **Other:** your own.
 
-Recommended: A, because it proves the sign-in form and `/people`, and leaves the design project with one job.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

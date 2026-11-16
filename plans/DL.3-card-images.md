@@ -2,7 +2,7 @@
 
 - **Spec:** #896
 - **Requirement IDs:** None. The Spec changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ Behaviour 2 and 3 need a test that tells the pinned image from other machines. N
 - **B.** A new test-only variable, which the `design` job of `ci.yml` and the render job set. It needs a Blocking decision and a row in `docs/infrastructure.md` ([new infrastructure](../docs/security.md#new-infrastructure)), and it edits `ci.yml`.
 - **Other:** your own.
 
-Recommended: A, because it adds no variable and no CI edit.
+**Answer: A** (@henetiriki)
 
 **D2 · When "Changing the design system" runs the workflow** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ On `main`, [Changing the design system](../design/CANVAS.md#changing-the-design-
 - **B.** Change no step. The `design` job fails, and the tech lead runs the workflow (check 3). The steps then lack the run that #897 names.
 - **Other:** your own.
 
-Recommended: A, because otherwise each component change gives one failed CI run first.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

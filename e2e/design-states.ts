@@ -33,7 +33,11 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
   },
   // The board edits Notes, then chooses "Relationships", so the leave warning shows.
   'person-leave': async page => {
-    await page.getByLabel('Notes').fill('Sources to check.');
+    await page
+      .getByLabel('Notes')
+      .fill(
+        'Her baptism record spells the family name Rossau. Six children are named in the family Bible.'
+      );
     await page.getByRole('link', { name: 'Relationships' }).click();
     await page.getByRole('dialog', { name: 'Leave without saving?' }).waitFor();
   },

@@ -33,6 +33,33 @@ const same = (page: Page) =>
     return w.kinscapeMarker !== undefined && w.kinscapeMarker === w.kinscapeMap;
   });
 
+/**
+ * Returns a function that is true once the loading-boundary prefetch of a path has ended.
+ * Next sends it with `Next-Router-Prefetch` and no segment header; its response holds the
+ * loading screen. Call this before `page.goto`.
+ */
+const prefetched = (page: Page, path: string) => {
+  let done = false;
+
+  page.on('requestfinished', async request => {
+    if (new URL(request.url()).pathname !== path) return;
+
+    const headers = request.headers();
+
+    if (
+      headers['next-router-prefetch'] !== '1' ||
+      headers['next-router-segment-prefetch'] !== undefined
+    )
+      return;
+
+    const response = await request.response();
+
+    if (response?.ok()) done = true;
+  });
+
+  return () => done;
+};
+
 const openPeople = async (page: Page) => {
   await page.getByRole('button', { name: 'Account menu' }).click();
   await page.getByRole('menuitem', { name: /^People/ }).click();
@@ -121,8 +148,16 @@ test.describe('desktop, 1280 × 800', () => {
 
   // PPL-01
   test('a slow server shows the loading screen', async ({ page }) => {
+    const ended = prefetched(page, '/people');
+
     await page.goto('/');
     await mark(page);
+    await expect
+      .poll(ended, {
+        message: 'The /people loading-boundary prefetch did not end',
+        timeout: 10_000,
+      })
+      .toBe(true);
     await page.route(
       url => url.pathname === '/people',
       async route => {

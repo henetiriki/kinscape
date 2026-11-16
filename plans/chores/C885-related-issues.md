@@ -1,7 +1,7 @@
 # Plan: C885: The plan agent reads the related issues before it drafts
 
 - **Spec:** #885
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@
 - **B.** Cut about 130 words from other rules in `plans/README.md`.
 - **Other:** your own.
 
-Recommended: A, because B changes rules that this Chore does not name.
+**Answer: Other:** write the rule in about 85 words and raise the budget to 1,000, not 1,100. The comment line stays in the prompt only. (@henetiriki)
 
 ## Files that change
 

@@ -24,8 +24,14 @@ export type SeedAccount = {
   id: AccountId;
   issuer: string;
   subject: string;
-  trees: Tree[];
+  trees: SeedTree[];
 };
+
+/** A Tree with preset rows, saved at version 1. A Relationship's Persons must be in `persons`. */
+export type SeedTree = {
+  persons?: PersonInput[];
+  relationships?: RelationshipInput[];
+} & Tree;
 
 export type Tree = { id: TreeId; name: string };
 

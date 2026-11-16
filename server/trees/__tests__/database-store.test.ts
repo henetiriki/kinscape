@@ -15,7 +15,10 @@ runTreeStoreContract('database', async seed => {
     await db.insertInto('account').values({ id, issuer, subject }).execute();
 
     for (const tree of trees) {
-      await db.insertInto('tree').values(tree).execute();
+      await db
+        .insertInto('tree')
+        .values({ id: tree.id, name: tree.name })
+        .execute();
       await db
         .insertInto('treeAccount')
         .values({ accountId: id, treeId: tree.id })
@@ -23,5 +26,19 @@ runTreeStoreContract('database', async seed => {
     }
   }
 
-  return { close: () => db.destroy(), store: databaseStore(db) };
+  const store = databaseStore(db);
+
+  for (const { id: accountId, trees } of seed) {
+    for (const { id: treeId, persons = [], relationships = [] } of trees) {
+      for (const person of persons) {
+        await store.addPerson({ accountId, person, treeId });
+      }
+
+      for (const relationship of relationships) {
+        await store.addRelationship({ accountId, relationship, treeId });
+      }
+    }
+  }
+
+  return { close: () => db.destroy(), store };
 });

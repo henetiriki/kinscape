@@ -55,7 +55,7 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     // The snapshot shows no focus border.
     await page.getByLabel('Password', { exact: true }).blur();
   },
-  // Researcher has no Account, so this is a real wrong-details sign-in.
+  // Researcher's fixture password is not this one, so this is a real wrong-details sign-in.
   'sign-in-wrong-password': async page => {
     await page.getByLabel('Email').fill('researcher@example.com');
     await page.getByLabel('Password', { exact: true }).fill('example-password');

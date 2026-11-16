@@ -23,7 +23,7 @@ test('wrong details show the error, keep the email and empty the password', asyn
   page,
 }) => {
   await page.goto('/sign-in');
-  // researcher@example.com has no Account, as in the design snapshots.
+  // The password is not the fixture password of researcher@example.com, so this sign-in fails.
   await signIn(page, 'researcher@example.com', 'not-the-password');
 
   await expect(

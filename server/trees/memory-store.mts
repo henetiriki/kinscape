@@ -36,23 +36,49 @@ const compare = (x: string, y: string): number =>
 const identityOf = (issuer: string, subject: string) =>
   JSON.stringify([issuer, subject]);
 
-/** A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree. */
-export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
+/**
+ * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
+ * A seed Tree may hold People and Relationships, saved at version 1. The four writes refuse a Tree
+ * in `readOnly` as they refuse a Tree the Account may not access.
+ */
+export const memoryStore = (
+  seed: SeedAccount[] = [],
+  readOnly: TreeId[] = []
+): TreeStore => {
   const accounts = new Map<string, AccountId>();
   const trees = new Map<TreeId, Tree>();
   const links = new Map<AccountId, Set<TreeId>>();
+  const persons = new Map<TreeId, Map<PersonId, Person>>();
+  const relationships = new Map<TreeId, Map<RelationshipId, Relationship>>();
 
   for (const { id, issuer, subject, trees: owned } of seed) {
     accounts.set(identityOf(issuer, subject), id);
     links.set(id, new Set(owned.map(tree => tree.id)));
 
     for (const tree of owned) {
-      trees.set(tree.id, tree);
+      trees.set(tree.id, { id: tree.id, name: tree.name });
+      persons.set(
+        tree.id,
+        new Map(
+          (tree.persons ?? []).map(person => [
+            person.id,
+            { ...structuredClone(person), version: 1 },
+          ])
+        )
+      );
+      relationships.set(
+        tree.id,
+        new Map(
+          (tree.relationships ?? []).map(relationship => [
+            relationship.id,
+            { ...structuredClone(relationship), version: 1 },
+          ])
+        )
+      );
     }
   }
 
   const ownedBy = (accountId: AccountId) => [...(links.get(accountId) ?? [])];
-  const persons = new Map<TreeId, Map<PersonId, Person>>();
 
   /** The Persons of a Tree the Account may access; undefined otherwise. */
   const personsOf = ({ accountId, treeId }: TreeScope) =>
@@ -60,7 +86,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       ? (persons.get(treeId) ?? persons.set(treeId, new Map()).get(treeId)!)
       : undefined;
 
-  const relationships = new Map<TreeId, Map<RelationshipId, Relationship>>();
+  const frozen = ({ treeId }: TreeScope) => readOnly.includes(treeId);
 
   /** The Relationships of a Tree the Account may access; undefined otherwise. */
   const relationshipsOf = (scope: TreeScope) =>
@@ -101,7 +127,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       return ok({ accountId, treeId });
     },
     addPerson: async ({ person, ...scope }) => {
-      const owned = personsOf(scope);
+      const owned = frozen(scope) ? undefined : personsOf(scope);
 
       if (owned === undefined || parsePersonId(person.id) === undefined) {
         return undefined;
@@ -117,7 +143,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       const owned = relationshipsOf(scope);
       const id = joinable(scope, relationship);
 
-      if (owned === undefined || id === undefined) {
+      if (frozen(scope) || owned === undefined || id === undefined) {
         return err('not-found');
       }
 
@@ -172,7 +198,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       const owned = personsOf(scope);
       const saved = owned?.get(person.id);
 
-      if (owned === undefined || saved === undefined) {
+      if (frozen(scope) || owned === undefined || saved === undefined) {
         return err('not-found');
       }
 
@@ -192,6 +218,7 @@ export const memoryStore = (seed: SeedAccount[] = []): TreeStore => {
       const saved = id === undefined ? undefined : owned?.get(id);
 
       if (
+        frozen(scope) ||
         owned === undefined ||
         id === undefined ||
         saved === undefined ||

@@ -11,6 +11,10 @@
   },
   "pages": [
     {
+      "id": "drafts",
+      "name": "Drafts"
+    },
+    {
       "id": "sign-in",
       "name": "Sign in"
     },

@@ -34,13 +34,13 @@ export const jpegSize = (bytes: Uint8Array): Size => {
 
 /**
  * Lists what stops `screens.json` covering every image: an image with no entry
- * and not in `notBuilt`, an entry that is also in `notBuilt` or has no image,
+ * and not in `noEntry`, an entry that is also in `noEntry` or has no image,
  * one that is not the snapshot's size, an `ignore` area, a mode other than `blocking`, or a threshold other than 0.5.
  */
 export const sweepProblems = (
   raw: unknown,
   images: Record<string, Size>,
-  notBuilt: string[]
+  noEntry: string[]
 ): string[] => {
   const config = isRecord(raw) ? raw : {};
   const screens = (Array.isArray(config.screens) ? config.screens : []).filter(
@@ -52,8 +52,8 @@ export const sweepProblems = (
   if (config.threshold !== 0.5) problems.push('threshold must be 0.5');
 
   for (const name of Object.keys(images)) {
-    if (!named.includes(name) && !notBuilt.includes(name)) {
-      problems.push(`${name}: has no entry and is not in NOT_BUILT`);
+    if (!named.includes(name) && !noEntry.includes(name)) {
+      problems.push(`${name}: has no entry and is not in NO_ENTRY`);
     }
   }
 
@@ -65,7 +65,7 @@ export const sweepProblems = (
       problems.push(`${name}: listed twice`);
     }
 
-    if (notBuilt.includes(name)) problems.push(`${name}: also in NOT_BUILT`);
+    if (noEntry.includes(name)) problems.push(`${name}: also in NO_ENTRY`);
 
     if (screen.ignore !== undefined) problems.push(`${name}: has ignore`);
 

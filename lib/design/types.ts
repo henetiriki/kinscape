@@ -12,6 +12,8 @@ export type Card = {
   /** Space above and below each state, for a message that opens outside its control. */
   pad: number;
   states: State[];
+  /** The px width at which the design system shows the card. */
+  width?: number;
 };
 
 /** A shared control: its name and source file. */

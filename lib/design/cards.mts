@@ -14,7 +14,8 @@ export const GROUPS = [
 ];
 
 const KB = 1024;
-const LINE_ONE = /^<!-- @dsCard group="(\w+)" height=(\d+) -->$/;
+const LINE_ONE =
+  /^<!-- @dsCard group="(\w+)" height=(\d+)(?: width=(\S+))? -->$/;
 const BANNED = /<(?:link|iframe|frame|object|embed|portal|noscript)\b/i;
 const SCRIPT_SRC = /<script\b[^>]*\bsrc\s*=/i;
 const REST = 'The other attributes of its HTML element go to the element.';
@@ -116,8 +117,9 @@ export const previewHtml = ({
   name,
   pad,
   states,
+  width,
 }: Card): string =>
-  `<!-- @dsCard group="${group}" height=${height} -->
+  `<!-- @dsCard group="${group}" height=${height}${width === undefined ? '' : ` width=${width}`} -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -170,7 +172,7 @@ export const checkReadme = (name: string, text: string): void => {
 
 /** Throws if the preview breaks a rule of the Design System type: 256 KB, line 1, and nothing linked. */
 export const checkPreview = (name: string, html: string): void => {
-  const [, group, height] = LINE_ONE.exec(html.split('\n')[0]) ?? [];
+  const [, group, height, width] = LINE_ONE.exec(html.split('\n')[0]) ?? [];
   const problem =
     Buffer.byteLength(html) > 256 * KB
       ? 'is over 256 KB'
@@ -178,9 +180,16 @@ export const checkPreview = (name: string, html: string): void => {
         ? 'does not start with a card comment naming one of the groups'
         : Number(height) < 40 || Number(height) > 4000
           ? 'has a height outside 40 to 4000'
-          : BANNED.test(html) || SCRIPT_SRC.test(html)
-            ? 'links or embeds something'
-            : undefined;
+          : width !== undefined &&
+              !(
+                /^\d+$/.test(width) &&
+                Number(width) >= 320 &&
+                Number(width) <= 1920
+              )
+            ? 'has a width that is not a whole number from 320 to 1920'
+            : BANNED.test(html) || SCRIPT_SRC.test(html)
+              ? 'links or embeds something'
+              : undefined;
 
   if (problem !== undefined) {
     throw new Error(`${name} preview.html ${problem}`);

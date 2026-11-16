@@ -112,6 +112,13 @@ describe('previewHtml', () => {
     );
   });
 
+  it('states a width on line 1 only for a card that has one', () => {
+    expect(previewHtml({ ...card, width: 1440 }).split('\n')[0]).toBe(
+      '<!-- @dsCard group="Feedback" height=140 width=1440 -->'
+    );
+    expect(html.split('\n')[0]).not.toContain('width');
+  });
+
   it('is a complete document, with its doctype on line 2', () => {
     expect(html.split('\n')[1]).toBe('<!doctype html>');
     expect(html).toContain('<head>');
@@ -170,8 +177,17 @@ describe('checkPreview', () => {
     }
   });
 
+  it.each([320, 1920])('accepts a width of %s', width => {
+    const html = ok.replace('88', `88 width=${width}`);
+
+    expect(() => checkPreview('A', html)).not.toThrow();
+  });
+
   it.each([
     ['a missing line 1', '<div></div>'],
+    ['a width under 320', ok.replace('88', '88 width=319')],
+    ['a width over 1920', ok.replace('88', '88 width=1921')],
+    ['a width that is not whole', ok.replace('88', '88 width=390.5')],
     ['an unknown group', ok.replace('Forms', 'Other')],
     ['a height under 40', ok.replace('88', '39')],
     ['a height over 4000', ok.replace('88', '4001')],

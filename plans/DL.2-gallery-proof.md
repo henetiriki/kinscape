@@ -2,7 +2,7 @@
 
 - **Spec:** #895
 - **Requirement IDs:** None. The Spec changes tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ Behaviour 2 says that a gallery file loads "the body of the card's `preview.html
 - **B.** Keep only the `<body>`. The cases show with no gap, padding or wrap, and DL.3 images show that layout.
 - **Other:** your own.
 
-Recommended: A, because the card images of DL.3 then show what the design system shows.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

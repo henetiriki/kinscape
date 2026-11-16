@@ -36,7 +36,7 @@ The linked file owns each meaning.
 
 No other file defines these terms.
 
-**Planned (#n)** marks a term for a thing that Intent #n has not built yet. The Spec that builds the thing removes the mark.
+**Planned (#n)** marks a term for a thing that Intent #n will build. The Spec that builds the thing removes the mark.
 
 | Term                | Meaning                                                                                                                                                            | Avoid                              |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
@@ -52,7 +52,7 @@ No other file defines these terms.
 | Design kit          | The app's `/design-kit` pages. They show in development and on Preview, and return 404 in production.                                                              | —                                  |
 | Design system       | The Design System artifact "KinScape design system". It holds tokens, fonts, icons, README, cover and components. `/publish-design-system` fills it from the repo. | the "KinScape" artifact, DS        |
 | Design system files | The folder `.design-system/`, which `npm run design-system` writes from the repo. `/publish-design-system` sends these files to the design system.                 | the design system (for the folder) |
-| Draft page          | **Planned (#893).** The canvas page that holds hand-drawn boards of components that are not built                                                                  | —                                  |
+| Draft page          | **Planned (#893).** The canvas page that holds hand-drawn boards of components that the app does not have yet                                                      | —                                  |
 | Exporter            | `npm run design:export`. It writes snapshots from boards.                                                                                                          | —                                  |
 | Fixture Account     | **Planned (#893).** A synthetic Account with a preset Tree. Only the memory adapters hold it.                                                                      | test user                          |
 | Gallery             | **Planned (#893).** The HTML files that a script writes from the component cards. CI opens them from disk.                                                         | —                                  |

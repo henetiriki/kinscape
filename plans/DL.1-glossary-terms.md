@@ -6,7 +6,7 @@
 
 ## Approach
 
-Edit `docs/glossary.md` › "Glossary terms" in one commit. Add the twelve rows of the Spec table, each in its A to Z place. Rename the "Page" row to "Canvas page", set its Avoid cell to "tab, page" and move it to its A to Z place. Change "a page" to "a canvas page" in the "Board" row, and "pages" to "canvas pages" in the "Canvas" row. Put the line about the **Planned (#n)** mark above the table, under "No other file defines these terms." Then run `npm run format`, which aligns the table.
+Edit `docs/glossary.md` › "Glossary terms" in one commit. Add the twelve rows of the Spec table, each in its A to Z place. Rename the "Page" row to "Canvas page". Set its Avoid cell to "tab, page". Move it to its A to Z place. Change "a page" to "a canvas page" in the "Board" row, and "pages" to "canvas pages" in the "Canvas" row. Put the line about the **Planned (#n)** mark above the table, under "No other file defines these terms." Then run `npm run format`, which aligns the table.
 
 The order of the rows after the edit is:
 
@@ -44,6 +44,11 @@ The order ignores case, as the table does now ("Canvas copy" before "CI agent").
 | 3. `npm run words` passes                                 | Output in Evidence                                                          |
 | 4. Only `docs/glossary.md` and the plan change            | `git diff --stat origin/main` in Evidence                                   |
 | 5. "Planned (#893)" in four rows, one line gives the mark | `git grep -n "Planned (#893)" docs/glossary.md` in Evidence: four rows only |
+
+## Deviations
+
+- The "Planned (#n)" line says "will build", not "has not built yet" (STE rule 9).
+- The "Draft page" row says "that the app does not have yet", not "that are not built" (STE rule 3).
 
 ## Out of scope
 

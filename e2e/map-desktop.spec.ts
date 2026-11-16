@@ -109,7 +109,7 @@ for (const width of WIDTHS) {
 }
 
 // NFR-05, NFR-06: the controls on the map carry hashed class names, not the plain ones.
-test.describe('desktop, 1440 × 800', () => {
+test.describe('hashed class names on /', () => {
   test.use({ viewport: { height: 800, width: 1440 } });
 
   test('the live controls carry hashed class names, not the plain ones', async ({

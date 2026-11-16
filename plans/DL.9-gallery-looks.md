@@ -69,9 +69,9 @@ The [failing-tests rule](README.md#failing-tests) covers the moved and deleted t
 
 ## Risks
 
-- **The Segmented card shares one radio group.** All five states pass `name: 'view'`, so the file has one group of radios. The Tab test counts one stop for each radio group. If the shared group still fails the test, follow the Spec: keep the test in `e2e/design-kit.spec.ts`, name it in the PR and comment on #893.
+- **The Segmented card shares one radio group.** All five states pass `name: 'view'`, so the file has one group of radios. The Tab test counts one stop for each radio group. If the shared group fails the test, follow the Spec. Keep the test in `e2e/design-kit.spec.ts`. Name it in the PR. Comment on #893.
 - **A probe lands on a neighbour.** A case puts its caption 8px above the control, so an old probe 21px above a small control can hit it. If one fails only for the gallery layout, follow the Spec as above.
-- **The focused default `TextField` is under 16px at 390px.** The Spec makes that a finding: file a Bug, and keep the old test.
+- **The focused default `TextField` is under 16px at 390px.** The Spec makes that a finding. File a Bug. Keep the old test.
 - **No TextLink is in the DOM of `/`.** The closed Sources dialog renders its licence links. If the list is empty, the test opens the dialog from the account menu first.
 - **The gallery step takes longer.** Step 9 measures it.
 

@@ -20,8 +20,39 @@ const open = (page: Page, name: string) =>
 const state = (page: Page, label: string) =>
   page.getByRole('figure', { exact: true, name: label });
 
+// Each control in one card state: the file, the figure, the role and the name.
+const HIT_CASES = [
+  ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
+  ['Chip', 'Chip · default', 'button', 'Birth'],
+  ['Segmented', 'Segmented · default', undefined, 'List'],
+  ['Tabs', 'Tabs · default', 'tab', 'Filters'],
+  ['IconButton', 'IconButton · default', 'button', 'Zoom in'],
+] as const;
+
+// A point 21px above, below and (for the checkbox) left of the centre is still on the control.
+const expectHitAreas = async (
+  page: Page,
+  cases: readonly (typeof HIT_CASES)[number][]
+) => {
+  for (const [file, label, role, name] of cases) {
+    await open(page, file);
+
+    const figure = state(page, label);
+    const control = role
+      ? figure.getByRole(role, { name })
+      : figure.locator('label', { hasText: name });
+
+    expect(await hitsControl(control, 0, 21), label).toBe(true);
+    expect(await hitsControl(control, 0, -21), label).toBe(true);
+
+    if (file === 'Checkbox') {
+      expect(await hitsControl(control, -21, 0), label).toBe(true);
+    }
+  }
+};
+
 test.describe('on a phone', () => {
-  // The toast's rise would shift its box while it is measured.
+  // Reduced motion keeps the toast still while the test measures its box.
   test.use({ reducedMotion: 'reduce', viewport: { height: 844, width: 390 } });
 
   const fontSize = (field: Locator) =>
@@ -47,29 +78,7 @@ test.describe('on a phone', () => {
   test('a checkbox, chip, segment, tab and icon button each have a 44 x 44px hit area', async ({
     page,
   }) => {
-    const cases = [
-      ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
-      ['Chip', 'Chip · default', 'button', 'Birth'],
-      ['Segmented', 'Segmented · default', undefined, 'List'],
-      ['Tabs', 'Tabs · default', 'tab', 'Filters'],
-      ['IconButton', 'IconButton · default', 'button', 'Zoom in'],
-    ] as const;
-
-    for (const [file, label, role, name] of cases) {
-      await open(page, file);
-
-      const figure = state(page, label);
-      const control = role
-        ? figure.getByRole(role, { name })
-        : figure.locator('label', { hasText: name });
-
-      expect(await hitsControl(control, 0, 21), label).toBe(true);
-      expect(await hitsControl(control, 0, -21), label).toBe(true);
-
-      if (file === 'Checkbox') {
-        expect(await hitsControl(control, -21, 0), label).toBe(true);
-      }
-    }
+    await expectHitAreas(page, HIT_CASES);
   });
 
   test('a placed banner is 80px from the top and a placed toast 164px from the bottom, inside the gutters', async ({
@@ -134,7 +143,7 @@ test.describe('hover', () => {
       const box = (await button.boundingBox())!;
 
       await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
-      // The press colour fades back over the button's transition.
+      // The press colour returns to the rest colour over the button's transition.
       await expect.poll(() => background(button)).toBe(rest);
     });
   });
@@ -149,7 +158,7 @@ test.describe('hover', () => {
     const rest = await background(button);
 
     await button.hover();
-    // The tint fades in over the button's transition.
+    // The tint appears over the button's transition.
     await expect.poll(() => background(button)).not.toBe(rest);
   });
 });
@@ -261,30 +270,10 @@ test.describe('at 1440px', () => {
   });
 
   test('a small control has a 44px hit area', async ({ page }) => {
-    // Away from the neighbouring checkbox, whose 44px area overlaps this one.
-    const cases = [
-      ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
-      ['Chip', 'Chip · default', 'button', 'Birth'],
-      ['Segmented', 'Segmented · default', undefined, 'List'],
-      ['Tabs', 'Tabs · default', 'tab', 'Filters'],
-    ] as const;
-
-    for (const [file, label, role, name] of cases) {
-      await open(page, file);
-
-      const figure = state(page, label);
-      const control = role
-        ? figure.getByRole(role, { name })
-        : figure.locator('label', { hasText: name });
-
-      expect(await hitsControl(control, 0, 21), label).toBe(true);
-
-      if (file === 'Checkbox') {
-        expect(await hitsControl(control, -21, 0), label).toBe(true);
-      } else if (file !== 'Segmented') {
-        expect(await hitsControl(control, 0, -21), label).toBe(true);
-      }
-    }
+    await expectHitAreas(
+      page,
+      HIT_CASES.filter(([file]) => file !== 'IconButton')
+    );
   });
 
   test('the banner action takes a white focus ring', async ({ page }) => {

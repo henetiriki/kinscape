@@ -6,17 +6,27 @@
 
 ## Approach
 
-A new spec, `e2e/gallery-looks.spec.ts`, holds the ten tests of the Spec table. Each test opens `.design-system/gallery/<Name>.html` by its file URL, as `e2e/design-gallery.spec.ts` does (`OUTPUT`, `GALLERY` from `lib/design/cards.mts`). Each test finds its control in one card state by `getByRole('figure', { name: '<state label>' })`, because the `figcaption` of each case names the figure. The `testMatch` of `e2e/gallery.config.ts` takes both specs, so `npm run design:gallery`, the CI step and the render workflow run both with no change. The new spec compares no image, so it does not read `pinnedImage`.
+A new spec, `e2e/gallery-looks.spec.ts`, holds the ten tests of the Spec table. Each test opens `.design-system/gallery/<Name>.html` by its file URL, as `e2e/design-gallery.spec.ts` does. Each test finds its control in one card state by `getByRole('figure', { name: '<state label>' })`, because the `figcaption` of each case names the figure. The `testMatch` of `e2e/gallery.config.ts` takes both specs, so `npm run design:gallery`, CI and the render workflow run both. The new spec compares no image, so it does not read `pinnedImage`.
 
 The hit-area helper `hitsControl` moves to `e2e/hits.ts`. The new spec and `e2e/design-kit.spec.ts` import it, because "states labels each cell and keeps 44px hit areas" stays until DL.13.
 
 The hashed-class test goes to `e2e/map-desktop.spec.ts` at 1440px. It reads these controls on `/`:
 
-- Play (`btnPrimary`);
 - Zoom in (`iconBtn`);
 - a licence link in the Sources dialog (`textLink`);
 - a Layers panel checkbox (`checkbox`);
 - a Precision segment of the dock (`segItem`).
+
+## Decisions
+
+**D1 · Play is not on `/`** · Decides: Tech lead
+
+`MapShell` passes no `onPlay`, so `/` has no Play. Which controls does the hashed-class test read?
+
+- **A.** Four: IconButton, TextLink, Checkbox, Segmented. Check 5 of #910 says "four". **Answer: A** (Tech lead)
+- ~~**B.** Wait until a Spec mounts Play.~~
+
+Recommended: A, because B blocks DL.9.
 
 ## Files that change
 
@@ -31,7 +41,7 @@ The hashed-class test goes to `e2e/map-desktop.spec.ts` at 1440px. It reads thes
 | `e2e/controls-phone.spec.ts`  | Deleted       | Five tests move; the date callout test goes                                                                                                                                                            |
 | `plans/DL.9-gallery-looks.md` | New           | This plan                                                                                                                                                                                              |
 
-The deleted and moved tests are in scope of Behaviour items 3, 5, 6 and 7 ([failing-tests rule](README.md#failing-tests)).
+The [failing-tests rule](README.md#failing-tests) covers the moved and deleted tests (Behaviour items 3, 5, 6, 7).
 
 ## Order of work
 
@@ -50,7 +60,7 @@ The deleted and moved tests are in scope of Behaviour items 3, 5, 6 and 7 ([fail
    | Toast rise              | `Toast · success`, with motion and with reduced motion                                                                       |
 
 3. Add `gallery-looks.spec.ts` to `testMatch` and to the `chromium` `testIgnore`.
-4. Run `npm run design:gallery` on this runner, which is not the pinned image, with no app server. Paste the output: both specs run, and none of the ten tests is skipped.
+4. Run `npm run design:gallery` here (not the pinned image), with no app server. Paste the output: both specs run, and no look test is skipped.
 5. Make `.checkbox::before` in `app/components/forms/Checkbox.module.css` cover only the box. Run `npm run design:gallery` and paste the failing line. Restore the file and paste the pass. Commit no CSS change.
 6. Add the hashed-class test to `e2e/map-desktop.spec.ts`. Remove the eight tests from `e2e/design-kit.spec.ts`. Run `git rm` on `e2e/controls-phone.spec.ts`.
 7. Run `git grep` for the fourteen titles under `e2e/` and for `controls-phone` outside `plans/`. Paste the output.
@@ -60,7 +70,7 @@ The deleted and moved tests are in scope of Behaviour items 3, 5, 6 and 7 ([fail
 ## Risks
 
 - **The Segmented card shares one radio group.** All five states pass `name: 'view'`, so the file has one group of radios. The Tab test counts one stop for each radio group. If the shared group still fails the test, follow the Spec: keep the test in `e2e/design-kit.spec.ts`, name it in the PR and comment on #893.
-- **A probe lands on a neighbour.** A case puts its caption 8px above the control. A probe 21px above the centre of a small control can hit the caption. The test probes the directions that the old test probed. If one fails only for the gallery layout, follow the Spec concern as above.
+- **A probe lands on a neighbour.** A case puts its caption 8px above the control, so an old probe 21px above a small control can hit it. If one fails only for the gallery layout, follow the Spec as above.
 - **The focused default `TextField` is under 16px at 390px.** The Spec makes that a finding: file a Bug, and keep the old test.
 - **No TextLink is in the DOM of `/`.** The closed Sources dialog renders its licence links. If the list is empty, the test opens the dialog from the account menu first.
 - **The gallery step takes longer.** Step 9 measures it.
@@ -81,4 +91,4 @@ The deleted and moved tests are in scope of Behaviour items 3, 5, 6 and 7 ([fail
 
 ## Out of scope
 
-Each item of the Spec's "Out of scope / carried forward". The hashed-class test checks no Chip and no Tabs (#910 D3).
+Each item of the Spec's "Out of scope / carried forward". The hashed-class test checks no Button, Chip or Tabs: no app route mounts one (#910 D3, plan D1).

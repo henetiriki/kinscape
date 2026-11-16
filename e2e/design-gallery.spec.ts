@@ -2,17 +2,25 @@ import { expect, test } from '@playwright/test';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import { GALLERY, OUTPUT } from '@ks/lib/design/cards.mts';
+import {
+  CARD_WIDTHS,
+  cardImage,
+  GALLERY,
+  OUTPUT,
+  pinnedImage,
+} from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 
 // Each component card opens from disk, with no app and no network, at a desktop and at a phone width.
+// In the pinned Playwright image, its full page also matches its card image in design/cards/.
 // `npm run design-system` writes the gallery files (`design:gallery` runs it first).
 
-const WIDTHS = [1440, 390];
 const gallery = join(process.cwd(), OUTPUT, GALLERY);
+// e2e/gallery.config.ts prints one line where this is false.
+const compare = pinnedImage(process.env);
 
 for (const { name, states } of CARDS) {
-  for (const width of WIDTHS) {
+  for (const width of CARD_WIDTHS) {
     test(`${name} at ${width}px shows each state and reports no error`, async ({
       page,
     }) => {
@@ -36,6 +44,12 @@ for (const { name, states } of CARDS) {
 
       await expect(page.locator('figure.ks-case')).toHaveCount(states.length);
       expect(problems).toEqual([]);
+
+      if (compare) {
+        await expect(page).toHaveScreenshot(cardImage(name, width), {
+          fullPage: true,
+        });
+      }
     });
   }
 }

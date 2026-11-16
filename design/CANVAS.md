@@ -4,19 +4,19 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG in the pinned Playwright image, and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, and renders every JPG and every card image in the pinned Playwright image. It commits those that changed. The card images are in `design/cards/`: nobody edits them by hand. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
 ## Changing the design system
 
 - **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
-- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in step 7 each commit.
+- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in steps 6 and 7 each commit.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
   4. Run "Updating the install" (4.1 to 4.7).
   5. Run "Refreshing the canvas copy" (5.1 to 5.5).
-  6. Push the branch. If a board shows the change, step 7 applies.
+  6. Push the branch. The tech lead runs the workflow Design: Render snapshots on it, because a component change changes its card images. If a board shows the change, step 7 applies.
   7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)). It runs "Refreshing the canvas copy" (5.1 to 5.5). It pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local session. The session needs a signed-in account.

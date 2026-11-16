@@ -1,8 +1,11 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import {
+  CARD_IMAGES,
+  CARD_WIDTHS,
+  cardImage,
   checkPreview,
   checkReadme,
   controlReadme,
@@ -10,7 +13,9 @@ import {
   firstSentence,
   galleryHtml,
   GROUPS,
+  pinnedImage,
   previewHtml,
+  strayCardImages,
 } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 
@@ -251,6 +256,70 @@ describe('checkReadme', () => {
     expect(() => checkReadme('A', 'x'.repeat(64 * 1024 + 1))).toThrow(
       'A README.md is over 64 KB'
     );
+  });
+});
+
+describe('cardImage', () => {
+  it('names the image of a card at a width', () => {
+    expect(CARD_WIDTHS).toEqual([1440, 390]);
+    expect(cardImage('Button', 1440)).toBe('Button-1440.png');
+    expect(cardImage('Button', 390)).toBe('Button-390.png');
+  });
+});
+
+describe('strayCardImages', () => {
+  const names = ['Alert', 'Button'];
+  const wanted = names.flatMap(name =>
+    CARD_WIDTHS.map(width => cardImage(name, width))
+  );
+
+  it('is empty when each file is the image of a card at a width', () => {
+    expect(strayCardImages(wanted, names)).toEqual([]);
+    expect(strayCardImages(wanted.slice(1), names)).toEqual([]);
+  });
+
+  it('lists, in order, each file that is not the image of a card at a width', () => {
+    expect(
+      strayCardImages(
+        [
+          ...wanted,
+          'Zebra-1440.png',
+          'Button-800.png',
+          'Alert-390.jpg',
+          'notes.md',
+        ],
+        names
+      )
+    ).toEqual([
+      'Alert-390.jpg',
+      'Button-800.png',
+      'Zebra-1440.png',
+      'notes.md',
+    ]);
+  });
+});
+
+describe('pinnedImage', () => {
+  it('is true only where PLAYWRIGHT_BROWSERS_PATH is /ms-playwright', () => {
+    expect(pinnedImage({ PLAYWRIGHT_BROWSERS_PATH: '/ms-playwright' })).toBe(
+      true
+    );
+    expect(pinnedImage({ PLAYWRIGHT_BROWSERS_PATH: '/home/me/.cache' })).toBe(
+      false
+    );
+    expect(pinnedImage({})).toBe(false);
+  });
+});
+
+describe('the card images', () => {
+  it('hold no file that is not the image of a card at a width', () => {
+    const files = existsSync(CARD_IMAGES) ? readdirSync(CARD_IMAGES) : [];
+    const stray = strayCardImages(
+      files,
+      CARDS.map(({ name }) => name)
+    );
+
+    expect(stray.map(file => `${CARD_IMAGES}/${file}`)).toEqual([]);
   });
 });
 

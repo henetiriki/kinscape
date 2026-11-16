@@ -88,3 +88,10 @@ The `summary` and `check` tests of `design-shots-ci` change: a new summary secti
 ## Out of scope
 
 Each item of the Spec's "Out of scope / carried forward".
+
+## Deviations
+
+- `scripts/word-count.mts`: the `design/CANVAS.md` budget becomes 1000, because the edits of D2 A and Behaviour 4 take the file from 900 words to 937. The tech lead chose this over a budget of 940 and a cut of 37 words.
+- `design/CANVAS.md` › "Where" says "steps 6 and 7", because step 6 runs the workflow (D2 A).
+- The gallery config prints the skip line, not the spec: the main config loads the spec.
+- Each `parseStatus` test gains `cards: []`.

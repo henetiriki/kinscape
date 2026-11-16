@@ -159,6 +159,29 @@ ${STYLE(pad, contain)}
 </html>
 `;
 
+/** The widths at which each card is drawn and compared: a desktop and a phone. */
+export const CARD_WIDTHS = [1440, 390];
+
+/** The folder that holds the card images. The workflow "Design: Render snapshots" writes them. */
+export const CARD_IMAGES = 'design/cards';
+
+/** The file name, in `CARD_IMAGES`, of the image of a card at a width. */
+export const cardImage = (name: string, width: number): string =>
+  `${name}-${width}.png`;
+
+/** The files of `CARD_IMAGES` that are not the image of one of the cards at a width. */
+export const strayCardImages = (files: string[], names: string[]): string[] => {
+  const wanted = new Set(
+    names.flatMap(name => CARD_WIDTHS.map(width => cardImage(name, width)))
+  );
+
+  return files.filter(file => !wanted.has(file)).toSorted();
+};
+
+/** Whether this is the Playwright image of the `design` job: the Microsoft image sets this path. */
+export const pinnedImage = (env: Record<string, string | undefined>): boolean =>
+  env.PLAYWRIGHT_BROWSERS_PATH === '/ms-playwright';
+
 /** The folder that `npm run design-system` writes, and the folder in it that holds the gallery files. */
 export const OUTPUT = '.design-system';
 export const GALLERY = 'gallery';

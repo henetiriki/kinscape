@@ -6,6 +6,7 @@
 ## Approach
 
 - `build.md` gets step 1, anchor `reword`, with each "What to change" bullet from Source to A closed issue. It finds a sibling's plan PR with `gh pr list --state open --search "Closes #<n> in:body"`.
+- If a body already holds the answer's text and its cite, step 1 does not edit that body. It does not comment on the sibling's plan PR again.
 - The plan-pr-flow rule and `how-we-work.md` › Decisions link to `reword`. Each new sentence is no longer than the one it replaces.
 - `build-local/SKILL.md` names `build.md` step 7, not 6.
 

@@ -14,19 +14,11 @@ import Readings from '@ks/app/screens/fuzzy-date-readings/page';
 import { saveConflict, saveFailed } from '@ks/app/screens/person-actions';
 import Conflict from '@ks/app/screens/person-conflict/page';
 import Edit from '@ks/app/screens/person-edit/page';
-import New from '@ks/app/screens/person-new/page';
-import NotFound from '@ks/app/screens/person-not-found/page';
 import SaveFailed from '@ks/app/screens/person-save-failed/page';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 // PPL-01
 describe('the Person screens', () => {
-  it('show the empty form', async () => {
-    render(await New());
-
-    screen.getByRole('heading', { name: 'Add a person' });
-  });
-
   it.each([
     ['person-edit', Edit],
     ['person-save-failed', SaveFailed],
@@ -38,23 +30,15 @@ describe('the Person screens', () => {
   });
 
   it.each([
-    ['person-new', New],
     ['person-edit', Edit],
     ['person-save-failed', SaveFailed],
     ['person-conflict', Conflict],
-    ['person-not-found', NotFound],
   ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
     render(await Page());
 
     expect(
       screen.getByRole('button', { name: 'Account menu' }).textContent
     ).toBe(accountInitial('researcher@example.com'));
-  });
-
-  it('show the not-found state', async () => {
-    render(await NotFound());
-
-    screen.getByText('Person not found');
   });
 
   it('give Save an outcome that saves nothing', async () => {

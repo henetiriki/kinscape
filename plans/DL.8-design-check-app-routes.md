@@ -68,6 +68,10 @@ The four entries get `account` and their app routes. `person-not-found` opens `/
 | 7. The architecture row states the rule                | The diff                                                   |
 | 8. Tests, types, e2e, 100% coverage                    | Output in Evidence                                         |
 
+## Deviations
+
+- Each design test sits in a `test.describe` named `design: <name>`, and the test is `matches its snapshot`, so `-g "design: <name>"` still selects it.
+
 ## Out of scope
 
 Each item of the Spec's "Out of scope / carried forward".

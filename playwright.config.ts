@@ -2,6 +2,8 @@ import type { PlaywrightWorkerOptions } from '@playwright/test';
 
 import { defineConfig } from '@playwright/test';
 
+import { authStateFor } from '@ks/lib/design/check.mts';
+
 // How the browser is launched. Every project below uses this one object, so
 // all of them run the same Chromium the same way. The top-level `use` further down
 // (the base URL) applies to every project too; a project's own `use` is added on top.
@@ -14,7 +16,7 @@ const use: Partial<PlaywrightWorkerOptions> = {
 };
 
 // Where e2e/auth.setup.ts saves the signed-in session.
-const signedIn = 'test-results/.auth/state.json';
+const signedIn = authStateFor();
 
 // The CI `design` job runs the design project. So the CI `e2e` job sets this to drop that project,
 // and `perf` waits only for `chromium`. Every other run keeps all projects.

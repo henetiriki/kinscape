@@ -2,7 +2,97 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
+import {
+  jpegSize,
+  screenOnlyProblems,
+  sweepProblems,
+} from '@ks/lib/design/sweep.mts';
+
+/**
+ * The folders of `app/screens/` that stay: no app route can show the page today. Each blocker names
+ * the data or outcome that is missing. Delete the folder and its row when an app route can show the page.
+ */
+const SCREEN_ONLY: { blocker: string; folder: string }[] = [
+  { blocker: 'No app route has the Add pin panel yet.', folder: 'add-pin' },
+  {
+    blocker: 'A sample layout of date readings: no app route shows it.',
+    folder: 'fuzzy-date-readings',
+  },
+  {
+    blocker: 'The open menu is a state of the map, which has no People.',
+    folder: 'map-account-menu',
+  },
+  { blocker: 'The fixture Tree has no People.', folder: 'people-empty' },
+  {
+    blocker: 'The fixture Tree has no People, so no row can match.',
+    folder: 'people-list-no-match',
+  },
+  {
+    blocker: 'The fixture Tree has no People to list.',
+    folder: 'people-list',
+  },
+  {
+    blocker: 'A load failure: no app route fails.',
+    folder: 'people-load-failed',
+  },
+  {
+    blocker: 'A loading state: no app route holds it.',
+    folder: 'people-loading',
+  },
+  {
+    blocker: 'A save failure: no app route saves nothing.',
+    folder: 'person-conflict',
+  },
+  { blocker: 'The fixture Tree has no Person to edit.', folder: 'person-edit' },
+  {
+    blocker: 'The fixture Tree has no Person with no relationships.',
+    folder: 'person-relationships-empty',
+  },
+  {
+    blocker: 'A load failure: no app route fails.',
+    folder: 'person-relationships-load-failed',
+  },
+  {
+    blocker: 'The fixture Tree has no Person with relationships.',
+    folder: 'person-relationships',
+  },
+  {
+    blocker: 'A save failure: no app route saves nothing.',
+    folder: 'person-save-failed',
+  },
+  {
+    blocker: 'The fixture Tree has no Person with relationships.',
+    folder: 'relationship-cycle',
+  },
+  {
+    blocker: 'The fixture Tree has no Person with relationships.',
+    folder: 'relationship-details-parent',
+  },
+  {
+    blocker: 'The fixture Tree has no Person with relationships.',
+    folder: 'relationship-details-spouse',
+  },
+  {
+    blocker: 'The fixture Tree has no Person with relationships.',
+    folder: 'relationship-edit-spouse',
+  },
+  {
+    blocker: 'The fixture Tree has no People to pick.',
+    folder: 'relationship-pick-empty',
+  },
+  {
+    blocker: 'The fixture Tree has no People, so no row can match.',
+    folder: 'relationship-pick-no-match',
+  },
+  {
+    blocker: 'The fixture Tree has no People to pick.',
+    folder: 'relationship-pick',
+  },
+  {
+    blocker: 'A save failure: no app route saves nothing.',
+    folder: 'relationship-save-failed',
+  },
+];
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
@@ -162,6 +252,44 @@ describe('sweepProblems', () => {
     expect(sweepProblems({ screens: [3] }, {}, [])).toEqual([
       'threshold must be 0.5',
     ]);
+  });
+});
+
+describe('screenOnlyProblems', () => {
+  it('accepts a folder with a row that has a blocker', () => {
+    expect(
+      screenOnlyProblems(['a'], [{ blocker: 'no route shows it', folder: 'a' }])
+    ).toEqual([]);
+  });
+
+  it('names a folder with no row', () => {
+    expect(
+      screenOnlyProblems(['a', 'b'], [{ blocker: 'x', folder: 'a' }])
+    ).toEqual(['b: has no row in SCREEN_ONLY']);
+  });
+
+  it('names a row with no folder', () => {
+    expect(screenOnlyProblems([], [{ blocker: 'x', folder: 'a' }])).toEqual([
+      'a: SCREEN_ONLY row has no folder in app/screens',
+    ]);
+  });
+
+  it('names a row with an empty blocker', () => {
+    expect(screenOnlyProblems(['a'], [{ blocker: ' ', folder: 'a' }])).toEqual([
+      'a: SCREEN_ONLY row has no blocker',
+    ]);
+  });
+});
+
+describe('app/screens', () => {
+  it('has a SCREEN_ONLY row for every folder, each with a blocker', () => {
+    const folders = readdirSync(join(process.cwd(), 'app/screens'), {
+      withFileTypes: true,
+    })
+      .filter(entry => entry.isDirectory() && entry.name !== '__tests__')
+      .map(entry => entry.name);
+
+    expect(screenOnlyProblems(folders, SCREEN_ONLY)).toEqual([]);
   });
 });
 

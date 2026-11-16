@@ -286,14 +286,16 @@
     },
     {
       "name": "person-new",
-      "route": "/screens/person-new",
+      "account": "researcher@example.com",
+      "route": "/people/new",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "person-form-phone",
-      "route": "/screens/person-new",
+      "account": "researcher@example.com",
+      "route": "/people/new",
       "width": 390,
       "height": 844,
       "mode": "blocking"
@@ -315,7 +317,8 @@
     },
     {
       "name": "person-errors",
-      "route": "/screens/person-new",
+      "account": "researcher@example.com",
+      "route": "/people/new",
       "state": "person-errors",
       "width": 1440,
       "height": 900,
@@ -339,7 +342,8 @@
     },
     {
       "name": "person-not-found",
-      "route": "/screens/person-not-found",
+      "account": "researcher@example.com",
+      "route": "/people/01900000-0000-7000-8000-000000000404",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

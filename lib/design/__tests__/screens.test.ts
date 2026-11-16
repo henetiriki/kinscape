@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 
-/** Images in `design/` with no `screens.json` entry yet. Remove a name when its slice adds the entry. */
-const NOT_BUILT = [
+/** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when its draft board is deleted. */
+const NO_ENTRY = [
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
   'map-credits-narrow',
@@ -94,7 +94,7 @@ describe('sweepProblems', () => {
     b: { height: 9, width: 8 },
   };
 
-  it('accepts sized entries and listed not-built images', () => {
+  it('accepts sized entries and listed no-entry images', () => {
     expect(
       sweepProblems(config(screen('a-phone', 390, 500)), images, ['b'])
     ).toEqual([]);
@@ -103,10 +103,10 @@ describe('sweepProblems', () => {
   it('flags an image with no entry that is not listed', () => {
     expect(
       sweepProblems(config(screen('a-phone', 390, 500)), images, [])
-    ).toEqual(['b: has no entry and is not in NOT_BUILT']);
+    ).toEqual(['b: has no entry and is not in NO_ENTRY']);
   });
 
-  it('flags a doubled entry, with an image or in NOT_BUILT', () => {
+  it('flags a doubled entry, with an image or in NO_ENTRY', () => {
     expect(
       sweepProblems(
         config(screen('a-phone', 390, 500), screen('a-phone', 390, 500)),
@@ -115,9 +115,9 @@ describe('sweepProblems', () => {
       )
     ).toEqual([
       'a-phone: listed twice',
-      'a-phone: also in NOT_BUILT',
+      'a-phone: also in NO_ENTRY',
       'a-phone: listed twice',
-      'a-phone: also in NOT_BUILT',
+      'a-phone: also in NO_ENTRY',
     ]);
   });
 
@@ -166,7 +166,7 @@ describe('sweepProblems', () => {
 });
 
 describe('design/screens.json', () => {
-  it('has a sized entry for every image, or lists it in NOT_BUILT', () => {
+  it('has a sized entry for every image, or lists it in NO_ENTRY', () => {
     const dir = join(process.cwd(), 'design');
     const images = Object.fromEntries(
       readdirSync(dir)
@@ -180,6 +180,6 @@ describe('design/screens.json', () => {
       readFileSync(join(dir, 'screens.json'), 'utf8')
     );
 
-    expect(sweepProblems(raw, images, NOT_BUILT)).toEqual([]);
+    expect(sweepProblems(raw, images, NO_ENTRY)).toEqual([]);
   });
 });

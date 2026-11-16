@@ -79,7 +79,6 @@ Each note names the component or screen that uses the token, from a `git grep` o
 
 - The motion rules: DL.17 (#918).
 - The `kit` tokens: DL.21 (#929).
-- `layout.list-width` and its note: DL.6 (#899).
 
 ## Deviations
 

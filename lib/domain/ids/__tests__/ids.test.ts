@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   parseAccountId,
   parsePersonId,
+  parsePinId,
+  parsePlaceId,
   parseRelationshipId,
   parseTreeId,
   uuidV7,
@@ -12,6 +14,8 @@ const UUID = '00000000-0000-4000-8000-0000000000a1';
 
 describe.each([
   ['parsePersonId', parsePersonId],
+  ['parsePinId', parsePinId],
+  ['parsePlaceId', parsePlaceId],
   ['parseRelationshipId', parseRelationshipId],
 ])('%s', (_name, parse) => {
   it('returns the id in lower case', () => {
@@ -20,6 +24,8 @@ describe.each([
 });
 
 describe.each([
+  ['parsePinId', parsePinId],
+  ['parsePlaceId', parsePlaceId],
   ['parseRelationshipId', parseRelationshipId],
   ['parseTreeId', parseTreeId],
   ['parsePersonId', parsePersonId],

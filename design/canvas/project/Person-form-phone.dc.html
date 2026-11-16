@@ -16,17 +16,15 @@
 </helmet>
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
-  <x-import component-from-global-scope="KinScape.PageHeader" back-href="People-list-phone.dc.html" back-label="People" avatar="{{avatar}}"></x-import>
-
-  <main style="position: absolute; left: 0; right: 0; top: 60px; bottom: 0; box-sizing: border-box; padding: var(--space-64) var(--space-16) 0; display: flex; flex-direction: column; align-items: center">
+  <x-import component-from-global-scope="KinScape.ColumnLayout" column="phone-notice" header="{{header}}">
     <x-import component-from-global-scope="KinScape.NoticeCard" phone="{{ true }}" title="Edit people on a computer" actions="{{actions}}">People are added and edited on a larger screen. On a phone you can look them up.</x-import>
-  </main>
+  </x-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   renderVals() {
-    return { actions: [{ label: 'See all people', href: 'People-list-phone.dc.html' }], avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null };
+    return { actions: [{ label: 'See all people', href: 'People-list-phone.dc.html' }], header: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.PageHeader, { backHref: 'People-list-phone.dc.html', backLabel: 'People', avatar: window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) }) : null };
   }
 }
 </script>

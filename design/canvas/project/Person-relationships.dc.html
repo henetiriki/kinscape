@@ -16,10 +16,7 @@
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
-  <x-import component-from-global-scope="KinScape.PageHeader" back-href="Person-edit.dc.html" back-label="Edit person" avatar="{{avatar}}"></x-import>
-
-  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; overflow-y: auto">
-    <div style="width: 960px; margin: 0 auto; padding: var(--space-24) 0 var(--space-32); display: flex; flex-direction: column; gap: var(--space-16)">
+  <x-import component-from-global-scope="KinScape.ColumnLayout" column="detail" header="{{header}}">
 
       <div style="display: flex; flex-direction: column; gap: var(--space-4)">
         <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Relationships</x-import>
@@ -55,8 +52,7 @@
         </sc-for>
       </sc-if>
 
-    </div>
-  </main>
+  </x-import>
 
   <sc-if value="{{showDialog}}" hint-placeholder-val="{{ false }}">
     <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center">
@@ -260,7 +256,7 @@ class Component extends DCLogic {
       };
     }
     return {
-      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null,
+      header: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.PageHeader, { backHref: 'Person-edit.dc.html', backLabel: 'Edit person', avatar: window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) }) : null,
       subtitle: { name: fullName(SELF), line: lineOf(SELF), words: words(SELF) },
       showFailed: s.view === 'failed',
       retryActions: [{ label: 'Try again', onClick: () => this.setState({ view: 'list' }) }],

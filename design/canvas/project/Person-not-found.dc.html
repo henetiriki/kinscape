@@ -16,17 +16,15 @@
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
-  <x-import component-from-global-scope="KinScape.PageHeader" back-href="People-list.dc.html" back-label="People" avatar="{{avatar}}"></x-import>
-
-  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 120px; box-sizing: border-box">
+  <x-import component-from-global-scope="KinScape.ColumnLayout" column="notice" header="{{header}}">
     <x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="people" title="Person not found" actions="{{actions}}">No one in your Tree has this address. The person may have been deleted, or the link is wrong.</x-import>
-  </main>
+  </x-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
-    return { actions: [{ label: 'Go to People', href: 'People-list.dc.html' }], avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null };
+    return { actions: [{ label: 'Go to People', href: 'People-list.dc.html' }], header: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.PageHeader, { backHref: 'People-list.dc.html', backLabel: 'People', avatar: window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) }) : null };
   }
 }
 </script>

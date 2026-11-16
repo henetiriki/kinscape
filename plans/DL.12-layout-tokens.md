@@ -2,7 +2,7 @@
 
 - **Spec:** #913
 - **Requirement IDs:** None. This Spec changes the content of the design system only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ Each note names the component or screen that uses the token, from a `git grep` o
 - **B.** `tokens.css` does not change. It then lacks three families that `tokens.json` has.
 - **Other:** your own.
 
-Recommended: A, because `systemCss` mirrors every token list in `tokens.json`.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -2,7 +2,7 @@
 
 - **Spec:** #902
 - **Requirement IDs:** None
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

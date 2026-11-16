@@ -56,6 +56,11 @@ export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type TextVariant = Heading | Other;
 export type Tone = 'error' | 'info' | 'warning';
 
+/** The `column` values of `ColumnLayout`, in the order of its card. */
+declare const COLUMNS: readonly ["list", "detail", "form", "notice", "phone-notice"];
+
+export type Column = (typeof COLUMNS)[number];
+
 /** One level of the Jurisdiction chain; `detail` says what the name was before. */
 export type ChainLevel = {
     detail?: string;
@@ -920,7 +925,7 @@ export type SheetPanelProps = Parameters<typeof SheetPanel>[0];
 export declare const ColumnLayout: ({ actions, children, column, header, }: {
     actions?: ReactNode;
     children: ReactNode;
-    column: "detail" | "form" | "list" | "notice" | "phone-notice";
+    column: Column;
     header: ReactNode;
 }) => import("react").JSX.Element;
 export type ColumnLayoutProps = Parameters<typeof ColumnLayout>[0];

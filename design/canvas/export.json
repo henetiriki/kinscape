@@ -2,7 +2,6 @@
   "icon": "/_blob/fc8efdb1b185576b872141e6e4fa37f8",
   "links": {
     "Kit-menu-phone.dc.html": "design-kit-menu-phone",
-    "Person-edit-relationships.dc.html": "person-edit",
     "Person-edit.dc.html": "person-edit"
   },
   "snapshots": [
@@ -498,8 +497,8 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
-      "file": "Person-edit-relationships.dc.html",
-      "name": "person-edit-relationships-leave",
+      "file": "Person-new.dc.html",
+      "name": "person-edit-leave",
       "props": { "variant": "leave" },
       "viewport": { "height": 900, "width": 1440 }
     },

@@ -27,7 +27,7 @@
           <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Given names and surname are required. Everything else can wait.</x-import>
         </div>
         <sc-if value="{{showRelationships}}" hint-placeholder-val="{{ false }}">
-          <x-import component-from-global-scope="KinScape.TextLink" href="Person-relationships.dc.html">Relationships</x-import>
+          <x-import component-from-global-scope="KinScape.TextLink" href="Person-relationships.dc.html" on-click="{{onRelationships}}">Relationships</x-import>
         </sc-if>
       </div>
 
@@ -75,12 +75,24 @@
     <x-import component-from-global-scope="KinScape.Button" variant="secondary" href="People-list.dc.html">Cancel</x-import>
   </x-import>
 
+  <sc-if value="{{showLeave}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center">
+      <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="Leave without saving?" title-id="leave-dialog-title" on-close="{{keepEditing}}">
+        <x-import component-from-global-scope="KinScape.Text" variant="body" as="p">You changed this person. If you leave now, the changes are lost.</x-import>
+        <div style="display: flex; gap: var(--space-12)">
+          <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{keepEditing}}">Keep editing</x-import>
+          <x-import component-from-global-scope="KinScape.Button" variant="secondary" href="Person-relationships.dc.html">Leave without saving</x-import>
+        </div>
+      </x-import>
+    </div>
+  </sc-if>
+
   <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
     <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["new","edit","errors","save-failed","conflict"],"default":"new"},"$preview":{"width":1440,"height":900}}'>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["new","edit","errors","save-failed","conflict","leave"],"default":"new"},"$preview":{"width":1440,"height":900}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -91,13 +103,14 @@ class Component extends DCLogic {
       notes: 'Her baptism record spells the family name Rossau.'
     };
     const blank = { given: '', surname: '', maiden: '', variants: [], sex: 'unknown', birth: '', death: '', deceased: false, notes: '' };
-    const b = (v === 'edit' || v === 'save-failed' || v === 'conflict') ? filled : blank;
+    const b = (v === 'edit' || v === 'save-failed' || v === 'conflict' || v === 'leave') ? filled : blank;
     const st = {
       given: b.given, surname: b.surname, maiden: b.maiden, variants: b.variants, sex: b.sex, deceased: b.deceased, notes: b.notes,
       birth: b.birth, death: b.death, birthErr: false, deathErr: false,
       givenErr: '', surnameErr: '', givenDirty: false, surnameDirty: false, summary: false,
       toast: v === 'save-failed' ? 'failed' : '',
-      conflict: v === 'conflict'
+      conflict: v === 'conflict',
+      leave: v === 'leave'
     };
     if (v === 'errors') {
       st.birth = 'ABT 1850';
@@ -107,12 +120,12 @@ class Component extends DCLogic {
       st.surnameErr = 'Enter the surname.';
       st.summary = true;
     }
-    if (v === 'conflict') {
+    if (v === 'conflict' || v === 'leave') {
       st.notes = 'Her baptism record spells the family name Rossau. Six children are named in the family Bible.';
     }
     this.state = st;
     // The fields take these once; after that each keeps its own text.
-    this.start = { birth: st.birth, death: st.death };
+    this.start = { birth: st.birth, death: st.death, notes: st.notes };
     this.variant = v;
   }
 
@@ -166,7 +179,7 @@ class Component extends DCLogic {
     const deathTyped = s.death.trim() !== '';
     const errCount = [s.givenErr, s.surnameErr, s.birthErr, s.deathErr].filter(Boolean).length;
     const fullName = (s.given.trim() + ' ' + s.surname.trim()).trim();
-    const isEdit = this.variant === 'edit' || this.variant === 'save-failed' || this.variant === 'conflict';
+    const isEdit = this.variant === 'edit' || this.variant === 'save-failed' || this.variant === 'conflict' || this.variant === 'leave';
     const toasts = {
       failed: { tone: 'error', text: "Couldn't save. Your changes are still here.", action: 'Try again', onAction: () => this.setState({ toast: 'saved' }), onDismiss: () => this.setState({ toast: '' }) },
       saved: { tone: 'success', text: 'Saved ' + (fullName || 'the person') + '.', action: undefined, onAction: undefined, onDismiss: () => this.setState({ toast: '' }) }
@@ -177,6 +190,14 @@ class Component extends DCLogic {
       showRelationships: isEdit,
       showSummary: s.summary && errCount > 0,
       showConflict: !!s.conflict,
+      showLeave: !!s.leave,
+      keepEditing: () => this.setState({ leave: false }),
+      onRelationships: (e) => {
+        if (this.state.givenDirty || this.state.surnameDirty || this.state.notes !== this.start.notes) {
+          e.preventDefault();
+          this.setState({ leave: true });
+        }
+      },
       reload: () => this.setState({ conflict: false, notes: 'Her baptism record spells the family name Rossau.', toast: '' }),
       summaryTitle: errCount === 1 ? '1 field needs fixing' : errCount + ' fields need fixing',
       given: s.given, surname: s.surname, maiden: s.maiden, notes: s.notes, sex: s.sex, variants: s.variants,

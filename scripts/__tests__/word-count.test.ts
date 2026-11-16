@@ -65,6 +65,7 @@ describe('budgetFor', () => {
     ['plans/bugs/B1-x.md', 900],
     ['plans/chores/C1-x.md', 450],
     ['.github/agent/rules.md', 300],
+    ['.github/agent/build.md', 450],
     ['.github/agent/fix-review.md', 360],
     ['.github/agent/review.md', 500],
     ['.github/agent/review-code.md', 750],

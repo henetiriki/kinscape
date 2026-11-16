@@ -70,3 +70,8 @@ A build loads only `rules.md` and `build.md` from `main`. Its checkout is the PR
 | Step 1; words and tests pass      | The new test; `npm run words`; `npm test` |
 | Respond run changes the plan only | The ready check                           |
 | The other five checks             | The tech lead checks the first builds     |
+
+## Deviations
+
+- `claude-build.yml` names `spec-checks.md` in `main_files` (D1). The issue names no workflow edit.
+- The related-issues rule changes one sentence (D2). The issue does not name that rule.

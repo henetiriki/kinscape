@@ -48,9 +48,9 @@ test.describe('on a phone', () => {
     page,
   }) => {
     const cases = [
-      ['Checkbox', 'Checkbox off · default', 'checkbox', 'Checkbox off'],
+      ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
       ['Chip', 'Chip · default', 'button', 'Birth'],
-      ['Segmented', 'Segmented · default', undefined, 'Month'],
+      ['Segmented', 'Segmented · default', undefined, 'List'],
       ['Tabs', 'Tabs · default', 'tab', 'Filters'],
       ['IconButton', 'IconButton · default', 'button', 'Zoom in'],
     ] as const;
@@ -215,7 +215,9 @@ test.describe('at 1440px', () => {
 
         if (
           await focused.evaluate(
-            node => node instanceof HTMLInputElement && node.type === 'text'
+            node =>
+              node instanceof HTMLInputElement &&
+              ['password', 'search', 'text'].includes(node.type)
           )
         ) {
           expect(
@@ -261,9 +263,9 @@ test.describe('at 1440px', () => {
   test('a small control has a 44px hit area', async ({ page }) => {
     // Away from the neighbouring checkbox, whose 44px area overlaps this one.
     const cases = [
-      ['Checkbox', 'Checkbox off · default', 'checkbox', 'Checkbox off'],
+      ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
       ['Chip', 'Chip · default', 'button', 'Birth'],
-      ['Segmented', 'Segmented · default', undefined, 'Month'],
+      ['Segmented', 'Segmented · default', undefined, 'List'],
       ['Tabs', 'Tabs · default', 'tab', 'Filters'],
     ] as const;
 

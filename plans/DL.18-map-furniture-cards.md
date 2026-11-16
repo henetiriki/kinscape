@@ -92,3 +92,5 @@ The tech lead, or a local Claude Code session that the tech lead starts, runs st
 - `DateField` stays in the group "Forms".
 
 ## Deviations
+
+- `design/map-districts.jpg`: the workflow Design: Render snapshots rewrote it by 6 bytes in `5ba746e7`. No board changed.

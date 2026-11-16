@@ -2,7 +2,7 @@
 
 - **Spec:** #920
 - **Requirement IDs:** None. This Spec changes the design system and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ The test "names each card whose component CSS has a width rule" (`cards.test.ts`
 - **B.** Make the test read the CSS file next to each path in `CONTROLS`. `DateField` and `FuzzyDateField` then join `PHONE_CARDS`, and the workflow adds two more card images. This changes two cards that #920 does not name, and #921 inherits the wider test.
 - **Other:** your own.
 
-Recommended: A, because B changes cards outside this Spec. File a Chore for B.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

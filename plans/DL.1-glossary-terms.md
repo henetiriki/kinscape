@@ -2,7 +2,7 @@
 
 - **Spec:** #894
 - **Requirement IDs:** None. The Spec changes docs only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

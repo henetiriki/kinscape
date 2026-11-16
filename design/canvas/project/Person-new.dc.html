@@ -79,7 +79,7 @@
   </sc-if>
 
   <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
+    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%); z-index: 10"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
   </sc-if>
 </div>
 </x-dc>

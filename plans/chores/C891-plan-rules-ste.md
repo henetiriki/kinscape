@@ -7,7 +7,7 @@
 
 `plans/README.md` is a hand-back path, so the tech lead builds this Chore with `/build-local`.
 
-The build rewrites each rule that the table names. A rewrite keeps the facts of its rule. No anchor, link or rule moves. The numbers are the [STE rules](../../docs/writing.md#ste) that each rule breaks.
+The build rewrites each rule that the table names. A rewrite keeps the facts of its rule, and each anchor and each link stays in its rule. No rule moves. The numbers are the [STE rules](../../docs/writing.md#ste) that each rule breaks.
 
 | Rule                    | Breaks                                      |
 | ----------------------- | ------------------------------------------- |
@@ -24,9 +24,10 @@ The build rewrites each rule that the table names. A rewrite keeps the facts of 
 | `test-first`            | 1, 2, 8                                     |
 | `hand-back`             | 8, 10 ("Hand back" in the label)            |
 | `design-system`         | 2, 10 ("sign in")                           |
-| `ready-check`           | 11 ("leaves draft")                         |
+| `ready-check`           | 11 ("leaves draft"), 15                     |
+| `related-issues`        | 15                                          |
 
-`related-issues` and `build-ownership` have no break.
+`build-ownership` has no break.
 
 ## Decisions
 
@@ -82,6 +83,6 @@ STE rule 15 asks for a vertical list "for more than two items". Five rules hold 
 
 ## Deviations
 
-- The file has 1,151 words. The budget is 1,200, not 1,151, so that a later rule has room.
+- The file has 1,155 words. The budget is 1,200, not 1,155, so that a later rule has room.
 - The intro line changes too (D1). The issue names the rules only.
 - The label of `hand-back` is "Hand-back", and the label of `plans-committed-first` is "Commit a Spec plan first".

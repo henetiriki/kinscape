@@ -2,7 +2,7 @@
 
 These rules apply to each plan, from its draft to its commit. Start each plan from [TEMPLATE.md](TEMPLATE.md).
 
-1. <a id="plans-committed-first"></a>**Commit a Spec plan first.** Save the plan as `plans/<spec-id>-<slug>.md`. [`agent-approve.mts`](../scripts/agent-approve.mts) commits its approval as `plan(<spec-id>): approved by @<tech-lead>`. A plan that a person commits has `Status: approved` and that commit text. A Spec id looks like `M0.1`. A Bug id is `B<issue number>`, and its plan is `plans/bugs/B<n>-<slug>.md`.
+1. <a id="plans-committed-first"></a>**Commit a Spec plan first.** Save the plan as `plans/<spec-id>-<slug>.md`. [`agent-approve.mts`](../scripts/agent-approve.mts) commits its approval as `plan(<spec-id>): approved by @<tech-lead>`. A plan that `agent-approve.mts` does not commit has `Status: approved` and that commit text. A Spec id looks like `M0.1`. A Bug id is `B<issue number>`, and its plan is `plans/bugs/B<n>-<slug>.md`.
 2. <a id="plan-pr-flow"></a>**In GitHub Actions**, do these steps:
    - Refresh the issue ([stale-facts rule](#stale-facts)).
    - Commit the plan as `plan(<spec-id>): draft` with `Status: draft`.
@@ -67,7 +67,7 @@ These rules apply to each plan, from its draft to its commit. Start each plan fr
 
    A Spec that builds a shared component adds it to `CONTROLS`. Run steps 2 to 7 of [Changing the design system](../design/CANVAS.md#changing-the-design-system) on the same branch ([`COMPONENTS.md`](../design/COMPONENTS.md)).
 
-8. <a id="failing-tests"></a>**Failing tests.** Fix the code, not the test. Do one of these to a test only if the plan changes the behaviour that the test checks:
+8. <a id="failing-tests"></a>**Failing tests.** Fix the code, not the test. If the plan changes the behaviour that a test checks, you can do one of these to the test:
    - Change the test.
    - Skip the test.
    - Delete the test.
@@ -87,18 +87,27 @@ These rules apply to each plan, from its draft to its commit. Start each plan fr
 
 10. <a id="related-issues"></a>**Related issues.** Before you draft or revise a plan, read each related issue:
     - Each `dependencies/blocking` issue.
-    - The parent Intent (a Bug, a Chore or a milestone Spec has none).
+    - The parent Intent. These have none:
+      - a Bug;
+      - a Chore;
+      - a milestone Spec.
     - Each open sub-issue of the parent that shares a requirement ID.
 
     In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Only the build edits a related issue.
 
 11. <a id="test-first"></a>**Test first.** This rule applies to logic that a unit test covers. Before you write the code, see the test fail on the behaviour, not on an import error. Paste that failing line in the Evidence of the PR.
-12. <a id="hand-back"></a>**Hand-back.** The agent does not build a hand-back. A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and is not in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). If there is no plan PR, comment the reason on the issue.
-13. <a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent has no sign-in, so it asks in the PR. It keeps the PR as a draft. A canvas-only follow-up has its own plan: [`C689-canvas-refresh.md`](chores/C689-canvas-refresh.md).
+12. <a id="hand-back"></a>**Hand-back.** The CI build agent does not build a hand-back. A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and is not in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). If there is no plan PR, comment the reason on the issue.
+13. <a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent cannot get access to claude.ai, so it asks in the PR. It keeps the PR as a draft. A canvas-only follow-up has its own plan: [`C689-canvas-refresh.md`](chores/C689-canvas-refresh.md).
 14. <a id="ready-check"></a>**Ready check.** Before the PR leaves the draft state, compare the plan and the diff with these parts of the issue:
-    - A Chore: "What to change", "How we'll know it's done" and Constraints.
+    - A Chore:
+      - "What to change";
+      - "How we'll know it's done";
+      - Constraints.
     - A Spec: "Behaviour and UX" and "Acceptance checks".
-    - A Bug: "What did you expect?", "Acceptance checks" and "Must not break".
+    - A Bug:
+      - "What did you expect?";
+      - "Acceptance checks";
+      - "Must not break".
 
     Do not list an edit that a step of [Changing the design system](../design/CANVAS.md#changing-the-design-system) makes. List each other difference under `## Deviations`. If a difference changes a done check, stop for the tech lead ([big-departures rule](#big-departures)).
 

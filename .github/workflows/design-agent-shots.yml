@@ -1,10 +1,11 @@
 name: 'Design: Render snapshots'
 
 # Exports the HTML snapshots (design/source/*.html) from design/canvas/, renders every JPG
-# (design/*.jpg) in the Playwright image that the design check runs in, and commits the files that
-# changed to the branch it was run on. Run it by hand from the Actions tab (or
-# `gh workflow run design-agent-shots.yml --ref <branch>`) after editing a canvas board,
-# or when the design check fails on text edges. Nobody exports or renders snapshots locally.
+# (design/*.jpg) and every card image (design/cards/*.png) in the Playwright image that the design
+# check runs in, and commits the files that changed to the branch that the run uses. Run it by
+# hand from the Actions tab (or `gh workflow run design-agent-shots.yml --ref <branch>`) after a
+# change to a canvas board or a component, or when the design check fails on text edges. Nobody
+# exports or renders snapshots or card images locally.
 #
 # The commit is pushed with the bot's token, so CI runs on it. A push never starts this workflow,
 # so it cannot loop. A run on a branch that has moved since is rejected, never forced.
@@ -45,8 +46,8 @@ jobs:
         id: pin
         run: echo "image=$(sed -n 's/^FROM //p' docker/playwright/Dockerfile)" >> "$GITHUB_OUTPUT"
 
-  # Exports and renders the snapshots; fails if anything but design/source/*.html and design/*.jpg
-  # changed. Holds no token that can push.
+  # Exports and renders the snapshots and the card images; fails if anything but
+  # design/source/*.html, design/*.jpg and design/cards/*.png changed. Holds no token that can push.
   render:
     needs: setup
     runs-on: ubuntu-latest
@@ -71,7 +72,10 @@ jobs:
         run: npm run design:export
       - name: Render the snapshots
         run: npm run design:shots
-      # Lists the HTML snapshots and JPGs that changed in the job summary.
+      # `--update-snapshots` rewrites only the card images that differ from the committed ones.
+      - name: Render the card images
+        run: npm run design:gallery -- --update-snapshots
+      # Lists the HTML snapshots, JPGs and card images that changed in the job summary.
       - name: Check which files changed
         id: check
         run: OUTPUT_FILE="$GITHUB_OUTPUT" SUMMARY_FILE="$GITHUB_STEP_SUMMARY" node scripts/design-shots-ci.mts check
@@ -82,9 +86,10 @@ jobs:
           name: design-snapshots
           path: |
             design/*.jpg
+            design/cards/*.png
             design/source/*.html
 
-  # Commits the changed snapshots as the bot. Its token starts CI on the new commit.
+  # Commits the changed snapshots and card images as the bot. Its token starts CI on the new commit.
   commit:
     needs: render
     if: ${{ needs.render.outputs.changed != '0' }}
@@ -112,13 +117,13 @@ jobs:
         with:
           name: design-snapshots
           path: design
-      - name: Check that only snapshots changed
+      - name: Check that only snapshots and card images changed
         run: node scripts/design-shots-ci.mts check
       - name: Commit the snapshots to the branch
         run: |
           git config user.name "$BOT_LOGIN"
           git config user.email "$BOT_ID+$BOT_LOGIN@users.noreply.github.com"
-          git add -- 'design/*.jpg' 'design/source/*.html'
+          git add -- 'design/*.jpg' 'design/cards/*.png' 'design/source/*.html'
           git commit -m 'chore: export and render design snapshots'
           git push origin "HEAD:$REF"
         env:

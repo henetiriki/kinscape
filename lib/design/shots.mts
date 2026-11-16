@@ -1,5 +1,8 @@
 import type { Shot } from '#ks/lib/design/types.ts';
 
+/** One raster thread: several threads can tile a page in a different order on each run, which changes the image bytes. */
+export const LAUNCH_ARGS = ['--num-raster-threads=1'];
+
 /** The phone boards are long pages; every other phone file is one screen. */
 const PHONE_BOARD = /^(?:style-\d.*|map-style|design-kit)-phone$/;
 

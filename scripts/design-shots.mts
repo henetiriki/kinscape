@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 
 import type { Shot } from '#ks/lib/design/types.ts';
 
-import { shotFor } from '#ks/lib/design/shots.mts';
+import { LAUNCH_ARGS, shotFor } from '#ks/lib/design/shots.mts';
 
 type Deps = {
   /** Renders the page at `url` to JPG bytes; rejects on any non-`file:` request. */
@@ -93,9 +93,6 @@ export const findProblems = (root: string): string[] => {
 
   return problems;
 };
-
-/** One raster thread: several threads can tile a page in a different order on each run, which changes the JPG bytes. */
-const LAUNCH_ARGS = ['--num-raster-threads=1'];
 
 /** Starts the browser with `LAUNCH_ARGS`; takes the browser type so a test can check the arguments. */
 export const launch = <Browser,>(browserType: {

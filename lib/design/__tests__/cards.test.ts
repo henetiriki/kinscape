@@ -1,8 +1,12 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import {
+  CARD_IMAGES,
+  CARD_WIDTHS,
+  cardImage,
+  cardImageWidths,
   checkPreview,
   checkReadme,
   controlReadme,
@@ -10,6 +14,8 @@ import {
   firstSentence,
   galleryHtml,
   GROUPS,
+  PHONE_CARDS,
+  pinnedImage,
   previewHtml,
 } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -251,6 +257,139 @@ describe('checkReadme', () => {
     expect(() => checkReadme('A', 'x'.repeat(64 * 1024 + 1))).toThrow(
       'A README.md is over 64 KB'
     );
+  });
+});
+
+describe('cardImage', () => {
+  it('names the image of a card at a width', () => {
+    expect(CARD_WIDTHS).toEqual([1440, 390]);
+    expect(cardImage('Button', 1440)).toBe('Button-1440.png');
+    expect(cardImage('Button', 390)).toBe('Button-390.png');
+  });
+});
+
+/** The files of `CARD_IMAGES` that are not the image of one of the cards at a width of its own. */
+const strayCardImages = (files: string[], names: string[]): string[] => {
+  const wanted = new Set(
+    names.flatMap(name =>
+      cardImageWidths(name).map(width => cardImage(name, width))
+    )
+  );
+
+  return files.filter(file => !wanted.has(file)).toSorted();
+};
+
+/** CSS that makes a component change with the viewport width. A fixed overlay with no such rule is listed by hand. */
+const WIDTH_RULE =
+  /@media[^{]*(?:(?:min|max)-width|\bwidth\s*[<>])|@container|\d(?:dvh|dvw|lvh|lvw|svh|svw|vh|vw)\b/;
+
+describe('the width rule of a component', () => {
+  it.each([
+    '@media (min-width: 640px) { a { top: 0 } }',
+    '@media (max-width: 639.98px), (max-height: 499.98px) { a { top: 0 } }',
+    '@media (width <= 640px) { a { top: 0 } }',
+    '@media (width > 640px) { a { top: 0 } }',
+    '@container (inline-size > 20em) { a { top: 0 } }',
+    'a { max-height: calc(100dvh - 80px); }',
+    'a { width: 90vw; }',
+  ])('matches %s', css => {
+    expect(WIDTH_RULE.test(css)).toBe(true);
+  });
+
+  it.each([
+    '@media (hover: hover) { a { top: 0 } }',
+    '@media (prefers-reduced-motion: no-preference) { a { top: 0 } }',
+    'a { width: 100%; inset: 0; }',
+    'a { line-height: 1.5; }',
+  ])('does not match %s', css => {
+    expect(WIDTH_RULE.test(css)).toBe(false);
+  });
+});
+
+describe('cardImageWidths', () => {
+  it('is the desktop width for a card, and the phone width too for a card in PHONE_CARDS', () => {
+    expect(cardImageWidths('Divider')).toEqual([1440]);
+    expect(cardImageWidths('Chip')).toEqual([1440, 390]);
+  });
+
+  it('names only cards that exist', () => {
+    const names = CARDS.map(({ name }) => name);
+
+    expect(PHONE_CARDS.filter(name => !names.includes(name))).toEqual([]);
+  });
+
+  it('names each card whose component CSS has a width rule', () => {
+    const files = readdirSync('app/components', { recursive: true }).map(
+      String
+    );
+    const responsive = CARDS.map(({ name }) => name).filter(name =>
+      files
+        .filter(file => file.endsWith(`/${name}.module.css`))
+        .some(file =>
+          WIDTH_RULE.test(readFileSync(`app/components/${file}`, 'utf8'))
+        )
+    );
+
+    expect(responsive.filter(name => !PHONE_CARDS.includes(name))).toEqual([]);
+    expect(responsive.length).toBeGreaterThan(0);
+  });
+});
+
+describe('strayCardImages', () => {
+  const names = ['Alert', 'Chip'];
+  const wanted = names.flatMap(name =>
+    cardImageWidths(name).map(width => cardImage(name, width))
+  );
+
+  it('is empty when each file is the image of a card at a width', () => {
+    expect(strayCardImages(wanted, names)).toEqual([]);
+    expect(strayCardImages(wanted.slice(1), names)).toEqual([]);
+  });
+
+  it('lists, in order, each file that is not the image of a card at a width', () => {
+    expect(
+      strayCardImages(
+        [
+          ...wanted,
+          'Zebra-1440.png',
+          'Alert-390.png',
+          'Chip-800.png',
+          'Chip-390.jpg',
+          'notes.md',
+        ],
+        names
+      )
+    ).toEqual([
+      'Alert-390.png',
+      'Chip-390.jpg',
+      'Chip-800.png',
+      'Zebra-1440.png',
+      'notes.md',
+    ]);
+  });
+});
+
+describe('pinnedImage', () => {
+  it('is true only where PLAYWRIGHT_BROWSERS_PATH is /ms-playwright', () => {
+    expect(pinnedImage({ PLAYWRIGHT_BROWSERS_PATH: '/ms-playwright' })).toBe(
+      true
+    );
+    expect(pinnedImage({ PLAYWRIGHT_BROWSERS_PATH: '/home/me/.cache' })).toBe(
+      false
+    );
+    expect(pinnedImage({})).toBe(false);
+  });
+});
+
+describe('the card images', () => {
+  it('hold no file that is not the image of a card at a width', () => {
+    const files = existsSync(CARD_IMAGES) ? readdirSync(CARD_IMAGES) : [];
+    const stray = strayCardImages(
+      files,
+      CARDS.map(({ name }) => name)
+    );
+
+    expect(stray.map(file => `${CARD_IMAGES}/${file}`)).toEqual([]);
   });
 });
 

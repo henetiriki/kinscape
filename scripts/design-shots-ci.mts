@@ -11,6 +11,8 @@ const SNAPSHOT = /^design\/[^/]+\.jpg$/;
 
 const HTML_SNAPSHOT = /^design\/source\/[^/]+\.html$/;
 
+const CARD_IMAGE = /^design\/cards\/[^/]+\.png$/;
+
 const STATUS = ['status', '--porcelain', '-z', '--untracked-files=all'];
 
 /** The reason the design-shots workflow must not run on `ref`; undefined when it may. */
@@ -26,18 +28,21 @@ export const guard = (ref: string): string | undefined => {
   return undefined;
 };
 
-/** Splits `git status --porcelain -z` output into HTML snapshots, snapshot JPGs and everything else. */
+/** Splits `git status --porcelain -z` output into HTML snapshots, snapshot JPGs, card images and everything else. */
 export const parseStatus = (porcelain: string) => {
   const paths = porcelain
     .split('\0')
     .filter(entry => entry !== '')
     .map(entry => entry.slice(3));
 
+  const known = [SNAPSHOT, HTML_SNAPSHOT, CARD_IMAGE];
+
   return {
+    cards: paths.filter(path => CARD_IMAGE.test(path)).toSorted(),
     html: paths.filter(path => HTML_SNAPSHOT.test(path)).toSorted(),
     jpgs: paths.filter(path => SNAPSHOT.test(path)).toSorted(),
     other: paths
-      .filter(path => !SNAPSHOT.test(path) && !HTML_SNAPSHOT.test(path))
+      .filter(path => !known.some(pattern => pattern.test(path)))
       .toSorted(),
   };
 };
@@ -52,37 +57,47 @@ const section = (label: string, paths: string[]): string[] =>
         ...paths.map(path => `- \`${path}\``),
       ];
 
-export const summary = (jpgs: string[], html: string[]): string =>
+export const summary = (
+  jpgs: string[],
+  html: string[],
+  cards: string[]
+): string =>
   [
     '## Design snapshots',
-    ...(jpgs.length + html.length === 0 ? ['', 'No changes.'] : []),
+    ...(jpgs.length + html.length + cards.length === 0
+      ? ['', 'No changes.']
+      : []),
     ...section('HTML snapshot', html),
     ...section('JPG', jpgs),
+    ...section('card image', cards),
   ]
     .join('\n')
     .concat('\n');
 
 /**
- * Fails when anything but `design/source/*.html` and `design/*.jpg` changed. Writes the summary
+ * Fails when anything but `design/source/*.html`, `design/*.jpg` and `design/cards/*.png` changed. Writes the summary
  * to `SUMMARY_FILE` and `changed=<count>` to `OUTPUT_FILE`, when set.
  */
 export const check = (env: Env, deps: DesignShotsCiDeps): number => {
-  const { html, jpgs, other } = parseStatus(deps.git(STATUS));
+  const { cards, html, jpgs, other } = parseStatus(deps.git(STATUS));
 
   if (other.length > 0) {
     console.error(
-      `Changed outside design/*.jpg and design/source/*.html: ${other.join(', ')}`
+      `Changed outside design/*.jpg, design/cards/*.png and design/source/*.html: ${other.join(', ')}`
     );
 
     return 1;
   }
 
   if (env.SUMMARY_FILE) {
-    deps.append(env.SUMMARY_FILE, summary(jpgs, html));
+    deps.append(env.SUMMARY_FILE, summary(jpgs, html, cards));
   }
 
   if (env.OUTPUT_FILE) {
-    deps.append(env.OUTPUT_FILE, `changed=${jpgs.length + html.length}\n`);
+    deps.append(
+      env.OUTPUT_FILE,
+      `changed=${jpgs.length + html.length + cards.length}\n`
+    );
   }
 
   return 0;

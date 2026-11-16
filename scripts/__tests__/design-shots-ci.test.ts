@@ -52,9 +52,33 @@ describe('parseStatus', () => {
         )
       )
     ).toEqual({
+      cards: [],
       html: [],
       jpgs: ['design/map-desktop.jpg', 'design/new.jpg'],
       other: ['design/DESIGN.md', 'design/source/new.jpg', 'package.json'],
+    });
+  });
+
+  it('separates card images, sorted', () => {
+    expect(
+      parseStatus(
+        status(
+          ' M design/cards/Button-390.png',
+          '?? design/cards/Alert-1440.png',
+          ' M design/cards/notes.md',
+          ' M design/cards/sub/Alert-1440.png',
+          ' M design/other.png'
+        )
+      )
+    ).toEqual({
+      cards: ['design/cards/Alert-1440.png', 'design/cards/Button-390.png'],
+      html: [],
+      jpgs: [],
+      other: [
+        'design/cards/notes.md',
+        'design/cards/sub/Alert-1440.png',
+        'design/other.png',
+      ],
     });
   });
 
@@ -69,6 +93,7 @@ describe('parseStatus', () => {
         )
       )
     ).toEqual({
+      cards: [],
       html: ['design/source/a.html', 'design/source/b.html'],
       jpgs: [],
       other: ['design/other.html', 'design/source/fonts.css'],
@@ -76,36 +101,63 @@ describe('parseStatus', () => {
   });
 
   it('finds nothing in a clean tree', () => {
-    expect(parseStatus('')).toEqual({ html: [], jpgs: [], other: [] });
+    expect(parseStatus('')).toEqual({
+      cards: [],
+      html: [],
+      jpgs: [],
+      other: [],
+    });
   });
 });
 
 describe('summary', () => {
   it('says when nothing changed', () => {
-    expect(summary([], [])).toBe('## Design snapshots\n\nNo changes.\n');
+    expect(summary([], [], [])).toBe('## Design snapshots\n\nNo changes.\n');
   });
 
   it('counts one JPG', () => {
-    expect(summary(['design/a.jpg'], [])).toBe(
+    expect(summary(['design/a.jpg'], [], [])).toBe(
       '## Design snapshots\n\n1 JPG changed:\n\n- `design/a.jpg`\n'
     );
   });
 
   it('lists several JPGs', () => {
-    expect(summary(['design/a.jpg', 'design/b.jpg'], [])).toBe(
+    expect(summary(['design/a.jpg', 'design/b.jpg'], [], [])).toBe(
       '## Design snapshots\n\n2 JPGs changed:\n\n- `design/a.jpg`\n- `design/b.jpg`\n'
     );
   });
 
   it('lists HTML snapshots before JPGs', () => {
-    expect(summary(['design/a.jpg'], ['design/source/a.html'])).toBe(
+    expect(summary(['design/a.jpg'], ['design/source/a.html'], [])).toBe(
       '## Design snapshots\n\n1 HTML snapshot changed:\n\n- `design/source/a.html`\n\n1 JPG changed:\n\n- `design/a.jpg`\n'
     );
   });
 
   it('counts several HTML snapshots', () => {
-    expect(summary([], ['design/source/a.html', 'design/source/b.html'])).toBe(
+    expect(
+      summary([], ['design/source/a.html', 'design/source/b.html'], [])
+    ).toBe(
       '## Design snapshots\n\n2 HTML snapshots changed:\n\n- `design/source/a.html`\n- `design/source/b.html`\n'
+    );
+  });
+});
+
+describe('summary of card images', () => {
+  it('counts one card image', () => {
+    expect(summary([], [], ['design/cards/A-390.png'])).toBe(
+      '## Design snapshots\n\n1 card image changed:\n\n- `design/cards/A-390.png`\n'
+    );
+  });
+
+  it('lists card images after JPGs', () => {
+    expect(
+      summary(
+        ['design/a.jpg'],
+        ['design/source/a.html'],
+        ['design/cards/A-390.png', 'design/cards/A-1440.png']
+      )
+    ).toBe(
+      '## Design snapshots\n\n1 HTML snapshot changed:\n\n- `design/source/a.html`\n\n1 JPG changed:\n\n- `design/a.jpg`\n\n2 card images changed:\n\n- `design/cards/A-390.png`\n- `design/cards/A-1440.png`\n'
     );
   });
 });
@@ -151,22 +203,31 @@ describe('check', () => {
 
   it('writes the summary and the count when the files are set', () => {
     const d = deps(
-      status(' M design/a.jpg', ' M design/b.jpg', ' M design/source/a.html')
+      status(
+        ' M design/a.jpg',
+        ' M design/b.jpg',
+        ' M design/source/a.html',
+        '?? design/cards/A-390.png'
+      )
     );
 
     expect(check({ OUTPUT_FILE: 'out', SUMMARY_FILE: 'sum' }, d)).toBe(0);
     expect(d.append).toHaveBeenCalledWith(
       'sum',
-      summary(['design/a.jpg', 'design/b.jpg'], ['design/source/a.html'])
+      summary(
+        ['design/a.jpg', 'design/b.jpg'],
+        ['design/source/a.html'],
+        ['design/cards/A-390.png']
+      )
     );
-    expect(d.append).toHaveBeenCalledWith('out', 'changed=3\n');
+    expect(d.append).toHaveBeenCalledWith('out', 'changed=4\n');
   });
 
   it('reports no changes with a count of 0', () => {
     const d = deps('');
 
     expect(check({ OUTPUT_FILE: 'out', SUMMARY_FILE: 'sum' }, d)).toBe(0);
-    expect(d.append).toHaveBeenCalledWith('sum', summary([], []));
+    expect(d.append).toHaveBeenCalledWith('sum', summary([], [], []));
     expect(d.append).toHaveBeenCalledWith('out', 'changed=0\n');
   });
 
@@ -185,7 +246,7 @@ describe('check', () => {
 
     expect(check({ OUTPUT_FILE: 'out', SUMMARY_FILE: 'sum' }, d)).toBe(1);
     expect(error).toHaveBeenCalledWith(
-      'Changed outside design/*.jpg and design/source/*.html: package.json'
+      'Changed outside design/*.jpg, design/cards/*.png and design/source/*.html: package.json'
     );
     expect(d.append).not.toHaveBeenCalled();
   });

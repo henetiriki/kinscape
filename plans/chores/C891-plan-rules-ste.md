@@ -79,3 +79,9 @@ STE rule 15 asks for a vertical list "for more than two items". Five rules hold 
 | `plan-rule-citations.test.ts` passes | `npm test`            |
 | No change to `RULE_NAMES`            | The diff              |
 | `npm run words` passes               | `npm run words`       |
+
+## Deviations
+
+- The file has 1,151 words. The budget is 1,200, not 1,151, so that a later rule has room.
+- The intro line changes too (D1). The issue names the rules only.
+- The label of `hand-back` is "Hand-back", and the label of `plans-committed-first` is "Commit a Spec plan first".

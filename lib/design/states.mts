@@ -1,6 +1,6 @@
 /** What each shared control's design system card shows (Spec #450): its group, height, `DESIGN.md` bullets and states. */
 
-import type { Card, State } from '#ks/lib/design/types.ts';
+import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 
 import {
   CHAIN,
@@ -144,6 +144,30 @@ const one = (
 });
 
 const AVATAR = { control: 'Avatar', props: { initial: 'R' } };
+
+const HEADER = {
+  control: 'PageHeader',
+  props: { backHref: '/people', backLabel: 'People' },
+};
+
+/** The `column` values that a frame with no action bar shows, with the heading of each. */
+const COLUMNS = [
+  ['list', 'People'],
+  ['detail', 'Relationships'],
+  ['form', 'Add a person'],
+  ['notice', 'Person not found'],
+  ['phone-notice', 'Edit people on a computer'],
+];
+
+/** The heading and the line of text that a `ColumnLayout` state holds. */
+const columnText = (title: string): Slot[] => [
+  { children: title, control: 'Text', props: { as: 'h1', variant: 'h1' } },
+  {
+    children: 'Each change saves at once.',
+    control: 'Text',
+    props: { variant: 'small' },
+  },
+];
 
 const dateField = (props: State['props'] = {}) => ({
   // The first Map date, today, and a day between.
@@ -1058,5 +1082,36 @@ export const CARDS: Card[] = [
         'Content'
       ),
     ],
+  },
+  {
+    contain: true,
+    design: [],
+    frame: 480,
+    group: 'Layout',
+    handlers: [],
+    height: 3400,
+    name: 'ColumnLayout',
+    pad: 0,
+    states: [
+      ...COLUMNS.map(([column, title]) =>
+        one(`ColumnLayout · ${column}`, { column }, columnText(title), {
+          header: HEADER,
+        })
+      ),
+      one(
+        'ColumnLayout · form with an action bar',
+        { column: 'form' },
+        columnText('Add a person'),
+        {
+          actions: {
+            children: 'Save',
+            control: 'Button',
+            props: { variant: 'primary' },
+          },
+          header: HEADER,
+        }
+      ),
+    ],
+    width: 1440,
   },
 ];

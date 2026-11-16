@@ -59,6 +59,7 @@ import { BackLink, PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
+import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
 import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
@@ -169,6 +170,7 @@ const COMPONENTS = {
   CheckboxField,
   Chip,
   ChipGroup,
+  ColumnLayout,
   DateField,
   Dialog,
   DialogPanel,
@@ -862,6 +864,39 @@ const CASES: [string, ReactElement][] = [
       titleId='sheet-tabs'>
       Content
     </SheetPanel>,
+  ],
+  ...(
+    [
+      ['list', 'People'],
+      ['detail', 'Relationships'],
+      ['form', 'Add a person'],
+      ['notice', 'Person not found'],
+      ['phone-notice', 'Edit people on a computer'],
+    ] as const
+  ).map(([column, title]): [string, ReactElement] => [
+    `ColumnLayout · ${column}`,
+    <ColumnLayout
+      column={column}
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key={column}>
+      <Text as='h1' variant='h1'>
+        {title}
+      </Text>
+      <Text variant='small'>Each change saves at once.</Text>
+    </ColumnLayout>,
+  ]),
+  [
+    'ColumnLayout · form with an action bar',
+    <ColumnLayout
+      actions={<Button variant='primary'>Save</Button>}
+      column='form'
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key='bar'>
+      <Text as='h1' variant='h1'>
+        Add a person
+      </Text>
+      <Text variant='small'>Each change saves at once.</Text>
+    </ColumnLayout>,
   ],
 ];
 

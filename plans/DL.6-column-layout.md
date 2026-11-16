@@ -88,3 +88,8 @@ The frame is `height: 100dvh`. In a gallery file each of the six states is then 
 As the Spec says. A `frame` for `SignInLayout` or `MapLayout`: #923 and #924.
 
 ## Deviations
+
+- `PersonNotFound.module.css` and `EditOnComputer.module.css` held only the frame, so the build deleted them.
+- The counts in `hover.test.ts` (stylesheets), `design.test.ts` (components) and `design-system.test.ts` (cards) changed with the file lists.
+- `detail` and `form` have no phone rule: their desktop width already is `100%` on a phone.
+- The card height is 3400px, and `ColumnLayout` has `width: 1440` as the Spec says.

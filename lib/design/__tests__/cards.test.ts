@@ -164,6 +164,22 @@ describe('previewHtml', () => {
     expect(html).not.toContain('contain: layout');
   });
 
+  it('sets the height of the control in each state only for a card with a frame', () => {
+    const layout = CARDS.find(({ name }) => name === 'ColumnLayout')!;
+
+    expect(layout.frame).toBe(480);
+    expect(layout.group).toBe('Layout');
+    expect(layout.width).toBe(1440);
+    expect(layout.states).toHaveLength(6);
+    expect(previewHtml(layout)).toContain(
+      '.ks-case > :last-child { height: 480px; }'
+    );
+    expect(previewHtml(layout).split('\n')[0]).toBe(
+      '<!-- @dsCard group="Layout" height=3400 width=1440 -->'
+    );
+    expect(html).not.toContain(':last-child');
+  });
+
   it('keeps text from ending the script', () => {
     const tricky = previewHtml({
       ...card,
@@ -400,11 +416,11 @@ describe('CARDS', () => {
     );
   });
 
-  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 3 Map, 8 Foundation and 9 Overlays', () => {
+  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 3 Map, 8 Foundation, 9 Overlays and 1 Layout', () => {
     const count = (group: string) =>
       CARDS.filter(card => card.group === group).length;
 
-    expect(GROUPS.map(count)).toEqual([14, 6, 8, 3, 8, 9]);
+    expect(GROUPS.map(count)).toEqual([14, 6, 8, 3, 8, 9, 1]);
   });
 
   it.each(CARDS.map(card => [card.name, card] as const))(

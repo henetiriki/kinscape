@@ -16,7 +16,7 @@ import {
 const NAMES = CONTROLS.map(({ name }) => name);
 
 describe('CONTROLS', () => {
-  it('lists the 48 shared controls, each from a file that exists', () => {
+  it('lists the 49 shared controls, each from a file that exists', () => {
     expect(NAMES).toEqual([
       'Button',
       'IconButton',
@@ -66,6 +66,7 @@ describe('CONTROLS', () => {
       'DialogPanel',
       'Sheet',
       'SheetPanel',
+      'ColumnLayout',
     ]);
     expect(CONTROLS.filter(({ path }) => !existsSync(path))).toEqual([]);
   });
@@ -76,6 +77,7 @@ const ROLE_FOLDERS = [
   'feedback',
   'forms',
   'foundation',
+  'layout',
   'overlays',
 ].map(role => `app/components/${role}`);
 

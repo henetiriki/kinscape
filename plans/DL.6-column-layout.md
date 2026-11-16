@@ -49,7 +49,7 @@ The frame is `height: 100dvh`. In a gallery file each of the six states is then 
 | `design/DESIGN.md`, `docs/architecture.md`                                                                                 | Changed       | Behaviour item 8                                                                          |
 | `design/tokens.json` `notes`                                                                                               | Changed       | Only as D4 says                                                                           |
 | `.design-system/`, `design/canvas/project/ds/`, `canvas.json`, `VERSION`, `design/cards/ColumnLayout-{1440,390}.png`       | Changed       | Steps 2 to 6                                                                              |
-| The eight boards of Behaviour item 7, their snapshots                                                                      | Changed       | Step 7                                                                                    |
+| The eight boards of Behaviour item 7, and the snapshots of them and of the 18 boards that import them (26 files)           | Changed       | Step 7                                                                                    |
 
 ## Order of work
 
@@ -71,19 +71,19 @@ The frame is `height: 100dvh`. In a gallery file each of the six states is then 
 
 ## Proof
 
-| Acceptance check | Proven by                                                                                                          |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| 1                | `npm run design:check`; `git diff main -- design/screens.json` is empty                                            |
-| 2                | `e2e/widths.spec.ts`                                                                                               |
-| 3                | `git grep -e 100dvh -e 960px -- 'features/people/components/*.css'` is empty                                       |
-| 4                | `ColumnLayout.test.tsx`                                                                                            |
-| 5                | `bundle.test.ts`, `react-18.test.tsx`                                                                              |
-| 6                | `scripts/__tests__/design-system.test.ts`; line 1 of `.design-system/project/components/ColumnLayout/preview.html` |
-| 7                | `git ls-files design/cards/ColumnLayout-*`                                                                         |
-| 8                | The PR lists who ran each step                                                                                     |
-| 9                | `sha256sum` of both trees in the PR                                                                                |
-| 10               | The board files; the step 7 workflow run                                                                           |
-| 11               | `npm test`, `npm run typecheck`, `npm run lint`                                                                    |
+| Acceptance check | Proven by                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 1                | `npm run design:check`; `git diff main -- design/screens.json` is empty                                                        |
+| 2                | `e2e/widths.spec.ts`                                                                                                           |
+| 3                | `git grep -e 100dvh -e 960px -- 'features/people/components/*.css'` is empty                                                   |
+| 4                | `ColumnLayout.test.tsx`                                                                                                        |
+| 5                | `bundle.test.ts`, `react-18.test.tsx`                                                                                          |
+| 6                | `scripts/__tests__/design-system.test.ts`; line 1 of `.design-system/project/components/ColumnLayout/preview.html`             |
+| 7                | `git ls-files design/cards/ColumnLayout-*`                                                                                     |
+| 8                | The PR lists who ran each step                                                                                                 |
+| 9                | `sha256sum` of both trees in the PR                                                                                            |
+| 10               | The board files; `git diff --name-only <commit before the swap> HEAD -- 'design/*.jpg'` is empty after the step 7 workflow run |
+| 11               | `npm test`, `npm run typecheck`, `npm run lint`                                                                                |
 
 ## Out of scope
 

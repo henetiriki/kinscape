@@ -4,6 +4,8 @@ The caller names the PR and who approved or asked. Follow [plans/README.md](../.
 
 Your first command is `gh pr view <n> --json title,body,comments,reviews,headRefName,labels --jq '(.comments, .reviews) |= map(select(.authorAssociation | IN("OWNER", "MEMBER", "COLLABORATOR")))'`: the team's comments and reviews, and nobody else's. The bot's own and the review's findings are not needed here: the plan file and the PR body hold the state, and a finding reaches you through a fix-review run or a respond run's thread.
 
+Then run `git fetch origin main`. The checkout holds only the PR branch.
+
 The plan is approved and its decisions are recorded: `scripts/agent-approve.mts` committed that before you started. Don't run `plan-approve`.
 
 ## Rules
@@ -15,6 +17,7 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
 - As you iterate, run only the affected test file.
 - If a test fails, read the error. Then follow the [failing-tests rule](../../plans/README.md#failing-tests).
 - Don't add temporary debug output.
+- Record a small departure from the plan as the [small-departures rule](../../plans/README.md#small-departures) says.
 
 ## Steps
 
@@ -22,17 +25,18 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
    - Reword the Summary, Behaviour and Acceptance checks that the answer changes. Do this in the Spec and in each issue that the chosen option names.
    - Change no other text and no Decisions box. End each changed line with a cite, as "(#537 plan D5)".
    - Skip a closed related issue, and a body that already holds the new text and its cite.
-   - Run the [Spec checks](spec-checks.md) on each new body. Fix your new text.
+   - Run the [Spec checks](spec-checks.md) on each new body. Use `origin/main` for `main`. Fix your new text.
    - If a reworded issue has an open plan PR (`gh pr list --state open --search "Closes #<n> in:body"`), comment there with the new value and a link.
    - If a reword fails, leave that issue and continue.
    - In the PR body and your final comment, name each reworded, closed and failed issue, and each problem.
-2. Run the full `npm test` and `npm run e2e` once.
-3. Push.
-4. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work).
-5. If every check passes, run the [ready check](../../plans/README.md#ready-check).
-6. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)). Keep the reword line.
-7. If one of these is true, leave the PR a draft. If none is true, run `gh pr ready <n>`.
+2. **Stale facts.** Check the issue against `origin/main` (the [stale-facts rule](../../plans/README.md#stale-facts)). Check only what the issue cites as existing: a file that the build makes is no mismatch. On a mismatch, stop before you write code. Comment each mismatch on the PR.
+3. Run the full `npm test` and `npm run e2e` once.
+4. Push.
+5. If you built the work, run the checks in [Verifying your work](../../AGENTS.md#verifying-your-work).
+6. If every check passes, run the [ready check](../../plans/README.md#ready-check).
+7. Set the PR title and body to describe the work as it would merge now (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)). Keep the reword line.
+8. If one of these is true, leave the PR a draft. If none is true, run `gh pr ready <n>`.
    - A check failed.
    - The ready check stops you.
    - The plan changes a design system input (the [design-system rule](../../plans/README.md#design-system)).
-8. Whether the checks pass or fail, comment on the PR last. Say what you did. If a check failed, say what blocked you.
+9. Whether the checks pass or fail, comment on the PR last. Say what you did. If a check failed, say what blocked you.

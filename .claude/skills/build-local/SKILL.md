@@ -43,6 +43,7 @@ Rules for every step:
 - If the plan's "Files that change" table names a hand-back path, edit it. Any other hand-back path is a big departure: ask the tech lead.
 - If the browser cannot start for `npm run e2e`, write that under Evidence. Name the CI e2e job as the check.
 - If the plan changes a design system input, run the steps that the [design-system rule](../../../plans/README.md#design-system) gives a local session. If a step needs a claude.ai sign-in that the session lacks, ask the tech lead. Then leave the PR a draft.
-- If the session ran every design-system step, ignore the design-system bullet of `build.md` step 7.
+- If the session ran every design-system step, ignore the design-system bullet of `build.md`.
+- Stop check 5 is the stale-facts step of `build.md`. Do not run it again. It runs before the reword step.
 - Drop "(plan)" from the title.
 - Do not merge, push to `main`, or change a label or a reviewer.

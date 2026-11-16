@@ -50,6 +50,10 @@ export default defineConfig({
         'design-check.spec.ts',
         'design-gallery.spec.ts',
         'gallery-looks.spec.ts',
+        // The fixture Accounts exist only under the memory adapters.
+        ...(process.env.KINSCAPE_MEMORY_SIGN_IN === '1'
+          ? ['fixture-accounts.spec.ts']
+          : []),
       ],
       use: { ...use, storageState: signedIn },
     },

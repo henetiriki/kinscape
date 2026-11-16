@@ -9,6 +9,7 @@ import type { TreeStore } from '#ks/lib/domain/trees/types.ts';
 
 import { databaseSessions } from '#ks/server/auth/database-sessions.mts';
 import { databaseThrottle } from '#ks/server/auth/database-throttle.mts';
+import { FIXTURES } from '#ks/server/auth/fixtures.mts';
 import { memorySessions } from '#ks/server/auth/memory-sessions.mts';
 import { memorySignIn } from '#ks/server/auth/memory-sign-in.mts';
 import { memoryThrottle } from '#ks/server/auth/memory-throttle.mts';
@@ -32,7 +33,7 @@ const shared = globalThis as { kinscapeAdapters?: Adapters };
 
 /**
  * The sign-in port, session store, Tree store and throttle store. `KINSCAPE_MEMORY_ADAPTERS` makes all four
- * memory. Otherwise the database holds the sessions, Trees and throttle. Sign-in is memory under
+ * memory and adds the read-only fixture Accounts. Otherwise the database holds the sessions, Trees and throttle. Sign-in is memory under
  * `KINSCAPE_MEMORY_SIGN_IN` and Supabase if it is off. `parseEnv` refuses both flags on Vercel.
  */
 export const appAdapters = (): Adapters => {
@@ -42,15 +43,24 @@ export const appAdapters = (): Adapters => {
     shared.kinscapeAdapters = env.memoryAdapters
       ? {
           sessions: memorySessions(),
-          signIn: memorySignIn([SYNTHETIC]),
-          store: memoryStore([
-            {
-              id: SYNTHETIC.accountId,
-              issuer: SYNTHETIC.issuer,
-              subject: SYNTHETIC.subject,
-              trees: [{ id: SYNTHETIC.treeId, name: SYNTHETIC.treeName }],
-            },
-          ]),
+          signIn: memorySignIn([SYNTHETIC, ...FIXTURES]),
+          store: memoryStore(
+            [
+              {
+                id: SYNTHETIC.accountId,
+                issuer: SYNTHETIC.issuer,
+                subject: SYNTHETIC.subject,
+                trees: [{ id: SYNTHETIC.treeId, name: SYNTHETIC.treeName }],
+              },
+              ...FIXTURES.map(fixture => ({
+                id: fixture.accountId,
+                issuer: fixture.issuer,
+                subject: fixture.subject,
+                trees: [{ id: fixture.treeId, name: fixture.treeName }],
+              })),
+            ],
+            FIXTURES.map(fixture => fixture.treeId)
+          ),
           throttle: memoryThrottle(),
         }
       : {

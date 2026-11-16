@@ -1446,6 +1446,46 @@ export const runTreeStoreContract = (
         });
       });
 
+      // NFR-09, NFR-10
+      it('opens a seed Tree with its People and Relationship', async () => {
+        const seeded: SeedAccount = {
+          id: parseAccountId('00000000-0000-4000-8000-0000000000a2')!,
+          issuer: 'test',
+          subject: 'seeded',
+          trees: [
+            {
+              id: parseTreeId('00000000-0000-4000-8000-0000000000b2')!,
+              name: 'Seeded',
+              persons: [
+                personOf(ID_1, { givenNames: 'Ana', surname: 'Test' }),
+                personOf(ID_2, { givenNames: 'Ben', surname: 'Test' }),
+              ],
+              relationships: [parentOf(REL_1, ID_1, ID_2)],
+            },
+          ],
+        };
+
+        await withStore(
+          async store => {
+            const opened = await openAs(store, seeded.id, seeded.trees[0].id);
+
+            if (!opened.ok) {
+              throw new Error('setup failed');
+            }
+
+            expect((await opened.value.persons.list()).map(p => p.id)).toEqual([
+              ID_1,
+              ID_2,
+            ]);
+            expect((await opened.value.persons.get(ID_1))?.version).toBe(1);
+            expect(await opened.value.relationships.list()).toEqual([
+              { ...parentOf(REL_1, ID_1, ID_2), version: 1 },
+            ]);
+          },
+          [seeded]
+        );
+      });
+
       // NFR-10
       it('finds nothing for an Account with no Tree', async () => {
         await withStore(

@@ -1,0 +1,45 @@
+import { z } from 'zod';
+
+import { requiredFuzzyDate } from '#ks/lib/domain/dates/schemas.mts';
+import {
+  parsePersonId,
+  parsePinId,
+  parsePlaceId,
+} from '#ks/lib/domain/ids/ids.mts';
+import { idField } from '#ks/lib/domain/ids/schemas.mts';
+import { MAX_NOTES } from '#ks/lib/domain/persons/schemas.mts';
+import { textField } from '#ks/lib/domain/text/schemas.mts';
+
+/** The caps of a Pin's address and sources, so a form can stop typing at the same point. */
+export const MAX_ADDRESS = 500;
+export const MAX_SOURCES = 10_000;
+
+/**
+ * The Event types (PIN-03), in the order of `EVENT_ORDER` in `lib/ui`: `lib/ui` may not import
+ * the domain, so a test keeps the two lists equal. `land` is land ownership and `baptism` is
+ * baptism or christening.
+ */
+export const EVENT_TYPES = [
+  'birth',
+  'baptism',
+  'residence',
+  'marriage',
+  'divorce',
+  'death',
+  'burial',
+  'land',
+  'occupation',
+  'other',
+] as const;
+
+/** What a client may save for a Pin (PIN-03): a Person at a Place on a date. */
+export const pinInputSchema = z.strictObject({
+  address: textField(MAX_ADDRESS).default(''),
+  date: requiredFuzzyDate,
+  eventType: z.enum(EVENT_TYPES),
+  id: idField(parsePinId),
+  notes: textField(MAX_NOTES).default(''),
+  personId: idField(parsePersonId),
+  placeId: idField(parsePlaceId),
+  sources: textField(MAX_SOURCES).default(''),
+});

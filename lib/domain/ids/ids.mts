@@ -1,6 +1,8 @@
 import type {
   AccountId,
   PersonId,
+  PinId,
+  PlaceId,
   RelationshipId,
   TreeId,
 } from '#ks/lib/domain/ids/types.ts';
@@ -15,6 +17,14 @@ export const parseAccountId = (text: string): AccountId | undefined =>
 /** The Person id for `text` in lower case, as Postgres returns it, or undefined if it isn't a UUID. */
 export const parsePersonId = (text: string): PersonId | undefined =>
   UUID.test(text) ? (text.toLowerCase() as PersonId) : undefined;
+
+/** The Pin id for `text` in lower case, as Postgres returns it, or undefined if it isn't a UUID. */
+export const parsePinId = (text: string): PinId | undefined =>
+  UUID.test(text) ? (text.toLowerCase() as PinId) : undefined;
+
+/** The Place id for `text` in lower case, as Postgres returns it, or undefined if it isn't a UUID. */
+export const parsePlaceId = (text: string): PlaceId | undefined =>
+  UUID.test(text) ? (text.toLowerCase() as PlaceId) : undefined;
 
 /** The Relationship id for `text` in lower case, as Postgres returns it, or undefined if it isn't a UUID. */
 export const parseRelationshipId = (

@@ -88,7 +88,7 @@ it('puts the header, the column and the action bar in slots, in that order', () 
   ]);
   expect(root.children[0]?.textContent).toBe('head');
   expect(root.querySelector('main p')?.textContent).toBe('body');
-  expect(root.children[2]?.querySelector('[data-spacer]')).toBeTruthy();
+  expect(root.children[2]?.querySelector('[data-spacer]')?.tagName).toBe('DIV');
   expect(root.querySelector('button')?.textContent).toBe('Save');
 });
 
@@ -131,7 +131,7 @@ it.each(COLUMNS)(
   }
 );
 
-it.each(COLUMNS)(
+it.each(COLUMNS.filter(({ phone }) => phone.length > 0))(
   'gives the $column column its phone gap, padding and width',
   ({ column, phone: lines }) => {
     const body = rule(media, `[data-column='${column}'] .content`) ?? '';

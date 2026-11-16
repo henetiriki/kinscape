@@ -32,22 +32,24 @@ The frame is `height: 100dvh`. In a gallery file each of the six states is then 
 
 ## Files that change
 
-| File                                                                                                                     | New / changed | What                                                                                      |
-| ------------------------------------------------------------------------------------------------------------------------ | ------------- | ----------------------------------------------------------------------------------------- |
-| `app/components/layout/ColumnLayout.tsx`, `.module.css`                                                                  | New           | The frame; one phone query, as `breakpoint` says                                          |
-| `app/components/layout/__tests__/ColumnLayout.test.tsx`                                                                  | New           | Slots; CSS per value at both sizes, read as `AuthLayout.test.tsx` reads its CSS (check 4) |
-| `design/tokens.json`, `app/tokens.css`                                                                                   | Changed       | `layout.list-width: 960px`; `npm run tokens`                                              |
-| `features/people/components/{PeopleList,PeopleLoading,PersonRelationships,PersonForm,PersonNotFound,EditOnComputer}.tsx` | Changed       | Use `ColumnLayout`                                                                        |
-| Their `.module.css`, `PeoplePage.module.css`                                                                             | Changed       | Lose `.page`, `.main`, `.content`; `PeoplePage` keeps `.top` and `.empty`                 |
-| `features/people/components/__tests__/*`                                                                                 | Changed       | Only a test that selects a removed class                                                  |
-| `lib/design/types.ts`, `lib/design/cards.mts`                                                                            | Changed       | `Group` and `GROUPS` gain `Layout`; `PHONE_CARDS` gains `ColumnLayout`; `frame` (D3)      |
-| `lib/design/states.mts`                                                                                                  | Changed       | The card: six states, `contain`, `width: 1440`                                            |
-| `lib/design/bundle.mts`                                                                                                  | Changed       | `CONTROLS` gains `ColumnLayout`                                                           |
-| `lib/design/__tests__/{react-18.test.tsx,bundle.test.ts,cards.test.ts}`                                                  | Changed       | Six cases; the `layout` folder; `frame`                                                   |
-| `design/DESIGN.md`, `docs/architecture.md`                                                                               | Changed       | Behaviour item 8                                                                          |
-| `design/tokens.json` `notes`                                                                                             | Changed       | Only as D4 says                                                                           |
-| `.design-system/`, `design/canvas/project/ds/`, `canvas.json`, `VERSION`, `design/cards/ColumnLayout-{1440,390}.png`     | Changed       | Steps 2 to 6                                                                              |
-| The eight boards of Behaviour item 7, their snapshots                                                                    | Changed       | Step 7                                                                                    |
+| File                                                                                                                       | New / changed | What                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------- |
+| `app/components/layout/ColumnLayout.tsx`, `.module.css`                                                                    | New           | The frame; one phone query, as `breakpoint` says                                          |
+| `app/components/layout/{columns.mts,types.ts}`                                                                             | New           | The `column` values once; the component and its card read them                            |
+| `app/components/__tests__/hover.test.ts`, `lib/design/__tests__/design.test.ts`, `scripts/__tests__/design-system.test.ts` | Changed       | Counts follow the file lists                                                              |
+| `app/components/layout/__tests__/ColumnLayout.test.tsx`                                                                    | New           | Slots; CSS per value at both sizes, read as `AuthLayout.test.tsx` reads its CSS (check 4) |
+| `design/tokens.json`, `app/tokens.css`                                                                                     | Changed       | `layout.list-width: 960px`; `npm run tokens`                                              |
+| `features/people/components/{PeopleList,PeopleLoading,PersonRelationships,PersonForm,PersonNotFound,EditOnComputer}.tsx`   | Changed       | Use `ColumnLayout`                                                                        |
+| Their `.module.css`, `PeoplePage.module.css`                                                                               | Changed       | Lose `.page`, `.main`, `.content`; `PeoplePage` keeps `.top` and `.empty`                 |
+| `features/people/components/__tests__/*`                                                                                   | Changed       | Only a test that selects a removed class                                                  |
+| `lib/design/types.ts`, `lib/design/cards.mts`                                                                              | Changed       | `Group` and `GROUPS` gain `Layout`; `PHONE_CARDS` gains `ColumnLayout`; `frame` (D3)      |
+| `lib/design/states.mts`                                                                                                    | Changed       | The card: six states, `contain`, `width: 1440`                                            |
+| `lib/design/bundle.mts`                                                                                                    | Changed       | `CONTROLS` gains `ColumnLayout`                                                           |
+| `lib/design/__tests__/{react-18.test.tsx,bundle.test.ts,cards.test.ts}`                                                    | Changed       | Six cases; the `layout` folder; `frame`                                                   |
+| `design/DESIGN.md`, `docs/architecture.md`                                                                                 | Changed       | Behaviour item 8                                                                          |
+| `design/tokens.json` `notes`                                                                                               | Changed       | Only as D4 says                                                                           |
+| `.design-system/`, `design/canvas/project/ds/`, `canvas.json`, `VERSION`, `design/cards/ColumnLayout-{1440,390}.png`       | Changed       | Steps 2 to 6                                                                              |
+| The eight boards of Behaviour item 7, their snapshots                                                                      | Changed       | Step 7                                                                                    |
 
 ## Order of work
 
@@ -90,6 +92,6 @@ As the Spec says. A `frame` for `SignInLayout` or `MapLayout`: #923 and #924.
 ## Deviations
 
 - `PersonNotFound.module.css` and `EditOnComputer.module.css` held only the frame, so the build deleted them.
-- The counts in `hover.test.ts` (stylesheets), `design.test.ts` (components) and `design-system.test.ts` (cards) changed with the file lists.
 - `detail` and `form` have no phone rule: their desktop width already is `100%` on a phone.
 - The card height is 3400px, and `ColumnLayout` has `width: 1440` as the Spec says.
+- `columns.mts` and `types.ts` hold the `column` values once. The component and its card read them, so they cannot differ.

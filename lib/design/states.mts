@@ -1,7 +1,9 @@
 /** What each shared control's design system card shows (Spec #450): its group, height, `DESIGN.md` bullets and states. */
 
+import type { Column } from '#ks/app/components/layout/types.ts';
 import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 
+import { COLUMNS } from '#ks/app/components/layout/columns.mts';
 import {
   CHAIN,
   FUZZY_DATE_HELPER,
@@ -150,14 +152,14 @@ const HEADER = {
   props: { backHref: '/people', backLabel: 'People' },
 };
 
-/** The `column` values that a frame with no action bar shows, with the heading of each. */
-const COLUMNS = [
-  ['list', 'People'],
-  ['detail', 'Relationships'],
-  ['form', 'Add a person'],
-  ['notice', 'Person not found'],
-  ['phone-notice', 'Edit people on a computer'],
-];
+/** The heading that the `ColumnLayout` state of each `column` value shows. */
+const COLUMN_TITLES: Record<Column, string> = {
+  detail: 'Relationships',
+  form: 'Add a person',
+  list: 'People',
+  notice: 'Person not found',
+  'phone-notice': 'Edit people on a computer',
+};
 
 /** The heading and the line of text that a `ColumnLayout` state holds. */
 const columnText = (title: string): Slot[] => [
@@ -1093,10 +1095,13 @@ export const CARDS: Card[] = [
     name: 'ColumnLayout',
     pad: 0,
     states: [
-      ...COLUMNS.map(([column, title]) =>
-        one(`ColumnLayout · ${column}`, { column }, columnText(title), {
-          header: HEADER,
-        })
+      ...COLUMNS.map(column =>
+        one(
+          `ColumnLayout · ${column}`,
+          { column },
+          columnText(COLUMN_TITLES[column]),
+          { header: HEADER }
+        )
       ),
       one(
         'ColumnLayout · form with an action bar',

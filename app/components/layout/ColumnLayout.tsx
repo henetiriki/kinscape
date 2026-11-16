@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import type { Column } from '@ks/app/components/layout/types';
+
 import { ActionBar } from '@ks/app/components/actions/ActionBar';
 
 import styles from '@ks/app/components/layout/ColumnLayout.module.css';
@@ -18,7 +20,7 @@ export const ColumnLayout = ({
 }: {
   actions?: ReactNode;
   children: ReactNode;
-  column: 'detail' | 'form' | 'list' | 'notice' | 'phone-notice';
+  column: Column;
   header: ReactNode;
 }) => (
   <div className={styles.page} data-column={column}>

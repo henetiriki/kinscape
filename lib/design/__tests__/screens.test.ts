@@ -30,7 +30,6 @@ const NOT_BUILT = [
   'map-phone-layers',
   'map-sources',
   'map-sources-phone',
-  'person-edit-relationships-leave',
   'relationship-messages',
   'sign-in-desktop-proposed',
   'sign-in-phone-error-proposed',

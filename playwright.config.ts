@@ -38,13 +38,18 @@ export default defineConfig({
   projects: [
     // Signs in once through the form and saves the session; the projects below load it.
     { name: 'setup', testMatch: 'auth.setup.ts', use },
-    // The everyday checks: every spec file except the design check, and every test
-    // except the ones tagged @perf (those get their own project below).
+    // The everyday checks: every spec file except the design check and the gallery spec (it has
+    // its own config, e2e/gallery.config.ts), and every test except the ones tagged @perf (those
+    // get their own project below).
     {
       dependencies: ['setup'],
       grepInvert: /@perf/,
       name: 'chromium',
-      testIgnore: ['auth.setup.ts', 'design-check.spec.ts'],
+      testIgnore: [
+        'auth.setup.ts',
+        'design-check.spec.ts',
+        'design-gallery.spec.ts',
+      ],
       use: { ...use, storageState: signedIn },
     },
     // The design check: only design-check.spec.ts, which compares each built screen

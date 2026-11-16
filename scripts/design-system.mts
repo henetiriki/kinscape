@@ -34,7 +34,9 @@ import {
   controlReadme,
   designBullets,
   firstSentence,
+  galleryHtml,
   previewHtml,
+  VENDOR,
 } from '#ks/lib/design/cards.mts';
 import { CARDS } from '#ks/lib/design/states.mts';
 import {
@@ -277,8 +279,10 @@ const rangeOf = (packageDir: string, file: string): string | undefined =>
 
 /**
  * Empties `out` and writes the design system's `project/` there: the index, tokens, fonts,
- * icons, README, cover and the shared controls' bundle. Returns the files written, relative
- * to `out`. Two runs on one commit write the same bytes: the timestamps are HEAD's commit time.
+ * icons, README, cover and the shared controls' bundle. It also writes `gallery/`: one page for
+ * each card, which a browser opens from disk, and the React files they load. Returns the files
+ * written, relative to `out`. Two runs on one commit write the same bytes: the timestamps are
+ * HEAD's commit time.
  */
 export const run = async (root: string, out: string): Promise<string[]> => {
   const raw = JSON.parse(
@@ -293,17 +297,21 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   ).toISOString();
   const design = readFileSync(join(root, 'design/DESIGN.md'), 'utf8');
   const written: string[] = [];
-  const put = (path: string, write: (target: string) => void) => {
-    const target = join(out, 'project', path);
+  const put = (
+    folder: string,
+    path: string,
+    write: (target: string) => void
+  ) => {
+    const target = join(out, folder, path);
 
     mkdirSync(dirname(target), { recursive: true });
     write(target);
-    written.push(join('project', path));
+    written.push(join(folder, path));
   };
-  const text = (path: string, content: string) =>
-    put(path, target => writeFileSync(target, content));
-  const copy = (path: string, source: string) =>
-    put(path, target => copyFileSync(join(root, source), target));
+  const text = (path: string, content: string, folder = 'project') =>
+    put(folder, path, target => writeFileSync(target, content));
+  const copy = (path: string, source: string, folder = 'project') =>
+    put(folder, path, target => copyFileSync(join(root, source), target));
   const ranges = Object.fromEntries(
     files.map(({ path }, index) => {
       const source = resolve(root, 'app', path);
@@ -343,6 +351,11 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     checkPreview(card.name, page);
     text(`components/${card.name}/README.md`, summary);
     text(`components/${card.name}/preview.html`, page);
+    text(`${card.name}.html`, galleryHtml(page), 'gallery');
+  }
+
+  for (const { file, pkg } of VENDOR) {
+    copy(`vendor/${file}`, join('node_modules', pkg, 'umd', file), 'gallery');
   }
 
   text(
@@ -369,5 +382,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
 if (import.meta.main) {
   const written = await run(process.cwd(), OUTPUT);
 
-  console.log(`Wrote ${written.length} files to ${OUTPUT}/project`);
+  console.log(
+    `Wrote ${written.length} files to ${OUTPUT}/project and ${OUTPUT}/gallery`
+  );
 }

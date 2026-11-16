@@ -177,6 +177,7 @@ export default defineConfig([
       'app/**/{robots,sitemap,manifest}.ts',
       'app/**/{icon,apple-icon,opengraph-image,twitter-image}.tsx',
       '*.config.{ts,mts,mjs}',
+      'e2e/*.config.ts',
       'e2e/design-reporter.ts',
       'types/*.d.ts',
     ],

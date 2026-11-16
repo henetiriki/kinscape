@@ -19,7 +19,12 @@ import {
   checkTypes,
   CONTROLS,
 } from '@ks/lib/design/bundle.mts';
-import { checkPreview, checkReadme } from '@ks/lib/design/cards.mts';
+import {
+  checkPreview,
+  checkReadme,
+  galleryHtml,
+  VENDOR,
+} from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 import { logoInline, run } from '@ks/scripts/design-system.mts';
 
@@ -61,12 +66,12 @@ describe('run', () => {
     }
   });
 
-  it('returns the files it wrote, all under project/ with relative paths', () => {
+  it('returns the files it wrote, all under project/ or gallery/ with relative paths', () => {
     expect(written.toSorted()).toEqual(filesIn(first));
     expect(
       written.filter(
         path =>
-          !path.startsWith('project/') ||
+          !/^(?:project|gallery)\//.test(path) ||
           path.includes('..') ||
           path.split('/').some(part => part.startsWith('.'))
       )
@@ -334,6 +339,55 @@ describe('the control cards', () => {
     expect(readFileSync(join(first, 'project/README.md'), 'utf8')).toMatch(
       /## Using the controls on a canvas\n\n[^#]+$/
     );
+  });
+});
+
+describe('the gallery', () => {
+  const names = CARDS.map(({ name }) => name);
+
+  it('writes one HTML file for each card, and the React files, and nothing else', () => {
+    expect(
+      written.filter(path => path.startsWith('gallery/')).toSorted()
+    ).toEqual(
+      [
+        ...names.map(name => `gallery/${name}.html`),
+        ...VENDOR.map(({ file }) => `gallery/vendor/${file}`),
+      ].toSorted()
+    );
+    expect(names).toHaveLength(45);
+  });
+
+  it('holds each preview.html as galleryHtml makes it', () => {
+    for (const name of names) {
+      expect(readFileSync(join(first, `gallery/${name}.html`), 'utf8')).toBe(
+        galleryHtml(component(`${name}/preview.html`))
+      );
+    }
+  });
+
+  it('copies the React 18 development files from node_modules', () => {
+    for (const { file, pkg } of VENDOR) {
+      expect(
+        readFileSync(join(first, 'gallery/vendor', file)).equals(
+          readFileSync(join('node_modules', pkg, 'umd', file))
+        )
+      ).toBe(true);
+    }
+  });
+
+  it('writes no gallery file for the cover', () => {
+    expect(existsSync(join(first, 'gallery/Cover.html'))).toBe(false);
+  });
+
+  it('keeps gallery files out of project/', () => {
+    expect(written.filter(path => path.includes('vendor/'))).toEqual(
+      VENDOR.map(({ file }) => `gallery/vendor/${file}`)
+    );
+    expect(
+      written.filter(
+        path => path.startsWith('project/') && /gallery|vendor/.test(path)
+      )
+    ).toEqual([]);
   });
 });
 

@@ -76,3 +76,7 @@ The test "returns the files it wrote, all under project/ with relative paths" ch
 ## Out of scope
 
 Each item of the Spec's "Out of scope / carried forward". A card's `width` (DL.5) does not change the width of a gallery file.
+
+## Deviations
+
+- `eslint.config.mjs` gains `'e2e/*.config.ts'` in its default-export exemption, because `e2e/gallery.config.ts` needs a default export.

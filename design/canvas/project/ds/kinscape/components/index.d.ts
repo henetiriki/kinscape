@@ -911,4 +911,18 @@ export declare const Sheet: ({ children, onClose, open, ...head }: SheetArgs) =>
 export type SheetProps = Parameters<typeof Sheet>[0];
 export type SheetPanelProps = Parameters<typeof SheetPanel>[0];
 
+/**
+ * The frame of a page with one centred column: a header, a main area that scrolls and an optional
+ * action bar. `column` sets the width, gap and padding of the column: `list`, `detail`, `form`,
+ * `notice` (a notice 120px under the header) or `phone-notice` (a notice 64px under it).
+ * `actions` are the buttons of the bar.
+ */
+export declare const ColumnLayout: ({ actions, children, column, header, }: {
+    actions?: ReactNode;
+    children: ReactNode;
+    column: "detail" | "form" | "list" | "notice" | "phone-notice";
+    header: ReactNode;
+}) => import("react").JSX.Element;
+export type ColumnLayoutProps = Parameters<typeof ColumnLayout>[0];
+
 export {};

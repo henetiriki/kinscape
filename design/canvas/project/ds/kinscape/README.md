@@ -73,6 +73,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 | `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                           |
 | `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                                               |
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                                                                       |
+| `layout`     | ColumnLayout                                                                                                                         |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                                                           |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.

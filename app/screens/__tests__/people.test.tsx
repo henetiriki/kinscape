@@ -16,6 +16,7 @@ import NoMatch from '@ks/app/screens/people-list-no-match/page';
 import List from '@ks/app/screens/people-list/page';
 import LoadFailed from '@ks/app/screens/people-load-failed/page';
 import Loading from '@ks/app/screens/people-loading/page';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 import { byName } from '@ks/lib/domain/persons/list.mts';
 
 // PPL-01
@@ -36,6 +37,14 @@ describe('the People screens', () => {
         .getAllByRole('listitem')
         .map((row, at) => row.textContent?.slice(0, names[at]?.length))
     ).toEqual(names);
+  });
+
+  it('show the avatar letter of the sample email', async () => {
+    render(await List());
+
+    expect(
+      screen.getByRole('button', { name: 'Account menu' }).textContent
+    ).toBe(accountInitial('researcher@example.com'));
   });
 
   it('show the same list for the no-match state, which the check filters', async () => {

@@ -656,9 +656,9 @@ const CASES: [string, ReactElement][] = [
     <ProgressBar key={value} labelledBy={`ks-case-${index}`} value={value} />,
   ]),
   ...states('Avatar', (state, disabled) => (
-    <Avatar disabled={disabled} initial='L' state={state} />
+    <Avatar disabled={disabled} initial='R' state={state} />
   )),
-  ['Avatar · open', <Avatar expanded initial='L' key='open' />],
+  ['Avatar · open', <Avatar expanded initial='R' key='open' />],
   ['Divider · plain', <Divider key='plain' />],
   ['Divider · labelled', <Divider key='labelled' label='or' />],
   ...(Object.keys(PATHS) as (keyof typeof PATHS)[]).map(
@@ -707,7 +707,7 @@ const CASES: [string, ReactElement][] = [
   ...(['Map', 'People'] as const).map((name): [string, ReactElement] => [
     `PageHeader · ${name}`,
     <PageHeader
-      avatar={<Avatar initial='L' />}
+      avatar={<Avatar initial='R' />}
       backHref={`/${name.toLowerCase()}`}
       backLabel={name}
       key={name}
@@ -718,7 +718,7 @@ const CASES: [string, ReactElement][] = [
   )),
   [
     'Menu · closed',
-    <Menu {...ACCOUNT} initial='L' key='menu' onSelect={noop} />,
+    <Menu {...ACCOUNT} initial='R' key='menu' onSelect={noop} />,
   ],
   ['MenuPanel · open', <MenuPanel {...ACCOUNT} key='open' onSelect={noop} />],
   [
@@ -1168,7 +1168,7 @@ describe('interactions', () => {
   it('Menu opens, and Esc and a selection close it to the Avatar', () => {
     const onSelect = vi.fn();
 
-    render(<Menu {...ACCOUNT} initial='L' onSelect={onSelect} />);
+    render(<Menu {...ACCOUNT} initial='R' onSelect={onSelect} />);
 
     const avatar = screen.getByRole('button', { name: 'Account menu' });
 

@@ -17,6 +17,7 @@ import Edit from '@ks/app/screens/person-edit/page';
 import New from '@ks/app/screens/person-new/page';
 import NotFound from '@ks/app/screens/person-not-found/page';
 import SaveFailed from '@ks/app/screens/person-save-failed/page';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 // PPL-01
 describe('the Person screens', () => {
@@ -34,6 +35,18 @@ describe('the Person screens', () => {
     render(await Page());
 
     screen.getByRole('heading', { name: 'Edit Maria Magdalena du Toit' });
+  });
+
+  it.each([
+    ['person-new', New],
+    ['person-edit', Edit],
+    ['person-not-found', NotFound],
+  ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
+    render(await Page());
+
+    expect(
+      screen.getByRole('button', { name: 'Account menu' }).textContent
+    ).toBe(accountInitial('researcher@example.com'));
   });
 
   it('show the not-found state', async () => {

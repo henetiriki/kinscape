@@ -67,7 +67,7 @@ const ZoomCard = ({ column }: { column: Column }) => (
   <ZoomDemo atMax={column === 'disabled'} state={stateOf(column)} />
 );
 
-const PillAvatar = () => <Avatar initial='L' />;
+const PillAvatar = () => <Avatar initial='R' />;
 
 export const Wordmarks = () => (
   <Section

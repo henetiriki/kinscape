@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 
 import Page, { metadata } from '@ks/app/screens/map-account-menu/page';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 vi.mock('@ks/server/auth/current.mts', () => ({ requireDevPage: vi.fn() }));
 vi.mock('next/navigation', () => ({
@@ -28,6 +29,9 @@ it('puts the menu in the account slot on desktop, with no Layers button', async 
   expect(
     screen.queryByRole('button', { name: 'Layers and filters' })
   ).toBeNull();
+  expect(screen.getByRole('button', { name: 'Account menu' }).textContent).toBe(
+    accountInitial('researcher@example.com')
+  );
   open();
   expect(screen.getByText('Signed in as').parentElement?.textContent).toContain(
     'researcher@example.com'

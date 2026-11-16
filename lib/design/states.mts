@@ -143,7 +143,7 @@ const one = (
   slots,
 });
 
-const AVATAR = { control: 'Avatar', props: { initial: 'L' } };
+const AVATAR = { control: 'Avatar', props: { initial: 'R' } };
 
 const dateField = (props: State['props'] = {}) => ({
   // The first Map date, today, and a day between.
@@ -782,9 +782,9 @@ export const CARDS: Card[] = [
     pad: 0,
     states: [
       ...grid('Avatar', (state, disabled) => ({
-        props: { disabled, initial: 'L', state },
+        props: { disabled, initial: 'R', state },
       })),
-      one('Avatar · open', { expanded: true, initial: 'L' }),
+      one('Avatar · open', { expanded: true, initial: 'R' }),
     ],
   },
   {
@@ -892,7 +892,7 @@ export const CARDS: Card[] = [
     height: 160,
     name: 'Menu',
     pad: 0,
-    states: [one('Menu · closed', { ...ACCOUNT, initial: 'L' })],
+    states: [one('Menu · closed', { ...ACCOUNT, initial: 'R' })],
   },
   {
     design: ['Menu'],

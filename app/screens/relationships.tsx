@@ -8,6 +8,7 @@ import type { FuzzyDate } from '@ks/lib/domain/dates/types';
 import type { PersonId, RelationshipId } from '@ks/lib/domain/ids/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
+import { SAMPLE_ACCOUNT } from '@ks/app/screens/account';
 import { saveNothing } from '@ks/app/screens/relationship-actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PersonRelationships } from '@ks/features/people';
@@ -296,8 +297,7 @@ export const RelationshipsScreen = ({
   picking?: ComponentProps<typeof PersonRelationships>['picking'];
 }) => {
   const account = {
-    email: 'researcher@example.com',
-    initial: 'L',
+    ...SAMPLE_ACCOUNT,
     onSignOut: signOutAction,
   };
 

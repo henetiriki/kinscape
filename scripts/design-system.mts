@@ -34,7 +34,11 @@ import {
   controlReadme,
   designBullets,
   firstSentence,
+  GALLERY,
+  galleryHtml,
+  OUTPUT,
   previewHtml,
+  VENDOR,
 } from '#ks/lib/design/cards.mts';
 import { CARDS } from '#ks/lib/design/states.mts';
 import {
@@ -47,7 +51,6 @@ import {
   unicodeRange,
 } from '#ks/lib/design/system.mts';
 
-const OUTPUT = '.design-system';
 // Vite resolves the entry against the root, so the entry's id is a path that never exists.
 const ENTRY = 'ks-controls.virtual.js';
 const SHIM = '\0ks-jsx-runtime';
@@ -276,9 +279,41 @@ const rangeOf = (packageDir: string, file: string): string | undefined =>
     .find(range => range !== undefined);
 
 /**
+ * Writes `gallery/` in `out`: one page for each card, from its preview by name, and the React files
+ * that the pages load. Returns the files written, relative to `out`.
+ */
+const writeGallery = (
+  root: string,
+  out: string,
+  previews: Record<string, string>
+): string[] => {
+  const put = (path: string, write: (target: string) => void): string => {
+    const target = join(out, GALLERY, path);
+
+    mkdirSync(dirname(target), { recursive: true });
+    write(target);
+
+    return join(GALLERY, path);
+  };
+
+  return [
+    ...Object.entries(previews).map(([name, preview]) =>
+      put(`${name}.html`, target => writeFileSync(target, galleryHtml(preview)))
+    ),
+    ...VENDOR.map(({ file, pkg }) =>
+      put(`vendor/${file}`, target =>
+        copyFileSync(join(root, 'node_modules', pkg, 'umd', file), target)
+      )
+    ),
+  ];
+};
+
+/**
  * Empties `out` and writes the design system's `project/` there: the index, tokens, fonts,
- * icons, README, cover and the shared controls' bundle. Returns the files written, relative
- * to `out`. Two runs on one commit write the same bytes: the timestamps are HEAD's commit time.
+ * icons, README, cover and the shared controls' bundle. It also writes `gallery/`: one page for
+ * each card, which a browser opens from disk, and the React files they load. Returns the files
+ * written, relative to `out`. Two runs on one commit write the same bytes: the timestamps are
+ * HEAD's commit time.
  */
 export const run = async (root: string, out: string): Promise<string[]> => {
   const raw = JSON.parse(
@@ -331,6 +366,8 @@ export const run = async (root: string, out: string): Promise<string[]> => {
   text('tokens.css', systemCss(system, ranges));
   text('README.md', readme(design));
 
+  const previews: Record<string, string> = {};
+
   for (const card of CARDS) {
     const page = previewHtml(card);
     const summary = controlReadme(
@@ -343,6 +380,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     checkPreview(card.name, page);
     text(`components/${card.name}/README.md`, summary);
     text(`components/${card.name}/preview.html`, page);
+    previews[card.name] = page;
   }
 
   text(
@@ -362,6 +400,8 @@ export const run = async (root: string, out: string): Promise<string[]> => {
     }
   }
 
+  written.push(...writeGallery(root, out, previews));
+
   return written;
 };
 
@@ -369,5 +409,7 @@ export const run = async (root: string, out: string): Promise<string[]> => {
 if (import.meta.main) {
   const written = await run(process.cwd(), OUTPUT);
 
-  console.log(`Wrote ${written.length} files to ${OUTPUT}/project`);
+  console.log(
+    `Wrote ${written.length} files to ${OUTPUT}/project and ${OUTPUT}/${GALLERY}`
+  );
 }

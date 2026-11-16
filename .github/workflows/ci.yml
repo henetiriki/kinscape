@@ -228,7 +228,7 @@ jobs:
   design:
     needs: image
     runs-on: ubuntu-latest
-    # The image has the browser and its system packages, which the snapshot export and the design check
+    # The image has the browser and its system packages, which the snapshot export, the gallery spec and the design check
     # need. Its version must match @playwright/test (scripts/__tests__/playwright-image.test.ts). Bump
     # the tag and digest together in docker/playwright/Dockerfile. Then run the design-shots workflow on the branch.
     container:
@@ -247,6 +247,9 @@ jobs:
       # Fails, naming the file, when a design/source snapshot differs from its design/canvas board.
       - name: Check that the HTML snapshots match the canvas
         run: npm run design:export && node scripts/design-shots-ci.mts source
+      # Writes a file for each component card, and opens each from disk at two widths. Needs no app server.
+      - name: Open the gallery files
+        run: npm run design:gallery
       # Only restores the cache that the e2e job saves, so the two jobs do not save one key. The key is
       # the e2e job's restore-keys prefix, as in setup-workspace.
       - name: Restore the Next.js build cache

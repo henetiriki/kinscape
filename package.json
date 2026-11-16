@@ -9,6 +9,7 @@
     "db:migrate": "node --env-file-if-exists=.env.local scripts/db-migrate.mts",
     "design:check": "playwright test --project=design",
     "design:export": "node scripts/design-export.mts",
+    "design:gallery": "node scripts/design-system.mts && playwright test --config=e2e/gallery.config.ts",
     "design:shots": "node scripts/design-shots.mts",
     "design-system": "node scripts/design-system.mts",
     "dev": "next dev",

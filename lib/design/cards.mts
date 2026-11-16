@@ -159,6 +159,32 @@ ${STYLE(pad, contain)}
 </html>
 `;
 
+/** The folder that `npm run design-system` writes, and the folder in it that holds the gallery files. */
+export const OUTPUT = '.design-system';
+export const GALLERY = 'gallery';
+
+/** The React 18 files that a gallery file loads: the package and its file under `umd/`. */
+export const VENDOR = [
+  { file: 'react.development.js', pkg: 'react-18' },
+  { file: 'react-dom.development.js', pkg: 'react-dom-18' },
+] as const;
+
+const GALLERY_TAGS = [
+  ...VENDOR.map(({ file }) => `<script src="vendor/${file}"></script>`),
+  '<link rel="stylesheet" href="../project/tokens.css" />',
+  '<link rel="stylesheet" href="../project/components/bundle.css" />',
+  '<script src="../project/components/bundle.js"></script>',
+].join('\n');
+
+/**
+ * The page that a browser opens from `gallery/` next to `project/`. It is the preview after its
+ * card comment. Its head loads the local React, the tokens and the controls' bundle first.
+ */
+export const galleryHtml = (preview: string): string =>
+  preview
+    .slice(preview.indexOf('\n') + 1)
+    .replace('<head>\n', `<head>\n${GALLERY_TAGS}\n`);
+
 /** Throws if the README breaks a rule of the Design System type: 64 KB, and a summary first. */
 export const checkReadme = (name: string, text: string): void => {
   if (text.split('\n')[0].startsWith('#') || text.startsWith('\n')) {

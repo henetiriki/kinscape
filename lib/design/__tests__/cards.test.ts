@@ -8,6 +8,7 @@ import {
   controlReadme,
   designBullets,
   firstSentence,
+  galleryHtml,
   GROUPS,
   previewHtml,
 } from '@ks/lib/design/cards.mts';
@@ -165,6 +166,43 @@ describe('previewHtml', () => {
 
     expect(tricky.match(/<\/script>/gi)).toHaveLength(1);
     expect(tricky).not.toContain('<!--</');
+  });
+});
+
+describe('galleryHtml', () => {
+  const preview = previewHtml(card);
+  const gallery = galleryHtml(preview);
+  const head = gallery.split('<head>\n')[1];
+
+  it('removes the card comment on line 1 and keeps the doctype first', () => {
+    expect(gallery).not.toContain('@dsCard');
+    expect(gallery.split('\n')[0]).toBe('<!doctype html>');
+  });
+
+  it('puts the five local tags first in the head, in load order', () => {
+    expect(head.split('\n').slice(0, 5)).toEqual([
+      '<script src="vendor/react.development.js"></script>',
+      '<script src="vendor/react-dom.development.js"></script>',
+      '<link rel="stylesheet" href="../project/tokens.css" />',
+      '<link rel="stylesheet" href="../project/components/bundle.css" />',
+      '<script src="../project/components/bundle.js"></script>',
+    ]);
+    expect(head.split('\n')[5]).toBe('<meta charset="utf-8" />');
+  });
+
+  it('keeps the style, the root and the mount script of the preview', () => {
+    const tags = head.split('\n').slice(0, 5).join('\n');
+
+    expect(gallery.replace(`${tags}\n`, '')).toBe(
+      preview.slice(preview.indexOf('\n') + 1)
+    );
+    expect(gallery).toContain('body { margin: 0; padding: 16px;');
+    expect(gallery).toContain('<div id="root"></div>');
+    expect(gallery).toContain('window.KinScape["Toast"]');
+  });
+
+  it('names no network address', () => {
+    expect(gallery).not.toMatch(/https?:/);
   });
 });
 

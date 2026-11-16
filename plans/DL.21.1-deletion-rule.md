@@ -2,7 +2,7 @@
 
 - **Spec:** #928
 - **Requirement IDs:** None. The Spec changes agent instructions and docs only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -28,7 +28,7 @@ Which words make room?
 - **B.** Raise the `CANVAS.md` budget in `scripts/word-count.mts` to 1100. The plan then lists that file.
 - **Other:** your own.
 
-Recommended: B, because each fallback is the only written path when the `Artifact` tool fails, and the rule is a new fact with one home.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -6,7 +6,7 @@
 
 ## Approach
 
-`design/tokens.json` loses `layout.dialog-top`, because no code reads it (D1). It gets 45 notes: 39 `layout`, 3 `breakpoint` and 3 `z`. `noteProblems` adds the three groups to `GROUPS`. So the test in `design.test.ts` fails for each of these tokens with no note.
+`design/tokens.json` loses `layout.dialog-top`, because no code reads it (D1). It gets 46 notes: 40 `layout`, 3 `breakpoint` and 3 `z`. `noteProblems` adds the three groups to `GROUPS`. So the test in `design.test.ts` fails for each of these tokens with no note.
 
 `systemTokens` writes `layout`, `breakpoint` and `z` as token lists, like `size`. These lists take resolved values. The format rules (`lib/design/format.mts`) allow an alias only in `color`. Thus `layout-menu-offset` is `8px`, not `{space-8}`, and so are `layout-sign-in-pane-y` and `layout-sign-in-pane-x`. `README_SECTIONS` gets "Layout" after "Colours".
 
@@ -28,20 +28,20 @@ Each note names the component or screen that uses the token, from a `git grep` o
 
 | File                                  | New / changed | What                                                                                                                                                                                                         |
 | ------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `design/tokens.json`                  | changed       | `layout.dialog-top` goes (D1). `notes` gains `layout`, `breakpoint` and `z`: 45 notes.                                                                                                                       |
+| `design/tokens.json`                  | changed       | `layout.dialog-top` goes (D1). `notes` gains `layout`, `breakpoint` and `z`: 46 notes.                                                                                                                       |
 | `app/tokens.css`                      | changed       | `npm run tokens` deletes `--layout-dialog-top: 120px;`.                                                                                                                                                      |
 | `lib/design/notes.mts`                | changed       | `GROUPS` gains `layout`, `breakpoint` and `z`.                                                                                                                                                               |
 | `lib/design/system.mts`               | changed       | `README_SECTIONS` gains "Layout". `systemTokens` writes the three families from `resolveTokens`. `systemCss` writes them (D2 A).                                                                             |
 | `lib/design/types.ts`                 | changed       | `SystemTokens` gains `layout`, `breakpoint` and `z`, each `{ tokens: SystemToken[] }`.                                                                                                                       |
 | `lib/design/__tests__/notes.test.ts`  | changed       | The fixture gains a `breakpoint` and a `z` token, and notes for them and `layout.dock-left`. "Stays out of the design system" loses its `layout` note. The count of 14 rises. New tests: Acceptance check 4. |
-| `lib/design/__tests__/system.test.ts` | changed       | `all()` and the expected groups gain the three families; the count 126 becomes 171. The README test expects "## Layout". New tests: Acceptance check 1, and D2.                                              |
+| `lib/design/__tests__/system.test.ts` | changed       | `all()` and the expected groups gain the three families; the count 126 becomes 172. The README test expects "## Layout". New tests: Acceptance check 1, and D2.                                              |
 | `plans/DL.12-layout-tokens.md`        | New           | This plan                                                                                                                                                                                                    |
 
 ## Order of work
 
 1. Change the tests in `notes.test.ts` and `system.test.ts`. See them fail on the missing note and on the missing family ([test-first rule](README.md#test-first)).
 2. Change `types.ts`, `notes.mts` and `system.mts`.
-3. Delete `layout.dialog-top` from `design/tokens.json`. Write the 45 notes. Run `npm test` until `design.test.ts` › "has a note for every token" passes.
+3. Delete `layout.dialog-top` from `design/tokens.json`. Write the 46 notes. Run `npm test` until `design.test.ts` › "has a note for every token" passes.
 4. Run `npm run tokens`. In `git diff app/tokens.css`, the only change must be the removal of `--layout-dialog-top: 120px;`.
 5. Run the checks in `AGENTS.md` › Commands.
 6. Run the steps of [Changing the design system](../design/CANVAS.md#changing-the-design-system):
@@ -56,7 +56,7 @@ Each note names the component or screen that uses the token, from a `git grep` o
 
 - `noteProblems` rejects a note that holds its token's value. A `z` note thus holds no "1" or "5", and a note for `breakpoint.phone-width` holds no "639.98px". The test of step 3 catches each.
 - Only the design kit boards use `breakpoint.desktop-width`. Its note names them. DL.21 (#929) deletes the kit, so that Spec must change the note.
-- DL.6 (#899) adds `layout.list-width`. If DL.6 merges first, the `layout` count is 40, and the build changes the count in `system.test.ts`. Acceptance check 1 then needs a reword by the tech lead.
+- DL.6 (#899) merged first and added `layout.list-width`. The `layout` count is 40, and the build changed the count in `system.test.ts`. Deviation 2 records this.
 - The Design System type may show a `layout`, `breakpoint` or `z` family empty, or may not read a unitless `z` value. Step 6.2 checks the page. If a family shows empty, the build stops and comments on #893 (Spec concern).
 - D1 says `Dialog.module.css` centres a dialog with `align-self: center`. That rule centres the sheet handle. The browser centres a modal dialog. D1 still holds: no code reads `layout.dialog-top`.
 - `design/canvas/project/ds/kinscape/components/bundle.css` holds `--layout-dialog-top`. Step 6.4 refreshes that copy, and Acceptance check 7 proves it.
@@ -65,7 +65,7 @@ Each note names the component or screen that uses the token, from a `git grep` o
 
 | Acceptance check | Proven by                                                                                                                      |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| 1                | `system.test.ts`: `system.layout.tokens`, `breakpoint` and `z` have 39, 3 and 3 tokens, each with a name, a value and a usage. |
+| 1                | `system.test.ts`: `system.layout.tokens`, `breakpoint` and `z` have 40, 3 and 3 tokens, each with a name, a value and a usage. |
 | 2                | `system.test.ts` › "passes the format rules": `formatProblems` checks each name and each repeated name.                        |
 | 3                | `system.test.ts` › `readme`: the headings in `README_SECTIONS` order, and no link into the repo.                               |
 | 4                | `notes.test.ts`: a fixture `layout`, `breakpoint` or `z` token with no note gives one message that names it.                   |

@@ -6,7 +6,7 @@
 
 ## Approach
 
-The gallery spec compares a full-page screenshot of each gallery file with `design/cards/<Name>-<width>.png` through `toHaveScreenshot`, with no pixel tolerance. `e2e/gallery.config.ts` sets `snapshotPathTemplate` and starts Chromium with `--num-raster-threads=1`, as the JPG render does (Bug #848). Outside the pinned image, the spec skips only the comparison and prints one line (D1). The render job of "Design: Render snapshots" runs `npm run design:gallery -- --update-snapshots`. In Playwright 1.65 that flag rewrites only the images that differ (check 4). A unit test fails on a file in `design/cards/` with no card (check 6).
+The gallery spec compares a full-page screenshot of each gallery file with `design/cards/<Name>-<width>.png` through `toHaveScreenshot`. The width is 1440, and 390 for a card in `PHONE_CARDS`. `e2e/gallery.config.ts` sets `snapshotPathTemplate` and starts Chromium with `--num-raster-threads=1`, as the JPG render does (Bug #848). Outside the pinned image, the spec skips only the comparison and prints one line (D1). The render job of "Design: Render snapshots" runs `npm run design:gallery -- --update-snapshots`. In Playwright 1.65 that flag rewrites only the images that differ (check 4). A unit test fails on a file in `design/cards/` with no card (check 6).
 
 This is a [hand-back](README.md#hand-back): the tech lead builds it.
 
@@ -34,23 +34,23 @@ On `main`, [Changing the design system](../design/CANVAS.md#changing-the-design-
 
 ## Files that change
 
-| File                                        | New / changed | What                                                                                                         |
-| ------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------ |
-| `lib/design/cards.mts`                      | Changed       | `CARD_WIDTHS` (from the spec), `CARD_IMAGES = 'design/cards'`, `cardImage`, `strayCardImages`, `pinnedImage` |
-| `lib/design/__tests__/cards.test.ts`        | Changed       | Tests of the new functions; a test that reads `design/cards/` and names each stray file (check 6)            |
-| `lib/design/shots.mts`                      | Changed       | `LAUNCH_ARGS` moves here from `scripts/design-shots.mts`, so the gallery config uses it too                  |
-| `scripts/design-shots.mts`                  | Changed       | Imports `LAUNCH_ARGS`                                                                                        |
-| `e2e/gallery.config.ts`                     | Changed       | `snapshotPathTemplate`; `launchOptions.args`                                                                 |
-| `e2e/design-gallery.spec.ts`                | Changed       | After the present checks: the comparison, or the skip line                                                   |
-| `scripts/design-shots-ci.mts`               | Changed       | `parseStatus` returns `cards`; `check` accepts them; `summary` lists them                                    |
-| `scripts/__tests__/design-shots-ci.test.ts` | Changed       | New cases for `design/cards/*.png`                                                                           |
-| `.github/workflows/design-agent-shots.yml`  | Changed       | Render step "Render the card images"; upload and `git add` include `design/cards/*.png`; header comment      |
-| `.gitattributes`                            | Changed       | `design/cards/*.png linguist-generated`                                                                      |
-| `AGENTS.md`                                 | Changed       | The workflow also makes `design/cards/`; never edit those three                                              |
-| `design/CANVAS.md`                          | Changed       | "Making the snapshots and JPGs" names `design/cards/`; step 6 if D2 is A                                     |
-| `docs/glossary.md`                          | Changed       | "Card JPG" becomes "Card image" (Behaviour 8)                                                                |
-| `design/cards/*.png`                        | New           | 90 images (45 cards, two widths), which the workflow commits                                                 |
-| `plans/DL.3-card-images.md`                 | New           | This plan                                                                                                    |
+| File                                        | New / changed | What                                                                                                    |
+| ------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------- |
+| `lib/design/cards.mts`                      | Changed       | `CARD_WIDTHS`, `CARD_IMAGES`, `PHONE_CARDS`, `cardImageWidths`, `cardImage`, `pinnedImage`              |
+| `lib/design/__tests__/cards.test.ts`        | Changed       | Tests of the new functions; a test that reads `design/cards/` and names each stray file (check 6)       |
+| `lib/design/shots.mts`                      | Changed       | `LAUNCH_ARGS` moves here from `scripts/design-shots.mts`, so the gallery config uses it too             |
+| `scripts/design-shots.mts`                  | Changed       | Imports `LAUNCH_ARGS`                                                                                   |
+| `e2e/gallery.config.ts`                     | Changed       | `snapshotPathTemplate`; `launchOptions.args`                                                            |
+| `e2e/design-gallery.spec.ts`                | Changed       | After the present checks: the comparison, or the skip line                                              |
+| `scripts/design-shots-ci.mts`               | Changed       | `parseStatus` returns `cards`; `check` accepts them; `summary` lists them                               |
+| `scripts/__tests__/design-shots-ci.test.ts` | Changed       | New cases for `design/cards/*.png`                                                                      |
+| `.github/workflows/design-agent-shots.yml`  | Changed       | Render step "Render the card images"; upload and `git add` include `design/cards/*.png`; header comment |
+| `.gitattributes`                            | Changed       | `design/cards/*.png linguist-generated`                                                                 |
+| `AGENTS.md`                                 | Changed       | The workflow also makes `design/cards/`; never edit those three                                         |
+| `design/CANVAS.md`                          | Changed       | "Making the snapshots and JPGs" names `design/cards/`; step 6 if D2 is A                                |
+| `docs/glossary.md`                          | Changed       | "Card JPG" becomes "Card image" (Behaviour 8)                                                           |
+| `design/cards/*.png`                        | New           | 56 images (45 at 1440px, 11 at 390px), which the workflow commits                                       |
+| `plans/DL.3-card-images.md`                 | New           | This plan                                                                                               |
 
 The `summary` and `check` tests of `design-shots-ci` change: a new summary section, a new error text ([failing-tests rule](README.md#failing-tests)).
 
@@ -60,7 +60,7 @@ The `summary` and `check` tests of `design-shots-ci` change: a new summary secti
 2. Change the config and the spec. Run `npm run design:gallery` outside the image: 90 pass and the skip line shows (check 7).
 3. Write the `design-shots-ci` tests, see them fail, then change the script. Change the workflow, `.gitattributes` and the docs.
 4. Push and mark the PR ready, because a draft PR does not run the `design` job. The first run fails for each card with no image (check 5).
-5. The tech lead runs "Design: Render snapshots". It commits 90 images, and CI passes (check 1).
+5. The tech lead runs "Design: Render snapshots". It commits 56 images, and CI passes (check 1).
 6. Commit a one-line CSS change to `Button.module.css`. CI fails and names `Button` and the width (check 2). Run the workflow, and CI passes (check 3). Revert both commits.
 7. Run the workflow again: the commit job does not run (check 4).
 8. Run the checks in `AGENTS.md` › Commands. Paste the output, the total size of `design/cards/` and the time of the gallery step in Evidence.
@@ -68,14 +68,14 @@ The `summary` and `check` tests of `design-shots-ci` change: a new summary secti
 ## Risks
 
 - **Two renders of one commit differ (#848).** Then check 4 fails. The Spec says: stop and report it on #893.
-- **`PLAYWRIGHT_BROWSERS_PATH` is not set in the image (D1 A).** Then CI skips each comparison and passes. Step 4 must show 90 failures, or the build stops and asks.
+- **`PLAYWRIGHT_BROWSERS_PATH` is not set in the image (D1 A).** Then CI skips each comparison and passes. Step 4 must show a failure for each card with no image, or the build stops and asks.
 - **Another Playwright image on a laptop** passes D1 A and can differ by a pixel. Nobody does this. A version check costs about 20 lines.
 
 ## Proof
 
 | Acceptance check                  | Proven by                                                        |
 | --------------------------------- | ---------------------------------------------------------------- |
-| 1. Two PNGs for each card         | CI run of step 5; `cards.test.ts`                                |
+| 1. The PNGs of each card          | CI run of step 5; `cards.test.ts`                                |
 | 2. A CSS change fails the job     | CI run of step 6                                                 |
 | 3. The workflow fixes it          | The workflow commit and the next CI run of step 6                |
 | 4. No change, no commit           | Workflow run of step 7                                           |
@@ -98,3 +98,4 @@ Each item of the Spec's "Out of scope / carried forward".
 - `.github/agent/review.md` also skips `design/cards/*.png`, so it matches `AGENTS.md`. `load-agent-files.test.ts` expects the new text. The `review.md` budget becomes 550. `word-count.test.ts` expects the two new budgets (1000 and 550). The tech lead chose these.
 - `strayCardImages` lives in `cards.test.ts`, not `cards.mts`: only that test calls it, and the code rules want each export wired.
 - The comparison keeps the Playwright colour threshold of 0.2: "no pixel tolerance" in Approach means `maxDiffPixels` 0. The tech lead chose the default (unlikely case).
+- Card images (tech lead, in the session): a card has an image at 1440px, and at 390px only if it is in `PHONE_CARDS`. That list holds the 8 cards whose component CSS has a width query and the overlays `Dialog`, `Modal` and `Sheet`. A test fails if a card with a width query is missing from it. Behaviour 1 and 9 and checks 1, 6 and 10 of #896 follow it. Each image stays a full-page screenshot, because the tech lead kept the viewport size. The gallery spec still opens every card at both widths. The 34 phone images of the other cards are deleted.

@@ -6,6 +6,7 @@ import {
   CARD_IMAGES,
   CARD_WIDTHS,
   cardImage,
+  cardImageWidths,
   checkPreview,
   checkReadme,
   controlReadme,
@@ -13,6 +14,7 @@ import {
   firstSentence,
   galleryHtml,
   GROUPS,
+  PHONE_CARDS,
   pinnedImage,
   previewHtml,
 } from '@ks/lib/design/cards.mts';
@@ -266,19 +268,51 @@ describe('cardImage', () => {
   });
 });
 
-/** The files of `CARD_IMAGES` that are not the image of one of the cards at a width. */
+/** The files of `CARD_IMAGES` that are not the image of one of the cards at a width of its own. */
 const strayCardImages = (files: string[], names: string[]): string[] => {
   const wanted = new Set(
-    names.flatMap(name => CARD_WIDTHS.map(width => cardImage(name, width)))
+    names.flatMap(name =>
+      cardImageWidths(name).map(width => cardImage(name, width))
+    )
   );
 
   return files.filter(file => !wanted.has(file)).toSorted();
 };
 
+describe('cardImageWidths', () => {
+  it('is the desktop width for a card, and the phone width too for a card in PHONE_CARDS', () => {
+    expect(cardImageWidths('Divider')).toEqual([1440]);
+    expect(cardImageWidths('Chip')).toEqual([1440, 390]);
+  });
+
+  it('names only cards that exist', () => {
+    const names = CARDS.map(({ name }) => name);
+
+    expect(PHONE_CARDS.filter(name => !names.includes(name))).toEqual([]);
+  });
+
+  it('names each card whose component CSS has a width query', () => {
+    const files = readdirSync('app/components', { recursive: true }).map(
+      String
+    );
+    const query = /@media[^{]*(?:min|max)-width|@container/;
+    const responsive = CARDS.map(({ name }) => name).filter(name =>
+      files
+        .filter(file => file.endsWith(`/${name}.module.css`))
+        .some(file =>
+          query.test(readFileSync(`app/components/${file}`, 'utf8'))
+        )
+    );
+
+    expect(responsive.filter(name => !PHONE_CARDS.includes(name))).toEqual([]);
+    expect(responsive.length).toBeGreaterThan(0);
+  });
+});
+
 describe('strayCardImages', () => {
-  const names = ['Alert', 'Button'];
+  const names = ['Alert', 'Chip'];
   const wanted = names.flatMap(name =>
-    CARD_WIDTHS.map(width => cardImage(name, width))
+    cardImageWidths(name).map(width => cardImage(name, width))
   );
 
   it('is empty when each file is the image of a card at a width', () => {
@@ -292,15 +326,17 @@ describe('strayCardImages', () => {
         [
           ...wanted,
           'Zebra-1440.png',
-          'Button-800.png',
-          'Alert-390.jpg',
+          'Alert-390.png',
+          'Chip-800.png',
+          'Chip-390.jpg',
           'notes.md',
         ],
         names
       )
     ).toEqual([
-      'Alert-390.jpg',
-      'Button-800.png',
+      'Alert-390.png',
+      'Chip-390.jpg',
+      'Chip-800.png',
       'Zebra-1440.png',
       'notes.md',
     ]);

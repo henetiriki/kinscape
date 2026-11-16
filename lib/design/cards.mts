@@ -159,7 +159,7 @@ ${STYLE(pad, contain)}
 </html>
 `;
 
-/** The widths at which each card is drawn and compared: a desktop and a phone. */
+/** The widths at which each card is drawn: a desktop and a phone. */
 export const CARD_WIDTHS = [1440, 390];
 
 /** The folder that holds the card images. The workflow "Design: Render snapshots" writes them. */
@@ -168,6 +168,28 @@ export const CARD_IMAGES = 'design/cards';
 /** The file name, in `CARD_IMAGES`, of the image of a card at a width. */
 export const cardImage = (name: string, width: number): string =>
   `${name}-${width}.png`;
+
+/**
+ * The cards that also have an image at the phone width, because the component changes with the
+ * width: the eight whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
+ */
+export const PHONE_CARDS = [
+  'ActionBar',
+  'CheckboxField',
+  'Chip',
+  'Dialog',
+  'Modal',
+  'NoticeCard',
+  'PageHeader',
+  'Sheet',
+  'TextAreaField',
+  'TextField',
+  'Toast',
+];
+
+/** The widths of the images of a card: the desktop width, and the phone width for a card in `PHONE_CARDS`. */
+export const cardImageWidths = (name: string): number[] =>
+  PHONE_CARDS.includes(name) ? CARD_WIDTHS : CARD_WIDTHS.slice(0, 1);
 
 /** Whether this is the Playwright image of the `design` job: the Microsoft image sets this path. */
 export const pinnedImage = (env: Record<string, string | undefined>): boolean =>

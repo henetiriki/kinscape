@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 import {
   CARD_WIDTHS,
   cardImage,
+  cardImageWidths,
   GALLERY,
   OUTPUT,
   pinnedImage,
@@ -45,7 +46,7 @@ for (const { name, states } of CARDS) {
       await expect(page.locator('figure.ks-case')).toHaveCount(states.length);
       expect(problems).toEqual([]);
 
-      if (compare) {
+      if (compare && cardImageWidths(name).includes(width)) {
         await expect(page).toHaveScreenshot(cardImage(name, width), {
           fullPage: true,
         });

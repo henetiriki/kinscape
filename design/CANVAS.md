@@ -75,4 +75,4 @@ A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>
 
 ## Drawing a board
 
-A Spec's design prompt is the brief for the drawing. A local session, or a subagent it starts, follows it. Skip the chat lines of the prompt (link the repository to the chat, edit no file in the repository).
+A Spec's design prompt is the brief for the drawing. A local session, or a subagent it starts, follows it. Skip the chat lines of the prompt (link the repository to the chat, edit no file in the repository). Draw a component that the app does not have on the draft page ([`COMPONENTS.md`](COMPONENTS.md#a-component-that-is-not-built)).

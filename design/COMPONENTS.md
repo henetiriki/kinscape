@@ -7,6 +7,22 @@ Two cases end the same way:
 
 Add the component to `CONTROLS`. Run the steps of [Changing the design system](CANVAS.md#changing-the-design-system) on one branch and one pull request. The plan lists the boards for [step 7](CANVAS.md#changing-the-design-system).
 
+## A component that is not built
+
+Draw the component on the draft page of the canvas ("Drafts"). Then follow these steps in order:
+
+1. Draw it on a board of the draft page. The board has a snapshot and a JPG, and no entry in `design/screens.json`. Add a Screens row for the snapshot to `design/DESIGN.md`. Add its name to `NO_ENTRY` in `lib/design/__tests__/screens.test.ts`. Raise the snapshot count in `lib/design/__tests__/design.test.ts` and `scripts/__tests__/design-export.test.ts` by one.
+2. Build the component from that board. Add it to `CONTROLS`. Write its card states in `lib/design/states.mts`. If its CSS has a width query, or it fills the viewport, add it to `PHONE_CARDS` in `lib/design/cards.mts`.
+3. Run the steps of [Changing the design system](CANVAS.md#changing-the-design-system). The workflow "Design: Render snapshots" writes its card images.
+4. Swap it into each screen board that shows it. Then delete the draft board, its snapshot and its JPG. Remove its Screens row and its `NO_ENTRY` name. Lower the two counts by one.
+5. Add no section to `/design-kit` and no `SG-*` board.
+
+## A built component
+
+If the app has the component and the design system does not, do steps 2 and 3 above. Draw no draft board.
+
+A change to a component that a `/design-kit` page shows still updates that page and its `SG-*` board, until the route retires.
+
 ## Board swap prompt
 
 Paste this prompt into a local session:

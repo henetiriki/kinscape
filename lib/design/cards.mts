@@ -12,6 +12,7 @@ export const GROUPS = [
   'Map',
   'Foundation',
   'Overlays',
+  'Layout',
 ];
 
 const KB = 1024;
@@ -103,15 +104,17 @@ const data = (value: unknown): string =>
 
 const STYLE = (
   pad: number,
-  contain: boolean
+  contain: boolean,
+  frame: number | undefined
 ) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
-.ks-label { color: var(--ink-3); }`;
+.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; }`}`;
 
 /** The card's preview: a root and one script that mounts each state of `window.KinScape.<name>`. */
 export const previewHtml = ({
   contain = false,
+  frame,
   group,
   handlers,
   height,
@@ -126,7 +129,7 @@ export const previewHtml = ({
 <head>
 <meta charset="utf-8" />
 <style>
-${STYLE(pad, contain)}
+${STYLE(pad, contain, frame)}
 </style>
 </head>
 <body>
@@ -172,12 +175,13 @@ export const cardImage = (name: string, width: number): string =>
 
 /**
  * The cards that also have an image at the phone width, because the component changes with the
- * width: the eight whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
+ * width: the nine whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
  */
 export const PHONE_CARDS = [
   'ActionBar',
   'CheckboxField',
   'Chip',
+  'ColumnLayout',
   'Dialog',
   'Modal',
   'NoticeCard',

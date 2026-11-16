@@ -1,16 +1,4 @@
-/* The page frame comes from `PeoplePage.module.css`; the rest is the list. */
-.page {
-  composes: page from '@ks/features/people/components/PeoplePage.module.css';
-}
-
-.main {
-  composes: main from '@ks/features/people/components/PeoplePage.module.css';
-}
-
-.content {
-  composes: content from '@ks/features/people/components/PeoplePage.module.css';
-}
-
+/* `ColumnLayout` draws the page frame; the rest is the list. */
 .top {
   composes: top from '@ks/features/people/components/PeoplePage.module.css';
 }

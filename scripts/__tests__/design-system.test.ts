@@ -265,7 +265,7 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(48);
+    expect(names).toHaveLength(49);
   });
 
   it.each(names)(
@@ -354,7 +354,7 @@ describe('the gallery', () => {
         ...VENDOR.map(({ file }) => `gallery/vendor/${file}`),
       ].toSorted()
     );
-    expect(names).toHaveLength(48);
+    expect(names).toHaveLength(49);
   });
 
   it('holds each preview.html as galleryHtml makes it', () => {

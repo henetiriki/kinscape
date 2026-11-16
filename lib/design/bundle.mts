@@ -71,6 +71,7 @@ export const CONTROLS: Control[] = [
   { name: 'DialogPanel', path: 'app/components/overlays/Dialog.tsx' },
   { name: 'Sheet', path: 'app/components/overlays/Sheet.tsx' },
   { name: 'SheetPanel', path: 'app/components/overlays/Sheet.tsx' },
+  { name: 'ColumnLayout', path: 'app/components/layout/ColumnLayout.tsx' },
 ];
 
 /**

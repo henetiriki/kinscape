@@ -14,12 +14,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <style>body{margin:0}</style>
 </helmet>
-<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; contain: layout; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
 
-  <x-import component-from-global-scope="KinScape.PageHeader" back-href="People-list.dc.html" back-label="People" avatar="{{avatar}}"></x-import>
-
-  <main style="position: absolute; left: 0; right: 0; top: 64px; bottom: 72px; overflow-y: auto">
-    <div style="width: 1088px; margin: 0 auto; padding: var(--space-20) 0 var(--space-24); display: flex; flex-direction: column; gap: var(--space-16)">
+  <x-import component-from-global-scope="KinScape.ColumnLayout" column="form" header="{{header}}" actions="{{actions}}">
 
       <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-24)">
         <div style="display: flex; flex-direction: column; gap: var(--space-4)">
@@ -67,16 +64,10 @@
         </div>
 
       </div>
-    </div>
-  </main>
-
-  <x-import component-from-global-scope="KinScape.ActionBar" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; contain: layout">
-    <x-import component-from-global-scope="KinScape.Button" variant="primary" on-click="{{save}}">Save</x-import>
-    <x-import component-from-global-scope="KinScape.Button" variant="secondary" href="People-list.dc.html">Cancel</x-import>
   </x-import>
 
   <sc-if value="{{showLeave}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: var(--scrim); display: flex; align-items: center; justify-content: center">
+    <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: 10; background: var(--scrim); display: flex; align-items: center; justify-content: center">
       <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="Leave without saving?" title-id="leave-dialog-title" on-close="{{keepEditing}}">
         <x-import component-from-global-scope="KinScape.Text" variant="body" as="p">You changed this person. If you leave now, the changes are lost.</x-import>
         <div style="display: flex; gap: var(--space-12)">
@@ -88,7 +79,7 @@
   </sc-if>
 
   <sc-if value="{{showToast}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%)"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
+    <div style="position: absolute; left: 50%; bottom: 88px; transform: translateX(-50%); z-index: 10"><x-import component-from-global-scope="KinScape.Toast" tone="{{toast.tone}}" action="{{toast.action}}" on-action="{{toast.onAction}}" on-dismiss="{{toast.onDismiss}}">{{toast.text}}</x-import></div>
   </sc-if>
 </div>
 </x-dc>
@@ -184,8 +175,9 @@ class Component extends DCLogic {
       failed: { tone: 'error', text: "Couldn't save. Your changes are still here.", action: 'Try again', onAction: () => this.setState({ toast: 'saved' }), onDismiss: () => this.setState({ toast: '' }) },
       saved: { tone: 'success', text: 'Saved ' + (fullName || 'the person') + '.', action: undefined, onAction: undefined, onDismiss: () => this.setState({ toast: '' }) }
     };
-    return {
-      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null,
+    const vals = {
+      header: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.PageHeader, { backHref: 'People-list.dc.html', backLabel: 'People', avatar: window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) }) : null,
+      actions: (window.React && window.KinScape) ? window.React.createElement(window.React.Fragment, null, window.React.createElement(window.KinScape.Button, { variant: 'primary', onClick: () => vals.save() }, 'Save'), window.React.createElement(window.KinScape.Button, { variant: 'secondary', href: 'People-list.dc.html' }, 'Cancel')) : null,
       title: isEdit ? 'Edit ' + fullName : 'Add a person',
       showRelationships: isEdit,
       showSummary: s.summary && errCount > 0,
@@ -235,6 +227,7 @@ class Component extends DCLogic {
       showToast: !!s.toast,
       toast: toasts[s.toast] || toasts.saved
     };
+    return vals;
   }
 }
 </script>

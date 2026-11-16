@@ -59,6 +59,7 @@ import { BackLink, PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
+import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
 import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
@@ -169,6 +170,7 @@ const COMPONENTS = {
   CheckboxField,
   Chip,
   ChipGroup,
+  ColumnLayout,
   DateField,
   Dialog,
   DialogPanel,
@@ -862,6 +864,74 @@ const CASES: [string, ReactElement][] = [
       titleId='sheet-tabs'>
       Content
     </SheetPanel>,
+  ],
+  ...(
+    [
+      ['list', 'People'],
+      ['detail', 'Relationships'],
+      ['form', 'Add a person'],
+    ] as const
+  ).map(([column, title]): [string, ReactElement] => [
+    `ColumnLayout · ${column}`,
+    <ColumnLayout
+      column={column}
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key={column}>
+      <Text as='h1' variant='h1'>
+        {title}
+      </Text>
+      <Text variant='small'>Each change saves at once.</Text>
+    </ColumnLayout>,
+  ]),
+  [
+    'ColumnLayout · notice',
+    <ColumnLayout
+      column='notice'
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key='notice'>
+      {[
+        <NoticeCard
+          actions={[{ href: '/people', label: 'Go to People' }]}
+          icon='people'
+          key='card'
+          size='large'
+          title='Person not found'>
+          No one in your Tree has this address. The person may have been
+          deleted, or the link is wrong.
+        </NoticeCard>,
+      ]}
+    </ColumnLayout>,
+  ],
+  [
+    'ColumnLayout · phone-notice',
+    <ColumnLayout
+      column='phone-notice'
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key='phone-notice'>
+      {[
+        <NoticeCard
+          actions={[{ href: '/people', label: 'See all people' }]}
+          key='card'
+          phone
+          title='Edit people on a computer'>
+          People are added and edited on a larger screen. On a phone you can
+          look them up.
+        </NoticeCard>,
+      ]}
+    </ColumnLayout>,
+  ],
+  [
+    'ColumnLayout · form with an action bar',
+    <ColumnLayout
+      actions={<Button variant='primary'>Save</Button>}
+      column='form'
+      header={<PageHeader backHref='/people' backLabel='People' />}
+      key='bar'>
+      <Text as='h1' variant='h1'>
+        Add a person
+      </Text>
+      <Text variant='small'>Each change saves at once.</Text>
+    </ColumnLayout>,
   ],
 ];
 

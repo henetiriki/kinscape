@@ -1,7 +1,9 @@
 /** What each shared control's design system card shows (Spec #450): its group, height, `DESIGN.md` bullets and states. */
 
-import type { Card, State } from '#ks/lib/design/types.ts';
+import type { Column } from '#ks/app/components/layout/types.ts';
+import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 
+import { COLUMNS } from '#ks/app/components/layout/columns.mts';
 import {
   CHAIN,
   FUZZY_DATE_HELPER,
@@ -144,6 +146,50 @@ const one = (
 });
 
 const AVATAR = { control: 'Avatar', props: { initial: 'R' } };
+
+const HEADER = {
+  control: 'PageHeader',
+  props: { backHref: '/people', backLabel: 'People' },
+};
+
+/** The heading and the line of text that a `ColumnLayout` state holds. */
+const columnText = (title: string): Slot[] => [
+  { children: title, control: 'Text', props: { as: 'h1', variant: 'h1' } },
+  {
+    children: 'Each change saves at once.',
+    control: 'Text',
+    props: { variant: 'small' },
+  },
+];
+
+/** The one `NoticeCard` that a notice column holds: a notice column centres a single child. */
+const columnNotice = (props: State['props'], text: string): Slot[] => [
+  { children: text, control: 'NoticeCard', props },
+];
+
+/** What the `ColumnLayout` state of each `column` value holds, as the People screens fill it. */
+const COLUMN_CONTENT: Record<Column, Slot[]> = {
+  detail: columnText('Relationships'),
+  form: columnText('Add a person'),
+  list: columnText('People'),
+  notice: columnNotice(
+    {
+      actions: [{ href: '/people', label: 'Go to People' }],
+      icon: 'people',
+      size: 'large',
+      title: 'Person not found',
+    },
+    'No one in your Tree has this address. The person may have been deleted, or the link is wrong.'
+  ),
+  'phone-notice': columnNotice(
+    {
+      actions: [{ href: '/people', label: 'See all people' }],
+      phone: true,
+      title: 'Edit people on a computer',
+    },
+    'People are added and edited on a larger screen. On a phone you can look them up.'
+  ),
+};
 
 const dateField = (props: State['props'] = {}) => ({
   // The first Map date, today, and a day between.
@@ -1058,5 +1104,36 @@ export const CARDS: Card[] = [
         'Content'
       ),
     ],
+  },
+  {
+    contain: true,
+    design: [],
+    frame: 480,
+    group: 'Layout',
+    handlers: [],
+    height: 3400,
+    name: 'ColumnLayout',
+    pad: 0,
+    states: [
+      ...COLUMNS.map(column =>
+        one(`ColumnLayout · ${column}`, { column }, COLUMN_CONTENT[column], {
+          header: HEADER,
+        })
+      ),
+      one(
+        'ColumnLayout · form with an action bar',
+        { column: 'form' },
+        columnText('Add a person'),
+        {
+          actions: {
+            children: 'Save',
+            control: 'Button',
+            props: { variant: 'primary' },
+          },
+          header: HEADER,
+        }
+      ),
+    ],
+    width: 1440,
   },
 ];

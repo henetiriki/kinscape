@@ -1,26 +1,4 @@
-/* The People page frame: the header, then a scrolling main, as the people-* boards draw it. The list and its loading screen take it with `composes`. */
-.page {
-  background: var(--surface-2);
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-}
-
-.main {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-24);
-  margin: 0 auto;
-  padding: var(--space-32) 0 var(--space-48);
-  width: min(960px, 100%);
-}
-
+/* The heading row and the empty notice of the People list and its loading screen, which take them with `composes`. `ColumnLayout` draws the page frame. */
 .top {
   align-items: flex-end;
   display: flex;
@@ -32,16 +10,4 @@
   display: flex;
   justify-content: center;
   padding-top: var(--space-64);
-}
-
-@media (max-width: 639.98px), (max-height: 499.98px) {
-  .page {
-    background: var(--surface);
-  }
-
-  .content {
-    gap: var(--space-16);
-    padding: var(--space-20) var(--space-16) var(--space-48);
-    width: 100%;
-  }
 }

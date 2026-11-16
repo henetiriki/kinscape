@@ -56,6 +56,11 @@ export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type TextVariant = Heading | Other;
 export type Tone = 'error' | 'info' | 'warning';
 
+/** The `column` values of `ColumnLayout`, in the order of its card. */
+declare const COLUMNS: readonly ["list", "detail", "form", "notice", "phone-notice"];
+
+export type Column = (typeof COLUMNS)[number];
+
 /** One level of the Jurisdiction chain; `detail` says what the name was before. */
 export type ChainLevel = {
     detail?: string;
@@ -910,5 +915,19 @@ type SheetArgs = SheetHead & Pick<ComponentProps<typeof SheetPanel>, 'children'>
 export declare const Sheet: ({ children, onClose, open, ...head }: SheetArgs) => import("react").JSX.Element;
 export type SheetProps = Parameters<typeof Sheet>[0];
 export type SheetPanelProps = Parameters<typeof SheetPanel>[0];
+
+/**
+ * The frame of a page with one centred column: a header, a main area that scrolls and an optional
+ * action bar. `column` sets the width, gap and padding of the column: `list`, `detail`, `form`,
+ * `notice` (a notice 120px under the header) or `phone-notice` (a notice 64px under it).
+ * `actions` are the buttons of the bar.
+ */
+export declare const ColumnLayout: ({ actions, children, column, header, }: {
+    actions?: ReactNode;
+    children: ReactNode;
+    column: Column;
+    header: ReactNode;
+}) => import("react").JSX.Element;
+export type ColumnLayoutProps = Parameters<typeof ColumnLayout>[0];
 
 export {};

@@ -20,6 +20,7 @@ import { RelationshipRow } from '@ks/app/components/actions/RelationshipRow';
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
+import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { EditOnComputer } from '@ks/features/people/components/EditOnComputer';
 import { RelationshipDetails } from '@ks/features/people/components/RelationshipDetails';
@@ -143,101 +144,100 @@ export const PersonRelationships = ({
 
   return (
     <EditOnComputer email={email} initial={initial} onSignOut={onSignOut}>
-      <div className={styles.page}>
-        <PageHeader
-          avatar={
-            <AccountMenu
-              email={email}
-              initial={initial}
-              onSignOut={onSignOut}
-            />
-          }
-          backHref={person ? `/people/${person.id}` : '/people'}
-          backLabel={person ? 'Edit person' : 'People'}
-        />
-        <main className={styles.main}>
-          <div className={styles.content}>
-            <div className={styles.heading}>
-              <Text as='h1' variant='h1'>
-                Relationships
-              </Text>
-              <Text variant='small'>
-                {person && (
-                  <>
-                    <span className={styles.person}>
-                      <Text variant='title'>
-                        {person.givenNames} {person.surname}
-                      </Text>
-                    </span>
-                    .{' '}
-                  </>
-                )}
-                Each change saves at once.
-              </Text>
-              {person && <DateText dates={person} />}
-            </div>
-            {failed ? (
-              <div className={styles.failed}>
-                <NoticeCard
-                  actions={[
-                    { label: 'Try again', onClick: () => router.refresh() },
-                  ]}
-                  icon='cloudOff'
-                  size='large'
-                  title="Relationships didn't load">
-                  Check your connection, then try again. Nothing in your Tree
-                  has changed.
-                </NoticeCard>
-              </div>
-            ) : (
-              GROUPS.map(({ key, title }) => (
-                <section
-                  aria-labelledby={`relationships-${key}`}
-                  className={styles.group}
-                  key={key}>
-                  <div className={styles.head}>
-                    <div className={styles.title}>
-                      <Text as='h2' id={`relationships-${key}`} variant='h3'>
-                        {title}
-                      </Text>
-                      <Text variant='small'>{count(groups[key].length)}</Text>
-                    </div>
-                    <Button
-                      onClick={() => {
-                        setAdding(key);
-                        setPicked(undefined);
-                        setOpen(true);
-                        setOpened(times => times + 1);
-                      }}
-                      variant='secondary'>
-                      Add
-                    </Button>
-                  </div>
-                  {groups[key].length === 0 ? (
-                    <div className={styles.none}>
-                      <Text variant='body'>No {key} yet.</Text>
-                    </div>
-                  ) : (
-                    // A click on "Edit" opens the dialog again, even if the address still holds `?edit` from the last close.
-
-                    <ul
-                      className={styles.rows}
-                      onClickCapture={() => setClosedEdit(undefined)}>
-                      {groups[key].map(entry => (
-                        <li className={styles.item} key={entry.id}>
-                          <RelationshipRow
-                            {...entry}
-                            href={`${here}?edit=${entry.id}`}
-                          />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </section>
-              ))
+      <ColumnLayout
+        column='detail'
+        header={
+          <PageHeader
+            avatar={
+              <AccountMenu
+                email={email}
+                initial={initial}
+                onSignOut={onSignOut}
+              />
+            }
+            backHref={person ? `/people/${person.id}` : '/people'}
+            backLabel={person ? 'Edit person' : 'People'}
+          />
+        }>
+        <div className={styles.heading}>
+          <Text as='h1' variant='h1'>
+            Relationships
+          </Text>
+          <Text variant='small'>
+            {person && (
+              <>
+                <span className={styles.person}>
+                  <Text variant='title'>
+                    {person.givenNames} {person.surname}
+                  </Text>
+                </span>
+                .{' '}
+              </>
             )}
+            Each change saves at once.
+          </Text>
+          {person && <DateText dates={person} />}
+        </div>
+        {failed ? (
+          <div className={styles.failed}>
+            <NoticeCard
+              actions={[
+                { label: 'Try again', onClick: () => router.refresh() },
+              ]}
+              icon='cloudOff'
+              size='large'
+              title="Relationships didn't load">
+              Check your connection, then try again. Nothing in your Tree has
+              changed.
+            </NoticeCard>
           </div>
-        </main>
+        ) : (
+          GROUPS.map(({ key, title }) => (
+            <section
+              aria-labelledby={`relationships-${key}`}
+              className={styles.group}
+              key={key}>
+              <div className={styles.head}>
+                <div className={styles.title}>
+                  <Text as='h2' id={`relationships-${key}`} variant='h3'>
+                    {title}
+                  </Text>
+                  <Text variant='small'>{count(groups[key].length)}</Text>
+                </div>
+                <Button
+                  onClick={() => {
+                    setAdding(key);
+                    setPicked(undefined);
+                    setOpen(true);
+                    setOpened(times => times + 1);
+                  }}
+                  variant='secondary'>
+                  Add
+                </Button>
+              </div>
+              {groups[key].length === 0 ? (
+                <div className={styles.none}>
+                  <Text variant='body'>No {key} yet.</Text>
+                </div>
+              ) : (
+                // A click on "Edit" opens the dialog again, even if the address still holds `?edit` from the last close.
+
+                <ul
+                  className={styles.rows}
+                  onClickCapture={() => setClosedEdit(undefined)}>
+                  {groups[key].map(entry => (
+                    <li className={styles.item} key={entry.id}>
+                      <RelationshipRow
+                        {...entry}
+                        href={`${here}?edit=${entry.id}`}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))
+        )}
         {adding && !failed && (
           <RelationshipPicker
             group={adding}
@@ -282,7 +282,7 @@ export const PersonRelationships = ({
             self={person.id}
           />
         )}
-      </div>
+      </ColumnLayout>
     </EditOnComputer>
   );
 };

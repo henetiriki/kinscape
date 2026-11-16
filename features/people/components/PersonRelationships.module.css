@@ -1,22 +1,4 @@
-/* The page frame comes from `PeoplePage.module.css`; the rest is the three groups. */
-.page {
-  composes: page from '@ks/features/people/components/PeoplePage.module.css';
-}
-
-.main {
-  composes: main from '@ks/features/people/components/PeoplePage.module.css';
-}
-
-/* Not composed: the frame's padding and gap differ from this board's, and a composed rule wins. */
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-  margin: 0 auto;
-  padding: var(--space-24) 0 var(--space-32);
-  width: min(960px, 100%);
-}
-
+/* `ColumnLayout` draws the page frame; the rest is the three groups. */
 /* The name has the colour of a row name, not the grey of the save note beside it. */
 .person {
   color: var(--ink);

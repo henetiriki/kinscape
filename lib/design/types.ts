@@ -4,6 +4,8 @@ export type Card = {
   contain?: boolean;
   /** The `DESIGN.md` › Components bullets the README holds, by their bold name. */
   design: string[];
+  /** The px height of each state's control, for a control that fills the viewport. The preview sets it, so the component keeps its own height. */
+  frame?: number;
   group: Group;
   /** The props a preview gives a no-op. */
   handlers: string[];
@@ -31,7 +33,13 @@ export type Docs = {
 };
 
 export type Group =
-  'Actions' | 'Feedback' | 'Forms' | 'Foundation' | 'Map' | 'Overlays';
+  | 'Actions'
+  | 'Feedback'
+  | 'Forms'
+  | 'Foundation'
+  | 'Layout'
+  | 'Map'
+  | 'Overlays';
 
 export type Outcome = 'blocked' | 'matches';
 

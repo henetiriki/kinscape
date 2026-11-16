@@ -2,7 +2,7 @@
 
 - **Spec:** #899
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The frame is `height: 100dvh`. In a gallery file each of the six states is then 
 - **B.** The frame reads `height: var(--column-layout-height, 100dvh)`, and the card sets the variable. The component holds a hook that only the card uses.
 - **Other:** your own.
 
-Recommended: A, because #923 and #924 can reuse it, and the component does not change.
+**Answer: A** (@henetiriki)
 
 **D4 · Who writes the note of `layout.list-width`** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ Recommended: A, because #923 and #924 can reuse it, and the component does not c
 - **B.** This Spec waits for #913 (`gh issue edit 899 --add-blocked-by 913`).
 - **Other:** your own.
 
-Recommended: A, because #913 also needs a local session, and #923 and #924 wait for this Spec.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

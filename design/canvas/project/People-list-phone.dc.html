@@ -90,7 +90,7 @@ class Component extends DCLogic {
       rows.push({ surname: p.s, given: p.g, born: p.b, bornReading: reading(p.b), died: died, diedReading: reading(died), deceased: deceased, maiden: p.m, variant: matched });
     });
     return {
-      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null,
       query: this.state.query,
       onQuery: (e) => this.setState({ query: e.target.value }),
       rows: rows,

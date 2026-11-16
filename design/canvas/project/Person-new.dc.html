@@ -185,7 +185,7 @@ class Component extends DCLogic {
       saved: { tone: 'success', text: 'Saved ' + (fullName || 'the person') + '.', action: undefined, onAction: undefined, onDismiss: () => this.setState({ toast: '' }) }
     };
     return {
-      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null,
       title: isEdit ? 'Edit ' + fullName : 'Add a person',
       showRelationships: isEdit,
       showSummary: s.summary && errCount > 0,

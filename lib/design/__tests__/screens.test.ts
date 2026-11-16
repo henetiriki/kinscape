@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 
-/** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when its draft board is deleted. */
+/** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',

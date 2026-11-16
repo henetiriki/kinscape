@@ -29,6 +29,19 @@ Does the path name them?
 
 **Answer: A** (@henetiriki)
 
+**D4 · Who deletes the snapshot and the JPG of a draft board** · Decides: Tech lead
+
+Step 4 of the path deletes the draft board, its snapshot and its JPG. `AGENTS.md` says that a workflow makes `design/source/` and `design/*.jpg`, and that nobody edits them. No workflow removes a snapshot whose board is gone, and `design-export.test.ts` fails on one.
+
+Who deletes the two files?
+
+- **A.** Step 4 names the tech lead, or a local session that the tech lead starts. No code changes.
+- ~~**B.** The workflow "Design: Render snapshots" removes them. A new Spec builds that.~~
+- ~~**C.** Step 4 deletes only the board. The snapshot and the JPG stay until a later Spec.~~
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                   | New / changed | What                                                                                |
@@ -78,3 +91,7 @@ The expected messages in `screens.test.ts` change, because Behaviour 6 changes t
 Each item of the Spec's "Out of scope / carried forward".
 
 ## Deviations
+
+- `design/COMPONENTS.md`: the opening lines are one line that names the two sections, so the file gives each fact once.
+- D4 is new. Step 4 of the path names who deletes the snapshot and the JPG.
+- The build reworded Behaviour 2 of #897 for D3 and D4. It did this after the first push.

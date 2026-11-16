@@ -59,6 +59,116 @@ describe('appAdapters', () => {
     ).toHaveLength(1);
   });
 
+  it('signs in each fixture Account to an empty read-only Tree under the memory adapters', async () => {
+    vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { FIXTURES } = await import('@ks/server/auth/fixtures.mts');
+    const { SYNTHETIC } = await import('@ks/server/auth/synthetic.mts');
+    const { signIn } = await import('@ks/server/auth/sign-in.mts');
+    const { personInputSchema } =
+      await import('@ks/lib/domain/persons/schemas.mts');
+    const { startSession } = await import('@ks/server/auth/sessions.mts');
+    const { openTree } = await import('@ks/server/trees/repository.mts');
+    const adapters = appAdapters();
+    const [fixture] = FIXTURES;
+
+    expect(fixture.email).toBe('researcher@example.com');
+
+    const signedIn = await signIn(adapters, fixture.email, fixture.password);
+
+    expect(signedIn).toEqual({ ok: true, value: { id: fixture.accountId } });
+    expect(
+      await adapters.store.findTree({
+        accountId: fixture.accountId,
+        treeId: fixture.treeId,
+      })
+    ).toEqual({ id: fixture.treeId, name: fixture.treeName });
+
+    const token = await startSession(adapters.sessions, () => new Date(), {
+      accountId: fixture.accountId,
+      email: fixture.email,
+    });
+    const opened = await openTree(
+      {
+        now: () => new Date(),
+        sessions: adapters.sessions,
+        store: adapters.store,
+      },
+      token,
+      fixture.treeId
+    );
+
+    if (!opened.ok) {
+      throw new Error('setup failed');
+    }
+
+    expect(await opened.value.persons.list()).toEqual([]);
+    expect(
+      await opened.value.persons.create(
+        personInputSchema.parse({ id: '01900000-0000-7000-8000-0000000000a1' })
+      )
+    ).toEqual({ error: 'not-found', ok: false });
+    expect(await opened.value.persons.list()).toEqual([]);
+
+    // The synthetic Account keeps its own empty, writable Tree.
+    expect(
+      await adapters.store.listPersons({
+        accountId: SYNTHETIC.accountId,
+        treeId: SYNTHETIC.treeId,
+      })
+    ).toEqual([]);
+    expect(
+      await adapters.store.listPersons({
+        accountId: SYNTHETIC.accountId,
+        treeId: fixture.treeId,
+      })
+    ).toEqual([]);
+  });
+
+  it('knows no fixture Account under the memory sign-in alone', async () => {
+    vi.stubEnv('KINSCAPE_MEMORY_SIGN_IN', '1');
+    vi.stubEnv('KINSCAPE_DATABASE_URL', 'postgres://app@localhost:1/db');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { FIXTURES } = await import('@ks/server/auth/fixtures.mts');
+    const { db } = await import('@ks/server/db/database.mts');
+    const [fixture] = FIXTURES;
+
+    expect(
+      await appAdapters().signIn.verify(fixture.email, fixture.password)
+    ).toBeUndefined();
+
+    await db().destroy();
+  });
+
+  it('sends a fixture email to Supabase under neither flag', async () => {
+    vi.stubEnv('KINSCAPE_DATABASE_URL', 'postgres://app@localhost:1/db');
+    vi.stubEnv('KINSCAPE_SUPABASE_URL', 'https://example.supabase.co');
+    vi.stubEnv('KINSCAPE_SUPABASE_PUBLISHABLE_KEY', 'publishable-key');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { FIXTURES } = await import('@ks/server/auth/fixtures.mts');
+    const { db } = await import('@ks/server/db/database.mts');
+    const fetch = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response('{}', { status: 400 }));
+    const [fixture] = FIXTURES;
+    const { signIn, store } = appAdapters();
+
+    expect(
+      await signIn.verify(fixture.email, fixture.password)
+    ).toBeUndefined();
+    expect(fetch).toHaveBeenCalledOnce();
+    // Port 1 refuses the connection; a memory store would resolve `undefined`.
+    await expect(
+      store.findAccount(fixture.issuer, fixture.subject)
+    ).rejects.toThrow();
+
+    fetch.mockRestore();
+    await db().destroy();
+  });
+
   it('refuses to build memory adapters on Vercel', async () => {
     vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
     vi.stubEnv('VERCEL_ENV', 'preview');

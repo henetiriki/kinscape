@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
+import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
+import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
 import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
@@ -35,6 +37,111 @@ describe('memoryStore seed', () => {
     expect(
       await store.findTree({ accountId: ACCOUNT, treeId: TREE_A })
     ).toEqual({ id: TREE_A, name: 'A' });
+  });
+
+  // NFR-09
+  describe('a read-only Tree', () => {
+    const OTHER = parseAccountId('00000000-0000-4000-8000-0000000000a2')!;
+    const PERSON = personInputSchema.parse({
+      id: '01900000-0000-7000-8000-0000000000a1',
+      surname: 'Seed',
+    });
+    const NEW_PERSON = personInputSchema.parse({
+      id: '01900000-0000-7000-8000-0000000000a2',
+    });
+    const REL = relationshipInputSchema.parse({
+      childId: NEW_PERSON.id,
+      id: '01900000-0000-7000-9000-0000000000b1',
+      parentId: PERSON.id,
+      subtype: 'biological',
+      type: 'parent',
+    });
+    const scope = { accountId: ACCOUNT, treeId: TREE_A };
+    const build = () =>
+      memoryStore(
+        [
+          {
+            id: ACCOUNT,
+            issuer: 'test',
+            subject: 's',
+            trees: [
+              {
+                id: TREE_A,
+                name: 'A',
+                persons: [PERSON],
+              },
+            ],
+          },
+          {
+            id: OTHER,
+            issuer: 'test',
+            subject: 'o',
+            trees: [{ id: TREE_B, name: 'B', persons: [NEW_PERSON] }],
+          },
+        ],
+        [TREE_A]
+      );
+
+    it('refuses each write and does not change', async () => {
+      const store = build();
+      const before = await store.listPersons(scope);
+
+      expect(before).toEqual([{ ...PERSON, version: 1 }]);
+      expect(await store.addPerson({ ...scope, person: NEW_PERSON })).toBe(
+        undefined
+      );
+      expect(
+        await store.updatePerson({
+          ...scope,
+          person: { ...PERSON, surname: 'Changed' },
+          version: 1,
+        })
+      ).toEqual({ error: 'not-found', ok: false });
+      expect(
+        await store.addRelationship({ ...scope, relationship: REL })
+      ).toEqual({ error: 'not-found', ok: false });
+      expect(
+        await store.updateRelationship({
+          ...scope,
+          relationship: REL,
+          version: 1,
+        })
+      ).toEqual({ error: 'not-found', ok: false });
+      expect(await store.listPersons(scope)).toEqual(before);
+      expect(await store.listRelationships(scope)).toEqual([]);
+    });
+
+    it('still writes to a Tree not on the list', async () => {
+      const store = build();
+      const own = { accountId: OTHER, treeId: TREE_B };
+
+      const added = await store.addPerson({
+        ...own,
+        person: personInputSchema.parse({
+          id: '01900000-0000-7000-8000-0000000000a3',
+        }),
+      });
+
+      expect(added?.version).toBe(1);
+    });
+
+    it('shows neither Account a row of the other', async () => {
+      const store = build();
+      const own = { accountId: OTHER, treeId: TREE_B };
+
+      expect((await store.listPersons(own)).map(p => p.id)).toEqual([
+        NEW_PERSON.id,
+      ]);
+      expect((await store.listPersons(scope)).map(p => p.id)).toEqual([
+        PERSON.id,
+      ]);
+      expect(
+        await store.listPersons({ accountId: OTHER, treeId: TREE_A })
+      ).toEqual([]);
+      expect(
+        await store.listPersons({ accountId: ACCOUNT, treeId: TREE_B })
+      ).toEqual([]);
+    });
   });
 
   it('refuses to add an Account over a seeded identity', async () => {

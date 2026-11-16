@@ -5,7 +5,7 @@ import { Avatar } from '@ks/app/components/foundation/Avatar';
 
 // NFR-05, NFR-06
 it('is closed unless told it is open', () => {
-  render(<Avatar initial='L' />);
+  render(<Avatar initial='R' />);
   expect(
     screen
       .getByRole('button', { name: 'Account menu' })
@@ -14,7 +14,7 @@ it('is closed unless told it is open', () => {
 });
 
 it('draws a state and its open look', () => {
-  render(<Avatar expanded initial='L' state='hover' />);
+  render(<Avatar expanded initial='R' state='hover' />);
 
   const avatar = screen.getByRole('button', { name: 'Account menu' });
 

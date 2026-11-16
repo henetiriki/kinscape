@@ -1,6 +1,7 @@
 'use client';
 
 import { usePhone } from '@ks/app/components/foundation/usePhone';
+import { SAMPLE_ACCOUNT } from '@ks/app/screens/account';
 import {
   AccountMenu,
   accountSlots,
@@ -13,8 +14,7 @@ export const AccountMenuScreen = () => {
   const phone = usePhone();
   const menu = (
     <AccountMenu
-      email='researcher@example.com'
-      initial='L'
+      {...SAMPLE_ACCOUNT}
       onOpenSources={() => {}}
       onSignOut={() => Promise.resolve()}
       phone={phone}

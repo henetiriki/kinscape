@@ -1,5 +1,6 @@
 import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 
+import { SAMPLE_ACCOUNT as ACCOUNT } from '@ks/app/screens/account';
 import { saveConflict, saveFailed } from '@ks/app/screens/person-actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import {
@@ -34,8 +35,6 @@ export const SAMPLE_PERSON: PersonView = {
   variants: ['Du Toit', 'Dutoit', 'Du Tois'],
   version: 1,
 };
-
-const ACCOUNT = { email: 'researcher@example.com', initial: 'L' };
 
 /**
  * The Person form with a synthetic Account. Save returns the outcome that `save` names, so the

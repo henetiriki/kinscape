@@ -25,7 +25,7 @@ export const MENU_GROUPS: MenuEntry[][] = [
 export const MENU_WORDS = {
   email: 'researcher@example.com',
   footer: 'Last backup: today, 02:00',
-  initial: 'L',
+  initial: 'R',
 };
 
 export const CHAIN: ChainLevel[] = SAMPLE_CHAIN;

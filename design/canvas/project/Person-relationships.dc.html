@@ -260,7 +260,7 @@ class Component extends DCLogic {
       };
     }
     return {
-      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'L' }) : null,
+      avatar: (window.React && window.KinScape) ? window.React.createElement(window.KinScape.Avatar, { initial: 'R' }) : null,
       subtitle: { name: fullName(SELF), line: lineOf(SELF), words: words(SELF) },
       showFailed: s.view === 'failed',
       retryActions: [{ label: 'Try again', onClick: () => this.setState({ view: 'list' }) }],

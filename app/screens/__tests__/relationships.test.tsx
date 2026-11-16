@@ -22,6 +22,7 @@ import PickEmpty from '@ks/app/screens/relationship-pick-empty/page';
 import NoMatch from '@ks/app/screens/relationship-pick-no-match/page';
 import Pick from '@ks/app/screens/relationship-pick/page';
 import SaveFailed from '@ks/app/screens/relationship-save-failed/page';
+import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 // PPL-02
 describe('the Relationships screens', () => {
@@ -38,6 +39,26 @@ describe('the Relationships screens', () => {
     within(screen.getByRole('region', { name: 'Spouses' })).getByText(
       'Mar. 1875, div. 1890'
     );
+  });
+
+  it.each([
+    ['person-relationships', Board],
+    ['person-relationships-empty', Empty],
+    ['person-relationships-load-failed', LoadFailed],
+    ['relationship-pick', Pick],
+    ['relationship-pick-no-match', NoMatch],
+    ['relationship-pick-empty', PickEmpty],
+    ['relationship-details-parent', Details],
+    ['relationship-details-spouse', DetailsSpouse],
+    ['relationship-cycle', Cycle],
+    ['relationship-edit-spouse', EditSpouse],
+    ['relationship-save-failed', SaveFailed],
+  ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
+    render(await Page());
+
+    expect(
+      screen.getByRole('button', { name: 'Account menu' }).textContent
+    ).toBe(accountInitial('researcher@example.com'));
   });
 
   it('person-relationships-empty shows the empty line of each group', async () => {

@@ -43,7 +43,7 @@ const HeaderShot = ({
   <Shot caption={caption}>
     <div className={styles.frame}>
       <PageHeader
-        avatar={<Avatar initial='L' />}
+        avatar={<Avatar initial='R' />}
         backHref={HREF}
         backLabel={backLabel}
       />

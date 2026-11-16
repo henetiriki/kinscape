@@ -23,7 +23,7 @@ const MENU = {
   email: 'researcher@example.com',
   footer: 'Last backup: today, 02:00',
   groups: GROUPS.map(group => [...group]),
-  initial: 'L',
+  initial: 'R',
 };
 
 const FORMS = [undefined, 'phone'] as const;
@@ -55,7 +55,7 @@ const key = (name: string) =>
 it('is a button named "Account menu" with the initial, haspopup and expanded', () => {
   const { avatar } = setup();
 
-  expect(avatar.textContent).toBe('L');
+  expect(avatar.textContent).toBe('R');
   expect(avatar.getAttribute('aria-haspopup')).toBe('menu');
   expect(avatar.getAttribute('aria-expanded')).toBe('false');
   expect(screen.queryByRole('menu')).toBeNull();

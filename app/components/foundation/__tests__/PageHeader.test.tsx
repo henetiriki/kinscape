@@ -15,7 +15,7 @@ const css = readFileSync(
 it('is a header with one back link that shows the back icon', () => {
   render(
     <PageHeader
-      avatar={<Avatar initial='L' />}
+      avatar={<Avatar initial='R' />}
       backHref='/map'
       backLabel='Map'
     />
@@ -31,7 +31,7 @@ it('is a header with one back link that shows the back icon', () => {
     'back'
   );
   expect(screen.getByRole('button', { name: 'Account menu' }).textContent).toBe(
-    'L'
+    'R'
   );
 });
 

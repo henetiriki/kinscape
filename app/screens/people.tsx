@@ -1,6 +1,7 @@
 import type { FuzzyDate } from '@ks/lib/domain/dates/types';
 import type { PersonSummary } from '@ks/lib/domain/persons/types';
 
+import { SAMPLE_ACCOUNT } from '@ks/app/screens/account';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { PeopleList } from '@ks/features/people';
 import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
@@ -83,9 +84,8 @@ export const PeopleScreen = ({
   people?: PersonSummary[];
 }) => (
   <PeopleList
-    email='researcher@example.com'
+    {...SAMPLE_ACCOUNT}
     failed={failed}
-    initial='L'
     onSignOut={signOutAction}
     people={people}
   />

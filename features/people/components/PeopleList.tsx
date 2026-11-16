@@ -13,6 +13,7 @@ import { TextField } from '@ks/app/components/forms/TextField';
 import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
+import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { datesOf } from '@ks/features/people/components/dates';
 import { findPeople } from '@ks/lib/domain/persons/list.mts';
@@ -55,129 +56,132 @@ export const PeopleList = ({
   }
 
   return (
-    <div className={styles.page}>
-      <PageHeader
-        avatar={
-          <AccountMenu email={email} initial={initial} onSignOut={onSignOut} />
-        }
-        backHref='/'
-        backLabel='Map'
-      />
-      <main className={styles.main}>
-        <div className={styles.content}>
-          <div className={styles.top}>
-            <div className={styles.heading}>
-              <Text as='h1' variant={phone ? 'h1Phone' : 'h1'}>
-                People
-              </Text>
-              {count && (
-                <Text role='status' variant='small'>
-                  {count}
-                </Text>
-              )}
-            </div>
-            {!phone && (
-              <Button href='/people/new' size='m' variant='primary'>
-                Add a person
-              </Button>
-            )}
-          </div>
-          {!empty && (
-            <div className={styles.filter}>
-              <TextField
-                disabled={failed}
-                helper={
-                  phone
-                    ? 'Matches names, maiden names and spelling variants.'
-                    : 'Matches given names, surnames, maiden names and spelling variants.'
-                }
-                label='Find a person'
-                onChange={event => setQuery(event.target.value)}
-                shortcut={phone ? undefined : '/'}
-                type='search'
-                value={query}
-              />
-            </div>
-          )}
-          {phone && !empty && (
-            <Text variant='small'>To add or edit people, use a computer.</Text>
-          )}
-          {failed && (
-            <div className={styles.failed}>
-              <Alert title="People didn't load" tone='error'>
-                Check your connection, then try again. Nothing in your Tree has
-                changed.
-              </Alert>
-              <Button onClick={() => router.refresh()}>Try again</Button>
-            </div>
-          )}
-          {empty && (
-            <div className={styles.empty}>
-              <NoticeCard icon='people' size='large' title='No people yet'>
-                {phone
-                  ? 'Add people on a computer. Once people are in it, you can pin their lives to the map.'
-                  : 'Use Add a person to start your Tree. Once people are in it, you can pin their lives to the map.'}
-              </NoticeCard>
-            </div>
-          )}
-          {!failed && !empty && filtering && shown.length === 0 && (
-            <div className={styles.noMatch}>
-              <NoticeCard
-                actions={[
-                  { label: 'Clear the filter', onClick: () => setQuery('') },
-                ]}
-                icon='search'
-                title={`No one matches “${query.trim()}”`}>
-                {phone
-                  ? 'Check the spelling.'
-                  : 'Check the spelling, or add them with Add a person.'}
-              </NoticeCard>
-            </div>
-          )}
-          {shown.length > 0 && phone && (
-            <ul aria-label='People, by surname' className={styles.phoneRows}>
-              {shown.map(({ match, person }) => (
-                <li key={person.id}>
-                  <PersonRow
-                    {...datesOf(person)}
-                    form='phone'
-                    givenNames={person.givenNames}
-                    href={`/people/${person.id}`}
-                    maidenName={person.maidenName}
-                    matchedVariant={match.variant}
-                    surname={person.surname}
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
-          {shown.length > 0 && !phone && (
-            <section aria-label='People, by surname' className={styles.list}>
-              <div aria-hidden='true' className={styles.heads}>
-                <Text variant='overline'>Name</Text>
-                <Text variant='overline'>Dates</Text>
-                <span />
-                <span className={styles.linkSlot} />
-              </div>
-              <ul className={styles.rows}>
-                {shown.map(({ match, person }) => (
-                  <li className={styles.item} key={person.id}>
-                    <PersonRow
-                      {...datesOf(person)}
-                      givenNames={person.givenNames}
-                      href={`/people/${person.id}`}
-                      maidenName={person.maidenName}
-                      matchedVariant={match.variant}
-                      relationshipsHref={`/people/${person.id}/relationships`}
-                      surname={person.surname}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </section>
+    <ColumnLayout
+      column='list'
+      header={
+        <PageHeader
+          avatar={
+            <AccountMenu
+              email={email}
+              initial={initial}
+              onSignOut={onSignOut}
+            />
+          }
+          backHref='/'
+          backLabel='Map'
+        />
+      }>
+      <div className={styles.top}>
+        <div className={styles.heading}>
+          <Text as='h1' variant={phone ? 'h1Phone' : 'h1'}>
+            People
+          </Text>
+          {count && (
+            <Text role='status' variant='small'>
+              {count}
+            </Text>
           )}
         </div>
-      </main>
-    </div>
+        {!phone && (
+          <Button href='/people/new' size='m' variant='primary'>
+            Add a person
+          </Button>
+        )}
+      </div>
+      {!empty && (
+        <div className={styles.filter}>
+          <TextField
+            disabled={failed}
+            helper={
+              phone
+                ? 'Matches names, maiden names and spelling variants.'
+                : 'Matches given names, surnames, maiden names and spelling variants.'
+            }
+            label='Find a person'
+            onChange={event => setQuery(event.target.value)}
+            shortcut={phone ? undefined : '/'}
+            type='search'
+            value={query}
+          />
+        </div>
+      )}
+      {phone && !empty && (
+        <Text variant='small'>To add or edit people, use a computer.</Text>
+      )}
+      {failed && (
+        <div className={styles.failed}>
+          <Alert title="People didn't load" tone='error'>
+            Check your connection, then try again. Nothing in your Tree has
+            changed.
+          </Alert>
+          <Button onClick={() => router.refresh()}>Try again</Button>
+        </div>
+      )}
+      {empty && (
+        <div className={styles.empty}>
+          <NoticeCard icon='people' size='large' title='No people yet'>
+            {phone
+              ? 'Add people on a computer. Once people are in it, you can pin their lives to the map.'
+              : 'Use Add a person to start your Tree. Once people are in it, you can pin their lives to the map.'}
+          </NoticeCard>
+        </div>
+      )}
+      {!failed && !empty && filtering && shown.length === 0 && (
+        <div className={styles.noMatch}>
+          <NoticeCard
+            actions={[
+              { label: 'Clear the filter', onClick: () => setQuery('') },
+            ]}
+            icon='search'
+            title={`No one matches “${query.trim()}”`}>
+            {phone
+              ? 'Check the spelling.'
+              : 'Check the spelling, or add them with Add a person.'}
+          </NoticeCard>
+        </div>
+      )}
+      {shown.length > 0 && phone && (
+        <ul aria-label='People, by surname' className={styles.phoneRows}>
+          {shown.map(({ match, person }) => (
+            <li key={person.id}>
+              <PersonRow
+                {...datesOf(person)}
+                form='phone'
+                givenNames={person.givenNames}
+                href={`/people/${person.id}`}
+                maidenName={person.maidenName}
+                matchedVariant={match.variant}
+                surname={person.surname}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+      {shown.length > 0 && !phone && (
+        <section aria-label='People, by surname' className={styles.list}>
+          <div aria-hidden='true' className={styles.heads}>
+            <Text variant='overline'>Name</Text>
+            <Text variant='overline'>Dates</Text>
+            <span />
+            <span className={styles.linkSlot} />
+          </div>
+          <ul className={styles.rows}>
+            {shown.map(({ match, person }) => (
+              <li className={styles.item} key={person.id}>
+                <PersonRow
+                  {...datesOf(person)}
+                  givenNames={person.givenNames}
+                  href={`/people/${person.id}`}
+                  maidenName={person.maidenName}
+                  matchedVariant={match.variant}
+                  relationshipsHref={`/people/${person.id}/relationships`}
+                  surname={person.surname}
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </ColumnLayout>
   );
 };

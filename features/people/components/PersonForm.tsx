@@ -10,7 +10,6 @@ import type {
   Sex,
 } from '@ks/lib/domain/persons/types.ts';
 
-import { ActionBar } from '@ks/app/components/actions/ActionBar';
 import { Button } from '@ks/app/components/actions/Button';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Alert } from '@ks/app/components/feedback/Alert';
@@ -22,6 +21,7 @@ import { TextField } from '@ks/app/components/forms/TextField';
 import { TokenField } from '@ks/app/components/forms/TokenField';
 import { PageHeader } from '@ks/app/components/foundation/PageHeader';
 import { Text } from '@ks/app/components/foundation/Text';
+import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
 import { Dialog } from '@ks/app/components/overlays/Dialog';
 import { AccountMenu } from '@ks/features/people/components/AccountMenu';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
@@ -202,160 +202,171 @@ export const PersonForm = ({
   };
 
   return (
-    <div className={styles.page}>
-      <PageHeader
-        avatar={
-          <AccountMenu email={email} initial={initial} onSignOut={onSignOut} />
-        }
-        backHref='/people'
-        backLabel='People'
-      />
-      <main className={styles.main}>
-        <div className={styles.content}>
-          <div className={styles.top}>
-            <div className={styles.heading}>
-              <Text as='h1' variant='h1'>
-                {person
-                  ? `Edit ${person.givenNames} ${person.surname}`
-                  : 'Add a person'}
-              </Text>
-              <Text variant='small'>
-                Given names and surname are required. Everything else can wait.
-              </Text>
-            </div>
-            {person && (
-              // The capture handler runs before the link's own click handler. `next/link` skips a
-              // prevented click, and the kit's TextLink cannot cancel one.
-              <span
-                className={styles.linkHolder}
-                onClickCapture={event => {
-                  if (changed) {
-                    event.preventDefault();
-                    setLeaving(true);
-                  }
-                }}>
-                <TextLink href={`/people/${person.id}/relationships`}>
-                  Relationships
-                </TextLink>
-              </span>
-            )}
-          </div>
-          {count > 0 && (
-            <div className={styles.alert}>
-              <Alert title={fixing(count)} tone='error'>
-                Nothing was saved. Each problem is marked at its field.
-              </Alert>
-            </div>
-          )}
-          {conflict && (
-            <div className={styles.alert}>
-              <Alert
-                title='This person changed while you were editing'
-                tone='error'>
-                Nothing was saved. Reload to see the latest version, then make
-                your changes again.
-              </Alert>
-              <Button onClick={() => router.refresh()}>Reload</Button>
-            </div>
-          )}
-          <form
-            className={styles.card}
-            id='person-form'
-            noValidate
-            onSubmit={event => {
-              event.preventDefault();
-              void submit();
-            }}>
-            <div
-              aria-labelledby='person-group-name'
-              className={styles.group}
-              data-column='1'
-              role='group'>
-              <Text id='person-group-name' variant='title'>
-                Name
-              </Text>
-              <TextField
-                autoComplete='off'
-                label='Given names'
-                {...name('givenNames')}
-              />
-              <TextField
-                autoComplete='off'
-                label='Surname'
-                {...name('surname')}
-              />
-              <TextField
-                autoComplete='off'
-                helper='Surname at birth, if it changed.'
-                label='Maiden name'
-                maxLength={MAX_NAME}
-                onChange={event => set({ maidenName: event.target.value })}
-                value={values.maidenName}
-              />
-              <TokenField
-                error={messages.variants}
-                helper='Other spellings in the records, up to 20. Press Enter after each.'
-                label='Spelling variants'
-                onChange={variants => {
-                  set({ variants });
-                  setErrors(without(errors, 'variants'));
-                }}
-                placeholder='Add a spelling'
-                values={values.variants}
-              />
-            </div>
-            <div
-              aria-labelledby='person-group-life'
-              className={styles.group}
-              data-column='2'
-              role='group'>
-              <Text id='person-group-life' variant='title'>
-                Life
-              </Text>
-              <SelectField
-                label='Sex'
-                onChange={event => set({ sex: event.target.value })}
-                options={SEX}
-                value={values.sex}
-              />
-              <FuzzyDateField
-                defaultValue={values.birth}
-                helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
-                key={errors.birth ? `birth-${checks}` : 'birth'}
-                label='Birth'
-                onInput={event => set({ birth: event.currentTarget.value })}
-              />
-              <FuzzyDateField
-                defaultValue={values.death}
-                helper="Leave it empty if you don't know."
-                key={errors.death ? `death-${checks}` : 'death'}
-                label='Death'
-                onInput={event => set({ death: event.currentTarget.value })}
-              />
-              <CheckboxField
-                checked={values.deceased || dead}
-                description={
-                  dead
-                    ? 'Ticked because a death date is entered.'
-                    : "Tick if this person has died but the date isn't known."
-                }
-                disabled={dead}
-                label='Deceased'
-                onChange={event => set({ deceased: event.target.checked })}
-              />
-            </div>
-            <div className={styles.notes}>
-              <TextAreaField
-                helper="Sources, stories, anything the fields can't hold."
-                label='Notes'
-                maxLength={MAX_NOTES}
-                onChange={event => set({ notes: event.target.value })}
-                value={values.notes}
-              />
-            </div>
-          </form>
+    <ColumnLayout
+      actions={
+        <>
+          <Button
+            disabled={saving}
+            form='person-form'
+            type='submit'
+            variant='primary'>
+            Save
+          </Button>
+          <Button href='/people'>Cancel</Button>
+        </>
+      }
+      column='form'
+      header={
+        <PageHeader
+          avatar={
+            <AccountMenu
+              email={email}
+              initial={initial}
+              onSignOut={onSignOut}
+            />
+          }
+          backHref='/people'
+          backLabel='People'
+        />
+      }>
+      <div className={styles.top}>
+        <div className={styles.heading}>
+          <Text as='h1' variant='h1'>
+            {person
+              ? `Edit ${person.givenNames} ${person.surname}`
+              : 'Add a person'}
+          </Text>
+          <Text variant='small'>
+            Given names and surname are required. Everything else can wait.
+          </Text>
         </div>
-      </main>
+        {person && (
+          // The capture handler runs before the link's own click handler. `next/link` skips a
+          // prevented click, and the kit's TextLink cannot cancel one.
+          <span
+            className={styles.linkHolder}
+            onClickCapture={event => {
+              if (changed) {
+                event.preventDefault();
+                setLeaving(true);
+              }
+            }}>
+            <TextLink href={`/people/${person.id}/relationships`}>
+              Relationships
+            </TextLink>
+          </span>
+        )}
+      </div>
+      {count > 0 && (
+        <div className={styles.alert}>
+          <Alert title={fixing(count)} tone='error'>
+            Nothing was saved. Each problem is marked at its field.
+          </Alert>
+        </div>
+      )}
+      {conflict && (
+        <div className={styles.alert}>
+          <Alert
+            title='This person changed while you were editing'
+            tone='error'>
+            Nothing was saved. Reload to see the latest version, then make your
+            changes again.
+          </Alert>
+          <Button onClick={() => router.refresh()}>Reload</Button>
+        </div>
+      )}
+      <form
+        className={styles.card}
+        id='person-form'
+        noValidate
+        onSubmit={event => {
+          event.preventDefault();
+          void submit();
+        }}>
+        <div
+          aria-labelledby='person-group-name'
+          className={styles.group}
+          data-column='1'
+          role='group'>
+          <Text id='person-group-name' variant='title'>
+            Name
+          </Text>
+          <TextField
+            autoComplete='off'
+            label='Given names'
+            {...name('givenNames')}
+          />
+          <TextField autoComplete='off' label='Surname' {...name('surname')} />
+          <TextField
+            autoComplete='off'
+            helper='Surname at birth, if it changed.'
+            label='Maiden name'
+            maxLength={MAX_NAME}
+            onChange={event => set({ maidenName: event.target.value })}
+            value={values.maidenName}
+          />
+          <TokenField
+            error={messages.variants}
+            helper='Other spellings in the records, up to 20. Press Enter after each.'
+            label='Spelling variants'
+            onChange={variants => {
+              set({ variants });
+              setErrors(without(errors, 'variants'));
+            }}
+            placeholder='Add a spelling'
+            values={values.variants}
+          />
+        </div>
+        <div
+          aria-labelledby='person-group-life'
+          className={styles.group}
+          data-column='2'
+          role='group'>
+          <Text id='person-group-life' variant='title'>
+            Life
+          </Text>
+          <SelectField
+            label='Sex'
+            onChange={event => set({ sex: event.target.value })}
+            options={SEX}
+            value={values.sex}
+          />
+          <FuzzyDateField
+            defaultValue={values.birth}
+            helper='For example 1850, ABT 1850 or BET 1850 AND 1855.'
+            key={errors.birth ? `birth-${checks}` : 'birth'}
+            label='Birth'
+            onInput={event => set({ birth: event.currentTarget.value })}
+          />
+          <FuzzyDateField
+            defaultValue={values.death}
+            helper="Leave it empty if you don't know."
+            key={errors.death ? `death-${checks}` : 'death'}
+            label='Death'
+            onInput={event => set({ death: event.currentTarget.value })}
+          />
+          <CheckboxField
+            checked={values.deceased || dead}
+            description={
+              dead
+                ? 'Ticked because a death date is entered.'
+                : "Tick if this person has died but the date isn't known."
+            }
+            disabled={dead}
+            label='Deceased'
+            onChange={event => set({ deceased: event.target.checked })}
+          />
+        </div>
+        <div className={styles.notes}>
+          <TextAreaField
+            helper="Sources, stories, anything the fields can't hold."
+            label='Notes'
+            maxLength={MAX_NOTES}
+            onChange={event => set({ notes: event.target.value })}
+            value={values.notes}
+          />
+        </div>
+      </form>
       {person && (
         <Dialog
           onClose={() => setLeaving(false)}
@@ -385,16 +396,6 @@ export const PersonForm = ({
           </Toast>
         </div>
       )}
-      <ActionBar>
-        <Button
-          disabled={saving}
-          form='person-form'
-          type='submit'
-          variant='primary'>
-          Save
-        </Button>
-        <Button href='/people'>Cancel</Button>
-      </ActionBar>
-    </div>
+    </ColumnLayout>
   );
 };

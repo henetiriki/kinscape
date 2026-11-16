@@ -1,7 +1,7 @@
 # Plan: C891: Make the rules of plans/README.md follow STE
 
 - **Spec:** #891
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -38,7 +38,7 @@ The build rewrites each rule that the table names. A rewrite keeps the facts of 
 - **B.** Rewrite the rules only. The review does not see the intro line, because it reads only added lines.
 - **Other:** your own.
 
-Recommended: A, because it agrees with both parts of the issue.
+**Answer: A** (@henetiriki)
 
 **D2 · Lists of more than two nouns** · Decides: Tech lead
 
@@ -48,7 +48,7 @@ STE rule 15 asks for a vertical list "for more than two items". Five rules hold 
 - **B.** Make each list of more than two items vertical.
 - **Other:** your own.
 
-Recommended: B, because the review checks each added line against the literal rule.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

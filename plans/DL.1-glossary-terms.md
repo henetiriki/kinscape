@@ -25,7 +25,7 @@ The order ignores case, as the table does now ("Canvas copy" before "CI agent").
 
 ## Order of work
 
-1. Edit `docs/glossary.md` as the Approach says. Copy each Meaning and Avoid cell from the Spec word for word, except the two Deviations.
+1. Edit `docs/glossary.md` as the Approach says. Copy each Meaning and Avoid cell from the Spec word for word.
 2. Run `npm run format`.
 3. Run the checks in `AGENTS.md` › Commands. Paste the output in Evidence.
 4. Run `git diff --stat origin/main`. Paste the output in Evidence.
@@ -48,8 +48,3 @@ The order ignores case, as the table does now ("Canvas copy" before "CI agent").
 ## Out of scope
 
 Each item of the Spec's "Out of scope / carried forward". No other file changes its words to the new terms.
-
-## Deviations
-
-- The "Planned (#n)" line says "will build", not "has not built yet" (STE rule 9). Commit 80c5510.
-- The "Draft page" row says "that the app does not have yet", not "that are not built" (STE rule 3). Commit 80c5510.

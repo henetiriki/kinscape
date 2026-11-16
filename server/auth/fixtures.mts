@@ -2,7 +2,7 @@ import { parseAccountId, parseTreeId } from '#ks/lib/domain/ids/ids.mts';
 
 /**
  * The fixture Accounts that only the memory adapters hold. Each Tree is read-only. No `server-only`,
- * so `parseConfig` and `e2e/` can import it under plain Node. The passwords differ from the wrong
+ * so `e2e/` can import it under plain Node. The passwords differ from the wrong
  * passwords of the sign-in tests.
  */
 export const FIXTURES = [

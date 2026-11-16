@@ -49,12 +49,19 @@ describe('memoryStore seed', () => {
     const NEW_PERSON = personInputSchema.parse({
       id: '01900000-0000-7000-8000-0000000000a2',
     });
+    const SECOND = personInputSchema.parse({
+      id: '01900000-0000-7000-8000-0000000000a4',
+    });
     const REL = relationshipInputSchema.parse({
-      childId: NEW_PERSON.id,
+      childId: SECOND.id,
       id: '01900000-0000-7000-9000-0000000000b1',
       parentId: PERSON.id,
       subtype: 'biological',
       type: 'parent',
+    });
+    const NEW_REL = relationshipInputSchema.parse({
+      ...REL,
+      id: '01900000-0000-7000-9000-0000000000b2',
     });
     const scope = { accountId: ACCOUNT, treeId: TREE_A };
     const build = () =>
@@ -68,7 +75,8 @@ describe('memoryStore seed', () => {
               {
                 id: TREE_A,
                 name: 'A',
-                persons: [PERSON],
+                persons: [PERSON, SECOND],
+                relationships: [REL],
               },
             ],
           },
@@ -86,7 +94,13 @@ describe('memoryStore seed', () => {
       const store = build();
       const before = await store.listPersons(scope);
 
-      expect(before).toEqual([{ ...PERSON, version: 1 }]);
+      const relsBefore = await store.listRelationships(scope);
+
+      expect(before).toEqual([
+        { ...SECOND, version: 1 },
+        { ...PERSON, version: 1 },
+      ]);
+      expect(relsBefore).toEqual([{ ...REL, version: 1 }]);
       expect(await store.addPerson({ ...scope, person: NEW_PERSON })).toBe(
         undefined
       );
@@ -98,7 +112,7 @@ describe('memoryStore seed', () => {
         })
       ).toEqual({ error: 'not-found', ok: false });
       expect(
-        await store.addRelationship({ ...scope, relationship: REL })
+        await store.addRelationship({ ...scope, relationship: NEW_REL })
       ).toEqual({ error: 'not-found', ok: false });
       expect(
         await store.updateRelationship({
@@ -108,7 +122,7 @@ describe('memoryStore seed', () => {
         })
       ).toEqual({ error: 'not-found', ok: false });
       expect(await store.listPersons(scope)).toEqual(before);
-      expect(await store.listRelationships(scope)).toEqual([]);
+      expect(await store.listRelationships(scope)).toEqual(relsBefore);
     });
 
     it('still writes to a Tree not on the list', async () => {
@@ -133,6 +147,7 @@ describe('memoryStore seed', () => {
         NEW_PERSON.id,
       ]);
       expect((await store.listPersons(scope)).map(p => p.id)).toEqual([
+        SECOND.id,
         PERSON.id,
       ]);
       expect(

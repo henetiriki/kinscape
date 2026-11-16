@@ -18,7 +18,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["PageHeader"];
   var handlers = [];
-  var states = [{"label":"PageHeader · Map","props":{"backHref":"/map","backLabel":"Map"},"slots":{"avatar":{"control":"Avatar","props":{"initial":"L"}}}},{"label":"PageHeader · People","props":{"backHref":"/people","backLabel":"People"},"slots":{"avatar":{"control":"Avatar","props":{"initial":"L"}}}}];
+  var states = [{"label":"PageHeader · Map","props":{"backHref":"/map","backLabel":"Map"},"slots":{"avatar":{"control":"Avatar","props":{"initial":"R"}}}},{"label":"PageHeader · People","props":{"backHref":"/people","backLabel":"People"},"slots":{"avatar":{"control":"Avatar","props":{"initial":"R"}}}}];
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
     var part = window.KinScape[slot.control];

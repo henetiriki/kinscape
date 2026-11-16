@@ -18,7 +18,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["Menu"];
   var handlers = ["onSelect"];
-  var states = [{"label":"Menu · closed","props":{"email":"researcher@example.com","footer":"Last backup: today, 02:00","groups":[[{"detail":"JSON and GeoJSON","icon":"export","id":"export","label":"Export"},{"icon":"document","id":"sources","label":"Sources"}],[{"disabled":true,"icon":"signOut","id":"out","label":"Sign out"},{"icon":"info","id":"about","label":"About"}]],"initial":"L"}}];
+  var states = [{"label":"Menu · closed","props":{"email":"researcher@example.com","footer":"Last backup: today, 02:00","groups":[[{"detail":"JSON and GeoJSON","icon":"export","id":"export","label":"Export"},{"icon":"document","id":"sources","label":"Sources"}],[{"disabled":true,"icon":"signOut","id":"out","label":"Sign out"},{"icon":"info","id":"about","label":"About"}]],"initial":"R"}}];
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
     var part = window.KinScape[slot.control];

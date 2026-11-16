@@ -34,8 +34,8 @@
 | `.github/workflows/claude-plan.yml`             | Changed       | The three commands and the comment line |
 | `scripts/__tests__/load-agent-files.test.ts`    | Changed       | A test that pins the new prompt text    |
 | `scripts/__tests__/plan-rule-citations.test.ts` | Changed       | `related-issues` in `RULE_NAMES`        |
-| `scripts/word-count.mts`                        | Changed       | D1 A: the `plans/README.md` budget      |
-| `scripts/__tests__/word-count.test.ts`          | Changed       | D1 A: the two `plans/README.md` cases   |
+| `scripts/word-count.mts`                        | Changed       | D1: the `plans/README.md` budget        |
+| `scripts/__tests__/word-count.test.ts`          | Changed       | D1: the two `plans/README.md` cases     |
 
 ## Order of work
 

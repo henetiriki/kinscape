@@ -27,7 +27,7 @@ How plans are drafted, approved and committed. Start each one from [TEMPLATE.md]
     - The parent Intent (a Bug, a Chore or a milestone Spec has none).
     - Each open sub-issue of the parent that shares a requirement ID.
 
-    In a decision's context line, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Edit no related issue.
+    In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Edit no related issue.
 
 13. <a id="test-first"></a>**Test first.** For logic a unit test covers, see the test fail on the behaviour (not an import error) before writing the code; paste that failing line in the PR's Evidence.
 14. <a id="hand-back"></a>**Hand back, don't build.** A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and isn't in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits one, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore needing a secret or too big ([too-big rule](#too-big)) gets no plan PR. With no plan PR, comment why on the issue.

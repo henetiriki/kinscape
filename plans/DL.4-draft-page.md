@@ -2,7 +2,7 @@
 
 - **Spec:** #897
 - **Requirement IDs:** None. The Spec changes docs and the canvas only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ Does the path name them?
 - **B.** No change. When `npm test` runs, the tests name each missing record.
 - **Other:** your own.
 
-Recommended: A, because D2 chose the same: the path names what a test would otherwise ask for.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

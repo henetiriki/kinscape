@@ -1,7 +1,7 @@
 # Plan: C888: Give each plan rule a step that cites it
 
 - **Spec:** #888
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,6 +25,8 @@ The fetch works in a build run. The repo is public, so the fetch needs no token.
 - **A.** Add the fetch after "Your first command is…": "Then run `git fetch origin main`." The reword step stays step 1.
 - **B.** Make the fetch step 1. The reword step becomes step 2, and the test changes.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

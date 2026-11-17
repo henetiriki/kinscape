@@ -3,6 +3,8 @@ import { appendFileSync } from 'node:fs';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
+import { TYPES } from '#ks/scripts/issue-status.mts';
+
 // Checks that run before a plan, build, fix or resolve job spends a model run (see claude-run.yml):
 //   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date); a plan
 //          issue must be open, labelled and a Spec, Bug or Chore
@@ -22,10 +24,6 @@ type Kind = 'build' | 'fix' | 'plan' | 'resolve';
 
 // The label that starts each label-started kind.
 const LABEL = { fix: 'fix-review', resolve: 'resolve-conflict' } as const;
-
-// The issue Types that get a plan. The workflow's `if:` can't test this: the `labeled` event may not
-// carry `issue.type`, so the gate reads the Type from the API.
-const PLAN_TYPES = ['Spec', 'Bug', 'Chore'];
 
 // Why a run can't start. `handBack` is true when the Spec should be marked `status: blocked`.
 type Stop = { handBack: boolean; reasons: string[] };
@@ -72,7 +70,8 @@ const staleReason = (
       return 'the issue is closed';
     }
 
-    if (!PLAN_TYPES.includes(issueType?.name ?? '')) {
+    // The `labeled` event may not carry `issue.type`, so the workflow's `if:` cannot decide this.
+    if (!TYPES.includes(issueType?.name ?? '')) {
       return 'the issue is not a Spec, Bug or Chore';
     }
 

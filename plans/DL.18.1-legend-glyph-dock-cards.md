@@ -48,7 +48,9 @@ The `DateField` card and `react-18.test.tsx` take `MAP_DATE` and `TODAY` from th
 | `lib/design/__tests__/react-18.test.tsx`              | changed       | Three imports, three `COMPONENTS` entries and the cases of the Approach.                                 |
 | `lib/design/__tests__/bundle.test.ts`                 | changed       | The list test names 52 controls.                                                                         |
 | `lib/design/__tests__/cards.test.ts`                  | changed       | The group count test expects `[14, 6, 8, 6, 8, 9, 1]`, and its title says "6 Map".                       |
-| `scripts/__tests__/design-system.test.ts`             | changed       | The two `toHaveLength(49)` become 52.                                                                    |
+| `scripts/design-system.mts`                           | changed       | `describeControl` accepts a control with no parameter.                                                   |
+| `scripts/__tests__/design-system.test.ts`             | changed       | The two `toHaveLength(49)` become 52. The `Legend` README has no props table.                            |
+| `e2e/gallery-looks.spec.ts`                           | changed       | `UNDER_44` names the `DateDock` controls (Bug #988).                                                     |
 | `docs/architecture.md`                                | changed       | The React 18 row names `DateDock.tsx`, `Legend.tsx` and `lib/ui/EventGlyph.tsx`.                         |
 | `design/cards/*.png`                                  | new           | `DateDock-1440.png`, `Legend-1440.png` and `EventGlyph-1440.png`. The workflow writes them.              |
 | `design/canvas/project/ds/`, `canvas.json`, `VERSION` | changed       | Steps 4 and 5 of Changing the design system.                                                             |
@@ -64,13 +66,12 @@ The `DateField` card and `react-18.test.tsx` take `MAP_DATE` and `TODAY` from th
 7. Run `git diff --stat origin/main -- features/map/components/ lib/ui/` and paste the empty output.
 8. Push. Keep the PR as a draft ([design-system rule](README.md#design-system)).
 
-The tech lead, or a local Claude Code session that the tech lead starts, runs steps 2 to 5 of [Changing the design system](../design/CANVAS.md#changing-the-design-system). The session needs a signed-in account. No board changes, so step 7 does not apply. The tech lead then runs the workflow Design: Render snapshots on the branch.
+The tech lead, or a local Claude Code session that the tech lead starts, runs steps 2 to 5 of [Changing the design system](../design/CANVAS.md#changing-the-design-system). No board changes, so step 7 does not apply. The tech lead then runs the workflow Design: Render snapshots on the branch.
 
 ## Risks
 
-- **DateDock in the bundle.** If `DateDock` cannot mount, or its card image differs between two runs, follow the Spec: comment on #893, and leave `DateDock` out.
+- **DateDock in the bundle.** If `DateDock` cannot mount, or its card image differs between two runs, follow the Spec: comment on #893, and omit `DateDock`.
 - **Dock width.** The board gives the dock 1048px. A card has no box, so the dock takes the width of its content. If the slider is too short to read, the PR shows it and asks the tech lead.
-- **Bundle size.** `bundle.js` already holds the tokens that `Legend` reads.
 - **Missing card images.** The `design` job fails on the three cards until the workflow commits their images.
 
 ## Proof

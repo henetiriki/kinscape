@@ -1,5 +1,7 @@
 /** Synthetic samples: the design kit's boards and the design system's cards both draw them. */
 
+import type { ContestedYears, Epoch } from '#ks/lib/ui/types.ts';
+
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
 
 export const CHAIN = [
@@ -26,14 +28,14 @@ export const MAP_DATE = toDay('1901-06-14');
 export const TODAY = toDay('2026-10-21');
 
 /** The Jump to list of the `Map` board. */
-export const EPOCHS: { label?: string; year: number }[] = [
+export const EPOCHS: Epoch[] = [
   ...[1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994].map(year => ({ year })),
   { label: 'Today', year: 2026 },
 ];
 
 /** The `DateDock` samples: the contested note and the hatch of the `Map` board slider. */
 export const CONTESTED_COUNT = 2;
-export const CONTESTED_YEARS = [{ from: 1900, to: 1901 }];
+export const CONTESTED_YEARS: ContestedYears[] = [{ from: 1900, to: 1901 }];
 
 export const PINS = [
   {

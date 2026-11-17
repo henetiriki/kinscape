@@ -43,11 +43,7 @@ setup('sign in as the synthetic Account', async ({ page }) => {
 
 // The fixture Accounts exist only under the memory adapters.
 for (const fixture of FIXTURES.filter(({ email }) => named.has(email))) {
-  setup(`sign in as ${fixture.email}`, async ({ page }) => {
-    setup.skip(
-      process.env.KINSCAPE_MEMORY_SIGN_IN === '1',
-      'The memory sign-in has no fixture Account.'
-    );
+  setup(`sign in as ${fixture.email} @fixture`, async ({ page }) => {
     await signIn(page, fixture, authStateFor(fixture.email));
   });
 }

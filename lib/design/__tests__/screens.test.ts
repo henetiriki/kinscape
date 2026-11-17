@@ -10,7 +10,7 @@ import {
 
 /**
  * The folders of `app/screens/` that stay: no app route can show the page today. Each blocker names
- * the data or outcome that is missing. Delete the folder and its row when an app route can show the page.
+ * the data or outcome that is missing. When an app route can show the page, delete the folder and its row.
  */
 const SCREEN_ONLY: { blocker: string; folder: string }[] = [
   { blocker: 'No app route has the Add pin panel yet.', folder: 'add-pin' },

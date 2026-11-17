@@ -8,7 +8,7 @@
 
 `parseConfig` accepts an optional `account` on an entry. The check accepts it only if the email is in `known.accounts`, which `e2e/design-check.spec.ts` fills from `FIXTURES`. A new `authStateFor(account?)` in `lib/design/check.mts` gives the path of the saved session: `test-results/.auth/state.json` with no account, and `test-results/.auth/<email>.json` for a fixture Account. `playwright.config.ts` and `e2e/auth.setup.ts` use it, so the path has one home.
 
-`e2e/auth.setup.ts` signs in once for each fixture Account that an entry of `design/screens.json` names, and saves the session. Under `KINSCAPE_MEMORY_SIGN_IN=1` it skips these sign-ins, because that job has no fixture Account. `e2e/design-check.spec.ts` wraps each test in a `test.describe` that uses `authStateFor(screen.account)` as its storage state.
+`e2e/auth.setup.ts` signs in once for each fixture Account that an entry of `design/screens.json` names, and saves the session. Each of these tests has the tag `@fixture`. Under `KINSCAPE_MEMORY_SIGN_IN=1`, `playwright.config.ts` leaves them out of `setup` and drops the `design` project, because that job has no fixture Account. `e2e/design-check.spec.ts` wraps each test in a `test.describe` that uses `authStateFor(screen.account)` as its storage state.
 
 The four entries get `account` and their app routes. `person-not-found` opens `/people/01900000-0000-7000-8000-000000000404`, an id that no Person has. The folders `app/screens/person-new` and `app/screens/person-not-found` go, and `PersonNotFoundScreen` goes with them.
 
@@ -70,6 +70,9 @@ The four entries get `account` and their app routes. `person-not-found` opens `/
 
 ## Deviations
 
+- The memory sign-in choice sits in `playwright.config.ts`, not `e2e/auth.setup.ts`: the code rules allow `process.env.KINSCAPE_*` there.
+- The "Living style guide" row drops `proxy.ts`, which has no `/screens` rule. The row also uses a slash in "Preview/development" to stay in the word budget.
+- Step 4 ran `npm run design:check -- -g "design: (person-new|person-form-phone|person-errors|person-not-found)"`, because the run denies a `DESIGN_SCREENS=` prefix.
 - Each design test sits in a `test.describe` named `design: <name>`, and the test is `matches its snapshot`, so `-g "design: <name>"` still selects it.
 
 ## Out of scope

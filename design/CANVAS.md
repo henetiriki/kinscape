@@ -10,12 +10,12 @@ The workflow also renders the card image of each component card (in `design/card
 
 ### Who deletes a generated file
 
-The tech lead, or a local session that the tech lead starts, deletes these generated files. If a board is not on the canvas on the same branch, delete each snapshot and JPG of it. If a card is not in `CARDS` on the same branch, delete each card image of it. The same pull request removes these records of a deleted board:
+The tech lead, or a local session that the tech lead starts, deletes these generated files. If a board is not on the canvas on the same branch, delete its snapshots and JPGs. If a card is not in `CARDS` on the same branch, delete its card images. Remove these records of a deleted board in the same pull request:
 
 - Its row in the Screens table of `design/DESIGN.md`.
 - Its name in `NO_ENTRY`, or its entry in `design/screens.json`.
 - Each entry in `snapshots` and `links` of `design/canvas/export.json` that names the board or its snapshots.
-- One from each snapshot count (`lib/design/__tests__/design.test.ts`, `scripts/__tests__/design-export.test.ts`) for each snapshot of the board.
+- Lower each snapshot count (`lib/design/__tests__/design.test.ts`, `scripts/__tests__/design-export.test.ts`) by one for each snapshot of the board.
 
 ## Changing the design system
 

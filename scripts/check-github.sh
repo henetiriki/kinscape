@@ -63,6 +63,11 @@ source "$DIR/github/labels.sh"
 check "Labels" "$(g label list --repo "$REPO" --limit 100 --json name,color,description --jq '.[] | "\(.name)|\(.color | ascii_downcase)|\(.description)"' | LC_ALL=C sort)" \
   "$(labels | awk -F'|' 'BEGIN { OFS = "|" } { $2 = tolower($2); print }' | LC_ALL=C sort)"
 
+# The issue Types setup-github.sh creates, each enabled, and no other.
+source "$DIR/github/issue-types.sh"
+check "Issue Types" "$(live_issue_types "$REPO" 2>/dev/null | cut -d'|' -f2- | LC_ALL=C sort)" \
+  "$(issue_types | sed 's/$/|true/' | LC_ALL=C sort)"
+
 ids=$(g api "repos/$REPO/rulesets" --jq '.[] | select(.name=="Protect main") | .id')
 id=$(printf '%s\n' "$ids" | head -n1)
 if [ -z "$id" ]; then

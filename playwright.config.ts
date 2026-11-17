@@ -132,7 +132,6 @@ export default defineConfig({
       url: 'http://localhost:3001/sign-in',
     },
   ],
-  // The CI runner has 4 cores. Software WebGL with 4 workers starves the map start and times out
-  // the two own-session tests, so CI uses 2. Elsewhere Playwright picks.
-  workers: process.env.CI ? 2 : undefined,
+  // The CI runner has 4 cores; elsewhere Playwright picks.
+  workers: process.env.CI ? 4 : undefined,
 });

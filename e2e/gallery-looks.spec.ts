@@ -21,6 +21,13 @@ const open = (page: Page, name: string) =>
 const state = (page: Page, label: string) =>
   page.getByRole('figure', { exact: true, name: label });
 
+// The height in px of one button in one case. The caller opens the file first.
+const buttonHeight = async (page: Page, label: string, name: string) =>
+  Math.round(
+    (await state(page, label).getByRole('button', { name }).boundingBox())!
+      .height
+  );
+
 // Each control in one card state: the file, the figure, the role and the name.
 const HIT_CASES = [
   ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
@@ -30,18 +37,63 @@ const HIT_CASES = [
   ['IconButton', 'IconButton · default', 'button', 'Zoom in'],
 ] as const;
 
-// Cards with a control under 44px and no 44px hit area on a phone. Each holds its Bug.
-const UNDER_44: Record<string, string> = {
-  ArrowLink: '#944: the link is 22px tall',
-  BottomSheet: '#947: the handle button is 20px tall',
-  DateField: '#949: a 2px border leaves the input 42px tall',
-  FuzzyDateField: '#950: a 2px border leaves the input 42px tall',
-  PersonRow: '#945: the Relationships link is 22px tall',
-  RelationshipRow: '#946: the Edit link is 22px tall',
-  SelectField: '#951: a 2px border leaves the select 42px tall',
-  TextField: '#948: a 2px border leaves the input 42px tall',
-  TextLink: '#943: the link is 22px tall',
+// Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
+const UNDER_44: Record<string, readonly string[]> = {
+  '#943: the link is 22px tall': [
+    'TextLink, TextLink · default, a  Sources',
+    'TextLink, TextLink · active, a  Sources',
+    'TextLink, TextLink · focus, a  Sources',
+    'TextLink, TextLink · hover, a  Sources',
+    'TextLink, TextLink · small, a  Sources',
+  ],
+  '#944: the link is 22px tall': [
+    'ArrowLink, ArrowLink · default, a  Edit',
+    'ArrowLink, ArrowLink · active, a  Edit',
+    'ArrowLink, ArrowLink · focus, a  Edit',
+    'ArrowLink, ArrowLink · hover, a  Edit',
+  ],
+  '#945: the Relationships link is 22px tall': [
+    'PersonRow, PersonRow · relationships link, a  Relationships, Botha, Hendrik Willem',
+  ],
+  '#946: the Edit link is 22px tall': [
+    'RelationshipRow, RelationshipRow · child, a  Edit, le Roux, Anna Catharina',
+    'RelationshipRow, RelationshipRow · spouse, a  Edit, Botha, Susanna',
+  ],
+  '#947: the handle button is 20px tall': [
+    'BottomSheet, BottomSheet · collapsed, button button Expand the sheet',
+    'BottomSheet, BottomSheet · expanded, button button Expand the sheet',
+  ],
+  '#948: a 2px border leaves the input 42px tall': [
+    'TextField, TextField · focus, input text',
+    'TextField, TextField · error, input text',
+    'TextField, TextField · warning, input text',
+  ],
+  '#949: a 2px border leaves the input 42px tall': [
+    'DateField, DateField · focus, input text Date shown',
+    'DateField, DateField · typing, input text Date shown',
+    'DateField, DateField · wrong format · below, input text Date shown',
+    'DateField, DateField · wrong format · above, input text Date shown',
+    'DateField, DateField · before 1652 · below, input text Date shown',
+    'DateField, DateField · before 1652 · above, input text Date shown',
+    'DateField, DateField · after today · below, input text Date shown',
+    'DateField, DateField · after today · above, input text Date shown',
+    "DateField, DateField · doesn't exist · below, input text Date shown",
+    "DateField, DateField · doesn't exist · above, input text Date shown",
+    'DateField, DateField · notice, input text Date shown',
+  ],
+  '#950: a 2px border leaves the input 42px tall': [
+    'FuzzyDateField, FuzzyDateField · typing, input text',
+    'FuzzyDateField, FuzzyDateField · focus, input text',
+    'FuzzyDateField, FuzzyDateField · error, input text',
+  ],
+  '#951: a 2px border leaves the select 42px tall': [
+    'SelectField, SelectField · active, select  CapeNatalTransvaal',
+    'SelectField, SelectField · focus, select  CapeNatalTransvaal',
+  ],
 };
+const UNDER_44_KEYS: ReadonlySet<string> = new Set(
+  Object.values(UNDER_44).flat()
+);
 
 // A point 21px above, below and (for the checkbox) left of the centre is still on the control.
 const expectHitAreas = async (
@@ -98,18 +150,12 @@ test.describe('on a phone', () => {
   test('an event chip is 44px tall and a removable chip 36px', async ({
     page,
   }) => {
-    const height = async (file: string, label: string, name: string) => {
-      await open(page, file);
+    await open(page, 'Chip');
+    expect(await buttonHeight(page, 'Chip · default', 'Birth')).toBe(44);
 
-      return Math.round(
-        (await state(page, label).getByRole('button', { name }).boundingBox())!
-          .height
-      );
-    };
-
-    expect(await height('Chip', 'Chip · default', 'Birth')).toBe(44);
+    await open(page, 'RemovableChip');
     expect(
-      await height('RemovableChip', 'RemovableChip · default', 'Remove Birth')
+      await buttonHeight(page, 'RemovableChip · default', 'Remove Birth')
     ).toBe(36);
   });
 
@@ -144,7 +190,8 @@ test.describe('on a phone', () => {
             node.getAttribute('aria-label') ?? node.textContent?.trim() ?? ''
           }`.trim(),
         ]);
-        const where = `${name}, ${caption}, ${kind} ${Math.round(box.width)}x${Math.round(box.height)}`;
+        const key = `${name}, ${caption}, ${kind}`;
+        const where = `${key} ${Math.round(box.width)}x${Math.round(box.height)}`;
         const points: [string, number, number][] = [];
 
         if (box.height < 44) {
@@ -157,9 +204,9 @@ test.describe('on a phone', () => {
 
         for (const [side, dx, dy] of points) {
           if (!(await hitsControl(control, dx, dy))) {
-            failed.add(name);
+            failed.add(key);
 
-            if (!(name in UNDER_44)) {
+            if (!UNDER_44_KEYS.has(key)) {
               failures.push(`${where} ${side}`);
             }
           }
@@ -168,8 +215,8 @@ test.describe('on a phone', () => {
     }
 
     expect(failures).toEqual([]);
-    // A card that is fixed leaves the list.
-    expect(Object.keys(UNDER_44).filter(name => !failed.has(name))).toEqual([]);
+    // A control that is fixed leaves the list.
+    expect([...UNDER_44_KEYS].filter(key => !failed.has(key))).toEqual([]);
   });
 
   test('a placed banner is 80px from the top and a placed toast 164px from the bottom, inside the gutters', async ({
@@ -363,16 +410,12 @@ test.describe('at 1440px', () => {
   test('a button is 50, 44, 40 or 36px tall by size', async ({ page }) => {
     await open(page, 'Button');
 
-    const height = async (label: string, name: string) =>
-      Math.round(
-        (await state(page, label).getByRole('button', { name }).boundingBox())!
-          .height
-      );
+    const height = (label: string) => buttonHeight(page, label, 'Copy chain');
 
-    expect(await height('Button · size l', 'Copy chain')).toBe(50);
-    expect(await height('Button secondary · default', 'Copy chain')).toBe(44);
-    expect(await height('Button · size s', 'Copy chain')).toBe(40);
-    expect(await height('Button · size xs', 'Copy chain')).toBe(36);
+    expect(await height('Button · size l')).toBe(50);
+    expect(await height('Button secondary · default')).toBe(44);
+    expect(await height('Button · size s')).toBe(40);
+    expect(await height('Button · size xs')).toBe(36);
   });
 
   test('the 36px button and the chip × keep a 44px hit area', async ({

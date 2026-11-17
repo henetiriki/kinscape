@@ -38,7 +38,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 
 | File                                                                                         | New / changed | What                                                                                                                     |
 | -------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `lib/design/states.mts`                                                                      | changed       | Three `Button` states (D1); raise `height` if the gallery file needs it                                                  |
+| `lib/design/states.mts`                                                                      | changed       | Three `Button` states (D1). If the gallery file needs it, raise `height`                                                 |
 | `lib/design/__tests__/react-18.test.tsx`                                                     | changed       | The same three cases                                                                                                     |
 | `e2e/gallery-looks.spec.ts`                                                                  | changed       | The four tests of the table                                                                                              |
 | `e2e/inputs.spec.ts`                                                                         | deleted       | Item 6.2                                                                                                                 |
@@ -54,18 +54,18 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 ## Order of work
 
 1. Add the three states and cases (D1). Run `npm run design:gallery`.
-2. Add the four gallery tests. If a card fails the phone hit-area test, follow the Spec's concern: list the card with a reason, and file a Bug.
+2. Add the four gallery tests. If a card fails the phone hit-area test, follow the Spec's concern. List the card with a reason. File a Bug.
 3. Delete the board files, `e2e/inputs.spec.ts` and the seven entries. Add the seven names to `NO_ENTRY`.
 4. Change `e2e/design-kit.spec.ts` and line 1 of `page.module.css`.
-5. Delete the dead code of `Board.tsx`. Run `npm test` and delete each branch that coverage names.
-6. Check that #914, #915, #917, #918 and #922 name the retirement steps of DL.11. On 2026-11-17 each does, so no reword is necessary. Run the checks in `AGENTS.md`, and push.
+5. Delete the dead code of `Board.tsx`. Run `npm test`. Delete each branch that coverage names.
+6. Check that #914, #915, #917, #918 and #922 name the retirement steps of DL.11. On 2026-11-17 each does, so no reword is necessary. Run the checks in `AGENTS.md`. Push.
 7. The tech lead, or a local session that the tech lead starts, runs steps 2 to 5 of [Changing the design system](../design/CANVAS.md#changing-the-design-system). The session needs a signed-in account. No board shows the change, so step 7 does not apply.
 8. The tech lead runs the workflow Design: Render snapshots. It commits `design/cards/Button-1440.png`.
 
 ## Risks
 
 - The phone hit-area test reads about 60 cards. A fixed bar or a scrim in a card can cover a point 21px from a control. The build reads each failure in the gallery file before it files a Bug.
-- The first retirement can meet a check that needs a screen entry for each canvas board. Then stop and comment on #893.
+- The first retirement can meet a check that needs a screen entry for each canvas board. Then stop. Comment on #893.
 
 ## Proof
 
@@ -83,7 +83,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 ## Deviations
 
 - The phone hit-area test measures the label of a radio, because the radio is hidden.
-- Nine cards fail the phone hit-area test. `UNDER_44` in `e2e/gallery-looks.spec.ts` lists each with its Bug: #943 to #951.
+- Nine cards fail the phone hit-area test. `UNDER_44` in `e2e/gallery-looks.spec.ts` lists each failing control, not each card, with its Bug: #943 to #951. A control of a listed card that starts to fail then fails the test.
 - The Spec says "text" and D1 adds the `copy` icon, so the local build reworded item 1 of #912 (#942 plan D1).
 
 ## Out of scope

@@ -12,7 +12,7 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 
 **D1 · The DL.11 PR is not merged** · Decides: Tech lead
 
-#942 (DL.11) is open. It adds `gone` to `BOARD_LINKS`, the gone-board branch of the index test and the nav filter, the 404 test "a board that is gone gives a 404", and seven names to `NO_ENTRY`. This Spec needs the same field and filter, and edits the same lines.
+#942 (DL.11) was open. It added `gone` to `BOARD_LINKS`, the gone-board branch of the index test and the nav filter, the 404 test "a board that is gone gives a 404", and seven names to `NO_ENTRY`. This Spec needs the same field and filter, and edits the same lines.
 
 - **A.** The build does not wait. If #942 is on `main` when the build starts, the build uses its `gone` field and filter. If not, the build adds them as #942 does. The PR that merges second resolves the conflict.
 - **B.** The build waits for #942. The build runs `gh issue edit 914 --add-blocked-by 912`, then uses the field and filter of #942.
@@ -28,8 +28,8 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 | `app/design-kit/states/page.module.css`         | deleted       | The board's styles (step 1).                                                          |
 | `app/design-kit/states/__tests__/page.test.tsx` | deleted       | The board's unit test (step 1).                                                       |
 | `design/screens.json`                           | changed       | The entries `style-4-states` and `style-4-states-phone` go (step 2).                  |
-| `lib/design/__tests__/screens.test.ts`          | changed       | `NO_ENTRY` gains `style-4-states` and `style-4-states-phone`, in sort order (step 4). |
-| `e2e/design-kit.spec.ts`                        | changed       | Steps 5 and 6. See Order of work.                                                     |
+| `lib/design/__tests__/screens.test.ts`          | changed       | `NO_ENTRY` gains `style-4-states` and `style-4-states-phone`, in sort order (step 3). |
+| `e2e/design-kit.spec.ts`                        | changed       | Step 4. See Order of work.                                                            |
 
 ## Order of work
 

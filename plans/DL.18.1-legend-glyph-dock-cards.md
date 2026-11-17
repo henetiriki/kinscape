@@ -2,7 +2,7 @@
 
 - **Spec:** #921
 - **Requirement IDs:** None. This Spec changes the design system and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -36,7 +36,7 @@ The `DateField` card and `react-18.test.tsx` take `MAP_DATE` and `TODAY` from th
 - **B.** File the Bug now and add it as a blocker of #921. The Bug gives each card state its own radio scope, for example a `form` around each case in `previewHtml`. It can change each card image that holds a radio.
 - **Other:** your own.
 
-Recommended: A, because each acceptance check still passes, and one Bug fixes both cards.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

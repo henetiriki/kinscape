@@ -21,10 +21,10 @@ Move the step "Open the gallery files" from the `design` job of `ci.yml` to a ne
 ## Order of work
 
 1. Change the test so that it expects `gallery`. See it fail.
-2. Add the job, remove the step and change the comments. Run `npm run workflows:diagram`.
+2. Add the job. Remove the step. Change the comments. Run `npm run workflows:diagram`.
 3. Add the ruleset entry.
 4. Search the repo outside `plans/` for "design job", "gallery" and "card image". Change each text that says `design` opens the gallery.
-5. Mark the PR ready. Change one card state, link the failed run and remove the change.
+5. Mark the PR ready. Change one card state. Link the failed run. Remove the change.
 6. After the merge, the tech lead runs `scripts/setup-github.sh`, then `scripts/check-github.sh`.
 
 ## Risks

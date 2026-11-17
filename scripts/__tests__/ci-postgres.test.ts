@@ -109,7 +109,7 @@ describe('the Postgres container of CI', () => {
     expect(jobs.e2e).not.toHaveProperty('needs');
   });
 
-  it.each(['test', 'e2e'])('skips draft PRs in the %s job', job => {
+  it.each(['test', 'e2e', 'gallery'])('skips draft PRs in the %s job', job => {
     expect(
       jobs[job]?.if,
       `the ${job} job needs the same draft gate as the image job`
@@ -140,10 +140,6 @@ describe('the Postgres container of CI', () => {
       expect(JSON.stringify(jobs[job])).not.toContain('ci-postgres');
     }
   );
-
-  it('skips draft PRs in the gallery job', () => {
-    expect(jobs.gallery?.if).toBe(jobs.image?.if);
-  });
 
   it.each([WORKFLOW, SCRIPT])(
     'holds no secret and no Supabase URL or variable in %s',

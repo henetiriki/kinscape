@@ -1,4 +1,6 @@
-/** WCAG contrast for the colour board: `#rrggbb` and `rgb(r g b / a)` values, ratios and their display. */
+/** WCAG contrast of design tokens: `#rrggbb` and `rgb(r g b / a)` values, ratios and their display. */
+
+import type { Tree } from '#ks/design/types.ts';
 
 type Rgb = [number, number, number];
 
@@ -44,6 +46,20 @@ export const contrastRatio = (a: string, b: string): number => {
 /** A ratio rounded to the nearest 0.1, as the colour board shows it: `4.6:1`. */
 export const formatRatio = (ratio: number): string => `${ratio.toFixed(1)}:1`;
 
-/** A colour as the board shows it: `#rrggbb` in capitals, any other value as written. */
-export const formatColour = (value: string): string =>
-  HEX.test(value) ? value.toUpperCase() : value;
+/** The resolved value at a token path such as `colour.brand` or `map.hatch.colour`. */
+export const valueAt = (tokens: Tree, path: string): string => {
+  let node: number | string | Tree = tokens;
+
+  for (const key of path.split('.')) {
+    node = (node as Tree)[key];
+  }
+
+  return String(node);
+};
+
+/** The unrounded contrast of a token on another (`colour.surface` unless `on` says). */
+export const ratioOf = (
+  tokens: Tree,
+  path: string,
+  on = 'colour.surface'
+): number => contrastRatio(valueAt(tokens, path), valueAt(tokens, on));

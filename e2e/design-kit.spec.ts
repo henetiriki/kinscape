@@ -5,26 +5,6 @@ import { expect, test } from '@playwright/test';
 import tokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 
-// NFR-06: each swatch on the colour board is filled with its token.
-test('colour swatches are filled with their tokens', async ({ page }) => {
-  await page.goto('/design-kit/colour');
-
-  const fill = (name: string) =>
-    page
-      .locator('code', { hasText: new RegExp(`^${name}$`) })
-      .locator('xpath=../preceding-sibling::div');
-
-  await expect(fill('--brand')).toHaveCSS(
-    'background-color',
-    'rgb(38, 79, 41)'
-  );
-  await expect(fill('--pin')).toHaveCSS('background-color', 'rgb(154, 59, 18)');
-  await expect(fill('map.hatch.colour')).toHaveCSS(
-    'background-color',
-    'rgb(139, 74, 28)'
-  );
-});
-
 // NFR-06: the kit's index and nav.
 // A board with `gone` has no page, but the index and the nav still link to it.
 const BOARD_LINKS: {
@@ -38,7 +18,12 @@ const BOARD_LINKS: {
     label: 'Typography',
     path: '/design-kit/type',
   },
-  { heading: 'Colour', label: 'Colour', path: '/design-kit/colour' },
+  {
+    gone: true,
+    heading: 'Colour',
+    label: 'Colour',
+    path: '/design-kit/colour',
+  },
   {
     gone: true,
     heading: 'Spacing, shape, depth, icons, motion',
@@ -253,11 +238,11 @@ test.describe('the kit bar', () => {
     });
 
     test('closes on choosing a board', async ({ page }) => {
-      await open(page);
+      await open(page, '/design-kit');
       await sheet(page)
-        .getByRole('link', { name: /Colour/ })
+        .getByRole('link', { name: /Typography/ })
         .click();
-      await expect(page).toHaveURL('/design-kit/colour');
+      await expect(page).toHaveURL('/design-kit/type');
       await expect(sheet(page)).toBeHidden();
     });
 
@@ -427,9 +412,9 @@ test.describe('the boards on a phone', () => {
   });
 });
 
-// NFR-05, NFR-06: the Colour and Map style boards on a phone, in portrait and landscape.
+// NFR-05, NFR-06: the Map style board on a phone, in portrait and landscape.
 test.describe('the other boards on a phone', () => {
-  const boards = ['colour', 'map-style'];
+  const boards = ['map-style'];
 
   for (const [name, size] of [
     ['390 wide', { height: 844, width: 390 }],
@@ -534,18 +519,6 @@ test.describe('the other boards on a phone', () => {
 
       expect(lefts.length).toBeGreaterThan(0);
       expect(new Set(lefts).size).toBe(1);
-    });
-
-    test('colour keeps five swatches in a row', async ({ page }) => {
-      await page.goto('/design-kit/colour');
-
-      const tops = await page
-        .locator('section[aria-label="Brand"] > div:last-child > div')
-        .evaluateAll(cards =>
-          cards.slice(0, 5).map(card => card.getBoundingClientRect().top)
-        );
-
-      expect(new Set(tops).size).toBe(1);
     });
   });
 });

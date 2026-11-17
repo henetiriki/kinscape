@@ -18,6 +18,13 @@ export type Card = {
   width?: number;
 };
 
+/** A colour token's role and, if the role has a least contrast, the token that it is measured on (`colour.surface` if `on` is unset). */
+export type ColourRole = {
+  on?: string;
+  path: string;
+  role: Role;
+};
+
 /** A shared control: its name and source file. */
 export type Control = { name: string; path: string };
 
@@ -57,6 +64,16 @@ export type Result = {
   outcome: Outcome;
   percent: number;
 };
+
+/** How a colour token is used. Only `text` and `border` have a least contrast. */
+export type Role =
+  | 'border'
+  | 'decorative'
+  | 'disabled'
+  | 'fill only'
+  | 'map only'
+  | 'overlay'
+  | 'text';
 
 export type Shot = {
   fullPage: boolean;

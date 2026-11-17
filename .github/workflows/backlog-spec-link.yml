@@ -6,12 +6,12 @@ name: 'Backlog: Link Spec to Intent'
 # The title shown for each run in the Actions tab: "Link: <title>" for a Spec filed by the owner, a
 # member, a collaborator or the agent App, "Skipped Link: <title>" for any other issue. Repeats the
 # job's `if:` (run-name cannot see job results): change them together.
-# The event may not carry `issue.type`. An issue with no Type in the event passes both conditions.
-# The script then reads the Type from the API. `scripts/__tests__/issue-type-gates.test.ts` fails
-# if a condition tests the Type with no such guard.
+# An `issues` payload carries no `issue.type`, so the title prefix shows the Type. The prefix
+# only filters: the script reads the Type from the API. `scripts/__tests__/issue-title-filters.test.ts`
+# fails if the title tests of the two conditions differ.
 run-name: >-
   ${{
-    (!github.event.issue.type || github.event.issue.type.name == 'Spec') &&
+    startsWith(github.event.issue.title, 'Spec: ') &&
     (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
       github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     format('Link: {0}', github.event.issue.title) ||
@@ -29,7 +29,7 @@ jobs:
   # Only new Specs matter here; every other new issue is ignored.
   link-spec:
     if: >-
-      (!github.event.issue.type || github.event.issue.type.name == 'Spec') &&
+      startsWith(github.event.issue.title, 'Spec: ') &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
             const { owner, repo } = context.repo;
             const { number, id, body } = context.payload.issue;
 
-            // 0. The event may not carry the Type, so read the issue as it is now.
+            // 0. The event carries no Type, so read the issue as it is now.
             const { data: current } = await github.rest.issues.get({
               owner,
               repo,

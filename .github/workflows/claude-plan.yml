@@ -1,11 +1,12 @@
 name: 'Claude: Plan'
 
 # The title shown for each run in the Actions tab:
-#   "Plan: <title>"         - the repo owner (the tech lead) marked an issue ready for the agent, and its
-#                             author is the owner, a member, a collaborator or the agent App, so the gate
-#                             runs. The event may not carry `issue.type`, so an issue with no Type in
-#                             the event passes this filter, and the gate (scripts/agent-gate.mts) reads
-#                             the Type from the API and stops quietly unless it is a Spec, Bug or Chore.
+#   "Plan: <title>"         - the repo owner (the tech lead) marked an issue ready for the agent.
+#                             Its author is the owner, a member, a collaborator or the agent App.
+#                             The gate then runs. The event may not carry `issue.type`, so an issue
+#                             with no Type in the event passes this filter. The gate
+#                             (scripts/agent-gate.mts) reads the Type from the API. It stops quietly
+#                             unless the Type is Spec, Bug or Chore.
 #   "Skipped Plan: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
 run-name: >-
@@ -42,11 +43,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Runs when someone adds the "status: ready-for-agent" label to an open issue (not a closed one) and
-  # that person is the repo owner: only the tech lead sets that label (how-we-work.md), and the PO's
-  # write access would otherwise start a run. The shared runner checks the plan can start, including
-  # that the issue is a Spec, Bug or Chore, then Claude writes the plan and opens a draft PR and stops
-  # to wait for the tech lead. The runner comes from main, like the agent files.
+  # Runs when the repo owner adds the "status: ready-for-agent" label to an open issue. Only the tech
+  # lead sets that label (how-we-work.md). The PO has write access, so the PO's label must not start
+  # a run. The shared runner checks that the plan can start. This includes the issue Type: it must be
+  # a Spec, Bug or Chore. Then Claude writes the plan and opens a draft PR. Claude stops there and
+  # waits for the tech lead. The runner comes from main, like the agent files.
   plan:
     # The Actions graph shows the runner's jobs under this name: "Plan / Gate", "Plan / Run Claude", "Plan / Result".
     name: Plan

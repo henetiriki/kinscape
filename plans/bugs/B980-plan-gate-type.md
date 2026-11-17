@@ -7,11 +7,11 @@ The tech lead builds this plan in a local session. Each file that changes is a [
 
 ## Approach
 
-Four workflows test `github.event.issue.type.name` in a `run-name` and in a job `if:`. #978 (C.976) added each test. The event payload may not carry `issue.type`, and the bot sets a Type after it creates the issue. No run since #978 shows the field in a payload. An `issue.type.name` test is then false, and the job is skipped. This is the cause of #980, found by elimination. It is not verified.
+Four workflows test `github.event.issue.type.name` in a `run-name` and in a job `if:`. #978 (C.976) added each test. The event payload may not carry `issue.type`. The bot also sets a Type after it creates an issue. No run since #978 shows the field in a payload. A test of an absent field is false, and the job skips. Elimination points to this cause of #980. Nobody has verified it.
 
 Each workflow gets two changes:
 
-- The `run-name` and the job `if:` test `(!github.event.issue.type || <Type test>)`. An event with a Type is filtered as before. An event with no Type reaches the job.
+- The `run-name` and the job `if:` test `(!github.event.issue.type || <Type test>)`. The filter works as before for an event with a Type. An event with no Type reaches the job.
 - The job reads the Type through the API and stops if it is wrong. `claude-plan.yml` does this in the gate `scripts/agent-gate.mts` (`gh issue view --json state,labels,issueType`). The three `github-script` workflows read `issues.get`.
 
 Reads of a REST object (`issues.get`, `/parent`, `/dependencies/*`) carry `type` and stay as they are. A new test fails if a workflow tests `issue.type.name` with no guard.
@@ -26,7 +26,7 @@ Reads of a REST object (`issues.get`, `/parent`, `/dependencies/*`) carry `type`
 - **B.** Guarded filter, as above. Cost: one more clause in each of eight places, and one guard test.
 - **Other:** your own.
 
-Recommended: B. Built as B until answered.
+Recommended: B. The build uses B until the tech lead answers.
 
 ## Files that change
 
@@ -43,7 +43,7 @@ Recommended: B. Built as B until answered.
 
 ## Order of work
 
-1. Check that the Bug still reproduces: run 44121869683 and later runs are skipped.
+1. Check that the Bug still reproduces. Run 44121869683 and the runs after it skipped the plan job.
 2. Commit the plan.
 3. Write the gate tests and the guard test. See them fail on the behaviour.
 4. Change `agent-gate.mts`. Commit it with its tests.
@@ -67,3 +67,7 @@ Recommended: B. Built as B until answered.
 | No workflow tests `issue.type.name` with no guard                         | `issue-type-gates.test.ts`                                                                   |
 | The `run-name` and the job `if:` stay in step                             | `plan-pr-condition.test.ts`, `issue-author-gates.test.ts`                                    |
 | A new Spec still gets its Intent link and milestone                       | After the merge: the next Spec the bot files shows a "Link: …" run and a milestone           |
+
+## Deviations
+
+- `scripts/issue-status.mts` exports `TYPES`, and `agent-gate.mts` imports it. One list then holds the issue Types, as the code-rules say. A review finding asked for it. Commit 3c84639.

@@ -1,7 +1,7 @@
 # Plan: C939: Push last in a review fix, and ask first in a local fix
 
 - **Spec:** #939
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The file is at about 355 of its 360 words. The failed-push rule adds about 40.
 - **B.** Cut other lines of `fix-review.md` to stay at 360.
 - **Other:** your own.
 
-Recommended: A, because a test checks most lines.
+**Answer: Other:** - 450 budget (@henetiriki)
 
 **D2 · The skill's reply on a fixed thread** · Decides: Tech lead
 
@@ -27,7 +27,7 @@ The skill now says "After the push, reply on each thread that you fixed. Say wha
 - **B.** Drop the line. The skill replies "Fixed in <sha>." as `fix-review.md` does.
 - **Other:** your own.
 
-Recommended: A, because #939 changes the order, not the text.
+**Answer: A** (@henetiriki)
 
 **D3 · A merge conflict after a failed push** · Decides: Tech lead
 
@@ -37,7 +37,7 @@ Recommended: A, because #939 changes the order, not the text.
 - **B.** Resolve the conflict as `resolve-conflict.md` does.
 - **Other:** your own.
 
-Recommended: A, because a fixer that resolves a conflict changes code that no finding names.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

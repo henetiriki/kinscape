@@ -23,7 +23,7 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 1. **Ask one question, then wait:** of the open questions whose inputs are settled, the one whose answer shapes the most others.
 2. **Number it** (Q1, Q2, …; never restart) and give it a short title.
-   - **Real alternatives:** call `AskUserQuestion` with just this question. The text starts with `Q<n> ·`. Put your pick first as "(Recommended)".
+   - **Real alternatives:** call `AskUserQuestion` with just this question. The text starts with `Q<n> ·`. Put your pick first as "(Recommended)". Choose it as [Decisions](../../../docs/how-we-work.md#decisions) says.
    - **Otherwise, or without the picker:** ask in chat. End with a 💡 line that a plain "yes" accepts.
 3. **Redraw the tree** after each answer. Skip questions an answer already settled.
 4. **Find facts, don't ask.** Check `docs/requirements.md`, existing issues and the repo yourself. Ask only about decisions.

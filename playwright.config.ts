@@ -3,6 +3,7 @@ import type { PlaywrightWorkerOptions } from '@playwright/test';
 import { defineConfig } from '@playwright/test';
 
 import { authStateFor } from '@ks/lib/design/check.mts';
+import { failureArtifacts } from '@ks/scripts/playwright-failures.mts';
 
 // How the browser is launched. Every project below uses this one object, so
 // all of them run the same Chromium the same way. The top-level `use` further down
@@ -14,6 +15,10 @@ const use: Partial<PlaywrightWorkerOptions> = {
     args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
   },
 };
+
+// The trace and screenshot that CI keeps of a failed test. The perf project takes none: a trace
+// records each test, which changes the redraw times (NFR-01).
+const failures = failureArtifacts(process.env);
 
 // Where e2e/auth.setup.ts saves the signed-in session.
 const signedIn = authStateFor();
@@ -42,11 +47,13 @@ export default defineConfig({
   projects: [
     // Signs in once through the form and saves the session; the projects below load it.
     // The tests tagged @fixture sign in as a fixture Account, which the memory sign-in lacks.
+    // The sign-ins run in sequence: two at the same time exceed the canvas wait on a CI runner.
     {
+      fullyParallel: false,
       grepInvert: memorySignIn ? /@fixture/ : undefined,
       name: 'setup',
       testMatch: 'auth.setup.ts',
-      use,
+      use: { ...use, ...failures },
     },
     // The everyday checks: every spec file except the design check and the two gallery specs.
     // Every test runs except the ones tagged @perf (those get their own project below).
@@ -63,7 +70,7 @@ export default defineConfig({
         // The fixture Accounts exist only under the memory adapters.
         ...(memorySignIn ? ['fixture-accounts.spec.ts'] : []),
       ],
-      use: { ...use, storageState: signedIn },
+      use: { ...use, ...failures, storageState: signedIn },
     },
     // The design check: only design-check.spec.ts, which compares each built screen
     // with its design snapshot. It is separate so `npm run design:check` can run it
@@ -72,7 +79,7 @@ export default defineConfig({
       dependencies: ['setup'],
       name: 'design',
       testMatch: 'design-check.spec.ts',
-      use: { ...use, storageState: signedIn },
+      use: { ...use, ...failures, storageState: signedIn },
     },
     // The timing tests, tagged @perf. They measure how fast the map redraws, so they
     // run alone, after the projects above finish (`dependencies`), and other

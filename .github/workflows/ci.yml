@@ -223,6 +223,18 @@ jobs:
         env:
           E2E_SPLIT: '1'
           KINSCAPE_MEMORY_SIGN_IN: '1'
+      # In CI a failed test leaves its trace and screenshot in test-results/ (scripts/playwright-failures.mts).
+      # A saved session of the setup project stays out.
+      - name: Upload the failure traces and screenshots
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ failure() }}
+        with:
+          name: e2e-failures
+          path: |
+            test-results
+            !test-results/.auth/**
+          if-no-files-found: ignore
+          retention-days: 7
 
   # Compares each built screen with its design snapshot, in parallel with e2e.
   design:
@@ -263,6 +275,18 @@ jobs:
           name: design-check
           path: test-results/design
           if-no-files-found: ignore
+      # The trace and screenshot of a failed test, as in the e2e job. The design-check artifact holds test-results/design.
+      - name: Upload the failure traces and screenshots
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ failure() }}
+        with:
+          name: design-failures
+          path: |
+            test-results
+            !test-results/.auth/**
+            !test-results/design/**
+          if-no-files-found: ignore
+          retention-days: 7
 
   # Opens each component card from disk at two widths, compares it with its card image and runs the
   # look tests. It needs no build and no app server, so it reports before the design check does.
@@ -287,11 +311,15 @@ jobs:
       # Writes a file for each component card, and opens each from disk at two widths.
       - name: Open the gallery files
         run: npm run design:gallery
-      # A card that differs leaves its expected, actual and diff image in test-results/.
+      # A card that differs leaves its expected, actual and diff image in test-results/. A failed test
+      # also leaves its trace and screenshot there.
       - name: Upload the gallery results
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ failure() }}
         with:
           name: gallery
-          path: test-results
+          path: |
+            test-results
+            !test-results/.auth/**
           if-no-files-found: ignore
+          retention-days: 7

@@ -4,7 +4,8 @@ import { appendFileSync } from 'node:fs';
 import type { Gh } from '#ks/scripts/types.ts';
 
 // Checks that run before a plan, build, fix or resolve job spends a model run (see claude-run.yml):
-//   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
+//   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date); a plan
+//          issue must be open, labelled and a Spec, Bug or Chore
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
 //   build: stop if an issue the PR closes is blocked by an open issue
 //   fix:   nothing more; a fix-review run changes a PR that is already built
@@ -21,6 +22,10 @@ type Kind = 'build' | 'fix' | 'plan' | 'resolve';
 
 // The label that starts each label-started kind.
 const LABEL = { fix: 'fix-review', resolve: 'resolve-conflict' } as const;
+
+// The issue Types that get a plan. The workflow's `if:` can't test this: the `labeled` event may not
+// carry `issue.type`, so the gate reads the Type from the API.
+const PLAN_TYPES = ['Spec', 'Bug', 'Chore'];
 
 // Why a run can't start. `handBack` is true when the Spec should be marked `status: blocked`.
 type Stop = { handBack: boolean; reasons: string[] };
@@ -51,13 +56,24 @@ const staleReason = (
   thread: number
 ): string | undefined => {
   if (kind === 'plan') {
-    const { labels, state } = json<{
+    const { issueType, labels, state } = json<{
+      issueType: { name: string } | null;
       labels: { name: string }[];
       state: string;
-    }>(gh, ['issue', 'view', String(thread), '--json', 'state,labels']);
+    }>(gh, [
+      'issue',
+      'view',
+      String(thread),
+      '--json',
+      'state,labels,issueType',
+    ]);
 
     if (state !== 'OPEN') {
       return 'the issue is closed';
+    }
+
+    if (!PLAN_TYPES.includes(issueType?.name ?? '')) {
+      return 'the issue is not a Spec, Bug or Chore';
     }
 
     return labels.some(({ name }) => name === 'status: ready-for-agent')

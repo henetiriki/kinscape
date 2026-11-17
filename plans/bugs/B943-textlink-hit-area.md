@@ -26,6 +26,17 @@ The Relationships link in `PersonRow` is a `TextLink`. #945 holds its `UNDER_44`
 
 If the #945 row still fails after the fix, D1 has no effect, and the row stays.
 
+**D2 · When to run the design system steps 3 to 5** · Decides: Tech lead
+
+The design system artifact holds the `spec/DL.16-colour-roles` content (stamp `31fde80`). This branch has no DL.16. A publish from here replaces the DL.16 `README.md`, `tokens.json`, `bundle.css` and `bundle.js` in the artifact.
+
+- **A.** Skip steps 3 to 5 now. Run them after DL.16 merges and this branch rebases on `main`. Cost: the PR stays a draft until then.
+- **B.** Publish now. DL.16 must then publish again.
+- **C.** Rebase this branch on `spec/DL.16-colour-roles` and publish from there.
+- **Other:** your own.
+
+**Answer: A** (tech lead)
+
 ## Files that change
 
 | File                                                  | New / changed | What                                                                                            |

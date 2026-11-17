@@ -2,10 +2,10 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-// An `issues` event payload may not carry `issue.type`: the bot sets the Type after it creates the
-// issue, and no run shows the field in a payload. A bare `issue.type.name` test is then false, so the
-// job is skipped. Each test therefore needs the guard `!github.event.issue.type ||`, and the job reads
-// the Type from the API (a REST object always carries `type`).
+// An `issues` event payload may not carry `issue.type`. The bot also sets the Type after it creates
+// the issue. No run shows the field in a payload. A bare `issue.type.name` test is then false, and the
+// job skips. Each test needs the guard `!github.event.issue.type ||`. The job then reads the Type
+// from the API. A REST object always carries `type`.
 const DIR = join(process.cwd(), '.github/workflows');
 const flat = (file: string) =>
   readFileSync(join(DIR, file), 'utf8').replace(/\s+/g, ' ');

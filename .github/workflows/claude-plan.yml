@@ -95,3 +95,19 @@ jobs:
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+
+  # Logs the issue Type that the `labeled` event carries. #980 suspects that the event has no
+  # `issue.type`. Nobody has verified this. The log shows the answer. Remove this job when it does.
+  # It has no permissions, and it reads the event text through `env:`.
+  log-type:
+    name: Log the issue Type
+    if: >-
+      github.event.label.name == 'status: ready-for-agent'
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    permissions: {}
+    steps:
+      - name: Log the event's issue Type
+        env:
+          ISSUE_TYPE: ${{ toJSON(github.event.issue.type) }}
+        run: echo "github.event.issue.type = $ISSUE_TYPE"

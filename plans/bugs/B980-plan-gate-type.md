@@ -56,6 +56,7 @@ Recommended: B. The build uses B until the tech lead answers.
 - A label or an event on an issue of the wrong Type, with no Type in the payload, starts a short runner job that stops with no model run.
 - Workflows on `issues` events run from `main`. The fix shows only after the merge. The tech lead then labels #921 again to prove it.
 - **Unlikely, not built:** the bot sets the Type about one second after it creates an issue. If the Link or Milestone job reads the issue in that gap, it sees no Type and stops. A job takes several seconds to start, so no shown run reaches the gap. A fix adds `typed` to the `on: issues` types of both workflows. Each job is safe to run twice. The tech lead decides whether to build it.
+- The `log-type` job starts on each `ready-for-agent` label event until the tech lead removes it. It has no permissions and runs for under a minute.
 - #979 has no Type. `agent-unblock.mts` and the new reads treat it as no Spec. This is data, not code. The tech lead sets the Type.
 
 ## Proof
@@ -71,3 +72,4 @@ Recommended: B. The build uses B until the tech lead answers.
 ## Deviations
 
 - `scripts/issue-status.mts` exports `TYPES`, and `agent-gate.mts` imports it. One list then holds the issue Types, as the code-rules say. A review finding asked for it. Commit 3c84639.
+- `claude-plan.yml` gets a `log-type` job that logs `github.event.issue.type`. The tech lead chose it after a review finding. The log shows whether the `labeled` event carries the field. The tech lead removes the job after the log answers. `.github/workflows/README.md` lists the job.

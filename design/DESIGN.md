@@ -161,7 +161,7 @@ The `kit.*` tokens set the design kit's board titles, page padding and intro wid
 
 ## Colours
 
-[`tokens.json`](tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each colour with its value and contrast ratio. The `notes` group of `tokens.json` says where each token is used.
+[`tokens.json`](tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `notes` group of `tokens.json` says where each token is used.
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
@@ -179,15 +179,30 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 ## Shape and depth
 
-`/design-kit/foundations` shows these with spacing and motion.
+| Token   | Value                                                                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Radius  | See the `radius` notes in `tokens.json`                                                                                                                                  |
+| Shadow  | See the `shadow` notes in `tokens.json`                                                                                                                                  |
+| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                                  |
+| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                                   |
+| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                                 |
+| Icons   | 24px grid, 2px stroke, round caps and joins, `currentColor`. Draw at 16, 18 or 20px (24 on the phone layers button). `aria-hidden`; an icon-only button carries the name |
 
-| Token   | Value                                                                                                                             |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Radius  | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                                         |
-| Shadow  | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment` |
-| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                           |
-| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                            |
-| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                          |
+## Motion
+
+`tokens.json` holds the durations. Each token is a `motion` token.
+
+| Token            | Use                                                        |
+| ---------------- | ---------------------------------------------------------- |
+| `press`          | Hover, press: colour and border only                       |
+| `popup`          | Popups, menus: fade and 4px rise                           |
+| `sheet`          | Phone sheet: slides; follows the finger while dragged      |
+| `changed-border` | Changed border: MAP-11 highlight, then gone                |
+| `toast`          | Toast: a success toast leaves after 4 seconds; errors stay |
+
+A map date change redraws at once. Do not animate it. Do not show a loader (NFR-01).
+
+Under `prefers-reduced-motion`, drop every transition except a colour change. Make Play step with no easing curve.
 
 ## Components
 
@@ -243,7 +258,7 @@ Every control has the five states in [style-4-states.jpg](style-4-states.jpg). H
 
 | State                | Design                                                                                                                                                                            |
 | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| First load (NFR-02)  | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. A date change never shows a loader (NFR-01).                    |
+| First load (NFR-02)  | Panel and date dock render at once from the URL. The map area shows a "Loading the map" card with a progress bar. For a date change, see [Motion](#motion).                       |
 | No pins in the tree  | A notice card in the middle of the map. The map still works as an atlas. No add button until data entry is designed.                                                              |
 | No pins on this date | A notice card at the top reads "No pins in {year}" and "Jump to {nearest year}". When filters are on, it also has "Clear filters". The Pins row reads "0 of N true on this date". |
 | Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                        |

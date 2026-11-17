@@ -28,7 +28,7 @@ const ASKS = [
 const PAGES = [
   ['/design-kit', '/design-kit/__PAGE__'],
   ['/design-kit', '/design-kit'],
-  ['/design-kit/colour', '/design-kit/colour/__PAGE__'],
+  ['/design-kit/type', '/design-kit/type/__PAGE__'],
   ['/screens/add-pin', '/screens/add-pin/__PAGE__'],
   ['/screens/add-pin', '/screens'],
 ] as const;

@@ -11,7 +11,8 @@ import type {
 
 import { isTree, REFERENCE, resolveTokens } from '#ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '#ks/lib/design/bundle.mts';
-import { cssName, familyName } from '#ks/lib/design/css.mts';
+import { familyName, systemName } from '#ks/lib/design/css.mts';
+import { roleSentences } from '#ks/lib/design/roles.mts';
 
 /** The `DESIGN.md` sections the README holds, in this order. */
 export const README_SECTIONS = [
@@ -20,6 +21,7 @@ export const README_SECTIONS = [
   'Colours',
   'Layout',
   'Shape and depth',
+  'Motion',
   'Components',
   'States',
   'Feedback and validation',
@@ -30,9 +32,6 @@ export const README_SECTIONS = [
 
 const LINK = /(!?)\[([^\]]*)\]\(([^)]*)\)/g;
 const FILE = /path:\s*'([^']+)',\s*style:\s*'([^']+)',\s*weight:\s*'([^']+)'/g;
-
-/** The name a token has in the design system: its `cssName` without `--`. */
-const nameOf = (path: string[]): string => cssName(path).slice(2);
 
 const leaves = (node: Tree, path: string[]): [string[], number | string][] =>
   Object.entries(node).flatMap(([key, child]) =>
@@ -53,18 +52,31 @@ const noteAt = (notes: Tree, path: string[]): string | undefined => {
 const alias = (value: string): string => {
   const reference = REFERENCE.exec(value)?.[1];
 
-  return reference === undefined ? value : `{${nameOf(reference.split('.'))}}`;
+  return reference === undefined
+    ? value
+    : `{${systemName(reference.split('.'))}}`;
 };
 
-/** Each leaf of the given groups that has a note, as a token: aliases point at the converted name. */
-const noted = (tokens: Tree, notes: Tree, groups: string[]): SystemToken[] =>
+/** Each leaf of the given groups that has a note, as a token: aliases point at the converted name. `extra` gives sentences that follow the note. */
+const noted = (
+  tokens: Tree,
+  notes: Tree,
+  groups: string[],
+  extra: (path: string[]) => string[] = () => []
+): SystemToken[] =>
   groups.flatMap(group => {
     return leaves(tokens[group] as Tree, [group]).flatMap(([path, value]) => {
       const usage = noteAt(notes, path);
 
       return usage === undefined
         ? []
-        : [{ name: nameOf(path), usage, value: alias(String(value)) }];
+        : [
+            {
+              name: systemName(path),
+              usage: [usage, ...extra(path)].join(' '),
+              value: alias(String(value)),
+            },
+          ];
     });
   });
 
@@ -135,8 +147,8 @@ export const systemTokens = (raw: Tree, fonts: SystemFont[]): SystemTokens => {
   const unresolved = Object.fromEntries(
     Object.entries(raw).filter(([group]) => group !== 'notes')
   );
-  const list = (...groups: string[]) => noted(unresolved, notes, groups);
   const resolved = resolveTokens(unresolved);
+  const list = (...groups: string[]) => noted(unresolved, notes, groups);
   /** The format rules allow an alias only in `color`, so these families hold values. */
   const valued = (group: string) => ({
     tokens: noted(resolved, notes, [group]),
@@ -146,7 +158,9 @@ export const systemTokens = (raw: Tree, fonts: SystemFont[]): SystemTokens => {
     breakpoint: valued('breakpoint'),
     color: {
       themes: [{ id: 'light', name: 'Light' }],
-      tokens: list('colour', 'map'),
+      tokens: noted(unresolved, notes, ['colour', 'map'], path =>
+        roleSentences(resolved, path.join('.'))
+      ),
     },
     focus: { tokens: list('focus') },
     layout: valued('layout'),

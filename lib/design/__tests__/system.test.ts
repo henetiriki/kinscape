@@ -8,6 +8,7 @@ import { resolveTokens } from '@ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
+import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
   fontFaces,
   fontFiles,
@@ -75,7 +76,15 @@ describe('systemTokens', () => {
         );
 
         return typeof usage === 'string'
-          ? [{ name: cssName(path).slice(2), usage, value: String(value) }]
+          ? [
+              {
+                name: cssName(path).slice(2),
+                usage: [usage, ...roleSentences(resolved, path.join('.'))].join(
+                  ' '
+                ),
+                value: String(value),
+              },
+            ]
           : [];
       })
     );
@@ -88,6 +97,18 @@ describe('systemTokens', () => {
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
     expect(all(system).length).toBe(172);
+  });
+
+  // NFR-06
+  it('ends the usage of ink-3 with its role and its ratio on surface', () => {
+    const usage = system.color.tokens.find(({ name }) => name === 'ink-3')
+      ?.usage as string;
+    const ratio =
+      /Role: text\. Contrast (\d+\.\d):1 on surface \(needs 4\.5:1\)\.$/.exec(
+        usage
+      )?.[1];
+
+    expect(Number(ratio)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('has the layout, breakpoint and z families, each token with a name, a value and a usage', () => {
@@ -332,10 +353,36 @@ describe('systemCss', () => {
   });
 });
 
+// NFR-01, NFR-06
+describe('Motion in DESIGN.md', () => {
+  const section = /^## Motion$([\s\S]*?)(?=^## )/m.exec(design)?.[1] ?? '';
+
+  it('names each motion token once, as code, and no duration', () => {
+    const missing = Object.keys(raw.motion as Tree).filter(
+      key => section.split(`\`${key}\``).length !== 2
+    );
+
+    expect(missing).toEqual([]);
+    expect(section).not.toMatch(/\d\s?ms\b/);
+  });
+
+  it('holds the map date change rule and the reduced-motion rule', () => {
+    expect(section).toContain('NFR-01');
+    expect(section).toContain('prefers-reduced-motion');
+  });
+});
+
 describe('readme', () => {
   const text = readme(design);
 
   it('holds the listed sections, in order, as DESIGN.md has them', () => {
+    expect(text.match(/^## Motion$/gm)).toHaveLength(1);
+    expect(text.indexOf('## Shape and depth')).toBeLessThan(
+      text.indexOf('## Motion')
+    );
+    expect(text.indexOf('## Motion')).toBeLessThan(
+      text.indexOf('## Components')
+    );
     expect([...text.matchAll(/^## (.+)$/gm)].map(([, name]) => name)).toEqual([
       ...README_SECTIONS,
       'Using the controls on a canvas',

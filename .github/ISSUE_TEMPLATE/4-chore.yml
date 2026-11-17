@@ -2,6 +2,7 @@ name: 🔧 Chore
 description: Tooling, CI, docs, process or settings. Only the tech lead files one.
 title: 'Chore: '
 labels: ['type: chore', 'status: ready-for-dev']
+type: Chore
 body:
   - type: markdown
     attributes:

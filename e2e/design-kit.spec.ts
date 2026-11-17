@@ -5,26 +5,6 @@ import { expect, test } from '@playwright/test';
 import tokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 
-// NFR-06: each swatch on the colour board is filled with its token.
-test('colour swatches are filled with their tokens', async ({ page }) => {
-  await page.goto('/design-kit/colour');
-
-  const fill = (name: string) =>
-    page
-      .locator('code', { hasText: new RegExp(`^${name}$`) })
-      .locator('xpath=../preceding-sibling::div');
-
-  await expect(fill('--brand')).toHaveCSS(
-    'background-color',
-    'rgb(38, 79, 41)'
-  );
-  await expect(fill('--pin')).toHaveCSS('background-color', 'rgb(154, 59, 18)');
-  await expect(fill('map.hatch.colour')).toHaveCSS(
-    'background-color',
-    'rgb(139, 74, 28)'
-  );
-});
-
 // NFR-06: the kit's index and nav.
 // A board with `gone` has no page, but the index and the nav still link to it.
 const BOARD_LINKS: {
@@ -38,8 +18,14 @@ const BOARD_LINKS: {
     label: 'Typography',
     path: '/design-kit/type',
   },
-  { heading: 'Colour', label: 'Colour', path: '/design-kit/colour' },
   {
+    gone: true,
+    heading: 'Colour',
+    label: 'Colour',
+    path: '/design-kit/colour',
+  },
+  {
+    gone: true,
     heading: 'Spacing, shape, depth, icons, motion',
     label: 'Foundations',
     path: '/design-kit/foundations',
@@ -252,11 +238,11 @@ test.describe('the kit bar', () => {
     });
 
     test('closes on choosing a board', async ({ page }) => {
-      await open(page);
+      await open(page, '/design-kit');
       await sheet(page)
-        .getByRole('link', { name: /Colour/ })
+        .getByRole('link', { name: /Typography/ })
         .click();
-      await expect(page).toHaveURL('/design-kit/colour');
+      await expect(page).toHaveURL('/design-kit/type');
       await expect(sheet(page)).toBeHidden();
     });
 
@@ -322,43 +308,6 @@ test('each map label has its token colour, size, weight and tracking', async ({
     'background-color',
     rgb(map.sea)
   );
-});
-
-// NFR-06: the Foundations board draws bars, radii and shadows from the tokens.
-test('the foundations board draws from the tokens', async ({ page }) => {
-  await page.goto('/design-kit/foundations');
-
-  const spacing = page.getByRole('region', { name: 'Spacing' });
-
-  for (const value of Object.values(tokens.space)) {
-    const bar = spacing
-      .getByText(value, { exact: true })
-      .locator('xpath=following-sibling::span[1]');
-
-    await expect(bar).toHaveCSS('width', `${Number.parseInt(value, 10) * 4}px`);
-  }
-
-  const corners = page.getByRole('region', { name: 'Corner radius' });
-
-  for (const name of ['small', 'control', 'panel', 'sheet', 'full'] as const) {
-    const label = name === 'full' ? name : tokens.radius[name];
-
-    await expect(
-      corners
-        .getByText(label, { exact: true })
-        .locator('xpath=preceding-sibling::span[1]')
-    ).toHaveCSS('border-top-left-radius', tokens.radius[name]);
-  }
-
-  const elevation = page.getByRole('region', { name: 'Elevation' });
-
-  for (const value of Object.values(tokens.shadow).slice(0, 3)) {
-    const card = elevation
-      .getByText(value, { exact: true })
-      .locator('xpath=..');
-
-    await expect(card).toHaveCSS('box-shadow', /rgba\(24, 33, 27/);
-  }
 });
 
 // NFR-06: the map style board has the layout's banner only, and previews drawn from the map tokens.
@@ -463,9 +412,9 @@ test.describe('the boards on a phone', () => {
   });
 });
 
-// NFR-05, NFR-06: the Colour, Foundations and Map style boards on a phone, in portrait and landscape.
+// NFR-05, NFR-06: the Map style board on a phone, in portrait and landscape.
 test.describe('the other boards on a phone', () => {
-  const boards = ['colour', 'foundations', 'map-style'];
+  const boards = ['map-style'];
 
   for (const [name, size] of [
     ['390 wide', { height: 844, width: 390 }],
@@ -570,29 +519,6 @@ test.describe('the other boards on a phone', () => {
 
       expect(lefts.length).toBeGreaterThan(0);
       expect(new Set(lefts).size).toBe(1);
-    });
-
-    test('colour keeps five swatches in a row', async ({ page }) => {
-      await page.goto('/design-kit/colour');
-
-      const tops = await page
-        .locator('section[aria-label="Brand"] > div:last-child > div')
-        .evaluateAll(cards =>
-          cards.slice(0, 5).map(card => card.getBoundingClientRect().top)
-        );
-
-      expect(new Set(tops).size).toBe(1);
-    });
-
-    test('foundations keeps Spacing beside Corner radius', async ({ page }) => {
-      await page.goto('/design-kit/foundations');
-
-      const top = (label: string) =>
-        page
-          .locator(`section[aria-label="${label}"]`)
-          .evaluate(section => section.getBoundingClientRect().top);
-
-      expect(await top('Spacing')).toBe(await top('Corner radius'));
     });
   });
 });

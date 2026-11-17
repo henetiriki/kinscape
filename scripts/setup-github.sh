@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Apply KinScape's GitHub configuration: labels, milestones, repo settings,
+# Apply KinScape's GitHub configuration: labels, issue Types, milestones, repo settings,
 # the ruleset protecting main, and security/Actions settings.
-# Needs the GitHub CLI (brew install gh) and `gh auth login` as a repo admin.
+# Needs the GitHub CLI (brew install gh) and `gh auth login` as a repo admin. The issue Types need
+# the `user` scope on a personal account: gh auth refresh -h github.com -s user.
 # Safe to re-run. To change a setting, change it here in a PR, merge, then re-run.
 # Verify with: ./scripts/check-github.sh
 set -euo pipefail
@@ -21,6 +22,36 @@ done < <(labels)
 for l in "${RETIRED_LABELS[@]}"; do
   gh label delete "$l" --repo "$REPO" --yes 2>/dev/null || true
 done
+
+echo "== Issue Types"
+# The list is in scripts/github/issue-types.sh. The loop updates a Type that differs and creates a
+# missing Type. Then it deletes each other Type. The script matches a Type on its name, so Bug keeps its id.
+source "$DIR/github/issue-types.sh"
+live=$(live_issue_types "$REPO")
+owner_id=$(gh api "users/${REPO%/*}" --jq .node_id)
+while IFS='|' read -r name color description; do
+  row=$(grep -F "|$name|" <<<"$live" | head -n1 || true)
+  if [ -z "$row" ]; then
+    gh api graphql -f owner="$owner_id" -f name="$name" -f color="$color" -f description="$description" -f query='
+      mutation($owner: ID!, $name: String!, $color: IssueTypeColor!, $description: String!) {
+        createIssueType(input: {ownerId: $owner, name: $name, color: $color, description: $description, isEnabled: true}) { clientMutationId }
+      }' >/dev/null
+    echo "issue type: $name"
+  elif [ "${row#*|}" != "$name|$color|$description|true" ]; then
+    gh api graphql -f id="${row%%|*}" -f color="$color" -f description="$description" -f query='
+      mutation($id: ID!, $color: IssueTypeColor!, $description: String!) {
+        updateIssueType(input: {issueTypeId: $id, color: $color, description: $description, isEnabled: true}) { clientMutationId }
+      }' >/dev/null
+    echo "issue type updated: $name"
+  fi
+done < <(issue_types)
+while IFS='|' read -r id name _; do
+  [ -z "$id" ] && continue
+  issue_types | grep -q "^$name|" && continue
+  gh api graphql -f id="$id" -f query='
+    mutation($id: ID!) { deleteIssueType(input: {issueTypeId: $id}) { clientMutationId } }' >/dev/null
+  echo "issue type deleted: $name"
+done <<<"$live"
 
 echo "== Milestones"
 existing=$(gh api "repos/$REPO/milestones?state=all" --jq '.[] | "\(.number)|\(.title)"')

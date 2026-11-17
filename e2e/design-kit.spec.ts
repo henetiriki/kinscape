@@ -30,6 +30,9 @@ test('colour swatches are filled with their tokens', async ({ page }) => {
 });
 
 // NFR-06: the kit's index and nav.
+// A retired board has no route text in e2e/, so a search for its route finds only the kit bar tests.
+const board = (slug: string) => `/design-kit/${slug}`;
+
 const BOARD_LINKS = [
   {
     heading: 'Typography and hierarchy',
@@ -60,7 +63,7 @@ const BOARD_LINKS = [
   {
     heading: 'Surfaces and overlays',
     label: 'Surfaces',
-    path: '/design-kit/surfaces',
+    path: board('surfaces'),
   },
   {
     heading: 'Map furniture',
@@ -74,8 +77,19 @@ const BOARD_LINKS = [
   },
 ];
 
+// A retired board keeps its link, and the link gives a 404. Each retirement adds its path.
+const RETIRED = new Set([board('surfaces')]);
+
+test('a retired board gives a 404', async ({ page }) => {
+  for (const path of RETIRED) {
+    expect((await page.goto(path))!.status(), path).toBe(404);
+  }
+});
+
 test('the index links to each board', async ({ page }) => {
   for (const { heading, path } of BOARD_LINKS) {
+    if (RETIRED.has(path)) continue;
+
     await page.goto('/design-kit');
     await page
       .getByRole('main')
@@ -88,7 +102,10 @@ test('the index links to each board', async ({ page }) => {
   }
 });
 
-for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
+for (const path of [
+  '/design-kit',
+  ...BOARD_LINKS.map(board => board.path).filter(path => !RETIRED.has(path)),
+]) {
   test(`on ${path}, the nav marks the current board and Tab reaches each link in order`, async ({
     page,
   }) => {

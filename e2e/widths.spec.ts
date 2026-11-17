@@ -162,28 +162,3 @@ test.describe('on a phone', () => {
     expect(375 - box!.x - box!.width).toBeCloseTo(16, 0);
   });
 });
-
-test('a large NoticeCard is no wider than a 320px container', async ({
-  page,
-}) => {
-  await page.setViewportSize({ height: 900, width: 1440 });
-  await page.goto('/design-kit/surfaces');
-
-  const card = page
-    .getByRole('status')
-    .filter({ hasText: 'No pins yet' })
-    .first();
-
-  // A block parent: a flex or grid parent would shrink the card by itself.
-  await card.evaluate(node => {
-    const parent = document.createElement('div');
-
-    parent.style.width = '320px';
-    node.replaceWith(parent);
-    parent.append(node);
-  });
-
-  const box = await card.boundingBox();
-
-  expect(box!.width).toBeLessThanOrEqual(320);
-});

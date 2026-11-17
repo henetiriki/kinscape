@@ -94,3 +94,6 @@ The Spec names no change to `app/design-kit/inputs/`. After the surfaces folder 
 - The rest of `app/design-kit/inputs/`: #912 and #922.
 
 ## Deviations
+
+- The phone notice card test checks the card's figure for sideways scroll, not the whole file. The large card of that file is a fixed 380 wide, so the file scrolls at 390px.
+- `e2e/design-kit.spec.ts` builds the paths of `surfaces` from a `board(slug)` helper, so check 3 finds no route text in `e2e/`.

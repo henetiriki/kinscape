@@ -81,6 +81,29 @@ test.describe('on a phone', () => {
     await expectHitAreas(page, HIT_CASES);
   });
 
+  test('a notice card is no wider than the screen less the gutters, has 44px buttons, and nothing scrolls sideways', async ({
+    page,
+  }) => {
+    await open(page, 'NoticeCard');
+
+    const card = state(page, 'NoticeCard · one action').getByRole('status');
+
+    expect(Math.round((await card.boundingBox())!.width)).toBeLessThanOrEqual(
+      390 - 32
+    );
+    expect(
+      Math.round((await card.getByRole('button').first().boundingBox())!.height)
+    ).toBe(44);
+    // The large card is a fixed 380 wide, so the whole file can scroll. The figure of this card must not.
+    expect(
+      await state(page, 'NoticeCard · one action').evaluate(
+        node =>
+          node.scrollWidth <= node.clientWidth &&
+          node.getBoundingClientRect().right <= window.innerWidth
+      )
+    ).toBe(true);
+  });
+
   test('a placed banner is 80px from the top and a placed toast 164px from the bottom, inside the gutters', async ({
     page,
   }) => {
@@ -289,6 +312,99 @@ test.describe('at 1440px', () => {
     await expect(retry).toBeFocused();
     await expect(retry).toHaveCSS('outline-color', 'rgb(255, 255, 255)');
     await expect(retry).toHaveCSS('outline-width', '2px');
+  });
+
+  const notice = (page: Page, label: string) =>
+    state(page, label).getByRole('status');
+
+  test('a notice card has 40px buttons and is 360 wide, 380 when large', async ({
+    page,
+  }) => {
+    await open(page, 'NoticeCard');
+
+    const first = notice(page, 'NoticeCard · one action');
+
+    expect(
+      Math.round(
+        (await first.getByRole('button').first().boundingBox())!.height
+      )
+    ).toBe(40);
+    expect(Math.round((await first.boundingBox())!.width)).toBe(360);
+    expect(
+      Math.round(
+        (await notice(page, 'NoticeCard · large').boundingBox())!.width
+      )
+    ).toBe(380);
+  });
+
+  test('a large notice card is no wider than a 320px container', async ({
+    page,
+  }) => {
+    await open(page, 'NoticeCard');
+
+    const card = notice(page, 'NoticeCard · large');
+
+    // A block parent: a flex or grid parent would shrink the card by itself.
+    await card.evaluate(node => {
+      const parent = document.createElement('div');
+
+      parent.style.width = '320px';
+      node.replaceWith(parent);
+      parent.append(node);
+    });
+
+    expect((await card.boundingBox())!.width).toBeLessThanOrEqual(320);
+  });
+
+  test('the progress bar fill eases over 0.16s', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await open(page, 'ProgressBar');
+    await expect(
+      state(page, 'ProgressBar · 40').getByRole('progressbar').locator('span')
+    ).toHaveCSS('transition-duration', '0.16s');
+  });
+
+  test('with reduced motion, the progress bar fill does not ease', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await open(page, 'ProgressBar');
+    await expect(
+      state(page, 'ProgressBar · 40').getByRole('progressbar').locator('span')
+    ).toHaveCSS('transition-duration', '0s');
+  });
+
+  test('the callout has 12px padding and the floating shadow', async ({
+    page,
+  }) => {
+    await open(page, 'Callout');
+
+    const callout = state(page, 'Callout · error').getByRole('alert');
+
+    await expect(callout).toHaveCSS('padding', '12px');
+    await expect(callout).toHaveCSS('box-shadow', /30px/);
+  });
+
+  test('Close and Copy chain keep a 44 x 44px hit area', async ({ page }) => {
+    await open(page, 'Popup');
+
+    const popup = state(page, 'Popup · floating');
+
+    for (const name of ['Close', 'Copy chain']) {
+      const button = popup.getByRole('button', { name });
+
+      for (const [dx, dy] of [
+        [21, 0],
+        [-21, 0],
+        [0, 21],
+        [0, -21],
+      ]) {
+        expect(
+          await hitsControl(button, dx, dy),
+          `${name} at ${dx},${dy}`
+        ).toBe(true);
+      }
+    }
   });
 
   test.describe('a toast rises in', () => {

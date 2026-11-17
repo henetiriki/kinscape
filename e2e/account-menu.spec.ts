@@ -47,6 +47,23 @@ test.describe('desktop, 1280 × 800', () => {
     await expect(page.getByRole('dialog', { name: /sources/i })).toBeVisible();
   });
 
+  // NFR-06
+  test('Esc in the Sources dialog returns focus to the Avatar', async ({
+    page,
+  }) => {
+    await openMenu(page);
+    await expect(items(page).first()).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+
+    const dialog = page.getByRole('dialog', { name: /sources/i });
+
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(avatar(page)).toBeFocused();
+  });
+
   // PPL-01
   test('People leads to the People page', async ({ page }) => {
     await openMenu(page);

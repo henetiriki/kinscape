@@ -1,10 +1,11 @@
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import type { IconSize } from '@ks/app/components/foundation/types';
+import type { IconName, IconSize } from '@ks/app/components/foundation/types';
 
-import { FilledIcon, Icon } from '@ks/app/components/foundation/Icon';
-import { ICONS } from '@ks/app/design-kit/foundations/values';
+import { FilledIcon, Icon, PATHS } from '@ks/app/components/foundation/Icon';
+
+const NAMES = Object.keys(PATHS) as IconName[];
 
 const svgOf = (container: HTMLElement) => container.querySelector('svg')!;
 
@@ -23,18 +24,15 @@ it('defaults to 18', () => {
   expect(svg.getAttribute('height')).toBe('18');
 });
 
-it.each(ICONS.map(icon => icon.name))(
-  '%s is decorative and draws in currentColor',
-  name => {
-    const svg = svgOf(render(<Icon name={name} />).container);
+it.each(NAMES)('%s is decorative and draws in currentColor', name => {
+  const svg = svgOf(render(<Icon name={name} />).container);
 
-    expect(svg.getAttribute('aria-hidden')).toBe('true');
-    expect(svg.getAttribute('stroke')).toBe('currentColor');
-    expect(svg.querySelector('path, circle')).toBeTruthy();
-  }
-);
+  expect(svg.getAttribute('aria-hidden')).toBe('true');
+  expect(svg.getAttribute('stroke')).toBe('currentColor');
+  expect(svg.querySelector('path, circle')).toBeTruthy();
+});
 
-it.each(ICONS.map(icon => icon.name))('%s draws at stroke 2', name => {
+it.each(NAMES)('%s draws at stroke 2', name => {
   const svg = svgOf(render(<Icon name={name} />).container);
 
   expect(svg.getAttribute('stroke-width')).toBe('2');

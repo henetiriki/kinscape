@@ -332,10 +332,36 @@ describe('systemCss', () => {
   });
 });
 
+// NFR-01, NFR-06
+describe('Motion in DESIGN.md', () => {
+  const section = /^## Motion$([\s\S]*?)(?=^## )/m.exec(design)?.[1] ?? '';
+
+  it('names each motion token once, as code, and no duration', () => {
+    const missing = Object.keys(raw.motion as Tree).filter(
+      key => section.split(`\`${key}\``).length !== 2
+    );
+
+    expect(missing).toEqual([]);
+    expect(section).not.toMatch(/\d\s?ms\b/);
+  });
+
+  it('holds the map date change rule and the reduced-motion rule', () => {
+    expect(section).toContain('NFR-01');
+    expect(section).toContain('prefers-reduced-motion');
+  });
+});
+
 describe('readme', () => {
   const text = readme(design);
 
   it('holds the listed sections, in order, as DESIGN.md has them', () => {
+    expect(text.match(/^## Motion$/gm)).toHaveLength(1);
+    expect(text.indexOf('## Shape and depth')).toBeLessThan(
+      text.indexOf('## Motion')
+    );
+    expect(text.indexOf('## Motion')).toBeLessThan(
+      text.indexOf('## Components')
+    );
     expect([...text.matchAll(/^## (.+)$/gm)].map(([, name]) => name)).toEqual([
       ...README_SECTIONS,
       'Using the controls on a canvas',

@@ -140,6 +140,8 @@ const NO_ENTRY = [
   'sign-in-phone-proposed',
   'sign-in-phone-unavailable',
   'sign-in-unavailable',
+  'style-3-foundations',
+  'style-3-foundations-phone',
   'style-4-states',
   'style-4-states-phone',
   'style-5-feedback',

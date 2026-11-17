@@ -18,6 +18,7 @@ The two issue-creating workflows mint the App token as `actions-pin-update.yml` 
 | `scripts/issue-status.mts`, `agent-unblock.mts`, `denial-audit.mts`                                                     | changed       | Read or set the Type                               |
 | Their tests in `scripts/__tests__/`                                                                                     | changed       | The fakes return a Type                            |
 | `agent-approve`, `agent-gate`, `agent-return`, `hand-back` tests                                                        | changed       | Remove the label from fixtures                     |
+| `scripts/__tests__/app-token.test.ts`                                                                                   | changed       | Lists the two new bot jobs                         |
 | `.github/ISSUE_TEMPLATE/*.yml`                                                                                          | changed       | Remove the `type:` label                           |
 | `scripts/github/labels.sh`                                                                                              | changed       | Move four labels to `RETIRED_LABELS`               |
 | `scripts/github/backfill-issue-types.sh`                                                                                | deleted       |                                                    |
@@ -50,5 +51,4 @@ The two issue-creating workflows mint the App token as `actions-pin-update.yml` 
 
 ## Deviations
 
-- `scripts/__tests__/app-token.test.ts` lists the two jobs that now mint the bot token.
 - In the `agent-approve` and `agent-return` fixtures, `hand-back` replaces a `type:` label where a test needs a label that is not a status label.

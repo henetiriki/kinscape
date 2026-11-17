@@ -44,3 +44,7 @@ Every file under `.github/workflows/` is a hand-back path, so the tech lead buil
 | `npm test`, lint, format, words              | Their output in Evidence    |
 | Intent, Spec, Bug, Chore and no-prefix runs  | Tech lead, after merge      |
 | Close and open runs of the backlog workflows | Tech lead, after merge      |
+
+## Deviations
+
+- The test also reads each step `if:`, and it keeps the check that each backlog script reads the Type from the API. The issue forbids the removal of an API check.

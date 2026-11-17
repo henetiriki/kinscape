@@ -3,17 +3,19 @@ name: 'Claude: Plan'
 # The title shown for each run in the Actions tab:
 #   "Plan: <title>"         - the repo owner (the tech lead) marked an issue ready for the agent.
 #                             Its author is the owner, a member, a collaborator or the agent App.
-#                             The gate then runs. The event may not carry `issue.type`, so an issue
-#                             with no Type in the event passes this filter. The gate
-#                             (scripts/agent-gate.mts) reads the Type from the API. It stops quietly
-#                             unless the Type is Spec, Bug or Chore.
+#                             Its title starts with "Spec: ", "Bug: " or "Chore: ". An `issues`
+#                             payload carries no `issue.type`, so the title prefix stands in for
+#                             the Type. The gate then runs. The gate (scripts/agent-gate.mts) reads
+#                             the Type from the API. It stops quietly unless the Type is Spec, Bug
+#                             or Chore.
 #   "Skipped Plan: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
+# `scripts/__tests__/issue-title-filters.test.ts` fails if their title tests differ.
 run-name: >-
   ${{
     github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
-    (!github.event.issue.type || contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name)) &&
+    (startsWith(github.event.issue.title, 'Spec: ') || startsWith(github.event.issue.title, 'Bug: ') || startsWith(github.event.issue.title, 'Chore: ')) &&
     (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
       github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     github.actor == github.repository_owner &&
@@ -54,7 +56,7 @@ jobs:
     if: |
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
-      (!github.event.issue.type || contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name)) &&
+      (startsWith(github.event.issue.title, 'Spec: ') || startsWith(github.event.issue.title, 'Bug: ') || startsWith(github.event.issue.title, 'Chore: ')) &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       github.actor == github.repository_owner
@@ -95,19 +97,3 @@ jobs:
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
-
-  # Logs the issue Type that the `labeled` event carries. #980 suspects that the event has no
-  # `issue.type`. Nobody has verified this. The log shows the answer. Remove this job when it does.
-  # It has no permissions, and it reads the event text through `env:`.
-  log-type:
-    name: Log the issue Type
-    if: >-
-      github.event.label.name == 'status: ready-for-agent'
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    permissions: {}
-    steps:
-      - name: Log the event's issue Type
-        env:
-          ISSUE_TYPE: ${{ toJSON(github.event.issue.type) }}
-        run: echo "github.event.issue.type = $ISSUE_TYPE"

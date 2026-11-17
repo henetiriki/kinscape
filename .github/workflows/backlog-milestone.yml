@@ -7,13 +7,13 @@ name: 'Backlog: Inherit milestone'
 # owner, a member, a collaborator or the agent App, a PR from this repo, or "Milestone: backfill" for
 # a manual run; "Skipped Milestone: <title>" for any other issue or PR. Repeats the job's `if:`
 # (run-name cannot see job results): change them together.
-# The event may not carry `issue.type`. An issue with no Type in the event passes both conditions.
-# The script then reads the Type from the API. `scripts/__tests__/issue-type-gates.test.ts` fails
-# if a condition tests the Type with no such guard.
+# An `issues` payload carries no `issue.type`, so the title prefix stands in for the Type. The prefix
+# only filters: the script reads the Type from the API. `scripts/__tests__/issue-title-filters.test.ts`
+# fails if the two conditions differ.
 run-name: >-
   ${{
     github.event_name == 'workflow_dispatch' && 'Milestone: backfill' ||
-    (github.event_name == 'issues' && (!github.event.issue.type || github.event.issue.type.name == 'Spec') &&
+    (github.event_name == 'issues' && startsWith(github.event.issue.title, 'Spec: ') &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       format('Milestone: {0}', github.event.issue.title)) ||
@@ -44,7 +44,7 @@ jobs:
     # job skips fork PRs: their token cannot write.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issues' && (!github.event.issue.type || github.event.issue.type.name == 'Spec') &&
+      (github.event_name == 'issues' && startsWith(github.event.issue.title, 'Spec: ') &&
         (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
           github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)) ||
       (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
@@ -140,7 +140,7 @@ jobs:
 
             if (context.eventName === 'issues') {
               const spec = context.payload.issue;
-              // The event may not carry the Type, so read the issue as it is now.
+              // The event carries no Type, so read the issue as it is now.
               const current = await getIssue(spec.number, spec.number);
               if (current?.type?.name !== 'Spec') return;
               await fill(spec, await specMilestone(spec));

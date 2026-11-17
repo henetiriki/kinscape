@@ -1,7 +1,7 @@
 # Plan: C968: Recommend the option that is best at equal cost
 
 - **Spec:** #968
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

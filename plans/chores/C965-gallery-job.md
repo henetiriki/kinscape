@@ -1,7 +1,7 @@
 # Plan: C965: The gallery checks run in a job of their own
 
 - **Spec:** #965
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

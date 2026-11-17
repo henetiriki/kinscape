@@ -16,9 +16,10 @@ describe('COLOUR_ROLES', () => {
       const minimum = MINIMUM[role];
 
       if (minimum !== undefined) {
-        expect(ratioOf(tokens, path, on), `${path} as ${role}`).toBeGreaterThan(
-          minimum - 1e-9
-        );
+        expect(
+          ratioOf(tokens, path, on),
+          `${path} as ${role}`
+        ).toBeGreaterThanOrEqual(minimum);
       }
     }
   });

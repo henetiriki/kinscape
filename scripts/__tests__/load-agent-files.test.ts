@@ -239,7 +239,7 @@ describe('the generated design files in review.md', () => {
       'If a deleted card image has a card in `CARDS` on the PR head, report one finding.'
     );
     expect(review).toContain(
-      'Report no finding for any other commit that only deletes them.'
+      'Report no finding for any other commit that only [deletes them](../../design/CANVAS.md#who-deletes-a-generated-file).'
     );
     expect(review).toContain(
       'If another non-merge commit whose message is not `chore: export and render design snapshots` changes them, report one finding.'

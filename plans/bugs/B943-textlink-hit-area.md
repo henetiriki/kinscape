@@ -2,7 +2,7 @@
 
 - **Spec:** #943 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05), [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The Relationships link in `PersonRow` is a `TextLink`. #945 holds its `UNDER_44`
 - **B.** Remove the #945 row, and leave #945 open. Its own plan checks the PersonRow layout, for example a tap between the row link and the Relationships link. Cost: one more plan and PR.
 - **Other:** your own.
 
-Recommended: A, because the fix covers the link with no change to `PersonRow`, and the hit area only grows up and down, away from the row link.
+**Answer: A** (@henetiriki)
 
 If the #945 row still fails after the fix, D1 has no effect, and the row stays.
 

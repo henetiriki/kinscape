@@ -1,16 +1,17 @@
 name: 'Claude: Plan'
 
 # The title shown for each run in the Actions tab:
-#   "Plan: <title>"         - the repo owner (the tech lead) marked a Spec, Bug or Chore ready for the agent,
-#                             and its author is the owner, a member, a collaborator or the agent App, so
-#                             Claude drafts a plan
+#   "Plan: <title>"         - the repo owner (the tech lead) marked an issue ready for the agent, and its
+#                             author is the owner, a member, a collaborator or the agent App, so the gate
+#                             runs. The gate stops quietly unless the issue is a Spec, Bug or Chore:
+#                             the `labeled` event is not trusted to carry `issue.type`
+#                             (scripts/agent-gate.mts reads the Type from the API).
 #   "Skipped Plan: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
-    contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name) &&
     (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
       github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     github.actor == github.repository_owner &&
@@ -40,10 +41,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Runs when someone adds the "status: ready-for-agent" label to an open Spec, Bug or Chore (not
-  # to a closed one or any other kind of issue) and that person is the repo owner: only the tech lead
-  # sets that label (how-we-work.md), and the PO's write access would otherwise start a run. The shared
-  # runner checks the plan can start, then Claude writes the plan and opens a draft PR and stops
+  # Runs when someone adds the "status: ready-for-agent" label to an open issue (not a closed one) and
+  # that person is the repo owner: only the tech lead sets that label (how-we-work.md), and the PO's
+  # write access would otherwise start a run. The shared runner checks the plan can start, including
+  # that the issue is a Spec, Bug or Chore, then Claude writes the plan and opens a draft PR and stops
   # to wait for the tech lead. The runner comes from main, like the agent files.
   plan:
     # The Actions graph shows the runner's jobs under this name: "Plan / Gate", "Plan / Run Claude", "Plan / Result".
@@ -51,7 +52,6 @@ jobs:
     if: |
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
-      contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name) &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       github.actor == github.repository_owner

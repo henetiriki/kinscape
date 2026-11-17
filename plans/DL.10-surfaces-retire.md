@@ -2,7 +2,7 @@
 
 - **Spec:** #911
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05), [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -35,7 +35,7 @@ The Spec names no change to `app/design-kit/inputs/`. After the surfaces folder 
 - **B.** Keep the code. Add a unit test that renders `Measurements` with `wide`.
 - **Other:** your own.
 
-Recommended: A, because the code-rules say to remove dead code, and a test of a dead prop proves nothing.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

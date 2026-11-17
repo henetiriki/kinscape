@@ -1856,11 +1856,11 @@ describe('the fix-review workflow', () => {
     const rule = text.slice(failed);
     const at = indexIn(rule, 'the failed-push rule');
     const order = [
-      'git merge origin/<branch>',
+      'git merge origin/<headRefName>',
       'Run the checks again',
       'Push once more',
-      'git merge --abort',
-      'If the merge fails or the second push fails, post one PR comment',
+      'If the merge fails, run `git merge --abort`. Push nothing. Post the failure comment',
+      'If the second push fails, post the failure comment',
       'the fixes are not on the branch',
     ].map(at);
 

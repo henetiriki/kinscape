@@ -6,7 +6,7 @@
 
 ## Approach
 
-The build deletes the board and its last tests, by the retirement steps of DL.11 (#912). It deletes `app/design-kit/states/` and the two screen entries, and adds the two image names to `NO_ENTRY`. In `e2e/design-kit.spec.ts`, the entry "Component states" in `BOARD_LINKS` gets `gone: true`, the same field that the DL.11 PR (#942) adds. The index test checks the href of a gone board and does not click it. The nav tests skip a gone board. A new test opens `/design-kit/states` and expects a 404. No canvas, `design/source/` or JPG file changes, so the design system steps do not apply.
+The build deletes the board and its last tests, by the retirement steps of DL.11 (#912). It deletes `app/design-kit/states/` and the two screen entries, and adds the two image names to `NO_ENTRY`. In `e2e/design-kit.spec.ts`, the entry "Component states" in `BOARD_LINKS` gets `gone: true`. #942 (DL.11) added the field, the gone-board branch of the index test and the nav filter to `main`. The test "a board that is gone gives a 404" loops over each board with `gone`, so it covers `/design-kit/states`. No canvas, `design/source/` or JPG file changes, so the design system steps do not apply.
 
 ## Decisions
 
@@ -41,14 +41,13 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
    2. Delete the helper `matrix`, because no test uses it after step 4.1.
    3. Remove `'states'` from the two phone loops. Change their comment to name only the boards that the loops open.
    4. Give the entry "Component states" of `BOARD_LINKS` the field `gone: true`, as D1 says.
-   5. Add the test "the states board gives a 404". It opens `'/design-kit/states'` as plain text and expects status 404.
+   5. Make the test "a board that is gone gives a 404" loop over each board of `BOARD_LINKS` with `gone`. It expects status 404 for each.
 5. Run the search of check 1: `git grep -n "design-kit/states" -- app e2e lib design/screens.json`. Paste the output in the PR.
 6. Run `git diff main --stat -- design/canvas design/source 'design/*.jpg'`. Paste the empty output in the PR.
 7. Run each check in `AGENTS.md` › Commands, and `npm run design:check`.
 
 ## Risks
 
-- **First retirement.** If this PR merges before #942, it is the first retirement. On `main`, the checks that read `design/screens.json` are `lib/design/sweep.mts` (an image with no entry passes if `NO_ENTRY` holds it), `app/design-kit/__tests__/boards.test.ts` (each entry needs a `BOARDS` row, not the reverse), `e2e/widths.spec.ts` and `e2e/design-check.spec.ts` (each opens only the listed routes). `lib/design/__tests__/shots.test.ts` uses the name `style-4-states` as an input only. No check needs an entry for each canvas board. If a check fails for that reason, stop and comment the check and the error on #893.
 - **Coverage.** The unit tests without `app/design-kit/states/` gave 100% on `main` (6057 statements, 3492 branches). No kept file loses a branch.
 - **A missed test.** On `main`, only `e2e/design-kit.spec.ts` names the route. `e2e/widths.spec.ts` and the design check read the route from `design/screens.json`, so step 2 removes it there. If the build finds another test that opens the board, follow the first concern of the Spec.
 
@@ -57,7 +56,7 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 | Acceptance check                                                                                  | Proven by                                                      |
 | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | 1. Only the kit bar and kit menu unit tests and `e2e/design-kit.spec.ts` hold `design-kit/states` | The `git grep` output of step 5 in the PR                      |
-| 2. `/design-kit/states` gives a 404                                                               | The new test "the states board gives a 404"                    |
+| 2. `/design-kit/states` gives a 404                                                               | The test "a board that is gone gives a 404"                    |
 | 3. `/design-kit` and each board left match their snapshots                                        | `npm run design:check`                                         |
 | 4. No canvas, source or JPG change                                                                | The `git diff --stat` output of step 6 in the PR               |
 | 5. Unit tests, types, lint and e2e pass                                                           | `npm test`, `npm run typecheck`, `npm run lint`, `npm run e2e` |
@@ -65,8 +64,3 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 ## Out of scope
 
 As the Spec says: the `SG-Controls` boards, their files, their `DESIGN.md` rows and sentence, and the two `NO_ENTRY` names go in DL.21 (#929).
-
-## Deviations
-
-- #942 is on `main`. The PR keeps the `gone` field and the nav filter of `main` and adds none. The 404 test loops over each board with `gone`, so no second test exists. This keeps the route `/design-kit/states` as plain text in `BOARD_LINKS` only.
-- The "First retirement" risk does not apply: #942 is the first retirement.

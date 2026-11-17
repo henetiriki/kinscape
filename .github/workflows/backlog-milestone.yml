@@ -6,9 +6,10 @@ name: 'Backlog: Inherit milestone'
 # The title shown for each run in the Actions tab: "Milestone: <title>" for a Spec filed by the
 # owner, a member, a collaborator or the agent App, a PR from this repo, or "Milestone: backfill" for
 # a manual run; "Skipped Milestone: <title>" for any other issue or PR. Repeats the job's `if:`
-# (run-name cannot see job results): change them together. The event may not carry `issue.type`, so an
-# issue with no Type in the event passes both, and the script reads the Type from the API
-# (scripts/__tests__/issue-type-gates.test.ts).
+# (run-name cannot see job results): change them together.
+# The event may not carry `issue.type`. An issue with no Type in the event passes both conditions.
+# The script then reads the Type from the API. `scripts/__tests__/issue-type-gates.test.ts` fails
+# if a condition tests the Type with no such guard.
 run-name: >-
   ${{
     github.event_name == 'workflow_dispatch' && 'Milestone: backfill' ||

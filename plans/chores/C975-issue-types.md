@@ -1,7 +1,7 @@
 # Plan: C975: Add the KinScape issue Types and set them on every issue
 
 - **Spec:** #975
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ The backfill script lists all issues with `gh issue list --state all --json numb
 - **B.** TypeScript, `scripts/backfill-issue-types.mts`, with tests at 100% coverage.
 - **Other:** your own.
 
-Recommended: A, because it calls `gh` like the other `scripts/github/` files, and the Chore checks it on live issues.
+**Answer: A** (@henetiriki)
 
 **D2 · A row in `docs/repo-settings.md`** · Decides: Tech lead
 
@@ -29,7 +29,7 @@ Recommended: A, because it calls `gh` like the other `scripts/github/` files, an
 - **B.** Change no doc.
 - **Other:** your own.
 
-Recommended: A, because otherwise the doc omits a setting.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -18,7 +18,7 @@ export type Card = {
   width?: number;
 };
 
-/** A colour token's role and, if the role has a least contrast, the token that it is measured on (`colour.surface` if `on` is unset). */
+/** The role of a colour token. If the role has a least contrast, `on` names the token that the contrast uses. */
 export type ColourRole = {
   on?: string;
   path: string;
@@ -65,7 +65,7 @@ export type Result = {
   percent: number;
 };
 
-/** How a colour token is used. Only `text` and `border` have a least contrast. */
+/** The use of a colour token. Only `text` and `border` have a least contrast. */
 export type Role =
   | 'border'
   | 'decorative'

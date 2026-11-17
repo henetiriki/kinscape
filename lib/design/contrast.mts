@@ -43,7 +43,7 @@ export const contrastRatio = (a: string, b: string): number => {
   return (light + 0.05) / (dark + 0.05);
 };
 
-/** A ratio rounded to the nearest 0.1, as the colour board shows it: `4.6:1`. */
+/** A ratio rounded to the nearest 0.1, as the role sentence of a design token shows it: `4.6:1`. */
 export const formatRatio = (ratio: number): string => `${ratio.toFixed(1)}:1`;
 
 /** The resolved value at a token path such as `colour.brand` or `map.hatch.colour`. */
@@ -57,9 +57,9 @@ export const valueAt = (tokens: Tree, path: string): string => {
   return String(node);
 };
 
-/** The unrounded contrast of a token on another (`colour.surface` unless `on` says). */
-export const ratioOf = (
-  tokens: Tree,
-  path: string,
-  on = 'colour.surface'
-): number => contrastRatio(valueAt(tokens, path), valueAt(tokens, on));
+/** The token that a contrast uses when a role names none. */
+export const DEFAULT_ON = 'colour.surface';
+
+/** The unrounded contrast of a token on another (`DEFAULT_ON` unless `on` says). */
+export const ratioOf = (tokens: Tree, path: string, on = DEFAULT_ON): number =>
+  contrastRatio(valueAt(tokens, path), valueAt(tokens, on));

@@ -1,9 +1,9 @@
-/** How each colour token is used, and what it is measured on (NFR-06). `notes` in `design/tokens.json` holds the use text. */
+/** The role of each colour token, and the token that its contrast uses (NFR-06). `notes` in `design/tokens.json` holds the use text. */
 
 import type { Tree } from '#ks/design/types.ts';
 import type { ColourRole, Role } from '#ks/lib/design/types.ts';
 
-import { formatRatio, ratioOf } from '#ks/lib/design/contrast.mts';
+import { DEFAULT_ON, formatRatio, ratioOf } from '#ks/lib/design/contrast.mts';
 import { systemName } from '#ks/lib/design/css.mts';
 
 /** The least contrast a role may show: text 4.5, a border 3. */
@@ -65,9 +65,9 @@ const sentence = (tokens: Tree, { on, path, role }: ColourRole): string => {
     return `Role: ${role}.`;
   }
 
-  const target = on ?? 'colour.surface';
+  const target = on ?? DEFAULT_ON;
 
-  return `Role: ${role}. Contrast ${formatRatio(ratioOf(tokens, path, on))} on ${systemName(target.split('.'))} (needs ${minimum}:1).`;
+  return `Role: ${role}. Contrast ${formatRatio(ratioOf(tokens, path, target))} on ${systemName(target.split('.'))} (needs ${minimum}:1).`;
 };
 
 /** One sentence for each entry of `path`, for the usage text of its token. */

@@ -6,7 +6,7 @@
 
 ## Approach
 
-A new list `COLOUR_ROLES` in `lib/design/roles.mts` holds the path, the role and the "on" path of each entry of the colour board, with the changes of Spec item 1 (#917 D3, D4). `valueAt` and `ratioOf` move to `lib/design/contrast.mts`, beside `contrastRatio` and `formatRatio`. `roleSentences` in `roles.mts` makes the sentences for one token path. `systemTokens` adds them to the usage text of each `colour` and `map` token. The private `nameOf` of `system.mts` moves to `css.mts` as `systemName`, so that the token list and the sentence make a name in one place. Then the board retires by the DL.11 steps. `formatColour` has no user after the board goes, so it goes with its test.
+A new list `COLOUR_ROLES` in `lib/design/roles.mts` holds the path, the role and the "on" path of each entry of the colour board. The list has the changes of Spec item 1 (#917 D3, D4). `valueAt` and `ratioOf` move to `lib/design/contrast.mts`, beside `contrastRatio` and `formatRatio`. `roleSentences` in `roles.mts` makes the sentences for one token path. `systemTokens` adds them to the usage text of each `colour` and `map` token. The private `nameOf` of `system.mts` moves to `css.mts` as `systemName`, so that the token list and the sentence make a name in one place. Then the board retires by the DL.11 steps. `formatColour` has no user after the board goes, so it goes with its test.
 
 ## Files that change
 
@@ -66,3 +66,5 @@ A new list `COLOUR_ROLES` in `lib/design/roles.mts` holds the path, the role and
 - `lib/design/__tests__/shots.test.ts` keeps `style-2-colour-phone` as a name for `shotFor`. The JPG stays until DL.21.
 
 ## Deviations
+
+- `lib/design/contrast.mts` also exports `DEFAULT_ON`, the default of `ratioOf`. `roles.mts` uses it, so that the sentence and the ratio name one token (review of #974).

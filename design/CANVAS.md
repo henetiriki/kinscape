@@ -6,7 +6,16 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
-The workflow also renders the card image of each component card in the pinned Playwright image. It commits those that changed. The card images are in `design/cards/`. Nobody edits them by hand.
+The workflow also renders the card image of each component card (in `design/cards/`) in the pinned Playwright image. It commits those that changed. Nobody edits them by hand. A deletion follows [the deletion rule](#who-deletes-a-generated-file).
+
+### Who deletes a generated file
+
+The tech lead, or a local session that the tech lead starts, deletes each snapshot and JPG of a board, and each card image of a component card. Delete a file only if its board is not on the canvas, or its card is not in `CARDS`, on the same branch. The same pull request removes these records of a deleted board:
+
+- Its row in the Screens table of `design/DESIGN.md`.
+- Its name in `NO_ENTRY`, or its entry in `design/screens.json`.
+- Each entry in `snapshots` and `links` of `design/canvas/export.json` that names the board or its snapshots.
+- One from each snapshot count (`lib/design/__tests__/design.test.ts`, `scripts/__tests__/design-export.test.ts`) for each snapshot of the board.
 
 ## Changing the design system
 
@@ -18,7 +27,7 @@ The workflow also renders the card image of each component card in the pinned Pl
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
   4. Run "Updating the install" (4.1 to 4.7).
   5. Run "Refreshing the canvas copy" (5.1 to 5.5).
-  6. Push the branch. The tech lead runs the workflow Design: Render snapshots on it, because a component change changes its card images. If a board shows the change, step 7 applies.
+  6. Push the branch. The tech lead runs the workflow Design: Render snapshots on it. If a board shows the change, step 7 applies.
   7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)). It runs "Refreshing the canvas copy" (5.1 to 5.5). It pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local session. The session needs a signed-in account.
@@ -35,12 +44,6 @@ After a `/publish-design-system` run that sends files, the canvas still holds th
 - **4.6** Read the canvas folder again. Report each file whose sha256 differs from the design system.
 - **4.7** Ask the person to open the canvas and check that the new cards render.
 
-Fallback, without the `Artifact` tool:
-
-- Use `copy_file` for each changed file.
-- Remove the deleted files.
-- Set the entry's `version` and `copiedAt`.
-
 To run the steps, paste this prompt into Claude Code:
 
 ```text
@@ -54,13 +57,11 @@ Change nothing else on the canvas. Touch no board. Leave the repo alone.
 
 Refresh `canvas/` after a board changes and after each install update. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
 
-- **5.1** `list` the canvas with `scope: "files"` (its link is line 1 of `canvas/VERSION`). `list` shows sizes, not hashes.
+- **5.1** `list` the canvas with `scope: "files"` (its link is line 1 of `canvas/VERSION`).
 - **5.2** `read` each file with `paths` into `canvas/project/` (long files in parts). Compare its `sha256` from `read` with `shasum -a 256` of the repo copy. Files under `project/ds/kinscape/` come from `.design-system/project/`.
 - **5.3** Set line 2 of `canvas/VERSION` to the version that `list` reports.
 - **5.4** Run `npm run design:export`. It prints "No snapshot changed" unless a board changed. With no Chromium, skip it.
 - **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes: step 7 renders the snapshots.
-
-Fallback, without the `Artifact` tool: use `list_files` and `read_file`. If `list_files` refuses with "written to by someone outside your organization", ask Claude in a chat on the canvas to read each changed file and give it to you.
 
 To run the steps, paste this prompt into Claude Code:
 
@@ -71,7 +72,7 @@ Follow "Refreshing the canvas copy" in design/CANVAS.md, steps 5.1 to 5.5.
 
 ## Reading a board
 
-A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>` on the canvas (link: line 1 of `canvas/VERSION`) with `read` and `paths` (`read_file` without the `Artifact` tool). If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked.
+A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>` on the canvas (link: line 1 of `canvas/VERSION`) with `read` and `paths`. If Claude Code can't build from it, build from the board's snapshot in `source/`. Record in the PR which worked.
 
 ## Drawing a board
 

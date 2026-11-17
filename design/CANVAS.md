@@ -15,7 +15,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
 - Its row in the Screens table of `design/DESIGN.md`.
 - Its name in `NO_ENTRY`, or its entry in `design/screens.json`.
 - Each entry in `snapshots` and `links` of `design/canvas/export.json` that names the board or its snapshots.
-- Lower each snapshot count (`lib/design/__tests__/design.test.ts`, `scripts/__tests__/design-export.test.ts`) by one for each snapshot of the board.
+- Each snapshot count in `lib/design/__tests__/design.test.ts` and `scripts/__tests__/design-export.test.ts`, lowered by one for each snapshot of the board.
 
 ## Changing the design system
 

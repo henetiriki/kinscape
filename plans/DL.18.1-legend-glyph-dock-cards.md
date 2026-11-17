@@ -88,6 +88,12 @@ The tech lead, or a local Claude Code session that the tech lead starts, runs st
 | 9                | The tech lead opens the design system.                                                           |
 | 10               | Command output in the PR, with 100% coverage.                                                    |
 
+## Deviations
+
+- `scripts/design-system.mts`: `describeControl` accepts a control with no parameter, because `Legend` takes no prop. The `README.md` of `Legend` has no props table, and `design-system.test.ts` expects that.
+- `e2e/gallery-looks.spec.ts`: the `UNDER_44` list names the `DateDock` controls under 44px (Bug #988). D1 option A filed Bug #987.
+- Card heights keep the start values of step 5: this run cannot compare card images.
+
 ## Out of scope
 
 - A card state for the phone sheet form of `DateDock`.

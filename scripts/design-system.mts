@@ -129,15 +129,18 @@ const describeControl = (
     .getTypeOfSymbolAtLocation(symbol, file)
     .getCallSignatures();
   const [parameter] = signature.getParameters();
-  const parameterType = checker.getTypeOfSymbolAtLocation(parameter, file);
-  const all = checker.getPropertiesOfType(parameterType);
+  // A control with no props, such as `Legend`, has no parameter.
+  const parameterType = parameter
+    ? checker.getTypeOfSymbolAtLocation(parameter, file)
+    : undefined;
+  const all = parameterType ? checker.getPropertiesOfType(parameterType) : [];
   const isOwn = (prop: ts.Symbol): boolean =>
     prop.declarations!.some(
       declaration =>
         !declaration.getSourceFile().fileName.includes('/node_modules/')
     );
   const own = all.filter(isOwn);
-  const forms = parameterType.isUnion()
+  const forms = parameterType?.isUnion()
     ? parameterType.types.map(member =>
         checker
           .getPropertiesOfType(member)

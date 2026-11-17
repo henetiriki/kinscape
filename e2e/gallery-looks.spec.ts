@@ -80,6 +80,21 @@ const UNDER_44: Record<string, readonly string[]> = {
     'SelectField, SelectField · active, select  CapeNatalTransvaal',
     'SelectField, SelectField · focus, select  CapeNatalTransvaal',
   ],
+  '#988: the slider is 28px tall, each epoch button 36px and each segment label 36px':
+    [
+      ...[
+        'DateDock · Map date',
+        'DateDock · with epochs',
+        'DateDock · with contested claims',
+      ].flatMap(caption => [
+        `DateDock, ${caption}, label  1`,
+        `DateDock, ${caption}, label  5`,
+        `DateDock, ${caption}, input range Map date`,
+      ]),
+      ...[1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994, 'Today'].map(
+        epoch => `DateDock, DateDock · with epochs, button button ${epoch}`
+      ),
+    ],
 };
 const UNDER_44_KEYS: ReadonlySet<string> = new Set(
   Object.values(UNDER_44).flat()

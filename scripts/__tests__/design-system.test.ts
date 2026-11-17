@@ -265,7 +265,7 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(49);
+    expect(names).toHaveLength(52);
   });
 
   it.each(names)(
@@ -275,7 +275,11 @@ describe('the control cards', () => {
 
       expect(() => checkReadme(name, text)).not.toThrow();
       expect(text.split('\n')[0]).not.toMatch(/^#/);
-      expect(text).toContain('| Prop | Type | Required | Description |');
+
+      // `Legend` takes no prop, so its README has no props table.
+      expect(text.includes('| Prop | Type | Required | Description |')).toBe(
+        name !== 'Legend'
+      );
     }
   );
 
@@ -354,7 +358,7 @@ describe('the gallery', () => {
         ...VENDOR.map(({ file }) => `gallery/vendor/${file}`),
       ].toSorted()
     );
-    expect(names).toHaveLength(49);
+    expect(names).toHaveLength(52);
   });
 
   it('holds each preview.html as galleryHtml makes it', () => {

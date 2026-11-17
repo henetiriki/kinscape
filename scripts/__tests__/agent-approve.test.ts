@@ -78,7 +78,7 @@ describe('run', () => {
     compare = 'diverged',
     draft = true,
     files = [PATH, 'src/other.ts'],
-    issues = { 8: ['type: chore', DEV] },
+    issues = { 8: [DEV] },
     prLabels = [],
     reviews = [],
     since = [],
@@ -439,7 +439,7 @@ describe('run', () => {
     it('stops quietly for a plan whose only commit since the review’s is its approval', () => {
       fakeGh({
         compare: 'ahead',
-        issues: { 8: ['type: chore', AGENT] },
+        issues: { 8: [AGENT] },
         since: ['plan(C500): approved by @tech-lead'],
         text: plan('approved'),
       });
@@ -455,7 +455,7 @@ describe('run', () => {
     it('stops quietly for a plan built since the review, comparing nothing', () => {
       fakeGh({
         draft: false,
-        issues: { 8: ['type: chore', AGENT] },
+        issues: { 8: [AGENT] },
         since: ['plan(C500): approved by @tech-lead', 'C.500: build it'],
         text: plan('approved'),
       });
@@ -655,7 +655,7 @@ describe('run', () => {
 
     it('moves the label to ready-for-dev when the commit fails', () => {
       fakeGh({
-        issues: { 8: ['type: chore', AGENT] },
+        issues: { 8: [AGENT] },
         reviews: [owner('D1: A\nD2: A', '2026-11-02T10:00:00Z')],
       });
 
@@ -694,7 +694,7 @@ describe('run', () => {
     });
 
     it('goes to ready-for-dev when a decision is open, even if it is on ready-for-agent', () => {
-      fakeGh({ issues: { 8: ['type: chore', AGENT] } });
+      fakeGh({ issues: { 8: [AGENT] } });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(written).toEqual(['go=false']);
@@ -711,7 +711,7 @@ describe('run', () => {
     it('moves each issue the PR closes, and none in another repository', () => {
       fakeGh({
         closes: [{ number: 8 }, { number: 9 }, { number: 10, repo: 'a/b' }],
-        issues: { 10: [DEV], 8: [DEV], 9: [DEV, 'type: spec'] },
+        issues: { 10: [DEV], 8: [DEV], 9: [DEV, 'hand-back'] },
         reviews: answered,
       });
 
@@ -735,14 +735,14 @@ describe('run', () => {
     });
 
     it('is not moved for a blocked issue', () => {
-      fakeGh({ issues: { 8: ['type: chore', BLOCKED] }, reviews: answered });
+      fakeGh({ issues: { 8: [BLOCKED] }, reviews: answered });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(edits()).toEqual([]);
     });
 
     it('is not moved for an issue already on its target', () => {
-      fakeGh({ issues: { 8: ['type: chore', AGENT] }, reviews: answered });
+      fakeGh({ issues: { 8: [AGENT] }, reviews: answered });
 
       expect(run(['504'], ENV, gh, write)).toBe(0);
       expect(edits()).toEqual([]);

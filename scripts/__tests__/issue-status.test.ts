@@ -26,7 +26,7 @@ type World = {
   // Throws when the callback returns true for a gh call's arguments.
   fail?: (args: string[]) => boolean;
   files?: { filename: string; previous_filename?: string }[];
-  // issue number -> its labels
+  // issue number -> its Type name (one of TYPE_NAMES) and its labels
   issues?: Record<number, string[]>;
 };
 
@@ -54,7 +54,8 @@ const approval = (association: string, state = 'approved'): Review => ({
   state,
 });
 
-const SPEC = ['type: spec', DEV];
+const SPEC = ['Spec', DEV];
+const TYPE_NAMES = ['Intent', 'Spec', 'Bug', 'Chore'];
 
 describe('run', () => {
   let gh: ReturnType<typeof vi.fn<Gh>>;
@@ -87,8 +88,12 @@ describe('run', () => {
       }
 
       if (args[1] === 'view') {
+        const names = issues[Number(args[2])] ?? [];
+        const type = names.find(name => TYPE_NAMES.includes(name));
+
         return JSON.stringify({
-          labels: (issues[Number(args[2])] ?? []).map(name => ({ name })),
+          issueType: type === undefined ? null : { name: type },
+          labels: names.filter(name => name !== type).map(name => ({ name })),
         });
       }
 
@@ -150,7 +155,7 @@ describe('run', () => {
     it('row 1: a plan PR opening moves its issue to ready-for-dev', () => {
       expect(
         exec('pull_request', event('opened', planPr()), {
-          issues: { 8: ['type: spec', AGENT] },
+          issues: { 8: ['Spec', AGENT] },
         })
       ).toBe(0);
       expect(edited()).toEqual([
@@ -162,7 +167,7 @@ describe('run', () => {
       exec(
         'pull_request',
         event('opened', planPr({ labels: [{ name: 'hand-back' }] })),
-        { issues: { 8: ['type: chore', AGENT] } }
+        { issues: { 8: ['Chore', AGENT] } }
       );
 
       expect(edited()).toEqual([
@@ -198,7 +203,7 @@ describe('run', () => {
 
     it('row 2: a user-visible Bug PR moves to ready-for-po', () => {
       exec('pull_request', event('ready_for_review', pr()), {
-        issues: { 8: ['type: bug', DEV] },
+        issues: { 8: ['Bug', DEV] },
       });
 
       expect(edited()[0].slice(-1)).toEqual([PO]);
@@ -206,7 +211,7 @@ describe('run', () => {
 
     it('row 3: a Chore PR moves to ready-for-dev, whatever it changes', () => {
       exec('pull_request', event('ready_for_review', pr()), {
-        issues: { 8: ['type: chore', AGENT] },
+        issues: { 8: ['Chore', AGENT] },
       });
 
       expect(edited()).toEqual([
@@ -220,7 +225,7 @@ describe('run', () => {
     it('row 3: a Spec PR that changes only invisible files moves to ready-for-dev', () => {
       exec('pull_request', event('ready_for_review', pr()), {
         files: [{ filename: 'docs/a.md' }, { filename: 'scripts/x.mts' }],
-        issues: { 8: ['type: spec', AGENT] },
+        issues: { 8: ['Spec', AGENT] },
       });
 
       expect(edited()[0].slice(-1)).toEqual([DEV]);
@@ -235,7 +240,7 @@ describe('run', () => {
             body: 'Closes #8\n\n## For the PO\n\n<!-- Plain-language: what to try. -->\n',
           })
         ),
-        { issues: { 8: ['type: spec', AGENT] } }
+        { issues: { 8: ['Spec', AGENT] } }
       );
 
       expect(edited()[0].slice(-1)).toEqual([DEV]);
@@ -250,7 +255,7 @@ describe('run', () => {
         exec(
           'pull_request_review',
           event('submitted', pr(), approval(association)),
-          { issues: { 8: ['type: spec', PO] } }
+          { issues: { 8: ['Spec', PO] } }
         );
 
         expect(edited()).toEqual([
@@ -352,7 +357,7 @@ describe('run', () => {
   describe('which issues', () => {
     it('leaves a blocked issue alone', () => {
       exec('pull_request', event('opened', planPr()), {
-        issues: { 8: ['type: spec', 'status: blocked'] },
+        issues: { 8: ['Spec', 'status: blocked'] },
       });
 
       expect(edits()).toHaveLength(0);
@@ -361,13 +366,13 @@ describe('run', () => {
     it('changes nothing when the issue is on its target', () => {
       expect(
         exec('pull_request', event('opened', planPr()), {
-          issues: { 8: ['type: spec', DEV] },
+          issues: { 8: ['Spec', DEV] },
         })
       ).toBe(0);
       expect(edits()).toHaveLength(0);
     });
 
-    it.each([[['type: intent']], [['bug']], [[]]])(
+    it.each([[['Intent']], [['bug']], [[]]])(
       'ignores an issue labelled %j',
       labels => {
         exec('pull_request', event('opened', planPr()), {
@@ -380,7 +385,7 @@ describe('run', () => {
 
     it('removes every other status label, and adds the target', () => {
       exec('pull_request', event('opened', planPr()), {
-        issues: { 8: ['type: spec', 'status: draft', AGENT] },
+        issues: { 8: ['Spec', 'status: draft', AGENT] },
       });
 
       expect(edited()).toEqual([
@@ -400,7 +405,7 @@ describe('run', () => {
 
     it('only adds the target when there is no status label', () => {
       exec('pull_request', event('opened', planPr()), {
-        issues: { 8: ['type: spec'] },
+        issues: { 8: ['Spec'] },
       });
 
       expect(edited()).toEqual([['issue', 'edit', '8', '--add-label', DEV]]);
@@ -409,7 +414,7 @@ describe('run', () => {
     it('moves each of several issues by its own type', () => {
       exec('pull_request', event('ready_for_review', pr()), {
         closing: [{ number: 8 }, { number: 9 }],
-        issues: { 8: ['type: spec', AGENT], 9: ['type: chore', AGENT] },
+        issues: { 8: ['Spec', AGENT], 9: ['Chore', AGENT] },
       });
 
       expect(edited().map(args => [args[2], args.at(-1)])).toEqual([
@@ -428,7 +433,7 @@ describe('run', () => {
     ) => {
       exec('pull_request', event('ready_for_review', pr({ body })), {
         files,
-        issues: { 8: ['type: spec', AGENT] },
+        issues: { 8: ['Spec', AGENT] },
       });
 
       return edited()[0].at(-1);
@@ -534,7 +539,7 @@ describe('run', () => {
         exec('pull_request', event('opened', planPr()), {
           closing: [{ number: 8 }, { number: 9 }],
           fail: args => args[2] === '8',
-          issues: { 8: SPEC, 9: ['type: chore', AGENT] },
+          issues: { 8: SPEC, 9: ['Chore', AGENT] },
         })
       ).toBe(1);
       expect(edited().map(args => args[2])).toEqual(['9']);
@@ -545,7 +550,7 @@ describe('run', () => {
         exec('pull_request', event('opened', planPr()), {
           closing: [{ number: 8 }, { number: 9 }],
           fail: args => args[1] === 'edit' && args[2] === '8',
-          issues: { 8: ['type: spec', AGENT], 9: ['type: chore', AGENT] },
+          issues: { 8: ['Spec', AGENT], 9: ['Chore', AGENT] },
         })
       ).toBe(1);
       expect(edited().map(args => args[2])).toEqual(['8', '9']);
@@ -562,7 +567,7 @@ describe('run', () => {
         exec('pull_request', event('ready_for_review', pr()), {
           closing: [{ number: 8 }, { number: 9 }],
           fail: args => args[0] === 'api',
-          issues: { 8: ['type: spec', AGENT], 9: ['type: chore', AGENT] },
+          issues: { 8: ['Spec', AGENT], 9: ['Chore', AGENT] },
         })
       ).toBe(1);
       expect(edited().map(args => [args[2], args.at(-1)])).toEqual([

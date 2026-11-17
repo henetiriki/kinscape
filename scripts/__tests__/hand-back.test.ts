@@ -428,7 +428,7 @@ describe('run', () => {
     expect(
       go({
         files: [{ filename: '.github/agent/build.md' }],
-        view: { labels: ['type: chore', 'hand-back'] },
+        view: { labels: ['hand-back'] },
       })
     ).toBe(0);
     expect(labelled()).toHaveLength(0);

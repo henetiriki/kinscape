@@ -32,7 +32,9 @@ describe('the App token', () => {
   it('is used by the jobs that act as the bot', () => {
     expect(bots.map(([file, job]) => `${file}:${job}`)).toEqual([
       'actions-pin-update.yml:update-pins',
+      'backlog-interaction-limit.yml:remind',
       'claude-build.yml:approve',
+      'claude-denial-audit.yml:audit',
       'claude-run.yml:gate',
       'claude-run.yml:run',
       'claude-run.yml:return',

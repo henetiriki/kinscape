@@ -10,7 +10,7 @@ name: 'Backlog: Inherit milestone'
 run-name: >-
   ${{
     github.event_name == 'workflow_dispatch' && 'Milestone: backfill' ||
-    (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'type: spec') &&
+    (github.event_name == 'issues' && github.event.issue.type.name == 'Spec' &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       format('Milestone: {0}', github.event.issue.title)) ||
@@ -41,7 +41,7 @@ jobs:
     # job skips fork PRs: their token cannot write.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'type: spec') &&
+      (github.event_name == 'issues' && github.event.issue.type.name == 'Spec' &&
         (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
           github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)) ||
       (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
@@ -57,7 +57,7 @@ jobs:
               o.headers['x-github-api-version'] = '2026-03-10';
             });
             const { owner, repo } = context.repo;
-            const hasLabel = (issue, name) => issue.labels.some((l) => (l.name ?? l) === name);
+            const hasType = (issue, ...names) => names.includes(issue.type?.name);
             const all = (route, params) =>
               github.paginate(route, { owner, repo, state: 'all', per_page: 100, ...params });
 
@@ -101,7 +101,7 @@ jobs:
               }
               const intent = await getIssue(Number(match[1]), spec.number);
               if (!intent) return undefined;
-              if (intent.pull_request || !hasLabel(intent, 'type: intent')) {
+              if (intent.pull_request || !hasType(intent, 'Intent')) {
                 core.warning(`#${spec.number}: #${intent.number} is not an Intent`);
                 return undefined;
               }
@@ -127,7 +127,7 @@ jobs:
                 if (
                   issue &&
                   !issue.pull_request &&
-                  (hasLabel(issue, 'type: spec') || hasLabel(issue, 'type: bug')) &&
+                  hasType(issue, 'Spec', 'Bug') &&
                   issue.milestone
                 ) {
                   return issue.milestone.number;
@@ -142,7 +142,7 @@ jobs:
               const pr = context.payload.pull_request;
               await fill(pr, await prMilestone(pr));
             } else {
-              const specs = await all(github.rest.issues.listForRepo, { labels: 'type: spec' });
+              const specs = await all(github.rest.issues.listForRepo, { type: 'Spec' });
               for (const spec of specs.filter((s) => !s.pull_request)) {
                 await fill(spec, await specMilestone(spec));
               }

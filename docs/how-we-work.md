@@ -87,7 +87,7 @@ Answer with `D1: B` or `D1: other, <your option>`:
 - **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns secrets.
 - **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing.
 
-Each issue has one **type** (`intent`, `spec`, `bug`, `chore`) and one **status** label; the status tells you whose turn it is.
+Each issue has one Type (Intent, Spec, Bug, Chore) and one status label.
 
 | Label                     | Meaning                                                              | Ball is with                                             |
 | ------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------- |

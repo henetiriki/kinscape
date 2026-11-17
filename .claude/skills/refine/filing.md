@@ -8,11 +8,11 @@ After the check round, follow these steps:
 2. Ask "File it now?" as a question of its own. A yes covers the links.
    - If the answer is not yes, file nothing.
    - If the user asks for a link, give one as _Prefilled links_ in `SKILL.md` describes. File nothing.
-3. Read the title prefix and `labels:` from the form in `.github/ISSUE_TEMPLATE/`. If a Chore has a blocker, use `status: blocked` in place of its status label ([Linking issues](../../../docs/how-we-work.md#linking-issues)).
+3. Read the title prefix, `type:` and `labels:` from the form in `.github/ISSUE_TEMPLATE/`. If a Chore has a blocker, use `status: blocked` in place of its status label ([Linking issues](../../../docs/how-we-work.md#linking-issues)).
 4. Write the body to a new file outside the repo, in the scratchpad or `$TMPDIR`.
 5. Write one `### <label>` heading per form box, in the form's order. The Spec-link workflow reads "Intent or milestone". Under an empty optional box, write `_No response_`.
 6. Put the title and each label in single quotes. Write a `'` in the title as `'\''`.
-7. Run `gh issue create --title '<title>' --label '<label>' --body-file <file>` once. Give one `--label` for each form label.
+7. Run `gh issue create --title '<title>' --type <Type> --label '<label>' --body-file <file>` once. Give one `--label` for each form label.
 8. Report the issue number. If step 1 named an issue, set the links as _Links_ says.
 
 ## Links

@@ -1,7 +1,7 @@
 name: 📐 Spec
 description: One slice of a milestone or an accepted Intent. Drafted by Claude.
 title: 'Spec: '
-labels: ['type: spec', 'status: draft']
+labels: ['status: draft']
 type: Spec
 body:
   - type: markdown

@@ -48,8 +48,8 @@ const TARGET = {
   po: `${STATUS}ready-for-po`,
 };
 const BLOCKED = `${STATUS}blocked`;
-const TYPES = ['type: spec', 'type: bug', 'type: chore'];
-const VISIBLE_TYPES = ['type: spec', 'type: bug'];
+const TYPES = ['Spec', 'Bug', 'Chore'];
+const VISIBLE_TYPES = ['Spec', 'Bug'];
 const MAY_MOVE_A_READY_PR = ['OWNER', 'MEMBER', 'COLLABORATOR'];
 
 // Removes HTML comments until none is left (one pass can join the pieces of a new one, as in
@@ -181,19 +181,31 @@ export const run = (
   }
 
   const issues = closing.flatMap(number => {
-    const labels = attempt(`reading #${number}`, (): string[] =>
-      JSON.parse(
-        gh(['issue', 'view', String(number), '--json', 'labels'])
-      ).labels.map(({ name: label }: { name: string }) => label)
+    const issue = attempt(
+      `reading #${number}`,
+      (): { labels: string[]; type: string } => {
+        const {
+          issueType,
+          labels,
+        }: { issueType: { name: string } | null; labels: { name: string }[] } =
+          JSON.parse(
+            gh(['issue', 'view', String(number), '--json', 'labels,issueType'])
+          );
+
+        return {
+          labels: labels.map(({ name: label }) => label),
+          type: issueType?.name ?? '',
+        };
+      }
     );
 
-    return labels?.some(label => TYPES.includes(label)) &&
-      !labels.includes(BLOCKED)
-      ? [{ labels, number }]
+    return issue !== undefined &&
+      TYPES.includes(issue.type) &&
+      !issue.labels.includes(BLOCKED)
+      ? [{ ...issue, number }]
       : [];
   });
-  const isVisibleType = (labels: string[]): boolean =>
-    labels.some(label => VISIBLE_TYPES.includes(label));
+  const isVisibleType = (type: string): boolean => VISIBLE_TYPES.includes(type);
 
   // Rows 2 and 3: the changed files matter only to a Spec or Bug whose PR says what to try.
   let visible: boolean | undefined = false;
@@ -201,7 +213,7 @@ export const run = (
   if (
     move === 'ready' &&
     hasForThePo(pull.body) &&
-    issues.some(({ labels }) => isVisibleType(labels))
+    issues.some(({ type }) => isVisibleType(type))
   ) {
     const files = attempt('listing the changed files', (): Changed[] =>
       gh([
@@ -223,8 +235,8 @@ export const run = (
     );
   }
 
-  for (const { labels, number } of issues) {
-    const visibleType = isVisibleType(labels);
+  for (const { labels, number, type } of issues) {
+    const visibleType = isVisibleType(type);
 
     if (move === 'ready' && visibleType && visible === undefined) {
       continue;

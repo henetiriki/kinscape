@@ -247,7 +247,7 @@ describe('run', () => {
     it('stops a plan quietly when the label is gone', () => {
       quiet(
         ['plan', '5'],
-        { issue: { labels: ['type: spec', 'status: blocked'] } },
+        { issue: { labels: ['status: blocked'] } },
         'the issue no longer has `status: ready-for-agent`'
       );
     });

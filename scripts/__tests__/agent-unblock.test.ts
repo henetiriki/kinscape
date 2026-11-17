@@ -18,6 +18,8 @@ type World = {
     login?: string;
     number: number;
     state?: string;
+    // the issue Type's name
+    type?: string;
   }[];
   // the merged PRs and the paths of each, by PR number
   mergedPrs?: {
@@ -60,12 +62,14 @@ describe('run', () => {
                   login,
                   number,
                   state,
+                  type,
                 }) => ({
                   author_association,
                   body,
                   labels: labels.map(name => ({ name })),
                   number,
                   state: state ?? 'open',
+                  type: type === undefined ? null : { name: type },
                   user: login === undefined ? undefined : { login },
                 })
               )
@@ -154,7 +158,7 @@ describe('run', () => {
 
   it('comments, mentions the owner and swaps the label of a blocked issue', () => {
     fakeGh({
-      blocking: [{ labels: ['type: spec', 'status: blocked'], number: 8 }],
+      blocking: [{ labels: ['status: blocked'], number: 8, type: 'Spec' }],
     });
 
     expect(run(['5'], ENV, gh, append)).toBe(0);
@@ -286,7 +290,7 @@ describe('run', () => {
   // claude-unblock.yml refreshes each listed issue against main (.github/agent/refresh.md).
   describe('the list for the refresh', () => {
     const WITH_OUTPUT = { ...ENV, GITHUB_OUTPUT: OUTPUT };
-    const BLOCKED = ['type: spec', 'status: blocked'];
+    const BLOCKED = ['status: blocked'];
 
     it('names each issue it unblocked and every issue that blocked it, as one line', () => {
       fakeGh({
@@ -470,7 +474,7 @@ describe('run', () => {
   // A Spec that a design change frees gets `status: draft`, so the owner sizes it again.
   describe('a Spec freed by a design change', () => {
     const WITH_OUTPUT = { ...ENV, GITHUB_OUTPUT: OUTPUT };
-    const BLOCKED = ['type: spec', 'status: blocked'];
+    const SPEC = { labels: ['status: blocked'], type: 'Spec' };
     const intent = (value: string) =>
       `### Intent or milestone\n\n${value}\n\n### Requirement IDs covered\n\nMAP-01`;
     const DESIGN = {
@@ -485,7 +489,7 @@ describe('run', () => {
           {
             author_association: 'OWNER',
             body: intent('#12'),
-            labels: BLOCKED,
+            ...SPEC,
             number: 8,
           },
         ],
@@ -518,8 +522,8 @@ describe('run', () => {
       fakeGh({
         ...DESIGN,
         blocking: [
-          { labels: BLOCKED, number: 8 },
-          { labels: BLOCKED, number: 9 },
+          { ...SPEC, number: 8 },
+          { ...SPEC, number: 9 },
         ],
       });
       run(['5'], ENV, gh, append);
@@ -561,7 +565,7 @@ describe('run', () => {
             { number: 6, state: 'closed' },
           ],
         },
-        blocking: [{ author_association: 'OWNER', labels: BLOCKED, number: 8 }],
+        blocking: [{ author_association: 'OWNER', ...SPEC, number: 8 }],
       });
       run(['6'], WITH_OUTPUT, gh, append);
 
@@ -582,7 +586,7 @@ describe('run', () => {
             { number: 6, state: 'closed' },
           ],
         },
-        blocking: [{ labels: BLOCKED, number: 8 }],
+        blocking: [{ ...SPEC, number: 8 }],
         mergedPrs: [
           { closingIssuesReferences: [{ number: 5 }], number: 60 },
           { closingIssuesReferences: [{ number: 6 }], number: 61 },
@@ -596,7 +600,7 @@ describe('run', () => {
 
     it('checks every merged PR that closes a blocker', () => {
       fakeGh({
-        blocking: [{ labels: BLOCKED, number: 8 }],
+        blocking: [{ ...SPEC, number: 8 }],
         mergedPrs: [
           { closingIssuesReferences: [{ number: 5 }], number: 60 },
           { closingIssuesReferences: [{ number: 5 }], number: 61 },
@@ -615,7 +619,7 @@ describe('run', () => {
     ])('reads the Intent box %j', (value, command) => {
       fakeGh({
         ...DESIGN,
-        blocking: [{ body: intent(value), labels: BLOCKED, number: 8 }],
+        blocking: [{ body: intent(value), ...SPEC, number: 8 }],
       });
       run(['5'], ENV, gh, append);
 
@@ -632,7 +636,7 @@ describe('run', () => {
       ['code in backticks', intent('`rm -rf /`')],
       ['a milestone with text', intent('M0; echo')],
     ])('names plain /refine spec for %s', (_, body) => {
-      fakeGh({ ...DESIGN, blocking: [{ body, labels: BLOCKED, number: 8 }] });
+      fakeGh({ ...DESIGN, blocking: [{ body, ...SPEC, number: 8 }] });
       run(['5'], ENV, gh, append);
 
       expect(comments()[0][1]).toContain(
@@ -663,7 +667,7 @@ describe('run', () => {
         },
       ],
     ])('goes to ready-for-dev for %s', (_, world) => {
-      fakeGh({ ...world, blocking: [{ labels: BLOCKED, number: 8 }] });
+      fakeGh({ ...world, blocking: [{ ...SPEC, number: 8 }] });
       run(['5'], ENV, gh, append);
 
       expect(comments()[0][1]).toContain('`status: ready-for-dev`');
@@ -673,12 +677,12 @@ describe('run', () => {
       expect(edits()[0][0].at(-1)).toBe('status: ready-for-dev');
     });
 
-    it.each(['type: bug', 'type: chore'])(
+    it.each(['Bug', 'Chore'])(
       'sends a freed %s to ready-for-dev and reads no PR',
       type => {
         fakeGh({
           ...DESIGN,
-          blocking: [{ labels: [type, 'status: blocked'], number: 8 }],
+          blocking: [{ labels: ['status: blocked'], number: 8, type }],
         });
         run(['5'], ENV, gh, append);
 
@@ -690,7 +694,7 @@ describe('run', () => {
     it('reads no PR for an issue that is not blocked', () => {
       fakeGh({
         ...DESIGN,
-        blocking: [{ labels: ['type: spec', 'status: draft'], number: 8 }],
+        blocking: [{ labels: ['status: draft'], number: 8, type: 'Spec' }],
       });
       run(['5'], ENV, gh, append);
 
@@ -702,8 +706,8 @@ describe('run', () => {
       fakeGh({
         ...DESIGN,
         blocking: [
-          { author_association: 'OWNER', labels: BLOCKED, number: 8 },
-          { author_association: 'OWNER', labels: BLOCKED, number: 9 },
+          { author_association: 'OWNER', ...SPEC, number: 8 },
+          { author_association: 'OWNER', ...SPEC, number: 9 },
         ],
       });
 
@@ -735,8 +739,8 @@ describe('run', () => {
           9: [{ number: 5, state: 'closed' }],
         },
         blocking: [
-          { author_association: 'OWNER', labels: BLOCKED, number: 8 },
-          { author_association: 'OWNER', labels: BLOCKED, number: 9 },
+          { author_association: 'OWNER', ...SPEC, number: 8 },
+          { author_association: 'OWNER', ...SPEC, number: 9 },
         ],
         mergedPrs: [
           { closingIssuesReferences: [{ number: 5 }], number: 60 },

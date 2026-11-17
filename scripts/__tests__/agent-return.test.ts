@@ -130,7 +130,7 @@ describe('run', () => {
     it.each([
       ['blocked', [BLOCKED]],
       ['on ready-for-dev already', [DEV]],
-      ['without a status label', ['type: chore']],
+      ['without a status label', ['hand-back']],
     ])('changes nothing for an issue %s, and reads no PR', (_what, labels) => {
       fakeGh({ issues: { 8: labels } });
 

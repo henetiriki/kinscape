@@ -1,7 +1,7 @@
 # Plan: C938: Stop a branch switch from failing on .git/config in a sandboxed session
 
 - **Spec:** #938
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

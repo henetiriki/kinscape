@@ -2,6 +2,8 @@ import type { PlaywrightWorkerOptions } from '@playwright/test';
 
 import { defineConfig } from '@playwright/test';
 
+import { authStateFor } from '@ks/lib/design/check.mts';
+
 // How the browser is launched. Every project below uses this one object, so
 // all of them run the same Chromium the same way. The top-level `use` further down
 // (the base URL) applies to every project too; a project's own `use` is added on top.
@@ -14,19 +16,21 @@ const use: Partial<PlaywrightWorkerOptions> = {
 };
 
 // Where e2e/auth.setup.ts saves the signed-in session.
-const signedIn = 'test-results/.auth/state.json';
+const signedIn = authStateFor();
 
 // The CI `design` job runs the design project. So the CI `e2e` job sets this to drop that project,
 // and `perf` waits only for `chromium`. Every other run keeps all projects.
+// The memory sign-in has no fixture Accounts, so the design project needs the memory adapters.
+const memorySignIn = process.env.KINSCAPE_MEMORY_SIGN_IN === '1';
 const split = process.env.E2E_SPLIT === '1';
+const noDesign = split || memorySignIn;
 
 // How both servers sign in and store data. By default the memory adapters, which need no database.
 // With KINSCAPE_MEMORY_SIGN_IN=1 (the CI e2e job), the memory sign-in over the Postgres that
 // KINSCAPE_DATABASE_URL names. The empty KINSCAPE_MEMORY_ADAPTERS overrides a value in the shell.
-const adapters: Record<string, string> =
-  process.env.KINSCAPE_MEMORY_SIGN_IN === '1'
-    ? { KINSCAPE_MEMORY_ADAPTERS: '', KINSCAPE_MEMORY_SIGN_IN: '1' }
-    : { KINSCAPE_MEMORY_ADAPTERS: '1' };
+const adapters: Record<string, string> = memorySignIn
+  ? { KINSCAPE_MEMORY_ADAPTERS: '', KINSCAPE_MEMORY_SIGN_IN: '1' }
+  : { KINSCAPE_MEMORY_ADAPTERS: '1' };
 
 export default defineConfig({
   // A stray `test.only` fails the run in CI instead of quietly running one test.
@@ -37,7 +41,13 @@ export default defineConfig({
   // three use the same browser settings (`use`) above.
   projects: [
     // Signs in once through the form and saves the session; the projects below load it.
-    { name: 'setup', testMatch: 'auth.setup.ts', use },
+    // The tests tagged @fixture sign in as a fixture Account, which the memory sign-in lacks.
+    {
+      grepInvert: memorySignIn ? /@fixture/ : undefined,
+      name: 'setup',
+      testMatch: 'auth.setup.ts',
+      use,
+    },
     // The everyday checks: every spec file except the design check and the two gallery specs.
     // Every test runs except the ones tagged @perf (those get their own project below).
     // The gallery specs have their own config, e2e/gallery.config.ts.
@@ -51,9 +61,7 @@ export default defineConfig({
         'design-gallery.spec.ts',
         'gallery-looks.spec.ts',
         // The fixture Accounts exist only under the memory adapters.
-        ...(process.env.KINSCAPE_MEMORY_SIGN_IN === '1'
-          ? ['fixture-accounts.spec.ts']
-          : []),
+        ...(memorySignIn ? ['fixture-accounts.spec.ts'] : []),
       ],
       use: { ...use, storageState: signedIn },
     },
@@ -70,13 +78,13 @@ export default defineConfig({
     // run alone, after the projects above finish (`dependencies`), and other
     // workers don't slow them. If a dependency fails, Playwright skips this one.
     {
-      dependencies: split ? ['chromium'] : ['chromium', 'design'],
+      dependencies: noDesign ? ['chromium'] : ['chromium', 'design'],
       grep: /@perf/,
       name: 'perf',
       testIgnore: 'auth.setup.ts',
       use: { ...use, storageState: signedIn },
     },
-  ].filter(({ name }) => !split || name !== 'design'),
+  ].filter(({ name }) => !noDesign || name !== 'design'),
   reporter: [
     ...(process.env.CI ? [['github'] as const] : []),
     ['list'],

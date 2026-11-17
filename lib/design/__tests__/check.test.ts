@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  authStateFor,
   changedPixels,
   compare,
   outcomeFor,
@@ -9,7 +10,7 @@ import {
   unionMask,
 } from '@ks/lib/design/check.mts';
 
-const known = { snapshots: ['map-desktop'], states: ['open'] };
+const known = { accounts: [], snapshots: ['map-desktop'], states: ['open'] };
 const screen = {
   height: 900,
   mode: 'blocking',
@@ -50,6 +51,50 @@ describe('parseConfig', () => {
   it('rejects a negative threshold', () => {
     expect(() => parseConfig({ screens: [], threshold: -1 }, known)).toThrow(
       /threshold/
+    );
+  });
+
+  // Check 2
+  it('names an entry whose account is not a fixture Account', () => {
+    expect(() =>
+      parseConfig(
+        {
+          screens: [{ ...screen, account: 'nobody@example.com' }],
+          threshold: 1,
+        },
+        { ...known, accounts: ['researcher@example.com'] }
+      )
+    ).toThrow('map-desktop: unknown account "nobody@example.com"');
+    expect(() =>
+      parseConfig(
+        { screens: [{ ...screen, account: 5 }], threshold: 1 },
+        { ...known, accounts: ['researcher@example.com'] }
+      )
+    ).toThrow('map-desktop: unknown account 5');
+  });
+
+  // Check 3
+  it('keeps a fixture account, and gives an entry with none the synthetic Account', () => {
+    const config = parseConfig(
+      {
+        screens: [
+          { ...screen, account: 'researcher@example.com' },
+          { ...screen, name: 'other' },
+        ],
+        threshold: 1,
+      },
+      {
+        accounts: ['researcher@example.com'],
+        snapshots: ['map-desktop', 'other'],
+        states: [],
+      }
+    );
+
+    expect(config.screens[0].account).toBe('researcher@example.com');
+    expect(config.screens[1].account).toBeUndefined();
+    expect(authStateFor()).toBe('test-results/.auth/state.json');
+    expect(authStateFor('researcher@example.com')).toBe(
+      'test-results/.auth/researcher@example.com.json'
     );
   });
 

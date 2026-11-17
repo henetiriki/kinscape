@@ -7,11 +7,13 @@ type Area = { height: number; width: number; x: number; y: number };
 
 type Config = { screens: Screen[]; threshold: number };
 
-type Known = { snapshots: string[]; states: string[] };
+type Known = { accounts: string[]; snapshots: string[]; states: string[] };
 
 type Score = { diff: Uint8Array; differing: number; percent: number };
 
 type Screen = {
+  /** The email of a fixture Account; with none, the entry signs in as the synthetic Account. */
+  account?: string;
   height: number;
   ignore: Area[];
   mode: 'blocking';
@@ -23,6 +25,12 @@ type Screen = {
 
 /** The tallest screen: the browser that `design:check` uses captures no more than this. */
 const MAX_HEIGHT = 8192;
+
+/** The saved session of the setup project: of a fixture Account, or of the synthetic Account. */
+export const authStateFor = (account?: string): string =>
+  account === undefined
+    ? 'test-results/.auth/state.json'
+    : `test-results/.auth/${account}.json`;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -67,6 +75,13 @@ const screenProblems = (raw: unknown, known: Known): string[] => {
     (typeof raw.state !== 'string' || !known.states.includes(raw.state))
   ) {
     bad(`unknown state ${JSON.stringify(raw.state)}`);
+  }
+
+  if (
+    raw.account !== undefined &&
+    (typeof raw.account !== 'string' || !known.accounts.includes(raw.account))
+  ) {
+    bad(`unknown account ${JSON.stringify(raw.account)}`);
   }
 
   if (

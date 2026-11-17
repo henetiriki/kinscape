@@ -1,7 +1,11 @@
-import { expect, test as setup } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
-// The path the other projects load (playwright.config.ts).
-const AUTH_STATE = 'test-results/.auth/state.json';
+import { expect, test as setup } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+import { authStateFor } from '@ks/lib/design/check.mts';
+import { FIXTURES } from '@ks/server/auth/fixtures.mts';
 
 // The synthetic Account behind the test-only memory sign-in (server/auth/synthetic.mts).
 const SYNTHETIC = {
@@ -9,13 +13,37 @@ const SYNTHETIC = {
   password: 'synthetic-password',
 };
 
-// NFR-03: signs in once, through the form; every project that needs a session reuses the state.
-setup('sign in as the synthetic Account', async ({ page }) => {
+// The fixture Accounts that an entry of design/screens.json names.
+const named = new Set(
+  (
+    JSON.parse(
+      readFileSync(join(process.cwd(), 'design/screens.json'), 'utf8')
+    ) as { screens: { account?: string }[] }
+  ).screens.flatMap(({ account }) => (account ? [account] : []))
+);
+
+const signIn = async (
+  page: Page,
+  { email, password }: { email: string; password: string },
+  path: string
+) => {
   await page.goto('/sign-in');
-  await page.getByLabel('Email').fill(SYNTHETIC.email);
-  await page.getByLabel('Password', { exact: true }).fill(SYNTHETIC.password);
+  await page.getByLabel('Email').fill(email);
+  await page.getByLabel('Password', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Sign in' }).click();
   await page.waitForURL(url => url.pathname === '/');
   await expect(page.locator('canvas.maplibregl-canvas')).toBeVisible();
-  await page.context().storageState({ path: AUTH_STATE });
+  await page.context().storageState({ path });
+};
+
+// NFR-03: signs in once, through the form; every project that needs a session reuses the state.
+setup('sign in as the synthetic Account', async ({ page }) => {
+  await signIn(page, SYNTHETIC, authStateFor());
 });
+
+// The fixture Accounts exist only under the memory adapters.
+for (const fixture of FIXTURES.filter(({ email }) => named.has(email))) {
+  setup(`sign in as ${fixture.email} @fixture`, async ({ page }) => {
+    await signIn(page, fixture, authStateFor(fixture.email));
+  });
+}

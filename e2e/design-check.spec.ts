@@ -8,17 +8,20 @@ import { PNG } from 'pngjs';
 
 import { states } from '@ks/e2e/design-states';
 import {
+  authStateFor,
   changedPixels,
   compare,
   outcomeFor,
   parseConfig,
   unionMask,
 } from '@ks/lib/design/check.mts';
+import { FIXTURES } from '@ks/server/auth/fixtures.mts';
 
 const root = process.cwd();
 const config = parseConfig(
   JSON.parse(readFileSync(join(root, 'design/screens.json'), 'utf8')),
   {
+    accounts: FIXTURES.map(({ email }) => email),
     snapshots: readdirSync(join(root, 'design/source'))
       .filter(file => file.endsWith('.html'))
       .map(file => file.slice(0, -'.html'.length)),
@@ -74,79 +77,84 @@ const sideBySide = (images: PNG[]) => {
 for (const screen of config.screens.filter(
   ({ name }) => wanted.length === 0 || wanted.includes(name)
 )) {
-  test(`design: ${screen.name}`, async ({ page }, testInfo) => {
-    const { height, width } = screen;
+  test.describe(`design: ${screen.name}`, () => {
+    test.use({ storageState: authStateFor(screen.account) });
 
-    // A signed-in visitor never sees the sign-in page.
-    if (screen.route.startsWith('/sign-in')) {
-      await page.context().clearCookies();
-    }
+    test('matches its snapshot', async ({ page }, testInfo) => {
+      const { height, width } = screen;
 
-    const out = join(root, 'test-results/design', screen.name);
-
-    mkdirSync(out, { recursive: true });
-    await page.setViewportSize({ height, width });
-
-    const response = await page.goto(screen.route);
-
-    expect(response?.status(), `${screen.name}: ${screen.route} status`).toBe(
-      200
-    );
-    await page.waitForLoadState('networkidle');
-    await page.evaluate(async () => {
-      await document.fonts.ready;
-
-      const map = (window as unknown as { kinscapeMap?: { loaded(): boolean } })
-        .kinscapeMap;
-
-      while (map && !map.loaded()) {
-        await new Promise(done => setTimeout(done, 100));
+      // A signed-in visitor never sees the sign-in page.
+      if (screen.route.startsWith('/sign-in')) {
+        await page.context().clearCookies();
       }
-    });
 
-    if (screen.state) await states[screen.state](page);
+      const out = join(root, 'test-results/design', screen.name);
 
-    const built = await shootWithMask(page);
+      mkdirSync(out, { recursive: true });
+      await page.setViewportSize({ height, width });
 
-    await page.goto(
-      pathToFileURL(join(root, 'design/source', `${screen.name}.html`)).href
-    );
-    await page.evaluate(() => document.fonts.ready);
-    await page.addStyleTag({ content: LAYER_DIALOGS });
+      const response = await page.goto(screen.route);
 
-    const design = await shootWithMask(page);
-    const score = compare(
-      built.shown.data,
-      design.shown.data,
-      width,
-      unionMask(built.mask, design.mask),
-      screen.ignore
-    );
-    const diff = new PNG({ height, width });
+      expect(response?.status(), `${screen.name}: ${screen.route} status`).toBe(
+        200
+      );
+      await page.waitForLoadState('networkidle');
+      await page.evaluate(async () => {
+        await document.fonts.ready;
 
-    diff.data = Buffer.from(score.diff);
-    writeFileSync(join(out, 'built.png'), PNG.sync.write(built.shown));
-    writeFileSync(join(out, 'design.png'), PNG.sync.write(design.shown));
-    writeFileSync(join(out, 'diff.png'), PNG.sync.write(diff));
-    writeFileSync(
-      join(out, 'side-by-side.png'),
-      sideBySide([built.shown, design.shown, diff])
-    );
+        const map = (
+          window as unknown as { kinscapeMap?: { loaded(): boolean } }
+        ).kinscapeMap;
 
-    const outcome = outcomeFor(score.percent, config.threshold);
+        while (map && !map.loaded()) {
+          await new Promise(done => setTimeout(done, 100));
+        }
+      });
 
-    testInfo.annotations.push({
-      description: JSON.stringify({
-        differing: score.differing,
-        name: screen.name,
+      if (screen.state) await states[screen.state](page);
+
+      const built = await shootWithMask(page);
+
+      await page.goto(
+        pathToFileURL(join(root, 'design/source', `${screen.name}.html`)).href
+      );
+      await page.evaluate(() => document.fonts.ready);
+      await page.addStyleTag({ content: LAYER_DIALOGS });
+
+      const design = await shootWithMask(page);
+      const score = compare(
+        built.shown.data,
+        design.shown.data,
+        width,
+        unionMask(built.mask, design.mask),
+        screen.ignore
+      );
+      const diff = new PNG({ height, width });
+
+      diff.data = Buffer.from(score.diff);
+      writeFileSync(join(out, 'built.png'), PNG.sync.write(built.shown));
+      writeFileSync(join(out, 'design.png'), PNG.sync.write(design.shown));
+      writeFileSync(join(out, 'diff.png'), PNG.sync.write(diff));
+      writeFileSync(
+        join(out, 'side-by-side.png'),
+        sideBySide([built.shown, design.shown, diff])
+      );
+
+      const outcome = outcomeFor(score.percent, config.threshold);
+
+      testInfo.annotations.push({
+        description: JSON.stringify({
+          differing: score.differing,
+          name: screen.name,
+          outcome,
+          percent: score.percent,
+        }),
+        type: 'design-result',
+      });
+      expect(
         outcome,
-        percent: score.percent,
-      }),
-      type: 'design-result',
+        `${screen.name}: ${score.percent.toFixed(2)}% of unmasked pixels differ (limit ${config.threshold}%)`
+      ).not.toBe('blocked');
     });
-    expect(
-      outcome,
-      `${screen.name}: ${score.percent.toFixed(2)}% of unmasked pixels differ (limit ${config.threshold}%)`
-    ).not.toBe('blocked');
   });
 }

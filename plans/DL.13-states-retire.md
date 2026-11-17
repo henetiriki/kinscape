@@ -64,3 +64,7 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 ## Out of scope
 
 As the Spec says: the `SG-Controls` boards, their files, their `DESIGN.md` rows and sentence, and the two `NO_ENTRY` names go in DL.21 (#929).
+
+## Deviations
+
+- Spec item 6 says one new 404 test. The build extends the test "a board that is gone gives a 404" of #942 instead. The route stays as plain text in `BOARD_LINKS`, and no check changes (commit `1fc234e`).

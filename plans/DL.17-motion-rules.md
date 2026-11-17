@@ -89,3 +89,4 @@ The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stro
 
 - Spec item 7.6 says one new 404 test. The test "a board that is gone gives a 404" of DL.11 covers each `gone` board, so the build adds no test. The route stays as plain text in `BOARD_LINKS`.
 - `design/DESIGN.md` passed 4000 words, so the build raised its budget to 4150 in `scripts/word-count.mts` and in `scripts/__tests__/word-count.test.ts`.
+- **D2** (tech lead, @henetiriki): eight notes in `design/tokens.json` lack a use that the board states. A: add all eight. B: add only `radius panel` (desktop dialogs) and `shadow raised` (cards). C: add none. **Answer: A.** The build edits `design/tokens.json` and runs the design system steps again.

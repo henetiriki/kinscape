@@ -80,6 +80,12 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 | 10               | The check output in the PR                                                                                                             |
 | 11               | `Board.tsx` in the diff                                                                                                                |
 
+## Deviations
+
+- The phone hit-area test measures the label of a radio, because the radio is hidden.
+- Nine cards fail the phone hit-area test. `UNDER_44` in `e2e/gallery-looks.spec.ts` lists each with its Bug: #943 to #951.
+- The Spec says "text" and D1 adds the `copy` icon, so the build reworded item 1 of #912 (#942 plan D1).
+
 ## Out of scope
 
 - The `.matrixNote` rules of `page.module.css`, which no code uses after this Spec: DL.21 (#929) deletes the file.

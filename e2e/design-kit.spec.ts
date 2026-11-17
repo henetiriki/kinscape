@@ -30,7 +30,13 @@ test('colour swatches are filled with their tokens', async ({ page }) => {
 });
 
 // NFR-06: the kit's index and nav.
-const BOARD_LINKS = [
+// A board with `gone` has no page, but the index and the nav still link to it.
+const BOARD_LINKS: {
+  gone?: true;
+  heading: string;
+  label: string;
+  path: string;
+}[] = [
   {
     heading: 'Typography and hierarchy',
     label: 'Typography',
@@ -53,6 +59,7 @@ const BOARD_LINKS = [
     path: '/design-kit/feedback',
   },
   {
+    gone: true,
     heading: 'Inputs and actions',
     label: 'Inputs',
     path: '/design-kit/inputs',
@@ -75,12 +82,19 @@ const BOARD_LINKS = [
 ];
 
 test('the index links to each board', async ({ page }) => {
-  for (const { heading, path } of BOARD_LINKS) {
+  for (const { gone, heading, path } of BOARD_LINKS) {
     await page.goto('/design-kit');
-    await page
+
+    const link = page
       .getByRole('main')
-      .getByRole('link', { exact: true, name: heading })
-      .click();
+      .getByRole('link', { exact: true, name: heading });
+
+    if (gone) {
+      await expect(link).toHaveAttribute('href', path);
+      continue;
+    }
+
+    await link.click();
     await expect(page).toHaveURL(path);
     await expect(
       page.getByRole('main').getByText(heading, { exact: true })
@@ -88,7 +102,16 @@ test('the index links to each board', async ({ page }) => {
   }
 });
 
-for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
+test('a board that is gone gives a 404', async ({ page }) => {
+  const response = await page.goto('/design-kit/inputs');
+
+  expect(response!.status()).toBe(404);
+});
+
+for (const path of [
+  '/design-kit',
+  ...BOARD_LINKS.filter(board => !board.gone).map(board => board.path),
+]) {
   test(`on ${path}, the nav marks the current board and Tab reaches each link in order`, async ({
     page,
   }) => {
@@ -521,7 +544,7 @@ test.describe('the boards on a phone', () => {
     ['390 wide', { height: 844, width: 390 }],
     ['800 by 450', { height: 450, width: 800 }],
   ] as const) {
-    for (const board of ['type', 'states', 'feedback', 'inputs']) {
+    for (const board of ['type', 'states', 'feedback']) {
       test(`${board} at ${name} does not scroll sideways`, async ({ page }) => {
         await page.setViewportSize(size);
         await page.goto(`/design-kit/${board}`);
@@ -539,7 +562,7 @@ test.describe('the boards on a phone', () => {
   test.describe('at 390 wide', () => {
     test.use({ viewport: { height: 844, width: 390 } });
 
-    for (const board of ['type', 'states', 'feedback', 'inputs']) {
+    for (const board of ['type', 'states', 'feedback']) {
       test(`${board} is one column inside 16px gutters`, async ({ page }) => {
         await page.goto(`/design-kit/${board}`);
 

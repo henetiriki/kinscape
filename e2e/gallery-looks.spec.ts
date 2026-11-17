@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 
 import { hitsControl } from '@ks/e2e/hits';
 import { GALLERY, OUTPUT } from '@ks/lib/design/cards.mts';
+import { CARDS } from '@ks/lib/design/states.mts';
 
 // NFR-05, NFR-06: the look of the shared controls, read from the gallery files in
 // .design-system/gallery/. Like e2e/design-gallery.spec.ts, each test opens files from disk, with no app.
@@ -28,6 +29,19 @@ const HIT_CASES = [
   ['Tabs', 'Tabs · default', 'tab', 'Filters'],
   ['IconButton', 'IconButton · default', 'button', 'Zoom in'],
 ] as const;
+
+// Cards with a control under 44px and no 44px hit area on a phone. Each holds its Bug.
+const UNDER_44: Record<string, string> = {
+  ArrowLink: '#944: the link is 22px tall',
+  BottomSheet: '#947: the handle button is 20px tall',
+  DateField: '#949: a 2px border leaves the input 42px tall',
+  FuzzyDateField: '#950: a 2px border leaves the input 42px tall',
+  PersonRow: '#945: the Relationships link is 22px tall',
+  RelationshipRow: '#946: the Edit link is 22px tall',
+  SelectField: '#951: a 2px border leaves the select 42px tall',
+  TextField: '#948: a 2px border leaves the input 42px tall',
+  TextLink: '#943: the link is 22px tall',
+};
 
 // A point 21px above, below and (for the checkbox) left of the centre is still on the control.
 const expectHitAreas = async (
@@ -79,6 +93,83 @@ test.describe('on a phone', () => {
     page,
   }) => {
     await expectHitAreas(page, HIT_CASES);
+  });
+
+  test('an event chip is 44px tall and a removable chip 36px', async ({
+    page,
+  }) => {
+    const height = async (file: string, label: string, name: string) => {
+      await open(page, file);
+
+      return Math.round(
+        (await state(page, label).getByRole('button', { name }).boundingBox())!
+          .height
+      );
+    };
+
+    expect(await height('Chip', 'Chip · default', 'Birth')).toBe(44);
+    expect(
+      await height('RemovableChip', 'RemovableChip · default', 'Remove Birth')
+    ).toBe(36);
+  });
+
+  test('each control under 44px tall or wide keeps a 44px hit area', async ({
+    page,
+  }) => {
+    const failures: string[] = [];
+    const failed = new Set<string>();
+
+    for (const { name } of CARDS) {
+      await open(page, name);
+
+      const controls = page
+        .locator(
+          ':is(button, input, select, a, [role="tab"]):not(:disabled):not([inert] *)'
+        )
+        .filter({ visible: true });
+      const count = await controls.count();
+
+      for (let i = 0; i < count; i += 1) {
+        // A radio is hidden: its label holds the hit area.
+        const input = controls.nth(i);
+        const control =
+          (await input.getAttribute('type')) === 'radio'
+            ? input.locator('xpath=ancestor::label[1]')
+            : input;
+        const box = (await control.boundingBox())!;
+        const [caption, kind] = await control.evaluate(node => [
+          node.closest('figure')?.querySelector('figcaption')?.textContent ??
+            '',
+          `${node.tagName.toLowerCase()} ${node.getAttribute('type') ?? ''} ${
+            node.getAttribute('aria-label') ?? node.textContent?.trim() ?? ''
+          }`.trim(),
+        ]);
+        const where = `${name}, ${caption}, ${kind} ${Math.round(box.width)}x${Math.round(box.height)}`;
+        const points: [string, number, number][] = [];
+
+        if (box.height < 44) {
+          points.push(['below', 0, 21], ['above', 0, -21]);
+        }
+
+        if (box.width < 44) {
+          points.push(['right', 21, 0], ['left', -21, 0]);
+        }
+
+        for (const [side, dx, dy] of points) {
+          if (!(await hitsControl(control, dx, dy))) {
+            failed.add(name);
+
+            if (!(name in UNDER_44)) {
+              failures.push(`${where} ${side}`);
+            }
+          }
+        }
+      }
+    }
+
+    expect(failures).toEqual([]);
+    // A card that is fixed leaves the list.
+    expect(Object.keys(UNDER_44).filter(name => !failed.has(name))).toEqual([]);
   });
 
   test('a placed banner is 80px from the top and a placed toast 164px from the bottom, inside the gutters', async ({
@@ -267,6 +358,43 @@ test.describe('at 1440px', () => {
         expect(ring.colour, where).toBe(BRAND);
       }
     }
+  });
+
+  test('a button is 50, 44, 40 or 36px tall by size', async ({ page }) => {
+    await open(page, 'Button');
+
+    const height = async (label: string, name: string) =>
+      Math.round(
+        (await state(page, label).getByRole('button', { name }).boundingBox())!
+          .height
+      );
+
+    expect(await height('Button · size l', 'Copy chain')).toBe(50);
+    expect(await height('Button secondary · default', 'Copy chain')).toBe(44);
+    expect(await height('Button · size s', 'Copy chain')).toBe(40);
+    expect(await height('Button · size xs', 'Copy chain')).toBe(36);
+  });
+
+  test('the 36px button and the chip × keep a 44px hit area', async ({
+    page,
+  }) => {
+    await open(page, 'Button');
+
+    const copy = state(page, 'Button · size xs').getByRole('button', {
+      name: 'Copy chain',
+    });
+
+    expect(await hitsControl(copy, 0, 21)).toBe(true);
+    expect(await hitsControl(copy, 0, -21)).toBe(true);
+
+    await open(page, 'RemovableChip');
+
+    const remove = state(page, 'RemovableChip · default').getByRole('button', {
+      name: 'Remove Birth',
+    });
+
+    expect(await hitsControl(remove, 21, 0)).toBe(true);
+    expect(await hitsControl(remove, 0, -21)).toBe(true);
   });
 
   test('a small control has a 44px hit area', async ({ page }) => {

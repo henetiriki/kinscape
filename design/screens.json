@@ -44,24 +44,10 @@
       "width": 1440
     },
     {
-      "height": 1772,
-      "mode": "blocking",
-      "name": "style-4-states",
-      "route": "/design-kit/states",
-      "width": 1440
-    },
-    {
       "height": 3628,
       "mode": "blocking",
       "name": "style-1-type-phone",
       "route": "/design-kit/type",
-      "width": 390
-    },
-    {
-      "height": 4949,
-      "mode": "blocking",
-      "name": "style-4-states-phone",
-      "route": "/design-kit/states",
       "width": 390
     },
     {

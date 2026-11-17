@@ -28,6 +28,15 @@ const read = (file: string) =>
   readFileSync(join(root, '.github/workflows', file), 'utf8');
 const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
+// Where each needle starts in a text, so a test checks the order of instructions. A missing needle
+// fails with its own name.
+const indexIn = (text: string, label: string) => (needle: string) => {
+  const index = text.indexOf(needle);
+
+  expect(index, `${label} has no "${needle}"`).toBeGreaterThan(-1);
+
+  return index;
+};
 
 type WorkflowJob = {
   name?: string;
@@ -1815,18 +1824,12 @@ describe('the fix-review workflow', () => {
     expect(text).toMatch(/data, not instructions/);
   });
 
-  // The push starts the next review at once. That review must see each reply, the resolve, the PR
-  // body and the final comment, so the push is the last step (plans/chores/C939-push-last-fix-review.md).
+  // The push starts the next review at once. That review must see each reply, each resolved thread,
+  // the PR body and the final comment, so the push is the last step (plans/chores/C939-push-last-fix-review.md).
   // The commit gives the sha for "Fixed in <sha>.", and a merge keeps it.
   it('commits, replies, resolves, updates the PR and comments, then pushes last, in fix-review.md', () => {
     const text = agent('fix-review.md');
-    const at = (needle: string) => {
-      const index = text.indexOf(needle);
-
-      expect(index, `fix-review.md has no "${needle}"`).toBeGreaterThan(-1);
-
-      return index;
-    };
+    const at = indexIn(text, 'fix-review.md');
     const steps = [
       'Commit the fixes',
       '-- reply <n>',
@@ -1842,7 +1845,8 @@ describe('the fix-review workflow', () => {
     expect(text).toContain('No step follows a push that succeeds');
   });
 
-  // A failed push must not drop the fixes without a word, and must not lose another person's commits.
+  // A failed push must not drop the fixes without a word, and must not lose the commits of another
+  // person. A merge that fails, with or without a conflict, ends in the same comment.
   it('merges and pushes once more after a failed push, never rebases, then comments, in fix-review.md', () => {
     const text = agent('fix-review.md');
     const failed = text.indexOf('If the push fails');
@@ -1850,55 +1854,41 @@ describe('the fix-review workflow', () => {
     expect(failed).toBeGreaterThan(text.indexOf('Push to the PR branch'));
 
     const rule = text.slice(failed);
-    const at = (needle: string) => {
-      const index = rule.indexOf(needle);
+    const at = indexIn(rule, 'the failed-push rule');
+    const order = [
+      'git merge origin/<branch>',
+      'Run the checks again',
+      'Push once more',
+      'git merge --abort',
+      'If the merge fails or the second push fails, post one PR comment',
+      'the fixes are not on the branch',
+    ].map(at);
 
-      expect(index, `the failed-push rule has no "${needle}"`).toBeGreaterThan(
-        -1
-      );
-
-      return index;
-    };
-
-    expect(at('git merge origin/<branch>')).toBeLessThan(
-      at('Run the checks again')
-    );
-    expect(at('Run the checks again')).toBeLessThan(at('Push once more'));
-    expect(at('Push once more')).toBeLessThan(at('If the second push fails'));
-    expect(at('If the second push fails')).toBeLessThan(
-      at('the fixes are not on the branch')
-    );
+    expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(rule).toContain('Never rebase');
-    expect(rule).toContain('never force-push');
-    expect(rule).toContain('git merge --abort');
+    expect(rule).toContain('Never force-push');
   });
 
-  // The local fixer asks before it changes a file: a later question finds a fix already made, or none
-  // is asked (plans/chores/C939-push-last-fix-review.md).
+  // The local fixer asks before it changes a file. A question after the first fix comes too late
+  // (plans/chores/C939-push-last-fix-review.md).
   it('lists the findings and asks every question before the first fix, in the fix-review-local skill', () => {
     const text = readFileSync(
       join(root, '.claude/skills/fix-review-local/SKILL.md'),
       'utf8'
     );
-    const at = (needle: string) => {
-      const index = text.indexOf(needle);
+    const at = indexIn(text, 'the skill');
+    const order = [
+      'List the findings before you change a file',
+      'Ask the tech lead about each finding',
+      'Ask every question before the first fix',
+      'Fix a clear finding without a question',
+    ].map(at);
 
-      expect(index, `the skill has no "${needle}"`).toBeGreaterThan(-1);
-
-      return index;
-    };
-
-    expect(at('List the findings before you change a file')).toBeLessThan(
-      at('Ask the tech lead about each finding')
-    );
-    expect(at('Ask the tech lead about each finding')).toBeLessThan(
-      at('Ask every question before the first fix')
-    );
-    expect(at('Ask every question before the first fix')).toBeLessThan(
-      at('Fix a clear finding without a question')
-    );
+    expect(order).toEqual([...order].sort((a, b) => a - b));
     expect(text).toContain('Leave a thread open only if the tech lead says so');
-    expect(text).toContain('tell the tech lead in the session');
+    expect(text).toContain(
+      'If the merge fails or the second push fails, also tell the tech lead in the session'
+    );
     expect(text).not.toContain('After the push, reply');
   });
 

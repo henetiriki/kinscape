@@ -5,7 +5,7 @@
 
 ## Approach
 
-Rewrite "The fix" of `fix-review.md` as the seven steps of #939 and the failed-push rule. The reply stays "Fixed in <sha>.": the commit gives the sha, and a merge keeps it. In `fix-review-local`, replace the three push overrides with the five overrides of #939.
+Rewrite "The fix" of `fix-review.md` as the seven steps of #939 and the failed-push rule. The reply stays "Fixed in <sha>.": the commit gives the sha, and a merge keeps it. In `fix-review-local`, replace the three push overrides with the six overrides of #939.
 
 ## Decisions
 
@@ -44,9 +44,9 @@ The skill now says "After the push, reply on each thread that you fixed. Say wha
 | File                                         | New / changed | What                                                                |
 | -------------------------------------------- | ------------- | ------------------------------------------------------------------- |
 | `.github/agent/fix-review.md`                | Changed       | The seven steps and the failed-push rule                            |
-| `.claude/skills/fix-review-local/SKILL.md`   | Changed       | The five overrides; D2                                              |
+| `.claude/skills/fix-review-local/SKILL.md`   | Changed       | The six overrides; D2                                               |
 | `scripts/__tests__/load-agent-files.test.ts` | Changed       | The "Fixed after the push" test checks the new order; two new tests |
-| `scripts/word-count.mts`, its test           | Changed       | D1 A only                                                           |
+| `scripts/word-count.mts`, its test           | Changed       | D1: 450                                                             |
 
 ## Order of work
 
@@ -72,3 +72,6 @@ The skill now says "After the push, reply on each thread that you fixed. Say wha
 | Constraints                                 | Review of the diff: no workflow file |
 
 ## Deviations
+
+- D3 widens to each failed merge, not only a conflict: abort, push nothing, post the comment. The tech lead decided this in the local fix of PR #941, after the review found an unlikely case.
+- The build skipped the reword step. The tech lead decided that the fix reword #939 for the D3 rule and this widening.

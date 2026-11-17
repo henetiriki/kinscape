@@ -140,10 +140,6 @@ const NO_ENTRY = [
   'sign-in-phone-proposed',
   'sign-in-phone-unavailable',
   'sign-in-unavailable',
-  'style-7-components-surfaces',
-  'style-7-components-surfaces-2',
-  'style-7-components-surfaces-2-phone',
-  'style-7-components-surfaces-phone',
 ];
 
 const jpeg = (width: number, height: number, ...before: number[][]) =>

@@ -65,7 +65,7 @@ export const Section = ({
   title,
 }: {
   children: ReactNode;
-  /** Board 08 gives none: their own styles choose what a desktop shows. */
+  /** Boards 07 and 08 give none: their own styles choose what a desktop shows. */
   desktopPart?: DesktopPart;
   lead: ReactNode;
   /** None: no part of a phone shows the section. */
@@ -180,19 +180,22 @@ export const Matrix = ({
 /** Name, value, token. */
 type Measurement = [string, ReactNode, ReactNode];
 
-/** The Measurements table: name, value, token. A phone puts the token under "name · value". */
-const Measurements = ({
+/** The Measurements table: name, value, token. `wide` draws it full width, with a wider token column. A phone puts the token under "name · value". */
+export const Measurements = ({
   label,
   measurements,
+  wide,
 }: {
   label: string;
   measurements: Measurement[];
+  wide?: boolean;
 }) => (
   <div className={styles.factsColumn}>
     <h3 className={styles.h3}>Measurements</h3>
     <div
       aria-label={`${label} measurements`}
       className={styles.table}
+      data-wide={wide || undefined}
       role='table'>
       {measurements.map(([name, value, token]) => (
         <div className={styles.fact} key={name} role='row'>
@@ -209,7 +212,7 @@ const Measurements = ({
   </div>
 );
 
-const Accessibility = ({
+export const Accessibility = ({
   accessibility,
 }: {
   accessibility: [string, ReactNode][];

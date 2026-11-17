@@ -16,7 +16,7 @@
   margin: 0;
 }
 
-/* Each width shows one part at a time: a desktop one of three, a phone one of four. Board 08 still uses `.otherPart` for their link. */
+/* Each width shows one part at a time: a desktop one of three, a phone one of four. Boards 07 and 08 still use `.otherPart` for their link. */
 .partOf,
 .nextPhone,
 .otherPart,
@@ -472,6 +472,10 @@
   line-height: var(--type-label-line);
 }
 
+.table[data-wide] .fact {
+  grid-template-columns: 150px minmax(0, 1fr) 480px;
+}
+
 .definition {
   color: var(--ink-2);
   margin: 0;
@@ -708,7 +712,8 @@
   }
 
   /* Measurements: "name · value", the token under it. */
-  .fact {
+  .fact,
+  .table[data-wide] .fact {
     color: var(--ink-2);
     display: block;
   }

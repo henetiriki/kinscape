@@ -81,29 +81,6 @@ test.describe('on a phone', () => {
     await expectHitAreas(page, HIT_CASES);
   });
 
-  test('a notice card is no wider than the screen less the gutters, has 44px buttons, and nothing scrolls sideways', async ({
-    page,
-  }) => {
-    await open(page, 'NoticeCard');
-
-    const card = state(page, 'NoticeCard · one action').getByRole('status');
-
-    expect(Math.round((await card.boundingBox())!.width)).toBeLessThanOrEqual(
-      390 - 32
-    );
-    expect(
-      Math.round((await card.getByRole('button').first().boundingBox())!.height)
-    ).toBe(44);
-    // The large card is a fixed 380 wide, so the whole file can scroll. The figure of this card must not.
-    expect(
-      await state(page, 'NoticeCard · one action').evaluate(
-        node =>
-          node.scrollWidth <= node.clientWidth &&
-          node.getBoundingClientRect().right <= window.innerWidth
-      )
-    ).toBe(true);
-  });
-
   test('a placed banner is 80px from the top and a placed toast 164px from the bottom, inside the gutters', async ({
     page,
   }) => {

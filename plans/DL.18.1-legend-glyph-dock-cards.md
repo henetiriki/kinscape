@@ -30,7 +30,7 @@ The `DateField` card and `react-18.test.tsx` take `MAP_DATE` and `TODAY` from th
 
 **D1 · One radio group across the `DateDock` states** · Decides: Tech lead
 
-`Segmented` makes radios with a fixed `name` (`precision`, `speed`). A gallery file puts all states in one document with no `form`. Thus the radios of the three docks are one group, and only the last dock shows Year and 5 as selected. `Segmented-1440.png` on `main` shows the same fault: only one of its five states has a selected segment. AC 6 forbids a change to `DateDock`.
+`DateDock` gives its `Segmented` groups the fixed names `precision` and `speed`. A gallery file puts all states in one document with no `form`. Thus only the last dock shows Year and 5 as selected. `Segmented-1440.png` on `main` shows the same fault: its five card states share the name `view`, and only one has a selected segment. AC 6 forbids a change to `DateDock`. AC 6 permits a change to `previewHtml`, which alters card images outside this Spec.
 
 - **A.** Build the three states as the Spec says. The first two docks show no selected segment in the card image. The build files a Bug that names the `Segmented` and `DateDock` cards and the shared radio group.
 - **B.** File the Bug now and add it as a blocker of #921. The Bug gives each card state its own radio scope, for example a `form` around each case in `previewHtml`. It can change each card image that holds a radio.

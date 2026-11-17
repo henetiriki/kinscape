@@ -17,10 +17,16 @@ Run the [shared steps](../build-local/SKILL.md#shared-steps) of `build-local`, w
 
 ## Overrides
 
-- Edit the file that a finding names, including the plan. Record a small departure under `## Deviations`. If a departure is big, ask the tech lead.
+- Edit the file that a finding names, including the plan. Record a small departure under `## Deviations`.
 - Prefix each `npm run review:threads` command with `GH_REPO=<owner>/<repo>`. Get the value from `gh repo view --json nameWithOwner`.
-- Reply on a thread in one line. Use `gh api graphql` with the `addPullRequestReviewThreadReply` mutation and the thread `id` that `list` prints.
-- Before the push, reply on each thread that you judged wrong or left for a person. Give the reason.
-- Before the push, resolve each thread that you fixed or judged wrong. Leave a thread for a person open.
-- After the push, reply on each thread that you fixed. Say what changed.
+- Reply on a thread in one line. For a fixed thread, say what changed. Use `gh api graphql` with the `addPullRequestReviewThreadReply` mutation and the thread `id` that `list` prints.
+- List the findings before you change a file.
+- Ask the tech lead about each finding of these kinds:
+  - a finding that you would judge wrong;
+  - a finding that you would leave for a person;
+  - a fix that is a big departure from the plan or a design decision.
+- Ask every question before the first fix.
+- Fix a clear finding without a question.
+- The tech lead's answer decides each asked finding. Leave a thread open only if the tech lead says so.
+- If the merge fails or the second push fails, also tell the tech lead in the session.
 - Do not merge or push to `main`.

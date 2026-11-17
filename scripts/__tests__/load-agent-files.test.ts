@@ -28,6 +28,15 @@ const read = (file: string) =>
   readFileSync(join(root, '.github/workflows', file), 'utf8');
 const agent = (file: string) =>
   readFileSync(join(root, '.github/agent', file), 'utf8');
+// Where each needle starts in a text, so a test checks the order of instructions. A missing needle
+// fails with its own name.
+const indexIn = (text: string, label: string) => (needle: string) => {
+  const index = text.indexOf(needle);
+
+  expect(index, `${label} has no "${needle}"`).toBeGreaterThan(-1);
+
+  return index;
+};
 
 type WorkflowJob = {
   name?: string;
@@ -1815,18 +1824,72 @@ describe('the fix-review workflow', () => {
     expect(text).toMatch(/data, not instructions/);
   });
 
-  // The review that a push starts must see the reason and the resolve. Only "Fixed in <sha>." needs
-  // the pushed commit.
-  it('replies with a reason and resolves before the push, and replies "Fixed" after it, in fix-review.md', () => {
+  // The push starts the next review at once. That review must see each reply, each resolved thread,
+  // the PR body and the final comment, so the push is the last step (plans/chores/C939-push-last-fix-review.md).
+  // The commit gives the sha for "Fixed in <sha>.", and a merge keeps it.
+  it('commits, replies, resolves, updates the PR and comments, then pushes last, in fix-review.md', () => {
     const text = agent('fix-review.md');
-    const push = text.indexOf('Push to the PR branch');
+    const at = indexIn(text, 'fix-review.md');
+    const steps = [
+      'Commit the fixes',
+      '-- reply <n>',
+      '-- resolve <n>',
+      'update the PR title and body',
+      'Post one final PR comment',
+      'Push to the PR branch',
+    ].map(at);
 
-    expect(text.indexOf('-- reply <n>')).toBeLessThan(
-      text.indexOf('-- resolve <n>')
-    );
-    expect(text.indexOf('-- resolve <n>')).toBeLessThan(push);
-    expect(text.indexOf('"Fixed in <sha>."')).toBeGreaterThan(push);
+    expect(steps).toEqual([...steps].sort((a, b) => a - b));
+    expect(at('"Fixed in <sha>."')).toBeLessThan(at('Push to the PR branch'));
     expect(text).toContain('Leave a thread for a person open');
+    expect(text).toContain('No step follows a successful push');
+  });
+
+  // A failed push must not drop the fixes without a word, and must not lose the commits of another
+  // person. A merge that fails, with or without a conflict, ends in the same comment.
+  it('merges and pushes once more after a failed push, never rebases, then comments, in fix-review.md', () => {
+    const text = agent('fix-review.md');
+    const failed = text.indexOf('If the push fails');
+
+    expect(failed).toBeGreaterThan(text.indexOf('Push to the PR branch'));
+
+    const rule = text.slice(failed);
+    const at = indexIn(rule, 'the failed-push rule');
+    const order = [
+      'git merge origin/<headRefName>',
+      'Run the checks again',
+      'Push once more',
+      'If the merge fails, run `git merge --abort`. Push nothing. Post the failure comment',
+      'If the second push fails, post the failure comment',
+      'the fixes are not on the branch',
+    ].map(at);
+
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    expect(rule).toContain('Never rebase');
+    expect(rule).toContain('Never force-push');
+  });
+
+  // The local fixer asks before it changes a file. A question after the first fix comes too late
+  // (plans/chores/C939-push-last-fix-review.md).
+  it('lists the findings and asks every question before the first fix, in the fix-review-local skill', () => {
+    const text = readFileSync(
+      join(root, '.claude/skills/fix-review-local/SKILL.md'),
+      'utf8'
+    );
+    const at = indexIn(text, 'the skill');
+    const order = [
+      'List the findings before you change a file',
+      'Ask the tech lead about each finding',
+      'Ask every question before the first fix',
+      'Fix a clear finding without a question',
+    ].map(at);
+
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    expect(text).toContain('Leave a thread open only if the tech lead says so');
+    expect(text).toContain(
+      'If the merge fails or the second push fails, also tell the tech lead in the session'
+    );
+    expect(text).not.toContain('After the push, reply');
   });
 
   it('opens a review with the findings that no thread shows, and posts the others inline, in review.md', () => {

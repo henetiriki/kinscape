@@ -282,55 +282,6 @@ test.describe('the kit bar', () => {
   });
 });
 
-// NFR-06: each sample on the type board computes to its tokens.
-test('each type sample has its style tokens', async ({ page }) => {
-  await page.goto('/design-kit/type');
-
-  const samples = await page.locator('[data-variant]').evaluateAll(nodes =>
-    nodes.map(node => {
-      const token = node
-        .getAttribute('data-variant')!
-        .replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-      // A probe styled by the same tokens: the family resolves through next/font to a generated name.
-      const probe = document.createElement('div');
-
-      probe.style.cssText = [
-        ['font-family', 'font'],
-        ['font-size', 'size'],
-        ['font-weight', 'weight'],
-        ['letter-spacing', 'tracking'],
-        ['line-height', 'line'],
-      ]
-        .map(([property, part]) => `${property}: var(--type-${token}-${part})`)
-        .join(';');
-      document.body.append(probe);
-
-      const read = (element: Element) => {
-        const style = getComputedStyle(element);
-
-        return [
-          style.fontFamily,
-          style.fontSize,
-          style.fontWeight,
-          style.letterSpacing,
-          style.lineHeight,
-        ];
-      };
-      const result = { actual: read(node), expected: read(probe) };
-
-      probe.remove();
-
-      return result;
-    })
-  );
-
-  expect(samples).toHaveLength(22);
-
-  for (const { actual, expected } of samples) {
-    expect(actual).toEqual(expected);
-  }
-});
-
 // NFR-06: each map label sample computes to its map tokens.
 test('each map label has its token colour, size, weight and tracking', async ({
   page,

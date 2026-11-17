@@ -24,6 +24,7 @@ export const README_SECTIONS = [
   'States',
   'Feedback and validation',
   'Event glyphs',
+  'Map style',
   'Copy',
 ];
 

@@ -343,7 +343,11 @@ describe('readme', () => {
     expect(text).toContain('Colour never carries meaning alone');
     expect(text).toContain('### Map date field');
     expect(text.match(/^## Layout$/gm)).toHaveLength(1);
-    expect(text).not.toContain('## Map style');
+    expect(text.match(/^## Map style$/gm)).toHaveLength(1);
+    expect(text.indexOf('## Event glyphs')).toBeLessThan(
+      text.indexOf('## Map style')
+    );
+    expect(text.indexOf('## Map style')).toBeLessThan(text.indexOf('## Copy'));
   });
 
   it('ends with how a canvas loads and mounts the controls, from the bundle constants', () => {
@@ -366,6 +370,7 @@ describe('readme', () => {
       'Every control has the five states in style-4-states.jpg'
     );
     expect(text).toContain('(see Map style)');
+    expect(text).toContain('map-style.jpg shows the full layer stack');
   });
 
   it('keeps an https link and rejects a missing section', () => {

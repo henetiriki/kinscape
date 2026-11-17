@@ -407,6 +407,65 @@ test.describe('at 1440px', () => {
     }
   });
 
+  // NFR-06
+  test('each Text sample has the type tokens of its variant', async ({
+    page,
+  }) => {
+    const states = CARDS.find(({ name }) => name === 'Text')!.states.filter(
+      ({ props }) => 'variant' in props
+    );
+
+    await open(page, 'Text');
+    await expect(page.getByText('Sample', { exact: true })).toHaveCount(
+      states.length
+    );
+
+    for (const { label, props } of states) {
+      const token = String(props.variant).replace(
+        /[A-Z]/g,
+        letter => `-${letter.toLowerCase()}`
+      );
+      // A probe that the same variables style, as the sample is.
+      const { actual, expected } = await state(page, label)
+        .getByText('Sample', { exact: true })
+        .evaluate((node, name) => {
+          const probe = document.createElement('div');
+
+          probe.style.cssText = [
+            ['font-family', 'font'],
+            ['font-size', 'size'],
+            ['font-weight', 'weight'],
+            ['letter-spacing', 'tracking'],
+            ['line-height', 'line'],
+          ]
+            .map(
+              ([property, part]) => `${property}: var(--type-${name}-${part})`
+            )
+            .join(';');
+          document.body.append(probe);
+
+          const read = (element: Element) => {
+            const style = getComputedStyle(element);
+
+            return [
+              style.fontFamily,
+              style.fontSize,
+              style.fontWeight,
+              style.letterSpacing,
+              style.lineHeight,
+            ];
+          };
+          const result = { actual: read(node), expected: read(probe) };
+
+          probe.remove();
+
+          return result;
+        }, token);
+
+      expect(actual, label).toEqual(expected);
+    }
+  });
+
   test('a button is 50, 44, 40 or 36px tall by size', async ({ page }) => {
     await open(page, 'Button');
 

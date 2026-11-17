@@ -23,6 +23,7 @@ Build plan PR `<n>` in this checkout. The caller is the tech lead. Follow [`buil
 Rules for every step:
 
 - Run each `git push`, `git pull`, `git fetch` and `gh` command alone.
+- Run `git push origin <branch>`, not a bare `git push`. A bare push writes an upstream to `.git/config`, which the sandbox denies.
 - Write a PR body to a file. Pass the file with `--body-file`.
 - If a stop needs no decision, report it in the session. Post no PR comment. Examples: a dirty tree, a plan that is not approved, the `fix-review` label.
 - If a decision is for the tech lead, ask in the session. Post no decision to the PR as a comment or an open question. This replaces each "comment why", "ask in the PR" and "reply that it is for a person" line in the agent file.

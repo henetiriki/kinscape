@@ -60,6 +60,7 @@ describe('budgetFor', () => {
     ['design/CANVAS.md', 1000],
     ['design/COMPONENTS.md', 600],
     ['plans/README.md', 1200],
+    ['plans/DL.17-motion-rules.md', 1500],
     ['plans/M0.1-hello-vercel.md', 900],
     ['plans/TEMPLATE.md', 900],
     ['plans/bugs/B1-x.md', 900],

@@ -332,6 +332,7 @@ describe('systemCss', () => {
   });
 });
 
+// NFR-01, NFR-06
 describe('Motion in DESIGN.md', () => {
   const section = /^## Motion$([\s\S]*?)(?=^## )/m.exec(design)?.[1] ?? '';
 

@@ -18,10 +18,31 @@ The board retires by the steps of DL.11, as `plans/DL.14-feedback-retire.md` did
 
 **D1 · The icon rules on the board** · Decides: Tech lead
 
-The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stroke, round caps and joins, `currentColor`, 16, 18 or 20px (24 on the phone layers button), `aria-hidden`, and an icon-only button that carries the name. After this Spec, only the canvas boards `SG-Foundations` and `SG-Foundations-phone` hold them. DL.21 (#929) deletes those boards, and it holds no value for these rules. `Icon.test.tsx` proves the stroke, `currentColor` and `aria-hidden`, but not the sizes or the name rule.
+The board's Icons section holds these rules, and no doc holds them:
+
+- a 24px grid;
+- a 2px stroke;
+- round caps and joins;
+- `currentColor`;
+- 16, 18 or 20px (24 on the phone layers button);
+- `aria-hidden`;
+- an icon-only button that carries the name.
+
+After this Spec, only the canvas boards `SG-Foundations` and `SG-Foundations-phone` hold them. DL.21 (#929) deletes those boards, and it holds no value for these rules. `Icon.test.tsx` proves the stroke, `currentColor` and `aria-hidden`, but not the sizes or the name rule.
 
 - **A.** "Shape and depth" in `design/DESIGN.md` gains an "Icons" row with the board text. The README gets it through the design system steps that the Spec runs. Cost: one table row, about 45 words. The Spec's Behaviour gains an item.
 - **B.** The rules go with the board. The build adds a Flagged concern to #929: move the rules before the SG boards go. Cost: no change here; #929 grows by one row.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D2 · Notes that lack a use that the board states** · Decides: Tech lead
+
+Eight notes in `design/tokens.json` lack a use that the board states (check 11). The board goes in this Spec. DL.21 (#929) deletes the canvas boards. The code confirms `radius panel` for desktop dialogs and the card use of `shadow raised`. It does not confirm the other six.
+
+- **A.** Add the eight uses to the notes. Cost: eight edited lines, and the design system steps run again.
+- **B.** Add only `radius panel` (desktop dialogs) and `shadow raised` (cards). Cost: two edited lines, and the steps run again.
+- **C.** Change no note. Cost: none here. The other uses go with the board.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -31,6 +52,7 @@ The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stro
 | File                                                  | New / changed | What                                                                               |
 | ----------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------- |
 | `design/DESIGN.md`                                    | changed       | `## Motion` (items 1 and 2); the sentence of item 4 goes; D1 A adds a row          |
+| `design/tokens.json`                                  | changed       | D2 A: eight notes gain the use that the board states                               |
 | `lib/design/system.mts`                               | changed       | `README_SECTIONS` gains "Motion" (item 3)                                          |
 | `lib/design/__tests__/system.test.ts`                 | changed       | The Motion test; "Motion" once in the README (checks 1 to 3)                       |
 | `app/components/foundation/__tests__/Icon.test.tsx`   | changed       | Names from `PATHS` (item 5)                                                        |
@@ -38,7 +60,8 @@ The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stro
 | `design/screens.json`                                 | changed       | Delete `style-3-foundations` and `style-3-foundations-phone` (item 7.2)            |
 | `lib/design/__tests__/screens.test.ts`                | changed       | `NO_ENTRY` gains the two names, in sort order (item 7.4)                           |
 | `e2e/design-kit.spec.ts`                              | changed       | `gone: true`; two tests go; the phone loop loses `foundations` (items 7.5 and 7.6) |
-| `scripts/word-count.mts`                              | changed       | Only if `design/DESIGN.md` passes 4000 words                                       |
+| `scripts/word-count.mts`                              | changed       | Only if `design/DESIGN.md` passes 4000 words; a budget for this plan (Deviations)  |
+| `scripts/__tests__/word-count.test.ts`                | changed       | The same budgets as `scripts/word-count.mts`                                       |
 | `design/canvas/project/ds/`, `canvas.json`, `VERSION` | changed       | The design system steps                                                            |
 | `plans/DL.17-motion-rules.md`                         | new           | This plan                                                                          |
 
@@ -47,7 +70,7 @@ The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stro
 1. Write the Motion test and the README heading check. See them fail on the five missing tokens ([test-first rule](README.md#test-first)).
 2. Write `## Motion`. Add "Motion" to `README_SECTIONS`. Delete the sentence of item 4. Apply D1.
 3. Change `Icon.test.tsx`.
-4. Fill the table of item 6: each of the 23 tokens of `SPACE`, `RADII` and `SHADOWS`, its board text, its note in `design/tokens.json`, and "same use" or the use that the note lacks. Change no note.
+4. Fill the table of item 6: each of the 23 tokens of `SPACE`, `RADII` and `SHADOWS`, its board text, its note in `design/tokens.json`, and "same use" or the use that the note lacks. Then apply D2 to the notes.
 5. Run `git rm -r app/design-kit/foundations`. Delete the two screen entries. Add the two names to `NO_ENTRY`. Change `e2e/design-kit.spec.ts`.
 6. Run `git grep -n design-kit/foundations -- app e2e lib design/screens.json design/DESIGN.md`. Expect only `KitNav.test.tsx`, `KitMenu.test.tsx` and `e2e/design-kit.spec.ts`.
 7. Run `npm run words`. If `design/DESIGN.md` passes its budget, raise it in `scripts/word-count.mts` and say so in the PR.
@@ -89,4 +112,6 @@ The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stro
 
 - Spec item 7.6 says one new 404 test. The test "a board that is gone gives a 404" of DL.11 covers each `gone` board, so the build adds no test. The route stays as plain text in `BOARD_LINKS`.
 - `design/DESIGN.md` passed 4000 words, so the build raised its budget to 4150 in `scripts/word-count.mts` and in `scripts/__tests__/word-count.test.ts`.
-- **D2** (tech lead, @henetiriki): eight notes in `design/tokens.json` lack a use that the board states. A: add all eight. B: add only `radius panel` (desktop dialogs) and `shadow raised` (cards). C: add none. **Answer: A.** The build edits `design/tokens.json` and runs the design system steps again.
+- The plan budget is 1500 words in `scripts/word-count.mts`, because D2 added a decision box after approval. The tech lead chose this budget.
+- The "First load" row of `design/DESIGN.md` links to Motion for the date change rule, so the rule is in one place. The tech lead chose this.
+- The "Radius" and "Shadow" rows of `design/DESIGN.md` point to the token notes, because D2 changed the notes and the notes own the uses. The tech lead chose this.

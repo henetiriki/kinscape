@@ -25,6 +25,8 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 1000, pattern: /^design\/CANVAS\.md$/ },
   { limit: 600, pattern: /^design\/COMPONENTS\.md$/ },
   { limit: 1200, pattern: /^plans\/README\.md$/ },
+  // The DL.17 plan holds a decision box that its tech lead added after approval.
+  { limit: 1500, pattern: /^plans\/DL\.17-motion-rules\.md$/, plan: true },
   { limit: 900, pattern: /^plans\/[^/]+\.md$/, plan: true },
   { limit: 900, pattern: /^plans\/bugs\/[^/]+\.md$/, plan: true },
   { limit: 450, pattern: /^plans\/chores\/[^/]+\.md$/, plan: true },

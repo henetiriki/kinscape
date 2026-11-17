@@ -2,7 +2,7 @@
 
 GitHub settings live outside git, so we keep them **as code** instead:
 
-- `scripts/setup-github.sh` applies them (labels, milestones, autolinks, repo settings, ruleset, security).
+- `scripts/setup-github.sh` applies them (labels, issue Types, milestones, autolinks, repo settings, ruleset, security).
 - `scripts/github/ruleset-main.json` defines the ruleset that protects `main`.
 - `scripts/check-github.sh` checks the live settings against them and fails on any drift. Run without a repo admin's token, it shows each setting it can't read as 🔒 instead.
 
@@ -36,6 +36,7 @@ GitHub settings live outside git, so we keep them **as code** instead:
 | Allowed actions                          | GitHub's, this repo's, `claude-code-action`, `codecov-action`, `setup-bun`                                                 | A new third-party action, or one an allowed action calls (`setup-bun` is `claude-code-action`'s), needs a PR to this list                                                                |
 | Secrets and variables                    | The names in [_Secrets and variables_](#secrets-and-variables)                                                             | Each job that acts as the bot mints a one-hour token from the App's key with only the permissions it needs (`actions/create-github-app-token`). The repo stores no personal access token |
 | Labels                                   | The list in `scripts/github/labels.sh`, and no other                                                                       | `setup-github.sh` creates them and deletes the retired ones; `check-github.sh` compares                                                                                                  |
+| Issue Types                              | The list in `scripts/github/issue-types.sh`, and no other                                                                  | `setup-github.sh` creates, updates and deletes them through GraphQL; `check-github.sh` compares                                                                                          |
 | Autolinks                                | One per requirement ID prefix, from `docs/requirements.md`; the URL names `main` and ends in its `#map-03`-style anchors   | A bare `MAP-03` in an issue, PR or commit links to its row                                                                                                                               |
 | Code scanning                            | CodeQL default setup                                                                                                       | Free on a public repo; flags vulnerable code in PRs                                                                                                                                      |
 | Fork PR workflow runs                    | Need approval, for all outside contributors                                                                                | An outsider's PR runs nothing until the team approves it                                                                                                                                 |

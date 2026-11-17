@@ -7,9 +7,21 @@
   font-size: var(--type-link-size);
   font-weight: var(--type-link-weight);
   line-height: var(--type-link-line);
+  position: relative;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
+}
+
+/* A 44px hit area, centred on the link. The anchor keeps its line height, so a link in running text does not grow. */
+.textLink:not([aria-disabled='true'])::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(100%, var(--size-touch));
 }
 
 /* The button form: undo the button's own look, so it reads as the link. It has no href, so it needs the touch height of a control. */

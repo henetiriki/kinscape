@@ -18,6 +18,21 @@ it('gives the button form a touch-size minimum height', () => {
   expect(/\.textLink \{[^}]*\}/.exec(css)![0]).not.toContain('min-height');
 });
 
+// NFR-05, NFR-06
+it('gives an enabled link a centred touch-size hit area, and the disabled text none', () => {
+  const link = /\.textLink \{[^}]*\}/.exec(css)![0];
+  const before =
+    /\.textLink:not\(\[aria-disabled='true'\]\)::before \{[^}]*\}/.exec(
+      css
+    )![0];
+
+  expect(link).toContain('position: relative');
+  expect(before).toContain('height: var(--size-touch)');
+  expect(before).toContain('width: max(100%, var(--size-touch))');
+  expect(before).toContain('translate: -50% -50%');
+  expect(css).not.toMatch(/aria-disabled='true'\]::before/);
+});
+
 // NFR-06
 it('is a link with a given state', () => {
   render(

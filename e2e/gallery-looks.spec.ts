@@ -39,21 +39,11 @@ const HIT_CASES = [
 
 // Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
 const UNDER_44: Record<string, readonly string[]> = {
-  '#943: the link is 22px tall': [
-    'TextLink, TextLink · default, a  Sources',
-    'TextLink, TextLink · active, a  Sources',
-    'TextLink, TextLink · focus, a  Sources',
-    'TextLink, TextLink · hover, a  Sources',
-    'TextLink, TextLink · small, a  Sources',
-  ],
   '#944: the link is 22px tall': [
     'ArrowLink, ArrowLink · default, a  Edit',
     'ArrowLink, ArrowLink · active, a  Edit',
     'ArrowLink, ArrowLink · focus, a  Edit',
     'ArrowLink, ArrowLink · hover, a  Edit',
-  ],
-  '#945: the Relationships link is 22px tall': [
-    'PersonRow, PersonRow · relationships link, a  Relationships, Botha, Hendrik Willem',
   ],
   '#946: the Edit link is 22px tall': [
     'RelationshipRow, RelationshipRow · child, a  Edit, le Roux, Anna Catharina',

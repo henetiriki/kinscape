@@ -92,7 +92,7 @@ The tech lead, or a local Claude Code session that the tech lead starts, runs st
 
 - `scripts/design-system.mts`: `describeControl` accepts a control with no parameter, because `Legend` takes no prop. The `README.md` of `Legend` has no props table, and `design-system.test.ts` expects that.
 - `e2e/gallery-looks.spec.ts`: the `UNDER_44` list names the `DateDock` controls under 44px (Bug #988). D1 option A filed Bug #987.
-- Card heights keep the start values of step 5: this run cannot compare card images.
+- Card heights keep the start values of step 5. The rendered card images show each card inside its height.
 
 ## Out of scope
 

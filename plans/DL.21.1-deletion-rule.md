@@ -30,7 +30,7 @@ Which words make room?
 
 **Answer: A** (@henetiriki)
 
-This reverses [C696 D2](chores/C696-canvas-artifact-tool.md): the canvas has no `read_file` fallback. The `read_file` row in `.claude/skills/publish-design-system/tools.md` stays: it is the MCP fallback of the publish skill, not of the canvas.
+This reverses [C696 D2](chores/C696-canvas-artifact-tool.md): the canvas has no `read_file` fallback. The MCP path in `.claude/skills/publish-design-system/` is dead, and Chore #936 removes it. This PR leaves those files alone.
 
 ## Files that change
 

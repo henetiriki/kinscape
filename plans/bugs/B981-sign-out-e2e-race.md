@@ -2,7 +2,7 @@
 
 - **Bug:** #981
 - **Requirement IDs:** [NFR-03](../../docs/requirements.md#nfr-03)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -36,7 +36,7 @@ Which change removes the timeout?
 - **C.** Move the two tests to a new project that runs them alone after `chromium`, and make `perf` wait for that project. A new project and a tag. If a `chromium` test fails, Playwright skips the two tests.
 - **Other:** your own.
 
-Recommended: B, because it removes the contention for each map test, not only for two. A costs less, but `sign-in.spec.ts` and `date-dock.spec.ts` keep the risk.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

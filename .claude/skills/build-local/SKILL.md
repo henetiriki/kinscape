@@ -18,7 +18,7 @@ Build plan PR `<n>` in this checkout. The caller is the tech lead. Follow [`buil
 3. Run `git worktree list`. If another worktree holds the branch, stop. Change nothing.
 4. Run `git fetch origin <branch>`. Then run `git fetch origin main`.
 5. Run the skill's stop checks.
-6. Run `git switch <branch>`. Then run `git pull --ff-only`.
+6. Run `git switch <branch>`. Then run `git pull --ff-only origin <branch>`.
 
 Rules for every step:
 

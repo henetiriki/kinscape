@@ -1,4 +1,11 @@
 {
+  "env": {
+    "GIT_CONFIG_COUNT": "2",
+    "GIT_CONFIG_KEY_0": "branch.autoSetupMerge",
+    "GIT_CONFIG_VALUE_0": "false",
+    "GIT_CONFIG_KEY_1": "push.autoSetupRemote",
+    "GIT_CONFIG_VALUE_1": "true"
+  },
   "hooks": {
     "PostToolUse": [
       {

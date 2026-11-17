@@ -44,3 +44,5 @@ No unit test covers these two files.
 `.github/agent/`, workflows and the other skills. `fix-review-local` links to the shared steps, so it gets the new step 6.
 
 ## Deviations
+
+- The `env` block sits before `hooks`, not after. Key order does not change behaviour.

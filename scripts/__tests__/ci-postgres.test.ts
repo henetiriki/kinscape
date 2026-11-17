@@ -131,9 +131,18 @@ describe('the Postgres container of CI', () => {
     );
   });
 
-  it('leaves the design job in the Playwright image, with no database', () => {
-    expect(jobs.design).toHaveProperty('container');
-    expect(JSON.stringify(jobs.design)).not.toContain('ci-postgres');
+  it.each(['design', 'gallery'])(
+    'leaves the %s job in the Playwright image, with no database',
+    job => {
+      expect(jobs[job], `ci.yml needs a ${job} job`).toHaveProperty(
+        'container'
+      );
+      expect(JSON.stringify(jobs[job])).not.toContain('ci-postgres');
+    }
+  );
+
+  it('skips draft PRs in the gallery job', () => {
+    expect(jobs.gallery?.if).toBe(jobs.image?.if);
   });
 
   it.each([WORKFLOW, SCRIPT])(

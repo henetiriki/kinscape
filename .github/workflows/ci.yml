@@ -228,7 +228,7 @@ jobs:
   design:
     needs: image
     runs-on: ubuntu-latest
-    # The image has the browser and its system packages, which the snapshot export, the gallery spec and the design check
+    # The image has the browser and its system packages, which the snapshot export and the design check
     # need. Its version must match @playwright/test (scripts/__tests__/playwright-image.test.ts). Bump
     # the tag and digest together in docker/playwright/Dockerfile. Then run the design-shots workflow on the branch.
     container:
@@ -247,9 +247,6 @@ jobs:
       # Fails, naming the file, when a design/source snapshot differs from its design/canvas board.
       - name: Check that the HTML snapshots match the canvas
         run: npm run design:export && node scripts/design-shots-ci.mts source
-      # Writes a file for each component card, and opens each from disk at two widths. Needs no app server.
-      - name: Open the gallery files
-        run: npm run design:gallery
       # Only restores the cache that the e2e job saves, so the two jobs do not save one key. The key is
       # the e2e job's restore-keys prefix, as in setup-workspace.
       - name: Restore the Next.js build cache
@@ -265,4 +262,36 @@ jobs:
         with:
           name: design-check
           path: test-results/design
+          if-no-files-found: ignore
+
+  # Opens each component card from disk at two widths, compares it with its card image and runs the
+  # look tests. It needs no build and no app server, so it reports before the design check does.
+  gallery:
+    if: ${{ !github.event.pull_request.draft }}
+    needs: image
+    runs-on: ubuntu-latest
+    # The card images are pixel-exact only in the pinned Playwright image (see the design job).
+    container:
+      image: ${{ needs.image.outputs.image }}
+      options: --user 1001
+    steps:
+      - name: Fetch the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          cache: npm
+          node-version-file: .nvmrc
+      - name: Install the dependencies
+        run: npm ci
+      # Writes a file for each component card, and opens each from disk at two widths.
+      - name: Open the gallery files
+        run: npm run design:gallery
+      # A card that differs leaves its expected, actual and diff image in test-results/.
+      - name: Upload the gallery results
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ failure() }}
+        with:
+          name: gallery
+          path: test-results
           if-no-files-found: ignore

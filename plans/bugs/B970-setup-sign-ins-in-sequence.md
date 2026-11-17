@@ -6,7 +6,7 @@
 
 ## Approach
 
-On `main` (e3e0ed6), the cause in the Bug is still there: the `setup` project has two sign-ins, and the top-level `fullyParallel: true` puts them in two workers. The last failure on `main` is run 44071344267.
+On `main` (e3e0ed6), the cause in the Bug is still there. The `setup` project has two sign-ins, and the top-level `fullyParallel: true` puts them in two workers. The last failure on `main` is run 44071344267.
 
 1. The `setup` project gets `fullyParallel: false`. Playwright then runs the tests of `auth.setup.ts` in order, in one worker. A failed first sign-in does not skip the second one, as `mode: 'serial'` would.
 2. A new helper `failureArtifacts(env)` returns `{ screenshot: 'only-on-failure', trace: 'retain-on-failure' }` if `env.CI` is set, else `{}`. The `setup`, `chromium`, `design` and `gallery` projects spread it into their `use`. The `perf` project does not get it, so its redraw times do not change.
@@ -78,3 +78,8 @@ The plan edits `.github/workflows/ci.yml`, a hand-back path. The tech lead build
 
 - The cause of the slow sign-in.
 - Videos.
+
+## Deviations
+
+- Steps 6 and 7 ran after the PR was ready, because CI skips the `e2e`, `design` and `gallery` jobs on a draft. Commit a7ad2b4 is the failing test of step 7, and commit 85b8ebc reverts it.
+- Approach: the first sentence became two sentences (STE rule 2, a review finding). The same commit changes one comment in `ci.yml` (STE rule 10).

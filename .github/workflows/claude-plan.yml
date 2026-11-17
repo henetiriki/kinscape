@@ -10,9 +10,7 @@ run-name: >-
   ${{
     github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
-    (contains(github.event.issue.labels.*.name, 'type: spec') ||
-      contains(github.event.issue.labels.*.name, 'type: bug') ||
-      contains(github.event.issue.labels.*.name, 'type: chore')) &&
+    contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name) &&
     (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
       github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     github.actor == github.repository_owner &&
@@ -53,9 +51,7 @@ jobs:
     if: |
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
-      (contains(github.event.issue.labels.*.name, 'type: spec') ||
-        contains(github.event.issue.labels.*.name, 'type: bug') ||
-        contains(github.event.issue.labels.*.name, 'type: chore')) &&
+      contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name) &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       github.actor == github.repository_owner

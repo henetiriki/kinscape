@@ -937,12 +937,22 @@ describe('run', () => {
       'create',
       '--title',
       ISSUE_TITLE,
-      '--label',
-      'type: chore',
+      '--type',
+      'Chore',
       '--label',
       'status: draft',
       '--body-file',
       '-',
+    ]);
+    expect(calls('list')[0][0]).toEqual([
+      'issue',
+      'list',
+      '--state',
+      'open',
+      '--type',
+      'Chore',
+      '--json',
+      'number,title',
     ]);
     expect(body).toContain(
       '| `Bash: cat` | plan, build | settings.json: no rule | 2 | $0.00 |'

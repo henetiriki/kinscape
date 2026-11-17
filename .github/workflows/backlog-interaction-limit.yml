@@ -12,17 +12,24 @@ on:
   # Lets a person run it by hand from the Actions tab.
   workflow_dispatch:
 
-permissions:
-  issues: write
+# The bot's token does the issue calls: GitHub drops an issue Type that `github.token` sets.
+permissions: {}
 
 jobs:
   remind:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - name: Create the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-issues: write
       - name: If the limit lapses within 30 days, open a Chore
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
           GH_REPO: ${{ github.repository }}
           EXPIRES: ${{ vars.KINSCAPE_INTERACTION_LIMIT_EXPIRES }}
           OWNER: ${{ github.repository_owner }}
@@ -47,6 +54,6 @@ jobs:
             echo 'A reminder is already open.'
             exit 0
           fi
-          gh issue create --title "$title" --assignee "$OWNER" --label 'type: chore' --label 'status: ready-for-dev' --body-file - <<EOF
+          gh issue create --title "$title" --assignee "$OWNER" --type Chore --label 'status: ready-for-dev' --body-file - <<EOF
           $reason Run \`./scripts/setup-github.sh\`, which restarts the six months and records the new expiry, then \`./scripts/check-github.sh\` ([repository settings](https://github.com/$GH_REPO/blob/main/docs/repo-settings.md)).
           EOF

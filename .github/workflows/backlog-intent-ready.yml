@@ -8,7 +8,7 @@ name: 'Backlog: Flag Intent for PO'
 # issue. Repeats the job's `if:` (run-name cannot see job results): change them together.
 run-name: >-
   ${{
-    contains(github.event.issue.labels.*.name, 'type: spec') &&
+    github.event.issue.type.name == 'Spec' &&
     (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
       github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     format('Check Intent: {0}', github.event.issue.title) ||
@@ -26,7 +26,7 @@ jobs:
   # Only closed Specs matter here; every other closed issue is ignored.
   flag-intent:
     if: >-
-      contains(github.event.issue.labels.*.name, 'type: spec') &&
+      github.event.issue.type.name == 'Spec' &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
             const { total, completed } = parent.sub_issues_summary;
             if (
               parent.state !== 'open' ||
-              !labels.includes('type: intent') ||
+              parent.type?.name !== 'Intent' ||
               labels.includes('status: ready-for-po') ||
               completed < total
             ) {

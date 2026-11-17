@@ -7,8 +7,8 @@ import type { Gh } from '#ks/scripts/types.ts';
 // by" links) that has no other open blocker left:
 //   - labelled `status: blocked`: say so, mention the repo owner, and swap the label for
 //     `status: ready-for-dev`; the tech lead then sets `status: ready-for-agent`
-//   - a `type: spec` whose closed blocker's merged PR changed a path under `design/canvas/`: swap the
-//     label for `status: draft` instead. The comment tells the owner to run `/refine spec`. A design
+//   - a Spec (its issue Type) whose closed blocker's merged PR changed a path under
+//     `design/canvas/`: swap the label for `status: draft` instead. The comment tells the owner to run `/refine spec`. A design
 //     change makes the Spec's size and checks stale.
 //   - with an open PR that closes it (a plan PR whose build the gate stopped): comment on the PR
 // Usage: node scripts/agent-unblock.mts <closed issue number>, with GH_REPO and GH_OWNER set.
@@ -28,6 +28,7 @@ type Linked = {
   labels?: { name: string }[];
   number: number;
   state: string;
+  type?: { name: string } | null;
   user?: { login?: string };
 };
 
@@ -233,9 +234,10 @@ export const run = (
           ...new Set([closed, ...blockedBy.map(({ number }) => number)]),
         ];
 
-        const design = hasLabel(issue, 'type: spec')
-          ? designBlockers(gh, repo, mergedPrs(), blockers)
-          : [];
+        const design =
+          issue.type?.name === 'Spec'
+            ? designBlockers(gh, repo, mergedPrs(), blockers)
+            : [];
 
         swapLabel(gh, comment, { closed, design, issue, owner });
         console.log(`#${issue.number} is unblocked.`);

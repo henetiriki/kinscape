@@ -47,3 +47,8 @@ The two issue-creating workflows mint the App token as `actions-pin-update.yml` 
 | Labels gone; check passes        | Tech lead, after `setup-github.sh` |
 | Spec link, milestone, plan start | Tech lead, test Spec and Chore     |
 | Both bot Chores show the Type    | Tech lead, manual runs             |
+
+## Deviations
+
+- `scripts/__tests__/app-token.test.ts` lists the two jobs that now mint the bot token.
+- In the `agent-approve` and `agent-return` fixtures, `hand-back` replaces a `type:` label where a test needs a label that is not a status label.

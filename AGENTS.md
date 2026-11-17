@@ -9,7 +9,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 - A screen that needs a missing component follows the [missing-components rule](plans/README.md#missing-components).
 - Only the tech lead, or a local session that the tech lead starts, edits `design/canvas/`. A [workflow](design/CANVAS.md#making-the-snapshots-and-jpgs) makes `design/source/`, `design/*.jpg` and `design/cards/`. Never edit those three. A deletion follows [the rule](design/CANVAS.md#who-deletes-a-generated-file). If the app can't match a snapshot, or one looks wrong, don't hide the difference in code. Raise a Bug that names the screen and the difference. A change to the design system's inputs follows [Changing the design system](design/CANVAS.md#changing-the-design-system).
 - [`docs/architecture.md`](docs/architecture.md): where changes go and the patterns to follow. [`docs/architecture-target.md`](docs/architecture-target.md) holds proposals, not rules.
-- [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs. File a `type: intent` issue for a new idea or requirement change.
+- [`docs/how-we-work.md`](docs/how-we-work.md): the workflow, labels, roles, Intents and Specs. File an Intent for a new idea or requirement change.
 - Use the terms in the [glossary](docs/glossary.md) exactly in code, UI and docs: no `User` for Account, `Marker` for Pin or `Region` for Polity.
 
 ## Workflow rules

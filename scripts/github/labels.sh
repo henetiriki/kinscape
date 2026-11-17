@@ -3,11 +3,6 @@
 # Print one line per label: name|colour|description. Lines starting with # are notes.
 labels() {
   grep -v '^#' <<'EOF'
-# Type: what kind of issue
-type: intent|8B5CF6|What the PO wants and why
-type: spec|3B82F6|Requirements and design for an accepted intent
-type: bug|EF4444|Something isn't working
-type: chore|6B7280|Tooling, CI, docs or process change filed by the tech lead
 # Applied by Dependabot to its pull requests
 dependencies|0366D6|Dependency update
 # Status: whose turn is it
@@ -27,4 +22,5 @@ EOF
 
 # GitHub's default labels that overlap with ours, and our retired ones: setup-github.sh deletes them.
 RETIRED_LABELS=(bug documentation duplicate enhancement "good first issue" "help wanted" invalid question wontfix
-  "status: in-progress" "status: in-review" accessibility)
+  "status: in-progress" "status: in-review" accessibility
+  "type: intent" "type: spec" "type: bug" "type: chore")

@@ -1,7 +1,7 @@
 name: 💡 Intent
 description: Describe something you want KinScape to do, in your own words. No technical language needed.
 title: 'Intent: '
-labels: ['type: intent', 'status: draft']
+labels: ['status: draft']
 type: Intent
 body:
   - type: markdown

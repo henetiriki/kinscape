@@ -12,11 +12,10 @@ on:
   # Lets a person run it by hand from the Actions tab.
   workflow_dispatch:
 
+# The bot's token reads the runs and does the issue calls: GitHub drops an issue Type that
+# `github.token` sets.
 permissions:
   contents: read
-  # Reads the runs and downloads their summaries.
-  actions: read
-  issues: write
 
 jobs:
   audit:
@@ -28,10 +27,18 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
+      - name: Create the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-actions: read
+          permission-issues: write
       # Run the audit (scripts/denial-audit.mts). GH_TOKEN lets it list runs, download their
       # summaries, and open or update the issue.
       - name: Audit the permission denials
         run: node scripts/denial-audit.mts
         env:
           GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ steps.bot.outputs.token }}

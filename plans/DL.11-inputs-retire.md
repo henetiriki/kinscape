@@ -84,7 +84,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 
 - The phone hit-area test measures the label of a radio, because the radio is hidden.
 - Nine cards fail the phone hit-area test. `UNDER_44` in `e2e/gallery-looks.spec.ts` lists each with its Bug: #943 to #951.
-- The Spec says "text" and D1 adds the `copy` icon, so the build reworded item 1 of #912 (#942 plan D1).
+- The Spec says "text" and D1 adds the `copy` icon, so the local build reworded item 1 of #912 (#942 plan D1).
 
 ## Out of scope
 

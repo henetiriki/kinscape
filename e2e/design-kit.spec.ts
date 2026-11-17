@@ -4,10 +4,6 @@ import { expect, test } from '@playwright/test';
 
 import tokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
-import { hitsControl } from '@ks/e2e/hits';
-
-const matrix = (page: Page) =>
-  page.getByRole('figure', { name: 'State matrix' });
 
 // NFR-06: each swatch on the colour board is filled with its token.
 test('colour swatches are filled with their tokens', async ({ page }) => {
@@ -43,6 +39,7 @@ const BOARD_LINKS = [
     path: '/design-kit/foundations',
   },
   {
+    gone: true,
     heading: 'Component states',
     label: 'Component states',
     path: '/design-kit/states',
@@ -75,12 +72,19 @@ const BOARD_LINKS = [
 ];
 
 test('the index links to each board', async ({ page }) => {
-  for (const { heading, path } of BOARD_LINKS) {
+  for (const { gone, heading, path } of BOARD_LINKS) {
     await page.goto('/design-kit');
-    await page
+
+    const link = page
       .getByRole('main')
-      .getByRole('link', { exact: true, name: heading })
-      .click();
+      .getByRole('link', { exact: true, name: heading });
+
+    if (gone) {
+      await expect(link).toHaveAttribute('href', path);
+      continue;
+    }
+
+    await link.click();
     await expect(page).toHaveURL(path);
     await expect(
       page.getByRole('main').getByText(heading, { exact: true })
@@ -88,7 +92,16 @@ test('the index links to each board', async ({ page }) => {
   }
 });
 
-for (const path of ['/design-kit', ...BOARD_LINKS.map(board => board.path)]) {
+test('the states board gives a 404', async ({ page }) => {
+  const response = await page.goto('/design-kit/states');
+
+  expect(response?.status()).toBe(404);
+});
+
+for (const path of [
+  '/design-kit',
+  ...BOARD_LINKS.filter(board => !board.gone).map(board => board.path),
+]) {
   test(`on ${path}, the nav marks the current board and Tab reaches each link in order`, async ({
     page,
   }) => {
@@ -515,13 +528,13 @@ test.describe('the map style board', () => {
   });
 });
 
-// NFR-05, NFR-06: the Type, States and Feedback boards on a phone, in portrait and landscape.
+// NFR-05, NFR-06: the Type, Feedback and Inputs boards on a phone, in portrait and landscape.
 test.describe('the boards on a phone', () => {
   for (const [name, size] of [
     ['390 wide', { height: 844, width: 390 }],
     ['800 by 450', { height: 450, width: 800 }],
   ] as const) {
-    for (const board of ['type', 'states', 'feedback', 'inputs']) {
+    for (const board of ['type', 'feedback', 'inputs']) {
       test(`${board} at ${name} does not scroll sideways`, async ({ page }) => {
         await page.setViewportSize(size);
         await page.goto(`/design-kit/${board}`);
@@ -539,7 +552,7 @@ test.describe('the boards on a phone', () => {
   test.describe('at 390 wide', () => {
     test.use({ viewport: { height: 844, width: 390 } });
 
-    for (const board of ['type', 'states', 'feedback', 'inputs']) {
+    for (const board of ['type', 'feedback', 'inputs']) {
       test(`${board} is one column inside 16px gutters`, async ({ page }) => {
         await page.goto(`/design-kit/${board}`);
 
@@ -574,28 +587,6 @@ test.describe('the boards on a phone', () => {
         );
 
       expect(new Set(lefts).size).toBe(1);
-    });
-
-    test('states labels each cell and keeps 44px hit areas', async ({
-      page,
-    }) => {
-      await page.goto('/design-kit/states');
-      await expect(matrix(page).getByText('Pressed').last()).toBeVisible();
-
-      const live = matrix(page).locator(':not([inert] *)');
-
-      for (const control of [
-        live.getByRole('button', { name: 'Sign in' }).first(),
-        live.getByRole('button', { name: 'Copy chain' }).first(),
-        live.getByRole('button', { name: 'Zoom in' }).first(),
-        live.getByRole('checkbox', { name: 'Checkbox off' }).first(),
-        live.getByRole('button', { name: 'Birth' }).first(),
-        live.locator('label', { hasText: 'Month' }).first(),
-        live.getByRole('tab', { name: 'Filters' }).first(),
-      ]) {
-        expect(await hitsControl(control, 0, 21)).toBe(true);
-        expect(await hitsControl(control, 0, -21)).toBe(true);
-      }
     });
   });
 });
@@ -707,43 +698,6 @@ test.describe('the other boards on a phone', () => {
 
       expect(lefts.length).toBeGreaterThan(0);
       expect(new Set(lefts).size).toBe(1);
-    });
-
-    test('states is one column and no two cells overlap', async ({ page }) => {
-      await page.goto('/design-kit/states');
-
-      const matrix = page.getByRole('figure', { name: 'State matrix' });
-
-      await expect(matrix.getByText('Component', { exact: true })).toBeHidden();
-      // Only the phone form shows each cell's state label.
-      await expect(
-        matrix.getByText('Hover', { exact: true }).last()
-      ).toBeVisible();
-
-      const overlaps = await matrix.evaluate(figure => {
-        let count = 0;
-
-        for (const row of figure.children) {
-          const boxes = [...row.children]
-            .filter(cell => cell.checkVisibility())
-            .map(cell => cell.getBoundingClientRect());
-
-          boxes.forEach((a, i) =>
-            boxes.slice(i + 1).forEach(b => {
-              if (
-                Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 &&
-                Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1
-              ) {
-                count += 1;
-              }
-            })
-          );
-        }
-
-        return count;
-      });
-
-      expect(overlaps).toBe(0);
     });
 
     test('colour keeps five swatches in a row', async ({ page }) => {

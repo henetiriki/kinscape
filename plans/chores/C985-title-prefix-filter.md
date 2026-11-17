@@ -1,7 +1,7 @@
 # Plan: C985: Skip a wrong-Type issue at the if: with its title prefix, and remove log-type
 
 - **Spec:** #985
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

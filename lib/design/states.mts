@@ -230,6 +230,11 @@ export const CARDS: Card[] = [
         children: 'Copy chain',
         props: { disabled, icon: 'copy', state },
       })),
+      ...(['l', 's', 'xs'] as const).map(size => ({
+        children: 'Copy chain',
+        label: `Button · size ${size}`,
+        props: { icon: 'copy', size },
+      })),
       ...linkGrid('Button link', state => ({
         children: 'See all people',
         props: { href: '/people', state, variant: 'primary' },

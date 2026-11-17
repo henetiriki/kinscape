@@ -11,6 +11,18 @@ The new test parses each workflow with `yaml`, as `app-token.test.ts` does. It t
 
 Every file under `.github/workflows/` is a hand-back path, so the tech lead builds this Chore.
 
+## Decisions
+
+**D1 · Reverse the payload read of C976 and the guard of B980** · Decides: Tech lead
+
+[C976](C976-retire-type-labels.md) made each workflow read `github.event.issue.type.name`. [B980](../bugs/B980-plan-gate-type.md) D1 added the `(!github.event.issue.type || …)` guard and the `log-type` job. An `issues` payload carries no `issue.type` (#985, _Why_).
+
+- **A.** Replace both with the title filter, and remove `log-type`. Cost: a title with no prefix skips.
+- **B.** Keep the guard. Cost: a label on an Intent starts a job that stops and shows green.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                                                                       | New / changed | What                                       |
@@ -48,3 +60,4 @@ Every file under `.github/workflows/` is a hand-back path, so the tech lead buil
 ## Deviations
 
 - The test also reads each step `if:`, and it keeps the check that each backlog script reads the Type from the API. The issue forbids the removal of an API check.
+- The plan gains D1, which records that it reverses C976 and B980.

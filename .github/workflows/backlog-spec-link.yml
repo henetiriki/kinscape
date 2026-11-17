@@ -6,9 +6,9 @@ name: 'Backlog: Link Spec to Intent'
 # The title shown for each run in the Actions tab: "Link: <title>" for a Spec filed by the owner, a
 # member, a collaborator or the agent App, "Skipped Link: <title>" for any other issue. Repeats the
 # job's `if:` (run-name cannot see job results): change them together.
-# An `issues` payload carries no `issue.type`, so the title prefix stands in for the Type. The prefix
+# An `issues` payload carries no `issue.type`, so the title prefix shows the Type. The prefix
 # only filters: the script reads the Type from the API. `scripts/__tests__/issue-title-filters.test.ts`
-# fails if the two conditions differ.
+# fails if the title tests of the two conditions differ.
 run-name: >-
   ${{
     startsWith(github.event.issue.title, 'Spec: ') &&

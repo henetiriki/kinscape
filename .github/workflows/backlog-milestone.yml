@@ -7,9 +7,9 @@ name: 'Backlog: Inherit milestone'
 # owner, a member, a collaborator or the agent App, a PR from this repo, or "Milestone: backfill" for
 # a manual run; "Skipped Milestone: <title>" for any other issue or PR. Repeats the job's `if:`
 # (run-name cannot see job results): change them together.
-# An `issues` payload carries no `issue.type`, so the title prefix stands in for the Type. The prefix
+# An `issues` payload carries no `issue.type`, so the title prefix shows the Type. The prefix
 # only filters: the script reads the Type from the API. `scripts/__tests__/issue-title-filters.test.ts`
-# fails if the two conditions differ.
+# fails if the title tests of the two conditions differ.
 run-name: >-
   ${{
     github.event_name == 'workflow_dispatch' && 'Milestone: backfill' ||

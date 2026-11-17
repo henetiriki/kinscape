@@ -4,10 +4,10 @@ name: 'Claude: Plan'
 #   "Plan: <title>"         - the repo owner (the tech lead) marked an issue ready for the agent.
 #                             Its author is the owner, a member, a collaborator or the agent App.
 #                             Its title starts with "Spec: ", "Bug: " or "Chore: ". An `issues`
-#                             payload carries no `issue.type`, so the title prefix stands in for
-#                             the Type. The gate then runs. The gate (scripts/agent-gate.mts) reads
-#                             the Type from the API. It stops quietly unless the Type is Spec, Bug
-#                             or Chore.
+#                             payload carries no `issue.type`, so the title prefix shows the
+#                             Type. The gate then runs. The gate (scripts/agent-gate.mts) reads the
+#                             Type from the API. It stops quietly unless the Type is Spec, Bug or
+#                             Chore.
 #   "Skipped Plan: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
 # `scripts/__tests__/issue-title-filters.test.ts` fails if their title tests differ.

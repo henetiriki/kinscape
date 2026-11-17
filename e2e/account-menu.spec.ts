@@ -2,6 +2,8 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import { signOut } from '@ks/e2e/session';
+
 // The synthetic Account behind the test-only memory adapters (e2e/auth.setup.ts).
 const SYNTHETIC = {
   email: 'synthetic@example.test',
@@ -82,14 +84,14 @@ test.describe('own session', () => {
   test('Sign out shows the sign-in page and the map is no longer reachable', async ({
     page,
   }) => {
+    // The map start is slow when four workers share four cores (B981).
+    test.slow();
     await page.goto('/sign-in');
     await page.getByLabel('Email').fill(SYNTHETIC.email);
     await page.getByLabel('Password', { exact: true }).fill(SYNTHETIC.password);
     await page.getByRole('button', { name: 'Sign in' }).click();
     await page.waitForURL(url => url.pathname === '/');
-    await avatar(page).click();
-    await page.getByRole('menuitem', { name: 'Sign out' }).click();
-    await page.waitForURL(url => url.pathname === '/sign-in');
+    await signOut(page);
 
     await page.goto('/');
     await expect(page).toHaveURL(url => url.pathname === '/sign-in');

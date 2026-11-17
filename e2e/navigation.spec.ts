@@ -2,6 +2,8 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import { signOut } from '@ks/e2e/session';
+
 // The synthetic Account behind the test-only memory adapters (e2e/auth.setup.ts).
 const SYNTHETIC = {
   email: 'synthetic@example.test',
@@ -279,6 +281,9 @@ test.describe('own session', () => {
   test('after sign-out and sign-in the map starts at today with every layer on', async ({
     page,
   }) => {
+    // This test starts the map twice, which is slow when four workers share four cores (B981).
+    test.slow();
+
     const signIn = async () => {
       await page.goto('/sign-in');
       await page.getByLabel('Email').fill(SYNTHETIC.email);
@@ -294,9 +299,7 @@ test.describe('own session', () => {
     await field(page).press('Enter');
     await layers(page).getByRole('checkbox').first().uncheck();
     await openPeople(page);
-    await page.getByRole('button', { name: 'Account menu' }).click();
-    await page.getByRole('menuitem', { name: 'Sign out' }).click();
-    await page.waitForURL(url => url.pathname === '/sign-in');
+    await signOut(page);
     await signIn();
 
     await expect(field(page)).toHaveValue(String(new Date().getFullYear()));

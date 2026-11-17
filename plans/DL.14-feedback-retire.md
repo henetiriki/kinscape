@@ -2,7 +2,7 @@
 
 - **Spec:** #915
 - **Requirement IDs:** None. The Spec deletes a hidden dev page.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

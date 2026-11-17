@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Apply KinScape's GitHub configuration: labels, issue Types, milestones, repo settings,
 # the ruleset protecting main, and security/Actions settings.
-# Needs the GitHub CLI (brew install gh) and `gh auth login` as a repo admin.
+# Needs the GitHub CLI (brew install gh) and `gh auth login` as a repo admin. The issue Types need
+# the `user` scope on a personal account: gh auth refresh -h github.com -s user.
 # Safe to re-run. To change a setting, change it here in a PR, merge, then re-run.
 # Verify with: ./scripts/check-github.sh
 set -euo pipefail

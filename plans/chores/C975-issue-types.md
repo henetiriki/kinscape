@@ -67,3 +67,5 @@ The backfill script lists all issues with `gh issue list --state all --json numb
 | Each form sets its Type              | Tech lead, four test issues                           |
 
 ## Deviations
+
+- `setup-github.sh` and `docs/repo-settings.md` name the `user` token scope: GitHub needs it to manage a personal account's Types.

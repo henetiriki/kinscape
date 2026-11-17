@@ -2,7 +2,7 @@
 
 - **Spec:** #912
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05), [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ Spec item 1 says "a secondary button with the text 'Copy chain'". `Button second
 - **B.** No icon. The card shows the text only.
 - **Other:** your own.
 
-Recommended: A, because it matches the secondary row, and the icon size also changes with the button size.
+**Answer: A** (@henetiriki)
 
 **D2 · Who builds** · Decides: Tech lead
 
@@ -32,7 +32,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 - **B.** The tech lead, or a local session, builds all of it. The CI agent does not build.
 - **Other:** your own.
 
-Recommended: A, because only the design system steps need a session that is signed in to claude.ai.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -64,15 +64,30 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 ## Shape and depth
 
-`/design-kit/foundations` shows these with spacing and motion.
+| Token   | Value                                                                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Radius  | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                                                                                |
+| Shadow  | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment`                                        |
+| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                                  |
+| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                                   |
+| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                                 |
+| Icons   | 24px grid, 2px stroke, round caps and joins, `currentColor`. Draw at 16, 18 or 20px (24 on the phone layers button). `aria-hidden`; an icon-only button carries the name |
 
-| Token   | Value                                                                                                                             |
-| ------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Radius  | 8 buttons and fields · 12 panels, dock, popup · 18 top of phone sheet · pills fully round                                         |
-| Shadow  | `--shadow-raised` for panels and the dock; `--shadow-floating` for popups; `--shadow-modal`, `--shadow-sheet`, `--shadow-segment` |
-| Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                           |
-| Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                            |
-| Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                          |
+## Motion
+
+`tokens.json` holds the durations. Each token is a `motion` token.
+
+| Token            | Use                                                        |
+| ---------------- | ---------------------------------------------------------- |
+| `press`          | Hover, press: colour and border only                       |
+| `popup`          | Popups, menus: fade and 4px rise                           |
+| `sheet`          | Phone sheet: slides; follows the finger while dragged      |
+| `changed-border` | Changed border: MAP-11 highlight, then gone                |
+| `toast`          | Toast: a success toast leaves after 4 seconds; errors stay |
+
+A map date change redraws at once. Never animate it and never show a loader (NFR-01).
+
+Under `prefers-reduced-motion`, drop every transition except a colour change. Play steps without easing.
 
 ## Components
 

@@ -29,7 +29,7 @@ Do these steps in order. The push starts the next review, so it comes last:
 4. Resolve each thread that you fixed or judged wrong (`npm run review:threads -- resolve <n> <thread id>`). Leave a thread for a person open.
 5. If the work changed, update the PR title and body (the [plan-pr-flow rule](../../plans/README.md#plan-pr-flow)).
 6. Post one final PR comment. Say what you fixed, and what you did not fix and why.
-7. Push to the PR branch. Do not ask for one. No step follows a push that succeeds.
+7. Push to the PR branch. Do not ask for a review. No step follows a successful push.
 
 If the push fails, do these steps:
 

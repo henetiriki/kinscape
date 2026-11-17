@@ -79,55 +79,6 @@
       "width": 390
     },
     {
-      "height": 7483,
-      "mode": "blocking",
-      "name": "style-6-components-inputs",
-      "route": "/design-kit/inputs",
-      "width": 1440
-    },
-    {
-      "height": 5789,
-      "mode": "blocking",
-      "name": "style-6-components-inputs-phone",
-      "route": "/design-kit/inputs",
-      "width": 390
-    },
-    {
-      "height": 5893,
-      "mode": "blocking",
-      "name": "style-6-components-inputs-2-phone",
-      "route": "/design-kit/inputs?part=2",
-      "width": 390
-    },
-    {
-      "height": 7260,
-      "mode": "blocking",
-      "name": "style-6-components-inputs-2",
-      "route": "/design-kit/inputs?part=2",
-      "width": 1440
-    },
-    {
-      "height": 2508,
-      "mode": "blocking",
-      "name": "style-6-components-inputs-3",
-      "route": "/design-kit/inputs?part=3",
-      "width": 1440
-    },
-    {
-      "height": 6122,
-      "mode": "blocking",
-      "name": "style-6-components-inputs-3-phone",
-      "route": "/design-kit/inputs?part=3",
-      "width": 390
-    },
-    {
-      "height": 7293,
-      "mode": "blocking",
-      "name": "style-6-components-inputs-4-phone",
-      "route": "/design-kit/inputs?part=4",
-      "width": 390
-    },
-    {
       "height": 7702,
       "mode": "blocking",
       "name": "style-7-components-surfaces-phone",

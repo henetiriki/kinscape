@@ -20,16 +20,8 @@ const COLUMNS: MatrixColumn[] = [
   { column: 'disabled', title: 'Disabled' },
 ];
 
-/** The columns of a link: it is never disabled. */
-export const LINK_COLUMNS = COLUMNS.filter(
-  ({ column }) => column !== 'disabled'
-);
-
 export const stateOf = (column: Column): ControlState | undefined =>
   column === 'default' || column === 'disabled' ? undefined : column;
-
-// The board keeps the space after a code inside it, so the space is set in mono too.
-export const code = (text: string) => <code>{`${text} `}</code>;
 
 /** Draws `desktop` on a desktop and `phone` on a phone, where the board says or draws them differently. */
 export const ByViewport = ({
@@ -61,7 +53,6 @@ export const Section = ({
   desktopPart,
   lead,
   part,
-  phoneLead,
   title,
 }: {
   children: ReactNode;
@@ -70,8 +61,6 @@ export const Section = ({
   lead: ReactNode;
   /** None: no part of a phone shows the section. */
   part?: PhonePart;
-  /** The lead a phone shows instead. */
-  phoneLead?: string;
   title: string;
 }) => (
   <section
@@ -81,9 +70,7 @@ export const Section = ({
     data-part={part}>
     <div className={styles.intro}>
       <h2 className={styles.h2}>{title}</h2>
-      <p className={styles.lead}>
-        {phoneLead ? <ByViewport desktop={lead} phone={phoneLead} /> : lead}
-      </p>
+      <p className={styles.lead}>{lead}</p>
     </div>
     {children}
   </section>
@@ -119,13 +106,10 @@ export const Variants = ({ children }: { children: ReactNode }) => (
 export const Matrix = ({
   columns = COLUMNS,
   label,
-  note,
   rows,
 }: {
   columns?: MatrixColumn[];
   label: string;
-  /** The line under the last row. */
-  note?: ReactNode;
   rows: {
     /** Drawn on a desktop only. */
     desktop?: boolean;
@@ -133,8 +117,6 @@ export const Matrix = ({
     /** Every cell is only drawn. */
     inert?: boolean;
     name: string;
-    /** The hint a phone shows instead. */
-    phoneHint?: string;
     render: (column: Column) => ReactNode;
   }[];
 }) => (
@@ -148,16 +130,14 @@ export const Matrix = ({
         <span key={title}>{title}</span>
       ))}
     </div>
-    {rows.map(({ desktop, hint, inert, name, phoneHint, render }) => (
+    {rows.map(({ desktop, hint, inert, name, render }) => (
       <div
         className={styles.row}
         data-desktop={desktop || undefined}
         key={`${name} ${hint}`}>
         <span className={styles.name}>
           <span>{name}</span>
-          <span className={styles.hint}>
-            {phoneHint ? <ByViewport desktop={hint} phone={phoneHint} /> : hint}
-          </span>
+          <span className={styles.hint}>{hint}</span>
         </span>
         {columns.map(({ column, phoneTitle, title }) => (
           // Hover, Focus and Pressed are looks, not controls: inert keeps them out of the tab order and the accessibility tree.
@@ -173,7 +153,6 @@ export const Matrix = ({
         ))}
       </div>
     ))}
-    {note && <figcaption className={styles.matrixNote}>{note}</figcaption>}
   </figure>
 );
 

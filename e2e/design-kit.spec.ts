@@ -26,7 +26,13 @@ test('colour swatches are filled with their tokens', async ({ page }) => {
 });
 
 // NFR-06: the kit's index and nav.
-const BOARD_LINKS = [
+// A board with `gone` has no page, but the index and the nav still link to it.
+const BOARD_LINKS: {
+  gone?: true;
+  heading: string;
+  label: string;
+  path: string;
+}[] = [
   {
     heading: 'Typography and hierarchy',
     label: 'Typography',
@@ -50,6 +56,7 @@ const BOARD_LINKS = [
     path: '/design-kit/feedback',
   },
   {
+    gone: true,
     heading: 'Inputs and actions',
     label: 'Inputs',
     path: '/design-kit/inputs',
@@ -92,10 +99,12 @@ test('the index links to each board', async ({ page }) => {
   }
 });
 
-test('the states board gives a 404', async ({ page }) => {
-  const response = await page.goto('/design-kit/states');
+test('a board that is gone gives a 404', async ({ page }) => {
+  for (const { path } of BOARD_LINKS.filter(board => board.gone)) {
+    const response = await page.goto(path);
 
-  expect(response?.status()).toBe(404);
+    expect(response!.status(), path).toBe(404);
+  }
 });
 
 for (const path of [
@@ -528,13 +537,13 @@ test.describe('the map style board', () => {
   });
 });
 
-// NFR-05, NFR-06: the Type, Feedback and Inputs boards on a phone, in portrait and landscape.
+// NFR-05, NFR-06: the Type and Feedback boards on a phone, in portrait and landscape.
 test.describe('the boards on a phone', () => {
   for (const [name, size] of [
     ['390 wide', { height: 844, width: 390 }],
     ['800 by 450', { height: 450, width: 800 }],
   ] as const) {
-    for (const board of ['type', 'feedback', 'inputs']) {
+    for (const board of ['type', 'feedback']) {
       test(`${board} at ${name} does not scroll sideways`, async ({ page }) => {
         await page.setViewportSize(size);
         await page.goto(`/design-kit/${board}`);
@@ -552,7 +561,7 @@ test.describe('the boards on a phone', () => {
   test.describe('at 390 wide', () => {
     test.use({ viewport: { height: 844, width: 390 } });
 
-    for (const board of ['type', 'feedback', 'inputs']) {
+    for (const board of ['type', 'feedback']) {
       test(`${board} is one column inside 16px gutters`, async ({ page }) => {
         await page.goto(`/design-kit/${board}`);
 

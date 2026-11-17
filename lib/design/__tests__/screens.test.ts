@@ -142,6 +142,13 @@ const NO_ENTRY = [
   'sign-in-unavailable',
   'style-4-states',
   'style-4-states-phone',
+  'style-6-components-inputs',
+  'style-6-components-inputs-2',
+  'style-6-components-inputs-2-phone',
+  'style-6-components-inputs-3',
+  'style-6-components-inputs-3-phone',
+  'style-6-components-inputs-4-phone',
+  'style-6-components-inputs-phone',
 ];
 
 const jpeg = (width: number, height: number, ...before: number[][]) =>

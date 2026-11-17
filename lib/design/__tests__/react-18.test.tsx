@@ -260,6 +260,15 @@ const CASES: [string, ReactElement][] = [
       Copy chain
     </Button>
   )),
+  ...(['l', 's', 'xs'] as const).map(
+    size =>
+      [
+        `Button · size ${size}`,
+        <Button icon='copy' key={size} size={size}>
+          Copy chain
+        </Button>,
+      ] as [string, ReactElement]
+  ),
   ...links('Button link', state => (
     <Button href='/people' state={state} variant='primary'>
       See all people

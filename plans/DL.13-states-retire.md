@@ -65,3 +65,8 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 ## Out of scope
 
 As the Spec says: the `SG-Controls` boards, their files, their `DESIGN.md` rows and sentence, and the two `NO_ENTRY` names go in DL.21 (#929).
+
+## Deviations
+
+- #942 is on `main`. The PR keeps the `gone` field and the nav filter of `main` and adds none. The 404 test loops over each board with `gone`, so no second test exists. This keeps the route `/design-kit/states` as plain text in `BOARD_LINKS` only.
+- The "First retirement" risk does not apply: #942 is the first retirement.

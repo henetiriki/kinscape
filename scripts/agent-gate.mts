@@ -3,8 +3,11 @@ import { appendFileSync } from 'node:fs';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
+import { TYPES } from '#ks/scripts/issue-status.mts';
+
 // Checks that run before a plan, build, fix or resolve job spends a model run (see claude-run.yml):
-//   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date)
+//   all:   stop quietly if the issue or PR no longer qualifies (the run's event is out of date); a plan
+//          issue must be open, labelled and a Spec, Bug or Chore
 //   plan:  stop if an open PR already closes the issue, or an issue it is "blocked by" is open
 //   build: stop if an issue the PR closes is blocked by an open issue
 //   fix:   nothing more; a fix-review run changes a PR that is already built
@@ -51,13 +54,25 @@ const staleReason = (
   thread: number
 ): string | undefined => {
   if (kind === 'plan') {
-    const { labels, state } = json<{
+    const { issueType, labels, state } = json<{
+      issueType: { name: string } | null;
       labels: { name: string }[];
       state: string;
-    }>(gh, ['issue', 'view', String(thread), '--json', 'state,labels']);
+    }>(gh, [
+      'issue',
+      'view',
+      String(thread),
+      '--json',
+      'state,labels,issueType',
+    ]);
 
     if (state !== 'OPEN') {
       return 'the issue is closed';
+    }
+
+    // The `labeled` event may not carry `issue.type`, so the workflow's `if:` cannot decide this.
+    if (!TYPES.includes(issueType?.name ?? '')) {
+      return 'the issue is not a Spec, Bug or Chore';
     }
 
     return labels.some(({ name }) => name === 'status: ready-for-agent')

@@ -12,7 +12,8 @@ type World = {
   // PR number -> the issues it closes
   closes?: Record<number, number[]>;
   // The issue or PR as it is now; a plan-ready open issue and an open draft plan PR by default.
-  issue?: { labels?: string[]; state?: string };
+  // `type` is the issue Type: "Spec" by default, null for an untyped issue.
+  issue?: { labels?: string[]; state?: string; type?: null | string };
   openPrs?: { closingIssuesReferences: { number: number }[]; number: number }[];
   // A draft plan PR by default; `labels` is read by a fix gate and defaults to the fix-review label.
   pr?: {
@@ -44,6 +45,8 @@ describe('run', () => {
 
       if (args[0] === 'issue' && args[1] === 'view') {
         return JSON.stringify({
+          issueType:
+            issue.type === null ? null : { name: issue.type ?? 'Spec' },
           labels: (issue.labels ?? ['status: ready-for-agent']).map(name => ({
             name,
           })),
@@ -252,6 +255,17 @@ describe('run', () => {
       );
     });
 
+    it.each([
+      ['an Intent', 'Intent'],
+      ['untyped', null],
+    ])('stops a plan quietly when the issue is %s', (_label, type) => {
+      quiet(
+        ['plan', '5'],
+        { issue: { type } },
+        'the issue is not a Spec, Bug or Chore'
+      );
+    });
+
     it('stops a build quietly when the PR is not open', () => {
       quiet(['build', '50'], { pr: { state: 'MERGED' } }, 'the PR is not open');
     });
@@ -313,7 +327,7 @@ describe('run', () => {
         'view',
         '5',
         '--json',
-        'state,labels',
+        'state,labels,issueType',
       ]);
       expect(gh).toHaveBeenCalledWith([
         'pr',
@@ -336,6 +350,13 @@ describe('run', () => {
       expect(write).toHaveBeenCalledWith('go=true');
       expect(posted()).toHaveLength(0);
       expect(edited()).toHaveLength(0);
+    });
+
+    it.each(['Spec', 'Bug', 'Chore'])('goes ahead for a %s', type => {
+      fakeGh({ issue: { type } });
+
+      expect(run(['plan', '5'], ENV, gh, write, summary)).toBe(0);
+      expect(write).toHaveBeenCalledWith('go=true');
     });
 
     it('asks for the open PRs and the blockers of the issue', () => {

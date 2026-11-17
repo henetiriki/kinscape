@@ -48,7 +48,9 @@ const TARGET = {
   po: `${STATUS}ready-for-po`,
 };
 const BLOCKED = `${STATUS}blocked`;
-const TYPES = ['Spec', 'Bug', 'Chore'];
+
+// The issue Types that carry a status. agent-gate.mts plans only these.
+export const TYPES = ['Spec', 'Bug', 'Chore'];
 const VISIBLE_TYPES = ['Spec', 'Bug'];
 const MAY_MOVE_A_READY_PR = ['OWNER', 'MEMBER', 'COLLABORATOR'];
 

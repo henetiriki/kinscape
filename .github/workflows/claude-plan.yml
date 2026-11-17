@@ -1,16 +1,19 @@
 name: 'Claude: Plan'
 
 # The title shown for each run in the Actions tab:
-#   "Plan: <title>"         - the repo owner (the tech lead) marked a Spec, Bug or Chore ready for the agent,
-#                             and its author is the owner, a member, a collaborator or the agent App, so
-#                             Claude drafts a plan
+#   "Plan: <title>"         - the repo owner (the tech lead) marked an issue ready for the agent.
+#                             Its author is the owner, a member, a collaborator or the agent App.
+#                             The gate then runs. The event may not carry `issue.type`, so an issue
+#                             with no Type in the event passes this filter. The gate
+#                             (scripts/agent-gate.mts) reads the Type from the API. It stops quietly
+#                             unless the Type is Spec, Bug or Chore.
 #   "Skipped Plan: <title>" - anything else, so nothing runs (a PO's label included)
 # This repeats the `if:` of the `plan` job (run-name cannot see job results): change them together.
 run-name: >-
   ${{
     github.event.issue.state == 'open' &&
     github.event.label.name == 'status: ready-for-agent' &&
-    contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name) &&
+    (!github.event.issue.type || contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name)) &&
     (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
       github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
     github.actor == github.repository_owner &&
@@ -40,18 +43,18 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Runs when someone adds the "status: ready-for-agent" label to an open Spec, Bug or Chore (not
-  # to a closed one or any other kind of issue) and that person is the repo owner: only the tech lead
-  # sets that label (how-we-work.md), and the PO's write access would otherwise start a run. The shared
-  # runner checks the plan can start, then Claude writes the plan and opens a draft PR and stops
-  # to wait for the tech lead. The runner comes from main, like the agent files.
+  # Runs when the repo owner adds the "status: ready-for-agent" label to an open issue. Only the tech
+  # lead sets that label (how-we-work.md). The PO has write access, so the PO's label must not start
+  # a run. The shared runner checks that the plan can start. This includes the issue Type: it must be
+  # a Spec, Bug or Chore. Then Claude writes the plan and opens a draft PR. Claude stops there and
+  # waits for the tech lead. The runner comes from main, like the agent files.
   plan:
     # The Actions graph shows the runner's jobs under this name: "Plan / Gate", "Plan / Run Claude", "Plan / Result".
     name: Plan
     if: |
       github.event.issue.state == 'open' &&
       github.event.label.name == 'status: ready-for-agent' &&
-      contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name) &&
+      (!github.event.issue.type || contains(fromJSON('["Spec","Bug","Chore"]'), github.event.issue.type.name)) &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       github.actor == github.repository_owner
@@ -92,3 +95,19 @@ jobs:
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+
+  # Logs the issue Type that the `labeled` event carries. #980 suspects that the event has no
+  # `issue.type`. Nobody has verified this. The log shows the answer. Remove this job when it does.
+  # It has no permissions, and it reads the event text through `env:`.
+  log-type:
+    name: Log the issue Type
+    if: >-
+      github.event.label.name == 'status: ready-for-agent'
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    permissions: {}
+    steps:
+      - name: Log the event's issue Type
+        env:
+          ISSUE_TYPE: ${{ toJSON(github.event.issue.type) }}
+        run: echo "github.event.issue.type = $ISSUE_TYPE"

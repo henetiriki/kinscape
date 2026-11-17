@@ -29,7 +29,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | | workflow_dispatch | | |
 | Claude: Fix review<br>`claude-fix-review.yml` · calls Claude: Run (shared) | pull_request | `labeled` | fix · unlabel |
 | Claude: Hand back<br>`claude-hand-back.yml` | pull_request | `opened, synchronize, reopened` | label |
-| Claude: Plan<br>`claude-plan.yml` · calls Claude: Run (shared) | issues | `labeled` | plan |
+| Claude: Plan<br>`claude-plan.yml` · calls Claude: Run (shared) | issues | `labeled` | plan · log-type |
 | Claude: Check plugin pin<br>`claude-plugin-pin-check.yml` | schedule | `0 6 * * 1` | check-pin |
 | | workflow_dispatch | | |
 | Claude: Resolve conflict<br>`claude-resolve-conflict.yml` · calls Claude: Run (shared) | pull_request_target | `labeled` | resolve · unlabel |

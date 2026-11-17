@@ -1,7 +1,7 @@
 # Plan: C976: Read issue Types in place of the type labels, and retire the labels
 
 - **Spec:** #976
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

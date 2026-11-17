@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
+import rawTokens from '@ks/design/tokens.json';
+import { resolveTokens } from '@ks/design/tokens.mts';
 import {
   contrastRatio,
-  formatColour,
   formatRatio,
   parseColour,
+  ratioOf,
+  valueAt,
 } from '@ks/lib/design/contrast.mts';
 
 // NFR-06
@@ -40,9 +43,20 @@ describe('formatRatio', () => {
   });
 });
 
-describe('formatColour', () => {
-  it('capitalises hex and leaves rgb() as written', () => {
-    expect(formatColour('#e6eee4')).toBe('#E6EEE4');
-    expect(formatColour('rgb(24 33 27 / 0.45)')).toBe('rgb(24 33 27 / 0.45)');
+describe('valueAt', () => {
+  it('resolves a colour token and a map token by its path', () => {
+    const tokens = resolveTokens(rawTokens);
+
+    expect(valueAt(tokens, 'colour.surface')).toBe(tokens.colour.surface);
+    expect(valueAt(tokens, 'map.hatch.colour')).toBe('#8b4a1c');
+  });
+});
+
+describe('ratioOf', () => {
+  const tokens = { colour: { a: '#000000', b: '#ffffff', surface: '#ffffff' } };
+
+  it('measures on surface unless told otherwise', () => {
+    expect(ratioOf(tokens, 'colour.a')).toBeCloseTo(21, 5);
+    expect(ratioOf(tokens, 'colour.b', 'colour.a')).toBeCloseTo(21, 5);
   });
 });

@@ -11,6 +11,9 @@ export const GENERATED_HEADER =
 export const cssName = (path: string[]): string =>
   `--${(path[0] === 'colour' ? path.slice(1) : path).join('-')}`;
 
+/** The name a token has in the design system: its `cssName` without `--`. */
+export const systemName = (path: string[]): string => cssName(path).slice(2);
+
 /** The variable `next/font` sets for a family, e.g. `--next-font-public-sans`. */
 export const fontVariable = (family: string): string =>
   `--next-font-${family.toLowerCase().replaceAll(' ', '-')}`;

@@ -161,7 +161,7 @@ The `kit.*` tokens set the design kit's board titles, page padding and intro wid
 
 ## Colours
 
-[`tokens.json`](tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. `/design-kit/colour` shows each colour with its value and contrast ratio. The `notes` group of `tokens.json` says where each token is used.
+[`tokens.json`](tokens.json) holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `notes` group of `tokens.json` says where each token is used.
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 

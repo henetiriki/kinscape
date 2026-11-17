@@ -8,6 +8,7 @@ import { resolveTokens } from '@ks/design/tokens.mts';
 import { BUNDLE_CSS, BUNDLE_JS, NAMESPACE } from '@ks/lib/design/bundle.mts';
 import { cssName } from '@ks/lib/design/css.mts';
 import { formatProblems } from '@ks/lib/design/format.mts';
+import { roleSentences } from '@ks/lib/design/roles.mts';
 import {
   fontFaces,
   fontFiles,
@@ -75,7 +76,15 @@ describe('systemTokens', () => {
         );
 
         return typeof usage === 'string'
-          ? [{ name: cssName(path).slice(2), usage, value: String(value) }]
+          ? [
+              {
+                name: cssName(path).slice(2),
+                usage: [usage, ...roleSentences(resolved, path.join('.'))].join(
+                  ' '
+                ),
+                value: String(value),
+              },
+            ]
           : [];
       })
     );
@@ -88,6 +97,18 @@ describe('systemTokens', () => {
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
     expect(all(system).length).toBe(172);
+  });
+
+  // NFR-06
+  it('ends the usage of ink-3 with its role and its ratio on surface', () => {
+    const usage = system.color.tokens.find(({ name }) => name === 'ink-3')
+      ?.usage as string;
+    const ratio =
+      /Role: text\. Contrast (\d+\.\d):1 on surface \(needs 4\.5:1\)\.$/.exec(
+        usage
+      )?.[1];
+
+    expect(Number(ratio)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('has the layout, breakpoint and z families, each token with a name, a value and a usage', () => {

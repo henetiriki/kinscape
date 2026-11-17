@@ -142,6 +142,8 @@ const NO_ENTRY = [
   'sign-in-unavailable',
   'style-4-states',
   'style-4-states-phone',
+  'style-5-feedback',
+  'style-5-feedback-phone',
   'style-6-components-inputs',
   'style-6-components-inputs-2',
   'style-6-components-inputs-2-phone',

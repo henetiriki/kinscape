@@ -44,24 +44,10 @@
       "width": 1440
     },
     {
-      "height": 2015,
-      "mode": "blocking",
-      "name": "style-5-feedback",
-      "route": "/design-kit/feedback",
-      "width": 1440
-    },
-    {
       "height": 3628,
       "mode": "blocking",
       "name": "style-1-type-phone",
       "route": "/design-kit/type",
-      "width": 390
-    },
-    {
-      "height": 4355,
-      "mode": "blocking",
-      "name": "style-5-feedback-phone",
-      "route": "/design-kit/feedback",
       "width": 390
     },
     {

@@ -69,7 +69,7 @@ Recommended: A, because …
 - Recommend the option that you would choose if all options had the same cost.
 - If that option needs a refactor first, write the refactor in the option as a step. Recommend the option anyway.
 - Write the cost of each option in its line. Do not give the cost as the reason after "because".
-- If a cheaper option loses little, name it after the reason and say what it loses.
+- If a cheaper option loses little, name it after the reason. Then say what it loses.
 
 A **Blocking** decision stops the plan until it has an answer. Any other decision can wait for the plan's approving review. Claude builds nothing while a decision is open.
 

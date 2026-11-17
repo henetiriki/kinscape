@@ -23,7 +23,7 @@ The link `../../../docs/how-we-work.md#decisions` resolves, and no new link cycl
 ## Order of work
 
 1. The tech lead approves the plan.
-2. `.claude/skills/refine/SKILL.md` is a hand-back path, so `claude-hand-back.yml` labels the PR `hand-back`. The tech lead runs `/build-local 968` in a local session.
+2. `.claude/skills/refine/SKILL.md` is a hand-back path, so `claude-hand-back.yml` labels the PR `hand-back`. The tech lead runs `/build-local 969` in a local session.
 3. The build makes the edits in [Approach](#approach), then runs the [Commands](../../AGENTS.md#commands) checks.
 
 ## Risks
@@ -46,3 +46,7 @@ The link `../../../docs/how-we-work.md#decisions` resolves, and no new link cycl
 - Other text in the two docs.
 - Other word limits.
 - The `Recommended:` prefix and `scripts/approve-plan.mts`.
+
+## Deviations
+
+- The last line of the new rule is two sentences, not one: STE rule 1 allows one instruction per sentence. The text of #968 changes the same way (check 2). Commit: this fix.

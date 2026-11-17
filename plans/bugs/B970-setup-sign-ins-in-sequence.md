@@ -2,7 +2,7 @@
 
 - **Spec:** #970 (Bug)
 - **Requirement IDs:** None. Must not break: [NFR-01](../../docs/requirements.md#nfr-01), [NFR-03](../../docs/requirements.md#nfr-03)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

@@ -7,7 +7,7 @@ import { LAUNCH_ARGS } from '@ks/lib/design/shots.mts';
 // Each worker loads this config again and has a TEST_WORKER_INDEX: only the runner prints.
 if (!pinnedImage(process.env) && process.env.TEST_WORKER_INDEX === undefined) {
   console.log(
-    'Card images: skipped. Another machine draws text differently. The design job and "Design: Render snapshots" compare them.'
+    'Card images: skipped. Another machine draws text differently. The gallery job and "Design: Render snapshots" compare them.'
   );
 }
 

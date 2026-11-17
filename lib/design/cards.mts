@@ -196,7 +196,7 @@ export const PHONE_CARDS = [
 export const cardImageWidths = (name: string): number[] =>
   PHONE_CARDS.includes(name) ? CARD_WIDTHS : CARD_WIDTHS.slice(0, 1);
 
-/** Whether this is the Playwright image of the `design` job: the Microsoft image sets this path. */
+/** Whether this is the Playwright image of the `gallery` job: the Microsoft image sets this path. */
 export const pinnedImage = (env: Record<string, string | undefined>): boolean =>
   env.PLAYWRIGHT_BROWSERS_PATH === '/ms-playwright';
 

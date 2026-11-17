@@ -2,7 +2,7 @@
 
 - **Spec:** #918
 - **Requirement IDs:** [NFR-01](../docs/requirements.md#nfr-01), [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ The board's Icons section holds rules that no doc holds: a 24px grid, a 2px stro
 - **B.** The rules go with the board. The build adds a Flagged concern to #929: move the rules before the SG boards go. Cost: no change here; #929 grows by one row.
 - **Other:** your own.
 
-Recommended: A, because a design agent reads the rules in the README, and the rules leave the code in this Spec. B is cheaper here, but the rules are out of the repo docs until #929.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

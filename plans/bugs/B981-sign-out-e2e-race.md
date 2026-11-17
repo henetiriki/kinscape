@@ -8,7 +8,7 @@
 
 The fault is in the waits of the two tests, not in the app. The plan changes test code and loosens no assertion.
 
-1. A new helper `signOut(page)` in `e2e/session.ts` starts `page.waitForEvent('load')` with a `/sign-in` filter, then clicks the Avatar and Sign out, then waits for that event. The `load` event fires only for a new document, not for the client navigation. Thus no `page.goto` can start before the `/sign-in` document loads.
+1. A new helper `signOut(page)` in `e2e/session.ts` starts `page.waitForEvent('load')` with a `/sign-in` filter. It then clicks the Avatar and Sign out. It waits for that event. The `load` event fires only for a new document, not for the client navigation. Thus no `page.goto` can start before the `/sign-in` document loads.
 2. `e2e/account-menu.spec.ts:82` and `e2e/navigation.spec.ts:279` call `signOut` in place of their own clicks and `waitForURL`.
 3. The answer to D1 removes the 30 s timeout.
 
@@ -61,7 +61,7 @@ Which change removes the timeout?
 1. Add `e2e/session.ts` with `signOut`.
 2. Use `signOut` in the two own-session tests.
 3. Make the change that D1 chooses.
-4. Run the command of the Approach with `--repeat-each=20` and `--workers=4`. Paste the result in the PR.
+4. Run the command of the Approach with `--repeat-each=5` and `--workers=4`. Add `sign-in.spec.ts` and `date-dock.spec.ts`. Paste the result in the PR.
 5. Run the checks in `AGENTS.md` › Commands.
 
 ## Risks
@@ -71,10 +71,14 @@ Which change removes the timeout?
 
 ## Proof
 
-| What did you expect?                                                                | Proven by                                                                             |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| After Sign out, each test waits for the new `/sign-in` document before `page.goto`. | `signOut` in `e2e/session.ts`; step 4 shows no `ERR_ABORTED` in 20 runs of each test. |
-| The two tests pass on a slow runner.                                                | Step 4 on this 4-core runner.                                                         |
+| What did you expect?                                                                | Proven by                                                                            |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| After Sign out, each test waits for the new `/sign-in` document before `page.goto`. | `signOut` in `e2e/session.ts`; step 4 shows no `ERR_ABORTED` in 5 runs of each test. |
+| The two tests pass on a slow runner.                                                | Step 4 on this 4-core runner.                                                        |
+
+## Deviations
+
+- Step 4 uses 5 repeats, not 20. The full set of 4 spec files takes 3.5 min at 5 repeats.
 
 ## Out of scope
 

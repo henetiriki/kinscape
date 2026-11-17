@@ -18,7 +18,7 @@ Six look tests go to `e2e/gallery-looks.spec.ts`. Each test opens its gallery fi
 
 The new test in `e2e/account-menu.spec.ts` uses the keys, as the deleted board test did: ArrowDown, Enter, then Esc. On `/` the second item is "Sources and attributions". The native `<dialog>` of `Modal` gives focus back to the Avatar.
 
-The board `/design-kit/surfaces` stays, with its folder, its `design/screens.json` entries and `NO_ENTRY`. `e2e/design-kit.spec.ts` and `inputs/Board.tsx` do not change. D3 gives the reason. #929 (DL.21) retires the board.
+The board `/design-kit/surfaces` stays, with its folder, its `design/screens.json` entries and `NO_ENTRY`. `e2e/design-kit.spec.ts` and `inputs/Board.tsx` do not change. D2 gives the reason. #929 (DL.21) retires the board.
 
 - `e2e/surfaces.spec.ts` keeps the phone notice card test and "part 2 shows the callout alone".
 - `e2e/menu-popup.spec.ts` keeps "part 2 shows the sheet Popup alone".
@@ -28,7 +28,7 @@ Five tests go, and a Vitest test proves each. The PR body names them with the re
 
 ## Decisions
 
-**D3 · The phone notice card test** · Decides: Tech lead
+**D2 · The phone notice card test** · Decides: Tech lead
 
 The Spec moves this test to the `NoticeCard` gallery file at 390px. The large card of that file is a fixed 380 wide, so the file scrolls sideways at 390px. A test of the card's figure alone checks less than the old test, which checked the whole page.
 
@@ -40,7 +40,7 @@ The Spec moves this test to the `NoticeCard` gallery file at 390px. The large ca
 
 ## Alternatives considered
 
-- Retire the board and move the phone test with a looser check. D3 B gives that option.
+- Retire the board and move the phone test with a looser check. D2 B gives that option.
 
 ## Files that change
 

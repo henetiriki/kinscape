@@ -12,7 +12,21 @@
 
 The four entries get `account` and their app routes. `person-not-found` opens `/people/01900000-0000-7000-8000-000000000404`, an id that no Person has. The folders `app/screens/person-new` and `app/screens/person-not-found` go, and `PersonNotFoundScreen` goes with them.
 
-`SCREEN_ONLY` sits beside `NO_ENTRY` in `lib/design/__tests__/screens.test.ts`, as one more list that scopes the design check. A pure `screenOnlyProblems(folders, rows)` in `lib/design/sweep.mts` returns one message for each folder with no row, each row with no folder and each empty blocker. The test reads the folders of `app/screens/`, except `__tests__`. Each blocker names the data or outcome that no app route can give today: People in the Tree, a load failure, a save failure, a loading state, or a sample layout.
+`SCREEN_ONLY` sits beside `NO_ENTRY` in `lib/design/__tests__/screens.test.ts`, as one more list that scopes the design check. A pure `screenOnlyProblems(folders, rows)`, also in that file, returns one message for each folder with no row, each row with no folder and each empty blocker. The test reads the folders of `app/screens/`, except `__tests__`. Each blocker names the data or outcome that no app route can give today: People in the Tree, a load failure, a save failure, a loading state, or a sample layout.
+
+## Decisions
+
+**D1 · Where `screenOnlyProblems` lives** · Decides: Tech lead
+
+Only `screens.test.ts` uses `screenOnlyProblems`. The [code rules](../docs/code-rules.md) say that a test does not wire an export.
+
+- ~~**A.** Keep it in `lib/design/sweep.mts`. Add a line to the wiring rule: a fitness-test helper in `lib/design` needs no wiring.~~
+- **B.** Move it into `screens.test.ts` and drop its export. `sweepProblems` and `jpegSize` stay as they are.
+- ~~**Other:** your own.~~
+
+Recommended: A, because it matches `sweepProblems` and `jpegSize`.
+
+**Answer: B** (tech lead)
 
 ## Alternatives considered
 
@@ -26,8 +40,7 @@ The four entries get `account` and their app routes. `person-not-found` opens `/
 | -------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- |
 | `lib/design/check.mts`                                                     | Changed       | `account` on `Screen`; `accounts` in `Known`; the unknown-account problem; `authStateFor`             |
 | `lib/design/__tests__/check.test.ts`                                       | Changed       | Checks 2 and 3                                                                                        |
-| `lib/design/sweep.mts`                                                     | Changed       | `screenOnlyProblems`                                                                                  |
-| `lib/design/__tests__/screens.test.ts`                                     | Changed       | `SCREEN_ONLY` with 22 rows; unit tests of `screenOnlyProblems`; the folder test                       |
+| `lib/design/__tests__/screens.test.ts`                                     | Changed       | `SCREEN_ONLY` with 22 rows; `screenOnlyProblems` and its unit tests; the folder test                  |
 | `e2e/auth.setup.ts`                                                        | Changed       | One sign-in for each fixture Account that an entry names                                              |
 | `e2e/design-check.spec.ts`                                                 | Changed       | Pass `accounts`; the storage state of each entry                                                      |
 | `playwright.config.ts`                                                     | Changed       | `signedIn` comes from `authStateFor()`                                                                |
@@ -41,7 +54,7 @@ The four entries get `account` and their app routes. `person-not-found` opens `/
 ## Order of work
 
 1. Write the `parseConfig` and `authStateFor` tests, and see them fail. Change `check.mts`.
-2. Write the `screenOnlyProblems` tests, and see them fail. Add the function.
+2. Write the `screenOnlyProblems` tests, and see them fail. Add the function to `screens.test.ts`.
 3. Change `auth.setup.ts`, `design-check.spec.ts` and `playwright.config.ts`.
 4. Change the four entries. Run `npm run design:check` with `DESIGN_SCREENS` set to the four names. If an entry fails, follow the first Flagged concern of the Spec: keep its entry and page, write the difference as its blocker, and file a Bug.
 5. Delete the two folders and `PersonNotFoundScreen`. Change `person.test.tsx`.
@@ -74,6 +87,7 @@ The four entries get `account` and their app routes. `person-not-found` opens `/
 - The "Living style guide" row drops `proxy.ts`, which has no `/screens` rule. The row also uses a slash in "Preview/development" to stay in the word budget.
 - Step 4 ran `npm run design:check -- -g "design: (person-new|person-form-phone|person-errors|person-not-found)"`, because the run denies a `DESIGN_SCREENS=` prefix.
 - Each design test sits in a `test.describe` named `design: <name>`, and the test is `matches its snapshot`, so `-g "design: <name>"` still selects it.
+- `screenOnlyProblems` sits in `screens.test.ts`, not `lib/design/sweep.mts` (D1).
 
 ## Out of scope
 

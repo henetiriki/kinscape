@@ -2,11 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import {
-  jpegSize,
-  screenOnlyProblems,
-  sweepProblems,
-} from '@ks/lib/design/sweep.mts';
+import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 
 /**
  * The folders of `app/screens/` that stay: no app route can show the page today. Each blocker names
@@ -92,6 +88,24 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     blocker: 'A save failure: no app route saves nothing.',
     folder: 'relationship-save-failed',
   },
+];
+
+/** Lists each folder of `app/screens/` with no row, each row with no folder, and each empty blocker. */
+const screenOnlyProblems = (
+  folders: string[],
+  rows: { blocker: string; folder: string }[]
+): string[] => [
+  ...folders
+    .filter(folder => !rows.some(row => row.folder === folder))
+    .map(folder => `${folder}: has no row in SCREEN_ONLY`),
+  ...rows.flatMap(({ blocker, folder }) => [
+    ...(folders.includes(folder)
+      ? []
+      : [`${folder}: SCREEN_ONLY row has no folder in app/screens`]),
+    ...(blocker.trim() === ''
+      ? [`${folder}: SCREEN_ONLY row has no blocker`]
+      : []),
+  ]),
 ];
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */

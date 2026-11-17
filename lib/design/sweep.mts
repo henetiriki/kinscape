@@ -32,24 +32,6 @@ export const jpegSize = (bytes: Uint8Array): Size => {
   throw new Error('no JPEG frame');
 };
 
-/** Lists each folder of `app/screens/` with no row, each row with no folder, and each empty blocker. */
-export const screenOnlyProblems = (
-  folders: string[],
-  rows: { blocker: string; folder: string }[]
-): string[] => [
-  ...folders
-    .filter(folder => !rows.some(row => row.folder === folder))
-    .map(folder => `${folder}: has no row in SCREEN_ONLY`),
-  ...rows.flatMap(({ blocker, folder }) => [
-    ...(folders.includes(folder)
-      ? []
-      : [`${folder}: SCREEN_ONLY row has no folder in app/screens`]),
-    ...(blocker.trim() === ''
-      ? [`${folder}: SCREEN_ONLY row has no blocker`]
-      : []),
-  ]),
-];
-
 /**
  * Lists what stops `screens.json` covering every image: an image with no entry
  * and not in `noEntry`, an entry that is also in `noEntry` or has no image,

@@ -2,6 +2,8 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import { signOut } from '@ks/e2e/session';
+
 // The synthetic Account behind the test-only memory adapters (e2e/auth.setup.ts).
 const SYNTHETIC = {
   email: 'synthetic@example.test',
@@ -87,9 +89,7 @@ test.describe('own session', () => {
     await page.getByLabel('Password', { exact: true }).fill(SYNTHETIC.password);
     await page.getByRole('button', { name: 'Sign in' }).click();
     await page.waitForURL(url => url.pathname === '/');
-    await avatar(page).click();
-    await page.getByRole('menuitem', { name: 'Sign out' }).click();
-    await page.waitForURL(url => url.pathname === '/sign-in');
+    await signOut(page);
 
     await page.goto('/');
     await expect(page).toHaveURL(url => url.pathname === '/sign-in');

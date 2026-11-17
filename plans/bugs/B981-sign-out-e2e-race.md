@@ -47,13 +47,13 @@ Which change removes the timeout?
 
 ## Files that change
 
-| File                                   | New / changed | What                                                                                               |
-| -------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `e2e/session.ts`                       | New           | `signOut(page)`: clicks Sign out and waits for the `load` event of the `/sign-in` document.        |
-| `e2e/account-menu.spec.ts`             | Changed       | The own-session test calls `signOut`. D1 A: `test.slow()`.                                         |
-| `e2e/navigation.spec.ts`               | Changed       | The own-session test calls `signOut`. D1 A: `test.slow()`.                                         |
-| `playwright.config.ts`                 | Changed       | D1 B only: `workers: process.env.CI ? 2 : undefined`, and its comment. D1 C only: the new project. |
-| `plans/bugs/B981-sign-out-e2e-race.md` | New           | This plan.                                                                                         |
+| File                                   | New / changed | What                                                                                        |
+| -------------------------------------- | ------------- | ------------------------------------------------------------------------------------------- |
+| `e2e/session.ts`                       | New           | `signOut(page)`: clicks Sign out and waits for the `load` event of the `/sign-in` document. |
+| `e2e/account-menu.spec.ts`             | Changed       | The own-session test calls `signOut`.                                                       |
+| `e2e/navigation.spec.ts`               | Changed       | The own-session test calls `signOut`.                                                       |
+| `playwright.config.ts`                 | Changed       | D1 B: `workers: process.env.CI ? 2 : undefined`, and its comment.                           |
+| `plans/bugs/B981-sign-out-e2e-race.md` | New           | This plan.                                                                                  |
 
 ## Order of work
 

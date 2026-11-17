@@ -75,3 +75,5 @@ The design system artifact holds the `spec/DL.16-colour-roles` content (stamp `3
 - `ArrowLink` (#944) and the other `UNDER_44` Bugs (#946 to #951).
 
 ## Deviations
+
+- Design system step 4.7 (open the canvas and check the TextLink card) did not run. The tech lead chose to skip it.

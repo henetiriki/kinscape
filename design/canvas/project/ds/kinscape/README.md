@@ -195,6 +195,32 @@ Each Event type is one 24 × 24 path in `design/source/`. It uses `currentColor`
 
 On the map these are SDF icons in `--pin`, with a 2px white halo.
 
+## Map style
+
+Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. map-style.jpg shows the full layer stack, and `/design-kit/map-style` builds it. The map colours:
+
+| Use                     | Value                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------- |
+| Sea (background)        | `map.sea`                                                                                           |
+| Land                    | `map.land`                                                                                          |
+| Coastline               | `map.coastline`                                                                                     |
+| Rivers                  | `map.river`, wider with zoom                                                                        |
+| Polity border           | `map.border`; dashed when confidence is low                                                         |
+| District border         | `map.district`                                                                                      |
+| Changed border (MAP-11) | `map.changed` (`--brand`), fades out                                                                |
+| Polity fills            | `map.polity`, keyed by Polity id; `default` for any other (muted tints of similar lightness)        |
+| Contested hatch         | 45° stripes, 3px in 9px, `map.hatch`                                                                |
+| Hillshade               | `map.hillshade`                                                                                     |
+| Polity label            | Public Sans SemiBold, uppercase; `map.polity-label`; contested note in italic `map.contested-label` |
+| Place label             | Public Sans Medium; `map.place-label`; dot `map.place-dot`                                          |
+| Water and river labels  | Public Sans Italic; `map.water-label`, `map.river-label`; sizes in tokens                           |
+| Context labels          | Public Sans Italic, uppercase, `map.context-label`                                                  |
+| Label halo              | `map.label-halo`, the land colour                                                                   |
+| Uncertainty halo        | `map.pin-halo`; radius grows with the date range                                                    |
+| Selected point          | `map.selected` (`--brand`)                                                                          |
+
+Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed circle outlines, and boxes behind labels. Anything you click or type into is HTML over the map.
+
 ## Copy
 
 - Use the requirements' Key concepts terms (Map date, Pin, Polity, Jurisdiction chain).

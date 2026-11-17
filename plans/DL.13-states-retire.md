@@ -2,7 +2,7 @@
 
 - **Spec:** #914
 - **Requirement IDs:** none. The Spec deletes a hidden dev page.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The build deletes the board and its last tests, by the retirement steps of DL.11
 - **B.** The build waits for #942. The build runs `gh issue edit 914 --add-blocked-by 912`, then uses the field and filter of #942.
 - **Other:** your own.
 
-Recommended: A, because each step can run on `main` now, and the conflict is in two lists and one test.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

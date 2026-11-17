@@ -20,6 +20,7 @@ export const README_SECTIONS = [
   'Colours',
   'Layout',
   'Shape and depth',
+  'Motion',
   'Components',
   'States',
   'Feedback and validation',

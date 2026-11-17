@@ -37,13 +37,6 @@
       "width": 1440
     },
     {
-      "height": 1594,
-      "mode": "blocking",
-      "name": "style-3-foundations",
-      "route": "/design-kit/foundations",
-      "width": 1440
-    },
-    {
       "height": 3628,
       "mode": "blocking",
       "name": "style-1-type-phone",
@@ -55,13 +48,6 @@
       "mode": "blocking",
       "name": "style-2-colour-phone",
       "route": "/design-kit/colour",
-      "width": 390
-    },
-    {
-      "height": 3132,
-      "mode": "blocking",
-      "name": "style-3-foundations-phone",
-      "route": "/design-kit/foundations",
       "width": 390
     },
     {

@@ -56,7 +56,7 @@ describe('budgetFor', () => {
     ['docs/architecture.md', 900],
     ['docs/architecture-target.md', 650],
     ['docs/glossary.md', 1200],
-    ['design/DESIGN.md', 4000],
+    ['design/DESIGN.md', 4150],
     ['design/CANVAS.md', 1000],
     ['design/COMPONENTS.md', 600],
     ['plans/README.md', 1200],

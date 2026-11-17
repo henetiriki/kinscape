@@ -40,6 +40,7 @@ const BOARD_LINKS: {
   },
   { heading: 'Colour', label: 'Colour', path: '/design-kit/colour' },
   {
+    gone: true,
     heading: 'Spacing, shape, depth, icons, motion',
     label: 'Foundations',
     path: '/design-kit/foundations',
@@ -324,43 +325,6 @@ test('each map label has its token colour, size, weight and tracking', async ({
   );
 });
 
-// NFR-06: the Foundations board draws bars, radii and shadows from the tokens.
-test('the foundations board draws from the tokens', async ({ page }) => {
-  await page.goto('/design-kit/foundations');
-
-  const spacing = page.getByRole('region', { name: 'Spacing' });
-
-  for (const value of Object.values(tokens.space)) {
-    const bar = spacing
-      .getByText(value, { exact: true })
-      .locator('xpath=following-sibling::span[1]');
-
-    await expect(bar).toHaveCSS('width', `${Number.parseInt(value, 10) * 4}px`);
-  }
-
-  const corners = page.getByRole('region', { name: 'Corner radius' });
-
-  for (const name of ['small', 'control', 'panel', 'sheet', 'full'] as const) {
-    const label = name === 'full' ? name : tokens.radius[name];
-
-    await expect(
-      corners
-        .getByText(label, { exact: true })
-        .locator('xpath=preceding-sibling::span[1]')
-    ).toHaveCSS('border-top-left-radius', tokens.radius[name]);
-  }
-
-  const elevation = page.getByRole('region', { name: 'Elevation' });
-
-  for (const value of Object.values(tokens.shadow).slice(0, 3)) {
-    const card = elevation
-      .getByText(value, { exact: true })
-      .locator('xpath=..');
-
-    await expect(card).toHaveCSS('box-shadow', /rgba\(24, 33, 27/);
-  }
-});
-
 // NFR-06: the map style board has the layout's banner only, and previews drawn from the map tokens.
 test.describe('the map style board', () => {
   const { map } = resolveTokens(tokens);
@@ -463,9 +427,9 @@ test.describe('the boards on a phone', () => {
   });
 });
 
-// NFR-05, NFR-06: the Colour, Foundations and Map style boards on a phone, in portrait and landscape.
+// NFR-05, NFR-06: the Colour and Map style boards on a phone, in portrait and landscape.
 test.describe('the other boards on a phone', () => {
-  const boards = ['colour', 'foundations', 'map-style'];
+  const boards = ['colour', 'map-style'];
 
   for (const [name, size] of [
     ['390 wide', { height: 844, width: 390 }],
@@ -582,17 +546,6 @@ test.describe('the other boards on a phone', () => {
         );
 
       expect(new Set(tops).size).toBe(1);
-    });
-
-    test('foundations keeps Spacing beside Corner radius', async ({ page }) => {
-      await page.goto('/design-kit/foundations');
-
-      const top = (label: string) =>
-        page
-          .locator(`section[aria-label="${label}"]`)
-          .evaluate(section => section.getBoundingClientRect().top);
-
-      expect(await top('Spacing')).toBe(await top('Corner radius'));
     });
   });
 });

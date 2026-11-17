@@ -6,11 +6,11 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
-The workflow also renders the card image of each component card (in `design/cards/`) in the pinned Playwright image. It commits those that changed. Nobody edits them by hand. A deletion follows [the deletion rule](#who-deletes-a-generated-file).
+The workflow also renders the card image of each component card (in `design/cards/`) in the pinned Playwright image. It commits those that changed. Nobody edits them by hand. A deletion follows [the rule](#who-deletes-a-generated-file).
 
 ### Who deletes a generated file
 
-The tech lead, or a local session that the tech lead starts, deletes each snapshot and JPG of a board, and each card image of a component card. Delete a file only if its board is not on the canvas, or its card is not in `CARDS`, on the same branch. The same pull request removes these records of a deleted board:
+The tech lead, or a local session that the tech lead starts, deletes these generated files. If a board is not on the canvas on the same branch, delete each snapshot and JPG of it. If a card is not in `CARDS` on the same branch, delete each card image of it. The same pull request removes these records of a deleted board:
 
 - Its row in the Screens table of `design/DESIGN.md`.
 - Its name in `NO_ENTRY`, or its entry in `design/screens.json`.

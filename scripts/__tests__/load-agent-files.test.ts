@@ -233,7 +233,13 @@ describe('the generated design files in review.md', () => {
       'The workflow [Design: Render snapshots](../../design/CANVAS.md#making-the-snapshots-and-jpgs) writes them.'
     );
     expect(review).toContain(
-      'Report no finding for a commit that only deletes them, if the board of each deleted snapshot and JPG is not in `design/canvas/project/canvas.json`, and the card of each deleted card image is not in `CARDS`, on the PR head.'
+      'If a deleted snapshot or JPG has a board in `design/canvas/project/canvas.json` on the PR head, report one finding.'
+    );
+    expect(review).toContain(
+      'If a deleted card image has a card in `CARDS` on the PR head, report one finding.'
+    );
+    expect(review).toContain(
+      'Report no finding for any other commit that only deletes them.'
     );
     expect(review).toContain(
       'If another non-merge commit whose message is not `chore: export and render design snapshots` changes them, report one finding.'

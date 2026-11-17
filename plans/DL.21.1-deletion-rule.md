@@ -30,6 +30,8 @@ Which words make room?
 
 **Answer: A** (@henetiriki)
 
+This reverses [C696 D2](chores/C696-canvas-artifact-tool.md): the canvas has no `read_file` fallback.
+
 ## Files that change
 
 | File                                         | New / changed | What                                                                                            |
@@ -81,3 +83,4 @@ Each item of the Spec's "Out of scope / carried forward".
 - `AGENTS.md` links with the text "the rule", not "the deletion rule": the file had 5 words of room.
 - `review.md` does not say how to find the card of a card image: the file had 10 words of room, and the rule sentence quoted in Approach is the whole addition.
 - D3 A also cut three short passages of `CANVAS.md` to reach 1000 words: the `read_file` note in "Reading a board", "`list` shows sizes, not hashes" in step 5.1, and the reason in step 6 of "Changing the design system".
+- The review rule has four sentences, not two, so that each condition comes first and each sentence meets the STE limits.

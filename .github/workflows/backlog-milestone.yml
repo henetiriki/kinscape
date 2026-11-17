@@ -6,11 +6,13 @@ name: 'Backlog: Inherit milestone'
 # The title shown for each run in the Actions tab: "Milestone: <title>" for a Spec filed by the
 # owner, a member, a collaborator or the agent App, a PR from this repo, or "Milestone: backfill" for
 # a manual run; "Skipped Milestone: <title>" for any other issue or PR. Repeats the job's `if:`
-# (run-name cannot see job results): change them together.
+# (run-name cannot see job results): change them together. The event may not carry `issue.type`, so an
+# issue with no Type in the event passes both, and the script reads the Type from the API
+# (scripts/__tests__/issue-type-gates.test.ts).
 run-name: >-
   ${{
     github.event_name == 'workflow_dispatch' && 'Milestone: backfill' ||
-    (github.event_name == 'issues' && github.event.issue.type.name == 'Spec' &&
+    (github.event_name == 'issues' && (!github.event.issue.type || github.event.issue.type.name == 'Spec') &&
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       format('Milestone: {0}', github.event.issue.title)) ||
@@ -41,7 +43,7 @@ jobs:
     # job skips fork PRs: their token cannot write.
     if: >-
       github.event_name == 'workflow_dispatch' ||
-      (github.event_name == 'issues' && github.event.issue.type.name == 'Spec' &&
+      (github.event_name == 'issues' && (!github.event.issue.type || github.event.issue.type.name == 'Spec') &&
         (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
           github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN)) ||
       (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
@@ -137,6 +139,9 @@ jobs:
 
             if (context.eventName === 'issues') {
               const spec = context.payload.issue;
+              // The event may not carry the Type, so read the issue as it is now.
+              const current = await getIssue(spec.number, spec.number);
+              if (current?.type?.name !== 'Spec') return;
               await fill(spec, await specMilestone(spec));
             } else if (context.eventName === 'pull_request') {
               const pr = context.payload.pull_request;

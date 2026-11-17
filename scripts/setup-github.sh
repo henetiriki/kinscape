@@ -24,8 +24,8 @@ for l in "${RETIRED_LABELS[@]}"; do
 done
 
 echo "== Issue Types"
-# The list is in scripts/github/issue-types.sh. Update a Type that differs, create a missing one and
-# delete each other Type. A Type is matched on its name, so Bug keeps its id.
+# The list is in scripts/github/issue-types.sh. The loop updates a Type that differs and creates a
+# missing Type. Then it deletes each other Type. The script matches a Type on its name, so Bug keeps its id.
 source "$DIR/github/issue-types.sh"
 live=$(live_issue_types "$REPO")
 owner_id=$(gh api "users/${REPO%/*}" --jq .node_id)

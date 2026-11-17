@@ -1,4 +1,4 @@
-# Sourced by setup-github.sh, check-github.sh and backfill-issue-types.sh: the repo's issue Types, one place.
+# setup-github.sh, check-github.sh and backfill-issue-types.sh source this file: the repo's issue Types, in one place.
 
 # Print one line per Type: name|COLOUR|description. COLOUR is a GraphQL IssueTypeColor value.
 issue_types() {

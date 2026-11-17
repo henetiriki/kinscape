@@ -10,7 +10,7 @@
 | --- | --- | --- | --- |
 | `chain` | `ChainLevel[]` | yes |  |
 | `coordinates` | `string` | yes |  |
-| `form` | `"floating" \| "sheet"` | yes | A floating popup on a desktop; a sheet region on a phone. |
+| `form` | `"sheet" \| "floating"` | yes | A floating popup on a desktop; a sheet region on a phone. |
 | `onClose` | `(() => void)` | no | Called by Close and by Esc inside the popup. |
 | `onCopied` | `((ok: boolean) => void)` | no | Called with whether the chain reached the clipboard; the caller shows the Toast. |
 | `pins` | `PopupPin[]` | yes |  |

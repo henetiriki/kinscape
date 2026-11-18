@@ -36,6 +36,7 @@ describe('the App token', () => {
       'claude-build.yml:approve',
       'claude-denial-audit.yml:audit',
       'claude-run.yml:gate',
+      'claude-run.yml:own',
       'claude-run.yml:run',
       'claude-run.yml:return',
       'design-agent-shots.yml:commit',

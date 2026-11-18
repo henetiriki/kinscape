@@ -37,7 +37,7 @@ What starts each GitHub Actions workflow, its jobs, and the reusable workflows i
 | | pull_request_review_comment | `created` | |
 | | issues | `opened, assigned` | |
 | | pull_request_review | `submitted` | |
-| Claude: Run (shared)<br>`claude-run.yml` | workflow_call | | gate · run · return · summary |
+| Claude: Run (shared)<br>`claude-run.yml` | workflow_call | | gate · own · run · return · summary |
 | Claude: Unblock<br>`claude-unblock.yml` | issues | `closed` | unblock · refresh |
 | Design: Render snapshots<br>`design-agent-shots.yml` | workflow_dispatch | | setup · render · commit |
 

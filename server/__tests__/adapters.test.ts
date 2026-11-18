@@ -59,7 +59,70 @@ describe('appAdapters', () => {
     ).toHaveLength(1);
   });
 
-  it('signs in each fixture Account to an empty read-only Tree under the memory adapters', async () => {
+  it('signs in each family fixture Account to its read-only Tree', async () => {
+    vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { FIXTURES, MARIA } = await import('@ks/server/auth/fixtures.mts');
+    const { signIn } = await import('@ks/server/auth/sign-in.mts');
+    const adapters = appAdapters();
+    const [, family, alone] = FIXTURES;
+
+    for (const [fixture, people, links] of [
+      [family, 13, 8],
+      [alone, 1, 0],
+    ] as const) {
+      const signedIn = await signIn(adapters, fixture.email, fixture.password);
+
+      expect(signedIn).toEqual({ ok: true, value: { id: fixture.accountId } });
+
+      const scope = { accountId: fixture.accountId, treeId: fixture.treeId };
+      const persons = await adapters.store.listPersons(scope);
+      const relationships = await adapters.store.listRelationships(scope);
+
+      expect(persons).toHaveLength(people);
+      expect(relationships).toHaveLength(links);
+      expect(persons.find(person => person.id === MARIA.id)).toMatchObject({
+        maidenName: 'Rossouw',
+        notes: 'Her baptism record spells the family name Rossau.',
+        variants: ['Du Toit', 'Dutoit', 'Du Tois'],
+      });
+
+      // Each write is refused, and the lists do not change.
+      expect(
+        await adapters.store.addPerson({ ...scope, person: MARIA })
+      ).toBeUndefined();
+      expect(
+        await adapters.store.updatePerson({
+          ...scope,
+          person: { ...MARIA, givenNames: 'Changed' },
+          version: 1,
+        })
+      ).toMatchObject({ ok: false });
+      expect(await adapters.store.listPersons(scope)).toEqual(persons);
+
+      const [first] = FIXTURES[1].relationships;
+
+      expect(
+        await adapters.store.addRelationship({
+          ...scope,
+          relationship: first,
+        })
+      ).toMatchObject({ ok: false });
+      expect(
+        await adapters.store.updateRelationship({
+          ...scope,
+          relationship: first,
+          version: 1,
+        })
+      ).toMatchObject({ ok: false });
+      expect(await adapters.store.listRelationships(scope)).toEqual(
+        relationships
+      );
+    }
+  });
+
+  it('signs in the researcher fixture Account to an empty read-only Tree under the memory adapters', async () => {
     vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
 
     const { appAdapters } = await import('@ks/server/adapters.mts');
@@ -133,11 +196,13 @@ describe('appAdapters', () => {
     const { appAdapters } = await import('@ks/server/adapters.mts');
     const { FIXTURES } = await import('@ks/server/auth/fixtures.mts');
     const { db } = await import('@ks/server/db/database.mts');
-    const [fixture] = FIXTURES;
+    const { signIn } = appAdapters();
 
-    expect(
-      await appAdapters().signIn.verify(fixture.email, fixture.password)
-    ).toBeUndefined();
+    for (const fixture of FIXTURES) {
+      expect(
+        await signIn.verify(fixture.email, fixture.password)
+      ).toBeUndefined();
+    }
 
     await db().destroy();
   });
@@ -153,17 +218,19 @@ describe('appAdapters', () => {
     const fetch = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response('{}', { status: 400 }));
-    const [fixture] = FIXTURES;
     const { signIn, store } = appAdapters();
 
-    expect(
-      await signIn.verify(fixture.email, fixture.password)
-    ).toBeUndefined();
-    expect(fetch).toHaveBeenCalledOnce();
-    // Port 1 refuses the connection; a memory store would resolve `undefined`.
-    await expect(
-      store.findAccount(fixture.issuer, fixture.subject)
-    ).rejects.toThrow();
+    for (const fixture of FIXTURES) {
+      expect(
+        await signIn.verify(fixture.email, fixture.password)
+      ).toBeUndefined();
+      // Port 1 refuses the connection; a memory store would resolve `undefined`.
+      await expect(
+        store.findAccount(fixture.issuer, fixture.subject)
+      ).rejects.toThrow();
+    }
+
+    expect(fetch).toHaveBeenCalledTimes(FIXTURES.length);
 
     fetch.mockRestore();
     await db().destroy();

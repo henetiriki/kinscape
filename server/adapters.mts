@@ -56,7 +56,14 @@ export const appAdapters = (): Adapters => {
                 id: fixture.accountId,
                 issuer: fixture.issuer,
                 subject: fixture.subject,
-                trees: [{ id: fixture.treeId, name: fixture.treeName }],
+                trees: [
+                  {
+                    id: fixture.treeId,
+                    name: fixture.treeName,
+                    persons: fixture.persons,
+                    relationships: fixture.relationships,
+                  },
+                ],
               })),
             ],
             FIXTURES.map(fixture => fixture.treeId)

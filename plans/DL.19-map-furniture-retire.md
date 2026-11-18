@@ -2,7 +2,7 @@
 
 - **Spec:** #922
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05), [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ Item 4 copies the board check: it fails if any ancestor of the button has an `ov
 - **B.** For each ancestor whose `overflow` is not `visible`, the test checks that the ring box is inside the client box of the ancestor. The ring box is the button box plus the outline offset and width. It passes on `main`, and it fails if the zoom card or a new wrapper cuts the ring. The build rewords item 4 to "no ancestor cuts its focus ring". About 10 more lines.
 - **Other:** your own.
 
-Recommended: B, because it proves what check 2 asks, and it still fails on a real clip. A costs 10 lines less, but it files a Bug that no Account sees, and it guards nothing while `test.fail` holds.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -15,9 +15,11 @@ This chore is a hand-back. The tech lead builds it.
 
 The done check says that no file names the old jobs. Three old plans name them: `M0.2-lint-and-format.md`, `C419-typecheck-job.md` and `DM.2-design-tokens.md`. Do we edit them?
 
-- **A.** Search outside `plans/`, and keep the old plans as history.
-- **B.** Edit the three plans to name `quality`.
+- **A.** Search outside `plans/`. Keep the old plans as history.
+- **B.** Edit the three plans to name `quality`. Three history files change.
 - **Other:** your own.
+
+Recommended: A, because the repo does not edit old plans.
 
 **Answer: A** (@henetiriki)
 

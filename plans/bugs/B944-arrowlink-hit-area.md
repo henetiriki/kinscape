@@ -89,7 +89,8 @@ PR #1017 (DL.21.2) merged. It changed `bundle.css`, `bundle.js`, `tokens.json` a
 ## Deviations
 
 - Order of work step 2 did not run: the browser cannot start in the local sandbox. The unit test gave the test-first failure.
-- Order of work step 3 ran in part: the unit tests passed after the fix. The gallery test did not run in the session. The CI gallery job runs it.
-- Order of work step 4 did not run: no gallery result yet shows if the `#946` rows leave the list. The CI gallery job shows it.
+- Order of work step 3 ran in part: the unit tests passed after the fix. The gallery test did not run in the session. The CI gallery job ran it: the first attempt timed out on a slow runner, and the second attempt passed.
+- Order of work step 4 did not run in the session. The passing CI gallery job shows that the `#944` and `#946` rows leave the list.
+- The gallery hit-area test in `e2e/gallery-looks.spec.ts` calls `test.slow()`: it took 30.3s against a 30s limit on a slow runner. The tech lead chose this.
 - Order of work step 5 ran in part: `npm run lint`, `npm run design:gallery`, `npm run design:check` and `npm run e2e` did not run in the session. CI runs each of them.
 - Design system step 4.7 (open the canvas and check the ArrowLink card) did not run in the session.

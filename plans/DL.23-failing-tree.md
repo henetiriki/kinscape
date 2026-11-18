@@ -6,7 +6,7 @@
 
 ## Approach
 
-`memoryStore` takes a third argument, `failing: TreeId[] = []`. For a Tree on that list, `listPersons` and `listRelationships` throw `new Error('The fixture Tree failed to load.')`. The throw comes after the access check, so an Account that may not access the Tree still gets an empty list, as the `TreeStore` contract says. The message is fixed and names no Person. The other reads and the read-only refusals do not change.
+`memoryStore` takes a third argument, `failing: TreeId[] = []`. For a Tree on that list, `listPersons` and `listRelationships` throw `new Error('The fixture Tree failed to load.')`. The throw comes after the access check. So an Account that may not access the Tree still gets an empty list, as the `TreeStore` contract says. The message is fixed and names no Person. The other reads and the read-only refusals do not change.
 
 `FIXTURES` gains a fourth entry, last, so that the reads by position in `e2e/` stay true. The entry has these values:
 

@@ -164,7 +164,22 @@ describe('appAdapters', () => {
       'The fixture Tree failed to load.'
     );
 
-    // Another fixture Tree lists as before.
+    // The Tree refuses each write.
+    expect(
+      await adapters.store.addPerson({ ...scope, person: MARIA })
+    ).toBeUndefined();
+    expect(
+      await adapters.store.updatePerson({
+        ...scope,
+        person: { ...MARIA, givenNames: 'Changed' },
+        version: 1,
+      })
+    ).toMatchObject({ ok: false });
+    expect(
+      await adapters.store.findPerson({ ...scope, personId: MARIA.id })
+    ).toMatchObject({ givenNames: MARIA.givenNames, version: 1 });
+
+    // The Family Tree still lists its People.
     const [, family] = FIXTURES;
 
     expect(

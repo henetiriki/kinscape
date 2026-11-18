@@ -72,20 +72,6 @@
       "width": 1440
     },
     {
-      "height": 4678,
-      "mode": "blocking",
-      "name": "map-style-phone",
-      "route": "/design-kit/map-style",
-      "width": 390
-    },
-    {
-      "height": 2170,
-      "mode": "blocking",
-      "name": "map-style",
-      "route": "/design-kit/map-style",
-      "width": 1440
-    },
-    {
       "name": "style-7-components-surfaces-2",
       "route": "/design-kit/surfaces?part=2",
       "width": 1440,

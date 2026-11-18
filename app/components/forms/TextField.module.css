@@ -67,7 +67,7 @@
   color: var(--warning-border);
 }
 
-/* The input fills the box and reaches over its 1px borders, so the whole field height is its target. */
+/* The input fills the box and reaches over its 1px and 2px borders, so the whole field height is its target. */
 .input {
   align-self: stretch;
   background: transparent;
@@ -97,6 +97,17 @@
 
 .input:disabled {
   cursor: default;
+}
+
+/* A 2px border: the input and the select reach over it. A token field keeps its height. */
+.box:not(.tokens):is(
+    :focus-within,
+    [data-state='focus'],
+    [data-mark],
+    :has(select)[data-state='active']
+  )
+  > :is(.input, .select) {
+  margin-block: -2px;
 }
 
 .date {

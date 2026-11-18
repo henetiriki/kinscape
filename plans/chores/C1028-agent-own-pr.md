@@ -1,7 +1,7 @@
 # Plan: C1028: Let the agent run checks on the bot's own PR
 
 - **Spec:** #1028
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

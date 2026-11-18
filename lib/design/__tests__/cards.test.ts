@@ -145,6 +145,25 @@ describe('previewHtml', () => {
     expect(html).toContain("id: 'ks-case-' + index");
   });
 
+  it('puts each case of a radios card in its own form, so its radios form their own group', () => {
+    const radios = previewHtml({ ...card, radios: true });
+
+    expect(radios).toContain(
+      "h('form', { className: 'ks-scope', key: index, onSubmit: function (event) { event.preventDefault(); } }, h('figure',"
+    );
+    expect(radios).toContain('.ks-scope { display: contents; }');
+    expect(html).not.toContain('ks-scope');
+    expect(html).not.toContain("h('form'");
+  });
+
+  it('sets radios on the two cards that hold a radio and no other', () => {
+    expect(
+      CARDS.filter(({ radios }) => radios)
+        .map(({ name }) => name)
+        .sort()
+    ).toEqual(['DateDock', 'Segmented']);
+  });
+
   it('sets the body to the body font', () => {
     expect(html).toMatch(/body \{[^}]*font-family: var\(--font-body\);/);
   });

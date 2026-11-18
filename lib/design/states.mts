@@ -308,6 +308,7 @@ export const CARDS: Card[] = [
     height: 200,
     name: 'Segmented',
     pad: 0,
+    radios: true,
     states: grid('Segmented', (state, disabled) => ({
       props: {
         disabled,
@@ -769,6 +770,7 @@ export const CARDS: Card[] = [
     height: 720,
     name: 'DateDock',
     pad: 0,
+    radios: true,
     states: [
       one('DateDock · Map date', { day: MAP_DATE, lastDay: TODAY }),
       one('DateDock · with epochs', {

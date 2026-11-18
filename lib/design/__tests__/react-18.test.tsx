@@ -1176,6 +1176,22 @@ describe('bundle', () => {
               )
           )
         ).toEqual([]);
+        expect(
+          [...page.document.querySelectorAll('[role="radiogroup"]')]
+            .map(group => group.querySelectorAll('input:checked').length)
+            .filter(checked => checked !== 1)
+        ).toEqual([]);
+
+        for (const form of page.document.querySelectorAll('form')) {
+          const submit = new page.Event('submit', {
+            bubbles: true,
+            cancelable: true,
+          });
+
+          form.dispatchEvent(submit);
+          expect(submit.defaultPrevented).toBe(true);
+        }
+
         expect(problems).toEqual([]);
       }
     );

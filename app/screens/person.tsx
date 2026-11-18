@@ -16,7 +16,7 @@ const date = (text: string) =>
     >
   ).value;
 
-/** The synthetic Person of the `person-edit`, `person-save-failed` and `person-conflict` boards. */
+/** The synthetic Person of the `person-save-failed` and `person-conflict` boards. */
 export const SAMPLE_PERSON: PersonView = {
   birth: date('ABT 1856'),
   death: date('14 MAR 1930'),

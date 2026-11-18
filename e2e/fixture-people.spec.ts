@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { wideAt } from '@ks/e2e/sideways';
 import { fixtureStateFor } from '@ks/lib/design/check.mts';
-import { FIXTURES } from '@ks/server/auth/fixtures.mts';
+import { FIXTURES, MARIA } from '@ks/server/auth/fixtures.mts';
 
 const [researcher, family] = FIXTURES;
 
@@ -24,6 +24,15 @@ test.describe('the family Tree', () => {
         page.getByRole('link', { name: 'Add a person' })
       ).toHaveCount(0);
       await expect(page.getByText('Edit', { exact: true })).toHaveCount(0);
+      await expect(page.getByText('Relationships')).toHaveCount(0);
+    });
+
+    // NFR-05
+    test('/people/{id} shows the notice and no Relationships link', async ({
+      page,
+    }) => {
+      await page.goto(`/people/${MARIA.id}`);
+      await expect(page.getByText('Edit people on a computer')).toBeVisible();
       await expect(page.getByText('Relationships')).toHaveCount(0);
     });
   });
@@ -73,6 +82,14 @@ test.describe('the family Tree', () => {
   // NFR-05
   test('13 rows do not scroll sideways at any size', async ({ page }) => {
     expect(await wideAt(page, '/people')).toEqual([]);
+  });
+
+  // NFR-05
+  test('the edit and Relationships pages do not scroll sideways at any size', async ({
+    page,
+  }) => {
+    expect(await wideAt(page, `/people/${MARIA.id}`)).toEqual([]);
+    expect(await wideAt(page, `/people/${MARIA.id}/relationships`)).toEqual([]);
   });
 });
 

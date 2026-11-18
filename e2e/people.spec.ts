@@ -48,13 +48,4 @@ test.describe('phone, 390 × 844', () => {
       )
     ).toBe(true);
   });
-
-  // NFR-05
-  test('/people/{id} shows the notice and no Relationships link', async ({
-    page,
-  }) => {
-    await page.goto('/screens/person-edit');
-    await expect(page.getByText('Edit people on a computer')).toBeVisible();
-    await expect(page.getByText('Relationships')).toHaveCount(0);
-  });
 });

@@ -30,18 +30,9 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     blocker: 'A save failure: no app route saves nothing.',
     folder: 'person-conflict',
   },
-  { blocker: 'The fixture Tree has no Person to edit.', folder: 'person-edit' },
-  {
-    blocker: 'The fixture Tree has no Person with no relationships.',
-    folder: 'person-relationships-empty',
-  },
   {
     blocker: 'A load failure: no app route fails.',
     folder: 'person-relationships-load-failed',
-  },
-  {
-    blocker: 'The fixture Tree has no Person with relationships.',
-    folder: 'person-relationships',
   },
   {
     blocker: 'A save failure: no app route saves nothing.',

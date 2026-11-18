@@ -38,13 +38,15 @@ Recommended: B, because one rule then gives each link the same hit area. A is ch
 
 **D3 · When to run the design system steps 3 to 5** · Decides: Tech lead
 
-Open PR #1017 (DL.21.2) changes `bundle.css`, `bundle.js`, `tokens.json` and `README.md` in the canvas copy, so its branch most likely published them. A publish from this branch replaces that content in the artifact.
+PR #1017 (DL.21.2) merged. It changed `bundle.css`, `bundle.js`, `tokens.json` and `README.md` in the canvas copy, so the artifact most likely holds them. This branch has `main` merged in, so a publish from here keeps that content.
 
-- **A.** Skip steps 3 to 5 until #1017 merges and this branch rebases on `main`. Cost: the PR stays a draft until then.
-- **B.** Publish now. DL.21.2 must then publish again.
+- **A.** Run steps 3 to 5 now that this branch has `main`. Cost: the PR stays a draft until a local session runs them.
+- ~~**B.** Publish before `main` is in this branch. DL.21.2 must then publish again.~~
 - **Other:** your own.
 
-Recommended: A, because no publish then drops open work, as in #943 D2.
+Recommended: A, because no publish then drops merged work, as in #943 D2.
+
+**Answer: A** (tech lead)
 
 ## Files that change
 

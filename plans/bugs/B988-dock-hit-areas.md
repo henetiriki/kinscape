@@ -37,6 +37,7 @@ Each is 30px or 33px wide, with a 4px gap. The `Map` snapshot (`design/source/ma
 | `features/map/components/JumpTo.module.css`     | changed       | `.epoch`: `position: relative` and a centred `::before`, `var(--size-touch)` tall                                                                        |
 | `app/components/actions/Segmented.module.css`   | changed       | D1 A: `.segItem` `min-width: 40px` and `justify-content: center`, with a comment that names the snapshot                                                 |
 | `e2e/gallery-looks.spec.ts`                     | changed       | Remove the `#988` entry and the `EPOCHS` import. `UNDER_44` stays, empty, for the next Bug. D1 B: change the side check. D1 C: keep the two segment keys |
+| `e2e/design.spec.ts`                            | changed       | The focus-ring test measures the gap to the slider track, not to its padded box. The slider keeps `outline-offset: -6px`                                 |
 
 ## Order of work
 
@@ -65,3 +66,7 @@ Each is 30px or 33px wide, with a 4px gap. The `Map` snapshot (`design/source/ma
 ## Out of scope
 
 - The 52px minimum width that the snapshot gives the precision segments.
+
+## Deviations
+
+- The `e2e/design.spec.ts` focus-ring test measured the padded slider box, so it read `-6px`. It now adds the padding above the 28px track, as the Risks entry on the focus ring expects.

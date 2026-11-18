@@ -2,11 +2,13 @@
 
 - **Spec:** #987 (Bug)
 - **Requirement IDs:** None. This Bug changes the design system cards and no screen.
-- **Status:** approved
+- **Status:** draft
 
 ## Approach
 
-`previewHtml` in `lib/design/cards.mts` puts each case `figure` in a `form` with the class `ks-scope`. Radios with one name form one group only in one form, so each case shows its own selected segment. `STYLE` gets `.ks-scope { display: contents; }`. Each `figure` then stays a flex item of `#root`, and `.ks-case > :last-child` still finds the control. The `form` has an `onSubmit` that calls `preventDefault`, so a submit button or Enter in a field does not reload the card. `Segmented`, `DateDock` and `states.mts` do not change.
+`Card` in `lib/design/types.ts` gets an optional field `radios`. `states.mts` sets it on `Segmented` and `DateDock`. For a card with `radios`, `previewHtml` in `lib/design/cards.mts` puts each case `figure` in a `form` with the class `ks-scope`. Radios with one name form one group only in one form, so each case shows its own selected segment.
+
+`STYLE` gets `.ks-scope { display: contents; }` for such a card. Each `figure` then stays a flex item of `#root`, and `.ks-case > :last-child` still finds the control. The `form` has an `onSubmit` that calls `preventDefault`, so a submit button or Enter in a field does not reload the card. `Segmented`, `DateDock` and the other cards do not change.
 
 On `main`, `Segmented-1440.png` shows no selected segment in its default state. `DateDock-1440.png` shows no selected Year and no selected 5 in its first two states. The Bug reproduces.
 
@@ -14,13 +16,13 @@ On `main`, `Segmented-1440.png` shows no selected segment in its default state. 
 
 **D1 · Which cases get a form** · Decides: Tech lead
 
-Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards hold one. `previewHtml` makes the `preview.html` of all 64 cards.
+Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards hold one. `SearchBar` renders its own `form`, so a form around its cases nests one form in another. React warns, and the HTML is invalid.
 
-- **A.** Put each case of each card in a form. All 64 `preview.html` files change. Only the two radio card images change. Cost: about 6 lines in `cards.mts`.
-- **B.** Add a `Card` field `radios` in `lib/design/types.ts`, and set it on the two cards in `states.mts`. `previewHtml` adds a form only for those cards. Two `preview.html` files change. Cost: one type field, two state lines and one more unit test.
+- ~~**A.** Put each case of each card in a form. All 64 `preview.html` files change. `SearchBar` needs an exception.~~
+- **B.** Add a `Card` field `radios`, and set it on the two cards in `states.mts`. `previewHtml` adds a form only for those cards. Two `preview.html` files change. Cost: one type field, two state lines and one more unit test.
 - **Other:** your own.
 
-**Answer: A** (@henetiriki)
+**Answer: B** (@henetiriki)
 
 **D2 · Who publishes the changed previews** · Decides: Tech lead
 
@@ -41,8 +43,10 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 
 | File                                                   | New / changed | What                                                                                                                              |
 | ------------------------------------------------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `lib/design/cards.mts`                                 | changed       | `previewHtml` puts each case in a `form` (D1), and `STYLE` gets the `.ks-scope` rule                                              |
-| `lib/design/__tests__/cards.test.ts`                   | changed       | The preview has the form, its `onSubmit` and the `.ks-scope` rule                                                                 |
+| `lib/design/types.ts`                                  | changed       | `Card` gets the field `radios`                                                                                                    |
+| `lib/design/states.mts`                                | changed       | `Segmented` and `DateDock` set `radios`                                                                                           |
+| `lib/design/cards.mts`                                 | changed       | `previewHtml` puts each case of a `radios` card in a `form`, and its `STYLE` gets the `.ks-scope` rule                            |
+| `lib/design/__tests__/cards.test.ts`                   | changed       | A `radios` preview has the form, its `onSubmit` and the `.ks-scope` rule. Another preview has none. Only the two cards set it     |
 | `lib/design/__tests__/react-18.test.tsx`               | changed       | "preview mounts every state": each `radiogroup` holds one checked radio, and a `submit` event is cancelled                        |
 | `e2e/gallery-looks.spec.ts`                            | changed       | The Tab test counts a radio group by its form and its name. Its comment no longer says that the `Segmented` cases share one group |
 | `design/cards/Segmented-1440.png`, `DateDock-1440.png` | changed       | The workflow writes them (step 6)                                                                                                 |
@@ -50,8 +54,8 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 
 ## Order of work
 
-1. Change the two unit tests. See them fail: no form in the preview, and no checked radio in the default `Segmented` case.
-2. Change `cards.mts`. Run the unit tests again.
+1. Change the unit tests. See them fail: no form in a `radios` preview, and no checked radio in the default `Segmented` case.
+2. Change `types.ts`, `states.mts` and `cards.mts`. Run the unit tests again.
 3. Change the Tab test in `e2e/gallery-looks.spec.ts`. Run `npm run design:gallery`.
 4. Run the checks in `AGENTS.md` › Commands, and `npm run design:check`.
 5. Design system steps 2 to 6 (D2). The build runs step 2 and pushes. The tech lead, or a local Claude Code session that the tech lead starts, runs steps 3 to 6. The session needs a signed-in account.
@@ -60,6 +64,7 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 
 - **Card images.** The `gallery` job fails on `Segmented` and `DateDock` until the workflow commits their images. If another card image changes, the form changed a layout. Then the build stops for the tech lead.
 - **Tab order.** Four enabled `Segmented` cases become four tab stops. The Tab test counts them, so it fails if the browser still sees one group.
+- **A new radio card.** A card with a radio and no `radios` field shows one selected segment again. A test that fails on a rendered radio group without a form would catch it. This plan does not build that test.
 
 ## Proof
 

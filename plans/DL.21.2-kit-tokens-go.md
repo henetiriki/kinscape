@@ -99,4 +99,5 @@ As the Spec says: the boards, their Screens rows, `NO_ENTRY` and `PHONE_BOARD` (
 ## Deviations
 
 - The CI run could not run `npm run tokens`, so `app/tokens.css` lost the same lines by hand. A local `npm run tokens` makes no diff.
+- `system.test.ts` also expects 171 noted tokens, not 172: `desktop-width` had a note.
 - D11: the `/screens` row label is the placeholder "**[TBC].**" until the tech lead names the row.

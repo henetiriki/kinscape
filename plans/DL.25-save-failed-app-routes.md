@@ -2,7 +2,7 @@
 
 - **Spec:** #963
 - **Requirement IDs:** [PPL-01](../docs/requirements.md#ppl-01), [PPL-02](../docs/requirements.md#ppl-02)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Five tests use the props: two in `PersonRelationships.test.tsx` and three in `Re
 - **B.** Rewrite each test with steps and a mock. Each then repeats a test on `main`.
 - **Other:** your own.
 
-Recommended: A, because B adds five copies and no coverage.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -190,40 +190,59 @@ test.describe('on a desktop, 1440 × 900', () => {
     );
   });
 
-  // `.stage` of Stage.module.css has `overflow: hidden`, so the check fails today (DL.19 plan D1). It passes after a Bug fixes the check or the ancestor.
-  // eslint-disable-next-line no-restricted-syntax -- expected failure that DL.19 D1 allows
-  test.fail(
-    'no ancestor of a zoom button clips its focus ring',
-    async ({ page }) => {
-      await page.goto('/');
-      await settled(page);
+  test('no ancestor of a zoom button clips its focus ring', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await settled(page);
 
-      await zoomIn(page).focus();
-      await page.keyboard.press('Shift+Tab');
-      await page.keyboard.press('Tab');
-      await expect(zoomIn(page)).toBeFocused();
+    await zoomIn(page).focus();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect(zoomIn(page)).toBeFocused();
 
-      const clipped = await zoomIn(page).evaluate(node => {
-        const found: string[] = [];
+    const result = await zoomIn(page).evaluate(node => {
+      const style = getComputedStyle(node);
+      const box = node.getBoundingClientRect();
+      const reach =
+        parseFloat(style.outlineOffset) + parseFloat(style.outlineWidth);
+      const ring = {
+        bottom: box.bottom + reach,
+        left: box.left - reach,
+        right: box.right + reach,
+        top: box.top - reach,
+      };
+      const tolerance = 0.5;
+      const cut: string[] = [];
 
-        for (
-          let parent = node.parentElement;
-          parent && parent !== document.body;
-          parent = parent.parentElement
+      for (
+        let parent = node.parentElement;
+        parent && parent !== document.body;
+        parent = parent.parentElement
+      ) {
+        const { overflowX, overflowY } = getComputedStyle(parent);
+
+        if (overflowX === 'visible' && overflowY === 'visible') continue;
+
+        const outer = parent.getBoundingClientRect();
+        const left = outer.left + parent.clientLeft;
+        const top = outer.top + parent.clientTop;
+
+        if (
+          ring.left < left - tolerance ||
+          ring.top < top - tolerance ||
+          ring.right > left + parent.clientWidth + tolerance ||
+          ring.bottom > top + parent.clientHeight + tolerance
         ) {
-          const { overflowX, overflowY } = getComputedStyle(parent);
-
-          if (overflowX !== 'visible' || overflowY !== 'visible') {
-            found.push(parent.className);
-          }
+          cut.push(parent.className);
         }
+      }
 
-        return [found, getComputedStyle(node).outlineWidth];
-      });
+      return [cut, style.outlineWidth];
+    });
 
-      expect(clipped).toEqual([[], '2px']);
-    }
-  );
+    expect(result).toEqual([[], '2px']);
+  });
 
   test('the open account menu paints above the zoom card', async ({ page }) => {
     await page.goto('/');

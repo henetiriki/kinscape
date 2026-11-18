@@ -82,6 +82,7 @@ test.describe('the researcher Tree, on a phone', () => {
     viewport: { height: 844, width: 375 },
   });
 
+  // NFR-05
   test('the "No people yet" card sits between 16px gutters', async ({
     page,
   }) => {

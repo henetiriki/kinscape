@@ -16,7 +16,7 @@ const deployment = (answers: Record<string, Response>) =>
 
 const GOOD = () => ({
   '/': answer(307, '/sign-in?returnTo=%2F'),
-  '/design-kit': answer(404),
+  '/screens/add-pin': answer(404),
 });
 
 let log: ReturnType<typeof vi.spyOn>;
@@ -37,7 +37,7 @@ describe('check-production', () => {
     const fetch = deployment(GOOD());
 
     expect(await run(['https://example.test'], {}, fetch)).toBe(0);
-    expect(fetch).toHaveBeenCalledWith('https://example.test/design-kit', {
+    expect(fetch).toHaveBeenCalledWith('https://example.test/screens/add-pin', {
       headers: {},
       redirect: 'manual',
     });
@@ -54,7 +54,7 @@ describe('check-production', () => {
   });
 
   it.each([
-    ['/design-kit', answer(200)],
+    ['/screens/add-pin', answer(200)],
     ['/', answer(200)],
     ['/', answer(307, '/elsewhere')],
     ['/', answer(307)],
@@ -117,7 +117,7 @@ describe('check-production', () => {
 
     expect(await run(['https://example.test'], {}, fetch)).toBe(1);
     expect(error).toHaveBeenCalledWith(
-      expect.stringContaining('FAIL /design-kit')
+      expect.stringContaining('FAIL /screens/add-pin')
     );
   });
 });

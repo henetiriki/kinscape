@@ -3,15 +3,14 @@ import { builtinModules } from 'node:module';
 import { join, posix, relative, sep } from 'node:path';
 
 // The layer map from docs/architecture.md. ESLint and the fitness test both read it.
-// Test files, app/design-kit, app/screens, scripts, e2e and lib/design tooling are outside the map, and mapped code may not import them.
+// Test files, app/screens, scripts, e2e and lib/design tooling are outside the map, and mapped code may not import them.
 // Any other lib/ folder is outside the map and unchecked.
 // Specifiers resolve only as `#ks/` (`.mts`, `.mjs`), `@ks/` (`.ts`, `.tsx`) or relative paths.
 
 const ROOT = join(import.meta.dirname, '..');
 const MAPLIBRE = /^maplibre-gl(?:\/|$)/;
 const TEST_FILE = /(?:^|\/)__tests__\/|\.(?:test|spec)\./;
-const DEV_ONLY =
-  /^(?:scripts|e2e|lib\/design)\/|^app\/(?:design-kit|screens)\//;
+const DEV_ONLY = /^(?:scripts|e2e|lib\/design)\/|^app\/screens\//;
 
 export const SOURCE_EXTENSION = /\.[cm]?[jt]sx?$/;
 /** Calls whose first argument is a module path, matched on the callee's source text. */
@@ -88,7 +87,7 @@ export const layerOf = (path: string): string | undefined => {
     return 'kit';
   }
 
-  if (dir.startsWith('app/design-kit/') || dir.startsWith('app/screens/')) {
+  if (dir.startsWith('app/screens/')) {
     return undefined;
   }
 

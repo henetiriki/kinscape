@@ -33,7 +33,7 @@ const ROUTES = appRoutes(
 );
 
 // NFR-03
-for (const path of ['/', '/design-kit', '/screens/add-pin']) {
+for (const path of ['/', '/screens/add-pin']) {
   test(`signed out, ${path} shows only the sign-in page`, async ({ page }) => {
     await page.goto(path);
 

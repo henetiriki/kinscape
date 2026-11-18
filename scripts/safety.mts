@@ -49,7 +49,7 @@ export const PUBLIC_PATHS = ['/sign-in', '/robots.txt'];
 const SESSION_CHECK =
   /(?:^|\.)(?:currentSession|openTree|requireDevPage|requireSession)$/;
 
-/** The call every route under `/design-kit` and `/screens` makes, so each hides itself too. */
+/** The call every route under `/screens` makes, so each hides itself too. */
 const DEV_PAGE_CHECK = /(?:^|\.)requireDevPage$/;
 
 const ADAPTERS_MESSAGE =

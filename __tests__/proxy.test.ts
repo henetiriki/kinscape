@@ -57,7 +57,7 @@ describe('proxy, with the dev pages hidden', () => {
     vi.stubEnv('VERCEL_ENV', 'production');
   };
 
-  it.each(['/design-kit', '/design-kit/colour', '/screens/add-pin'])(
+  it.each(['/screens', '/screens/add-pin'])(
     'answers 404 for %s, with or without a session cookie',
     path => {
       hide();
@@ -81,7 +81,7 @@ describe('proxy, with the dev pages hidden', () => {
     hide();
     vi.stubEnv('VERCEL_ENV', 'preview');
 
-    expect(proxy(request('/design-kit')).status).toBe(307);
+    expect(proxy(request('/screens/add-pin')).status).toBe(307);
   });
 });
 
@@ -89,8 +89,7 @@ describe('proxy, with the dev pages hidden', () => {
 describe('the matcher', () => {
   it.each([
     '/',
-    '/design-kit',
-    '/design-kit/colour',
+    '/screens',
     '/screens/add-pin',
     '/data/polities',
     '/data/zz',

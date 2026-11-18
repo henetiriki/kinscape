@@ -9,15 +9,6 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
       .getByRole('menuitem', { name: /^People/ })
       .evaluate(node => node.setAttribute('data-state', 'hover'));
   },
-  'kit-menu-open': async page => {
-    await page.getByRole('button', { name: 'Boards' }).click();
-    // The sheet has slid in once its animation is done.
-    await page
-      .getByRole('dialog', { name: 'Boards' })
-      .evaluate(node =>
-        Promise.all(node.getAnimations().map(animation => animation.finished))
-      );
-  },
   // The board filters on a surname that only a maiden name carries, so no row matches.
   'people-no-match': async page => {
     await page

@@ -14,7 +14,7 @@ const CHECKS: {
   {
     expected: '404',
     ok: response => response.status === 404,
-    path: '/design-kit',
+    path: '/screens/add-pin',
   },
   {
     expected: 'a redirect to /sign-in',

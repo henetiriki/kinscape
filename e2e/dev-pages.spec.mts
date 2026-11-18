@@ -24,11 +24,8 @@ const ASKS = [
   },
 ];
 
-// Each path with a segment to prefetch: its page, and the layout above it (the kit's bar and nav).
+// Each path with a segment to prefetch: its page, and the `/screens` layout above it.
 const PAGES = [
-  ['/design-kit', '/design-kit/__PAGE__'],
-  ['/design-kit', '/design-kit'],
-  ['/design-kit/type', '/design-kit/type/__PAGE__'],
   ['/screens/add-pin', '/screens/add-pin/__PAGE__'],
   ['/screens/add-pin', '/screens'],
 ] as const;

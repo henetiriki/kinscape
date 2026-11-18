@@ -19,20 +19,12 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-account-menu',
   },
   {
-    blocker: 'A loading state: no app route holds it.',
+    blocker: 'No app route holds the loading state.',
     folder: 'people-loading',
   },
   {
-    blocker: 'A save failure: no app route saves nothing.',
+    blocker: 'A conflict needs a save from a second tab.',
     folder: 'person-conflict',
-  },
-  {
-    blocker: 'A save failure: no app route saves nothing.',
-    folder: 'person-save-failed',
-  },
-  {
-    blocker: 'A save failure: no app route saves nothing.',
-    folder: 'relationship-save-failed',
   },
 ];
 

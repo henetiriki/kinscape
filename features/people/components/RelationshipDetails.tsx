@@ -5,7 +5,6 @@ import { useRef, useState } from 'react';
 
 import type {
   AlertCode,
-  DetailsShown,
   OtherPerson,
   RelationshipActions,
   RelationshipSaveResult,
@@ -107,7 +106,6 @@ const startValues = (
  * updates and names the version that the page read; without, it creates. The dialog makes its id
  * once, so "Try again" repeats the same create. A refusal or a store error shows in an alert, and
  * any other failure in the error toast. The dialog stays open on both. `onBack` is for "Add" only.
- * `shown` is for the screen boards.
  */
 export const RelationshipDetails = ({
   actions,
@@ -118,7 +116,6 @@ export const RelationshipDetails = ({
   open,
   other,
   self,
-  shown,
 }: {
   actions: RelationshipActions;
   /** The Relationship to change. Without it the dialog adds one. */
@@ -130,17 +127,14 @@ export const RelationshipDetails = ({
   other: OtherPerson;
   /** The id of the Person whose page it is. */
   self: string;
-  shown?: DetailsShown;
 }) => {
   const router = useRouter();
   const [newId] = useState(() => uuidV7());
   const [values, setValues] = useState(() => startValues(existing));
-  const [code, setCode] = useState<AlertCode | undefined>(
-    shown === 'failed' ? undefined : shown
-  );
+  const [code, setCode] = useState<AlertCode>();
   // The number of the attempt whose toast shows, or 0. "Try again" starts the next attempt, so its
   // dismiss of the old toast cannot hide the toast of the new one.
-  const [failed, setFailed] = useState(shown === 'failed' ? 1 : 0);
+  const [failed, setFailed] = useState(0);
   const attempts = useRef(1);
   const [saving, setSaving] = useState(false);
   const name = `${other.givenNames} ${other.surname}`;

@@ -386,18 +386,6 @@ describe('step 2 of "Add"', () => {
 
     screen.getByText('Step 1 of 2. Choose the person.');
   });
-
-  it('opens at step 2 when the screen board says so', () => {
-    open({ picking: { group: 'spouses', picked: PIETER } });
-
-    screen.getByRole('heading', { name: 'Add a spouse' });
-  });
-
-  it('opens at the picker when the picked Person is not in the Tree', () => {
-    open({ picking: { group: 'spouses', picked: 'nobody' } });
-
-    screen.getByText('Step 1 of 2. Choose the person.');
-  });
 });
 
 // PPL-02

@@ -129,7 +129,8 @@
     },
     {
       "name": "person-save-failed",
-      "route": "/screens/person-save-failed",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1",
       "state": "person-saved-nothing",
       "width": 1440,
       "height": 900,
@@ -223,7 +224,9 @@
     },
     {
       "name": "relationship-save-failed",
-      "route": "/screens/relationship-save-failed",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-save-failed",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

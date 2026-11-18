@@ -43,7 +43,7 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await page.getByRole('link', { name: 'Relationships' }).click();
     await page.getByRole('dialog', { name: 'Leave without saving?' }).waitFor();
   },
-  // The stand-in action returns an error, so Save shows the toast or the conflict alert.
+  // On a read-only Tree the store refuses Save, so the form shows the toast. `person-conflict` uses a stand-in action.
   'person-saved-nothing': async page => {
     await page.getByRole('button', { name: 'Save' }).click();
     await page
@@ -83,6 +83,22 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await add(page, 'Parents');
     await page.getByLabel('Find a person').fill('Pretorius');
     await page.getByLabel('Find a person').blur();
+  },
+  // The route aborts each server action request, as a network failure does, so Save shows the toast.
+  'relationship-save-failed': async page => {
+    await page.route('**/*', route =>
+      route.request().headers()['next-action']
+        ? route.abort()
+        : route.continue()
+    );
+    await add(page, 'Children');
+    await pick(page, /le Roux, Anna Catharina/);
+    await page.getByRole('button', { name: 'Save' }).click();
+    await page
+      .getByRole('alert')
+      .filter({ hasText: "Couldn't save" })
+      .waitFor();
+    await page.unroute('**/*');
   },
   // The sign-in snapshot's password; the email stays empty and shows its placeholder.
   'sign-in-filled': async page => {

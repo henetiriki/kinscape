@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import type {
-  DetailsShown,
   OtherPerson,
   RelationshipActions,
   RelationshipEntry,
@@ -83,7 +82,6 @@ export const PersonRelationships = ({
   onSignOut,
   people,
   person,
-  picking,
 }: {
   email: string;
   initial: string;
@@ -98,15 +96,6 @@ export const PersonRelationships = ({
       /** Every Person of the Tree except `person`, for the picker. */
       people: PersonSummary[];
       person: RelationshipsPerson;
-      /**
-       * Opens the dialog of a group at the start, for the screen boards: at step 2 with a Person
-       * picked and a result to show.
-       */
-      picking?: {
-        group: RelationshipGroup;
-        picked?: string;
-        shown?: DetailsShown;
-      };
     }
   | {
       actions?: undefined;
@@ -115,16 +104,13 @@ export const PersonRelationships = ({
       groups?: undefined;
       people?: undefined;
       person?: RelationshipsPerson;
-      picking?: undefined;
     }
 )) => {
   const router = useRouter();
-  const [adding, setAdding] = useState(picking?.group);
-  const [open, setOpen] = useState(picking !== undefined);
+  const [adding, setAdding] = useState<RelationshipGroup>();
+  const [open, setOpen] = useState(false);
   const [opened, setOpened] = useState(0);
-  const [picked, setPicked] = useState(() =>
-    people?.find(candidate => candidate.id === picking?.picked)
-  );
+  const [picked, setPicked] = useState<PersonSummary>();
   const editing = findEntry(groups, edit);
   const here = person ? `/people/${person.id}/relationships` : '/people';
   // The refresh after a save still holds `?edit`: the dialog stays closed until the address drops it.
@@ -257,7 +243,6 @@ export const PersonRelationships = ({
             open={open}
             other={otherOf(picked, picked.id)}
             self={person.id}
-            shown={picking?.shown}
           />
         )}
         {editing && !failed && (

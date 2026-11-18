@@ -15,9 +15,6 @@ import type { Result } from '@ks/lib/domain/result/types.ts';
 /** A result code that shows an alert. `invalid` shows the error toast instead. */
 export type AlertCode = Exclude<RelationshipSaveError, 'invalid'>;
 
-/** What the details dialog shows at the start, for the screen boards: an alert, or the error toast. */
-export type DetailsShown = 'failed' | AlertCode;
-
 /** The text of an alert. `action` is a button under it. */
 export type Message = {
   action?: 'Go to People' | 'Reload';

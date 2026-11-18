@@ -1,7 +1,7 @@
 import type { PersonView } from '@ks/lib/domain/persons/types.ts';
 
 import { SAMPLE_ACCOUNT as ACCOUNT } from '@ks/app/screens/account';
-import { saveConflict, saveFailed } from '@ks/app/screens/person-actions';
+import { saveConflict } from '@ks/app/screens/person-actions';
 import { signOutAction } from '@ks/app/sign-in/actions';
 import { EditOnComputer, PersonForm } from '@ks/features/people';
 import { parseFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
@@ -16,7 +16,7 @@ const date = (text: string) =>
     >
   ).value;
 
-/** The synthetic Person of the `person-save-failed` and `person-conflict` boards. */
+/** The synthetic Person of the `person-conflict` board. */
 export const SAMPLE_PERSON: PersonView = {
   birth: date('ABT 1856'),
   death: date('14 MAR 1930'),
@@ -32,24 +32,15 @@ export const SAMPLE_PERSON: PersonView = {
   version: 1,
 };
 
-/**
- * The Person form with a synthetic Account. Save returns the outcome that `save` names, so the
- * check can show it: `failed` is a save that did not go through, `conflict` another tab's save.
- */
-export const PersonScreen = ({
-  person,
-  save = 'failed',
-}: {
-  person?: PersonView;
-  save?: 'conflict' | 'failed';
-}) => (
+/** The Person form with a synthetic Account. Save reports another tab's save, so the check shows the conflict. */
+export const PersonScreen = ({ person }: { person?: PersonView }) => (
   <EditOnComputer {...ACCOUNT} onSignOut={signOutAction}>
     <PersonForm
       {...ACCOUNT}
-      create={saveFailed}
+      create={saveConflict}
       onSignOut={signOutAction}
       person={person}
-      update={save === 'conflict' ? saveConflict : saveFailed}
+      update={saveConflict}
     />
   </EditOnComputer>
 );

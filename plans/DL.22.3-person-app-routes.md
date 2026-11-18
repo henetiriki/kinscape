@@ -2,7 +2,7 @@
 
 - **Spec:** #959
 - **Requirement IDs:** [PPL-01](../docs/requirements.md#ppl-01), [PPL-02](../docs/requirements.md#ppl-02), [NFR-05](../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ After the folders go, each export and prop of `app/screens/person.tsx` and `app/
 - **B.** Add nothing. The loop checks the not-found page on the two routes. No lines.
 - **Other:** your own.
 
-Recommended: A, because the filled form and the three groups are the widest content of these pages.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

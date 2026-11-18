@@ -20,7 +20,10 @@
   font-size: var(--type-chip-size);
   font-weight: var(--type-chip-weight);
   height: var(--size-chip);
+  justify-content: center;
   line-height: var(--type-chip-line);
+  /* The Map snapshot draws each speed segment at least 40px wide. With the 4px gap, each 44px hit area then meets the next. */
+  min-width: 40px;
   padding: 0 var(--space-12);
   position: relative;
 }

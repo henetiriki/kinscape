@@ -85,3 +85,8 @@ PR #1017 (DL.21.2) merged. It changed `bundle.css`, `bundle.js`, `tokens.json` a
 ## Out of scope
 
 - The other `UNDER_44` Bugs (#947 to #951, #988), and #946 if D1 is B.
+
+## Deviations
+
+- Order of work step 2 did not run: the browser cannot start in the local sandbox. The unit test gave the test-first failure.
+- Design system step 4.7 (open the canvas and check the ArrowLink card) did not run in the session.

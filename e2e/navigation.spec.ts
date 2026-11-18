@@ -281,6 +281,9 @@ test.describe('own session', () => {
   test('after sign-out and sign-in the map starts at today with every layer on', async ({
     page,
   }) => {
+    // This test starts the map twice. It takes up to 25 s on a CI runner, against a 30 s limit.
+    test.slow();
+
     const signIn = async () => {
       await page.goto('/sign-in');
       await page.getByLabel('Email').fill(SYNTHETIC.email);

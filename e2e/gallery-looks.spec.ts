@@ -153,6 +153,9 @@ test.describe('on a phone', () => {
   test('each control under 44px tall or wide keeps a 44px hit area', async ({
     page,
   }) => {
+    // The test opens every card. It takes up to 27 s on a CI runner, against a 30 s limit.
+    test.slow();
+
     const failures: string[] = [];
     const failed = new Set<string>();
 

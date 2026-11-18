@@ -18,7 +18,7 @@ The Bug reproduces on `origin/main` (d45d712f): the count line is at `fixture-pe
 
 **D1 · The number of CI workers** · Decides: Tech lead
 
-B.981 (#981) kept 4 workers and chose `test.slow()`, because 2 workers doubled the job time. #1025 sets 3. The B.981 plan measured `navigation.spec.ts:279`: 21 to 36 s with 4 workers, 16 to 27 s with 3, 12 to 17 s with 2.
+[B.981 D1](B981-sign-out-e2e-race.md#decisions) (#981) kept 4 workers and chose `test.slow()`, because 2 workers doubled the job time. #1025 sets 3. The B.981 plan measured `navigation.spec.ts:279`: 21 to 36 s with 4 workers, 16 to 27 s with 3, 12 to 17 s with 2.
 
 - **A.** 3 workers, as #1025 says. The 5 runs give the job time. With 16 to 27 s, the `test.slow()` of `navigation.spec.ts:279` probably stays (acceptance check 6).
 - ~~**B.** Keep 4 workers. Only the 10 s limit and the count fix change, and each `test.slow()` stays. This changes acceptance checks 2 and 5 of #1025.~~
@@ -89,3 +89,8 @@ Recommended: A, because it removes contention from each map test, and the 20 s r
 - The cause of the slow map start in software WebGL.
 - Fewer end-to-end tests that start the map.
 - A guard that blocks requests to other hosts: the traces show none.
+
+## Deviations
+
+- Step 8: the tech lead starts each re-run. The token of the local session has read access to Actions only.
+- Step 9: `test.slow()` returns to `navigation.spec.ts` (25.1 s in one run) and `gallery-looks.spec.ts` (20.9, 26.2 and 27.1 s). The other three lines stay removed: each time was 18.8 s or less.

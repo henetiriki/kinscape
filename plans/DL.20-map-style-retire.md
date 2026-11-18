@@ -2,7 +2,7 @@
 
 - **Spec:** #961
 - **Requirement IDs:** [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ Where does the page go?
 - **B.** The folder moves to `app/screens/map-style/`, with a `SCREEN_ONLY` row. The two screen entries take the new route, and the e2e tests follow it. The build rewords Summary, Behaviour 1 to 3 and checks 1, 2 and 5 of #961. The estimate grows by about 40 lines.
 - **Other:** your own.
 
-Recommended: A, because the sheet is no state of an app screen, and the Intent wants `/screens` to hold only those states.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

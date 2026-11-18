@@ -157,6 +157,9 @@ const NO_ENTRY = [
   'style-6-components-inputs-3-phone',
   'style-6-components-inputs-4-phone',
   'style-6-components-inputs-phone',
+  'style-8-components-map',
+  'style-8-components-map-2-phone',
+  'style-8-components-map-phone',
 ];
 
 const jpeg = (width: number, height: number, ...before: number[][]) =>

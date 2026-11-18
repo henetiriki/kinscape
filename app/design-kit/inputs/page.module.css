@@ -16,7 +16,7 @@
   margin: 0;
 }
 
-/* Each width shows one part at a time: a desktop one of three, a phone one of four. Boards 07 and 08 still use `.otherPart` for their link. */
+/* Each width shows one part at a time: a desktop one of three, a phone one of four. Board 07 still uses `.otherPart` for its link. */
 .partOf,
 .nextPhone,
 .otherPart,

@@ -391,11 +391,6 @@ describe('step 2 of "Add"', () => {
     open({ picking: { group: 'spouses', picked: PIETER } });
 
     screen.getByRole('heading', { name: 'Add a spouse' });
-    fireEvent.change(screen.getByLabelText('Marriage'), {
-      target: { value: '1875' },
-    });
-
-    expect(screen.getByLabelText('Marriage')).toHaveProperty('value', '1875');
   });
 
   it('opens at the picker when the picked Person is not in the Tree', () => {

@@ -80,6 +80,7 @@ After the seven folders go, only `relationship-save-failed` and `person-relation
 | 6. No `SCREEN_ONLY` row for the seven folders                        | `lib/design/__tests__/screens.test.ts`                                                        |
 | 7. No file under `design/canvas/`, `design/source/` or a JPG changes | `git diff origin/main --stat` in the PR                                                       |
 | 8. The checks pass                                                   | `npm test`, `typecheck`, `lint` and `e2e` output in the PR                                    |
+| 9. The six family entries do not scroll sideways (D1 A)              | New sideways test in `e2e/fixture-people.spec.ts`                                             |
 
 ## Deviations
 

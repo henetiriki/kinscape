@@ -1,24 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 
+import screens from '@ks/design/screens.json';
 import { states } from '@ks/e2e/design-states';
 import { DESKTOP_SIZES, wideAt, wideNow } from '@ks/e2e/sideways';
 import { fixtureStateFor } from '@ks/lib/design/check.mts';
 import { FIXTURES, MARIA } from '@ks/server/auth/fixtures.mts';
 
 const [researcher, family] = FIXTURES;
-
-const { screens } = JSON.parse(
-  readFileSync(join(process.cwd(), 'design/screens.json'), 'utf8')
-) as {
-  screens: {
-    account?: string;
-    name: string;
-    route: string;
-    state?: string;
-  }[];
-};
 
 test.describe('the family Tree', () => {
   test.use({ storageState: fixtureStateFor(family.email) });
@@ -120,7 +108,7 @@ test.describe('the family Tree', () => {
   test('the Relationship dialogs do not scroll sideways at a desktop size', async ({
     page,
   }) => {
-    const entries = screens.filter(
+    const entries = screens.screens.filter(
       ({ account, name }) =>
         account === family.email && name.startsWith('relationship-')
     );

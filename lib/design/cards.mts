@@ -115,8 +115,8 @@ const STYLE = (
 const FIGURE =
   "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";
 
-// Radios of one name form one group only inside one form. A control that renders its own form
-// (SearchBar) has no radios, because a form in a form is invalid HTML.
+// Radios of one name form one group only inside one form. Only a `radios` card gets a form,
+// because SearchBar renders its own form and a form in a form is invalid HTML.
 const CASE = (radios: boolean) =>
   radios
     ? `h('form', { className: 'ks-scope', key: index, onSubmit: function (event) { event.preventDefault(); } }, ${FIGURE})`

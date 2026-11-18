@@ -6,6 +6,7 @@ import { pathToFileURL } from 'node:url';
 
 import { hitsControl } from '@ks/e2e/hits';
 import { GALLERY, OUTPUT } from '@ks/lib/design/cards.mts';
+import { EPOCHS } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 
 // NFR-05, NFR-06: the look of the shared controls, read from the gallery files in
@@ -91,8 +92,9 @@ const UNDER_44: Record<string, readonly string[]> = {
         `DateDock, ${caption}, label  5`,
         `DateDock, ${caption}, input range Map date`,
       ]),
-      ...[1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994, 'Today'].map(
-        epoch => `DateDock, DateDock · with epochs, button button ${epoch}`
+      ...EPOCHS.map(
+        ({ label, year }) =>
+          `DateDock, DateDock · with epochs, button button ${label ?? year}`
       ),
     ],
 };

@@ -4,6 +4,7 @@ import {
   authStateFor,
   changedPixels,
   compare,
+  fixtureStateFor,
   outcomeFor,
   parseConfig,
   summarise,
@@ -95,6 +96,12 @@ describe('parseConfig', () => {
     expect(authStateFor()).toBe('test-results/.auth/state.json');
     expect(authStateFor('researcher@example.com')).toBe(
       'test-results/.auth/researcher@example.com.json'
+    );
+  });
+
+  it('names the saved session of a fixture Account on the fixture server', () => {
+    expect(fixtureStateFor('researcher@example.com')).toBe(
+      'test-results/.auth/fixture/researcher@example.com.json'
     );
   });
 

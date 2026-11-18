@@ -20,6 +20,13 @@ const signInAs = async (
   await page.waitForURL(url => url.pathname === '/');
 };
 
+// The fixture server hides the screens, as production does.
+test('the fixture server gives 404 for a screen', async ({ page }) => {
+  const response = await page.goto('/screens/add-pin');
+
+  expect(response?.status()).toBe(404);
+});
+
 // NFR-03
 test('the researcher fixture Account signs in and sees no People', async ({
   page,

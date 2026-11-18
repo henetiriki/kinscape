@@ -1,5 +1,22 @@
 import type { Page } from '@playwright/test';
 
+import { expect } from '@playwright/test';
+
+// Signs in through the form, waits for the map, and saves the session at `path`.
+export const signIn = async (
+  page: Page,
+  { email, password }: { email: string; password: string },
+  path: string
+) => {
+  await page.goto('/sign-in');
+  await page.getByLabel('Email').fill(email);
+  await page.getByLabel('Password', { exact: true }).fill(password);
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.waitForURL(url => url.pathname === '/');
+  await expect(page.locator('canvas.maplibregl-canvas')).toBeVisible();
+  await page.context().storageState({ path });
+};
+
 // Signs out through the Account menu. Sign-out ends with a client navigation to /sign-in and then a
 // document load. Only the `load` event of that document proves it finished: a `page.goto` before that
 // event aborts the load. `waitForURL` returns after the client navigation, so it is too early.

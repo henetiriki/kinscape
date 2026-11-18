@@ -75,3 +75,5 @@ As the Spec says:
 - The `SG-*` and `Kit-*` boards, their files and records, and `PHONE_BOARD`: DL.21.3 (#993).
 
 ## Deviations
+
+- Step 8 used `npm run build` and `next start` with `KINSCAPE_DEV_PAGES=1`, not `npm run dev`. Turbopack dev does not start in the sandbox of a local session.

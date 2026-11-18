@@ -565,6 +565,28 @@ const CASES: [string, ReactElement][] = [
   ['FuzzyDateField · focus', fuzzyDateField({ state: 'focus' })],
   ['FuzzyDateField · error', fuzzyDateField({ defaultValue: '31 FEB 1850' })],
   ['FuzzyDateField · disabled', fuzzyDateField({ disabled: true })],
+  ['FuzzyDateField · exact', fuzzyDateField({ defaultValue: '14 MAR 1850' })],
+  ['FuzzyDateField · about', fuzzyDateField({ defaultValue: 'ABT 1850' })],
+  ['FuzzyDateField · before', fuzzyDateField({ defaultValue: 'BEF 1850' })],
+  ['FuzzyDateField · after', fuzzyDateField({ defaultValue: 'AFT 1850' })],
+  [
+    'FuzzyDateField · period',
+    fuzzyDateField({ defaultValue: 'FROM 1850 TO 1855' }),
+  ],
+  ['FuzzyDateField · estimated', fuzzyDateField({ defaultValue: 'EST 1850' })],
+  ['FuzzyDateField · calculated', fuzzyDateField({ defaultValue: 'CAL 1850' })],
+  [
+    'FuzzyDateField · error, wrong format',
+    fuzzyDateField({ defaultValue: '14/03/1850' }),
+  ],
+  [
+    'FuzzyDateField · error, year out of range',
+    fuzzyDateField({ defaultValue: 'ABT 850' }),
+  ],
+  [
+    'FuzzyDateField · error, range in reverse',
+    fuzzyDateField({ defaultValue: 'BET 1855 AND 1850' }),
+  ],
   ...states('SelectField', (state, disabled) => (
     <SelectField
       disabled={disabled}

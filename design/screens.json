@@ -248,13 +248,6 @@
       "mode": "blocking"
     },
     {
-      "name": "fuzzy-date-readings",
-      "route": "/screens/fuzzy-date-readings",
-      "width": 1440,
-      "height": 1255,
-      "mode": "blocking"
-    },
-    {
       "name": "sign-in-desktop",
       "route": "/sign-in",
       "state": "sign-in-filled",

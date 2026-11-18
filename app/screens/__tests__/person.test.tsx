@@ -10,7 +10,6 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
 }));
 
-import Readings from '@ks/app/screens/fuzzy-date-readings/page';
 import { saveConflict } from '@ks/app/screens/person-actions';
 import Conflict from '@ks/app/screens/person-conflict/page';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
@@ -33,17 +32,5 @@ describe('the Person screens', () => {
 
   it('gives Save an outcome that saves nothing', async () => {
     expect(await saveConflict()).toEqual({ error: 'conflict', ok: false });
-  });
-
-  it('show every reading and message of the date field', async () => {
-    render(await Readings());
-
-    expect(screen.getAllByText('On 14 March 1850').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('February 1850 has 28 days.')).not.toHaveLength(
-      0
-    );
-    expect(
-      screen.getAllByText('Put the earlier date first: BET 1850 AND 1855.')
-    ).toHaveLength(1);
   });
 });

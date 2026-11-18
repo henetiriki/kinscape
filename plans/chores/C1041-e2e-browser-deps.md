@@ -1,7 +1,7 @@
 # Plan: C1041: The e2e job installs the browser without the system packages
 
 - **Spec:** #1041
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ The Chore asks for 3 passed runs of the `e2e` job in a row. Its "Why" counts 2 a
 - **B.** Push 2 empty commits after the build commit. Link the CI run of each commit. Cost: 2 extra commits.
 - **Other:** your own.
 
-Recommended: A, because each attempt tests the same commit and the same cache entry.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

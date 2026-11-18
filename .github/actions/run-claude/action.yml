@@ -34,6 +34,9 @@ inputs:
   main_files:
     description: "Repo files Claude reads as main has them, space separated. The step below writes main's copy of each file in the checkout. An empty value changes no file."
     default: ''
+  restrict_untrusted_prs:
+    description: "'false' only on the bot's own PR (claude-run.yml's `own` job), so Claude can run npm there. Any other value keeps claude-code-action's deny list for a PR whose author lacks write access."
+    default: 'true'
 
 runs:
   using: composite
@@ -86,6 +89,7 @@ runs:
         bot_id: ${{ inputs.bot_id }}
         prompt: ${{ inputs.prompt }}
         additional_permissions: ${{ inputs.additional_permissions }}
+        restrict_untrusted_prs: ${{ inputs.restrict_untrusted_prs }}
         # Only the team's comments, reviews and review comments reach the prompt (the triggering
         # comment always does): the write collaborators, the bot for its own earlier replies, and
         # github-actions for the review's findings (claude-code-review.yml posts with the

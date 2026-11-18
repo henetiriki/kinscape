@@ -53,3 +53,5 @@ This chore is a hand-back. The tech lead builds it.
 - `claude-code-review.yml` and `claude-unblock.yml`.
 
 ## Deviations
+
+- A bad thread number, a bad `GH_REPO` or an empty `BOT_LOGIN` exits 1 and writes no output, like `agent-gate.mts`. `own` fails, and `run` keeps the restriction.

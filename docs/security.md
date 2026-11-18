@@ -21,6 +21,7 @@ A change to a workflow or action follows these:
 - Never read a prompt, settings, marketplace or rule file from the PR head.
 - Read comments and reviews with an author-association filter.
 - Name the app on a new required check.
+- Set `restrict_untrusted_prs` to `false` only for a PR that the bot opened from a branch in this repo. `claude-run.yml` decides this with `scripts/agent-own-pr.mts`.
 
 ## New infrastructure
 

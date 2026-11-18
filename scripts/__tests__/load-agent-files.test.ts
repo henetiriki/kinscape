@@ -2397,3 +2397,109 @@ describe('the review job of claude-code-review.yml', () => {
     });
   });
 });
+
+// claude-code-action denies `npm` and other commands that run code on a PR whose author lacks write
+// access, and counts each `[bot]` author as one. Only the bot's own PR lifts that
+// (plans/chores/C1028-agent-own-pr.md, docs/security.md).
+describe('the own-PR check', () => {
+  type Job = {
+    if?: string;
+    needs?: string | string[];
+    outputs?: Record<string, string>;
+    permissions?: Record<string, string>;
+    steps?: Step[];
+  };
+  const RULE =
+    'set `restrict_untrusted_prs` to `false` only for a PR that the bot opened from a branch in this repo';
+  const jobs = () =>
+    (parse(read('claude-run.yml')) as { jobs: Record<string, Job> }).jobs;
+  const own = () => jobs().own;
+  const step = (name: string) => own().steps?.find(it => it.name === name);
+
+  it('is an input of run-claude, true by default, and goes to claude-code-action', () => {
+    const { inputs } = parse(
+      readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8')
+    ) as { inputs: Record<string, { default?: string }> };
+
+    expect(inputs.restrict_untrusted_prs.default).toBe('true');
+    expect(
+      stepUsing('anthropics/claude-code-action')?.with?.restrict_untrusted_prs
+    ).toBe('${{ inputs.restrict_untrusted_prs }}');
+  });
+
+  it('is skipped on a plan run, which has no PR', () => {
+    expect(own().if).toBe('${{ !inputs.plan }}');
+  });
+
+  it('runs the script from main, so the PR branch cannot change it', () => {
+    const checkout = own().steps?.[0];
+
+    expect(checkout?.uses).toMatch(/^actions\/checkout@[0-9a-f]{40}$/);
+    expect(checkout?.with).toMatchObject({
+      'persist-credentials': false,
+      ref: 'main',
+    });
+    expect(String(checkout?.with?.['sparse-checkout'])).toContain('scripts');
+  });
+
+  it('reads pull requests only: the token, and the job’s own token for the checkout', () => {
+    const mint = step("Create the bot's token");
+    const permissions = Object.keys(mint?.with ?? {}).filter(key =>
+      key.startsWith('permission-')
+    );
+
+    expect(permissions).toEqual(['permission-pull-requests']);
+    expect(mint?.with?.['permission-pull-requests']).toBe('read');
+    expect(own().permissions).toEqual({ contents: 'read' });
+  });
+
+  it('gives the script the thread, the repo and the bot, each through env', () => {
+    const check = step("Check whether it is the bot's own PR");
+
+    expect(check?.id).toBe('own');
+    expect(check?.run).toBe('node scripts/agent-own-pr.mts "$NUMBER"');
+    expect(check?.env).toEqual({
+      BOT_LOGIN: '${{ vars.KINSCAPE_BOT_LOGIN }}',
+      GH_REPO: '${{ github.repository }}',
+      GH_TOKEN: '${{ steps.bot.outputs.token }}',
+      NUMBER: '${{ inputs.thread }}',
+    });
+    expect(own().outputs).toEqual({ own: '${{ steps.own.outputs.own }}' });
+  });
+
+  it('is needed by `run`, which keeps the restriction unless `own` found the bot’s PR', () => {
+    const call = jobs().run.steps?.find(it =>
+      it.uses?.includes('actions/run-claude@')
+    );
+
+    expect(jobs().run.needs).toEqual(['gate', 'own']);
+    expect(jobs().run.if).toContain('!cancelled()');
+    expect(call?.with?.restrict_untrusted_prs).toBe(
+      "${{ needs.own.outputs.own == 'true' && 'false' || 'true' }}"
+    );
+  });
+
+  it('is not used by the review or the unblock run', () => {
+    expect(read('claude-code-review.yml')).not.toContain(
+      'restrict_untrusted_prs'
+    );
+    expect(read('claude-unblock.yml')).not.toContain('restrict_untrusted_prs');
+  });
+
+  it('has the rule at the job and in docs/security.md', () => {
+    const security = readFileSync(join(root, 'docs/security.md'), 'utf8');
+
+    // The comment wraps, so join its lines.
+    expect(read('claude-run.yml').replace(/\n\s*# /g, ' ')).toContain(RULE);
+    expect(security.toLowerCase()).toContain(RULE.toLowerCase());
+  });
+
+  it('is not set to false in any other place', () => {
+    const all = [
+      ...readdirSync(join(root, '.github/workflows')).map(file => read(file)),
+      readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8'),
+    ].join('\n');
+
+    expect(all.match(/restrict_untrusted_prs: .*'false'/g)).toHaveLength(1);
+  });
+});

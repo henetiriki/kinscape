@@ -137,6 +137,44 @@ describe('appAdapters', () => {
     }
   });
 
+  it('signs in the failing fixture Account to a Tree whose two lists throw', async () => {
+    vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
+
+    const { appAdapters } = await import('@ks/server/adapters.mts');
+    const { FIXTURES, MARIA } = await import('@ks/server/auth/fixtures.mts');
+    const { signIn } = await import('@ks/server/auth/sign-in.mts');
+    const adapters = appAdapters();
+    const fixture = FIXTURES.find(row => row.failing)!;
+
+    expect(fixture.email).toBe('r.failing@example.com');
+    expect(await signIn(adapters, fixture.email, fixture.password)).toEqual({
+      ok: true,
+      value: { id: fixture.accountId },
+    });
+
+    const scope = { accountId: fixture.accountId, treeId: fixture.treeId };
+
+    expect(
+      await adapters.store.findPerson({ ...scope, personId: MARIA.id })
+    ).toMatchObject({ givenNames: MARIA.givenNames });
+    await expect(adapters.store.listPersons(scope)).rejects.toThrow(
+      'The fixture Tree failed to load.'
+    );
+    await expect(adapters.store.listRelationships(scope)).rejects.toThrow(
+      'The fixture Tree failed to load.'
+    );
+
+    // Another fixture Tree lists as before.
+    const [, family] = FIXTURES;
+
+    expect(
+      await adapters.store.listPersons({
+        accountId: family.accountId,
+        treeId: family.treeId,
+      })
+    ).toHaveLength(13);
+  });
+
   it('signs in the researcher fixture Account to an empty read-only Tree under the memory adapters', async () => {
     vi.stubEnv('KINSCAPE_MEMORY_ADAPTERS', '1');
 

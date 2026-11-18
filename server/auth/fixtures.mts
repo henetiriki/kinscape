@@ -15,18 +15,18 @@ type PersonRow = {
   variants?: string[];
 };
 
+/** The id of the other Person `o<n>`, from `o1` to `o12`. */
+const personId = (n: number) => `01900000-0000-7000-8000-000000000${100 + n}`;
+
+/** The id of a Relationship of Maria. */
+const relationshipId = (n: number) =>
+  `01900000-0000-7000-8000-000000000${200 + n}`;
+
 /** A synthetic Person. The module throws on load if a date or an id is bad. */
 const person = ({ n, ...row }: PersonRow): PersonInput =>
-  personInputSchema.parse({
-    ...row,
-    deceased: true,
-    id: `01900000-0000-7000-8000-000000000${100 + n}`,
-  });
+  personInputSchema.parse({ ...row, deceased: true, id: personId(n) });
 
-/** The id of the other Person of a Relationship: `o1` to `o12`. */
-const other = (n: number) => `01900000-0000-7000-8000-000000000${100 + n}`;
-
-/** A Relationship of Maria: the first end of a spouse row, and the child of a parent row. */
+/** A Relationship, parsed so that a bad id or date throws when the module loads. */
 const relationship = (row: object): RelationshipInput =>
   relationshipInputSchema.parse(row);
 
@@ -137,43 +137,40 @@ const OTHERS: PersonInput[] = [
   }),
 ];
 
-const parent = (id: number, parentN: number, subtype: string) =>
+/** A parent row between Maria and `o<n>`. `maria` is her end of the row. */
+const parent = (
+  id: number,
+  n: number,
+  subtype: string,
+  maria: 'child' | 'parent'
+) =>
   relationship({
-    childId: MARIA.id,
-    id: `01900000-0000-7000-8000-000000000${200 + id}`,
-    parentId: other(parentN),
-    subtype,
-    type: 'parent',
-  });
-
-const child = (id: number, childN: number, subtype: string) =>
-  relationship({
-    childId: other(childN),
-    id: `01900000-0000-7000-8000-000000000${200 + id}`,
-    parentId: MARIA.id,
+    childId: maria === 'child' ? MARIA.id : personId(n),
+    id: relationshipId(id),
+    parentId: maria === 'child' ? personId(n) : MARIA.id,
     subtype,
     type: 'parent',
   });
 
 const spouse = (
   id: number,
-  spouseN: number,
+  n: number,
   dates: { divorce?: string; marriage?: string }
 ) =>
   relationship({
     ...dates,
-    id: `01900000-0000-7000-8000-000000000${200 + id}`,
+    id: relationshipId(id),
     personAId: MARIA.id,
-    personBId: other(spouseN),
+    personBId: personId(n),
     type: 'spouse',
   });
 
 const FAMILY_RELATIONSHIPS: RelationshipInput[] = [
-  parent(1, 1, 'biological'),
-  parent(2, 2, 'adoptive'),
-  parent(3, 3, 'step'),
-  child(11, 4, 'biological'),
-  child(12, 5, 'adoptive'),
+  parent(1, 1, 'biological', 'child'),
+  parent(2, 2, 'adoptive', 'child'),
+  parent(3, 3, 'step', 'child'),
+  parent(11, 4, 'biological', 'parent'),
+  parent(12, 5, 'adoptive', 'parent'),
   spouse(21, 6, { divorce: '1890', marriage: 'MAR 1875' }),
   spouse(22, 7, { marriage: 'MAR 1875' }),
   spouse(23, 8, {}),

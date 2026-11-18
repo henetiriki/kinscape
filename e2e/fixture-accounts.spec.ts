@@ -47,19 +47,27 @@ test('the family fixture Account sees 13 People, the Relationships and the form 
 
   await page.goto(`/people/${MARIA.id}/relationships`);
 
-  for (const name of [
-    'Jacobus',
-    'Johanna Petronella',
-    'Cornelis',
-    'Hendrik Willem',
-    'Susanna',
-    'Gerrit',
-    'Pieter',
-  ]) {
-    await expect(page.getByText(name).first()).toBeVisible();
-  }
+  for (const [group, links, names] of [
+    [
+      'Parents',
+      '3 links',
+      ['Rossouw, Jacobus', 'Nel, Johanna Petronella', 'Visser, Cornelis'],
+    ],
+    [
+      'Spouses',
+      '3 links',
+      ['van Wyk, Gerrit', 'Fourie, Pieter', 'Botha, Hendrik Willem'],
+    ],
+    ['Children', '2 links', ['du Toit, Hendrik Willem', 'du Toit, Susanna']],
+  ] as const) {
+    const region = page.getByRole('region', { name: group });
 
-  await expect(page.getByText('3 links').first()).toBeVisible();
+    await expect(region.getByText(links, { exact: true })).toBeVisible();
+
+    for (const name of names) {
+      await expect(region.getByText(name, { exact: true })).toBeVisible();
+    }
+  }
 
   await page.goto(`/people/${MARIA.id}`);
 
@@ -67,7 +75,7 @@ test('the family fixture Account sees 13 People, the Relationships and the form 
   await expect(page.getByLabel('Notes')).toHaveValue(MARIA.notes!);
 
   for (const variant of MARIA.variants) {
-    await expect(page.getByText(variant).first()).toBeVisible();
+    await expect(page.getByText(variant, { exact: true })).toBeVisible();
   }
 });
 

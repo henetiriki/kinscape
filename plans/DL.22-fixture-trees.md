@@ -6,11 +6,11 @@
 
 ## Approach
 
-`memoryStore` already takes seed People and Relationships and refuses writes to a read-only Tree (DL.7). So this Spec adds data and passes it on, and the store does not change.
+`memoryStore` already takes seed People and Relationships and refuses writes to a read-only Tree (DL.7). So this Spec adds data and gives it to `appAdapters`, and the store does not change.
 
 Each row of `FIXTURES` in `server/auth/fixtures.mts` gets `persons` and `relationships`. The researcher row gets two empty lists and stays first, because `e2e/fixture-accounts.spec.ts` reads `const [researcher] = FIXTURES`. The memory branch of `appAdapters` puts both lists in the seed Tree. The Tree ids already go to the read-only list.
 
-Two local helpers build the rows from GEDCOM text with `personInputSchema.parse` and `relationshipInputSchema.parse`. Each Person gets `deceased: true`. A bad date or id then throws when the module loads, so each test that imports `FIXTURES` fails.
+The local helpers `person` and `relationship` build the rows from GEDCOM text with `personInputSchema.parse` and `relationshipInputSchema.parse`. The helpers `parent` and `spouse` build each Relationship of Maria. Each Person gets `deceased: true`. A bad date or id then throws when the module loads, so each test that imports `FIXTURES` fails.
 
 The file exports `MARIA`, the `PersonInput` of Maria Magdalena du Toit. The Family Tree and the Alone Tree both hold this one object. DL.22.3 (#959) needs `MARIA.id`, and DL.23 (#960) copies her fields.
 
@@ -46,7 +46,7 @@ The passwords are `family-password` and `alone-password`. Each differs from the 
 ## Order of work
 
 1. Write `fixtures.test.ts` and the new `adapters.test.ts` tests. See them fail on the missing Accounts.
-2. Add the rows to `fixtures.mts`, and pass them on in `adapters.mts`. See the tests pass.
+2. Add the rows to `fixtures.mts`, and give them to the seed Tree in `adapters.mts`. See the tests pass.
 3. Add the two browser tests. Run them with a local `npm run e2e`.
 4. Run the checks in `AGENTS.md` › Commands. Paste the output in Evidence.
 
@@ -64,7 +64,7 @@ The passwords are `family-password` and `alone-password`. Each differs from the 
 | 2. Three parents, three spouses, two children by name | `adapters.test.ts` (8 Relationships); `fixture-accounts.spec.ts`, each name in its group           |
 | 3. The form of Maria                                  | `adapters.test.ts` (her fields); `fixture-accounts.spec.ts` (maiden name, notes, variants)         |
 | 4. `r.alone` sees one Person and no Relationship      | `adapters.test.ts`; `fixture-accounts.spec.ts` ("1 person", the three empty groups)                |
-| 5. A write to either Tree is refused                  | `adapters.test.ts`: each of the four writes, then the lists do not change                          |
+| 5. The store refuses a write to either Tree           | `adapters.test.ts`: each of the four writes, then the lists do not change                          |
 | 6. Each Person deceased, both ends in the Tree        | `fixtures.test.ts`                                                                                 |
 | 7. No fixture Account without the memory adapters     | `adapters.test.ts`, for each row of `FIXTURES`                                                     |
 | 8. `fixture-accounts.spec.ts`                         | A local `npm run e2e` (in no CI job until DL.22.1, #957)                                           |
@@ -73,3 +73,7 @@ The passwords are `family-password` and `alone-password`. Each differs from the 
 ## Out of scope
 
 Each item of the Spec's "Out of scope / carried forward". No change to `app/screens/`, `design/screens.json` or `memoryStore`.
+
+## Deviations
+
+- `fixtures.mts` has the id helpers `personId` and `relationshipId` and the row helpers `parent` and `spouse`, so each id template is in one place (659a854a).

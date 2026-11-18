@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { parseRelationshipId } from '@ks/lib/domain/ids/ids.mts';
+
 // NFR-03
 describe('appAdapters', () => {
   afterEach(() => {
@@ -88,7 +90,7 @@ describe('appAdapters', () => {
         variants: ['Du Toit', 'Dutoit', 'Du Tois'],
       });
 
-      // Each write is refused, and the lists do not change.
+      // The store refuses each write, and the lists do not change.
       expect(
         await adapters.store.addPerson({ ...scope, person: MARIA })
       ).toBeUndefined();
@@ -101,7 +103,20 @@ describe('appAdapters', () => {
       ).toMatchObject({ ok: false });
       expect(await adapters.store.listPersons(scope)).toEqual(persons);
 
-      const [first] = FIXTURES[1].relationships;
+      // Both ends of each row are in the Tree, so only the read-only check refuses the add.
+      const [first] =
+        fixture === family
+          ? family.relationships
+          : [
+              {
+                id: parseRelationshipId(
+                  '01900000-0000-7000-8000-000000000299'
+                )!,
+                personAId: MARIA.id,
+                personBId: MARIA.id,
+                type: 'spouse' as const,
+              },
+            ];
 
       expect(
         await adapters.store.addRelationship({

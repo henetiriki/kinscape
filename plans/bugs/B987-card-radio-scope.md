@@ -64,7 +64,7 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 
 - **Card images.** The `gallery` job fails on `Segmented` and `DateDock` until the workflow commits their images. If another card image changes, the form changed a layout. Then the build stops for the tech lead.
 - **Tab order.** Four enabled `Segmented` cases become four tab stops. The Tab test counts them, so it fails if the browser still sees one group.
-- **A new radio card.** A card with a radio and no `radios` field shows one selected segment again. A test that fails on a rendered radio group without a form would catch it. This plan does not build that test.
+- **A new radio card.** A card with a radio and no `radios` field shows one selected segment again. The "preview mounts every state" test fails for it, and for a `radios` field on a card with no radio.
 
 ## Proof
 
@@ -79,3 +79,8 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 
 - A `lib/design/cards.mts` line in the "When" list of Changing the design system.
 - The `DateDock` controls under 44px (#988).
+
+## Deviations
+
+- The tech lead asked for a guard. `react-18.test.tsx` now fails if a card mounts a radio and has no `radios` field, or the reverse.
+- "Design: Render snapshots" changed no card image. A selected segment differs from an unselected one by less than the screenshot colour threshold, so `Segmented-1440.png` and `DateDock-1440.png` stay as on `main`.

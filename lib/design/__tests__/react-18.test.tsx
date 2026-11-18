@@ -1181,6 +1181,10 @@ describe('bundle', () => {
             .map(group => group.querySelectorAll('input:checked').length)
             .filter(checked => checked !== 1)
         ).toEqual([]);
+        // A card with a radio sets `radios`, so each state is its own radio group.
+        expect(
+          page.document.querySelector('input[type="radio"]') !== null
+        ).toBe(card.radios === true);
 
         for (const form of page.document.querySelectorAll('form')) {
           const submit = new page.Event('submit', {

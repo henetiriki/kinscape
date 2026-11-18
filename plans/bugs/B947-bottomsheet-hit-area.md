@@ -2,7 +2,7 @@
 
 - **Spec:** #947 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05), [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The grabber is 8px below the top of the sheet. The first row of the sheet starts
 - **B.** Make the grabber box 44px tall, from 8px above the sheet to the first row. Negative margins keep the layout, and top padding keeps the handle in place. It covers 8px of the map and none of the row. The gallery test then checks no point, because the box is 44px. The browser focus outline grows to 64 × 44px. Cost: about 6 lines.
 - **Other:** your own.
 
-Recommended: A, because each control then keeps one hit-area pattern, and the Bug expects the point 21px above and below the 20px button to hit it.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

@@ -2,7 +2,7 @@
 
 - **Spec:** #992
 - **Requirement IDs:** [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Behaviour 6 makes the row "**Living style guide.**" of `docs/architecture.md` na
 - **B.** "**Living style guide.**" stays. Cost: none.
 - **Other:** your own.
 
-Recommended: A, because the label then names what the row holds. B loses little: the row text says what `/screens` is.
+**Answer: Other:** [TBC] (@henetiriki)
 
 ## Files that change
 

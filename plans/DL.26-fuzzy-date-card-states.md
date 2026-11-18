@@ -40,7 +40,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 ## Order of work
 
 1. Add the `FuzzyDateField.test.tsx` test. See it fail, because `CARDS` has no `FuzzyDateField · exact`.
-2. Add the 10 states and the 10 cases. Run `npm run design:gallery`. Set `height` to the height of the 16 states, rounded up to 20.
+2. Add the 10 states and the 10 cases. Run `npm run design:gallery`. Set `height` to the height of the 16 states, to the next multiple of 20.
 3. If an error state shows no error, stop and comment on #893 (Spec concern 4).
 4. Delete the folder and its test. Change `SCREEN_ONLY`, `NO_ENTRY`, `design/screens.json` and `e2e/widths.spec.ts`.
 5. Run the checks in `AGENTS.md`, and `git grep -n fuzzy-date-readings -- e2e design/screens.json app`. Push.
@@ -66,7 +66,8 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 
 ## Deviations
 
-- The 16 states are 592px high at 1440px and 1024px high at 800px. The design system viewer width is not known, and the stated heights of other cards fit widths of about 800 to 1100px. So `height` is 1040 (the 800px value, rounded up to 20), not 600.
+- The 16 states are 592px high at 1440px and 1024px high at 800px. We do not know the width of the design system viewer. The stated heights of other cards fit widths of about 800 to 1100px. So `height` is 1040 (the 800px value, to the next multiple of 20), not 600.
+- The tech lead checked the 404 of `/screens/fuzzy-date-readings` in a signed-in dev session. The PR does not paste the status code (Proof row 6).
 
 ## Out of scope
 

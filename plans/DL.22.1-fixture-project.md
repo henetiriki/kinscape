@@ -2,7 +2,7 @@
 
 - **Spec:** #957
 - **Requirement IDs:** None. This Spec changes test tooling only.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -27,7 +27,7 @@ Behaviour item 7 says that `fixture-accounts.spec.ts` runs "with no change to wh
 - **B.** Put the test in a new file `e2e/fixture-dev-pages.spec.ts`. `fixture-accounts.spec.ts` does not change, and check 3 changes its file name. About 15 lines.
 - **Other:** your own.
 
-Recommended: A, because check 3 names the file, and the three tests that item 7 protects stay the same.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

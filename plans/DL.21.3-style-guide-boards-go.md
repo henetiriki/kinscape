@@ -6,7 +6,7 @@
 
 ## Approach
 
-A local session that the tech lead starts builds the whole Spec, because only it edits the canvas and deletes a generated file. It deletes the 27 `SG-*` and `Kit-*` boards and the canvas page "Style guide", then refreshes `design/canvas/`. It removes the records that the rule [Who deletes a generated file](../design/CANVAS.md#who-deletes-a-generated-file) lists, and narrows `lib/design/shots.mts`. The Screens table is not in `README_SECTIONS` (`lib/design/system.mts`), so the design system output does not change, and the steps of "Changing the design system" do not apply. The build starts after DL.21.2 (#992) merges, because #992 changes the sentence of `design/DESIGN.md` that links to `style-4-states.jpg`.
+A local session that the tech lead starts builds the whole Spec, because only it edits the canvas and deletes a generated file. It deletes the 27 `SG-*` and `Kit-*` boards and the canvas page "Style guide", then refreshes `design/canvas/`. It removes the records that the rule [Who deletes a generated file](../design/CANVAS.md#who-deletes-a-generated-file) lists, and narrows `lib/design/shots.mts`. The Screens table is not in `README_SECTIONS` (`lib/design/system.mts`), so the design system output does not change. The steps of "Changing the design system" do not apply. The build starts after DL.21.2 (#992) merges, because #992 changes the sentence of `design/DESIGN.md` that links to `style-4-states.jpg`.
 
 ## Decisions
 
@@ -17,6 +17,17 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 - **A.** Remove only the `href` attribute of the 11 links. The inline styles keep the look, so `map-style.jpg` and `map-style-phone.jpg` do not change. `map-style.html` and `map-style-phone.html` lose 11 `href` values. The header still says "KinScape design kit". Cost: 11 attribute edits.
 - **B.** Remove the header with the kit title and the "Boards" links from both boards. The two JPGs change, so Behaviour 2 and 6 and check 4 need an exception. That is a change to the Spec. Cost: two board edits, two JPGs and a Spec rewrite.
 - **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D2 · How step 3 follows CANVAS.md 5.5** · Decides: Tech lead
+
+Rule 5.5 says to commit `canvas/` alone. Step 3 also committed the two `map-style` snapshots. How does the plan change?
+
+- **A.** Step 3 says "commits `canvas/` alone". Deviations records that ff0ad0ee also committed the two snapshots, so the workflow had nothing to commit. Cost: one plan line and one Deviations line.
+- ~~**B.** Change step 3 and add the Deviations line only.~~
+- ~~**C.** Leave step 3 and add the Deviations line only.~~
+- ~~**D.** Judge the finding wrong and change nothing.~~
 
 **Answer: A** (@henetiriki)
 
@@ -49,7 +60,7 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 3. The session runs "Refreshing the canvas copy" (5.1 to 5.5):
    - Before 5.4, it runs `git rm` on the 27 board files and removes the records of `design/canvas/export.json`.
    - In 5.4, `npm run design:export` writes the two `map-style` snapshots.
-   - In 5.5, it commits `canvas/` and the two snapshots.
+   - In 5.5, it commits `canvas/` alone (D2).
 4. One commit deletes the 27 snapshots and the 27 JPGs, and nothing else (check 8).
 5. One commit removes the Screens rows, the `NO_ENTRY` names and the counts.
 6. One commit changes `shots.mts` and `shots.test.ts`.
@@ -59,7 +70,7 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 
 - If a `map-style` JPG changes under D1 A, check 4 fails. Then stop and comment on #893.
 - Until #992 merges, `scripts/__tests__/doc-links.test.ts` fails on the link to `style-4-states.jpg`. Step 1 stops the build.
-- A canvas deletion cannot be undone from the repo alone. Step 1 checks that git history keeps each board.
+- The repo alone cannot restore a deleted board. Step 1 checks that git history keeps each board.
 - If another Spec changes a count first, use the count of the day, and say so in the PR.
 
 ## Proof
@@ -81,3 +92,4 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 ## Deviations
 
 - The snapshot workflow (838aa92f) changed `map-account-menu-proposed.jpg` and `map-districts.jpg` by 6 of 255 levels or less, on fewer than 1,000 pixels each. No snapshot or board changed. The tech lead accepted this as render noise, so check 4 passes.
+- Commit ff0ad0ee also committed `design/source/map-style.html` and `design/source/map-style-phone.html`, which rule 5.5 forbids (D2). The workflow (838aa92f) changed neither snapshot, so their content is correct.

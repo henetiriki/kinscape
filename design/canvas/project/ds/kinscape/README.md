@@ -15,7 +15,7 @@
 | Public Sans         | 400, 500, 600, italic 400 and 500 | All UI text and every map label                         |
 | JetBrains Mono      | 400, 500                          | Dates, coordinates, keyboard hints, code. Ligatures off |
 
-Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`). `/design-kit/type` shows them.
+Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`). The Text component card shows them.
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see Map style).
 
@@ -41,8 +41,6 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
 
 Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
-
-The `kit.*` tokens set the design kit's board titles, page padding and intro width. Only kit pages use them.
 
 ## Colours
 
@@ -103,7 +101,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 | `layout`     | ColumnLayout                                                                                                                         |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                                                           |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/screens` is exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
@@ -135,9 +133,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a 14/600 title and one line in `type.small`.
 - **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
-Every control has the five states in style-4-states.jpg. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
-
-`/design-kit/states` builds the controls. `/design-kit` lists the boards. In production the kit is a 404.
+Every control has the five states on its component card. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
 
 ## States
 
@@ -164,7 +160,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Map date field
 
-`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. The field pads single digits (`1901-6-4`).
+The DateField component card shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. The field pads single digits (`1901-6-4`).
 
 1. Check on Enter or when focus leaves, never while the user types.
 2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field. Set `aria-invalid`. Link the message with `aria-describedby`.
@@ -184,7 +180,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Fuzzy date field
 
-`/design-kit/inputs` shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
+The FuzzyDateField component card shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
 
 1. The line is one `aria-live="polite"` slot. It shows the helper, "Reads as **{reading}**", or the error message.
 2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.
@@ -212,7 +208,7 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 
 ## Map style
 
-Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. map-style.jpg shows the full layer stack, and `/design-kit/map-style` builds it. The map colours:
+Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. map-style.jpg shows the full layer stack. The map colours:
 
 | Use                     | Value                                                                                               |
 | ----------------------- | --------------------------------------------------------------------------------------------------- |

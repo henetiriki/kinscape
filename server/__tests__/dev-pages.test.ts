@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { devPagesVisible, isDevPage } from '@ks/server/dev-pages.mts';
 
-// NFR-03: the design kit and screens are an allowlist, so an unset or unknown value hides them.
+// NFR-03: the screens are an allowlist, so an unset or unknown value hides them.
 describe('devPagesVisible', () => {
   it.each([
     [{ NODE_ENV: 'development' }],

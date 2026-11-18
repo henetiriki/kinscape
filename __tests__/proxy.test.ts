@@ -46,7 +46,7 @@ describe('proxy', () => {
   });
 });
 
-// NFR-03: outside Preview and development the design kit and screens are 404, whatever the cookie.
+// NFR-03: outside Preview and development the screens are 404, whatever the cookie.
 describe('proxy, with the dev pages hidden', () => {
   afterEach(() => {
     vi.unstubAllEnvs();

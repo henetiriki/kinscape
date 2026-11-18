@@ -96,7 +96,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(172);
+    expect(all(system).length).toBe(171);
   });
 
   // NFR-06
@@ -116,7 +116,7 @@ describe('systemTokens', () => {
       system.layout.tokens.length,
       system.breakpoint.tokens.length,
       system.z.tokens.length,
-    ]).toEqual([40, 3, 3]);
+    ]).toEqual([40, 2, 3]);
 
     for (const { name, usage, value } of [
       ...system.layout.tokens,
@@ -414,7 +414,7 @@ describe('readme', () => {
     expect(text).toContain('Map labels need Public Sans Regular');
     expect(text).not.toMatch(/\]\((?!https:\/\/)[^)]*\)/);
     expect(text).toContain(
-      'Every control has the five states in style-4-states.jpg'
+      'Every control has the five states on its component card.'
     );
     expect(text).toContain('(see Map style)');
     expect(text).toContain('map-style.jpg shows the full layer stack');

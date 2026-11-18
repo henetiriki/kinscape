@@ -54,7 +54,7 @@ it('marks a field without a message of its own, and keeps the caller’s descrip
   expect(container.querySelector('[data-icon="warning"]')).not.toBeNull();
 });
 
-it('takes a state for the design kit and passes input props through', () => {
+it('takes a state for its component card and passes input props through', () => {
   const { container } = render(
     <TextField date disabled label='Date' placeholder='1901' state='hover' />
   );

@@ -43,6 +43,16 @@ const transcript = (
 const artifact = (...commands: string[]) =>
   JSON.stringify(transcript(commands.map(bash), { costUsd: 2, turns: 20 }));
 
+// A transcript denied `z a` this many times.
+const times = (count: number) =>
+  transcript(Array.from({ length: count }, () => bash('z a')));
+
+// Runs 1 to 8, denied 1, 3, 2, 3, 1, 2, 1 and 1 times: most counts tie.
+const EIGHT_RUNS = [1, 3, 2, 3, 1, 2, 1, 1].map((count, index) => ({
+  id: index + 1,
+  transcript: times(count),
+}));
+
 const NO_RULES: Settings = { allow: [], deny: [] };
 
 // The runs are plan runs unless they say otherwise, and no settings file has a rule.
@@ -131,9 +141,25 @@ describe('summarise', () => {
         count: 2,
         example: 'Bash: x y',
         pattern: 'Bash: x',
-        runs: [1, 2],
+        runs: [2, 1],
       },
     ]);
+  });
+
+  it('sorts the runs of a group by its denials in each, then the newer run first', () => {
+    expect(summarise(EIGHT_RUNS).groups[0].runs).toEqual([
+      4, 2, 6, 3, 8, 7, 5, 1,
+    ]);
+  });
+
+  it('adds the denials of the sessions of one run before it sorts', () => {
+    const report = summarise([
+      { id: 1, transcript: times(2) },
+      { id: 2, transcript: times(1) },
+      { id: 2, transcript: times(2) },
+    ]);
+
+    expect(report.groups[0].runs).toEqual([2, 1]);
   });
 
   // The settings file a workflow runs with: the review's own, else settings.json.
@@ -584,6 +610,115 @@ describe('issueBody', () => {
       )
     ).toContain('The hook cut a leading `cd` from 0 commands.');
   });
+
+  const SINCE = new Date('2026-10-17T00:00:00Z');
+  const RUN_PAGE = 'https://github.com/o/r/actions/runs/7';
+
+  const reportOf = (groups: (typeof group)[]) => ({
+    costUsd: 0,
+    denials: 0,
+    deniedCostUsd: 0,
+    deniedRunsCostUsd: 0,
+    groups,
+    runs: 1,
+    stripped: {},
+    turns: 0,
+    unlinked: 0,
+  });
+
+  // The most busy week: many patterns, many runs each, a long example. Counts fall from the first.
+  const busy = reportOf(
+    Array.from({ length: 300 }, (_, index) => ({
+      ...group,
+      count: 1000 - index,
+      example: 'x'.repeat(5000),
+      pattern: `Bash: p${index}`,
+      runs: Array.from({ length: 100 }, (_, run) => run + 1),
+    }))
+  );
+  const rowsOf = (body: string) =>
+    body.split('\n').filter(line => line.startsWith('| `Bash: p'));
+
+  it('keeps the body to 60,000 characters or less', () => {
+    expect(issueBody(busy, 'o/r', SINCE).length).toBeLessThanOrEqual(60_000);
+    expect(issueBody(busy, 'o/r', SINCE, RUN_PAGE).length).toBeLessThanOrEqual(
+      60_000
+    );
+  });
+
+  it('drops the rows with the lowest counts, and says how many', () => {
+    const body = issueBody(busy, 'o/r', SINCE, RUN_PAGE);
+    const dropped = 300 - rowsOf(body).length;
+
+    expect(dropped).toBeGreaterThan(0);
+    expect(body).toContain('| `Bash: p0` |');
+    expect(body).not.toContain('| `Bash: p299` |');
+    expect(body).toContain(
+      `${dropped} more patterns are on the [run page](${RUN_PAGE}).`
+    );
+  });
+
+  it('says the dropped rows were left out when there is no run page', () => {
+    const body = issueBody(busy, 'o/r', SINCE);
+    const dropped = 300 - rowsOf(body).length;
+
+    expect(body).toContain(`${dropped} more patterns were left out.`);
+    expect(body).not.toContain('run page');
+  });
+
+  it('links the run page under the table when no row is dropped', () => {
+    expect(issueBody(reportOf([group]), 'o/r', SINCE, RUN_PAGE)).toContain(
+      `\n| \`Bash: cat a\` | build, code-review | settings.json: denied by the hook; review-settings.json: no rule | 4 | $0.76 | [11](https://github.com/o/r/actions/runs/11), [12](https://github.com/o/r/actions/runs/12) | \`Bash: cat a \\| tail\` | Tell the agent \\| stop. |\n\nThe [run page](${RUN_PAGE}) shows every run and the full examples.\n`
+    );
+  });
+
+  it('writes no line under the table when no row is dropped and there is no run page', () => {
+    const body = issueBody(reportOf([group]), 'o/r', SINCE);
+
+    expect(body).not.toContain('run page');
+    expect(body).not.toContain('left out');
+    expect(body).not.toContain('more patterns');
+  });
+
+  it('shows 5 run links in the order summarise gives, then how many more', () => {
+    const body = issueBody(summarise(EIGHT_RUNS), 'o/r', SINCE);
+    const link = (id: number) =>
+      `[${id}](https://github.com/o/r/actions/runs/${id})`;
+
+    expect(body).toContain(
+      `${[4, 2, 6, 3, 8].map(link).join(', ')}, +3 more |`
+    );
+    expect(body).not.toContain(link(7));
+  });
+
+  it('shows 5 run links with no "more" when a group has 5', () => {
+    const body = issueBody(
+      reportOf([{ ...group, runs: [1, 2, 3, 4, 5] }]),
+      'o/r',
+      SINCE
+    );
+
+    expect(body).toContain('/actions/runs/5) |');
+    expect(body).not.toContain('more |');
+  });
+
+  it('cuts an example over 200 characters, and shows 200 in full', () => {
+    const cut = issueBody(
+      reportOf([{ ...group, example: `${'a'.repeat(100)}${'b'.repeat(200)}` }]),
+      'o/r',
+      SINCE
+    );
+    const whole = issueBody(
+      reportOf([{ ...group, example: 'c'.repeat(200) }]),
+      'o/r',
+      SINCE
+    );
+
+    expect(cut).toContain(`\`${'a'.repeat(100)}${'b'.repeat(100)}…\``);
+    expect(cut).not.toContain('b'.repeat(101));
+    expect(whole).toContain(`\`${'c'.repeat(200)}\``);
+    expect(whole).not.toContain('…');
+  });
 });
 
 describe('settingsReader', () => {
@@ -713,7 +848,7 @@ describe('run', () => {
   // A run's artifacts: none, one text, or several.
   const read = (id: number) => [artifacts[id] ?? []].flat();
 
-  const audit = () =>
+  const audit = (env: Record<string, string> = ENV) =>
     run(
       {
         gh,
@@ -722,7 +857,7 @@ describe('run', () => {
         settings: () => NO_RULES,
         summary,
       },
-      ENV
+      env
     );
 
   const calls = (verb: string) =>
@@ -898,8 +1033,8 @@ describe('run', () => {
     expect(page).toContain(
       '| `Bash: cat` | respond | settings.json: no rule | 2 | $0.00 |'
     );
-    expect(page).toMatch(
-      /\nOpened issue https:\/\/github\.com\/o\/r\/issues\/9\.$/
+    expect(summary.mock.calls[1][0]).toMatch(
+      /^\nOpened issue https:\/\/github\.com\/o\/r\/issues\/9\.$/
     );
   });
 
@@ -910,7 +1045,7 @@ describe('run', () => {
     open = [{ number: 9, title: ISSUE_TITLE }];
     audit();
 
-    expect(summary.mock.calls[0][0]).toMatch(/\nUpdated issue #9\.$/);
+    expect(summary.mock.calls[1][0]).toMatch(/^\nUpdated issue #9\.$/);
   });
 
   it('still says it opened an issue when gh prints no URL', () => {
@@ -919,7 +1054,97 @@ describe('run', () => {
     artifacts[2] = artifact('cat b');
     audit();
 
-    expect(summary.mock.calls[0][0]).toMatch(/\nOpened an issue\.$/);
+    expect(summary.mock.calls[1][0]).toMatch(/^\nOpened an issue\.$/);
+  });
+
+  // 200 patterns that two runs hit: more rows than the issue body can hold.
+  const flood = () => {
+    runs['claude-respond.yml'] = [make(1), make(2)];
+
+    const commands = Array.from(
+      { length: 200 },
+      (_, index) => `p${index} ${'x'.repeat(300)}`
+    );
+
+    artifacts[1] = artifact(...commands);
+    artifacts[2] = artifact(...commands);
+  };
+
+  it('shows the run page every row and the full example, and the issue the capped table', () => {
+    flood();
+    audit({ ...ENV, GITHUB_RUN_ID: '777' });
+
+    const [page] = summary.mock.calls[0];
+    const body = calls('create')[0][1] ?? '';
+
+    expect(page.match(/^\| `Bash: p\d+` /gm)).toHaveLength(200);
+    expect(page).toContain('x'.repeat(300));
+    expect(page).not.toContain('more patterns');
+    expect(body.length).toBeLessThanOrEqual(60_000);
+    expect(body.match(/^\| `Bash: p\d+` /gm)?.length).toBeLessThan(200);
+    expect(body).not.toContain('x'.repeat(201));
+  });
+
+  it('links the run page in the issue when GITHUB_RUN_ID is set', () => {
+    flood();
+    audit({ ...ENV, GITHUB_RUN_ID: '777' });
+
+    expect(calls('create')[0][1]).toMatch(
+      /\d+ more patterns are on the \[run page\]\(https:\/\/github\.com\/owner\/repo\/actions\/runs\/777\)\./
+    );
+  });
+
+  it('omits the link when GITHUB_RUN_ID is not set, or is not digits', () => {
+    flood();
+    audit();
+    audit({ ...ENV, GITHUB_RUN_ID: '7/../x' });
+
+    for (const [, body] of calls('create')) {
+      expect(body).toMatch(/\d+ more patterns were left out\./);
+      expect(body).not.toContain('run page');
+      expect(body).not.toContain('runs/7');
+    }
+
+    expect(calls('create')).toHaveLength(2);
+  });
+
+  it('shows the run page before it calls GitHub for the issue', () => {
+    runs['claude-respond.yml'] = [make(1), make(2)];
+    artifacts[1] = artifact('cat a');
+    artifacts[2] = artifact('cat b');
+    audit();
+
+    expect(summary.mock.invocationCallOrder[0]).toBeLessThan(
+      gh.mock.invocationCallOrder[
+        gh.mock.calls.findIndex(
+          ([args]) => args[1] === 'list' && args[0] === 'issue'
+        )
+      ]
+    );
+  });
+
+  it('keeps the run page and returns 1 when the issue call fails', () => {
+    flood();
+
+    const base = gh.getMockImplementation() as Gh;
+
+    gh.mockImplementation((args, input) => {
+      if (args[1] === 'create') {
+        throw new Error('Body is too long (maximum is 65536 characters)');
+      }
+
+      return base(args, input);
+    });
+
+    expect(audit({ ...ENV, GITHUB_RUN_ID: '777' })).toBe(1);
+    expect(summary).toHaveBeenCalledTimes(2);
+    expect(summary.mock.calls[0][0]).toContain('| `Bash: p199` ');
+    expect(summary.mock.calls[1][0]).toBe(
+      '\nThe issue call failed: Error: Body is too long (maximum is 65536 characters)'
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      expect.stringContaining('Body is too long')
+    );
   });
 
   it('opens one issue for denials that repeat', () => {

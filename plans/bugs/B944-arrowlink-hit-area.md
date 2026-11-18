@@ -46,7 +46,6 @@ PR #1017 (DL.21.2) merged. It changed `bundle.css`, `bundle.js`, `tokens.json` a
 
 **Answer: A** (@henetiriki)
 
-
 ## Files that change
 
 | File                                                  | New / changed   | What                                                             |

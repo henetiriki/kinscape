@@ -110,9 +110,6 @@ const screenOnlyProblems = (
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
-  'design-kit',
-  'design-kit-menu-phone',
-  'design-kit-phone',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
   'map-credits-narrow',
@@ -145,30 +142,6 @@ const NO_ENTRY = [
   'sign-in-phone-proposed',
   'sign-in-phone-unavailable',
   'sign-in-unavailable',
-  'style-1-type',
-  'style-1-type-phone',
-  'style-2-colour',
-  'style-2-colour-phone',
-  'style-3-foundations',
-  'style-3-foundations-phone',
-  'style-4-states',
-  'style-4-states-phone',
-  'style-5-feedback',
-  'style-5-feedback-phone',
-  'style-6-components-inputs',
-  'style-6-components-inputs-2',
-  'style-6-components-inputs-2-phone',
-  'style-6-components-inputs-3',
-  'style-6-components-inputs-3-phone',
-  'style-6-components-inputs-4-phone',
-  'style-6-components-inputs-phone',
-  'style-7-components-surfaces',
-  'style-7-components-surfaces-2',
-  'style-7-components-surfaces-2-phone',
-  'style-7-components-surfaces-phone',
-  'style-8-components-map',
-  'style-8-components-map-2-phone',
-  'style-8-components-map-phone',
 ];
 
 const jpeg = (width: number, height: number, ...before: number[][]) =>

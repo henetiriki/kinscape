@@ -3,25 +3,21 @@ import type { Shot } from '#ks/lib/design/types.ts';
 /** One raster thread: several threads can tile a page in a different order on each run, which changes the image bytes. */
 export const LAUNCH_ARGS = ['--num-raster-threads=1'];
 
-/** The phone boards are long pages; every other phone file is one screen. */
-const PHONE_BOARD = /^(?:style-\d.*|map-style|design-kit)-phone$/;
+/** The map style phone board is a long page; every other phone file is one screen. */
+const PHONE_BOARD = 'map-style-phone';
 
-/** Phone screens, style guide boards, the map style board and the fuzzy-date reference each have their own size. */
+/** Phone screens, the map style board and the fuzzy-date reference each have their own size. */
 export const shotFor = (name: string): Shot => {
   if (name.includes('phone')) {
     return {
-      fullPage: PHONE_BOARD.test(name),
+      fullPage: name === PHONE_BOARD,
       height: 844,
       scale: 2,
       width: 390,
     };
   }
 
-  if (
-    name.startsWith('style-') ||
-    name === 'map-style' ||
-    name === 'fuzzy-date-readings'
-  ) {
+  if (name === 'map-style' || name === 'fuzzy-date-readings') {
     return { fullPage: true, height: 900, scale: 1, width: 1440 };
   }
 

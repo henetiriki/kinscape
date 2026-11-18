@@ -6,11 +6,16 @@ import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 import { COLUMNS } from '#ks/app/components/layout/columns.mts';
 import {
   CHAIN,
+  CONTESTED_COUNT,
+  CONTESTED_YEARS,
+  EPOCHS,
   FUZZY_DATE_HELPER,
   LONG_NOTES,
+  MAP_DATE,
   PINS,
+  TODAY,
 } from '#ks/lib/design/samples.mts';
-import { toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { EVENT_TYPES } from '#ks/lib/domain/pins/schemas.mts';
 
 const FOCUS = ['active', 'focus', 'hover'] as const;
 const TABS = [
@@ -193,8 +198,8 @@ const COLUMN_CONTENT: Record<Column, Slot[]> = {
 
 const dateField = (props: State['props'] = {}) => ({
   // The first Map date, today, and a day between.
-  day: toDay('1901-06-14'),
-  max: toDay('2026-10-21'),
+  day: MAP_DATE,
+  max: TODAY,
   min: 0,
   precision: 'day',
   ...props,
@@ -756,6 +761,46 @@ export const CARDS: Card[] = [
     states: grid('LayersButton', (state, disabled) => ({
       props: { disabled, state },
     })),
+  },
+  {
+    design: ['Date dock'],
+    group: 'Map',
+    handlers: ['onChange', 'onPlay'],
+    height: 720,
+    name: 'DateDock',
+    pad: 0,
+    states: [
+      one('DateDock · Map date', { day: MAP_DATE, lastDay: TODAY }),
+      one('DateDock · with epochs', {
+        day: MAP_DATE,
+        epochs: EPOCHS,
+        lastDay: TODAY,
+      }),
+      one('DateDock · with contested claims', {
+        contestedCount: CONTESTED_COUNT,
+        contestedYears: CONTESTED_YEARS,
+        day: MAP_DATE,
+        lastDay: TODAY,
+      }),
+    ],
+  },
+  {
+    design: [],
+    group: 'Map',
+    handlers: [],
+    height: 280,
+    name: 'Legend',
+    pad: 0,
+    states: [one('Legend · default', {})],
+  },
+  {
+    design: [],
+    group: 'Map',
+    handlers: [],
+    height: 140,
+    name: 'EventGlyph',
+    pad: 0,
+    states: EVENT_TYPES.map(event => one(`EventGlyph · ${event}`, { event })),
   },
   {
     design: ['Alert'],

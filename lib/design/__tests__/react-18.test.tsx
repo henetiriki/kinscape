@@ -66,22 +66,33 @@ import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Modal } from '@ks/app/components/overlays/Modal';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
+import { DateDock } from '@ks/features/map/components/DateDock';
 import { DateField } from '@ks/features/map/components/DateField';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
+import { Legend } from '@ks/features/map/components/Legend';
 import { SearchBar } from '@ks/features/map/components/SearchBar';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
-import { CHAIN, LONG_NOTES, PINS } from '@ks/lib/design/samples.mts';
+import {
+  CHAIN,
+  CONTESTED_COUNT,
+  CONTESTED_YEARS,
+  EPOCHS,
+  LONG_NOTES,
+  MAP_DATE,
+  PINS,
+  TODAY,
+} from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
-import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
+import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
+import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 import { run } from '@ks/scripts/design-system.mts';
 
 // The shared controls (DS.5) must work in the React 18 the design system targets as well as the app's 19.
 
 const STATES = ['active', 'focus', 'hover'] as const;
-const TODAY = toDay('2026-10-21');
 const TABS = [
   { label: 'Layers', value: 'layers' },
   { count: 1, label: 'Filters', value: 'filters' },
@@ -170,15 +181,18 @@ const COMPONENTS = {
   Chip,
   ChipGroup,
   ColumnLayout,
+  DateDock,
   DateField,
   Dialog,
   DialogPanel,
   Divider,
+  EventGlyph,
   FuzzyDateField,
   Icon,
   IconButton,
   KeyHint,
   LayersButton,
+  Legend,
   Menu,
   MenuPanel,
   Modal,
@@ -230,7 +244,7 @@ const slotted = (value: unknown): unknown =>
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (
   <DateField
-    day={toDay('1901-06-14')}
+    day={MAP_DATE}
     max={TODAY}
     min={MIN_DAY}
     onChange={noop}
@@ -638,6 +652,44 @@ const CASES: [string, ReactElement][] = [
   ...states('LayersButton', (state, disabled) => (
     <LayersButton disabled={disabled} state={state} />
   )),
+  [
+    'DateDock · Map date',
+    <DateDock
+      day={MAP_DATE}
+      key='plain'
+      lastDay={TODAY}
+      onChange={noop}
+      onPlay={noop}
+    />,
+  ],
+  [
+    'DateDock · with epochs',
+    <DateDock
+      day={MAP_DATE}
+      epochs={EPOCHS}
+      key='epochs'
+      lastDay={TODAY}
+      onChange={noop}
+      onPlay={noop}
+    />,
+  ],
+  [
+    'DateDock · with contested claims',
+    <DateDock
+      contestedCount={CONTESTED_COUNT}
+      contestedYears={CONTESTED_YEARS}
+      day={MAP_DATE}
+      key='contested'
+      lastDay={TODAY}
+      onChange={noop}
+      onPlay={noop}
+    />,
+  ],
+  ['Legend · default', <Legend key='legend' />],
+  ...EVENT_TYPES.map((event): [string, ReactElement] => [
+    `EventGlyph · ${event}`,
+    <EventGlyph event={event} key={event} />,
+  ]),
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,

@@ -11,9 +11,9 @@
 - `fixture-setup` runs the new `e2e/fixture.setup.ts`. It signs in each Account of `FIXTURES` through the form, in sequence, and saves each session at `fixtureStateFor(email)`.
 - `fixture` depends on `fixture-setup` and matches `fixture-*.spec.ts`.
 
-`fixtureStateFor` sits beside `authStateFor` in `lib/design/check.mts` and gives `test-results/.auth/fixture/<email>.json`. The path stays under `test-results/.auth/`, so the CI artifacts keep out the new sessions with no change. The `setup` project and its `@fixture` tests stay as they are, for the `design` project on port 3000.
+`fixtureStateFor` sits beside `authStateFor` in `lib/design/check.mts` and gives `test-results/.auth/fixture/<email>.json`. The path stays under `test-results/.auth/`, so the CI artifacts exclude the new sessions with no change. The `setup` project and its `@fixture` tests stay as they are, for the `design` project on port 3000.
 
-The `signIn` helper moves from `e2e/auth.setup.ts` to `e2e/session.ts`, so the two setup files share one copy. The `chromium` project ignores `fixture-*.spec.ts` in every run, and the `memorySignIn` condition goes. The `perf` project also waits for `fixture`, so that the timing tests still run alone. No filter drops `fixture` in a mode, so `npm run e2e` runs it with `E2E_SPLIT=1` and `KINSCAPE_MEMORY_SIGN_IN=1` too. `npm run design:check` passes `--project=design`, so it does not run `fixture`.
+`signIn` moves from `e2e/auth.setup.ts` to `e2e/session.ts`, for both setup files. The `chromium` project ignores `fixture-*.spec.ts` in every run, and the `memorySignIn` condition goes. The `perf` project also waits for `fixture`, so that the timing tests still run alone. No filter drops `fixture` in a mode, so `npm run e2e` runs it with `E2E_SPLIT=1` and `KINSCAPE_MEMORY_SIGN_IN=1` too. `npm run design:check` passes `--project=design`, so it does not run `fixture`.
 
 `.github/workflows/ci.yml` does not change. The `e2e` job sets `KINSCAPE_MEMORY_SIGN_IN=1` on its step, and the empty value on port 3002 overrides it. `parseEnv` ignores the database variables under the memory adapters.
 
@@ -72,7 +72,7 @@ Behaviour item 7 says that `fixture-accounts.spec.ts` runs "with no change to wh
 ## Risks
 
 - **One build serves the memory adapters.** Only check 1 proves it. If the server on port 3002 fails in the CI `e2e` job, stop and comment on #893, as the Spec says.
-- **A local run with a server on port 3000.** Locally, Playwright reuses a running server and skips the build. Then the server on port 3002 needs `npm run build` first, as the server on port 3001 does today. The config comment says so.
+- **A local run with a server on port 3000.** Playwright then skips the build. The config comment says to run `npm run build` first, as for port 3001.
 - **Sign-ins in parallel.** Two sign-ins at the same time exceed the canvas wait on a CI runner. `fixture-setup` sets `fullyParallel: false`. It can run beside `setup`, so the CI run shows whether two setup projects side by side are too slow.
 
 ## Proof
@@ -91,3 +91,8 @@ Behaviour item 7 says that `fixture-accounts.spec.ts` runs "with no change to wh
 
 - The tests of DL.22.2 and DL.22.3, which use the saved sessions of `fixture-setup`.
 - A change to `.github/workflows/ci.yml`. If the CI `e2e` job needs one, the PR is a hand-back.
+
+## Deviations
+
+- `lib/design/check.mts` and its test change, as Behaviour item 4 asks. The first line of Behaviour says that no file under `lib/` changes.
+- `fixture-accounts.spec.ts` gets a fourth test (D1: A). Behaviour item 7 says that what it tests does not change.

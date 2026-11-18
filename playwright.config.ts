@@ -24,7 +24,7 @@ const failures = failureArtifacts(process.env);
 const signedIn = authStateFor();
 
 // The CI `design` job runs the design project. So the CI `e2e` job sets this to drop that project,
-// and `perf` waits only for `chromium`. Every other run keeps all projects.
+// and `perf` waits only for `chromium` and `fixture`. Every other run keeps all projects.
 // The memory sign-in has no fixture Accounts, so the design project needs the memory adapters.
 const memorySignIn = process.env.KINSCAPE_MEMORY_SIGN_IN === '1';
 const split = process.env.E2E_SPLIT === '1';
@@ -33,7 +33,8 @@ const noDesign = split || memorySignIn;
 // The server with the memory adapters, which has the fixture Accounts. The memory sign-in has none.
 const fixtureURL = 'http://localhost:3002';
 
-// How the servers on ports 3000 and 3001 sign in and store data. By default the memory adapters, which need no database.
+// How the servers on ports 3000 and 3001 sign in and store data. By default they use the memory
+// adapters, which need no database.
 // With KINSCAPE_MEMORY_SIGN_IN=1 (the CI e2e job), the memory sign-in over the Postgres that
 // KINSCAPE_DATABASE_URL names. The empty KINSCAPE_MEMORY_ADAPTERS overrides a value in the shell.
 const adapters: Record<string, string> = memorySignIn
@@ -46,7 +47,7 @@ export default defineConfig({
   // Run the tests inside one file side by side too, not only different files.
   fullyParallel: true,
   // A project is a named group of tests. Each picks its tests with a filter, and all
-  // three use the same browser settings (`use`) above.
+  // of them use the same browser settings (`use`) above.
   projects: [
     // Signs in once through the form and saves the session; the projects below load it.
     // The tests tagged @fixture sign in as a fixture Account, which the memory sign-in lacks.
@@ -154,7 +155,7 @@ export default defineConfig({
     },
     // The same build with the memory adapters and no screens, for the `fixture` project.
     // The empty values override the CI `e2e` job, which sets KINSCAPE_MEMORY_SIGN_IN=1.
-    // Locally, if :3000 is already running the build is skipped: run `npm run build` first.
+    // Locally, if a server runs on :3000, Playwright skips the build. Run `npm run build` first.
     {
       command: 'npm run start -- -p 3002',
       env: {

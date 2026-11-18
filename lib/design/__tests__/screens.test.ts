@@ -18,15 +18,6 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     blocker: 'The open menu is a state of the map, which has no People.',
     folder: 'map-account-menu',
   },
-  { blocker: 'The fixture Tree has no People.', folder: 'people-empty' },
-  {
-    blocker: 'The fixture Tree has no People, so no row can match.',
-    folder: 'people-list-no-match',
-  },
-  {
-    blocker: 'The fixture Tree has no People to list.',
-    folder: 'people-list',
-  },
   {
     blocker: 'A load failure: no app route fails.',
     folder: 'people-load-failed',

@@ -22,12 +22,10 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 
 **D2 · How step 3 follows CANVAS.md 5.5** · Decides: Tech lead
 
-Rule 5.5 says to commit `canvas/` alone. Step 3 also committed the two `map-style` snapshots. How does the plan change?
+Does step 3 commit `canvas/` alone, as rule 5.5 of `design/CANVAS.md` says?
 
-- **A.** Step 3 says "commits `canvas/` alone". Deviations records that ff0ad0ee also committed the two snapshots, so the workflow had nothing to commit. Cost: one plan line and one Deviations line.
-- ~~**B.** Change step 3 and add the Deviations line only.~~
-- ~~**C.** Leave step 3 and add the Deviations line only.~~
-- ~~**D.** Judge the finding wrong and change nothing.~~
+- **A.** Yes. Step 3 commits `canvas/` alone. Cost: one plan line.
+- **Other:** your own.
 
 **Answer: A** (@henetiriki)
 

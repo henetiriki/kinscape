@@ -964,4 +964,14 @@ export declare const ColumnLayout: ({ actions, children, column, header, }: {
 }) => import("react").JSX.Element;
 export type ColumnLayoutProps = Parameters<typeof ColumnLayout>[0];
 
+/**
+ * The sign-in page's two halves: `hero` left and `children` right, stacked on a phone.
+ * It draws the wordmark (44 over the form, 36 over the hero on a phone) and holds no form logic.
+ */
+export declare const SignInLayout: ({ children, hero, }: {
+    children: ReactNode;
+    hero: ReactNode;
+}) => import("react").JSX.Element;
+export type SignInLayoutProps = Parameters<typeof SignInLayout>[0];
+
 export {};

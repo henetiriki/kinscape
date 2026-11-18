@@ -56,7 +56,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`. A media query can't read a variable, so a test checks each against `breakpoint`.
 - The `Stage` places the search, account, zoom, panel, dock, credits and overlay slots from those tokens. On a phone only, it also places a Layers button. Its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`), with the pointer on its right edge.
 - A notice centres in the free map area, not the window.
-- `AuthLayout` places the sign-in hero and form from `layout.sign-in`. On desktop the hero is left, and the form pane is at least 440 wide with a form of at most 360. On a phone, a 188px hero with the wordmark over it comes first, then the form. `SignInHero`'s coast and border lines are a hand-drawn sketch, traced from no dataset (NFR-08).
+- `SignInLayout` places the sign-in hero and form from `layout.sign-in`. On desktop the hero is left, and the form pane is at least 440 wide with a form of at most 360. On a phone, a 188px hero with the wordmark over it comes first, then the form. `SignInHero`'s coast and border lines are a hand-drawn sketch, traced from no dataset (NFR-08).
 - `ColumnLayout` frames the People screens: a header, one centred column that scrolls and an optional action bar. `column` sets the width, gap and padding. `list` and `detail` are `layout.list-width` wide; `form` is `layout.content-width` wide.
 - Pass MapLibre `padding` so the map centres in the space the panel and dock leave.
 
@@ -98,8 +98,8 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 | `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                           |
 | `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                                               |
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                                                                       |
-| `layout`     | ColumnLayout                                                                                                                         |
-| `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                                                           |
+| `layout`     | ColumnLayout, SignInLayout                                                                                                           |
+| `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                       |
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/screens` is exempt.
 

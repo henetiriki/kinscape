@@ -2,7 +2,7 @@
 
 - **Bug:** #988
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05), [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ Each is 30px or 33px wide, with a 4px gap. The `Map` snapshot (`design/source/ma
 - **C.** Keep the look and the two labels in `UNDER_44`, with the reason that the phone sheet shows no speed. The Bug closes with two controls listed.
 - **Other:** your own.
 
-Recommended: A, because the snapshot already draws the segments 40px wide and a tablet user taps them.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

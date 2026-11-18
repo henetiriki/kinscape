@@ -2,7 +2,7 @@
 
 - **Spec:** #1003
 - **Requirement IDs:** None: CI tooling
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The Constraint wants this fix in the same PR. On #793, GitHub's `.github/dependa
 - **B.** The build leaves the key out of the group entry now. This changes What to change.
 - **Other:** your own.
 
-Recommended: A, because it keeps What to change and uses GitHub's answer when the check runs.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

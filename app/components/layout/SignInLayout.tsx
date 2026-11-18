@@ -4,7 +4,7 @@ import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 
-import styles from '@ks/app/components/auth/AuthLayout.module.css';
+import styles from '@ks/app/components/layout/SignInLayout.module.css';
 
 const { map } = resolveTokens(rawTokens);
 
@@ -14,7 +14,7 @@ const SEA = { '--auth-sea': map.sea } as CSSProperties;
  * The sign-in page's two halves: `hero` left and `children` right, stacked on a phone.
  * It draws the wordmark (44 over the form, 36 over the hero on a phone) and holds no form logic.
  */
-export const AuthLayout = ({
+export const SignInLayout = ({
   children,
   hero,
 }: {

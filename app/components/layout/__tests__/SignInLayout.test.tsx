@@ -3,14 +3,14 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { AuthLayout } from '@ks/app/components/auth/AuthLayout';
+import { SignInLayout } from '@ks/app/components/layout/SignInLayout';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 
 const { breakpoint, layout, map } = resolveTokens(rawTokens);
 
 const css = readFileSync(
-  join(import.meta.dirname, '../AuthLayout.module.css'),
+  join(import.meta.dirname, '../SignInLayout.module.css'),
   'utf8'
 );
 const media = css.slice(css.indexOf('@media'));
@@ -19,9 +19,9 @@ const desktop = css.slice(0, css.indexOf('@media'));
 // NFR-05
 it('puts the hero before the form and the desktop wordmark above the form', () => {
   const { container } = render(
-    <AuthLayout hero={<p>hero</p>}>
+    <SignInLayout hero={<p>hero</p>}>
       <form>form</form>
-    </AuthLayout>
+    </SignInLayout>
   );
   const slots = [...container.querySelectorAll('[data-slot]')];
 
@@ -36,9 +36,9 @@ it('puts the hero before the form and the desktop wordmark above the form', () =
 
 it('draws a 36px wordmark in the hero for a phone', () => {
   const { container } = render(
-    <AuthLayout hero='hero'>
+    <SignInLayout hero='hero'>
       <form />
-    </AuthLayout>
+    </SignInLayout>
   );
 
   expect(
@@ -48,9 +48,9 @@ it('draws a 36px wordmark in the hero for a phone', () => {
 
 it('sets the sea colour from the map tokens', () => {
   const { container } = render(
-    <AuthLayout hero='hero'>
+    <SignInLayout hero='hero'>
       <form />
-    </AuthLayout>
+    </SignInLayout>
   );
 
   expect(

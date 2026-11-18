@@ -115,7 +115,7 @@ describe('the Playwright container image', () => {
         schedule: { interval: 'weekly' },
         'versioning-strategy': 'increase',
       });
-      expect(regular).not.toHaveProperty('multi-ecosystem-group');
+      expect(npmEntries).toHaveLength(2);
       expect(regular).not.toHaveProperty('patterns');
       expect(Object.keys(regular?.groups ?? {})).toEqual([
         'next',

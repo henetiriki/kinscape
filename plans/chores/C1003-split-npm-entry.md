@@ -10,6 +10,13 @@ Split the npm entry of `.github/dependabot.yml` into two entries for `/`, as the
 
 ## Decisions
 
+**Reversals of [C792](C792-playwright-group.md)** · Decided by #1003
+
+This plan reverses two C792 choices:
+
+- The C792 Approach says that `development` excludes `@playwright/test`. This plan removes `exclude-patterns`, because the regular entry now ignores the package.
+- C792 D1 (A) moved `commit-message` off the npm entry. This plan puts the `chore` prefix back on the regular entry.
+
 **D1 · A rejected `versioning-strategy`** · Decides: Tech lead
 
 The Constraint wants this fix in the same PR. On #793, GitHub's `.github/dependabot.yml` check stayed queued, so the PR may get no answer before the merge.

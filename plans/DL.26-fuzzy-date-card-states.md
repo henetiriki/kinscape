@@ -2,7 +2,7 @@
 
 - **Spec:** #964
 - **Requirement IDs:** [PPL-01](../docs/requirements.md#ppl-01), [NFR-06](../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 - **B.** The tech lead, or a local session, builds all of it. The CI agent does not build.
 - **Other:** your own.
 
-Recommended: A, because the code steps need no claude.ai account, and the tech lead only runs the steps that need one.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

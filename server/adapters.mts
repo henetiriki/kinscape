@@ -66,7 +66,10 @@ export const appAdapters = (): Adapters => {
                 ],
               })),
             ],
-            FIXTURES.map(fixture => fixture.treeId)
+            FIXTURES.map(fixture => fixture.treeId),
+            FIXTURES.filter(fixture => fixture.failing).map(
+              fixture => fixture.treeId
+            )
           ),
           throttle: memoryThrottle(),
         }

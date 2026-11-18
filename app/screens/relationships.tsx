@@ -21,7 +21,7 @@ import {
 
 const exact = (year: string) => fuzzyDateOf('EXACT', year);
 
-/** The synthetic Person of the Relationships dialog boards and `person-relationships-load-failed`. */
+/** The synthetic Person of the Relationships dialog boards. */
 const SAMPLE_SUBJECT: RelationshipsPerson = {
   ...personDates({
     birth: fuzzyDateOf('ABT', '1856'),
@@ -278,32 +278,21 @@ const SAMPLE_PEOPLE: PersonSummary[] = [
 ];
 
 /**
- * The Relationships page in one state, with a synthetic Account. `failed` is a load that threw.
- * `picking` opens step 2 of a group with a Person picked. The actions are stand-ins that save
- * nothing.
+ * The Relationships page in one state, with a synthetic Account. `picking` opens step 2 of a group
+ * with a Person picked. The actions are stand-ins that save nothing.
  */
 export const RelationshipsScreen = ({
-  failed,
   picking,
 }: {
-  failed?: boolean;
   picking?: ComponentProps<typeof PersonRelationships>['picking'];
-}) => {
-  const account = {
-    ...SAMPLE_ACCOUNT,
-    onSignOut: signOutAction,
-  };
-
-  return failed ? (
-    <PersonRelationships {...account} failed person={SAMPLE_SUBJECT} />
-  ) : (
-    <PersonRelationships
-      {...account}
-      actions={{ create: saveNothing, update: saveNothing }}
-      groups={SAMPLE_RELATIONSHIPS}
-      people={SAMPLE_PEOPLE}
-      person={SAMPLE_SUBJECT}
-      picking={picking}
-    />
-  );
-};
+}) => (
+  <PersonRelationships
+    {...SAMPLE_ACCOUNT}
+    actions={{ create: saveNothing, update: saveNothing }}
+    groups={SAMPLE_RELATIONSHIPS}
+    onSignOut={signOutAction}
+    people={SAMPLE_PEOPLE}
+    person={SAMPLE_SUBJECT}
+    picking={picking}
+  />
+);

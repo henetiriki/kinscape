@@ -215,4 +215,16 @@ export const FIXTURES = [
     treeId: parseTreeId('00000000-0000-4000-8000-0000000000b4')!,
     treeName: 'Alone Tree',
   },
+  {
+    accountId: parseAccountId('00000000-0000-4000-8000-0000000000a5')!,
+    email: 'r.failing@example.com',
+    failing: true,
+    issuer: 'fixture',
+    password: 'failing-password',
+    persons: [MARIA],
+    relationships: [] as RelationshipInput[],
+    subject: 'r.failing',
+    treeId: parseTreeId('00000000-0000-4000-8000-0000000000b5')!,
+    treeName: 'Failing Tree',
+  },
 ];

@@ -159,6 +159,73 @@ describe('memoryStore seed', () => {
     });
   });
 
+  // PPL-01, PPL-02
+  describe('a failing Tree', () => {
+    const OTHER = parseAccountId('00000000-0000-4000-8000-0000000000a2')!;
+    const PERSON = personInputSchema.parse({
+      id: '01900000-0000-7000-8000-0000000000a1',
+      surname: 'Seed',
+    });
+    const scope = { accountId: ACCOUNT, treeId: TREE_A };
+    const build = () =>
+      memoryStore(
+        [
+          {
+            id: ACCOUNT,
+            issuer: 'test',
+            subject: 's',
+            trees: [{ id: TREE_A, name: 'A', persons: [PERSON] }],
+          },
+          {
+            id: OTHER,
+            issuer: 'test',
+            subject: 'o',
+            trees: [{ id: TREE_B, name: 'B', persons: [PERSON] }],
+          },
+        ],
+        [],
+        [TREE_A]
+      );
+
+    it('throws a fixed message on both lists', async () => {
+      const store = build();
+
+      await expect(store.listPersons(scope)).rejects.toThrow(
+        'The fixture Tree failed to load.'
+      );
+      await expect(store.listRelationships(scope)).rejects.toThrow(
+        'The fixture Tree failed to load.'
+      );
+    });
+
+    it('answers its other reads as before', async () => {
+      const store = build();
+
+      expect(await store.findPerson({ ...scope, personId: PERSON.id })).toEqual(
+        { ...PERSON, version: 1 }
+      );
+      expect(await store.findTree(scope)).toEqual({ id: TREE_A, name: 'A' });
+    });
+
+    it('returns an empty list to an Account that may not access it', async () => {
+      const store = build();
+      const other = { accountId: OTHER, treeId: TREE_A };
+
+      expect(await store.listPersons(other)).toEqual([]);
+      expect(await store.listRelationships(other)).toEqual([]);
+    });
+
+    it('lists another Tree as before', async () => {
+      const store = build();
+      const own = { accountId: OTHER, treeId: TREE_B };
+
+      expect((await store.listPersons(own)).map(p => p.id)).toEqual([
+        PERSON.id,
+      ]);
+      expect(await store.listRelationships(own)).toEqual([]);
+    });
+  });
+
   it('refuses to add an Account over a seeded identity', async () => {
     const store = memoryStore([
       { id: ACCOUNT, issuer: 'test', subject: 's', trees: [] },

@@ -19,20 +19,12 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-account-menu',
   },
   {
-    blocker: 'A load failure: no app route fails.',
-    folder: 'people-load-failed',
-  },
-  {
     blocker: 'A loading state: no app route holds it.',
     folder: 'people-loading',
   },
   {
     blocker: 'A save failure: no app route saves nothing.',
     folder: 'person-conflict',
-  },
-  {
-    blocker: 'A load failure: no app route fails.',
-    folder: 'person-relationships-load-failed',
   },
   {
     blocker: 'A save failure: no app route saves nothing.',

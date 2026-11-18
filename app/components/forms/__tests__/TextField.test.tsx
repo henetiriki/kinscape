@@ -1,7 +1,34 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { TextField } from '@ks/app/components/forms/TextField';
+
+const css = readFileSync(
+  join(process.cwd(), 'app/components/forms/TextField.module.css'),
+  'utf8'
+);
+
+// NFR-05, NFR-06
+it('reaches the input and the select over a 2px border, but not in a token field', () => {
+  const rule = css.match(
+    /(\.box:not\(\.tokens\):is\([^{]*?> :is\(\.input, \.select\)) \{([^}]*)\}/
+  );
+
+  expect(rule?.[2]).toContain('margin-block: -2px');
+  expect(rule?.[1]).toContain(':focus-within');
+  expect(rule?.[1]).toContain("[data-state='focus']");
+  expect(rule?.[1]).toContain('[data-mark]');
+  expect(rule?.[1]).toContain(":has(select)[data-state='active']");
+});
+
+// NFR-05
+it('keeps an autofilled input from painting over the border that it reaches', () => {
+  const rule = css.match(/\.input:-webkit-autofill \{([^}]*)\}/);
+
+  expect(rule?.[1]).toContain('transition: background-color 0s 600000s');
+});
 
 // NFR-06
 it('names the input by its label and links the helper text', () => {

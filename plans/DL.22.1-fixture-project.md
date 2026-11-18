@@ -29,6 +29,16 @@ Behaviour item 7 says that `fixture-accounts.spec.ts` runs "with no change to wh
 
 **Answer: A** (@henetiriki)
 
+**D2 · The test of the project list** · Decides: Tech lead
+
+`scripts/__tests__/playwright-failures.test.ts` expects exactly four projects. How does it get `fixture-setup` and `fixture`?
+
+- **A.** Add them to the list. Also check their CI trace and screenshot, and that `fixture-setup` runs in sequence. About 10 lines.
+- **B.** Add them to the list only. About 5 lines.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - **Run `auth.setup.ts` a second time in the new setup project.** The file would need the project name to pick its port and paths, and it signs in only the Accounts that `design/screens.json` names. Behaviour item 4 asks for each Account of `FIXTURES`.
@@ -36,16 +46,17 @@ Behaviour item 7 says that `fixture-accounts.spec.ts` runs "with no change to wh
 
 ## Files that change
 
-| File                                 | New / changed | What                                                                                                 |
-| ------------------------------------ | ------------- | ---------------------------------------------------------------------------------------------------- |
-| `lib/design/check.mts`               | changed       | `fixtureStateFor(email)`                                                                             |
-| `lib/design/__tests__/check.test.ts` | changed       | The path that `fixtureStateFor` gives                                                                |
-| `e2e/session.ts`                     | changed       | `signIn`, moved from `auth.setup.ts`                                                                 |
-| `e2e/auth.setup.ts`                  | changed       | Imports `signIn`                                                                                     |
-| `e2e/fixture.setup.ts`               | new           | Signs in each Account of `FIXTURES` on port 3002                                                     |
-| `e2e/fixture-accounts.spec.ts`       | changed       | The 404 test of check 3 (D1: A)                                                                      |
-| `playwright.config.ts`               | changed       | The server on port 3002; the projects `fixture-setup` and `fixture`; the `chromium` and `perf` edits |
-| `docs/infrastructure.md`             | changed       | The row of `KINSCAPE_MEMORY_ADAPTERS` names the server on port 3002 of the CI `e2e` job              |
+| File                                            | New / changed | What                                                                                                 |
+| ----------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------- |
+| `lib/design/check.mts`                          | changed       | `fixtureStateFor(email)`                                                                             |
+| `lib/design/__tests__/check.test.ts`            | changed       | The path that `fixtureStateFor` gives                                                                |
+| `e2e/session.ts`                                | changed       | `signIn`, moved from `auth.setup.ts`                                                                 |
+| `e2e/auth.setup.ts`                             | changed       | Imports `signIn`                                                                                     |
+| `e2e/fixture.setup.ts`                          | new           | Signs in each Account of `FIXTURES` on port 3002                                                     |
+| `e2e/fixture-accounts.spec.ts`                  | changed       | The 404 test of check 3 (D1: A)                                                                      |
+| `playwright.config.ts`                          | changed       | The server on port 3002; the projects `fixture-setup` and `fixture`; the `chromium` and `perf` edits |
+| `docs/infrastructure.md`                        | changed       | The row of `KINSCAPE_MEMORY_ADAPTERS` names the server on port 3002 of the CI `e2e` job              |
+| `scripts/__tests__/playwright-failures.test.ts` | changed       | The two new projects (D2: A)                                                                         |
 
 ## Order of work
 

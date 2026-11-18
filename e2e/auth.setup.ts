@@ -2,10 +2,9 @@ import { test as setup } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { signIn } from '@ks/e2e/session';
 import { authStateFor } from '@ks/lib/design/check.mts';
 import { FIXTURES } from '@ks/server/auth/fixtures.mts';
-
-import { signIn } from './session';
 
 // The synthetic Account behind the test-only memory sign-in (server/auth/synthetic.mts).
 const SYNTHETIC = {

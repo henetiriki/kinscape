@@ -2,7 +2,7 @@
 
 - **Spec:** #987 (Bug)
 - **Requirement IDs:** None. This Bug changes the design system cards and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 - **B.** Add a `Card` field `radios` in `lib/design/types.ts`, and set it on the two cards in `states.mts`. `previewHtml` adds a form only for those cards. Two `preview.html` files change. Cost: one type field, two state lines and one more unit test.
 - **Other:** your own.
 
-Recommended: A, because a new card with a radio gets its own scope with no extra step. B loses that: a new card that does not set `radios` shows the fault again.
+**Answer: A** (@henetiriki)
 
 **D2 · Who publishes the changed previews** · Decides: Tech lead
 
@@ -30,7 +30,7 @@ Recommended: A, because a new card with a radio gets its own scope with no extra
 - **B.** This PR ships the code, the tests and the two card images (step 6). A follow-up Chore runs steps 3 to 5. Until then, the published cards and the canvas copy show the fault. The PR says `Refs #987`.
 - **Other:** your own.
 
-Recommended: A, because the published cards show the fault that the Bug names.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

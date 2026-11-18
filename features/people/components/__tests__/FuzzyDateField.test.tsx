@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
+import { CARDS } from '@ks/lib/design/states.mts';
 
 const css = readFileSync(
   join(process.cwd(), 'features/people/components/FuzzyDateField.module.css'),
@@ -162,6 +163,42 @@ it('does not check a default value in the focus state', () => {
   setup({ defaultValue: '31 FEB 1850', state: 'focus' });
 
   expect(screen.queryByRole('alert')).toBeNull();
+});
+
+const cardState = (name: string) =>
+  CARDS.find(card => card.name === 'FuzzyDateField')!.states.find(
+    one => one.label === `FuzzyDateField · ${name}`
+  )!;
+
+it.each([
+  ['exact', 'On 14 March 1850'],
+  ['about', 'About 1850'],
+  ['before', 'Before 1850'],
+  ['after', 'After 1850'],
+  ['period', 'From 1850 to 1855'],
+  ['estimated', 'Estimated as 1850'],
+  ['calculated', 'Calculated as 1850'],
+])('shows the reading of the card state %s', (name, reading) => {
+  const field = setup(cardState(name).props);
+
+  expect(field.value).not.toBe('');
+  expect(slot().textContent).toBe(`Reads as ${reading}`);
+  expect(screen.queryByRole('alert')).toBeNull();
+});
+
+it.each([
+  [
+    'error, wrong format',
+    'Use a date like 1850, 14 MAR 1850, ABT 1850 or BET 1850 AND 1855.',
+  ],
+  ['error, year out of range', 'Use a year from 1000 to 2999.'],
+  ['error, range in reverse', 'Put the earlier date first: BET 1850 AND 1855.'],
+])('shows the message of the card state %s', (name, message) => {
+  const field = setup(cardState(name).props);
+
+  expect(screen.getByRole('alert').textContent).toBe(message);
+  expect(field.getAttribute('aria-invalid')).toBe('true');
+  expect(field.closest('span')!.getAttribute('data-mark')).toBe('error');
 });
 
 it('shows nothing when there is no helper', () => {

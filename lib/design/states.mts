@@ -630,7 +630,7 @@ export const CARDS: Card[] = [
     design: ['Fuzzy date field'],
     group: 'Forms',
     handlers: [],
-    height: 720,
+    height: 1040,
     name: 'FuzzyDateField',
     pad: 0,
     states: [
@@ -664,6 +664,26 @@ export const CARDS: Card[] = [
         helper: FUZZY_DATE_HELPER,
         label: 'Born',
       }),
+      ...(
+        [
+          ['exact', '14 MAR 1850'],
+          ['about', 'ABT 1850'],
+          ['before', 'BEF 1850'],
+          ['after', 'AFT 1850'],
+          ['period', 'FROM 1850 TO 1855'],
+          ['estimated', 'EST 1850'],
+          ['calculated', 'CAL 1850'],
+          ['error, wrong format', '14/03/1850'],
+          ['error, year out of range', 'ABT 850'],
+          ['error, range in reverse', 'BET 1855 AND 1850'],
+        ] as const
+      ).map(([name, defaultValue]) =>
+        one(`FuzzyDateField · ${name}`, {
+          defaultValue,
+          helper: FUZZY_DATE_HELPER,
+          label: 'Born',
+        })
+      ),
     ],
   },
   {

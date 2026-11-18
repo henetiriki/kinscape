@@ -78,9 +78,13 @@
 .slider input {
   appearance: none;
   background: transparent;
+  box-sizing: border-box;
   display: block;
-  height: 28px;
-  margin: 0;
+  height: var(--size-touch);
+  margin: -8px 0;
+  /* The ring hugs the 28px track, not the 44px hit area. */
+  outline-offset: -6px;
+  padding: 8px 0;
   position: relative;
   width: 100%;
 }

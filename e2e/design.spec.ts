@@ -50,6 +50,11 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
           : active;
       const style = getComputedStyle(ringed);
       const tag = active.tagName + '.' + active.className;
+      // A range input pads its box to a 44px hit area. The track fills the content box, so its ring clears the track, not the padding.
+      const padding =
+        active instanceof HTMLInputElement && active.type === 'range'
+          ? parseFloat(style.paddingTop)
+          : 0;
 
       // A text field has no ring: its box takes a 2px brand border.
       if (active instanceof HTMLInputElement && active.type === 'text') {
@@ -69,7 +74,7 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
       return {
         mark: {
           colour: style.outlineColor,
-          offset: style.outlineOffset,
+          offset: `${parseFloat(style.outlineOffset) + padding}px`,
           width: style.outlineWidth,
         },
         tag,

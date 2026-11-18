@@ -1,8 +1,7 @@
 name: CI
 
 # The title shown for each run in the Actions tab: "CI: <PR title>" for a pull request, "CI: main"
-# for a push. Only the jobs have an `if:` (`format` and `words` run on every run), so there is no
-# "Skipped" form.
+# for a push. Only the jobs have an `if:` (`words` runs on every run), so there is no "Skipped" form.
 run-name: 'CI: ${{ github.event.pull_request.title || github.ref_name }}'
 
 on:
@@ -26,10 +25,12 @@ concurrency:
   cancel-in-progress: true
 
 # The automated checks that every change must pass.
-# Drafts are mostly plan PRs: only format and words run on them. Every job runs on a push to main.
+# Drafts are mostly plan PRs: only words runs on them. Every job runs on a push to main.
 jobs:
-  # Checks the code for mistakes and style problems.
-  lint:
+  # Lints the code, checks the types and checks the format, with one `npm ci` for the three. A type
+  # error fails here and not late in e2e's build. Each check runs after an earlier one fails, so one
+  # run shows every failure.
+  quality:
     if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     steps:
@@ -44,38 +45,11 @@ jobs:
         run: npm ci
       - name: Lint the code
         run: npm run lint
-
-  # Checks the types, so a type error fails here and not late in e2e's build.
-  typecheck:
-    if: ${{ !github.event.pull_request.draft }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fetch the code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Install Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          cache: npm
-          node-version-file: .nvmrc
-      - name: Install the dependencies
-        run: npm ci
       - name: Check the types
+        if: ${{ !cancelled() }}
         run: npm run typecheck
-
-  # Checks that files are laid out consistently.
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Fetch the code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Install Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          cache: npm
-          node-version-file: .nvmrc
-      - name: Install the dependencies
-        run: npm ci
       - name: Check the format
+        if: ${{ !cancelled() }}
         run: npm run format:check
 
   # Runs the automated tests and keeps the coverage report for the coverage job (even if a test failed).

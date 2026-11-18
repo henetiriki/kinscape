@@ -16,7 +16,6 @@ const Page = async () => {
         notes:
           'Her baptism record spells the family name Rossau. Six children are named in the family Bible.',
       }}
-      save='conflict'
     />
   );
 };

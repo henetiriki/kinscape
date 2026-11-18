@@ -11,35 +11,27 @@ vi.mock('next/navigation', () => ({
 }));
 
 import Readings from '@ks/app/screens/fuzzy-date-readings/page';
-import { saveConflict, saveFailed } from '@ks/app/screens/person-actions';
+import { saveConflict } from '@ks/app/screens/person-actions';
 import Conflict from '@ks/app/screens/person-conflict/page';
-import SaveFailed from '@ks/app/screens/person-save-failed/page';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 // PPL-01
 describe('the Person screens', () => {
-  it.each([
-    ['person-save-failed', SaveFailed],
-    ['person-conflict', Conflict],
-  ])('%s shows the synthetic Person', async (_name, Page) => {
-    render(await Page());
+  it('person-conflict shows the synthetic Person', async () => {
+    render(await Conflict());
 
     screen.getByRole('heading', { name: 'Edit Maria Magdalena du Toit' });
   });
 
-  it.each([
-    ['person-save-failed', SaveFailed],
-    ['person-conflict', Conflict],
-  ])('%s shows the avatar letter of the sample email', async (_name, Page) => {
-    render(await Page());
+  it('person-conflict shows the avatar letter of the sample email', async () => {
+    render(await Conflict());
 
     expect(
       screen.getByRole('button', { name: 'Account menu' }).textContent
     ).toBe(accountInitial('researcher@example.com'));
   });
 
-  it('give Save an outcome that saves nothing', async () => {
-    expect(await saveFailed()).toEqual({ error: 'not-found', ok: false });
+  it('gives Save an outcome that saves nothing', async () => {
     expect(await saveConflict()).toEqual({ error: 'conflict', ok: false });
   });
 

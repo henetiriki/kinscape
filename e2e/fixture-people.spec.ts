@@ -108,12 +108,15 @@ test.describe('the family Tree', () => {
   test('the Relationship dialogs do not scroll sideways at a desktop size', async ({
     page,
   }) => {
+    // Seven dialogs at each desktop size take longer than the default 30s on a busy runner.
+    test.setTimeout(90_000);
+
     const entries = screens.screens.filter(
       ({ account, name }) =>
         account === family.email && name.startsWith('relationship-')
     );
 
-    expect(entries.map(({ name }) => name)).toHaveLength(6);
+    expect(entries.map(({ name }) => name)).toHaveLength(7);
 
     const wide: string[] = [];
 
@@ -146,6 +149,45 @@ test.describe('the family Tree', () => {
       page.getByRole('alert').filter({ hasText: 'ancestor' })
     ).toBeVisible();
 
+    await page.goto(`/people/${MARIA.id}/relationships`);
+    await expect(page.getByRole('link', { name: /^Edit\s*,/ })).toHaveCount(8);
+  });
+
+  // PPL-01, PPL-02
+  test('a failed save shows the toast, sends no save, and changes nothing', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+
+    const finished: string[] = [];
+    const failed: string[] = [];
+
+    page.on('requestfinished', request => {
+      if (request.headers()['next-action']) finished.push(request.url());
+    });
+    page.on('requestfailed', request => {
+      if (request.headers()['next-action']) failed.push(request.url());
+    });
+
+    await page.goto(`/people/${MARIA.id}/relationships`);
+    await states['relationship-save-failed'](page);
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await expect(
+      page.getByText("Couldn't save the link. Your picks are still here.")
+    ).toBeVisible();
+    expect(finished).toEqual([]);
+    expect(failed).toHaveLength(1);
+
+    await page.goto(`/people/${MARIA.id}`);
+    await states['person-saved-nothing'](page);
+    await expect(
+      page.getByText("Couldn't save. Your changes are still here.")
+    ).toBeVisible();
+
+    await page.reload();
+    await expect(page.getByLabel('Notes')).toHaveValue(
+      'Her baptism record spells the family name Rossau.'
+    );
     await page.goto(`/people/${MARIA.id}/relationships`);
     await expect(page.getByRole('link', { name: /^Edit\s*,/ })).toHaveCount(8);
   });

@@ -76,3 +76,5 @@ Five tests use the props: two in `PersonRelationships.test.tsx` and three in `Re
 - A change to the toast, the alert, the dialog or the store.
 
 ## Deviations
+
+- `e2e/fixture-people.spec.ts`: the dialog width test sets a 90s timeout. Seven dialogs at each size pass 30s on a busy runner.

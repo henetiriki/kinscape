@@ -525,22 +525,3 @@ describe('any other failure', () => {
     expect(screen.queryByText(/Couldn't save the link/)).toBeNull();
   });
 });
-
-// PPL-02
-describe('the screen boards', () => {
-  it.each(['cycle', 'conflict'] as const)(
-    'start with the alert of %s',
-    code => {
-      open({ shown: code });
-
-      screen.getByRole('alert');
-    }
-  );
-
-  it('starts with the toast when `shown` is "failed"', () => {
-    open({ shown: 'failed' });
-
-    screen.getByRole('button', { name: 'Try again' });
-    expect(screen.getAllByRole('alert')).toHaveLength(1);
-  });
-});

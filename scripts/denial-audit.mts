@@ -21,9 +21,8 @@ import {
 // to date with the permission denials that repeat, so the allowlist and the rules follow what the
 // agents really try. Opens no issue when no denial repeats. Run weekly by claude-denial-audit.yml,
 // which shows the result on the run page ($GITHUB_STEP_SUMMARY) as well as in the log.
-// The run page gets the full table before the issue call. The issue gets a capped table (5 run
-// links and 200 characters of the example per row, 60,000 characters in all) and a link to the
-// run page, because GitHub refuses an issue body over 65,536 characters.
+// The run page gets the full table before the issue call. The issue gets a capped table and a link
+// to the run page (see BODY_LIMIT).
 // Usage: node scripts/denial-audit.mts, with GH_REPO set.
 
 type Deps = {
@@ -518,8 +517,8 @@ const rowOf = (
   return `| ${cell(pattern)} | ${workflows.join(', ')} | ${plain(settings)} | ${count} | $${costUsd.toFixed(2)} | ${links} | ${cell(call)} | ${plain(suggestion)} |`;
 };
 
-// The line under the table: what the issue leaves out and where the run page shows it. With no run
-// page (a run outside GitHub Actions) and no dropped row, the issue has no line.
+// The line under the table: what the issue omits and where the run page shows it. With no run page
+// (a run outside GitHub Actions) and no dropped row, the issue has no line.
 const noteOf = (dropped: number, runPage: string | undefined): string => {
   if (dropped > 0) {
     return runPage
@@ -599,6 +598,48 @@ export const issueBody = (
   return bodyWith(kept);
 };
 
+// Updates the open audit issue or opens one, and says which.
+const fileIssue = (gh: Gh, body: string): string => {
+  const open: { number: number; title: string }[] = JSON.parse(
+    gh([
+      'issue',
+      'list',
+      '--state',
+      'open',
+      '--type',
+      'Chore',
+      '--json',
+      'number,title',
+    ])
+  );
+  const existing = open.find(({ title }) => title === ISSUE_TITLE);
+
+  if (existing) {
+    gh(['issue', 'edit', String(existing.number), '--body-file', '-'], body);
+
+    return `Updated issue #${existing.number}.`;
+  }
+
+  // `gh issue create` prints the new issue's URL.
+  const url = gh(
+    [
+      'issue',
+      'create',
+      '--title',
+      ISSUE_TITLE,
+      '--type',
+      'Chore',
+      '--label',
+      'status: draft',
+      '--body-file',
+      '-',
+    ],
+    body
+  ).trim();
+
+  return url ? `Opened issue ${url}.` : 'Opened an issue.';
+};
+
 export const run = (
   { gh, now, readArtifact, settings, summary }: Deps,
   env: Record<string, string | undefined>
@@ -654,50 +695,10 @@ export const run = (
   // The run page holds the full table before the issue call, which can fail.
   summary(['### Denial audit', '', pageBody(report, repo, since)].join('\n'));
 
+  let done: string;
+
   try {
-    const open: { number: number; title: string }[] = JSON.parse(
-      gh([
-        'issue',
-        'list',
-        '--state',
-        'open',
-        '--type',
-        'Chore',
-        '--json',
-        'number,title',
-      ])
-    );
-    const existing = open.find(({ title }) => title === ISSUE_TITLE);
-    let done: string;
-
-    if (existing) {
-      gh(['issue', 'edit', String(existing.number), '--body-file', '-'], body);
-      done = `Updated issue #${existing.number}.`;
-    } else {
-      // `gh issue create` prints the new issue's URL.
-      const url = gh(
-        [
-          'issue',
-          'create',
-          '--title',
-          ISSUE_TITLE,
-          '--type',
-          'Chore',
-          '--label',
-          'status: draft',
-          '--body-file',
-          '-',
-        ],
-        body
-      ).trim();
-
-      done = url ? `Opened issue ${url}.` : 'Opened an issue.';
-    }
-
-    console.log(done);
-    summary(`\n${done}`);
-
-    return 0;
+    done = fileIssue(gh, body);
   } catch (error) {
     const failed = `The issue call failed: ${String(error)}`;
 
@@ -706,6 +707,11 @@ export const run = (
 
     return 1;
   }
+
+  console.log(done);
+  summary(`\n${done}`);
+
+  return 0;
 };
 
 /* v8 ignore next 18 -- only true when run directly with node, not when imported */

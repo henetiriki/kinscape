@@ -65,5 +65,7 @@ These tests change with the behaviour:
 
 ## Deviations
 
-- `rowOf` also takes `repo`, to write the run links. `bodyOf` and `noteOf` hold the shared body and the line under the table, so `issueBody` and `pageBody` repeat no text.
+- `rowOf` also takes `repo`, to write the run links.
+- `bodyOf` and `noteOf` hold the shared body and the line under the table, so `issueBody` and `pageBody` repeat no text.
+- `fileIssue` holds the issue calls, so `run` keeps one `try` around one call.
 - The second `summary` call starts with a blank line, so the issue line is its own paragraph on the run page.

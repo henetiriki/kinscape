@@ -43,6 +43,16 @@ const transcript = (
 const artifact = (...commands: string[]) =>
   JSON.stringify(transcript(commands.map(bash), { costUsd: 2, turns: 20 }));
 
+// A transcript denied `z a` this many times.
+const times = (count: number) =>
+  transcript(Array.from({ length: count }, () => bash('z a')));
+
+// Runs 1 to 8, denied 1, 3, 2, 3, 1, 2, 1 and 1 times: most counts tie.
+const EIGHT_RUNS = [1, 3, 2, 3, 1, 2, 1, 1].map((count, index) => ({
+  id: index + 1,
+  transcript: times(count),
+}));
+
 const NO_RULES: Settings = { allow: [], deny: [] };
 
 // The runs are plan runs unless they say otherwise, and no settings file has a rule.
@@ -137,22 +147,12 @@ describe('summarise', () => {
   });
 
   it('sorts the runs of a group by its denials in each, then the newer run first', () => {
-    const times = (count: number) =>
-      transcript(Array.from({ length: count }, () => bash('z a')));
-    const counts = [1, 3, 2, 3, 1, 2, 1, 1];
-    const report = summarise(
-      counts.map((count, index) => ({
-        id: index + 1,
-        transcript: times(count),
-      }))
-    );
-
-    expect(report.groups[0].runs).toEqual([4, 2, 6, 3, 8, 7, 5, 1]);
+    expect(summarise(EIGHT_RUNS).groups[0].runs).toEqual([
+      4, 2, 6, 3, 8, 7, 5, 1,
+    ]);
   });
 
   it('adds the denials of the sessions of one run before it sorts', () => {
-    const times = (count: number) =>
-      transcript(Array.from({ length: count }, () => bash('z a')));
     const report = summarise([
       { id: 1, transcript: times(2) },
       { id: 2, transcript: times(1) },
@@ -680,12 +680,8 @@ describe('issueBody', () => {
     expect(body).not.toContain('more patterns');
   });
 
-  it('shows 5 run links, then how many more', () => {
-    const body = issueBody(
-      reportOf([{ ...group, runs: [4, 2, 6, 3, 8, 7, 5, 1] }]),
-      'o/r',
-      SINCE
-    );
+  it('shows 5 run links in the order summarise gives, then how many more', () => {
+    const body = issueBody(summarise(EIGHT_RUNS), 'o/r', SINCE);
     const link = (id: number) =>
       `[${id}](https://github.com/o/r/actions/runs/${id})`;
 
@@ -1098,7 +1094,7 @@ describe('run', () => {
     );
   });
 
-  it('leaves the link out when GITHUB_RUN_ID is not set, or is not digits', () => {
+  it('omits the link when GITHUB_RUN_ID is not set, or is not digits', () => {
     flood();
     audit();
     audit({ ...ENV, GITHUB_RUN_ID: '7/../x' });

@@ -94,3 +94,4 @@ Recommended: A, because it removes contention from each map test, and the 20 s r
 
 - Step 8: the tech lead starts each re-run. The token of the local session has read access to Actions only.
 - Step 9: `test.slow()` returns to `navigation.spec.ts` (25.1 s in one run) and `gallery-looks.spec.ts` (20.9, 26.2 and 27.1 s). The other three lines stay removed: each time was 18.8 s or less.
+- Step 9 and acceptance check 4: no second round of 5 runs. The 6 attempts on `a0cd5b33` and the CI run of the final head prove the check (@henetiriki). The later commits only put `test.slow()` back and change comments and this plan.

@@ -1188,4 +1188,35 @@ export const CARDS: Card[] = [
     ],
     width: 1440,
   },
+  {
+    contain: true,
+    design: [],
+    frame: 480,
+    group: 'Layout',
+    handlers: [],
+    height: 560,
+    name: 'SignInLayout',
+    pad: 0,
+    states: [
+      one(
+        'SignInLayout · hero and form',
+        {},
+        [
+          {
+            children: 'Sign in to see your family on the map.',
+            control: 'Text',
+            props: { variant: 'small' },
+          },
+        ],
+        {
+          hero: {
+            children: 'Your family, where they were.',
+            control: 'Text',
+            props: { as: 'h1', variant: 'h1' },
+          },
+        }
+      ),
+    ],
+    width: 1440,
+  },
 ];

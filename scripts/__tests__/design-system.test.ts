@@ -265,7 +265,13 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(52);
+    expect(names).toHaveLength(53);
+    expect(card('SignInLayout', 'preview.html').split('\n')[0]).toContain(
+      'group="Layout"'
+    );
+    expect(card('SignInLayout', 'preview.html').split('\n')[0]).toContain(
+      'width=1440'
+    );
   });
 
   it.each(names)(
@@ -358,7 +364,7 @@ describe('the gallery', () => {
         ...VENDOR.map(({ file }) => `gallery/vendor/${file}`),
       ].toSorted()
     );
-    expect(names).toHaveLength(52);
+    expect(names).toHaveLength(53);
   });
 
   it('holds each preview.html as galleryHtml makes it', () => {

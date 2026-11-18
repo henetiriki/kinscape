@@ -187,7 +187,7 @@ export const cardImage = (name: string, width: number): string =>
 
 /**
  * The cards that also have an image at the phone width, because the component changes with the
- * width: the nine whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
+ * width: the ten whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
  */
 export const PHONE_CARDS = [
   'ActionBar',
@@ -199,6 +199,7 @@ export const PHONE_CARDS = [
   'NoticeCard',
   'PageHeader',
   'Sheet',
+  'SignInLayout',
   'TextAreaField',
   'TextField',
   'Toast',

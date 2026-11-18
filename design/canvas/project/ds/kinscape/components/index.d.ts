@@ -41,7 +41,7 @@ export type Tab = {
     value: string;
 };
 
-/** A state the design kit shows without the pointer or keyboard; the real states come from the browser. */
+/** A state that a component card shows without the pointer or keyboard; the real states come from the browser. */
 export type ControlState = 'active' | 'focus' | 'hover';
 export type FilledIconName = keyof typeof MARKS;
 export type Heading = 'display' | 'h1' | 'h2' | 'h3';
@@ -532,7 +532,7 @@ export type SearchBarProps = Parameters<typeof SearchBar>[0];
 
 /**
  * The card of Zoom in, Zoom out and Fit South Africa. At a limit a button is `aria-disabled`, stays in
- * the Tab order and skips its handler. `state` shows a look on Zoom in, for the design kit.
+ * the Tab order and skips its handler. `state` shows a look on Zoom in, for its component card.
  */
 export declare const ZoomControls: ({ atMax, atMin, onFit, onZoomIn, onZoomOut, state, }: {
     atMax?: boolean;
@@ -668,7 +668,7 @@ export declare const NoticeCard: ({ actions, children, icon, phone, progress, si
     /** The one line. */
     children: ReactNode;
     icon?: IconName;
-    /** The kit's phone sample: 358 wide with 44 buttons. */
+    /** The phone sample of its component card: 358 wide with 44 buttons. */
     phone?: boolean;
     progress?: number;
     /** `large`: the icon on top, an H3 title, 380 wide. */
@@ -887,7 +887,7 @@ export declare const Modal: ({ children, onClose, open, ...rest }: ModalArgs) =>
 /** The round 44 × 44 Close button that ends every Dialog and Sheet head. */
 declare const ModalClose: ({ iconSize, onClick, }: {
     iconSize: 18 | 20;
-    /** Left off in the design kit, where the head is only drawn. */
+    /** Left off where the head is only drawn. */
     onClick?: () => void;
 }) => import("react").JSX.Element;
 export type ModalProps = Parameters<typeof Modal>[0];
@@ -898,7 +898,7 @@ type DialogPanelArgs = {
     /** A line under the body. */
     footnote?: string;
     form: DialogForm;
-    /** Left off in the design kit, where the panel is only drawn. */
+    /** Left off where the panel is only drawn. */
     onClose?: () => void;
     subtitle?: string;
     title: string;

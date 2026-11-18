@@ -2,7 +2,7 @@
 
 - **Spec:** #958
 - **Requirement IDs:** [PPL-01](../docs/requirements.md#ppl-01), [NFR-05](../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ Three tests move to `e2e/fixture-people.spec.ts`. Each `describe` loads its sess
 - **B.** Add nothing. The loop checks `/people` with the rows that it finds. No lines.
 - **Other:** your own.
 
-Recommended: A, because NFR-05 keeps a check of 13 rows at 320 px. B loses the check of a full list.
+**Answer: A** (@henetiriki)
 
 **D2 · Who builds** · Decides: Tech lead
 
@@ -32,7 +32,7 @@ The Spec says a local session builds it, because only a local session edits `des
 - **B.** The CI agent does steps 4 to 9 and keeps the PR a draft. It asks in the PR for steps 1 to 3. After the snapshots land, a `@claude` comment makes it run step 10.
 - **Other:** your own.
 
-Recommended: A, because one session compares `/people` with the board while it redraws. B needs less local time, but it adds two waits between people.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

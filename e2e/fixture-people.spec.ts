@@ -179,15 +179,21 @@ test.describe('the family Tree', () => {
     expect(failed).toHaveLength(1);
 
     await page.goto(`/people/${MARIA.id}`);
+    await page.getByLabel('Notes').fill('A note that must not be saved.');
     await states['person-saved-nothing'](page);
     await expect(
       page.getByText("Couldn't save. Your changes are still here.")
     ).toBeVisible();
 
     await page.reload();
-    await expect(page.getByLabel('Notes')).toHaveValue(
-      'Her baptism record spells the family name Rossau.'
+    await expect(page.getByLabel('Notes')).toHaveValue(MARIA.notes ?? '');
+    await expect(page.getByLabel('Given names')).toHaveValue(MARIA.givenNames);
+    await expect(page.getByLabel('Surname')).toHaveValue(MARIA.surname);
+    await expect(page.getByLabel('Maiden name')).toHaveValue(
+      MARIA.maidenName ?? ''
     );
+    await expect(page.getByLabel('Birth')).toHaveValue('ABT 1856');
+    await expect(page.getByLabel('Death')).toHaveValue('14 MAR 1930');
     await page.goto(`/people/${MARIA.id}/relationships`);
     await expect(page.getByRole('link', { name: /^Edit\s*,/ })).toHaveCount(8);
   });

@@ -160,49 +160,62 @@
     },
     {
       "name": "relationship-pick",
-      "route": "/screens/relationship-pick",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-pick",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "relationship-pick-no-match",
-      "route": "/screens/relationship-pick-no-match",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-pick-no-match",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "relationship-pick-empty",
-      "route": "/screens/relationship-pick-empty",
+      "account": "r.alone@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-pick-empty",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "relationship-details-parent",
-      "route": "/screens/relationship-details-parent",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-details-parent",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "relationship-details-spouse",
-      "route": "/screens/relationship-details-spouse",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-details-spouse",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "relationship-edit-spouse",
-      "route": "/screens/relationship-edit-spouse",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships?edit=01900000-0000-7000-8000-000000000221",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "relationship-cycle",
-      "route": "/screens/relationship-cycle",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
+      "state": "relationship-cycle",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

@@ -99,14 +99,12 @@ export const PersonRelationships = ({
       people: PersonSummary[];
       person: RelationshipsPerson;
       /**
-       * Opens the dialog of a group at the start, for the screen boards: with a filter, or at step 2
-       * with a Person picked, a marriage text and a result to show.
+       * Opens the dialog of a group at the start, for the screen boards: at step 2 with a Person
+       * picked and a result to show.
        */
       picking?: {
         group: RelationshipGroup;
-        marriage?: string;
         picked?: string;
-        query?: string;
         shown?: DetailsShown;
       };
     }
@@ -127,7 +125,6 @@ export const PersonRelationships = ({
   const [picked, setPicked] = useState(() =>
     people?.find(candidate => candidate.id === picking?.picked)
   );
-  const query = picking?.query;
   const editing = findEntry(groups, edit);
   const here = person ? `/people/${person.id}/relationships` : '/people';
   // The refresh after a save still holds `?edit`: the dialog stays closed until the address drops it.
@@ -241,7 +238,6 @@ export const PersonRelationships = ({
         {adding && !failed && (
           <RelationshipPicker
             group={adding}
-            initialQuery={query}
             key={opened}
             onClose={() => {
               if (!picked) setOpen(false);
@@ -262,7 +258,6 @@ export const PersonRelationships = ({
             other={otherOf(picked, picked.id)}
             self={person.id}
             shown={picking?.shown}
-            startMarriage={picking?.marriage}
           />
         )}
         {editing && !failed && (

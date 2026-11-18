@@ -25,18 +25,15 @@ const TITLES: Record<RelationshipGroup, string> = {
  * Step 1 of "Add" on the Relationships page (PPL-02): a dialog that lists the other Persons, with
  * the filter of the People list. A row calls `onPick`, and step 2 follows. The page gives the
  * picker a new `key` each time "Add" opens it, so the filter is empty each time.
- * `initialQuery` is for the screen boards.
  */
 export const RelationshipPicker = ({
   group,
-  initialQuery = '',
   onClose,
   onPick,
   open,
   people,
 }: {
   group: RelationshipGroup;
-  initialQuery?: string;
   onClose: () => void;
   /** The picker calls it with the Person of the row that the user chose. */
   onPick: (person: PersonSummary) => void;
@@ -45,7 +42,7 @@ export const RelationshipPicker = ({
   /** Every Person of the Tree except the one whose page it is. */
   people: PersonSummary[];
 }) => {
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] = useState('');
   const shown = findPeople(people, query);
 
   return (

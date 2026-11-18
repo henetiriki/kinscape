@@ -81,6 +81,12 @@ After the seven folders go, only `relationship-save-failed` and `person-relation
 | 7. No file under `design/canvas/`, `design/source/` or a JPG changes | `git diff origin/main --stat` in the PR                                                       |
 | 8. The checks pass                                                   | `npm test`, `typecheck`, `lint` and `e2e` output in the PR                                    |
 
+## Deviations
+
+- The new `e2e/sideways.ts` export is `wideNow`. The sideways test reads its six entries from `design/screens.json`.
+- `relationship-pick` needed `blur()` (0.52% without it, 0.30% with it). `relationship-pick-no-match` and `relationship-details-spouse` also call `blur()`, so the three typed states match the boards.
+- The cycle test finds its links by the name `/^Edit\s*,/`, because the page also has the link "Edit person".
+
 ## Out of scope
 
 - `relationship-save-failed`, `picking` and `shown`: DL.25 (#963).

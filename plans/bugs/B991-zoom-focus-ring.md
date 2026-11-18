@@ -2,7 +2,7 @@
 
 - **Bug:** #991
 - **Requirement IDs:** [MAP-01](../../docs/requirements.md#map-01)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ The Bug names two fixes. #924 (open, `status: draft`) moves `Stage` to `MapLayou
 - **B.** Remove `overflow: hidden` from `.stage`. The test does not change. Then an overflow from the map (`100vw` × `100dvh` in `app/globals.css`), the phone sheet or the account menu card reaches the page, and the page can scroll. This touches `/`, `/screens/add-pin` and `/screens/map-account-menu`. Cost: one CSS line, a manual check of the three routes on a phone and on desktop, and `npm run design:check`. If #924 merges first, `MapLayout` is in `CONTROLS`, so the change also runs steps 2 to 7 of [Changing the design system](../../design/CANVAS.md#changing-the-design-system).
 - **Other:** your own.
 
-Recommended: A, because the test then checks what an Account sees, a cut ring, and `.stage` keeps the clip that holds the map frame inside the window. B is cheaper in code. It loses that clip, and the test still fails on each new clipping ancestor, also on one that cuts no ring.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

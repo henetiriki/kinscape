@@ -1,7 +1,7 @@
 # Plan: C1023: Keep the denial audit's issue body under GitHub's size limit
 
 - **Spec:** #1023
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ The drop line shows only after a drop. Where does the link go?
 - **B.** The first line ends with "Full table: [run page](url)." One line text.
 - **Other:** your own.
 
-Recommended: A, because the reader finds the link where the table cuts.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

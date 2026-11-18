@@ -191,7 +191,7 @@ describe('previewHtml', () => {
     expect(layout.width).toBe(1440);
     expect(layout.states).toHaveLength(6);
     expect(previewHtml(layout)).toContain(
-      '.ks-case > :last-child { height: 480px; }'
+      '.ks-case > :last-child { height: 480px; min-height: 0; }'
     );
     expect(previewHtml(layout).split('\n')[0]).toBe(
       '<!-- @dsCard group="Layout" height=3400 width=1440 -->'

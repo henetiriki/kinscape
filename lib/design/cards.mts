@@ -110,7 +110,7 @@ const STYLE = (
 ) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
-.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
+.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
 const FIGURE =
   "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";

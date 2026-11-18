@@ -23,7 +23,19 @@ a:is(:active, [data-state='active']) .arrowLink {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   border-radius: var(--radius-link);
   cursor: pointer;
+  position: relative;
   text-decoration: none;
+}
+
+/* A 44px hit area, centred on the link. The link keeps its line height. */
+.link::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(100%, var(--size-touch));
 }
 
 @media (hover: hover) {

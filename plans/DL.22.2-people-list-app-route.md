@@ -86,3 +86,8 @@ The Spec says a local session builds it, because only a local session edits `des
 
 - `people-load-failed` (DL.23) and `people-loading`.
 - The person and Relationships entries (DL.22.3).
+
+## Deviations
+
+- `e2e/sideways.ts` holds `wideAt`, the size loop that `widths.spec.ts` and the new sideways test both run. `SIZES` and the three helpers stay private to it.
+- `people.test.tsx` keeps the avatar-letter test for `people-load-failed`, which the deleted `it.each` also covered.

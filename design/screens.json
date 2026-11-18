@@ -32,21 +32,24 @@
     },
     {
       "name": "people-list",
-      "route": "/screens/people-list",
+      "account": "r.family@example.com",
+      "route": "/people",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "people-list-phone",
-      "route": "/screens/people-list",
+      "account": "r.family@example.com",
+      "route": "/people",
       "width": 390,
       "height": 844,
       "mode": "blocking"
     },
     {
       "name": "people-list-no-match",
-      "route": "/screens/people-list-no-match",
+      "account": "r.family@example.com",
+      "route": "/people",
       "state": "people-no-match",
       "width": 1440,
       "height": 900,
@@ -54,7 +57,8 @@
     },
     {
       "name": "people-empty",
-      "route": "/screens/people-empty",
+      "account": "researcher@example.com",
+      "route": "/people",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

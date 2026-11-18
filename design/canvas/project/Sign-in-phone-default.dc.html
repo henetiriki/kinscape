@@ -25,7 +25,7 @@ body{margin:0}
     <x-import component-from-global-scope="KinScape.TextField" size="l" type="email" label="Email" autocomplete="username" placeholder="you@example.com"></x-import>
     <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
 
-    <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}" style="margin-top: var(--space-4)">Sign in</x-import>
+    <div style="margin-top: var(--space-4)"><x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import></div>
 
     <div style="margin-top: auto"><x-import component-from-global-scope="KinScape.Text" variant="small" as="p">There's no sign-up. Accounts are set up by whoever runs this KinScape.</x-import></div>
     </form>

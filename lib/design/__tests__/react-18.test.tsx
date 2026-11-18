@@ -1002,7 +1002,8 @@ const CASES: [string, ReactElement][] = [
         <Text as='h1' variant='h1'>
           Your family, where they were.
         </Text>
-      }>
+      }
+      key='sign-in'>
       {[
         <Text key='form' variant='small'>
           Sign in to see your family on the map.

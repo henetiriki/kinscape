@@ -77,3 +77,4 @@ As the Spec says:
 ## Deviations
 
 - Step 8 used `npm run build` and `next start` with `KINSCAPE_DEV_PAGES=1`, not `npm run dev`. Turbopack dev does not start in the sandbox of a local session.
+- The `layerOf` row `['app/design-kit/page.tsx', undefined]` of `scripts/__tests__/layers.test.ts` goes. The `['app/screens/add-pin/page.tsx', undefined]` row covers the same case.

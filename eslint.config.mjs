@@ -95,8 +95,8 @@ export default defineConfig([
       'perfectionist/sort-imports': [
         'error',
         {
-          // A module's own stylesheet loads after the ones of what it imports, so a later rule
-          // keeps winning the cascade.
+          // A module's own stylesheet loads after the stylesheets of its imports, so its rules win
+          // the cascade.
           groups: [
             'type-import',
             ['value-builtin', 'value-external'],

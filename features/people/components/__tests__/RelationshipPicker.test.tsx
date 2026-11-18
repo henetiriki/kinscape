@@ -41,8 +41,7 @@ const maria = person({
 
 const open = (
   people: PersonSummary[],
-  group: RelationshipGroup = 'parents',
-  query?: string
+  group: RelationshipGroup = 'parents'
 ) => {
   const onClose = vi.fn();
   const onPick = vi.fn();
@@ -50,7 +49,6 @@ const open = (
   render(
     <RelationshipPicker
       group={group}
-      initialQuery={query}
       onClose={onClose}
       onPick={onPick}
       open
@@ -117,7 +115,10 @@ describe('RelationshipPicker', () => {
   });
 
   it('shows the no-match notice, and "Clear the filter" lists everyone again', () => {
-    open([pieter, susanna], 'parents', 'Pretorius');
+    open([pieter, susanna], 'parents');
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'Pretorius' },
+    });
 
     screen.getByText('No one matches “Pretorius”');
     expect(names()).toEqual([]);

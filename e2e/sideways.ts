@@ -72,6 +72,33 @@ const reaching = (page: Page) =>
     ];
   });
 
+/** The four sizes of `SIZES` that are not a phone: the sizes where a Relationship dialog opens. */
+export const DESKTOP_SIZES = SIZES.filter(({ width }) => width >= 768);
+
+/** What scrolls sideways in the open page at `size`, as one text for each problem. */
+export const wideNow = async (
+  page: Page,
+  size: { height: number; width: number }
+) => {
+  const wide: string[] = [];
+
+  await page.evaluate(() => document.fonts.ready);
+
+  const over = await overflow(page);
+
+  if (over > 0) {
+    wide.push(
+      `${size.width} × ${size.height}: ${over}px by ${(await reaching(page)).join('; ')}`
+    );
+  }
+
+  for (const scroller of await insideScrollers(page)) {
+    wide.push(`${size.width} × ${size.height}: inside ${scroller}`);
+  }
+
+  return wide;
+};
+
 /** What scrolls sideways on `route` at each size of `SIZES`, as one text for each problem. */
 export const wideAt = async (page: Page, route: string) => {
   const wide: string[] = [];
@@ -80,19 +107,7 @@ export const wideAt = async (page: Page, route: string) => {
     await page.setViewportSize(size);
     await page.goto(route);
     await page.waitForLoadState('networkidle');
-    await page.evaluate(() => document.fonts.ready);
-
-    const over = await overflow(page);
-
-    if (over > 0) {
-      wide.push(
-        `${size.width} × ${size.height}: ${over}px by ${(await reaching(page)).join('; ')}`
-      );
-    }
-
-    for (const scroller of await insideScrollers(page)) {
-      wide.push(`${size.width} × ${size.height}: inside ${scroller}`);
-    }
+    wide.push(...(await wideNow(page, size)));
   }
 
   return wide;

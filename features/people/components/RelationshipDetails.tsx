@@ -119,7 +119,6 @@ export const RelationshipDetails = ({
   other,
   self,
   shown,
-  startMarriage,
 }: {
   actions: RelationshipActions;
   /** The Relationship to change. Without it the dialog adds one. */
@@ -132,15 +131,10 @@ export const RelationshipDetails = ({
   /** The id of the Person whose page it is. */
   self: string;
   shown?: DetailsShown;
-  /** Marriage text to start with, for the screen boards. */
-  startMarriage?: string;
 }) => {
   const router = useRouter();
   const [newId] = useState(() => uuidV7());
-  const [values, setValues] = useState(() => ({
-    ...startValues(existing),
-    ...(startMarriage === undefined ? {} : { marriage: startMarriage }),
-  }));
+  const [values, setValues] = useState(() => startValues(existing));
   const [code, setCode] = useState<AlertCode | undefined>(
     shown === 'failed' ? undefined : shown
   );

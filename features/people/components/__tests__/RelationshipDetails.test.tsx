@@ -138,8 +138,11 @@ describe('the add dialog', () => {
     expect(screen.queryByRole('radiogroup')).toBeNull();
   });
 
-  it('starts the marriage with the text of a screen board', () => {
-    open({ startMarriage: 'ABT 1875' }, 'spouses');
+  it('reads the marriage text that the Account types', () => {
+    open({}, 'spouses');
+    fireEvent.change(screen.getByLabelText('Marriage'), {
+      target: { value: 'ABT 1875' },
+    });
 
     expect(screen.getByLabelText('Marriage')).toHaveProperty(
       'value',

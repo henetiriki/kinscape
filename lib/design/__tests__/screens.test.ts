@@ -31,34 +31,6 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'person-save-failed',
   },
   {
-    blocker: 'The fixture Tree has no Person with relationships.',
-    folder: 'relationship-cycle',
-  },
-  {
-    blocker: 'The fixture Tree has no Person with relationships.',
-    folder: 'relationship-details-parent',
-  },
-  {
-    blocker: 'The fixture Tree has no Person with relationships.',
-    folder: 'relationship-details-spouse',
-  },
-  {
-    blocker: 'The fixture Tree has no Person with relationships.',
-    folder: 'relationship-edit-spouse',
-  },
-  {
-    blocker: 'The fixture Tree has no People to pick.',
-    folder: 'relationship-pick-empty',
-  },
-  {
-    blocker: 'The fixture Tree has no People, so no row can match.',
-    folder: 'relationship-pick-no-match',
-  },
-  {
-    blocker: 'The fixture Tree has no People to pick.',
-    folder: 'relationship-pick',
-  },
-  {
     blocker: 'A save failure: no app route saves nothing.',
     folder: 'relationship-save-failed',
   },

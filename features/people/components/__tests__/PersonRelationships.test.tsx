@@ -284,8 +284,13 @@ describe('the groups', () => {
     expect(screen.getByRole('searchbox')).toHaveProperty('value', '');
   });
 
-  it('opens with a filter when the screen board says so', () => {
-    open({ picking: { group: 'parents', query: 'Pretorius' } });
+  it('shows the no-match notice when the filter matches no one', () => {
+    open();
+
+    fireEvent.click(group('Parents').getByRole('button', { name: 'Add' }));
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'Pretorius' },
+    });
 
     screen.getByText('No one matches “Pretorius”');
   });
@@ -383,10 +388,9 @@ describe('step 2 of "Add"', () => {
   });
 
   it('opens at step 2 when the screen board says so', () => {
-    open({ picking: { group: 'spouses', marriage: '1875', picked: PIETER } });
+    open({ picking: { group: 'spouses', picked: PIETER } });
 
     screen.getByRole('heading', { name: 'Add a spouse' });
-    expect(screen.getByLabelText('Marriage')).toHaveProperty('value', '1875');
   });
 
   it('opens at the picker when the picked Person is not in the Tree', () => {

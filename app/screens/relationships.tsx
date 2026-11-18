@@ -174,8 +174,6 @@ const SAMPLE_RELATIONSHIPS = {
   ],
 };
 
-const NO_RELATIONSHIPS = { children: [], parents: [], spouses: [] };
-
 const sample = (
   id: string,
   surname: string,
@@ -280,27 +278,20 @@ const SAMPLE_PEOPLE: PersonSummary[] = [
 ];
 
 /**
- * The Relationships page in one state, with a synthetic Account. `empty` is a Person with no
- * Relationships, and with no other Person in the Tree. `picking` opens the dialog of a group: the
- * picker with a filter, or step 2 with a Person picked. `edit` opens the dialog of a Relationship.
- * The actions are stand-ins that save nothing.
+ * The Relationships page in one state, with a synthetic Account. `picking` opens step 2 of a group
+ * with a Person picked. The actions are stand-ins that save nothing.
  */
 export const RelationshipsScreen = ({
-  edit,
-  empty,
   picking,
 }: {
-  edit?: string;
-  empty?: boolean;
   picking?: ComponentProps<typeof PersonRelationships>['picking'];
 }) => (
   <PersonRelationships
     {...SAMPLE_ACCOUNT}
     actions={{ create: saveNothing, update: saveNothing }}
-    edit={edit}
-    groups={empty ? NO_RELATIONSHIPS : SAMPLE_RELATIONSHIPS}
+    groups={SAMPLE_RELATIONSHIPS}
     onSignOut={signOutAction}
-    people={empty ? [] : SAMPLE_PEOPLE}
+    people={SAMPLE_PEOPLE}
     person={SAMPLE_SUBJECT}
     picking={picking}
   />

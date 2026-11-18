@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-import { wideAt } from '@ks/e2e/sideways';
+import screens from '@ks/design/screens.json';
+import { states } from '@ks/e2e/design-states';
+import { DESKTOP_SIZES, wideAt, wideNow } from '@ks/e2e/sideways';
 import { fixtureStateFor } from '@ks/lib/design/check.mts';
 import { FIXTURES, MARIA } from '@ks/server/auth/fixtures.mts';
 
@@ -100,6 +102,52 @@ test.describe('the family Tree', () => {
 
     expect(await wideAt(page, `/people/${MARIA.id}`)).toEqual([]);
     expect(await wideAt(page, `/people/${MARIA.id}/relationships`)).toEqual([]);
+  });
+
+  // NFR-05. `relationship-pick-empty` uses another Account, so no test here covers it.
+  test('the Relationship dialogs do not scroll sideways at a desktop size', async ({
+    page,
+  }) => {
+    const entries = screens.screens.filter(
+      ({ account, name }) =>
+        account === family.email && name.startsWith('relationship-')
+    );
+
+    expect(entries.map(({ name }) => name)).toHaveLength(6);
+
+    const wide: string[] = [];
+
+    for (const { name, route, state } of entries) {
+      for (const size of DESKTOP_SIZES) {
+        await page.setViewportSize(size);
+        await page.goto(route);
+
+        if (state) await states[state](page);
+
+        await page.getByRole('dialog').waitFor();
+        await page.waitForLoadState('networkidle');
+        wide.push(
+          ...(await wideNow(page, size)).map(text => `${name}: ${text}`)
+        );
+      }
+    }
+
+    expect(wide).toEqual([]);
+  });
+
+  // PPL-02
+  test('a parent that would make a cycle shows the alert and adds no Relationship', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto(`/people/${MARIA.id}/relationships`);
+    await states['relationship-cycle'](page);
+    await expect(
+      page.getByRole('alert').filter({ hasText: 'ancestor' })
+    ).toBeVisible();
+
+    await page.goto(`/people/${MARIA.id}/relationships`);
+    await expect(page.getByRole('link', { name: /^Edit\s*,/ })).toHaveCount(8);
   });
 });
 

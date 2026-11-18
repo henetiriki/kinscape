@@ -62,3 +62,8 @@ These tests change with the behaviour:
 | 5. Run-page link, or "left out"   | New `run` tests, with and without the variable |
 | 6. Failed call: page, error, 1    | New `run` test; `gh` throws on `issue create`  |
 | 7. Manual run on `main`           | The run from Order of work step 3              |
+
+## Deviations
+
+- `rowOf` also takes `repo`, to write the run links. `bodyOf` and `noteOf` hold the shared body and the line under the table, so `issueBody` and `pageBody` repeat no text.
+- The second `summary` call starts with a blank line, so the issue line is its own paragraph on the run page.

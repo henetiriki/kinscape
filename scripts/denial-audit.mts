@@ -21,6 +21,9 @@ import {
 // to date with the permission denials that repeat, so the allowlist and the rules follow what the
 // agents really try. Opens no issue when no denial repeats. Run weekly by claude-denial-audit.yml,
 // which shows the result on the run page ($GITHUB_STEP_SUMMARY) as well as in the log.
+// The run page gets the full table before the issue call. The issue gets a capped table (5 run
+// links and 200 characters of the example per row, 60,000 characters in all) and a link to the
+// run page, because GitHub refuses an issue body over 65,536 characters.
 // Usage: node scripts/denial-audit.mts, with GH_REPO set.
 
 type Deps = {
@@ -78,6 +81,12 @@ const DAYS = 7;
 const REPEAT_RUNS = 2;
 const REPEAT_COUNT = 3;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
+const RUN_ID = /^\d+$/;
+// GitHub refuses an issue body over 65,536 characters. The guard counts UTF-16 units, never fewer
+// than GitHub counts.
+const BODY_LIMIT = 60_000;
+const CAPPED_RUNS = 5;
+const CAPPED_EXAMPLE = 200;
 
 // Programs whose second word says what they do (`gh run`, `npm run`), so it belongs in the pattern.
 const WITH_SUBCOMMAND = new Set(['docker', 'gh', 'git', 'npm', 'npx', 'pnpm']);
@@ -329,7 +338,14 @@ export const summarise = (
   // Each group keeps the first denial it saw under each settings file, to judge against that file,
   // and the sessions (one per transcript) it hit: a refresh run with several has the same run id
   // in each, so the run is linked once but each session counts toward a repeat (plan C482, D2).
-  const groups = new Map<string, { firstBy: Map<string, Denial> } & Group>();
+  const groups = new Map<
+    string,
+    {
+      firstBy: Map<string, Denial>;
+      // The denials in each run, to sort the group's runs by.
+      perRun: Map<number, number>;
+    } & Omit<Group, 'runs'>
+  >();
   const sessionsOf = new Map<string, Set<number>>();
   const stripped: Record<string, number> = {};
   // The audit reads each settings file once, because it runs the hook for each denial.
@@ -362,7 +378,7 @@ export const summarise = (
         example: `${denial.tool}: ${denial.detail}`.replace(/: $/, ''),
         firstBy: new Map<string, Denial>(),
         pattern,
-        runs: [],
+        perRun: new Map<number, number>(),
         settings: '',
         suggestion: '',
         workflows: [],
@@ -375,9 +391,7 @@ export const summarise = (
         (sessionsOf.get(pattern) ?? new Set()).add(session)
       );
 
-      if (!group.runs.includes(id)) {
-        group.runs.push(id);
-      }
+      group.perRun.set(id, (group.perRun.get(id) ?? 0) + 1);
 
       if (!group.workflows.includes(name)) {
         group.workflows.push(name);
@@ -422,7 +436,7 @@ export const summarise = (
         ({ count, pattern }) => repeating.has(pattern) || count >= REPEAT_COUNT
       )
       .sort((a, b) => b.count - a.count)
-      .map(({ firstBy, ...group }) => {
+      .map(({ firstBy, perRun, ...group }) => {
         const rows = [...firstBy].map(([file, denial]) => ({
           file,
           status: statusOf(settingsOf(file), denial),
@@ -430,6 +444,10 @@ export const summarise = (
 
         return {
           ...group,
+          // The busiest run first; of two as busy, the newer (a higher id).
+          runs: [...perRun]
+            .sort(([idA, a], [idB, b]) => b - a || idB - idA)
+            .map(([id]) => id),
           settings: rows
             .map(({ file, status }) => `${file}: ${status}`)
             .join('; '),
@@ -468,10 +486,58 @@ const strippedLine = ({ stripped }: Report): string => {
   return `The hook cut a leading \`cd\` from ${total} commands${entries.length > 0 ? `: ${entries.map(([name, count]) => `${name} ${count}`).join(', ')}` : ''}.`;
 };
 
-export const issueBody = (
+// A table row. A capped row, for the issue, shows the first runs and the start of the example.
+const rowOf = (
+  repo: string,
+  {
+    costUsd,
+    count,
+    example,
+    pattern,
+    runs,
+    settings,
+    suggestion,
+    workflows,
+  }: Group,
+  capped: boolean
+): string => {
+  const link = (id: number): string =>
+    `[${id}](https://github.com/${repo}/actions/runs/${id})`;
+  const shown = capped ? runs.slice(0, CAPPED_RUNS) : runs;
+  const links = [
+    ...shown.map(link),
+    ...(shown.length < runs.length
+      ? [`+${runs.length - shown.length} more`]
+      : []),
+  ].join(', ');
+  const call =
+    capped && example.length > CAPPED_EXAMPLE
+      ? `${example.slice(0, CAPPED_EXAMPLE)}…`
+      : example;
+
+  return `| ${cell(pattern)} | ${workflows.join(', ')} | ${plain(settings)} | ${count} | $${costUsd.toFixed(2)} | ${links} | ${cell(call)} | ${plain(suggestion)} |`;
+};
+
+// The line under the table: what the issue leaves out and where the run page shows it. With no run
+// page (a run outside GitHub Actions) and no dropped row, the issue has no line.
+const noteOf = (dropped: number, runPage: string | undefined): string => {
+  if (dropped > 0) {
+    return runPage
+      ? `${dropped} more patterns are on the [run page](${runPage}).`
+      : `${dropped} more patterns were left out.`;
+  }
+
+  return runPage
+    ? `The [run page](${runPage}) shows every run and the full examples.`
+    : '';
+};
+
+const bodyOf = (
   report: Report,
   repo: string,
-  since: Date
+  since: Date,
+  rows: string[],
+  note: string
 ): string => {
   const average =
     report.runs === 0 ? 0 : Math.round(report.turns / report.runs);
@@ -479,8 +545,6 @@ export const issueBody = (
     report.deniedRunsCostUsd === 0
       ? 0
       : Math.round((report.deniedCostUsd / report.deniedRunsCostUsd) * 100);
-  const link = (id: number): string =>
-    `[${id}](https://github.com/${repo}/actions/runs/${id})`;
 
   return [
     `Permission denials in Claude runs since ${since.toISOString().slice(0, 10)}: ${report.runs} runs read, ${report.denials} denials, ${average} turns on average.`,
@@ -493,22 +557,46 @@ export const issueBody = (
     '',
     '| Denied | Workflows | Settings | Times | Cost | Runs | Example | Suggestion |',
     '| --- | --- | --- | ---: | ---: | --- | --- | --- |',
-    ...report.groups.map(
-      ({
-        costUsd,
-        count,
-        example,
-        pattern,
-        runs,
-        settings,
-        suggestion,
-        workflows,
-      }) =>
-        `| ${cell(pattern)} | ${workflows.join(', ')} | ${plain(settings)} | ${count} | $${costUsd.toFixed(2)} | ${runs.map(link).join(', ')} | ${cell(example)} | ${plain(suggestion)} |`
-    ),
+    ...rows,
     '',
+    ...(note ? [note, ''] : []),
     'For each one: allow it in `.github/agent/settings.json`, change `.github/agent/rules.md` so the agent stops trying, or leave it. For the code review, edit `.github/agent/review-settings.json` or `.github/agent/review.md`. For the unblock refresh, edit `.github/agent/refresh-settings.json` or `.github/agent/refresh.md`. The weekly audit rewrites this issue while it stays open; close it when it is handled.',
   ].join('\n');
+};
+
+// The full table, for the run page: every row, every run link and the whole example.
+const pageBody = (report: Report, repo: string, since: Date): string =>
+  bodyOf(
+    report,
+    repo,
+    since,
+    report.groups.map(group => rowOf(repo, group, false)),
+    ''
+  );
+
+// The capped table, for the issue. Rows fall from the bottom (the lowest counts) until the body fits.
+export const issueBody = (
+  report: Report,
+  repo: string,
+  since: Date,
+  runPage?: string
+): string => {
+  const rows = report.groups.map(group => rowOf(repo, group, true));
+  const bodyWith = (kept: number): string =>
+    bodyOf(
+      report,
+      repo,
+      since,
+      rows.slice(0, kept),
+      noteOf(rows.length - kept, runPage)
+    );
+  let kept = rows.length;
+
+  while (kept > 0 && bodyWith(kept).length > BODY_LIMIT) {
+    kept -= 1;
+  }
+
+  return bodyWith(kept);
 };
 
 export const run = (
@@ -553,50 +641,71 @@ export const run = (
     return 0;
   }
 
-  const body = issueBody(report, repo, since);
-  const open: { number: number; title: string }[] = JSON.parse(
-    gh([
-      'issue',
-      'list',
-      '--state',
-      'open',
-      '--type',
-      'Chore',
-      '--json',
-      'number,title',
-    ])
+  const runId = env.GITHUB_RUN_ID ?? '';
+  const body = issueBody(
+    report,
+    repo,
+    since,
+    RUN_ID.test(runId)
+      ? `https://github.com/${repo}/actions/runs/${runId}`
+      : undefined
   );
-  const existing = open.find(({ title }) => title === ISSUE_TITLE);
-  let done: string;
 
-  if (existing) {
-    gh(['issue', 'edit', String(existing.number), '--body-file', '-'], body);
-    done = `Updated issue #${existing.number}.`;
-  } else {
-    // `gh issue create` prints the new issue's URL.
-    const url = gh(
-      [
+  // The run page holds the full table before the issue call, which can fail.
+  summary(['### Denial audit', '', pageBody(report, repo, since)].join('\n'));
+
+  try {
+    const open: { number: number; title: string }[] = JSON.parse(
+      gh([
         'issue',
-        'create',
-        '--title',
-        ISSUE_TITLE,
+        'list',
+        '--state',
+        'open',
         '--type',
         'Chore',
-        '--label',
-        'status: draft',
-        '--body-file',
-        '-',
-      ],
-      body
-    ).trim();
+        '--json',
+        'number,title',
+      ])
+    );
+    const existing = open.find(({ title }) => title === ISSUE_TITLE);
+    let done: string;
 
-    done = url ? `Opened issue ${url}.` : 'Opened an issue.';
+    if (existing) {
+      gh(['issue', 'edit', String(existing.number), '--body-file', '-'], body);
+      done = `Updated issue #${existing.number}.`;
+    } else {
+      // `gh issue create` prints the new issue's URL.
+      const url = gh(
+        [
+          'issue',
+          'create',
+          '--title',
+          ISSUE_TITLE,
+          '--type',
+          'Chore',
+          '--label',
+          'status: draft',
+          '--body-file',
+          '-',
+        ],
+        body
+      ).trim();
+
+      done = url ? `Opened issue ${url}.` : 'Opened an issue.';
+    }
+
+    console.log(done);
+    summary(`\n${done}`);
+
+    return 0;
+  } catch (error) {
+    const failed = `The issue call failed: ${String(error)}`;
+
+    console.error(failed);
+    summary(`\n${failed}`);
+
+    return 1;
   }
-
-  console.log(done);
-  summary(['### Denial audit', '', body, '', done].join('\n'));
-
-  return 0;
 };
 
 /* v8 ignore next 18 -- only true when run directly with node, not when imported */

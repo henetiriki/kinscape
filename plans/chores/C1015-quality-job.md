@@ -1,7 +1,7 @@
 # Plan: C1015: Merge the lint, typecheck and format jobs into one quality job
 
 - **Spec:** #1015
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -19,7 +19,7 @@ The done check says that no file names the old jobs. Three old plans name them: 
 - **B.** Edit the three plans to name `quality`.
 - **Other:** your own.
 
-Recommended: A, because `AGENTS.md` says that other plans are history.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

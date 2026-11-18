@@ -154,6 +154,31 @@ test.describe('on a phone', () => {
     await expectHitAreas(page, HIT_CASES);
   });
 
+  test('the search pill and the layers button are at least 44px tall and wide', async ({
+    page,
+  }) => {
+    for (const [file, label, target] of [
+      [
+        'SearchBar',
+        'SearchBar · pill',
+        (figure: Locator) => figure.getByRole('searchbox'),
+      ],
+      [
+        'LayersButton',
+        'LayersButton · default',
+        (figure: Locator) =>
+          figure.getByRole('button', { name: 'Layers and filters' }),
+      ],
+    ] as const) {
+      await open(page, file);
+
+      const box = (await target(state(page, label)).boundingBox())!;
+
+      expect(box.height, label).toBeGreaterThanOrEqual(44);
+      expect(box.width, label).toBeGreaterThanOrEqual(44);
+    }
+  });
+
   test('an event chip is 44px tall and a removable chip 36px', async ({
     page,
   }) => {
@@ -470,6 +495,24 @@ test.describe('at 1440px', () => {
         }, token);
 
       expect(actual, label).toEqual(expected);
+    }
+  });
+
+  test('the Wordmark icons are 44, 36 and 32 square, with a quarter radius', async ({
+    page,
+  }) => {
+    await open(page, 'Wordmark');
+
+    for (const size of [44, 36, 32]) {
+      const icon = state(page, `Wordmark · ${size}`).locator('img');
+
+      expect(
+        await icon.evaluate(node => [
+          node.getBoundingClientRect().width,
+          getComputedStyle(node).borderTopLeftRadius,
+        ]),
+        `Wordmark · ${size}`
+      ).toEqual([size, `${size / 4}px`]);
     }
   });
 

@@ -37,16 +37,6 @@ export const ByViewport = ({
   </>
 );
 
-/** Drawn on a desktop only. */
-export const DesktopOnly = ({ children }: { children: ReactNode }) => (
-  <div className={styles.desktopOnly}>{children}</div>
-);
-
-/** Drawn on a phone only. */
-export const PhoneOnly = ({ children }: { children: ReactNode }) => (
-  <div className={styles.phoneOnly}>{children}</div>
-);
-
 /** One section of the board. `desktopPart` is the page of three that shows it on a desktop. `part` is the page of four that shows it on a phone. */
 export const Section = ({
   children,
@@ -56,7 +46,7 @@ export const Section = ({
   title,
 }: {
   children: ReactNode;
-  /** Boards 07 and 08 give none: their own styles choose what a desktop shows. */
+  /** Board 07 gives none: its own styles choose what a desktop shows. */
   desktopPart?: DesktopPart;
   lead: ReactNode;
   /** None: no part of a phone shows the section. */

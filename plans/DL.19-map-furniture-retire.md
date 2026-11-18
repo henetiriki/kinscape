@@ -77,3 +77,4 @@ Item 4 copies the board check: it fails if any ancestor of the button has an `ov
 ## Deviations
 
 - Spec item 5.7 says one new 404 test. The test "a board that is gone gives a 404" of DL.11 covers each `gone` board, so the build adds no test. The route stays as plain text in `BOARD_LINKS`.
+- The lint rule blocks `test.fail`, so the focus ring test has an `eslint-disable-next-line` with its reason. The Bug is #991.

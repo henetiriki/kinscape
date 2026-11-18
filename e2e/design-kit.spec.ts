@@ -54,6 +54,7 @@ const BOARD_LINKS: {
     path: '/design-kit/surfaces',
   },
   {
+    gone: true,
     heading: 'Map furniture',
     label: 'Map furniture',
     path: '/design-kit/map-furniture',

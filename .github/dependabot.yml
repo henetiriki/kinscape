@@ -9,7 +9,15 @@ multi-ecosystem-groups:
     commit-message:
       prefix: chore
 updates:
-  # A grouped entry cannot set commit-message, so only the playwright PR gets the chore prefix.
+  # Two npm entries: an entry in a multi-ecosystem group drops its own groups, schedule and commit-message.
+  # The first entry holds only @playwright/test, so the playwright PR moves it with the image.
+  - package-ecosystem: npm
+    directory: /
+    versioning-strategy: increase
+    multi-ecosystem-group: playwright
+    patterns:
+      - '@playwright/test'
+  # The second entry keeps the other npm groups and ignores @playwright/test.
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -17,9 +25,8 @@ updates:
     versioning-strategy: increase
     labels:
       - dependencies
-    multi-ecosystem-group: playwright
-    patterns:
-      - '@playwright/test'
+    commit-message:
+      prefix: chore
     # Held majors: see "Held packages" in docs/dependencies.md.
     ignore:
       - dependency-name: typescript
@@ -28,6 +35,7 @@ updates:
       - dependency-name: '@types/node'
         update-types:
           - version-update:semver-major
+      - dependency-name: '@playwright/test'
     groups:
       next:
         patterns:
@@ -53,8 +61,6 @@ updates:
           - patch
       development:
         dependency-type: development
-        exclude-patterns:
-          - '@playwright/test'
         update-types:
           - minor
           - patch

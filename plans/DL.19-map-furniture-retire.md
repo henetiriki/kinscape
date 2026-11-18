@@ -53,7 +53,7 @@ Recommended: B, because it proves what check 2 asks, and it still fails on a rea
 ## Risks
 
 - A gallery test can fail because the card state differs from the board. Then the build stops and comments on #893. It changes no component or card state, because the Spec changes no design system file.
-- #961 (DL.20) edits the same lines of `BOARD_LINKS`, `design/screens.json` and `NO_ENTRY`. The PR that merges second resolves the conflict.
+- #961 (DL.20) edits the same lines of `BOARD_LINKS`, `design/screens.json` and `NO_ENTRY`. #958 and #964 also edit `e2e/widths.spec.ts` and `NO_ENTRY`. The PR that merges second resolves the conflict.
 - If coverage names another branch of `Board.tsx` that only the deleted board reaches, the build deletes it and lists it in the PR (DL.11 step 6.9).
 
 ## Proof

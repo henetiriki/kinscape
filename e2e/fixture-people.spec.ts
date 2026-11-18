@@ -88,6 +88,16 @@ test.describe('the family Tree', () => {
   test('the edit and Relationships pages do not scroll sideways at any size', async ({
     page,
   }) => {
+    // A Person outside the Tree shows the not-found page, which `wideAt` also passes. A phone
+    // size can show the notice, not the form: so check the pages at 1440 × 900 first.
+    await page.setViewportSize({ height: 900, width: 1440 });
+    await page.goto(`/people/${MARIA.id}`);
+    await expect(
+      page.getByRole('heading', { name: 'Edit Maria Magdalena du Toit' })
+    ).toBeVisible();
+    await page.goto(`/people/${MARIA.id}/relationships`);
+    await expect(page.getByText('Rossouw, Jacobus').first()).toBeVisible();
+
     expect(await wideAt(page, `/people/${MARIA.id}`)).toEqual([]);
     expect(await wideAt(page, `/people/${MARIA.id}/relationships`)).toEqual([]);
   });

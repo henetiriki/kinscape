@@ -23,6 +23,13 @@ it('reaches the input and the select over a 2px border, but not in a token field
   expect(rule?.[1]).toContain(":has(select)[data-state='active']");
 });
 
+// NFR-05
+it('keeps an autofilled input from painting over the border that it reaches', () => {
+  const rule = css.match(/\.input:-webkit-autofill \{([^}]*)\}/);
+
+  expect(rule?.[1]).toContain('transition: background-color 0s 600000s');
+});
+
 // NFR-06
 it('names the input by its label and links the helper text', () => {
   render(<TextField helper='Where they lived.' label='Place' />);

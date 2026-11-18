@@ -29,11 +29,6 @@ const drawnPolities = async (page: Page) => {
 
 const slider = (page: Page) => page.getByRole('slider', { name: 'Map date' });
 
-// Each test starts the map, which is slow when four workers share four cores (B981).
-test.beforeEach(() => {
-  test.slow();
-});
-
 // MAP-03: the Map date starts on today and the eleven Polities are drawn.
 test('loads on today with the eleven Polities', async ({ page }) => {
   await page.goto('/');

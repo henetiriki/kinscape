@@ -50,7 +50,7 @@ test.describe('the family Tree', () => {
       .getByRole('link')
       .filter({ hasNotText: 'Relationships' });
 
-    expect(await rows.count()).toBe(13);
+    await expect(rows).toHaveCount(13);
 
     const found = await rows.evaluateAll(links =>
       links.map(link => {

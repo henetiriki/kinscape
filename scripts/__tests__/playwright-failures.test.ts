@@ -6,7 +6,18 @@ import { parse } from 'yaml';
 import type { Step } from '@ks/scripts/__tests__/types';
 
 import { authStateFor } from '@ks/lib/design/check.mts';
-import { failureArtifacts } from '@ks/scripts/playwright-failures.mts';
+import {
+  ciLimits,
+  failureArtifacts,
+} from '@ks/scripts/playwright-failures.mts';
+
+type Config = {
+  expect?: { timeout?: number };
+  projects?: Project[];
+  workers?: number | string;
+};
+
+type ConfigFile = 'e2e/gallery.config.ts' | 'playwright.config.ts';
 
 type Project = {
   fullyParallel?: boolean;
@@ -15,12 +26,10 @@ type Project = {
 };
 
 const KEPT = { screenshot: 'only-on-failure', trace: 'retain-on-failure' };
+const LIMITS = { expect: { timeout: 10_000 }, workers: 3 };
 
-// Loads a Playwright config as a run with or without `CI` does, and returns its projects by name.
-const projects = async (
-  file: 'e2e/gallery.config.ts' | 'playwright.config.ts',
-  ci: string
-): Promise<Record<string, Project>> => {
+// Loads a Playwright config as a run with or without `CI` does.
+const load = async (file: ConfigFile, ci: string): Promise<Config> => {
   vi.stubEnv('CI', ci);
   // A shell value of these two drops the design project.
   vi.stubEnv('E2E_SPLIT', '');
@@ -29,15 +38,30 @@ const projects = async (
   vi.stubEnv('TEST_WORKER_INDEX', '0');
   vi.resetModules();
 
-  const config: { default: { projects?: Project[] } } =
+  const config: { default: Config } =
     file === 'playwright.config.ts'
       ? await import('@ks/playwright.config.ts')
       : await import('@ks/e2e/gallery.config.ts');
 
-  return Object.fromEntries(
-    (config.default.projects ?? []).map(project => [project.name, project])
-  );
+  return config.default;
 };
+
+// The projects of a config, by name.
+const projects = async (
+  file: ConfigFile,
+  ci: string
+): Promise<Record<string, Project>> =>
+  Object.fromEntries(
+    ((await load(file, ci)).projects ?? []).map(project => [
+      project.name,
+      project,
+    ])
+  );
+
+const limits = ({ expect: assertion, workers }: Config) => ({
+  expect: assertion,
+  workers,
+});
 
 const kept = ({ use }: Project) => ({
   screenshot: use?.screenshot,
@@ -57,6 +81,32 @@ describe('failureArtifacts', () => {
     expect(failureArtifacts(env)).toEqual({});
   });
 });
+
+describe('ciLimits', () => {
+  it('gives 3 workers and a 10 s assertion limit in CI', () => {
+    expect(ciLimits({ CI: 'true' })).toEqual(LIMITS);
+  });
+
+  it.each([{}, { CI: '' }])('keeps the Playwright defaults for %o', env => {
+    expect(ciLimits(env)).toEqual({});
+  });
+});
+
+describe.each(['playwright.config.ts', 'e2e/gallery.config.ts'] as const)(
+  'the limits of %s',
+  file => {
+    it('has 3 workers and a 10 s assertion limit in CI', async () => {
+      expect(limits(await load(file, 'true'))).toEqual(LIMITS);
+    });
+
+    it('keeps the Playwright defaults without CI', async () => {
+      expect(limits(await load(file, ''))).toEqual({
+        expect: undefined,
+        workers: undefined,
+      });
+    });
+  }
+);
 
 describe('playwright.config.ts', () => {
   it.each(['setup', 'fixture-setup'])(

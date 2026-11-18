@@ -12,11 +12,6 @@ const SYNTHETIC = {
 // These start signed out: a signed-in visitor never sees the form.
 test.use({ storageState: { cookies: [], origins: [] } });
 
-// A sign-in opens the map, and the map start is slow when four workers share four cores (B981).
-test.beforeEach(() => {
-  test.slow();
-});
-
 const signIn = async (page: Page, email: string, password: string) => {
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password', { exact: true }).fill(password);

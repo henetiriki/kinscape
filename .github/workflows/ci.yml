@@ -175,9 +175,10 @@ jobs:
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright.outputs.version }}
           path: ~/.cache/ms-playwright
-      # The cache holds the browser, not the system packages it needs, so these install on every run.
+      # The runner already has Chromium's system packages, as in claude-run.yml, so only the browser
+      # is installed. The job compares no pixels, so it needs no font package.
       - name: Install the browser
-        run: npm run e2e:install -- --with-deps
+        run: npm run e2e:install
       - name: Start Postgres
         run: scripts/ci-postgres.sh e2e
       - name: Migrate the database

@@ -2,7 +2,7 @@
 
 - **Spec:** #962
 - **Requirement IDs:** [PPL-02](../docs/requirements.md#ppl-02)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -29,7 +29,7 @@ After the seven folders go, only `relationship-save-failed` and `person-relation
 - **B.** Add nothing. The dialogs lose the sideways check. No lines.
 - **Other:** your own.
 
-Recommended: A, because NFR-05 covers each screen, and the dialogs are the widest part of the page. B loses seven dialogs at four sizes. A keeps six.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

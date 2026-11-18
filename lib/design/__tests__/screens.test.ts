@@ -134,6 +134,8 @@ const NO_ENTRY = [
   'map-phone-layers',
   'map-sources',
   'map-sources-phone',
+  'map-style',
+  'map-style-phone',
   'relationship-messages',
   'sign-in-desktop-proposed',
   'sign-in-phone-error-proposed',

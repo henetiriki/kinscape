@@ -60,6 +60,7 @@ const BOARD_LINKS: {
     path: '/design-kit/map-furniture',
   },
   {
+    gone: true,
     heading: 'MapLibre layer stack',
     label: 'Map style',
     path: '/design-kit/map-style',
@@ -311,46 +312,7 @@ test('each map label has its token colour, size, weight and tracking', async ({
   );
 });
 
-// NFR-06: the map style board has the layout's banner only, and previews drawn from the map tokens.
-test.describe('the map style board', () => {
-  const { map } = resolveTokens(tokens);
-
-  const rgb = (hex: string) => {
-    const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
-
-    return `rgb(${r}, ${g}, ${b})`;
-  };
-
-  const preview = (page: Page, id: string) =>
-    page
-      .getByRole('row')
-      .filter({ hasText: id })
-      .first()
-      .getByRole('cell')
-      .nth(1)
-      .locator('span')
-      .first();
-
-  test('has one banner and 20 layers', async ({ page }) => {
-    await page.goto('/design-kit/map-style');
-    await expect(page.getByRole('banner')).toHaveCount(1);
-    await expect(page.getByRole('row')).toHaveCount(21);
-  });
-
-  test('draws the sea and a border line from the tokens', async ({ page }) => {
-    await page.goto('/design-kit/map-style');
-    await expect(preview(page, 'background')).toHaveCSS(
-      'background-color',
-      rgb(map.sea)
-    );
-    await expect(preview(page, 'polity-line')).toHaveCSS(
-      'background-image',
-      new RegExp(rgb(map.border.colour).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    );
-  });
-});
-
-// NFR-05, NFR-06: the Type board on a phone, in portrait and landscape.
+// NFR-05, NFR-06: the Type board on a phone, in portrait, landscape and at 800 by 900.
 test.describe('the boards on a phone', () => {
   for (const [name, size] of [
     ['390 wide', { height: 844, width: 390 }],
@@ -411,98 +373,9 @@ test.describe('the boards on a phone', () => {
       expect(new Set(lefts).size).toBe(1);
     });
   });
-});
-
-// NFR-05, NFR-06: the Map style board on a phone, in portrait and landscape.
-test.describe('the other boards on a phone', () => {
-  const boards = ['map-style'];
-
-  for (const [name, size] of [
-    ['390 wide', { height: 844, width: 390 }],
-    ['844 by 390', { height: 390, width: 844 }],
-  ] as const) {
-    test.describe(`at ${name}`, () => {
-      test.use({ viewport: size });
-
-      for (const board of boards) {
-        test(`${board} does not scroll sideways`, async ({ page }) => {
-          await page.goto(`/design-kit/${board}`);
-
-          const widths = await page.evaluate(() => ({
-            client: document.documentElement.clientWidth,
-            scroll: document.documentElement.scrollWidth,
-          }));
-
-          expect(widths.scroll).toBe(widths.client);
-        });
-      }
-
-      test('map style shows 20 cards with their labels and a scrolling code sample', async ({
-        page,
-      }) => {
-        await page.goto('/design-kit/map-style');
-        await expect(
-          page.getByRole('columnheader', { name: 'Layer id' })
-        ).toBeHidden();
-
-        const rows = page
-          .getByRole('table', { name: 'Layer stack' })
-          .getByRole('row')
-          .filter({ visible: true });
-
-        await expect(rows).toHaveCount(20);
-        await expect(rows.getByText('Covers', { exact: true })).toHaveCount(20);
-        await expect(
-          rows.getByText('Covers', { exact: true }).first()
-        ).toBeVisible();
-
-        // At 844 wide the sample fits its box; only the narrow phone needs the scroll.
-        if (size.width === 390) {
-          const code = await page
-            .locator('pre')
-            .evaluate(pre => pre.scrollWidth > pre.clientWidth);
-
-          expect(code).toBe(true);
-        }
-      });
-    });
-  }
-
-  test.describe('at 390 wide', () => {
-    test.use({ viewport: { height: 844, width: 390 } });
-
-    for (const board of boards) {
-      test(`${board} stays inside 16px gutters`, async ({ page }) => {
-        await page.goto(`/design-kit/${board}`);
-
-        const outside = await page.locator('main *').evaluateAll(
-          nodes =>
-            nodes
-              .filter(node => node.checkVisibility())
-              .filter(node => !node.closest('pre'))
-              .map(node => node.getBoundingClientRect())
-              .filter(
-                box => box.width > 0 && (box.left < 16 || box.right > 374)
-              ).length
-        );
-
-        expect(outside).toBe(0);
-      });
-    }
-  });
 
   test.describe('at 800 wide and 900 tall', () => {
     test.use({ viewport: { height: 900, width: 800 } });
-
-    test('map style takes the phone layout', async ({ page }) => {
-      await page.goto('/design-kit/map-style');
-      await expect(
-        page.getByRole('columnheader', { name: 'Layer id' })
-      ).toBeHidden();
-      await expect(
-        page.getByRole('cell').getByText('Source / filter').first()
-      ).toBeVisible();
-    });
 
     test('type is one column', async ({ page }) => {
       await page.goto('/design-kit/type');

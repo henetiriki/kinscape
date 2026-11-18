@@ -20,6 +20,24 @@
 
 **Answer: A** (@henetiriki)
 
+**D2 · How a board fills the `hero` slot** · Decides: Tech lead
+
+A board cannot fill a named prop in markup. The exporter reads a prop only from `renderVals()`, and it throws on an `<svg>` child.
+
+- **A.** The board script holds the drawn hero as a string. `renderVals()` mounts it with `dangerouslySetInnerHTML`. The form stays markup. Cost: the canvas cannot edit the hero text.
+- ~~**B.** The boards keep their drawn frame. Cost: a Chore for a markup way to fill a named slot.~~
+
+**Answer: A** (@henetiriki)
+
+**D3 · Order of step 7** · Decides: Tech lead
+
+The local session cannot start Chromium, so it cannot check the export or the pixels.
+
+- **A.** Swap the boards in the repo copy first. CI renders them. Publish to the canvas only when no `sign-in-*` JPG changes.
+- ~~**B.** Swap on the canvas first, then refresh the repo copy. Cost: a failed board is already on the canvas.~~
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - Rename `--auth-sea` to `--sign-in-sea`. Behaviour item 1 keeps the CSS rules, and the name is not `AuthLayout`.
@@ -71,3 +89,9 @@
 ## Out of scope
 
 As the Spec says. The three `-proposed` Sign-in boards keep their drawn frame.
+
+## Deviations
+
+- Merged `main` after DL.26 (#1043) and ran steps 3 to 5 again, so the artifact and the canvas hold both Specs (`6f3f9f5a`, `a3186c85`).
+- The five boards carry the hero as a string (D2) and step 7 ran repo-first (D3) (`032fb279` to `984ffa50`).
+- The three phone boards wrap the submit button in a `div` with `margin-top`. The exporter drops `style` on a nested `<x-import>` (`08dcfb68`).

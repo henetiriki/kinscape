@@ -126,10 +126,55 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: node scripts/agent-gate.mts "$KIND" "$NUMBER"
 
+  # Rule: set `restrict_untrusted_prs` to `false` only for a PR that the bot opened from a branch in
+  # this repo (scripts/agent-own-pr.mts). claude-code-action counts each `[bot]` author as one
+  # without write access, and then denies `npm` and other commands that run code from the checkout.
+  # A plan run has no PR, so it skips this job. If this job is skipped or fails, `run` keeps the denial.
+  own:
+    # The Actions graph shows this as "<caller job> / Own PR".
+    name: Own PR
+    if: ${{ !inputs.plan }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only to fetch main; the bot's App token reads the PR.
+    permissions:
+      contents: read
+    outputs:
+      own: ${{ steps.own.outputs.own }}
+    steps:
+      # The script comes from main, so the PR branch can't change it. Node's own modules only: no `npm ci`.
+      - name: Fetch the own-PR script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            .nvmrc
+          persist-credentials: false
+      - name: Install Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Create the bot's token
+        id: bot
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.KINSCAPE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}
+          permission-pull-requests: read
+      - name: Check whether it is the bot's own PR
+        id: own
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          BOT_LOGIN: ${{ vars.KINSCAPE_BOT_LOGIN }}
+          NUMBER: ${{ inputs.thread }}
+        run: node scripts/agent-own-pr.mts "$NUMBER"
+
   run:
     # The Actions graph shows this as "<caller job> / Run Claude".
     name: Run Claude
-    needs: gate
+    needs: [gate, own]
     # A skipped gate skips its dependants unless the condition names a status function.
     if: ${{ !cancelled() && (inputs.kind == 'respond' || needs.gate.result == 'success' && needs.gate.outputs.go == 'true') }}
     # One run per thread at a time, so a reply, a revision and a build never overlap.
@@ -235,7 +280,7 @@ jobs:
       # change it. The caller's prompt and model flags say what to do.
       - name: Run Claude Code
         id: claude
-        uses: henetiriki/kinscape/.github/actions/run-claude@fd2992a64eb63d31baae7c7b52f609c2760105bd
+        uses: henetiriki/kinscape/.github/actions/run-claude@103c3e64af25af2b9d97ca1a2bba3da51638eb7d
         with:
           files: ${{ inputs.agent_files }}
           prompt: ${{ inputs.prompt }}
@@ -248,6 +293,8 @@ jobs:
           bot_id: ${{ vars.KINSCAPE_BOT_ID }}
           team_logins: ${{ vars.KINSCAPE_TEAM_LOGINS }}
           main_files: ${{ inputs.main_files }}
+          # 'false' only if the `own` job found the bot's own PR; a skipped or failed `own` gives 'true'.
+          restrict_untrusted_prs: ${{ needs.own.outputs.own == 'true' && 'false' || 'true' }}
 
       # Before the safety net, which counts the bot's comments and would take this one for Claude's.
       - name: Remove the working comment

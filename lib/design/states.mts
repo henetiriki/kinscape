@@ -630,7 +630,7 @@ export const CARDS: Card[] = [
     design: ['Fuzzy date field'],
     group: 'Forms',
     handlers: [],
-    height: 2080,
+    height: 1040,
     name: 'FuzzyDateField',
     pad: 0,
     states: [

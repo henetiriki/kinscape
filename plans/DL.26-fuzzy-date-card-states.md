@@ -66,7 +66,7 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 
 ## Deviations
 
-- The CI session has no browser script, so `height` is 2080, an estimate of 16 states at about 112px and 16px gaps. The tech lead checks it in step 6.
+- The 16 states are 592px high at 1440px and 1024px high at 800px. The design system viewer width is not known, and the stated heights of other cards fit widths of about 800 to 1100px. So `height` is 1040 (the 800px value, rounded up to 20), not 600.
 
 ## Out of scope
 

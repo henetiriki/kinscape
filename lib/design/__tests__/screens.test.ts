@@ -11,10 +11,6 @@ import { jpegSize, sweepProblems } from '@ks/lib/design/sweep.mts';
 const SCREEN_ONLY: { blocker: string; folder: string }[] = [
   { blocker: 'No app route has the Add pin panel yet.', folder: 'add-pin' },
   {
-    blocker: 'A sample layout of date readings: no app route shows it.',
-    folder: 'fuzzy-date-readings',
-  },
-  {
     blocker: 'The open menu is a state of the map, which has no People.',
     folder: 'map-account-menu',
   },
@@ -48,6 +44,7 @@ const screenOnlyProblems = (
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
+  'fuzzy-date-readings',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
   'map-credits-narrow',

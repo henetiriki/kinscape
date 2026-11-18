@@ -64,6 +64,10 @@ The Spec says that the tech lead, or a local session, builds it. The [design-sys
 | 7. No snapshot, JPG or board changes  | `git diff main --stat`, pasted in the PR                                                                                        |
 | 8. The checks pass                    | `npm test`, `npm run typecheck`, `npm run lint`, `npm run e2e` output                                                           |
 
+## Deviations
+
+- The CI session has no browser script, so `height` is 2080, an estimate of 16 states at about 112px and 16px gaps. The tech lead checks it in step 6.
+
 ## Out of scope
 
 - The board `Fuzzy-date-readings`, its snapshot, its JPG, its `design/canvas/export.json` entry and its `design/DESIGN.md` row.

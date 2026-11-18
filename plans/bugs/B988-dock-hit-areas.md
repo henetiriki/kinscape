@@ -69,4 +69,4 @@ Each is 30px or 33px wide, with a 4px gap. The `Map` snapshot (`design/source/ma
 
 ## Deviations
 
-- The `e2e/design.spec.ts` focus-ring test measured the padded slider box, so it read `-6px`. It now adds the padding above the 28px track, as the Risks entry on the focus ring expects.
+- The `e2e/design.spec.ts` focus-ring test measured the padded slider box, so it read `-6px`. It now adds the input's block padding, as the Risks entry on the focus ring expects.

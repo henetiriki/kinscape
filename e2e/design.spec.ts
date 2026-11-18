@@ -50,15 +50,10 @@ test('keyboard focus shows a 2px brand outline offset 2px', async ({
           : active;
       const style = getComputedStyle(ringed);
       const tag = active.tagName + '.' + active.className;
-      // A range input pads its box to a 44px hit area, so its ring clears the track, not the box.
+      // A range input pads its box to a 44px hit area. The track fills the content box, so its ring clears the track, not the padding.
       const padding =
         active instanceof HTMLInputElement && active.type === 'range'
-          ? (active.getBoundingClientRect().height -
-              parseFloat(
-                getComputedStyle(active, '::-webkit-slider-runnable-track')
-                  .height
-              )) /
-            2
+          ? parseFloat(style.paddingTop)
           : 0;
 
       // A text field has no ring: its box takes a 2px brand border.

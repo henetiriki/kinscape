@@ -77,3 +77,7 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 | 7                | `git grep -E "style-[0-9]\|'style-'\|design-kit" -- lib scripts`, pasted in the PR |
 | 8                | The automated review of the commit of step 4; a finding goes on #893               |
 | 9                | The command output, pasted in the PR                                               |
+
+## Deviations
+
+- The snapshot workflow (838aa92f) changed `map-account-menu-proposed.jpg` and `map-districts.jpg` by 6 of 255 levels or less, on fewer than 1,000 pixels each. No snapshot or board changed. The tech lead accepted this as render noise, so check 4 passes.

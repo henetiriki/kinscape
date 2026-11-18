@@ -2,7 +2,7 @@
 
 - **Spec:** #993
 - **Requirement IDs:** None. The plan deletes boards and their generated files.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ On `main`, `Map-style.dc.html` links to `Kit-index.dc.html` and the 8 desktop `S
 - **B.** Remove the header with the kit title and the "Boards" links from both boards. The two JPGs change, so Behaviour 2 and 6 and check 4 need an exception. That is a change to the Spec. Cost: two board edits, two JPGs and a Spec rewrite.
 - **Other:** your own.
 
-Recommended: A, because the Flagged concern says to change nothing else on the board, and check 4 stays true. B also removes the kit title from a reference sheet, which the Spec puts out of scope.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

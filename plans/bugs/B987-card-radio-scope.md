@@ -2,7 +2,7 @@
 
 - **Spec:** #987 (Bug)
 - **Requirement IDs:** None. This Bug changes the design system cards and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

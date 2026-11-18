@@ -13,14 +13,12 @@ vi.mock('next/navigation', () => ({
 import Readings from '@ks/app/screens/fuzzy-date-readings/page';
 import { saveConflict, saveFailed } from '@ks/app/screens/person-actions';
 import Conflict from '@ks/app/screens/person-conflict/page';
-import Edit from '@ks/app/screens/person-edit/page';
 import SaveFailed from '@ks/app/screens/person-save-failed/page';
 import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 // PPL-01
 describe('the Person screens', () => {
   it.each([
-    ['person-edit', Edit],
     ['person-save-failed', SaveFailed],
     ['person-conflict', Conflict],
   ])('%s shows the synthetic Person', async (_name, Page) => {
@@ -30,7 +28,6 @@ describe('the Person screens', () => {
   });
 
   it.each([
-    ['person-edit', Edit],
     ['person-save-failed', SaveFailed],
     ['person-conflict', Conflict],
   ])('%s shows the avatar letter of the sample email', async (_name, Page) => {

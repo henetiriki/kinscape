@@ -102,14 +102,16 @@
     },
     {
       "name": "person-edit",
-      "route": "/screens/person-edit",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
     },
     {
       "name": "person-edit-leave",
-      "route": "/screens/person-edit",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1",
       "state": "person-leave",
       "width": 1440,
       "height": 900,
@@ -150,7 +152,8 @@
     },
     {
       "name": "person-relationships",
-      "route": "/screens/person-relationships",
+      "account": "r.family@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -213,7 +216,8 @@
     },
     {
       "name": "person-relationships-empty",
-      "route": "/screens/person-relationships-empty",
+      "account": "r.alone@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

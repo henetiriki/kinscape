@@ -10,9 +10,7 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn(), replace: vi.fn() }),
 }));
 
-import Empty from '@ks/app/screens/person-relationships-empty/page';
 import LoadFailed from '@ks/app/screens/person-relationships-load-failed/page';
-import Board from '@ks/app/screens/person-relationships/page';
 import { saveNothing } from '@ks/app/screens/relationship-actions';
 import Cycle from '@ks/app/screens/relationship-cycle/page';
 import Details from '@ks/app/screens/relationship-details-parent/page';
@@ -26,24 +24,7 @@ import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 
 // PPL-02
 describe('the Relationships screens', () => {
-  it('person-relationships shows the three groups of the board', async () => {
-    render(await Board());
-
-    screen.getByText('Maria Magdalena du Toit');
-    within(screen.getByRole('region', { name: 'Parents' })).getByText(
-      '3 links'
-    );
-    within(screen.getByRole('region', { name: 'Children' })).getByText(
-      '2 links'
-    );
-    within(screen.getByRole('region', { name: 'Spouses' })).getByText(
-      'Mar. 1875, div. 1890'
-    );
-  });
-
   it.each([
-    ['person-relationships', Board],
-    ['person-relationships-empty', Empty],
     ['person-relationships-load-failed', LoadFailed],
     ['relationship-pick', Pick],
     ['relationship-pick-no-match', NoMatch],
@@ -59,14 +40,6 @@ describe('the Relationships screens', () => {
     expect(
       screen.getByRole('button', { name: 'Account menu' }).textContent
     ).toBe(accountInitial('researcher@example.com'));
-  });
-
-  it('person-relationships-empty shows the empty line of each group', async () => {
-    render(await Empty());
-
-    screen.getByText('No parents yet.');
-    screen.getByText('No children yet.');
-    screen.getByText('No spouses yet.');
   });
 
   it('relationship-pick shows the matches of "Fourie", by name', async () => {

@@ -21,7 +21,7 @@ import {
 
 const exact = (year: string) => fuzzyDateOf('EXACT', year);
 
-/** The synthetic Person of the `person-relationships` boards. */
+/** The synthetic Person of the Relationships dialog boards and `person-relationships-load-failed`. */
 const SAMPLE_SUBJECT: RelationshipsPerson = {
   ...personDates({
     birth: fuzzyDateOf('ABT', '1856'),
@@ -90,7 +90,7 @@ const spouse = (
   surname,
 });
 
-/** The synthetic Relationships of the `person-relationships` board. */
+/** The synthetic Relationships behind the dialog boards. */
 const SAMPLE_RELATIONSHIPS = {
   children: [
     parentOrChild(

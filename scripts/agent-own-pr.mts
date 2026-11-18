@@ -8,9 +8,14 @@ import type { Gh } from '#ks/scripts/types.ts';
 // The action counts each `[bot]` author as one without write access, and denies `npm` and other
 // commands that run code from the checkout.
 // Usage: node scripts/agent-own-pr.mts <issue or PR number>, with GH_REPO and BOT_LOGIN set.
-// It writes `own=true` or `own=false` to $GITHUB_OUTPUT. Each case that is not the bot's own PR is
-// `own=false` with exit code 0: another author, a fork, a deleted head repo, a thread that is not a
-// PR and a failed read. A failed read logs the exit status, not the error text.
+// It writes `own=true` or `own=false` to $GITHUB_OUTPUT. For each other case it writes `own=false`
+// and exits 0:
+//   - another author
+//   - a fork
+//   - a deleted head repo
+//   - a thread that is not a PR
+//   - a failed read
+// A failed read logs the exit status, not the error text.
 
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;

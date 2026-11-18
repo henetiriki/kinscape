@@ -13,7 +13,7 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
-import type { Step } from '@ks/scripts/__tests__/types';
+import type { Job, Step } from '@ks/scripts/__tests__/types';
 
 import {
   MAIN_COPY_CHECK,
@@ -2402,13 +2402,6 @@ describe('the review job of claude-code-review.yml', () => {
 // access, and counts each `[bot]` author as one. Only the bot's own PR lifts that
 // (plans/chores/C1028-agent-own-pr.md, docs/security.md).
 describe('the own-PR check', () => {
-  type Job = {
-    if?: string;
-    needs?: string | string[];
-    outputs?: Record<string, string>;
-    permissions?: Record<string, string>;
-    steps?: Step[];
-  };
   const RULE =
     'set `restrict_untrusted_prs` to `false` only for a PR that the bot opened from a branch in this repo';
   const jobs = () =>
@@ -2500,6 +2493,6 @@ describe('the own-PR check', () => {
       readFileSync(join(root, '.github/actions/run-claude/action.yml'), 'utf8'),
     ].join('\n');
 
-    expect(all.match(/restrict_untrusted_prs: .*'false'/g)).toHaveLength(1);
+    expect(all.match(/restrict_untrusted_prs: .*false/g)).toHaveLength(1);
   });
 });

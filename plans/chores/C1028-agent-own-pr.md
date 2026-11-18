@@ -7,7 +7,10 @@
 
 1. `scripts/agent-own-pr.mts` exports `run(args, env, gh, out)`. It reads `gh api repos/$GH_REPO/pulls/<n>` with a `--jq` filter for `.user.login` and `.head.repo.full_name`. The REST login keeps the `[bot]` suffix that `$BOT_LOGIN` has.
 2. `run` writes `own=true` only for that login and a head repo equal to `$GH_REPO`. Each other case writes `own=false` and exits 0. A failed read logs the exit status, not the error text.
-3. A new job `own` (name "Own PR") in `claude-run.yml` copies the shape of `return`: a sparse checkout of `main`, Node, and an App token with only `permission-pull-requests: read`. A plan run skips it.
+3. A new job `own` (name "Own PR") in `claude-run.yml` copies the shape of `return`. A plan run skips it. The job has these steps:
+   - A sparse checkout of `main`.
+   - Node.
+   - An App token with only `permission-pull-requests: read`.
 4. `run` needs `[gate, own]`. It passes `restrict_untrusted_prs: ${{ needs.own.outputs.own == 'true' && 'false' || 'true' }}`. A skipped or failed `own` keeps `'true'`.
 
 This chore is a hand-back. The tech lead builds it.
@@ -29,7 +32,9 @@ This chore is a hand-back. The tech lead builds it.
 
 1. Write the script tests. See each fail.
 2. Write the script, the workflow tests, the job and the input.
-3. After the merge, merge both pin PRs. Then run the checks in Proof rows 4 to 6 and link the runs.
+3. After the merge, merge both pin PRs.
+4. Run the checks in Proof rows 4 to 6.
+5. Link the runs.
 
 ## Risks
 

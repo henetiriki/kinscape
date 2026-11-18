@@ -65,7 +65,8 @@
     },
     {
       "name": "people-load-failed",
-      "route": "/screens/people-load-failed",
+      "account": "r.failing@example.com",
+      "route": "/people",
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -224,7 +225,8 @@
     },
     {
       "name": "person-relationships-load-failed",
-      "route": "/screens/person-relationships-load-failed",
+      "account": "r.failing@example.com",
+      "route": "/people/01900000-0000-7000-8000-0000000000a1/relationships",
       "width": 1440,
       "height": 900,
       "mode": "blocking"

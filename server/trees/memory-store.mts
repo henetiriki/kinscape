@@ -39,11 +39,13 @@ const identityOf = (issuer: string, subject: string) =>
 /**
  * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
  * A seed Tree may hold People and Relationships, saved at version 1. The four writes refuse a Tree
- * in `readOnly` as they refuse a Tree the Account may not access.
+ * in `readOnly` as they refuse a Tree the Account may not access. The two list reads of a Tree in
+ * `failing` throw.
  */
 export const memoryStore = (
   seed: SeedAccount[] = [],
-  readOnly: TreeId[] = []
+  readOnly: TreeId[] = [],
+  failing: TreeId[] = []
 ): TreeStore => {
   const accounts = new Map<string, AccountId>();
   const trees = new Map<TreeId, Tree>();
@@ -87,6 +89,18 @@ export const memoryStore = (
       : undefined;
 
   const frozen = ({ treeId }: TreeScope) => readOnly.includes(treeId);
+
+  /**
+   * The rows, or a throw for a Tree in `failing` that the Account may access. The message names no
+   * Person.
+   */
+  const failIfListed = <Row,>(scope: TreeScope, rows: Row[]): Row[] => {
+    if (failing.includes(scope.treeId) && personsOf(scope) !== undefined) {
+      throw new Error('The fixture Tree failed to load.');
+    }
+
+    return rows;
+  };
 
   /** The Relationships of a Tree the Account may access; undefined otherwise. */
   const relationshipsOf = (scope: TreeScope) =>
@@ -182,7 +196,9 @@ export const memoryStore = (
           return { id, name };
         }),
     listPersons: async scope =>
-      structuredClone([...(personsOf(scope)?.values() ?? [])])
+      structuredClone(
+        failIfListed(scope, [...(personsOf(scope)?.values() ?? [])])
+      )
         .sort(
           (x, y) =>
             compare(x.surname, y.surname) ||
@@ -191,7 +207,9 @@ export const memoryStore = (
         )
         .slice(0, MAX_LISTED),
     listRelationships: async scope =>
-      structuredClone([...(relationshipsOf(scope)?.values() ?? [])])
+      structuredClone(
+        failIfListed(scope, [...(relationshipsOf(scope)?.values() ?? [])])
+      )
         .sort((x, y) => compare(x.id, y.id))
         .slice(0, MAX_RELATIONSHIPS),
     updatePerson: async ({ person, version, ...scope }) => {

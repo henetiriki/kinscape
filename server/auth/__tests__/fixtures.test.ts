@@ -8,7 +8,16 @@ describe('FIXTURES', () => {
       ['researcher@example.com', 'Researcher Tree'],
       ['r.family@example.com', 'Family Tree'],
       ['r.alone@example.com', 'Alone Tree'],
+      ['r.failing@example.com', 'Failing Tree'],
     ]);
+  });
+
+  it('marks only the Failing Tree as failing, and holds Maria alone in it', () => {
+    const failing = FIXTURES.filter(fixture => fixture.failing);
+
+    expect(failing.map(fixture => fixture.treeName)).toEqual(['Failing Tree']);
+    expect(failing[0].persons).toEqual([MARIA]);
+    expect(failing[0].relationships).toEqual([]);
   });
 
   it('starts each email with "r", for the avatar letter', () => {

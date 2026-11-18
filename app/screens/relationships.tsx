@@ -21,7 +21,7 @@ import {
 
 const exact = (year: string) => fuzzyDateOf('EXACT', year);
 
-/** The synthetic Person of the Relationships dialog boards and `person-relationships-load-failed`. */
+/** The synthetic Person of the Relationships dialog boards. */
 const SAMPLE_SUBJECT: RelationshipsPerson = {
   ...personDates({
     birth: fuzzyDateOf('ABT', '1856'),
@@ -281,37 +281,27 @@ const SAMPLE_PEOPLE: PersonSummary[] = [
 
 /**
  * The Relationships page in one state, with a synthetic Account. `empty` is a Person with no
- * Relationships, and with no other Person in the Tree. `failed` is a load that threw. `picking`
- * opens the dialog of a group: the picker with a filter, or step 2 with a Person picked. `edit`
- * opens the dialog of a Relationship. The actions are stand-ins that save nothing.
+ * Relationships, and with no other Person in the Tree. `picking` opens the dialog of a group: the
+ * picker with a filter, or step 2 with a Person picked. `edit` opens the dialog of a Relationship.
+ * The actions are stand-ins that save nothing.
  */
 export const RelationshipsScreen = ({
   edit,
   empty,
-  failed,
   picking,
 }: {
   edit?: string;
   empty?: boolean;
-  failed?: boolean;
   picking?: ComponentProps<typeof PersonRelationships>['picking'];
-}) => {
-  const account = {
-    ...SAMPLE_ACCOUNT,
-    onSignOut: signOutAction,
-  };
-
-  return failed ? (
-    <PersonRelationships {...account} failed person={SAMPLE_SUBJECT} />
-  ) : (
-    <PersonRelationships
-      {...account}
-      actions={{ create: saveNothing, update: saveNothing }}
-      edit={edit}
-      groups={empty ? NO_RELATIONSHIPS : SAMPLE_RELATIONSHIPS}
-      people={empty ? [] : SAMPLE_PEOPLE}
-      person={SAMPLE_SUBJECT}
-      picking={picking}
-    />
-  );
-};
+}) => (
+  <PersonRelationships
+    {...SAMPLE_ACCOUNT}
+    actions={{ create: saveNothing, update: saveNothing }}
+    edit={edit}
+    groups={empty ? NO_RELATIONSHIPS : SAMPLE_RELATIONSHIPS}
+    onSignOut={signOutAction}
+    people={empty ? [] : SAMPLE_PEOPLE}
+    person={SAMPLE_SUBJECT}
+    picking={picking}
+  />
+);

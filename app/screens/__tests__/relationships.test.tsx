@@ -10,7 +10,6 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn(), replace: vi.fn() }),
 }));
 
-import LoadFailed from '@ks/app/screens/person-relationships-load-failed/page';
 import { saveNothing } from '@ks/app/screens/relationship-actions';
 import Cycle from '@ks/app/screens/relationship-cycle/page';
 import Details from '@ks/app/screens/relationship-details-parent/page';
@@ -25,7 +24,6 @@ import { accountInitial } from '@ks/lib/domain/auth/initial.mts';
 // PPL-02
 describe('the Relationships screens', () => {
   it.each([
-    ['person-relationships-load-failed', LoadFailed],
     ['relationship-pick', Pick],
     ['relationship-pick-no-match', NoMatch],
     ['relationship-pick-empty', PickEmpty],
@@ -122,12 +120,5 @@ describe('the Relationships screens', () => {
 
   it('the stand-in action saves nothing', async () => {
     expect(await saveNothing()).toEqual({ error: 'invalid', ok: false });
-  });
-
-  it('person-relationships-load-failed shows the notice', async () => {
-    render(await LoadFailed());
-
-    screen.getByText("Relationships didn't load");
-    screen.getByRole('button', { name: 'Try again' });
   });
 });

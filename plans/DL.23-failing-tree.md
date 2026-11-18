@@ -2,7 +2,7 @@
 
 - **Spec:** #960
 - **Requirement IDs:** [PPL-01](../docs/requirements.md#ppl-01), [PPL-02](../docs/requirements.md#ppl-02)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

@@ -27,17 +27,11 @@ describe('devPagesVisible', () => {
 });
 
 describe('isDevPage', () => {
-  it.each([
-    '/design-kit',
-    '/design-kit/',
-    '/design-kit/colour',
-    '/screens',
-    '/screens/add-pin',
-  ])('covers %s', path => {
+  it.each(['/screens', '/screens/', '/screens/add-pin'])('covers %s', path => {
     expect(isDevPage(path)).toBe(true);
   });
 
-  it.each(['/', '/design-kits', '/screensaver', '/sign-in', '/data/screens'])(
+  it.each(['/', '/screensaver', '/sign-in', '/data/screens'])(
     'leaves %s',
     path => {
       expect(isDevPage(path)).toBe(false);

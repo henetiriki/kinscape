@@ -342,18 +342,18 @@ describe('the import sorter in the real lint config', () => {
     ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);
   });
 
-  it('keeps stylesheets last, the kit’s before a board’s', async () => {
+  it('keeps stylesheets last', async () => {
     expect(
       await lint(
-        'app/design-kit/colour/page.tsx',
-        "import { a } from '@ks/lib/a';\n\nimport kit from '@ks/app/design-kit/kit.module.css';\n\nimport styles from '@ks/app/design-kit/colour/page.module.css';\n",
+        'app/screens/colour/page.tsx',
+        "import { a } from '@ks/lib/a';\n\nimport styles from '@ks/app/screens/colour/page.module.css';\n",
         sorter
       )
     ).toEqual([]);
     expect(
       await lint(
-        'app/design-kit/colour/page.tsx',
-        "import styles from '@ks/app/design-kit/colour/page.module.css';\nimport kit from '@ks/app/design-kit/kit.module.css';\n",
+        'app/screens/colour/page.tsx',
+        "import styles from '@ks/app/screens/colour/page.module.css';\nimport { a } from '@ks/lib/a';\n",
         sorter
       )
     ).toEqual([expect.stringContaining('perfectionist/sort-imports')]);

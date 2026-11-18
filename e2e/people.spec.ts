@@ -38,6 +38,32 @@ test.describe('phone, 390 × 844', () => {
     await expect(page).toHaveURL(url => url.pathname === '/people');
   });
 
+  // NFR-05, NFR-06
+  test('the notice card fits the width, its link is 44px tall, and nothing scrolls sideways', async ({
+    page,
+  }) => {
+    await page.goto('/people/new');
+
+    const card = page
+      .getByRole('status')
+      .filter({ hasText: 'Edit people on a computer' });
+    const box = (await card.boundingBox())!;
+
+    expect(Math.round(box.width)).toBeLessThanOrEqual(390 - 32);
+    expect(
+      Math.round(
+        (await card
+          .getByRole('link', { name: 'See all people' })
+          .boundingBox())!.height
+      )
+    ).toBe(44);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth
+      )
+    ).toBe(true);
+  });
+
   // NFR-05
   test('/people/{id} shows the notice and no Relationships link', async ({
     page,

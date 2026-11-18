@@ -181,7 +181,6 @@ describe('layerOf', () => {
     ['server', 'server'],
     ['features', undefined],
     ['lib/design/check.mts', undefined],
-    ['app/design-kit/page.tsx', undefined],
     ['app/screens/add-pin/page.tsx', undefined],
     ['app/__tests__/page.test.tsx', undefined],
     ['lib/ui/__tests__/a.test.ts', undefined],
@@ -325,7 +324,7 @@ describe('layerBreak', () => {
     [
       'app/ routes',
       'app/page.tsx',
-      '@ks/app/design-kit/a',
+      '@ks/app/screens/a',
       'may not import dev-only code',
     ],
     [

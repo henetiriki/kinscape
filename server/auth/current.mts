@@ -47,7 +47,7 @@ export const requireSession = async (): Promise<Session> => {
 };
 
 /**
- * The check every page under `/design-kit` and `/screens` makes: 404 where those pages are hidden
+ * The check every page under `/screens` makes: 404 where those pages are hidden
  * (`devPagesVisible`), then `requireSession()`. `proxy.ts` makes the first half too.
  */
 export const requireDevPage = async (): Promise<Session> => {

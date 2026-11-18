@@ -38,7 +38,7 @@ describe('MapHost', () => {
     }
   );
 
-  it.each(['/sign-in', '/peoplex', '/design-kit'])(
+  it.each(['/sign-in', '/peoplex', '/screens/add-pin'])(
     'drops the map on %s',
     path => {
       show(path);

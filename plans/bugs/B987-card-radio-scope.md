@@ -83,4 +83,4 @@ Only `Segmented` renders a radio, and only the `Segmented` and `DateDock` cards 
 ## Deviations
 
 - The tech lead asked for a guard. `react-18.test.tsx` now fails if a card mounts a radio and has no `radios` field, or the reverse.
-- "Design: Render snapshots" changed no card image. A selected segment differs from an unselected one by less than the screenshot colour threshold, so `Segmented-1440.png` and `DateDock-1440.png` stay as on `main`.
+- "Design: Render snapshots" changed no card image. A selected segment differs from an unselected one by less than the screenshot colour threshold, so `Segmented-1440.png` and `DateDock-1440.png` stay as on `main`. The tech lead left them as they are.

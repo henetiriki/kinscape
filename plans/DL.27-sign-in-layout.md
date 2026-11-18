@@ -2,7 +2,7 @@
 
 - **Spec:** #923
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@
 - **B.** The card sets no `frame`, and its `height` fits one 900px state. Cost: none in code. The state follows the viewport, so in the artifact it can overflow the card by its caption.
 - **Other:** your own.
 
-Recommended: A, because the card image then does not depend on the viewport height.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

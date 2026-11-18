@@ -11,7 +11,7 @@ The Dialog as drawn: a modal Surface with a fixed head and a body that scrolls.
 | `children` | `ReactNode` | yes |  |
 | `footnote` | `string` | no | A line under the body. |
 | `form` | `"sheet" \| "centred"` | yes |  |
-| `onClose` | `(() => void)` | no | Left off where the panel is only drawn. |
+| `onClose` | `(() => void)` | no | No board passes it: a board only draws the panel. |
 | `subtitle` | `string` | no |  |
 | `title` | `string` | yes |  |
 | `titleId` | `string` | yes |  |

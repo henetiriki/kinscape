@@ -887,7 +887,7 @@ export declare const Modal: ({ children, onClose, open, ...rest }: ModalArgs) =>
 /** The round 44 × 44 Close button that ends every Dialog and Sheet head. */
 declare const ModalClose: ({ iconSize, onClick, }: {
     iconSize: 18 | 20;
-    /** Left off where the head is only drawn. */
+    /** No board passes it: a board only draws the head. */
     onClick?: () => void;
 }) => import("react").JSX.Element;
 export type ModalProps = Parameters<typeof Modal>[0];
@@ -898,7 +898,7 @@ type DialogPanelArgs = {
     /** A line under the body. */
     footnote?: string;
     form: DialogForm;
-    /** Left off where the panel is only drawn. */
+    /** No board passes it: a board only draws the panel. */
     onClose?: () => void;
     subtitle?: string;
     title: string;

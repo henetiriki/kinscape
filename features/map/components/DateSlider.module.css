@@ -78,9 +78,11 @@
 .slider input {
   appearance: none;
   background: transparent;
+  box-sizing: border-box;
   display: block;
-  height: 28px;
-  margin: 0;
+  height: var(--size-touch);
+  margin: -8px 0;
+  padding: 8px 0;
   position: relative;
   width: 100%;
 }

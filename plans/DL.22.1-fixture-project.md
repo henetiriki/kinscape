@@ -95,4 +95,3 @@ Behaviour item 7 says that `fixture-accounts.spec.ts` runs "with no change to wh
 ## Deviations
 
 - `lib/design/check.mts` and its test change, as Behaviour item 4 asks. The first line of Behaviour says that no file under `lib/` changes.
-- `fixture-accounts.spec.ts` gets a fourth test (D1: A). Behaviour item 7 says that what it tests does not change.

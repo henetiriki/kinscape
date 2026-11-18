@@ -49,7 +49,7 @@ export default defineConfig({
   // A project is a named group of tests. Each picks its tests with a filter, and all
   // of them use the same browser settings (`use`) above.
   projects: [
-    // Signs in once through the form and saves the session; the projects below load it.
+    // Signs in once through the form and saves the session; `chromium`, `design` and `perf` load it.
     // The tests tagged @fixture sign in as a fixture Account, which the memory sign-in lacks.
     // The sign-ins run in sequence: two at the same time exceed the canvas wait on a CI runner.
     {

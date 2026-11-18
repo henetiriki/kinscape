@@ -2,7 +2,7 @@
 
 - **Spec:** #956
 - **Requirement IDs:** None (test data only)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

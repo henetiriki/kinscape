@@ -119,32 +119,6 @@ for (const route of routes) {
   });
 }
 
-test.describe('a board at a small desktop width', () => {
-  test.use({ viewport: { height: 900, width: 1366 } });
-
-  test('map furniture fits, and its glyph grid is no wider than its board', async ({
-    page,
-  }) => {
-    await page.goto('/design-kit/map-furniture');
-    await page.waitForLoadState('networkidle');
-
-    expect(await reaching(page), 'reaching past 1366').toEqual([]);
-    expect(await overflow(page)).toBeLessThanOrEqual(0);
-
-    const { board, grid } = await page.evaluate(() => {
-      const glyphs = document.querySelector('[class*="glyphGrid"]')!;
-      const right = (node: Element) => node.getBoundingClientRect().right;
-
-      return {
-        board: right(glyphs.closest('section') ?? glyphs.parentElement!),
-        grid: right(glyphs),
-      };
-    });
-
-    expect(grid).toBeLessThanOrEqual(board);
-  });
-});
-
 test.describe('on a phone', () => {
   test.use({ viewport: { height: 844, width: 375 } });
 

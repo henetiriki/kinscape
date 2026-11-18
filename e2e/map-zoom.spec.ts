@@ -190,6 +190,41 @@ test.describe('on a desktop, 1440 × 900', () => {
     );
   });
 
+  // `.stage` of Stage.module.css has `overflow: hidden`, so the check fails today (DL.19 plan D1). It passes after a Bug fixes the check or the ancestor.
+  // eslint-disable-next-line no-restricted-syntax -- expected failure that DL.19 D1 allows
+  test.fail(
+    'no ancestor of a zoom button clips its focus ring',
+    async ({ page }) => {
+      await page.goto('/');
+      await settled(page);
+
+      await zoomIn(page).focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      await expect(zoomIn(page)).toBeFocused();
+
+      const clipped = await zoomIn(page).evaluate(node => {
+        const found: string[] = [];
+
+        for (
+          let parent = node.parentElement;
+          parent && parent !== document.body;
+          parent = parent.parentElement
+        ) {
+          const { overflowX, overflowY } = getComputedStyle(parent);
+
+          if (overflowX !== 'visible' || overflowY !== 'visible') {
+            found.push(parent.className);
+          }
+        }
+
+        return [found, getComputedStyle(node).outlineWidth];
+      });
+
+      expect(clipped).toEqual([[], '2px']);
+    }
+  );
+
   test('the open account menu paints above the zoom card', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Account menu' }).click();

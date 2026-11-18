@@ -53,6 +53,7 @@ describe('with an href', () => {
     );
   });
 
+  // NFR-05, NFR-06
   it('has a 44px hit area, centred on the link', () => {
     const link = /\.link \{[^}]*\}/.exec(css)![0];
     const area = /\.link::before \{[^}]*\}/.exec(css)![0];
@@ -84,6 +85,7 @@ describe('without an href', () => {
     expect(screen.getAllByText('Edit')).toHaveLength(2);
   });
 
+  // NFR-05, NFR-06
   it('has no hit area, because the row around it is the link', () => {
     const base = /\.arrowLink \{[^}]*\}/.exec(css)![0];
 

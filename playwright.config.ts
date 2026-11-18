@@ -24,13 +24,17 @@ const failures = failureArtifacts(process.env);
 const signedIn = authStateFor();
 
 // The CI `design` job runs the design project. So the CI `e2e` job sets this to drop that project,
-// and `perf` waits only for `chromium`. Every other run keeps all projects.
+// and `perf` waits only for `chromium` and `fixture`. Every other run keeps all projects.
 // The memory sign-in has no fixture Accounts, so the design project needs the memory adapters.
 const memorySignIn = process.env.KINSCAPE_MEMORY_SIGN_IN === '1';
 const split = process.env.E2E_SPLIT === '1';
 const noDesign = split || memorySignIn;
 
-// How both servers sign in and store data. By default the memory adapters, which need no database.
+// The server with the memory adapters, which has the fixture Accounts. The memory sign-in has none.
+const fixtureURL = 'http://localhost:3002';
+
+// How the servers on ports 3000 and 3001 sign in and store data. By default they use the memory
+// adapters, which need no database.
 // With KINSCAPE_MEMORY_SIGN_IN=1 (the CI e2e job), the memory sign-in over the Postgres that
 // KINSCAPE_DATABASE_URL names. The empty KINSCAPE_MEMORY_ADAPTERS overrides a value in the shell.
 const adapters: Record<string, string> = memorySignIn
@@ -43,9 +47,9 @@ export default defineConfig({
   // Run the tests inside one file side by side too, not only different files.
   fullyParallel: true,
   // A project is a named group of tests. Each picks its tests with a filter, and all
-  // three use the same browser settings (`use`) above.
+  // of them use the same browser settings (`use`) above.
   projects: [
-    // Signs in once through the form and saves the session; the projects below load it.
+    // Signs in once through the form and saves the session; `chromium`, `design` and `perf` load it.
     // The tests tagged @fixture sign in as a fixture Account, which the memory sign-in lacks.
     // The sign-ins run in sequence: two at the same time exceed the canvas wait on a CI runner.
     {
@@ -54,6 +58,21 @@ export default defineConfig({
       name: 'setup',
       testMatch: 'auth.setup.ts',
       use: { ...use, ...failures },
+    },
+    // Signs in each fixture Account on the fixture server (port 3002) and saves the sessions.
+    // The sign-ins run in sequence, for the same reason as in `setup`.
+    {
+      fullyParallel: false,
+      name: 'fixture-setup',
+      testMatch: 'fixture.setup.ts',
+      use: { ...use, ...failures, baseURL: fixtureURL },
+    },
+    // The tests that need a fixture Account: only fixture-*.spec.ts, on the fixture server.
+    {
+      dependencies: ['fixture-setup'],
+      name: 'fixture',
+      testMatch: 'fixture-*.spec.ts',
+      use: { ...use, ...failures, baseURL: fixtureURL },
     },
     // The everyday checks: every spec file except the design check and the two gallery specs.
     // Every test runs except the ones tagged @perf (those get their own project below).
@@ -67,8 +86,9 @@ export default defineConfig({
         'design-check.spec.ts',
         'design-gallery.spec.ts',
         'gallery-looks.spec.ts',
-        // The fixture Accounts exist only under the memory adapters.
-        ...(memorySignIn ? ['fixture-accounts.spec.ts'] : []),
+        // The `fixture` project runs these on the server with the memory adapters.
+        'fixture-*.spec.ts',
+        'fixture.setup.ts',
       ],
       use: { ...use, ...failures, storageState: signedIn },
     },
@@ -85,7 +105,9 @@ export default defineConfig({
     // run alone, after the projects above finish (`dependencies`), and other
     // workers don't slow them. If a dependency fails, Playwright skips this one.
     {
-      dependencies: noDesign ? ['chromium'] : ['chromium', 'design'],
+      dependencies: noDesign
+        ? ['chromium', 'fixture']
+        : ['chromium', 'design', 'fixture'],
       grep: /@perf/,
       name: 'perf',
       testIgnore: 'auth.setup.ts',
@@ -106,7 +128,7 @@ export default defineConfig({
     {
       command: 'npm run build && npm run start',
       env: {
-        // A production build hides the design kit and screens; the tests need them.
+        // A production build hides the screens; the tests need them.
         KINSCAPE_DEV_PAGES: '1',
         // The server fails at start without Supabase and database variables; the memory adapters need neither.
         ...adapters,
@@ -116,7 +138,7 @@ export default defineConfig({
       timeout: 180_000,
       url: 'http://localhost:3000',
     },
-    // The same build with the design kit and screens hidden, as in production, for
+    // The same build with the screens hidden, as in production, for
     // e2e/dev-pages.spec.mts. It starts after the server above, so in CI the build exists.
     // Locally, if :3000 is already running the build is skipped: run `npm run build` first.
     {
@@ -130,6 +152,21 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
       timeout: 60_000,
       url: 'http://localhost:3001/sign-in',
+    },
+    // The same build with the memory adapters and no screens, for the `fixture` project.
+    // The empty values override the CI `e2e` job, which sets KINSCAPE_MEMORY_SIGN_IN=1.
+    // Locally, if a server runs on :3000, Playwright skips the build. Run `npm run build` first.
+    {
+      command: 'npm run start -- -p 3002',
+      env: {
+        KINSCAPE_DEV_PAGES: '',
+        KINSCAPE_MEMORY_ADAPTERS: '1',
+        KINSCAPE_MEMORY_SIGN_IN: '',
+        NEXT_PUBLIC_E2E: '1',
+      },
+      reuseExistingServer: !process.env.CI,
+      timeout: 60_000,
+      url: `${fixtureURL}/sign-in`,
     },
   ],
   // The CI runner has 4 cores; elsewhere Playwright picks.

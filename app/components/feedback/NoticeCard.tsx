@@ -31,7 +31,7 @@ export const NoticeCard = ({
   /** The one line. */
   children: ReactNode;
   icon?: IconName;
-  /** The kit's phone sample: 358 wide with 44 buttons. */
+  /** The phone sample of its component card: 358 wide with 44 buttons. */
   phone?: boolean;
   progress?: number;
   /** `large`: the icon on top, an H3 title, 380 wide. */

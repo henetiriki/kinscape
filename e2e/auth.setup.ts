@@ -1,9 +1,8 @@
-import type { Page } from '@playwright/test';
-
-import { expect, test as setup } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { signIn } from '@ks/e2e/session';
 import { authStateFor } from '@ks/lib/design/check.mts';
 import { FIXTURES } from '@ks/server/auth/fixtures.mts';
 
@@ -21,20 +20,6 @@ const named = new Set(
     ) as { screens: { account?: string }[] }
   ).screens.flatMap(({ account }) => (account ? [account] : []))
 );
-
-const signIn = async (
-  page: Page,
-  { email, password }: { email: string; password: string },
-  path: string
-) => {
-  await page.goto('/sign-in');
-  await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password', { exact: true }).fill(password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.waitForURL(url => url.pathname === '/');
-  await expect(page.locator('canvas.maplibregl-canvas')).toBeVisible();
-  await page.context().storageState({ path });
-};
 
 // NFR-03: signs in once, through the form; every project that needs a session reuses the state.
 setup('sign in as the synthetic Account', async ({ page }) => {

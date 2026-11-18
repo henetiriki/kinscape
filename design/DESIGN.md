@@ -4,96 +4,69 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 
 ## Screens
 
-| Screen                                               | File                                                                               |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Sign in, desktop                                     | [sign-in-desktop.jpg](sign-in-desktop.jpg)                                         |
-| Sign in, phone                                       | [sign-in-phone.jpg](sign-in-phone.jpg)                                             |
-| Sign in, phone, wrong password                       | [sign-in-phone-error.jpg](sign-in-phone-error.jpg)                                 |
-| Sign in, desktop, can't sign in right now            | [sign-in-unavailable.jpg](sign-in-unavailable.jpg)                                 |
-| Sign in, phone, can't sign in right now              | [sign-in-phone-unavailable.jpg](sign-in-phone-unavailable.jpg)                     |
-| Map, desktop, Layers tab, point clicked              | [map-desktop.jpg](map-desktop.jpg)                                                 |
-| Map, desktop, Filters tab                            | [map-desktop-filters.jpg](map-desktop-filters.jpg)                                 |
-| Map, phone, look-up only (NFR-05)                    | [map-phone.jpg](map-phone.jpg)                                                     |
-| Map, phone, sheet collapsed                          | [map-phone-collapsed.jpg](map-phone-collapsed.jpg)                                 |
-| Map, phone, Layers screen                            | [map-phone-layers.jpg](map-phone-layers.jpg)                                       |
-| Map, phone, Filters                                  | [map-phone-filters.jpg](map-phone-filters.jpg)                                     |
-| First load                                           | [map-loading.jpg](map-loading.jpg)                                                 |
-| First load, phone                                    | [map-loading-phone.jpg](map-loading-phone.jpg)                                     |
-| No pins in the tree                                  | [map-empty-tree.jpg](map-empty-tree.jpg)                                           |
-| No pins in the tree, phone                           | [map-empty-tree-phone.jpg](map-empty-tree-phone.jpg)                               |
-| No pins on this date                                 | [map-empty-date.jpg](map-empty-date.jpg)                                           |
-| No pins on this date, phone                          | [map-empty-date-phone.jpg](map-empty-date-phone.jpg)                               |
-| Districts layer on                                   | [map-districts.jpg](map-districts.jpg)                                             |
-| Districts layer on, phone                            | [map-districts-phone.jpg](map-districts-phone.jpg)                                 |
-| Terrain failed to load                               | [map-offline.jpg](map-offline.jpg)                                                 |
-| Terrain failed to load, phone                        | [map-offline-phone.jpg](map-offline-phone.jpg)                                     |
-| Account menu (M2)                                    | [map-account-menu.jpg](map-account-menu.jpg)                                       |
-| Account menu, phone (M2)                             | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                           |
-| Sources and attributions                             | [map-sources.jpg](map-sources.jpg)                                                 |
-| Sources and attributions, phone                      | [map-sources-phone.jpg](map-sources-phone.jpg)                                     |
-| Credits at 800px, collapsed                          | [map-credits-narrow.jpg](map-credits-narrow.jpg)                                   |
-| Credits at 800px, expanded                           | [map-credits-narrow-open.jpg](map-credits-narrow-open.jpg)                         |
-| Map style: MapLibre layer stack                      | [map-style.jpg](map-style.jpg)                                                     |
-| Map style, phone                                     | [map-style-phone.jpg](map-style-phone.jpg)                                         |
-| Invalid date typed in the dock                       | [map-date-invalid.jpg](map-date-invalid.jpg)                                       |
-| Invalid date typed in the dock, phone                | [map-date-invalid-phone.jpg](map-date-invalid-phone.jpg)                           |
-| Style guide 01: typography                           | [style-1-type.jpg](style-1-type.jpg)                                               |
-| Style guide 01: typography, phone                    | [style-1-type-phone.jpg](style-1-type-phone.jpg)                                   |
-| Style guide 02: colour                               | [style-2-colour.jpg](style-2-colour.jpg)                                           |
-| Style guide 02: colour, phone                        | [style-2-colour-phone.jpg](style-2-colour-phone.jpg)                               |
-| Style guide 03: spacing, shape, motion               | [style-3-foundations.jpg](style-3-foundations.jpg)                                 |
-| Style guide 03: spacing, shape, motion, phone        | [style-3-foundations-phone.jpg](style-3-foundations-phone.jpg)                     |
-| Style guide 04: component states                     | [style-4-states.jpg](style-4-states.jpg)                                           |
-| Style guide 04: component states, phone              | [style-4-states-phone.jpg](style-4-states-phone.jpg)                               |
-| Style guide 05: feedback and validation              | [style-5-feedback.jpg](style-5-feedback.jpg)                                       |
-| Style guide 05: feedback and validation, phone       | [style-5-feedback-phone.jpg](style-5-feedback-phone.jpg)                           |
-| Style guide 06: inputs and actions, part 1           | [style-6-components-inputs.jpg](style-6-components-inputs.jpg)                     |
-| Style guide 06: inputs and actions, part 2           | [style-6-components-inputs-2.jpg](style-6-components-inputs-2.jpg)                 |
-| Style guide 06: inputs and actions, part 3           | [style-6-components-inputs-3.jpg](style-6-components-inputs-3.jpg)                 |
-| Style guide 06: inputs and actions, phone, part 1    | [style-6-components-inputs-phone.jpg](style-6-components-inputs-phone.jpg)         |
-| Style guide 06: inputs and actions, phone, part 2    | [style-6-components-inputs-2-phone.jpg](style-6-components-inputs-2-phone.jpg)     |
-| Style guide 06: inputs and actions, phone, part 3    | [style-6-components-inputs-3-phone.jpg](style-6-components-inputs-3-phone.jpg)     |
-| Style guide 06: inputs and actions, phone, part 4    | [style-6-components-inputs-4-phone.jpg](style-6-components-inputs-4-phone.jpg)     |
-| Style guide 07: surfaces and overlays, part 1        | [style-7-components-surfaces.jpg](style-7-components-surfaces.jpg)                 |
-| Style guide 07: surfaces and overlays, part 2        | [style-7-components-surfaces-2.jpg](style-7-components-surfaces-2.jpg)             |
-| Style guide 07: surfaces and overlays, phone, part 1 | [style-7-components-surfaces-phone.jpg](style-7-components-surfaces-phone.jpg)     |
-| Style guide 07: surfaces and overlays, phone, part 2 | [style-7-components-surfaces-2-phone.jpg](style-7-components-surfaces-2-phone.jpg) |
-| Style guide 08: map furniture                        | [style-8-components-map.jpg](style-8-components-map.jpg)                           |
-| Style guide 08: map furniture, phone, part 1         | [style-8-components-map-phone.jpg](style-8-components-map-phone.jpg)               |
-| Style guide 08: map furniture, phone, part 2         | [style-8-components-map-2-phone.jpg](style-8-components-map-2-phone.jpg)           |
-| Design kit index                                     | [design-kit.jpg](design-kit.jpg)                                                   |
-| Design kit index, phone                              | [design-kit-phone.jpg](design-kit-phone.jpg)                                       |
-| Design kit boards menu open, phone                   | [design-kit-menu-phone.jpg](design-kit-menu-phone.jpg)                             |
-| Add a pin (provisional)                              | [add-pin.jpg](add-pin.jpg)                                                         |
-| Add a pin, phone (provisional)                       | [add-pin-phone.jpg](add-pin-phone.jpg)                                             |
-| People list                                          | [people-list.jpg](people-list.jpg)                                                 |
-| People list, filter finds nothing                    | [people-list-no-match.jpg](people-list-no-match.jpg)                               |
-| People list, no people yet                           | [people-empty.jpg](people-empty.jpg)                                               |
-| People list, failed to load                          | [people-load-failed.jpg](people-load-failed.jpg)                                   |
-| People list, loading                                 | [people-loading.jpg](people-loading.jpg)                                           |
-| People list, loading, phone                          | [people-loading-phone.jpg](people-loading-phone.jpg)                               |
-| People list, phone, read-only                        | [people-list-phone.jpg](people-list-phone.jpg)                                     |
-| Person form, add                                     | [person-new.jpg](person-new.jpg)                                                   |
-| Person form, edit                                    | [person-edit.jpg](person-edit.jpg)                                                 |
-| Person form, errors after Save                       | [person-errors.jpg](person-errors.jpg)                                             |
-| Person form, save failed                             | [person-save-failed.jpg](person-save-failed.jpg)                                   |
-| Person form, changed by another edit                 | [person-conflict.jpg](person-conflict.jpg)                                         |
-| Person not found                                     | [person-not-found.jpg](person-not-found.jpg)                                       |
-| Person form, phone, notice                           | [person-form-phone.jpg](person-form-phone.jpg)                                     |
-| Fuzzy dates, readings and messages                   | [fuzzy-date-readings.jpg](fuzzy-date-readings.jpg)                                 |
-| Relationships, page, three groups                    | [person-relationships.jpg](person-relationships.jpg)                               |
-| Relationships, no links yet                          | [person-relationships-empty.jpg](person-relationships-empty.jpg)                   |
-| Relationships, failed to load                        | [person-relationships-load-failed.jpg](person-relationships-load-failed.jpg)       |
-| Relationship dialog, step 1, pick a person           | [relationship-pick.jpg](relationship-pick.jpg)                                     |
-| Relationship dialog, step 1, filter finds nothing    | [relationship-pick-no-match.jpg](relationship-pick-no-match.jpg)                   |
-| Relationship dialog, step 1, no other person         | [relationship-pick-empty.jpg](relationship-pick-empty.jpg)                         |
-| Relationship dialog, step 2, parent                  | [relationship-details-parent.jpg](relationship-details-parent.jpg)                 |
-| Relationship dialog, step 2, spouse                  | [relationship-details-spouse.jpg](relationship-details-spouse.jpg)                 |
-| Relationship dialog, edit a spouse link              | [relationship-edit-spouse.jpg](relationship-edit-spouse.jpg)                       |
-| Relationship dialog, cycle refused                   | [relationship-cycle.jpg](relationship-cycle.jpg)                                   |
-| Relationship dialog, save failed                     | [relationship-save-failed.jpg](relationship-save-failed.jpg)                       |
-| Relationship messages                                | [relationship-messages.jpg](relationship-messages.jpg)                             |
-| Person form, edit, leave warning                     | [person-edit-leave.jpg](person-edit-leave.jpg)                                     |
+| Screen                                            | File                                                                         |
+| ------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Sign in, desktop                                  | [sign-in-desktop.jpg](sign-in-desktop.jpg)                                   |
+| Sign in, phone                                    | [sign-in-phone.jpg](sign-in-phone.jpg)                                       |
+| Sign in, phone, wrong password                    | [sign-in-phone-error.jpg](sign-in-phone-error.jpg)                           |
+| Sign in, desktop, can't sign in right now         | [sign-in-unavailable.jpg](sign-in-unavailable.jpg)                           |
+| Sign in, phone, can't sign in right now           | [sign-in-phone-unavailable.jpg](sign-in-phone-unavailable.jpg)               |
+| Map, desktop, Layers tab, point clicked           | [map-desktop.jpg](map-desktop.jpg)                                           |
+| Map, desktop, Filters tab                         | [map-desktop-filters.jpg](map-desktop-filters.jpg)                           |
+| Map, phone, look-up only (NFR-05)                 | [map-phone.jpg](map-phone.jpg)                                               |
+| Map, phone, sheet collapsed                       | [map-phone-collapsed.jpg](map-phone-collapsed.jpg)                           |
+| Map, phone, Layers screen                         | [map-phone-layers.jpg](map-phone-layers.jpg)                                 |
+| Map, phone, Filters                               | [map-phone-filters.jpg](map-phone-filters.jpg)                               |
+| First load                                        | [map-loading.jpg](map-loading.jpg)                                           |
+| First load, phone                                 | [map-loading-phone.jpg](map-loading-phone.jpg)                               |
+| No pins in the tree                               | [map-empty-tree.jpg](map-empty-tree.jpg)                                     |
+| No pins in the tree, phone                        | [map-empty-tree-phone.jpg](map-empty-tree-phone.jpg)                         |
+| No pins on this date                              | [map-empty-date.jpg](map-empty-date.jpg)                                     |
+| No pins on this date, phone                       | [map-empty-date-phone.jpg](map-empty-date-phone.jpg)                         |
+| Districts layer on                                | [map-districts.jpg](map-districts.jpg)                                       |
+| Districts layer on, phone                         | [map-districts-phone.jpg](map-districts-phone.jpg)                           |
+| Terrain failed to load                            | [map-offline.jpg](map-offline.jpg)                                           |
+| Terrain failed to load, phone                     | [map-offline-phone.jpg](map-offline-phone.jpg)                               |
+| Account menu (M2)                                 | [map-account-menu.jpg](map-account-menu.jpg)                                 |
+| Account menu, phone (M2)                          | [map-account-menu-phone.jpg](map-account-menu-phone.jpg)                     |
+| Sources and attributions                          | [map-sources.jpg](map-sources.jpg)                                           |
+| Sources and attributions, phone                   | [map-sources-phone.jpg](map-sources-phone.jpg)                               |
+| Credits at 800px, collapsed                       | [map-credits-narrow.jpg](map-credits-narrow.jpg)                             |
+| Credits at 800px, expanded                        | [map-credits-narrow-open.jpg](map-credits-narrow-open.jpg)                   |
+| Map style: MapLibre layer stack                   | [map-style.jpg](map-style.jpg)                                               |
+| Map style, phone                                  | [map-style-phone.jpg](map-style-phone.jpg)                                   |
+| Invalid date typed in the dock                    | [map-date-invalid.jpg](map-date-invalid.jpg)                                 |
+| Invalid date typed in the dock, phone             | [map-date-invalid-phone.jpg](map-date-invalid-phone.jpg)                     |
+| Add a pin (provisional)                           | [add-pin.jpg](add-pin.jpg)                                                   |
+| Add a pin, phone (provisional)                    | [add-pin-phone.jpg](add-pin-phone.jpg)                                       |
+| People list                                       | [people-list.jpg](people-list.jpg)                                           |
+| People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |
+| People list, no people yet                        | [people-empty.jpg](people-empty.jpg)                                         |
+| People list, failed to load                       | [people-load-failed.jpg](people-load-failed.jpg)                             |
+| People list, loading                              | [people-loading.jpg](people-loading.jpg)                                     |
+| People list, loading, phone                       | [people-loading-phone.jpg](people-loading-phone.jpg)                         |
+| People list, phone, read-only                     | [people-list-phone.jpg](people-list-phone.jpg)                               |
+| Person form, add                                  | [person-new.jpg](person-new.jpg)                                             |
+| Person form, edit                                 | [person-edit.jpg](person-edit.jpg)                                           |
+| Person form, errors after Save                    | [person-errors.jpg](person-errors.jpg)                                       |
+| Person form, save failed                          | [person-save-failed.jpg](person-save-failed.jpg)                             |
+| Person form, changed by another edit              | [person-conflict.jpg](person-conflict.jpg)                                   |
+| Person not found                                  | [person-not-found.jpg](person-not-found.jpg)                                 |
+| Person form, phone, notice                        | [person-form-phone.jpg](person-form-phone.jpg)                               |
+| Fuzzy dates, readings and messages                | [fuzzy-date-readings.jpg](fuzzy-date-readings.jpg)                           |
+| Relationships, page, three groups                 | [person-relationships.jpg](person-relationships.jpg)                         |
+| Relationships, no links yet                       | [person-relationships-empty.jpg](person-relationships-empty.jpg)             |
+| Relationships, failed to load                     | [person-relationships-load-failed.jpg](person-relationships-load-failed.jpg) |
+| Relationship dialog, step 1, pick a person        | [relationship-pick.jpg](relationship-pick.jpg)                               |
+| Relationship dialog, step 1, filter finds nothing | [relationship-pick-no-match.jpg](relationship-pick-no-match.jpg)             |
+| Relationship dialog, step 1, no other person      | [relationship-pick-empty.jpg](relationship-pick-empty.jpg)                   |
+| Relationship dialog, step 2, parent               | [relationship-details-parent.jpg](relationship-details-parent.jpg)           |
+| Relationship dialog, step 2, spouse               | [relationship-details-spouse.jpg](relationship-details-spouse.jpg)           |
+| Relationship dialog, edit a spouse link           | [relationship-edit-spouse.jpg](relationship-edit-spouse.jpg)                 |
+| Relationship dialog, cycle refused                | [relationship-cycle.jpg](relationship-cycle.jpg)                             |
+| Relationship dialog, save failed                  | [relationship-save-failed.jpg](relationship-save-failed.jpg)                 |
+| Relationship messages                             | [relationship-messages.jpg](relationship-messages.jpg)                       |
+| Person form, edit, leave warning                  | [person-edit-leave.jpg](person-edit-leave.jpg)                               |
 
 ![Map, desktop](map-desktop.jpg)
 
@@ -130,7 +103,7 @@ Not built. The sign-in rows and the first account menu rows show Google sign-in:
 | Public Sans         | 400, 500, 600, italic 400 and 500 | All UI text and every map label                         |
 | JetBrains Mono      | 400, 500                          | Dates, coordinates, keyboard hints, code. Ligatures off |
 
-Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`). `/design-kit/type` shows them.
+Components set these styles with `<Text variant>` (`app/components/foundation/Text.tsx`). The Text component card shows them.
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see [Map style](#map-style)).
 
@@ -156,8 +129,6 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
 
 Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
-
-The `kit.*` tokens set the design kit's board titles, page padding and intro width. Only kit pages use them.
 
 ## Colours
 
@@ -218,7 +189,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 | `layout`     | ColumnLayout                                                                                                                         |
 | `auth`       | What only sign-in uses: AuthLayout, SignInHero, SignInForm                                                                           |
 
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/design-kit` and `app/screens` are exempt.
+**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/screens` is exempt.
 
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
@@ -250,9 +221,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a 14/600 title and one line in `type.small`.
 - **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
-Every control has the five states in [style-4-states.jpg](style-4-states.jpg). Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
-
-`/design-kit/states` builds the controls. `/design-kit` lists the boards. In production the kit is a 404.
+Every control has the five states on its component card. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
 
 ## States
 
@@ -279,7 +248,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Map date field
 
-`/design-kit/feedback` shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. The field pads single digits (`1901-6-4`).
+The DateField component card shows it. The field is 188px wide and accepts `1901`, `1901-06` or `1901-06-14`. The field pads single digits (`1901-6-4`).
 
 1. Check on Enter or when focus leaves, never while the user types.
 2. When the date is invalid, keep what was typed. Show a 2px `--error-border` and an error icon inside the field. Set `aria-invalid`. Link the message with `aria-describedby`.
@@ -299,7 +268,7 @@ Errors use `role="alert"`. Everything else uses `role="status"`.
 
 ### Fuzzy date field
 
-`/design-kit/inputs` shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
+The FuzzyDateField component card shows it. It is a label, a 44px input and one line under the input. The input text is Mono M with ligatures off. On a phone it takes the size and line of Body L, 16 / 24.
 
 1. The line is one `aria-live="polite"` slot. It shows the helper, "Reads as **{reading}**", or the error message.
 2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.
@@ -338,7 +307,7 @@ On the map these are SDF icons in `--pin`, with a 2px white halo.
 
 ## Map style
 
-Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. [map-style.jpg](map-style.jpg) shows the full layer stack, and `/design-kit/map-style` builds it. The map colours:
+Every map visual is something MapLibre GL can draw: flat fills, solid or dashed lines, one `fill-pattern` hatch, a hillshade layer, circles and SDF symbols. [map-style.jpg](map-style.jpg) shows the full layer stack. The map colours:
 
 | Use                     | Value                                                                                               |
 | ----------------------- | --------------------------------------------------------------------------------------------------- |

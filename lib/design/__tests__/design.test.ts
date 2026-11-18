@@ -25,7 +25,7 @@ describe('the design snapshots', () => {
   );
 
   it('are all checked', () => {
-    expect(snapshots).toHaveLength(93);
+    expect(snapshots).toHaveLength(66);
   });
 
   it.each(snapshots)('%s uses only token colours', name => {
@@ -140,18 +140,9 @@ describe('layout tokens', () => {
     const { breakpoint } = tokens;
     const allowed = new Map([
       ['max-height', [px(breakpoint['phone-height'])]],
-      [
-        'max-width',
-        [px(breakpoint['phone-width']), px(breakpoint['desktop-width'])],
-      ],
+      ['max-width', [px(breakpoint['phone-width'])]],
       ['min-height', [px(breakpoint['phone-height']) + 0.02]],
-      [
-        'min-width',
-        [
-          px(breakpoint['phone-width']) + 0.02,
-          px(breakpoint['desktop-width']) + 0.02,
-        ],
-      ],
+      ['min-width', [px(breakpoint['phone-width']) + 0.02]],
     ]);
     const found: string[] = [];
 

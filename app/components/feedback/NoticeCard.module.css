@@ -92,7 +92,7 @@
   padding-left: var(--space-32);
 }
 
-/* The kit's phone sample: 358 wide, 44 buttons. */
+/* The phone sample of its component card: 358 wide, 44 buttons. */
 .card[data-phone] {
   width: 358px;
 }

@@ -59,13 +59,16 @@ describe('failureArtifacts', () => {
 });
 
 describe('playwright.config.ts', () => {
-  it('runs the setup sign-ins in sequence', async () => {
-    const { setup } = await projects('playwright.config.ts', '');
+  it.each(['setup', 'fixture-setup'])(
+    'runs the %s sign-ins in sequence',
+    async name => {
+      expect(
+        (await projects('playwright.config.ts', ''))[name].fullyParallel
+      ).toBe(false);
+    }
+  );
 
-    expect(setup.fullyParallel).toBe(false);
-  });
-
-  it.each(['setup', 'chromium', 'design'])(
+  it.each(['setup', 'fixture-setup', 'fixture', 'chromium', 'design'])(
     'keeps a trace and a screenshot of a failed %s test in CI',
     async name => {
       expect(
@@ -85,8 +88,15 @@ describe('playwright.config.ts', () => {
   it('records nothing without CI', async () => {
     const all = await projects('playwright.config.ts', '');
 
-    expect(Object.keys(all)).toEqual(['setup', 'chromium', 'design', 'perf']);
-    expect(Object.values(all).map(kept)).toEqual([{}, {}, {}, {}]);
+    expect(Object.keys(all)).toEqual([
+      'setup',
+      'fixture-setup',
+      'fixture',
+      'chromium',
+      'design',
+      'perf',
+    ]);
+    expect(Object.values(all).map(kept)).toEqual([{}, {}, {}, {}, {}, {}]);
   });
 });
 

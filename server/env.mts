@@ -66,7 +66,7 @@ export const parseCaFile = (source: Record<string, string | undefined>) => {
  * Supabase variable. The server stops if `VERCEL` or `VERCEL_ENV` is defined, even empty.
  * `KINSCAPE_MEMORY_SIGN_IN=1` is test-only too. It swaps in only the sign-in and needs the database
  * variable. The server stops on Vercel in the same way.
- * Test-only `KINSCAPE_DEV_PAGES` shows the design kit and screens (`dev-pages.mts`).
+ * Test-only `KINSCAPE_DEV_PAGES` shows the screens (`dev-pages.mts`).
  * `KINSCAPE_DATABASE_CA_FILE` (`parseCaFile`) follows the same Vercel rule.
  */
 export const parseEnv = (source: Record<string, string | undefined>) => {

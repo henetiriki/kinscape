@@ -10,13 +10,10 @@ Follow these steps in order:
 2. Build the component from that board. Add it to `CONTROLS`. Write its card states in `lib/design/states.mts`. If its CSS has a width query, or it fills the viewport, add it to `PHONE_CARDS` in `lib/design/cards.mts`.
 3. Run the steps of [Changing the design system](CANVAS.md#changing-the-design-system) on one branch and one pull request. The plan lists the boards for [step 7](CANVAS.md#changing-the-design-system). The workflow "Design: Render snapshots" writes its card images.
 4. Swap it into each screen board that shows it. Then delete the draft board. Follow [the deletion rule](CANVAS.md#who-deletes-a-generated-file).
-5. Add no section to `/design-kit` and no `SG-*` board.
 
 ## A built component
 
 If the app has the component and the design system does not, do steps 2 and 3 above. Draw no draft board.
-
-A change to a component that a `/design-kit` page shows still updates that page and its `SG-*` board, until the route retires.
 
 ## Board swap prompt
 

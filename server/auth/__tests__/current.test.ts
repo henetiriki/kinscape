@@ -80,7 +80,7 @@ describe('requireSession', () => {
   });
 });
 
-// NFR-03: the design kit and screens are 404 outside Preview and development, even signed in.
+// NFR-03: the screens are 404 outside Preview and development, even signed in.
 describe('requireDevPage', () => {
   afterEach(() => {
     vi.unstubAllEnvs();

@@ -108,7 +108,7 @@ it('renders on the server as the centred dialog', () => {
   ).toContain('data-form="centred"');
 });
 
-it('draws a panel without a dialog around it, for the design kit', () => {
+it('draws a panel without a dialog around it, for its component card', () => {
   render(
     <DialogPanel form='sheet' title='Example' titleId='t'>
       <p>Body</p>

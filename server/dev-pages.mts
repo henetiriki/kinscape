@@ -1,4 +1,4 @@
-// The design kit and the built screens: sample data for design work, never part of the product.
+// The built screens: sample data for design work, never part of the product.
 // No `server-only`: `proxy.ts` imports this too.
 
 const DEV_PAGE = /^\/screens(?:\/|$)/;

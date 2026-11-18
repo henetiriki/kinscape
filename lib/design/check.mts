@@ -32,6 +32,10 @@ export const authStateFor = (account?: string): string =>
     ? 'test-results/.auth/state.json'
     : `test-results/.auth/${account}.json`;
 
+/** The saved session of a fixture Account that `fixture-setup` signs in on the fixture server. */
+export const fixtureStateFor = (account: string): string =>
+  `test-results/.auth/fixture/${account}.json`;
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 

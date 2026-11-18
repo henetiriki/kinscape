@@ -52,7 +52,7 @@
   width: 100%;
 }
 
-/* In a dialog the panel stops short of the screen's edge; the design kit draws it whole. */
+/* In a dialog the panel stops short of the screen's edge; a component card draws it whole. */
 .dialog .panel {
   max-height: calc(100dvh - 80px);
 }

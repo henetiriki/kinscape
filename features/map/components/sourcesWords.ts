@@ -1,4 +1,4 @@
-/** The Sources dialog's words, which the design kit shows too. */
+/** The Sources dialog's words. */
 export const SOURCES_WORDS = {
   footnote:
     "The line under the date control is built from this list. A source isn't used until its licence has been checked.",

@@ -23,32 +23,32 @@ After the seven folders go, only `relationship-save-failed` and `person-relation
 
 **D1 · A sideways check of the Relationship dialogs** · Decides: Tech lead
 
-`e2e/widths.spec.ts` checks each route of `design/screens.json` at seven sizes, as the default Account. On `main` it opens the seven `/screens` pages, so it checks each dialog at the four sizes that are not a phone. After this Spec, the seven routes show the not-found page to that Account. #959 plan D1 added a fixture test of the page, and said that it does not cover the dialogs. Does a fixture test keep the check of the dialogs?
+`e2e/widths.spec.ts` checks each route of `design/screens.json` at seven sizes, as the default Account. On `main` it opens the seven `/screens` pages, so it checks each dialog at the four sizes that are not a phone. After this Spec, the seven routes show the not-found page to that Account. The fixture test of #959 covers the page, not the dialogs. Does a fixture test keep the check of the dialogs?
 
-- **A.** Split `wideAt` in `e2e/sideways.ts`: a new export measures the open page, and `wideAt` calls it. Add one test to the family Tree block of `e2e/fixture-people.spec.ts`. For the six family states and the four desktop sizes, it opens the route, runs the state and measures. `relationship-pick-empty` uses another Account, so it is not in the test. About 40 lines and 24 page loads.
+- **A.** Split `wideAt` in `e2e/sideways.ts`: a new export measures the open page, and `wideAt` calls it. `DESKTOP_SIZES` exports the four sizes that are not a phone. Add one test to the family Tree block of `e2e/fixture-people.spec.ts`. For each of the six family entries and each desktop size, it opens the route, runs the state if any, waits for the dialog and measures. `relationship-pick-empty` uses another Account, so no test covers it, as in DL.22.2 (#958). About 40 lines and 24 page loads.
 - **B.** Add nothing. The dialogs lose the sideways check. No lines.
 - **Other:** your own.
 
-Recommended: A, because NFR-05 covers each screen, and the dialogs are the widest part of the page. B loses the check of seven states at four sizes.
+Recommended: A, because NFR-05 covers each screen, and the dialogs are the widest part of the page. B loses seven dialogs at four sizes. A keeps six.
 
 ## Files that change
 
-| File                                                                                                        | New / changed | What                                                   |
-| ----------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------ |
-| `design/screens.json`                                                                                       | changed       | Seven entries open the app route and name an `account` |
-| `e2e/design-states.ts`                                                                                      | changed       | Six states and the helper that opens the picker        |
-| `e2e/fixture-people.spec.ts`                                                                                | changed       | The cycle test of check 3; D1 A adds the sideways test |
-| `e2e/sideways.ts`                                                                                           | changed       | D1 A only: the measuring part becomes an export        |
-| `app/screens/relationship-{pick,pick-no-match,pick-empty,details-parent,details-spouse,edit-spouse,cycle}/` | deleted       | The seven pages                                        |
-| `app/screens/relationships.tsx`                                                                             | changed       | `edit`, `empty` and `NO_RELATIONSHIPS` go              |
-| `app/screens/__tests__/relationships.test.tsx`                                                              | changed       | The seven avatar rows and the seven page tests go      |
-| `features/people/components/PersonRelationships.tsx`                                                        | changed       | `query` and `marriage` go from `picking`               |
-| `features/people/components/RelationshipPicker.tsx`                                                         | changed       | `initialQuery` goes                                    |
-| `features/people/components/RelationshipDetails.tsx`                                                        | changed       | `startMarriage` goes                                   |
-| `features/people/components/__tests__/PersonRelationships.test.tsx`                                         | changed       | Two tests type the filter and the marriage             |
-| `features/people/components/__tests__/RelationshipPicker.test.tsx`                                          | changed       | The no-match test types "Pretorius"                    |
-| `features/people/components/__tests__/RelationshipDetails.test.tsx`                                         | changed       | The marriage test types "ABT 1875"                     |
-| `lib/design/__tests__/screens.test.ts`                                                                      | changed       | Seven `SCREEN_ONLY` rows go                            |
+| File                                                                                                        | New / changed | What                                                    |
+| ----------------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------- |
+| `design/screens.json`                                                                                       | changed       | Seven entries open the app route and name an `account`  |
+| `e2e/design-states.ts`                                                                                      | changed       | Six states and the helper that opens the picker         |
+| `e2e/fixture-people.spec.ts`                                                                                | changed       | The cycle test of check 3; D1 A adds the sideways test  |
+| `e2e/sideways.ts`                                                                                           | changed       | D1 A only: the measuring part and the sizes are exports |
+| `app/screens/relationship-{pick,pick-no-match,pick-empty,details-parent,details-spouse,edit-spouse,cycle}/` | deleted       | The seven pages                                         |
+| `app/screens/relationships.tsx`                                                                             | changed       | `edit`, `empty` and `NO_RELATIONSHIPS` go               |
+| `app/screens/__tests__/relationships.test.tsx`                                                              | changed       | The seven avatar rows and the seven page tests go       |
+| `features/people/components/PersonRelationships.tsx`                                                        | changed       | `query` and `marriage` go from `picking`                |
+| `features/people/components/RelationshipPicker.tsx`                                                         | changed       | `initialQuery` goes                                     |
+| `features/people/components/RelationshipDetails.tsx`                                                        | changed       | `startMarriage` goes                                    |
+| `features/people/components/__tests__/PersonRelationships.test.tsx`                                         | changed       | Two tests type the filter and the marriage              |
+| `features/people/components/__tests__/RelationshipPicker.test.tsx`                                          | changed       | The no-match test types "Pretorius"                     |
+| `features/people/components/__tests__/RelationshipDetails.test.tsx`                                         | changed       | The marriage test types "ABT 1875"                      |
+| `lib/design/__tests__/screens.test.ts`                                                                      | changed       | Seven `SCREEN_ONLY` rows go                             |
 
 ## Order of work
 

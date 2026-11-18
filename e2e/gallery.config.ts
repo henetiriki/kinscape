@@ -2,7 +2,10 @@ import { defineConfig } from '@playwright/test';
 
 import { CARD_IMAGES, pinnedImage } from '@ks/lib/design/cards.mts';
 import { LAUNCH_ARGS } from '@ks/lib/design/shots.mts';
-import { failureArtifacts } from '@ks/scripts/playwright-failures.mts';
+import {
+  ciLimits,
+  failureArtifacts,
+} from '@ks/scripts/playwright-failures.mts';
 
 // The main config loads design-gallery.spec.ts too, so the config of the gallery prints this, not the spec.
 // Each worker loads this config again and has a TEST_WORKER_INDEX: only the runner prints.
@@ -17,6 +20,7 @@ if (!pinnedImage(process.env) && process.env.TEST_WORKER_INDEX === undefined) {
 // and sets no base URL. `npm run design:gallery` writes the files first, then runs this config.
 // The card images are the baselines of the screenshot assertion: `--update-snapshots` writes them.
 export default defineConfig({
+  ...ciLimits(process.env),
   forbidOnly: !!process.env.CI,
   fullyParallel: true,
   projects: [
@@ -34,5 +38,4 @@ export default defineConfig({
   snapshotPathTemplate: `{testDir}/../${CARD_IMAGES}/{arg}{ext}`,
   testDir: '.',
   testMatch: ['design-gallery.spec.ts', 'gallery-looks.spec.ts'],
-  workers: process.env.CI ? 4 : undefined,
 });

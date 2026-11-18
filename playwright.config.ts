@@ -3,7 +3,10 @@ import type { PlaywrightWorkerOptions } from '@playwright/test';
 import { defineConfig } from '@playwright/test';
 
 import { authStateFor } from '@ks/lib/design/check.mts';
-import { failureArtifacts } from '@ks/scripts/playwright-failures.mts';
+import {
+  ciLimits,
+  failureArtifacts,
+} from '@ks/scripts/playwright-failures.mts';
 
 // How the browser is launched. Every project below uses this one object, so
 // all of them run the same Chromium the same way. The top-level `use` further down
@@ -42,6 +45,7 @@ const adapters: Record<string, string> = memorySignIn
   : { KINSCAPE_MEMORY_ADAPTERS: '1' };
 
 export default defineConfig({
+  ...ciLimits(process.env),
   // A stray `test.only` fails the run in CI instead of quietly running one test.
   forbidOnly: !!process.env.CI,
   // Run the tests inside one file side by side too, not only different files.
@@ -169,6 +173,4 @@ export default defineConfig({
       url: `${fixtureURL}/sign-in`,
     },
   ],
-  // The CI runner has 4 cores; elsewhere Playwright picks.
-  workers: process.env.CI ? 4 : undefined,
 });

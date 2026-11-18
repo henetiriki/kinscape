@@ -105,11 +105,22 @@ const data = (value: unknown): string =>
 const STYLE = (
   pad: number,
   contain: boolean,
-  frame: number | undefined
+  frame: number | undefined,
+  radios: boolean
 ) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
-.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; }`}`;
+.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
+
+const FIGURE =
+  "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";
+
+// Radios of one name form one group only inside one form. Only a `radios` card gets a form,
+// because SearchBar renders its own form and a form in a form is invalid HTML.
+const CASE = (radios: boolean) =>
+  radios
+    ? `h('form', { className: 'ks-scope', key: index, onSubmit: function (event) { event.preventDefault(); } }, ${FIGURE})`
+    : FIGURE;
 
 /** The card's preview: a root and one script that mounts each state of `window.KinScape.<name>`. */
 export const previewHtml = ({
@@ -120,6 +131,7 @@ export const previewHtml = ({
   height,
   name,
   pad,
+  radios = false,
   states,
   width,
 }: Card): string =>
@@ -129,7 +141,7 @@ export const previewHtml = ({
 <head>
 <meta charset="utf-8" />
 <style>
-${STYLE(pad, contain, frame)}
+${STYLE(pad, contain, frame, radios)}
 </style>
 </head>
 <body>
@@ -152,7 +164,7 @@ ${STYLE(pad, contain, frame)}
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);
-    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
+    return ${CASE(radios)};
   });
   ReactDOM.flushSync(function () {
     ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));

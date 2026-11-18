@@ -321,7 +321,7 @@ test.describe('at 1440px', () => {
     ]) {
       await open(page, file);
 
-      // A radio group is one tab stop, and the cards of Segmented share one group.
+      // A radio group is one tab stop: the radios of one name in one form.
       const stops = await page
         .locator(':is(button, input, a)')
         .evaluateAll(nodes => {
@@ -337,7 +337,12 @@ test.describe('at 1440px', () => {
           return (
             enabled.length -
             radios.length +
-            new Set(radios.map(radio => radio.name)).size
+            new Set(
+              radios.map(
+                radio =>
+                  `${[...document.forms].findIndex(form => form === radio.form)} ${radio.name}`
+              )
+            ).size
           );
         });
 

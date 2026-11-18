@@ -13,6 +13,8 @@ export type Card = {
   name: string;
   /** Space above and below each state, for a message that opens outside its control. */
   pad: number;
+  /** The control renders radios. The preview puts each state in its own form, so each state has its own radio group. */
+  radios?: boolean;
   states: State[];
   /** The px width at which the design system shows the card. */
   width?: number;

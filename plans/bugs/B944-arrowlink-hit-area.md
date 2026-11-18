@@ -2,7 +2,7 @@
 
 - **Spec:** #944 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05), [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The Edit link of `RelationshipRow` is an `<ArrowLink href>`. #946 holds its two 
 - **B.** Remove the #946 rows, and leave #946 open for its own plan. Cost: one more plan and PR.
 - **Other:** your own.
 
-Recommended: A, because one fix and one proof serve both links, as in #943 D1.
+**Answer: A** (@henetiriki)
 
 If a #946 row still fails after the fix, D1 has no effect, and the row stays.
 
@@ -34,7 +34,7 @@ The new rule is the same six lines as the `::before` rule of `TextLink.module.cs
 - **B.** Add `app/components/foundation/touch.module.css`: a `.touch` class with `position: relative` and the centred `::before`. `ArrowLink` `.link` and the enabled `TextLink` take it with `composes`. Cost: about 30 lines, and `TextLink` becomes a second design system input.
 - **Other:** your own.
 
-Recommended: B, because one rule then gives each link the same hit area. A is cheaper. It loses only the one place for the rule.
+**Answer: A** (@henetiriki)
 
 **D3 · When to run the design system steps 3 to 5** · Decides: Tech lead
 
@@ -44,9 +44,8 @@ PR #1017 (DL.21.2) merged. It changed `bundle.css`, `bundle.js`, `tokens.json` a
 - ~~**B.** Publish before `main` is in this branch. DL.21.2 must then publish again.~~
 - **Other:** your own.
 
-Recommended: A, because no publish then drops merged work, as in #943 D2.
+**Answer: A** (@henetiriki)
 
-**Answer: A** (tech lead)
 
 ## Files that change
 

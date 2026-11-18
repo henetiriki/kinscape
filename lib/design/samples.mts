@@ -1,4 +1,4 @@
-/** Synthetic samples: the design kit's boards and the design system's cards both draw them. */
+/** Synthetic samples: the component cards draw them. */
 
 import type { ContestedYears, Epoch } from '#ks/lib/ui/types.ts';
 
@@ -19,7 +19,7 @@ export const LONG_NOTES = Array.from(
   (_, line) => `Line ${line + 1} of the notes.`
 ).join('\n');
 
-/** The line under an empty or unreadable fuzzy date field, in the kit and on its card. */
+/** The line under an empty or unreadable fuzzy date field, on its component card. */
 export const FUZZY_DATE_HELPER =
   'For example 1850, ABT 1850 or BET 1850 AND 1855.';
 

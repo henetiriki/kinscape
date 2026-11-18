@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef, ComponentType } from 'react';
 
 import type { MARKS, PATHS } from '@ks/app/components/foundation/Icon';
 
-/** A state the design kit shows without the pointer or keyboard; the real states come from the browser. */
+/** A state that a component card shows without the pointer or keyboard; the real states come from the browser. */
 export type ControlState = 'active' | 'focus' | 'hover';
 
 export type FilledIconName = keyof typeof MARKS;

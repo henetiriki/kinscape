@@ -7,7 +7,7 @@ import styles from '@ks/features/map/components/ZoomControls.module.css';
 
 /**
  * The card of Zoom in, Zoom out and Fit South Africa. At a limit a button is `aria-disabled`, stays in
- * the Tab order and skips its handler. `state` shows a look on Zoom in, for the design kit.
+ * the Tab order and skips its handler. `state` shows a look on Zoom in, for its component card.
  */
 export const ZoomControls = ({
   atMax,

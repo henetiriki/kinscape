@@ -92,7 +92,7 @@ export type Slot = {
 /** One state a preview mounts. A slot holds a control; a preview draws it from `window.KinScape`. */
 export type State = {
   children?: Slot[] | string;
-  /** Matches the design kit case of the same label in `react-18.test.tsx`. */
+  /** Matches the case of the same label in `react-18.test.tsx`. */
   label: string;
   props: Record<string, unknown>;
   /** A control for each prop that takes an element, by prop name. */

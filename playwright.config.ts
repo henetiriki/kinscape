@@ -106,7 +106,7 @@ export default defineConfig({
     {
       command: 'npm run build && npm run start',
       env: {
-        // A production build hides the design kit and screens; the tests need them.
+        // A production build hides the screens; the tests need them.
         KINSCAPE_DEV_PAGES: '1',
         // The server fails at start without Supabase and database variables; the memory adapters need neither.
         ...adapters,
@@ -116,7 +116,7 @@ export default defineConfig({
       timeout: 180_000,
       url: 'http://localhost:3000',
     },
-    // The same build with the design kit and screens hidden, as in production, for
+    // The same build with the screens hidden, as in production, for
     // e2e/dev-pages.spec.mts. It starts after the server above, so in CI the build exists.
     // Locally, if :3000 is already running the build is skipped: run `npm run build` first.
     {

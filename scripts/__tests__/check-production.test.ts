@@ -33,7 +33,7 @@ afterEach(() => {
 
 // NFR-03
 describe('check-production', () => {
-  it('passes a deployment that hides the kit and gates the map', async () => {
+  it('passes a deployment that hides the screens and gates the map', async () => {
     const fetch = deployment(GOOD());
 
     expect(await run(['https://example.test'], {}, fetch)).toBe(0);

@@ -4,7 +4,6 @@ import type {
   IconSize,
 } from '@ks/app/components/foundation/types';
 
-// The board icons are copied from design/source/style-3-foundations.html.
 export const PATHS = {
   alert: (
     <>

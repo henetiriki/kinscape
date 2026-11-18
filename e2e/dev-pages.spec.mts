@@ -3,7 +3,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 // The second server in playwright.config.ts: a production build without KINSCAPE_DEV_PAGES, so the
-// design kit and screens are hidden as on a production deployment. Each test starts with no session
+// screens are hidden as on a production deployment. Each test starts with no session
 // (below) and forges or makes its own, as the two servers may share one `session` table.
 test.use({
   baseURL: 'http://localhost:3001',
@@ -50,7 +50,7 @@ const expectHidden = async (page: Page) => {
 };
 
 // NFR-03
-test('the design kit and screens are 404 with a forged session cookie', async ({
+test('the screens are 404 with a forged session cookie', async ({
   context,
   page,
 }) => {
@@ -70,7 +70,7 @@ test('the design kit and screens are 404 with a forged session cookie', async ({
 });
 
 // NFR-03
-test('the design kit and screens are 404 when signed in', async ({ page }) => {
+test('the screens are 404 when signed in', async ({ page }) => {
   await page.goto('/sign-in');
   await page.getByLabel('Email').fill('synthetic@example.test');
   await page.getByLabel('Password', { exact: true }).fill('synthetic-password');

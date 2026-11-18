@@ -79,7 +79,7 @@
   line-height: var(--type-small-line);
 }
 
-/* The Dialog's form decides, so the design kit can draw both on one screen. */
+/* The Dialog's form picks the table or the list. */
 :global([data-form='sheet']) .table {
   display: none;
 }

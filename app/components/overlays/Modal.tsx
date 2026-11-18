@@ -52,7 +52,7 @@ export const ModalClose = ({
   onClick,
 }: {
   iconSize: 18 | 20;
-  /** Left off in the design kit, where the head is only drawn. */
+  /** Left off where the head is only drawn. */
   onClick?: () => void;
 }) => (
   <button

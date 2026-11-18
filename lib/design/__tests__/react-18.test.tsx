@@ -1128,7 +1128,7 @@ describe('bundle', () => {
       );
 
     it.each(CARDS.map(card => [card.name, card] as const))(
-      '%s lists the states of the design kit, with the same props',
+      '%s lists the cases of this file, with the same props',
       (name, card) => {
         const cases = CASES.filter(
           ([, element]) =>

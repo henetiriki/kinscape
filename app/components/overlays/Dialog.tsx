@@ -17,7 +17,7 @@ type DialogPanelArgs = {
   /** A line under the body. */
   footnote?: string;
   form: DialogForm;
-  /** Left off in the design kit, where the panel is only drawn. */
+  /** Left off where the panel is only drawn. */
   onClose?: () => void;
   subtitle?: string;
   title: string;

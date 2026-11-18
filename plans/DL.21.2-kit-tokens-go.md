@@ -97,3 +97,5 @@ Behaviour 6 makes the row "**Living style guide.**" of `docs/architecture.md` na
 As the Spec says: the boards, their Screens rows, `NO_ENTRY` and `PHONE_BOARD` (DL.21.3, #993); a new section or card; the `state` prop.
 
 ## Deviations
+
+- The CI run could not run `npm run tokens`, so `app/tokens.css` lost the same lines by hand. D11 has no answer, so the `/screens` row label stays "**Living style guide.**" (option B).

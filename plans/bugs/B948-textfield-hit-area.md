@@ -2,7 +2,7 @@
 
 - **Spec:** #948 (Bug)
 - **Requirement IDs:** [NFR-05](../../docs/requirements.md#nfr-05), [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ On `main`, `npm run design:gallery -- -g "each control under 44px"` passes, so e
 - **B.** As A, and the rule also covers `.select`, with the pressed (`[data-state='active']`) select box. Remove the `#951` rows too, and close #951. Cost: about 2 more lines of CSS and one more unit check.
 - **Other:** your own.
 
-Recommended: B, because the four Bugs have one cause, and one rule fixes all of them. A loses the `.select` fix, so a later PR edits the same rule again.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

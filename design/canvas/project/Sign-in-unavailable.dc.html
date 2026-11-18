@@ -15,10 +15,31 @@
 body{margin:0}
 </style>
 </helmet>
-<div style="min-height: 100vh; display: flex; flex-wrap: wrap; font-family: var(--font-body); color: var(--ink); background: var(--surface-2)">
+  <x-import component-from-global-scope="KinScape.SignInLayout" hero="{{hero}}">
+    <form style="display: flex; flex-direction: column; gap: var(--space-24); font-family: var(--font-body)">
+      <div style="display: flex; flex-direction: column; gap: var(--space-4)">
+          <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Sign in</x-import>
+          <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
+        </div>
 
-  <div style="flex: 999 1 560px; min-height: 420px; position: relative; overflow: hidden; background: var(--map-sea)">
-    <svg viewBox="180 40 1000 880" preserveAspectRatio="xMidYMid meet" style="position: absolute; inset: 0; width: 100%; height: 100%" aria-hidden="true">
+      <x-import component-from-global-scope="KinScape.Alert" tone="error">KinScape can't sign you in right now. Try again in a few minutes.</x-import>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-16)">
+        <x-import component-from-global-scope="KinScape.TextField" size="l" type="email" label="Email" autocomplete="username" placeholder="you@example.com" default-value="researcher@example.com"></x-import>
+        <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
+      </div>
+
+      <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import>
+
+      <p class="small" style="margin: 0; padding-top: var(--space-20); border-top: 1px solid var(--line); color: var(--ink-3)">There's no sign-up. Accounts are set up by whoever runs this KinScape.</p>
+    </form>
+  </x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // The hero is drawn markup: the exporter reads a named prop only from renderVals.
+    const hero = `    <svg viewBox="180 40 1000 880" preserveAspectRatio="xMidYMid meet" style="position: absolute; inset: 0; width: 100%; height: 100%" aria-hidden="true">
       <defs>
         <clipPath id="landClipL"><path d="M63 0 L89 60 L126 114 L131 147 L136 210 L150 270 L163 348 L165 369 L173 408 L194 444 L220 474 L234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 Z"></path></clipPath>
         <filter id="hsL" x="0" y="0" width="100%" height="100%">
@@ -59,37 +80,9 @@ body{margin:0}
       <span>Map date 1901-01-01 · borders as recorded</span>
       <span style="display: inline-block; width: 22px; height: 0; border-top: 1.5px dashed var(--map-border-colour); margin-left: var(--space-8)"></span>
       <span>approximate</span>
-    </div>
-  </div>
+    </div>`;
 
-  <div style="flex: 1 1 440px; display: flex; align-items: center; justify-content: center; padding: var(--space-48) var(--space-32); box-sizing: border-box; background: var(--surface)">
-    <form style="width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: var(--space-24)">
-      <div style="display: flex; flex-direction: column; gap: var(--space-20)">
-        <x-import component-from-global-scope="KinScape.Wordmark" size="44"></x-import>
-        <div style="display: flex; flex-direction: column; gap: var(--space-4)">
-          <x-import component-from-global-scope="KinScape.Text" variant="h1" as="h1">Sign in</x-import>
-          <p class="body" style="margin: 0; color: var(--ink-3)">Your tree is private. Sign in to open the map.</p>
-        </div>
-      </div>
-
-      <x-import component-from-global-scope="KinScape.Alert" tone="error">KinScape can't sign you in right now. Try again in a few minutes.</x-import>
-
-      <div style="display: flex; flex-direction: column; gap: var(--space-16)">
-        <x-import component-from-global-scope="KinScape.TextField" size="l" type="email" label="Email" autocomplete="username" placeholder="you@example.com" default-value="researcher@example.com"></x-import>
-        <x-import component-from-global-scope="KinScape.TextField" size="l" type="password" label="Password" autocomplete="current-password" default-value="example-password"></x-import>
-      </div>
-
-      <x-import component-from-global-scope="KinScape.Button" type="submit" variant="primary" size="l" full="{{yes}}">Sign in</x-import>
-
-      <p class="small" style="margin: 0; padding-top: var(--space-20); border-top: 1px solid var(--line); color: var(--ink-3)">There's no sign-up. Accounts are set up by whoever runs this KinScape.</p>
-    </form>
-  </div>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
-class Component extends DCLogic {
-  renderVals() {
-    return { yes: true };
+    return { yes: true, hero: window.React ? window.React.createElement('div', { style: { display: 'contents', fontFamily: 'var(--font-body)' }, dangerouslySetInnerHTML: { __html: hero } }) : null };
   }
 }
 </script>

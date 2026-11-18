@@ -40,10 +40,6 @@ const HIT_CASES = [
 
 // Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
 const UNDER_44: Record<string, readonly string[]> = {
-  '#947: the handle button is 20px tall': [
-    'BottomSheet, BottomSheet · collapsed, button button Expand the sheet',
-    'BottomSheet, BottomSheet · expanded, button button Expand the sheet',
-  ],
   '#948: a 2px border leaves the input 42px tall': [
     'TextField, TextField · focus, input text',
     'TextField, TextField · error, input text',

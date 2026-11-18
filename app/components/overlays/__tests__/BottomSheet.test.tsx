@@ -1,7 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, it, vi } from 'vitest';
 
 import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
+
+const css = readFileSync(
+  join(process.cwd(), 'app/components/overlays/BottomSheet.module.css'),
+  'utf8'
+);
+
+// NFR-05, NFR-06
+it('gives the grabber a centred touch-size hit area and keeps its 64 × 20px box', () => {
+  const grabber = /\.grabber \{[^}]*\}/.exec(css)![0];
+  const before = /\.grabber::before \{[^}]*\}/.exec(css)?.[0] ?? '';
+
+  expect(grabber).toContain('position: relative');
+  expect(grabber).toContain('height: 20px');
+  expect(grabber).toContain('width: 64px');
+  expect(grabber).toContain('margin-bottom: -4px');
+  expect(before).toContain('height: var(--size-touch)');
+  expect(before).toContain('width: max(100%, var(--size-touch))');
+  expect(before).toContain('translate: -50% -50%');
+});
 
 // NFR-05
 it('expands the sheet from the grabber, and is not a dialog', () => {

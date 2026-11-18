@@ -23,7 +23,19 @@
   justify-content: center;
   margin-bottom: -4px;
   padding: 0;
+  position: relative;
   width: 64px;
+}
+
+/* A 44px hit area, centred on the grabber. The grabber keeps its 64 × 20px box. */
+.grabber::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: max(100%, var(--size-touch));
 }
 
 .handle {

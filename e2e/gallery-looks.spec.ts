@@ -40,33 +40,6 @@ const HIT_CASES = [
 
 // Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
 const UNDER_44: Record<string, readonly string[]> = {
-  '#948: a 2px border leaves the input 42px tall': [
-    'TextField, TextField · focus, input text',
-    'TextField, TextField · error, input text',
-    'TextField, TextField · warning, input text',
-  ],
-  '#949: a 2px border leaves the input 42px tall': [
-    'DateField, DateField · focus, input text Date shown',
-    'DateField, DateField · typing, input text Date shown',
-    'DateField, DateField · wrong format · below, input text Date shown',
-    'DateField, DateField · wrong format · above, input text Date shown',
-    'DateField, DateField · before 1652 · below, input text Date shown',
-    'DateField, DateField · before 1652 · above, input text Date shown',
-    'DateField, DateField · after today · below, input text Date shown',
-    'DateField, DateField · after today · above, input text Date shown',
-    "DateField, DateField · doesn't exist · below, input text Date shown",
-    "DateField, DateField · doesn't exist · above, input text Date shown",
-    'DateField, DateField · notice, input text Date shown',
-  ],
-  '#950: a 2px border leaves the input 42px tall': [
-    'FuzzyDateField, FuzzyDateField · typing, input text',
-    'FuzzyDateField, FuzzyDateField · focus, input text',
-    'FuzzyDateField, FuzzyDateField · error, input text',
-  ],
-  '#951: a 2px border leaves the select 42px tall': [
-    'SelectField, SelectField · active, select  CapeNatalTransvaal',
-    'SelectField, SelectField · focus, select  CapeNatalTransvaal',
-  ],
   '#988: the slider is 28px tall, each epoch button 36px and each segment label 36px':
     [
       ...[

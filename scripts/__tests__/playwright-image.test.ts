@@ -61,10 +61,16 @@ describe('the Playwright container image', () => {
       updates: {
         [key: string]: unknown;
         directory?: string;
-        groups?: Record<string, { 'exclude-patterns'?: string[] }>;
+        groups?: Record<string, unknown>;
+        ignore?: Record<string, unknown>[];
         'package-ecosystem': string;
       }[];
     };
+    const npmEntries = config.updates.filter(
+      update =>
+        update['package-ecosystem'] === 'npm' && update.directory === '/'
+    );
+    const regular = npmEntries.find(update => !update['multi-ecosystem-group']);
     const entry = (ecosystem: string, directory: string) =>
       config.updates.find(
         update =>
@@ -89,25 +95,48 @@ describe('the Playwright container image', () => {
       });
     });
 
-    it('puts only @playwright/test of the npm entry in the group', () => {
-      const npm = entry('npm', '/');
-
-      expect(npm?.['multi-ecosystem-group']).toBe('playwright');
-      expect(npm?.patterns).toEqual(['@playwright/test']);
-    });
-
-    // The other npm updates still need their own schedule and label.
-    it('keeps the schedule and label of the npm entry', () => {
-      expect(entry('npm', '/')).toMatchObject({
-        labels: ['dependencies'],
-        schedule: { interval: 'weekly' },
+    it('puts only @playwright/test in the npm group entry', () => {
+      expect(
+        npmEntries.find(update => update['multi-ecosystem-group'])
+      ).toEqual({
+        directory: '/',
+        'multi-ecosystem-group': 'playwright',
+        'package-ecosystem': 'npm',
+        patterns: ['@playwright/test'],
+        'versioning-strategy': 'increase',
       });
     });
 
-    it('keeps @playwright/test out of the development group', () => {
-      expect(
-        entry('npm', '/')?.groups?.development?.['exclude-patterns']
-      ).toEqual(['@playwright/test']);
+    // A grouped entry cannot set its own schedule, labels, groups or commit-message.
+    it('keeps the schedule, label, prefix and groups in the regular npm entry', () => {
+      expect(regular).toMatchObject({
+        'commit-message': { prefix: 'chore' },
+        labels: ['dependencies'],
+        schedule: { interval: 'weekly' },
+        'versioning-strategy': 'increase',
+      });
+      expect(regular).not.toHaveProperty('multi-ecosystem-group');
+      expect(regular).not.toHaveProperty('patterns');
+      expect(Object.keys(regular?.groups ?? {})).toEqual([
+        'next',
+        'react',
+        'vitest',
+        'maplibre',
+        'production',
+        'development',
+      ]);
+    });
+
+    it('ignores @playwright/test in the regular npm entry', () => {
+      expect(regular?.ignore).toContainEqual({
+        'dependency-name': '@playwright/test',
+      });
+    });
+
+    it('does not exclude patterns from the development group', () => {
+      expect(regular?.groups?.development).not.toHaveProperty(
+        'exclude-patterns'
+      );
     });
   });
 });

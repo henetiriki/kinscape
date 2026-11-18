@@ -48,7 +48,7 @@ it('draws the full Wordmark and the icon-only one for the phone CSS to pick', ()
 });
 
 // PPL-01
-it('gives the back link a state for its card', () => {
+it('gives the back link a state for its component card', () => {
   render(<BackLink href='/map' label='Map' state='focus' />);
 
   expect(screen.getByRole('link', { name: 'Map' }).dataset.state).toBe('focus');

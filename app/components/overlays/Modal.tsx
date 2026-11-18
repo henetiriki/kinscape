@@ -52,7 +52,7 @@ export const ModalClose = ({
   onClick,
 }: {
   iconSize: 18 | 20;
-  /** Left off where the head is only drawn. */
+  /** No board passes it: a board only draws the head. */
   onClick?: () => void;
 }) => (
   <button

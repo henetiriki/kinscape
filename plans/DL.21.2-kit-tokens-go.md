@@ -66,12 +66,12 @@ Behaviour 6 makes the row "**Living style guide.**" of `docs/architecture.md` na
 
 ## Order of work
 
-1. Change `design/tokens.json`. Run `npm run tokens`. Change the two tests, and see each fail on `main` values first.
+1. Change `design/tokens.json`. Run `npm run tokens`. Change the two tests. See each fail on `main` values first.
 2. Change the docs, the comments and the test titles, as the tables say.
 3. Run the search of check 1 and `git diff main -- app/tokens.css` (check 2). Paste both in the PR.
 4. Run `npm run design-system` and check 3. Push.
 5. The CI build stops here, keeps the PR as a draft and asks in the PR for steps 6 to 8.
-6. The tech lead, or a local session that the tech lead starts, runs `/publish-design-system` (3.1 to 3.11), "Updating the install" (4.1 to 4.7; 4.7 can be skipped, as the Spec says) and "Refreshing the canvas copy" (5.1 to 5.5). The session needs a signed-in account.
+6. The tech lead, or a local session that the tech lead starts, runs `/publish-design-system` (3.1 to 3.11), "Updating the install" (4.1 to 4.7; the Spec lets the session skip 4.7) and "Refreshing the canvas copy" (5.1 to 5.5). The session needs a signed-in account.
 7. Push. The tech lead runs the workflow Design: Render snapshots on the branch.
 8. The PR names each JPG and snapshot that changed, with the reason, and each sentence that went with no new home (DESIGN.md lines 255 and 341).
 9. Run each check in `AGENTS.md` › Commands.
@@ -100,3 +100,4 @@ As the Spec says: the boards, their Screens rows, `NO_ENTRY` and `PHONE_BOARD` (
 
 - The CI run could not run `npm run tokens`, so `app/tokens.css` lost the same lines by hand. A local `npm run tokens` makes no diff.
 - `system.test.ts` also expects 171 noted tokens, not 172: `desktop-width` had a note.
+- `PageHeader.test.tsx` says "its component card", not the Spec's "its card": the glossary lists "card" under Avoid.

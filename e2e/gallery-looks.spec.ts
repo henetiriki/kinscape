@@ -40,16 +40,6 @@ const HIT_CASES = [
 
 // Controls under 44px with no 44px hit area on a phone. Each Bug holds its controls, as "card, caption, control".
 const UNDER_44: Record<string, readonly string[]> = {
-  '#944: the link is 22px tall': [
-    'ArrowLink, ArrowLink · default, a  Edit',
-    'ArrowLink, ArrowLink · active, a  Edit',
-    'ArrowLink, ArrowLink · focus, a  Edit',
-    'ArrowLink, ArrowLink · hover, a  Edit',
-  ],
-  '#946: the Edit link is 22px tall': [
-    'RelationshipRow, RelationshipRow · child, a  Edit, le Roux, Anna Catharina',
-    'RelationshipRow, RelationshipRow · spouse, a  Edit, Botha, Susanna',
-  ],
   '#947: the handle button is 20px tall': [
     'BottomSheet, BottomSheet · collapsed, button button Expand the sheet',
     'BottomSheet, BottomSheet · expanded, button button Expand the sheet',
@@ -194,6 +184,9 @@ test.describe('on a phone', () => {
   test('each control under 44px tall or wide keeps a 44px hit area', async ({
     page,
   }) => {
+    // The test opens every card. It takes about 21s, and 30s on a slow runner, against a 30s limit.
+    test.slow();
+
     const failures: string[] = [];
     const failed = new Set<string>();
 

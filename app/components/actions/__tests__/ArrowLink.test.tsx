@@ -52,6 +52,18 @@ describe('with an href', () => {
       /\.link:is\(:active, \[data-state='active'\]\) \{\s*color: var\(--brand-pressed\)/
     );
   });
+
+  // NFR-05, NFR-06
+  it('has a 44px hit area, centred on the link', () => {
+    const link = /\.link \{[^}]*\}/.exec(css)![0];
+    const area = /\.link::before \{[^}]*\}/.exec(css)![0];
+
+    expect(link).toContain('position: relative');
+    expect(area).toContain('height: var(--size-touch)');
+    expect(area).toContain('width: max(100%, var(--size-touch))');
+    expect(area).toContain('position: absolute');
+    expect(area).toContain('translate: -50% -50%');
+  });
 });
 
 describe('without an href', () => {
@@ -71,6 +83,14 @@ describe('without an href', () => {
     // @ts-expect-error A label takes no state.
     render(<ArrowLink state='hover'>Edit</ArrowLink>);
     expect(screen.getAllByText('Edit')).toHaveLength(2);
+  });
+
+  // NFR-05, NFR-06
+  it('has no hit area, because the row around it is the link', () => {
+    const base = /\.arrowLink \{[^}]*\}/.exec(css)![0];
+
+    expect(base).not.toContain('position');
+    expect(css).not.toContain('.arrowLink::before');
   });
 
   it('turns brand-pressed inside a pressed link', () => {

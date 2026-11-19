@@ -72,6 +72,16 @@ The board draws "Matches spelling variants too (Rossouw, Rossau)" under Surname.
 
 **Answer: Other:** . FilterFields takes an optional surnameHelper prop and passes it to TokenField helper. The board and the two card states with values pass the board’s text as a sample. (@henetiriki)
 
+**D5 · The tick marks in the snapshots** · Decides: Tech lead
+
+The exporter leaves out a pseudo-element that needs a `url()` mask. The real `Checkbox` draws its tick with one. So a checked layer row has no tick in a snapshot or a JPG. The canvas shows the tick.
+
+- **A.** Swap the board now. The PR lists the missing ticks. Cost: the JPGs show checked rows with no tick until #1066 merges.
+- **B.** Keep the drawn panel until the exporter writes the tick. Cost: this Spec waits, and checks 6 to 8 stay open.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki). #1066 fixes the tick and merges after this PR.
+
 ## Files that change
 
 | File                                                      | New / changed | What                                                                                        |

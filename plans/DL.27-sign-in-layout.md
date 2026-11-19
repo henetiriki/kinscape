@@ -6,7 +6,7 @@
 
 ## Approach
 
-`git mv` moves `AuthLayout.tsx`, its stylesheet and its test to `app/components/layout/`, with the name `SignInLayout`. The code, the slots and the CSS rules stay the same, so no screen changes a pixel. The card follows `ColumnLayout`: group "Layout", `width: 1440`, `contain`, and a fixed `frame` (D1). The frame is `min-height: 100vh`, and a `height` does not beat a `min-height`, so D1 decides how the card bounds it. DL.6 (#934) swapped its three phone boards with the same media query, so all five boards of Behaviour item 6 are swapped. The wordmark is part of the frame, so a swap drops the drawn wordmark of the board and keeps the rest of its hero and form.
+`git mv` moves `AuthLayout.tsx`, its stylesheet and its test to `app/components/layout/`, with the name `SignInLayout`. The code, the slots and the CSS rules stay the same, so no screen changes a pixel. The card follows `ColumnLayout`: group "Layout", `width: 1440`, `contain`, and a fixed `frame` (D1). The frame is `min-height: 100vh`, and a `height` does not beat a `min-height`, so D1 decides how the card bounds it. DL.6 (#934) swapped its three phone boards with the same media query, so this Spec swaps all five boards of Behaviour item 6. The wordmark is part of the frame, so a swap drops the drawn wordmark of the board and keeps the rest of its hero and form.
 
 ## Decisions
 
@@ -33,7 +33,7 @@ A board cannot fill a named prop in markup. The exporter reads a prop only from 
 
 The local session cannot start Chromium, so it cannot check the export or the pixels.
 
-- **A.** Swap the boards in the repo copy first. CI renders them. Publish to the canvas only when no `sign-in-*` JPG changes.
+- **A.** Swap the boards in the repo copy first. CI renders them. If no `sign-in-*` JPG changes, publish to the canvas.
 - ~~**B.** Swap on the canvas first, then refresh the repo copy. Cost: a failed board is already on the canvas.~~
 
 **Answer: A** (@henetiriki)
@@ -61,7 +61,7 @@ The local session cannot start Chromium, so it cannot check the export or the pi
 1. If D1 is A, write the `frame` test in `cards.test.ts`. See it fail on the missing `min-height: 0`. Change `previewHtml`. Commit.
 2. `git mv` the three files. Rename the component and the paths. Update `app/sign-in/page.tsx`. Run `npm test` and `npm run e2e`. Commit.
 3. Add `CONTROLS`, `PHONE_CARDS`, the card and the React 18 case. Run `npm run design-system` (step 2) and `npm run design:gallery`. Commit.
-4. Update `design/DESIGN.md`. Push. Keep the PR a draft, and ask in it for steps 3 to 7.
+4. Update `design/DESIGN.md`. Push. Keep the PR a draft. Ask in it for steps 3 to 7.
 5. The tech lead, or a local Claude Code session that the tech lead starts, runs steps 3 to 5 (`/publish-design-system`, "Updating the install", "Refreshing the canvas copy"). The session needs a signed-in account.
 6. The tech lead runs Design: Render snapshots (step 6).
 7. The same person or session swaps the five boards with the [board swap prompt](../design/COMPONENTS.md#board-swap-prompt) and refreshes the canvas copy. The tech lead runs the workflow again (step 7).

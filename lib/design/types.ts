@@ -4,7 +4,7 @@ export type Card = {
   box?: string;
   /** The state boxes hold a fixed bar: each is the containing block of its `position: fixed` part. */
   contain?: boolean;
-  /** The `DESIGN.md` › Components bullets the README holds, by their bold name. */
+  /** The `DESIGN.md` bullets, in any section, that the README holds, by their bold name. */
   design: string[];
   /** The px height of each state's control, for a control that fills the viewport. The preview sets it, so the component keeps its own height. */
   frame?: number;
@@ -98,6 +98,8 @@ export type Slot = {
 /** One state a preview mounts. A slot holds a control; a preview draws it from `window.KinScape`. */
 export type State = {
   children?: Slot[] | string;
+  /** The form that the state shows: its name, set as `data-form` on the state's box, and the CSS width of that box. */
+  form?: { box: string; name: string };
   /** Matches the case of the same label in `react-18.test.tsx`. */
   label: string;
   props: Record<string, unknown>;

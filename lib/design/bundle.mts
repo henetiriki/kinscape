@@ -54,6 +54,7 @@ export const CONTROLS: Control[] = [
   { name: 'Panel', path: 'features/map/components/Panel.tsx' },
   { name: 'LayerGroup', path: 'features/map/components/LayerGroup.tsx' },
   { name: 'FilterFields', path: 'features/map/components/FilterFields.tsx' },
+  { name: 'SourcesList', path: 'features/map/components/SourcesDialog.tsx' },
   { name: 'Alert', path: 'app/components/feedback/Alert.tsx' },
   { name: 'Toast', path: 'app/components/feedback/Toast.tsx' },
   { name: 'Banner', path: 'app/components/feedback/Banner.tsx' },

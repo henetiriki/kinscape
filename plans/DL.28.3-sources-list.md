@@ -2,7 +2,7 @@
 
 - **Spec:** #1073
 - **Requirement IDs:** None. The Spec changes the design system, the export and two boards, and no screen.
-- **Status:** approved
+- **Status:** draft
 
 ## Approach
 
@@ -48,6 +48,17 @@ A local session swaps the `sources` variant of both boards (step 7):
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
+
+**D6 · The 44px hit-area test on the `table` state** · Decides: Tech lead
+
+`npm run design:gallery` fails `e2e/gallery-looks.spec.ts` › "each control under 44px tall or wide keeps a 44px hit area". At 390px the `table` state shows the licence link "SIL Open Font Licence 1.1" at 138x35px with no 44px hit area. The app never shows the table at 390px, because the sheet form shows the list. The file is not in Files that change, and `UNDER_44` holds only Bug numbers.
+
+- **A.** File a Bug for the licence link, and add its key to `UNDER_44`. Cost: a Bug, one test line, and a key that stays until the Bug is fixed. The Bug would change `SourcesDialog.module.css`, which check 5 blocks here.
+- **B.** The test skips a figure that has `data-form` absent and a width above the viewport. Cost: a new rule in a shared test.
+- **C.** The card shows the `table` state only at 1440px. Cost: a new `Card` field and a test for it.
+- **Other:** your own.
+
+Recommended: A, because the link is a real 35px target on the desktop table, and the Bug records it. B or C hide the target from the test and lose that record.
 
 ## Files that change
 

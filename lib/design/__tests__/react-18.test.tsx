@@ -68,6 +68,7 @@ import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Modal } from '@ks/app/components/overlays/Modal';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
+import sourceData from '@ks/data/sources.json';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { DateField } from '@ks/features/map/components/DateField';
 import { FilterFields } from '@ks/features/map/components/FilterFields';
@@ -76,9 +77,11 @@ import { LayersButton } from '@ks/features/map/components/LayersButton';
 import { Legend } from '@ks/features/map/components/Legend';
 import { Panel } from '@ks/features/map/components/Panel';
 import { SearchBar } from '@ks/features/map/components/SearchBar';
+import { SourcesList } from '@ks/features/map/components/SourcesDialog';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
+import { FORM_ATTRIBUTE } from '@ks/lib/design/cards.mts';
 import {
   CHAIN,
   CONTESTED_COUNT,
@@ -226,6 +229,7 @@ const COMPONENTS = {
   Sheet,
   SheetPanel,
   SignInLayout,
+  SourcesList,
   Surface,
   Tabs,
   Text,
@@ -883,6 +887,10 @@ const CASES: [string, ReactElement][] = [
       surnames={['Rossouw']}
     />,
   ],
+  ...(['table', 'list'] as const).map((name): [string, ReactElement] => [
+    `SourcesList · ${name}`,
+    <SourcesList key={name} sources={sourceData.sources} />,
+  ]),
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,
@@ -1264,6 +1272,20 @@ describe('states', () => {
   });
 });
 
+it('names the form attribute that DialogPanel sets, and the form of the list state', () => {
+  const { container } = render(
+    <DialogPanel form='sheet' title='Sources' titleId='dialog-attribute'>
+      Content
+    </DialogPanel>
+  );
+  const list = CARDS.find(({ name }) => name === 'SourcesList')!.states[1];
+
+  expect(
+    container.querySelector(`[${FORM_ATTRIBUTE}]`)?.getAttribute(FORM_ATTRIBUTE)
+  ).toBe(list.form?.name);
+  quiet();
+});
+
 describe('bundle', () => {
   const read = (path: string) => readFileSync(path, 'utf8');
   const problems: string[] = [];
@@ -1400,9 +1422,15 @@ describe('bundle', () => {
             caption => caption.textContent
           )
         ).toEqual(card.states.map(({ label }) => label));
+        // A control can render a fragment, so a state holds one element or more.
+        const figures = [...page.document.querySelectorAll('figure')];
+
+        expect(figures).toHaveLength(card.states.length);
         expect(
-          page.document.querySelectorAll('figure > :not(figcaption)')
-        ).toHaveLength(card.states.length);
+          figures.filter(
+            figure => figure.querySelector(':scope > :not(figcaption)') === null
+          )
+        ).toEqual([]);
         expect(
           [...page.document.querySelectorAll('[aria-labelledby]')].filter(
             each =>

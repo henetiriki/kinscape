@@ -65,6 +65,10 @@ The Bug reproduces: the three card comments in `design/canvas/project/ds/kinscap
 | #801: the People list                                       | `e2e/people.spec.ts`, unchanged                                                                                         |
 | `e2e/design-gallery.spec.ts`: each card opens with no error | `e2e/design-gallery.spec.ts`, unchanged                                                                                 |
 
+## Deviations
+
+- The heights are 340 (PersonRow), 220 (RelationshipRow) and 440 (PickerRow). The test measures them from the end of the last state, because the page is as tall as the viewport.
+
 ## Out of scope
 
 - A narrow form of the rows. The phone form of PersonRow stays as it is.

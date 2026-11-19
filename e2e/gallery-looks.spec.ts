@@ -225,6 +225,104 @@ test.describe('on a phone', () => {
   });
 });
 
+// The preview has 16px of padding on each side of the card.
+const PREVIEW_PAD = 16;
+
+test.describe('the row cards at their width', () => {
+  for (const name of ['PersonRow', 'RelationshipRow', 'PickerRow']) {
+    const card = CARDS.find(item => item.name === name)!;
+
+    test.describe(name, () => {
+      test.use({
+        viewport: { height: 900, width: card.width! + 2 * PREVIEW_PAD },
+      });
+
+      test('shows each name on one line, with no text overlapping, inside the frame', async ({
+        page,
+      }) => {
+        await open(page, name);
+
+        const rows = await page.getByRole('figure').evaluateAll(figures =>
+          figures.map(figure => {
+            const row = figure.lastElementChild!;
+            // The text parts: each visible element with its own text. A 1px clipped part is hidden text.
+            const parts = [row, ...row.querySelectorAll('*')]
+              .filter(
+                node =>
+                  node.checkVisibility() &&
+                  [...node.childNodes].some(
+                    child => child.nodeType === 3 && child.textContent!.trim()
+                  )
+              )
+              .map(node => ({
+                box: node.getBoundingClientRect(),
+                line: Number.parseFloat(getComputedStyle(node).lineHeight),
+                text: node.textContent!.trim(),
+              }))
+              .filter(part => part.box.width > 1 && part.box.height > 1);
+            const box = row.getBoundingClientRect();
+
+            return {
+              caption: figure.querySelector('figcaption')!.textContent!,
+              parts,
+              ring: {
+                bottom: box.bottom + 4,
+                left: box.left - 4,
+                right: box.right + 4,
+              },
+            };
+          })
+        );
+
+        expect(rows.length).toBeGreaterThan(0);
+
+        for (const { caption, parts, ring } of rows) {
+          const [name] = parts;
+
+          expect(name.box.height, `${caption}: ${name.text}`).toBeLessThan(
+            2 * name.line
+          );
+
+          for (const [i, a] of parts.entries()) {
+            for (const b of parts.slice(i + 1)) {
+              const apart =
+                a.box.right <= b.box.left + 0.5 ||
+                b.box.right <= a.box.left + 0.5 ||
+                a.box.bottom <= b.box.top + 0.5 ||
+                b.box.bottom <= a.box.top + 0.5;
+
+              expect(apart, `${caption}: "${a.text}" and "${b.text}"`).toBe(
+                true
+              );
+            }
+          }
+
+          expect(ring.left, caption).toBeGreaterThanOrEqual(PREVIEW_PAD - 4);
+          expect(ring.right, caption).toBeLessThanOrEqual(
+            card.width! + PREVIEW_PAD + 4
+          );
+          expect(ring.bottom, caption).toBeLessThanOrEqual(card.height);
+        }
+
+        const scroll = await page.evaluate(() => ({
+          // The page is at least as tall as the viewport, so measure to the end of the last case.
+          height: Math.ceil(
+            [...document.querySelectorAll('figure')]
+              .at(-1)!
+              .getBoundingClientRect().bottom +
+              scrollY +
+              16
+          ),
+          width: document.documentElement.scrollWidth,
+        }));
+
+        expect(scroll.width).toBeLessThanOrEqual(card.width! + 2 * PREVIEW_PAD);
+        expect(scroll.height).toBeLessThanOrEqual(card.height);
+      });
+    });
+  }
+});
+
 test.describe('hover', () => {
   test.use({ viewport: { height: 900, width: 1440 } });
 

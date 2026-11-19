@@ -412,7 +412,7 @@ export const CARDS: Card[] = [
     design: ['Person row'],
     group: 'Actions',
     handlers: [],
-    height: 400,
+    height: 340,
     name: 'PersonRow',
     pad: 0,
     states: [
@@ -450,12 +450,13 @@ export const CARDS: Card[] = [
         surname: 'Botha',
       }),
     ],
+    width: 992,
   },
   {
     design: ['Relationship row'],
     group: 'Actions',
     handlers: [],
-    height: 240,
+    height: 220,
     name: 'RelationshipRow',
     pad: 0,
     states: [
@@ -483,12 +484,13 @@ export const CARDS: Card[] = [
         surname: 'Botha',
       }),
     ],
+    width: 992,
   },
   {
     design: ['Picker row'],
     group: 'Actions',
     handlers: [],
-    height: 360,
+    height: 440,
     name: 'PickerRow',
     pad: 0,
     states: linkGrid('PickerRow', state => ({
@@ -504,6 +506,7 @@ export const CARDS: Card[] = [
         surname: 'du Toit',
       },
     })),
+    width: 736,
   },
   {
     design: ['Text field'],

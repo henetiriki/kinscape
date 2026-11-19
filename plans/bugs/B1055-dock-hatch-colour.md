@@ -2,7 +2,7 @@
 
 - **Spec:** #1055
 - **Requirement IDs:** None (design only). Must not break: [BND-04](../../docs/requirements.md#bnd-04).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -34,6 +34,8 @@ Each option adds check 9 to #1055: the nine JPGs draw the slider thumb as `DateD
 
 Recommended: B, because a snapshot then draws each pseudo-element as the app does. A is cheaper and loses only the other pseudo-elements, which stay as `main` draws them.
 
+**Answer: B** (@henetiriki)
+
 **D3 · The other dock differences** · Decides: Tech lead
 
 The real dock differs from the drawn dock in six ways, and in its Play button, which this plan leaves alone. The six are: no selected Jump to year, "1900" and "2000" slider labels with two more ticks, a higher contested note, a hatch span that the thumb covers, a darker field border, and wider spacing.
@@ -43,6 +45,8 @@ The real dock differs from the drawn dock in six ways, and in its Play button, w
 - **Other:** your own.
 
 Recommended: A, because the `DateDock` card already shows each one.
+
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

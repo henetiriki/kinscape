@@ -6,7 +6,7 @@
 
 ## Approach
 
-The `Map` board drops its drawn zoom card and mounts the real `ZoomControls` in the `zoom` slot: `vals.chrome ? h(K.ZoomControls) : undefined`. The tech lead chose the real card (#1053 D1: A, Expected per). The `account` variant sets `chrome` to false, so `map-account-menu` keeps no card and does not change. The other ten `Map` snapshots take the real card as their new baseline.
+The `Map` board drops its drawn zoom card and mounts the real `ZoomControls` in the `zoom` slot: `vals.chrome ? h(K.ZoomControls) : undefined`. The tech lead chose the real card (#1053 D1: A, Expected per). The `account` variant sets `chrome` to false, so `map-account-menu` keeps no card and does not change. In `map-account-menu-proposed`, the open account menu covers the whole card, so its JPG does not change ([D3](#decisions)). The other nine `Map` snapshots take the real card as their new baseline.
 
 No component, token or `CONTROLS` entry changes, so no step of [Changing the design system](../../design/CANVAS.md#changing-the-design-system) applies. The canvas install is current: #1054 check 11 matched it, and only #1059 and #1060 merged after it. Neither changed a component. Only the tech lead or a local session edits `design/canvas/` ([D2](#decisions)).
 
@@ -24,6 +24,16 @@ The CI build agent cannot edit `design/canvas/`. No path of this Bug is in `.git
 
 **Answer: A** (@henetiriki)
 
+**D3 · Check 3 when a menu covers the card** · Decides: Tech lead
+
+Check 3 of #1053 says "the other ten differ only inside the zoom card". The render changed nine JPGs. In `map-account-menu-proposed`, the open account menu (z-index 20, 296px wide, from y 76) covers the whole card, so its JPG is byte-identical.
+
+- **A.** Reword: check 3 and Expected per of #1053 say nine and name the covered snapshot. Cost: one issue edit.
+- **B.** Keep the text: a byte-identical file differs nowhere outside the card, so check 3 holds. Cost: none, but the count in the issue is wrong.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - Change `ZoomControls` to a white card with `overflow: hidden`. The tech lead chose the real card, its comment says why it has no `overflow: hidden`, and #920 must not change its card.
@@ -34,15 +44,15 @@ The CI build agent cannot edit `design/canvas/`. No path of this Bug is in `.git
 | ----------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------- |
 | `design/canvas/project/Map.dc.html`             | changed       | The `zoom` value is `vals.chrome ? h(K.ZoomControls) : undefined`. The drawn card and its `mount` go. |
 | `design/canvas/VERSION`                         | changed       | Line 2: the canvas version (5.3).                                                                     |
-| `design/source/` and `design/*.jpg` of 10 shots | changed       | The render workflow. All `Map` snapshots except `map-account-menu`.                                   |
+| `design/source/` and `design/*.jpg` of 10 shots | changed       | The render workflow. All `Map` snapshots except `map-account-menu`; 9 JPGs ([D3](#decisions)).        |
 | `plans/bugs/B1053-map-zoom-card.md`             | new           | This plan.                                                                                            |
 
 ## Order of work
 
-1. A local Claude Code session that the tech lead starts, with a signed-in account, edits the `zoom` slot of `project/Map.dc.html` on the canvas with the Artifact tool, as the table says.
+1. A local Claude Code session that the tech lead starts edits the `zoom` slot of `project/Map.dc.html` on the canvas, as the table says. It uses the Artifact tool and a signed-in account.
 2. The same session runs "Refreshing the canvas copy" (5.1 to 5.5). It posts the sha256 pair of `Map.dc.html` (check 4) and the `npm run design:export` output (check 2) in the PR. It discards the exported `source/` changes, commits `design/canvas/` alone and pushes.
 3. The tech lead runs Design: Render snapshots on the branch.
-4. Compare each of the 11 JPGs with `origin/main` (check 3). Use `cmp` for `map-account-menu`. For the other ten, use `changedPixels` of `lib/design/check.mts` and post the box that holds the changed pixels.
+4. Compare each of the 11 JPGs with `origin/main` (check 3). Use `cmp` for `map-account-menu`. For the other ten, use `changedPixels` of `lib/design/check.mts`. Post the box that holds the changed pixels.
 5. Run the [Commands](../../AGENTS.md#commands) checks (check 5). Do the ready check. Write the PR body.
 
 ## Risks
@@ -53,21 +63,17 @@ The CI build agent cannot edit `design/canvas/`. No path of this Bug is in `.git
 
 ## Proof
 
-| Acceptance check                                   | Proven by                                                                                         |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| 1. The `zoom` slot mounts `ZoomControls`           | Read the slot; `git grep 'aria-label="Zoom in"'` on the board has no match                        |
-| 2. The export passes on the 11 snapshots           | The `npm run design:export` output in the PR                                                      |
-| 3. `map-account-menu` same, ten differ in the card | `cmp`; the changed-pixel boxes of step 4                                                          |
-| 4. Same sha256, `Map.dc.html`                      | The 5.2 pair in the PR                                                                            |
-| 5. Test, typecheck, lint, coverage                 | The outputs in the PR                                                                             |
-| Must not break: #924 `MapLayout` and other slots   | Read the board; the boxes of check 3 hold only the card                                           |
-| Must not break: #1052 baseline                     | Step 4 compares with `origin/main`, which holds the #1060 JPGs                                    |
-| Must not break: #920 `ZoomControls` card           | `git diff origin/main -- design/cards/ features/` is empty                                        |
-| Must not break: MAP-01, no app file                | `git diff --stat origin/main` names only `design/` and `plans/`; `npm run e2e` passes (pan, zoom) |
-
-## Deviations
-
-- Nine JPGs differ, not ten: the open account menu of `map-account-menu-proposed` covers the whole zoom card, so its JPG is byte-identical.
+| Acceptance check                                 | Proven by                                                                                         |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| 1. The `zoom` slot mounts `ZoomControls`         | Read the slot; `git grep 'aria-label="Zoom in"'` on the board has no match                        |
+| 2. The export passes on the 11 snapshots         | The `npm run design:export` output in the PR                                                      |
+| 3. Two same, nine differ in the card             | `cmp`; the changed-pixel boxes of step 4                                                          |
+| 4. Same sha256, `Map.dc.html`                    | The 5.2 pair in the PR                                                                            |
+| 5. Test, typecheck, lint, coverage               | The outputs in the PR                                                                             |
+| Must not break: #924 `MapLayout` and other slots | Read the board; the boxes of check 3 hold only the card                                           |
+| Must not break: #1052 baseline                   | Step 4 compares with `origin/main`, which holds the #1060 JPGs                                    |
+| Must not break: #920 `ZoomControls` card         | `git diff origin/main -- design/cards/ features/` is empty                                        |
+| Must not break: MAP-01, no app file              | `git diff --stat origin/main` names only `design/` and `plans/`; `npm run e2e` passes (pan, zoom) |
 
 ## Out of scope
 

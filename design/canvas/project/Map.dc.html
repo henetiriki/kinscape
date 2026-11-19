@@ -576,15 +576,7 @@ class Component extends DCLogic {
       </div>
     ` : ''}
   </aside>`) : undefined,
-      search: vals.chrome ? mount(`  <div style="height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 8px 0 12px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
-    <span style="width: 1px; height: 28px; background: #E2E5DD"></span>
-    <label style="display: flex; align-items: center; gap: 8px; width: 340px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #4A544C">
-      <x-import component-from-global-scope="KinScape.Icon" name="search"></x-import>
-      <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; border: 0; background: transparent; font-size: 15px; line-height: 22px; color: #18211B; outline: none">
-      <x-import component-from-global-scope="KinScape.KeyHint">/</x-import>
-    </label>
-  </div>`) : undefined,
+      search: vals.chrome ? h(K.SearchBar, { form: 'bar' }) : undefined,
       sources: vals.sources,
       v,
       zoom: vals.chrome ? mount(`  <div style="display: flex; flex-direction: column; background: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">

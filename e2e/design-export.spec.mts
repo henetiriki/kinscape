@@ -2,17 +2,13 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-import {
-  CONTESTED_COUNT,
-  CONTESTED_YEARS,
-  EPOCHS,
-  MAP_DATE,
-  TODAY,
-} from '#ks/lib/design/samples.mts';
+import type * as samples from '#ks/lib/design/samples.mts';
+
 import {
   defineBuilder,
   designSystem,
@@ -28,6 +24,11 @@ import {
 // DS.8: a board that uses the design system exports as rendered HTML with every value written out.
 
 const root = process.cwd();
+// The Playwright config loads the samples' imports as CommonJS, so an `import` of the samples here fails.
+const { CONTESTED_COUNT, CONTESTED_YEARS, EPOCHS, MAP_DATE, TODAY } =
+  createRequire(import.meta.url)(
+    '#ks/lib/design/samples.mts'
+  ) as typeof samples;
 const url = (path: string) => pathToFileURL(join(root, path)).href;
 
 /** A canvas board: `body` is its template and `vals` is what its script returns. */

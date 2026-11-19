@@ -82,3 +82,8 @@ The CI build agent cannot run steps 4 and 5 ([design-system rule](../README.md#d
 - The `dock` of `Map-phone.dc.html` and its sheet.
 - A board that mounts the `Legend`: #1051.
 - A typed-text prop on `DateDock` for `date-invalid`.
+
+## Deviations
+
+- `e2e/design-export.spec.mts` loads the samples with `createRequire`, not `import`: the Playwright config loads `model.mts` as CommonJS, so the `import` fails. Commit `test(B1055): load the samples with require`.
+- The `Map` board holds the sample values as numbers: a board cannot import `lib/design/samples.mts`. Commit `dcf48ad7`.

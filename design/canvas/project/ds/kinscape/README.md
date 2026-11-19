@@ -33,7 +33,7 @@ All three are OFL fonts. The app and the snapshots load the same `@fontsource` f
 | Small          | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                    |
 | Caption        | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes             |
 | Overline       | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings               |
-| Overline tight | Public Sans 11 / 13 · 600, caps, 0.1em     | Layer group headings           |
+| Overline tight | Public Sans 11 / 12 · 600, caps, 0.1em     | Layer group headings           |
 | Button         | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)         |
 | Control        | Public Sans 15 / 22 · 600                  | 44px buttons and controls      |
 | Button S       | Public Sans 14 / 20 · 600                  | 40px and 36px buttons          |

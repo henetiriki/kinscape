@@ -23,8 +23,9 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
     names.forEach(function (name) {
       var at = name.indexOf('.');
       if (at < 0) { props[name] = noop; return; }
+      var list = name.slice(0, at);
       var key = name.slice(at + 1);
-      props[name.slice(0, at)] = props[name.slice(0, at)].map(function (item) {
+      props[list] = props[list].map(function (item) {
         var copy = Object.assign({}, item);
         copy[key] = noop;
         return copy;

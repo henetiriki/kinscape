@@ -4,6 +4,7 @@ import type { Column } from '#ks/app/components/layout/types.ts';
 import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 
 import { COLUMNS } from '#ks/app/components/layout/columns.mts';
+import { SLOTS } from '#ks/app/components/layout/slots.mts';
 import {
   CHAIN,
   CONTESTED_COUNT,
@@ -1263,16 +1264,7 @@ export const CARDS: Card[] = [
           },
         ],
         Object.fromEntries(
-          [
-            'search',
-            'account',
-            'zoom',
-            'layers',
-            'panel',
-            'dock',
-            'credits',
-            'overlay',
-          ].map(slot => [
+          SLOTS.map(slot => [
             slot,
             {
               children: slot,

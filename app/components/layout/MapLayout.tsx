@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { SLOTS } from '@ks/app/components/layout/slots.mts';
 import rawTokens from '@ks/design/tokens.json';
 
 import styles from '@ks/app/components/layout/MapLayout.module.css';
@@ -23,19 +24,7 @@ export const freeArea = (phone: boolean) =>
         top: px(layout['furniture-top']),
       };
 
-/** The slots in DOM order; `search` and `account` stack above the others (`MapLayout.module.css`). A phone shows `layers` and hides `account`, `zoom` and `credits`. */
-const SLOTS = [
-  'search',
-  'account',
-  'zoom',
-  'layers',
-  'panel',
-  'dock',
-  'credits',
-  'overlay',
-] as const;
-
-/** Each slot is declared, not mapped from `SLOTS`: the design system reads the props from their declarations. */
+/** The interface declares each slot and does not map `SLOTS`: the design system reads the props from their declarations. */
 interface MapLayoutSlots {
   /** The account control, on desktop. */
   account?: ReactNode;

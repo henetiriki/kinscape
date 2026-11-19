@@ -92,3 +92,5 @@ The two `CheckboxField` tests change because the parent of the `<input>` is now 
 - A change to any board.
 
 ## Deviations
+
+- `features/map/components/__tests__/LayerGroup.test.tsx` also read the row with `parentElement`. It now uses `closest('[data-size]')`, for the same reason as the two `CheckboxField` tests.

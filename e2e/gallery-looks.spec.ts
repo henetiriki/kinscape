@@ -65,6 +65,20 @@ const expectHitAreas = async (
   }
 };
 
+test('the tick shows on a checked checkbox and not on an unchecked one', async ({
+  page,
+}) => {
+  await open(page, 'Checkbox');
+
+  const tick = (label: string) =>
+    state(page, label)
+      .getByRole('checkbox')
+      .locator('xpath=following-sibling::*[1]');
+
+  await expect(tick('Checkbox on · default')).toBeVisible();
+  await expect(tick('Checkbox off · default')).toBeHidden();
+});
+
 test.describe('on a phone', () => {
   // Reduced motion keeps the toast still while the test measures its box.
   test.use({ reducedMotion: 'reduce', viewport: { height: 844, width: 390 } });

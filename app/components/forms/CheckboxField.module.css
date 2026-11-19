@@ -6,10 +6,6 @@
   min-height: var(--size-field-l);
 }
 
-.row > input {
-  flex: none;
-}
-
 .text {
   display: flex;
   flex-direction: column;

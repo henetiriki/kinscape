@@ -20,3 +20,15 @@ it('reports a checkbox as checked or not and shows a given state', () => {
   expect(on.checked).toBe(true);
   expect(on.dataset.state).toBe('active');
 });
+
+// NFR-06: the tick is an inline `<svg>` so a design snapshot holds it.
+it('draws the tick as a hidden `<svg>` after the input', () => {
+  render(<Checkbox aria-label='On' defaultChecked />);
+
+  const input = screen.getByRole('checkbox', { name: 'On' });
+  const tick = input.nextElementSibling;
+
+  expect(tick?.tagName.toLowerCase()).toBe('svg');
+  expect(tick?.getAttribute('aria-hidden')).toBe('true');
+  expect(input.parentElement?.children).toHaveLength(2);
+});

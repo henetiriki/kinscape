@@ -41,7 +41,10 @@ it('can be disabled and shows a state', () => {
 
 it('draws a 44 row with size m', () => {
   render(<CheckboxField label='Pins' size='m' />);
-  expect(screen.getByRole('checkbox').parentElement!.dataset.size).toBe('m');
+  expect(
+    (screen.getByRole('checkbox').closest('[data-size]') as HTMLElement).dataset
+      .size
+  ).toBe('m');
 });
 
 it('draws the plain sign-in form, still named by its label', () => {
@@ -51,5 +54,7 @@ it('draws the plain sign-in form, still named by its label', () => {
     name: 'Keep me signed in on this device',
   });
 
-  expect(box.parentElement!.dataset.plain).toBe('true');
+  expect((box.closest('[data-plain]') as HTMLElement).dataset.plain).toBe(
+    'true'
+  );
 });

@@ -573,6 +573,21 @@ test.describe('at 1440px', () => {
     expect(await height('Button · size xs')).toBe(36);
   });
 
+  test('"Clear filters" on the Panel is 44px tall and narrower than the body', async ({
+    page,
+  }) => {
+    await open(page, 'Panel');
+
+    const figure = state(page, 'Panel · Filters tab');
+    const clear = (await figure
+      .getByRole('button', { name: 'Clear filters' })
+      .boundingBox())!;
+    const body = (await figure.getByRole('tabpanel').boundingBox())!;
+
+    expect(Math.round(clear.height)).toBe(44);
+    expect(clear.width).toBeLessThan(body.width);
+  });
+
   test('the 36px button and the chip × keep a 44px hit area', async ({
     page,
   }) => {

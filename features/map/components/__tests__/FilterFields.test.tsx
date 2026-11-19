@@ -70,10 +70,35 @@ it('reports each change and shows only the values it is given', () => {
   expect(screen.getByRole('button', { name: 'Remove Rossouw' })).toBeTruthy();
 });
 
-it('has a Clear filters button', () => {
+it('shows the Surname helper only when it is given', () => {
+  const { unmount } = render(
+    <FilterFields
+      branch=''
+      branches={CHOICES}
+      events={[]}
+      eventTypes={[]}
+      people={CHOICES}
+      person=''
+      surnameHelper='Spelling variants too'
+      surnames={[]}
+      {...handlers()}
+    />
+  );
+
+  expect(screen.getByText('Spelling variants too')).toBeTruthy();
+  unmount();
+  show();
+  expect(screen.queryByText('Spelling variants too')).toBeNull();
+});
+
+it('has a Clear filters button that is not full width', () => {
   const onClear = vi.fn();
 
   render(<ClearFilters onClear={onClear} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+
+  const button = screen.getByRole('button', { name: 'Clear filters' });
+
+  fireEvent.click(button);
   expect(onClear).toHaveBeenCalledOnce();
+  expect(button.hasAttribute('data-full')).toBe(false);
 });

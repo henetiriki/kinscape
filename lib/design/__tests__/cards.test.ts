@@ -200,6 +200,14 @@ describe('previewHtml', () => {
     expect(html).not.toContain(':last-child');
   });
 
+  it('gives each state a box of the card width only for a card with a box', () => {
+    const panel = CARDS.find(({ name }) => name === 'Panel')!;
+
+    expect(panel.box).toBe(320);
+    expect(previewHtml(panel)).toMatch(/\.ks-case \{[^}]*width: 320px;/);
+    expect(html).not.toMatch(/\.ks-case \{[^}]*width: 320px;/);
+  });
+
   it.each([
     ['PersonRow', 992],
     ['RelationshipRow', 992],
@@ -450,11 +458,11 @@ describe('CARDS', () => {
     );
   });
 
-  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 6 Map, 8 Foundation, 9 Overlays and 3 Layout', () => {
+  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 9 Map, 8 Foundation, 9 Overlays and 3 Layout', () => {
     const count = (group: string) =>
       CARDS.filter(card => card.group === group).length;
 
-    expect(GROUPS.map(count)).toEqual([14, 6, 8, 6, 8, 9, 3]);
+    expect(GROUPS.map(count)).toEqual([14, 6, 8, 9, 8, 9, 3]);
   });
 
   it.each(CARDS.map(card => [card.name, card] as const))(

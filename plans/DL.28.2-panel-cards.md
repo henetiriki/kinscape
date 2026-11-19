@@ -135,6 +135,15 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 | 10               | Step 4.6 of "Updating the install".                                                      |
 | 11               | Command output in the PR, with 100% coverage.                                            |
 
+## Deviations
+
+- D1 B adds `box` to `Card` in `lib/design/types.ts`, and `cards.mts` and its test use it.
+- D4 adds the optional `surnameHelper` prop to `FilterFields`. The board and the two states with values pass the board's text (`SURNAME_HELPER` in `samples.mts`).
+- `Menu.tsx` renames its internal `PanelProps` to `MenuPanelArgs`. The bundle's `PanelProps` type for the new `Panel` control clashed with it.
+- `react-18.test.tsx` strips functions from nested props, and mounts the first case with the page's React. A nested control with a hook needs the page's copy.
+- `e2e/hits.ts` scrolls the probe point into view. The Filters tab of the `Panel` card ends at the bottom edge of the phone viewport.
+- The Spec reword for D4 is in #1051 (Behaviour, item 2).
+
 ## Out of scope
 
 - The map screen mounts `Panel` (MAP-05): DL.28.3 (#1057).

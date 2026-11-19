@@ -1,5 +1,7 @@
 /** What a control's design system card shows (Spec #450). */
 export type Card = {
+  /** The px width of each state's box, for a control that fills its parent. A state has no box of its own. */
+  box?: number;
   /** The state boxes hold a fixed bar: each is the containing block of its `position: fixed` part. */
   contain?: boolean;
   /** The `DESIGN.md` › Components bullets the README holds, by their bold name. */

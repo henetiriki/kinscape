@@ -109,10 +109,11 @@ const STYLE = (
   pad: number,
   contain: boolean,
   frame: number | undefined,
-  radios: boolean
+  radios: boolean,
+  box: number | undefined
 ) => `body { margin: 0; padding: ${PREVIEW_PAD}px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
-.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''}${box === undefined ? '' : ` width: ${box}px;`} }
 .ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
 const FIGURE =
@@ -127,6 +128,7 @@ const CASE = (radios: boolean) =>
 
 /** The card's preview: a root and one script that mounts each state of `window.KinScape.<name>`. */
 export const previewHtml = ({
+  box,
   contain = false,
   frame,
   group,
@@ -144,7 +146,7 @@ export const previewHtml = ({
 <head>
 <meta charset="utf-8" />
 <style>
-${STYLE(pad, contain, frame, radios)}
+${STYLE(pad, contain, frame, radios, box)}
 </style>
 </head>
 <body>

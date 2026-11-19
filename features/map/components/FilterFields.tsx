@@ -21,6 +21,7 @@ export const FilterFields = ({
   onSurnamesChange,
   people,
   person,
+  surnameHelper,
   surnames,
 }: {
   branch: string;
@@ -34,6 +35,8 @@ export const FilterFields = ({
   onSurnamesChange: (values: string[]) => void;
   people: Choice[];
   person: string;
+  /** A line under Surname, such as what the field matches. */
+  surnameHelper?: string;
   surnames: string[];
 }) => (
   <div className={styles.fields}>
@@ -44,6 +47,7 @@ export const FilterFields = ({
       value={person}
     />
     <TokenField
+      helper={surnameHelper}
       label='Surname'
       onChange={onSurnamesChange}
       placeholder='Add a surname'
@@ -64,9 +68,7 @@ export const FilterFields = ({
   </div>
 );
 
-/** The Panel's footer on the Filters tab. */
+/** The Panel's `end` node on the Filters tab: a button at the left of the body's end. */
 export const ClearFilters = ({ onClear }: { onClear: () => void }) => (
-  <Button full onClick={onClear}>
-    Clear filters
-  </Button>
+  <Button onClick={onClear}>Clear filters</Button>
 );

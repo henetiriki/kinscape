@@ -33,8 +33,8 @@ it('shows a badge on the Filters tab and calls onSelect', () => {
   expect(onSelect).toHaveBeenCalledWith('filters');
 });
 
-it('is an aside with a tablist, a scrolling tabpanel body and an optional footer', () => {
-  const { rerender } = show({ footer: <button type='button'>Clear</button> });
+it('is an aside with a tablist and a scrolling tabpanel body', () => {
+  const { rerender } = show();
 
   expect(screen.getByRole('complementary', { name: 'Map panel' })).toBeTruthy();
   expect(
@@ -46,7 +46,6 @@ it('is an aside with a tablist, a scrolling tabpanel body and an optional footer
   expect(body.id).toBe('body');
   expect(body.textContent).toBe('Rows');
   expect(body.dataset.gap).toBe('14');
-  expect(screen.getByRole('button', { name: 'Clear' })).toBeTruthy();
 
   rerender(
     <Panel gap={20} label='Map panel' selected='layers' tabs={TABS}>
@@ -54,5 +53,41 @@ it('is an aside with a tablist, a scrolling tabpanel body and an optional footer
     </Panel>
   );
   expect(screen.getByRole('tabpanel').dataset.gap).toBe('20');
-  expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull();
+});
+
+it('puts the end node inside the tabpanel, after the children', () => {
+  show({ end: <p>Legend</p> });
+
+  const body = screen.getByRole('tabpanel');
+  const end = screen.getByText('Legend');
+
+  expect(body.textContent).toBe('RowsLegend');
+  expect(body.lastElementChild!.contains(end)).toBe(true);
+  expect(screen.getByRole('complementary').lastElementChild).toBe(body);
+});
+
+it('puts a Clear filters button inside the tabpanel, after the fields', () => {
+  render(
+    <Panel
+      bodyId='body'
+      end={<button type='button'>Clear filters</button>}
+      label='Map panel'
+      selected='filters'
+      tabs={TABS}>
+      <input aria-label='Field' />
+    </Panel>
+  );
+
+  const body = screen.getByRole('tabpanel');
+  const clear = screen.getByRole('button', { name: 'Clear filters' });
+
+  expect(body.contains(clear)).toBe(true);
+  expect(screen.getByLabelText('Field').compareDocumentPosition(clear)).toBe(
+    Node.DOCUMENT_POSITION_FOLLOWING
+  );
+});
+
+it('has no end block without an end node', () => {
+  show();
+  expect(screen.getByRole('tabpanel').children).toHaveLength(0);
 });

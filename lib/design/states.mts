@@ -10,10 +10,17 @@ import {
   CONTESTED_COUNT,
   CONTESTED_YEARS,
   EPOCHS,
+  FILTER_BRANCHES,
+  FILTER_EVENT_TYPES,
+  FILTER_PEOPLE,
+  FILTER_PEOPLE_WITH_ONE,
   FUZZY_DATE_HELPER,
+  LAYER_GROUPS,
   LONG_NOTES,
   MAP_DATE,
+  panelTabs,
   PINS,
+  SURNAME_HELPER,
   TODAY,
 } from '#ks/lib/design/samples.mts';
 import { EVENT_TYPES } from '#ks/lib/domain/pins/schemas.mts';
@@ -149,6 +156,21 @@ const one = (
   label,
   props,
   slots,
+});
+
+/** The width in px of the `Map` board's panel slot. A `Panel`, `LayerGroup` or `FilterFields` card box has it. */
+const PANEL_BOX = 320;
+
+/** The props of a `FilterFields` state: the empty state, with `props` set over it. */
+const filterFields = (props: State['props']): State['props'] => ({
+  branch: '',
+  branches: FILTER_BRANCHES,
+  events: [],
+  eventTypes: FILTER_EVENT_TYPES,
+  people: FILTER_PEOPLE,
+  person: '',
+  surnames: [],
+  ...props,
 });
 
 const AVATAR = { control: 'Avatar', props: { initial: 'R' } };
@@ -827,6 +849,101 @@ export const CARDS: Card[] = [
     name: 'EventGlyph',
     pad: 0,
     states: EVENT_TYPES.map(event => one(`EventGlyph · ${event}`, { event })),
+  },
+  {
+    box: PANEL_BOX,
+    design: [],
+    group: 'Map',
+    handlers: ['onSelect'],
+    height: 760,
+    name: 'Panel',
+    pad: 0,
+    states: [
+      one(
+        'Panel · Layers tab',
+        {
+          bodyId: 'panel-layers',
+          label: 'Layers and filters',
+          selected: 'layers',
+          tabs: panelTabs('panel-layers'),
+        },
+        LAYER_GROUPS.map(({ heading, rows }) => ({
+          control: 'LayerGroup',
+          props: { heading, rows },
+        })),
+        { end: { control: 'Legend', props: {} } }
+      ),
+      one(
+        'Panel · Filters tab',
+        {
+          bodyId: 'panel-filters',
+          gap: 20,
+          label: 'Layers and filters',
+          selected: 'filters',
+          tabs: panelTabs('panel-filters'),
+        },
+        [
+          {
+            control: 'FilterFields',
+            props: filterFields({
+              events: FILTER_EVENT_TYPES.map(({ value }) => value),
+              surnameHelper: SURNAME_HELPER,
+              surnames: ['Rossouw'],
+            }),
+          },
+        ],
+        {
+          end: {
+            children: 'Clear filters',
+            control: 'Button',
+            props: {},
+          },
+        }
+      ),
+    ],
+  },
+  {
+    box: PANEL_BOX,
+    design: ['Layer rows'],
+    group: 'Map',
+    handlers: [],
+    height: 200,
+    name: 'LayerGroup',
+    pad: 0,
+    states: [
+      one('LayerGroup · rows on and off', {
+        heading: LAYER_GROUPS[0].heading,
+        rows: LAYER_GROUPS[0].rows,
+      }),
+    ],
+  },
+  {
+    box: PANEL_BOX,
+    design: [],
+    group: 'Map',
+    handlers: [
+      'onBranchChange',
+      'onEventToggle',
+      'onPersonChange',
+      'onSurnamesChange',
+    ],
+    height: 480,
+    name: 'FilterFields',
+    pad: 0,
+    states: [
+      one('FilterFields · empty', filterFields({})),
+      one(
+        'FilterFields · with values',
+        filterFields({
+          branch: 'ancestors',
+          events: ['birth', 'marriage'],
+          people: FILTER_PEOPLE_WITH_ONE,
+          person: 'p1',
+          surnameHelper: SURNAME_HELPER,
+          surnames: ['Rossouw'],
+        })
+      ),
+    ],
   },
   {
     design: ['Alert'],

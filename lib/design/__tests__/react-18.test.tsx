@@ -70,8 +70,11 @@ import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { DateField } from '@ks/features/map/components/DateField';
+import { FilterFields } from '@ks/features/map/components/FilterFields';
+import { LayerGroup } from '@ks/features/map/components/LayerGroup';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
 import { Legend } from '@ks/features/map/components/Legend';
+import { Panel } from '@ks/features/map/components/Panel';
 import { SearchBar } from '@ks/features/map/components/SearchBar';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
@@ -81,9 +84,16 @@ import {
   CONTESTED_COUNT,
   CONTESTED_YEARS,
   EPOCHS,
+  FILTER_BRANCHES,
+  FILTER_EVENT_TYPES,
+  FILTER_PEOPLE,
+  FILTER_PEOPLE_WITH_ONE,
+  LAYER_GROUPS,
   LONG_NOTES,
   MAP_DATE,
+  panelTabs,
   PINS,
+  SURNAME_HELPER,
   TODAY,
 } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
@@ -189,10 +199,12 @@ const COMPONENTS = {
   DialogPanel,
   Divider,
   EventGlyph,
+  FilterFields,
   FuzzyDateField,
   Icon,
   IconButton,
   KeyHint,
+  LayerGroup,
   LayersButton,
   Legend,
   MapLayout,
@@ -201,6 +213,7 @@ const COMPONENTS = {
   Modal,
   NoticeCard,
   PageHeader,
+  Panel,
   PersonRow,
   PickerRow,
   Popup,
@@ -225,7 +238,7 @@ const COMPONENTS = {
   ZoomControls,
 };
 
-/** A control in a prop or in the children, as a card lists it. */
+/** A control in a prop or in the children, as a card lists it. A card has no handler in a nested control. */
 const toSlot = (element: ReactElement<{ children?: string }>) => {
   const { children, ...props } = element.props;
 
@@ -234,7 +247,7 @@ const toSlot = (element: ReactElement<{ children?: string }>) => {
     control: Object.entries(COMPONENTS).find(
       ([, type]) => type === element.type
     )![0],
-    props,
+    props: slotted(props),
   };
 };
 
@@ -243,7 +256,13 @@ const slotted = (value: unknown): unknown =>
     ? toSlot(value as ReactElement<{ children?: string }>)
     : Array.isArray(value)
       ? value.map(slotted)
-      : value;
+      : value !== null && typeof value === 'object'
+        ? Object.fromEntries(
+            Object.entries(value)
+              .filter(([, each]) => typeof each !== 'function')
+              .map(([key, each]) => [key, slotted(each)])
+          )
+        : value;
 
 const noop = () => {};
 const dateField = (props: Partial<Parameters<typeof DateField>[0]> = {}) => (
@@ -716,6 +735,98 @@ const CASES: [string, ReactElement][] = [
     `EventGlyph · ${event}`,
     <EventGlyph event={event} key={event} />,
   ]),
+  [
+    'Panel · Layers tab',
+    <Panel
+      bodyId='panel-layers'
+      end={<Legend />}
+      key='layers'
+      label='Layers and filters'
+      onSelect={noop}
+      selected='layers'
+      tabs={panelTabs('panel-layers')}>
+      {LAYER_GROUPS.map(({ heading, rows }) => (
+        <LayerGroup
+          heading={heading}
+          key={heading}
+          rows={rows.map(row => ({ ...row, onChange: noop }))}
+        />
+      ))}
+    </Panel>,
+  ],
+  [
+    'Panel · Filters tab',
+    <Panel
+      bodyId='panel-filters'
+      end={<Button>Clear filters</Button>}
+      gap={20}
+      key='filters'
+      label='Layers and filters'
+      onSelect={noop}
+      selected='filters'
+      tabs={panelTabs('panel-filters')}>
+      {[
+        <FilterFields
+          branch=''
+          branches={FILTER_BRANCHES}
+          events={FILTER_EVENT_TYPES.map(({ value }) => value)}
+          eventTypes={FILTER_EVENT_TYPES}
+          key='fields'
+          onBranchChange={noop}
+          onEventToggle={noop}
+          onPersonChange={noop}
+          onSurnamesChange={noop}
+          people={FILTER_PEOPLE}
+          person=''
+          surnameHelper={SURNAME_HELPER}
+          surnames={['Rossouw']}
+        />,
+      ]}
+    </Panel>,
+  ],
+  [
+    'LayerGroup · rows on and off',
+    <LayerGroup
+      heading={LAYER_GROUPS[0].heading}
+      key='group'
+      rows={LAYER_GROUPS[0].rows.map(row => ({ ...row, onChange: noop }))}
+    />,
+  ],
+  [
+    'FilterFields · empty',
+    <FilterFields
+      branch=''
+      branches={FILTER_BRANCHES}
+      events={[]}
+      eventTypes={FILTER_EVENT_TYPES}
+      key='empty'
+      onBranchChange={noop}
+      onEventToggle={noop}
+      onPersonChange={noop}
+      onSurnamesChange={noop}
+      people={FILTER_PEOPLE}
+      person=''
+      surnames={[]}
+    />,
+  ],
+  [
+    'FilterFields · with values',
+    <FilterFields
+      branch='ancestors'
+      branches={FILTER_BRANCHES}
+      events={['birth', 'marriage']}
+      eventTypes={FILTER_EVENT_TYPES}
+      key='values'
+      onBranchChange={noop}
+      onEventToggle={noop}
+      onPersonChange={noop}
+      onSurnamesChange={noop}
+      people={FILTER_PEOPLE_WITH_ONE}
+      person='p1'
+      surnameHelper={SURNAME_HELPER}
+      surnames={['Rossouw']}
+    />,
+  ],
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,
@@ -1164,13 +1275,45 @@ describe('bundle', () => {
       };
       const root = page.document.createElement('div');
       const reactRoot = pageDom.createRoot(root);
+      // A control with hooks needs the page's React, not this file's copy.
+      const rebuild = (value: unknown, key?: number): unknown => {
+        if (Array.isArray(value)) {
+          return value.map((each, at) => rebuild(each, at));
+        }
+
+        const type = isValidElement(value)
+          ? Object.entries(COMPONENTS).find(
+              ([, each]) => each === value.type
+            )?.[0]
+          : undefined;
+
+        if (type === undefined) return value;
+
+        const { children, ...props } = (value as ReactElement).props as Record<
+          string,
+          unknown
+        >;
+        const made = Object.fromEntries(
+          Object.entries(props).map(([prop, each]) => [prop, rebuild(each)])
+        );
+
+        return pageReact.createElement(
+          KinScape[type] as never,
+          (key === undefined ? made : { ...made, key }) as never,
+          rebuild(children) as never
+        );
+      };
 
       page.document.body.append(root);
       pageDom.flushSync(() =>
         reactRoot.render(
           pageReact.createElement(
             KinScape[name] as never,
-            (first as [string, ReactElement])[1].props as never
+            Object.fromEntries(
+              Object.entries(
+                (first as [string, ReactElement])[1].props as object
+              ).map(([prop, each]) => [prop, rebuild(each)])
+            ) as never
           )
         )
       );

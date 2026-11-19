@@ -45,7 +45,7 @@ export const MenuItem = ({
   </button>
 );
 
-type PanelProps = {
+type MenuPanelArgs = {
   email: string;
   /** A line under the items. No line is drawn when unset. */
   footer?: string;
@@ -69,7 +69,7 @@ export const MenuPanel = ({
   menuRef,
   onKeyDown,
   onSelect,
-}: PanelProps) => (
+}: MenuPanelArgs) => (
   <Surface className={styles.panel} level='floating'>
     <div inert={inert}>
       <div className={styles.header}>
@@ -101,7 +101,7 @@ export const MenuPanel = ({
   </Surface>
 );
 
-type AccountMenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
+type AccountMenuProps = Pick<MenuPanelArgs, 'email' | 'footer' | 'groups'> & {
   /**
    * `phone`: the card hangs from the nearest positioned ancestor (the search
    * pill), not from the Avatar. With no positioned ancestor it hangs from the page.

@@ -2,7 +2,7 @@
 
 - **Spec:** #1053
 - **Requirement IDs:** None (design only). Must not break: [MAP-01](../../docs/requirements.md#map-01).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The CI build agent cannot edit `design/canvas/`. No path of this Bug is in `.git
 - **B.** Split: a local session does steps 1 and 2. The CI build agent does steps 4 and 5. Cost: one more hand-off, and the CI run needs Chromium for check 2.
 - **Other:** your own.
 
-Recommended: A, because the session that edits the board can also read the render against the board.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

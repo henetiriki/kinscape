@@ -2,9 +2,11 @@ import type { DOMWindow } from 'jsdom';
 import type * as ReactNamespace from 'react';
 
 import { JSDOM, VirtualConsole } from 'jsdom';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
+
+import { BOARD_DIR } from '@ks/scripts/design-export.mts';
 
 type Page = DOMWindow & {
   KinScape: Record<string, unknown>;
@@ -15,25 +17,20 @@ type Page = DOMWindow & {
   React: typeof ReactNamespace;
 };
 
-const BOARD_DIR = 'design/canvas/project';
 const SCRIPT = '<script src="./board-helpers.js"></script>';
 const BUNDLE = '<script src="ds/kinscape/components/bundle.js"></script>';
+const read = (file: string) => readFileSync(join(process.cwd(), file), 'utf8');
+const board = (name: string) => read(`${BOARD_DIR}/${name}.dc.html`);
+// A board that imports one of the two boards runs its script, so it needs the helpers in its own <head>.
+const IMPORTS = /<dc-import name="Map(?:-phone)?"/;
 const BOARDS = [
   'Map',
   'Map-phone',
-  'Map-account',
-  'Map-date-invalid',
-  'Map-districts',
-  'Map-empty-date',
-  'Map-empty-tree',
-  'Map-loading',
-  'Map-offline',
-  'Map-sources',
-  'Map-phone-collapsed',
+  ...readdirSync(join(process.cwd(), BOARD_DIR))
+    .filter(file => file.endsWith('.dc.html'))
+    .map(file => file.slice(0, -'.dc.html'.length))
+    .filter(name => IMPORTS.test(board(name))),
 ];
-
-const read = (file: string) => readFileSync(join(process.cwd(), file), 'utf8');
-const board = (name: string) => read(`${BOARD_DIR}/${name}.dc.html`);
 
 describe('board-helpers.js', () => {
   let page: Page;

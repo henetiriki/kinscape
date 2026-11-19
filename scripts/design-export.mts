@@ -18,7 +18,7 @@ import type {
   StyleSelector,
 } from '#ks/scripts/types.ts';
 
-const BOARD_DIR = 'design/canvas/project';
+export const BOARD_DIR = 'design/canvas/project';
 const EXPORT_FILE = 'design/canvas/export.json';
 const SOURCE_DIR = 'design/source';
 const ICON_PATH = '../../app/icon0.svg';

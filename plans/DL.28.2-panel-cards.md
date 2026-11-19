@@ -74,7 +74,7 @@ The board draws "Matches spelling variants too (Rossouw, Rossau)" under Surname.
 
 **D5 · The tick marks in the snapshots** · Decides: Tech lead
 
-The exporter leaves out a pseudo-element with a `url()` mask, and the real `Checkbox` draws its tick with one. So a checked row has no tick in a JPG.
+The exporter omits a pseudo-element with a `url()` mask, and the real `Checkbox` draws its tick with one. So a checked row has no tick in a JPG.
 
 - **A.** Swap the board now. The PR lists the missing ticks. Cost: the JPGs show checked rows with no tick until #1066 merges.
 - **B.** Keep the drawn panel until the exporter writes the tick. Cost: this Spec waits, and checks 6 to 8 stay open.
@@ -84,14 +84,14 @@ The exporter leaves out a pseudo-element with a `url()` mask, and the real `Chec
 
 **D6 · The line of a `LayerGroup` heading** · Decides: Tech lead
 
-Overline is 11 / 16. The board draws each group heading on a 13px line, so the real rows are 3px lower for each group.
+Overline is 11 / 16. The board draws each group heading on the font's own line, so the real rows are lower for each group.
 
 - **A.** `LayerGroup` sets `line-height: normal` on its heading. Cost: one heading leaves the type scale, and its height depends on the font metrics.
 - **B.** Keep the 16px line, and add the row offsets to #1067. Cost: the JPGs show the rows 3.5px to 9.5px lower.
 - **C.** Add a type token for this heading (11 / 13) in `design/tokens.json`. Cost: a new type style for one use.
 - **Other:** your own.
 
-**Answer: C** (@henetiriki). The style is `overline-tight`, and `LayerGroup` uses `<Text variant='overlineTight'>`.
+**Answer: C** (@henetiriki). The style is `overline-tight`, and `LayerGroup` uses `<Text variant='overlineTight'>`. Its line is 12px: the pinned render draws the board's heading on that line.
 
 ## Files that change
 
@@ -161,9 +161,9 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 - `Menu.tsx` renames its internal `PanelProps` to `MenuPanelArgs`. The bundle's `PanelProps` type for the new `Panel` control clashed with it.
 - `react-18.test.tsx` strips functions from nested props, and mounts the first case with the page's React. A nested control with a hook needs the page's copy.
 - `e2e/hits.ts` scrolls the probe point into view. The Filters tab of the `Panel` card ends at the bottom edge of the phone viewport.
-- D6 adds the type style `overline-tight` to `tokens.json`, `DESIGN.md` and `Text`.
+- D6 adds the type style `overline-tight`: `tokens.json`, `app/tokens.css`, `DESIGN.md`, `Text` with its types and CSS, and the count in `system.test.ts`.
 - `Card.box` is a CSS length: the three cards pass `var(--size-panel)`.
-- `Slot` has a `handlers` field, and `rows.onChange` names a function in each item of a list prop. The tech lead asked for it.
+- `Slot` has a `handlers` field, and `rows.onChange` names a function in each item of a list prop. With no handler, a click on a layer row in a card throws.
 - The Spec reword for D4 is in #1051 (Behaviour, item 2).
 
 ## Out of scope

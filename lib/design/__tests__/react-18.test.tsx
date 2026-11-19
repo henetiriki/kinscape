@@ -242,24 +242,24 @@ const COMPONENTS = {
 const controlName = (type: unknown): string | undefined =>
   Object.entries(COMPONENTS).find(([, each]) => each === type)?.[0];
 
+/** The keys of the functions in a plain object. An element or a primitive has none. */
+const functionKeys = (value: unknown): string[] =>
+  value !== null && typeof value === 'object' && !isValidElement(value)
+    ? Object.entries(value)
+        .filter(([, each]) => typeof each === 'function')
+        .map(([key]) => key)
+    : [];
+
 /** The function props of a control, as `Card.handlers` names them: `onClick`, or `rows.onChange` for a function in each item of a list. */
-const handlerNames = (props: object): string[] =>
-  Object.entries(props)
-    .flatMap(([key, value]) =>
-      typeof value === 'function'
-        ? [key]
-        : Array.isArray(value)
-          ? value.flatMap(item =>
-              item !== null && typeof item === 'object' && !isValidElement(item)
-                ? Object.entries(item)
-                    .filter(([, each]) => typeof each === 'function')
-                    .map(([name]) => `${key}.${name}`)
-                : []
-            )
-          : []
-    )
-    .filter((name, at, names) => names.indexOf(name) === at)
-    .toSorted();
+const handlerNames = (props: object): string[] => {
+  const inLists = Object.entries(props).flatMap(([key, value]) =>
+    Array.isArray(value)
+      ? value.flatMap(item => functionKeys(item).map(name => `${key}.${name}`))
+      : []
+  );
+
+  return [...new Set([...functionKeys(props), ...inLists])].toSorted();
+};
 
 /** A control in a prop or in the children, as a card lists it. */
 const toSlot = (element: ReactElement<{ children?: string }>) => {

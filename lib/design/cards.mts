@@ -116,6 +116,21 @@ const STYLE = (
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''}${box === undefined ? '' : ` width: ${box};`} }
 .ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
+// Gives each named prop a no-op. A name with a dot, such as `rows.onChange`, names a key in each item of a list prop.
+const GIVE = `  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var list = name.slice(0, at);
+      var key = name.slice(at + 1);
+      props[list] = props[list].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };`;
+
 const FIGURE =
   "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";
 
@@ -158,18 +173,7 @@ ${STYLE(pad, contain, frame, radios, box)}
   var Control = window.${NAMESPACE}[${data(name)}];
   var handlers = ${data(handlers)};
   var states = ${data(states)};
-  var give = function (props, names) {
-    names.forEach(function (name) {
-      var at = name.indexOf('.');
-      if (at < 0) { props[name] = noop; return; }
-      var key = name.slice(at + 1);
-      props[name.slice(0, at)] = props[name.slice(0, at)].map(function (item) {
-        var copy = Object.assign({}, item);
-        copy[key] = noop;
-        return copy;
-      });
-    });
-  };
+${GIVE}
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
     give(props, slot.handlers || []);

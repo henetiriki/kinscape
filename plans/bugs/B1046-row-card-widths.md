@@ -2,7 +2,7 @@
 
 - **Spec:** #1046 (Bug)
 - **Requirement IDs:** None. This Bug changes the design system cards and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The Bug reproduces: the three card comments in `design/canvas/project/ds/kinscap
 - **B.** 1440 for all three, as `ColumnLayout`. Two states fit on most lines, so the cards are shorter. A narrow pane scales the card down more, so the text is smaller.
 - **Other:** your own.
 
-Recommended: A, because each card then shows its rows at the width that the app gives them.
+**Answer: Other:** . PersonRow and RelationshipRow: 992 (option A). PickerRow: 736. The Dialog panel is 760px with 28px side padding (Dialog.module.css), so the row is 704px wide, plus 32px preview padding. (@henetiriki)
 
 ## Alternatives considered
 

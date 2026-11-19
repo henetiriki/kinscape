@@ -16,6 +16,32 @@ The wrapper takes `flex: none`. The rule `.row > input` of `CheckboxField.module
 
 `Checkbox` is in `CONTROLS`, so [Changing the design system](../../design/CANVAS.md#changing-the-design-system) applies. The export e2e reads `design/canvas/project/ds/kinscape/`, so check 4 passes only after step 5. No board changes: `Person-new`, `Sign-in-proposed` and `Sign-in-phone-default-proposed` already mount `KinScape.CheckboxField`. Step 7 has no board to swap.
 
+## Decisions
+
+**D1 · Nine map JPGs** · Decides: Tech lead
+
+Nine map JPGs differ from `main`, and check 6 names only the seven. Each shows the Layers panel, and its checked rows now draw the tick. Accept them?
+
+- **A.** Accept them. The PR names each one and its changed pixels.
+- ~~**B.** Reject them. A change to the Layers rows needs its own plan.~~
+- **Other:** your own.
+
+Recommended: A, because the tick is the fix, and the boxes did not move.
+
+**Answer: A** (Tech lead)
+
+**D2 · `LayerGroup-1440.png`** · Decides: Tech lead
+
+`LayerGroup-1440.png` differs from `main` by 19 px. Each pixel differs by 1 in one colour channel on the edge of a box. Check 7 allows only three cards. Accept it?
+
+- **A.** Accept it. The PR lists its changed pixels.
+- ~~**B.** Keep the image on `main`. The render must then produce its bytes.~~
+- **Other:** your own.
+
+Recommended: A, because the difference is below what the eye sees.
+
+**Answer: A** (Tech lead)
+
 ## Alternatives considered
 
 - **The snapshot check reads a `data:` mask.** The tech lead chose the `<svg>` in the Bug, and #1055 needs the check as it is.
@@ -96,3 +122,5 @@ The two `CheckboxField` tests change because the parent of the `<input>` is now 
 - `features/map/components/__tests__/LayerGroup.test.tsx` also read the row with `parentElement`. It now uses `closest('[data-size]')`, for the same reason as the two `CheckboxField` tests.
 - `.tick` also takes `position: relative`. The `<input>` is positioned, so it painted over the tick, and the card images lost the tick. Check 2 reads `visibility` only, so it did not catch this.
 - `.box` also has a fixed 20px grid cell. The card stretches the box, so the tick sat away from the input. The check 2 test now also reads that the tick lies inside the input.
+- Nine map JPGs differ from `main`, besides the seven of check 6. The tick of each checked Layers row is new (D1).
+- `LayerGroup-1440.png` differs from `main` by 19 px, each by 1 in one colour channel (D2).

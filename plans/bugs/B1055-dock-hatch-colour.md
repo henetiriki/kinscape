@@ -2,13 +2,15 @@
 
 - **Spec:** #1055
 - **Requirement IDs:** None (design only). Must not break: [BND-04](../../docs/requirements.md#bnd-04).
-- **Status:** approved
+- **Status:** draft
 
 ## Approach
 
 `lib/ui/hatch.ts` exports `HATCH_LINE`, `rgba(139, 74, 28, 0.34)`, built from `map.hatch`. `--hatch-line` and the `Legend`'s `--legend-hatch` take it, so the colour has one source. Chromium computes the old `color-mix()` as the same colour, so the cards keep their pixels (check 6).
 
 The fix changes components in `CONTROLS`, so [Changing the design system](../../design/CANVAS.md#changing-the-design-system) applies. The export reads `design/canvas/project/ds/kinscape/`, so check 3 passes only after step 5. The `dock` slot then mounts `KinScape.DateDock` with the samples of `lib/design/samples.mts`. The `date-invalid` variant keeps its drawn dock: the real `DateDock` takes no typed text, so it cannot show `1901-02-30`.
+
+The render shows a blue browser thumb on the slider. `inlineStyles` writes each rule on its element's `style`, and a pseudo-element has none, so the snapshot loses the `::-webkit-slider-thumb` rule. `inlineStyles` keeps such a rule in a `<style>` block of the snapshot, with each value written out and a selector that names its element.
 
 ## Decisions
 
@@ -21,6 +23,26 @@ The CI build agent cannot run steps 4 and 5 ([design-system rule](../README.md#d
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
+
+**D2 · Which pseudo-element rules the exporter keeps** · Decides: Tech lead · **Blocking**
+
+Each option adds check 9 to #1055: the nine JPGs draw the slider thumb as `DateDock-1440.png` draws it.
+
+- **A.** Only `::-webkit-slider-thumb` and `::-webkit-slider-runnable-track`, from a list in the exporter. Only the nine `Map` snapshots change. Cost: a later pseudo-element needs a list entry.
+- **B.** Every pseudo-element rule (`::before`, `::after`, `::placeholder`). Snapshots of other screens can change, so check 5 of #1055 then names each one. Cost: a larger render to review.
+- **Other:** your own.
+
+Recommended: B, because a snapshot then draws each pseudo-element as the app does. A is cheaper and loses only the other pseudo-elements, which stay as `main` draws them.
+
+**D3 · The other dock differences** · Decides: Tech lead
+
+The real dock differs from the drawn dock in six ways, and in its Play button, which this plan leaves alone. The six are: no selected Jump to year, "1900" and "2000" slider labels with two more ticks, a higher contested note, a hatch span that the thumb covers, a darker field border, and wider spacing.
+
+- **A.** Accept all six as the real `DateDock`. Cost: none.
+- **B.** File a Bug for each one that you name. Cost: one Bug each.
+- **Other:** your own.
+
+Recommended: A, because the `DateDock` card already shows each one.
 
 ## Alternatives considered
 
@@ -40,6 +62,9 @@ The CI build agent cannot run steps 4 and 5 ([design-system rule](../README.md#d
 | `design/canvas/project/Map.dc.html`                                                       | changed       | `dock`: no chrome, `undefined`; `date-invalid`, the drawn dock; else `h(K.DateDock, …)`. The comment gives the new why. |
 | `design/canvas/project/ds/`, `design/canvas/project/canvas.json`, `design/canvas/VERSION` | changed       | Steps 4 and 5.                                                                                                          |
 | `design/source/` and `design/*.jpg` of 9 shots                                            | changed       | The render workflow: the `Map` snapshots except `map-account-menu` and `map-date-invalid`.                              |
+| `scripts/design-export.mts`                                                               | changed       | `inlineStyles` keeps the pseudo-element rules of D2 in a `<style>` block.                                               |
+| `scripts/__tests__/design-export.test.ts`, `e2e/design-export.spec.mts`                   | changed       | Check 9: the `DateDock` board's snapshot holds the thumb rule, and `snapshotProblems` stays empty.                      |
+| `scripts/word-count.mts`, its test, `plans/TEMPLATE.md`                                   | changed       | One budget of 1500 words for every plan.                                                                                |
 | `plans/bugs/B1055-dock-hatch-colour.md`                                                   | new           | This plan.                                                                                                              |
 
 ## Order of work
@@ -52,8 +77,12 @@ The CI build agent cannot run steps 4 and 5 ([design-system rule](../README.md#d
 6. The tech lead runs Design: Render snapshots on the branch (design steps 6 and 7 in one render).
 7. Compare the JPGs and card images with `origin/main`. Use `cmp` for `map-account-menu`, `map-date-invalid`, the `Map-phone` JPGs, `DateDock-1440.png` and `Legend-1440.png`. For the other nine, post the `changedPixels` box of `lib/design/check.mts`. List each visible difference of the dock for the tech lead (check 5).
 8. Run the [Commands](../../AGENTS.md#commands) checks. Do the ready check. Write the PR body.
+9. Write the tests of check 9. See them fail. Change `inlineStyles`. Run `npm run design:export`, discard `source/` and push.
+10. The tech lead runs Design: Render snapshots again. Do steps 7 and 8 again.
 
 ## Risks
+
+- **Chromium gives no computed style for the thumb.** Then write the declared values, with each `var()` taken from the element. If a value still fails the colour check, stop for the tech lead.
 
 - **The drawn dock differs from the real dock.** For example, the drawn slider hatch is `rgba(139,74,28,0.55)`. The PR lists each difference (Expected per).
 - **A card image changes.** The computed colours are the same, so this is unlikely. If check 6 fails, stop for the tech lead.
@@ -71,6 +100,7 @@ The CI build agent cannot run steps 4 and 5 ([design-system rule](../README.md#d
 | 6. Card images same                                         | `cmp` in step 7                                                                                |
 | 7. Same sha256, `Map.dc.html`                               | The 5.2 pair in the PR                                                                         |
 | 8. Test, typecheck, lint, coverage                          | The outputs in the PR                                                                          |
+| 9. The JPGs draw the card's thumb                           | The tests of step 9; the crop of `map-desktop.jpg` beside the card in the PR                   |
 | Must not break: #924 `MapLayout` and other slots            | Read the board; the boxes of check 5 hold only the dock                                        |
 | Must not break: #1052 and #1053 baseline                    | Step 7 compares with `origin/main`, which holds the #1060 and #1061 JPGs                       |
 | Must not break: #921 cards                                  | `git diff origin/main -- lib/design/states.mts lib/design/samples.mts` is empty; check 6       |

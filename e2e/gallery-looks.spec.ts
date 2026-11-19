@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { hitsControl } from '@ks/e2e/hits';
-import { GALLERY, OUTPUT } from '@ks/lib/design/cards.mts';
+import { GALLERY, OUTPUT, PREVIEW_PAD } from '@ks/lib/design/cards.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 
 // NFR-05, NFR-06: the look of the shared controls, read from the gallery files in
@@ -225,19 +225,15 @@ test.describe('on a phone', () => {
   });
 });
 
-// The preview has 16px of padding on each side of the card.
-const PREVIEW_PAD = 16;
-
 test.describe('the row cards at their width', () => {
   for (const name of ['PersonRow', 'RelationshipRow', 'PickerRow']) {
     const card = CARDS.find(item => item.name === name)!;
 
     test.describe(name, () => {
-      test.use({
-        viewport: { height: 900, width: card.width! + 2 * PREVIEW_PAD },
-      });
+      // The card `width` is the whole frame, so the viewport is as wide as the card.
+      test.use({ viewport: { height: 900, width: card.width! } });
 
-      test('shows each name on one line, with no text overlapping, inside the frame', async ({
+      test('shows each name on one line, where no text overlaps other text, inside the frame', async ({
         page,
       }) => {
         await open(page, name);
@@ -299,24 +295,27 @@ test.describe('the row cards at their width', () => {
 
           expect(ring.left, caption).toBeGreaterThanOrEqual(PREVIEW_PAD - 4);
           expect(ring.right, caption).toBeLessThanOrEqual(
-            card.width! + PREVIEW_PAD + 4
+            card.width! - PREVIEW_PAD + 4
           );
           expect(ring.bottom, caption).toBeLessThanOrEqual(card.height);
         }
 
-        const scroll = await page.evaluate(() => ({
-          // The page is at least as tall as the viewport, so measure to the end of the last case.
-          height: Math.ceil(
-            [...document.querySelectorAll('figure')]
-              .at(-1)!
-              .getBoundingClientRect().bottom +
-              scrollY +
-              16
-          ),
-          width: document.documentElement.scrollWidth,
-        }));
+        const scroll = await page.evaluate(
+          pad => ({
+            // The page is at least as tall as the viewport, so measure to the end of the last case.
+            height: Math.ceil(
+              [...document.querySelectorAll('figure')]
+                .at(-1)!
+                .getBoundingClientRect().bottom +
+                scrollY +
+                pad
+            ),
+            width: document.documentElement.scrollWidth,
+          }),
+          PREVIEW_PAD
+        );
 
-        expect(scroll.width).toBeLessThanOrEqual(card.width! + 2 * PREVIEW_PAD);
+        expect(scroll.width).toBeLessThanOrEqual(card.width!);
         expect(scroll.height).toBeLessThanOrEqual(card.height);
       });
     });

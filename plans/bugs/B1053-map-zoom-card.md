@@ -65,6 +65,10 @@ The CI build agent cannot edit `design/canvas/`. No path of this Bug is in `.git
 | Must not break: #920 `ZoomControls` card           | `git diff origin/main -- design/cards/ features/` is empty                                        |
 | Must not break: MAP-01, no app file                | `git diff --stat origin/main` names only `design/` and `plans/`; `npm run e2e` passes (pan, zoom) |
 
+## Deviations
+
+- Nine JPGs differ, not ten: the open account menu of `map-account-menu-proposed` covers the whole zoom card, so its JPG is byte-identical.
+
 ## Out of scope
 
 - The `dock` slot: #1055.

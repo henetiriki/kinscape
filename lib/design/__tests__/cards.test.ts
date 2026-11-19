@@ -203,9 +203,11 @@ describe('previewHtml', () => {
   it('gives each state a box of the card width only for a card with a box', () => {
     const panel = CARDS.find(({ name }) => name === 'Panel')!;
 
-    expect(panel.box).toBe(320);
-    expect(previewHtml(panel)).toMatch(/\.ks-case \{[^}]*width: 320px;/);
-    expect(html).not.toMatch(/\.ks-case \{[^}]*width: 320px;/);
+    expect(panel.box).toBe('var(--size-panel)');
+    expect(previewHtml(panel)).toMatch(
+      /\.ks-case \{[^}]*width: var\(--size-panel\);/
+    );
+    expect(html).not.toMatch(/\.ks-case \{[^}]*width: var\(--size-panel\);/);
   });
 
   it.each([

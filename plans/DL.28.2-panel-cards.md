@@ -74,13 +74,24 @@ The board draws "Matches spelling variants too (Rossouw, Rossau)" under Surname.
 
 **D5 · The tick marks in the snapshots** · Decides: Tech lead
 
-The exporter leaves out a pseudo-element that needs a `url()` mask. The real `Checkbox` draws its tick with one. So a checked layer row has no tick in a snapshot or a JPG. The canvas shows the tick.
+The exporter leaves out a pseudo-element with a `url()` mask, and the real `Checkbox` draws its tick with one. So a checked row has no tick in a JPG.
 
 - **A.** Swap the board now. The PR lists the missing ticks. Cost: the JPGs show checked rows with no tick until #1066 merges.
 - **B.** Keep the drawn panel until the exporter writes the tick. Cost: this Spec waits, and checks 6 to 8 stay open.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki). #1066 fixes the tick and merges after this PR.
+
+**D6 · The line of a `LayerGroup` heading** · Decides: Tech lead
+
+Overline is 11 / 16. The board draws each group heading on a 13px line, so the real rows are 3px lower for each group.
+
+- **A.** `LayerGroup` sets `line-height: normal` on its heading. Cost: one heading leaves the type scale, and its height depends on the font metrics.
+- **B.** Keep the 16px line, and add the row offsets to #1067. Cost: the JPGs show the rows 3.5px to 9.5px lower.
+- **C.** Add a type token for this heading (11 / 13) in `design/tokens.json`. Cost: a new type style for one use.
+- **Other:** your own.
+
+**Answer: C** (@henetiriki). The style is `overline-tight`, and `LayerGroup` uses `<Text variant='overlineTight'>`.
 
 ## Files that change
 
@@ -123,12 +134,10 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 
 ## Risks
 
-- **A nested slot has no handler.** A preview gives no-op handlers to the card's own control only. A click on a checkbox or a chip inside `Panel` calls nothing, and the console shows an error. No test clicks a card, and no screen mounts these. A fix adds a `handlers` field to `Slot`, about 10 lines. The tech lead decides whether to build it.
-- **Visible differences.** The real chips, selects, badge and "Clear filters" can differ from the drawing in type and padding. The PR lists each (Spec D4). D3 and D4 name the two known ones.
+- **Visible differences.** The PR lists each (Spec D4). #1067 holds the open ones.
 - **#1057.** Its concern names `max-height: 100%`, which stays. `flex: 1` fills the slot, and the slot box does not change, so the scale bar check still holds.
 - **Other board edits.** #1052, #1053 and #1055 are merged. #1056 rewrites `mount` after this Spec, and the panel slot does not use `mount`.
 - **#925.** Its Out of scope names "Component cards for the Layers panel". After this Spec the cards exist, and the build checks that line.
-- **Missing card images.** The `design` job fails on the three cards until the workflow commits their images.
 
 ## Proof
 
@@ -152,7 +161,9 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 - `Menu.tsx` renames its internal `PanelProps` to `MenuPanelArgs`. The bundle's `PanelProps` type for the new `Panel` control clashed with it.
 - `react-18.test.tsx` strips functions from nested props, and mounts the first case with the page's React. A nested control with a hook needs the page's copy.
 - `e2e/hits.ts` scrolls the probe point into view. The Filters tab of the `Panel` card ends at the bottom edge of the phone viewport.
-- `LayerGroup.module.css` gives a heading `line-height: normal`, as the board draws it. The overline line moved the layer rows down by 3px a group.
+- D6 adds the type style `overline-tight` to `tokens.json`, `DESIGN.md` and `Text`.
+- `Card.box` is a CSS length: the three cards pass `var(--size-panel)`.
+- `Slot` has a `handlers` field, and `rows.onChange` names a function in each item of a list prop. The tech lead asked for it.
 - The Spec reword for D4 is in #1051 (Behaviour, item 2).
 
 ## Out of scope

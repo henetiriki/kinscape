@@ -238,17 +238,73 @@ const COMPONENTS = {
   ZoomControls,
 };
 
-/** A control in a prop or in the children, as a card lists it. A card has no handler in a nested control. */
+/** The `COMPONENTS` name of an element's type. */
+const controlName = (type: unknown): string | undefined =>
+  Object.entries(COMPONENTS).find(([, each]) => each === type)?.[0];
+
+/** The function props of a control, as `Card.handlers` names them: `onClick`, or `rows.onChange` for a function in each item of a list. */
+const handlerNames = (props: object): string[] =>
+  Object.entries(props)
+    .flatMap(([key, value]) =>
+      typeof value === 'function'
+        ? [key]
+        : Array.isArray(value)
+          ? value.flatMap(item =>
+              item !== null && typeof item === 'object' && !isValidElement(item)
+                ? Object.entries(item)
+                    .filter(([, each]) => typeof each === 'function')
+                    .map(([name]) => `${key}.${name}`)
+                : []
+            )
+          : []
+    )
+    .filter((name, at, names) => names.indexOf(name) === at)
+    .toSorted();
+
+/** A control in a prop or in the children, as a card lists it. */
 const toSlot = (element: ReactElement<{ children?: string }>) => {
   const { children, ...props } = element.props;
+  const handlers = handlerNames(props);
 
   return {
     children,
-    control: Object.entries(COMPONENTS).find(
-      ([, type]) => type === element.type
-    )![0],
+    control: controlName(element.type)!,
+    handlers: handlers.length > 0 ? handlers : undefined,
     props: slotted(props),
   };
+};
+
+/** The same element tree with the controls and the React of the bundle's page: a control with hooks needs the page's copy. */
+const rebuild = (
+  value: unknown,
+  pageReact: typeof React,
+  controls: Record<string, unknown>,
+  key?: number
+): unknown => {
+  if (Array.isArray(value)) {
+    return value.map((each, at) => rebuild(each, pageReact, controls, at));
+  }
+
+  const name = isValidElement(value) ? controlName(value.type) : undefined;
+
+  if (name === undefined) return value;
+
+  const { children, ...props } = (value as ReactElement).props as Record<
+    string,
+    unknown
+  >;
+  const made = Object.fromEntries(
+    Object.entries(props).map(([prop, each]) => [
+      prop,
+      rebuild(each, pageReact, controls),
+    ])
+  );
+
+  return pageReact.createElement(
+    controls[name] as never,
+    (key === undefined ? made : { ...made, key }) as never,
+    rebuild(children, pageReact, controls) as never
+  );
 };
 
 const slotted = (value: unknown): unknown =>
@@ -1275,34 +1331,6 @@ describe('bundle', () => {
       };
       const root = page.document.createElement('div');
       const reactRoot = pageDom.createRoot(root);
-      // A control with hooks needs the page's React, not this file's copy.
-      const rebuild = (value: unknown, key?: number): unknown => {
-        if (Array.isArray(value)) {
-          return value.map((each, at) => rebuild(each, at));
-        }
-
-        const type = isValidElement(value)
-          ? Object.entries(COMPONENTS).find(
-              ([, each]) => each === value.type
-            )?.[0]
-          : undefined;
-
-        if (type === undefined) return value;
-
-        const { children, ...props } = (value as ReactElement).props as Record<
-          string,
-          unknown
-        >;
-        const made = Object.fromEntries(
-          Object.entries(props).map(([prop, each]) => [prop, rebuild(each)])
-        );
-
-        return pageReact.createElement(
-          KinScape[type] as never,
-          (key === undefined ? made : { ...made, key }) as never,
-          rebuild(children) as never
-        );
-      };
 
       page.document.body.append(root);
       pageDom.flushSync(() =>
@@ -1312,7 +1340,10 @@ describe('bundle', () => {
             Object.fromEntries(
               Object.entries(
                 (first as [string, ReactElement])[1].props as object
-              ).map(([prop, each]) => [prop, rebuild(each)])
+              ).map(([prop, each]) => [
+                prop,
+                rebuild(each, pageReact, KinScape),
+              ])
             ) as never
           )
         )
@@ -1398,6 +1429,13 @@ describe('bundle', () => {
 
           form.dispatchEvent(submit);
           expect(submit.defaultPrevented).toBe(true);
+        }
+
+        // A click reaches the control's handler. A missing one throws in the page.
+        for (const box of page.document.querySelectorAll<HTMLInputElement>(
+          'input[type="checkbox"]'
+        )) {
+          box.click();
         }
 
         expect(problems).toEqual([]);

@@ -44,7 +44,7 @@ export const panelTabs = (body: string) => [
   { controls: body, count: 1, label: 'Filters', value: 'filters' },
 ];
 
-/** The layer groups of the `Map` board, with its default rows on. A row has no `onChange`: a card has no handler for it. */
+/** The layer groups of the `Map` board, with its default rows on. A row has no `onChange`: the card names it in `handlers`. */
 export const LAYER_GROUPS = [
   {
     heading: 'Boundaries',

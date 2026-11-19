@@ -92,6 +92,7 @@ const OTHERS = [
   'mono',
   'monoL',
   'overline',
+  'overlineTight',
   'small',
   'title',
 ];
@@ -158,8 +159,16 @@ const one = (
   slots,
 });
 
-/** The width in px of the `Map` board's panel slot. A `Panel`, `LayerGroup` or `FilterFields` card box has it. */
-const PANEL_BOX = 320;
+/** The width of the `Map` board's panel slot. A `Panel`, `LayerGroup` or `FilterFields` card box has it. */
+const PANEL_BOX = 'var(--size-panel)';
+
+const FILTER_HANDLERS = [
+  'onBranchChange',
+  'onEventToggle',
+  'onPersonChange',
+  'onSurnamesChange',
+];
+const LAYER_HANDLERS = ['rows.onChange'];
 
 /** The props of a `FilterFields` state: the empty state, with `props` set over it. */
 const filterFields = (props: State['props']): State['props'] => ({
@@ -869,6 +878,7 @@ export const CARDS: Card[] = [
         },
         LAYER_GROUPS.map(({ heading, rows }) => ({
           control: 'LayerGroup',
+          handlers: LAYER_HANDLERS,
           props: { heading, rows },
         })),
         { end: { control: 'Legend', props: {} } }
@@ -885,6 +895,7 @@ export const CARDS: Card[] = [
         [
           {
             control: 'FilterFields',
+            handlers: FILTER_HANDLERS,
             props: filterFields({
               events: FILTER_EVENT_TYPES.map(({ value }) => value),
               surnameHelper: SURNAME_HELPER,
@@ -906,7 +917,7 @@ export const CARDS: Card[] = [
     box: PANEL_BOX,
     design: ['Layer rows'],
     group: 'Map',
-    handlers: [],
+    handlers: LAYER_HANDLERS,
     height: 200,
     name: 'LayerGroup',
     pad: 0,
@@ -921,12 +932,7 @@ export const CARDS: Card[] = [
     box: PANEL_BOX,
     design: [],
     group: 'Map',
-    handlers: [
-      'onBranchChange',
-      'onEventToggle',
-      'onPersonChange',
-      'onSurnamesChange',
-    ],
+    handlers: FILTER_HANDLERS,
     height: 480,
     name: 'FilterFields',
     pad: 0,

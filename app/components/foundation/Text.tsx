@@ -25,6 +25,7 @@ export const DEFAULT_TAG: Record<Other, Tag> = {
   mono: 'span',
   monoL: 'span',
   overline: 'span',
+  overlineTight: 'span',
   small: 'span',
   title: 'span',
 };

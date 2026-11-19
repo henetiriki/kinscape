@@ -110,10 +110,10 @@ const STYLE = (
   contain: boolean,
   frame: number | undefined,
   radios: boolean,
-  box: number | undefined
+  box: string | undefined
 ) => `body { margin: 0; padding: ${PREVIEW_PAD}px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
-.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''}${box === undefined ? '' : ` width: ${box}px;`} }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''}${box === undefined ? '' : ` width: ${box};`} }
 .ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
 const FIGURE =
@@ -158,14 +158,27 @@ ${STYLE(pad, contain, frame, radios, box)}
   var Control = window.${NAMESPACE}[${data(name)}];
   var handlers = ${data(handlers)};
   var states = ${data(states)};
+  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var key = name.slice(at + 1);
+      props[name.slice(0, at)] = props[name.slice(0, at)].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
     var part = window.${NAMESPACE}[slot.control];
     return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
   };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
-    handlers.forEach(function (handler) { props[handler] = noop; });
+    give(props, handlers);
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);

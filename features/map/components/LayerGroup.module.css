@@ -5,7 +5,5 @@
 
 .group > h3 {
   color: var(--ink-3);
-  /* The Map board draws a heading on the font's own line. The overline line is 3px taller, and the rows below move. */
-  line-height: normal;
   margin: 0 0 var(--space-4);
 }

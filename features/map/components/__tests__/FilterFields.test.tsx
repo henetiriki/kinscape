@@ -85,7 +85,9 @@ it('shows the Surname helper only when it is given', () => {
     />
   );
 
-  expect(screen.getByText('Spelling variants too')).toBeTruthy();
+  expect(
+    screen.getByLabelText('Surname').getAttribute('aria-describedby')
+  ).toBe(screen.getByText('Spelling variants too').id);
   unmount();
   show();
   expect(screen.queryByText('Spelling variants too')).toBeNull();

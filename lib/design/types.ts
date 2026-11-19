@@ -1,7 +1,7 @@
 /** What a control's design system card shows (Spec #450). */
 export type Card = {
-  /** The px width of each state's box, for a control that fills its parent. A state has no box of its own. */
-  box?: number;
+  /** The CSS width of each state's box, for a control that fills its parent. A state has no box of its own. */
+  box?: string;
   /** The state boxes hold a fixed bar: each is the containing block of its `position: fixed` part. */
   contain?: boolean;
   /** The `DESIGN.md` › Components bullets the README holds, by their bold name. */
@@ -9,7 +9,7 @@ export type Card = {
   /** The px height of each state's control, for a control that fills the viewport. The preview sets it, so the component keeps its own height. */
   frame?: number;
   group: Group;
-  /** The props a preview gives a no-op. */
+  /** The props a preview gives a no-op. `rows.onChange` names `onChange` in each item of the list prop `rows`. */
   handlers: string[];
   height: number;
   name: string;
@@ -90,6 +90,8 @@ export type Shot = {
 export type Slot = {
   children?: string;
   control: string;
+  /** The props of this control that a preview gives a no-op, named as `Card.handlers` names them. */
+  handlers?: string[];
   props: Record<string, unknown>;
 };
 

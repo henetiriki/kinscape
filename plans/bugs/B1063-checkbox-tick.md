@@ -94,3 +94,4 @@ The two `CheckboxField` tests change because the parent of the `<input>` is now 
 ## Deviations
 
 - `features/map/components/__tests__/LayerGroup.test.tsx` also read the row with `parentElement`. It now uses `closest('[data-size]')`, for the same reason as the two `CheckboxField` tests.
+- `.tick` also takes `position: relative`. The `<input>` is positioned, so it painted over the tick, and the card images lost the tick. Check 2 reads `visibility` only, so it did not catch this.

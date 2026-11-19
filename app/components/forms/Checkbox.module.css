@@ -36,6 +36,8 @@
   height: 14px;
   place-self: center;
   pointer-events: none;
+  /* The positioned `.checkbox` paints over an unpositioned sibling in the same cell. */
+  position: relative;
   width: 14px;
 }
 

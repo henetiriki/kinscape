@@ -35,7 +35,29 @@ const SLOTS = [
   'overlay',
 ] as const;
 
-type Slot = (typeof SLOTS)[number];
+/** Each slot is declared, not mapped from `SLOTS`: the design system reads the props from their declarations. */
+interface MapLayoutSlots {
+  /** The account control, on desktop. */
+  account?: ReactNode;
+  /** The map. */
+  children?: ReactNode;
+  /** The source credits, on desktop. */
+  credits?: ReactNode;
+  /** The date dock. */
+  dock?: ReactNode;
+  /** The Layers button, on a phone. */
+  layers?: ReactNode;
+  /** The popup area over the map. */
+  overlay?: ReactNode;
+  /** `top` puts the overlay at the slot's top edge; otherwise it centres. */
+  overlayAt?: 'top';
+  /** The side panel, or the sheet on a phone. */
+  panel?: ReactNode;
+  /** The search bar. */
+  search?: ReactNode;
+  /** The zoom controls, on desktop. */
+  zoom?: ReactNode;
+}
 
 /**
  * The map screen's frame: the map is `children`, and each slot is a placed box over it.
@@ -46,10 +68,7 @@ export const MapLayout = ({
   children,
   overlayAt,
   ...slots
-}: {
-  children?: ReactNode;
-  overlayAt?: 'top';
-} & Partial<Record<Slot, ReactNode>>) => (
+}: MapLayoutSlots) => (
   <div className={styles.layout}>
     {children}
     {SLOTS.map(

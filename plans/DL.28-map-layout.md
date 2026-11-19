@@ -84,3 +84,6 @@ A local session cannot start Chromium, so it cannot check the export or the pixe
 As the Spec says.
 
 ## Deviations
+
+- `MapLayout` declares its slots in an interface (`MapLayoutSlots`), not `Partial<Record<Slot, ReactNode>>`: `scripts/design-system.mts` reads props from their declarations and a mapped type has none.
+- `lib/design/__tests__/cards.test.ts` changes its Layout count from 2 to 3. The plan did not list it.

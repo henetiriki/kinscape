@@ -1239,4 +1239,47 @@ export const CARDS: Card[] = [
     ],
     width: 1440,
   },
+  {
+    contain: true,
+    design: [],
+    frame: 480,
+    group: 'Layout',
+    handlers: [],
+    height: 560,
+    name: 'MapLayout',
+    pad: 0,
+    states: [
+      one(
+        'MapLayout · text in each slot',
+        {},
+        [
+          {
+            children: 'The map',
+            control: 'Text',
+            props: { variant: 'small' },
+          },
+        ],
+        Object.fromEntries(
+          [
+            'search',
+            'account',
+            'zoom',
+            'layers',
+            'panel',
+            'dock',
+            'credits',
+            'overlay',
+          ].map(slot => [
+            slot,
+            {
+              children: slot,
+              control: 'Text',
+              props: { variant: 'small' },
+            },
+          ])
+        )
+      ),
+    ],
+    width: 1440,
+  },
 ];

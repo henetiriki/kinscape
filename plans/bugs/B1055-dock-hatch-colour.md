@@ -2,7 +2,7 @@
 
 - **Spec:** #1055
 - **Requirement IDs:** None (design only). Must not break: [BND-04](../../docs/requirements.md#bnd-04).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -20,7 +20,7 @@ The CI build agent cannot run steps 4 and 5 ([design-system rule](../README.md#d
 - **B.** Split: the CI build agent does steps 1 to 3 and keeps the PR as a draft. A local session does steps 4 and 5. The CI build agent does steps 7 and 8. Cost: two more hand-offs.
 - **Other:** your own.
 
-Recommended: B, because it is the path of the design-system rule, and the CI run records the test-first evidence. A is cheaper by two hand-offs and loses only that CI evidence.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

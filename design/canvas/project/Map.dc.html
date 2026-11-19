@@ -75,8 +75,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
-  <div style="position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
-  <div style="position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
+  <div style="z-index: 2; position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
+  <div style="z-index: 2; position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
     <button type="button" aria-expanded="false" aria-controls="credits-text" style="display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="info" size="14"></x-import>Credits</button>
     <span aria-hidden="true">·</span>
     <a href="#" style="color: #1D3E20">Attributions</a>
@@ -276,6 +276,18 @@ class Component extends DCLogic {
     };
 
     const v = vals.v;
+    // The real dock takes the values of the `DateDock` card (`lib/design/samples.mts`): a board cannot import them.
+    const day = iso => Math.round((Date.parse(`${iso}T00:00:00Z`) - Date.UTC(1652, 0, 1)) / 86400000);
+    const noop = () => {};
+    const dateDock = h(K.DateDock, {
+      contestedCount: 2,
+      contestedYears: [{ from: 1900, to: 1901 }],
+      day: day('1901-06-14'),
+      epochs: [1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994].map(year => ({ year })).concat([{ label: 'Today', year: 2026 }]),
+      lastDay: day('2026-10-21'),
+      onChange: noop,
+      onPlay: noop
+    });
     // The slot puts a card at its top edge. The board draws two cards lower, so they take the gap as a margin.
     const lower = (gap, card) => h('div', { style: { marginTop: gap } }, card);
     const notice = v.emptyDate
@@ -291,7 +303,8 @@ class Component extends DCLogic {
       accountMenu: vals.accountMenu,
       chrome: vals.chrome,
       dateInvalid,
-      dock: vals.chrome ? mount(`  <section aria-label="Map date" style="height: 176px; box-sizing: border-box; padding: 14px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
+      // An invalid typed date is a state that the real field reaches only by typing, so that board keeps the drawn dock.
+      dock: vals.chrome ? (dateInvalid ? mount(`  <section aria-label="Map date" style="height: 176px; box-sizing: border-box; padding: 14px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
     <div style="display: flex; align-items: center; gap: 14px; height: 44px">
       <div style="display: flex; align-items: center; gap: 4px">
         <button type="button" aria-label="Back one ${precisionWord}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
@@ -351,7 +364,7 @@ class Component extends DCLogic {
       `).join('')}
       <span style="margin-left: auto; font-size: 12.5px; line-height: 18px; color: #4A544C; display: inline-flex; gap: 8px; align-items: center"><x-import component-from-global-scope="KinScape.KeyHint">←</x-import><x-import component-from-global-scope="KinScape.KeyHint">→</x-import>1 ${precisionWord} · with <x-import component-from-global-scope="KinScape.KeyHint">Shift</x-import> ×10</span>
     </div>
-  </section>`) : undefined,
+  </section>`) : dateDock) : undefined,
       map: h('div', { style: { display: 'contents' }, dangerouslySetInnerHTML: { __html: `  <svg viewBox="-289 89 1600 1000" width="1440" height="900" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map of South Africa on 1901: Cape Colony, Natal, Basutoland and Swaziland, with the Orange Free State and South African Republic shown as contested">
     <defs>
       <clipPath id="landClip"><path d="M63 0 L89 60 L126 114 L131 147 L136 210 L150 270 L163 348 L165 369 L173 408 L194 444 L220 474 L234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 Z"></path></clipPath>
@@ -586,7 +599,13 @@ class Component extends DCLogic {
   </div>`) : undefined,
       sources: vals.sources,
       v,
-      zoom: vals.chrome ? h(K.ZoomControls) : undefined
+      zoom: vals.chrome ? mount(`  <div style="display: flex; flex-direction: column; background: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+    <button type="button" aria-label="Zoom in" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="zoomIn"></x-import></button>
+    <span style="height: 1px; background: #E2E5DD"></span>
+    <button type="button" aria-label="Zoom out" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="zoomOut"></x-import></button>
+    <span style="height: 1px; background: #E2E5DD"></span>
+    <button type="button" aria-label="Fit South Africa" style="width: 44px; height: 44px; border: 0; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="fit"></x-import></button>
+  </div>`) : undefined
     };
   }
 }

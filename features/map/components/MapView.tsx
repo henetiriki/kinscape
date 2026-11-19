@@ -16,7 +16,7 @@ import type {
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 
 import { PHONE } from '@ks/app/components/foundation/usePhone';
-import { freeArea } from '@ks/features/map/components/Stage';
+import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { buildStyle } from '@ks/features/map/style';
 import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 import { coverZoom } from '@ks/lib/domain/map/zoom.mts';

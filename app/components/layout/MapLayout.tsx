@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import rawTokens from '@ks/design/tokens.json';
 
-import styles from '@ks/features/map/components/Stage.module.css';
+import styles from '@ks/app/components/layout/MapLayout.module.css';
 
 const { layout, size } = rawTokens;
 const px = (value: string) => Number.parseFloat(value);
@@ -23,7 +23,7 @@ export const freeArea = (phone: boolean) =>
         top: px(layout['furniture-top']),
       };
 
-/** The slots in DOM order; `search` and `account` stack above the others (`Stage.module.css`). A phone shows `layers` and hides `account`, `zoom` and `credits`. */
+/** The slots in DOM order; `search` and `account` stack above the others (`MapLayout.module.css`). A phone shows `layers` and hides `account`, `zoom` and `credits`. */
 const SLOTS = [
   'search',
   'account',
@@ -42,7 +42,7 @@ type Slot = (typeof SLOTS)[number];
  * Desktop and phone forms switch at `breakpoint`; every edge is a `layout` token.
  * The `overlay` content centres unless `overlayAt` is `top`, which puts it at the slot's top edge.
  */
-export const Stage = ({
+export const MapLayout = ({
   children,
   overlayAt,
   ...slots
@@ -50,7 +50,7 @@ export const Stage = ({
   children?: ReactNode;
   overlayAt?: 'top';
 } & Partial<Record<Slot, ReactNode>>) => (
-  <div className={styles.stage}>
+  <div className={styles.layout}>
     {children}
     {SLOTS.map(
       slot =>

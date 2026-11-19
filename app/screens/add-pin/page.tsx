@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 
+import { MapLayout } from '@ks/app/components/layout/MapLayout';
 import { AddPinPanel } from '@ks/app/screens/add-pin/AddPinPanel';
-import { Stage } from '@ks/features/map';
 import { requireDevPage } from '@ks/server/auth/current.mts';
 
 export const metadata: Metadata = { title: 'Add a pin' };
 
 // The map screen's frame with only its panel slot filled, and no map.
-const AddPinPage = () => <Stage panel={<AddPinPanel />} />;
+const AddPinPage = () => <MapLayout panel={<AddPinPanel />} />;
 
 const Page = async () => {
   await requireDevPage();

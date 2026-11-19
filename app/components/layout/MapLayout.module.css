@@ -1,5 +1,5 @@
 /* The map screen's frame: each slot is a placed box; every edge is a layout token. */
-.stage {
+.layout {
   height: 100%;
   overflow: hidden;
   position: relative;

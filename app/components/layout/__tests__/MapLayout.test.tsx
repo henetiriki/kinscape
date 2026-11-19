@@ -3,10 +3,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { freeArea, Stage } from '@ks/features/map/components/Stage';
+import { freeArea, MapLayout } from '@ks/app/components/layout/MapLayout';
 
 const css = readFileSync(
-  join(import.meta.dirname, '../Stage.module.css'),
+  join(import.meta.dirname, '../MapLayout.module.css'),
   'utf8'
 );
 const media = css.slice(css.indexOf('@media'));
@@ -15,7 +15,7 @@ const desktop = css.slice(0, css.indexOf('@media'));
 // NFR-05
 it('places each slot it is given, with the map as children', () => {
   const { container } = render(
-    <Stage
+    <MapLayout
       account='a'
       credits='c'
       dock='d'
@@ -25,7 +25,7 @@ it('places each slot it is given, with the map as children', () => {
       search='s'
       zoom='z'>
       <canvas />
-    </Stage>
+    </MapLayout>
   );
 
   expect(container.querySelector('canvas')).toBeTruthy();
@@ -46,14 +46,14 @@ it('places each slot it is given, with the map as children', () => {
 });
 
 it('top-aligns the overlay only when asked', () => {
-  const { container, rerender } = render(<Stage overlay='o' search='s' />);
+  const { container, rerender } = render(<MapLayout overlay='o' search='s' />);
   const at = () =>
     [...container.querySelectorAll('[data-slot]')].map(slot =>
       slot.getAttribute('data-at')
     );
 
   expect(at()).toEqual([null, null]);
-  rerender(<Stage overlay='o' overlayAt='top' search='s' />);
+  rerender(<MapLayout overlay='o' overlayAt='top' search='s' />);
   expect(at()).toEqual([null, 'top']);
   expect(css).toMatch(
     /\.overlay\[data-at='top'\] \{[^}]*align-items: flex-start/
@@ -61,7 +61,7 @@ it('top-aligns the overlay only when asked', () => {
 });
 
 it('draws no box for a slot left empty', () => {
-  const { container } = render(<Stage search='s' />);
+  const { container } = render(<MapLayout search='s' />);
 
   expect(container.querySelectorAll('[data-slot]')).toHaveLength(1);
 });

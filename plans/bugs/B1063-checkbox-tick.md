@@ -56,17 +56,18 @@ Recommended: A, because the difference is below what the eye sees.
 | `app/components/forms/CheckboxField.module.css`                                           | changed       | No `.row > input` rule                                                                                                                   |
 | `app/components/forms/__tests__/Checkbox.test.tsx`                                        | changed       | Check 1                                                                                                                                  |
 | `app/components/forms/__tests__/CheckboxField.test.tsx`                                   | changed       | "draws a 44 row with size m" and "draws the plain sign-in form" read the row with `closest('[data-size]')` and `closest('[data-plain]')` |
+| `features/map/components/__tests__/LayerGroup.test.tsx`                                   | changed       | The row is read with `closest('[data-size]')`, not `parentElement`                                                                       |
 | `e2e/gallery-looks.spec.ts`                                                               | changed       | Check 2, on "Checkbox on · default" and "Checkbox off · default"                                                                         |
 | `e2e/design-export.spec.mts`                                                              | changed       | Check 4: a board that mounts a checked `KinScape.Checkbox`                                                                               |
 | `design/canvas/VERSION`, `design/canvas/project/ds/`, `design/canvas/project/canvas.json` | changed       | Design system steps 3 to 5                                                                                                               |
 | `design/source/*.html`, `design/*.jpg`, `design/cards/*.png`                              | changed       | The render of step 6                                                                                                                     |
 | `plans/bugs/B1063-checkbox-tick.md`                                                       | new           | This plan                                                                                                                                |
 
-The two `CheckboxField` tests change because the parent of the `<input>` is now the wrapper ([failing-tests rule](README.md#failing-tests)).
+The two `CheckboxField` tests and the `LayerGroup` test change because the parent of the `<input>` is now the wrapper ([failing-tests rule](README.md#failing-tests)).
 
 ## Order of work
 
-1. Write the test of check 1. See it fail on the missing `<svg>`, and paste the failing line in the PR.
+1. Write the test of check 1. See it fail on the missing `<svg>`. Paste the failing line in the PR.
 2. Change `Checkbox.tsx`, `Checkbox.module.css` and `CheckboxField.module.css`. Change the two `CheckboxField` tests.
 3. Write the gallery test of check 2 and the export board of check 4. The export board passes only after step 5.
 4. Run `npm run design-system` (design step 2). Run the gallery test of check 2.
@@ -89,7 +90,7 @@ The two `CheckboxField` tests change because the parent of the `<input>` is now 
 
 - **The tick takes a click.** Then Playwright fails a click on a checkbox with "intercepts pointer events". `pointer-events: none` on the tick stops this. The smoke and navigation e2e tests click checkboxes, so they prove it.
 - **The stroke differs from the mask by anti-aliasing.** Then the three card images and the seven JPGs differ at the edge of the tick. Check 7 lists each one, and the tech lead decides (Expected per).
-- **The `LayersPanel` box moves.** The wrapper is an inline grid in the `.checkbox` span, so the line box can change its height. Then the box moves down by a pixel or two. No snapshot holds a `LayersPanel`, so step 7 cannot show it. Compare the box of "Polity borders" on `/` before and after the change with `boundingBox()`, and post both in the PR.
+- **The `LayersPanel` box moves.** The wrapper is an inline grid in the `.checkbox` span, so the line box can change its height. Then the box goes lower by a pixel or two. No snapshot holds a `LayersPanel`, so step 7 cannot show it. Compare the box of "Polity borders" on `/` before and after the change with `boundingBox()`. Post both in the PR.
 
 ## Proof
 
@@ -119,8 +120,8 @@ The two `CheckboxField` tests change because the parent of the `<input>` is now 
 
 ## Deviations
 
-- `features/map/components/__tests__/LayerGroup.test.tsx` also read the row with `parentElement`. It now uses `closest('[data-size]')`, for the same reason as the two `CheckboxField` tests.
-- `.tick` also takes `position: relative`. The `<input>` is positioned, so it painted over the tick, and the card images lost the tick. Check 2 reads `visibility` only, so it did not catch this.
+- `.tick` also takes `position: relative`. The `<input>` is positioned, so it covered the tick, and the card images lost the tick. Check 2 reads `visibility` only, so it did not catch this.
 - `.box` also has a fixed 20px grid cell. The card stretches the box, so the tick sat away from the input. The check 2 test now also reads that the tick lies inside the input.
 - Nine map JPGs differ from `main`, besides the seven of check 6. The tick of each checked Layers row is new (D1).
 - `LayerGroup-1440.png` differs from `main` by 19 px, each by 1 in one colour channel (D2).
+- The `LayersPanel` box comparison of Risks was not done. It needs a browser, and the local sandbox cannot start one. No e2e test measures that box. The tech lead accepted this.

@@ -110,7 +110,7 @@ const STYLE = (
 ) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
-.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
+.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
 const FIGURE =
   "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";
@@ -187,7 +187,7 @@ export const cardImage = (name: string, width: number): string =>
 
 /**
  * The cards that also have an image at the phone width, because the component changes with the
- * width: the nine whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
+ * width: the ten whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
  */
 export const PHONE_CARDS = [
   'ActionBar',
@@ -199,6 +199,7 @@ export const PHONE_CARDS = [
   'NoticeCard',
   'PageHeader',
   'Sheet',
+  'SignInLayout',
   'TextAreaField',
   'TextField',
   'Toast',

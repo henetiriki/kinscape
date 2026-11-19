@@ -191,7 +191,7 @@ describe('previewHtml', () => {
     expect(layout.width).toBe(1440);
     expect(layout.states).toHaveLength(6);
     expect(previewHtml(layout)).toContain(
-      '.ks-case > :last-child { height: 480px; }'
+      '.ks-case > :last-child { height: 480px; min-height: 0; }'
     );
     expect(previewHtml(layout).split('\n')[0]).toBe(
       '<!-- @dsCard group="Layout" height=3400 width=1440 -->'
@@ -435,11 +435,11 @@ describe('CARDS', () => {
     );
   });
 
-  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 6 Map, 8 Foundation, 9 Overlays and 1 Layout', () => {
+  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 6 Map, 8 Foundation, 9 Overlays and 2 Layout', () => {
     const count = (group: string) =>
       CARDS.filter(card => card.group === group).length;
 
-    expect(GROUPS.map(count)).toEqual([14, 6, 8, 6, 8, 9, 1]);
+    expect(GROUPS.map(count)).toEqual([14, 6, 8, 6, 8, 9, 2]);
   });
 
   it.each(CARDS.map(card => [card.name, card] as const))(

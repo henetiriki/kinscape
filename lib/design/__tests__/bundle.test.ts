@@ -16,7 +16,7 @@ import {
 const NAMES = CONTROLS.map(({ name }) => name);
 
 describe('CONTROLS', () => {
-  it('lists the 52 shared controls, each from a file that exists', () => {
+  it('lists the 53 shared controls, each from a file that exists', () => {
     expect(NAMES).toEqual([
       'Button',
       'IconButton',
@@ -70,6 +70,7 @@ describe('CONTROLS', () => {
       'Sheet',
       'SheetPanel',
       'ColumnLayout',
+      'SignInLayout',
     ]);
     expect(CONTROLS.filter(({ path }) => !existsSync(path))).toEqual([]);
   });

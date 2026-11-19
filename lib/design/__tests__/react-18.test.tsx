@@ -60,6 +60,7 @@ import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
+import { SignInLayout } from '@ks/app/components/layout/SignInLayout';
 import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
@@ -209,6 +210,7 @@ const COMPONENTS = {
   SelectField,
   Sheet,
   SheetPanel,
+  SignInLayout,
   Surface,
   Tabs,
   Text,
@@ -1014,6 +1016,22 @@ const CASES: [string, ReactElement][] = [
       </Text>
       <Text variant='small'>Each change saves at once.</Text>
     </ColumnLayout>,
+  ],
+  [
+    'SignInLayout · hero and form',
+    <SignInLayout
+      hero={
+        <Text as='h1' variant='h1'>
+          Your family, where they were.
+        </Text>
+      }
+      key='sign-in'>
+      {[
+        <Text key='form' variant='small'>
+          Sign in to see your family on the map.
+        </Text>,
+      ]}
+    </SignInLayout>,
   ],
 ];
 

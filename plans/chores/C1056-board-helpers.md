@@ -1,7 +1,7 @@
 # Plan: C1056: One shared helper script for the canvas boards
 
 - **Spec:** #1056
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ The Constraints name the board swap steps. The [board swap prompt](../../design/
 - **B.** Edit the 12 files on the canvas first. Then run 5.1 to 5.5 and the workflow. Cost: if a JPG changes, the canvas holds the failed boards until a revert.
 - **Other:** your own.
 
-Recommended: A, because a board that fails check 5 never reaches the canvas.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

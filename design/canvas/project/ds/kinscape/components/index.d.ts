@@ -51,7 +51,7 @@ export type IconSize = 14 | 16 | 18 | 20 | 24 | 28;
 export type LinkComponent = 'a' | ComponentType<{
     href: string;
 } & ComponentPropsWithoutRef<'a'>>;
-export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'small' | 'title';
+export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'overlineTight' | 'small' | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type TextVariant = Heading | Other;
 export type Tone = 'error' | 'info' | 'warning';

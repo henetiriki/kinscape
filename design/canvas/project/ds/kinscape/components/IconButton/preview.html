@@ -19,14 +19,27 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["IconButton"];
   var handlers = [];
   var states = [{"label":"IconButton · default","children":"+","props":{"disabled":false,"label":"Zoom in"}},{"label":"IconButton · active","children":"+","props":{"disabled":false,"label":"Zoom in","state":"active"}},{"label":"IconButton · focus","children":"+","props":{"disabled":false,"label":"Zoom in","state":"focus"}},{"label":"IconButton · hover","children":"+","props":{"disabled":false,"label":"Zoom in","state":"hover"}},{"label":"IconButton · disabled","children":"+","props":{"disabled":true,"label":"Zoom in"}},{"label":"IconButton raised · default","children":"+","props":{"disabled":false,"label":"Layers","variant":"raised"}},{"label":"IconButton raised · active","children":"+","props":{"disabled":false,"label":"Layers","state":"active","variant":"raised"}},{"label":"IconButton raised · focus","children":"+","props":{"disabled":false,"label":"Layers","state":"focus","variant":"raised"}},{"label":"IconButton raised · hover","children":"+","props":{"disabled":false,"label":"Layers","state":"hover","variant":"raised"}},{"label":"IconButton raised · disabled","children":"+","props":{"disabled":true,"label":"Layers","variant":"raised"}}];
+  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var key = name.slice(at + 1);
+      props[name.slice(0, at)] = props[name.slice(0, at)].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
     var part = window.KinScape[slot.control];
     return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
   };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
-    handlers.forEach(function (handler) { props[handler] = noop; });
+    give(props, handlers);
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);

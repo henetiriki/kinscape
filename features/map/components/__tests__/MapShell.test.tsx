@@ -37,9 +37,9 @@ vi.mock('@ks/features/map/components/MapView', async () => {
   };
 });
 
+import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { MapShell } from '@ks/features/map/components/MapShell';
-import { freeArea } from '@ks/features/map/components/Stage';
 import { polityLayer } from '@ks/features/map/layers/polities';
 
 const sources: Source[] = [

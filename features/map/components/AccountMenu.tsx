@@ -23,7 +23,7 @@ const groups = (phone?: boolean): MenuEntry[][] => [
   [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }],
 ];
 
-/** The `Stage` slot for the account menu: `search` on a phone, `account` on desktop. */
+/** The `MapLayout` slot for the account menu: `search` on a phone, `account` on desktop. */
 export const accountSlots = (phone: boolean, menu: ReactNode) =>
   phone ? { search: menu } : { account: menu };
 

@@ -1,4 +1,4 @@
-/* The panel fills the slot the Stage gives it: a title, a body that scrolls, the actions last. */
+/* The panel fills the slot the MapLayout gives it: a title, a body that scrolls, the actions last. */
 .panel {
   display: flex;
   flex: 1;

@@ -48,6 +48,17 @@ Recommended: A, because the `DateDock` card already shows each one.
 
 **Answer: A** (@henetiriki)
 
+**D4 · The tick of a checked `Checkbox`** · Decides: Tech lead
+
+The tick is a `::after` with a `mask: url("data:…")`. The snapshot check rejects `url()`, `http://` and `black`.
+
+- **A.** The exporter leaves out a pseudo-element that needs `url()`. A checked `Checkbox` stays as `main` draws it, with no tick. Cost: a known gap.
+- **B.** The snapshot check accepts a `data:` mask. Cost: a new exception in the check, and a larger plan.
+- **C.** A, and a Bug for the tick. Cost: one Bug.
+- **Other:** your own.
+
+**Answer: C** (@henetiriki). The Bug is #1063.
+
 ## Alternatives considered
 
 - Teach the colour check `color-mix()`. The tech lead chose `rgba()` (Expected per).
@@ -121,3 +132,5 @@ Recommended: A, because the `DateDock` card already shows each one.
 
 - `e2e/design-export.spec.mts` loads the samples with `createRequire`, not `import`: the Playwright config loads `model.mts` as CommonJS, so the `import` fails. Commit `test(B1055): load the samples with require`.
 - The `Map` board holds the sample values as numbers: a board cannot import `lib/design/samples.mts`. Commit `dcf48ad7`.
+- `inlineStyles` matches each selector of a list on its own: a list with a pseudo-element matches no element as a whole. Commit `fix(B1055): the exporter keeps pseudo-element rules`.
+- `::before`, `::after` and `::placeholder` take Chromium's computed values. Only a `::-webkit-` pseudo-element takes the probe of the Risks section. Same commit.

@@ -128,6 +128,10 @@ test('exports a board that mounts the DateDock with contested claims and epochs'
   expect(snapshotProblems(snapshot, tokens)).toEqual([]);
   expect(snapshot).toContain('2 contested claims on this date');
   expect(snapshot).toContain('rgba(139, 74, 28, 0.34)');
+  // The slider thumb is a pseudo-element: its rule stays as CSS, with the brand colour written out.
+  expect(snapshot).toMatch(
+    /\[data-pseudo="\d+"\]::-webkit-slider-thumb\{[^}]*background-color: rgb\(38, 79, 41\);[^}]*height: 26px;/
+  );
 });
 
 test('exports a board that mounts the Legend', async ({ page }) => {

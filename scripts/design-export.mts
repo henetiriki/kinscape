@@ -690,6 +690,9 @@ export const mountImports = async (): Promise<void> => {
  * (`tokens` holds `r,g,b` strings) where the border is 0px wide, and an outline colour that is not
  * a token where `outline-style` is `none` (Chromium keeps such an outline 3px wide). The browser
  * fills that colour with a default grey, or with black for a radio, that the author never set.
+ *
+ * A pseudo-element has no `style` attribute. Its values go in a `<style data-pseudo>` block, under
+ * a selector that names its element by a `data-pseudo` number.
  * Uses nothing from the module, as `fillTemplate`.
  */
 export const inlineStyles = (tokens: string[]): void => {
@@ -704,49 +707,93 @@ export const inlineStyles = (tokens: string[]): void => {
   }
 
   const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+  // The declarations of each pseudo-element of each element, in rule order.
+  const pseudos = new Map<HTMLElement, Map<string, CSSStyleDeclaration[]>>();
+
+  // The value to write for a property, or nothing for one the snapshot leaves out.
+  const written = (
+    computed: CSSStyleDeclaration,
+    name: string
+  ): string | undefined => {
+    // A static snapshot has no use for transitions or animations, and their names
+    // (`transition-property: background`) would read as colours.
+    if (/^(?:--|animation|transition)/.test(name)) {
+      return undefined;
+    }
+
+    const value = computed.getPropertyValue(name);
+    const side = /^border-(top|right|bottom|left)-color$/.exec(name);
+    const undrawn =
+      (side &&
+        computed.getPropertyValue(`border-${side[1]}-width`) === '0px') ||
+      (name === 'outline-color' &&
+        computed.getPropertyValue('outline-style') === 'none');
+
+    if (
+      undrawn &&
+      !tokens.includes(
+        [...value.matchAll(/\d+/g)]
+          .slice(0, 3)
+          .map(([digits]) => digits)
+          .join(',')
+      )
+    ) {
+      return undefined;
+    }
+
+    return value.replaceAll('rgba(0, 0, 0, 0)', 'transparent');
+  };
+
+  // The selectors of a list: a comma inside `:is()` or `[]` does not split.
+  const selectors = (list: string): string[] => {
+    const parts = [''];
+    let depth = 0;
+
+    for (const char of list) {
+      depth += '(['.includes(char) ? 1 : ')]'.includes(char) ? -1 : 0;
+
+      if (char === ',' && depth === 0) {
+        parts.push('');
+      } else {
+        parts[parts.length - 1] += char;
+      }
+    }
+
+    return parts.map(part => part.trim());
+  };
+
+  const collect = ({ selectorText, style: declared }: CSSStyleRule): void => {
+    for (const selector of selectors(selectorText)) {
+      // This matches any selector: the pseudo-element part is optional.
+      const [, base, pseudo] = /^(.*?)(::[\w-]+)?$/.exec(selector)!;
+
+      for (const element of elements.filter(item =>
+        item.matches(base || '*')
+      )) {
+        if (pseudo === undefined) {
+          const computed = getComputedStyle(element);
+
+          for (const name of Array.from(declared)) {
+            const value = written(computed, name);
+
+            if (value !== undefined) {
+              element.style.setProperty(name, value);
+            }
+          }
+        } else {
+          const own = pseudos.get(element) ?? new Map();
+
+          own.set(pseudo, [...(own.get(pseudo) ?? []), declared]);
+          pseudos.set(element, own);
+        }
+      }
+    }
+  };
+
   const apply = (rules: CSSRuleList): void => {
     for (const rule of Array.from(rules)) {
       if ('selectorText' in rule) {
-        const { selectorText, style: declared } = rule as CSSStyleRule;
-
-        for (const element of elements.filter(item =>
-          item.matches(selectorText)
-        )) {
-          for (const name of Array.from(declared)) {
-            // A static snapshot has no use for transitions or animations, and their names
-            // (`transition-property: background`) would read as colours.
-            if (/^(?:--|animation|transition)/.test(name)) {
-              continue;
-            }
-
-            const computed = getComputedStyle(element);
-            const value = computed.getPropertyValue(name);
-            const side = /^border-(top|right|bottom|left)-color$/.exec(name);
-            const undrawn =
-              (side &&
-                computed.getPropertyValue(`border-${side[1]}-width`) ===
-                  '0px') ||
-              (name === 'outline-color' &&
-                computed.getPropertyValue('outline-style') === 'none');
-
-            if (
-              undrawn &&
-              !tokens.includes(
-                [...value.matchAll(/\d+/g)]
-                  .slice(0, 3)
-                  .map(([digits]) => digits)
-                  .join(',')
-              )
-            ) {
-              continue;
-            }
-
-            element.style.setProperty(
-              name,
-              value.replaceAll('rgba(0, 0, 0, 0)', 'transparent')
-            );
-          }
-        }
+        collect(rule as CSSStyleRule);
       }
 
       if ('cssRules' in rule) {
@@ -755,8 +802,67 @@ export const inlineStyles = (tokens: string[]): void => {
     }
   };
 
+  // Chromium gives the element's own style for a `::-webkit-` pseudo-element. So a hidden probe
+  // beside the element takes the declarations, and its computed style gives the values.
+  const probed = <T,>(
+    element: HTMLElement,
+    declared: CSSStyleDeclaration[],
+    read: (computed: CSSStyleDeclaration) => T
+  ): T => {
+    const box = document.createElement('span');
+    const probe = box.appendChild(document.createElement('i'));
+
+    box.style.display = 'none';
+    probe.style.cssText = declared.map(({ cssText }) => cssText).join(';');
+    element.after(box);
+
+    try {
+      return read(getComputedStyle(probe));
+    } finally {
+      box.remove();
+    }
+  };
+
   apply(bundle.sheet.cssRules);
+
+  const css = elements
+    .flatMap(element => {
+      const own = pseudos.get(element);
+
+      return own ? [{ element, own }] : [];
+    })
+    .flatMap(({ element, own }, index) => {
+      element.dataset.pseudo = String(index + 1);
+
+      const rules = Array.from(own, ([pseudo, declared]) => {
+        const values = (computed: CSSStyleDeclaration) =>
+          [...new Set(declared.flatMap(style => Array.from(style)))]
+            .map(name => [name, written(computed, name)])
+            .filter(([, value]) => value !== undefined && value !== '')
+            .map(([name, value]) => `${name}: ${value};`)
+            .join(' ');
+
+        return `[data-pseudo="${index + 1}"]${pseudo}{${
+          pseudo.startsWith('::-webkit-')
+            ? probed(element, declared, values)
+            : values(getComputedStyle(element, pseudo))
+        }}`;
+      });
+
+      // The snapshot check reads no `url()`, so a pseudo-element that needs one (a mask) stays out whole.
+      return rules.filter(rule => !rule.includes('url('));
+    });
+
+  // The pseudo-element values above need the stylesheet, so it goes only now.
   bundle.remove();
+
+  if (css.length > 0) {
+    const block = document.createElement('style');
+
+    block.dataset.pseudo = '';
+    block.textContent = css.join('\n');
+    document.head.append(block);
+  }
 };
 
 const fileUrl = (root: string, path: string) =>

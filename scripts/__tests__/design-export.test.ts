@@ -757,6 +757,131 @@ describe('inlineStyles', () => {
     expect(document.querySelector('style')).toBeNull();
   });
 
+  // A pseudo-element has no `style` attribute, so its rules stay as CSS with written-out values.
+  describe('a pseudo-element rule', () => {
+    const computed = (values: (name: string) => string) =>
+      ({ getPropertyValue: values }) as unknown as CSSStyleDeclaration;
+
+    it('keeps the computed values in a <style> block, under a selector that names the element', () => {
+      document.head.innerHTML =
+        "<title>T</title><style data-bundle>.a::before{content:'';width:1px;transition-property:width}.a,:is(.b,.c)::after{color:red}.a:hover::before{height:1px}.z::before{width:1px}</style>";
+      document.body.innerHTML =
+        '<x-import><i class="a"></i><u class="b"></u></x-import>';
+      vi.spyOn(window, 'getComputedStyle').mockImplementation(
+        (_element, pseudo) =>
+          computed(name =>
+            // The stylesheet still applies while a pseudo-element is read.
+            document.querySelector('style[data-bundle]') === null
+              ? ''
+              : pseudo === '::before'
+                ? ({ content: '""', width: '44px' }[name] ?? '')
+                : pseudo === '::after'
+                  ? 'rgb(1, 2, 3)'
+                  : 'rgb(4, 5, 6)'
+          )
+      );
+
+      inlineStyles([]);
+
+      expect(document.body.innerHTML).toBe(
+        '<x-import><i class="a" style="color: rgb(4, 5, 6);" data-pseudo="1"></i><u class="b" data-pseudo="2"></u></x-import>'
+      );
+      expect(document.querySelector('style[data-bundle]')).toBeNull();
+      expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
+        '[data-pseudo="1"]::before{content: ""; width: 44px;}\n[data-pseudo="2"]::after{color: rgb(1, 2, 3);}'
+      );
+    });
+
+    it('adds no <style> block when no pseudo-element rule matches', () => {
+      document.head.innerHTML =
+        '<title>T</title><style data-bundle>.z::before{width:1px}</style>';
+      document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+
+      inlineStyles([]);
+
+      expect(document.querySelector('style')).toBeNull();
+      expect(document.body.innerHTML).toBe(
+        '<x-import><i class="a"></i></x-import>'
+      );
+    });
+
+    // Chromium gives the element's own style for `::-webkit-slider-thumb`, so the values come
+    // from a probe that takes the rules' declarations.
+    it('reads a ::-webkit- rule from a probe beside the element, in rule order', () => {
+      document.head.innerHTML =
+        '<title>T</title><style data-bundle>.s input::-webkit-slider-thumb{height:1px;width:2px}.s input::-webkit-slider-thumb{height:3px}</style>';
+      document.body.innerHTML =
+        '<x-import><b class="s"><input type="range"></b></x-import>';
+
+      const probed: string[] = [];
+
+      vi.spyOn(window, 'getComputedStyle').mockImplementation(
+        (element, pseudo) => {
+          const probe = element as HTMLElement;
+
+          if (pseudo === undefined && probe.tagName === 'I') {
+            probed.push(
+              `${probe.parentElement?.previousElementSibling?.tagName} ${probe.parentElement?.getAttribute('style')} ${probe.style.height} ${probe.style.width}`
+            );
+          }
+
+          return computed(name =>
+            pseudo === undefined && probe.tagName === 'I'
+              ? probe.style.getPropertyValue(name).replace('px', '0px')
+              : 'own'
+          );
+        }
+      );
+
+      inlineStyles([]);
+
+      expect(probed[0]).toBe('INPUT display: none; 3px 2px');
+      expect(document.body.innerHTML).toBe(
+        '<x-import><b class="s"><input type="range" data-pseudo="1"></b></x-import>'
+      );
+      expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
+        '[data-pseudo="1"]::-webkit-slider-thumb{height: 30px; width: 20px;}'
+      );
+    });
+
+    it('leaves out a pseudo-element that needs a url() value', () => {
+      document.head.innerHTML =
+        '<title>T</title><style data-bundle>.a::before{width:1px}.a::after{width:1px;mask-image:none}</style>';
+      document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
+      vi.spyOn(window, 'getComputedStyle').mockImplementation(
+        (_element, pseudo) =>
+          computed(name =>
+            pseudo === '::after' && name === 'mask-image'
+              ? 'url("data:image/svg+xml,x")'
+              : '5px'
+          )
+      );
+
+      inlineStyles([]);
+
+      expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
+        '[data-pseudo="1"]::before{width: 5px;}'
+      );
+    });
+
+    it("drops the browser's colour of a zero-width border", () => {
+      document.head.innerHTML =
+        '<title>T</title><style data-bundle>::before{border-top-width:0;border-top-color:red}</style>';
+      document.body.innerHTML = '<i></i>';
+      vi.spyOn(window, 'getComputedStyle').mockReturnValue(
+        computed(name =>
+          name === 'border-top-color' ? 'rgb(128, 128, 128)' : '0px'
+        )
+      );
+
+      inlineStyles([]);
+
+      expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
+        '[data-pseudo="1"]::before{border-top-width: 0px;}'
+      );
+    });
+  });
+
   it('does nothing without the stylesheet on a page with no <x-import>', () => {
     document.head.innerHTML = '<title>T</title>';
     document.body.innerHTML = '<i></i>';

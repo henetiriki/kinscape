@@ -76,6 +76,7 @@ export const CONTROLS: Control[] = [
   { name: 'SheetPanel', path: 'app/components/overlays/Sheet.tsx' },
   { name: 'ColumnLayout', path: 'app/components/layout/ColumnLayout.tsx' },
   { name: 'SignInLayout', path: 'app/components/layout/SignInLayout.tsx' },
+  { name: 'MapLayout', path: 'app/components/layout/MapLayout.tsx' },
 ];
 
 /**

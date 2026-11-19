@@ -60,6 +60,7 @@ import { Surface } from '@ks/app/components/foundation/Surface';
 import { DEFAULT_TAG, Text } from '@ks/app/components/foundation/Text';
 import { Wordmark } from '@ks/app/components/foundation/Wordmark';
 import { ColumnLayout } from '@ks/app/components/layout/ColumnLayout';
+import { MapLayout } from '@ks/app/components/layout/MapLayout';
 import { SignInLayout } from '@ks/app/components/layout/SignInLayout';
 import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
@@ -194,6 +195,7 @@ const COMPONENTS = {
   KeyHint,
   LayersButton,
   Legend,
+  MapLayout,
   Menu,
   MenuPanel,
   Modal,
@@ -1032,6 +1034,25 @@ const CASES: [string, ReactElement][] = [
         </Text>,
       ]}
     </SignInLayout>,
+  ],
+  [
+    'MapLayout · text in each slot',
+    <MapLayout
+      account={<Text variant='small'>account</Text>}
+      credits={<Text variant='small'>credits</Text>}
+      dock={<Text variant='small'>dock</Text>}
+      key='map'
+      layers={<Text variant='small'>layers</Text>}
+      overlay={<Text variant='small'>overlay</Text>}
+      panel={<Text variant='small'>panel</Text>}
+      search={<Text variant='small'>search</Text>}
+      zoom={<Text variant='small'>zoom</Text>}>
+      {[
+        <Text key='map' variant='small'>
+          The map
+        </Text>,
+      ]}
+    </MapLayout>,
   ],
 ];
 

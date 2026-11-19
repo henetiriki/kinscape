@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 
+import { SLOTS } from '@ks/app/components/layout/slots.mts';
 import rawTokens from '@ks/design/tokens.json';
 
-import styles from '@ks/features/map/components/Stage.module.css';
+import styles from '@ks/app/components/layout/MapLayout.module.css';
 
 const { layout, size } = rawTokens;
 const px = (value: string) => Number.parseFloat(value);
@@ -23,34 +24,41 @@ export const freeArea = (phone: boolean) =>
         top: px(layout['furniture-top']),
       };
 
-/** The slots in DOM order; `search` and `account` stack above the others (`Stage.module.css`). A phone shows `layers` and hides `account`, `zoom` and `credits`. */
-const SLOTS = [
-  'search',
-  'account',
-  'zoom',
-  'layers',
-  'panel',
-  'dock',
-  'credits',
-  'overlay',
-] as const;
-
-type Slot = (typeof SLOTS)[number];
+/** The interface declares each slot and does not map `SLOTS`: the design system reads the props from their declarations. */
+interface MapLayoutSlots {
+  /** The account control, on desktop. */
+  account?: ReactNode;
+  /** The map. */
+  children?: ReactNode;
+  /** The source credits, on desktop. */
+  credits?: ReactNode;
+  /** The date dock. */
+  dock?: ReactNode;
+  /** The Layers button, on a phone. */
+  layers?: ReactNode;
+  /** The popup area over the map. */
+  overlay?: ReactNode;
+  /** `top` puts the overlay at the slot's top edge; otherwise it centres. */
+  overlayAt?: 'top';
+  /** The side panel, or the sheet on a phone. */
+  panel?: ReactNode;
+  /** The search bar. */
+  search?: ReactNode;
+  /** The zoom controls, on desktop. */
+  zoom?: ReactNode;
+}
 
 /**
  * The map screen's frame: the map is `children`, and each slot is a placed box over it.
  * Desktop and phone forms switch at `breakpoint`; every edge is a `layout` token.
  * The `overlay` content centres unless `overlayAt` is `top`, which puts it at the slot's top edge.
  */
-export const Stage = ({
+export const MapLayout = ({
   children,
   overlayAt,
   ...slots
-}: {
-  children?: ReactNode;
-  overlayAt?: 'top';
-} & Partial<Record<Slot, ReactNode>>) => (
-  <div className={styles.stage}>
+}: MapLayoutSlots) => (
+  <div className={styles.layout}>
     {children}
     {SLOTS.map(
       slot =>

@@ -56,8 +56,8 @@ const maplibre = vi.hoisted(() => {
 vi.mock('maplibre-gl', () => maplibre);
 vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
 
+import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { MapView, MAX_BOUNDS } from '@ks/features/map/components/MapView';
-import { freeArea } from '@ks/features/map/components/Stage';
 import { asDay } from '@ks/lib/domain/boundaries/model.mts';
 import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 import { coverZoom } from '@ks/lib/domain/map/zoom.mts';

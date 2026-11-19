@@ -265,11 +265,17 @@ describe('the control cards', () => {
         ]),
       ].toSorted()
     );
-    expect(names).toHaveLength(53);
+    expect(names).toHaveLength(54);
     expect(card('SignInLayout', 'preview.html').split('\n')[0]).toContain(
       'group="Layout"'
     );
     expect(card('SignInLayout', 'preview.html').split('\n')[0]).toContain(
+      'width=1440'
+    );
+    expect(card('MapLayout', 'preview.html').split('\n')[0]).toContain(
+      'group="Layout"'
+    );
+    expect(card('MapLayout', 'preview.html').split('\n')[0]).toContain(
       'width=1440'
     );
   });
@@ -364,7 +370,7 @@ describe('the gallery', () => {
         ...VENDOR.map(({ file }) => `gallery/vendor/${file}`),
       ].toSorted()
     );
-    expect(names).toHaveLength(53);
+    expect(names).toHaveLength(54);
   });
 
   it('holds each preview.html as galleryHtml makes it', () => {

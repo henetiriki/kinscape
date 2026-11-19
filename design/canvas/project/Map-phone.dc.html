@@ -17,11 +17,36 @@
 body{margin:0}
 a{color:#264F29}a:hover{color:#1D3E20}
 button,input{font:inherit}
+/* The snapshot drops the bundle CSS, and the exporter cannot inline a ::placeholder rule, so the board sets it. */
 input[aria-label="Search people and places"]::placeholder{color:#4A544C}
 </style>
 </helmet>
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
-  <svg viewBox="531 323 279 603" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map around Kimberley in 1901">
+  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" layers="{{layers}}" dock="{{dock}}"></x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["lookup","collapsed"],"default":"lookup"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const collapsed = (this.props.variant ?? 'lookup') === 'collapsed';
+    const React = window.React;
+    const K = window.KinScape;
+
+    if (!React || !K) return { dock: null, layers: null, map: null, search: null };
+
+    const h = React.createElement;
+    const noop = () => {};
+    // The exporter reads a named prop only from renderVals, and it throws on an <svg> child, so the drawn map is a string.
+    const drawn = html => h('div', { style: { display: 'contents' }, dangerouslySetInnerHTML: { __html: html } });
+    // The drawn parts keep their CSS text. This turns it into the style object that React takes.
+    const css = text => Object.fromEntries(text.split(';').map(part => part.trim()).filter(Boolean).map(part => {
+      const at = part.indexOf(':');
+      return [part.slice(0, at).trim().replace(/-([a-z])/g, (_match, letter) => letter.toUpperCase()), part.slice(at + 1).trim()];
+    }));
+    const el = (tag, attrs, text, ...kids) => h(tag, { ...attrs, ...(text ? { style: css(text) } : {}) }, ...kids);
+
+    const ring = collapsed ? 'none' : 'inline';
+    const map = drawn(`  <svg viewBox="531 323 279 603" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map around Kimberley in 1901">
     <defs>
       <filter id="hsP" x="0" y="0" width="100%" height="100%">
         <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" seed="11"></feTurbulence>
@@ -72,89 +97,74 @@ input[aria-label="Search people and places"]::placeholder{color:#4A544C}
     <circle cx="746" cy="517" r="30" fill="#9A3B12" opacity="0.24" filter="url(#haloP)"></circle>
     <path transform="translate(738 509) scale(0.6667)" d="M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z" fill="#9A3B12" opacity="0.6" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
     <path transform="translate(662 486) scale(0.6667)" d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
-    <g style="display: {{ringDisplay}}">
+    <g style="display: ${ring}">
     <circle cx="670" cy="494" r="12" fill="none" stroke="#264F29" stroke-width="2.5" vector-effect="non-scaling-stroke"></circle>
     <circle cx="670" cy="494" r="15.5" fill="none" stroke="#ffffff" stroke-opacity="0.85" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
     </g>
-  </svg>
+  </svg>`);
 
-  <div style="position: absolute; left: 16px; right: 16px; top: 16px; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-    <x-import component-from-global-scope="KinScape.Wordmark" icon-only="{{ true }}" size="32"></x-import>
-    <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; height: 44px; padding: 0; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent">
-    <x-import component-from-global-scope="KinScape.Avatar" initial="R"></x-import>
-  </div>
+    const STEP = 'width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center';
+    const dateRow = () => el('div', {}, 'display: flex; align-items: center; gap: 6px',
+      el('button', { type: 'button', 'aria-label': 'Back one year' }, STEP, h(K.Icon, { name: 'back', size: 16 })),
+      el('input', { 'aria-label': 'Map date', value: '1901', readOnly: true }, "flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B"),
+      el('button', { type: 'button', 'aria-label': 'Forward one year' }, STEP, h(K.Icon, { name: 'forward', size: 16 })),
+      el('button', { type: 'button', 'aria-label': 'Play through time' }, 'width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px', h(K.Icon, { name: 'play', size: 16 }))
+    );
 
-  <div style="position: absolute; right: 16px; top: 80px; width: 48px; height: 48px">
-    <x-import component-from-global-scope="KinScape.IconButton" variant="raised" label="Layers and filters"><x-import component-from-global-scope="KinScape.Icon" name="layers" size="24"></x-import></x-import>
-  </div>
+    const LABEL = 'font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C';
+    const MONO = "font-family: 'JetBrains Mono', monospace; color: #4A544C";
+    const lookup = el('section', { 'aria-label': 'Map date and lookup' }, 'position: absolute; left: 0; right: 0; bottom: 0; height: 432px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px',
+      el('span', {}, 'align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5'),
+      dateRow(),
+      el('div', {}, 'position: relative; height: 34px',
+        el('span', {}, 'position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: #D6DAD2'),
+        el('button', { type: 'button', 'aria-label': 'Map date slider, 1901' }, 'position: absolute; left: calc(66.4% - 13px); top: 1px; width: 26px; height: 26px; padding: 0; border-radius: 13px; border: 4px solid #FFFFFF; background: #264F29; box-shadow: 0 0 0 1px #264F29, 0 2px 6px rgba(24,33,27,0.3)'),
+        el('span', {}, `position: absolute; left: 0; top: 22px; font-size: 11px; ${MONO}`, '1652'),
+        el('span', {}, `position: absolute; right: 0; top: 22px; font-size: 11px; ${MONO}`, 'Today')
+      ),
+      el('div', {}, 'height: 1px; background: #E2E5DD'),
+      el('div', {}, 'display: flex; flex-direction: column; gap: 2px',
+        el('span', {}, 'font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C', 'On this spot in 1901'),
+        el('div', {}, 'display: flex; align-items: baseline; justify-content: space-between; gap: 8px',
+          h(K.Text, { variant: 'h3', as: 'span' }, 'Kimberley'),
+          el('span', {}, `font-size: 12px; line-height: 16px; ${MONO}`, '28.738° S · 24.764° E')
+        )
+      ),
+      el('ol', {}, 'list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column',
+        el('li', {}, 'display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #E2E5DD',
+          el('span', {}, LABEL, 'District'),
+          h(K.Text, { variant: 'title', as: 'span' }, 'Kimberley')
+        ),
+        el('li', {}, 'display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD',
+          el('span', {}, LABEL, 'Colony'),
+          el('span', {}, 'display: flex; flex-direction: column',
+            h(K.Text, { variant: 'title', as: 'span' }, 'Cape Colony'),
+            h(K.Text, { variant: 'caption', as: 'span' }, 'Was Griqualand West until 1880')
+          )
+        )
+      ),
+      el('a', { href: '#' }, 'display: flex; align-items: center; gap: 8px; min-height: 44px; color: #18211B; text-decoration: none',
+        el('span', { 'aria-hidden': 'true', dangerouslySetInnerHTML: { __html: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z"></path></svg>' } }, 'color: #9A3B12'),
+        el('span', {}, 'flex: 1; display: flex; flex-direction: column',
+          el('span', {}, 'font-size: 14px; line-height: 20px; font-weight: 600', 'Marriage'),
+          el('span', {}, 'font-size: 13px; line-height: 20px; color: #4A544C', 'J. Rossouw & M. du Toit')
+        ),
+        el('span', {}, "font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #2E3A33", '1901-03-14')
+      ),
+      el('p', {}, 'margin: auto 0 0; font-size: 12.5px; color: #4A544C', 'Look-up only on a phone. Add people and pins on a tablet or computer.')
+    );
 
-  <sc-if value="{{expanded}}" hint-placeholder-val="{{ true }}">
-  <section aria-label="Map date and lookup" style="position: absolute; left: 0; right: 0; bottom: 0; height: 432px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
-    <span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
+    const sheet = h(K.BottomSheet, { expanded: false, onExpandedChange: noop },
+      dateRow(),
+      el('p', {}, 'margin: 0; font-size: 13px; color: #4A544C; text-align: center', 'Tap the map to see what a place was part of in 1901.')
+    );
 
-    <div style="display: flex; align-items: center; gap: 6px">
-      <button type="button" aria-label="Back one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
-      <input aria-label="Map date" value="1901" readonly style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B">
-      <button type="button" aria-label="Forward one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
-      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>
-    </div>
-
-    <div style="position: relative; height: 34px">
-      <span style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: #D6DAD2"></span>
-      <button type="button" aria-label="Map date slider, 1901" style="position: absolute; left: calc(66.4% - 13px); top: 1px; width: 26px; height: 26px; padding: 0; border-radius: 13px; border: 4px solid #FFFFFF; background: #264F29; box-shadow: 0 0 0 1px #264F29, 0 2px 6px rgba(24,33,27,0.3)"></button>
-      <span style="position: absolute; left: 0; top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4A544C">1652</span>
-      <span style="position: absolute; right: 0; top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4A544C">Today</span>
-    </div>
-
-    <div style="height: 1px; background: #E2E5DD"></div>
-
-    <div style="display: flex; flex-direction: column; gap: 2px">
-      <span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">On this spot in 1901</span>
-      <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px">
-        <x-import component-from-global-scope="KinScape.Text" variant="h3" as="span">Kimberley</x-import>
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #4A544C">28.738° S · 24.764° E</span>
-      </div>
-    </div>
-
-    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
-      <li style="display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #E2E5DD">
-        <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">District</span>
-        <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Kimberley</x-import>
-      </li>
-      <li style="display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid #E2E5DD; border-bottom: 1px solid #E2E5DD">
-        <span style="font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">Colony</span>
-        <span style="display: flex; flex-direction: column"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">Cape Colony</x-import><x-import component-from-global-scope="KinScape.Text" variant="caption" as="span">Was Griqualand West until 1880</x-import></span>
-      </li>
-    </ol>
-
-    <a href="#" style="display: flex; align-items: center; gap: 8px; min-height: 44px; color: #18211B; text-decoration: none">
-      <span style="color: #9A3B12" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display: inline-block; width: 1em; height: 1em; vertical-align: -0.125em"><path d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z"></path></svg></span>
-      <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 14px; line-height: 20px; font-weight: 600">Marriage</span><span style="font-size: 13px; line-height: 20px; color: #4A544C">J. Rossouw &amp; M. du Toit</span></span>
-      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #2E3A33">1901-03-14</span>
-    </a>
-
-    <p style="margin: auto 0 0; font-size: 12.5px; color: #4A544C">Look-up only on a phone. Add people and pins on a tablet or computer.</p>
-  </section>
-  </sc-if>
-
-  <sc-if value="{{collapsed}}" hint-placeholder-val="{{ false }}">
-  <div style="position: absolute; left: 0; right: 0; bottom: 0"><x-import component-from-global-scope="KinScape.BottomSheet" expanded="{{no}}" on-expanded-change="{{noop}}">
-    <div style="display: flex; align-items: center; gap: 6px">
-      <button type="button" aria-label="Back one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
-      <input aria-label="Map date" value="1901" readonly style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B">
-      <button type="button" aria-label="Forward one year" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
-      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>
-    </div>
-    <p style="margin: 0; font-size: 13px; color: #4A544C; text-align: center">Tap the map to see what a place was part of in 1901.</p>
-  </x-import></div>
-  </sc-if>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["lookup","collapsed"],"default":"lookup"},"$preview":{"width":390,"height":844}}'>
-class Component extends DCLogic {
-  renderVals() {
-    const collapsed = (this.props.variant ?? 'lookup') === 'collapsed';
-    return { noop: () => {}, no: false, collapsed: collapsed, expanded: !collapsed, ringDisplay: collapsed ? 'none' : 'inline' };
+    return {
+      dock: collapsed ? sheet : lookup,
+      layers: h(K.LayersButton),
+      map,
+      search: h(K.SearchBar, { account: h(K.Avatar, { initial: 'R' }), form: 'pill' })
+    };
   }
 }
 </script>

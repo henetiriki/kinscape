@@ -14,6 +14,7 @@ import type { Validity } from '@ks/lib/domain/validity/types.ts';
 
 import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
+import { freeArea, MapLayout } from '@ks/app/components/layout/MapLayout';
 import { Sheet } from '@ks/app/components/overlays/Sheet';
 import {
   AccountMenu,
@@ -28,7 +29,6 @@ import {
 } from '@ks/features/map/components/LayersPanel';
 import { MapView } from '@ks/features/map/components/MapView';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
-import { freeArea, Stage } from '@ks/features/map/components/Stage';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
@@ -102,7 +102,7 @@ export const MapShell = ({
 
   return (
     <>
-      <Stage
+      <MapLayout
         {...accountSlots(phone, account)}
         credits={phone ? undefined : credits}
         dock={
@@ -171,7 +171,7 @@ export const MapShell = ({
           padding={freeArea(phone)}
           visible={visible}
         />
-      </Stage>
+      </MapLayout>
       {phone && (
         <Sheet
           onClose={() => setShowLayers(false)}

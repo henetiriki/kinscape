@@ -974,4 +974,42 @@ export declare const SignInLayout: ({ children, hero, }: {
 }) => import("react").JSX.Element;
 export type SignInLayoutProps = Parameters<typeof SignInLayout>[0];
 
+/** The free map area as map padding: what the `overlay` slot leaves, from the same tokens. */
+declare const freeArea: (phone: boolean) => {
+    bottom: number;
+    left: number;
+    right: number;
+    top: number;
+};
+/** Each slot is declared, not mapped from `SLOTS`: the design system reads the props from their declarations. */
+interface MapLayoutSlots {
+    /** The account control, on desktop. */
+    account?: ReactNode;
+    /** The map. */
+    children?: ReactNode;
+    /** The source credits, on desktop. */
+    credits?: ReactNode;
+    /** The date dock. */
+    dock?: ReactNode;
+    /** The Layers button, on a phone. */
+    layers?: ReactNode;
+    /** The popup area over the map. */
+    overlay?: ReactNode;
+    /** `top` puts the overlay at the slot's top edge; otherwise it centres. */
+    overlayAt?: 'top';
+    /** The side panel, or the sheet on a phone. */
+    panel?: ReactNode;
+    /** The search bar. */
+    search?: ReactNode;
+    /** The zoom controls, on desktop. */
+    zoom?: ReactNode;
+}
+/**
+ * The map screen's frame: the map is `children`, and each slot is a placed box over it.
+ * Desktop and phone forms switch at `breakpoint`; every edge is a `layout` token.
+ * The `overlay` content centres unless `overlayAt` is `top`, which puts it at the slot's top edge.
+ */
+export declare const MapLayout: ({ children, overlayAt, ...slots }: MapLayoutSlots) => import("react").JSX.Element;
+export type MapLayoutProps = Parameters<typeof MapLayout>[0];
+
 export {};

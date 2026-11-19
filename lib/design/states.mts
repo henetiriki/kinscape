@@ -4,6 +4,7 @@ import type { Column } from '#ks/app/components/layout/types.ts';
 import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 
 import { COLUMNS } from '#ks/app/components/layout/columns.mts';
+import { SLOTS } from '#ks/app/components/layout/slots.mts';
 import {
   CHAIN,
   CONTESTED_COUNT,
@@ -1238,6 +1239,40 @@ export const CARDS: Card[] = [
             props: { as: 'h1', variant: 'h1' },
           },
         }
+      ),
+    ],
+    width: 1440,
+  },
+  {
+    contain: true,
+    design: [],
+    frame: 480,
+    group: 'Layout',
+    handlers: [],
+    height: 560,
+    name: 'MapLayout',
+    pad: 0,
+    states: [
+      one(
+        'MapLayout · text in each slot',
+        {},
+        [
+          {
+            children: 'The map',
+            control: 'Text',
+            props: { variant: 'small' },
+          },
+        ],
+        Object.fromEntries(
+          SLOTS.map(slot => [
+            slot,
+            {
+              children: slot,
+              control: 'Text',
+              props: { variant: 'small' },
+            },
+          ])
+        )
       ),
     ],
     width: 1440,

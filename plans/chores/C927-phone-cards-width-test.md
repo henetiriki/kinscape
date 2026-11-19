@@ -1,7 +1,7 @@
 # Plan: C927: The width-rule test reads the stylesheet of each component card
 
 - **Spec:** #927
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ The width-rule test walks `CONTROLS`, not `app/components/`. For each entry, it 
 - **B.** The test also reads the stylesheet of the file in `path`. The four cards join `PHONE_CARDS`, with four more `-390.png` images. Step 1 of the issue changes.
 - **Other:** your own.
 
-Recommended: B, because the guard then sees each card in a file with a width rule. A costs less, and `RemovableChip` gets no phone image.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

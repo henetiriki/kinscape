@@ -1,7 +1,7 @@
 # Plan: DL.28.1: The other Map boards mount MapLayout
 
 - **Spec:** #925
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -26,7 +26,7 @@ Behaviour item 7 names the [board swap prompt](../design/COMPONENTS.md#board-swa
 - **B.** Edit the 14 files on the canvas first, as item 7 says. Then run 5.1 to 5.5 and the workflow. Cost: a board that fails check 1 is on the canvas until a revert.
 - **Other:** your own.
 
-Recommended: A, because a failed board never reaches the canvas.
+**Answer: A** (@henetiriki)
 
 **D6 · `Map-credits-narrow` at 800 × 120** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ Recommended: A, because a failed board never reaches the canvas.
 - **B.** Keep the file as it is, and file a Bug (check 3). Its wrapper still loads the helpers (item 2). Cost: two rows of the PR table say "not swapped".
 - **Other:** your own.
 
-Recommended: B, because check 3 is the Spec's path for a frame that cannot show the board. A loses no pixel, but its mount proves nothing.
+**Answer: Other:** B, and `Map-credits-narrow` and `Map-credits-narrow-open` do not load `./board-helpers.js`. The test does not list them. (@henetiriki)
 
 ## Alternatives considered
 

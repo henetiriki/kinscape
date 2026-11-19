@@ -85,8 +85,8 @@ A local session cannot start Chromium, so it cannot check the export or the pixe
 | 7                | `git ls-files design/cards/MapLayout-*`                                                                         |
 | 8                | The PR lists who ran each step                                                                                  |
 | 9                | `sha256sum` of both trees in the PR                                                                             |
-| 10               | The two board files; `git diff --name-only <commit before the swap> HEAD -- 'design/*.jpg'` is empty            |
-| 11               | The PR names each kept slot or board, with its Bug                                                              |
+| 10               | The two board files; the PR lists each JPG that changed, and D3 accepts them                                    |
+| 11               | The Deviations name each kept slot; the Bugs follow the merge                                                   |
 | 12               | `npm test`, `npm run typecheck`, `npm run lint`                                                                 |
 
 ## Out of scope
@@ -101,3 +101,7 @@ As the Spec says.
 - These slots keep drawn content (check 11): `dock` on `Map-phone`, and `search`, `zoom`, `panel` and `dock` on `Map`. The real `DateDock` fails the export: its hatch colour uses `color-mix()`.
 - The `loading` and `empty-tree` cards sit at the top of `overlay` with a margin.
 - The drawn panel and dock lose their click (D1 A). The other overlays stay as markup beside the frame.
+- The credits line and the open account menus stay beside the frame, not in `credits` and `account`. The credits span both screen edges, and a slot would move them. The menus paint above the zoom card with a `z-index`. `map-account-menu` is byte-identical, and a move risks that.
+- `mount` in `Map.dc.html` turns drawn markup into React elements, because the drawn panel and dock hold components that `dangerouslySetInnerHTML` cannot mount. `Map-phone.dc.html` uses `dangerouslySetInnerHTML` for the map only.
+- Both boards hold a copy of the `css` helper. Each board is one file, and the bundle holds only app components. A shared helper is a later Chore.
+- The Bugs for the kept slots follow the merge, as the tech lead asked.

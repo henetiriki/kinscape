@@ -3,6 +3,8 @@
 .box {
   display: inline-grid;
   flex: none;
+  /* A fixed cell keeps the tick on the input when a parent stretches the box. */
+  grid-template: var(--size-checkbox) / var(--size-checkbox);
 }
 
 .checkbox {

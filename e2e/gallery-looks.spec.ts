@@ -77,6 +77,17 @@ test('the tick shows on a checked checkbox and not on an unchecked one', async (
 
   await expect(tick('Checkbox on · default')).toBeVisible();
   await expect(tick('Checkbox off · default')).toBeHidden();
+
+  // The card stretches the box. The tick still lies inside the 20px input.
+  const input = (await state(page, 'Checkbox on · default')
+    .getByRole('checkbox')
+    .boundingBox())!;
+  const mark = (await tick('Checkbox on · default').boundingBox())!;
+
+  expect(mark.x).toBeGreaterThanOrEqual(input.x);
+  expect(mark.y).toBeGreaterThanOrEqual(input.y);
+  expect(mark.x + mark.width).toBeLessThanOrEqual(input.x + input.width);
+  expect(mark.y + mark.height).toBeLessThanOrEqual(input.y + input.height);
 });
 
 test.describe('on a phone', () => {

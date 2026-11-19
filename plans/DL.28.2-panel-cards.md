@@ -2,7 +2,7 @@
 
 - **Spec:** #1051
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -39,7 +39,7 @@ A local session swaps the `panel` slot of `Map.dc.html` (step 7). The slot build
 - **B.** `Card` gets a `box` width, and `previewHtml` wraps each state in it. Cost: a change to `cards.mts` and its tests for one card.
 - **Other:** your own.
 
-Recommended: A, because the panel is 320 wide wherever it shows.
+**Answer: B** (@henetiriki)
 
 **D2 · `ClearFilters` after the change** · Decides: Tech lead
 
@@ -50,7 +50,7 @@ Recommended: A, because the panel is 320 wide wherever it shows.
 - **C.** Keep it. Cost: when #1058 mounts it, it is full width, unlike the board.
 - **Other:** your own.
 
-Recommended: A, because the component then matches the board.
+**Answer: A** (@henetiriki)
 
 **D3 · The space between the filter fields** · Decides: Tech lead
 
@@ -60,7 +60,7 @@ The board puts 20px between the four fields. `FilterFields` puts 16px.
 - **B.** Keep 16px. Cost: on `map-desktop-filters`, Surname, Event type and Branch move up, and the PR lists them (Spec D4).
 - **Other:** your own.
 
-Recommended: A, because the board is the reference (Spec D1).
+**Answer: A** (@henetiriki)
 
 **D4 · The Surname helper** · Decides: Tech lead
 
@@ -70,7 +70,7 @@ The board draws "Matches spelling variants too (Rossouw, Rossau)" under Surname.
 - **B.** `FilterFields` shows the board's text. Cost: the card and the board promise a match rule before #1058 D2 has an answer.
 - **Other:** your own.
 
-Recommended: A, because the text promises behaviour that nobody has decided.
+**Answer: Other:** . FilterFields takes an optional surnameHelper prop and passes it to TokenField helper. The board and the two card states with values pass the board’s text as a sample. (@henetiriki)
 
 ## Files that change
 

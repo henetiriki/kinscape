@@ -30,13 +30,13 @@ A local session cannot start Chromium, so it cannot check the export or the pixe
 
 **Answer: A** (@henetiriki)
 
-**D3 · Phone shadow** · Decides: Tech lead
+**D3 · Frame shadows** · Decides: Tech lead
 
-`search` paints above `layers`, so each phone snapshot changes.
+`search` and `account` paint above other slots, so shadows blend and snapshots change.
 
-- ~~**A.** Board rule `[data-slot="layers"] { z-index: 11 }`. Cost: app differs.~~
-- **B.** Accept new phone JPGs. Cost: check 10 fails for them.
-- ~~**C.** Keep the old board and file a Bug. Cost: no phone swap.~~
+- ~~**A.** Board rule: old order. Cost: app differs.~~
+- **B.** Accept new JPGs. Cost: check 10 fails for them.
+- ~~**C.** Keep old board, file a Bug. Cost: no swap.~~
 
 **Answer: B** (@henetiriki)
 
@@ -97,7 +97,7 @@ As the Spec says.
 
 - `MapLayout` declares its slots in an interface (`MapLayoutSlots`), not `Partial<Record<Slot, ReactNode>>`: `scripts/design-system.mts` reads props from their declarations and a mapped type has none.
 - `lib/design/__tests__/cards.test.ts` changes its Layout count from 2 to 3. The plan did not list it.
-- The two phone snapshots change (D3).
+- The two phone snapshots change by 11 of 255 at most, and ten desktop snapshots by 6 at most. Only `map-account-menu` is identical (D3).
 - These slots keep drawn content (check 11): `dock` on `Map-phone`, and `search`, `zoom`, `panel` and `dock` on `Map`. The real `DateDock` fails the export: its hatch colour uses `color-mix()`.
 - The `loading` and `empty-tree` cards sit at the top of `overlay` with a margin.
 - The drawn panel and dock lose their click (D1 A). The other overlays stay as markup beside the frame.

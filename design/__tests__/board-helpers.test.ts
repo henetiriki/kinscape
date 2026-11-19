@@ -21,11 +21,18 @@ const SCRIPT = '<script src="./board-helpers.js"></script>';
 const BUNDLE = '<script src="ds/kinscape/components/bundle.js"></script>';
 const read = (file: string) => readFileSync(join(process.cwd(), file), 'utf8');
 const board = (name: string) => read(`${BOARD_DIR}/${name}.dc.html`);
-// A board that imports one of the two boards runs its script, so it needs the helpers in its own <head>.
-const IMPORTS = /<dc-import name="Map(?:-phone)?"/;
-const BOARDS = [
+// The boards that call a helper.
+const FRAMES = [
   'Map',
   'Map-phone',
+  'Map-phone-states',
+  'Add-pin',
+  'Add-pin-phone',
+];
+// A board that imports one of them runs its script, so it needs the helpers in its own <head>.
+const IMPORTS = new RegExp(`<dc-import name="(?:${FRAMES.join('|')})"`);
+const BOARDS = [
+  ...FRAMES,
   ...readdirSync(join(process.cwd(), BOARD_DIR))
     .filter(file => file.endsWith('.dc.html'))
     .map(file => file.slice(0, -'.dc.html'.length))

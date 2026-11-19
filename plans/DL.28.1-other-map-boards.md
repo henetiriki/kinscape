@@ -91,3 +91,10 @@ With D5 B, step 2 edits the canvas and runs 5.1 to 5.5, and step 4 drops.
 As the Spec says.
 
 ## Deviations
+
+- D6: `Map-credits-narrow` and `Map-credits-narrow-open` get no edit, so 12 heads load the helpers, not 14. `FRAMES` in the test lists five files, not six.
+- The `dock` slot of `Map-phone-states` keeps its drawn sheet in each variant (check 2). The real `DateDock` draws a wider field with a darker border, and it cannot show `1901-02-30`.
+- The `overlay` slot keeps the drawn "No pins in 1901" card (check 2). The real `NoticeCard` draws its two buttons wider.
+- `Add-pin` and `Add-pin-phone` call `mount` and not `drawn`: they draw no `<svg>`. Their panels mix `mount` and `h`.
+- Step 6 did not run. #1051 is closed, and the build skips a closed issue.
+- Chromium starts in the local session. A local export and a screenshot of each old and new snapshot show only shadow differences on 13 snapshots. The workflow is still the proof.

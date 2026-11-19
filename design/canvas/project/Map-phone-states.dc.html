@@ -6,6 +6,7 @@
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ds/kinscape/components/bundle.css">
 <script src="ds/kinscape/components/bundle.js"></script>
+<script src="./board-helpers.js"></script>
 <link rel="stylesheet" href="ds/kinscape/tokens.css">
 </head>
 <body>
@@ -21,80 +22,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </style>
 </helmet>
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
-  <svg viewBox="531 323 279 603" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map around Kimberley in 1901">
-    <defs>
-      <filter id="hsS" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" seed="11"></feTurbulence>
-        <feDiffuseLighting surfaceScale="3" lighting-color="#ffffff" diffuseConstant="1.1"><feDistantLight azimuth="315" elevation="38"></feDistantLight></feDiffuseLighting>
-      </filter>
-      <filter id="haloS" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
-      <pattern id="hatchS" patternUnits="userSpaceOnUse" width="6.5" height="6.5" patternTransform="rotate(45)"><rect width="2.2" height="6.5" fill="#8B4A1C" fill-opacity="0.34"></rect></pattern>
-      <path id="rvs-vaal" d="M691 445 L714 429 L770 389 L808 381"></path>
-      <clipPath id="landClipS"><path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z"></path></clipPath>
-    </defs>
-    <rect x="500" y="300" width="360" height="660" fill="#C9D5D2"></rect>
-    <g style="display: {{d.base}}">
-      <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z" fill="#E9EBE2"></path>
-      <path d="M234 488 L283 495 L325 504 L368 507 L399 486 L420 474 L420 256 L441 306 L456 383 L515 372 L567 330 L620 306 L672 318 L714 312 L703 366 L690 414 L691 445 L694 472 L684 500 L634 547 L665 575 L706 608 L733 600 L772 611 L798 603 L808 600 L840 611 L877 594 L903 567 L924 594 L955 635 L945 645 L921 668 L892 699 L866 726 L835 751 L814 765 L782 786 L761 795 L722 798 L714 808 L682 809 L674 822 L640 817 L598 813 L580 815 L557 812 L532 821 L504 833 L478 834 L446 837 L420 860 Z" fill="#D3DCC4"></path>
-      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z" fill="#E3D2B2"></path>
-      <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z" fill="#D9CFBA"></path>
-      <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534 L903 567 L877 594 L840 611 L808 600 L788 582 Z" fill="#D9CFD9"></path>
-      <g fill="url(#hatchS)">
-        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
-        <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z"></path>
-      </g>
-      <g clip-path="url(#landClipS)" style="display: {{d.terrain}}"><rect x="500" y="300" width="360" height="660" filter="url(#hsS)" style="mix-blend-mode: multiply" opacity="0.28"></rect></g>
-      <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699" fill="none" stroke="#7E9A98" stroke-width="1" vector-effect="non-scaling-stroke"></path>
-      <g fill="none" stroke="#6E99A3" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round">
-        <path d="M887 516 L877 546 L861 576 L835 600 L798 603 L772 611 L733 600 L706 608 L665 575 L634 547 L625 514 L598 534 L564 550 L525 504"></path>
-        <path d="M950 369 L929 381 L905 387 L872 378 L836 370 L808 381 L770 389 L714 429 L691 445 L662 483 L625 514"></path>
-      </g>
-      <g fill="none" stroke="#6F7263" stroke-width="0.8" vector-effect="non-scaling-stroke" style="display: {{d.districts}}">
-        <path d="M470 760 L560 730 L640 760 L682 809"></path>
-        <path d="M560 730 L600 640 L700 620 L760 700 L761 795"></path>
-        <path d="M600 640 L540 560 L470 600 L420 700"></path>
-        <path d="M760 700 L840 650 L866 726"></path>
-        <path d="M540 560 L560 440 L640 420 L662 483"></path>
-      </g>
-      <g fill="none" stroke="#3B3A2F" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round">
-        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
-        <path d="M690 414 L703 366 L714 312"></path>
-        <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534"></path>
-      </g>
-      <g font-family="Public Sans, sans-serif" stroke="#E9EBE2" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke">
-        <g font-size="8" font-style="italic" fill="#3F646C">
-          <text dy="-3"><textPath href="#rvs-vaal" startOffset="55%" text-anchor="middle">Vaal</textPath></text>
-        </g>
-        <g fill="#2E2C22" font-weight="600" font-size="8.6" style="letter-spacing: 1.2px">
-          <text x="742" y="452" text-anchor="middle">ORANGE FREE STATE</text>
-          <text x="585" y="600" text-anchor="middle">CAPE COLONY</text>
-        </g>
-        <text x="742" y="463" text-anchor="middle" fill="#6B3412" font-style="italic" font-size="7.9">contested · Orange River Colony</text>
-        <g fill="#18211B" font-size="9.3" font-weight="500">
-          <text x="680" y="511">Kimberley</text>
-          <text x="738" y="534" text-anchor="end">Bloemfontein</text>
-        </g>
-        <circle cx="746" cy="517" r="2.4" fill="#18211B" stroke="#ffffff" stroke-width="1.2"></circle>
-      </g>
-    </g>
-    <g style="display: {{d.pins}}">
-      <circle cx="746" cy="517" r="30" fill="#9A3B12" opacity="0.24" filter="url(#haloS)"></circle>
-      <path transform="translate(738 509) scale(0.6667)" d="M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z" fill="#9A3B12" opacity="0.6" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
-      <path transform="translate(662 486) scale(0.6667)" d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
-    </g>
-  </svg>
-
-  <div style="position: absolute; left: 16px; right: 16px; top: 16px; height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 4px 0 12px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
-    <x-import component-from-global-scope="KinScape.Wordmark" icon-only="{{ true }}" size="32"></x-import>
-    <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; height: 44px; padding: 0; border: 0; font-size: 16px; line-height: 24px; color: #18211B; outline: none; background: transparent">
-    <x-import component-from-global-scope="KinScape.Avatar" initial="R" expanded="{{avatarExpanded}}"></x-import>
-  </div>
-
-  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
-  <div style="position: absolute; right: 16px; top: {{layersTop}}; width: 48px; height: 48px">
-    <x-import component-from-global-scope="KinScape.IconButton" variant="raised" label="Layers and filters"><x-import component-from-global-scope="KinScape.Icon" name="layers" size="24"></x-import></x-import>
-  </div>
-  </sc-if>
+  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" layers="{{layers}}" dock="{{dock}}" overlay="{{overlay}}" overlay-at="{{overlayAt}}"></x-import>
 
   <sc-if value="{{v.offline}}" hint-placeholder-val="{{ false }}">
     <div role="alert" style="position: absolute; left: 16px; right: 16px; top: 80px; min-height: 60px; box-sizing: border-box; padding: 8px 8px 8px 16px; background: #18211B; color: #FFFFFF; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 20px rgba(24,33,27,0.2)">
@@ -102,30 +30,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <span style="flex: 1; font-size: 14px; line-height: 20px">Terrain didn't load. Borders and pins still work.</span>
       <button type="button" style="flex: none; height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.45); border-radius: 8px; background: transparent; color: #FFFFFF; font-size: 14px; font-weight: 600">Retry</button>
     </div>
-  </sc-if>
-
-  <sc-if value="{{v.emptyDate}}" hint-placeholder-val="{{ false }}">
-    <div role="status" style="position: absolute; left: 16px; right: 16px; top: 144px; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
-      <div style="display: flex; gap: 12px; align-items: flex-start">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A3B12" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">No pins in 1901</x-import>
-          <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Nobody in your filters is pinned to this date.</span>
-        </div>
-      </div>
-      <div style="display: flex; gap: 8px; padding-left: 32px">
-        <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600">Jump to 1898</button>
-        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600">Clear filters</button>
-      </div>
+    <div style="position: absolute; right: 16px; top: 156px; width: 48px; height: 48px">
+      <x-import component-from-global-scope="KinScape.IconButton" variant="raised" label="Layers and filters"><x-import component-from-global-scope="KinScape.Icon" name="layers" size="24"></x-import></x-import>
     </div>
-  </sc-if>
-
-  <sc-if value="{{v.emptyTree}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 16px; right: 16px; top: 260px"><x-import component-from-global-scope="KinScape.NoticeCard" size="large" icon="place" title="No pins yet">Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.</x-import></div>
-  </sc-if>
-
-  <sc-if value="{{v.loading}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 16px; right: 16px; top: 300px"><x-import component-from-global-scope="KinScape.NoticeCard" title="Loading the map" progress="{{ks.loadingProgress}}">Every border from 1652 to today loads once, up front, so the slider never has to wait.</x-import></div>
   </sc-if>
 
   <sc-if value="{{v.dateError}}" hint-placeholder-val="{{ false }}">
@@ -136,27 +43,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </div>
   </sc-if>
 
-  <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
-  <section aria-label="Map date" style="position: absolute; left: 0; right: 0; bottom: 0; height: 152px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
-    <button type="button" aria-label="Expand the sheet" style="align-self: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center"><span style="width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span></button>
-    <div style="display: flex; align-items: center; gap: 6px">
-      <button type="button" aria-label="Back one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
-      <span style="position: relative; flex: 1; min-width: 0; display: flex">
-        <input aria-label="Map date" aria-invalid="{{v.dateError}}" aria-describedby="date-msg-phone" value="{{dateValue}}" readonly style="{{dateFieldStyle}}">
-        <sc-if value="{{v.dateError}}" hint-placeholder-val="{{ false }}"><svg style="position: absolute; right: 10px; top: 13px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4412F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.01"></path></svg></sc-if>
-      </span>
-      <button type="button" aria-label="Forward one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
-      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>
-    </div>
-  </section>
-  </sc-if>
-
   <sc-if value="{{v.scrim}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></div>
+    <div style="z-index: 20; position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></div>
   </sc-if>
 
   <sc-if value="{{v.accountProposed}}" hint-placeholder-val="{{ false }}">
-    <div role="menu" aria-label="Account" style="position: absolute; right: 16px; top: 76px; width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
+    <div role="menu" aria-label="Account" style="z-index: 20; position: absolute; right: 16px; top: 76px; width: 296px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2); padding: 4px; box-sizing: border-box; display: flex; flex-direction: column">
       <div style="padding: 12px; display: flex; flex-direction: column; gap: 4px">
         <span style="font-size: 12.5px; line-height: 18px; color: #4A544C">Signed in as</span>
         <span style="font-size: 14px; line-height: 20px; font-weight: 600">researcher@example.com</span>
@@ -180,7 +72,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.panel}}" hint-placeholder-val="{{ false }}">
-    <section role="dialog" aria-label="Layers and filters" style="position: absolute; left: 0; right: 0; top: 76px; bottom: 0; box-sizing: border-box; padding: 8px 16px 0; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
+    <section role="dialog" aria-label="Layers and filters" style="z-index: 20; position: absolute; left: 0; right: 0; top: 76px; bottom: 0; box-sizing: border-box; padding: 8px 16px 0; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 8px">
       <span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
       <div style="display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #E2E5DD">
         <div style="flex: 1; display: flex; gap: 4px">
@@ -252,11 +144,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   </sc-if>
 
   <sc-if value="{{v.account}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; right: var(--size-gutter-phone); top: calc(var(--space-64) + var(--space-12))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
+    <div style="z-index: 20; position: absolute; right: var(--size-gutter-phone); top: calc(var(--space-64) + var(--space-12))"><x-import component-from-global-scope="KinScape.MenuPanel" email="researcher@example.com" groups="{{accountMenu.groups}}" hovered="people"></x-import></div>
   </sc-if>
 
   <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">
-    <section role="dialog" aria-label="Sources and attributions" style="will-change: transform; position: absolute; left: 0; right: 0; top: 56px; bottom: 0; box-sizing: border-box; padding: 8px 16px 24px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 12px">
+    <section role="dialog" aria-label="Sources and attributions" style="z-index: 20; will-change: transform; position: absolute; left: 0; right: 0; top: 56px; bottom: 0; box-sizing: border-box; padding: 8px 16px 24px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 12px">
       <span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>
       <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
         <div style="display: flex; flex-direction: column; gap: 4px">
@@ -291,21 +183,14 @@ class Component extends DCLogic {
     const tab = (on) => 'flex: 1; height: 44px; border: 0; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; ' + (on ? 'background: #E6EEE4; color: #1D3E20' : 'background: transparent; color: #4A544C');
     const ph = 'font-family: JetBrains Mono, monospace; font-size: 12px; line-height: 16px; color: #4A544C';
     const row = (label, sub, on) => ({ label: label, sub: sub, on: on });
-    return {
+    const vals = {
       noop: () => {},
-      ks: { loadingProgress: 45 },
-      chrome: !is('account'),
-      avatarExpanded: is('account') ? true : undefined,
       accountMenu: { groups: [[{ icon: 'people', id: 'people', label: 'People', detail: 'Look up the people in your Tree' }], [{ icon: 'document', id: 'sources', label: 'Sources and attributions' }], [{ icon: 'signOut', id: 'sign-out', label: 'Sign out' }]] },
       v: {
         panel: is('layers') || is('filters'), scrim: is('layers') || is('filters') || is('sources'),
         loading: loading, emptyTree: is('empty-tree'), emptyDate: is('empty-date'), offline: is('offline'),
         account: is('account'), accountProposed: is('account-proposed'), sources: is('sources'), dateError: dateError
       },
-      d: {
-        base: show(!loading), terrain: show(!is('offline')), districts: show(is('districts')), pins: show(!noPins)
-      },
-      layersTop: is('offline') ? '156px' : '80px',
       tabs: { layersOn: !is('filters'), filtersOn: is('filters'), layersStyle: tab(!is('filters')), filtersStyle: tab(is('filters')) },
       groups: [
         { title: 'Boundaries', rows: [row('Polities', 'Colonies, republics, provinces, homelands', true), row('Districts', 'Drostdy and magisterial districts', false)] },
@@ -317,10 +202,133 @@ class Component extends DCLogic {
         ['Polity borders', '[Source]', '[Licence]', ph], ['District borders', '[Source]', '[Licence]', ph], ['Place names', '[Source]', '[Licence]', ph],
         ['Coast and land', '[Source]', '[Licence]', ph], ['Rivers', '[Source]', '[Licence]', ph], ['Terrain', '[DEM source]', '[Licence]', ph],
         ['Map library', 'MapLibre GL JS', 'BSD-3-Clause', 'color: #18211B']
-      ].map((s) => ({ layer: s[0], source: s[1], licence: s[2], checked: '—', style: s[3] })),
-      dateValue: dateError ? '1901-02-30' : '1901',
-      precisionWord: dateError ? 'day' : 'year',
-      dateFieldStyle: "flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: #18211B; background: #FFFFFF; " + (dateError ? 'border: 2px solid #B4412F; padding: 0 32px 0 8px' : 'border: 1px solid #C9CFC5')
+      ].map((s) => ({ layer: s[0], source: s[1], licence: s[2], checked: '—', style: s[3] }))
+    };
+
+    const React = window.React;
+    const K = window.KinScape;
+
+    if (!React || !K) return vals;
+
+    const h = React.createElement;
+    const { drawn, mount } = window.KinScapeBoard;
+    const v = vals.v;
+    // The account menu covers the Layers button and the sheet, so that variant draws neither.
+    const chrome = !v.account;
+    const d = { base: show(!loading), terrain: show(!v.offline), districts: show(is('districts')), pins: show(!noPins) };
+    const map = drawn(`  <svg viewBox="531 323 279 603" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map around Kimberley in 1901">
+    <defs>
+      <filter id="hsS" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="5" seed="11"></feTurbulence>
+        <feDiffuseLighting surfaceScale="3" lighting-color="#ffffff" diffuseConstant="1.1"><feDistantLight azimuth="315" elevation="38"></feDistantLight></feDiffuseLighting>
+      </filter>
+      <filter id="haloS" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+      <pattern id="hatchS" patternUnits="userSpaceOnUse" width="6.5" height="6.5" patternTransform="rotate(45)"><rect width="2.2" height="6.5" fill="#8B4A1C" fill-opacity="0.34"></rect></pattern>
+      <path id="rvs-vaal" d="M691 445 L714 429 L770 389 L808 381"></path>
+      <clipPath id="landClipS"><path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z"></path></clipPath>
+    </defs>
+    <rect x="500" y="300" width="360" height="660" fill="#C9D5D2"></rect>
+    <g style="display: ${d.base}">
+      <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z" fill="#E9EBE2"></path>
+      <path d="M234 488 L283 495 L325 504 L368 507 L399 486 L420 474 L420 256 L441 306 L456 383 L515 372 L567 330 L620 306 L672 318 L714 312 L703 366 L690 414 L691 445 L694 472 L684 500 L634 547 L665 575 L706 608 L733 600 L772 611 L798 603 L808 600 L840 611 L877 594 L903 567 L924 594 L955 635 L945 645 L921 668 L892 699 L866 726 L835 751 L814 765 L782 786 L761 795 L722 798 L714 808 L682 809 L674 822 L640 817 L598 813 L580 815 L557 812 L532 821 L504 833 L478 834 L446 837 L420 860 Z" fill="#D3DCC4"></path>
+      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z" fill="#E3D2B2"></path>
+      <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z" fill="#D9CFBA"></path>
+      <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534 L903 567 L877 594 L840 611 L808 600 L788 582 Z" fill="#D9CFD9"></path>
+      <g fill="url(#hatchS)">
+        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+        <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z"></path>
+      </g>
+      <g clip-path="url(#landClipS)" style="display: ${d.terrain}"><rect x="500" y="300" width="360" height="660" filter="url(#hsS)" style="mix-blend-mode: multiply" opacity="0.28"></rect></g>
+      <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699" fill="none" stroke="#7E9A98" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+      <g fill="none" stroke="#6E99A3" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M887 516 L877 546 L861 576 L835 600 L798 603 L772 611 L733 600 L706 608 L665 575 L634 547 L625 514 L598 534 L564 550 L525 504"></path>
+        <path d="M950 369 L929 381 L905 387 L872 378 L836 370 L808 381 L770 389 L714 429 L691 445 L662 483 L625 514"></path>
+      </g>
+      <g fill="none" stroke="#6F7263" stroke-width="0.8" vector-effect="non-scaling-stroke" style="display: ${d.districts}">
+        <path d="M470 760 L560 730 L640 760 L682 809"></path>
+        <path d="M560 730 L600 640 L700 620 L760 700 L761 795"></path>
+        <path d="M600 640 L540 560 L470 600 L420 700"></path>
+        <path d="M760 700 L840 650 L866 726"></path>
+        <path d="M540 560 L560 440 L640 420 L662 483"></path>
+      </g>
+      <g fill="none" stroke="#3B3A2F" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round">
+        <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+        <path d="M690 414 L703 366 L714 312"></path>
+        <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534"></path>
+      </g>
+      <g font-family="Public Sans, sans-serif" stroke="#E9EBE2" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke">
+        <g font-size="8" font-style="italic" fill="#3F646C">
+          <text dy="-3"><textPath href="#rvs-vaal" startOffset="55%" text-anchor="middle">Vaal</textPath></text>
+        </g>
+        <g fill="#2E2C22" font-weight="600" font-size="8.6" style="letter-spacing: 1.2px">
+          <text x="742" y="452" text-anchor="middle">ORANGE FREE STATE</text>
+          <text x="585" y="600" text-anchor="middle">CAPE COLONY</text>
+        </g>
+        <text x="742" y="463" text-anchor="middle" fill="#6B3412" font-style="italic" font-size="7.9">contested · Orange River Colony</text>
+        <g fill="#18211B" font-size="9.3" font-weight="500">
+          <text x="680" y="511">Kimberley</text>
+          <text x="738" y="534" text-anchor="end">Bloemfontein</text>
+        </g>
+        <circle cx="746" cy="517" r="2.4" fill="#18211B" stroke="#ffffff" stroke-width="1.2"></circle>
+      </g>
+    </g>
+    <g style="display: ${d.pins}">
+      <circle cx="746" cy="517" r="30" fill="#9A3B12" opacity="0.24" filter="url(#haloS)"></circle>
+      <path transform="translate(738 509) scale(0.6667)" d="M17.38 21.8 13.66 16.61Q13.37 16.2 13.08 15.75Q12.8 15.3 12.51 14.77Q12.23 14.24 11.96 13.68L13.03 12.95Q13.48 13.36 13.89 13.78Q14.3 14.2 14.66 14.62Q15.02 15.04 15.3 15.45L19.02 20.63ZM6.66 21.8 5.01 20.63 8.73 15.45Q9.02 15.04 9.38 14.61Q9.73 14.19 10.14 13.77Q10.56 13.36 11 12.95L12.08 13.68Q11.8 14.24 11.52 14.77Q11.24 15.3 10.95 15.75Q10.67 16.2 10.38 16.61ZM11.26 13.1Q10.65 12.99 10.07 12.88Q9.48 12.77 8.95 12.62Q8.42 12.46 7.97 12.3L2 10.13L2.69 8.23L8.66 10.4Q9.14 10.56 9.63 10.79Q10.12 11.01 10.65 11.29Q11.18 11.57 11.69 11.9ZM12 13.8Q11.55 13.8 11.24 13.49Q10.92 13.17 10.92 12.73Q10.92 12.24 11.24 11.95Q11.55 11.65 12 11.65Q12.48 11.65 12.78 11.95Q13.08 12.24 13.08 12.73Q13.08 13.17 12.78 13.49Q12.48 13.8 12 13.8ZM11.36 11.92Q11.18 10.99 11.09 10.18Q11 9.36 11 8.6V2.2H13V8.6Q13 9.33 12.92 10.16Q12.85 10.99 12.64 11.92ZM12.74 13.1 12.31 11.9Q12.83 11.57 13.35 11.29Q13.88 11.01 14.38 10.79Q14.89 10.56 15.34 10.4L21.31 8.23L22 10.13L16.03 12.3Q15.58 12.46 15.05 12.62Q14.52 12.77 13.95 12.88Q13.38 12.99 12.74 13.1Z" fill="#9A3B12" opacity="0.6" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
+      <path transform="translate(662 486) scale(0.6667)" d="M6.84 18.64Q4.63 18.64 3.31 17.24Q2 15.84 2 13.44V10.56Q2 8.16 3.38 6.76Q4.76 5.36 7.07 5.36Q9.03 5.36 10.27 6.44Q11.5 7.53 12.16 9.38H12.27Q12.51 8.49 13.12 7.57Q13.73 6.65 14.75 6Q15.77 5.36 17.16 5.36Q19.37 5.36 20.69 6.76Q22 8.16 22 10.56V13.44Q22 15.84 20.63 17.24Q19.26 18.64 16.93 18.64Q14.97 18.64 13.78 17.56Q12.6 16.47 11.95 14.62H11.83Q11.59 15.47 10.94 16.41Q10.29 17.35 9.28 18Q8.26 18.64 6.84 18.64ZM7.19 16.75Q8.12 16.75 8.82 16.37Q9.52 15.99 10.01 15.37Q10.5 14.76 10.81 14.06Q11.13 13.36 11.25 12.7L10.08 9.67Q9.07 7.25 7.19 7.25Q5.85 7.25 5.01 8.15Q4.18 9.06 4.18 10.56V13.44Q4.18 14.94 5.01 15.85Q5.85 16.75 7.19 16.75ZM16.81 16.75Q18.17 16.75 19 15.85Q19.82 14.94 19.82 13.44V10.56Q19.82 9.06 19 8.15Q18.17 7.25 16.81 7.25Q15.9 7.25 15.19 7.63Q14.48 8.01 13.99 8.63Q13.5 9.24 13.19 9.94Q12.87 10.64 12.75 11.3L13.92 14.33Q14.41 15.52 15.14 16.13Q15.88 16.75 16.81 16.75Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>
+    </g>
+  </svg>`);
+
+    // The slot puts a card at its top edge. The board draws two cards lower, so they take the gap as a margin.
+    const lower = (gap, card) => h('div', { style: { marginTop: gap, width: '100%' } }, card);
+    // The real NoticeCard draws its two buttons wider than this card does, so the card is drawn.
+    const notice = v.emptyDate
+      ? mount(`    <div role="status" style="width: 100%; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; gap: 12px; align-items: flex-start">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A3B12" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">No pins in 1901</x-import>
+          <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Nobody in your filters is pinned to this date.</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; padding-left: 32px">
+        <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600">Jump to 1898</button>
+        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600">Clear filters</button>
+      </div>
+    </div>`)
+      : v.emptyTree
+        ? lower('116px', h(K.NoticeCard, { icon: 'place', size: 'large', title: 'No pins yet' }, 'Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.'))
+        : v.loading
+          ? lower('156px', h(K.NoticeCard, { progress: 45, title: 'Loading the map' }, 'Every border from 1652 to today loads once, up front, so the slider never has to wait.'))
+          : undefined;
+
+    const dateFieldStyle = "flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: #18211B; background: #FFFFFF; " + (v.dateError ? 'border: 2px solid #B4412F; padding: 0 32px 0 8px' : 'border: 1px solid #C9CFC5');
+    const precisionWord = v.dateError ? 'day' : 'year';
+    const ERROR_ICON = '<svg style="position: absolute; right: 10px; top: 13px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4412F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.01"></path></svg>';
+    // The sheet is drawn. The real DateDock takes no typed text, so it cannot show 1901-02-30. Its field is also
+    // wider than this one, and its border is darker.
+    const dock = () => mount(`  <section aria-label="Map date" style="position: absolute; left: 0; right: 0; bottom: 0; height: 152px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">
+    <button type="button" aria-label="Expand the sheet" style="align-self: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center"><span style="width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span></button>
+    <div style="display: flex; align-items: center; gap: 6px">
+      <button type="button" aria-label="Back one ${precisionWord}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
+      <span style="position: relative; flex: 1; min-width: 0; display: flex">
+        <input aria-label="Map date" aria-invalid="${v.dateError}" aria-describedby="date-msg-phone" value="${v.dateError ? '1901-02-30' : '1901'}" readonly style="${dateFieldStyle}">
+        ${v.dateError ? ERROR_ICON : ''}
+      </span>
+      <button type="button" aria-label="Forward one ${precisionWord}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
+      <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>
+    </div>
+  </section>`);
+
+    return {
+      ...vals,
+      dock: chrome ? dock() : undefined,
+      // The offline banner takes the place of the Layers button, so that variant draws its button lower, beside the frame.
+      layers: chrome && !v.offline ? h(K.LayersButton) : undefined,
+      map,
+      overlay: notice,
+      overlayAt: notice ? 'top' : undefined,
+      search: h(K.SearchBar, { account: h(K.Avatar, { expanded: v.account ? true : undefined, initial: 'R' }), form: 'pill' })
     };
   }
 }

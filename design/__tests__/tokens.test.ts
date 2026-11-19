@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveTokens } from '@ks/design/tokens.mts';
+import { hexChannels, resolveTokens } from '@ks/design/tokens.mts';
 
 describe('resolveTokens', () => {
   it('replaces references, including a chain of them, with the value', () => {
@@ -32,4 +32,20 @@ describe('resolveTokens', () => {
       'Token reference cycle'
     );
   });
+});
+
+describe('hexChannels', () => {
+  it('gives the red, green and blue of a #rrggbb colour, in either case', () => {
+    expect(hexChannels('#8b4a1c')).toEqual([139, 74, 28]);
+    expect(hexChannels('#8B4A1C')).toEqual([139, 74, 28]);
+  });
+
+  it.each(['#8b4', 'rgb(139 74 28)', 'brown', ''])(
+    'throws on %j, which is not #rrggbb',
+    value => {
+      expect(() => hexChannels(value)).toThrow(
+        `Not a #rrggbb colour: ${value}`
+      );
+    }
+  );
 });

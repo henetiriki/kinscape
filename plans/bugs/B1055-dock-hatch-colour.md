@@ -86,6 +86,7 @@ This plan has about 1250 words. [C855](../chores/C855-plan-word-budgets.md) (#85
 | File                                                                                      | New / changed | What                                                                                                                    |
 | ----------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | `lib/ui/hatch.ts`                                                                         | changed       | `HATCH_LINE`; `--hatch-line` takes it. No `color-mix()`.                                                                |
+| `design/tokens.mts`, its test, `lib/design/contrast.mts`                                  | changed       | `hexChannels`, the one `#rrggbb` parser. `hatch.ts` and `parseColour` use it.                                           |
 | `lib/ui/__tests__/hatch.test.ts`                                                          | new           | Check 1.                                                                                                                |
 | `features/map/components/Legend.tsx`                                                      | changed       | `--legend-hatch` is `HATCH_LINE`; `--legend-hatch-opacity` goes.                                                        |
 | `features/map/components/Legend.module.css`                                               | changed       | The `.hatch` stripe is `var(--legend-hatch) 0 3px`. No `color-mix()`.                                                   |
@@ -128,7 +129,7 @@ This plan has about 1250 words. [C855](../chores/C855-plan-word-budgets.md) (#85
 | 2. The `Legend` hatch is the `rgba()` value                 | `Legend.test.tsx`; `git grep color-mix features/map/components/Legend.module.css` has no match |
 | 3. `snapshotProblems` empty for both boards                 | `e2e/design-export.spec.mts` in `npm run e2e`                                                  |
 | 4. The `dock` slot mounts `DateDock`, except `date-invalid` | Read the slot                                                                                  |
-| 5. Two JPGs same, nine differ in the dock                   | `cmp`; the boxes and the list of step 7                                                        |
+| 5. `map-account-menu` same, the dock changes in nine        | `cmp`; the boxes and the list of step 7, which names each other JPG                            |
 | 6. Card images same                                         | `cmp` in step 7                                                                                |
 | 7. Same sha256, `Map.dc.html`                               | The 5.2 pair in the PR                                                                         |
 | 8. Test, typecheck, lint, coverage                          | The outputs in the PR                                                                          |
@@ -155,3 +156,5 @@ This plan has about 1250 words. [C855](../chores/C855-plan-word-budgets.md) (#85
 - Must not break, #924: `map-empty-date.jpg` draws the "Clear filters" text of its notice card with different anti-aliasing. Nothing moves. The tech lead accepted it. Commit `34047fcb`.
 - Proof row 9 names the two image files. The PR holds no crop, because `gh` uploads no image. Commit `fix(B1055): review: split inlineStyles`.
 - `inlineStyles` is three functions. `defineStyleHelpers` puts the shared helpers on `window`. `inlinePseudoStyles` writes the `<style>` block. `inlineStyles` writes the element styles. The exporter loads the helpers with `page.evaluate`, as it loads `kinscapeBuild`. Same commit.
+- `hexChannels` in `design/tokens.mts` is the one `#rrggbb` parser, because `lib/ui` cannot import `lib/design`. The design system and the canvas install take the new `bundle.js`. Commit `fix(B1055): review: one hex parser`.
+- Proof row 5 follows the reworded check 5: `map-date-invalid.jpg` changes its search bar placeholder. Same commit.

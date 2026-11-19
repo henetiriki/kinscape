@@ -2,17 +2,16 @@
 
 import type { Tree } from '#ks/design/types.ts';
 
+import { HEX_COLOUR, hexChannels } from '#ks/design/tokens.mts';
+
 type Rgb = [number, number, number];
 
-const HEX = /^#([0-9a-f]{6})$/i;
 const FUNCTION = /^rgb\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)\s*(?:[/,][^)]*)?\)$/i;
 
 /** The red, green and blue of `#rrggbb` or `rgb(r g b / a)` (opacity ignored). */
 export const parseColour = (value: string): Rgb => {
-  const hex = HEX.exec(value)?.[1];
-
-  if (hex !== undefined) {
-    return [0, 2, 4].map(i => Number.parseInt(hex.slice(i, i + 2), 16)) as Rgb;
+  if (HEX_COLOUR.test(value)) {
+    return hexChannels(value);
   }
 
   const channels = FUNCTION.exec(value);

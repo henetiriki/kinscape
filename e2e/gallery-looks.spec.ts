@@ -114,6 +114,28 @@ test.describe('on a phone', () => {
     expect(await fontSize(date)).toBeGreaterThanOrEqual(16);
   });
 
+  // MAP-03: the app's sheet has no Play, so the card measures the row.
+  test('the date row of the phone sheet has 4px gaps, and 8px before Play', async ({
+    page,
+  }) => {
+    await open(page, 'DateDock');
+
+    const figure = state(page, 'DateDock · phone sheet');
+    const [back, date, forward, play] = await Promise.all(
+      [
+        figure.getByRole('button', { name: 'Back' }),
+        // The parent of the input draws the border of the field.
+        figure.getByRole('textbox', { name: 'Date shown' }).locator('xpath=..'),
+        figure.getByRole('button', { name: 'Forward' }),
+        figure.getByRole('button', { name: 'Play through time' }),
+      ].map(async control => (await control.boundingBox())!)
+    );
+
+    expect(date.x - (back.x + back.width)).toBeCloseTo(4, 1);
+    expect(forward.x - (date.x + date.width)).toBeCloseTo(4, 1);
+    expect(play.x - (forward.x + forward.width)).toBeCloseTo(8, 1);
+  });
+
   test('a checkbox, chip, segment, tab and icon button each have a 44 x 44px hit area', async ({
     page,
   }) => {

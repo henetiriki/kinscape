@@ -424,3 +424,40 @@ describe('the no-borders warning', () => {
     expect(screen.queryByRole('status')).toBeNull();
   });
 });
+
+// MAP-03
+describe('defaultText', () => {
+  const day = toDay('1901-06-14');
+
+  it('starts the dock with the text and its problem', () => {
+    render(
+      <DateDock
+        day={day}
+        defaultText='1901-02-30'
+        lastDay={today}
+        onChange={vi.fn()}
+      />
+    );
+    expect(field().value).toBe('1901-02-30');
+    expect(screen.getByText('February 1901 has 28 days.').tagName).toBe(
+      'STRONG'
+    );
+    expect(field().getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('starts the phone sheet with the text and its problem', () => {
+    render(
+      <DateDock
+        day={day}
+        defaultText='1901-02-30'
+        lastDay={today}
+        onChange={vi.fn()}
+        sheet={{ expanded: false, onExpandedChange: vi.fn() }}
+      />
+    );
+    expect(field().value).toBe('1901-02-30');
+    expect(screen.getByText('February 1901 has 28 days.').tagName).toBe(
+      'STRONG'
+    );
+  });
+});

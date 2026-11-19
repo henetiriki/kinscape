@@ -786,6 +786,40 @@ const CASES: [string, ReactElement][] = [
       onPlay={noop}
     />,
   ],
+  [
+    'DateDock · phone sheet',
+    <DateDock
+      day={MAP_DATE}
+      key='sheet'
+      lastDay={TODAY}
+      onChange={noop}
+      onPlay={noop}
+      sheet={{ expanded: false, onExpandedChange: noop }}
+    />,
+  ],
+  [
+    'DateDock · invalid date',
+    <DateDock
+      day={MAP_DATE}
+      defaultText='1901-02-30'
+      key='invalid'
+      lastDay={TODAY}
+      onChange={noop}
+      onPlay={noop}
+    />,
+  ],
+  [
+    'DateDock · phone sheet · invalid date',
+    <DateDock
+      day={MAP_DATE}
+      defaultText='1901-02-30'
+      key='sheet-invalid'
+      lastDay={TODAY}
+      onChange={noop}
+      onPlay={noop}
+      sheet={{ expanded: false, onExpandedChange: noop }}
+    />,
+  ],
   ['Legend · default', <Legend key='legend' />],
   ...EVENT_TYPES.map((event): [string, ReactElement] => [
     `EventGlyph · ${event}`,

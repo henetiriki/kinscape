@@ -45,3 +45,9 @@
   display: contents;
   --callout-lift: 48px;
 }
+
+/* Play sits 8px from Forward: the row's 4px gap plus this margin. Button takes no class, so the wrapper holds it. */
+.sheetPlay {
+  display: flex;
+  margin-left: var(--space-4);
+}

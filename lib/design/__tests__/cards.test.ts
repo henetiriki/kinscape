@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename, dirname } from 'node:path';
+import { runInNewContext } from 'node:vm';
 import { describe, expect, it } from 'vitest';
 
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
@@ -221,6 +222,52 @@ describe('previewHtml', () => {
     expect(row.width).toBe(width);
     expect(line).toContain(`width=${width}`);
     expect(() => checkPreview(name, previewHtml(row))).not.toThrow();
+  });
+
+  it('gives a no-op to a key of an object prop, and skips a state without the prop', () => {
+    type Made = { children: Made[]; props: Record<string, unknown> };
+
+    const preview = previewHtml({
+      ...card,
+      handlers: ['onChange', 'sheet.onExpandedChange'],
+      states: [
+        { label: 'sheet', props: { sheet: { expanded: false } } },
+        { label: 'dock', props: {} },
+      ],
+    });
+    let figures: Made[] = [];
+
+    runInNewContext(/<script>([\s\S]*)<\/script>/.exec(preview)![1], {
+      document: { getElementById: () => ({}) },
+      React: {
+        createElement: (
+          _type: unknown,
+          props: object,
+          ...children: Made[]
+        ) => ({
+          children: children.flat(),
+          props,
+        }),
+      },
+      ReactDOM: {
+        createRoot: () => ({
+          render: (root: Made) => {
+            figures = root.children;
+          },
+        }),
+        flushSync: (run: () => void) => run(),
+      },
+      window: { KinScape: {} },
+    });
+
+    const [sheet, dock] = figures.map(figure => figure.children[1].props);
+
+    expect(sheet.sheet).toEqual({
+      expanded: false,
+      onExpandedChange: expect.any(Function),
+    });
+    expect(Object.keys(dock).toSorted()).toEqual(['key', 'onChange']);
+    expect(dock.onChange).toEqual(expect.any(Function));
   });
 
   it('keeps text from ending the script', () => {

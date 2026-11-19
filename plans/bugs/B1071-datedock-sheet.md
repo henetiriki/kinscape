@@ -49,8 +49,8 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 | `features/map/components/DateDock.tsx`                                                    | changed       | `defaultText` prop, passed to `DateField`. The round Play sits in `span.sheetPlay`.                                                                                                                                                                                             |
 | `features/map/components/DateDock.module.css`                                             | changed       | `.sheetPlay`: `display: flex; margin-left: var(--space-4)`.                                                                                                                                                                                                                     |
 | `features/map/components/__tests__/DateDock.test.tsx`                                     | changed       | Check 2: `defaultText` in the dock and in the sheet shows the text and "February 1901 has 28 days.".                                                                                                                                                                            |
-| `e2e/map-phone.spec.ts`                                                                   | changed       | Check 1: at 390px, Back, field and Forward are 4px apart, and Play is 8px from Forward.                                                                                                                                                                                         |
-| `lib/design/states.mts`                                                                   | changed       | `DateDock`: states "phone sheet", "invalid date" and "phone sheet · invalid date"; `handlers` adds `sheet.onExpandedChange`; `height` fits six states; `pad` clears the dock's callout.                                                                                         |
+| `e2e/gallery-looks.spec.ts`                                                               | changed       | Check 1: on the "DateDock · phone sheet" card state at 390px, Back, field and Forward are 4px apart, and Play is 8px from Forward.                                                                                                                                              |
+| `lib/design/states.mts`                                                                   | changed       | `DateDock`: states "phone sheet", "invalid date" and "phone sheet · invalid date"; `handlers` adds `sheet.onExpandedChange`; `box` makes each state fill the card; `height` fits six states; `pad` clears the dock's callout.                                                   |
 | `lib/design/__tests__/react-18.test.tsx`                                                  | changed       | The three new cases.                                                                                                                                                                                                                                                            |
 | `lib/design/cards.mts`, `lib/design/types.ts`                                             | changed       | `give` gives a no-op to an object prop, and skips a missing prop. `PHONE_CARDS` lists `DateDock`, and its comment gives why. The `handlers` doc names the object prop.                                                                                                          |
 | `lib/design/__tests__/cards.test.ts`                                                      | changed       | A preview gives `sheet.onExpandedChange` a no-op, and a state without `sheet` mounts.                                                                                                                                                                                           |
@@ -86,7 +86,7 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 
 | Acceptance check                                       | Proven by                                                                                   |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
-| 1. Gaps 4, 4 and 8px at 390px                          | `e2e/map-phone.spec.ts`                                                                     |
+| 1. Gaps 4, 4 and 8px at 390px                          | `e2e/gallery-looks.spec.ts`                                                                 |
 | 2. `defaultText` in dock and sheet; none as on `main`  | `DateDock.test.tsx`: the new tests and the existing ones                                    |
 | 3. Card states, `PHONE_CARDS`, `DateDock-390.png`      | `react-18.test.tsx`, `cards.test.ts`; the file after step 7                                 |
 | 4. `Map-phone-states` mounts `DateDock`, nothing drawn | Read the slot; `git grep "28 days"` on the board has no match                               |
@@ -108,3 +108,9 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 
 - The drawn look-up sheet of `map-phone.jpg`.
 - The `overlay` slot and the offline banner: #1072.
+
+## Deviations
+
+- Check 1 is in `e2e/gallery-looks.spec.ts`, not `e2e/map-phone.spec.ts`. The app passes no `onPlay`, so its phone sheet has no Play. The card state has one.
+- The `DateDock` card sets `box: '100%'`. Without it, the sheet takes the width of its content (475px at 390px), not the width of the card.
+- `DateDock` gained `defaultText` before the first e2e run of step 1. The build type-checks the unit test of check 2.

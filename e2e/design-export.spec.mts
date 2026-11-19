@@ -72,6 +72,7 @@ const exportBoard = async (page: Page, board: string): Promise<string> => {
       file,
       prepare(board, '/_blob/icon', {
         fonts: url('design/source/fonts.css'),
+        helpers: url('design/canvas/project/board-helpers.js'),
         icon: url('app/icon0.svg'),
         system: designSystem(root),
       })

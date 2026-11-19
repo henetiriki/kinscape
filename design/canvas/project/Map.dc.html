@@ -6,6 +6,7 @@
 <script src="./support.js"></script>
 <link rel="stylesheet" href="ds/kinscape/components/bundle.css">
 <script src="ds/kinscape/components/bundle.js"></script>
+<script src="./board-helpers.js"></script>
 <link rel="stylesheet" href="ds/kinscape/tokens.css">
 </head>
 <body>
@@ -233,44 +234,7 @@ class Component extends DCLogic {
     // Boundaries draws its rows 48 tall; Basemap and Pins pass 'm' for 44.
     const layerRows = (items, size) => items.map(item => ({ checked: item.on, description: item.sub, id: item.id, label: item.label, onChange: item.toggle, size }));
     const h = React.createElement;
-    const camel = name => name.replace(/-([a-z])/g, (_match, letter) => letter.toUpperCase());
-    // The drawn parts keep their CSS text. This turns it into the style object that React takes.
-    const css = text => Object.fromEntries(text.split(';').map(part => part.trim()).filter(Boolean).map(part => {
-      const at = part.indexOf(':');
-      return [camel(part.slice(0, at).trim()), part.slice(at + 1).trim()];
-    }));
-    const BOOLEAN = { checked: 'defaultChecked', disabled: 'disabled', readonly: 'readOnly' };
-    const RENAME = { class: 'className', for: 'htmlFor', tabindex: 'tabIndex' };
-    // The exporter reads a named prop only from renderVals, and it throws on an <svg> child. So the drawn
-    // parts of a slot are markup strings here, and this turns one into React elements: an <x-import> is its component.
-    const mount = html => {
-      const box = document.createElement('template');
-      box.innerHTML = html;
-      const build = (node, key) => {
-        if (node.nodeType === 3) return node.nodeValue;
-        if (node.nodeType !== 1) return null;
-
-        const tag = node.localName;
-        const props = { key };
-
-        for (const { name, value } of Array.from(node.attributes)) {
-          if (name === 'component-from-global-scope') continue;
-          if (name === 'style') props.style = css(value);
-          else if (tag !== 'x-import' && name in BOOLEAN) props[BOOLEAN[name]] = true;
-          else if (tag !== 'x-import' && name in RENAME) props[RENAME[name]] = value;
-          else if (tag !== 'x-import' && name === 'value' && /^(input|select|textarea)$/.test(tag)) props.defaultValue = value;
-          else props[/^(aria|data)-/.test(name) ? name : camel(name)] = value;
-        }
-
-        const type = tag === 'x-import'
-          ? node.getAttribute('component-from-global-scope').split('.').reduce((part, name) => part && part[name], window)
-          : tag;
-
-        return h(type, props, ...Array.from(node.childNodes, build));
-      };
-
-      return h(React.Fragment, null, ...Array.from(box.content.childNodes, build));
-    };
+    const { drawn, mount } = window.KinScapeBoard;
 
     const v = vals.v;
     // The slot puts a card at its top edge. The board draws two cards lower, so they take the gap as a margin.
@@ -359,7 +323,7 @@ class Component extends DCLogic {
       <span style="margin-left: auto; font-size: 12.5px; line-height: 18px; color: #4A544C; display: inline-flex; gap: 8px; align-items: center"><x-import component-from-global-scope="KinScape.KeyHint">←</x-import><x-import component-from-global-scope="KinScape.KeyHint">→</x-import>1 ${precisionWord} · with <x-import component-from-global-scope="KinScape.KeyHint">Shift</x-import> ×10</span>
     </div>
   </section>`),
-      map: h('div', { style: { display: 'contents' }, dangerouslySetInnerHTML: { __html: `  <svg viewBox="-289 89 1600 1000" width="1440" height="900" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map of South Africa on 1901: Cape Colony, Natal, Basutoland and Swaziland, with the Orange Free State and South African Republic shown as contested">
+      map: drawn(`  <svg viewBox="-289 89 1600 1000" width="1440" height="900" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map of South Africa on 1901: Cape Colony, Natal, Basutoland and Swaziland, with the Orange Free State and South African Republic shown as contested">
     <defs>
       <clipPath id="landClip"><path d="M63 0 L89 60 L126 114 L131 147 L136 210 L150 270 L163 348 L165 369 L173 408 L194 444 L220 474 L234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 Z"></path></clipPath>
       <filter id="hillshade" x="0" y="0" width="100%" height="100%">
@@ -497,7 +461,7 @@ class Component extends DCLogic {
     <circle cx="670" cy="494" r="17" fill="none" stroke="#264F29" stroke-width="2.5" vector-effect="non-scaling-stroke"></circle>
     <circle cx="670" cy="494" r="22" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
     </g>
-  </svg>` } }),
+  </svg>`),
       overlay: notice,
       overlayAt: notice ? 'top' : undefined,
       // The values are the Panel samples of lib/design/samples.mts. The board holds the state, so a click changes the picture.

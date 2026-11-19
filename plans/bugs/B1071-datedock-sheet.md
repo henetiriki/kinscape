@@ -2,7 +2,7 @@
 
 - **Spec:** #1071
 - **Requirement IDs:** [MAP-03](../../docs/requirements.md#map-03). Must not break: [NFR-06](../../docs/requirements.md#nfr-06).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ The CI build agent cannot run design steps 3 to 5 or edit `design/canvas/` ([des
 - **B.** Split: the CI build agent does steps 1 to 4 and keeps the PR as a draft. A local session does steps 5 and 6. The CI build agent does steps 8 and 9. Cost: two more hand-offs.
 - **Other:** your own.
 
-Recommended: A, because one session holds the whole change and the render baseline.
+**Answer: A** (@henetiriki)
 
 **D2 · What the invalid-date boards show** · Decides: Tech lead
 
@@ -34,7 +34,7 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 - **B.** `DateDock` also gains `defaultPrecision`, and the boards pass `day`. The boards then keep "1901-02-28" and Day. Cost: a second prop that #1071 does not ask for, and the app does not set.
 - **Other:** your own.
 
-Recommended: A, because the boards then show what the app shows.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

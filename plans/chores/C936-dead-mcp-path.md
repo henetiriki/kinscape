@@ -1,7 +1,7 @@
 # Plan: C936: Remove the dead `mcp__claude-artifacts__*` path from publish-design-system
 
 - **Spec:** #936
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -17,7 +17,7 @@ After the edit, the table has one call column, with the header "`Artifact` tool 
 - **B.** Change the header to "`Artifact` tool". The diff changes one more cell, and the plan lists it under Deviations.
 - **Other:** your own.
 
-Recommended: B, because "(default)" points the reader to a fallback that the Chore removes. A keeps the diff to the listed edits, but it keeps that pointer.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

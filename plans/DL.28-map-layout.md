@@ -98,6 +98,6 @@ As the Spec says.
 - `MapLayout` declares its slots in an interface (`MapLayoutSlots`), not `Partial<Record<Slot, ReactNode>>`: `scripts/design-system.mts` reads props from their declarations and a mapped type has none.
 - `lib/design/__tests__/cards.test.ts` changes its Layout count from 2 to 3. The plan did not list it.
 - The two phone snapshots change (D3).
-- These slots keep drawn content (check 11): `dock` on `Map-phone`, and `search`, `panel` and `dock` on `Map`.
+- These slots keep drawn content (check 11): `dock` on `Map-phone`, and `search`, `zoom`, `panel` and `dock` on `Map`. The real `DateDock` fails the export: its hatch colour uses `color-mix()`.
 - The `loading` and `empty-tree` cards sit at the top of `overlay` with a margin.
 - The drawn panel and dock lose their click (D1 A). The other overlays stay as markup beside the frame.

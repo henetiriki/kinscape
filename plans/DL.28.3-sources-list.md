@@ -2,7 +2,7 @@
 
 - **Spec:** #1073
 - **Requirement IDs:** None. The Spec changes the design system, the export and two boards, and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -47,7 +47,7 @@ A local session swaps the `sources` variant of both boards (step 7):
 - **C.** Keep the line. Cost: `DESIGN.md` then describes JPGs that no longer exist.
 - **Other:** your own.
 
-Recommended: A, because the rule then names the file that replaces the placeholders.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

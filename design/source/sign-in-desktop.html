@@ -8,6 +8,14 @@
     <style>
       body{margin:0}
     </style>
+    <style data-pseudo="">
+      [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="1"]::placeholder{color: rgb(74, 84, 76);}
+      [data-pseudo="2"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="2"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="2"]::placeholder{color: rgb(24, 33, 27);}
+    </style>
   </head>
   <body>
     <div
@@ -243,6 +251,7 @@
                     placeholder="you@example.com"
                     id=":r0:"
                     type="email"
+                    data-pseudo="1"
                     style='font-size: 16px; line-height: 24px; color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
                 </span>
               </div>
@@ -265,6 +274,7 @@
                     id=":r1:"
                     type="password"
                     value="example-password"
+                    data-pseudo="2"
                     style='font-size: 16px; line-height: 24px; color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
                   <button
                     aria-label="Show password"

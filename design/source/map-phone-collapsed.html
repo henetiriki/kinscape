@@ -12,6 +12,15 @@
       /* The snapshot drops the bundle CSS, and the exporter cannot inline a ::placeholder rule, so the board sets it. */
       input[aria-label="Search people and places"]::placeholder{color:#4A544C}
     </style>
+    <style data-pseudo="">
+      [data-pseudo="1"]::placeholder{color: rgb(74, 84, 76);}
+      [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="2"]::before{content: ""; height: 44px; width: 64px; position: absolute; top: 10px; left: 32px; translate: -50% -50%;}
+      [data-pseudo="3"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="3"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="3"]::placeholder{color: rgb(24, 33, 27);}
+    </style>
   </head>
   <body>
     <div
@@ -251,6 +260,7 @@
               class="_input_z00bc_44"
               placeholder="Search people and places"
               type="search"
+              data-pseudo="1"
               style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; height: 44px; line-height: 24px; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; min-width: 0px; padding: 0px;' />
             <button
               aria-expanded="false"
@@ -302,6 +312,7 @@
               aria-label="Expand the sheet"
               class="_grabber_rrbse_15"
               type="button"
+              data-pseudo="2"
               style="cursor: pointer; background: 0px 0px; border-width: 0px; border-style: none; border-image: none; justify-content: center; align-self: center; align-items: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0px; display: flex; position: relative;">
               <span
                 class="_handle_rrbse_41"
@@ -349,6 +360,7 @@
                           id=":r1:"
                           type="text"
                           value="1901"
+                          data-pseudo="3"
                           style='font-size: 22px; line-height: 28px; color: rgb(24, 33, 27); font-family: "JetBrains Mono", monospace; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px; font-variant-ligatures: none; font-weight: 500; text-align: center;' />
                       </span>
                     </div>

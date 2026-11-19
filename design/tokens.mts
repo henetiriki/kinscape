@@ -1,8 +1,26 @@
-/** Design tokens at runtime: `design/tokens.json` with its `{group.name}` references resolved. */
+/** Design tokens at runtime: `design/tokens.json` with its `{group.name}` references resolved, and the channels of a colour token. */
 
 import type { Tree } from '#ks/design/types.ts';
 
 export const REFERENCE = /^\{([^{}]+)\}$/;
+
+/** A colour token as `#rrggbb`. */
+export const HEX_COLOUR = /^#([0-9a-f]{6})$/i;
+
+/** The red, green and blue of a `#rrggbb` colour. */
+export const hexChannels = (value: string): [number, number, number] => {
+  const hex = HEX_COLOUR.exec(value)?.[1];
+
+  if (hex === undefined) {
+    throw new Error(`Not a #rrggbb colour: ${value}`);
+  }
+
+  return [0, 2, 4].map(at => Number.parseInt(hex.slice(at, at + 2), 16)) as [
+    number,
+    number,
+    number,
+  ];
+};
 
 export const isTree = (value: unknown): value is Tree =>
   typeof value === 'object' && value !== null;

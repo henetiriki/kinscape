@@ -34,12 +34,7 @@
 .hatch {
   background: repeating-linear-gradient(
     45deg,
-    color-mix(
-        in srgb,
-        var(--legend-hatch) calc(var(--legend-hatch-opacity) * 100%),
-        transparent
-      )
-      0 3px,
+    var(--legend-hatch) 0 3px,
     var(--legend-fill) 3px 9px
   );
   border: 1px solid var(--legend-border);

@@ -71,8 +71,10 @@ it('reads each swatch value from the map tokens', () => {
     `${map.border['dash-on']} ${map.border['dash-off']}`
   );
   expect(value('--legend-fill')).toBe(map.polity['free-state']);
-  expect(value('--legend-hatch')).toBe(map.hatch.colour);
-  expect(value('--legend-hatch-opacity')).toBe(String(map.hatch.opacity));
+  // BND-04: an rgba() colour built from map.hatch, which the design export can read.
+  expect(map.hatch).toEqual({ colour: '#8b4a1c', opacity: 0.34 });
+  expect(value('--legend-hatch')).toBe('rgba(139, 74, 28, 0.34)');
+  expect(value('--legend-hatch-opacity')).toBe('');
   expect(value('--legend-halo')).toBe(map['pin-halo'].colour);
   expect(value('--legend-halo-opacity')).toBe(String(map['pin-halo'].opacity));
   expect(value('--legend-pin')).toBe(map.pin.colour);

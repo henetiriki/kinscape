@@ -6,6 +6,7 @@ import { Text } from '@ks/app/components/foundation/Text';
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
 import { EventGlyph } from '@ks/lib/ui/EventGlyph';
+import { HATCH_LINE } from '@ks/lib/ui/hatch';
 
 import styles from '@ks/features/map/components/Legend.module.css';
 
@@ -19,8 +20,7 @@ export const LEGEND_VARS = {
   '--legend-fill': map.polity['free-state'],
   '--legend-halo': map['pin-halo'].colour,
   '--legend-halo-opacity': map['pin-halo'].opacity,
-  '--legend-hatch': map.hatch.colour,
-  '--legend-hatch-opacity': map.hatch.opacity,
+  '--legend-hatch': HATCH_LINE,
   '--legend-pin': map.pin.colour,
   '--legend-pin-opacity': map.pin['fuzzy-opacity'],
   '--legend-pin-stroke': map.pin.halo,

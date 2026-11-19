@@ -2,7 +2,7 @@
 
 - **Spec:** #1054
 - **Requirement IDs:** None (design only). Must not break: [NFR-05](../../docs/requirements.md#nfr-05).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Step 6 of [Changing the design system](../../design/CANVAS.md#changing-the-desig
 - **B.** Two pushes and two renders, in the order of the section. Cost: one more hand-off and one more render.
 - **Other:** your own.
 
-Recommended: A, because the step 6 render has no change to show.
+**Answer: Other:** - I've set it to hand-back so it builds locally (@henetiriki)
 
 ## Alternatives considered
 

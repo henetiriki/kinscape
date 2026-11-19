@@ -5,7 +5,7 @@
 
 ## Approach
 
-Each of the four files follows `Map-phone.dc.html`. The board root holds one `<x-import>` of `KinScape.MapLayout`. `renderVals()` builds each slot, after its `React` check, and takes `const { drawn, mount } = window.KinScapeBoard`. A drawn `<svg>` goes through `drawn`. Drawn markup that holds a component goes through `mount`. A component that takes an array, a number or a function is an `h` call, because `mount` passes each attribute as text. A part that no slot can place stays beside the frame, as on `Map` (DL.28 Deviations), with `z-index: 20` where it must paint above a slot. Each of the 14 heads loads `./board-helpers.js` after the bundle script (#925 D2).
+Each of the four files follows `Map-phone.dc.html`. The board root holds one `<x-import>` of `KinScape.MapLayout`. `renderVals()` builds each slot, after its `React` check, and takes `const { drawn, mount } = window.KinScapeBoard`. `drawn` mounts a drawn `<svg>`. `mount` mounts drawn markup that holds a component. A component that takes an array, a number or a function is an `h` call, because `mount` passes each attribute as text. A part that no slot can place stays beside the frame, as on `Map` (DL.28 Deviations), with `z-index: 20` where it must paint above a slot. Each of the 14 heads loads `./board-helpers.js` after the bundle script (#925 D2).
 
 The slots of each file:
 
@@ -38,6 +38,8 @@ Behaviour item 7 names the [board swap prompt](../design/COMPONENTS.md#board-swa
 
 **Answer: Other:** B, and `Map-credits-narrow` and `Map-credits-narrow-open` do not load `./board-helpers.js`. The test does not list them. (@henetiriki)
 
+This answer reverses part of [#925 D2](https://github.com/henetiriki/kinscape/issues/925): nine wrapper boards load the script, not 10, and the test covers three files, not four.
+
 ## Alternatives considered
 
 - One regex per wrapper in the test. One list of the six files that load the helpers gives both the boards and the import regex.
@@ -58,7 +60,7 @@ A local Claude Code session that the tech lead starts does steps 1 to 5. The CI 
 
 1. Add the four files to the test. See it fail on the 14 heads. Paste a failing line in the PR.
 2. Edit the 10 heads and the four files in the repo copy (D5 A). Run `npm test`, `npm run typecheck`, `npm run lint` and `npm run format:check`. If Chromium starts, run `npm run design:export`. Push. Keep the PR a draft.
-3. The tech lead runs Design: Render snapshots. Compare each committed JPG with `main`. Accept a shadow difference (#925 D3). If a slot changes more, put its drawn content back, and run the workflow again (check 2). If a file fails the export or its frame changes more, restore the file and file a Bug (check 3).
+3. The tech lead runs Design: Render snapshots. Compare each committed JPG with `main`. Accept a shadow difference (#925 D3). If a slot changes more, restore its drawn content, and run the workflow again (check 2). If a file fails the export or its frame changes more, restore the file and file a Bug (check 3).
 4. Publish the 14 files to the canvas. Run "Refreshing the canvas copy" (5.1 to 5.5). Paste the sha256 pair of each file in the PR.
 5. Write the PR table: one row for each of the 15 snapshots (check 4).
 6. The build rewords the line of #1051 that names #925 for the phone Layers sheet: no Spec swaps the sheet yet (#925 D4).

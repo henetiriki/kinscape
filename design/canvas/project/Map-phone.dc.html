@@ -154,10 +154,8 @@ class Component extends DCLogic {
       el('p', {}, 'margin: auto 0 0; font-size: 12.5px; color: #4A544C', 'Look-up only on a phone. Add people and pins on a tablet or computer.')
     );
 
-    const sheet = h(K.BottomSheet, { expanded: false, onExpandedChange: noop },
-      dateRow(),
-      el('p', {}, 'margin: 0; font-size: 13px; color: #4A544C; text-align: center', 'Tap the map to see what a place was part of in 1901.')
-    );
+    // A Day counts days since 1652-01-01: 91109 is 1901-06-14 and 136894 is 2026-10-21.
+    const sheet = h(K.DateDock, { day: 91109, lastDay: 136894, onChange: noop, onPlay: noop, sheet: { expanded: false, onExpandedChange: noop } });
 
     return {
       dock: collapsed ? sheet : lookup,

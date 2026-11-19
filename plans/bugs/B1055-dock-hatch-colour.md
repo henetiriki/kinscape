@@ -135,4 +135,4 @@ The tick is a `::after` with a `mask: url("data:…")`. The snapshot check rejec
 - `inlineStyles` matches each selector of a list on its own: a list with a pseudo-element matches no element as a whole. Commit `fix(B1055): the exporter keeps pseudo-element rules`.
 - `::before`, `::after` and `::placeholder` take Chromium's computed values. Only a `::-webkit-` pseudo-element takes the probe of the Risks section. Same commit.
 - The render changes 20 JPGs, not nine. The placeholder text is darker in the search bar of ten `Map` JPGs, the spelling field of six person JPGs and the email field of four sign-in JPGs: the snapshot now holds the `::placeholder` colour. Commit `34047fcb`.
-- Must not break, #924: `map-empty-date.jpg` draws the "Clear filters" text of its notice card with different anti-aliasing. Nothing moves. Commit `34047fcb`.
+- Must not break, #924: `map-empty-date.jpg` draws the "Clear filters" text of its notice card with different anti-aliasing. Nothing moves. The tech lead accepted it. Commit `34047fcb`.

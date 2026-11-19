@@ -152,6 +152,7 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 - `Menu.tsx` renames its internal `PanelProps` to `MenuPanelArgs`. The bundle's `PanelProps` type for the new `Panel` control clashed with it.
 - `react-18.test.tsx` strips functions from nested props, and mounts the first case with the page's React. A nested control with a hook needs the page's copy.
 - `e2e/hits.ts` scrolls the probe point into view. The Filters tab of the `Panel` card ends at the bottom edge of the phone viewport.
+- `LayerGroup.module.css` gives a heading `line-height: normal`, as the board draws it. The overline line moved the layer rows down by 3px a group.
 - The Spec reword for D4 is in #1051 (Behaviour, item 2).
 
 ## Out of scope

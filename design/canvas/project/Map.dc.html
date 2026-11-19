@@ -276,17 +276,20 @@ class Component extends DCLogic {
     };
 
     const v = vals.v;
+    // The slot puts a card at its top edge. The board draws two cards lower, so they take the gap as a margin.
+    const lower = (gap, card) => h('div', { style: { marginTop: gap } }, card);
     const notice = v.emptyDate
       ? h(K.NoticeCard, { actions: [{ label: 'Jump to 1898' }, { label: 'Clear filters' }], icon: 'place', title: 'No pins in 1901' }, 'Nobody in your filters is pinned to this date.')
       : v.emptyTree
-        ? h(K.NoticeCard, { icon: 'place', size: 'large', title: 'No pins yet' }, 'Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.')
+        ? lower('212px', h(K.NoticeCard, { icon: 'place', size: 'large', title: 'No pins yet' }, 'Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.'))
         : v.loading
-          ? h(K.NoticeCard, { progress: 45, title: 'Loading the map' }, 'Every border from 1652 to today loads once, up front, so the slider never has to wait.')
+          ? lower('232px', h(K.NoticeCard, { progress: 45, title: 'Loading the map' }, 'Every border from 1652 to today loads once, up front, so the slider never has to wait.'))
           : undefined;
 
     return {
       account: h(K.Avatar, { expanded: vals.avatarExpanded, initial: 'R' }),
       accountMenu: vals.accountMenu,
+      chrome: vals.chrome,
       dateInvalid,
       dock: vals.chrome ? mount(`  <section aria-label="Map date" style="height: 176px; box-sizing: border-box; padding: 14px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
     <div style="display: flex; align-items: center; gap: 14px; height: 44px">
@@ -489,7 +492,7 @@ class Component extends DCLogic {
     </g>
   </svg>` } }),
       overlay: notice,
-      overlayAt: v.emptyDate ? 'top' : undefined,
+      overlayAt: notice ? 'top' : undefined,
       panel: vals.chrome ? mount(`  <aside style="flex: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); overflow: hidden">
     <div style="display: flex; gap: 4px; padding: 4px; border-bottom: 1px solid #E2E5DD">
       <button type="button" aria-pressed="${tabs.layersOn}" style="${tabs.layersStyle}">Layers</button>
@@ -572,7 +575,15 @@ class Component extends DCLogic {
       </div>
     ` : ''}
   </aside>`) : undefined,
-      search: vals.chrome ? h(K.SearchBar, { form: 'bar' }) : undefined,
+      search: vals.chrome ? mount(`  <div style="height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 8px 0 12px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)">
+    <x-import component-from-global-scope="KinScape.Wordmark" size="32"></x-import>
+    <span style="width: 1px; height: 28px; background: #E2E5DD"></span>
+    <label style="display: flex; align-items: center; gap: 8px; width: 340px; height: 44px; padding: 0 12px; box-sizing: border-box; border-radius: 8px; background: #F4F5F0; color: #4A544C">
+      <x-import component-from-global-scope="KinScape.Icon" name="search"></x-import>
+      <input type="search" aria-label="Search people and places" placeholder="Search people and places" style="flex: 1; min-width: 0; border: 0; background: transparent; font-size: 15px; line-height: 22px; color: #18211B; outline: none">
+      <x-import component-from-global-scope="KinScape.KeyHint">/</x-import>
+    </label>
+  </div>`) : undefined,
       sources: vals.sources,
       v,
       zoom: vals.chrome ? h(K.ZoomControls) : undefined

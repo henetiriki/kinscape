@@ -38,20 +38,30 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 
 **D3 · How the export passes on `map-date-invalid`** · Decides: Tech lead
 
-`npm run design:export` refuses `max()`. The desktop dock holds a hidden `TextLink`, whose `::before` keeps `width: max(100%, 44px)`.
+The export refuses the `max()` of a hidden `TextLink` in the desktop dock.
 
-- **A.** `TextLink.module.css` sets `width: 100%` and `min-width: var(--size-touch)`. Cost: one more design system publish.
-- **B.** The exporter skips a hidden subtree. Cost: a tool change.
-- **C.** The exporter allows `max()`. Cost: an unwritten value.
-- **D.** File a Bug. Cost: check 6 stays open.
+- **A.** `TextLink.module.css` uses `min-width`. Cost: one more publish.
+- **B.** The exporter skips a hidden subtree.
+- **C.** The exporter allows `max()`.
+- **D.** File a Bug.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
+**D4 · The sheet grabber has no 44px hit area below it** · Decides: Tech lead
+
+The date row takes the tap, so the `gallery` test fails.
+
+- **A.** File a Bug; use `UNDER_44`.
+- **B.** The grabber stacks above the row.
+- **Other:** your own.
+
+**Answer: B** (@henetiriki)
+
 ## Alternatives considered
 
-- Change the boards to 6px gaps and the drawn borders. The tech lead chose the real `DateDock` (Expected per).
-- A `className` on `Button` for the Play margin: it widens the `Button` API for one use.
+- Change the boards to match the drawing. The tech lead chose the real `DateDock` (Expected per).
+- A `className` on `Button`: it widens the API for one use.
 - A `gap` of 8px on the `DateField` row: it changes Back and Forward too (check 1).
 
 ## Files that change
@@ -64,6 +74,7 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 | `e2e/gallery-looks.spec.ts`                                                               | changed       | Check 1: on the "DateDock · phone sheet" card state at 390px, Back, field and Forward are 4px apart, and Play is 8px from Forward.                                                                                                                                              |
 | `app/components/actions/TextLink.module.css`                                              | changed       | The hit area has no `max()` ([D3](#decisions)).                                                                                                                                                                                                                                 |
 | `app/components/actions/__tests__/TextLink.test.tsx`                                      | changed       | The hit-area test.                                                                                                                                                                                                                                                              |
+| `app/components/overlays/BottomSheet.module.css`, its test                                | changed       | The grabber stacks above the content ([D4](#decisions)).                                                                                                                                                                                                                        |
 | `lib/design/states.mts`                                                                   | changed       | `DateDock`: states "phone sheet", "invalid date" and "phone sheet · invalid date"; `handlers` adds `sheet.onExpandedChange`; `box` makes each state fill the card; `height` fits six states; `pad` clears the dock's callout.                                                   |
 | `lib/design/__tests__/react-18.test.tsx`                                                  | changed       | The three new cases.                                                                                                                                                                                                                                                            |
 | `lib/design/cards.mts`, `lib/design/types.ts`                                             | changed       | `give` gives a no-op to an object prop, and skips a missing prop. `PHONE_CARDS` lists `DateDock`, and its comment gives why. The `handlers` doc names the object prop.                                                                                                          |
@@ -94,7 +105,7 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 - **The dock's callout overlaps the state above it on the card.** `pad` gives it room. Read `DateDock-1440.png` and `DateDock-390.png` after step 7.
 - **A pixel changes outside the sheet, the dock or the message.** The sheet uses `BottomSheet`, which `map-phone-collapsed` already draws. If check 7 fails, stop for the tech lead.
 - **The JPG blocks spread a change.** Read "inside the sheet" as its box and shadow, widened to whole 8×8 blocks.
-- **#1072 also edits both boards and `PHONE_CARDS`** (the `overlay` slot and the offline banner). The branch that lands second rebases on the other. Its render takes the other's JPGs as the baseline, as #1072 says.
+- **#1072 also edits both boards and `PHONE_CARDS`.** The branch that lands second rebases on the other.
 
 ## Proof
 
@@ -129,3 +140,4 @@ The real `DateDock` starts on Year, and it has no precision prop. With `day` 911
 - The `DateDock` card sets `box: '100%'`. Without it, the sheet is 475px wide at 390px.
 - `TextLink` changes ([D3](#decisions)). The approved plan did not have D3.
 - The boards changed in the repo copy first, so the export ran before the canvas got them.
+- `BottomSheet` changes ([D4](#decisions)). The approved plan did not have D4.

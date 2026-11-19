@@ -82,3 +82,7 @@ A `Day` counts days since 1652-01-01. The board writes `MAP_DATE` (1901-06-14) a
 - The expanded look-up variant: MAP-07.
 - Play in the app: MAP-09.
 - The `MapLayout` swaps of #925.
+
+## Deviations
+
+- Step 7 read only the two boards and `canvas.json` for 5.2. Step 5 read all 188 canvas files 20 minutes before, and the boards publish met no newer version. (90046cef)

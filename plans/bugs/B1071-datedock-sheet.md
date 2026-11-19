@@ -141,3 +141,4 @@ The date row takes the tap, so the `gallery` test fails.
 - `TextLink` changes ([D3](#decisions)). The approved plan did not have D3.
 - The boards changed in the repo copy first, so the export ran before the canvas got them.
 - `BottomSheet` changes ([D4](#decisions)). The approved plan did not have D4.
+- Nine of the 12 JPGs of check 7 changed. `map-phone-layers`, `map-phone-filters` and `map-sources-phone` are the same bytes: a panel covers their sheet.

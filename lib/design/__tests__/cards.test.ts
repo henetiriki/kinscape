@@ -237,7 +237,7 @@ describe('previewHtml', () => {
     });
     let figures: Made[] = [];
 
-    runInNewContext(/<script>([\s\S]*)<\/script>/.exec(preview)![1], {
+    runInNewContext(/<script>([\s\S]*)<\/script>/i.exec(preview)![1], {
       document: { getElementById: () => ({}) },
       React: {
         createElement: (

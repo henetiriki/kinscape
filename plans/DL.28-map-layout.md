@@ -2,7 +2,7 @@
 
 - **Spec:** #924
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ The exporter reads a named prop only from `renderVals()`. It throws on an `<svg>
 - **B.** The drawn map stays as markup under the frame, a sibling and not a child. Only the slots come from `renderVals()`. Cost: Behaviour item 5 and check 10 change, so the Spec changes.
 - **Other:** your own.
 
-Recommended: A, because the Spec keeps the map as the child, and DL.27 proved the method.
+**Answer: A** (@henetiriki)
 
 **D2 · Order of step 7** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ A local session cannot start Chromium, so it cannot check the export or the pixe
 - **B.** Swap on the canvas first, then refresh the repo copy. Cost: a failed board is already on the canvas.
 - **Other:** your own.
 
-Recommended: A, because a failed swap never reaches the canvas.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

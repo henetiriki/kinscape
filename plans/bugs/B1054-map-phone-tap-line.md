@@ -39,15 +39,15 @@ A `Day` counts days since 1652-01-01. The board writes `MAP_DATE` (1901-06-14) a
 
 ## Order of work
 
-1. CI build agent (step 1): edit the States row in `design/DESIGN.md`.
-2. CI build agent (step 2): run `npm run design-system`. Commit, push, and ask in the PR for the local session. Keep the PR as a draft.
-3. A local Claude Code session that the tech lead starts, with a signed-in account, runs steps 3 to 5:
+1. A local Claude Code session that the tech lead starts, with a signed-in account (step 1): edit the States row in `design/DESIGN.md`.
+2. The same session (step 2): run `npm run design-system`. Keep the PR as a draft.
+3. The same session runs steps 3 to 5:
    - `/publish-design-system`;
    - "Updating the install" (4.1 to 4.7);
    - "Refreshing the canvas copy" (5.1 to 5.5).
 4. The same session (step 7) edits the two boards as the table says. It runs 5.1 to 5.5, posts the sha256 pairs of 5.2 in the PR, and pushes.
-5. The tech lead runs Design: Render snapshots (steps 6 and 7, D6 A).
-6. CI build agent: run checks 2, 3, 5 and 8, and the [Commands](../../AGENTS.md#commands) checks. Do the ready check. Write the PR body.
+5. The tech lead runs Design: Render snapshots once for steps 6 and 7 (D6: the local session builds the hand-back).
+6. The same session: run checks 2, 3, 5 and 8, and the [Commands](../../AGENTS.md#commands) checks. Do the ready check. Write the PR body.
 
 ## Risks
 
@@ -85,4 +85,5 @@ A `Day` counts days since 1652-01-01. The board writes `MAP_DATE` (1901-06-14) a
 
 ## Deviations
 
-- Step 7 read only the two boards and `canvas.json` for 5.2. Step 5 read all 188 canvas files 20 minutes before, and the boards publish met no newer version. (90046cef)
+- Step 7 read only the two boards and `canvas.json` for 5.2. Step 5 read all 188 canvas files 20 minutes before. When the session published the boards, the canvas had no newer version. (90046cef)
+- The local session, not the CI build agent, ran checks 2, 3, 5 and 8, because the PR is a hand-back (D6). The #1054 D2 line still names the CI build agent.

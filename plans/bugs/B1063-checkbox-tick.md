@@ -2,7 +2,7 @@
 
 - **Spec:** #1063
 - **Requirement IDs:** None (design only). Must not break: [NFR-06](../../docs/requirements.md#nfr-06), [PPL-01](../../docs/requirements.md#ppl-01), [MAP-05](../../docs/requirements.md#map-05).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

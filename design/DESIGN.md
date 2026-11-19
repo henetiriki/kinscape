@@ -233,7 +233,7 @@ Every control has the five states on its component card. Hover darkens or tints.
 | Districts on         | Thin district lines under polity borders. Where coverage is partial, the Districts row says where (e.g. "On this date: Cape Colony only").                                        |
 | Terrain failed       | A banner with Retry. Borders and pins keep working because they load up front.                                                                                                    |
 | Account menu         | Signed-in email, People, Export all data (JSON and GeoJSON, NFR-04), Sources and attributions, Sign out, and the last backup time (Export, backup time: M3).                      |
-| Phone, collapsed     | Date stepper and Play only, and a hint to tap the map.                                                                                                                            |
+| Phone, collapsed     | Date stepper and Play only.                                                                                                                                                       |
 
 ## Feedback and validation
 

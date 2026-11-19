@@ -148,7 +148,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
       <button type="button" aria-label="Forward one {{precisionWord}}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
       <button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>
     </div>
-    <p style="margin: 0; font-size: 13px; color: #4A544C; text-align: center">{{sheetHint}}</p>
   </section>
   </sc-if>
 
@@ -321,8 +320,7 @@ class Component extends DCLogic {
       ].map((s) => ({ layer: s[0], source: s[1], licence: s[2], checked: '—', style: s[3] })),
       dateValue: dateError ? '1901-02-30' : '1901',
       precisionWord: dateError ? 'day' : 'year',
-      dateFieldStyle: "flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: #18211B; background: #FFFFFF; " + (dateError ? 'border: 2px solid #B4412F; padding: 0 32px 0 8px' : 'border: 1px solid #C9CFC5'),
-      sheetHint: 'Tap the map to see what a place was part of in 1901.'
+      dateFieldStyle: "flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: #18211B; background: #FFFFFF; " + (dateError ? 'border: 2px solid #B4412F; padding: 0 32px 0 8px' : 'border: 1px solid #C9CFC5')
     };
   }
 }

@@ -1,4 +1,5 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { basename, dirname } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
@@ -367,16 +368,17 @@ describe('cardImageWidths', () => {
   });
 
   it('names each card whose component CSS has a width rule', () => {
-    const files = readdirSync('app/components', { recursive: true }).map(
-      String
-    );
-    const responsive = CARDS.map(({ name }) => name).filter(name =>
-      files
-        .filter(file => file.endsWith(`/${name}.module.css`))
-        .some(file =>
-          WIDTH_RULE.test(readFileSync(`app/components/${file}`, 'utf8'))
-        )
-    );
+    const responsive = CONTROLS.filter(({ name, path }) => {
+      const folder = dirname(path);
+      const sheets = [name, basename(path, '.tsx')].map(
+        sheet => `${folder}/${sheet}.module.css`
+      );
+
+      return sheets.some(
+        sheet =>
+          existsSync(sheet) && WIDTH_RULE.test(readFileSync(sheet, 'utf8'))
+      );
+    }).map(({ name }) => name);
 
     expect(responsive.filter(name => !PHONE_CARDS.includes(name))).toEqual([]);
     expect(responsive.length).toBeGreaterThan(0);

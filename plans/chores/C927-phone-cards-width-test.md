@@ -27,6 +27,10 @@ The width-rule test walks `CONTROLS`, not `app/components/`. For each entry, it 
 | `lib/design/cards.mts`                                     | Changed       | `PHONE_CARDS` and its comment |
 | `design/cards/DateField-390.png`, `FuzzyDateField-390.png` | New           | The workflow writes them      |
 
+## Deviations
+
+- D1 B: the test also reads the stylesheet named for the file in `path`. `PHONE_CARDS` gains `RemovableChip`, `BackLink`, `DialogPanel` and `SheetPanel`, with their `-390.png` images from the same workflow run.
+
 ## Order of work
 
 1. Change the test. See it fail and name `DateField` and `FuzzyDateField`. Paste the failing line in the PR.

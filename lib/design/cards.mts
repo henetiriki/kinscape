@@ -190,18 +190,25 @@ export const cardImage = (name: string, width: number): string =>
 
 /**
  * The cards that also have an image at the phone width, because the component changes with the
- * width: the ten whose CSS has a width query (a test checks that), and the three overlays that fill the viewport.
+ * width: the 18 whose CSS has a width rule, and `Modal`, which fills the viewport. A test reads
+ * the stylesheet of each `CONTROLS` entry, named for the card or for the file in its `path`.
  */
 export const PHONE_CARDS = [
   'ActionBar',
+  'BackLink',
   'CheckboxField',
   'Chip',
   'ColumnLayout',
+  'DateField',
   'Dialog',
+  'DialogPanel',
+  'FuzzyDateField',
   'Modal',
   'NoticeCard',
   'PageHeader',
+  'RemovableChip',
   'Sheet',
+  'SheetPanel',
   'SignInLayout',
   'TextAreaField',
   'TextField',

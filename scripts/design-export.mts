@@ -158,7 +158,8 @@ export const linkMap = (canvas: CanvasExport): Record<string, string> => {
 };
 
 /**
- * The board as Chromium loads it: local fonts and icon, and no canvas `support.js`. With a
+ * The board as Chromium loads it: local fonts and icon, the board helpers from the repo file,
+ * and no canvas `support.js`. With a
  * `system`, its tokens and scripts load from files, React 18 first, and its CSS is a `<style>`
  * the page can read (a `file:` stylesheet is cross-origin to a `file:` page).
  */
@@ -167,6 +168,7 @@ export const prepare = (
   icon: string,
   urls: {
     fonts: string;
+    helpers: string;
     icon: string;
     system?: { css: string; design: string; react: string; reactDom: string };
   }
@@ -176,6 +178,10 @@ export const prepare = (
     .replace(
       '<script src="./support.js"></script>',
       () => `<link rel="stylesheet" href="${urls.fonts}">`
+    )
+    .replace(
+      '<script src="./board-helpers.js"></script>',
+      () => `<script src="${urls.helpers}"></script>`
     )
     .replaceAll(icon, () => urls.icon);
   const { system } = urls;
@@ -946,6 +952,7 @@ export const exportSnapshots = async (
   const tokenList = [...tokens];
   const urls = {
     fonts: fileUrl(root, `${SOURCE_DIR}/fonts.css`),
+    helpers: fileUrl(root, `${BOARD_DIR}/board-helpers.js`),
     icon: fileUrl(root, 'app/icon0.svg'),
   };
   const outputs: [string, string][] = [];

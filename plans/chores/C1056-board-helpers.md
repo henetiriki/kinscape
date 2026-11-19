@@ -80,3 +80,8 @@ With D5 B, step 3 edits the canvas and runs 5.1 to 5.5, and step 5 drops.
 - The five Sign-in boards keep their copy (#1056 D3).
 - The 14 boards of #925.
 - A design system input.
+
+## Deviations
+
+- `e2e/design-export.spec.mts` passes `helpers` to `prepare`. The plan did not list the file. `urls.helpers` has no default, so each caller of `prepare` gives it.
+- Chromium starts in the local session, so step 3 ran `npm run design:export`. It passed on the 13 snapshots. The source of `map-phone` differs by one `;` in the style of the Marriage glyph.

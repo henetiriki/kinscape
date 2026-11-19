@@ -118,7 +118,11 @@ describe('linkMap', () => {
 });
 
 describe('prepare and finish', () => {
-  const urls = { fonts: 'file:///r/$&fonts.css', icon: 'file:///r/icon0.svg' };
+  const urls = {
+    fonts: 'file:///r/$&fonts.css',
+    helpers: 'file:///r/$&board-helpers.js',
+    icon: 'file:///r/icon0.svg',
+  };
 
   it('prepare drops web fonts and support.js, and loads local fonts and the icon', () => {
     expect(
@@ -130,6 +134,16 @@ describe('prepare and finish', () => {
     ).toBe(
       '<head>\n<title>T</title>\n<link rel="stylesheet" href="file:///r/$&fonts.css">\n</head><body><img src="file:///r/icon0.svg"><img src="file:///r/icon0.svg"></body>'
     );
+  });
+
+  it('prepare loads the board helpers from the repo file', () => {
+    expect(
+      prepare(
+        '<head><script src="./board-helpers.js"></script></head>',
+        '/_blob/i',
+        urls
+      )
+    ).toBe(`<head><script src="${urls.helpers}"></script></head>`);
   });
 
   it('prepare loads a design system from files: React 18, its CSS as a style and its scripts', () => {
@@ -1170,7 +1184,7 @@ describe('exportSnapshots', () => {
     setup();
     put(
       'design/canvas/project/A.dc.html',
-      '<link rel="stylesheet" href="ds/kinscape/components/bundle.css"><script src="ds/kinscape/components/bundle.js"></script><x-import component-from-global-scope="K.B"></x-import>'
+      '<link rel="stylesheet" href="ds/kinscape/components/bundle.css"><script src="ds/kinscape/components/bundle.js"></script><script src="./board-helpers.js"></script><x-import component-from-global-scope="K.B"></x-import>'
     );
     put('design/canvas/project/ds/kinscape/components/bundle.css', '.a{}');
     put(
@@ -1195,6 +1209,7 @@ describe('exportSnapshots', () => {
         `<script src="${url('node_modules/react-18/umd/react.production.min.js')}"></script>`,
         `<script src="${url('node_modules/react-dom-18/umd/react-dom.production.min.js')}"></script>`,
         `<script src="${url('design/canvas/project/ds/kinscape')}/components/bundle.js"></script>`,
+        `<script src="${url('design/canvas/project/board-helpers.js')}"></script>`,
         '<x-import component-from-global-scope="K.B"></x-import>',
       ].join('')
     );

@@ -305,20 +305,20 @@
           style="z-index: 1; position: absolute; bottom: 0px; left: 0px; right: 0px; flex-direction: column; display: flex;">
           <section
             aria-label="Map date"
-            class="_sheet_rrbse_1 _sheet_1w41m_23 _base_1w41m_2"
-            style="gap: 12px; height: 152px; padding: 8px 16px 20px; flex-direction: column; width: 390px; display: flex; background: rgb(255, 255, 255); border-radius: 18px 18px 0px 0px; box-sizing: border-box; box-shadow: rgba(24, 33, 27, 0.16) 0px -6px 24px 0px;">
+            class="_sheet_bpqyi_1 _sheet_1w41m_23 _base_1w41m_2"
+            style="gap: 12px; height: 152px; isolation: isolate; padding: 8px 16px 20px; flex-direction: column; width: 390px; display: flex; background: rgb(255, 255, 255); border-radius: 18px 18px 0px 0px; box-sizing: border-box; box-shadow: rgba(24, 33, 27, 0.16) 0px -6px 24px 0px;">
             <button
               aria-expanded="false"
               aria-label="Expand the sheet"
-              class="_grabber_rrbse_15"
+              class="_grabber_bpqyi_18"
               type="button"
               data-pseudo="2"
-              style="cursor: pointer; background: 0px 0px; border-width: 0px; border-style: none; border-image: none; justify-content: center; align-self: center; align-items: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0px; display: flex; position: relative;">
+              style="cursor: pointer; width: 64px; height: 20px; z-index: 1; background: 0px 0px; border-width: 0px; border-style: none; border-image: none; justify-content: center; align-self: center; align-items: center; margin-bottom: -4px; padding: 0px; display: flex; position: relative;">
               <span
-                class="_handle_rrbse_41"
+                class="_handle_bpqyi_47"
                 style="background: rgb(201, 207, 197); border-radius: 2px; width: 40px; height: 4px;"></span>
             </button>
-            <div class="_sheetField_o2o60_44" style="display: contents;">
+            <div class="_sheetField_qi6r4_44" style="display: contents;">
               <div
                 class="_wrap_7p5i3_1"
                 style="gap: 12px; flex-direction: column; display: flex;">
@@ -353,7 +353,7 @@
                       <span
                         class="_box_1r79y_8 _date_1r79y_118"
                         data-fill="true"
-                        style="background: rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative; width: 214px;">
+                        style="background: rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative; width: 210px;">
                         <input
                           aria-label="Date shown"
                           class="_input_1r79y_71"
@@ -383,30 +383,34 @@
                       <path d="M9 5l7 7-7 7"></path>
                     </svg>
                   </button>
-                  <button
-                    aria-label="Play through time"
-                    class="_btn_1kclf_1 _ring_180bu_3 _btnPrimary_1kclf_73"
-                    data-icon-only="true"
-                    data-round="true"
-                    type="button"
-                    style='border-radius: 999px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; align-items: center; gap: 8px; height: 44px; line-height: 22px; padding: 0px; white-space: nowrap; justify-content: center; text-decoration: rgb(255, 255, 255); display: flex; position: relative; aspect-ratio: 1 / 1; background: rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
-                    <svg
-                      aria-hidden="true"
-                      data-icon="play"
-                      fill="none"
-                      height="16"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="16">
-                      <path
-                        d="M7 4.5v15l12.5-7.5z"
-                        fill="currentColor"
-                        stroke="none"></path>
-                    </svg>
-                  </button>
+                  <span
+                    class="_sheetPlay_qi6r4_50"
+                    style="margin-left: 4px; display: flex;">
+                    <button
+                      aria-label="Play through time"
+                      class="_btn_1kclf_1 _ring_180bu_3 _btnPrimary_1kclf_73"
+                      data-icon-only="true"
+                      data-round="true"
+                      type="button"
+                      style='border-radius: 999px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; align-items: center; gap: 8px; height: 44px; line-height: 22px; padding: 0px; white-space: nowrap; justify-content: center; text-decoration: rgb(255, 255, 255); display: flex; position: relative; aspect-ratio: 1 / 1; background: rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
+                      <svg
+                        aria-hidden="true"
+                        data-icon="play"
+                        fill="none"
+                        height="16"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="16">
+                        <path
+                          d="M7 4.5v15l12.5-7.5z"
+                          fill="currentColor"
+                          stroke="none"></path>
+                      </svg>
+                    </button>
+                  </span>
                 </div>
               </div>
             </div>

@@ -981,7 +981,7 @@ declare const freeArea: (phone: boolean) => {
     right: number;
     top: number;
 };
-/** Each slot is declared, not mapped from `SLOTS`: the design system reads the props from their declarations. */
+/** The interface declares each slot and does not map `SLOTS`: the design system reads the props from their declarations. */
 interface MapLayoutSlots {
     /** The account control, on desktop. */
     account?: ReactNode;

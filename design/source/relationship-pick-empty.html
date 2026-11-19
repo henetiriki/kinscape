@@ -8,6 +8,12 @@
     <style>
       body{margin:0}
     </style>
+    <style data-pseudo="">
+      [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="1"]::placeholder{color: rgb(24, 33, 27);}
+      [data-pseudo="2"]::before{content: ""; height: 44px; width: 119px; position: absolute; top: 20px; left: 58.5px; translate: -50% -50%;}
+    </style>
   </head>
   <body>
     <div
@@ -321,6 +327,7 @@
                   id=":r0:"
                   type="search"
                   value=""
+                  data-pseudo="1"
                   style='font-size: 15px; line-height: 22px; color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px;' />
               </span>
               <span
@@ -381,6 +388,7 @@
                     class="_btn_1kclf_1 _ring_180bu_3 _btnPrimary_1kclf_73"
                     data-size="s"
                     href="person-new.html"
+                    data-pseudo="2"
                     style='border-radius: 8px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; align-items: center; gap: 8px; height: 40px; line-height: 20px; padding: 0px 16px; white-space: nowrap; justify-content: center; text-decoration: rgb(255, 255, 255); display: flex; position: relative; background: rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
                     Add a person
                   </a>

@@ -12,6 +12,11 @@
       /* The snapshot drops the bundle CSS, and the exporter cannot inline a ::placeholder rule, so the board sets it. */
       input[aria-label="Search people and places"]::placeholder{color:#4A544C}
     </style>
+    <style data-pseudo="">
+      [data-pseudo="1"]::placeholder{color: rgb(74, 84, 76);}
+      [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
+    </style>
   </head>
   <body>
     <div
@@ -251,6 +256,7 @@
               class="_input_z00bc_44"
               placeholder="Search people and places"
               type="search"
+              data-pseudo="1"
               style='color: rgb(24, 33, 27); font-family: "Public Sans", system-ui, sans-serif; font-size: 16px; height: 44px; line-height: 24px; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; min-width: 0px; padding: 0px;' />
             <button
               aria-expanded="false"

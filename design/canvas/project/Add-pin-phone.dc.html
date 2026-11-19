@@ -36,7 +36,7 @@ class Component extends DCLogic {
     const h = React.createElement;
     const { mount } = window.KinScapeBoard;
     const noop = () => {};
-    // The exporter reads a named prop only from renderVals, so the panel is built here. A part whose props are
+    // The exporter reads a named prop only from renderVals, so renderVals builds the panel. A part whose props are
     // all text is markup for mount. ChipGroup, DateField and a Button that fills its box take other props, so each is an h call.
     const panel = h('section', { 'aria-labelledby': 'add-pin-phone-title', style: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', background: 'var(--surface)', borderRadius: 'var(--radius-sheet) var(--radius-sheet) 0 0', boxShadow: 'var(--shadow-sheet)', overflow: 'hidden' } },
       mount(`<div style="padding: var(--space-20) var(--size-gutter-phone) var(--space-16)"><x-import component-from-global-scope="KinScape.Text" variant="h2" as="h2" id="add-pin-phone-title">Add a pin</x-import></div>`),

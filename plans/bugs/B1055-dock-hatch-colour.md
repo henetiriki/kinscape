@@ -38,7 +38,14 @@ Recommended: B, because a snapshot then draws each pseudo-element as the app doe
 
 **D3 · The other dock differences** · Decides: Tech lead
 
-The real dock differs from the drawn dock in six ways, and in its Play button, which this plan leaves alone. The six are: no selected Jump to year, "1900" and "2000" slider labels with two more ticks, a higher contested note, a hatch span that the thumb covers, a darker field border, and wider spacing.
+The real dock differs from the drawn dock in six ways, and in its Play button, which this plan leaves alone:
+
+- No Jump to year is selected.
+- The slider has "1900" and "2000" labels and two more ticks.
+- The contested note sits higher.
+- The thumb covers a hatch span.
+- The field border is darker.
+- The spacing is wider.
 
 - **A.** Accept all six as the real `DateDock`. Cost: none.
 - **B.** File a Bug for each one that you name. Cost: one Bug each.
@@ -59,6 +66,16 @@ The tick is a `::after` with a `mask: url("data:…")`. The snapshot check rejec
 
 **Answer: C** (@henetiriki). The Bug is #1063.
 
+**D5 · The word budget of a plan** · Decides: Tech lead
+
+This plan has about 1250 words. [C855](../chores/C855-plan-word-budgets.md) (#855) set 900 words for a Spec or Bug plan and 450 for a Chore plan, and DL.17 had its own 1500.
+
+- **A.** One budget of 1500 words for every plan, in this PR. The `BUDGETS` list goes in path order. Cost: this Bug PR holds a change that #1055 does not ask for.
+- **B.** A Chore of its own. Cost: this PR waits for that Chore.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - Teach the colour check `color-mix()`. The tech lead chose `rgba()` (Expected per).
@@ -77,7 +94,7 @@ The tick is a `::after` with a `mask: url("data:…")`. The snapshot check rejec
 | `design/canvas/project/Map.dc.html`                                                       | changed       | `dock`: no chrome, `undefined`; `date-invalid`, the drawn dock; else `h(K.DateDock, …)`. The comment gives the new why. |
 | `design/canvas/project/ds/`, `design/canvas/project/canvas.json`, `design/canvas/VERSION` | changed       | Steps 4 and 5.                                                                                                          |
 | `design/source/` and `design/*.jpg` of 9 shots                                            | changed       | The render workflow: the `Map` snapshots except `map-account-menu` and `map-date-invalid`.                              |
-| `scripts/design-export.mts`                                                               | changed       | `inlineStyles` keeps the pseudo-element rules of D2 in a `<style>` block.                                               |
+| `scripts/design-export.mts`, `scripts/types.ts`                                           | changed       | `inlinePseudoStyles` keeps the pseudo-element rules of D2 in a `<style>` block.                                         |
 | `scripts/__tests__/design-export.test.ts`, `e2e/design-export.spec.mts`                   | changed       | Check 9: the `DateDock` board's snapshot holds the thumb rule, and `snapshotProblems` stays empty.                      |
 | `scripts/word-count.mts`, its test, `plans/TEMPLATE.md`                                   | changed       | One budget of 1500 words for every plan.                                                                                |
 | `plans/bugs/B1055-dock-hatch-colour.md`                                                   | new           | This plan.                                                                                                              |
@@ -115,7 +132,7 @@ The tick is a `::after` with a `mask: url("data:…")`. The snapshot check rejec
 | 6. Card images same                                         | `cmp` in step 7                                                                                |
 | 7. Same sha256, `Map.dc.html`                               | The 5.2 pair in the PR                                                                         |
 | 8. Test, typecheck, lint, coverage                          | The outputs in the PR                                                                          |
-| 9. The JPGs draw the card's thumb                           | The tests of step 9; the crop of `map-desktop.jpg` beside the card in the PR                   |
+| 9. The JPGs draw the card's thumb                           | The tests of step 9; `design/map-desktop.jpg` beside `design/cards/DateDock-1440.png`          |
 | Must not break: #924 `MapLayout` and other slots            | Read the board; the boxes of check 5 hold only the dock                                        |
 | Must not break: #1052 and #1053 baseline                    | Step 7 compares with `origin/main`, which holds the #1060 and #1061 JPGs                       |
 | Must not break: #921 cards                                  | `git diff origin/main -- lib/design/states.mts lib/design/samples.mts` is empty; check 6       |
@@ -134,5 +151,7 @@ The tick is a `::after` with a `mask: url("data:…")`. The snapshot check rejec
 - The `Map` board holds the sample values as numbers: a board cannot import `lib/design/samples.mts`. Commit `dcf48ad7`.
 - `inlineStyles` matches each selector of a list on its own: a list with a pseudo-element matches no element as a whole. Commit `fix(B1055): the exporter keeps pseudo-element rules`.
 - `::before`, `::after` and `::placeholder` take Chromium's computed values. Only a `::-webkit-` pseudo-element takes the probe of the Risks section. Same commit.
-- The render changes 20 JPGs, not nine. The placeholder text is darker in the search bar of ten `Map` JPGs, the spelling field of six person JPGs and the email field of four sign-in JPGs: the snapshot now holds the `::placeholder` colour. Commit `34047fcb`.
+- The render changes 20 JPGs, not nine, because the snapshot now holds the `::placeholder` colour. The placeholder text is darker in ten `Map` JPGs, six person JPGs and four sign-in JPGs. Commit `34047fcb`.
 - Must not break, #924: `map-empty-date.jpg` draws the "Clear filters" text of its notice card with different anti-aliasing. Nothing moves. The tech lead accepted it. Commit `34047fcb`.
+- Proof row 9 names the two image files. The PR holds no crop, because `gh` uploads no image. Commit `fix(B1055): review: split inlineStyles`.
+- `inlineStyles` is three functions. `defineStyleHelpers` puts the shared helpers on `window`. `inlinePseudoStyles` writes the `<style>` block. `inlineStyles` writes the element styles. The exporter loads the helpers with `page.evaluate`, as it loads `kinscapeBuild`. Same commit.

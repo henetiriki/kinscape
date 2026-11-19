@@ -11,7 +11,12 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { format, resolveConfig } from 'prettier';
 
-import type { CanvasExport, DesignExportDeps } from '#ks/scripts/types.ts';
+import type {
+  CanvasExport,
+  DesignExportDeps,
+  StyleHelpers,
+  StyleSelector,
+} from '#ks/scripts/types.ts';
 
 const BOARD_DIR = 'design/canvas/project';
 const EXPORT_FILE = 'design/canvas/export.json';
@@ -683,35 +688,47 @@ export const mountImports = async (): Promise<void> => {
 };
 
 /**
- * Runs in the page, after `mountImports`: the design system's CSS (the `<style data-bundle>`)
- * is dropped from the snapshot, so each element on the page takes the computed value of every
- * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. It skips custom properties,
- * transitions, animations and states (`:hover`). It also skips a border colour that is not a token
- * (`tokens` holds `r,g,b` strings) where the border is 0px wide, and an outline colour that is not
- * a token where `outline-style` is `none` (Chromium keeps such an outline 3px wide). The browser
- * fills that colour with a default grey, or with black for a radio, that the author never set.
- *
- * A pseudo-element has no `style` attribute. Its values go in a `<style data-pseudo>` block, under
- * a selector that names its element by a `data-pseudo` number.
- * Uses nothing from the module, as `fillTemplate`.
+ * Runs in the page, after `mountImports`: puts `kinscapeStyles` on `window`, the helpers that
+ * `inlinePseudoStyles` and `inlineStyles` share. `page.evaluate` sends one function, so they read
+ * the helpers from `window`, as `mountImports` reads `kinscapeBuild`. Uses nothing from the module.
  */
-export const inlineStyles = (tokens: string[]): void => {
-  const bundle = document.querySelector<HTMLStyleElement>('style[data-bundle]');
+export const defineStyleHelpers = (): void => {
+  // Each style rule of a sheet, with the rules inside a grouping rule (`@media`).
+  const styleRules = (rules: CSSRuleList): CSSStyleRule[] =>
+    Array.from(rules).flatMap(rule => [
+      ...('selectorText' in rule ? [rule as CSSStyleRule] : []),
+      ...('cssRules' in rule
+        ? styleRules((rule as CSSGroupingRule).cssRules)
+        : []),
+    ]);
 
-  if (!bundle?.sheet) {
-    if (document.querySelector('x-import')) {
-      throw new Error('The board has <x-import> but no bundle <style>');
+  // Each selector of a list as its base and its pseudo-element: a comma inside `:is()` or `[]`
+  // does not split.
+  const selectors = (list: string): StyleSelector[] => {
+    const parts = [''];
+    let depth = 0;
+
+    for (const char of list) {
+      depth += '(['.includes(char) ? 1 : ')]'.includes(char) ? -1 : 0;
+
+      if (char === ',' && depth === 0) {
+        parts.push('');
+      } else {
+        parts[parts.length - 1] += char;
+      }
     }
 
-    return;
-  }
+    return parts.map(part => {
+      // This matches any selector: the pseudo-element part is optional.
+      const [, base, pseudo] = /^(.*?)(::[\w-]+)?$/.exec(part.trim())!;
 
-  const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
-  // The declarations of each pseudo-element of each element, in rule order.
-  const pseudos = new Map<HTMLElement, Map<string, CSSStyleDeclaration[]>>();
+      return { base: base || '*', pseudo };
+    });
+  };
 
   // The value to write for a property, or nothing for one the snapshot leaves out.
   const written = (
+    tokens: string[],
     computed: CSSStyleDeclaration,
     name: string
   ): string | undefined => {
@@ -728,87 +745,23 @@ export const inlineStyles = (tokens: string[]): void => {
         computed.getPropertyValue(`border-${side[1]}-width`) === '0px') ||
       (name === 'outline-color' &&
         computed.getPropertyValue('outline-style') === 'none');
+    const rgb = [...value.matchAll(/\d+/g)]
+      .slice(0, 3)
+      .map(([digits]) => digits)
+      .join(',');
 
-    if (
-      undrawn &&
-      !tokens.includes(
-        [...value.matchAll(/\d+/g)]
-          .slice(0, 3)
-          .map(([digits]) => digits)
-          .join(',')
-      )
-    ) {
-      return undefined;
-    }
-
-    return value.replaceAll('rgba(0, 0, 0, 0)', 'transparent');
-  };
-
-  // The selectors of a list: a comma inside `:is()` or `[]` does not split.
-  const selectors = (list: string): string[] => {
-    const parts = [''];
-    let depth = 0;
-
-    for (const char of list) {
-      depth += '(['.includes(char) ? 1 : ')]'.includes(char) ? -1 : 0;
-
-      if (char === ',' && depth === 0) {
-        parts.push('');
-      } else {
-        parts[parts.length - 1] += char;
-      }
-    }
-
-    return parts.map(part => part.trim());
-  };
-
-  const collect = ({ selectorText, style: declared }: CSSStyleRule): void => {
-    for (const selector of selectors(selectorText)) {
-      // This matches any selector: the pseudo-element part is optional.
-      const [, base, pseudo] = /^(.*?)(::[\w-]+)?$/.exec(selector)!;
-
-      for (const element of elements.filter(item =>
-        item.matches(base || '*')
-      )) {
-        if (pseudo === undefined) {
-          const computed = getComputedStyle(element);
-
-          for (const name of Array.from(declared)) {
-            const value = written(computed, name);
-
-            if (value !== undefined) {
-              element.style.setProperty(name, value);
-            }
-          }
-        } else {
-          const own = pseudos.get(element) ?? new Map();
-
-          own.set(pseudo, [...(own.get(pseudo) ?? []), declared]);
-          pseudos.set(element, own);
-        }
-      }
-    }
-  };
-
-  const apply = (rules: CSSRuleList): void => {
-    for (const rule of Array.from(rules)) {
-      if ('selectorText' in rule) {
-        collect(rule as CSSStyleRule);
-      }
-
-      if ('cssRules' in rule) {
-        apply((rule as CSSGroupingRule).cssRules);
-      }
-    }
+    return undrawn && !tokens.includes(rgb)
+      ? undefined
+      : value.replaceAll('rgba(0, 0, 0, 0)', 'transparent');
   };
 
   // Chromium gives the element's own style for a `::-webkit-` pseudo-element. So a hidden probe
   // beside the element takes the declarations, and its computed style gives the values.
-  const probed = <T,>(
+  const probed = (
     element: HTMLElement,
     declared: CSSStyleDeclaration[],
-    read: (computed: CSSStyleDeclaration) => T
-  ): T => {
+    read: (computed: CSSStyleDeclaration) => string
+  ): string => {
     const box = document.createElement('span');
     const probe = box.appendChild(document.createElement('i'));
 
@@ -823,11 +776,46 @@ export const inlineStyles = (tokens: string[]): void => {
     }
   };
 
-  apply(bundle.sheet.cssRules);
+  const helpers: StyleHelpers = { probed, selectors, styleRules, written };
 
-  const css = elements
+  Object.assign(window, { kinscapeStyles: helpers });
+};
+
+/**
+ * Runs in the page, after `defineStyleHelpers` and before `inlineStyles`, which drops the
+ * stylesheet that the values here need. A pseudo-element has no `style` attribute. So the values
+ * of its rules go in a `<style data-pseudo>` block, under a selector that names its element by a
+ * `data-pseudo` number. The values follow the rules of `inlineStyles`.
+ */
+export const inlinePseudoStyles = (tokens: string[]): void => {
+  const sheet =
+    document.querySelector<HTMLStyleElement>('style[data-bundle]')?.sheet;
+  const { probed, selectors, styleRules, written } = (
+    window as unknown as { kinscapeStyles: StyleHelpers }
+  ).kinscapeStyles;
+  // The declarations of each pseudo-element of each element, in rule order.
+  const found = new Map<HTMLElement, Map<string, CSSStyleDeclaration[]>>();
+
+  for (const { selectorText, style } of sheet
+    ? styleRules(sheet.cssRules)
+    : []) {
+    for (const { base, pseudo } of selectors(selectorText)) {
+      for (const element of pseudo === undefined
+        ? []
+        : document.querySelectorAll<HTMLElement>('body *')) {
+        if (element.matches(base)) {
+          const own = found.get(element) ?? new Map();
+
+          own.set(pseudo, [...(own.get(pseudo) ?? []), style]);
+          found.set(element, own);
+        }
+      }
+    }
+  }
+
+  const css = Array.from(document.querySelectorAll<HTMLElement>('body *'))
     .flatMap(element => {
-      const own = pseudos.get(element);
+      const own = found.get(element);
 
       return own ? [{ element, own }] : [];
     })
@@ -837,7 +825,7 @@ export const inlineStyles = (tokens: string[]): void => {
       const rules = Array.from(own, ([pseudo, declared]) => {
         const values = (computed: CSSStyleDeclaration) =>
           [...new Set(declared.flatMap(style => Array.from(style)))]
-            .map(name => [name, written(computed, name)])
+            .map(name => [name, written(tokens, computed, name)])
             .filter(([, value]) => value !== undefined && value !== '')
             .map(([name, value]) => `${name}: ${value};`)
             .join(' ');
@@ -853,9 +841,6 @@ export const inlineStyles = (tokens: string[]): void => {
       return rules.filter(rule => !rule.includes('url('));
     });
 
-  // The pseudo-element values above need the stylesheet, so it goes only now.
-  bundle.remove();
-
   if (css.length > 0) {
     const block = document.createElement('style');
 
@@ -863,6 +848,53 @@ export const inlineStyles = (tokens: string[]): void => {
     block.textContent = css.join('\n');
     document.head.append(block);
   }
+};
+
+/**
+ * Runs in the page, after `inlinePseudoStyles`: the design system's CSS (the `<style data-bundle>`)
+ * is dropped from the snapshot, so each element on the page takes the computed value of every
+ * property a rule that matches it declares, `rgba(0, 0, 0, 0)` as `transparent`. It skips custom properties,
+ * transitions, animations and states (`:hover`). It also skips a border colour that is not a token
+ * (`tokens` holds `r,g,b` strings) where the border is 0px wide, and an outline colour that is not
+ * a token where `outline-style` is `none` (Chromium keeps such an outline 3px wide). The browser
+ * fills that colour with a default grey, or with black for a radio, that the author never set.
+ */
+export const inlineStyles = (tokens: string[]): void => {
+  const bundle = document.querySelector<HTMLStyleElement>('style[data-bundle]');
+
+  if (!bundle?.sheet) {
+    if (document.querySelector('x-import')) {
+      throw new Error('The board has <x-import> but no bundle <style>');
+    }
+
+    return;
+  }
+
+  const { selectors, styleRules, written } = (
+    window as unknown as { kinscapeStyles: StyleHelpers }
+  ).kinscapeStyles;
+  const elements = Array.from(document.querySelectorAll<HTMLElement>('body *'));
+
+  for (const { selectorText, style } of styleRules(bundle.sheet.cssRules)) {
+    // A selector with a pseudo-element belongs to `inlinePseudoStyles`.
+    for (const { base } of selectors(selectorText).filter(
+      ({ pseudo }) => pseudo === undefined
+    )) {
+      for (const element of elements.filter(item => item.matches(base))) {
+        const computed = getComputedStyle(element);
+
+        for (const name of Array.from(style)) {
+          const value = written(tokens, computed, name);
+
+          if (value !== undefined) {
+            element.style.setProperty(name, value);
+          }
+        }
+      }
+    }
+  }
+
+  bundle.remove();
 };
 
 const fileUrl = (root: string, path: string) =>
@@ -1004,6 +1036,8 @@ if (import.meta.main) {
           await page.evaluate(fillTemplate, { props, state });
           await page.evaluate(defineBuilder);
           await page.evaluate(mountImports);
+          await page.evaluate(defineStyleHelpers);
+          await page.evaluate(inlinePseudoStyles, tokens);
           await page.evaluate(inlineStyles, tokens);
           await page.evaluate(() => document.fonts.ready);
           snapshot = await page.evaluate(pageHtml);

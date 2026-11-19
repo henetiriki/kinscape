@@ -16,9 +16,11 @@ import type { CanvasSnapshot } from '@ks/scripts/types.ts';
 
 import {
   defineBuilder,
+  defineStyleHelpers,
   exportSnapshots,
   fillTemplate,
   finish,
+  inlinePseudoStyles,
   inlineStyles,
   linkMap,
   mountImports,
@@ -738,7 +740,11 @@ describe('mountImports', () => {
   });
 });
 
-describe('inlineStyles', () => {
+describe('inlinePseudoStyles and inlineStyles', () => {
+  beforeEach(() => {
+    defineStyleHelpers();
+  });
+
   it('writes the computed values of the declared properties onto every element a rule matches, then drops the stylesheet', () => {
     document.head.innerHTML =
       '<title>T</title><style data-bundle>@font-face{font-family:f}:root{--x:1px}.a{width:1px;margin-top:0;transition-property:width;border-top-color:red}@media (min-width:1px){.a{padding-top:1px}}.b:hover{height:1px}.c{--y:2px}</style>';
@@ -759,6 +765,10 @@ describe('inlineStyles', () => {
 
   // A pseudo-element has no `style` attribute, so its rules stay as CSS with written-out values.
   describe('a pseudo-element rule', () => {
+    const inline = (tokens: string[]) => {
+      inlinePseudoStyles(tokens);
+      inlineStyles(tokens);
+    };
     const computed = (values: (name: string) => string) =>
       ({ getPropertyValue: values }) as unknown as CSSStyleDeclaration;
 
@@ -781,14 +791,25 @@ describe('inlineStyles', () => {
           )
       );
 
-      inlineStyles([]);
+      inline([]);
 
       expect(document.body.innerHTML).toBe(
-        '<x-import><i class="a" style="color: rgb(4, 5, 6);" data-pseudo="1"></i><u class="b" data-pseudo="2"></u></x-import>'
+        '<x-import><i class="a" data-pseudo="1" style="color: rgb(4, 5, 6);"></i><u class="b" data-pseudo="2"></u></x-import>'
       );
       expect(document.querySelector('style[data-bundle]')).toBeNull();
       expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
         '[data-pseudo="1"]::before{content: ""; width: 44px;}\n[data-pseudo="2"]::after{color: rgb(1, 2, 3);}'
+      );
+    });
+
+    it('does nothing without the stylesheet', () => {
+      document.head.innerHTML = '<title>T</title>';
+      document.body.innerHTML = '<i></i>';
+
+      inlinePseudoStyles([]);
+
+      expect(document.documentElement.innerHTML).toBe(
+        '<head><title>T</title></head><body><i></i></body>'
       );
     });
 
@@ -797,7 +818,7 @@ describe('inlineStyles', () => {
         '<title>T</title><style data-bundle>.z::before{width:1px}</style>';
       document.body.innerHTML = '<x-import><i class="a"></i></x-import>';
 
-      inlineStyles([]);
+      inline([]);
 
       expect(document.querySelector('style')).toBeNull();
       expect(document.body.innerHTML).toBe(
@@ -833,7 +854,7 @@ describe('inlineStyles', () => {
         }
       );
 
-      inlineStyles([]);
+      inline([]);
 
       expect(probed[0]).toBe('INPUT display: none; 3px 2px');
       expect(document.body.innerHTML).toBe(
@@ -857,7 +878,7 @@ describe('inlineStyles', () => {
           )
       );
 
-      inlineStyles([]);
+      inline([]);
 
       expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
         '[data-pseudo="1"]::before{width: 5px;}'
@@ -874,7 +895,7 @@ describe('inlineStyles', () => {
         )
       );
 
-      inlineStyles([]);
+      inline([]);
 
       expect(document.querySelector('style[data-pseudo]')?.textContent).toBe(
         '[data-pseudo="1"]::before{border-top-width: 0px;}'

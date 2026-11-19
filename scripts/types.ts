@@ -92,6 +92,25 @@ export type Settings = { allow: string[]; deny: string[]; hook?: string };
 /** A module a source names, and whether only types come from it. */
 export type Specifier = { specifier: string; typeOnly: boolean };
 
+/** The helpers that `defineStyleHelpers` in `design-export.mts` puts on `window` for the two inline steps. */
+export type StyleHelpers = {
+  probed: (
+    element: HTMLElement,
+    declared: CSSStyleDeclaration[],
+    read: (computed: CSSStyleDeclaration) => string
+  ) => string;
+  selectors: (list: string) => StyleSelector[];
+  styleRules: (rules: CSSRuleList) => CSSStyleRule[];
+  written: (
+    tokens: string[],
+    computed: CSSStyleDeclaration,
+    name: string
+  ) => string | undefined;
+};
+
+/** One selector of a rule: what an element matches, and its pseudo-element if it has one. */
+export type StyleSelector = { base: string; pseudo?: string };
+
 export type Transcript = {
   costUsd: number | undefined;
   denials: Denial[];

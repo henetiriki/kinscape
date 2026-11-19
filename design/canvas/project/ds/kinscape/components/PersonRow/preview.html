@@ -19,14 +19,28 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["PersonRow"];
   var handlers = [];
   var states = [{"label":"PersonRow · default","props":{"born":"c. 1835","bornReading":"About 1835","died":"1901","diedReading":"In 1901","givenNames":"Susanna","href":"/people/1","maidenName":"Fourie","surname":"Botha"}},{"label":"PersonRow · active","props":{"born":"c. 1835","bornReading":"About 1835","died":"1901","diedReading":"In 1901","givenNames":"Susanna","href":"/people/1","maidenName":"Fourie","state":"active","surname":"Botha"}},{"label":"PersonRow · focus","props":{"born":"c. 1835","bornReading":"About 1835","died":"1901","diedReading":"In 1901","givenNames":"Susanna","href":"/people/1","maidenName":"Fourie","state":"focus","surname":"Botha"}},{"label":"PersonRow · hover","props":{"born":"c. 1835","bornReading":"About 1835","died":"1901","diedReading":"In 1901","givenNames":"Susanna","href":"/people/1","maidenName":"Fourie","state":"hover","surname":"Botha"}},{"label":"PersonRow · relationships link","props":{"born":"1832","bornReading":"In 1832","died":"1899","diedReading":"In 1899","givenNames":"Hendrik Willem","href":"/people/1","relationshipsHref":"/people/1/relationships","surname":"Botha"}},{"label":"PersonRow · phone","props":{"born":"1832","bornReading":"In 1832","died":"1899","diedReading":"In 1899","form":"phone","givenNames":"Hendrik Willem","href":"/people/1","surname":"Botha"}}];
+  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var list = name.slice(0, at);
+      var key = name.slice(at + 1);
+      props[list] = props[list].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
     var part = window.KinScape[slot.control];
     return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
   };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
-    handlers.forEach(function (handler) { props[handler] = noop; });
+    give(props, handlers);
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);

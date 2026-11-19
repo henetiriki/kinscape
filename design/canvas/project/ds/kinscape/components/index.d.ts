@@ -51,7 +51,7 @@ export type IconSize = 14 | 16 | 18 | 20 | 24 | 28;
 export type LinkComponent = 'a' | ComponentType<{
     href: string;
 } & ComponentPropsWithoutRef<'a'>>;
-export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'small' | 'title';
+export type Other = 'body' | 'bodyL' | 'button' | 'buttonS' | 'caption' | 'chip' | 'chipOff' | 'control' | 'credits' | 'h1Phone' | 'label' | 'link' | 'linkS' | 'mono' | 'monoL' | 'overline' | 'overlineTight' | 'small' | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';
 export type TextVariant = Heading | Other;
 export type Tone = 'error' | 'info' | 'warning';
@@ -604,6 +604,66 @@ export declare const EventGlyph: ({ event }: {
 }) => import("react").JSX.Element;
 export type EventGlyphProps = Parameters<typeof EventGlyph>[0];
 
+/** The map's side panel: a tabs head and a body that scrolls. The body ends with the `end` node. */
+export declare const Panel: ({ bodyId, children, end, gap, label, onSelect, selected, tabs, }: {
+    /** The id the tabs' `controls` point to. */
+    bodyId?: string;
+    children: ReactNode;
+    /** The legend, or "Clear filters". It sits at the end of the body, after the children. */
+    end?: ReactNode;
+    /** Space between the body's groups, as the tab draws it. */
+    gap?: 14 | 20;
+    label: string;
+    onSelect?: (value: string) => void;
+    selected: string;
+    tabs: Tab[];
+}) => import("react").JSX.Element;
+export type PanelProps = Parameters<typeof Panel>[0];
+
+type LayerRow = {
+    checked: boolean;
+    description?: ReactNode;
+    disabled?: boolean;
+    id: string;
+    label: string;
+    onChange: (checked: boolean) => void;
+    /** `m` is the 44 row Basemap and Pins draw; Boundaries draws 48. */
+    size?: ComponentProps<typeof CheckboxField>['size'];
+};
+/** A heading and checkbox rows, named by the heading. */
+export declare const LayerGroup: ({ heading, rows, }: {
+    heading: string;
+    rows: LayerRow[];
+}) => import("react").JSX.Element;
+export type LayerGroupProps = Parameters<typeof LayerGroup>[0];
+
+type Choice = {
+    label: string;
+    value: string;
+};
+/** The Filters tab, in order: Person, Surname, Event type, Branch. The caller holds every value. */
+export declare const FilterFields: ({ branch, branches, events, eventTypes, onBranchChange, onEventToggle, onPersonChange, onSurnamesChange, people, person, surnameHelper, surnames, }: {
+    branch: string;
+    branches: Choice[];
+    /** The chosen Event types. */
+    events: string[];
+    eventTypes: ChipOption[];
+    onBranchChange: (value: string) => void;
+    onEventToggle: (value: string) => void;
+    onPersonChange: (value: string) => void;
+    onSurnamesChange: (values: string[]) => void;
+    people: Choice[];
+    person: string;
+    /** A line under Surname, such as what the field matches. */
+    surnameHelper?: string;
+    surnames: string[];
+}) => import("react").JSX.Element;
+/** The Panel's `end` node on the Filters tab: a button at the left of the body's end. */
+declare const ClearFilters: ({ onClear }: {
+    onClear: () => void;
+}) => import("react").JSX.Element;
+export type FilterFieldsProps = Parameters<typeof FilterFields>[0];
+
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export declare const Alert: ({ aside, children, title, tone, }: {
     /** A note at the right of the title line. */
@@ -808,7 +868,7 @@ declare const MenuItem: ({ entry, onSelect, state, }: {
     onSelect?: (id: string) => void;
     state?: ControlState;
 }) => import("react").JSX.Element;
-type PanelProps = {
+type MenuPanelArgs = {
     email: string;
     /** A line under the items. No line is drawn when unset. */
     footer?: string;
@@ -822,8 +882,8 @@ type PanelProps = {
     onSelect?: (id: string) => void;
 };
 /** The account Menu's card: who is signed in, the item groups split by dividers, and a footer line. */
-export declare const MenuPanel: ({ email, footer, groups, hovered, inert, menuRef, onKeyDown, onSelect, }: PanelProps) => import("react").JSX.Element;
-type AccountMenuProps = Pick<PanelProps, 'email' | 'footer' | 'groups'> & {
+export declare const MenuPanel: ({ email, footer, groups, hovered, inert, menuRef, onKeyDown, onSelect, }: MenuPanelArgs) => import("react").JSX.Element;
+type AccountMenuProps = Pick<MenuPanelArgs, 'email' | 'footer' | 'groups'> & {
     /**
      * `phone`: the card hangs from the nearest positioned ancestor (the search
      * pill), not from the Avatar. With no positioned ancestor it hangs from the page.

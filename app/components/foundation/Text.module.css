@@ -102,6 +102,16 @@
   text-transform: uppercase;
 }
 
+.overlineTight {
+  font-family: var(--type-overline-tight-font);
+  font-size: var(--type-overline-tight-size);
+  font-weight: var(--type-overline-tight-weight);
+  letter-spacing: var(--type-overline-tight-tracking);
+  line-height: var(--type-overline-tight-line);
+  margin: 0;
+  text-transform: uppercase;
+}
+
 .button {
   font-family: var(--type-button-font);
   font-size: var(--type-button-size);

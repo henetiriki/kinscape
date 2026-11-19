@@ -6,11 +6,11 @@ import { Tabs } from '@ks/app/components/actions/Tabs';
 
 import styles from '@ks/features/map/components/Panel.module.css';
 
-/** The map's side panel: a tabs head, a body that scrolls, and a footer at the bottom. */
+/** The map's side panel: a tabs head and a body that scrolls. The body ends with the `end` node. */
 export const Panel = ({
   bodyId,
   children,
-  footer,
+  end,
   gap = 14,
   label,
   onSelect,
@@ -20,8 +20,8 @@ export const Panel = ({
   /** The id the tabs' `controls` point to. */
   bodyId?: string;
   children: ReactNode;
-  /** The legend, or "Clear filters". */
-  footer?: ReactNode;
+  /** The legend, or "Clear filters". It sits at the end of the body, after the children. */
+  end?: ReactNode;
   /** Space between the body's groups, as the tab draws it. */
   gap?: 14 | 20;
   label: string;
@@ -46,7 +46,7 @@ export const Panel = ({
       role='tabpanel'
       tabIndex={0}>
       {children}
+      {end && <div className={styles.end}>{end}</div>}
     </div>
-    {footer && <div className={styles.footer}>{footer}</div>}
   </aside>
 );

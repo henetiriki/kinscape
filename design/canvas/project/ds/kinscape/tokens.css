@@ -297,6 +297,15 @@
   font-style: normal;
 }
 
+.overline-tight {
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-style: normal;
+}
+
 .button {
   font-family: var(--font-body);
   font-size: 16px;

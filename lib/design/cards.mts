@@ -109,11 +109,27 @@ const STYLE = (
   pad: number,
   contain: boolean,
   frame: number | undefined,
-  radios: boolean
+  radios: boolean,
+  box: string | undefined
 ) => `body { margin: 0; padding: ${PREVIEW_PAD}px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
-.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''}${box === undefined ? '' : ` width: ${box};`} }
 .ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
+
+// Gives each named prop a no-op. A name with a dot, such as `rows.onChange`, names a key in each item of a list prop.
+const GIVE = `  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var list = name.slice(0, at);
+      var key = name.slice(at + 1);
+      props[list] = props[list].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };`;
 
 const FIGURE =
   "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";
@@ -127,6 +143,7 @@ const CASE = (radios: boolean) =>
 
 /** The card's preview: a root and one script that mounts each state of `window.KinScape.<name>`. */
 export const previewHtml = ({
+  box,
   contain = false,
   frame,
   group,
@@ -144,7 +161,7 @@ export const previewHtml = ({
 <head>
 <meta charset="utf-8" />
 <style>
-${STYLE(pad, contain, frame, radios)}
+${STYLE(pad, contain, frame, radios, box)}
 </style>
 </head>
 <body>
@@ -156,14 +173,16 @@ ${STYLE(pad, contain, frame, radios)}
   var Control = window.${NAMESPACE}[${data(name)}];
   var handlers = ${data(handlers)};
   var states = ${data(states)};
+${GIVE}
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
     var part = window.${NAMESPACE}[slot.control];
     return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
   };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
-    handlers.forEach(function (handler) { props[handler] = noop; });
+    give(props, handlers);
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);

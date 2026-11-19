@@ -20,14 +20,28 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["ColumnLayout"];
   var handlers = [];
   var states = [{"children":[{"children":"People","control":"Text","props":{"as":"h1","variant":"h1"}},{"children":"Each change saves at once.","control":"Text","props":{"variant":"small"}}],"label":"ColumnLayout · list","props":{"column":"list"},"slots":{"header":{"control":"PageHeader","props":{"backHref":"/people","backLabel":"People"}}}},{"children":[{"children":"Relationships","control":"Text","props":{"as":"h1","variant":"h1"}},{"children":"Each change saves at once.","control":"Text","props":{"variant":"small"}}],"label":"ColumnLayout · detail","props":{"column":"detail"},"slots":{"header":{"control":"PageHeader","props":{"backHref":"/people","backLabel":"People"}}}},{"children":[{"children":"Add a person","control":"Text","props":{"as":"h1","variant":"h1"}},{"children":"Each change saves at once.","control":"Text","props":{"variant":"small"}}],"label":"ColumnLayout · form","props":{"column":"form"},"slots":{"header":{"control":"PageHeader","props":{"backHref":"/people","backLabel":"People"}}}},{"children":[{"children":"No one in your Tree has this address. The person may have been deleted, or the link is wrong.","control":"NoticeCard","props":{"actions":[{"href":"/people","label":"Go to People"}],"icon":"people","size":"large","title":"Person not found"}}],"label":"ColumnLayout · notice","props":{"column":"notice"},"slots":{"header":{"control":"PageHeader","props":{"backHref":"/people","backLabel":"People"}}}},{"children":[{"children":"People are added and edited on a larger screen. On a phone you can look them up.","control":"NoticeCard","props":{"actions":[{"href":"/people","label":"See all people"}],"phone":true,"title":"Edit people on a computer"}}],"label":"ColumnLayout · phone-notice","props":{"column":"phone-notice"},"slots":{"header":{"control":"PageHeader","props":{"backHref":"/people","backLabel":"People"}}}},{"children":[{"children":"Add a person","control":"Text","props":{"as":"h1","variant":"h1"}},{"children":"Each change saves at once.","control":"Text","props":{"variant":"small"}}],"label":"ColumnLayout · form with an action bar","props":{"column":"form"},"slots":{"actions":{"children":"Save","control":"Button","props":{"variant":"primary"}},"header":{"control":"PageHeader","props":{"backHref":"/people","backLabel":"People"}}}}];
+  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var list = name.slice(0, at);
+      var key = name.slice(at + 1);
+      props[list] = props[list].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
     var part = window.KinScape[slot.control];
     return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
   };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
-    handlers.forEach(function (handler) { props[handler] = noop; });
+    give(props, handlers);
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);

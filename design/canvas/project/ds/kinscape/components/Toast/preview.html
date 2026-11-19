@@ -19,14 +19,28 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var Control = window.KinScape["Toast"];
   var handlers = ["onDismiss"];
   var states = [{"children":"Done.","label":"Toast · error","props":{"action":"Undo","tone":"error"}},{"children":"Done.","label":"Toast · success","props":{"action":"Undo","tone":"success"}}];
+  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var list = name.slice(0, at);
+      var key = name.slice(at + 1);
+      props[list] = props[list].map(function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      });
+    });
+  };
   var make = function (slot, key) {
     var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
     var part = window.KinScape[slot.control];
     return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
   };
   var items = states.map(function (state, index) {
     var props = Object.assign({ key: index }, state.props);
-    handlers.forEach(function (handler) { props[handler] = noop; });
+    give(props, handlers);
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);

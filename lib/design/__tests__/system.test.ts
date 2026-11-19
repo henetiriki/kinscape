@@ -162,7 +162,7 @@ describe('systemTokens', () => {
 
     expect(names).toEqual([
       ['Display', 'display', 5],
-      ['Body', 'body', 15],
+      ['Body', 'body', 16],
       ['Mono', 'mono', 3],
     ]);
     expect(system.type.groups[0].styles[1]).toEqual({

@@ -33,6 +33,7 @@ export type Other =
   | 'mono'
   | 'monoL'
   | 'overline'
+  | 'overlineTight'
   | 'small'
   | 'title';
 export type SurfaceLevel = 'floating' | 'modal' | 'raised' | 'sheet';

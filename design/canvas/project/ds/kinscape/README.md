@@ -19,26 +19,27 @@ Components set these styles with `<Text variant>` (`app/components/foundation/Te
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see Map style).
 
-| Style    | Font · size / line · weight                | Used for                       |
-| -------- | ------------------------------------------ | ------------------------------ |
-| Display  | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline               |
-| H1       | Bricolage 32 / 40 · 500 · −0.015em         | Page title                     |
-| H1 phone | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone          |
-| H2       | Bricolage 24 / 32 · 700                    | Dialog and section titles      |
-| H3       | Bricolage 22 / 28 · 700                    | Place name in a popup, cards   |
-| Title    | Public Sans 15 / 22 · 600                  | Notice titles, row titles      |
-| Body L   | Public Sans 16 / 24 · 400                  | Sign-in, fields                |
-| Body     | Public Sans 15 / 22 · 400                  | Panels, popups                 |
-| Label    | Public Sans 14 / 20 · 600                  | Field labels, layer rows       |
-| Small    | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                    |
-| Caption  | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes             |
-| Overline | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings               |
-| Button   | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)         |
-| Control  | Public Sans 15 / 22 · 600                  | 44px buttons and controls      |
-| Button S | Public Sans 14 / 20 · 600                  | 40px and 36px buttons          |
-| Mono L   | JetBrains Mono 22 / 28 · 500               | Map date field                 |
-| Mono M   | JetBrains Mono 15 / 22 · 400               | Fuzzy date field               |
-| Mono     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
+| Style          | Font · size / line · weight                | Used for                       |
+| -------------- | ------------------------------------------ | ------------------------------ |
+| Display        | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline               |
+| H1             | Bricolage 32 / 40 · 500 · −0.015em         | Page title                     |
+| H1 phone       | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone          |
+| H2             | Bricolage 24 / 32 · 700                    | Dialog and section titles      |
+| H3             | Bricolage 22 / 28 · 700                    | Place name in a popup, cards   |
+| Title          | Public Sans 15 / 22 · 600                  | Notice titles, row titles      |
+| Body L         | Public Sans 16 / 24 · 400                  | Sign-in, fields                |
+| Body           | Public Sans 15 / 22 · 400                  | Panels, popups                 |
+| Label          | Public Sans 14 / 20 · 600                  | Field labels, layer rows       |
+| Small          | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                    |
+| Caption        | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes             |
+| Overline       | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings               |
+| Overline tight | Public Sans 11 / 12 · 600, caps, 0.1em     | Layer group headings           |
+| Button         | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)         |
+| Control        | Public Sans 15 / 22 · 600                  | 44px buttons and controls      |
+| Button S       | Public Sans 14 / 20 · 600                  | 40px and 36px buttons          |
+| Mono L         | JetBrains Mono 22 / 28 · 500               | Map date field                 |
+| Mono M         | JetBrains Mono 15 / 22 · 400               | Fuzzy date field               |
+| Mono           | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
 
 Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
 

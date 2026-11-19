@@ -138,6 +138,22 @@ test('exports a board that mounts the DateDock with contested claims and epochs'
   );
 });
 
+// The tick is an inline <svg>: a CSS mask has no snapshot form.
+test('exports a board that mounts a checked Checkbox with its tick', async ({
+  page,
+}) => {
+  const snapshot = await exportBoard(
+    page,
+    board(
+      '<x-import component-from-global-scope="KinScape.Checkbox" aria-label="Deceased" default-checked="true"></x-import>',
+      '{}'
+    )
+  );
+
+  expect(snapshotProblems(snapshot, tokens)).toEqual([]);
+  expect(snapshot).toMatch(/<input[^>]*type="checkbox"[^>]*>\s*<svg/);
+});
+
 test('exports a board that mounts the Legend', async ({ page }) => {
   const snapshot = await exportBoard(
     page,

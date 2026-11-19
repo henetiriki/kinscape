@@ -1,5 +1,12 @@
 /* A 20px box with a 44px hit area */
 
+.box {
+  display: inline-grid;
+  flex: none;
+  /* A fixed cell keeps the tick on the input when a parent stretches the box. */
+  grid-template: var(--size-checkbox) / var(--size-checkbox);
+}
+
 .checkbox {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
   appearance: none;
@@ -8,10 +15,9 @@
   border-radius: var(--radius-small);
   box-sizing: border-box;
   cursor: pointer;
-  display: inline-grid;
+  grid-area: 1 / 1;
   height: var(--size-checkbox);
   margin: 0;
-  place-content: center;
   position: relative;
   width: var(--size-checkbox);
 }
@@ -26,23 +32,24 @@
   width: var(--size-touch);
 }
 
-.checkbox::after {
-  background: var(--white);
-  content: '';
+.tick {
+  color: var(--white);
+  grid-area: 1 / 1;
   height: 14px;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
-    center / 100% no-repeat;
-  opacity: 0;
+  place-self: center;
+  pointer-events: none;
+  /* The positioned `.checkbox` paints over an unpositioned sibling in the same cell. */
+  position: relative;
   width: 14px;
+}
+
+.checkbox:not(:checked) + .tick {
+  visibility: hidden;
 }
 
 .checkbox:checked {
   background: var(--brand);
   border-color: var(--brand);
-}
-
-.checkbox:checked::after {
-  opacity: 1;
 }
 
 @media (hover: hover) {

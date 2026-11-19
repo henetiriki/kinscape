@@ -40,7 +40,9 @@ it('is a group named by its heading, with a described checkbox per row', () => {
     screen.getByText('Fills and borders.').id
   );
   expect(screen.getByRole('checkbox', { name: 'Districts' })).toBe(districts);
-  expect(districts.parentElement!.dataset.size).toBe('m');
+  expect((districts.closest('[data-size]') as HTMLElement).dataset.size).toBe(
+    'm'
+  );
 });
 
 it('reports a toggle with the new value', () => {

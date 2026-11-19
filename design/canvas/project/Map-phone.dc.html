@@ -100,7 +100,7 @@ class Component extends DCLogic {
     const STEP = 'width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center';
     const LABEL = 'font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C';
     const MONO = "font-family: 'JetBrains Mono', monospace; color: #4A544C";
-    // The lines join with no space between them. A space between two tags would be a text node, which the sheet does not have.
+    // The lines join with no space between them. A space between two tags makes a text node, and the sheet has no text node there.
     const lookup = mount([
       `<section aria-label="Map date and lookup" style="position: absolute; left: 0; right: 0; bottom: 0; height: 432px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">`,
       `<span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>`,

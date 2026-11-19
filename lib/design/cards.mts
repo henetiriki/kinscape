@@ -102,12 +102,15 @@ export const controlReadme = (
 const data = (value: unknown): string =>
   JSON.stringify(value).replaceAll('<', '\\u003c');
 
+/** The padding in px on each side of a preview's body. A card `width` includes it. */
+export const PREVIEW_PAD = 16;
+
 const STYLE = (
   pad: number,
   contain: boolean,
   frame: number | undefined,
   radios: boolean
-) => `body { margin: 0; padding: 16px; font-family: var(--font-body); }
+) => `body { margin: 0; padding: ${PREVIEW_PAD}px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''} }
 .ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;

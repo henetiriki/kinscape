@@ -199,6 +199,19 @@ describe('previewHtml', () => {
     expect(html).not.toContain(':last-child');
   });
 
+  it.each([
+    ['PersonRow', 992],
+    ['RelationshipRow', 992],
+    ['PickerRow', 736],
+  ])('states the width of the page of the %s card', (name, width) => {
+    const row = CARDS.find(card => card.name === name)!;
+    const line = previewHtml(row).split('\n')[0];
+
+    expect(row.width).toBe(width);
+    expect(line).toContain(`width=${width}`);
+    expect(() => checkPreview(name, previewHtml(row))).not.toThrow();
+  });
+
   it('keeps text from ending the script', () => {
     const tricky = previewHtml({
       ...card,

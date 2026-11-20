@@ -25,11 +25,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" layers="{{layers}}" dock="{{dock}}" overlay="{{overlay}}" overlay-at="{{overlayAt}}"></x-import>
 
   <sc-if value="{{v.offline}}" hint-placeholder-val="{{ false }}">
-    <div role="alert" style="position: absolute; left: 16px; right: 16px; top: 80px; min-height: 60px; box-sizing: border-box; padding: 8px 8px 8px 16px; background: #18211B; color: #FFFFFF; border-radius: 12px; display: flex; align-items: center; gap: 12px; box-shadow: 0 6px 20px rgba(24,33,27,0.2)">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none"><path d="M3 3l18 18M8.5 8.6A5.5 5.5 0 0 0 6.5 18H17M17.6 12.2A4 4 0 0 1 20.5 16"></path></svg>
-      <span style="flex: 1; font-size: 14px; line-height: 20px">Terrain didn't load. Borders and pins still work.</span>
-      <button type="button" style="flex: none; height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.45); border-radius: 8px; background: transparent; color: #FFFFFF; font-size: 14px; font-weight: 600">Retry</button>
-    </div>
+    <x-import component-from-global-scope="KinScape.Banner" icon="cloudOff" action="Retry" placed="{{ true }}">Terrain didn't load. Borders and pins still work.</x-import>
     <div style="position: absolute; right: 16px; top: 156px; width: 48px; height: 48px">
       <x-import component-from-global-scope="KinScape.IconButton" variant="raised" label="Layers and filters"><x-import component-from-global-scope="KinScape.Icon" name="layers" size="24"></x-import></x-import>
     </div>
@@ -185,7 +181,7 @@ class Component extends DCLogic {
 
     const h = React.createElement;
     const noop = () => {};
-    const { drawn, mount } = window.KinScapeBoard;
+    const { drawn } = window.KinScapeBoard;
     const v = vals.v;
     // The account menu covers the Layers button and the sheet, so that variant draws neither.
     const chrome = !v.account;
@@ -255,21 +251,8 @@ class Component extends DCLogic {
 
     // The slot puts a card at its top edge. The board draws two cards lower, so they take the gap as a margin.
     const lower = (gap, card) => h('div', { style: { marginTop: gap, width: '100%' } }, card);
-    // The real NoticeCard draws its two buttons wider than this card does, so the board draws the card.
     const notice = v.emptyDate
-      ? mount(`    <div role="status" style="width: 100%; box-sizing: border-box; padding: 16px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 12px">
-      <div style="display: flex; gap: 12px; align-items: flex-start">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9A3B12" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.8" r="2.3"></circle></svg>
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">No pins in 1901</x-import>
-          <span style="font-size: 15px; line-height: 22px; color: #2E3A33">Nobody in your filters is pinned to this date.</span>
-        </div>
-      </div>
-      <div style="display: flex; gap: 8px; padding-left: 32px">
-        <button type="button" style="height: 44px; padding: 0 16px; border: 0; border-radius: 8px; background: #264F29; color: #FFFFFF; font-size: 14px; line-height: 20px; font-weight: 600">Jump to 1898</button>
-        <button type="button" style="height: 44px; padding: 0 16px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; font-size: 14px; line-height: 20px; font-weight: 600">Clear filters</button>
-      </div>
-    </div>`)
+      ? h(K.NoticeCard, { actions: [{ label: 'Jump to 1898' }, { label: 'Clear filters' }], icon: 'place', title: 'No pins in 1901' }, 'Nobody in your filters is pinned to this date.')
       : v.emptyTree
         ? lower('116px', h(K.NoticeCard, { icon: 'place', size: 'large', title: 'No pins yet' }, 'Pins show up here on the dates they were true. Until then the map works as an atlas: move the date and watch the borders change.'))
         : v.loading

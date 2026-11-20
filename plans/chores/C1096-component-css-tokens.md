@@ -2,7 +2,7 @@
 
 - **Chore:** #1096
 - **Requirement IDs:** None. The Chore changes a code rule and token use in CSS.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -40,7 +40,7 @@ The `.action` rule of `Toast.module.css` sets `--type-label-size` and `--type-la
 - **C.** Write the three values with the `--type-button-s-` tokens. Three lines change. This breaks the Constraint "Change no component CSS except the lines of item 3".
 - **Other:** your own.
 
-Recommended: A, because a reader then sees one type style in the rule, and the size and line already name it. C gives the role of `DESIGN.md`, but it needs an exception to the Constraint.
+**Answer: Other:** - C + lift the Constraint for lines 30 to 32 of Toast.module.css, and change the Files table row to "Lines 30 to 32, as D3 says" (@henetiriki)
 
 **D4 · The bold text of a Callout** · Decides: Tech lead
 
@@ -51,7 +51,7 @@ Recommended: A, because a reader then sees one type style in the rule, and the s
 - **C.** Add a token for bold small text in `design/tokens.json` and use it. This adds a design system input beyond item 3, and breaks the Constraint "Change no component CSS except the lines of item 3".
 - **Other:** your own.
 
-Recommended: A, because the rule keeps a literal for a value that no token names for that role and no other part shares.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

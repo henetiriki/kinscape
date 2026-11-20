@@ -7,9 +7,17 @@ import { readSources } from '@ks/scripts/sources.mts';
 // repo first, then fixtures.
 describe('the repo', () => {
   it('names no browser storage and imports no persistence package', () => {
-    const files = readSources(['app', 'features']);
+    const files = readSources([
+      'app',
+      'design',
+      'features',
+      'lib',
+      'server',
+      'types',
+    ]);
 
     expect(Object.keys(files)).toContain('app/layout.tsx');
+    expect(Object.keys(files)).toContain('lib/design/bundle.mts');
     expect(memoryOnlyBreaks(files)).toEqual([]);
   });
 });
@@ -43,14 +51,24 @@ describe('memoryOnlyBreaks', () => {
     ]);
   });
 
-  it('passes a test, a file outside app/ and features/, a comment and another TanStack package', () => {
+  it('names a persistence import outside app/ and features/', () => {
+    expect(
+      memoryOnlyBreaks({
+        'lib/d.ts': "import { x } from '@tanstack/query-persist-client-core';",
+      })
+    ).toEqual([
+      'lib/d.ts: Memory rule: no file imports a persistence package (@tanstack/query-persist-client-core).',
+    ]);
+  });
+
+  it('passes a test, a storage name outside app/ and features/, a comment and another TanStack package', () => {
     expect(
       memoryOnlyBreaks({
         'app/__tests__/a.test.ts': 'localStorage.clear();',
         'app/b.tsx':
           "import { useQuery } from '@tanstack/react-query';\n// localStorage\nconst a = 'cache';",
         'lib/c.ts': 'localStorage.clear();',
-        'server/d.ts':
+        'server/__tests__/d.test.ts':
           "import { x } from '@tanstack/query-persist-client-core';",
       })
     ).toEqual([]);

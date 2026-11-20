@@ -18,7 +18,7 @@ The four checks:
 
   A name off `SEARCH_PARAMS` (`edit`, `returnTo`) is a break. Each other read of `searchParams` is a break, so the check fails closed.
 
-- **Memory only:** a file under `app/` or `features/` with the identifier or string `localStorage`, `sessionStorage` or `indexedDB` is a break. An import that matches `@tanstack/*persist*` is a break. `STORAGE_EXEMPT` starts empty.
+- **Memory only:** a file under `app/` or `features/` with the identifier or string `localStorage`, `sessionStorage` or `indexedDB` is a break. An import that matches `@tanstack/*persist*` in any source file is a break (D3). `STORAGE_EXEMPT` starts empty.
 
 ## Decisions
 
@@ -39,6 +39,16 @@ The Spec does not say how the check finds a page that reads Tree data. #678 Cons
 - **A.** A page reads Tree data if it calls `treeAction` or `openTree`, or takes a value from an `app/` or `features/` module that does, at any depth. A server action counts. `/people/new` counts through `app/people/actions.ts`. When M2.14 gives `app/@map/page.tsx` a Pin action, the check fails until that Spec adds a `no-store` rule for `/` (about 10 lines). The import walk costs about 30 lines here.
 - **B.** Only a call in the page file counts. About 10 lines. A page that reads through another module passes, such as `/people/new` today.
 - **C.** As A, but a `'use server'` module does not count. The gap in the Flagged concern stays open. About 35 lines.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D3 · Where the persistence import check looks** · Decides: Tech lead
+
+The Spec's acceptance check names "a file" with no folder. The Behaviour line names `app/` and `features/`. #538 can put the query client in `lib/`.
+
+- **A.** Each non-test source file. The storage names still count only under `app/` and `features/`. About 10 lines.
+- **B.** Only `app/` and `features/`. The acceptance check then names the two folders.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -88,7 +98,7 @@ The Spec does not say how the check finds a page that reads Tree data. #678 Cons
 | A folder `[name]`, `[slug]` or `[...path]`                             | `scripts/__tests__/addresses.test.ts`     |
 | A search parameter off the list                                        | `scripts/__tests__/addresses.test.ts`     |
 | `localStorage`, `sessionStorage` or `indexedDB` in `app/`, `features/` | `scripts/__tests__/memory-only.test.ts`   |
-| An import of a TanStack Query persistence package                      | `scripts/__tests__/memory-only.test.ts`   |
+| An import of a TanStack Query persistence package, in any folder       | `scripts/__tests__/memory-only.test.ts`   |
 | The repo as it is passes each check                                    | The repo case of each of the four tests   |
 
 ## Deviations

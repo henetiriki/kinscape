@@ -597,42 +597,47 @@ export const addressBreaks = (files: Record<string, string>): string[] => {
   ];
 };
 
-/** Each `file: rule` line where a file under `app/` or `features/` keeps Tree data outside memory. */
+/** The storage names in a file under `app/` or `features/`. */
+const storageNames = (path: string, source: string): string[] => {
+  if (!/^(?:app|features)\//.test(path)) {
+    return [];
+  }
+
+  const names = new Set<string>();
+  const visit = (node: ts.Node): void => {
+    if (
+      (ts.isIdentifier(node) || ts.isStringLiteralLike(node)) &&
+      STORAGE_NAMES.includes(node.text)
+    ) {
+      names.add(node.text);
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(parse(path, source));
+
+  return [...names];
+};
+
+/**
+ * Each `file: rule` line where a file keeps Tree data outside memory. The storage names count
+ * only under `app/` and `features/`. A persistence import counts in any source file.
+ */
 export const memoryOnlyBreaks = (files: Record<string, string>): string[] =>
   Object.entries(files)
-    .filter(
-      ([path]) =>
-        /^(?:app|features)\//.test(path) &&
-        !TEST_FILE.test(path) &&
-        !(path in STORAGE_EXEMPT)
-    )
-    .flatMap(([path, source]) => {
-      const names = new Set<string>();
-      const visit = (node: ts.Node): void => {
-        if (
-          (ts.isIdentifier(node) || ts.isStringLiteralLike(node)) &&
-          STORAGE_NAMES.includes(node.text)
-        ) {
-          names.add(node.text);
-        }
-
-        ts.forEachChild(node, visit);
-      };
-
-      visit(parse(path, source));
-
-      return [
-        ...[...names].map(
-          name => `${path}: Memory rule: no file names ${name}.`
+    .filter(([path]) => !TEST_FILE.test(path) && !(path in STORAGE_EXEMPT))
+    .flatMap(([path, source]) => [
+      ...storageNames(path, source).map(
+        name => `${path}: Memory rule: no file names ${name}.`
+      ),
+      ...specifiersOf(path, source)
+        .filter(({ specifier }) => /^@tanstack\/.*persist/.test(specifier))
+        .map(
+          ({ specifier }) =>
+            `${path}: Memory rule: no file imports a persistence package (${specifier}).`
         ),
-        ...specifiersOf(path, source)
-          .filter(({ specifier }) => /^@tanstack\/.*persist/.test(specifier))
-          .map(
-            ({ specifier }) =>
-              `${path}: Memory rule: no file imports a persistence package (${specifier}).`
-          ),
-      ];
-    });
+    ]);
 
 /** A node that names a module, as ESLint hands it over. */
 interface Sourced {

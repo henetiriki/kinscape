@@ -2285,6 +2285,184 @@ export const runTreeStoreContract = (
         });
       });
 
+      describe('places and pins', () => {
+        const PIN_1 = '01900000-0000-7000-b000-0000000000d1' as PinId;
+        const PIN_2 = '01900000-0000-7000-b000-0000000000d2' as PinId;
+
+        const pinOf = (id: string, fields: Record<string, unknown> = {}) =>
+          pinInputSchema.parse({
+            date: '1850',
+            eventType: 'residence',
+            personId: ID_1,
+            placeId: PLACE_1,
+            ...fields,
+            id,
+          });
+
+        /** Opens Tree A with Persons 1 and 2, and Tree B with Person 4 and Place 3. */
+        const openBoth = async (store: TreeStore) => {
+          const { a, b } = await twoTrees(store);
+          const asA = await openAs(store, a.accountId, a.treeId);
+          const asB = await openAs(store, b.accountId, b.treeId);
+
+          if (!asA.ok || !asB.ok) {
+            throw new Error('setup failed');
+          }
+
+          for (const id of [ID_1, ID_2]) {
+            await asA.value.persons.create(personOf(id, {}));
+          }
+
+          await asB.value.persons.create(personOf(ID_4, {}));
+          await asB.value.places.create(placeOf(PLACE_3, {}));
+
+          return { a, a2: asA.value, b2: asB.value };
+        };
+
+        // PIN-06
+        it('saves a Place, then a Pin that joins a Person and that Place', async () => {
+          await withStore(async store => {
+            const { a2 } = await openBoth(store);
+            const place = placeOf(PLACE_1, {});
+            const pin = pinOf(PIN_1);
+
+            expect(await a2.places.create(place)).toEqual({
+              ok: true,
+              value: { ...place, version: 1 },
+            });
+            expect(await a2.pins.create(pin)).toEqual({
+              ok: true,
+              value: { ...pin, version: 1 },
+            });
+            expect(await a2.places.get(PLACE_1)).toEqual({
+              ...place,
+              version: 1,
+            });
+            expect(await a2.pins.get(PIN_1)).toEqual({ ...pin, version: 1 });
+            expect(await a2.places.list()).toEqual([{ ...place, version: 1 }]);
+            expect(await a2.places.get(PLACE_2)).toBe(undefined);
+            expect(await a2.pins.get(PIN_2)).toBe(undefined);
+          });
+        });
+
+        // PIN-06
+        it('updates a Place and a Pin, and refuses a stale version', async () => {
+          await withStore(async store => {
+            const { a2 } = await openBoth(store);
+
+            await a2.places.create(placeOf(PLACE_1, {}));
+            await a2.pins.create(pinOf(PIN_1));
+
+            const moved = await a2.places.update(
+              placeOf(PLACE_1, { latitude: -26.2 }),
+              1
+            );
+            const dated = await a2.pins.update(
+              pinOf(PIN_1, { date: '1860' }),
+              1
+            );
+
+            expect(moved.ok && moved.value.version).toBe(2);
+            expect(dated.ok && dated.value.version).toBe(2);
+            expect(await a2.places.update(placeOf(PLACE_1, {}), 1)).toEqual({
+              error: 'conflict',
+              ok: false,
+            });
+            expect(await a2.pins.update(pinOf(PIN_1), 1)).toEqual({
+              error: 'conflict',
+              ok: false,
+            });
+          });
+        });
+
+        // NFR-09
+        it('gives not-found for a Pin whose Person or Place is in another Tree', async () => {
+          await withStore(async store => {
+            const { a2 } = await openBoth(store);
+
+            await a2.places.create(placeOf(PLACE_1, {}));
+
+            expect(
+              await a2.pins.create(pinOf(PIN_1, { personId: ID_4 }))
+            ).toEqual(NOT_FOUND);
+            expect(
+              await a2.pins.create(pinOf(PIN_1, { placeId: PLACE_3 }))
+            ).toEqual(NOT_FOUND);
+            expect(await a2.pins.list()).toEqual([]);
+          });
+        });
+
+        // NFR-09
+        it('gives not-found when the store refuses a create', async () => {
+          await withStore(async store => {
+            const { a2 } = await openBoth(store);
+
+            vi.spyOn(store, 'addPlace').mockResolvedValue({
+              error: 'not-found',
+              ok: false,
+            });
+
+            expect(await a2.places.create(placeOf(PLACE_1, {}))).toEqual(
+              NOT_FOUND
+            );
+          });
+        });
+
+        // PIN-04
+        it('queries the Pins of a day as the store does', async () => {
+          await withStore(async store => {
+            const { a, a2 } = await openBoth(store);
+
+            await a2.places.create(placeOf(PLACE_1, {}));
+            await a2.pins.create(pinOf(PIN_1, { date: 'FROM 1840 TO 1855' }));
+            await a2.pins.create(pinOf(PIN_2, { date: '1900' }));
+
+            const day = toDay('1850-06-01');
+            const viaGroup = await a2.pins.listOn(day);
+
+            expect(viaGroup.map(pin => pin.id)).toEqual([PIN_1]);
+            expect(viaGroup).toEqual(await store.listPinsOn({ ...a, day }));
+          });
+        });
+
+        // PIN-04
+        it('lists each Pin with its span', async () => {
+          await withStore(async store => {
+            const { a, a2 } = await openBoth(store);
+
+            await a2.places.create(placeOf(PLACE_1, {}));
+            await a2.pins.create(pinOf(PIN_1));
+            await a2.pins.create(pinOf(PIN_2, { date: '1900' }));
+
+            const listed = await a2.pins.list();
+
+            expect(listed).toHaveLength(2);
+            expect(listed.every(pin => pin.span !== undefined)).toBe(true);
+            expect(listed).toEqual(await store.listPins(a));
+          });
+        });
+
+        // NFR-09
+        it('keeps a Place and a Pin of Tree A out of Account B’s Tree', async () => {
+          await withStore(async store => {
+            const { a2, b2 } = await openBoth(store);
+
+            await a2.places.create(placeOf(PLACE_1, {}));
+            await a2.pins.create(pinOf(PIN_1));
+
+            expect(await b2.places.get(PLACE_1)).toEqual(
+              await b2.places.get(PLACE_2)
+            );
+            expect(await b2.pins.get(PIN_1)).toEqual(await b2.pins.get(PIN_2));
+            expect(await b2.places.list()).toEqual([
+              { ...placeOf(PLACE_3, {}), version: 1 },
+            ]);
+            expect(await b2.pins.list()).toEqual([]);
+            expect(await b2.pins.listOn(toDay('1850-06-01'))).toEqual([]);
+          });
+        });
+      });
+
       // NFR-09
       it('gives not-found when the store refuses a create', async () => {
         await withStore(async store => {

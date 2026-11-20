@@ -5,6 +5,7 @@ import { sql } from 'kysely';
 import type { FuzzyDate } from '#ks/lib/domain/dates/types.ts';
 import type { PersonId } from '#ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '#ks/lib/domain/persons/types.ts';
+import type { Pin, PinInput } from '#ks/lib/domain/pins/types.ts';
 import type { Place, PlaceInput } from '#ks/lib/domain/places/types.ts';
 import type {
   Relationship,
@@ -190,6 +191,61 @@ const reaches = async (
     .select('treeId')
     .executeTakeFirst()) !== undefined;
 
+const selectPin = (db: Db, { treeId }: TreeScope) =>
+  db.selectFrom('pin').selectAll().where('treeId', '=', treeId);
+
+/** The columns a save writes, apart from the Tree id and the id. */
+const pinFieldsOf = (pin: PinInput) => ({
+  address: pin.address,
+  dateDate1: pin.date.date1,
+  dateDate2: pin.date.date2 ?? null,
+  datePrecision: pin.date.precision,
+  dateQualifier: pin.date.qualifier,
+  dateValidFrom: pin.date.validFrom,
+  // `fuzzyDateOf` always sets an end day; the `pin` table requires one.
+  dateValidTo: pin.date.validTo!,
+  eventType: pin.eventType,
+  notes: pin.notes,
+  personId: pin.personId,
+  placeId: pin.placeId,
+  sources: pin.sources,
+});
+
+const pinOf = (row: Selectable<Database['pin']>): Pin => ({
+  address: row.address,
+  date: fuzzyDateOf(
+    row.dateQualifier,
+    row.dateDate1,
+    row.dateDate2 ?? undefined
+  ),
+  eventType: row.eventType,
+  id: row.id,
+  notes: row.notes,
+  personId: row.personId,
+  placeId: row.placeId,
+  sources: row.sources,
+  version: row.version,
+});
+
+/** Whether the Tree holds the Person and the Place of `pin`. */
+const pinnable = async (
+  db: Db,
+  { treeId }: TreeScope,
+  pin: PinInput
+): Promise<boolean> =>
+  (await db
+    .selectFrom('person')
+    .where('treeId', '=', treeId)
+    .where('id', '=', pin.personId)
+    .select('id')
+    .executeTakeFirst()) !== undefined &&
+  (await db
+    .selectFrom('place')
+    .where('treeId', '=', treeId)
+    .where('id', '=', pin.placeId)
+    .select('id')
+    .executeTakeFirst()) !== undefined;
+
 const selectPerson = (db: Db, { treeId }: TreeScope) =>
   db.selectFrom('person').selectAll().where('treeId', '=', treeId);
 
@@ -229,17 +285,20 @@ const added = async <Row, Entity>(
 /**
  * The versioned update that each kind shares. Each kind passes its own typed queries: Kysely does
  * not type `.set(...)` for a generic table. `exists` tells a missing row from a stale version.
+ * `check` is an extra refusal.
  */
 const updated = async <Row, Entity>(
   db: Db,
   scope: TreeScope,
   {
+    check,
     exists,
     ids,
     map,
     update,
     version,
   }: {
+    check?: () => Promise<boolean>;
     exists: () => Promise<unknown>;
     ids: readonly string[];
     map: (row: Row) => Entity;
@@ -247,7 +306,10 @@ const updated = async <Row, Entity>(
     version: number;
   }
 ): Promise<Result<Entity, 'conflict' | 'not-found'>> => {
-  if (!(await reaches(db, scope, ...ids))) {
+  if (
+    !(await reaches(db, scope, ...ids)) ||
+    (check !== undefined && !(await check()))
+  ) {
     return err('not-found');
   }
 
@@ -312,6 +374,30 @@ export const databaseStore = (db: Db): TreeStore => ({
           .where('id', '=', person.id)
           .executeTakeFirstOrThrow(),
     }),
+  addPin: async ({ pin, ...scope }) =>
+    savedOrNotFound(
+      await added(db, scope, {
+        check: () => pinnable(db, scope, pin),
+        ids: [pin.id, pin.personId, pin.placeId],
+        insert: () =>
+          db
+            .insertInto('pin')
+            .values({
+              ...pinFieldsOf(pin),
+              id: pin.id,
+              treeId: scope.treeId,
+            })
+            .onConflict(conflict =>
+              conflict.columns(['treeId', 'id']).doNothing()
+            )
+            .execute(),
+        map: pinOf,
+        read: () =>
+          selectPin(db, scope)
+            .where('id', '=', pin.id)
+            .executeTakeFirstOrThrow(),
+      })
+    ),
   addPlace: async ({ place, ...scope }) =>
     savedOrNotFound(
       await added(db, scope, {
@@ -380,6 +466,13 @@ export const databaseStore = (db: Db): TreeStore => ({
       : undefined;
 
     return row === undefined ? undefined : personOf(row);
+  },
+  findPin: async ({ pinId, ...scope }) => {
+    const row = (await reaches(db, scope, pinId))
+      ? await selectPin(db, scope).where('id', '=', pinId).executeTakeFirst()
+      : undefined;
+
+    return row === undefined ? undefined : pinOf(row);
   },
   findPlace: async ({ placeId, ...scope }) => {
     const row = (await reaches(db, scope, placeId))
@@ -465,6 +558,31 @@ export const databaseStore = (db: Db): TreeStore => ({
           })
           .where('treeId', '=', scope.treeId)
           .where('id', '=', person.id)
+          .where('version', '=', version)
+          .returningAll()
+          .executeTakeFirst(),
+      version,
+    }),
+  updatePin: ({ pin, version, ...scope }) =>
+    updated(db, scope, {
+      check: () => pinnable(db, scope, pin),
+      exists: () =>
+        selectPin(db, scope)
+          .where('id', '=', pin.id)
+          .select('id')
+          .executeTakeFirst(),
+      ids: [pin.id, pin.personId, pin.placeId],
+      map: pinOf,
+      update: () =>
+        db
+          .updateTable('pin')
+          .set({
+            ...pinFieldsOf(pin),
+            updatedAt: sql`now()`,
+            version: sql`version + 1`,
+          })
+          .where('treeId', '=', scope.treeId)
+          .where('id', '=', pin.id)
           .where('version', '=', version)
           .returningAll()
           .executeTakeFirst(),

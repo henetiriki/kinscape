@@ -3,11 +3,13 @@ import { describe, expect, it, vi } from 'vitest';
 import type {
   AccountId,
   PersonId,
+  PinId,
   PlaceId,
   RelationshipId,
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { PersonInput } from '@ks/lib/domain/persons/types.ts';
+import type { PinInput } from '@ks/lib/domain/pins/types.ts';
 import type { PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type { RelationshipInput } from '@ks/lib/domain/relationships/types.ts';
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
@@ -17,6 +19,7 @@ import {
   MAX_LISTED,
   personInputSchema,
 } from '@ks/lib/domain/persons/schemas.mts';
+import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import {
   MAX_PLACES,
   placeInputSchema,
@@ -1336,6 +1339,325 @@ export const runTreeStoreContract = (
           }
 
           expect((await store.listPlaces(a))[0].latitude).toBe(-33.9);
+        });
+      });
+    });
+
+    describe('pins', () => {
+      const PIN_1 = '01900000-0000-7000-b000-0000000000d1' as PinId;
+      const PIN_2 = '01900000-0000-7000-b000-0000000000d2' as PinId;
+      const PIN_3 = '01900000-0000-7000-b000-0000000000d3' as PinId;
+
+      const pinOf = (
+        id: string,
+        fields: Record<string, unknown> = {}
+      ): PinInput =>
+        pinInputSchema.parse({
+          date: '1850',
+          eventType: 'residence',
+          personId: ID_1,
+          placeId: PLACE_1,
+          ...fields,
+          id,
+        });
+
+      /** Two Trees; Tree A holds Persons 1 to 3 and Places 1 and 2. Tree B holds Person 4 and Place 3. */
+      const withRows = async (store: TreeStore) => {
+        const trees = await twoTrees(store);
+
+        for (const id of [ID_1, ID_2, ID_3]) {
+          await store.addPerson({ ...trees.a, person: personOf(id, {}) });
+        }
+
+        for (const id of [PLACE_1, PLACE_2]) {
+          await store.addPlace({ ...trees.a, place: placeOf(id, {}) });
+        }
+
+        await store.addPerson({ ...trees.b, person: personOf(ID_4, {}) });
+        await store.addPlace({ ...trees.b, place: placeOf(PLACE_3, {}) });
+
+        return trees;
+      };
+
+      // PIN-03
+      it('reads back every field of a Pin dated ABT 1850', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+          const pin = pinOf(PIN_1, {
+            address: '1 Test Street',
+            date: 'ABT 1850',
+            eventType: 'baptism',
+            notes: 'Synthetic.',
+            sources: 'Synthetic register.',
+          });
+          const expected = { ...pin, version: 1 };
+
+          expect(pin.date.qualifier).toBe('ABT');
+          expect(await store.addPin({ ...a, pin })).toEqual({
+            ok: true,
+            value: expected,
+          });
+          expect(await store.findPin({ ...a, pinId: PIN_1 })).toEqual(expected);
+        });
+      });
+
+      // PIN-02
+      it('saves three Persons pinned to one Place', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+
+          for (const [pinId, personId] of [
+            [PIN_1, ID_1],
+            [PIN_2, ID_2],
+            [PIN_3, ID_3],
+          ]) {
+            const added = await store.addPin({
+              ...a,
+              pin: pinOf(pinId, { personId }),
+            });
+
+            expect(added.ok).toBe(true);
+          }
+
+          for (const pinId of [PIN_1, PIN_2, PIN_3]) {
+            expect((await store.findPin({ ...a, pinId }))?.placeId).toBe(
+              PLACE_1
+            );
+          }
+        });
+      });
+
+      // NFR-09
+      it('refuses a Pin whose Person or Place is in another Tree', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+
+          for (const fields of [
+            { personId: ID_4 },
+            { placeId: PLACE_3 },
+            { personId: '01900000-0000-7000-8000-0000000000ff' },
+            { placeId: '01900000-0000-7000-a000-0000000000ff' },
+          ]) {
+            expect(
+              await store.addPin({ ...a, pin: pinOf(PIN_1, fields) })
+            ).toEqual(NOT_FOUND);
+          }
+
+          expect(await store.findPin({ ...a, pinId: PIN_1 })).toBeUndefined();
+        });
+      });
+
+      // NFR-09
+      it('gives Account B the result of a Pin that does not exist', async () => {
+        await withStore(async store => {
+          const { a, b } = await withRows(store);
+
+          await store.addPin({ ...a, pin: pinOf(PIN_1) });
+
+          const cross = { accountId: b.accountId, treeId: a.treeId };
+
+          expect(await store.findPin({ ...cross, pinId: PIN_1 })).toEqual(
+            await store.findPin({ ...a, pinId: PIN_2 })
+          );
+          expect(await store.addPin({ ...cross, pin: pinOf(PIN_2) })).toEqual(
+            NOT_FOUND
+          );
+          expect(
+            await store.updatePin({
+              ...cross,
+              pin: pinOf(PIN_1, { eventType: 'death' }),
+              version: 1,
+            })
+          ).toEqual(NOT_FOUND);
+          expect((await store.findPin({ ...a, pinId: PIN_1 }))?.eventType).toBe(
+            'residence'
+          );
+          expect(await store.findPin({ ...a, pinId: PIN_2 })).toBeUndefined();
+        });
+      });
+
+      // NFR-09
+      it('keeps the same id apart in two Trees', async () => {
+        await withStore(async store => {
+          const { a, b } = await withRows(store);
+
+          await store.addPin({ ...a, pin: pinOf(PIN_1) });
+          await store.addPin({
+            ...b,
+            pin: pinOf(PIN_1, {
+              eventType: 'death',
+              personId: ID_4,
+              placeId: PLACE_3,
+            }),
+          });
+
+          expect((await store.findPin({ ...a, pinId: PIN_1 }))?.eventType).toBe(
+            'residence'
+          );
+          expect((await store.findPin({ ...b, pinId: PIN_1 }))?.eventType).toBe(
+            'death'
+          );
+        });
+      });
+
+      // NFR-09
+      it('ignores a repeated add with the same id', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+          const first = await store.addPin({ ...a, pin: pinOf(PIN_1) });
+          const again = await store.addPin({
+            ...a,
+            pin: pinOf(PIN_1, { eventType: 'death', personId: ID_2 }),
+          });
+
+          expect(again).toEqual(first);
+          expect(await store.findPin({ ...a, pinId: PIN_1 })).toEqual(
+            first.ok && first.value
+          );
+        });
+      });
+
+      // PIN-03
+      it('updates with the version read, and refuses a stale one', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+
+          await store.addPin({ ...a, pin: pinOf(PIN_1) });
+
+          const next = pinOf(PIN_1, {
+            address: 'New',
+            date: 'MAR 1851',
+            eventType: 'burial',
+            personId: ID_2,
+            placeId: PLACE_2,
+          });
+
+          expect(
+            await store.updatePin({ ...a, pin: next, version: 1 })
+          ).toEqual({ ok: true, value: { ...next, version: 2 } });
+          expect(
+            await store.updatePin({
+              ...a,
+              pin: pinOf(PIN_1, { eventType: 'death' }),
+              version: 1,
+            })
+          ).toEqual({ error: 'conflict', ok: false });
+          expect(await store.findPin({ ...a, pinId: PIN_1 })).toEqual({
+            ...next,
+            version: 2,
+          });
+          expect(
+            await store.updatePin({ ...a, pin: pinOf(PIN_2), version: 1 })
+          ).toEqual(NOT_FOUND);
+        });
+      });
+
+      // NFR-09
+      it('refuses an update to a Person or Place of another Tree', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+
+          await store.addPin({ ...a, pin: pinOf(PIN_1) });
+
+          for (const fields of [{ personId: ID_4 }, { placeId: PLACE_3 }]) {
+            expect(
+              await store.updatePin({
+                ...a,
+                pin: pinOf(PIN_1, fields),
+                version: 1,
+              })
+            ).toEqual(NOT_FOUND);
+          }
+
+          expect(await store.findPin({ ...a, pinId: PIN_1 })).toEqual({
+            ...pinOf(PIN_1),
+            version: 1,
+          });
+        });
+      });
+
+      // NFR-03
+      it('treats an id that is not a UUID as one that matches nothing', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+          const badTree = { accountId: a.accountId, treeId: MALFORMED_TREE };
+          const badId = { ...pinOf(PIN_1), id: 'nope' } as PinInput;
+          const badPerson = { ...pinOf(PIN_1), personId: 'nope' } as PinInput;
+          const badPlace = { ...pinOf(PIN_1), placeId: 'nope' } as PinInput;
+
+          expect(
+            await store.findPin({ ...a, pinId: 'nope' as PinId })
+          ).toBeUndefined();
+
+          for (const pin of [badId, badPerson, badPlace]) {
+            expect(await store.addPin({ ...a, pin })).toEqual(NOT_FOUND);
+            expect(await store.updatePin({ ...a, pin, version: 1 })).toEqual(
+              NOT_FOUND
+            );
+          }
+
+          expect(await store.addPin({ ...badTree, pin: pinOf(PIN_1) })).toEqual(
+            NOT_FOUND
+          );
+          expect(await store.findPin({ ...a, pinId: PIN_1 })).toBeUndefined();
+        });
+      });
+
+      // PIN-03
+      it('keeps one Pin for an id in either case', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+          const upper = PIN_1.toUpperCase();
+
+          // A cast skips the schema, which makes the id lower case first.
+          await store.addPin({
+            ...a,
+            pin: { ...pinOf(PIN_1), id: upper } as PinInput,
+          });
+          await store.addPin({
+            ...a,
+            pin: pinOf(PIN_1, { eventType: 'death' }),
+          });
+
+          expect(
+            (await store.findPin({ ...a, pinId: upper as PinId }))?.eventType
+          ).toBe('residence');
+        });
+      });
+
+      // NFR-09
+      it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
+        'gives conflict for the version %s',
+        async version => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+
+            await store.addPin({ ...a, pin: pinOf(PIN_1) });
+
+            expect(
+              await store.updatePin({ ...a, pin: pinOf(PIN_1), version })
+            ).toEqual({ error: 'conflict', ok: false });
+          });
+        }
+      );
+
+      // NFR-09
+      it('returns copies that a caller may change', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+          const input = pinOf(PIN_1);
+          const added = await store.addPin({ ...a, pin: input });
+          const found = await store.findPin({ ...a, pinId: PIN_1 });
+
+          for (const copy of [added.ok && added.value, found, input]) {
+            if (copy) {
+              copy.date.date1 = '1900';
+            }
+          }
+
+          expect(
+            (await store.findPin({ ...a, pinId: PIN_1 }))?.date.date1
+          ).toBe('1850');
         });
       });
     });

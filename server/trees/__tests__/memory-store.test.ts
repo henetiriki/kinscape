@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
 import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
+import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import { placeInputSchema } from '@ks/lib/domain/places/schemas.mts';
 import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
 import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
@@ -69,6 +70,14 @@ describe('memoryStore seed', () => {
       latitude: -33.9,
       longitude: 18.4,
     });
+    const PIN = pinInputSchema.parse({
+      date: '1850',
+      eventType: 'residence',
+      id: '01900000-0000-7000-b000-0000000000d1',
+      personId: PERSON.id,
+      placeId: PLACE.id,
+    });
+    const NOT_FOUND = { error: 'not-found', ok: false };
     const scope = { accountId: ACCOUNT, treeId: TREE_A };
     const build = () =>
       memoryStore(
@@ -134,6 +143,11 @@ describe('memoryStore seed', () => {
       expect(
         await store.updatePlace({ ...scope, place: PLACE, version: 1 })
       ).toEqual({ error: 'not-found', ok: false });
+      expect(await store.addPin({ ...scope, pin: PIN })).toEqual(NOT_FOUND);
+      expect(await store.updatePin({ ...scope, pin: PIN, version: 1 })).toEqual(
+        NOT_FOUND
+      );
+      expect(await store.findPin({ ...scope, pinId: PIN.id })).toBeUndefined();
       expect(await store.listPersons(scope)).toEqual(before);
       expect(await store.listRelationships(scope)).toEqual(relsBefore);
       expect(await store.listPlaces(scope)).toEqual([]);

@@ -1,11 +1,13 @@
 import type {
   AccountId,
   PersonId,
+  PinId,
   PlaceId,
   RelationshipId,
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '@ks/lib/domain/persons/types.ts';
+import type { Pin, PinInput } from '@ks/lib/domain/pins/types.ts';
 import type { Place, PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type {
   Relationship,
@@ -54,6 +56,14 @@ export type TreeStore = {
     input: { person: PersonInput } & TreeScope
   ) => Promise<Person | undefined>;
   /**
+   * Saves a new Pin at version 1 and returns it. A second call with the same id changes nothing and
+   * returns the Pin already saved. `not-found` if the Person or the Place is not in the Tree, or the
+   * Account may not access the Tree, or an id is not a UUID.
+   */
+  addPin: (
+    input: { pin: PinInput } & TreeScope
+  ) => Promise<Result<Pin, 'not-found'>>;
+  /**
    * Saves a new Place at version 1 and returns it. A second call with the same id changes nothing
    * and returns the Place already saved. `not-found` if the Account may not access the Tree or the
    * id is not a UUID.
@@ -78,6 +88,8 @@ export type TreeStore = {
   findPerson: (
     input: { personId: PersonId } & TreeScope
   ) => Promise<Person | undefined>;
+  /** The Pin, or undefined if missing, in another Tree or in a Tree the Account may not access. */
+  findPin: (input: { pinId: PinId } & TreeScope) => Promise<Pin | undefined>;
   /** The Place, or undefined if missing, in another Tree or in a Tree the Account may not access. */
   findPlace: (
     input: { placeId: PlaceId } & TreeScope
@@ -109,6 +121,14 @@ export type TreeStore = {
   updatePerson: (
     input: { person: PersonInput; version: number } & TreeScope
   ) => Promise<Result<Person, 'conflict' | 'not-found'>>;
+  /**
+   * Replaces every field of the Pin, including its Person and Place, if `version` is the one saved.
+   * `conflict` for a stale version; `not-found` for a missing Pin, a Person or Place that is not in
+   * the Tree, another Account's Tree or an id that isn't a UUID.
+   */
+  updatePin: (
+    input: { pin: PinInput; version: number } & TreeScope
+  ) => Promise<Result<Pin, 'conflict' | 'not-found'>>;
   /**
    * Replaces the latitude, longitude and precision if `version` is the one saved. `conflict` for a
    * stale version; `not-found` for a missing Place, another Account's Tree or an id that isn't a UUID.

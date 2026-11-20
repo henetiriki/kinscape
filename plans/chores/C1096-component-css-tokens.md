@@ -65,6 +65,7 @@ The `.action` rule of `Toast.module.css` sets `--type-label-size` and `--type-la
 | `docs/architecture.md`                                                                             | changed       | The rule in the "Tokens are the one source" row               |
 | `docs/code-rules.md`                                                                               | changed       | One Code smells line                                          |
 | `app/components/forms/TextAreaField.module.css`                                                    | changed       | Line 42: `padding: 10px var(--space-12)`                      |
+| `app/components/forms/__tests__/TextAreaField.test.tsx`                                            | changed       | Two assertions: `padding: 10px var(--space-12)`               |
 | `app/components/actions/KeyHint.module.css`                                                        | changed       | Line 8: `var(--type-mono-line)`; line 9: `2px var(--space-4)` |
 | `features/people/components/PersonForm.module.css`                                                 | changed       | Line 43: `column-gap: var(--space-40)`                        |
 | `app/components/actions/Chip.module.css`                                                           | changed       | Line 15, as the table says                                    |
@@ -117,3 +118,4 @@ The tech lead builds the plan in a local Claude Code session with a signed-in ac
 ## Deviations
 
 - The D3 answer names lines 30 to 32 of `Toast.module.css`. The size, weight and line height of `.action` are lines 31, 32 and 34. Line 30 is the font family. The build changes those three lines.
+- `TextAreaField.test.tsx` asserts the text `padding: 10px 12px`, so the item 3 change breaks two tests. The build stopped, as the failing-tests rule says. The tech lead chose to list the test and change both assertions to `padding: 10px var(--space-12)`.

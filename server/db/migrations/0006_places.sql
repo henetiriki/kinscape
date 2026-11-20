@@ -1,6 +1,6 @@
 -- PIN-02, NFR-09. A Place in one Tree: a point and how exactly it is known. A double precision
--- column holds a JavaScript number exactly. The range of latitude and longitude is checked in the
--- schema, not here.
+-- column holds a JavaScript number exactly. The schema checks the range of latitude and
+-- longitude, not this table.
 create table place (
   tree_id uuid not null references tree (id) on delete cascade,
   id uuid not null,

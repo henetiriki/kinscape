@@ -1005,7 +1005,7 @@ export const runTreeStoreContract = (
 
           const upper = REL_1.toUpperCase();
 
-          // A cast skips the schema, which would make the id lower case first.
+          // A cast skips the schema, which makes the id lower case first.
           await store.addRelationship({
             ...a,
             relationship: {
@@ -1279,7 +1279,7 @@ export const runTreeStoreContract = (
           const { a } = await twoTrees(store);
           const upper = PLACE_1.toUpperCase();
 
-          // A cast skips the schema, which would make the id lower case first.
+          // A cast skips the schema, which makes the id lower case first.
           await store.addPlace({
             ...a,
             place: { ...placeOf(PLACE_1, {}), id: upper } as PlaceInput,

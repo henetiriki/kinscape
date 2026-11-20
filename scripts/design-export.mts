@@ -912,10 +912,10 @@ export const inlineStyles = (tokens: string[]): void => {
 };
 
 /**
- * Runs in the page, after `inlineStyles` and before `pageHtml`: keeps only the `clip` of the
- * viewport. The page moves into a box of the viewport size, placed at `-x`, `-y` in an outer box of
- * the clip size that hides the rest. Each value is px, so `snapshotProblems` passes. Uses nothing
- * from the module, as `fillTemplate`.
+ * Runs in the page, after `inlineStyles` and before `pageHtml`. It keeps only the `clip` of the
+ * viewport. The page moves into an inner box of the viewport size. The inner box sits at `-x`, `-y`
+ * in an outer box of the clip size. The outer box hides the rest. Each value is px, so
+ * `snapshotProblems` passes. The function uses nothing from the module, as `fillTemplate` does.
  */
 export const clipPage = ({
   clip,
@@ -927,7 +927,7 @@ export const clipPage = ({
   const outer = document.createElement('div');
   const inner = document.createElement('div');
 
-  // An element with `position: fixed` keeps the viewport as its containing block, so the clip would not move it.
+  // The clip does not move an element with `position: fixed`. Its containing block is the viewport.
   for (const element of document.body.querySelectorAll('*')) {
     if (getComputedStyle(element).position === 'fixed') {
       throw new Error('The clip does not move an element with position: fixed');

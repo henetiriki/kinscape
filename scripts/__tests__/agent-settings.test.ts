@@ -564,6 +564,8 @@ describe('the Bash hook', () => {
     ['git diff a b | grep x | head -40', 'git grep options'],
     ['git status 2>&1 | git log', '--jq'],
     ['git status\ngit log | git show', '--jq'],
+    // The heredoc of a commit message is not skipped by the other rows: only the pipe row skips it.
+    ['git commit -m "$(cat <<\'EOF\'\nDeny "a | b"\nEOF\n)"; cat x', 'Read'],
     // A GraphQL query with a mutation is a write, with or without `\"` inside it.
     ['gh api graphql -f query="mutation { x(a: \\"b\\") { c } }"', 'read only'],
   ])('denies %j, naming the alternative', (command, alternative) => {
@@ -595,6 +597,10 @@ describe('the Bash hook', () => {
     'git grep -E a\\|b -- x',
     "gh issue view 1 --json x --jq '.a | .b'",
     'git status || git log',
+    // Claude Code's commit form with a quoted `|` in the message: the quote step pairs the message's
+    // `"` with the opener's, so the `|` shows. The pipe row skips a call that holds `$(cat <<`.
+    'git commit -m "$(cat <<\'EOF\'\nDeny "a | b"\nEOF\n)"',
+    'git commit -m "$(cat <<\'EOF\'\nFix\n\n"x" | "y"\nEOF\n)"',
     "gh pr comment 1 --body-file - <<'EOF'\n| a | b |\n| - | - |\nEOF",
     'node scripts/run.mts',
     'npm run format',

@@ -66,6 +66,17 @@ The test "Tab visits each enabled control with a 2px brand ring" in `gallery-loo
 
 **Answer: A** (@henetiriki)
 
+**D9 · The focus ring of a `TextLink` that is a block** · Decides: Tech lead
+
+A link that is a flex item is a block. Its ring was 22px tall and item-wide. With D7 it is 17px tall and text-wide. Each other gallery screenshot equals `main`.
+
+- **A.** Accept the ring on the text. Cost: `TextLink-1440.png` changes.
+- **B.** Revert the fix, and file a Bug (D6 option A).
+- **C.** A new `TextLink` prop keeps the block ring. Cost: an edit at each block use.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                                         | New / changed | What                                                                                                                              |
@@ -88,6 +99,7 @@ The test "Tab visits each enabled control with a 2px brand ring" in `gallery-loo
 | `TextLink.tsx`, `TextLink.module.css`, `focus.module.css`    | changed       | D6, D7: the label `span`, the anchor padding, and `ringInner`. Under `app/components/` in `actions/` and `foundation/`.           |
 | `app/components/actions/__tests__/TextLink.test.tsx`         | changed       | D7: the padding, the ring on the `span`, and the button form.                                                                     |
 | `e2e/gallery-looks.spec.ts`                                  | changed       | D8: the ring test reads the first child of a focused anchor. No other line changes (D6).                                          |
+| `playwright.config.ts`                                       | changed       | The `chromium` project ignores `gallery-textlink.spec.ts`, as it ignores `gallery-looks.spec.ts`.                                 |
 | `design/canvas/project/Map.dc.html`                          | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/canvas/project/Map-phone-states.dc.html`             | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/source/map-sources*.html`, `design/map-sources*.jpg` | changed       | The workflow writes them.                                                                                                         |
@@ -114,7 +126,7 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 - **The bundle.** If `SourcesList` cannot mount, stop and comment the error on #893. The PR states the size of `bundle.js` before and after.
 - **The phone sheet.** If the grid box does not let the body scroll, the sheet runs off the board. The build compares `map-sources-phone.jpg` with `main` before it pushes.
 - **A later change to `data/sources.json`.** It changes the card image and both JPGs, and the board test asks for a board edit.
-- **The `TextLink` fix.** It reaches each `TextLink` in the app.
+- **The `TextLink` fix.** It reaches each `TextLink`.
 
 ## Proof
 
@@ -136,3 +148,11 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 
 - A card for the modal `SourcesDialog`, the credits line (#1074) and the scale bar: the Spec's Out of scope.
 - Bold names for the credits sentences: #1074.
+
+## Deviations
+
+- `TextLink` changes ([D6 to D9](#decisions)), which the first approved plan lacked.
+- The anchor takes a negative `margin-block`. Without it, a flex-item link grows from 22px to 51px.
+- The padding is `round(up, …, 1px)`. Half a pixel moves the text of a small link by 1px.
+- The D8 test reads the first child only where the anchor has no outline: `ArrowLink` keeps its own ring.
+- The `preview mounts every state` test counts figures: each state renders a table and a list.

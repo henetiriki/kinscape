@@ -17,10 +17,14 @@
   composes: ring from '@ks/app/components/foundation/focus.module.css';
 }
 
-/* Padding gives each line of a wrapped link a 44px hit area. It adds no height to the line, so no text moves. */
+/*
+ * Padding gives each line of a wrapped link a 44px hit area. It adds no height to a line of text.
+ * A link that is a flex item is a block: there the margin takes the padding back, so the row keeps its height.
+ */
 .anchor {
   composes: ringInner from '@ks/app/components/foundation/focus.module.css';
-  padding-block: calc((var(--size-touch) - 1em) / 2);
+  margin-block: calc(-1 * round(up, (var(--size-touch) - 1em) / 2, 1px));
+  padding-block: round(up, (var(--size-touch) - 1em) / 2, 1px);
 }
 
 .anchor > span {

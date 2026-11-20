@@ -40,13 +40,23 @@ it('gives an enabled link a centred touch-size hit area, and the disabled text n
 it('gives each line of an anchor a touch-size hit area, and the button and disabled text none', () => {
   const anchor = /\.anchor \{[^}]*\}/.exec(css)![0];
 
+  // A whole pixel: half a pixel of padding moves the text of a small link by 1px.
   expect(anchor).toContain(
-    'padding-block: calc((var(--size-touch) - 1em) / 2)'
+    'padding-block: round(up, (var(--size-touch) - 1em) / 2, 1px)'
   );
   expect(css).toContain(
     "composes: ringInner from '@ks/app/components/foundation/focus.module.css'"
   );
   expect(css).not.toMatch(/\.textLink \{[^}]*padding/);
+});
+
+// NFR-05: a link that is a flex item is a block, and its padding would add height to the row.
+it('takes the padding of an anchor back as a margin, so a link that is a block keeps its height', () => {
+  const anchor = /\.anchor \{[^}]*\}/.exec(css)![0];
+
+  expect(anchor).toContain(
+    'margin-block: calc(-1 * round(up, (var(--size-touch) - 1em) / 2, 1px))'
+  );
 });
 
 // NFR-06

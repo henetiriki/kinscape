@@ -44,6 +44,10 @@ const screenOnlyProblems = (
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
+  'draft-pin-fan',
+  'draft-pin-marker',
+  'draft-pin-popup',
+  'draft-pin-popup-phone',
   'fuzzy-date-readings',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
@@ -67,6 +71,13 @@ const NO_ENTRY = [
   'map-phone-collapsed',
   'map-phone-filters',
   'map-phone-layers',
+  'map-pin-count',
+  'map-pin-fan',
+  'map-pin-fan-phone',
+  'map-pin-popup',
+  'map-pin-popup-failed',
+  'map-pin-popup-loading',
+  'map-pin-popup-phone',
   'map-sources',
   'map-sources-phone',
   'map-style',

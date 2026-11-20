@@ -2,7 +2,7 @@ A problem with the app that doesn't stop the map, with one action.
 
 ## Design
 
-- **Banner:** `--ink` background, white text, top centre of the map, with one action. For problems that don't block the map.
+- **Banner:** `--ink` background, white text, the `floating` shadow, top centre of the map, with one action. For problems that don't block the map.
 
 ## Props
 

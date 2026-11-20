@@ -1,7 +1,7 @@
 # Plan: C1090: Order plans/README.md by the plan lifecycle
 
 - **Spec:** #1090
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -36,7 +36,7 @@ The table:
 - **B.** Cite `item-types`. The same two lines change, but the table does not say who builds a hand-back.
 - **Other:** your own.
 
-Recommended: A, because the reply tells who builds the PR, and the `hand-back` rule says that.
+**Answer: A** (@henetiriki)
 
 **D2 · The check for a rule with no anchor** · Decides: Tech lead
 
@@ -46,7 +46,7 @@ Recommended: A, because the reply tells who builds the PR, and the `hand-back` r
 - **B.** Delete the check and its fixture test. About 10 test lines go.
 - **Other:** your own.
 
-Recommended: A, because a test then proves the heading-order done check. B loses that test, and the review checks the order.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

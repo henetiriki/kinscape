@@ -24,7 +24,7 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 ## Plans
 
-One plan per Spec, Bug or Chore, under `plans/` (paths: the [plans-committed-first rule](plans/README.md#plans-committed-first) and the [chores rule](plans/README.md#chores)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read these files:
+One plan per Spec, Bug or Chore, under `plans/` (names and paths: the [item-types table](plans/README.md#item-types)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read these files:
 
 - [`plans/README.md`](plans/README.md)
 - [`plans/TEMPLATE.md`](plans/TEMPLATE.md)

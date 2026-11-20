@@ -1,7 +1,7 @@
 # Plan: C1078: Cut avoidable agent permission denials from audit #1026
 
 - **Spec:** #1078 (also closes #1026)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -31,7 +31,7 @@ The allow lists get the forms in "What to change". `review.md` gets one Commands
 - **B.** Do not allow `wc`. The review counts lines with Read. Two done checks change: the `review-settings.json` allow check and the audit check for no `wc` row. The build rewords them in the issue.
 - **Other:** your own.
 
-Recommended: B, because a command that the review cannot run cannot leak. A keeps the checks, but each missed form of the option leaks the variables in a public comment.
+**Answer: B** (@henetiriki)
 
 ## Alternatives considered
 

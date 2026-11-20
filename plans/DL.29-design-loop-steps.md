@@ -63,3 +63,7 @@ No step changes a design system input, so the steps of [Changing the design syst
 ## Out of scope
 
 The Spec's "Out of scope / carried forward" list holds.
+
+## Deviations
+
+- The **Where** line of `design/CANVAS.md` also changes: "The refresh and the workflow in steps 6 and 7 each commit" becomes "The refresh in step 5, the session in step 7 and the workflow each commit". The new step 7 does not run the refresh, so the old text was wrong. The review found it (f8b9a61a).

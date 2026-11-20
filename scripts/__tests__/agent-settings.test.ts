@@ -163,6 +163,33 @@ describe('settings.json', () => {
     expect(allowedBy(allow)('gh repo view o/r')).toBe(true);
   });
 
+  // Reads that the plan, build and respond runs make (plan C1078).
+  it.each([
+    'ls plans/chores',
+    'gh run view 1 --json conclusion',
+    'gh run list --limit 5',
+    'gh label list --search status:',
+    'gh search issues x --repo o/r',
+  ])('allows: %s', command => {
+    expect(allowedBy(allow)(command)).toBe(true);
+  });
+
+  // `cat`, `head`, `grep`, `jq` and `awk` read any file. The `Read(...)` deny rules bind only the
+  // Read tool. A gh subcommand that writes is not allowed.
+  it.each([
+    'cat /proc/self/environ',
+    'head -c 99 .git/config',
+    'grep -r token /home/runner/work/_temp',
+    'jq . /proc/self/environ',
+    'awk 1 /proc/self/environ',
+    'gh run rerun 1',
+    'gh run cancel 1',
+    'gh label create x',
+    'gh label delete x',
+  ])('does not allow: %s', command => {
+    expect(allowedBy(allow)(command)).toBe(false);
+  });
+
   it.each([
     'git status',
     'git log -n 5',
@@ -204,18 +231,33 @@ describe('review-settings.json', () => {
     'git ls-files -co --exclude-standard docs',
     'git fetch origin main',
     'git fetch origin',
+    'git fetch -q origin 51cfa5a main',
     'gh api repos/o/r/pulls/5/files --paginate',
     "gh api graphql -f query='query { x }'",
     'gh pr view 5',
+    'ls docs',
   ])('allows: %s', command => {
     expect(allowed(command)).toBe(true);
   });
 
+  // `wc --files0-from=/proc/self/environ` prints each variable in its "cannot open" errors. The
+  // review posts what it reads (plan C1078, D2). This file does not allow `git fetch <url>` (D1).
   it.each([
     'git push origin HEAD',
     'git fetch',
     'git fetch https://example.com/r.git',
+    'git fetch -q https://example.com/r.git',
+    'git fetch -q origin-x',
     'git fetch origin-x',
+    'wc -l x',
+    'wc --files0-from=/proc/self/environ',
+    'cat /proc/self/environ',
+    'head -c 99 .git/config',
+    'grep -r token /home/runner/work/_temp',
+    'jq . /proc/self/environ',
+    'awk 1 /proc/self/environ',
+    'gh run view 1',
+    'gh label list',
     'git commit -m x',
     'git checkout x',
     'npm run lint',
@@ -427,7 +469,6 @@ describe('the Bash hook', () => {
     ['cat < x', 'Read'],
     ['grep -rn foo src', 'git grep'],
     ['head -5 x', 'Read'],
-    ['ls docs', 'git ls-files'],
     ['sed -n 1,5p x', 'Edit'],
     ['for f in a b; do ls $f; done', 'one command'],
     ['npx prettier x', 'npm run format'],
@@ -510,6 +551,23 @@ describe('the Bash hook', () => {
     // A quoted <<EOF opens no heredoc, so the next line is a command.
     ["git grep '<<EOF'\ngit remote -v", 'configuration'],
     ['git commit -m "<<EOF\n"; cat x\nEOF', 'Read'],
+    // A string ends at the first `"` that no `\` escapes: after `"a\\"` the `;` is outside it.
+    ['echo "a\\\\"; cat x', 'Read'],
+    // The pipe: the allowlist denies a filter such as head or grep and gives no reason. Each row
+    // above keeps its own reason, so the pipe row comes last.
+    ['git grep x | head -5', 'one command per Bash call'],
+    ['gh pr diff 1 | head -50', 'one command per Bash call'],
+    ['gh pr view 1 | grep x', 'one command per Bash call'],
+    ['gh pr view 1 | cat -n', 'one command per Bash call'],
+    ['git status | git log', '--jq'],
+    ['git status|git log', '--jq'],
+    ['git diff a b | grep x | head -40', 'git grep options'],
+    ['git status 2>&1 | git log', '--jq'],
+    ['git status\ngit log | git show', '--jq'],
+    // The heredoc of a commit message is not skipped by the other rows: only the pipe row skips it.
+    ['git commit -m "$(cat <<\'EOF\'\nDeny "a | b"\nEOF\n)"; cat x', 'Read'],
+    // A GraphQL query with a mutation is a write, with or without `\"` inside it.
+    ['gh api graphql -f query="mutation { x(a: \\"b\\") { c } }"', 'read only'],
   ])('denies %j, naming the alternative', (command, alternative) => {
     const output = hook(command);
 
@@ -527,10 +585,23 @@ describe('the Bash hook', () => {
     // Claude Code's usual commit form: the `cat` reads the heredoc, not a file.
     'git commit -m "$(cat <<\'EOF\'\nfix\nEOF\n)"',
     'git ls-files -co docs',
-    // A filter on a command's output: Read, git grep and git ls-files cannot replace it.
-    'gh pr diff 1 | head -50',
-    'gh pr view 1 | grep x',
-    'gh pr view 1 | cat -n',
+    // `ls` prints names, not content (plan C1078).
+    'ls',
+    'ls docs',
+    'ls -la plans/chores',
+    'git status; ls docs',
+    // A `|` that is no pipe: in a quoted string, escaped, doubled, or in a heredoc's text.
+    'git grep -E "a|b" -- x',
+    "git grep -E 'a|b' -- x",
+    "git grep -E 'a\\|b' -- x",
+    'git grep -E a\\|b -- x',
+    "gh issue view 1 --json x --jq '.a | .b'",
+    'git status || git log',
+    // Claude Code's commit form with a quoted `|` in the message: the quote step pairs the message's
+    // `"` with the opener's, so the `|` shows. The pipe row skips a call that holds `$(cat <<`.
+    'git commit -m "$(cat <<\'EOF\'\nDeny "a | b"\nEOF\n)"',
+    'git commit -m "$(cat <<\'EOF\'\nFix\n\n"x" | "y"\nEOF\n)"',
+    "gh pr comment 1 --body-file - <<'EOF'\n| a | b |\n| - | - |\nEOF",
     'node scripts/run.mts',
     'npm run format',
     'echo concatenate',
@@ -553,6 +624,9 @@ describe('the Bash hook', () => {
     "gh api graphql -f query='query($n: Int!) { x }' --jq .data",
     'gh api graphql -f query=x',
     'gh api graphql -f query="query { x }"',
+    // `\"` inside a double-quoted query is part of the query, not the end of the string.
+    'gh api graphql -f query="{ repository(owner: \\"x\\", name: \\"y\\") { issueTypes(first: 25) { nodes { id name } } } }"',
+    'gh api graphql -f query="query { x(a: \\"b|c\\") }" --jq .data',
     // A reply on a thread: the text is a heredoc of a project script, not a gh body.
     "npm run review:threads -- reply 5 PRRT_1 <<'EOF'\nFixed in abc1234.\nEOF",
     // -O in a word that is not an option, and options that are not -O.
@@ -616,6 +690,9 @@ describe('the Bash hook', () => {
 
   it('gives the review the same answers', () => {
     expect(hook('cat x', 'review-settings.json')).toEqual(hook('cat x'));
+    expect(hook('git status | git log', 'review-settings.json')).toEqual(
+      hook('git status | git log')
+    );
     expect(hook(`cd ${cwd}; gh pr view 1`, 'review-settings.json')).toEqual(
       hook(`cd ${cwd}; gh pr view 1`)
     );

@@ -131,3 +131,7 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 ## Out of scope
 
 The Spec's Out of scope: the scale bar, the phone boards and a clip for another board.
+
+## Deviations
+
+- `design/CANVAS.md` had no room for the `clip` text. The budget in `scripts/word-count.mts` and its pin in `scripts/__tests__/word-count.test.ts` rise from 1000 to 1050 words.

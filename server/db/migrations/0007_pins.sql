@@ -1,5 +1,5 @@
 -- PIN-02, PIN-03, NFR-09. A Pin joins a Person to a Place on a date. The composite foreign keys
--- keep a row from pointing into another Tree. The date is required, so its columns are not null,
+-- so that a row cannot point into another Tree. The date is required, so its columns are not null,
 -- except date2, which only a range uses. The schema checks the length of address, sources and notes.
 create table pin (
   tree_id uuid not null references tree (id) on delete cascade,

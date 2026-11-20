@@ -78,7 +78,8 @@ const placeOf = (id: string, fields: Record<string, unknown>): PlaceInput =>
     ...fields,
     id,
   });
-const NOT_FOUND = { error: 'not-found', ok: false };
+
+export const NOT_FOUND = { error: 'not-found', ok: false };
 const NO_TREE: SeedAccount = {
   id: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
   issuer: 'test',
@@ -1379,7 +1380,7 @@ export const runTreeStoreContract = (
         return trees;
       };
 
-      // PIN-03
+      // PIN-02, PIN-04
       it('reads back every field of a Pin dated ABT 1850', async () => {
         await withStore(async store => {
           const { a } = await withRows(store);
@@ -1401,7 +1402,7 @@ export const runTreeStoreContract = (
         });
       });
 
-      // PIN-02
+      // PIN-06
       it('saves three Persons pinned to one Place', async () => {
         await withStore(async store => {
           const { a } = await withRows(store);
@@ -1517,7 +1518,7 @@ export const runTreeStoreContract = (
         });
       });
 
-      // PIN-03
+      // PIN-02
       it('updates with the version read, and refuses a stale one', async () => {
         await withStore(async store => {
           const { a } = await withRows(store);
@@ -1603,7 +1604,7 @@ export const runTreeStoreContract = (
         });
       });
 
-      // PIN-03
+      // PIN-02
       it('keeps one Pin for an id in either case', async () => {
         await withStore(async store => {
           const { a } = await withRows(store);

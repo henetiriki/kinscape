@@ -5,7 +5,10 @@ import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
 import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import { placeInputSchema } from '@ks/lib/domain/places/schemas.mts';
 import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
-import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
+import {
+  NOT_FOUND,
+  runTreeStoreContract,
+} from '@ks/server/trees/__tests__/contract.ts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const ACCOUNT = parseAccountId('00000000-0000-4000-8000-0000000000a1')!;
@@ -77,7 +80,6 @@ describe('memoryStore seed', () => {
       personId: PERSON.id,
       placeId: PLACE.id,
     });
-    const NOT_FOUND = { error: 'not-found', ok: false };
     const scope = { accountId: ACCOUNT, treeId: TREE_A };
     const build = () =>
       memoryStore(

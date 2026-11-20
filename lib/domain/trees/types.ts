@@ -123,8 +123,9 @@ export type TreeStore = {
   ) => Promise<Result<Person, 'conflict' | 'not-found'>>;
   /**
    * Replaces every field of the Pin, including its Person and Place, if `version` is the one saved.
-   * `conflict` for a stale version; `not-found` for a missing Pin, a Person or Place that is not in
-   * the Tree, another Account's Tree or an id that isn't a UUID.
+   * `conflict` for a stale version.
+   * `not-found` for a missing Pin, a Person or Place that is not in the Tree, another Account's
+   * Tree or an id that isn't a UUID.
    */
   updatePin: (
     input: { pin: PinInput; version: number } & TreeScope

@@ -5,6 +5,7 @@ import { sql } from 'kysely';
 import type { FuzzyDate } from '#ks/lib/domain/dates/types.ts';
 import type { PersonId } from '#ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '#ks/lib/domain/persons/types.ts';
+import type { Place, PlaceInput } from '#ks/lib/domain/places/types.ts';
 import type {
   Relationship,
   RelationshipInput,
@@ -20,6 +21,7 @@ import {
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
@@ -129,6 +131,24 @@ const relationshipOf = (
   };
 };
 
+const placeOf = (row: Selectable<Database['place']>): Place => ({
+  id: row.id,
+  latitude: row.latitude,
+  longitude: row.longitude,
+  precision: row.precision,
+  version: row.version,
+});
+
+/** The columns a save writes, apart from the Tree id and the id. */
+const placeFieldsOf = (place: PlaceInput) => ({
+  latitude: place.latitude,
+  longitude: place.longitude,
+  precision: place.precision,
+});
+
+const selectPlace = (db: Db, { treeId }: TreeScope) =>
+  db.selectFrom('place').selectAll().where('treeId', '=', treeId);
+
 const selectRelationship = (db: Db, { treeId }: TreeScope) =>
   db.selectFrom('relationship').selectAll().where('treeId', '=', treeId);
 
@@ -221,6 +241,25 @@ export const databaseStore = (db: Db): TreeStore => ({
         .executeTakeFirstOrThrow()
     );
   },
+  addPlace: async ({ place, ...scope }) => {
+    if (!(await reaches(db, scope, place.id))) {
+      return err('not-found');
+    }
+
+    await db
+      .insertInto('place')
+      .values({ ...placeFieldsOf(place), id: place.id, treeId: scope.treeId })
+      .onConflict(conflict => conflict.columns(['treeId', 'id']).doNothing())
+      .execute();
+
+    return ok(
+      placeOf(
+        await selectPlace(db, scope)
+          .where('id', '=', place.id)
+          .executeTakeFirstOrThrow()
+      )
+    );
+  },
   addRelationship: async ({ relationship, ...scope }) => {
     const ends = endsOf(relationship);
 
@@ -268,6 +307,15 @@ export const databaseStore = (db: Db): TreeStore => ({
 
     return row === undefined ? undefined : personOf(row);
   },
+  findPlace: async ({ placeId, ...scope }) => {
+    const row = (await reaches(db, scope, placeId))
+      ? await selectPlace(db, scope)
+          .where('id', '=', placeId)
+          .executeTakeFirst()
+      : undefined;
+
+    return row === undefined ? undefined : placeOf(row);
+  },
   findRelationship: async ({ relationshipId, ...scope }) => {
     const row = (await reaches(db, scope, relationshipId))
       ? await selectRelationship(db, scope)
@@ -309,6 +357,12 @@ export const databaseStore = (db: Db): TreeStore => ({
             .execute()
         ).map(personOf)
       : [],
+  listPlaces: async scope =>
+    (await reaches(db, scope))
+      ? (
+          await selectPlace(db, scope).orderBy('id').limit(MAX_PLACES).execute()
+        ).map(placeOf)
+      : [],
   listRelationships: async scope =>
     (await reaches(db, scope))
       ? (
@@ -346,6 +400,39 @@ export const databaseStore = (db: Db): TreeStore => ({
     // Zero rows: the Person is missing, or its version changed.
     const saved = await selectPerson(db, scope)
       .where('id', '=', person.id)
+      .select('id')
+      .executeTakeFirst();
+
+    return err(saved === undefined ? 'not-found' : 'conflict');
+  },
+  updatePlace: async ({ place, version, ...scope }) => {
+    if (!(await reaches(db, scope, place.id))) {
+      return err('not-found');
+    }
+
+    // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
+    const row = isVersion(version)
+      ? await db
+          .updateTable('place')
+          .set({
+            ...placeFieldsOf(place),
+            updatedAt: sql`now()`,
+            version: sql`version + 1`,
+          })
+          .where('treeId', '=', scope.treeId)
+          .where('id', '=', place.id)
+          .where('version', '=', version)
+          .returningAll()
+          .executeTakeFirst()
+      : undefined;
+
+    if (row !== undefined) {
+      return ok(placeOf(row));
+    }
+
+    // Zero rows: the Place is missing, or its version changed.
+    const saved = await selectPlace(db, scope)
+      .where('id', '=', place.id)
       .select('id')
       .executeTakeFirst();
 

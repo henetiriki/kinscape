@@ -4,11 +4,13 @@ import type { Qualifier } from '@ks/lib/domain/dates/types.ts';
 import type {
   AccountId,
   PersonId,
+  PlaceId,
   RelationshipId,
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types.ts';
 import type { Sex } from '@ks/lib/domain/persons/types.ts';
+import type { PlacePrecision } from '@ks/lib/domain/places/types.ts';
 import type { ParentSubtype } from '@ks/lib/domain/relationships/types.ts';
 
 /** Tables as Kysely sees them: camelCase, mapped to snake_case by `CamelCasePlugin`. */
@@ -33,6 +35,16 @@ export type Database = {
     version: Generated<number>;
   } & FuzzyDateColumnsOf<'birth'> &
     FuzzyDateColumnsOf<'death'>;
+  place: {
+    createdAt: Generated<Date>;
+    id: PlaceId;
+    latitude: number;
+    longitude: number;
+    precision: PlacePrecision;
+    treeId: TreeId;
+    updatedAt: Generated<Date>;
+    version: Generated<number>;
+  };
   relationship: {
     createdAt: Generated<Date>;
     id: RelationshipId;

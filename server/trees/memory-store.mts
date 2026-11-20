@@ -3,10 +3,12 @@ import { randomUUID } from 'node:crypto';
 import type {
   AccountId,
   PersonId,
+  PlaceId,
   RelationshipId,
   TreeId,
 } from '#ks/lib/domain/ids/types.ts';
 import type { Person } from '#ks/lib/domain/persons/types.ts';
+import type { Place } from '#ks/lib/domain/places/types.ts';
 import type {
   Relationship,
   RelationshipInput,
@@ -21,10 +23,12 @@ import type {
 import {
   parseAccountId,
   parsePersonId,
+  parsePlaceId,
   parseRelationshipId,
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
@@ -38,8 +42,8 @@ const identityOf = (issuer: string, subject: string) =>
 
 /**
  * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
- * A seed Tree may hold People and Relationships, saved at version 1. The four writes refuse a Tree
- * in `readOnly` as they refuse a Tree the Account may not access. The two list reads of a Tree in
+ * A seed Tree may hold People and Relationships, saved at version 1. The six writes refuse a Tree
+ * in `readOnly` as they refuse a Tree the Account may not access. The three list reads of a Tree in
  * `failing` throw.
  */
 export const memoryStore = (
@@ -52,6 +56,7 @@ export const memoryStore = (
   const links = new Map<AccountId, Set<TreeId>>();
   const persons = new Map<TreeId, Map<PersonId, Person>>();
   const relationships = new Map<TreeId, Map<RelationshipId, Relationship>>();
+  const places = new Map<TreeId, Map<PlaceId, Place>>();
 
   for (const { id, issuer, subject, trees: owned } of seed) {
     accounts.set(identityOf(issuer, subject), id);
@@ -102,12 +107,19 @@ export const memoryStore = (
     return rows;
   };
 
-  /** The Relationships of a Tree the Account may access; undefined otherwise. */
-  const relationshipsOf = (scope: TreeScope) =>
+  /** The rows of a Tree in `table` if the Account may access the Tree; undefined otherwise. */
+  const rowsOf = <Id, Row>(
+    table: Map<TreeId, Map<Id, Row>>,
+    scope: TreeScope
+  ) =>
     personsOf(scope) === undefined
       ? undefined
-      : (relationships.get(scope.treeId) ??
-        relationships.set(scope.treeId, new Map()).get(scope.treeId)!);
+      : (table.get(scope.treeId) ??
+        table.set(scope.treeId, new Map()).get(scope.treeId)!);
+
+  const relationshipsOf = (scope: TreeScope) => rowsOf(relationships, scope);
+
+  const placesOf = (scope: TreeScope) => rowsOf(places, scope);
 
   /** The id of the Relationship, if the ids are UUIDs and both Persons are in the Tree. */
   const joinable = (scope: TreeScope, input: RelationshipInput) => {
@@ -153,6 +165,20 @@ export const memoryStore = (
 
       return structuredClone(owned.get(person.id));
     },
+    addPlace: async ({ place, ...scope }) => {
+      const owned = placesOf(scope);
+      const id = parsePlaceId(place.id);
+
+      if (frozen(scope) || owned === undefined || id === undefined) {
+        return err('not-found');
+      }
+
+      if (!owned.has(id)) {
+        owned.set(id, { ...structuredClone(place), id, version: 1 });
+      }
+
+      return ok(structuredClone(owned.get(id)!));
+    },
     addRelationship: async ({ relationship, ...scope }) => {
       const owned = relationshipsOf(scope);
       const id = joinable(scope, relationship);
@@ -174,6 +200,8 @@ export const memoryStore = (
     },
     findPerson: async ({ personId, ...scope }) =>
       structuredClone(personsOf(scope)?.get(personId)),
+    findPlace: async ({ placeId, ...scope }) =>
+      structuredClone(placesOf(scope)?.get(parsePlaceId(placeId) as PlaceId)),
     findRelationship: async ({ relationshipId, ...scope }) =>
       structuredClone(
         relationshipsOf(scope)?.get(
@@ -206,6 +234,12 @@ export const memoryStore = (
             compare(x.id, y.id)
         )
         .slice(0, MAX_LISTED),
+    listPlaces: async scope =>
+      structuredClone(
+        failIfListed(scope, [...(placesOf(scope)?.values() ?? [])])
+      )
+        .sort((x, y) => compare(x.id, y.id))
+        .slice(0, MAX_PLACES),
     listRelationships: async scope =>
       structuredClone(
         failIfListed(scope, [...(relationshipsOf(scope)?.values() ?? [])])
@@ -227,6 +261,30 @@ export const memoryStore = (
       const next = { ...structuredClone(person), version: version + 1 };
 
       owned.set(person.id, next);
+
+      return ok(structuredClone(next));
+    },
+    updatePlace: async ({ place, version, ...scope }) => {
+      const owned = placesOf(scope);
+      const id = parsePlaceId(place.id);
+      const saved = id === undefined ? undefined : owned?.get(id);
+
+      if (
+        frozen(scope) ||
+        owned === undefined ||
+        id === undefined ||
+        saved === undefined
+      ) {
+        return err('not-found');
+      }
+
+      if (saved.version !== version) {
+        return err('conflict');
+      }
+
+      const next = { ...structuredClone(place), id, version: version + 1 };
+
+      owned.set(id, next);
 
       return ok(structuredClone(next));
     },

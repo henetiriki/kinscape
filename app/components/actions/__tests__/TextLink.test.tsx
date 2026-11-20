@@ -50,8 +50,8 @@ it('gives each line of an anchor a touch-size hit area, and the button and disab
   expect(css).not.toMatch(/\.textLink \{[^}]*padding/);
 });
 
-// NFR-05: a link that is a flex item is a block, and its padding would add height to the row.
-it('takes the padding of an anchor back as a margin, so a link that is a block keeps its height', () => {
+// NFR-05: a link that is a flex item is a block, and its padding adds height to the row.
+it('cancels the padding of an anchor with a negative margin, so a link that is a block keeps its height', () => {
   const anchor = /\.anchor \{[^}]*\}/.exec(css)![0];
 
   expect(anchor).toContain(

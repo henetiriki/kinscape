@@ -52,7 +52,7 @@ At 390px the `table` link "SIL Open Font Licence 1.1" wraps and has no 44px hit 
 
 **D7 · The focus ring of a wrapped `TextLink`** · Decides: Tech lead
 
-`padding-block` on an inline link gives each line a 44px hit area. A ring on the link would grow to 44px tall.
+`padding-block` on an inline link gives each line a 44px hit area. A ring on the link is 44px tall.
 
 **Answer: Other** (@henetiriki). An anchor wraps its children in a `span`. The anchor takes `padding-block`. The `span` takes the `ring` tokens on `:focus-visible` or `data-state='focus'`. The button and the disabled text keep their form.
 
@@ -118,13 +118,16 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 - The tech lead runs the workflow Design: Render snapshots (step 6). It commits the card image.
 - A local session adds the board test, sees it fail, swaps both boards (step 7), runs `npm run design:export` and pushes. The tech lead runs the workflow.
 - When the render passes check 9, the session publishes the two boards and runs "Refreshing the canvas copy" (5.1 to 5.5).
-- The build rewords #1073 ([reword step](../.github/agent/build.md#reword)): the Summary and Behaviour name the export (D4), item 3 and checks 2 and 3 follow D1 and D3, and item 4 names the bold name (D2).
+- The build rewords #1073 ([reword step](../.github/agent/build.md#reword)):
+  - the Summary and Behaviour name the export (D4);
+  - item 3 and checks 2 and 3 follow D1 and D3;
+  - item 4 names the bold name (D2).
 
 ## Risks
 
 - **Other board edits.** #1071, #1072 and #1074 change the same boards. The later one merges the earlier edit.
 - **The bundle.** If `SourcesList` cannot mount, stop and comment the error on #893. The PR states the size of `bundle.js` before and after.
-- **The phone sheet.** If the grid box does not let the body scroll, the sheet runs off the board. The build compares `map-sources-phone.jpg` with `main` before it pushes.
+- **The phone sheet.** If the grid box does not let the body scroll, the sheet runs off the board. The build compares `map-sources-phone.jpg` with `main`.
 - **A later change to `data/sources.json`.** It changes the card image and both JPGs, and the board test asks for a board edit.
 - **The `TextLink` fix.** It reaches each `TextLink`.
 
@@ -143,6 +146,8 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 | 10, 11           | The commits of steps 4, 5 and 7, the workflow runs, and step 4.6 of "Updating the install". |
 | 12               | Step 4.7 of "Updating the install".                                                         |
 | 13               | Command output in the PR, with 100% coverage.                                               |
+| 14               | `e2e/gallery-textlink.spec.ts` in `npm run design:gallery`.                                 |
+| 15               | The gallery screenshots against `main`.                                                     |
 
 ## Out of scope
 
@@ -151,7 +156,8 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 
 ## Deviations
 
-- `TextLink` changes ([D6 to D9](#decisions)), which the first approved plan lacked.
+- `TextLink` changes ([D6 to D9](#decisions)).
+- `TextLink · wrapped` adds a `running` form, its CSS and three tests.
 - The anchor takes a negative `margin-block`. Without it, a flex-item link grows from 22px to 51px.
 - The padding is `round(up, …, 1px)`. Half a pixel moves the text of a small link by 1px.
 - The D8 test reads the first child only where the anchor has no outline: `ArrowLink` keeps its own ring.

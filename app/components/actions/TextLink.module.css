@@ -12,14 +12,14 @@
   text-underline-offset: 3px;
 }
 
-/* The button and the disabled text keep the ring on themselves. */
+/* The button keeps the ring on itself. */
 .button {
   composes: ring from '@ks/app/components/foundation/focus.module.css';
 }
 
 /*
  * Padding gives each line of a wrapped link a 44px hit area. It adds no height to a line of text.
- * A link that is a flex item is a block: there the margin takes the padding back, so the row keeps its height.
+ * A link that is a flex item is a block: there the negative margin cancels the padding, so the row keeps its height.
  */
 .anchor {
   composes: ringInner from '@ks/app/components/foundation/focus.module.css';

@@ -34,7 +34,15 @@ test('each line of a wrapped small link has a 44px hit area', async ({
   );
 
   expect(lines.length, 'the link wraps to two lines').toBe(2);
-  expect(lines, 'a line of 44px hit area, above and below').toEqual(
-    lines.map(({ height }) => ({ height, hits: [true, true] }))
-  );
+  expect(
+    lines.map(({ hits }) => hits),
+    'a point above and below each line is on the link'
+  ).toEqual([
+    [true, true],
+    [true, true],
+  ]);
+  expect(
+    lines.every(({ height }) => height >= 44),
+    'each line is 44px tall'
+  ).toBe(true);
 });

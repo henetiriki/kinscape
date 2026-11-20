@@ -28,10 +28,10 @@
   color: var(--ink);
   cursor: pointer;
   font-family: var(--font-body);
-  font-size: var(--type-label-size);
-  font-weight: 600;
+  font-size: var(--type-button-s-size);
+  font-weight: var(--type-button-s-weight);
   height: 36px;
-  line-height: var(--type-label-line);
+  line-height: var(--type-button-s-line);
   padding: 0 var(--space-12);
 }
 

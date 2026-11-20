@@ -123,7 +123,7 @@
 .detail {
   color: var(--ink-3);
   font-size: var(--type-caption-size);
-  font-weight: 400;
+  font-weight: var(--type-caption-weight);
   line-height: var(--type-caption-line);
 }
 

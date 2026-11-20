@@ -5,6 +5,6 @@
   font-family: var(--type-mono-font);
   font-size: var(--type-mono-size);
   font-variant-ligatures: none;
-  line-height: 16px;
-  padding: 2px 4px;
+  line-height: var(--type-mono-line);
+  padding: 2px var(--space-4);
 }

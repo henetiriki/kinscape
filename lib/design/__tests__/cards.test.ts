@@ -13,6 +13,7 @@ import {
   controlReadme,
   designBullets,
   firstSentence,
+  FORM_ATTRIBUTE,
   galleryHtml,
   GROUPS,
   PHONE_CARDS,
@@ -59,11 +60,25 @@ describe('designBullets', () => {
       'Error: see Feedback and validation.'
     );
     expect(() => designBullets(design, ['Nope'])).toThrow(
-      'DESIGN.md › Components has no bullet "Nope"'
+      'DESIGN.md has no bullet "Nope"'
     );
-    expect(() => designBullets('## Brand\n', [])).toThrow(
-      'DESIGN.md has no "Components" section'
+  });
+
+  it('takes a bold bullet from any section', () => {
+    const [bullet] = designBullets(design, ['Sources and attributions dialog']);
+
+    expect(bullet).toMatch(/^- \*\*Sources and attributions dialog\*\*/);
+  });
+
+  it('throws if two sections hold the same bold name', () => {
+    const twice = '## A\n\n- **Same** one\n\n## B\n\n- **Same:** two\n';
+
+    expect(() => designBullets(twice, ['Same'])).toThrow(
+      'DESIGN.md has the bullet "Same" in two sections'
     );
+    expect(
+      designBullets('## A\n\n- **Same** one\n- **Same** two\n', ['Same'])
+    ).toEqual(['- **Same** one']);
   });
 });
 
@@ -221,6 +236,23 @@ describe('previewHtml', () => {
     expect(row.width).toBe(width);
     expect(line).toContain(`width=${width}`);
     expect(() => checkPreview(name, previewHtml(row))).not.toThrow();
+  });
+
+  it('gives a state with a form its data-form and the width of that form', () => {
+    const sources = CARDS.find(({ name }) => name === 'SourcesList')!;
+    const html = previewHtml(sources);
+
+    expect(FORM_ATTRIBUTE).toBe('data-form');
+    expect(sources.box).toBe('704px');
+    expect(sources.states.map(({ form }) => form)).toEqual([
+      undefined,
+      { box: '358px', name: 'sheet' },
+    ]);
+    expect(html).toContain('width: 704px;');
+    expect(html).toContain('"form":{"box":"358px","name":"sheet"}');
+    expect(html).toContain(
+      "state.form ? { 'data-form': state.form.name, style: { width: state.form.box } } : {}"
+    );
   });
 
   it('keeps text from ending the script', () => {
@@ -460,11 +492,11 @@ describe('CARDS', () => {
     );
   });
 
-  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 9 Map, 8 Foundation, 9 Overlays and 3 Layout', () => {
+  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 10 Map, 8 Foundation, 9 Overlays and 3 Layout', () => {
     const count = (group: string) =>
       CARDS.filter(card => card.group === group).length;
 
-    expect(GROUPS.map(count)).toEqual([14, 6, 8, 9, 8, 9, 3]);
+    expect(GROUPS.map(count)).toEqual([14, 6, 8, 10, 8, 9, 3]);
   });
 
   it.each(CARDS.map(card => [card.name, card] as const))(

@@ -490,6 +490,13 @@ export const pageHtml = (): string => {
     wrapper.replaceWith(...wrapper.childNodes);
   }
 
+  // A snapshot asks for no outside URL (check 8 of `snapshotProblems`), so an external link points to `#`.
+  for (const link of document.querySelectorAll('[href]')) {
+    if (/^https?:\/\//i.test(String(link.getAttribute('href')))) {
+      link.setAttribute('href', '#');
+    }
+  }
+
   // Each `var(--name)` becomes the root's value, then `calc()` below resolves what is left.
   const root = getComputedStyle(document.documentElement);
 

@@ -8,6 +8,8 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 0px 0; }
 .ks-label { color: var(--ink-3); }
+.ks-case[data-form='running'] { display: block; }
+.ks-case[data-form='running'] > .ks-label { display: block; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -18,7 +20,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var noop = function () {};
   var Control = window.KinScape["TextLink"];
   var handlers = ["onClick"];
-  var states = [{"label":"TextLink · default","children":"Sources","props":{"disabled":false,"href":"/sources"}},{"label":"TextLink · active","children":"Sources","props":{"disabled":false,"href":"/sources","state":"active"}},{"label":"TextLink · focus","children":"Sources","props":{"disabled":false,"href":"/sources","state":"focus"}},{"label":"TextLink · hover","children":"Sources","props":{"disabled":false,"href":"/sources","state":"hover"}},{"label":"TextLink · disabled","children":"Sources","props":{"disabled":true,"href":"/sources"}},{"children":"Sources","label":"TextLink · small","props":{"href":"/sources","size":"small"}},{"children":"Go to 1901-02-28","label":"TextLink · button","props":{"size":"small"}}];
+  var states = [{"label":"TextLink · default","children":"Sources","props":{"disabled":false,"href":"/sources"}},{"label":"TextLink · active","children":"Sources","props":{"disabled":false,"href":"/sources","state":"active"}},{"label":"TextLink · focus","children":"Sources","props":{"disabled":false,"href":"/sources","state":"focus"}},{"label":"TextLink · hover","children":"Sources","props":{"disabled":false,"href":"/sources","state":"hover"}},{"label":"TextLink · disabled","children":"Sources","props":{"disabled":true,"href":"/sources"}},{"children":"Sources","label":"TextLink · small","props":{"href":"/sources","size":"small"}},{"children":"Go to 1901-02-28","label":"TextLink · button","props":{"size":"small"}},{"children":"SIL Open Font Licence 1.1","label":"TextLink · wrapped","props":{"href":"/sources","size":"small"},"form":{"box":"150px","name":"running"}}];
   var give = function (props, names) {
     names.forEach(function (name) {
       var at = name.indexOf('.');
@@ -46,7 +48,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);
-    return h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
+    return h('figure', Object.assign({ className: 'ks-case', key: index }, state.form ? { 'data-form': state.form.name, style: { width: state.form.box } } : {}), h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
   });
   ReactDOM.flushSync(function () {
     ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));

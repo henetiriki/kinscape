@@ -5,6 +5,7 @@ import type { Card, Slot, State } from '#ks/lib/design/types.ts';
 
 import { COLUMNS } from '#ks/app/components/layout/columns.mts';
 import { SLOTS } from '#ks/app/components/layout/slots.mts';
+import sources from '#ks/data/sources.json' with { type: 'json' };
 import {
   CHAIN,
   CONTESTED_COUNT,
@@ -161,6 +162,12 @@ const one = (
 
 /** The width of the `Map` board's panel slot. A `Panel`, `LayerGroup` or `FilterFields` card box has it. */
 const PANEL_BOX = 'var(--size-panel)';
+
+/** The body of the centred dialog: 760px less 28px of padding on each side. The `SourcesList` card box has it. */
+const SOURCES_BOX = '704px';
+
+/** The body of the sheet on a 390px phone, less 16px of padding on each side. The `list` state of `SourcesList` has it. */
+const SHEET_BOX = '358px';
 
 const FILTER_HANDLERS = [
   'onBranchChange',
@@ -387,6 +394,15 @@ export const CARDS: Card[] = [
       })),
       one('TextLink · small', { href: '/sources', size: 'small' }, 'Sources'),
       one('TextLink · button', { size: 'small' }, 'Go to 1901-02-28'),
+      {
+        // The `running` form lays the link in a line of text, not as a flex item. A box of 150px wraps it to two lines, as the licence column of the sources table does.
+        ...one(
+          'TextLink · wrapped',
+          { href: '/sources', size: 'small' },
+          'SIL Open Font Licence 1.1'
+        ),
+        form: { box: '150px', name: 'running' },
+      },
     ],
   },
   {
@@ -975,6 +991,23 @@ export const CARDS: Card[] = [
         })
       ),
     ],
+  },
+  {
+    box: SOURCES_BOX,
+    design: ['Sources and attributions dialog'],
+    group: 'Map',
+    handlers: [],
+    height: 3760,
+    name: 'SourcesList',
+    pad: 0,
+    states: [
+      one('SourcesList · table', { sources: sources.sources }),
+      {
+        ...one('SourcesList · list', { sources: sources.sources }),
+        form: { box: SHEET_BOX, name: 'sheet' },
+      },
+    ],
+    width: 760,
   },
   {
     design: ['Alert'],

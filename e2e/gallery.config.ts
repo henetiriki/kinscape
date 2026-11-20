@@ -15,7 +15,7 @@ if (!pinnedImage(process.env) && process.env.TEST_WORKER_INDEX === undefined) {
   );
 }
 
-// Runs only e2e/design-gallery.spec.ts and e2e/gallery-looks.spec.ts, which open the files that
+// Runs only e2e/design-gallery.spec.ts, e2e/gallery-looks.spec.ts and e2e/gallery-textlink.spec.ts, which open the files that
 // `npm run design-system` writes to .design-system/gallery/. The files hold all they load, so this config starts no app server
 // and sets no base URL. `npm run design:gallery` writes the files first, then runs this config.
 // The card images are the baselines of the screenshot assertion: `--update-snapshots` writes them.
@@ -37,5 +37,9 @@ export default defineConfig({
   // `{testDir}` is e2e/, so the template names the parent folder, then CARD_IMAGES.
   snapshotPathTemplate: `{testDir}/../${CARD_IMAGES}/{arg}{ext}`,
   testDir: '.',
-  testMatch: ['design-gallery.spec.ts', 'gallery-looks.spec.ts'],
+  testMatch: [
+    'design-gallery.spec.ts',
+    'gallery-looks.spec.ts',
+    'gallery-textlink.spec.ts',
+  ],
 });

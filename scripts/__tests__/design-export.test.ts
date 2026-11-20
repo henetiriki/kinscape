@@ -1093,6 +1093,16 @@ describe('pageHtml', () => {
     );
   });
 
+  it('sets each http and https link to # and keeps the others', () => {
+    document.head.innerHTML = '<title>T</title>';
+    document.body.innerHTML =
+      '<x-dc><a href="https://example.com/a">A</a><a href="http://example.com/b">B</a><a href="#a">C</a><a href="/people">D</a><a>E</a></x-dc>';
+
+    expect(pageHtml()).toBe(
+      '<!doctype html>\n<html><head><title>T</title><link rel="stylesheet" href="fonts.css"></head><body><a href="#">A</a><a href="#">B</a><a href="#a">C</a><a href="/people">D</a><a>E</a></body></html>\n'
+    );
+  });
+
   it('rejects a page without a title', () => {
     document.head.innerHTML = '';
     document.body.innerHTML = '';

@@ -90,6 +90,7 @@ export default defineConfig({
         'design-check.spec.ts',
         'design-gallery.spec.ts',
         'gallery-looks.spec.ts',
+        'gallery-textlink.spec.ts',
         // The `fixture` project runs these on the server with the memory adapters.
         'fixture-*.spec.ts',
         'fixture.setup.ts',

@@ -8,6 +8,8 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 40px 0; width: 100%; }
 .ks-label { color: var(--ink-3); }
+.ks-case[data-form='running'] { display: block; }
+.ks-case[data-form='running'] > .ks-label { display: block; margin-bottom: 8px; }
 .ks-scope { display: contents; }
 </style>
 </head>
@@ -47,7 +49,7 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
     Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
     var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
     var control = children === undefined ? h(Control, props) : h(Control, props, children);
-    return h('form', { className: 'ks-scope', key: index, onSubmit: function (event) { event.preventDefault(); } }, h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control));
+    return h('form', { className: 'ks-scope', key: index, onSubmit: function (event) { event.preventDefault(); } }, h('figure', Object.assign({ className: 'ks-case', key: index }, state.form ? { 'data-form': state.form.name, style: { width: state.form.box } } : {}), h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control));
   });
   ReactDOM.flushSync(function () {
     ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));

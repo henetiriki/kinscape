@@ -32,29 +32,32 @@ export const firstSentence = (text: string): string => {
 const escapeRegExp = (text: string): string =>
   text.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
 
-/** The `DESIGN.md` › Components bullets whose bold text starts with each of `names`. */
+/** The attribute that a state's form sets on its `figure`. `DialogPanel` sets the same name. */
+export const FORM_ATTRIBUTE = 'data-form';
+
+/** The `DESIGN.md` bullets, in any `##` section, whose bold text starts with each of `names`. */
 export const designBullets = (design: string, names: string[]): string[] => {
-  const section = design
+  const sections = design
     .split(/^(?=## )/m)
-    .find(text => text.startsWith('## Components\n'));
-
-  if (section === undefined) {
-    throw new Error('DESIGN.md has no "Components" section');
-  }
-
-  const lines = section.split('\n');
+    .map(section => section.split('\n'));
 
   return names.map(name => {
     const bullet = new RegExp(
       `^- \\*\\*${escapeRegExp(name)}(?::\\*\\*|\\*\\*)`
     );
-    const line = lines.find(each => bullet.test(each));
+    const found = sections
+      .map(lines => lines.find(each => bullet.test(each)))
+      .filter((line): line is string => line !== undefined);
 
-    if (line === undefined) {
-      throw new Error(`DESIGN.md › Components has no bullet "${name}"`);
+    if (found.length === 0) {
+      throw new Error(`DESIGN.md has no bullet "${name}"`);
     }
 
-    return plainLinks(line);
+    if (found.length > 1) {
+      throw new Error(`DESIGN.md has the bullet "${name}" in two sections`);
+    }
+
+    return plainLinks(found[0]);
   });
 };
 
@@ -114,7 +117,9 @@ const STYLE = (
 ) => `body { margin: 0; padding: ${PREVIEW_PAD}px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
 .ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: ${pad}px 0;${contain ? ' contain: layout; width: 100%;' : ''}${box === undefined ? '' : ` width: ${box};`} }
-.ks-label { color: var(--ink-3); }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
+.ks-label { color: var(--ink-3); }
+.ks-case[${FORM_ATTRIBUTE}='running'] { display: block; }
+.ks-case[${FORM_ATTRIBUTE}='running'] > .ks-label { display: block; margin-bottom: 8px; }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
 // Gives each named prop a no-op. A name with a dot names a key in each item of a list prop (`rows.onChange`)
 // or in an object prop (`sheet.onExpandedChange`). A state without that prop gets nothing.
@@ -134,8 +139,8 @@ const GIVE = `  var give = function (props, names) {
     });
   };`;
 
-const FIGURE =
-  "h('figure', { className: 'ks-case', key: index }, h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)";
+// A state with a form sets the form's attribute and width on its figure.
+const FIGURE = `h('figure', Object.assign({ className: 'ks-case', key: index }, state.form ? { '${FORM_ATTRIBUTE}': state.form.name, style: { width: state.form.box } } : {}), h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control)`;
 
 // Radios of one name form one group only inside one form. Only a `radios` card gets a form,
 // because SearchBar renders its own form and a form in a form is invalid HTML.

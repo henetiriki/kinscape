@@ -86,6 +86,12 @@ The Spec does not say how the check finds a page that reads Tree data. #678 Cons
 | An import of a TanStack Query persistence package                      | `scripts/__tests__/memory-only.test.ts`   |
 | The repo as it is passes each check                                    | The repo case of each of the four tests   |
 
+## Deviations
+
+- `docs/architecture.md` was at its 900-word budget. The Lint bullet lost its rule list ("the config lists the rest"), and the Enforcement line says "four more in the Tree data row".
+- The Patterns row is named "Tree data stays private" and is short for the same reason.
+- The four checks were written before their fixture tests. The tests then passed on the first run.
+
 ## Out of scope
 
 The Pins route and TanStack Query: M2.13.1 (#538). The check of `fetch` calls and the row text that names TanStack Query: TD.2 (#1091). A `no-store` rule for `/`: the M2.14 Spec that adds a Pin action to the map (D2: A).

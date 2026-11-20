@@ -75,6 +75,14 @@ export type DesignShotsCiDeps = {
 
 export type Gh = (args: string[], input?: string) => string;
 
+/** A rule of `headers()` in `next.config.ts`, as the no-store check reads it. */
+export type HeaderRule = {
+  has?: unknown[];
+  headers: { key: string; value: string }[];
+  missing?: unknown[];
+  source: string;
+};
+
 export type PrepareMapDataDeps = {
   applyCommands: (
     commands: string,

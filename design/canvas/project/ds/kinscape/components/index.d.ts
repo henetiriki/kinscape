@@ -677,6 +677,25 @@ declare const SourcesDialog: ({ onClose, open, sources, }: {
 }) => import("react").JSX.Element;
 export type SourcesListProps = Parameters<typeof SourcesList>[0];
 
+/** Layers whose sources are credited only while that layer is on. */
+declare const POLITY_LAYER = "Polity borders";
+/** The sources of everything currently drawn. */
+declare const sourcesOnScreen: (sources: Source[], showPolities: boolean) => Source[];
+/**
+ * The credits line. `collapsible` (desktop) keeps it to one line: a "Credits" button opens the
+ * attribution text in a card above the line. A second press, a press outside or Esc closes it.
+ * Without it (the phone) the text shows in full. `defaultOpen` opens the card at the first render:
+ * a design board shows the open state with it, and the app does not set it.
+ */
+export declare const Credits: ({ collapsible, defaultOpen, onOpenAttributions, showPolities, sources, }: {
+    collapsible?: boolean;
+    defaultOpen?: boolean;
+    onOpenAttributions: () => void;
+    showPolities: boolean;
+    sources: Source[];
+}) => import("react").JSX.Element;
+export type CreditsProps = Parameters<typeof Credits>[0];
+
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export declare const Alert: ({ aside, children, title, tone, }: {
     /** A note at the right of the title line. */

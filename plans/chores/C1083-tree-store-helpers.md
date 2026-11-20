@@ -2,7 +2,7 @@
 
 - **Spec:** #1083
 - **Requirement IDs:** [NFR-09](../../docs/requirements.md#nfr-09)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -33,7 +33,7 @@ The Constraints forbid `any` and a cast in a helper. Kysely types `returningAll(
 - **C.** Each kind keeps its own `updateTable(` call, and the helper shares only the `not-found` and `conflict` logic. Cost: the first done check changes to three calls.
 - **Other:** your own.
 
-Recommended: A, because it keeps every Constraint and done check, and a mismatch fails the contract suite on PGlite. A without the transaction saves one round trip. It loses the guarantee: a second writer between the update and `read` changes the row that the result shows.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

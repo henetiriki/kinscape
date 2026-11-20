@@ -59,10 +59,11 @@
   color: var(--error-border);
 }
 
+/* The shadow is set here, not composed: the base rule of `floating` sets a white background and can come after this rule. */
 .banner {
-  composes: floating from '@ks/app/components/foundation/Surface.module.css';
   background: var(--ink);
   border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-floating);
   color: var(--white);
   height: 52px;
   padding-right: var(--space-8);

@@ -28,6 +28,9 @@ const buttonHeight = async (page: Page, label: string, name: string) =>
       .height
   );
 
+// The --ink token, as the browser computes it.
+const INK = 'rgb(24, 33, 27)';
+
 // The shadow of a `floating` surface, as the browser computes it from the token.
 const floatingShadow = (page: Page) =>
   page.evaluate(() => {
@@ -43,7 +46,7 @@ const floatingShadow = (page: Page) =>
     return shadow;
   });
 
-// The banner of "Banner · offline": its shadow and height, and the gaps from Retry to its top, bottom and right edge.
+// The banner of "Banner · offline": its background, shadow and height, and the gaps from Retry to its top, bottom and right edge.
 // The caller opens the file first.
 const bannerLook = async (page: Page) => {
   const banner = state(page, 'Banner · offline').getByRole('alert');
@@ -53,6 +56,9 @@ const bannerLook = async (page: Page) => {
     .boundingBox())!;
 
   return {
+    background: await banner.evaluate(
+      node => getComputedStyle(node).backgroundColor
+    ),
     bottom: Math.round(box.y + box.height - (retry.y + retry.height)),
     height: Math.round(box.height),
     retry: Math.round(retry.height),
@@ -283,6 +289,7 @@ test.describe('on a phone', () => {
     await open(page, 'Banner');
 
     expect(await bannerLook(page)).toEqual({
+      background: INK,
       bottom: 8,
       height: 60,
       retry: 44,
@@ -728,6 +735,7 @@ test.describe('at 1440px', () => {
     await open(page, 'Banner');
 
     expect(await bannerLook(page)).toEqual({
+      background: INK,
       bottom: 8,
       height: 52,
       retry: 36,

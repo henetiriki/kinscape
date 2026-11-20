@@ -58,6 +58,7 @@ The table:
 | `scripts/agent-approve.mts`                     | changed       | The hand-back reply cites the rule of D1                    |
 | `scripts/__tests__/agent-approve.test.ts`       | changed       | It expects the rule of D1                                   |
 | `scripts/__tests__/plan-rule-citations.test.ts` | changed       | `RULE_NAMES` in the new order with `item-types`; D2's check |
+| `.github/workflows/claude-plan.yml`             | changed       | The prompt takes id, path and branch from `item-types`      |
 
 The [failing-tests rule](../README.md#failing-tests) lets the build change the two tests.
 
@@ -98,3 +99,6 @@ The [failing-tests rule](../README.md#failing-tests) lets the build change the t
 ## Deviations
 
 - `docs/building.md` keeps its link to the `hand-back` rule beside the `item-types` link, because the sentence still says who builds a hand-back.
+- Review of #1092, answered by the tech lead in the session: `claude-plan.yml` (a hand-back path) takes its id, path and branch facts from the `item-types` table (a big departure the tech lead approved).
+- `hand-back` says "The tech lead builds a hand-back in a local agent session. The tech lead also plans a Chore that gets no plan PR."
+- The exemptions under the table are a vertical list (STE rule 15), not one sentence.

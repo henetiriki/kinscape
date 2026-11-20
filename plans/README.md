@@ -4,7 +4,7 @@ These rules apply to each plan, from its draft to its commit. Start each plan fr
 
 ## Item types
 
-<a id="item-types"></a>Each Spec, Bug and Chore has a plan, a branch and a plan PR. `<id>` is the id in the table. `<n>` is the issue number.
+<a id="item-types"></a>Each Spec, Bug and Chore has an id, a plan path, a branch and a plan PR title. `<id>` is the id in the table. `<n>` is the issue number.
 
 | Item  | Id                          | Plan path                     | Branch                  | Plan PR title                             |
 | ----- | --------------------------- | ----------------------------- | ----------------------- | ----------------------------------------- |
@@ -12,7 +12,11 @@ These rules apply to each plan, from its draft to its commit. Start each plan fr
 | Bug   | `B<n>`                      | `plans/bugs/B<n>-<slug>.md`   | `bug/B<n>-<slug>`       | `B.<n>: <title without "Bug: "> (plan)`   |
 | Chore | `C<n>`                      | `plans/chores/C<n>-<slug>.md` | `chore/C<n>-<slug>`     | `C.<n>: <title without "Chore: "> (plan)` |
 
-Only a PR from Dependabot, a PR from `actions-pin-update.yml` or a revert needs no issue and no plan.
+Only these need no issue and no plan:
+
+- a PR from Dependabot;
+- a PR from `actions-pin-update.yml`;
+- a revert.
 
 ## Before you draft
 
@@ -69,7 +73,7 @@ The title and the body describe the work that the PR merges now. Evidence is the
 - If the PR has a "Building…" comment, wait. The workflow deletes it when the run ends.
 - If the PR has no "Building…" comment, continue from the last pushed commit.
 
-<a id="hand-back"></a>**Hand-back.** The CI build agent does not build a hand-back. A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and is not in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead plans and builds a hand-back. If there is no plan PR, comment the reason on the issue.
+<a id="hand-back"></a>**Hand-back.** The CI build agent does not build a hand-back. A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and is not in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead builds a hand-back in a local agent session. The tech lead also plans a Chore that gets no plan PR. If there is no plan PR, comment the reason on the issue.
 
 <a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent cannot get access to claude.ai, so it asks in the PR. It keeps the PR as a draft. A canvas-only follow-up has its own plan: [`C689-canvas-refresh.md`](chores/C689-canvas-refresh.md).
 

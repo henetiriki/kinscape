@@ -2,7 +2,7 @@
 
 - **Spec:** #1074
 - **Requirement IDs:** None. The Spec changes the design system, the export and two boards, and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -43,7 +43,7 @@ On `main`, the frame, both `$preview` values, the wrapper's `hint-size` and both
 - **B.** Only the frame changes. Cost: the canvas tiles show the top 120px of the frame, which has no credits line.
 - **Other:** your own.
 
-Recommended: A, because a reader of the canvas then sees the credits line that the snapshot shows.
+**Answer: A** (@henetiriki)
 
 **D6 · The narrow board calls no board helper** · Decides: Tech lead
 
@@ -53,7 +53,7 @@ Behaviour 11 says that a board that calls a helper loads `./board-helpers.js`, a
 - **B.** Both boards load the helpers, and `FRAMES` lists `Map-credits-narrow`. The test finds the wrapper through its `<dc-import>`. The `FRAMES` comment says "call a helper or mount `MapLayout`". Cost: one script line that the board does not use.
 - **Other:** your own.
 
-Recommended: A, because a board loads only what it calls. B costs one line and keeps Behaviour 11, but the test then checks a script that the board does not use.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

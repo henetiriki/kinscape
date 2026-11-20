@@ -28,6 +28,40 @@ const buttonHeight = async (page: Page, label: string, name: string) =>
       .height
   );
 
+// The shadow of a `floating` surface, as the browser computes it from the token.
+const floatingShadow = (page: Page) =>
+  page.evaluate(() => {
+    const probe = document.createElement('div');
+
+    probe.style.boxShadow = 'var(--shadow-floating)';
+    document.body.append(probe);
+
+    const shadow = getComputedStyle(probe).boxShadow;
+
+    probe.remove();
+
+    return shadow;
+  });
+
+// The banner of "Banner · offline": its shadow and height, and the gaps from Retry to its top, bottom and right edge.
+// The caller opens the file first.
+const bannerLook = async (page: Page) => {
+  const banner = state(page, 'Banner · offline').getByRole('alert');
+  const box = (await banner.boundingBox())!;
+  const retry = (await banner
+    .getByRole('button', { name: 'Retry' })
+    .boundingBox())!;
+
+  return {
+    bottom: Math.round(box.y + box.height - (retry.y + retry.height)),
+    height: Math.round(box.height),
+    retry: Math.round(retry.height),
+    right: Math.round(box.x + box.width - (retry.x + retry.width)),
+    shadow: await banner.evaluate(node => getComputedStyle(node).boxShadow),
+    top: Math.round(retry.y - box.y),
+  };
+};
+
 // Each control in one card state: the file, the figure, the role and the name.
 const HIT_CASES = [
   ['Checkbox', 'Checkbox off · default', 'checkbox', 'Deceased'],
@@ -240,6 +274,22 @@ test.describe('on a phone', () => {
     expect(failures).toEqual([]);
     // A control that is fixed leaves the list.
     expect([...UNDER_44_KEYS].filter(key => !failed.has(key))).toEqual([]);
+  });
+
+  // NFR-05: the phone box keeps its 60px, and Retry its 44px.
+  test('the banner has the floating shadow, a 60px box and a 44px Retry 8px from its top, bottom and right edge', async ({
+    page,
+  }) => {
+    await open(page, 'Banner');
+
+    expect(await bannerLook(page)).toEqual({
+      bottom: 8,
+      height: 60,
+      retry: 44,
+      right: 8,
+      shadow: await floatingShadow(page),
+      top: 8,
+    });
   });
 
   test('a placed banner is 80px from the top and a placed toast 164px from the bottom, inside the gutters', async ({
@@ -670,6 +720,21 @@ test.describe('at 1440px', () => {
       page,
       HIT_CASES.filter(([file]) => file !== 'IconButton')
     );
+  });
+
+  test('the banner has the floating shadow, is 52px tall, and has Retry 8px from its top, bottom and right edge', async ({
+    page,
+  }) => {
+    await open(page, 'Banner');
+
+    expect(await bannerLook(page)).toEqual({
+      bottom: 8,
+      height: 52,
+      retry: 36,
+      right: 8,
+      shadow: await floatingShadow(page),
+      top: 8,
+    });
   });
 
   test('the banner action takes a white focus ring', async ({ page }) => {

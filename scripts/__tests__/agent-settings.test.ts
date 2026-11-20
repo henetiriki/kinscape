@@ -174,8 +174,8 @@ describe('settings.json', () => {
     expect(allowedBy(allow)(command)).toBe(true);
   });
 
-  // `cat`, `head`, `grep`, `jq` and `awk` read any file, and `Read(//proc/**)` and the other
-  // denies bind only the Read tool; a gh subcommand that writes stays off too.
+  // `cat`, `head`, `grep`, `jq` and `awk` read any file. The `Read(...)` deny rules bind only the
+  // Read tool. A gh subcommand that writes is not allowed.
   it.each([
     'cat /proc/self/environ',
     'head -c 99 .git/config',
@@ -240,8 +240,8 @@ describe('review-settings.json', () => {
     expect(allowed(command)).toBe(true);
   });
 
-  // `wc --files0-from=/proc/self/environ` prints each variable in its "cannot open" errors, and the
-  // review posts what it reads (plan C1078, D2). `git fetch <url>` stays off here (D1).
+  // `wc --files0-from=/proc/self/environ` prints each variable in its "cannot open" errors. The
+  // review posts what it reads (plan C1078, D2). This file does not allow `git fetch <url>` (D1).
   it.each([
     'git push origin HEAD',
     'git fetch',
@@ -553,7 +553,7 @@ describe('the Bash hook', () => {
     ['git commit -m "<<EOF\n"; cat x\nEOF', 'Read'],
     // A string ends at the first `"` that no `\` escapes: after `"a\\"` the `;` is outside it.
     ['echo "a\\\\"; cat x', 'Read'],
-    // The pipe: the allowlist denies a filter such as head or grep without saying why. Each row
+    // The pipe: the allowlist denies a filter such as head or grep and gives no reason. Each row
     // above keeps its own reason, so the pipe row comes last.
     ['git grep x | head -5', 'one command per Bash call'],
     ['gh pr diff 1 | head -50', 'one command per Bash call'],

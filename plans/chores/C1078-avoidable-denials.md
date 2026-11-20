@@ -33,6 +33,8 @@ The allow lists get the forms in "What to change". `review.md` gets one Commands
 
 **Answer: B** (@henetiriki)
 
+**Reverses [C480](C480-bash-hook-audit.md).** C480 denied `ls`, and let `cat`, `grep`, `head` and `sed` filter output after a single `|`. #1078 asks to allow `ls` and to deny each unquoted `|`. This plan does both.
+
 ## Alternatives considered
 
 - Deny only a pipe into `head`, `grep`, `cat` or `sed`. The Chore asks for each unquoted `|`, and a pipe into another program hides the same output from the allow list.
@@ -80,7 +82,7 @@ The tech lead builds this hand-back in a local session (`/build-local <n>`).
 | The same query with `mutation` is denied                                                      | `agent-settings.test.ts`: hook test                                                  |
 | `gh api -X POST …` is still denied                                                            | `agent-settings.test.ts`: existing deny tests                                        |
 | `settings.json` allows the five listed forms                                                  | `agent-settings.test.ts`: `allowedBy` test                                           |
-| `review-settings.json` allows `ls`, `git fetch -q origin` and `wc`                            | `agent-settings.test.ts`: `allowedBy` test (`wc` only if D2 is A)                    |
+| `review-settings.json` allows `ls` and `git fetch -q origin`, and not `wc` (D2)               | `agent-settings.test.ts`: `allowedBy` test                                           |
 | Neither file allows `gh run rerun`, `gh label create`, `jq`, `awk`, `cat`, `head` or `grep`   | `agent-settings.test.ts`: `allowedBy` test, both files                               |
 | Neither file allows `git fetch <url>` (D1: `review-settings.json` only)                       | `agent-settings.test.ts`: existing review test                                       |
 | The same hook text in both files                                                              | `agent-settings.test.ts`: existing test                                              |
@@ -98,4 +100,5 @@ The tech lead builds this hand-back in a local session (`/build-local <n>`).
 - The pipe row also skips a `|` after a `\`, so an unquoted `git grep -E a\|b` stays allowed.
 - `review.md` had 3 words of room, and the new line has 8. The build cut 5 words from other lines and changed no rule: `in each` to `per`, `that is`, `file under` to `file`, and `ones`.
 - Per D2 B, the build did not allow `wc`. It added tests that the review does not allow `wc` or `wc --files0-from=…`.
+- `review.md` keeps its own copy of the heredoc rule that `rules.md` line 6 gives. The review loads `review.md` and `review-code.md`, not `rules.md`, and no file that every workflow loads can hold a shell rule: `AGENTS.md` also governs local sessions, which must not use heredocs in `gh` calls. The tech lead chose this in the fix review of #1079.
 - `denial-audit.test.ts` also changes line 345 (`ls` to `sed x`), because the hook no longer denies `ls`.

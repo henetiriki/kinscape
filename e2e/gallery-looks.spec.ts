@@ -509,7 +509,15 @@ test.describe('at 1440px', () => {
         }
 
         const ring = await focused.evaluate(node => {
-          const style = getComputedStyle(node.closest('label') ?? node);
+          // A TextLink anchor has no outline: its first child holds the ring, so the hit-area padding does not enlarge it.
+          const inner =
+            node instanceof HTMLAnchorElement &&
+            getComputedStyle(node).outlineStyle === 'none'
+              ? node.firstElementChild
+              : null;
+          const style = getComputedStyle(
+            node.closest('label') ?? inner ?? node
+          );
 
           return {
             colour: style.outlineColor,

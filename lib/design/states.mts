@@ -997,7 +997,7 @@ export const CARDS: Card[] = [
     design: ['Sources and attributions dialog'],
     group: 'Map',
     handlers: [],
-    height: 1600,
+    height: 3760,
     name: 'SourcesList',
     pad: 0,
     states: [

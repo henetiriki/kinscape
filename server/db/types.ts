@@ -4,12 +4,14 @@ import type { Qualifier } from '@ks/lib/domain/dates/types.ts';
 import type {
   AccountId,
   PersonId,
+  PinId,
   PlaceId,
   RelationshipId,
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { Precision } from '@ks/lib/domain/map/types.ts';
 import type { Sex } from '@ks/lib/domain/persons/types.ts';
+import type { EventType } from '@ks/lib/domain/pins/types.ts';
 import type { PlacePrecision } from '@ks/lib/domain/places/types.ts';
 import type { ParentSubtype } from '@ks/lib/domain/relationships/types.ts';
 
@@ -35,6 +37,25 @@ export type Database = {
     version: Generated<number>;
   } & FuzzyDateColumnsOf<'birth'> &
     FuzzyDateColumnsOf<'death'>;
+  pin: {
+    address: string;
+    createdAt: Generated<Date>;
+    dateDate1: string;
+    dateDate2: null | string;
+    datePrecision: Precision;
+    dateQualifier: Qualifier;
+    dateValidFrom: number;
+    dateValidTo: number;
+    eventType: EventType;
+    id: PinId;
+    notes: string;
+    personId: PersonId;
+    placeId: PlaceId;
+    sources: string;
+    treeId: TreeId;
+    updatedAt: Generated<Date>;
+    version: Generated<number>;
+  };
   place: {
     createdAt: Generated<Date>;
     id: PlaceId;

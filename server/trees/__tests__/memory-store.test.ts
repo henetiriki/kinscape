@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
+import type { TreeId } from '@ks/lib/domain/ids/types.ts';
+
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
 import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
+import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import { placeInputSchema } from '@ks/lib/domain/places/schemas.mts';
 import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
-import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
+import {
+  NOT_FOUND,
+  runTreeStoreContract,
+} from '@ks/server/trees/__tests__/contract.ts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
 
 const ACCOUNT = parseAccountId('00000000-0000-4000-8000-0000000000a1')!;
@@ -69,8 +75,15 @@ describe('memoryStore seed', () => {
       latitude: -33.9,
       longitude: 18.4,
     });
+    const PIN = pinInputSchema.parse({
+      date: '1850',
+      eventType: 'residence',
+      id: '01900000-0000-7000-b000-0000000000d1',
+      personId: PERSON.id,
+      placeId: PLACE.id,
+    });
     const scope = { accountId: ACCOUNT, treeId: TREE_A };
-    const build = () =>
+    const build = (readOnly: TreeId[] = [TREE_A]) =>
       memoryStore(
         [
           {
@@ -93,11 +106,19 @@ describe('memoryStore seed', () => {
             trees: [{ id: TREE_B, name: 'B', persons: [NEW_PERSON] }],
           },
         ],
-        [TREE_A]
+        readOnly
       );
 
     it('refuses each write and does not change', async () => {
-      const store = build();
+      // `frozen` reads `readOnly` at call time. A seed Tree holds no Place, so the Place and the Pin
+      // are saved before the Tree is frozen: the Pin writes then fail only because of the freeze.
+      const readOnly: TreeId[] = [];
+      const store = build(readOnly);
+
+      await store.addPlace({ ...scope, place: PLACE });
+      await store.addPin({ ...scope, pin: PIN });
+      readOnly.push(TREE_A);
+
       const before = await store.listPersons(scope);
 
       const relsBefore = await store.listRelationships(scope);
@@ -134,9 +155,17 @@ describe('memoryStore seed', () => {
       expect(
         await store.updatePlace({ ...scope, place: PLACE, version: 1 })
       ).toEqual({ error: 'not-found', ok: false });
+      expect(await store.addPin({ ...scope, pin: PIN })).toEqual(NOT_FOUND);
+      expect(await store.updatePin({ ...scope, pin: PIN, version: 1 })).toEqual(
+        NOT_FOUND
+      );
+      expect(await store.findPin({ ...scope, pinId: PIN.id })).toEqual({
+        ...PIN,
+        version: 1,
+      });
       expect(await store.listPersons(scope)).toEqual(before);
       expect(await store.listRelationships(scope)).toEqual(relsBefore);
-      expect(await store.listPlaces(scope)).toEqual([]);
+      expect(await store.listPlaces(scope)).toEqual([{ ...PLACE, version: 1 }]);
     });
 
     it('still writes to a Tree not on the list', async () => {

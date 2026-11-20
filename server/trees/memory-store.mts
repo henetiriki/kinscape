@@ -3,11 +3,13 @@ import { randomUUID } from 'node:crypto';
 import type {
   AccountId,
   PersonId,
+  PinId,
   PlaceId,
   RelationshipId,
   TreeId,
 } from '#ks/lib/domain/ids/types.ts';
 import type { Person } from '#ks/lib/domain/persons/types.ts';
+import type { Pin, PinInput } from '#ks/lib/domain/pins/types.ts';
 import type { Place } from '#ks/lib/domain/places/types.ts';
 import type {
   Relationship,
@@ -23,6 +25,7 @@ import type {
 import {
   parseAccountId,
   parsePersonId,
+  parsePinId,
   parsePlaceId,
   parseRelationshipId,
   parseTreeId,
@@ -43,7 +46,7 @@ const identityOf = (issuer: string, subject: string) =>
 
 /**
  * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
- * A seed Tree may hold People and Relationships, saved at version 1. The six writes refuse a Tree
+ * A seed Tree may hold People and Relationships, saved at version 1. The eight writes refuse a Tree
  * in `readOnly` as they refuse a Tree the Account may not access. The three list reads of a Tree in
  * `failing` throw.
  */
@@ -58,6 +61,7 @@ export const memoryStore = (
   const persons = new Map<TreeId, Map<PersonId, Person>>();
   const relationships = new Map<TreeId, Map<RelationshipId, Relationship>>();
   const places = new Map<TreeId, Map<PlaceId, Place>>();
+  const pins = new Map<TreeId, Map<PinId, Pin>>();
 
   for (const { id, issuer, subject, trees: owned } of seed) {
     accounts.set(identityOf(issuer, subject), id);
@@ -122,6 +126,8 @@ export const memoryStore = (
 
   const placesOf = (scope: TreeScope) => rowsOf(places, scope);
 
+  const pinsOf = (scope: TreeScope) => rowsOf(pins, scope);
+
   /** The id of the Relationship, if the ids are UUIDs and both Persons are in the Tree. */
   const joinable = (scope: TreeScope, input: RelationshipInput) => {
     const id = parseRelationshipId(input.id);
@@ -132,6 +138,27 @@ export const memoryStore = (
       owned !== undefined &&
       ends.every(end => end !== undefined && owned.has(end))
       ? id
+      : undefined;
+  };
+
+  /**
+   * The Pin with its ids as UUIDs in lower case, as Postgres gives them, if its Person and Place are
+   * in the Tree.
+   */
+  const pinnable = (
+    scope: TreeScope,
+    input: PinInput
+  ): PinInput | undefined => {
+    const id = parsePinId(input.id);
+    const person = parsePersonId(input.personId);
+    const place = parsePlaceId(input.placeId);
+
+    return id !== undefined &&
+      person !== undefined &&
+      place !== undefined &&
+      personsOf(scope)?.has(person) &&
+      placesOf(scope)?.has(place)
+      ? { ...input, id, personId: person, placeId: place }
       : undefined;
   };
 
@@ -217,6 +244,13 @@ export const memoryStore = (
         parsePersonId(person.id) === undefined ? undefined : person.id,
         person
       ),
+    addPin: async ({ pin, ...scope }) => {
+      const pinned = pinnable(scope, pin);
+
+      return savedOrNotFound(
+        added(scope, pinsOf(scope), pinned?.id, pinned ?? pin)
+      );
+    },
     addPlace: async ({ place, ...scope }) =>
       savedOrNotFound(
         added(scope, placesOf(scope), parsePlaceId(place.id), place)
@@ -237,6 +271,8 @@ export const memoryStore = (
     },
     findPerson: async ({ personId, ...scope }) =>
       structuredClone(personsOf(scope)?.get(personId)),
+    findPin: async ({ pinId, ...scope }) =>
+      structuredClone(pinsOf(scope)?.get(parsePinId(pinId) as PinId)),
     findPlace: async ({ placeId, ...scope }) =>
       structuredClone(placesOf(scope)?.get(parsePlaceId(placeId) as PlaceId)),
     findRelationship: async ({ relationshipId, ...scope }) =>
@@ -285,6 +321,11 @@ export const memoryStore = (
         .slice(0, MAX_RELATIONSHIPS),
     updatePerson: async ({ person, version, ...scope }) =>
       updated(scope, personsOf(scope), person.id, person, version),
+    updatePin: async ({ pin, version, ...scope }) => {
+      const pinned = pinnable(scope, pin);
+
+      return updated(scope, pinsOf(scope), pinned?.id, pinned ?? pin, version);
+    },
     updatePlace: async ({ place, version, ...scope }) =>
       updated(scope, placesOf(scope), parsePlaceId(place.id), place, version),
     updateRelationship: async ({ relationship, version, ...scope }) =>

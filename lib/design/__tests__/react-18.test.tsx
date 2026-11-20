@@ -1472,6 +1472,13 @@ describe('bundle', () => {
           box.click();
         }
 
+        // A click on a sheet grabber reaches `onExpandedChange`. In a `DateDock` state it is a key of the object prop `sheet`.
+        for (const grabber of page.document.querySelectorAll<HTMLButtonElement>(
+          'button[aria-label="Expand the sheet"]'
+        )) {
+          grabber.click();
+        }
+
         expect(problems).toEqual([]);
       }
     );

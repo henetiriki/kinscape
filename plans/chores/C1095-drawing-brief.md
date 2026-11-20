@@ -1,7 +1,7 @@
 # Plan: C1095: One drawing brief in CANVAS.md replaces the prompt of each Spec
 
 - **Chore:** #1095
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -18,7 +18,7 @@ Step 3 of the "After the canvas" steps of #539 changes the line about the screen
 - **C.** Drop it. Cost: the line stays stale after #539 merges.
 - **Other:** your own.
 
-Recommended: A, because each design Spec draws a screen from that list.
+**Answer: A** (@henetiriki)
 
 **D2 · Where the session draws** · Decides: Tech lead
 
@@ -28,7 +28,7 @@ The #539 prompt draws on the canvas and edits no repo file. Its step 1 then runs
 - **B.** The brief draws on the canvas, then runs steps 5.1 to 5.5. It links step 7 only for an edit to a board that exists. Cost: the brief does not match item 3, and the export runs after the canvas changes.
 - **Other:** your own.
 
-Recommended: A, because step 7 runs the export before it publishes, so a board that fails the export never reaches the canvas.
+**Answer: A** (@henetiriki)
 
 **D3 · Two rules of the #539 prompt** · Decides: Tech lead
 
@@ -38,7 +38,7 @@ The #539 prompt puts each screen board on the canvas page of its screen ("the sa
 - **B.** Leave both out. The Acceptance check of #539 on unchanged snapshots covers the second. Cost: the session picks the canvas page.
 - **Other:** your own.
 
-Recommended: A, because the brief then holds each standing rule of the prompt.
+**Answer: A** (@henetiriki)
 
 **D4 · Lines of #539 that name the prompt** · Decides: Tech lead
 
@@ -48,7 +48,7 @@ After the edit, two lines of #539 name a prompt that is gone. Flagged concerns s
 - **B.** Change only what item 4 of the Chore names. Cost: Flagged concerns names a missing prompt.
 - **Other:** your own.
 
-Recommended: A, because a reader of #539 then finds no step that does not exist.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

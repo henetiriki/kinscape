@@ -4,12 +4,13 @@
 
 ## Commands
 
-- Run one command in each Bash call. One denied part denies the whole call.
+- Run one command per Bash call. One denied part denies the whole call.
 - `npm` is off: a PR can hold a hostile script.
+- Post with `gh pr comment <n> --body-file - <<'EOF'`.
 
 ## The plan
 
-Read the PR's plan (the file under `plans/` that it changes) and issue `#N` from its `Spec:` line.
+Read the PR's plan (the `plans/` file that it changes) and issue `#N` from its `Spec:` line.
 
 Report a missing plan file, except on head branch `bot/update-action-pins` or `revert-*`.
 
@@ -34,7 +35,7 @@ For each answered Decision, check that the Spec's Behaviour and Acceptance check
   - Plan departures: at most two.
 - Skip style nits and linter findings.
 - Skip the content of `design/source/*.html`, `design/*.jpg` and `design/cards/*.png`. The workflow [Design: Render snapshots](../../design/CANVAS.md#making-the-snapshots-and-jpgs) writes them. If a deleted snapshot or JPG has a board in `design/canvas/project/canvas.json` on the PR head, report one finding. If a deleted card image has a card in `CARDS` on the PR head, report one finding. Report no finding for any other commit that only [deletes them](../../design/CANVAS.md#who-deletes-a-generated-file). If another non-merge commit whose message is not `chore: export and render design snapshots` changes them, report one finding.
-- If Claude commented before, ignore the command's stop and review every push. Do not repeat a finding that is still on the PR.
-- Read the threads, resolved ones too, with `gh api graphql`.
+- If Claude commented before, ignore the command's stop and review every push. Do not repeat a finding still on the PR.
+- Read the threads, resolved too, with `gh api graphql`.
 - Open every review with a comment that starts `Earlier findings still open: <n>`. Count each earlier finding whose thread is resolved but whose defect is still in the code, and each finding with no line. Do not count an unresolved thread (the check does) or an unlikely case. After the first review, write "All earlier findings addressed", or link each open finding with a one-line reason. Check each finding against the current code, not only `.since-last-review.diff`. A fix, or an author's reply with an accepted reason, addresses a finding. A resolved thread alone does not.
 - Never post "No issues" alone. List the plan items and rules you checked.

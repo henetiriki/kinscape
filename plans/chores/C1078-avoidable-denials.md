@@ -92,3 +92,10 @@ The tech lead builds this hand-back in a local session (`/build-local <n>`).
 - `refresh-settings.json` and `refresh.md`.
 - `Bash(git:*)` in `settings.json` (D1).
 - The audit's split of a call into parts (`scripts/denial-audit.mts`). It splits at `;`, `&&` and `||`, so a piped call stays one part.
+
+## Deviations
+
+- The pipe row also skips a `|` after a `\`, so an unquoted `git grep -E a\|b` stays allowed.
+- `review.md` had 3 words of room, and the new line has 8. The build cut 5 words from other lines and changed no rule: `in each` to `per`, `that is`, `file under` to `file`, and `ones`.
+- Per D2 B, the build did not allow `wc`. It added tests that the review does not allow `wc` or `wc --files0-from=…`.
+- `denial-audit.test.ts` also changes line 345 (`ls` to `sed x`), because the hook no longer denies `ls`.

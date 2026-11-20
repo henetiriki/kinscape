@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 
 import { Links } from '@ks/app/Links';
 import { MapHost } from '@ks/app/MapHost';
+import { QueryProvider } from '@ks/app/QueryProvider';
 
 import '@ks/app/tokens.css';
 import '@ks/app/globals.css';
@@ -136,10 +137,12 @@ const RootLayout = ({
     className={`${bricolage.variable} ${publicSans.variable} ${jetbrainsMono.variable}`}
     lang='en'>
     <body>
-      <Links>
-        <MapHost>{map}</MapHost>
-        {children}
-      </Links>
+      <QueryProvider>
+        <Links>
+          <MapHost>{map}</MapHost>
+          {children}
+        </Links>
+      </QueryProvider>
     </body>
   </html>
 );

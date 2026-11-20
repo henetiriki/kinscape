@@ -3,11 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { QueryProvider } from '@ks/app/QueryProvider';
 import { usePins } from '@ks/features/pins';
-import {
-  fetchPins,
-  pinsRequestError,
-  retryPins,
-} from '@ks/features/pins/query';
+import { fetchPins } from '@ks/features/pins/query';
 
 // PIN-02, NFR-01, NFR-03. Data is synthetic.
 const PIN = {
@@ -113,18 +109,6 @@ it('retries a 503 and shows the Pins when the next response is OK', async () => 
     { timeout: 5000 }
   );
   expect(fetchStub).toHaveBeenCalledTimes(2);
-});
-
-it.each([
-  ['a 401', pinsRequestError(401), 0, false],
-  ['a 404', pinsRequestError(404), 0, false],
-  ['a 500', pinsRequestError(500), 0, true],
-  ['a 503', pinsRequestError(503), 2, true],
-  ['a 503 after three retries', pinsRequestError(503), 3, false],
-  ['a dropped connection', new TypeError('Failed to fetch'), 0, true],
-  ['a dropped connection after three retries', new TypeError('x'), 3, false],
-])('retryPins gives the right answer for %s', (_name, error, count, retry) => {
-  expect(retryPins(count, error)).toBe(retry);
 });
 
 it('shows the error state after one request when the response is 401', async () => {

@@ -68,6 +68,8 @@ describe('treeMethods', () => {
       'findTree',
       'findTrees',
       'listPersons',
+      'listPins',
+      'listPinsOn',
       'listPlaces',
       'listRelationships',
       'updatePerson',

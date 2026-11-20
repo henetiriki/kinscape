@@ -14,6 +14,9 @@ import { textField } from '#ks/lib/domain/text/schemas.mts';
 export const MAX_ADDRESS = 500;
 export const MAX_SOURCES = 10_000;
 
+/** The most Pins that `listPins` and `listPinsOn` return, ordered by id (a Tree holds 10,000). */
+export const MAX_PINS = 10_000;
+
 /**
  * The Event types (PIN-03), in the order of `EVENT_ORDER` in `lib/ui`: `lib/ui` may not import
  * the domain, so a test keeps the two lists equal. `land` is land ownership and `baptism` is

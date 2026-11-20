@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
+import type { Day } from '#ks/lib/domain/boundaries/types.ts';
 import type {
   AccountId,
   PersonId,
@@ -21,6 +22,7 @@ import type {
   TreeScope,
   TreeStore,
 } from '#ks/lib/domain/trees/types.ts';
+import type { Validity } from '#ks/lib/domain/validity/types.ts';
 
 import {
   parseAccountId,
@@ -31,10 +33,13 @@ import {
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { MAX_PINS } from '#ks/lib/domain/pins/schemas.mts';
+import { spanOf } from '#ks/lib/domain/pins/span.mts';
 import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { isCurrentOn } from '#ks/lib/domain/validity/validity.mts';
 import { savedOrNotFound } from '#ks/server/trees/saved.mts';
 
 /** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
@@ -47,7 +52,7 @@ const identityOf = (issuer: string, subject: string) =>
 /**
  * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
  * A seed Tree may hold People and Relationships, saved at version 1. The eight writes refuse a Tree
- * in `readOnly` as they refuse a Tree the Account may not access. The three list reads of a Tree in
+ * in `readOnly` as they refuse a Tree the Account may not access. The list reads of a Tree in
  * `failing` throw.
  */
 export const memoryStore = (
@@ -127,6 +132,23 @@ export const memoryStore = (
   const placesOf = (scope: TreeScope) => rowsOf(places, scope);
 
   const pinsOf = (scope: TreeScope) => rowsOf(pins, scope);
+
+  /**
+   * At most `MAX_PINS` copies of the Tree's Pins, ordered by id, each with its span from the Person
+   * as saved now. A Tree in `failing` throws. The day query filters before it caps, as the SQL does.
+   */
+  const spanned = (
+    scope: TreeScope,
+    day?: Day
+  ): { pin: Pin; span: Validity }[] =>
+    structuredClone(failIfListed(scope, [...(pinsOf(scope)?.values() ?? [])]))
+      .map(pin => ({
+        pin,
+        span: spanOf(pin.date, personsOf(scope)!.get(pin.personId)!),
+      }))
+      .filter(({ span }) => day === undefined || isCurrentOn(span, day))
+      .sort((x, y) => compare(x.pin.id, y.pin.id))
+      .slice(0, MAX_PINS);
 
   /** The id of the Relationship, if the ids are UUIDs and both Persons are in the Tree. */
   const joinable = (scope: TreeScope, input: RelationshipInput) => {
@@ -307,6 +329,10 @@ export const memoryStore = (
             compare(x.id, y.id)
         )
         .slice(0, MAX_LISTED),
+    listPins: async scope =>
+      spanned(scope).map(({ pin, span }) => ({ ...pin, span })),
+    listPinsOn: async ({ day, ...scope }) =>
+      spanned(scope, day).map(({ pin }) => pin),
     listPlaces: async scope =>
       structuredClone(
         failIfListed(scope, [...(placesOf(scope)?.values() ?? [])])

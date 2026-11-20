@@ -105,4 +105,4 @@ Both banners keep the text "Terrain didn't load. Borders and pins still work."
 ## Deviations
 
 - `.banner` sets `box-shadow: var(--shadow-floating)` and does not compose `floating`. The composed base rule sets a white background and comes after `.banner`, so the bar drew white. The tests now check the `--ink` background.
-- The phone `offline` variant mounts `Banner` in a plain absolute box, not with `placed` ([D2](#decisions)). Check 5 of #1072 still says "with `placed`".
+- The phone `offline` variant mounts `Banner` in a plain absolute box, not with `placed` ([D2](#decisions)).

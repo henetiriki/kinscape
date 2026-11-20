@@ -17,16 +17,24 @@ If the app has the component and the design system does not, do steps 2 and 3 ab
 
 ## Board swap prompt
 
+Follow these rules:
+
+- If the real component draws differently from the board, do not swap that part. Raise a Bug that names the board and the difference. The Bug does not block the other swaps.
+- Fix the component first, then swap.
+- Never change a component to make it mount on a board or to make a check pass.
+
 Paste this prompt into a local session:
 
 ```text
 Do not edit design/source/ or the JPGs.
-Swap the new component into the boards that the plan lists, on the canvas.
+Swap the new component into the boards that the plan lists.
+Edit each board in the repo copy, design/canvas/project/.
 First check the exporter version.
 Then list every snapshot that could change, including a board you did not edit.
 New bundle CSS changes the inline styles that the exporter writes.
-For each board, swap it only if the export passes and the pixels match.
-If a swap fails the export or changes pixels, keep the old board.
+For each board, swap it only if npm run design:export passes.
+If a swap fails the export, keep the old board.
+Do not compare pixels. The tech lead compares the JPGs after the workflow run.
 Leave the other boards alone.
 Report each error with its board name.
 ```

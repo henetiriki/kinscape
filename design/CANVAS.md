@@ -10,6 +10,8 @@ An `export.json` snapshot can hold a `clip`: the `x`, `y`, `width` and `height` 
 
 The workflow also renders the card image of each component card (in `design/cards/`) in the pinned Playwright image. It commits those that changed. Nobody edits them by hand. A deletion follows [the rule](#who-deletes-a-generated-file).
 
+`npm run design:gallery` writes the gallery and opens each component card. The CI job `gallery` runs it. Outside the pinned image, the run skips the card images. If a card image differs in the `gallery` job, the tech lead runs the workflow. The workflow commits the new card image.
+
 ### Who deletes a generated file
 
 The tech lead, or a local session that the tech lead starts, deletes these generated files. If a board is not on the canvas on the same branch, delete its snapshots and JPGs. If a card is not in `CARDS` on the same branch, delete its card images. Remove these records of a deleted board in the same pull request:
@@ -21,17 +23,27 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
 
 ## Changing the design system
 
-- **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
-- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in steps 6 and 7 each commit.
+- **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
+- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in steps 6 and 7 each commit. If the branch merges a `main` that holds another design system change, run steps 3 to 5 again.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
-  4. Run "Updating the install" (4.1 to 4.7).
+  4. Run "Updating the install" (4.1 to 4.6).
   5. Run "Refreshing the canvas copy" (5.1 to 5.5).
-  6. Push the branch. The tech lead runs the workflow Design: Render snapshots on it. If a board shows the change, step 7 applies.
-  7. A local session swaps the boards that the plan lists ([board swap prompt](COMPONENTS.md#board-swap-prompt)). It runs "Refreshing the canvas copy" (5.1 to 5.5). It pushes the branch. The tech lead then runs the workflow Design: Render snapshots.
-- **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 5, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
+  6. If no board shows the change, push the branch. The tech lead runs the workflow Design: Render snapshots on it.
+  7. If a board shows the change, step 6 does not run. A local session does these steps in order:
+     1. Edit each board that the plan lists in the repo copy, `design/canvas/project/` ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
+     2. Run `npm run design:export`. If it fails, stop and publish nothing.
+     3. Publish each edited board to the canvas.
+     4. `list` the canvas. Read back only the boards that the session published. Compare each sha256 with the repo copy. Set line 2 of `canvas/VERSION`.
+     5. Discard the exported `source/` changes. Commit `design/canvas/` alone. Push the branch.
+
+     The tech lead then runs the workflow Design: Render snapshots once. That run renders the card images and the boards.
+
+     A local `npm run design:export` proves only that the export does not fail: another machine can write different values. The workflow runs in the pinned Playwright image. It is the proof of the snapshots, the JPGs and the card images.
+
+- **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 6, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
 - **Who.** The tech lead, or a local session. The session needs a signed-in account.
 
 ## Updating the install
@@ -44,26 +56,25 @@ After a `/publish-design-system` run that sends files, the canvas still holds th
 - **4.4** `read` the canvas in full. Send the changed and new files with one `publish` to the canvas `url` ([publish rules](../.claude/skills/publish-design-system/tools.md#rules-for-publish-with-the-artifact-tool)). Map each `project/ds/kinscape/<path>` to its source file in `files`. Set a deleted file to `null`.
 - **4.5** Read `project/canvas.json` right before the edit. Set the `version` and `copiedAt` of the `designSystems` entry, and change nothing else. Send it last.
 - **4.6** Read the canvas folder again. Report each file whose sha256 differs from the design system.
-- **4.7** Ask the person to open the canvas and check that the new cards render.
 
 To run the steps, paste this prompt into Claude Code:
 
 ```text
 Use the Artifact tool to update project/ds/kinscape/ and the designSystems entry on the canvas.
-Follow "Updating the install" in design/CANVAS.md, steps 4.1 to 4.7.
+Follow "Updating the install" in design/CANVAS.md, steps 4.1 to 4.6.
 If nothing differs, say so and stop.
 Change nothing else on the canvas. Touch no board. Leave the repo alone.
 ```
 
 ## Refreshing the canvas copy
 
-Refresh `canvas/` after a board changes and after each install update. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
+Refresh `canvas/` in two cases: after an install update, and after a person changes a board on the canvas. Step 7 of "Changing the design system" does not run it. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
 
 - **5.1** `list` the canvas with `scope: "files"` (its link is line 1 of `canvas/VERSION`).
 - **5.2** `read` each file with `paths` into `canvas/project/` (long files in parts). Compare its `sha256` from `read` with `shasum -a 256` of the repo copy. Files under `project/ds/kinscape/` come from `.design-system/project/`.
 - **5.3** Set line 2 of `canvas/VERSION` to the version that `list` reports.
 - **5.4** Run `npm run design:export`. It prints "No snapshot changed" unless a board changed. With no Chromium, skip it.
-- **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes: step 7 renders the snapshots.
+- **5.5** Commit `canvas/` alone, on the branch of the change. If a board changed, discard the exported `source/` changes: the workflow renders the snapshots.
 
 To run the steps, paste this prompt into Claude Code:
 

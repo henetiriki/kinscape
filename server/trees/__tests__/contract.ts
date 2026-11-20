@@ -1626,6 +1626,28 @@ export const runTreeStoreContract = (
         });
       });
 
+      // PIN-02
+      it('gives the Person and Place of a Pin in lower case', async () => {
+        await withStore(async store => {
+          const { a } = await withRows(store);
+          // A cast skips the schema, which makes each id lower case first.
+          const upper = {
+            ...pinOf(PIN_1),
+            personId: ID_2.toUpperCase(),
+            placeId: PLACE_2.toUpperCase(),
+          } as PinInput;
+          const expected = pinOf(PIN_1, { personId: ID_2, placeId: PLACE_2 });
+
+          expect(await store.addPin({ ...a, pin: upper })).toEqual({
+            ok: true,
+            value: { ...expected, version: 1 },
+          });
+          expect(
+            await store.updatePin({ ...a, pin: upper, version: 1 })
+          ).toEqual({ ok: true, value: { ...expected, version: 2 } });
+        });
+      });
+
       // NFR-09
       it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
         'gives conflict for the version %s',

@@ -141,8 +141,14 @@ export const memoryStore = (
       : undefined;
   };
 
-  /** The id of the Pin, if its ids are UUIDs and its Person and Place are in the Tree. */
-  const pinnable = (scope: TreeScope, input: PinInput) => {
+  /**
+   * The Pin with its ids as UUIDs in lower case, as Postgres gives them, if its Person and Place are
+   * in the Tree.
+   */
+  const pinnable = (
+    scope: TreeScope,
+    input: PinInput
+  ): PinInput | undefined => {
     const id = parsePinId(input.id);
     const person = parsePersonId(input.personId);
     const place = parsePlaceId(input.placeId);
@@ -152,7 +158,7 @@ export const memoryStore = (
       place !== undefined &&
       personsOf(scope)?.has(person) &&
       placesOf(scope)?.has(place)
-      ? id
+      ? { ...input, id, personId: person, placeId: place }
       : undefined;
   };
 
@@ -238,8 +244,13 @@ export const memoryStore = (
         parsePersonId(person.id) === undefined ? undefined : person.id,
         person
       ),
-    addPin: async ({ pin, ...scope }) =>
-      savedOrNotFound(added(scope, pinsOf(scope), pinnable(scope, pin), pin)),
+    addPin: async ({ pin, ...scope }) => {
+      const pinned = pinnable(scope, pin);
+
+      return savedOrNotFound(
+        added(scope, pinsOf(scope), pinned?.id, pinned ?? pin)
+      );
+    },
     addPlace: async ({ place, ...scope }) =>
       savedOrNotFound(
         added(scope, placesOf(scope), parsePlaceId(place.id), place)
@@ -310,8 +321,11 @@ export const memoryStore = (
         .slice(0, MAX_RELATIONSHIPS),
     updatePerson: async ({ person, version, ...scope }) =>
       updated(scope, personsOf(scope), person.id, person, version),
-    updatePin: async ({ pin, version, ...scope }) =>
-      updated(scope, pinsOf(scope), pinnable(scope, pin), pin, version),
+    updatePin: async ({ pin, version, ...scope }) => {
+      const pinned = pinnable(scope, pin);
+
+      return updated(scope, pinsOf(scope), pinned?.id, pinned ?? pin, version);
+    },
     updatePlace: async ({ place, version, ...scope }) =>
       updated(scope, placesOf(scope), parsePlaceId(place.id), place, version),
     updateRelationship: async ({ relationship, version, ...scope }) =>

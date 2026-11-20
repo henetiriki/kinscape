@@ -136,3 +136,4 @@ The Spec's Out of scope: the scale bar, the phone boards and a clip for another 
 
 - `design/CANVAS.md` had no room for the `clip` text. The budget in `scripts/word-count.mts` and its pin in `scripts/__tests__/word-count.test.ts` rise from 1000 to 1050 words.
 - The first card image showed the open card over its caption in a 358px box. The box is `CREDITS_BOX`, 420px, so the card clears the caption.
+- Design system step 4.7 (open the canvas and check the `Credits` card) did not run. The tech lead says the step is out of date (#979).

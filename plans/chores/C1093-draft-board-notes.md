@@ -73,6 +73,12 @@ The issue adds "The code needs no second copy of a value that it holds." A reade
 | Each heading and linked anchor is unchanged, and `npm test` passes                               | No heading line in the diff; `npm test` (`doc-links.test.ts`) |
 | `npm run words` passes                                                                           | `npm run words`                                               |
 
+## Deviations
+
+- "shows or states" is "shows or says" (STE rule 4).
+- The step 4 condition comes before its instruction (STE rule 13).
+- The last sentence of step 4 is the text of D1 B.
+
 ## Out of scope
 
 - A rule for the Components text of a built component (D2).

@@ -5,23 +5,26 @@ import { describe, expect, it } from 'vitest';
 // A file names a plan rule by its anchor in plans/README.md, never by its number: a renumbered
 // list would leave every number wrong and no check would fail.
 const PLAN_RULES = 'plans/README.md';
-const RULE_NAMES = [
-  'plans-committed-first',
-  'plan-pr-flow',
-  'chores',
-  'small-departures',
-  'big-departures',
-  'too-big',
-  'missing-components',
-  'failing-tests',
-  'stale-facts',
-  'related-issues',
-  'test-first',
-  'hand-back',
-  'design-system',
-  'ready-check',
-  'build-ownership',
+// Each `##` heading of plans/README.md, with the anchors under it in order.
+const SECTIONS = [
+  { anchors: ['item-types'], heading: 'Item types' },
+  { anchors: ['stale-facts', 'related-issues'], heading: 'Before you draft' },
+  { anchors: ['plan-pr-flow'], heading: 'Plan PR' },
+  {
+    anchors: ['build-ownership', 'hand-back', 'design-system'],
+    heading: 'Who builds',
+  },
+  {
+    anchors: ['test-first', 'missing-components', 'failing-tests'],
+    heading: 'While you build',
+  },
+  {
+    anchors: ['small-departures', 'big-departures', 'too-big'],
+    heading: 'When the plan changes',
+  },
+  { anchors: ['ready-check'], heading: 'Before ready' },
 ];
+const RULE_NAMES = SECTIONS.flatMap(section => section.anchors);
 // An owner is a file that a run or a session loads: an agent file, a Claude workflow, a skill or
 // AGENTS.md. A rule that no owner cites has no step that points at it, so no run applies it.
 const OWNERS = [
@@ -53,12 +56,15 @@ const numberCitations = (text: string) =>
 
 const anchors = (text: string) => [...text.matchAll(ANCHOR)].map(m => m[1]);
 
-// Numbered list items that do not start with an anchor.
-const unanchoredItems = (text: string) =>
+// The anchors under each `##` heading, in order. A heading with no anchor has an empty list.
+const sections = (text: string) =>
   text
-    .split('\n')
-    .filter(line => /^\d+\. /.test(line) && !/^\d+\. <a id="/.test(line))
-    .map(line => line.slice(0, 40));
+    .split(/^## /m)
+    .slice(1)
+    .map(block => ({
+      anchors: anchors(block),
+      heading: block.split('\n')[0],
+    }));
 
 // Anchor names a text cites: links to plans/README.md, links inside it and plain-text names.
 const citedNames = (text: string, inRules = false) => [
@@ -105,9 +111,23 @@ describe('plan rule citations (fixtures)', () => {
     expect(numberCitations('// plans/README.md rule 4')).toEqual(['rule 4']);
   });
 
-  it('finds a list item without an anchor', () => {
-    expect(unanchoredItems('1. <a id="a"></a>**A.** x\n2. **B.** y')).toEqual([
-      '2. **B.** y',
+  it('maps each heading to its anchors', () => {
+    expect(
+      sections(
+        'Intro <a id="x"></a>\n## One\n<a id="a"></a>**A.** x\n<a id="b"></a>**B.** y\n## Two\n<a id="c"></a>**C.** z'
+      )
+    ).toEqual([
+      { anchors: ['a', 'b'], heading: 'One' },
+      { anchors: ['c'], heading: 'Two' },
+    ]);
+  });
+
+  it('finds a heading with no anchor', () => {
+    expect(
+      sections('## One\n<a id="a"></a>**A.** x\n## Two\n**B.** y')
+    ).toEqual([
+      { anchors: ['a'], heading: 'One' },
+      { anchors: [], heading: 'Two' },
     ]);
   });
 
@@ -170,8 +190,8 @@ describe('plan rule citations (repo)', () => {
     ).toEqual([]);
   });
 
-  it('plans/README.md has one named anchor in each rule', () => {
-    expect(unanchoredItems(rules)).toEqual([]);
+  it('plans/README.md has each named anchor under its heading', () => {
+    expect(sections(rules)).toEqual(SECTIONS);
     expect(anchors(rules)).toEqual(RULE_NAMES);
   });
 

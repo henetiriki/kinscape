@@ -69,7 +69,7 @@ The `.action` rule of `Toast.module.css` sets `--type-label-size` and `--type-la
 | `features/people/components/PersonForm.module.css`                                                 | changed       | Line 43: `column-gap: var(--space-40)`                        |
 | `app/components/actions/Chip.module.css`                                                           | changed       | Line 15, as the table says                                    |
 | `app/components/overlays/Menu.module.css`                                                          | changed       | Line 126, as the table says                                   |
-| `app/components/feedback/Toast.module.css`                                                         | changed       | Line 32, as D3 says                                           |
+| `app/components/feedback/Toast.module.css`                                                         | changed       | Lines 31, 32 and 34, as D3 says                               |
 | `app/components/feedback/Callout.module.css`                                                       | changed       | Line 15, only if D4 is B                                      |
 | `scripts/word-count.mts`                                                                           | changed       | Each budget that the docs go over, to the next multiple of 50 |
 | `scripts/__tests__/word-count.test.ts`                                                             | changed       | The pin of each raised budget                                 |
@@ -115,3 +115,5 @@ The tech lead builds the plan in a local Claude Code session with a signed-in ac
 - Other literal values in components. The rule applies to each line at its next edit.
 
 ## Deviations
+
+- The D3 answer names lines 30 to 32 of `Toast.module.css`. The size, weight and line height of `.action` are lines 31, 32 and 34. Line 30 is the font family. The build changes those three lines.

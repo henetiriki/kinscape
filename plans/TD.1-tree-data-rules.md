@@ -12,7 +12,12 @@ The four checks:
 
 - **JSON routes:** a `route.*` file under `app/` that calls `Response.json` or `NextResponse.json` is a break, except a file in `JSON_EXEMPT` (`app/data/polities/route.ts`).
 - **No-store pages:** the test reads the rules from `await nextConfig.headers()`. A rule counts if it sets `Cache-Control: private, no-store` and has no `has` or `missing` condition. A page that reads Tree data (D2) at a path that no such rule matches is a break. `routeOf` gives the path. A small matcher reads literal segments, `:name` and a final `:name*`. A rule in another syntax is a break, so the check fails closed.
-- **Addresses:** a folder under `app/` whose name starts with `[` and is not in `ADDRESS_FOLDERS` (`[id]`) is a break. The check reads search parameter names in three forms: a destructure of `searchParams`, and `.get`, `.getAll` or `.has` with a string literal, on `searchParams` or on a `useSearchParams()` result. A name off `SEARCH_PARAMS` (`edit`, `returnTo`) is a break. Each other read of `searchParams` is a break, so the check fails closed.
+- **Addresses:** a folder under `app/` whose name starts with `[` and is not in `ADDRESS_FOLDERS` (`[id]`) is a break. The check reads search parameter names in these forms, on `searchParams`, on a `.searchParams` property or on a `useSearchParams()` result:
+  - a destructure;
+  - `.get`, `.getAll` or `.has` with a string literal.
+
+  A name off `SEARCH_PARAMS` (`edit`, `returnTo`) is a break. Each other read of `searchParams` is a break, so the check fails closed.
+
 - **Memory only:** a file under `app/` or `features/` with the identifier or string `localStorage`, `sessionStorage` or `indexedDB` is a break. An import that matches `@tanstack/*persist*` is a break. `STORAGE_EXEMPT` starts empty.
 
 ## Decisions
@@ -90,7 +95,7 @@ The Spec does not say how the check finds a page that reads Tree data. #678 Cons
 
 - `docs/architecture.md` was at its 900-word budget. The Lint bullet lost its rule list ("the config lists the rest"), and the Enforcement line says "four more in the Tree data row".
 - The Patterns row is named "Tree data stays private" and is short for the same reason.
-- The four checks were written before their fixture tests. The tests then passed on the first run.
+- I wrote the four checks before their fixture tests. The tests then passed on the first run.
 - The diff is 726 changed lines without the plan. This is over the 600-line cap of the [too-big rule](README.md#too-big). The tech lead accepted the size.
 
 ## Out of scope

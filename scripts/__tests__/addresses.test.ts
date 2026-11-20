@@ -117,14 +117,38 @@ describe('addressBreaks: search parameters', () => {
     ]);
   });
 
-  it('skips a test, a file outside app/ and a property named searchParams', () => {
+  it('skips a test, a file outside app/ and a key named searchParams', () => {
     expect(
       addressBreaks({
         'app/__tests__/a.test.tsx': 'read(searchParams);',
-        'app/a/page.tsx':
-          'const u = new URL(x);\nconst a = u.searchParams;\nconst o = { searchParams: 1 };',
+        'app/a/page.tsx': 'const o = { searchParams: 1 };',
         'features/a.ts': 'read(searchParams);',
       })
     ).toEqual([]);
+  });
+
+  it.each([
+    [
+      'a props read',
+      'const { sort } = await props.searchParams;',
+      [PARAM('sort')],
+    ],
+    [
+      'a request URL read',
+      "const a = new URL(request.url).searchParams.get('bbox');",
+      [PARAM('bbox')],
+    ],
+    [
+      'a renamed prop',
+      'const P = async ({ searchParams: q }) => { const { sort } = await q; };',
+      [PARAM('sort')],
+    ],
+    [
+      'a property that is not read by name',
+      'const a = u.searchParams;',
+      [BY_NAME('app/a/page.tsx')],
+    ],
+  ])('names a break for %s', (_name, source, breaks) => {
+    expect(addressBreaks({ 'app/a/page.tsx': source })).toEqual(breaks);
   });
 });

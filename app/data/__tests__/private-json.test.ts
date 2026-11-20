@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { privateJson } from '@ks/app/data/private-json';
 
-// NFR-03. A response with Tree data goes out `private, no-store`, and a caller cannot change it.
+// NFR-03. A response with Tree data has `private, no-store`, and a caller cannot change it.
 describe('privateJson', () => {
   it('sends a JSON body that no cache keeps', async () => {
     const response = privateJson({ a: 1 });

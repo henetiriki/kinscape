@@ -7,9 +7,13 @@ import { SOURCE_EXTENSION, targetOf } from '#ks/scripts/layers.mts';
 import { parse, specifiersOf, TEST_FILE } from '#ks/scripts/sources.mts';
 import { isDevPage } from '#ks/server/dev-pages.mts';
 
-// The four safety rows of docs/architecture.md › Patterns: Tree scoping, the sign-in gate, the
-// client/server boundary and the Tree data rules (cache, addresses, memory only). The fitness tests run them over the repo; eslint.config.mjs reads
-// the same lists, so lint and test agree.
+// The four safety rows of docs/architecture.md › Patterns:
+// - Tree scoping
+// - the sign-in gate
+// - the client/server boundary
+// - Tree data stays private (cache, addresses, memory only)
+// The fitness tests run them over the repo. eslint.config.mjs reads the lists of the
+// scoping and boundary rows, so lint and test agree on those.
 
 const ROOT = join(import.meta.dirname, '..');
 
@@ -497,12 +501,9 @@ const isUseSearchParams = (node: ts.Node): node is ts.CallExpression =>
   ts.isIdentifier(node.expression) &&
   node.expression.text === 'useSearchParams';
 
-/** Each `file: rule` line for a dynamic folder or a search parameter off the lists. */
-export const addressBreaks = (files: Record<string, string>): string[] => {
-  const appFiles = Object.entries(files).filter(
-    ([path]) => path.startsWith('app/') && !TEST_FILE.test(path)
-  );
-  const folders = [
+/** Each `file: rule` line for a dynamic folder under `app/` that is not on the list. */
+const folderBreaks = (appFiles: [string, string][]): string[] =>
+  [
     ...new Set(
       appFiles.flatMap(([path]) => {
         const parts = path.split('/').slice(0, -1);
@@ -518,51 +519,82 @@ export const addressBreaks = (files: Record<string, string>): string[] => {
     folder =>
       `${folder}: Address rule: a dynamic folder under app/ is one of ${ADDRESS_FOLDERS.join(', ')}.`
   );
-  const reads = appFiles.flatMap(([path, source]) => {
-    const tree = parse(path, source);
-    const bound = new Set(['searchParams']);
-    const collect = (node: ts.Node): void => {
-      if (
-        ts.isVariableDeclaration(node) &&
-        ts.isIdentifier(node.name) &&
-        node.initializer !== undefined &&
-        isUseSearchParams(node.initializer)
-      ) {
-        bound.add(node.name.text);
-      }
 
-      ts.forEachChild(node, collect);
-    };
-    const found: (string[] | undefined)[] = [];
-    const visit = (node: ts.Node): void => {
-      if (
-        isUseSearchParams(node) ||
-        (ts.isIdentifier(node) && bound.has(node.text) && isRead(node))
-      ) {
-        found.push(namesOf(node));
-      }
+/** The local names that hold `searchParams` or a `useSearchParams()` result in a file. */
+const boundNames = (tree: ts.Node): Set<string> => {
+  const bound = new Set(['searchParams']);
+  const collect = (node: ts.Node): void => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.initializer !== undefined &&
+      isUseSearchParams(node.initializer)
+    ) {
+      bound.add(node.name.text);
+    }
 
-      ts.forEachChild(node, visit);
-    };
+    if (
+      ts.isBindingElement(node) &&
+      ts.isIdentifier(node.name) &&
+      node.propertyName !== undefined &&
+      ts.isIdentifier(node.propertyName) &&
+      node.propertyName.text === 'searchParams'
+    ) {
+      bound.add(node.name.text);
+    }
 
-    collect(tree);
-    visit(tree);
+    ts.forEachChild(node, collect);
+  };
 
-    return found.flatMap(names =>
-      names === undefined
-        ? [
-            `${path}: Address rule: read a search parameter by name, from searchParams or useSearchParams().`,
-          ]
-        : names
-            .filter(name => !SEARCH_PARAMS.includes(name))
-            .map(
-              name =>
-                `${path}: Address rule: the search parameter ${name} is not one of ${SEARCH_PARAMS.join(', ')}.`
-            )
-    );
-  });
+  collect(tree);
 
-  return [...folders, ...reads];
+  return bound;
+};
+
+/** Each `file: rule` line for a search parameter read that is off the list or has a form the check cannot see. */
+const searchParamBreaks = (path: string, source: string): string[] => {
+  const tree = parse(path, source);
+  const bound = boundNames(tree);
+  const found: (string[] | undefined)[] = [];
+  const visit = (node: ts.Node): void => {
+    if (
+      isUseSearchParams(node) ||
+      (ts.isPropertyAccessExpression(node) &&
+        node.name.text === 'searchParams') ||
+      (ts.isIdentifier(node) && bound.has(node.text) && isRead(node))
+    ) {
+      found.push(namesOf(node));
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(tree);
+
+  return found.flatMap(names =>
+    names === undefined
+      ? [
+          `${path}: Address rule: read a search parameter by name, from searchParams or useSearchParams().`,
+        ]
+      : names
+          .filter(name => !SEARCH_PARAMS.includes(name))
+          .map(
+            name =>
+              `${path}: Address rule: the search parameter ${name} is not one of ${SEARCH_PARAMS.join(', ')}.`
+          )
+  );
+};
+
+/** Each `file: rule` line for a dynamic folder or a search parameter off the lists. */
+export const addressBreaks = (files: Record<string, string>): string[] => {
+  const appFiles = Object.entries(files).filter(
+    ([path]) => path.startsWith('app/') && !TEST_FILE.test(path)
+  );
+
+  return [
+    ...folderBreaks(appFiles),
+    ...appFiles.flatMap(([path, source]) => searchParamBreaks(path, source)),
+  ];
 };
 
 /** Each `file: rule` line where a file under `app/` or `features/` keeps Tree data outside memory. */

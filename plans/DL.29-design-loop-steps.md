@@ -2,7 +2,7 @@
 
 - **Spec:** #979
 - **Requirement IDs:** None. The Spec changes docs, one skill description and two word budgets.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 

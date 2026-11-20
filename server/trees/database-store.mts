@@ -26,6 +26,7 @@ import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { savedOrNotFound } from '#ks/server/trees/saved.mts';
 import { isVersion } from '#ks/server/trees/version.mts';
 
 type Db = ReturnType<typeof createDb>;
@@ -193,7 +194,7 @@ const selectPerson = (db: Db, { treeId }: TreeScope) =>
   db.selectFrom('person').selectAll().where('treeId', '=', treeId);
 
 /**
- * The add flow that each kind shares: refuse, insert, read back. `check` is an extra refusal.
+ * The add flow that each kind shares: refuse, insert, then read the row. `check` is an extra refusal.
  * An insert on a saved id changes nothing, so an add that repeats returns the saved row.
  */
 const added = async <Row, Entity>(
@@ -224,10 +225,6 @@ const added = async <Row, Entity>(
 
   return map(await read());
 };
-
-/** The `Result` of an add: `not-found` for a refused add. */
-const savedOrNotFound = <Entity,>(saved: Entity | undefined) =>
-  saved === undefined ? err('not-found') : ok(saved);
 
 /**
  * The versioned update that each kind shares. Each kind passes its own typed queries: Kysely does

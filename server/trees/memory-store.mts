@@ -32,6 +32,7 @@ import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { savedOrNotFound } from '#ks/server/trees/saved.mts';
 
 /** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
 const compare = (x: string, y: string): number =>
@@ -208,23 +209,27 @@ export const memoryStore = (
 
       return ok({ accountId, treeId });
     },
+    // `findPerson` and `updatePerson` look up the id as sent, so a Person keeps that id.
     addPerson: async ({ person, ...scope }) =>
-      added(scope, personsOf(scope), parsePersonId(person.id), person),
-    addPlace: async ({ place, ...scope }) => {
-      const row = added(scope, placesOf(scope), parsePlaceId(place.id), place);
-
-      return row === undefined ? err('not-found') : ok(row);
-    },
-    addRelationship: async ({ relationship, ...scope }) => {
-      const row = added(
+      added(
         scope,
-        relationshipsOf(scope),
-        joinable(scope, relationship),
-        relationship
-      );
-
-      return row === undefined ? err('not-found') : ok(row);
-    },
+        personsOf(scope),
+        parsePersonId(person.id) === undefined ? undefined : person.id,
+        person
+      ),
+    addPlace: async ({ place, ...scope }) =>
+      savedOrNotFound(
+        added(scope, placesOf(scope), parsePlaceId(place.id), place)
+      ),
+    addRelationship: async ({ relationship, ...scope }) =>
+      savedOrNotFound(
+        added(
+          scope,
+          relationshipsOf(scope),
+          joinable(scope, relationship),
+          relationship
+        )
+      ),
     findAccount: async (issuer, subject) => {
       const id = accounts.get(identityOf(issuer, subject));
 

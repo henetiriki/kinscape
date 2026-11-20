@@ -13,7 +13,7 @@ Each store gets two private helpers: `added` for the add flow and `updated` for 
 - `added(scope, rows, id, input)` refuses a frozen Tree, a missing `rows` and an `undefined` id. Otherwise it saves `{ ...structuredClone(input), id, version: 1 }` if the id is not saved. It returns a clone of the saved row.
 - `updated(scope, rows, id, input, version, matches?)` gives `not-found` for the same three cases, a missing row or a failed `matches`. It gives `conflict` for a stale version. Otherwise it saves `version + 1` and returns a clone.
 - Each kind passes its id check:
-  - Person: `parsePersonId` on add, and `person.id` on update, as now.
+  - Person: `parsePersonId` checks the id on add, and the row keeps `person.id`. Update uses `person.id`, as now.
   - Place: `parsePlaceId`.
   - Relationship: `joinable`, and on update a `matches` on the type and both Persons.
 
@@ -46,6 +46,7 @@ The Constraints forbid `any` and a cast in a helper. Kysely types `returningAll(
 | ------------------------------------------ | ------------- | ------------------------------------------------ |
 | `server/trees/memory-store.mts`            | Changed       | `added` and `updated`; the six methods call them |
 | `server/trees/database-store.mts`          | Changed       | `added` and `updated`; the six methods call them |
+| `server/trees/saved.mts`                   | New           | `savedOrNotFound`, which both stores use         |
 | `plans/chores/C1083-tree-store-helpers.md` | New           | This plan                                        |
 
 ## Order of work
@@ -63,7 +64,7 @@ The Constraints allow no test change, so no new test fails first ([test-first ru
 ## Risks
 
 - Each kind keeps its typed query, so a wrong pair of table and fields fails `npm run typecheck`. Three `updateTable(` calls and three `insertInto(` calls stay.
-- `isVersion` still skips the update for a version that is not an `int4`. Then `read` gives `not-found` or `conflict`, as now.
+- `isVersion` still skips the update for a version that is not an `int4`. Then `exists` gives `not-found` or `conflict`, as now.
 - Estimate: about 500 changed lines, and each store gets shorter.
 
 ## Proof
@@ -85,4 +86,4 @@ The Constraints allow no test change, so no new test fails first ([test-first ru
 
 ## Deviations
 
-- `database-store.mts` has a third helper, `savedOrNotFound`. It turns an `undefined` add into `not-found` for Place and Relationship, so those two adds do not repeat the line.
+- A third helper, `savedOrNotFound`, is in the new file `server/trees/saved.mts`. It turns an `undefined` add into `not-found` for Place and Relationship. Both stores use it, so the line has one copy.

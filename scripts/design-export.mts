@@ -13,6 +13,7 @@ import { format, resolveConfig } from 'prettier';
 
 import type {
   CanvasExport,
+  CanvasSnapshot,
   DesignExportDeps,
   StyleHelpers,
   StyleSelector,
@@ -910,6 +911,46 @@ export const inlineStyles = (tokens: string[]): void => {
   bundle.remove();
 };
 
+/**
+ * Runs in the page, after `inlineStyles` and before `pageHtml`. It keeps only the `clip` of the
+ * viewport. The page moves into an inner box of the viewport size. The inner box sits at `-x`, `-y`
+ * in an outer box of the clip size. The outer box hides the rest. Each value is px, so
+ * `snapshotProblems` passes. The function uses nothing from the module, as `fillTemplate` does.
+ */
+export const clipPage = ({
+  clip,
+  viewport,
+}: {
+  clip: NonNullable<CanvasSnapshot['clip']>;
+  viewport: CanvasSnapshot['viewport'];
+}): void => {
+  const outer = document.createElement('div');
+  const inner = document.createElement('div');
+
+  // The clip does not move an element with `position: fixed`. Its containing block is the viewport.
+  for (const element of document.body.querySelectorAll('*')) {
+    if (getComputedStyle(element).position === 'fixed') {
+      throw new Error('The clip does not move an element with position: fixed');
+    }
+  }
+
+  outer.style.cssText = `height: ${clip.height}px; overflow: hidden; width: ${clip.width}px;`;
+  inner.style.cssText = `height: ${viewport.height}px; left: ${-clip.x}px; position: relative; top: ${-clip.y}px; width: ${viewport.width}px;`;
+  inner.append(...document.body.childNodes);
+  outer.append(inner);
+  document.body.append(outer);
+};
+
+/** Whether a clip has a size and lies inside its viewport. */
+const clipInside = ({ clip, viewport }: CanvasSnapshot): boolean =>
+  clip === undefined ||
+  (clip.x >= 0 &&
+    clip.y >= 0 &&
+    clip.width > 0 &&
+    clip.height > 0 &&
+    clip.x + clip.width <= viewport.width &&
+    clip.y + clip.height <= viewport.height);
+
 const fileUrl = (root: string, path: string) =>
   pathToFileURL(resolve(root, path)).href;
 
@@ -970,6 +1011,10 @@ export const exportSnapshots = async (
       continue;
     }
 
+    if (!clipInside(snapshot)) {
+      throw new Error(`${snapshot.name}: the clip is not inside the viewport`);
+    }
+
     const board = readFileSync(join(root, BOARD_DIR, snapshot.file), 'utf8');
     const target = join(root, SOURCE_DIR, `${snapshot.name}.html`);
     const rendered = await deps.render(
@@ -1025,7 +1070,7 @@ if (import.meta.main) {
     const changed = await exportSnapshots('.', process.argv.slice(2), {
       render: async (
         html,
-        { name, props = {}, state = {}, viewport },
+        { clip, name, props = {}, state = {}, viewport },
         tokens
       ) => {
         const file = join(dir, `${name}.html`);
@@ -1053,6 +1098,11 @@ if (import.meta.main) {
           await page.evaluate(defineStyleHelpers);
           await page.evaluate(inlinePseudoStyles, tokens);
           await page.evaluate(inlineStyles, tokens);
+
+          if (clip) {
+            await page.evaluate(clipPage, { clip, viewport });
+          }
+
           await page.evaluate(() => document.fonts.ready);
           snapshot = await page.evaluate(pageHtml);
         } catch (error) {

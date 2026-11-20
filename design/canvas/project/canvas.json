@@ -555,7 +555,7 @@
       "x": 0,
       "y": 8160,
       "w": 800,
-      "h": 120,
+      "h": 900,
       "title": "Credits at 800px — collapsed",
       "page": "states"
     },
@@ -563,7 +563,7 @@
       "x": 880,
       "y": 8160,
       "w": 800,
-      "h": 120,
+      "h": 900,
       "title": "Credits at 800px — expanded",
       "page": "states"
     }
@@ -687,8 +687,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1795162658-3b3c",
-      "copiedAt": "2026-11-20T08:19:01Z"
+      "version": "1795169654-84a7",
+      "copiedAt": "2026-11-20T10:14:22Z"
     }
   ]
 }

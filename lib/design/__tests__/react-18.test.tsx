@@ -69,6 +69,7 @@ import { Modal } from '@ks/app/components/overlays/Modal';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import sourceData from '@ks/data/sources.json';
+import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { DateField } from '@ks/features/map/components/DateField';
 import { FilterFields } from '@ks/features/map/components/FilterFields';
@@ -196,6 +197,7 @@ const COMPONENTS = {
   Chip,
   ChipGroup,
   ColumnLayout,
+  Credits,
   DateDock,
   DateField,
   Dialog,
@@ -931,6 +933,36 @@ const CASES: [string, ReactElement][] = [
     `SourcesList · ${name}`,
     <SourcesList key={name} sources={sourceData.sources} />,
   ]),
+  [
+    'Credits · one line',
+    <Credits
+      collapsible
+      key='line'
+      onOpenAttributions={noop}
+      showPolities
+      sources={sourceData.sources}
+    />,
+  ],
+  [
+    'Credits · open',
+    <Credits
+      collapsible
+      defaultOpen
+      key='open'
+      onOpenAttributions={noop}
+      showPolities
+      sources={sourceData.sources}
+    />,
+  ],
+  [
+    'Credits · full text',
+    <Credits
+      key='full'
+      onOpenAttributions={noop}
+      showPolities
+      sources={sourceData.sources}
+    />,
+  ],
   ...(['error', 'info', 'success', 'warning'] as const).map(
     (tone): [string, ReactElement] => [
       `Alert · ${tone}`,

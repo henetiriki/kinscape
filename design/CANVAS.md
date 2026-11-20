@@ -6,6 +6,8 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
+An `export.json` snapshot can hold a `clip`: the `x`, `y`, `width` and `height` in px of the part to keep. The snapshot and its JPG show only that part, and the JPG keeps its size. The export fails on a clip outside the viewport, and on `position: fixed` content.
+
 The workflow also renders the card image of each component card (in `design/cards/`) in the pinned Playwright image. It commits those that changed. Nobody edits them by hand. A deletion follows [the rule](#who-deletes-a-generated-file).
 
 ### Who deletes a generated file

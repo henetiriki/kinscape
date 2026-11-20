@@ -169,6 +169,9 @@ const SOURCES_BOX = '704px';
 /** The body of the sheet on a 390px phone, less 16px of padding on each side. The `list` state of `SourcesList` has it. */
 const SHEET_BOX = '358px';
 
+/** The 300px open card of `Credits`, and 120px at its left for the caption of its case: the card opens over the caption's row. */
+const CREDITS_BOX = '420px';
+
 const FILTER_HANDLERS = [
   'onBranchChange',
   'onEventToggle',
@@ -1008,6 +1011,34 @@ export const CARDS: Card[] = [
       },
     ],
     width: 760,
+  },
+  {
+    // A case is a flex column, so the line sits at the right, as in the slot.
+    box: CREDITS_BOX,
+    design: ['Credits line', 'Credits card'],
+    group: 'Map',
+    handlers: ['onOpenAttributions'],
+    height: 240,
+    name: 'Credits',
+    // The open card opens above its line: this clears it above its case.
+    pad: 64,
+    states: [
+      one('Credits · one line', {
+        collapsible: true,
+        showPolities: true,
+        sources: sources.sources,
+      }),
+      one('Credits · open', {
+        collapsible: true,
+        defaultOpen: true,
+        showPolities: true,
+        sources: sources.sources,
+      }),
+      one('Credits · full text', {
+        showPolities: true,
+        sources: sources.sources,
+      }),
+    ],
   },
   {
     design: ['Alert'],

@@ -2,6 +2,8 @@ import type { Locator } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import { hitsControl } from '@ks/e2e/hits';
+
 const WIDTHS = [640, 800, 1024, 1279, 1440, 1920];
 
 const box = async (locator: Locator) => (await locator.boundingBox())!;
@@ -131,6 +133,35 @@ test.describe('hashed class names on /', () => {
 
       expect(tokens.some(token => token.includes(plain))).toBe(true);
       expect(tokens).not.toContain(plain);
+    }
+  });
+});
+
+// #1074 D3, D4: a point 13px above the credits line is on a Credits button, over the dock and the open card.
+test.describe('the hit areas of the credits line on /', () => {
+  test.use({ viewport: { height: 800, width: 1440 } });
+
+  test('each Credits button has a 44px hit area above the line, with the card shut and open', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.getByRole('radiogroup').first()).toBeVisible();
+
+    const credits = page.getByRole('button', { exact: true, name: 'Credits' });
+    const buttons = [
+      credits,
+      page.getByRole('button', { name: 'Attributions' }),
+    ];
+
+    for (const open of [false, true]) {
+      if (open) {
+        await credits.click();
+        await expect(credits).toHaveAttribute('aria-expanded', 'true');
+      }
+
+      for (const button of buttons) {
+        expect(await hitsControl(button, 0, -21)).toBe(true);
+      }
     }
   });
 });

@@ -22,20 +22,23 @@ export const sourcesOnScreen = (
 /**
  * The credits line. `collapsible` (desktop) keeps it to one line: a "Credits" button opens the
  * attribution text in a card above the line. A second press, a press outside or Esc closes it.
- * Without it (the phone) the text shows in full.
+ * Without it (the phone) the text shows in full. `defaultOpen` opens the card at the first render:
+ * a design board shows the open state with it, and the app does not set it.
  */
 export const Credits = ({
   collapsible,
+  defaultOpen = false,
   onOpenAttributions,
   showPolities,
   sources,
 }: {
   collapsible?: boolean;
+  defaultOpen?: boolean;
   onOpenAttributions: () => void;
   showPolities: boolean;
   sources: Source[];
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const cardId = useId();
   const line = useRef<HTMLDivElement>(null);
   const credits = [

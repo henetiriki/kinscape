@@ -92,15 +92,17 @@
       "viewport": { "height": 900, "width": 1440 }
     },
     {
+      "clip": { "height": 120, "width": 800, "x": 0, "y": 780 },
       "file": "Map-credits-narrow.dc.html",
       "name": "map-credits-narrow",
-      "viewport": { "height": 120, "width": 800 }
+      "viewport": { "height": 900, "width": 800 }
     },
     {
+      "clip": { "height": 120, "width": 800, "x": 0, "y": 780 },
       "file": "Map-credits-narrow.dc.html",
       "name": "map-credits-narrow-open",
       "props": { "variant": "open" },
-      "viewport": { "height": 120, "width": 800 }
+      "viewport": { "height": 900, "width": 800 }
     },
     {
       "file": "Map.dc.html",

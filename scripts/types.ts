@@ -22,6 +22,8 @@ export type CanvasExport = {
 };
 
 export type CanvasSnapshot = {
+  /** The part of the viewport to keep, in px. The snapshot then shows only that part, at its size. */
+  clip?: { height: number; width: number; x: number; y: number };
   /** The board in `design/canvas/project/`. */
   file: string;
   name: string;

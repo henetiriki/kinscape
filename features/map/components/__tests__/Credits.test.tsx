@@ -154,6 +154,29 @@ it('keeps the card open for a press inside a dialog', () => {
   expect(button.getAttribute('aria-expanded')).toBe('true');
 });
 
+// #1074
+it('opens the card at the first render with defaultOpen, and a second press closes it', () => {
+  render(
+    <Credits
+      collapsible
+      defaultOpen
+      onOpenAttributions={vi.fn()}
+      showPolities
+      sources={sources}
+    />
+  );
+
+  const button = screen.getByRole('button', { name: 'Credits' });
+
+  expect(button.getAttribute('aria-expanded')).toBe('true');
+  expect(
+    screen.getByText('Made with Natural Earth · Public Sans · MapLibre').id
+  ).toBe(button.getAttribute('aria-controls'));
+
+  fireEvent.click(button);
+  expect(button.getAttribute('aria-expanded')).toBe('false');
+});
+
 it('opens the dialog from the Attributions link while collapsed', () => {
   const open = vi.fn();
 

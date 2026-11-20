@@ -26,7 +26,26 @@
   cursor: pointer;
   font: inherit;
   padding: 0;
+  position: relative;
   text-decoration: underline;
+}
+
+/* Only the desktop line has the open card. Its buttons paint above the card. The hit area then keeps the lowest 6px of the card. The phone text stays below the date error callout. */
+.line button {
+  z-index: 1;
+}
+
+/* A 44px hit area, centred on the button. The line keeps its 16px height. `min-width`, not `max()`: the snapshot export refuses `max()`. */
+.credits button::before,
+.line button::before {
+  content: '';
+  height: var(--size-touch);
+  left: 50%;
+  min-width: var(--size-touch);
+  position: absolute;
+  top: 50%;
+  translate: -50% -50%;
+  width: 100%;
 }
 
 .line button:first-child {

@@ -1,6 +1,6 @@
 ---
 name: publish-design-system
-description: Publish KinScape's design system (tokens, fonts, icons, README, cover, components) to its Design System artifact in Claude. It sends only the files that changed. Use `/publish-design-system` after a change to `design/tokens.json`, `design/DESIGN.md`, the fonts, the icons, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/states.mts` or a component in `CONTROLS`. It needs an interactive Claude Code session signed in to claude.ai.
+description: Publish KinScape's design system (tokens, fonts, icons, README, cover, components) to its Design System artifact in Claude. It sends only the files that changed. Use `/publish-design-system` after a change to `design/tokens.json`, `design/DESIGN.md`, the fonts, the icons, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`. It needs an interactive Claude Code session signed in to claude.ai.
 ---
 
 # Publish the design system

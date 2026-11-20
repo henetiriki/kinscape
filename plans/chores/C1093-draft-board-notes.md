@@ -2,7 +2,7 @@
 
 - **Chore:** #1093
 - **Requirement IDs:** None. The Chore changes a process doc.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -33,7 +33,7 @@ The issue adds "The code needs no second copy of a value that it holds." A reade
 - **B.** Write "A note that the code holds needs no second copy in the Components text." The meaning stays.
 - **Other:** your own.
 
-Recommended: B, because it names where the second copy would go.
+**Answer: B** (@henetiriki)
 
 **D2 · Step 2 for a built component** · Decides: Tech lead
 
@@ -43,7 +43,7 @@ Recommended: B, because it names where the second copy would go.
 - **B.** Start the new text with "If there is a draft board,". "A built component" then has no rule for its Components text.
 - **Other:** your own.
 
-Recommended: A, because the gap is in step 2 already, and a rule for a built component is a new scope for its own Chore.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -2,7 +2,7 @@
 
 - **Spec:** #1089
 - **Requirement IDs:** [NFR-03](../docs/requirements.md#nfr-03), [NFR-10](../docs/requirements.md#nfr-10)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ _Where does X go_ has no row for a response helper. #538 imports the helper for 
 - **B.** `server/http.mts`, which opens with `import 'server-only'`. `APP_SERVER_MODULES` and `SERVER_ONLY` in `scripts/safety.mts` each get one entry, so the scoping and boundary rows change. About 5 more lines.
 - **Other:** your own.
 
-Recommended: A, because each route of #538 and #861 is under `/data/`, and the helper holds no secret, so `server-only` guards nothing.
+**Answer: A** (@henetiriki)
 
 **D2 · Which pages read Tree data** · Decides: Tech lead
 
@@ -36,7 +36,7 @@ The Spec does not say how the check finds a page that reads Tree data. #678 Cons
 - **C.** As A, but a `'use server'` module does not count. The gap in the Flagged concern stays open. About 35 lines.
 - **Other:** your own.
 
-Recommended: A, because #678 puts server actions under the caching rule. Option C costs the same and leaves `/` uncovered.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

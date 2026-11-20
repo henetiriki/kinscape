@@ -7,9 +7,9 @@ A component that the app does not have follows [A component that is not built](#
 Follow these steps in order:
 
 1. Draw the component on a board of the draft page ("Drafts") of the canvas. The board has a snapshot and a JPG, and no entry in `design/screens.json`. Add a Screens row for the snapshot to `design/DESIGN.md`. Add its name to `NO_ENTRY` in `lib/design/__tests__/screens.test.ts`. Raise the snapshot count in `lib/design/__tests__/design.test.ts` and `scripts/__tests__/design-export.test.ts` by one.
-2. Build the component from that board. Add it to `CONTROLS`. Write its card states in `lib/design/states.mts`. If its CSS has a width query, or it fills the viewport, add it to `PHONE_CARDS` in `lib/design/cards.mts`.
+2. Build the component from that board. Add it to `CONTROLS`. Write its card states in `lib/design/states.mts`. If its CSS has a width query, or it fills the viewport, add it to `PHONE_CARDS` in `lib/design/cards.mts`. Write its Components text in `design/DESIGN.md` from the notes of the draft board. A note is each size, rule, offset, state and accessible name that the board shows or says.
 3. Run the steps of [Changing the design system](CANVAS.md#changing-the-design-system) on one branch and one pull request. The plan lists the boards for [step 7](CANVAS.md#changing-the-design-system). The workflow "Design: Render snapshots" writes its card images.
-4. Swap it into each screen board that shows it. Then delete the draft board. Follow [the deletion rule](CANVAS.md#who-deletes-a-generated-file).
+4. Swap it into each screen board that shows it. Then, when each note of the draft board is in the Components text, in a card state or in the code, delete the board. A note that the code holds needs no second copy in the Components text. Follow [the deletion rule](CANVAS.md#who-deletes-a-generated-file).
 
 ## A built component
 

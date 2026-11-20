@@ -1,15 +1,19 @@
 import { join, relative, sep } from 'node:path';
 import ts from 'typescript';
 
-import type { AppRoute } from '#ks/scripts/types.ts';
+import type { AppRoute, HeaderRule } from '#ks/scripts/types.ts';
 
 import { SOURCE_EXTENSION, targetOf } from '#ks/scripts/layers.mts';
 import { parse, specifiersOf, TEST_FILE } from '#ks/scripts/sources.mts';
 import { isDevPage } from '#ks/server/dev-pages.mts';
 
-// The three safety rows of docs/architecture.md › Patterns: Tree scoping, the sign-in gate and
-// the client/server boundary. The fitness tests run them over the repo; eslint.config.mjs reads
-// the same lists, so lint and test agree.
+// The four safety rows of docs/architecture.md › Patterns:
+// - Tree scoping
+// - the sign-in gate
+// - the client/server boundary
+// - Tree data stays private (cache, addresses, memory only)
+// The fitness tests run them over the repo. eslint.config.mjs reads the lists of the
+// scoping and boundary rows, so lint and test agree on those.
 
 const ROOT = join(import.meta.dirname, '..');
 
@@ -309,6 +313,331 @@ export const boundaryBreaks = (files: Record<string, string>): string[] => [
         .map(({ specifier }) => `${path}: ${clientMessage(specifier)}`)
     ),
 ];
+
+/** The route handlers that may send JSON without `privateJson()`, each with its reason. */
+export const JSON_EXEMPT: Record<string, string> = {
+  'app/data/polities/route.ts': 'Reference data: no Tree data in the body.',
+};
+
+/** The dynamic folders `app/` may hold. */
+export const ADDRESS_FOLDERS = ['[id]'];
+
+/** The search parameters a file under `app/` may read. */
+export const SEARCH_PARAMS = ['edit', 'returnTo'];
+
+/** The files under `app/` or `features/` that may name browser storage, each with its reason. */
+export const STORAGE_EXEMPT: Record<string, string> = {};
+
+const STORAGE_NAMES = ['localStorage', 'sessionStorage', 'indexedDB'];
+const SEARCH_METHODS = ['get', 'getAll', 'has'];
+const TREE_CALL = /(?:^|\.)(?:openTree|treeAction)$/;
+const NO_STORE = 'private, no-store';
+const EXTENSIONS = ['.ts', '.tsx', '.mts', '.js', '.jsx'];
+
+/** Each `file: rule` line where a route handler sends JSON without `privateJson()`. */
+export const jsonRouteBreaks = (files: Record<string, string>): string[] =>
+  Object.entries(files)
+    .filter(
+      ([path]) =>
+        /^app\/(?:.*\/)?route\.[jt]sx?$/.test(path) && !(path in JSON_EXEMPT)
+    )
+    .filter(([path, source]) =>
+      calls(/^(?:Next)?Response\.json$/, path, source)
+    )
+    .map(
+      ([path]) =>
+        `${path}: Cache rule: a route handler sends JSON through privateJson().`
+    );
+
+/** The file a module target names, with an extension or as a folder's `index`. */
+const fileOf = (
+  files: Record<string, string>,
+  target: string
+): string | undefined =>
+  [
+    target,
+    ...EXTENSIONS.map(extension => `${target}${extension}`),
+    ...EXTENSIONS.map(extension => `${target}/index${extension}`),
+  ].find(candidate => candidate in files);
+
+/** Whether a file calls `treeAction` or `openTree`, or takes a value from an `app/` or `features/` file that does. */
+const readsTree = (
+  files: Record<string, string>,
+  path: string,
+  seen: Set<string> = new Set()
+): boolean => {
+  if (seen.has(path)) {
+    return false;
+  }
+
+  seen.add(path);
+
+  return (
+    calls(TREE_CALL, path, files[path]) ||
+    specifiersOf(path, files[path])
+      .filter(({ typeOnly }) => !typeOnly)
+      .flatMap(({ specifier }) => {
+        const target = targetOf(path, specifier);
+        const file = target === undefined ? undefined : fileOf(files, target);
+
+        return file !== undefined &&
+          /^(?:app|features)\//.test(file) &&
+          !TEST_FILE.test(file)
+          ? [file]
+          : [];
+      })
+      .some(file => readsTree(files, file, seen))
+  );
+};
+
+/**
+ * Whether a `next.config.ts` header `source` covers a route path: literal segments, `:name` and
+ * a last `:name*`. Any other syntax covers nothing, so the check fails closed.
+ */
+export const covers = (source: string, path: string): boolean => {
+  const open = /\/:\w+\*$/.test(source);
+  const rule = source.split('/').filter(Boolean);
+  const fixed = open ? rule.slice(0, -1) : rule;
+  const target = path.split('/').filter(Boolean);
+
+  return (
+    (open ? target.length >= fixed.length : target.length === fixed.length) &&
+    fixed.every(
+      (segment, index) =>
+        /^:\w+$/.test(segment) ||
+        (/^[\w.~-]+$/.test(segment) && segment === target[index])
+    )
+  );
+};
+
+/** Each `file: rule` line where a page that reads Tree data has no `private, no-store` header rule. */
+export const noStoreBreaks = (
+  files: Record<string, string>,
+  rules: HeaderRule[]
+): string[] => {
+  const global = rules.filter(
+    ({ has, headers, missing }) =>
+      has === undefined &&
+      missing === undefined &&
+      headers.some(
+        ({ key, value }) => key === 'Cache-Control' && value === NO_STORE
+      )
+  );
+
+  return appRoutes(Object.keys(files))
+    .filter(
+      ({ file }) =>
+        /\/page\.[jt]sx?$/.test(file) &&
+        !TEST_FILE.test(file) &&
+        readsTree(files, file)
+    )
+    .filter(({ path }) => !global.some(rule => covers(rule.source, path)))
+    .map(
+      ({ file, path }) =>
+        `${file}: Cache rule: ${path} reads Tree data, and no next.config.ts header rule sets Cache-Control: ${NO_STORE} there.`
+    );
+};
+
+/** Whether an identifier is a read of its name, not a declaration or a property name. */
+const isRead = (node: ts.Identifier): boolean => {
+  const { parent } = node;
+  const named = parent as { name?: ts.Node; propertyName?: ts.Node };
+
+  return (
+    ts.isShorthandPropertyAssignment(parent) ||
+    (named.name !== node && named.propertyName !== node)
+  );
+};
+
+/** The names a read of `searchParams` takes, or undefined if the read has a form the check cannot see. */
+const namesOf = (read: ts.Node): string[] | undefined => {
+  const outer = ts.isAwaitExpression(read.parent) ? read.parent : read;
+  const { parent } = outer;
+
+  if (
+    ts.isVariableDeclaration(parent) &&
+    parent.initializer === outer &&
+    ts.isObjectBindingPattern(parent.name)
+  ) {
+    const names = parent.name.elements.map(
+      ({ dotDotDotToken, name, propertyName }) => {
+        const key = propertyName ?? name;
+
+        return dotDotDotToken === undefined &&
+          (ts.isIdentifier(key) || ts.isStringLiteral(key))
+          ? key.text
+          : undefined;
+      }
+    );
+
+    return names.every(name => name !== undefined) ? names : undefined;
+  }
+
+  if (
+    ts.isVariableDeclaration(parent) &&
+    ts.isCallExpression(read) &&
+    ts.isIdentifier(parent.name)
+  ) {
+    return [];
+  }
+
+  const [argument] = ts.isCallExpression(parent.parent)
+    ? parent.parent.arguments
+    : [];
+
+  return ts.isPropertyAccessExpression(parent) &&
+    parent.expression === outer &&
+    SEARCH_METHODS.includes(parent.name.text) &&
+    ts.isCallExpression(parent.parent) &&
+    parent.parent.expression === parent &&
+    argument !== undefined &&
+    ts.isStringLiteralLike(argument)
+    ? [argument.text]
+    : undefined;
+};
+
+const isUseSearchParams = (node: ts.Node): node is ts.CallExpression =>
+  ts.isCallExpression(node) &&
+  ts.isIdentifier(node.expression) &&
+  node.expression.text === 'useSearchParams';
+
+/** Each `file: rule` line for a dynamic folder under `app/` that is not on the list. */
+const folderBreaks = (appFiles: [string, string][]): string[] =>
+  [
+    ...new Set(
+      appFiles.flatMap(([path]) => {
+        const parts = path.split('/').slice(0, -1);
+
+        return parts.flatMap((part, index) =>
+          part.startsWith('[') && !ADDRESS_FOLDERS.includes(part)
+            ? [parts.slice(0, index + 1).join('/')]
+            : []
+        );
+      })
+    ),
+  ].map(
+    folder =>
+      `${folder}: Address rule: a dynamic folder under app/ is one of ${ADDRESS_FOLDERS.join(', ')}.`
+  );
+
+/** The local names that hold `searchParams` or a `useSearchParams()` result in a file. */
+const boundNames = (tree: ts.Node): Set<string> => {
+  const bound = new Set(['searchParams']);
+  const collect = (node: ts.Node): void => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.initializer !== undefined &&
+      isUseSearchParams(node.initializer)
+    ) {
+      bound.add(node.name.text);
+    }
+
+    if (
+      ts.isBindingElement(node) &&
+      ts.isIdentifier(node.name) &&
+      node.propertyName !== undefined &&
+      ts.isIdentifier(node.propertyName) &&
+      node.propertyName.text === 'searchParams'
+    ) {
+      bound.add(node.name.text);
+    }
+
+    ts.forEachChild(node, collect);
+  };
+
+  collect(tree);
+
+  return bound;
+};
+
+/** Each `file: rule` line for a search parameter read that is off the list or has a form the check cannot see. */
+const searchParamBreaks = (path: string, source: string): string[] => {
+  const tree = parse(path, source);
+  const bound = boundNames(tree);
+  const found: (string[] | undefined)[] = [];
+  const visit = (node: ts.Node): void => {
+    if (
+      isUseSearchParams(node) ||
+      (ts.isPropertyAccessExpression(node) &&
+        node.name.text === 'searchParams') ||
+      (ts.isIdentifier(node) && bound.has(node.text) && isRead(node))
+    ) {
+      found.push(namesOf(node));
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(tree);
+
+  return found.flatMap(names =>
+    names === undefined
+      ? [
+          `${path}: Address rule: read a search parameter by name, from searchParams or useSearchParams().`,
+        ]
+      : names
+          .filter(name => !SEARCH_PARAMS.includes(name))
+          .map(
+            name =>
+              `${path}: Address rule: the search parameter ${name} is not one of ${SEARCH_PARAMS.join(', ')}.`
+          )
+  );
+};
+
+/** Each `file: rule` line for a dynamic folder or a search parameter off the lists. */
+export const addressBreaks = (files: Record<string, string>): string[] => {
+  const appFiles = Object.entries(files).filter(
+    ([path]) => path.startsWith('app/') && !TEST_FILE.test(path)
+  );
+
+  return [
+    ...folderBreaks(appFiles),
+    ...appFiles.flatMap(([path, source]) => searchParamBreaks(path, source)),
+  ];
+};
+
+/** The storage names in a file under `app/` or `features/`. */
+const storageNames = (path: string, source: string): string[] => {
+  if (!/^(?:app|features)\//.test(path)) {
+    return [];
+  }
+
+  const names = new Set<string>();
+  const visit = (node: ts.Node): void => {
+    if (
+      (ts.isIdentifier(node) || ts.isStringLiteralLike(node)) &&
+      STORAGE_NAMES.includes(node.text)
+    ) {
+      names.add(node.text);
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(parse(path, source));
+
+  return [...names];
+};
+
+/**
+ * Each `file: rule` line where a file keeps Tree data outside memory. The storage names count
+ * only under `app/` and `features/`. A persistence import counts in any source file.
+ */
+export const memoryOnlyBreaks = (files: Record<string, string>): string[] =>
+  Object.entries(files)
+    .filter(([path]) => !TEST_FILE.test(path) && !(path in STORAGE_EXEMPT))
+    .flatMap(([path, source]) => [
+      ...storageNames(path, source).map(
+        name => `${path}: Memory rule: no file names ${name}.`
+      ),
+      ...specifiersOf(path, source)
+        .filter(({ specifier }) => /^@tanstack\/.*persist/.test(specifier))
+        .map(
+          ({ specifier }) =>
+            `${path}: Memory rule: no file imports a persistence package (${specifier}).`
+        ),
+    ]);
 
 /** A node that names a module, as ESLint hands it over. */
 interface Sourced {

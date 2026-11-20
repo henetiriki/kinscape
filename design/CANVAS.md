@@ -89,4 +89,41 @@ A Spec names the board's file (for example `Map.dc.html`). Read `project/<board>
 
 ## Drawing a board
 
-A Spec's design prompt is the brief for the drawing. A local session, or a subagent it starts, follows it. Skip the chat lines of the prompt (link the repository to the chat, edit no file in the repository). If the app does not have a component, draw it on the draft page ([`COMPONENTS.md`](COMPONENTS.md#a-component-that-is-not-built)).
+A local session, or a subagent it starts, follows this brief for each board that a Spec lists. The session draws each board in the repo copy, `design/canvas/project/`, and publishes it as step 7 of [Changing the design system](#changing-the-design-system) says. It edits no board that the Spec does not list.
+
+### Rules for the drawing
+
+The exporter checks each rule except the `<sc-for>` rule, which the HTML parser sets. If this list differs from `scripts/design-export.mts`, the code wins.
+
+- Write `var(--token)` only in an inline `style=""` attribute, never in a `<style>` block.
+- Use no CSS function that the colour check cannot read, such as `inset()`, `rect()` or `clamp()`.
+- Add no `<script>` except the board's own `data-dc-script` and the canvas tags. Use no `http(s)` load and no CSS escape.
+- Put no `<sc-for>` in a `<table>`, `<tbody>` or `<tr>`. The HTML parser moves it out of the table.
+- Link to another board only if that board has a snapshot, or an entry in `links` in `design/canvas/export.json`.
+- Put `<x-import>` in the file of each board that needs the design system.
+
+Also follow these rules:
+
+- Mount `KinScape.MapLayout` in a map board.
+- Read the README of a component in `design/canvas/project/ds/kinscape/components/` before you use it.
+- Use only design-system components and tokens, and synthetic data.
+- Follow `design/DESIGN.md` for spacing, 44px targets, error placement and sentence case.
+- Draw a part with no component on the Drafts page ([`COMPONENTS.md`](COMPONENTS.md#a-component-that-is-not-built)).
+- Put each screen board on the canvas page of the other boards of its screen, or on Drafts.
+
+In the PR body, list these:
+
+- the board files and the layout;
+- each hand-drawn part, with its states;
+- each value that has no token, so that the build Spec decides a token.
+
+### Records of a new board
+
+Each new board needs these:
+
+- An entry in `canvas.json`, and one in `export.json`. A wrapper names its base file and `props`. Publish `canvas.json` last, after the boards, as step 4.5 does.
+- A Screens row in `design/DESIGN.md`.
+- If the board designs a screen under "Not designed yet" in `design/DESIGN.md`, a change to that line.
+- A name in `NO_ENTRY` in `lib/design/__tests__/screens.test.ts`, unless `design/screens.json` has an entry.
+- The two snapshot counts, in `lib/design/__tests__/design.test.ts` and `scripts/__tests__/design-export.test.ts`.
+- The README check: run `npm run design-system`. Compare the sha256 of `.design-system/project/README.md` and `design/canvas/project/ds/kinscape/README.md`. If they differ, stop: steps 3 to 5 of Changing the design system apply.

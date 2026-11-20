@@ -2,7 +2,7 @@
 
 - **Spec:** #1091
 - **Requirement IDs:** [NFR-01](../docs/requirements.md#nfr-01), [NFR-03](../docs/requirements.md#nfr-03)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -25,7 +25,7 @@ The Spec names "a map source". A map source is a `sources` entry of a `Layer` (`
 - **B.** Only the `data`, `url` and `tiles` values in a `sources` object. A URL in a constant or a `setData` call passes. About 25 lines.
 - **Other:** your own.
 
-Recommended: A, because a Tree data URL outside the query layer is a second path, wherever it is.
+**Answer: A** (@henetiriki)
 
 **D2 · What counts as a call of `fetch`** · Decides: Tech lead
 
@@ -35,7 +35,7 @@ Recommended: A, because a Tree data URL outside the query layer is a second path
 - **B.** Only a call whose callee is `fetch`, `window.fetch`, `globalThis.fetch` or `self.fetch`. It reuses `calls()` in `scripts/safety.mts`. An alias passes. About 5 lines.
 - **Other:** your own.
 
-Recommended: A, because it fails closed, as the TD.1 checks do. B costs 10 fewer lines and misses an alias.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

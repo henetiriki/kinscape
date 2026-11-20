@@ -11,6 +11,7 @@ The Map date control.
 | `contestedCount` | `number` | no | Contested claims on the Map date. |
 | `contestedYears` | `ContestedYears[]` | no | Year spans drawn hatched on the slider. |
 | `day` | `Day` | yes |  |
+| `defaultText` | `string` | no | Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. |
 | `epochs` | `Epoch[]` | no | Epochs for Jump to; they are also the slider's ticks. |
 | `hasBorders` | `((day: Day) => boolean)` | no | Whether a Boundary version is valid on a day; a typed date without one shows the warning. |
 | `lastDay` | `Day` | yes |  |

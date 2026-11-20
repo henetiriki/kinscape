@@ -9,7 +9,7 @@ export type Card = {
   /** The px height of each state's control, for a control that fills the viewport. The preview sets it, so the component keeps its own height. */
   frame?: number;
   group: Group;
-  /** The props a preview gives a no-op. `rows.onChange` names `onChange` in each item of the list prop `rows`. */
+  /** The props a preview gives a no-op. `rows.onChange` names `onChange` in each item of the list prop `rows`. `sheet.onExpandedChange` names `onExpandedChange` in the object prop `sheet`. */
   handlers: string[];
   height: number;
   name: string;

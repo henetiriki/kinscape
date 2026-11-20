@@ -71,10 +71,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     </div>
   </sc-if>
 
-  <sc-if value="{{dateInvalid}}" hint-placeholder-val="{{ false }}">
-    <div style="position: absolute; left: 388px; top: 618px; width: 340px"><x-import component-from-global-scope="KinScape.Callout" id="date-msg"><strong>February 1901 has 28 days.</strong> The map still shows 1901-02-28. Press Esc to go back to it.</x-import><span style="position: absolute; left: 137px; bottom: -6px; width: 12px; height: 12px; background: #FBEDEA; border-right: 1px solid #B4412F; border-bottom: 1px solid #B4412F; transform: rotate(45deg)"></span></div>
-  </sc-if>
-
   <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <div style="z-index: 2; position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
   <div style="z-index: 2; position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
@@ -150,10 +146,7 @@ class Component extends DCLogic {
       events: { birth: true, baptism: true, residence: true, marriage: true, divorce: true, death: true, burial: true, land: true, occupation: true, other: true },
       person: '',
       surnames: ['Rossouw'],
-      branch: '',
-      precision: (props && props.variant === 'date-invalid') ? 'day' : 'year',
-      playing: false,
-      speed: 5
+      branch: ''
     };
   }
   renderVals() {
@@ -161,15 +154,7 @@ class Component extends DCLogic {
     const L = s.layers;
     const toggle = (k) => () => this.setState({ layers: Object.assign({}, s.layers, { [k]: !s.layers[k] }) });
     const row = (k, label, sub) => ({ id: k, label: label, sub: sub, on: !!L[k], toggle: toggle(k) });
-    const seg = (on) => 'height: 36px; min-width: 52px; padding: 0 12px; border: 0; border-radius: 7px; font-size: 13.5px; font-weight: 600; cursor: pointer; ' + (on ? 'background: #FFFFFF; color: #18211B; box-shadow: 0 1px 2px rgba(24,33,27,0.18)' : 'background: transparent; color: #4A544C');
-    const precisionWord = { year: 'year', month: 'month', day: 'day' }[s.precision];
     const dateInvalid = (this.props.variant ?? 'default') === 'date-invalid';
-    const dateValue = dateInvalid ? '1901-02-30' : { year: '1901', month: '1901-06', day: '1901-06-14' }[s.precision];
-    const dateFieldStyle = "width: 188px; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: #18211B; background: #FFFFFF; " + (dateInvalid ? 'border: 2px solid #B4412F; padding: 0 30px 0 6px' : 'border: 1px solid #C9CFC5');
-    const epochs = ['1652','1806','1854','1880','1902','1910','1976','1994','Today'].map((y) => ({
-      label: y,
-      style: 'height: 36px; padding: 0 10px; border-radius: 7px; font-family: JetBrains Mono, monospace; font-size: 12.5px; cursor: pointer; ' + (y === '1902' ? 'border: 1px solid #264F29; background: #FFFFFF; color: #1D3E20' : 'border: 1px solid #D6DAD2; background: #FFFFFF; color: #2E3A33')
-    }));
     const variant = this.props.variant ?? 'default';
     const loading = variant === 'loading';
     const noPins = loading || variant === 'empty-tree' || variant === 'empty-date';
@@ -211,17 +196,6 @@ class Component extends DCLogic {
         basemap: [row('names', 'Place names', 'As they were on the map date'), row('rivers', 'Rivers', 'Many early borders follow them'), row('terrain', 'Terrain', 'Hillshade, no modern borders')],
         pins: [row('pins', 'Pins', variant === 'empty-tree' ? 'None in your tree yet' : variant === 'empty-date' ? '0 of 214 true on this date' : loading ? 'Loading…' : '8 of 214 true on this date'), row('halos', 'Uncertainty halos', 'Grow with the date range')]
       },
-      precisions: [['year','Year'],['month','Month'],['day','Day']].map((p) => ({ label: p[1], on: s.precision === p[0], pick: () => this.setState({ precision: p[0] }), style: seg(s.precision === p[0]) })),
-      speeds: [1, 5, 10].map((n) => ({ label: String(n), on: s.speed === n, pick: () => this.setState({ speed: n }), style: seg(s.speed === n) + '; min-width: 40px' })),
-      precisionWord: precisionWord,
-      dateValue: dateValue,
-      dateInvalid: dateInvalid,
-      dateFieldStyle: dateFieldStyle,
-      playing: s.playing,
-      notPlaying: !s.playing,
-      playLabel: s.playing ? 'Pause' : 'Play',
-      togglePlay: () => this.setState({ playing: !s.playing }),
-      epochs: epochs
     };
 
     const React = window.React;
@@ -229,12 +203,12 @@ class Component extends DCLogic {
 
     if (!React || !K) return vals;
 
-    const { d, groups, notPlaying, playLabel, playing, precisions, speeds, tabs } = vals;
+    const { d, groups, tabs } = vals;
     const eventTypes = Object.keys(s.events).map(value => ({ glyph: value, label: value[0].toUpperCase() + value.slice(1), value }));
     // Boundaries draws its rows 48 tall; Basemap and Pins pass 'm' for 44.
     const layerRows = (items, size) => items.map(item => ({ checked: item.on, description: item.sub, id: item.id, label: item.label, onChange: item.toggle, size }));
     const h = React.createElement;
-    const { drawn, mount } = window.KinScapeBoard;
+    const { drawn } = window.KinScapeBoard;
 
     const v = vals.v;
     // The slot puts a card at its top edge. The board draws two cards lower, so they take the gap as a margin.
@@ -251,78 +225,19 @@ class Component extends DCLogic {
       account: h(K.Avatar, { expanded: vals.avatarExpanded, initial: 'R' }),
       accountMenu: vals.accountMenu,
       chrome: vals.chrome,
-      dateInvalid,
-      // The values are the DateDock samples of lib/design/samples.mts. The real DateDock takes no typed text,
-      // so it cannot show 1901-02-30: the date-invalid variant draws its dock.
-      dock: !vals.chrome ? undefined : !dateInvalid ? h(K.DateDock, {
+      // The values are the DateDock samples of lib/design/samples.mts. The key mounts a new dock for each
+      // variant: defaultText sets only the first text of the field.
+      dock: !vals.chrome ? undefined : h(K.DateDock, {
         contestedCount: 2,
         contestedYears: [{ from: 1900, to: 1901 }],
         day: 91109,
+        defaultText: dateInvalid ? '1901-02-30' : undefined,
         epochs: [1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994].map(year => ({ year })).concat([{ label: 'Today', year: 2026 }]),
+        key: variant,
         lastDay: 136894,
         onChange: () => {},
         onPlay: () => {}
-      }) : mount(`  <section aria-label="Map date" style="height: 176px; box-sizing: border-box; padding: 14px 20px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12); display: flex; flex-direction: column; gap: 8px">
-    <div style="display: flex; align-items: center; gap: 14px; height: 44px">
-      <div style="display: flex; align-items: center; gap: 4px">
-        <button type="button" aria-label="Back one ${precisionWord}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>
-        <span style="position: relative; display: inline-flex">
-          <input aria-label="Map date" aria-invalid="${dateInvalid}" aria-describedby="date-msg" value="${dateValue}" readonly style="${dateFieldStyle}">
-          ${dateInvalid ? `<svg style="position: absolute; right: 9px; top: 13px" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4412F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.01"></path></svg>` : ''}
-        </span>
-        <button type="button" aria-label="Forward one ${precisionWord}" style="width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>
-      </div>
-      <div style="display: flex; padding: 3px; gap: 2px; background: #EEF0EA; border-radius: 9px" aria-label="Date precision">
-        ${precisions.map(p => `
-          <button type="button" aria-pressed="${p.on}" style="${p.style}">${p.label}</button>
-        `).join('')}
-      </div>
-      <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #2E3A33"><span style="width: 18px; height: 14px; border-radius: 2px; border: 1px solid #3B3A2F; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.34) 0 3px, #E3D2B2 3px 8px); box-sizing: border-box"></span>2 contested claims on this date</span>
-      <div style="margin-left: auto; display: flex; align-items: center; gap: 10px">
-        <button type="button" aria-label="${playLabel} through time" style="height: 44px; padding: 0 16px 0 12px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer">
-          ${playing ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>` : ''}
-          ${notPlaying ? `<x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import>` : ''}
-          ${playLabel}
-        </button>
-        <div style="display: flex; padding: 3px; gap: 2px; background: #EEF0EA; border-radius: 9px" aria-label="Playback speed in years per second">
-          ${speeds.map(sp => `
-            <button type="button" aria-pressed="${sp.on}" style="${sp.style}">${sp.label}</button>
-          `).join('')}
-        </div>
-        <span style="font-size: 12.5px; color: #4A544C">yr/s</span>
-      </div>
-    </div>
-
-    <div style="position: relative; height: 44px">
-      <span style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: #D6DAD2"></span>
-      <span style="position: absolute; left: 66.15%; width: 0.53%; top: 8px; height: 12px; border-radius: 2px; background: repeating-linear-gradient(45deg, rgba(139,74,28,0.55) 0 2px, transparent 2px 4px)"></span>
-      <span style="position: absolute; left: 41.1%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <span style="position: absolute; left: 53.9%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <span style="position: absolute; left: 60.8%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <span style="position: absolute; left: 66.7%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <span style="position: absolute; left: 68.8%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <span style="position: absolute; left: 86.4%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <span style="position: absolute; left: 91.2%; top: 8px; width: 2px; height: 12px; background: #4A544C"></span>
-      <button type="button" aria-label="Map date slider, 1901. Arrow keys step one year, Shift and arrow ten years" style="position: absolute; left: calc(66.4% - 13px); top: 1px; width: 26px; height: 26px; border-radius: 13px; border: 4px solid #FFFFFF; background: #264F29; box-shadow: 0 0 0 1px #264F29, 0 2px 6px rgba(24,33,27,0.3); cursor: grab; padding: 0"></button>
-      <div style="position: absolute; left: 0; right: 0; top: 26px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #4A544C">
-        <span style="position: absolute; left: 0">1652</span>
-        <span style="position: absolute; left: 12.8%; transform: translateX(-50%)">1700</span>
-        <span style="position: absolute; left: 26.1%; transform: translateX(-50%)">1750</span>
-        <span style="position: absolute; left: 39.5%; transform: translateX(-50%)">1800</span>
-        <span style="position: absolute; left: 52.8%; transform: translateX(-50%)">1850</span>
-        <span style="position: absolute; left: 79.5%; transform: translateX(-50%)">1950</span>
-        <span style="position: absolute; right: 0">Today</span>
-      </div>
-    </div>
-
-    <div style="display: flex; align-items: center; gap: 6px">
-      <span style="font-size: 12.5px; color: #4A544C; margin-right: 4px">Jump to</span>
-      ${epochs.map(e => `
-        <button type="button" style="${e.style}">${e.label}</button>
-      `).join('')}
-      <span style="margin-left: auto; font-size: 12.5px; line-height: 18px; color: #4A544C; display: inline-flex; gap: 8px; align-items: center"><x-import component-from-global-scope="KinScape.KeyHint">←</x-import><x-import component-from-global-scope="KinScape.KeyHint">→</x-import>1 ${precisionWord} · with <x-import component-from-global-scope="KinScape.KeyHint">Shift</x-import> ×10</span>
-    </div>
-  </section>`),
+      }),
       map: drawn(`  <svg viewBox="-289 89 1600 1000" width="1440" height="900" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="Map of South Africa on 1901: Cape Colony, Natal, Basutoland and Swaziland, with the Orange Free State and South African Republic shown as contested">
     <defs>
       <clipPath id="landClip"><path d="M63 0 L89 60 L126 114 L131 147 L136 210 L150 270 L163 348 L165 369 L173 408 L194 444 L220 474 L234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 Z"></path></clipPath>

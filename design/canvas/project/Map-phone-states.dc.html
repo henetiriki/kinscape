@@ -25,7 +25,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" layers="{{layers}}" dock="{{dock}}" overlay="{{overlay}}" overlay-at="{{overlayAt}}"></x-import>
 
   <sc-if value="{{v.offline}}" hint-placeholder-val="{{ false }}">
-    <x-import component-from-global-scope="KinScape.Banner" icon="cloudOff" action="Retry" placed="{{ true }}">Terrain didn't load. Borders and pins still work.</x-import>
+    <div style="position: absolute; left: 16px; right: 16px; top: 80px">
+      <x-import component-from-global-scope="KinScape.Banner" icon="cloudOff" action="Retry">Terrain didn't load. Borders and pins still work.</x-import>
+    </div>
     <div style="position: absolute; right: 16px; top: 156px; width: 48px; height: 48px">
       <x-import component-from-global-scope="KinScape.IconButton" variant="raised" label="Layers and filters"><x-import component-from-global-scope="KinScape.Icon" name="layers" size="24"></x-import></x-import>
     </div>

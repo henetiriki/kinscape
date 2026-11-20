@@ -84,3 +84,5 @@ The Constraints allow no test change, so no new test fails first ([test-first ru
 - The Pin store (#880). It checks its Person and Place on update too, so it adds a `check` to `updated`.
 
 ## Deviations
+
+- `database-store.mts` has no change yet. With D1 A, `updateTable(table).set(...)` does not type for a generic or union `TreeTable`: TS2349, "none of those signatures are compatible". Step 5 stops here for the tech lead.

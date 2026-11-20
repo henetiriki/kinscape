@@ -1,6 +1,14 @@
 import type { SessionStore } from '@ks/lib/domain/auth/types.ts';
-import type { PersonId, RelationshipId } from '@ks/lib/domain/ids/types.ts';
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
+import type {
+  PersonId,
+  PinId,
+  PlaceId,
+  RelationshipId,
+} from '@ks/lib/domain/ids/types.ts';
 import type { PersonInput, PersonView } from '@ks/lib/domain/persons/types.ts';
+import type { Pin, PinInput, SpannedPin } from '@ks/lib/domain/pins/types.ts';
+import type { Place, PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type {
   Refusal,
   Relationship,
@@ -20,6 +28,35 @@ export type PersonGroup = {
     person: PersonInput,
     version: number
   ) => Promise<Result<PersonView, 'conflict' | 'not-found'>>;
+};
+
+/** The Pins of the opened Tree. Each read passes `pinView`. */
+export type PinGroup = {
+  /** Saves a new Pin; `not-found` if its Person or Place is not in the Tree. */
+  create: (pin: PinInput) => Promise<Result<Pin, 'not-found'>>;
+  get: (id: PinId) => Promise<Pin | undefined>;
+  /** Each Pin comes with its span (PIN-04). */
+  list: () => Promise<SpannedPin[]>;
+  /** The Pins current on `day`, as `listPinsOn` returns them. */
+  listOn: (day: Day) => Promise<Pin[]>;
+  /** `version` is the one the client read; a stale one gives `conflict`. */
+  update: (
+    pin: PinInput,
+    version: number
+  ) => Promise<Result<Pin, 'conflict' | 'not-found'>>;
+};
+
+/** The Places of the opened Tree. Each read passes `placeView`. */
+export type PlaceGroup = {
+  /** Saves a new Place; a repeat of an id returns the Place saved first. */
+  create: (place: PlaceInput) => Promise<Result<Place, 'not-found'>>;
+  get: (id: PlaceId) => Promise<Place | undefined>;
+  list: () => Promise<Place[]>;
+  /** `version` is the one the client read; a stale one gives `conflict`. */
+  update: (
+    place: PlaceInput,
+    version: number
+  ) => Promise<Result<Place, 'conflict' | 'not-found'>>;
 };
 
 /** The Relationships of the opened Tree. Each write runs `checkRelationship` first (PPL-02). */
@@ -58,6 +95,8 @@ export type TreeDeps = {
  */
 export type TreeRepository = {
   persons: PersonGroup;
+  pins: PinGroup;
+  places: PlaceGroup;
   relationships: RelationshipGroup;
   tree: Tree;
   viewer: Viewer;

@@ -7,6 +7,8 @@ import type { Result } from '#ks/lib/domain/result/types.ts';
 import type { TreeStore, Viewer } from '#ks/lib/domain/trees/types.ts';
 import type {
   PersonGroup,
+  PinGroup,
+  PlaceGroup,
   RelationshipGroup,
   TreeDeps,
   TreeRepository,
@@ -19,6 +21,8 @@ import { err, ok } from '#ks/lib/domain/result/result.mts';
 import { sessionOf } from '#ks/server/auth/sessions.mts';
 import {
   personView,
+  pinView,
+  placeView,
   relationshipView,
   treeView,
 } from '#ks/server/trees/views.mts';
@@ -50,6 +54,71 @@ const personGroup = (
       const saved = await store.updatePerson({ ...scope, person, version });
 
       return saved.ok ? ok(personView(viewer, saved.value)) : saved;
+    },
+  };
+};
+
+/** The Places of one Tree, for one Viewer. */
+const placeGroup = (
+  store: TreeStore,
+  viewer: Viewer,
+  treeId: TreeId
+): PlaceGroup => {
+  const scope = { accountId: viewer.accountId, treeId };
+
+  return {
+    create: async place => {
+      const saved = await store.addPlace({ ...scope, place });
+
+      return saved.ok ? ok(placeView(viewer, saved.value)) : saved;
+    },
+    get: async placeId => {
+      const row = await store.findPlace({ ...scope, placeId });
+
+      return row === undefined ? undefined : placeView(viewer, row);
+    },
+    list: async () =>
+      (await store.listPlaces(scope)).map(row => placeView(viewer, row)),
+    update: async (place, version) => {
+      const saved = await store.updatePlace({ ...scope, place, version });
+
+      return saved.ok ? ok(placeView(viewer, saved.value)) : saved;
+    },
+  };
+};
+
+/** The Pins of one Tree, for one Viewer. */
+const pinGroup = (
+  store: TreeStore,
+  viewer: Viewer,
+  treeId: TreeId
+): PinGroup => {
+  const scope = { accountId: viewer.accountId, treeId };
+
+  return {
+    create: async pin => {
+      const saved = await store.addPin({ ...scope, pin });
+
+      return saved.ok ? ok(pinView(viewer, saved.value)) : saved;
+    },
+    get: async pinId => {
+      const row = await store.findPin({ ...scope, pinId });
+
+      return row === undefined ? undefined : pinView(viewer, row);
+    },
+    list: async () =>
+      (await store.listPins(scope)).map(row => ({
+        ...pinView(viewer, row),
+        span: row.span,
+      })),
+    listOn: async day =>
+      (await store.listPinsOn({ ...scope, day })).map(row =>
+        pinView(viewer, row)
+      ),
+    update: async (pin, version) => {
+      const saved = await store.updatePin({ ...scope, pin, version });
+
+      return saved.ok ? ok(pinView(viewer, saved.value)) : saved;
     },
   };
 };
@@ -147,6 +216,8 @@ export const openTree = async (
     ? err('not-found')
     : ok({
         persons: personGroup(store, viewer, row.id),
+        pins: pinGroup(store, viewer, row.id),
+        places: placeGroup(store, viewer, row.id),
         relationships: relationshipGroup(store, viewer, row.id),
         tree: treeView(viewer, row),
         viewer,

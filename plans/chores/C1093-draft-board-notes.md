@@ -21,7 +21,7 @@ The new text of step 2, after its last sentence:
 
 The new text of step 4:
 
-> Swap it into each screen board that shows it. Then, when each note of the draft board is in the Components text, in a card state or in the code, delete the board. {D1 sentence} Follow [the deletion rule](CANVAS.md#who-deletes-a-generated-file).
+> Swap it into each screen board that shows it. Then, when each note is in the Components text, a card state or the code, delete the draft board. {D1 sentence} Follow [the deletion rule](CANVAS.md#who-deletes-a-generated-file).
 
 ## Decisions
 

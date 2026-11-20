@@ -8,7 +8,7 @@
 
 Two check functions join the "Tree data stays private" row of TD.1 in `scripts/safety.mts`. Each returns `file: rule` lines, as `memoryOnlyBreaks` does. Each reads the syntax tree, so a comment never counts. Test files do not count.
 
-- **Fetch:** `fetchBreaks` names each non-test file under `app/` or `features/` that calls `fetch` (D2). A file in `QUERY_FILES` passes. The list starts as `['features/pins/query.ts']` (#538 plan D4).
+- **Fetch:** `fetchBreaks` names each non-test file under `app/` or `features/` that reads `fetch` (D2). A file in `QUERY_FILES` passes. The list starts as `['features/pins/query.ts']` (#538 plan D4).
 - **Tree data URLs:** `treeUrlBreaks` names each non-test file under `app/` or `features/` with a string that starts with `/data/` (D1). A file in `QUERY_FILES` passes. A reference URL passes.
 
 The reference URLs come from `JSON_EXEMPT` through `routeOf`: a route that sends no Tree data is the one kind a map source may name. Today that gives `/data/polities`. No second list holds it.
@@ -62,7 +62,7 @@ The Spec names "a map source". A map source is a `sources` entry of a `Layer` (`
 ## Risks
 
 - **Server code under `app/`.** A route handler or server action that calls an outside service fails the fetch check. No file does this today. A reviewed change then adds the file to `QUERY_FILES`, or the Spec of that service changes the rule.
-- **`lib/ui` is not checked.** A shared component in `lib/ui` could call `fetch`. No file does this, and it holds no feature data. Adding `lib/` to both checks costs about 2 lines. It is not built.
+- **No check reads `lib/ui`.** A shared component in `lib/ui` could call `fetch`. No file does this, and it holds no feature data. A check of `lib/` costs about 2 lines. The build does not add it.
 
 ## Proof
 

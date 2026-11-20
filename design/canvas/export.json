@@ -203,7 +203,7 @@
     {
       "file": "Draft-pin-fan.dc.html",
       "name": "draft-pin-fan",
-      "viewport": { "height": 440, "width": 820 }
+      "viewport": { "height": 592, "width": 820 }
     },
     {
       "file": "Draft-pin-popup.dc.html",
@@ -213,7 +213,7 @@
     {
       "file": "Draft-pin-popup-phone.dc.html",
       "name": "draft-pin-popup-phone",
-      "viewport": { "height": 360, "width": 390 }
+      "viewport": { "height": 844, "width": 390 }
     },
     {
       "file": "Map-phone-states.dc.html",

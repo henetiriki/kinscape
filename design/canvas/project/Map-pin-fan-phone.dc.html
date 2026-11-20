@@ -58,7 +58,7 @@ class Component extends DCLogic {
     if (variant === 'fan') {
       const R = 56;
       const around = deg => ({ x: Math.round(P.x + R * Math.cos(deg * Math.PI / 180)), y: Math.round(P.y + R * Math.sin(deg * Math.PI / 180)) });
-      const fan = [['residence', 'Residence', around(-150)], ['birth', 'Birth', around(-30)], ['marriage', 'Marriage', around(90)]];
+      const fan = [['residence', 'Residence, 1890 to 1905', around(-150)], ['birth', 'Birth, 1901', around(-30)], ['marriage', 'Marriage, 1899', around(90)]];
       below += fan.map(([, , at]) => `<line x1="${P.x}" y1="${P.y}" x2="${at.x}" y2="${at.y}" stroke="#9A3B12" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"></line>`).join('');
       above = [marker(3, '3 Pins at Example Farm', P), ...fan.map(([event, label, at]) => fanPin(event, label, at))].join('');
     } else {

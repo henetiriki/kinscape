@@ -32,7 +32,7 @@ class Component extends DCLogic {
     const { drawn, mount } = window.KinScapeBoard;
     const noop = () => {};
     const variant = this.props.variant ?? 'count';
-    // Example Farm, in board pixels. The marker, the fan and the popup are placed from this point.
+    // Example Farm, in board pixels. The board places the marker, the fan and the popup from this point.
     const P = { x: 940, y: 400 };
     const TEXT = (variant, text, as) => `<x-import component-from-global-scope="KinScape.Text" variant="${variant}" as="${as || 'span'}">${text}</x-import>`;
     const BUTTON = (text, kind, extra) => `<x-import component-from-global-scope="KinScape.Button" variant="${kind}"${extra || ''}>${text}</x-import>`;
@@ -111,7 +111,7 @@ class Component extends DCLogic {
     // The fan: three Pins on a ring of 56px around the Place, joined to it by a thin line.
     const R = 56;
     const around = deg => ({ x: Math.round(P.x + R * Math.cos(deg * Math.PI / 180)), y: Math.round(P.y + R * Math.sin(deg * Math.PI / 180)) });
-    const fan = [['residence', 'normal', 'Residence', around(-150)], ['birth', 'hover', 'Birth', around(-30)], ['marriage', 'normal', 'Marriage', around(90)]];
+    const fan = [['residence', 'normal', 'Residence, 1890 to 1905', around(-150)], ['birth', 'hover', 'Birth, 1901', around(-30)], ['marriage', 'normal', 'Marriage, 1899', around(90)]];
     const lines = fan.map(([, , , at]) => `<line x1="${P.x}" y1="${P.y}" x2="${at.x}" y2="${at.y}" stroke="#9A3B12" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"></line>`).join('');
 
     let below = others;

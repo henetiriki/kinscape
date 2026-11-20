@@ -21,7 +21,15 @@ const PLACE = '01900000-0000-7000-a000-0000000000c1';
 const PIN = '01900000-0000-7000-b000-0000000000d1';
 const OTHER_PIN = '01900000-0000-7000-b000-0000000000d2';
 
-const MAP_PIN_KEYS = ['eventType', 'id', 'latitude', 'longitude', 'span'];
+const MAP_PIN_KEYS = [
+  'date1',
+  'eventType',
+  'id',
+  'latitude',
+  'longitude',
+  'qualifier',
+  'span',
+];
 
 const setup = async () => {
   const store = memoryStore();

@@ -1,5 +1,6 @@
 import type { z } from 'zod';
 
+import type { FuzzyDate } from '@ks/lib/domain/dates/types.ts';
 import type { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import type { Place } from '@ks/lib/domain/places/types.ts';
 import type { Validity } from '@ks/lib/domain/validity/types.ts';
@@ -8,17 +9,27 @@ import type { Validity } from '@ks/lib/domain/validity/types.ts';
 export type EventType = PinInput['eventType'];
 
 /**
- * What the map needs of a Pin (NFR-03): the position of its Place, its span and its event type.
- * It holds no Place id, Person id, date, address, source or note.
+ * What the map needs of a Pin (NFR-03): the position of its Place, its span, its event type and the
+ * parts of its date. `date2` is there only for a Pin with two dates. It holds no Place id, Person
+ * id, address, source or note.
  */
 export type MapPin = {
   eventType: EventType;
   id: Pin['id'];
   span: Validity;
-} & Pick<Place, 'latitude' | 'longitude'>;
+} & Pick<FuzzyDate, 'date1' | 'date2' | 'qualifier'> &
+  Pick<Place, 'latitude' | 'longitude'>;
 
 /** A saved Pin. `version` starts at 1 and rises by 1 for each update. */
 export type Pin = { version: number } & PinInput;
+
+/** What the popup shows of a Pin beyond the Pin of the map (PIN-02). It holds no date. */
+export type PinDetails = {
+  address: PinInput['address'];
+  eventType: EventType;
+  givenNames: string;
+  surname: string;
+};
 
 /** What a client saves for a Pin. */
 export type PinInput = z.output<typeof pinInputSchema>;

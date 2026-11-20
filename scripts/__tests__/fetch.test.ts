@@ -27,6 +27,9 @@ describe('fetchBreaks', () => {
     'window.fetch(url)',
     'globalThis.fetch(url)',
     'self.fetch(url)',
+    "window['fetch'](url)",
+    "globalThis['fetch']",
+    'self[`fetch`](url)',
     'const get = fetch;',
     'fetch.bind(window)',
     'const fetch = 1;',
@@ -47,7 +50,7 @@ describe('fetchBreaks', () => {
       fetchBreaks({
         'app/__tests__/a.test.ts': 'vi.stubGlobal(fetch);',
         'features/map/b.tsx':
-          "router.prefetch('/a');\nconst x = client.fetch;\n// fetch\nconst s = 'fetch';",
+          "router.prefetch('/a');\nconst x = client.fetch;\nconst y = client['fetch'];\n// fetch\nconst s = 'fetch';",
         'lib/c.ts': 'fetch(url);',
       })
     ).toEqual([]);

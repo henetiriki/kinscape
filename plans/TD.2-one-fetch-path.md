@@ -37,6 +37,27 @@ The Spec names "a map source". A map source is a `sources` entry of a `Layer` (`
 
 **Answer: A** (@henetiriki)
 
+**D3 · Where the row of `docs/architecture.md` names the query files** · Decides: Tech lead
+
+`QUERY_FILES` lists the query files. A later feature adds its own file to that list.
+
+- **A.** The row names TanStack Query and `QUERY_FILES` in `scripts/safety.mts`, not a path. The list has one home. About 1 line.
+- **B.** The row names `features/pins/query.ts`, and a fitness test checks that the row holds each `QUERY_FILES` entry. About 10 lines.
+- **C.** The row names `features/pins/query.ts`. The row goes wrong when the list grows. No cost.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
+**D4 · A string key on a global object** · Decides: Tech lead
+
+`readsFetch` misses `window['fetch'](url)` and `globalThis['fetch']`. No file does this.
+
+- **A.** Also read a string key `fetch` on `window`, `globalThis` or `self`. About 5 lines.
+- **B.** Write no code. The gap stays under **Risks**.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Alternatives considered
 
 - **An ESLint `no-restricted-globals` rule for `fetch`.** It shows a break in the editor. The other safety rows are fitness tests, and the URL check still needs one.
@@ -44,12 +65,12 @@ The Spec names "a map source". A map source is a `sources` entry of a `Layer` (`
 
 ## Files that change
 
-| File                                  | New / changed | What                                                                                      |
-| ------------------------------------- | ------------- | ----------------------------------------------------------------------------------------- |
-| `scripts/safety.mts`                  | Changed       | `QUERY_FILES`, `fetchBreaks`, `treeUrlBreaks`, the header comment                         |
-| `scripts/__tests__/fetch.test.ts`     | New           | The repo, a file outside the query layer, the query layer, `router.prefetch`, a test file |
-| `scripts/__tests__/tree-urls.test.ts` | New           | The repo, a source with `/data/pins`, a source with `/data/polities`, the query layer     |
-| `docs/architecture.md`                | Changed       | The row names TanStack Query, `features/pins/query.ts` and the two tests; "four" → "six"  |
+| File                                  | New / changed | What                                                                                                         |
+| ------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------ |
+| `scripts/safety.mts`                  | Changed       | `QUERY_FILES`, `fetchBreaks`, `treeUrlBreaks`, the header comment                                            |
+| `scripts/__tests__/fetch.test.ts`     | New           | The repo, a file outside the query layer, a string key (D4), the query layer, `router.prefetch`, a test file |
+| `scripts/__tests__/tree-urls.test.ts` | New           | The repo, a source with `/data/pins`, a source with `/data/polities`, the query layer                        |
+| `docs/architecture.md`                | Changed       | The row names TanStack Query, `QUERY_FILES` (D3) and the two tests; "four" → "six"                           |
 
 ## Order of work
 

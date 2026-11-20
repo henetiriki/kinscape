@@ -653,19 +653,29 @@ const outsideQuery = (files: Record<string, string>): [string, string][] =>
       !QUERY_FILES.includes(path)
   );
 
-/** Whether a source reads the name `fetch`, or `fetch` on a global object. A local `fetch` counts. */
+const isGlobalObject = (node: ts.Expression): boolean =>
+  ts.isIdentifier(node) && GLOBAL_OBJECTS.includes(node.text);
+
+/**
+ * Whether a source reads the name `fetch`, or `fetch` on a global object by name or string key. A
+ * local `fetch` counts.
+ */
 const readsFetch = (path: string, source: string): boolean => {
   let found = false;
   const visit = (node: ts.Node): void => {
     const { parent } = node;
 
     found ||=
-      ts.isIdentifier(node) &&
-      node.text === 'fetch' &&
-      (!ts.isPropertyAccessExpression(parent) ||
-        parent.name !== node ||
-        (ts.isIdentifier(parent.expression) &&
-          GLOBAL_OBJECTS.includes(parent.expression.text)));
+      (ts.isIdentifier(node) &&
+        node.text === 'fetch' &&
+        (!ts.isPropertyAccessExpression(parent) ||
+          parent.name !== node ||
+          isGlobalObject(parent.expression))) ||
+      (ts.isStringLiteralLike(node) &&
+        node.text === 'fetch' &&
+        ts.isElementAccessExpression(parent) &&
+        parent.argumentExpression === node &&
+        isGlobalObject(parent.expression));
     ts.forEachChild(node, visit);
   };
 

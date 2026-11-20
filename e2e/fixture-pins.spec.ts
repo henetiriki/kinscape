@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import type { TestWindow } from '@ks/e2e/types';
+
 import { fixtureStateFor } from '@ks/lib/design/check.mts';
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 import { FIXTURES } from '@ks/server/auth/fixtures.mts';
@@ -8,18 +10,6 @@ const [researcher] = FIXTURES;
 const failing = FIXTURES.find(
   ({ email }) => email === 'r.failing@example.com'
 )!;
-
-// The map is on window only in builds made with NEXT_PUBLIC_E2E=1 (playwright.config.ts).
-type TestWindow = {
-  kinscapeMap: {
-    hasImage: (id: string) => boolean;
-    queryRenderedFeatures: (
-      geometry: undefined,
-      options: { layers: string[] }
-    ) => unknown[];
-    querySourceFeatures: (source: string) => unknown[];
-  };
-};
 
 // One synthetic Pin of each Event type, each at its own position and shown from 1797 on.
 const EACH_TYPE = EVENT_TYPES.map((eventType, index) => ({

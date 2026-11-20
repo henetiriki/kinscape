@@ -9,6 +9,8 @@ import { dateFilter } from '@ks/features/map/filter';
 import { pinsLayer } from '@ks/features/map/layers/pins';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { fuzzyDateOf } from '@ks/lib/domain/dates/fuzzy-date.mts';
+import { spanOf } from '@ks/lib/domain/pins/span.mts';
 import { EVENT_ORDER, EVENT_PATHS } from '@ks/lib/ui/EventGlyph';
 
 describe('polityLayer', () => {
@@ -51,7 +53,11 @@ const pinOn = (
   longitude: 18.4,
   span: { validFrom: toDay(from), validTo: to === null ? null : toDay(to) },
 });
-const RESIDENCE = pinOn(1, '1840-01-01', '1855-01-01');
+// The span that a Pin dated FROM 1840 TO 1855 gets: it ends on 1856-01-01.
+const RESIDENCE: MapPin = {
+  ...pinOn(1, '1840-01-01', null),
+  span: spanOf(fuzzyDateOf('FROM', '1840', '1855'), {}),
+};
 
 // PIN-03, PIN-06
 describe('pinsLayer', () => {

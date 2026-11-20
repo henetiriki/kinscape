@@ -2,28 +2,15 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import type { TestWindow } from '@ks/e2e/types';
+
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
 
 // The seed (scripts/seed-ci.mts) adds 10,000 Pins to the SYNTHETIC Tree of the Postgres that the
-// CI `e2e` job uses. The memory adapters hold none, so these tests skip there.
-// eslint-disable-next-line no-restricted-syntax -- the Pins exist only on the seeded Postgres of the CI e2e job (plan M2.13.2)
-test.skip(
-  process.env.KINSCAPE_MEMORY_SIGN_IN !== '1',
-  'The Pins come from scripts/seed-ci.mts'
-);
+// CI `e2e` job uses. The memory adapters hold none, so playwright.config.ts leaves this file out
+// there.
 
 const SEEDED = 10_000;
-
-// The map is on window only in builds made with NEXT_PUBLIC_E2E=1 (playwright.config.ts).
-type TestWindow = {
-  kinscapeMap: {
-    hasImage: (id: string) => boolean;
-    queryRenderedFeatures: (
-      geometry: undefined,
-      options: { layers: string[] }
-    ) => { properties: { eventType: string } }[];
-  };
-};
 
 const shownTypes = async (page: Page) => {
   await page.waitForFunction(() => 'kinscapeMap' in window);
@@ -130,6 +117,10 @@ test(
 
     const input = page.getByRole('slider', { name: 'Map date' });
     const start = Number(await input.inputValue());
+    // The map load, the Pins load and `goTo` already made redraw entries. Count only the steps.
+    const base = await page.evaluate(
+      () => performance.getEntriesByName('map-date-redraw').length
+    );
     const times: number[] = [];
 
     for (let step = 1; step <= 20; step++) {
@@ -137,7 +128,7 @@ test(
       await page.waitForFunction(
         count =>
           performance.getEntriesByName('map-date-redraw').length >= count,
-        times.length + 1
+        base + step
       );
       times.push(
         await page.evaluate(

@@ -2,25 +2,11 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
+import type { TestWindow } from '@ks/e2e/types';
+
 import { centreOf, FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 
 // MAP-01: the zoom card in the map's `zoom` slot.
-
-type TestWindow = {
-  kinscapeMap: {
-    getMaxZoom: () => number;
-    getMinZoom: () => number;
-    getPadding: () => {
-      bottom: number;
-      left: number;
-      right: number;
-      top: number;
-    };
-    getZoom: () => number;
-    jumpTo: (options: { zoom: number }) => void;
-    project: (point: [number, number]) => { x: number; y: number };
-  };
-};
 
 const zoomIn = (page: Page) => page.getByRole('button', { name: 'Zoom in' });
 const zoomOut = (page: Page) => page.getByRole('button', { name: 'Zoom out' });

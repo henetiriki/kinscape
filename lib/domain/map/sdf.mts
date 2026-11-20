@@ -77,7 +77,7 @@ export const squaredDistances = (
 };
 
 /**
- * Turns the alpha of a glyph into a signed distance field: one byte per pixel, 255 deep inside,
+ * Changes the alpha of a glyph to a signed distance field: one byte per pixel, 255 deep inside,
  * 0 further than `radius` outside. The edge is at 191, which is where MapLibre expects it.
  */
 export const alphaToSdf = (

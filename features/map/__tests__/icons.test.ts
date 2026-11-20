@@ -73,4 +73,28 @@ describe('iconImage', () => {
     expect(alphaAt(0, 0)).toBe(0);
     expect(alphaAt(16, 16 + 5)).toBeGreaterThan(alphaAt(16, 16 + 9));
   });
+
+  // MapLibre sets the halo edge in units of SDF_PX = 8, so 1 px must be 1/8 of the alpha range.
+  it('falls one alpha range in 8 CSS pixels, the scale of the MapLibre halo', () => {
+    stub(1);
+
+    const { data, width } = iconImage(path, 1);
+    const alphaAt = (x: number, y: number) => data[(y * width + x) * 4 + 3];
+
+    // The block ends at row 21. The pixel centres of rows 23 and 24 are 1.5 and 2.5 px outside it.
+    expect(alphaAt(16, 23)).toBe(143);
+    expect(alphaAt(16, 24)).toBe(112);
+  });
+
+  it('keeps the 8 px scale on a dense screen', () => {
+    stub(2);
+
+    const { data, width } = iconImage(path, 2);
+    const alphaAt = (x: number, y: number) => data[(y * width + x) * 4 + 3];
+
+    // At ratio 2 the block ends at row 37. The centres of rows 40 and 42 are 2.5 and 4.5 device px
+    // outside it. The field radius is 16 device px.
+    expect(alphaAt(32, 40)).toBe(Math.round(255 - 255 * (2.5 / 16 + 0.25)));
+    expect(alphaAt(32, 42)).toBe(Math.round(255 - 255 * (4.5 / 16 + 0.25)));
+  });
 });

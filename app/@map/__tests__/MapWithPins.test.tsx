@@ -51,6 +51,11 @@ const props = {
   sources: [],
 };
 const fetchStub = vi.fn();
+// The row text of the Pins layer at 1850 and at 1860.
+const captions = () =>
+  document.querySelector('[data-layer="pins"]')?.textContent;
+const EMPTY = '0 of 0 true on this date | 0 of 0 true on this date';
+const LOADED = '1 of 3 true on this date | 0 of 3 true on this date';
 
 const renderMap = () =>
   render(
@@ -79,7 +84,7 @@ describe('MapWithPins', () => {
       shell.mock.calls[0][0].layers.map((layer: Layer) => layer.id)
     ).toEqual(['polity-borders', 'pins']);
     await waitFor(() => {
-      expect(screen.getByText(/3 true/)).toBeTruthy();
+      expect(captions()).toBe(LOADED);
     });
   });
 
@@ -87,14 +92,10 @@ describe('MapWithPins', () => {
     fetchStub.mockResolvedValue(Response.json(PINS));
     renderMap();
 
-    expect(document.querySelector('[data-layer="pins"]')?.textContent).toBe(
-      '0 of 0 true on this date | 0 of 0 true on this date'
-    );
+    expect(captions()).toBe(EMPTY);
 
     await waitFor(() => {
-      expect(document.querySelector('[data-layer="pins"]')?.textContent).toBe(
-        '1 of 3 true on this date | 0 of 3 true on this date'
-      );
+      expect(captions()).toBe(LOADED);
     });
   });
 
@@ -106,9 +107,7 @@ describe('MapWithPins', () => {
       expect(fetchStub).toHaveBeenCalledOnce();
     });
     expect(screen.queryByRole('alert')).toBeNull();
-    expect(document.querySelector('[data-layer="pins"]')?.textContent).toBe(
-      '0 of 0 true on this date | 0 of 0 true on this date'
-    );
+    expect(captions()).toBe(EMPTY);
   });
 
   it('sends one request for the Pins', async () => {
@@ -116,7 +115,7 @@ describe('MapWithPins', () => {
     renderMap();
 
     await waitFor(() => {
-      expect(screen.getByText(/3 true/)).toBeTruthy();
+      expect(captions()).toBe(LOADED);
     });
     expect(fetchStub).toHaveBeenCalledExactlyOnceWith('/data/pins');
   });
@@ -134,7 +133,7 @@ describe('MapWithPins', () => {
     expect(alert.hasAttribute('data-placed')).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     await waitFor(() => {
-      expect(screen.getByText(/3 true/)).toBeTruthy();
+      expect(captions()).toBe(LOADED);
     });
     expect(screen.queryByRole('alert')).toBeNull();
     expect(fetchStub).toHaveBeenCalledTimes(2);
@@ -149,7 +148,9 @@ describe('MapWithPins', () => {
     await waitFor(() => {
       expect(fetchStub).toHaveBeenCalledTimes(2);
     });
-    expect(await screen.findByRole('alert')).toBeTruthy();
+    expect((await screen.findByRole('alert')).textContent).toContain(
+      'Your pins did not load.'
+    );
   });
 
   it('hides the message on Esc', async () => {

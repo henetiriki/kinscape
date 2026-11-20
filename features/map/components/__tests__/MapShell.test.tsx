@@ -220,9 +220,17 @@ it('gives a layer the Map date for its row text, and again when the date moves',
       sources={sources}
     />
   );
-  expect(screen.getByText(`Shows day ${dayOf(new Date())}`)).toBeTruthy();
+  // The row text is the description of the checkbox.
+  const rowText = () =>
+    document.getElementById(
+      screen
+        .getByRole('checkbox', { name: 'Test layer' })
+        .getAttribute('aria-describedby')!
+    )?.textContent;
+
+  expect(rowText()).toBe(`Shows day ${dayOf(new Date())}`);
   fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-  expect(screen.getByText(`Shows day ${lastProps().mapDay}`)).toBeTruthy();
+  expect(rowText()).toBe(`Shows day ${lastProps().mapDay}`);
   expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
 });
 
@@ -247,7 +255,7 @@ it('shows what the page puts in the toast slot', () => {
       toast={<p>Your pins did not load.</p>}
     />
   );
-  expect(screen.getByText('Your pins did not load.')).toBeTruthy();
+  expect(screen.getByText('Your pins did not load.').tagName).toBe('P');
 });
 
 // MAP-02

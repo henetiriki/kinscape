@@ -3,6 +3,12 @@ import { z } from 'zod';
 import { parsePlaceId } from '#ks/lib/domain/ids/ids.mts';
 import { idField } from '#ks/lib/domain/ids/schemas.mts';
 
+/**
+ * The most Places a list returns. Each Pin may have its own Place, and the map checks 10,000 Pins,
+ * so this matches `MAX_RELATIONSHIPS`.
+ */
+export const MAX_PLACES = 10_000;
+
 /** How exactly a Place is known (PIN-02): `street` is street address and `town` is town or city. */
 export const PLACE_PRECISIONS = [
   'street',

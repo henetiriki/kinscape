@@ -1,10 +1,12 @@
 import type {
   AccountId,
   PersonId,
+  PlaceId,
   RelationshipId,
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '@ks/lib/domain/persons/types.ts';
+import type { Place, PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type {
   Relationship,
   RelationshipInput,
@@ -52,6 +54,14 @@ export type TreeStore = {
     input: { person: PersonInput } & TreeScope
   ) => Promise<Person | undefined>;
   /**
+   * Saves a new Place at version 1 and returns it. A second call with the same id changes nothing
+   * and returns the Place already saved. `not-found` if the Account may not access the Tree or the
+   * id is not a UUID.
+   */
+  addPlace: (
+    input: { place: PlaceInput } & TreeScope
+  ) => Promise<Result<Place, 'not-found'>>;
+  /**
    * Saves a new Relationship at version 1 and returns it. A second call with the same id changes
    * nothing and returns the Relationship already saved. `not-found` if either Person is not in the
    * Tree, or the Account may not access the Tree, or an id is not a UUID.
@@ -68,6 +78,10 @@ export type TreeStore = {
   findPerson: (
     input: { personId: PersonId } & TreeScope
   ) => Promise<Person | undefined>;
+  /** The Place, or undefined if missing, in another Tree or in a Tree the Account may not access. */
+  findPlace: (
+    input: { placeId: PlaceId } & TreeScope
+  ) => Promise<Place | undefined>;
   /** The Relationship, or undefined if missing, in another Tree or in a Tree the Account may not access. */
   findRelationship: (
     input: { relationshipId: RelationshipId } & TreeScope
@@ -84,6 +98,8 @@ export type TreeStore = {
    * may not access the Tree.
    */
   listPersons: (scope: TreeScope) => Promise<Person[]>;
+  /** At most `MAX_PLACES` of the Tree's Places, ordered by id. Empty if the Account may not access the Tree. */
+  listPlaces: (scope: TreeScope) => Promise<Place[]>;
   /** At most `MAX_RELATIONSHIPS` of the Tree's Relationships, ordered by id. Empty if the Account may not access the Tree. */
   listRelationships: (scope: TreeScope) => Promise<Relationship[]>;
   /**
@@ -93,6 +109,13 @@ export type TreeStore = {
   updatePerson: (
     input: { person: PersonInput; version: number } & TreeScope
   ) => Promise<Result<Person, 'conflict' | 'not-found'>>;
+  /**
+   * Replaces the latitude, longitude and precision if `version` is the one saved. `conflict` for a
+   * stale version; `not-found` for a missing Place, another Account's Tree or an id that isn't a UUID.
+   */
+  updatePlace: (
+    input: { place: PlaceInput; version: number } & TreeScope
+  ) => Promise<Result<Place, 'conflict' | 'not-found'>>;
   /**
    * Replaces the subtype or the dates if `version` is the one saved. The saved row must have the
    * same type and Persons as the input. `conflict` for a stale version; `not-found` for a missing

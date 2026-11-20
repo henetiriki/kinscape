@@ -3,10 +3,12 @@ import { describe, expect, it, vi } from 'vitest';
 import type {
   AccountId,
   PersonId,
+  PlaceId,
   RelationshipId,
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { PersonInput } from '@ks/lib/domain/persons/types.ts';
+import type { PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type { RelationshipInput } from '@ks/lib/domain/relationships/types.ts';
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
 
@@ -15,6 +17,10 @@ import {
   MAX_LISTED,
   personInputSchema,
 } from '@ks/lib/domain/persons/schemas.mts';
+import {
+  MAX_PLACES,
+  placeInputSchema,
+} from '@ks/lib/domain/places/schemas.mts';
 import {
   MAX_RELATIONSHIPS,
   relationshipInputSchema,
@@ -57,6 +63,18 @@ const spouseOf = (
 /** A synthetic Person as a client's text parses: the schema fills what `fields` omits. */
 const personOf = (id: string, fields: Record<string, unknown>): PersonInput =>
   personInputSchema.parse({ ...fields, id });
+const PLACE_1 = '01900000-0000-7000-a000-0000000000c1' as PlaceId;
+const PLACE_2 = '01900000-0000-7000-a000-0000000000c2' as PlaceId;
+const PLACE_3 = '01900000-0000-7000-a000-0000000000c3' as PlaceId;
+
+/** A synthetic Place as a client's text parses: the schema fills what `fields` omits. */
+const placeOf = (id: string, fields: Record<string, unknown>): PlaceInput =>
+  placeInputSchema.parse({
+    latitude: -33.9,
+    longitude: 18.4,
+    ...fields,
+    id,
+  });
 const NOT_FOUND = { error: 'not-found', ok: false };
 const NO_TREE: SeedAccount = {
   id: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
@@ -1068,6 +1086,256 @@ export const runTreeStoreContract = (
           expect(saved?.type === 'spouse' && saved.marriage?.date1).toBe(
             '1870'
           );
+        });
+      });
+    });
+
+    describe('places', () => {
+      // PIN-02
+      it('reads back a Place at -33.925839, 18.423300 with its precision', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const place = placeOf(PLACE_1, {
+            latitude: -33.925_839,
+            longitude: 18.4233,
+            precision: 'suburb',
+          });
+          const expected = { ...place, version: 1 };
+
+          expect(await store.addPlace({ ...a, place })).toEqual({
+            ok: true,
+            value: expected,
+          });
+          expect(await store.findPlace({ ...a, placeId: place.id })).toEqual(
+            expected
+          );
+          expect(await store.listPlaces(a)).toEqual([expected]);
+        });
+      });
+
+      // NFR-09
+      it('gives Account B the result of a Place that does not exist', async () => {
+        await withStore(async store => {
+          const { a, b } = await twoTrees(store);
+
+          await store.addPlace({ ...a, place: placeOf(PLACE_1, {}) });
+
+          const cross = { accountId: b.accountId, treeId: a.treeId };
+
+          expect(await store.findPlace({ ...cross, placeId: PLACE_1 })).toEqual(
+            await store.findPlace({ ...a, placeId: PLACE_2 })
+          );
+          expect(await store.listPlaces(cross)).toEqual([]);
+          expect(
+            await store.addPlace({ ...cross, place: placeOf(PLACE_2, {}) })
+          ).toEqual(NOT_FOUND);
+          expect(
+            await store.updatePlace({
+              ...cross,
+              place: placeOf(PLACE_1, { latitude: 1 }),
+              version: 1,
+            })
+          ).toEqual(NOT_FOUND);
+          expect(await store.listPlaces(a)).toHaveLength(1);
+          expect((await store.listPlaces(a))[0].latitude).toBe(-33.9);
+        });
+      });
+
+      // NFR-09
+      it('keeps the same id apart in two Trees', async () => {
+        await withStore(async store => {
+          const { a, b } = await twoTrees(store);
+
+          await store.addPlace({ ...a, place: placeOf(PLACE_1, {}) });
+          await store.addPlace({
+            ...b,
+            place: placeOf(PLACE_1, { latitude: 10 }),
+          });
+
+          expect((await store.listPlaces(a))[0].latitude).toBe(-33.9);
+          expect((await store.listPlaces(b))[0].latitude).toBe(10);
+        });
+      });
+
+      // NFR-09
+      it('ignores a repeated add with the same id', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const first = await store.addPlace({
+            ...a,
+            place: placeOf(PLACE_1, {}),
+          });
+          const again = await store.addPlace({
+            ...a,
+            place: placeOf(PLACE_1, { latitude: 10, precision: 'street' }),
+          });
+
+          expect(again).toEqual(first);
+          expect(await store.listPlaces(a)).toEqual([first.ok && first.value]);
+        });
+      });
+
+      // PIN-02
+      it('updates with the version read, and refuses a stale one', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          await store.addPlace({ ...a, place: placeOf(PLACE_1, {}) });
+
+          const next = placeOf(PLACE_1, {
+            latitude: -26.2,
+            longitude: 28.04,
+            precision: 'town',
+          });
+
+          expect(
+            await store.updatePlace({ ...a, place: next, version: 1 })
+          ).toEqual({ ok: true, value: { ...next, version: 2 } });
+
+          const stale = placeOf(PLACE_1, { latitude: 5 });
+
+          expect(
+            await store.updatePlace({ ...a, place: stale, version: 1 })
+          ).toEqual({ error: 'conflict', ok: false });
+          expect(await store.findPlace({ ...a, placeId: PLACE_1 })).toEqual({
+            ...next,
+            version: 2,
+          });
+          expect(
+            await store.updatePlace({
+              ...a,
+              place: placeOf(PLACE_2, {}),
+              version: 1,
+            })
+          ).toEqual(NOT_FOUND);
+        });
+      });
+
+      // NFR-09
+      it('lists by id', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+
+          for (const id of [PLACE_3, PLACE_1, PLACE_2]) {
+            await store.addPlace({ ...a, place: placeOf(id, {}) });
+          }
+
+          expect((await store.listPlaces(a)).map(p => p.id)).toEqual([
+            PLACE_1,
+            PLACE_2,
+            PLACE_3,
+          ]);
+        });
+      });
+
+      // NFR-09
+      it('lists no more than the cap, ordered by id', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const idOf = (n: number) =>
+            `01900000-0000-7000-a000-${String(n).padStart(12, '0')}`;
+
+          for (let n = MAX_PLACES; n >= 0; n -= 1) {
+            await store.addPlace({ ...a, place: placeOf(idOf(n), {}) });
+          }
+
+          const listed = await store.listPlaces(a);
+
+          expect(listed).toHaveLength(MAX_PLACES);
+          expect(listed[0].id).toBe(idOf(0));
+          expect(listed[MAX_PLACES - 1].id).toBe(idOf(MAX_PLACES - 1));
+        });
+      }, 120_000);
+
+      // NFR-03
+      it('treats an id that is not a UUID as one that matches nothing', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const bad = { accountId: MALFORMED_ACCOUNT, treeId: a.treeId };
+          const badTree = { accountId: a.accountId, treeId: MALFORMED_TREE };
+          const badId = { ...placeOf(PLACE_1, {}), id: 'nope' } as PlaceInput;
+
+          expect(await store.listPlaces(bad)).toEqual([]);
+          expect(await store.listPlaces(badTree)).toEqual([]);
+          expect(
+            await store.findPlace({ ...a, placeId: 'nope' as PlaceId })
+          ).toBeUndefined();
+          expect(await store.addPlace({ ...a, place: badId })).toEqual(
+            NOT_FOUND
+          );
+          expect(
+            await store.updatePlace({ ...a, place: badId, version: 1 })
+          ).toEqual(NOT_FOUND);
+          expect(
+            await store.addPlace({ ...badTree, place: placeOf(PLACE_1, {}) })
+          ).toEqual(NOT_FOUND);
+          expect(await store.listPlaces(a)).toEqual([]);
+        });
+      });
+
+      // NFR-09
+      it('keeps one Place for an id in either case', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const upper = PLACE_1.toUpperCase();
+
+          // A cast skips the schema, which would make the id lower case first.
+          await store.addPlace({
+            ...a,
+            place: { ...placeOf(PLACE_1, {}), id: upper } as PlaceInput,
+          });
+          await store.addPlace({
+            ...a,
+            place: placeOf(PLACE_1, { latitude: 10 }),
+          });
+
+          const listed = await store.listPlaces(a);
+
+          expect(listed.map(p => [p.id, p.latitude])).toEqual([
+            [PLACE_1, -33.9],
+          ]);
+          expect(
+            (await store.findPlace({ ...a, placeId: upper as PlaceId }))?.id
+          ).toBe(PLACE_1);
+        });
+      });
+
+      // NFR-09
+      it.each([0, 1.5, Number.NaN, 2 ** 31, -1])(
+        'gives conflict for the version %s',
+        async version => {
+          await withStore(async store => {
+            const { a } = await twoTrees(store);
+
+            await store.addPlace({ ...a, place: placeOf(PLACE_1, {}) });
+
+            expect(
+              await store.updatePlace({
+                ...a,
+                place: placeOf(PLACE_1, {}),
+                version,
+              })
+            ).toEqual({ error: 'conflict', ok: false });
+          });
+        }
+      );
+
+      // NFR-09
+      it('returns copies that a caller may change', async () => {
+        await withStore(async store => {
+          const { a } = await twoTrees(store);
+          const input = placeOf(PLACE_1, {});
+          const added = await store.addPlace({ ...a, place: input });
+          const found = await store.findPlace({ ...a, placeId: input.id });
+          const [listed] = await store.listPlaces(a);
+
+          for (const copy of [added.ok && added.value, found, listed, input]) {
+            if (copy) {
+              copy.latitude = 1;
+            }
+          }
+
+          expect((await store.listPlaces(a))[0].latitude).toBe(-33.9);
         });
       });
     });

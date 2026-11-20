@@ -58,14 +58,18 @@ describe('treeMethods', () => {
   it('reads the Tree methods from the type, not the Account ones', () => {
     expect(METHODS).toEqual([
       'addPerson',
+      'addPlace',
       'addRelationship',
       'findPerson',
+      'findPlace',
       'findRelationship',
       'findTree',
       'findTrees',
       'listPersons',
+      'listPlaces',
       'listRelationships',
       'updatePerson',
+      'updatePlace',
       'updateRelationship',
     ]);
   });

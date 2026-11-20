@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
 import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
+import { placeInputSchema } from '@ks/lib/domain/places/schemas.mts';
 import { relationshipInputSchema } from '@ks/lib/domain/relationships/schemas.mts';
 import { runTreeStoreContract } from '@ks/server/trees/__tests__/contract.ts';
 import { memoryStore } from '@ks/server/trees/memory-store.mts';
@@ -63,6 +64,11 @@ describe('memoryStore seed', () => {
       ...REL,
       id: '01900000-0000-7000-9000-0000000000b2',
     });
+    const PLACE = placeInputSchema.parse({
+      id: '01900000-0000-7000-a000-0000000000c1',
+      latitude: -33.9,
+      longitude: 18.4,
+    });
     const scope = { accountId: ACCOUNT, treeId: TREE_A };
     const build = () =>
       memoryStore(
@@ -121,8 +127,16 @@ describe('memoryStore seed', () => {
           version: 1,
         })
       ).toEqual({ error: 'not-found', ok: false });
+      expect(await store.addPlace({ ...scope, place: PLACE })).toEqual({
+        error: 'not-found',
+        ok: false,
+      });
+      expect(
+        await store.updatePlace({ ...scope, place: PLACE, version: 1 })
+      ).toEqual({ error: 'not-found', ok: false });
       expect(await store.listPersons(scope)).toEqual(before);
       expect(await store.listRelationships(scope)).toEqual(relsBefore);
+      expect(await store.listPlaces(scope)).toEqual([]);
     });
 
     it('still writes to a Tree not on the list', async () => {
@@ -196,6 +210,9 @@ describe('memoryStore seed', () => {
       await expect(store.listRelationships(scope)).rejects.toThrow(
         'The fixture Tree failed to load.'
       );
+      await expect(store.listPlaces(scope)).rejects.toThrow(
+        'The fixture Tree failed to load.'
+      );
     });
 
     it('answers its other reads as before', async () => {
@@ -213,6 +230,7 @@ describe('memoryStore seed', () => {
 
       expect(await store.listPersons(other)).toEqual([]);
       expect(await store.listRelationships(other)).toEqual([]);
+      expect(await store.listPlaces(other)).toEqual([]);
     });
 
     it('lists another Tree as before', async () => {

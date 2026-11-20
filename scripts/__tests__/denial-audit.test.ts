@@ -340,9 +340,9 @@ describe('summarise', () => {
       ['gh pr view 1; cat x', 'Bash: cat'],
       ['gh pr view 1 && cat x', 'Bash: cat'],
       ['gh pr view 1 || cat x', 'Bash: cat'],
-      ['  gh pr view 1 ;  git status ;  ls docs', 'Bash: ls'],
+      ['  gh pr view 1 ;  git status ;  sed x', 'Bash: sed'],
       // The first denied part names it.
-      ['gh pr view 1; cat x; ls', 'Bash: cat'],
+      ['gh pr view 1; cat x; sed x', 'Bash: cat'],
       // Not the workspace: this cd is the denied part.
       ['cd /elsewhere; cat x', 'Bash: cd'],
       // The hook denies no part: the call, without a cut cd.

@@ -107,19 +107,19 @@ export const memoryStore = (
     return rows;
   };
 
-  /** The Relationships of a Tree the Account may access; undefined otherwise. */
-  const relationshipsOf = (scope: TreeScope) =>
+  /** The rows of a Tree in `table` if the Account may access the Tree; undefined otherwise. */
+  const rowsOf = <Id, Row>(
+    table: Map<TreeId, Map<Id, Row>>,
+    scope: TreeScope
+  ) =>
     personsOf(scope) === undefined
       ? undefined
-      : (relationships.get(scope.treeId) ??
-        relationships.set(scope.treeId, new Map()).get(scope.treeId)!);
+      : (table.get(scope.treeId) ??
+        table.set(scope.treeId, new Map()).get(scope.treeId)!);
 
-  /** The Places of a Tree the Account may access; undefined otherwise. */
-  const placesOf = (scope: TreeScope) =>
-    personsOf(scope) === undefined
-      ? undefined
-      : (places.get(scope.treeId) ??
-        places.set(scope.treeId, new Map()).get(scope.treeId)!);
+  const relationshipsOf = (scope: TreeScope) => rowsOf(relationships, scope);
+
+  const placesOf = (scope: TreeScope) => rowsOf(places, scope);
 
   /** The id of the Relationship, if the ids are UUIDs and both Persons are in the Tree. */
   const joinable = (scope: TreeScope, input: RelationshipInput) => {

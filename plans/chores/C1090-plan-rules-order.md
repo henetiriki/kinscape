@@ -94,3 +94,7 @@ The [failing-tests rule](../README.md#failing-tests) lets the build change the t
 
 - Links in other files in `plans/`.
 - `<spec-id>` in `plans/TEMPLATE.md`.
+
+## Deviations
+
+- `docs/building.md` keeps its link to the `hand-back` rule beside the `item-types` link, because the sentence still says who builds a hand-back.

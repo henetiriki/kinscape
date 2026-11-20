@@ -81,6 +81,21 @@ const placeOf = (id: string, fields: Record<string, unknown>): PlaceInput =>
     id,
   });
 
+const PIN_1 = '01900000-0000-7000-b000-0000000000d1' as PinId;
+const PIN_2 = '01900000-0000-7000-b000-0000000000d2' as PinId;
+const PIN_3 = '01900000-0000-7000-b000-0000000000d3' as PinId;
+
+/** A synthetic Pin as a client's text parses: the schema fills what `fields` omits. */
+const pinOf = (id: string, fields: Record<string, unknown> = {}): PinInput =>
+  pinInputSchema.parse({
+    date: '1850',
+    eventType: 'residence',
+    personId: ID_1,
+    placeId: PLACE_1,
+    ...fields,
+    id,
+  });
+
 export const NOT_FOUND = { error: 'not-found', ok: false };
 const NO_TREE: SeedAccount = {
   id: parseAccountId('00000000-0000-4000-8000-0000000000a1')!,
@@ -1347,23 +1362,6 @@ export const runTreeStoreContract = (
     });
 
     describe('pins', () => {
-      const PIN_1 = '01900000-0000-7000-b000-0000000000d1' as PinId;
-      const PIN_2 = '01900000-0000-7000-b000-0000000000d2' as PinId;
-      const PIN_3 = '01900000-0000-7000-b000-0000000000d3' as PinId;
-
-      const pinOf = (
-        id: string,
-        fields: Record<string, unknown> = {}
-      ): PinInput =>
-        pinInputSchema.parse({
-          date: '1850',
-          eventType: 'residence',
-          personId: ID_1,
-          placeId: PLACE_1,
-          ...fields,
-          id,
-        });
-
       /** Two Trees; Tree A holds Persons 1 to 3 and Places 1 and 2. Tree B holds Person 4 and Place 3. */
       const withRows = async (store: TreeStore) => {
         const trees = await twoTrees(store);
@@ -2286,19 +2284,6 @@ export const runTreeStoreContract = (
       });
 
       describe('places and pins', () => {
-        const PIN_1 = '01900000-0000-7000-b000-0000000000d1' as PinId;
-        const PIN_2 = '01900000-0000-7000-b000-0000000000d2' as PinId;
-
-        const pinOf = (id: string, fields: Record<string, unknown> = {}) =>
-          pinInputSchema.parse({
-            date: '1850',
-            eventType: 'residence',
-            personId: ID_1,
-            placeId: PLACE_1,
-            ...fields,
-            id,
-          });
-
         /** Opens Tree A with Persons 1 and 2, and Tree B with Person 4 and Place 3. */
         const openBoth = async (store: TreeStore) => {
           const { a, b } = await twoTrees(store);

@@ -12,13 +12,13 @@ Write the token rule once, in the Patterns row "Tokens are the one source" of `d
 
 The Patterns cell gets these sentences after its current text:
 
-> A size, space, radius, shadow, motion, z or type value in a `.module.css` file uses `var(--token)` when a token holds that value for that role: a 44px hit area is `--size-touch`, a 16px gap is `--space-16`, a mono line height is `--type-mono-line`. A part's own dimension that no token names may stay a literal, such as the 40 × 4 grabber of a sheet. A value that two parts share with no token gets a token in the same Spec, through [Changing the design system](../design/CANVAS.md#changing-the-design-system).
+> A size, space, radius, shadow, motion, z or type value in a `.module.css` file uses `var(--token)` when a token holds that value for that role. For example, a 44px hit area is `--size-touch`, a 16px gap is `--space-16` and a mono line height is `--type-mono-line`. A part's own dimension that no token names may stay a literal, such as the 40 × 4 grabber of a sheet. A value that two parts share with no token gets a token in the same Spec, through [Changing the design system](../design/CANVAS.md#changing-the-design-system).
 
 Its _Enforced by_ cell adds "; Review for the token rule".
 
 The Code smells line:
 
-> - Use `var(--token)` in a `.module.css` file when a token holds the value for that role. A part's own dimension may stay a literal. A shared value with no token gets a token: see [Tokens are the one source](architecture.md#patterns).
+> - When a token holds the value for that role, use `var(--token)` in a `.module.css` file. A part's own dimension may stay a literal. A shared value with no token gets a token: see [Tokens are the one source](architecture.md#patterns).
 
 ### The `font-weight` literals
 
@@ -105,7 +105,7 @@ The tech lead builds the plan in a local Claude Code session with a signed-in ac
 | `npm run words` and `npm test` pass; each raised budget is the next multiple of 50 | The PR Evidence                                       |
 | Steps 2 to 6 ran, or 2 to 7                                                        | The step commits on the branch; the workflow run link |
 | `canvas/project/ds/kinscape/` matches `.design-system/project/`                    | The report of step 4.6                                |
-| `npm run design:export` prints "No snapshot changed"                               | The output of step 5.4 in the PR Evidence             |
+| `npm run design:export` prints "No snapshot changed", or the plan lists each one   | The Deviations list and the render workflow run       |
 
 ## Out of scope
 
@@ -119,4 +119,38 @@ The tech lead builds the plan in a local Claude Code session with a signed-in ac
 
 - The D3 answer names lines 30 to 32 of `Toast.module.css`. The size, weight and line height of `.action` are lines 31, 32 and 34. Line 30 is the font family. The build changes those three lines.
 - `TextAreaField.test.tsx` asserts the text `padding: 10px 12px`, so the item 3 change breaks two tests. The build stopped, as the failing-tests rule says. The tech lead chose to list the test and change both assertions to `padding: 10px var(--space-12)`.
-- The render workflow (run 44811451216) changed 33 snapshot sources and no image: add-pin-phone, add-pin, map-account-menu-phone, map-account-menu-proposed, map-account-menu, map-credits-narrow-open, map-credits-narrow, map-date-invalid, map-desktop-filters, map-desktop, map-districts, map-empty-date, map-empty-tree, map-loading, map-offline-phone, map-offline, map-pin-count, map-pin-fan, map-pin-popup-failed, map-pin-popup-loading, map-pin-popup, map-sources, people-empty, people-list-no-match, people-list, people-load-failed, person-conflict, person-edit-leave, person-edit, person-errors, person-new, person-save-failed, relationship-save-failed. No board changed, so step 7 has no work.
+- Step 5.4 did not print "No snapshot changed" on the local machine. It rewrote 47 sources, because local text widths differ from the pinned render. The build discarded them, as step 5.5 says. The render workflow proves the snapshots, so the proof of that check is the second branch of the #1096 check: the list below and [run 44811451216](https://github.com/henetiriki/kinscape/actions/runs/44811451216).
+- The render workflow (run 44811451216) changed no image and these 33 snapshot sources. No board changed, so step 7 has no work.
+  - add-pin-phone
+  - add-pin
+  - map-account-menu-phone
+  - map-account-menu-proposed
+  - map-account-menu
+  - map-credits-narrow-open
+  - map-credits-narrow
+  - map-date-invalid
+  - map-desktop-filters
+  - map-desktop
+  - map-districts
+  - map-empty-date
+  - map-empty-tree
+  - map-loading
+  - map-offline-phone
+  - map-offline
+  - map-pin-count
+  - map-pin-fan
+  - map-pin-popup-failed
+  - map-pin-popup-loading
+  - map-pin-popup
+  - map-sources
+  - people-empty
+  - people-list-no-match
+  - people-list
+  - people-load-failed
+  - person-conflict
+  - person-edit-leave
+  - person-edit
+  - person-errors
+  - person-new
+  - person-save-failed
+  - relationship-save-failed

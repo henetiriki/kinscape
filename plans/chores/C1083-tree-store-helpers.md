@@ -64,21 +64,25 @@ The Constraints allow no test change, so no new test fails first ([test-first ru
 
 - Each kind keeps its typed query, so a wrong pair of table and fields fails `npm run typecheck`. Three `updateTable(` calls and three `insertInto(` calls stay.
 - `isVersion` still skips the update for a version that is not an `int4`. Then `read` gives `not-found` or `conflict`, as now.
-- Estimate: about 150 changed lines, and each store gets shorter.
+- Estimate: about 500 changed lines, and each store gets shorter.
 
 ## Proof
 
-| Acceptance check                                       | Proven by                                           |
-| ------------------------------------------------------ | --------------------------------------------------- |
-| `updateTable(` appears 3 times in `database-store.mts` | `git grep -c` in step 6, pasted in the PR           |
-| `version + 1` appears once in `memory-store.mts`       | `git grep -c` in step 6, pasted in the PR           |
-| The contract suite passes on memory and PGlite         | `memory-store.test.ts` and `database-store.test.ts` |
-| No test file changes                                   | The PR diff                                         |
-| `npm test` passes with 100% coverage                   | The output, pasted in the PR                        |
-| Lint, typecheck, format, words and boundaries pass     | The output of each command, pasted in the PR        |
-| `lib/domain/trees/types.ts` and the migrations stay    | The PR diff                                         |
+| Acceptance check                                           | Proven by                                           |
+| ---------------------------------------------------------- | --------------------------------------------------- |
+| `updateTable(` appears three times in `database-store.mts` | `git grep -c` in step 6, pasted in the PR           |
+| `version + 1` appears once in `memory-store.mts`           | `git grep -c` in step 6, pasted in the PR           |
+| The contract suite passes on memory and PGlite             | `memory-store.test.ts` and `database-store.test.ts` |
+| No test file changes                                       | The PR diff                                         |
+| `npm test` passes with 100% coverage                       | The output, pasted in the PR                        |
+| Lint, typecheck, format, words and boundaries pass         | The output of each command, pasted in the PR        |
+| `lib/domain/trees/types.ts` and the migrations stay        | The PR diff                                         |
 
 ## Out of scope
 
 - The `find*` and `list*` methods, and `reaches`.
 - The Pin store (#880). It checks its Person and Place on update too, so it adds a `check` to `updated`.
+
+## Deviations
+
+- `database-store.mts` has a third helper, `savedOrNotFound`. It turns an `undefined` add into `not-found` for Place and Relationship, so those two adds do not repeat the line.

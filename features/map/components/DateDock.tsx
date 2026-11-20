@@ -61,6 +61,7 @@ export const DateDock = ({
   contestedCount,
   contestedYears,
   day,
+  defaultText,
   epochs,
   hasBorders,
   lastDay,
@@ -73,6 +74,8 @@ export const DateDock = ({
   /** Year spans drawn hatched on the slider. */
   contestedYears?: ContestedYears[];
   day: Day;
+  /** Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. */
+  defaultText?: string;
   /** Epochs for Jump to; they are also the slider's ticks. */
   epochs?: Epoch[];
   /** Whether a Boundary version is valid on a day; a typed date without one shows the warning. */
@@ -113,7 +116,9 @@ export const DateDock = ({
             <Chevron path='M9 5l7 7-7 7' />
           </IconButton>
           {sheet && onPlay && (
-            <PlayButton onClick={() => onPlay(Number(speed))} round />
+            <span className={styles.sheetPlay}>
+              <PlayButton onClick={() => onPlay(Number(speed))} round />
+            </span>
           )}
         </>
       }
@@ -126,6 +131,7 @@ export const DateDock = ({
         </IconButton>
       }
       day={day}
+      defaultText={defaultText}
       fill={!!sheet}
       keepPrecision={!!sheet}
       max={lastDay}

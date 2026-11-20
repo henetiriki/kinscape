@@ -555,12 +555,14 @@ export type LayersButtonProps = Parameters<typeof LayersButton>[0];
  * With `sheet` it is the phone's bottom sheet: the stepper and round Play, and the slider once expanded.
  * The Play, Jump to and contested parts show only when their props are passed.
  */
-export declare const DateDock: ({ contestedCount, contestedYears, day, epochs, hasBorders, lastDay, onChange, onPlay, sheet, }: {
+export declare const DateDock: ({ contestedCount, contestedYears, day, defaultText, epochs, hasBorders, lastDay, onChange, onPlay, sheet, }: {
     /** Contested claims on the Map date. */
     contestedCount?: number;
     /** Year spans drawn hatched on the slider. */
     contestedYears?: ContestedYears[];
     day: Day;
+    /** Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. */
+    defaultText?: string;
     /** Epochs for Jump to; they are also the slider's ticks. */
     epochs?: Epoch[];
     /** Whether a Boundary version is valid on a day; a typed date without one shows the warning. */

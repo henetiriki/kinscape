@@ -28,7 +28,10 @@ it('gives an enabled link a centred touch-size hit area, and the disabled text n
 
   expect(link).toContain('position: relative');
   expect(before).toContain('height: var(--size-touch)');
-  expect(before).toContain('width: max(100%, var(--size-touch))');
+  expect(before).toContain('min-width: var(--size-touch)');
+  expect(before).toContain('width: 100%');
+  // A hidden link keeps the `max` function in its computed style, and the snapshot export refuses it.
+  expect(before).not.toContain('max(');
   expect(before).toContain('translate: -50% -50%');
   expect(css).not.toMatch(/aria-disabled='true'\]::before/);
 });

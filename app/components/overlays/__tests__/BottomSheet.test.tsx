@@ -24,6 +24,14 @@ it('gives the grabber a centred touch-size hit area and keeps its 64 × 20px box
   expect(before).toContain('translate: -50% -50%');
 });
 
+// NFR-06 (#988): the date row starts inside the hit area and is positioned, so it takes the tap unless the grabber stacks above it.
+it('stacks the grabber above the content, inside the sheet only', () => {
+  expect(/\.grabber \{[^}]*\}/.exec(css)![0]).toContain(
+    'z-index: var(--z-furniture)'
+  );
+  expect(/\.sheet \{[^}]*\}/.exec(css)![0]).toContain('isolation: isolate');
+});
+
 // NFR-05
 it('expands the sheet from the grabber, and is not a dialog', () => {
   const onExpandedChange = vi.fn();

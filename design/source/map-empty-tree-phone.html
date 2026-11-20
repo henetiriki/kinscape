@@ -16,6 +16,10 @@
       [data-pseudo="1"]::placeholder{color: rgb(74, 84, 76);}
       [data-pseudo="1"]::-webkit-search-cancel-button{appearance: none; display: none;}
       [data-pseudo="1"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="2"]::before{content: ""; height: 44px; width: 64px; position: absolute; top: 10px; left: 32px; translate: -50% -50%;}
+      [data-pseudo="3"]::-webkit-search-cancel-button{appearance: none; display: none;}
+      [data-pseudo="3"]::-webkit-search-decoration{appearance: none; display: none;}
+      [data-pseudo="3"]::placeholder{color: rgb(24, 33, 27);}
     </style>
   </head>
   <body>
@@ -296,82 +300,114 @@
           style="z-index: 1; position: absolute; bottom: 0px; left: 0px; right: 0px; flex-direction: column; display: flex;">
           <section
             aria-label="Map date"
-            style="position: absolute; left: 0px; right: 0px; bottom: 0px; height: 152px; box-sizing: border-box; padding: 8px 16px 20px; background: rgb(255, 255, 255); border-radius: 18px 18px 0px 0px; box-shadow: rgba(24, 33, 27, 0.16) 0px -6px 24px; display: flex; flex-direction: column; gap: 12px;">
+            class="_sheet_bpqyi_1 _sheet_1w41m_23 _base_1w41m_2"
+            style="gap: 12px; height: 152px; isolation: isolate; padding: 8px 16px 20px; flex-direction: column; width: 390px; display: flex; background: rgb(255, 255, 255); border-radius: 18px 18px 0px 0px; box-sizing: border-box; box-shadow: rgba(24, 33, 27, 0.16) 0px -6px 24px 0px;">
             <button
-              type="button"
+              aria-expanded="false"
               aria-label="Expand the sheet"
-              style="align-self: center; width: 64px; height: 20px; margin-bottom: -4px; padding: 0px; border: 0px; background: none; display: flex; align-items: center; justify-content: center;">
+              class="_grabber_bpqyi_18"
+              type="button"
+              data-pseudo="2"
+              style="cursor: pointer; width: 64px; height: 20px; z-index: 1; background: 0px 0px; border-width: 0px; border-style: none; border-image: none; justify-content: center; align-self: center; align-items: center; margin-bottom: -4px; padding: 0px; display: flex; position: relative;">
               <span
-                style="width: 40px; height: 4px; border-radius: 2px; background: rgb(201, 207, 197);"></span>
+                class="_handle_bpqyi_47"
+                style="background: rgb(201, 207, 197); border-radius: 2px; width: 40px; height: 4px;"></span>
             </button>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <button
-                type="button"
-                aria-label="Back one year"
-                style="width: 44px; height: 44px; border: 1px solid rgb(201, 207, 197); border-radius: 8px; background: rgb(255, 255, 255); color: rgb(24, 33, 27); display: flex; align-items: center; justify-content: center;">
-                <svg
-                  aria-hidden="true"
-                  data-icon="back"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16">
-                  <path d="M15 5l-7 7 7 7"></path>
-                </svg>
-              </button>
-              <span
-                style="position: relative; flex: 1 1 0%; min-width: 0px; display: flex;">
-                <input
-                  aria-label="Map date"
-                  aria-invalid="false"
-                  aria-describedby="date-msg-phone"
-                  readonly=""
-                  value="1901"
-                  style='flex: 1 1 0%; min-width: 0px; height: 44px; box-sizing: border-box; text-align: center; border-radius: 8px; font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-size: 22px; font-weight: 500; color: rgb(24, 33, 27); background: rgb(255, 255, 255); border: 1px solid rgb(201, 207, 197);' />
-              </span>
-              <button
-                type="button"
-                aria-label="Forward one year"
-                style="width: 44px; height: 44px; border: 1px solid rgb(201, 207, 197); border-radius: 8px; background: rgb(255, 255, 255); color: rgb(24, 33, 27); display: flex; align-items: center; justify-content: center;">
-                <svg
-                  aria-hidden="true"
-                  data-icon="forward"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16">
-                  <path d="M9 5l7 7-7 7"></path>
-                </svg>
-              </button>
-              <button
-                type="button"
-                aria-label="Play through time"
-                style="width: 44px; height: 44px; border: 0px; border-radius: 22px; background: rgb(38, 79, 41); color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; margin-left: 4px;">
-                <svg
-                  aria-hidden="true"
-                  data-icon="play"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16">
-                  <path
-                    d="M7 4.5v15l12.5-7.5z"
-                    fill="currentColor"
-                    stroke="none"></path>
-                </svg>
-              </button>
+            <div class="_sheetField_qi6r4_44" style="display: contents;">
+              <div
+                class="_wrap_7p5i3_1"
+                style="gap: 12px; flex-direction: column; display: flex;">
+                <div
+                  class="_row_7p5i3_7"
+                  style="align-items: center; gap: 4px; display: flex; position: relative;">
+                  <button
+                    aria-label="Back"
+                    class="_iconBtn_5950n_1 _ring_180bu_3"
+                    type="button"
+                    style="background: rgb(255, 255, 255); border: 1px solid rgb(226, 229, 221); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; height: 44px; width: 44px; justify-content: center; align-items: center; padding: 0px; display: flex; position: relative;">
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2.2"
+                      viewBox="0 0 24 24"
+                      width="16">
+                      <path d="M15 5l-7 7 7 7"></path>
+                    </svg>
+                  </button>
+                  <span
+                    class="_anchor_7p5i3_15"
+                    data-fill="true"
+                    style="position: relative; flex: 1 1 0%; min-width: 0px;">
+                    <div
+                      class="_field_1r79y_1"
+                      style="gap: 8px; flex-direction: column; display: flex;">
+                      <span
+                        class="_box_1r79y_8 _date_1r79y_118"
+                        data-fill="true"
+                        style="background: rgb(255, 255, 255); border: 1px solid rgb(142, 151, 140); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); height: 44px; padding: 0px 12px; align-items: center; display: flex; position: relative; width: 210px;">
+                        <input
+                          aria-label="Date shown"
+                          class="_input_1r79y_71"
+                          id=":r1:"
+                          type="text"
+                          value="1901"
+                          data-pseudo="3"
+                          style='font-size: 22px; line-height: 28px; color: rgb(24, 33, 27); font-family: "JetBrains Mono", monospace; background: 0px 0px; border: 0px rgb(24, 33, 27); outline: 0px none rgb(24, 33, 27); flex: 1 1 0%; align-self: stretch; min-width: 0px; margin-block: -1px; padding: 0px; font-variant-ligatures: none; font-weight: 500; text-align: center;' />
+                      </span>
+                    </div>
+                  </span>
+                  <button
+                    aria-label="Forward"
+                    class="_iconBtn_5950n_1 _ring_180bu_3"
+                    type="button"
+                    style="background: rgb(255, 255, 255); border: 1px solid rgb(226, 229, 221); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; height: 44px; width: 44px; justify-content: center; align-items: center; padding: 0px; display: flex; position: relative;">
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2.2"
+                      viewBox="0 0 24 24"
+                      width="16">
+                      <path d="M9 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
+                  <span
+                    class="_sheetPlay_qi6r4_50"
+                    style="margin-left: 4px; display: flex;">
+                    <button
+                      aria-label="Play through time"
+                      class="_btn_1kclf_1 _ring_180bu_3 _btnPrimary_1kclf_73"
+                      data-icon-only="true"
+                      data-round="true"
+                      type="button"
+                      style='border-radius: 999px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; align-items: center; gap: 8px; height: 44px; line-height: 22px; padding: 0px; white-space: nowrap; justify-content: center; text-decoration: rgb(255, 255, 255); display: flex; position: relative; aspect-ratio: 1 / 1; background: rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
+                      <svg
+                        aria-hidden="true"
+                        data-icon="play"
+                        fill="none"
+                        height="16"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="16">
+                        <path
+                          d="M7 4.5v15l12.5-7.5z"
+                          fill="currentColor"
+                          stroke="none"></path>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </div>
             </div>
           </section>
         </div>
@@ -414,7 +450,7 @@
                   style="gap: 8px; flex-direction: column; flex: 1 1 0%; display: flex;">
                   <span
                     class="_title_1kvzk_59"
-                    id=":r0:"
+                    id=":r2:"
                     style='font-size: 22px; font-weight: 700; line-height: 28px; font-family: "Bricolage Grotesque", sans-serif;'>
                     No pins yet
                   </span>

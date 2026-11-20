@@ -244,12 +244,18 @@ const dateField = (props: State['props'] = {}) => ({
   ...props,
 });
 
+/** A typed date that no calendar has. */
+const IMPOSSIBLE_DATE = '1901-02-30';
+
 const BAD_DATES = [
   ['wrong format', '14/06/1901'],
   ['before 1652', '1650'],
   ['after today', '2031'],
-  ["doesn't exist", '1901-02-30'],
+  ["doesn't exist", IMPOSSIBLE_DATE],
 ];
+
+/** The `sheet` prop of a collapsed `DateDock` phone sheet. A preview gives it `onExpandedChange`. */
+const PHONE_SHEET = { expanded: false };
 
 const checkboxes = (name: string, make: (checked: boolean) => Make) =>
   [false, true].flatMap(checked =>
@@ -835,12 +841,15 @@ export const CARDS: Card[] = [
     })),
   },
   {
+    // The dock fills its slot and the sheet fills the phone, so each state fills the card.
+    box: '100%',
     design: ['Date dock'],
     group: 'Map',
-    handlers: ['onChange', 'onPlay'],
-    height: 720,
+    handlers: ['onChange', 'onPlay', 'sheet.onExpandedChange'],
+    height: 1720,
     name: 'DateDock',
-    pad: 0,
+    // Clears the callout of an invalid date, which opens above the dock and the sheet.
+    pad: 40,
     radios: true,
     states: [
       one('DateDock · Map date', { day: MAP_DATE, lastDay: TODAY }),
@@ -854,6 +863,22 @@ export const CARDS: Card[] = [
         contestedYears: CONTESTED_YEARS,
         day: MAP_DATE,
         lastDay: TODAY,
+      }),
+      one('DateDock · phone sheet', {
+        day: MAP_DATE,
+        lastDay: TODAY,
+        sheet: PHONE_SHEET,
+      }),
+      one('DateDock · invalid date', {
+        day: MAP_DATE,
+        defaultText: IMPOSSIBLE_DATE,
+        lastDay: TODAY,
+      }),
+      one('DateDock · phone sheet · invalid date', {
+        day: MAP_DATE,
+        defaultText: IMPOSSIBLE_DATE,
+        lastDay: TODAY,
+        sheet: PHONE_SHEET,
       }),
     ],
   },

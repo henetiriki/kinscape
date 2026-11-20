@@ -1,4 +1,4 @@
-<!-- @dsCard group="Map" height=720 -->
+<!-- @dsCard group="Map" height=1720 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,7 +6,7 @@
 <style>
 body { margin: 0; padding: 16px; font-family: var(--font-body); }
 #root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
-.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 0px 0; }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 40px 0; width: 100%; }
 .ks-label { color: var(--ink-3); }
 .ks-scope { display: contents; }
 </style>
@@ -18,19 +18,21 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
   var h = React.createElement;
   var noop = function () {};
   var Control = window.KinScape["DateDock"];
-  var handlers = ["onChange","onPlay"];
-  var states = [{"label":"DateDock · Map date","props":{"day":91109,"lastDay":136894}},{"label":"DateDock · with epochs","props":{"day":91109,"epochs":[{"year":1652},{"year":1806},{"year":1854},{"year":1880},{"year":1902},{"year":1910},{"year":1976},{"year":1994},{"label":"Today","year":2026}],"lastDay":136894}},{"label":"DateDock · with contested claims","props":{"contestedCount":2,"contestedYears":[{"from":1900,"to":1901}],"day":91109,"lastDay":136894}}];
+  var handlers = ["onChange","onPlay","sheet.onExpandedChange"];
+  var states = [{"label":"DateDock · Map date","props":{"day":91109,"lastDay":136894}},{"label":"DateDock · with epochs","props":{"day":91109,"epochs":[{"year":1652},{"year":1806},{"year":1854},{"year":1880},{"year":1902},{"year":1910},{"year":1976},{"year":1994},{"label":"Today","year":2026}],"lastDay":136894}},{"label":"DateDock · with contested claims","props":{"contestedCount":2,"contestedYears":[{"from":1900,"to":1901}],"day":91109,"lastDay":136894}},{"label":"DateDock · phone sheet","props":{"day":91109,"lastDay":136894,"sheet":{"expanded":false}}},{"label":"DateDock · invalid date","props":{"day":91109,"defaultText":"1901-02-30","lastDay":136894}},{"label":"DateDock · phone sheet · invalid date","props":{"day":91109,"defaultText":"1901-02-30","lastDay":136894,"sheet":{"expanded":false}}}];
   var give = function (props, names) {
     names.forEach(function (name) {
       var at = name.indexOf('.');
       if (at < 0) { props[name] = noop; return; }
-      var list = name.slice(0, at);
+      var prop = name.slice(0, at);
       var key = name.slice(at + 1);
-      props[list] = props[list].map(function (item) {
+      var withKey = function (item) {
         var copy = Object.assign({}, item);
         copy[key] = noop;
         return copy;
-      });
+      };
+      if (props[prop] === undefined) return;
+      props[prop] = Array.isArray(props[prop]) ? props[prop].map(withKey) : withKey(props[prop]);
     });
   };
   var make = function (slot, key) {

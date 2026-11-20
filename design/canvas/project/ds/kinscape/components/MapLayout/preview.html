@@ -24,13 +24,15 @@ body { margin: 0; padding: 16px; font-family: var(--font-body); }
     names.forEach(function (name) {
       var at = name.indexOf('.');
       if (at < 0) { props[name] = noop; return; }
-      var list = name.slice(0, at);
+      var prop = name.slice(0, at);
       var key = name.slice(at + 1);
-      props[list] = props[list].map(function (item) {
+      var withKey = function (item) {
         var copy = Object.assign({}, item);
         copy[key] = noop;
         return copy;
-      });
+      };
+      if (props[prop] === undefined) return;
+      props[prop] = Array.isArray(props[prop]) ? props[prop].map(withKey) : withKey(props[prop]);
     });
   };
   var make = function (slot, key) {

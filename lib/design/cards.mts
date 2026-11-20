@@ -121,18 +121,21 @@ const STYLE = (
 .ks-case[${FORM_ATTRIBUTE}='running'] { display: block; }
 .ks-case[${FORM_ATTRIBUTE}='running'] > .ks-label { display: block; margin-bottom: 8px; }${frame === undefined ? '' : `\n.ks-case > :last-child { height: ${frame}px; min-height: 0; }`}${radios ? '\n.ks-scope { display: contents; }' : ''}`;
 
-// Gives each named prop a no-op. A name with a dot, such as `rows.onChange`, names a key in each item of a list prop.
+// Gives each named prop a no-op. A name with a dot names a key in each item of a list prop (`rows.onChange`)
+// or in an object prop (`sheet.onExpandedChange`). A state without that prop gets nothing.
 const GIVE = `  var give = function (props, names) {
     names.forEach(function (name) {
       var at = name.indexOf('.');
       if (at < 0) { props[name] = noop; return; }
-      var list = name.slice(0, at);
+      var prop = name.slice(0, at);
       var key = name.slice(at + 1);
-      props[list] = props[list].map(function (item) {
+      var withKey = function (item) {
         var copy = Object.assign({}, item);
         copy[key] = noop;
         return copy;
-      });
+      };
+      if (props[prop] === undefined) return;
+      props[prop] = Array.isArray(props[prop]) ? props[prop].map(withKey) : withKey(props[prop]);
     });
   };`;
 
@@ -214,7 +217,8 @@ export const cardImage = (name: string, width: number): string =>
 
 /**
  * The cards that also have an image at the phone width, because the component changes with the
- * width. These are the 19 cards whose CSS has a width rule, and `Modal`, which fills the viewport.
+ * width. These are the 19 cards whose CSS has a width rule, and two more. `Modal` fills the viewport.
+ * The sheet of `DateDock` fills the width, and the callout of its `DateField` changes at 640px.
  * A test reads the stylesheet of each `CONTROLS` entry, named for the card or for the file in its `path`.
  */
 export const PHONE_CARDS = [
@@ -223,6 +227,7 @@ export const PHONE_CARDS = [
   'CheckboxField',
   'Chip',
   'ColumnLayout',
+  'DateDock',
   'DateField',
   'Dialog',
   'DialogPanel',

@@ -32,10 +32,13 @@
   content: '';
   height: var(--size-touch);
   left: 50%;
+
+  /* A minimum, not the `max` function. A hidden link has no layout, so the function stays in its computed style. The snapshot export refuses it. */
+  min-width: var(--size-touch);
   position: absolute;
   top: 50%;
   translate: -50% -50%;
-  width: max(100%, var(--size-touch));
+  width: 100%;
 }
 
 /* The button form: undo the button's own look, so it reads as the link. It has no href, so it needs the touch height of a control. */

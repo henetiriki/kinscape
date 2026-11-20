@@ -93,11 +93,11 @@ A local session, or a subagent it starts, follows this brief for each board that
 
 ### Rules for the drawing
 
-The exporter checks these. If this list differs from `scripts/design-export.mts`, the code wins.
+The exporter checks each rule except the `<sc-for>` rule, which the HTML parser sets. If this list differs from `scripts/design-export.mts`, the code wins.
 
 - Write `var(--token)` only in an inline `style=""` attribute, never in a `<style>` block.
 - Use no CSS function that the colour check cannot read, such as `inset()`, `rect()` or `clamp()`.
-- Use no `<script>`, no `http(s)` load and no CSS escape.
+- Add no `<script>` except the board's own `data-dc-script` and the canvas tags. Use no `http(s)` load and no CSS escape.
 - Put no `<sc-for>` in a `<table>`, `<tbody>` or `<tr>`. The HTML parser moves it out of the table.
 - Link to another board only if that board has a snapshot, or an entry in `links` in `design/canvas/export.json`.
 - Put `<x-import>` in the file of each board that needs the design system.
@@ -121,10 +121,9 @@ In the PR body, list these:
 
 Each new board needs these:
 
-- An entry in `canvas.json`, and one in `export.json`. A wrapper names its base file and `props`.
+- An entry in `canvas.json`, and one in `export.json`. A wrapper names its base file and `props`. Publish `canvas.json` last, after the boards, as step 4.5 does.
 - A Screens row in `design/DESIGN.md`.
 - If the board designs a screen under "Not designed yet" in `design/DESIGN.md`, a change to that line.
-- A name in `NO_ENTRY`, unless `design/screens.json` has an entry.
+- A name in `NO_ENTRY` in `lib/design/__tests__/screens.test.ts`, unless `design/screens.json` has an entry.
 - The two snapshot counts, in `lib/design/__tests__/design.test.ts` and `scripts/__tests__/design-export.test.ts`.
 - The README check: run `npm run design-system`. Compare the sha256 of `.design-system/project/README.md` and `design/canvas/project/ds/kinscape/README.md`. If they differ, stop: steps 3 to 5 of Changing the design system apply.
-- `npm run design:export`, then the workflow Design: Render snapshots, which the tech lead runs.

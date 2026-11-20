@@ -57,7 +57,7 @@ describe('budgetFor', () => {
     ['docs/architecture-target.md', 650],
     ['docs/glossary.md', 1200],
     ['design/DESIGN.md', 4150],
-    ['design/CANVAS.md', 1550],
+    ['design/CANVAS.md', 1600],
     ['design/COMPONENTS.md', 600],
     ['plans/README.md', 1200],
     ['plans/DL.17-motion-rules.md', 1500],

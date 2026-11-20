@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-import { dateFilter } from '@ks/features/map/filter';
+import { dateFilter, spanFilter } from '@ks/features/map/filter';
 import { asDay } from '@ks/lib/domain/boundaries/model.mts';
 import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 
@@ -40,6 +40,28 @@ describe('dateFilter agrees with isCurrentOn', () => {
 
   it('drops a label feature under the boundary filter', () => {
     expect(keeps(1500, { ...range, kind: 'label' })).toBe(false);
+  });
+});
+
+describe('spanFilter agrees with isCurrentOn', () => {
+  const range = { validFrom: asDay(1000), validTo: asDay(2000) };
+  const open = { validFrom: asDay(1000), validTo: null };
+  const spans = (day: number, properties: Record<string, unknown>): boolean =>
+    featureFilter(spanFilter(asDay(day)), 'filter').filter(
+      { zoom: 0 },
+      { geometry: [], id: 1, properties, type: 1 }
+    );
+
+  it.each([999, 1000, 1999, 2000])('on day %i of 1000–2000', day => {
+    expect(spans(day, range)).toBe(isCurrentOn(range, asDay(day)));
+  });
+
+  it.each([999, 1000, 100_000])('on day %i of a range with no end', day => {
+    expect(spans(day, open)).toBe(isCurrentOn(open, asDay(day)));
+  });
+
+  it('keeps a feature of any kind', () => {
+    expect(spans(1500, { ...range, kind: 'label' })).toBe(true);
   });
 });
 

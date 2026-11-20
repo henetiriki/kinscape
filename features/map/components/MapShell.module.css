@@ -3,3 +3,21 @@
   padding: 0 var(--size-gutter-phone) var(--space-4);
   text-align: right;
 }
+
+/* The toast sits at the bottom centre of the free map area, above the dock. */
+.toast {
+  bottom: calc(
+    var(--layout-furniture-bottom) + var(--layout-dock-height) + var(--space-16)
+  );
+  display: flex;
+  justify-content: center;
+  left: var(--layout-dock-left);
+  pointer-events: none;
+  position: absolute;
+  right: var(--size-gutter);
+  z-index: var(--z-furniture);
+}
+
+.toast > * {
+  pointer-events: auto;
+}

@@ -2,7 +2,7 @@
 
 - **Spec:** #1072
 - **Requirement IDs:** Must not break: [NFR-05](../../docs/requirements.md#nfr-05).
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -22,7 +22,7 @@ The CI build agent cannot run design steps 3 to 5 or edit `design/canvas/` ([des
 - **B.** Split: the CI build agent does steps 1 to 4 and keeps the PR as a draft. A local session does steps 5 and 6. The CI build agent does steps 8 and 9. Cost: two more hand-offs.
 - **Other:** your own.
 
-Recommended: A, because the code part is small, and one session can check the board and the code together.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

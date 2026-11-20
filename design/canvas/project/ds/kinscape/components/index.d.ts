@@ -666,6 +666,17 @@ declare const ClearFilters: ({ onClear }: {
 }) => import("react").JSX.Element;
 export type FilterFieldsProps = Parameters<typeof FilterFields>[0];
 
+/** Every source as layer, source, licence and date checked: a table in the centred Dialog, a list in the sheet. */
+export declare const SourcesList: ({ sources }: {
+    sources: Source[];
+}) => import("react").JSX.Element;
+declare const SourcesDialog: ({ onClose, open, sources, }: {
+    onClose: () => void;
+    open: boolean;
+    sources: Source[];
+}) => import("react").JSX.Element;
+export type SourcesListProps = Parameters<typeof SourcesList>[0];
+
 /** A problem or note about one part of the screen. An error is announced at once; the rest politely. */
 export declare const Alert: ({ aside, children, title, tone, }: {
     /** A note at the right of the title line. */

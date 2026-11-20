@@ -82,7 +82,7 @@ class Component extends DCLogic {
       const alert = failed ? `<x-import component-from-global-scope="KinScape.Alert" tone="error" title="Couldn't load this Pin">The details didn't load.</x-import>` : '';
       const buttons = failed
         ? BUTTON('Try again', 'secondary')
-        : `${BUTTON('Edit', 'primary', loaded ? '' : ' disabled="true"')}${BUTTON('Add a pin here', 'secondary', loaded ? '' : ' disabled="true"')}`;
+        : `${BUTTON('Add a pin here', 'primary', loaded ? '' : ' disabled="true"')}${BUTTON('Edit', 'secondary', loaded ? '' : ' disabled="true"')}`;
       return [
         `<div role="dialog" aria-label="Pin details"${loaded ? '' : failed ? '' : ' aria-busy="true"'} style="position: absolute; left: ${P.x - 30 - 304}px; top: ${P.y - 114}px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">`,
         `<span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>`,

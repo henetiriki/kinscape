@@ -2,7 +2,8 @@ import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { QueryProvider } from '@ks/app/QueryProvider';
-import { fetchPins, usePins } from '@ks/features/pins';
+import { usePins } from '@ks/features/pins';
+import { fetchPins } from '@ks/features/pins/query';
 
 // PIN-02, NFR-01, NFR-03. Data is synthetic.
 const PIN = {
@@ -16,9 +17,9 @@ const PIN = {
 const fetchStub = vi.fn();
 
 const Probe = ({ name }: { name: string }) => {
-  const { data } = usePins();
+  const { data, isError } = usePins();
 
-  return <p>{`${name}: ${data?.length ?? 'loading'}`}</p>;
+  return <p>{`${name}: ${isError ? 'error' : (data?.length ?? 'loading')}`}</p>;
 };
 
 beforeEach(() => {
@@ -88,6 +89,21 @@ it('leaves no Pin in local storage or session storage', async () => {
   });
   expect(localStorage).toHaveLength(0);
   expect(sessionStorage).toHaveLength(0);
+});
+
+it('shows the error state after one request when the response is 401', async () => {
+  fetchStub.mockResolvedValue(new Response(null, { status: 401 }));
+
+  render(
+    <QueryProvider>
+      <Probe name='one' />
+    </QueryProvider>
+  );
+
+  await waitFor(() => {
+    expect(document.body.textContent).toContain('one: error');
+  });
+  expect(fetchStub).toHaveBeenCalledTimes(1);
 });
 
 it('rejects fetchPins on a response that is not OK', async () => {

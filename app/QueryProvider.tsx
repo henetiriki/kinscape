@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 /**
  * One `QueryClient` for each page load, so the map and later screens share one cache. It lives in
- * state: a module-level client would be shared by every request on the server.
+ * state, because a module-level client on the server holds the data of every request.
  */
 export const QueryProvider = ({ children }: { children: ReactNode }) => {
   const [client] = useState(() => new QueryClient());

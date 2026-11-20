@@ -17,7 +17,13 @@ export const fetchPins = async (): Promise<MapPin[]> => {
 
 /**
  * The Pins of the Tree. The query loads once for the page (`staleTime: Infinity`) and keeps the
- * Pins in memory only (NFR-03). A later save reloads it by the key `['pins']`.
+ * Pins in memory only (NFR-03). A later save reloads it by the key `['pins']`. A failed load does
+ * not retry: the error state shows at once, and a person retries it.
  */
 export const usePins = () =>
-  useQuery({ queryFn: fetchPins, queryKey: ['pins'], staleTime: Infinity });
+  useQuery({
+    queryFn: fetchPins,
+    queryKey: ['pins'],
+    retry: false,
+    staleTime: Infinity,
+  });

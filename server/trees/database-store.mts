@@ -10,6 +10,7 @@ import type {
   Relationship,
   RelationshipInput,
 } from '#ks/lib/domain/relationships/types.ts';
+import type { Result } from '#ks/lib/domain/result/types.ts';
 import type { TreeScope, TreeStore } from '#ks/lib/domain/trees/types.ts';
 import type { createDb } from '#ks/server/db/database.mts';
 import type { Database, FuzzyDateColumnsOf } from '#ks/server/db/types.ts';
@@ -25,6 +26,7 @@ import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { savedOrNotFound } from '#ks/server/trees/saved.mts';
 import { isVersion } from '#ks/server/trees/version.mts';
 
 type Db = ReturnType<typeof createDb>;
@@ -192,6 +194,75 @@ const selectPerson = (db: Db, { treeId }: TreeScope) =>
   db.selectFrom('person').selectAll().where('treeId', '=', treeId);
 
 /**
+ * The add flow that each kind shares: refuse, insert, then read the row. `check` is an extra refusal.
+ * An insert on a saved id changes nothing, so an add that repeats returns the saved row.
+ */
+const added = async <Row, Entity>(
+  db: Db,
+  scope: TreeScope,
+  {
+    check,
+    ids,
+    insert,
+    map,
+    read,
+  }: {
+    check?: () => Promise<boolean>;
+    ids: readonly string[];
+    insert: () => Promise<unknown>;
+    map: (row: Row) => Entity;
+    read: () => Promise<Row>;
+  }
+): Promise<Entity | undefined> => {
+  if (
+    !(await reaches(db, scope, ...ids)) ||
+    (check !== undefined && !(await check()))
+  ) {
+    return undefined;
+  }
+
+  await insert();
+
+  return map(await read());
+};
+
+/**
+ * The versioned update that each kind shares. Each kind passes its own typed queries: Kysely does
+ * not type `.set(...)` for a generic table. `exists` tells a missing row from a stale version.
+ */
+const updated = async <Row, Entity>(
+  db: Db,
+  scope: TreeScope,
+  {
+    exists,
+    ids,
+    map,
+    update,
+    version,
+  }: {
+    exists: () => Promise<unknown>;
+    ids: readonly string[];
+    map: (row: Row) => Entity;
+    update: () => Promise<Row | undefined>;
+    version: number;
+  }
+): Promise<Result<Entity, 'conflict' | 'not-found'>> => {
+  if (!(await reaches(db, scope, ...ids))) {
+    return err('not-found');
+  }
+
+  // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
+  const row = isVersion(version) ? await update() : undefined;
+
+  if (row !== undefined) {
+    return ok(map(row));
+  }
+
+  // Zero rows: the row is missing or differs in its key, or its version changed.
+  return err((await exists()) === undefined ? 'not-found' : 'conflict');
+};
+
+/**
  * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
  * throws on a malformed `uuid`, so a read given an id that isn't a UUID finds nothing, as in memory.
  */
@@ -224,71 +295,74 @@ export const databaseStore = (db: Db): TreeStore => ({
 
       return ok({ accountId: account.id, treeId: tree.id });
     }),
-  addPerson: async ({ person, ...scope }) => {
-    if (!(await reaches(db, scope, person.id))) {
-      return undefined;
-    }
-
-    await db
-      .insertInto('person')
-      .values({ ...fieldsOf(person), id: person.id, treeId: scope.treeId })
-      .onConflict(conflict => conflict.columns(['treeId', 'id']).doNothing())
-      .execute();
-
-    return personOf(
-      await selectPerson(db, scope)
-        .where('id', '=', person.id)
-        .executeTakeFirstOrThrow()
-    );
-  },
-  addPlace: async ({ place, ...scope }) => {
-    if (!(await reaches(db, scope, place.id))) {
-      return err('not-found');
-    }
-
-    await db
-      .insertInto('place')
-      .values({ ...placeFieldsOf(place), id: place.id, treeId: scope.treeId })
-      .onConflict(conflict => conflict.columns(['treeId', 'id']).doNothing())
-      .execute();
-
-    return ok(
-      placeOf(
-        await selectPlace(db, scope)
-          .where('id', '=', place.id)
-          .executeTakeFirstOrThrow()
-      )
-    );
-  },
+  addPerson: ({ person, ...scope }) =>
+    added(db, scope, {
+      ids: [person.id],
+      insert: () =>
+        db
+          .insertInto('person')
+          .values({ ...fieldsOf(person), id: person.id, treeId: scope.treeId })
+          .onConflict(conflict =>
+            conflict.columns(['treeId', 'id']).doNothing()
+          )
+          .execute(),
+      map: personOf,
+      read: () =>
+        selectPerson(db, scope)
+          .where('id', '=', person.id)
+          .executeTakeFirstOrThrow(),
+    }),
+  addPlace: async ({ place, ...scope }) =>
+    savedOrNotFound(
+      await added(db, scope, {
+        ids: [place.id],
+        insert: () =>
+          db
+            .insertInto('place')
+            .values({
+              ...placeFieldsOf(place),
+              id: place.id,
+              treeId: scope.treeId,
+            })
+            .onConflict(conflict =>
+              conflict.columns(['treeId', 'id']).doNothing()
+            )
+            .execute(),
+        map: placeOf,
+        read: () =>
+          selectPlace(db, scope)
+            .where('id', '=', place.id)
+            .executeTakeFirstOrThrow(),
+      })
+    ),
   addRelationship: async ({ relationship, ...scope }) => {
     const ends = endsOf(relationship);
 
-    if (
-      !(await reaches(db, scope, relationship.id, ...ends)) ||
-      !(await bothInTree(db, scope, ends))
-    ) {
-      return err('not-found');
-    }
-
-    await db
-      .insertInto('relationship')
-      .values({
-        ...relationshipFieldsOf(relationship),
-        id: relationship.id,
-        personA: ends[0],
-        personB: ends[1],
-        treeId: scope.treeId,
-        type: relationship.type,
+    return savedOrNotFound(
+      await added(db, scope, {
+        check: () => bothInTree(db, scope, ends),
+        ids: [relationship.id, ...ends],
+        insert: () =>
+          db
+            .insertInto('relationship')
+            .values({
+              ...relationshipFieldsOf(relationship),
+              id: relationship.id,
+              personA: ends[0],
+              personB: ends[1],
+              treeId: scope.treeId,
+              type: relationship.type,
+            })
+            .onConflict(conflict =>
+              conflict.columns(['treeId', 'id']).doNothing()
+            )
+            .execute(),
+        map: relationshipOf,
+        read: () =>
+          selectRelationship(db, scope)
+            .where('id', '=', relationship.id)
+            .executeTakeFirstOrThrow(),
       })
-      .onConflict(conflict => conflict.columns(['treeId', 'id']).doNothing())
-      .execute();
-
-    return ok(
-      relationshipOf(
-        await selectRelationship(db, scope)
-          .where('id', '=', relationship.id)
-          .executeTakeFirstOrThrow()
-      )
     );
   },
   findAccount: async (issuer, subject) =>
@@ -372,14 +446,17 @@ export const databaseStore = (db: Db): TreeStore => ({
             .execute()
         ).map(relationshipOf)
       : [],
-  updatePerson: async ({ person, version, ...scope }) => {
-    if (!(await reaches(db, scope, person.id))) {
-      return err('not-found');
-    }
-
-    // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
-    const row = isVersion(version)
-      ? await db
+  updatePerson: ({ person, version, ...scope }) =>
+    updated(db, scope, {
+      exists: () =>
+        selectPerson(db, scope)
+          .where('id', '=', person.id)
+          .select('id')
+          .executeTakeFirst(),
+      ids: [person.id],
+      map: personOf,
+      update: () =>
+        db
           .updateTable('person')
           .set({
             ...fieldsOf(person),
@@ -390,29 +467,20 @@ export const databaseStore = (db: Db): TreeStore => ({
           .where('id', '=', person.id)
           .where('version', '=', version)
           .returningAll()
-          .executeTakeFirst()
-      : undefined;
-
-    if (row !== undefined) {
-      return ok(personOf(row));
-    }
-
-    // Zero rows: the Person is missing, or its version changed.
-    const saved = await selectPerson(db, scope)
-      .where('id', '=', person.id)
-      .select('id')
-      .executeTakeFirst();
-
-    return err(saved === undefined ? 'not-found' : 'conflict');
-  },
-  updatePlace: async ({ place, version, ...scope }) => {
-    if (!(await reaches(db, scope, place.id))) {
-      return err('not-found');
-    }
-
-    // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
-    const row = isVersion(version)
-      ? await db
+          .executeTakeFirst(),
+      version,
+    }),
+  updatePlace: ({ place, version, ...scope }) =>
+    updated(db, scope, {
+      exists: () =>
+        selectPlace(db, scope)
+          .where('id', '=', place.id)
+          .select('id')
+          .executeTakeFirst(),
+      ids: [place.id],
+      map: placeOf,
+      update: () =>
+        db
           .updateTable('place')
           .set({
             ...placeFieldsOf(place),
@@ -423,28 +491,11 @@ export const databaseStore = (db: Db): TreeStore => ({
           .where('id', '=', place.id)
           .where('version', '=', version)
           .returningAll()
-          .executeTakeFirst()
-      : undefined;
-
-    if (row !== undefined) {
-      return ok(placeOf(row));
-    }
-
-    // Zero rows: the Place is missing, or its version changed.
-    const saved = await selectPlace(db, scope)
-      .where('id', '=', place.id)
-      .select('id')
-      .executeTakeFirst();
-
-    return err(saved === undefined ? 'not-found' : 'conflict');
-  },
-  updateRelationship: async ({ relationship, version, ...scope }) => {
+          .executeTakeFirst(),
+      version,
+    }),
+  updateRelationship: ({ relationship, version, ...scope }) => {
     const ends = endsOf(relationship);
-
-    if (!(await reaches(db, scope, relationship.id, ...ends))) {
-      return err('not-found');
-    }
-
     // The row matches by Tree, id, type and both Persons: an update never changes them.
     const key = {
       id: relationship.id,
@@ -453,9 +504,17 @@ export const databaseStore = (db: Db): TreeStore => ({
       treeId: scope.treeId,
       type: relationship.type,
     };
-    // A version that is not an `int4` matches no row, as in memory, and Postgres does not throw.
-    const row = isVersion(version)
-      ? await db
+
+    return updated(db, scope, {
+      exists: () =>
+        selectRelationship(db, scope)
+          .where(eb => eb.and(key))
+          .select('id')
+          .executeTakeFirst(),
+      ids: [relationship.id, ...ends],
+      map: relationshipOf,
+      update: () =>
+        db
           .updateTable('relationship')
           .set({
             ...relationshipFieldsOf(relationship),
@@ -465,19 +524,8 @@ export const databaseStore = (db: Db): TreeStore => ({
           .where(eb => eb.and(key))
           .where('version', '=', version)
           .returningAll()
-          .executeTakeFirst()
-      : undefined;
-
-    if (row !== undefined) {
-      return ok(relationshipOf(row));
-    }
-
-    // Zero rows: the Relationship is missing or differs in type or Persons, or its version changed.
-    const saved = await selectRelationship(db, scope)
-      .where(eb => eb.and(key))
-      .select('id')
-      .executeTakeFirst();
-
-    return err(saved === undefined ? 'not-found' : 'conflict');
+          .executeTakeFirst(),
+      version,
+    });
   },
 });

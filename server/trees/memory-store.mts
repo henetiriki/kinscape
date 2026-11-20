@@ -32,6 +32,7 @@ import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
+import { savedOrNotFound } from '#ks/server/trees/saved.mts';
 
 /** Code-point order: the byte order of UTF-8, as `collate "C"` gives in Postgres. */
 const compare = (x: string, y: string): number =>
@@ -134,6 +135,62 @@ export const memoryStore = (
       : undefined;
   };
 
+  /**
+   * Saves `input` at version 1 under `id` unless the id is saved, and gives a copy of the saved row.
+   * Gives undefined for a frozen Tree, a Tree the Account may not access and an id that is not valid.
+   */
+  const added = <Id, Input extends { id: Id }>(
+    scope: TreeScope,
+    rows: Map<Id, { version: number } & Input> | undefined,
+    id: Id | undefined,
+    input: Input
+  ) => {
+    if (frozen(scope) || rows === undefined || id === undefined) {
+      return undefined;
+    }
+
+    if (!rows.has(id)) {
+      rows.set(id, { ...structuredClone(input), id, version: 1 });
+    }
+
+    return structuredClone(rows.get(id)!);
+  };
+
+  /**
+   * Replaces the row at `id` and raises its version. `not-found` covers the cases of `added`, a
+   * missing row and a row that fails `matches`. `conflict` is a stale `version`.
+   */
+  const updated = <Id, Input extends { id: Id }>(
+    scope: TreeScope,
+    rows: Map<Id, { version: number } & Input> | undefined,
+    id: Id | undefined,
+    input: Input,
+    version: number,
+    matches: (saved: Input) => boolean = () => true
+  ) => {
+    const saved = id === undefined ? undefined : rows?.get(id);
+
+    if (
+      frozen(scope) ||
+      rows === undefined ||
+      id === undefined ||
+      saved === undefined ||
+      !matches(saved)
+    ) {
+      return err('not-found');
+    }
+
+    if (saved.version !== version) {
+      return err('conflict');
+    }
+
+    const next = { ...structuredClone(input), id, version: version + 1 };
+
+    rows.set(id, next);
+
+    return ok(structuredClone(next));
+  };
+
   return {
     addAccount: async ({ issuer, subject, treeName }) => {
       const identity = identityOf(issuer, subject);
@@ -152,47 +209,27 @@ export const memoryStore = (
 
       return ok({ accountId, treeId });
     },
-    addPerson: async ({ person, ...scope }) => {
-      const owned = frozen(scope) ? undefined : personsOf(scope);
-
-      if (owned === undefined || parsePersonId(person.id) === undefined) {
-        return undefined;
-      }
-
-      if (!owned.has(person.id)) {
-        owned.set(person.id, { ...structuredClone(person), version: 1 });
-      }
-
-      return structuredClone(owned.get(person.id));
-    },
-    addPlace: async ({ place, ...scope }) => {
-      const owned = placesOf(scope);
-      const id = parsePlaceId(place.id);
-
-      if (frozen(scope) || owned === undefined || id === undefined) {
-        return err('not-found');
-      }
-
-      if (!owned.has(id)) {
-        owned.set(id, { ...structuredClone(place), id, version: 1 });
-      }
-
-      return ok(structuredClone(owned.get(id)!));
-    },
-    addRelationship: async ({ relationship, ...scope }) => {
-      const owned = relationshipsOf(scope);
-      const id = joinable(scope, relationship);
-
-      if (frozen(scope) || owned === undefined || id === undefined) {
-        return err('not-found');
-      }
-
-      if (!owned.has(id)) {
-        owned.set(id, { ...structuredClone(relationship), id, version: 1 });
-      }
-
-      return ok(structuredClone(owned.get(id)!));
-    },
+    // `findPerson` and `updatePerson` look up the id as sent, so a Person keeps that id.
+    addPerson: async ({ person, ...scope }) =>
+      added(
+        scope,
+        personsOf(scope),
+        parsePersonId(person.id) === undefined ? undefined : person.id,
+        person
+      ),
+    addPlace: async ({ place, ...scope }) =>
+      savedOrNotFound(
+        added(scope, placesOf(scope), parsePlaceId(place.id), place)
+      ),
+    addRelationship: async ({ relationship, ...scope }) =>
+      savedOrNotFound(
+        added(
+          scope,
+          relationshipsOf(scope),
+          joinable(scope, relationship),
+          relationship
+        )
+      ),
     findAccount: async (issuer, subject) => {
       const id = accounts.get(identityOf(issuer, subject));
 
@@ -246,77 +283,20 @@ export const memoryStore = (
       )
         .sort((x, y) => compare(x.id, y.id))
         .slice(0, MAX_RELATIONSHIPS),
-    updatePerson: async ({ person, version, ...scope }) => {
-      const owned = personsOf(scope);
-      const saved = owned?.get(person.id);
-
-      if (frozen(scope) || owned === undefined || saved === undefined) {
-        return err('not-found');
-      }
-
-      if (saved.version !== version) {
-        return err('conflict');
-      }
-
-      const next = { ...structuredClone(person), version: version + 1 };
-
-      owned.set(person.id, next);
-
-      return ok(structuredClone(next));
-    },
-    updatePlace: async ({ place, version, ...scope }) => {
-      const owned = placesOf(scope);
-      const id = parsePlaceId(place.id);
-      const saved = id === undefined ? undefined : owned?.get(id);
-
-      if (
-        frozen(scope) ||
-        owned === undefined ||
-        id === undefined ||
-        saved === undefined
-      ) {
-        return err('not-found');
-      }
-
-      if (saved.version !== version) {
-        return err('conflict');
-      }
-
-      const next = { ...structuredClone(place), id, version: version + 1 };
-
-      owned.set(id, next);
-
-      return ok(structuredClone(next));
-    },
-    updateRelationship: async ({ relationship, version, ...scope }) => {
-      const owned = relationshipsOf(scope);
-      const id = joinable(scope, relationship);
-      const saved = id === undefined ? undefined : owned?.get(id);
-
-      if (
-        frozen(scope) ||
-        owned === undefined ||
-        id === undefined ||
-        saved === undefined ||
-        saved.type !== relationship.type ||
-        endsOf(saved).join() !== endsOf(relationship).join()
-      ) {
-        return err('not-found');
-      }
-
-      if (saved.version !== version) {
-        return err('conflict');
-      }
-
-      const next = {
-        ...structuredClone(relationship),
-        id,
-        version: version + 1,
-      };
-
-      owned.set(id, next);
-
-      return ok(structuredClone(next));
-    },
+    updatePerson: async ({ person, version, ...scope }) =>
+      updated(scope, personsOf(scope), person.id, person, version),
+    updatePlace: async ({ place, version, ...scope }) =>
+      updated(scope, placesOf(scope), parsePlaceId(place.id), place, version),
+    updateRelationship: async ({ relationship, version, ...scope }) =>
+      updated(
+        scope,
+        relationshipsOf(scope),
+        joinable(scope, relationship),
+        relationship,
+        version,
+        saved =>
+          saved.type === relationship.type &&
+          endsOf(saved).join() === endsOf(relationship).join()
+      ),
   };
 };

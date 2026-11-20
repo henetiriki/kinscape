@@ -555,7 +555,7 @@
       "x": 0,
       "y": 8160,
       "w": 800,
-      "h": 120,
+      "h": 900,
       "title": "Credits at 800px — collapsed",
       "page": "states"
     },
@@ -563,7 +563,7 @@
       "x": 880,
       "y": 8160,
       "w": 800,
-      "h": 120,
+      "h": 900,
       "title": "Credits at 800px — expanded",
       "page": "states"
     }

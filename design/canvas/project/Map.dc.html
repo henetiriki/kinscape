@@ -23,7 +23,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
 
-  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" account="{{account}}" zoom="{{zoom}}" panel="{{panel}}" dock="{{dock}}" overlay="{{overlay}}" overlay-at="{{overlayAt}}"></x-import>
+  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" account="{{account}}" zoom="{{zoom}}" panel="{{panel}}" dock="{{dock}}" credits="{{credits}}" overlay="{{overlay}}" overlay-at="{{overlayAt}}"></x-import>
 
   <sc-if value="{{v.popup}}" hint-placeholder-val="{{ true }}">
   <div role="dialog" aria-label="Jurisdiction at this point" style="position: absolute; left: 545px; top: 250px; width: 304px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.1), 0 10px 30px rgba(24,33,27,0.2)">
@@ -71,11 +71,6 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 
   <sc-if value="{{chrome}}" hint-placeholder-val="{{ true }}">
   <div style="z-index: 2; position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
-  <div style="z-index: 2; position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
-    <button type="button" aria-expanded="false" aria-controls="credits-text" style="display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="info" size="14"></x-import>Credits</button>
-    <span aria-hidden="true">·</span>
-    <a href="#" style="color: #1D3E20">Attributions</a>
-  </div>
   </sc-if>
 
   <sc-if value="{{v.accountProposed}}" hint-placeholder-val="{{ false }}">
@@ -195,6 +190,7 @@ class Component extends DCLogic {
       account: h(K.Avatar, { expanded: vals.avatarExpanded, initial: 'R' }),
       accountMenu: vals.accountMenu,
       chrome: vals.chrome,
+      credits: !vals.chrome ? undefined : h(K.Credits, { collapsible: true, onOpenAttributions: () => {}, showPolities: true, sources: SOURCES_DIALOG.sources }),
       // The values are the DateDock samples of lib/design/samples.mts. The key mounts a new dock for each
       // variant: defaultText sets only the first text of the field.
       dock: !vals.chrome ? undefined : h(K.DateDock, {

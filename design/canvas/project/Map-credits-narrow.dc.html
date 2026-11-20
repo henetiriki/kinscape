@@ -16,35 +16,57 @@
 <style>
 body{margin:0}
 a{color:#264F29}a:hover{color:#1D3E20}
-button{font:inherit}
-button:focus-visible{outline:2px solid #264F29;outline-offset:2px}
+button,input,select{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #264F29;outline-offset:2px}
 </style>
 </helmet>
-<div style="width: 800px; height: 120px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
+<div style="width: 800px; height: 900px; position: relative; overflow: hidden; background: #C9D5D2; font-family: 'Public Sans', system-ui, sans-serif; color: #18211B">
 
-  <aside aria-hidden="true" style="position: absolute; left: 24px; bottom: 28px; width: 320px; height: 200px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.1)"></aside>
-  <section aria-hidden="true" style="position: absolute; left: 368px; right: 24px; bottom: 28px; height: 176px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 1px 2px rgba(24,33,27,0.08), 0 6px 20px rgba(24,33,27,0.12)"></section>
+  <x-import component-from-global-scope="KinScape.MapLayout" panel="{{panel}}" dock="{{dock}}" credits="{{credits}}"></x-import>
 
-  <div style="position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
-
-  <div style="position: absolute; right: var(--size-gutter); bottom: 6px; display: flex; align-items: center; gap: 6px; font-size: 11px; line-height: 16px; color: var(--credits)">
-    <button type="button" aria-expanded="{{expanded}}" aria-controls="credits-text" style="display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="info" size="14"></x-import>Credits</button>
-    <span aria-hidden="true">·</span>
-    <a href="#" style="color: #1D3E20">Attributions</a>
-  </div>
-
-  <sc-if value="{{v.open}}" hint-placeholder-val="{{ false }}">
-    <div id="credits-text" style="position: absolute; right: var(--size-gutter); bottom: 30px; width: 300px; box-sizing: border-box; padding: 10px 14px; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating); font-size: 11px; line-height: 16px; color: var(--credits)">Boundaries: KinScape data, sources per layer · Terrain: [DEM SOURCE] · Coast &amp; rivers: [SOURCE]</div>
-  </sc-if>
+  <div style="z-index: 2; position: absolute; left: var(--size-gutter); bottom: 6px; box-sizing: border-box; width: 72px; height: 17px; padding: 0 4px; border: 1px solid var(--credits); border-top: 0; background: var(--white-60); font-size: 11px; line-height: 16px; color: var(--credits); white-space: nowrap">100 km</div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["default","open"],"default":"default"},"$preview":{"width":800,"height":120}}'>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["default","open"],"default":"default"},"$preview":{"width":800,"height":900}}'>
 class Component extends DCLogic {
   renderVals() {
+    const React = window.React;
+    const K = window.KinScape;
+
+    if (!React || !K) return {};
+
+    const h = React.createElement;
     const open = (this.props.variant ?? 'default') === 'open';
+    // The rows of data/sources.json: the Credits reads the attribution of each. A test keeps them in step.
+    const SOURCES = [{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-land","layer":"Land","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2. Clipped to southern Africa, simplified to 500 m, coordinates rounded to 4 decimals.","title":"Natural Earth 10m land"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-coastline","layer":"Coastline","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2. Clipped to southern Africa, simplified to 500 m, coordinates rounded to 4 decimals.","title":"Natural Earth 10m coastline"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-rivers","layer":"Rivers","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2, scalerank 7 and lower. Clipped to southern Africa, simplified to 500 m, coordinates rounded to 4 decimals.","title":"Natural Earth 10m rivers and lake centerlines"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-admin-1","layer":"Polity borders","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2 admin-1. South Africa's provinces, Lesotho and eSwatini, each dissolved to one shape, clipped, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Lesotho and eSwatini from 1910-05-31, low confidence until 1994-04-27 (unverified). Provinces from 2006-03-01 (Twelfth Amendment, Proclamation R. 8 of 2006, Government Gazette 28568), low confidence until 2009-04-03 (Sixteenth Amendment, Proclamation R. 20 of 2009, Government Gazette 32091), when Merafong moved to Gauteng. Natural Earth's lines may predate those amendments in places.","title":"Natural Earth 10m admin-1 states and provinces"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-25","id":"natural-earth-admin-1-v4","layer":"Polity borders","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v4.1.0/LICENSE.md","processing":"Natural Earth 10m v4.1.0 admin-1 (2018-05-21). South Africa's nine provinces, each dissolved to one shape, clipped to the v5.1.2 outline of South Africa, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1994-04-27 to 2006-03-01 (M1.3). Also the Orange Free State from 1910-05-31 to 1994-04-27 (B289): the Free State shape clipped as above, so its Vaal and Orange borders follow those rivers and it doesn't shift at 1994-04-27; low confidence. Bushbuckridge is in Mpumalanga here, though it was in Northern Province until 2006. Natural Earth approximates the magisterial districts of Schedule 1 of the 1993 Constitution; low confidence.","title":"Natural Earth 10m admin-1 states and provinces, v4.1.0"},{"attribution":"afrith/historical-boundary-data (CC0-1.0)","author":"afrith","dateChecked":"2026-10-25","id":"afrith-provinces-1910","layer":"Polity borders","licence":"CC0-1.0","licenceLink":"https://github.com/afrith/historical-boundary-data/blob/fbdf94d8a561814510f5d62ec552d6d67f3488e6/LICENSE","processing":"provinces-1910.geojson at commit fbdf94d (2022-04-23). Cape of Good Hope, Natal and Transvaal, each dissolved to one shape (the Orange Free State is Natural Earth v4.1.0's, see natural-earth-admin-1-v4), extended by 5 km at their unshared edges, Natural Earth's Free State, Lesotho and eSwatini erased, clipped to Natural Earth land and to Natural Earth's v5.1.2 outline of South Africa plus afrith's Walvis Bay part, so the outer edge on the Limpopo, lower Orange and Marico follows Natural Earth's; the gaps up to 300 km² between them and the Free State, Lesotho and eSwatini filled into the neighbouring shape (so the 1910 Lesotho and eSwatini differ slightly from today's), simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1910-05-31 to 1994-04-27, low confidence. The author doesn't recall the sources: Free State and northern Natal equal current provincial lines, Cape–Natal current municipal ones, Cape–Transvaal probably from Trig Survey maps. Griqualand East is in the Cape though it moved to Natal in 1978, and Walvis Bay stays in the Cape eight weeks past 1994-03-01. Homelands are not drawn. Its own Free State is not used: its Vaal and Orange borders are off the rivers.","title":"Historical provinces of South Africa, 1910"},{"attribution":"Public Sans © The Public Sans Project Authors","author":"The Public Sans Project Authors","dateChecked":"2026-10-19","id":"public-sans","layer":"Polity borders","licence":"SIL Open Font Licence 1.1","licenceLink":"https://github.com/uswds/public-sans/blob/v2.001/OFL.txt","processing":"Version 2.001, SemiBold, converted to map glyphs (characters 0 to 511) with fontnik.","title":"Public Sans"},{"attribution":"MapLibre","author":"MapLibre contributors","dateChecked":"2026-10-19","id":"maplibre-gl","layer":"Map renderer","licence":"BSD-3-Clause","licenceLink":"https://github.com/maplibre/maplibre-gl-js/blob/main/LICENSE.txt","title":"MapLibre GL JS"}];
+    const noop = () => {};
+    const row = (id, label, description, checked, size) => ({ checked, description, id, label, onChange: noop, size });
+
     return {
-      expanded: open ? 'true' : 'false',
-      v: { open: open }
+      credits: h(K.Credits, { collapsible: true, defaultOpen: open, onOpenAttributions: noop, showPolities: true, sources: SOURCES }),
+      // The values are the DateDock samples of lib/design/samples.mts.
+      dock: h(K.DateDock, {
+        contestedCount: 2,
+        contestedYears: [{ from: 1900, to: 1901 }],
+        day: 91109,
+        epochs: [1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994].map(year => ({ year })).concat([{ label: 'Today', year: 2026 }]),
+        lastDay: 136894,
+        onChange: noop,
+        onPlay: noop
+      }),
+      // The values are the Panel samples of lib/design/samples.mts, with its Layers tab.
+      panel: h(K.Panel, {
+        bodyId: 'map-panel-body',
+        end: h(K.Legend),
+        gap: 14,
+        label: 'Layers and filters',
+        onSelect: noop,
+        selected: 'layers',
+        tabs: [{ controls: 'map-panel-body', label: 'Layers', value: 'layers' }, { controls: 'map-panel-body', count: 1, label: 'Filters', value: 'filters' }]
+      },
+        h(K.LayerGroup, { heading: 'Boundaries', rows: [row('polities', 'Polities', 'Colonies, republics, provinces, homelands', true), row('districts', 'Districts', 'Drostdy and magisterial districts', false)] }),
+        h(K.LayerGroup, { heading: 'Basemap', rows: [row('names', 'Place names', 'As they were on the map date', true, 'm'), row('rivers', 'Rivers', 'Many early borders follow them', true, 'm'), row('terrain', 'Terrain', 'Hillshade, no modern borders', true, 'm')] }),
+        h(K.LayerGroup, { heading: 'Pins', rows: [row('pins', 'Pins', '8 of 214 true on this date', true, 'm'), row('halos', 'Uncertainty halos', 'Grow with the date range', true, 'm')] }))
     };
   }
 }

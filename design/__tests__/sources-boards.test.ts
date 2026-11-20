@@ -9,6 +9,23 @@ import { BOARD_DIR } from '@ks/scripts/design-export.mts';
 // A board cannot import a file of the app, so each board holds its own copy of the Sources dialog's words and rows.
 const LINE = /^\s*const SOURCES_DIALOG = (\{.*\});$/m;
 
+// The narrow credits board needs only the rows: its Credits reads the attribution of each source.
+const ROWS = /^\s*const SOURCES = (\[.*\]);$/m;
+
+it.each(['Map-credits-narrow'])(
+  'the %s board holds the rows of the Sources dialog',
+  name => {
+    const board = readFileSync(
+      join(process.cwd(), BOARD_DIR, `${name}.dc.html`),
+      'utf8'
+    );
+    const [, json] = ROWS.exec(board) ?? [];
+
+    expect(json, `${name}.dc.html has no SOURCES line`).toBeDefined();
+    expect(JSON.parse(json!), `${name}.dc.html`).toEqual(sources.sources);
+  }
+);
+
 it.each(['Map', 'Map-phone-states'])(
   'the %s board holds the words and the rows of the Sources dialog',
   name => {

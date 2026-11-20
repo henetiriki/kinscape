@@ -67,3 +67,4 @@ The Spec's "Out of scope / carried forward" list holds.
 ## Deviations
 
 - The **Where** line of `design/CANVAS.md` also changes: "The refresh and the workflow in steps 6 and 7 each commit" becomes "The refresh in step 5, the session in step 7 and the workflow each commit". The new step 7 does not run the refresh, so the old text was wrong. The review found it (f8b9a61a).
+- The budget of `docs/code-rules.md` is 450, and its pin follows. `countWords` gives 381 words on `main` and 437 on this branch (`wc -w`: 410 and 470). 437 is over 400, so 450 is the next multiple of 50 that holds the file (a6e6d5fc).

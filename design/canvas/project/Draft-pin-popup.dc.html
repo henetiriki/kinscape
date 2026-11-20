@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Draft, Pin popup</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<script src="./board-helpers.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1040px; height: 460px; position: relative; overflow: hidden; box-sizing: border-box; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+<div style="padding: 32px 32px 0; display: flex; flex-direction: column; gap: var(--space-4)">
+  <x-import component-from-global-scope="KinScape.Text" variant="h2" as="h2">Pin popup</x-import>
+  <x-import component-from-global-scope="KinScape.Text" variant="body" as="span">A click on a Pin opens it, 30 px left of the Pin. The pointer is on the right edge. The popup is 304 px wide.</x-import>
+</div>
+<span style="position: absolute; left: 32px; top: 92px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Loaded</x-import></span><div role="dialog" aria-label="Pin details" style="position: absolute; left: 32px; top: 120px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
+  <span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>
+  <div style="position: relative; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12)"><div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-8)"><div style="display: flex; flex-direction: column; gap: var(--space-4)"><span style="display: flex; align-items: center; gap: var(--space-8); color: var(--pin); font-size: 16px"><x-import component-from-global-scope="KinScape.EventGlyph" event="residence"></x-import><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Residence</x-import></span><x-import component-from-global-scope="KinScape.Text" variant="h3" as="span">Example Person</x-import></div><x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import></div><div style="display: flex; flex-direction: column; gap: 2px"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">From 1890 to 1905</x-import><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">FROM 1890 TO 1905</x-import></div><div style="display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-12); border-radius: var(--radius-control); background: var(--surface-2)"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Address as recorded</x-import><x-import component-from-global-scope="KinScape.Text" variant="body" as="span">Farm Example, district Example</x-import></div><div style="display: flex; gap: var(--space-8)"><x-import component-from-global-scope="KinScape.Button" variant="primary">Edit</x-import><x-import component-from-global-scope="KinScape.Button" variant="secondary">Add a pin here</x-import></div></div>
+</div>
+<span style="position: absolute; left: 368px; top: 92px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Loading</x-import></span><div role="dialog" aria-label="Pin details" style="position: absolute; left: 368px; top: 120px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
+  <span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>
+  <div style="position: relative; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12)"><div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-8)"><div style="display: flex; flex-direction: column; gap: var(--space-4)"><span style="display: flex; align-items: center; gap: var(--space-8); color: var(--pin); font-size: 16px"><x-import component-from-global-scope="KinScape.EventGlyph" event="residence"></x-import><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Residence</x-import></span><span aria-hidden="true" style="display: block; width: 168px; max-width: 100%; height: 20px; border-radius: var(--radius-small); background: var(--line)"></span></div><x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import></div><div style="display: flex; flex-direction: column; gap: 2px"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">From 1890 to 1905</x-import><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">FROM 1890 TO 1905</x-import></div><div style="display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-12); border-radius: var(--radius-control); background: var(--surface-2)"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Address as recorded</x-import><span aria-hidden="true" style="display: block; width: 220px; max-width: 100%; height: 20px; border-radius: var(--radius-small); background: var(--line)"></span></div><div style="display: flex; gap: var(--space-8)"><x-import component-from-global-scope="KinScape.Button" variant="primary" disabled="true">Edit</x-import><x-import component-from-global-scope="KinScape.Button" variant="secondary" disabled="true">Add a pin here</x-import></div></div>
+</div>
+<span style="position: absolute; left: 704px; top: 92px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Failed</x-import></span><div role="dialog" aria-label="Pin details" style="position: absolute; left: 704px; top: 120px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
+  <span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>
+  <div style="position: relative; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12)"><div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-8)"><div style="display: flex; flex-direction: column; gap: var(--space-4)"><span style="display: flex; align-items: center; gap: var(--space-8); color: var(--pin); font-size: 16px"><x-import component-from-global-scope="KinScape.EventGlyph" event="residence"></x-import><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Residence</x-import></span></div><x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import></div><div style="display: flex; flex-direction: column; gap: 2px"><x-import component-from-global-scope="KinScape.Text" variant="title" as="span">From 1890 to 1905</x-import><x-import component-from-global-scope="KinScape.Text" variant="mono" as="span">FROM 1890 TO 1905</x-import></div><x-import component-from-global-scope="KinScape.Alert" tone="error" title="Couldn't load this Pin">The details didn't load.</x-import><div style="display: flex; gap: var(--space-8)"><x-import component-from-global-scope="KinScape.Button" variant="secondary">Try again</x-import></div></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1040,"height":460}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

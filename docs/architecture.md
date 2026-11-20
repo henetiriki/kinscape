@@ -56,7 +56,7 @@ Import repo paths by alias: `#ks/` in `.mts` and `.mjs` files, `@ks/` elsewhere.
 ## Enforcement
 
 - **Lint** (`eslint.config.mjs`): arrow functions only, exported types only in `types.ts`, alias imports by extension; the config lists the rest.
-- **Fitness tests** (`scripts/__tests__/`): `vercel-imports` (undeployed imports); `scoping`, `gate` and `boundary` (three safety rows, from `scripts/safety.mts`); four in the Tree data stays private row.
+- **Fitness tests** (`scripts/__tests__/`): `vercel-imports` (undeployed imports); `scoping`, `gate` and `boundary` (three safety rows, from `scripts/safety.mts`); four in the Tree data row.
 - **Layers** (`scripts/layers.mts`, ESLint rule `layers/imports`, fitness test `scripts/__tests__/layers.test.ts`): a path's layer may import only the layers in its row. `lib/domain` may not import Node built-ins or `maplibre-gl`. `features/` holds only feature folders, imported from outside through `index.ts`. Tests, `app/screens`, `scripts`, `e2e` and `lib/design` are outside the layers; layer code may not import them.
   | Layer             | Holds                                  | May import                                                                                   |
   | ----------------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |

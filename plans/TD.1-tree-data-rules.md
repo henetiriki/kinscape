@@ -93,7 +93,7 @@ The Spec does not say how the check finds a page that reads Tree data. #678 Cons
 
 ## Deviations
 
-- `docs/architecture.md` was at its 900-word budget. The Lint bullet lost its rule list ("the config lists the rest"), and the Enforcement line says "four more in the Tree data row".
+- `docs/architecture.md` was at its 900-word budget. The Lint bullet lost its rule list ("the config lists the rest"), and the Enforcement line says "four in the Tree data row".
 - The Patterns row is named "Tree data stays private" and is short for the same reason.
 - I wrote the four checks before their fixture tests. The tests then passed on the first run.
 - The diff is 726 changed lines without the plan. This is over the 600-line cap of the [too-big rule](README.md#too-big). The tech lead accepted the size.

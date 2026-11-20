@@ -1126,6 +1126,18 @@ describe('clipPage', () => {
     );
   });
 
+  it('throws on an element with position: fixed and leaves the page as it is', () => {
+    const page =
+      '<p>A</p><div><i style="position: fixed; top: 0px">B</i></div>';
+
+    document.body.innerHTML = page;
+
+    expect(() => clipPage({ clip: CLIP, viewport: VIEWPORT })).toThrow(
+      'The clip does not move an element with position: fixed'
+    );
+    expect(document.body.innerHTML).toBe(page);
+  });
+
   it('moves the box left by x and up by y', () => {
     document.body.innerHTML = '<p>A</p>';
 

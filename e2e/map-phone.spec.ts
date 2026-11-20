@@ -192,6 +192,25 @@ test.describe('phone, 390 × 844', () => {
     await expect(field(page)).toHaveValue('1901');
   });
 
+  // MAP-03: the credits sit above the sheet, and its error callout opens over them.
+  test('the date message, not the Attributions button, takes a tap at its lower right', async ({
+    page,
+  }) => {
+    await typeDate(page, '1901-02-30');
+
+    const callout = page.getByRole('alert').filter({ hasText: 'has 28 days' });
+
+    await expect(callout).toBeVisible();
+    expect(
+      await callout.evaluate(node => {
+        const { bottom, right } = node.getBoundingClientRect();
+        const hit = document.elementFromPoint(right - 8, bottom - 8);
+
+        return hit !== null && node.contains(hit);
+      })
+    ).toBe(true);
+  });
+
   // NFR-06
   test('the keyboard reaches Layers, the grabber, the steps and the field', async ({
     page,

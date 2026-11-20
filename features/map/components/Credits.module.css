@@ -28,8 +28,10 @@
   padding: 0;
   position: relative;
   text-decoration: underline;
+}
 
-  /* Above the open card, so the hit area below keeps the card's lowest 6px. */
+/* Only the desktop line has the open card. Its buttons paint above the card, so a hit area keeps the card's lowest 6px. The phone text stays below the date error callout. */
+.line button {
   z-index: 1;
 }
 

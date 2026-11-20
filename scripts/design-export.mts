@@ -927,6 +927,13 @@ export const clipPage = ({
   const outer = document.createElement('div');
   const inner = document.createElement('div');
 
+  // An element with `position: fixed` keeps the viewport as its containing block, so the clip would not move it.
+  for (const element of document.body.querySelectorAll('*')) {
+    if (getComputedStyle(element).position === 'fixed') {
+      throw new Error('The clip does not move an element with position: fixed');
+    }
+  }
+
   outer.style.cssText = `height: ${clip.height}px; overflow: hidden; width: ${clip.width}px;`;
   inner.style.cssText = `height: ${viewport.height}px; left: ${-clip.x}px; position: relative; top: ${-clip.y}px; width: ${viewport.width}px;`;
   inner.append(...document.body.childNodes);

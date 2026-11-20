@@ -6,7 +6,7 @@
 
 ## Approach
 
-**The component.** `Credits` gains `defaultOpen?: boolean`, the first value of its `open` state. The app does not set it. In `Credits.module.css`, each button of both forms takes `position: relative` and `z-index: 1` (D3), and a `::before` hit area with the declarations of `TextLink` (D2). The `::before` uses `min-width`, not `max()`, because the export refuses `max()`. `MapLayout.module.css` does not change (D4).
+**The component.** `Credits` gains `defaultOpen?: boolean`, the first value of its `open` state. The app does not set it. In `Credits.module.css`, each button of both forms takes `position: relative`, and each button of the desktop line takes `z-index: 1` (D3), and a `::before` hit area with the declarations of `TextLink` (D2). The `::before` uses `min-width`, not `max()`, because the export refuses `max()`. `MapLayout.module.css` does not change (D4).
 
 **The card.** Add `Credits` to `CONTROLS` after `SourcesList`, so that the group "Map" holds 11 cards.
 
@@ -23,7 +23,7 @@ The card has no `width` and does not join `PHONE_CARDS`.
 
 **`DESIGN.md`.** In › Attributions, the line bullet starts with the bold name "Credits line", and the card bullet with "Credits card". The words of each bullet do not change.
 
-**The clip.** `CanvasSnapshot` gains `clip?: { height; width; x; y }` in viewport px. Before it renders, `exportSnapshots` throws `<name>: the clip is not inside the viewport` for a bad clip (check 7). A new page function `clipPage` runs after `inlineStyles` and before `pageHtml`. It moves the body content into an inner box at `-x`, `-y`, with the viewport size. An outer box of the clip size with `overflow: hidden` holds it. Each value is px, so `snapshotProblems` passes. An entry with no clip skips `clipPage` (check 6). `shotFor` does not change, so each JPG keeps 1440 × 900. `design/CANVAS.md` › Making the snapshots and JPGs gets two sentences on the `clip`.
+**The clip.** `CanvasSnapshot` gains `clip?: { height; width; x; y }` in viewport px. Before it renders, `exportSnapshots` throws `<name>: the clip is not inside the viewport` for a bad clip (check 7). A new page function `clipPage` runs after `inlineStyles` and before `pageHtml`. It moves the body content into an inner box at `-x`, `-y`, with the viewport size. An outer box of the clip size with `overflow: hidden` holds it. It throws first on an element with `position: fixed`, which the clip does not move. Each value is px, so `snapshotProblems` passes. An entry with no clip skips `clipPage` (check 6). `shotFor` does not change, so each JPG keeps 1440 × 900. `design/CANVAS.md` › Making the snapshots and JPGs gets two sentences on the `clip`.
 
 **The boards** (step 7):
 
@@ -76,6 +76,7 @@ Behaviour 11 says that a board that calls a helper loads `./board-helpers.js`, a
 | `scripts/design-export.mts`                                                     | changed       | The clip check, `clipPage`, and its call in the main block.                              |
 | `scripts/__tests__/design-export.test.ts`                                       | changed       | `clipPage` in jsdom. A clip outside the viewport throws and names the snapshot.          |
 | `e2e/map-desktop.spec.ts`                                                       | changed       | Check 17: at 1440 × 800, a point 21px above the centre of each `Credits` button hits it. |
+| `e2e/map-phone.spec.ts`                                                         | changed       | On a phone, the date error callout takes a tap at its lower right, not Attributions.     |
 | `design/DESIGN.md`                                                              | changed       | Two bold names.                                                                          |
 | `design/CANVAS.md`                                                              | changed       | The `clip`.                                                                              |
 | `docs/architecture.md`                                                          | changed       | The React 18 row names `Credits`.                                                        |
@@ -137,3 +138,5 @@ The Spec's Out of scope: the scale bar, the phone boards and a clip for another 
 - `design/CANVAS.md` had no room for the `clip` text. The budget in `scripts/word-count.mts` and its pin in `scripts/__tests__/word-count.test.ts` rise from 1000 to 1050 words.
 - The first card image showed the open card over its caption in a 358px box. The box is `CREDITS_BOX`, 420px, so the card clears the caption.
 - Design system step 4.7 (open the canvas and check the `Credits` card) did not run. The tech lead says the step is out of date (#979).
+- The phone text of `Credits` takes no `z-index`: it would paint over the date error callout on a phone. Only the desktop line has the open card.
+- `clipPage` throws on an element with `position: fixed`. The tech lead chose to build this check (review of #1080).

@@ -2,7 +2,7 @@
 
 - **Spec:** #1073
 - **Requirement IDs:** None. The Spec changes the design system, the export and two boards, and no screen.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -64,7 +64,7 @@ The test "Tab visits each enabled control with a 2px brand ring" in `gallery-loo
 - **B.** Keep the outline on the anchor. Cost: the ring grows to 44px tall.
 - **Other:** your own.
 
-Recommended: A.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 
@@ -87,6 +87,7 @@ Recommended: A.
 | `e2e/gallery-textlink.spec.ts`, `e2e/gallery.config.ts`      | new, changed  | D6: the wrapped-link test, and its entry in `testMatch`.                                                                          |
 | `TextLink.tsx`, `TextLink.module.css`, `focus.module.css`    | changed       | D6, D7: the label `span`, the anchor padding, and `ringInner`. Under `app/components/` in `actions/` and `foundation/`.           |
 | `app/components/actions/__tests__/TextLink.test.tsx`         | changed       | D7: the padding, the ring on the `span`, and the button form.                                                                     |
+| `e2e/gallery-looks.spec.ts`                                  | changed       | D8: the ring test reads the first child of a focused anchor. No other line changes (D6).                                          |
 | `design/canvas/project/Map.dc.html`                          | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/canvas/project/Map-phone-states.dc.html`             | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/source/map-sources*.html`, `design/map-sources*.jpg` | changed       | The workflow writes them.                                                                                                         |

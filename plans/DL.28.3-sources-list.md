@@ -30,7 +30,7 @@ Each board holds one line `const SOURCES_DIALOG = { … };` with JSON text: the 
 
 A local session swaps the `sources` variant of both boards (step 7):
 
-- `Map.dc.html`: a placing box at left 340px and top 112px holds `KinScape.DialogPanel` with `form="centred"`, and `KinScape.SourcesList` inside it.
+- `Map.dc.html`: a placing box at left 340px, from top 40px to bottom 40px, holds `KinScape.DialogPanel` with `form="centred"`, and `KinScape.SourcesList` inside it.
 - `Map-phone-states.dc.html`: a placing box from top 56px (`--layout-phone-sources-top`) to the bottom holds `KinScape.DialogPanel` with `form="sheet"`. The box is a one-row grid, so the panel fills it and its body scrolls, as in the drawn sheet.
 - The props come from `SOURCES_DIALOG`. The drawn dialog, the drawn sheet, the `sources` arrays and their row styles go. The scrim stays a plain box.
 
@@ -156,3 +156,5 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 - The padding is `round(up, …, 1px)`. Half a pixel moves the text of a small link by 1px.
 - The D8 test reads the first child only where the anchor has no outline: `ArrowLink` keeps its own ring.
 - The `preview mounts every state` test counts figures: each state renders a table and a list.
+- The `Map` placing box is 40px from the top and the bottom, as in the app. At top 112px the real rows ran off the board.
+- One workflow run renders the cards and the boards: the boards changed before step 6.

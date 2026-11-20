@@ -110,28 +110,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 
   <sc-if value="{{v.sources}}" hint-placeholder-val="{{ false }}">
     <div style="z-index: 20; position: absolute; inset: 0; background: rgba(24,33,27,0.45)"></div>
-    <div role="dialog" aria-label="Sources and attributions" style="z-index: 20; will-change: transform; position: absolute; left: 340px; top: 112px; width: 760px; box-sizing: border-box; padding: 24px 28px 28px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 10px 40px rgba(24,33,27,0.3); display: flex; flex-direction: column; gap: 16px">
-      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 24px">Sources and attributions</h2>
-          <p style="margin: 0; font-size: 15px; line-height: 22px; color: #2E3A33">Where every layer on the map comes from, and the licence it's used under.</p>
-        </div>
-        <button type="button" aria-label="Close" style="width: 44px; height: 44px; margin: -8px -8px 0 0; border: 0; border-radius: 22px; background: transparent; color: #4A544C; display: flex; align-items: center; justify-content: center; cursor: pointer"><x-import component-from-global-scope="KinScape.Icon" name="close"></x-import></button>
-      </div>
-      <div role="table" aria-label="Sources" style="display: flex; flex-direction: column; border-top: 1px solid #C9CFC5; padding-top: 16px">
-        <div role="row" style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 12px; padding: 10px 0; border-bottom: 1px solid #E2E5DD; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C">
-          <span role="columnheader">Layer</span><span role="columnheader">Source</span><span role="columnheader">Licence</span><span role="columnheader">Checked</span>
-        </div>
-        <sc-for list="{{sources}}" as="src" hint-placeholder-count="7">
-          <div role="row" style="display: grid; grid-template-columns: 170px minmax(0, 1fr) 150px 120px; gap: 12px; align-items: center; min-height: 44px; padding: 4px 0; border-bottom: 1px solid #E2E5DD; font-size: 13px; line-height: 20px">
-            <x-import component-from-global-scope="KinScape.Text" variant="label" as="span" role="cell">{{src.layer}}</x-import>
-            <span role="cell" style="{{src.style}}">{{src.source}}</span>
-            <span role="cell" style="{{src.style}}">{{src.licence}}</span>
-            <span role="cell" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 16px; color: #4A544C">{{src.checked}}</span>
-          </div>
-        </sc-for>
-      </div>
-      <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">The line under the date control is built from this list. A source isn't used until its licence has been checked.</x-import>
+    <div style="z-index: 20; will-change: transform; position: absolute; left: 340px; top: 40px; bottom: 40px; display: grid; grid-template-rows: minmax(0, 1fr)">
+      <x-import component-from-global-scope="KinScape.DialogPanel" form="centred" title="{{sourcesDialog.title}}" subtitle="{{sourcesDialog.subtitle}}" footnote="{{sourcesDialog.footnote}}" title-id="sources-dialog-title">
+        <x-import component-from-global-scope="KinScape.SourcesList" sources="{{sourcesDialog.sources}}"></x-import>
+      </x-import>
     </div>
   </sc-if>
 </div>
@@ -159,17 +141,7 @@ class Component extends DCLogic {
     const loading = variant === 'loading';
     const noPins = loading || variant === 'empty-tree' || variant === 'empty-date';
     const show = (b) => (b ? 'inline' : 'none');
-    const ph = 'font-family: JetBrains Mono, monospace; font-size: 12px; line-height: 16px; color: #4A544C';
-    const ok = 'color: #18211B';
-    const sources = [
-      ['Polity borders', '[Source]', '[Licence]', '—', ph],
-      ['District borders', '[Source]', '[Licence]', '—', ph],
-      ['Place names', '[Source]', '[Licence]', '—', ph],
-      ['Coast and land', '[Source]', '[Licence]', '—', ph],
-      ['Rivers', '[Source]', '[Licence]', '—', ph],
-      ['Terrain', '[DEM source]', '[Licence]', '—', ph],
-      ['Map library', 'MapLibre GL JS', 'BSD-3-Clause', '—', ok]
-    ].map((r) => ({ layer: r[0], source: r[1], licence: r[2], checked: r[3], style: r[4] }));
+    const SOURCES_DIALOG = {"footnote":"The line under the date control is built from this list. A source isn't used until its licence has been checked.","subtitle":"Where every layer on the map comes from, and the licence it's used under.","title":"Sources and attributions","sources":[{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-land","layer":"Land","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2. Clipped to southern Africa, simplified to 500 m, coordinates rounded to 4 decimals.","title":"Natural Earth 10m land"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-coastline","layer":"Coastline","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2. Clipped to southern Africa, simplified to 500 m, coordinates rounded to 4 decimals.","title":"Natural Earth 10m coastline"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-rivers","layer":"Rivers","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2, scalerank 7 and lower. Clipped to southern Africa, simplified to 500 m, coordinates rounded to 4 decimals.","title":"Natural Earth 10m rivers and lake centerlines"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-19","id":"natural-earth-admin-1","layer":"Polity borders","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v5.1.2/LICENSE.md","processing":"Natural Earth 10m v5.1.2 admin-1. South Africa's provinces, Lesotho and eSwatini, each dissolved to one shape, clipped, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Lesotho and eSwatini from 1910-05-31, low confidence until 1994-04-27 (unverified). Provinces from 2006-03-01 (Twelfth Amendment, Proclamation R. 8 of 2006, Government Gazette 28568), low confidence until 2009-04-03 (Sixteenth Amendment, Proclamation R. 20 of 2009, Government Gazette 32091), when Merafong moved to Gauteng. Natural Earth's lines may predate those amendments in places.","title":"Natural Earth 10m admin-1 states and provinces"},{"attribution":"Made with Natural Earth","author":"Tom Patterson, Nathaniel Vaughn Kelso and contributors","dateChecked":"2026-10-25","id":"natural-earth-admin-1-v4","layer":"Polity borders","licence":"Public domain","licenceLink":"https://github.com/nvkelso/natural-earth-vector/blob/v4.1.0/LICENSE.md","processing":"Natural Earth 10m v4.1.0 admin-1 (2018-05-21). South Africa's nine provinces, each dissolved to one shape, clipped to the v5.1.2 outline of South Africa, simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1994-04-27 to 2006-03-01 (M1.3). Also the Orange Free State from 1910-05-31 to 1994-04-27 (B289): the Free State shape clipped as above, so its Vaal and Orange borders follow those rivers and it doesn't shift at 1994-04-27; low confidence. Bushbuckridge is in Mpumalanga here, though it was in Northern Province until 2006. Natural Earth approximates the magisterial districts of Schedule 1 of the 1993 Constitution; low confidence.","title":"Natural Earth 10m admin-1 states and provinces, v4.1.0"},{"attribution":"afrith/historical-boundary-data (CC0-1.0)","author":"afrith","dateChecked":"2026-10-25","id":"afrith-provinces-1910","layer":"Polity borders","licence":"CC0-1.0","licenceLink":"https://github.com/afrith/historical-boundary-data/blob/fbdf94d8a561814510f5d62ec552d6d67f3488e6/LICENSE","processing":"provinces-1910.geojson at commit fbdf94d (2022-04-23). Cape of Good Hope, Natal and Transvaal, each dissolved to one shape (the Orange Free State is Natural Earth v4.1.0's, see natural-earth-admin-1-v4), extended by 5 km at their unshared edges, Natural Earth's Free State, Lesotho and eSwatini erased, clipped to Natural Earth land and to Natural Earth's v5.1.2 outline of South Africa plus afrith's Walvis Bay part, so the outer edge on the Limpopo, lower Orange and Marico follows Natural Earth's; the gaps up to 300 km² between them and the Free State, Lesotho and eSwatini filled into the neighbouring shape (so the 1910 Lesotho and eSwatini differ slightly from today's), simplified to 500 m together with the basemap, coordinates rounded to 4 decimals. Valid 1910-05-31 to 1994-04-27, low confidence. The author doesn't recall the sources: Free State and northern Natal equal current provincial lines, Cape–Natal current municipal ones, Cape–Transvaal probably from Trig Survey maps. Griqualand East is in the Cape though it moved to Natal in 1978, and Walvis Bay stays in the Cape eight weeks past 1994-03-01. Homelands are not drawn. Its own Free State is not used: its Vaal and Orange borders are off the rivers.","title":"Historical provinces of South Africa, 1910"},{"attribution":"Public Sans © The Public Sans Project Authors","author":"The Public Sans Project Authors","dateChecked":"2026-10-19","id":"public-sans","layer":"Polity borders","licence":"SIL Open Font Licence 1.1","licenceLink":"https://github.com/uswds/public-sans/blob/v2.001/OFL.txt","processing":"Version 2.001, SemiBold, converted to map glyphs (characters 0 to 511) with fontnik.","title":"Public Sans"},{"attribution":"MapLibre","author":"MapLibre contributors","dateChecked":"2026-10-19","id":"maplibre-gl","layer":"Map renderer","licence":"BSD-3-Clause","licenceLink":"https://github.com/maplibre/maplibre-gl-js/blob/main/LICENSE.txt","title":"MapLibre GL JS"}]};
     const vals = {
       ks: { loadingProgress: 45, emptyDateActions: [{ label: 'Jump to 1898' }, { label: 'Clear filters' }] },
       chrome: variant !== 'account',
@@ -179,7 +151,7 @@ class Component extends DCLogic {
         popup: variant === 'default', emptyDate: variant === 'empty-date', emptyTree: variant === 'empty-tree',
         loading: loading, offline: variant === 'offline', account: variant === 'account', accountProposed: variant === 'account-proposed', sources: variant === 'sources'
       },
-      sources: sources,
+      sourcesDialog: SOURCES_DIALOG,
       d: {
         base: show(!loading),
         polities: show(L.polities && !loading), districts: show(L.districts && !loading), names: show(L.names && !loading),
@@ -407,7 +379,7 @@ class Component extends DCLogic {
         h(K.LayerGroup, { heading: 'Pins', rows: layerRows(groups.pins, 'm') })
       ])) : undefined,
       search: vals.chrome ? h(K.SearchBar, { form: 'bar' }) : undefined,
-      sources: vals.sources,
+      sourcesDialog: vals.sourcesDialog,
       v,
       zoom: vals.chrome ? h(K.ZoomControls) : undefined
     };

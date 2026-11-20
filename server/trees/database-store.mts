@@ -5,7 +5,7 @@ import { sql } from 'kysely';
 import type { FuzzyDate } from '#ks/lib/domain/dates/types.ts';
 import type { PersonId } from '#ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '#ks/lib/domain/persons/types.ts';
-import type { Pin, PinInput } from '#ks/lib/domain/pins/types.ts';
+import type { Pin, PinInput, SpannedPin } from '#ks/lib/domain/pins/types.ts';
 import type { Place, PlaceInput } from '#ks/lib/domain/places/types.ts';
 import type {
   Relationship,
@@ -23,6 +23,8 @@ import {
   parseTreeId,
 } from '#ks/lib/domain/ids/ids.mts';
 import { MAX_LISTED } from '#ks/lib/domain/persons/schemas.mts';
+import { MAX_PINS } from '#ks/lib/domain/pins/schemas.mts';
+import { spanOf } from '#ks/lib/domain/pins/span.mts';
 import { MAX_PLACES } from '#ks/lib/domain/places/schemas.mts';
 import { endsOf } from '#ks/lib/domain/relationships/rules.mts';
 import { MAX_RELATIONSHIPS } from '#ks/lib/domain/relationships/schemas.mts';
@@ -226,6 +228,38 @@ const pinOf = (row: Selectable<Database['pin']>): Pin => ({
   sources: row.sources,
   version: row.version,
 });
+
+/** The Tree's Pins with the birth and death columns of each Pin's Person, ordered by id and capped. */
+const selectSpanned = (db: Db, { treeId }: TreeScope) =>
+  db
+    .selectFrom('pin')
+    .innerJoin('person', join =>
+      join
+        .onRef('person.treeId', '=', 'pin.treeId')
+        .onRef('person.id', '=', 'pin.personId')
+    )
+    .where('pin.treeId', '=', treeId)
+    .selectAll('pin')
+    .select([
+      'person.birthDate1',
+      'person.birthDate2',
+      'person.birthQualifier',
+      'person.deathDate1',
+      'person.deathDate2',
+      'person.deathQualifier',
+    ])
+    .orderBy('pin.id')
+    .limit(MAX_PINS);
+
+const spannedPinOf = (
+  row: Awaited<ReturnType<ReturnType<typeof selectSpanned>['execute']>>[number]
+): SpannedPin => {
+  const pin = pinOf(row);
+  const birth = dateOf(row.birthQualifier, row.birthDate1, row.birthDate2);
+  const death = dateOf(row.deathQualifier, row.deathDate1, row.deathDate2);
+
+  return { ...pin, span: spanOf(pin.date, { birth, death }) };
+};
 
 /** Whether the Tree holds the Person and the Place of `pin`. */
 const pinnable = async (
@@ -523,6 +557,27 @@ export const databaseStore = (db: Db): TreeStore => ({
             .limit(MAX_LISTED)
             .execute()
         ).map(personOf)
+      : [],
+  listPins: async scope =>
+    (await reaches(db, scope))
+      ? (await selectSpanned(db, scope).execute()).map(spannedPinOf)
+      : [],
+  // The clip is in SQL so `limit` caps the current Pins. A null birth or death clips nothing, as in
+  // `spanOf`. The plain date bounds let Postgres use `pin_date_idx`.
+  listPinsOn: async ({ day, ...scope }) =>
+    (await reaches(db, scope))
+      ? (
+          await selectSpanned(db, scope)
+            .where('pin.dateValidFrom', '<=', day)
+            .where('pin.dateValidTo', '>', day)
+            .where(
+              sql<boolean>`greatest(pin.date_valid_from, person.birth_valid_from) <= ${day}`
+            )
+            .where(
+              sql<boolean>`${day} < least(pin.date_valid_to, person.death_valid_to)`
+            )
+            .execute()
+        ).map(row => pinOf(row))
       : [],
   listPlaces: async scope =>
     (await reaches(db, scope))

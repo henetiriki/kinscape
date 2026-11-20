@@ -14,12 +14,13 @@ import type { PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type { RelationshipInput } from '@ks/lib/domain/relationships/types.ts';
 import type { SeedAccount, TreeStore } from '@ks/lib/domain/trees/types.ts';
 
+import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
 import {
   MAX_LISTED,
   personInputSchema,
 } from '@ks/lib/domain/persons/schemas.mts';
-import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
+import { MAX_PINS, pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import {
   MAX_PLACES,
   placeInputSchema,
@@ -28,6 +29,7 @@ import {
   MAX_RELATIONSHIPS,
   relationshipInputSchema,
 } from '@ks/lib/domain/relationships/schemas.mts';
+import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
 import { startSession } from '@ks/server/auth/sessions.mts';
 import { openTree } from '@ks/server/trees/repository.mts';
@@ -1682,6 +1684,268 @@ export const runTreeStoreContract = (
             (await store.findPin({ ...a, pinId: PIN_1 }))?.date.date1
           ).toBe('1850');
         });
+      });
+
+      describe('day query and list', () => {
+        const pinIdOf = (n: number) =>
+          `01900000-0000-7000-b000-${String(n).padStart(12, '0')}` as PinId;
+
+        type Scope = Awaited<ReturnType<typeof withRows>>['a'];
+
+        const idsOn = async (store: TreeStore, scope: Scope, day: string) =>
+          (await store.listPinsOn({ ...scope, day: toDay(day) })).map(
+            pin => pin.id
+          );
+
+        /** Saves the Pin of `date` for `personId` and gives its id. */
+        const pinned = async (
+          store: TreeStore,
+          scope: Scope,
+          n: number,
+          date: string,
+          personId: PersonId = ID_1
+        ) => {
+          await store.addPin({
+            ...scope,
+            pin: pinOf(pinIdOf(n), { date, personId }),
+          });
+
+          return pinIdOf(n);
+        };
+
+        // PIN-04
+        it('returns a Pin on the days of its date and no other', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+            const range = await pinned(store, a, 1, 'FROM 1840 TO 1855');
+            const between = await pinned(store, a, 2, 'BET 1848 AND 1852');
+
+            expect(await idsOn(store, a, '1850-06-01')).toEqual([
+              range,
+              between,
+            ]);
+            expect(await idsOn(store, a, '1860-06-01')).toEqual([]);
+            expect(await idsOn(store, a, '1852-12-31')).toEqual([
+              range,
+              between,
+            ]);
+            expect(await idsOn(store, a, '1853-01-01')).toEqual([range]);
+          });
+        });
+
+        // PIN-04
+        it('clips a Pin by the birth and death of its Person', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+
+            await store.updatePerson({
+              ...a,
+              person: personOf(ID_2, { birth: '1830', death: '1860' }),
+              version: 1,
+            });
+            await store.updatePerson({
+              ...a,
+              person: personOf(ID_3, { birth: '1900' }),
+              version: 1,
+            });
+
+            const after = await pinned(store, a, 1, 'AFT 1850', ID_2);
+            const before = await pinned(store, a, 2, 'BEF 1850', ID_2);
+            const open = await pinned(store, a, 3, 'AFT 1850', ID_1);
+            const late = await pinned(store, a, 4, 'FROM 1840 TO 1855', ID_3);
+
+            expect(await idsOn(store, a, '1865-01-01')).toEqual([open]);
+            expect(await idsOn(store, a, '1855-01-01')).toEqual([after, open]);
+            expect(await idsOn(store, a, '1820-01-01')).toEqual([]);
+            expect(await idsOn(store, a, '1840-01-01')).toEqual([before]);
+            expect(await idsOn(store, a, '1900-01-01')).toEqual([open]);
+
+            for (const year of ['1840', '1850', '1855', '1900', '1910']) {
+              expect(await idsOn(store, a, `${year}-01-01`)).not.toContain(
+                late
+              );
+            }
+          });
+        });
+
+        // PIN-04
+        it('uses a death that is added after the Pin is saved', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+            const id = await pinned(store, a, 1, 'AFT 1850');
+
+            expect(await idsOn(store, a, '1900-01-01')).toEqual([id]);
+
+            await store.updatePerson({
+              ...a,
+              person: personOf(ID_1, { death: '1860' }),
+              version: 1,
+            });
+
+            expect(await idsOn(store, a, '1900-01-01')).toEqual([]);
+            expect(await idsOn(store, a, '1855-01-01')).toEqual([id]);
+          });
+        });
+
+        // PIN-04
+        it('returns three Pins at one Place, each with that Place', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+
+            for (const [n, personId] of [ID_1, ID_2, ID_3].entries()) {
+              await pinned(store, a, n + 1, 'FROM 1840 TO 1855', personId);
+            }
+
+            const found = await store.listPinsOn({
+              ...a,
+              day: toDay('1850-01-01'),
+            });
+
+            expect(found.map(pin => pin.placeId)).toEqual([
+              PLACE_1,
+              PLACE_1,
+              PLACE_1,
+            ]);
+            expect(found.map(pin => pin.personId)).toEqual([ID_1, ID_2, ID_3]);
+          });
+        });
+
+        // PIN-06
+        it('lists each Pin with its span', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+
+            await store.updatePerson({
+              ...a,
+              person: personOf(ID_2, { death: '1860' }),
+              version: 1,
+            });
+
+            const id = await pinned(store, a, 1, 'AFT 1850', ID_2);
+            const listed = await store.listPins(a);
+
+            expect(listed.map(pin => pin.id)).toEqual([id]);
+            expect(listed[0]).toMatchObject({
+              date: pinOf(id, { date: 'AFT 1850' }).date,
+              version: 1,
+            });
+            expect(isCurrentOn(listed[0].span, toDay('1855-01-01'))).toBe(true);
+            expect(isCurrentOn(listed[0].span, toDay('1865-01-01'))).toBe(
+              false
+            );
+          });
+        });
+
+        // PIN-04, PIN-06
+        it('holds a day in the list span if and only if the day query returns the Pin', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+
+            await store.updatePerson({
+              ...a,
+              person: personOf(ID_2, { birth: '1830', death: '1860' }),
+              version: 1,
+            });
+            await store.updatePerson({
+              ...a,
+              person: personOf(ID_3, { birth: '1900' }),
+              version: 1,
+            });
+
+            let n = 0;
+
+            for (const personId of [ID_1, ID_2, ID_3]) {
+              for (const date of [
+                'AFT 1850',
+                'BEF 1850',
+                'FROM 1840 TO 1855',
+                '1850',
+              ]) {
+                n += 1;
+                await pinned(store, a, n, date, personId);
+              }
+            }
+
+            const listed = await store.listPins(a);
+            const days = new Set<number>();
+
+            for (let year = 1800; year <= 1910; year += 1) {
+              days.add(toDay(`${year}-01-01`));
+            }
+
+            for (const { span } of listed) {
+              days.add(span.validFrom);
+              days.add(span.validFrom - 1);
+              days.add(span.validTo! - 1);
+              days.add(span.validTo!);
+            }
+
+            expect(listed).toHaveLength(12);
+
+            for (const day of days) {
+              const found = await store.listPinsOn({ ...a, day: asDay(day) });
+
+              expect(found.map(pin => pin.id)).toEqual(
+                listed
+                  .filter(({ span }) => isCurrentOn(span, asDay(day)))
+                  .map(pin => pin.id)
+              );
+            }
+          });
+        });
+
+        // NFR-09
+        it('returns no Pins for another Account’s Tree or an id that is not a UUID', async () => {
+          await withStore(async store => {
+            const { a, b } = await withRows(store);
+
+            await pinned(store, a, 1, 'FROM 1840 TO 1855');
+
+            const day = toDay('1850-01-01');
+            const bad = { accountId: MALFORMED_ACCOUNT, treeId: a.treeId };
+            const badTree = { accountId: a.accountId, treeId: MALFORMED_TREE };
+
+            for (const scope of [
+              { accountId: b.accountId, treeId: a.treeId },
+              { accountId: MISSING_ACCOUNT, treeId: a.treeId },
+              { accountId: a.accountId, treeId: MISSING_TREE },
+              bad,
+              badTree,
+            ]) {
+              expect(await store.listPins(scope)).toEqual([]);
+              expect(await store.listPinsOn({ ...scope, day })).toEqual([]);
+            }
+
+            expect(await store.listPins(a)).toHaveLength(1);
+            expect(await store.listPins(b)).toEqual([]);
+          });
+        });
+
+        // NFR-09
+        it('lists no more than the cap, ordered by id', async () => {
+          await withStore(async store => {
+            const { a } = await withRows(store);
+
+            for (let n = MAX_PINS; n >= 0; n -= 1) {
+              await store.addPin({
+                ...a,
+                pin: pinOf(pinIdOf(n), { date: '1850' }),
+              });
+            }
+
+            const listed = await store.listPins(a);
+            const found = await store.listPinsOn({
+              ...a,
+              day: toDay('1850-06-01'),
+            });
+
+            for (const rows of [listed, found]) {
+              expect(rows).toHaveLength(MAX_PINS);
+              expect(rows[0].id).toBe(pinIdOf(0));
+              expect(rows[MAX_PINS - 1].id).toBe(pinIdOf(MAX_PINS - 1));
+            }
+          });
+        }, 300_000);
       });
     });
 

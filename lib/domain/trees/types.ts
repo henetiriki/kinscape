@@ -1,3 +1,4 @@
+import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type {
   AccountId,
   PersonId,
@@ -7,7 +8,7 @@ import type {
   TreeId,
 } from '@ks/lib/domain/ids/types.ts';
 import type { Person, PersonInput } from '@ks/lib/domain/persons/types.ts';
-import type { Pin, PinInput } from '@ks/lib/domain/pins/types.ts';
+import type { Pin, PinInput, SpannedPin } from '@ks/lib/domain/pins/types.ts';
 import type { Place, PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type {
   Relationship,
@@ -110,6 +111,16 @@ export type TreeStore = {
    * may not access the Tree.
    */
   listPersons: (scope: TreeScope) => Promise<Person[]>;
+  /**
+   * At most `MAX_PINS` of the Tree's Pins, ordered by id, each with its span (PIN-04). Empty if the
+   * Account may not access the Tree.
+   */
+  listPins: (scope: TreeScope) => Promise<SpannedPin[]>;
+  /**
+   * At most `MAX_PINS` Pins whose span holds `day` under `isCurrentOn`, ordered by id. Both reads
+   * use the Person as saved. Empty if the Account may not access the Tree.
+   */
+  listPinsOn: (input: { day: Day } & TreeScope) => Promise<Pin[]>;
   /** At most `MAX_PLACES` of the Tree's Places, ordered by id. Empty if the Account may not access the Tree. */
   listPlaces: (scope: TreeScope) => Promise<Place[]>;
   /** At most `MAX_RELATIONSHIPS` of the Tree's Relationships, ordered by id. Empty if the Account may not access the Tree. */

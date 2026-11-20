@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { TreeId } from '@ks/lib/domain/ids/types.ts';
 
+import { asDay } from '@ks/lib/domain/boundaries/model.mts';
 import { parseAccountId, parseTreeId } from '@ks/lib/domain/ids/ids.mts';
 import { personInputSchema } from '@ks/lib/domain/persons/schemas.mts';
 import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
@@ -242,6 +243,12 @@ describe('memoryStore seed', () => {
       await expect(store.listPlaces(scope)).rejects.toThrow(
         'The fixture Tree failed to load.'
       );
+      await expect(store.listPins(scope)).rejects.toThrow(
+        'The fixture Tree failed to load.'
+      );
+      await expect(
+        store.listPinsOn({ ...scope, day: asDay(0) })
+      ).rejects.toThrow('The fixture Tree failed to load.');
     });
 
     it('answers its other reads as before', async () => {

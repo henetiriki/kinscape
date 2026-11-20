@@ -444,6 +444,12 @@ const CASES: [string, ReactElement][] = [
       Go to 1901-02-28
     </TextLink>,
   ],
+  [
+    'TextLink · wrapped',
+    <TextLink href='/sources' key='wrapped' size='small'>
+      SIL Open Font Licence 1.1
+    </TextLink>,
+  ],
   ...links('ArrowLink', state => (
     <ArrowLink href='/people/1' state={state}>
       Edit

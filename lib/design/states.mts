@@ -388,6 +388,15 @@ export const CARDS: Card[] = [
       })),
       one('TextLink · small', { href: '/sources', size: 'small' }, 'Sources'),
       one('TextLink · button', { size: 'small' }, 'Go to 1901-02-28'),
+      {
+        // The `running` form lays the link in a line of text, not as a flex item. A box of 150px wraps it to two lines, as the licence column of the sources table does.
+        ...one(
+          'TextLink · wrapped',
+          { href: '/sources', size: 'small' },
+          'SIL Open Font Licence 1.1'
+        ),
+        form: { box: '150px', name: 'running' },
+      },
     ],
   },
   {

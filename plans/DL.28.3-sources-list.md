@@ -20,7 +20,7 @@ The card:
 | `height` | From the render. Start value 1600.                                                                                        |
 | States   | `SourcesList · table`: `{ sources }`. `SourcesList · list`: `{ sources }`, form `{ box: SHEET_BOX, name: 'sheet' }` (D1). |
 
-`SHEET_BOX` is `'358px'`: the sheet body on a 390px phone, less 16px padding on each side. Both constants have a comment, as `PANEL_BOX` has. `states.mts` imports `#ks/data/sources.json` with `{ type: 'json' }`, so no file holds a second copy of the rows. The card does not join `PHONE_CARDS`: `SourcesDialog.module.css` has no width rule, and the card has only a 1440px image (D1).
+`SHEET_BOX` is `'358px'`: the sheet body on a 390px phone, less 16px padding on each side. Both constants have a comment. `states.mts` imports `#ks/data/sources.json`, so no file holds a second copy of the rows. The card does not join `PHONE_CARDS` (D1).
 
 `designBullets` reads a bold bullet in any `##` section (D2). It throws if a name has no bullet, or if two sections hold the name. In `design/DESIGN.md` › Attributions, the dialog line gets the bold name "Sources and attributions dialog". "That link" becomes "the "Attributions" link", so the README line reads on its own.
 
@@ -36,29 +36,41 @@ A local session swaps the `sources` variant of both boards (step 7):
 
 ## Decisions
 
-**D1 to D4** have answers from the tech lead on #1073: D1 B, D2 B, D3 A, D4 A, with the box for each form. The Approach follows them.
+**D1 to D4** have answers on #1073: D1 B, D2 B, D3 A, D4 A. The Approach follows them.
 
 **D5 · The placeholder line in `DESIGN.md`** · Decides: Tech lead
 
 `design/DESIGN.md` › Attributions says: "The JPGs show `[Source]` and `[Licence]` until someone completes the checks." After item 7, `map-sources.jpg` and `map-sources-phone.jpg` show the eight checked rows of `data/sources.json`. The drawn rows for District borders, Place names and Terrain go, because the file has no source for them. #1074 holds no value for this line.
 
-- **A.** Reword the line: "The boards show the rows of `data/sources.json`. A test keeps them in step." Cost: one line of a design system input that this Spec already changes.
-- **B.** Delete the line. Cost: one line, and `DESIGN.md` no longer says where the board rows come from.
-- **C.** Keep the line. Cost: `DESIGN.md` then describes JPGs that no longer exist.
+- **A.** Reword the line: "The boards show the rows of `data/sources.json`. A test keeps them in step." Cost: one line of a design system input.
+- **B.** Delete the line. Cost: `DESIGN.md` no longer says where the board rows come from.
+- **C.** Keep the line. Cost: `DESIGN.md` describes JPGs that no longer exist.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
 
 **D6 · The 44px hit-area test on the `table` state** · Decides: Tech lead
 
-`npm run design:gallery` fails `e2e/gallery-looks.spec.ts` › "each control under 44px tall or wide keeps a 44px hit area". At 390px the `table` state shows the licence link "SIL Open Font Licence 1.1" at 138x35px with no 44px hit area. The app never shows the table at 390px, because the sheet form shows the list. The file is not in Files that change, and `UNDER_44` holds only Bug numbers.
+`npm run design:gallery` fails the test "each control under 44px tall or wide keeps a 44px hit area". At 390px the `table` state shows the link "SIL Open Font Licence 1.1" at 138x35px with no 44px hit area.
 
-- **A.** File a Bug for the licence link, and add its key to `UNDER_44`. Cost: a Bug, one test line, and a key that stays until the Bug is fixed. The Bug would change `SourcesDialog.module.css`, which check 5 blocks here.
-- **B.** The test skips a figure that has `data-form` absent and a width above the viewport. Cost: a new rule in a shared test.
-- **C.** The card shows the `table` state only at 1440px. Cost: a new `Card` field and a test for it.
+- **A.** File a Bug, and add its key to `UNDER_44`. Cost: a Bug and a key that stays until it is fixed.
+- **B.** The test skips this figure. Cost: a new rule in a shared test.
+- **C.** The card shows `table` at 1440px only. Cost: a new `Card` field.
 - **Other:** your own.
 
-Recommended: A, because the link is a real 35px target on the desktop table, and the Bug records it. B or C hide the target from the test and lose that record.
+**Answer: Other** (@henetiriki). Fix the hit area in `TextLink` in this PR. `gallery-looks.spec.ts` and `SourcesDialog.module.css` do not change, and `UNDER_44` stays empty.
+
+**D7 · The focus ring of a wrapped `TextLink`** · Decides: Tech lead
+
+The `::before` hit area fails on a link that wraps in a line of text. The state `TextLink · wrapped` (150px box, form `running`) draws two lines of 15px, and `e2e/gallery-textlink.spec.ts` fails there: the points 21px above and below each line miss the link. A flex item is one block, so the old states never showed this.
+
+`padding-block` on the inline link gives each line a 44px hit area and moves no text. But the focus ring is an `outline` on the border box (`focus.module.css`), so it grows from 15px to 44px tall. That changes visible pixels, so the build wrote no CSS.
+
+- **A.** Accept the taller ring. Cost: `TextLink-1440.png` and each board with a focused link change.
+- **B.** Draw the ring from `background` on the text box, and add `padding-block`. Cost: a new ring for `TextLink` alone, and a test of its pixels.
+- **Other:** your own.
+
+Recommended: A, because a 44px ring marks the real target.
 
 ## Files that change
 
@@ -78,6 +90,7 @@ Recommended: A, because the link is a real 35px target on the desktop table, and
 | `scripts/__tests__/design-export.test.ts`                    | changed       | `pageHtml` sets `http://` and `https://` links to `#`, and keeps `#a` and `/people`.                                              |
 | `design/__tests__/sources-boards.test.ts`                    | new           | Item 7.                                                                                                                           |
 | `design/cards/SourcesList-1440.png`                          | new           | The workflow writes it.                                                                                                           |
+| `e2e/gallery-textlink.spec.ts`, `e2e/gallery.config.ts`      | new, changed  | D6: the wrapped-link test, and its entry in `testMatch`.                                                                          |
 | `design/canvas/project/Map.dc.html`                          | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/canvas/project/Map-phone-states.dc.html`             | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/source/map-sources*.html`, `design/map-sources*.jpg` | changed       | The workflow writes them.                                                                                                         |
@@ -92,18 +105,19 @@ Recommended: A, because the link is a real 35px target on the desktop table, and
 
 Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changing-the-design-system):
 
-- The tech lead, or a local Claude Code session that the tech lead starts, runs steps 3 to 5. The session needs a signed-in account.
+- A local signed-in session runs steps 3 to 5.
 - The tech lead runs the workflow Design: Render snapshots (step 6). It commits the card image.
-- A local session adds the board test, sees it fail, and swaps both boards in the repo copy (step 7). It runs `npm run design:export` and pushes. The tech lead runs the workflow.
-- When the render passes check 9, the session publishes the two boards to the canvas and runs "Refreshing the canvas copy" (5.1 to 5.5).
+- A local session adds the board test, sees it fail, swaps both boards (step 7), runs `npm run design:export` and pushes. The tech lead runs the workflow.
+- When the render passes check 9, the session publishes the two boards and runs "Refreshing the canvas copy" (5.1 to 5.5).
 - The build rewords #1073 ([reword step](../.github/agent/build.md#reword)): the Summary and Behaviour name the export (D4), item 3 and checks 2 and 3 follow D1 and D3, and item 4 names the bold name (D2).
 
 ## Risks
 
-- **Other board edits.** #1071, #1072 and #1074 change the same boards. The one that lands later merges the earlier edit, and its JPGs are the baseline for its check.
-- **The bundle.** `SourcesDialog.tsx` imports the `Source` type, and `index.d.ts` then holds its declaration. If `SourcesList` cannot mount, stop and comment the error on #893. The PR states the size of `bundle.js` before and after.
+- **Other board edits.** #1071, #1072 and #1074 change the same boards. The later one merges the earlier edit.
+- **The bundle.** If `SourcesList` cannot mount, stop and comment the error on #893. The PR states the size of `bundle.js` before and after.
 - **The phone sheet.** If the grid box does not let the body scroll, the sheet runs off the board. The build compares `map-sources-phone.jpg` with `main` before it pushes.
 - **A later change to `data/sources.json`.** It changes the card image and both JPGs, and the board test asks for a board edit.
+- **The `TextLink` fix.** It reaches each `TextLink` in the app.
 
 ## Proof
 
@@ -124,4 +138,4 @@ Then do steps 3 to 7 of [Changing the design system](../design/CANVAS.md#changin
 ## Out of scope
 
 - A card for the modal `SourcesDialog`, the credits line (#1074) and the scale bar: the Spec's Out of scope.
-- Bold names for the two credits sentences: #1074 (D2).
+- Bold names for the credits sentences: #1074.

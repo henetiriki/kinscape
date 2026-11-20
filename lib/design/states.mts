@@ -166,8 +166,11 @@ const PANEL_BOX = 'var(--size-panel)';
 /** The body of the centred dialog: 760px less 28px of padding on each side. The `SourcesList` card box has it. */
 const SOURCES_BOX = '704px';
 
-/** The body of the sheet on a 390px phone, less 16px of padding on each side. The `list` state of `SourcesList` and the `Credits` card box have it. */
+/** The body of the sheet on a 390px phone, less 16px of padding on each side. The `list` state of `SourcesList` has it. */
 const SHEET_BOX = '358px';
+
+/** The 300px open card of `Credits`, and 120px at its left for the caption of its case: the card opens over the caption's row. */
+const CREDITS_BOX = '420px';
 
 const FILTER_HANDLERS = [
   'onBranchChange',
@@ -1010,15 +1013,15 @@ export const CARDS: Card[] = [
     width: 760,
   },
   {
-    // The phone credits box holds the 300px open card. A case is a flex column, so the line sits at the right, as in the slot.
-    box: SHEET_BOX,
+    // A case is a flex column, so the line sits at the right, as in the slot.
+    box: CREDITS_BOX,
     design: ['Credits line', 'Credits card'],
     group: 'Map',
     handlers: ['onOpenAttributions'],
-    height: 400,
+    height: 240,
     name: 'Credits',
-    // The open card opens above its line and over the caption of its case.
-    pad: 100,
+    // The open card opens above its line: this clears it above its case.
+    pad: 64,
     states: [
       one('Credits · one line', {
         collapsible: true,

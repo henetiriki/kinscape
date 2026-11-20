@@ -12,14 +12,14 @@
 
 | Field      | Value                                                                                                                                                        |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `box`      | `SHEET_BOX`, `'358px'`: the phone credits box. It holds the 300px open card.                                                                                 |
+| `box`      | `CREDITS_BOX`, `'420px'`: the 300px open card and 120px for the caption.                                                                                     |
 | `design`   | `['Credits line', 'Credits card']`                                                                                                                           |
 | `handlers` | `['onOpenAttributions']`                                                                                                                                     |
-| `pad`      | From the render, so that the open card stays inside its case. Start value 100.                                                                               |
-| `height`   | From the render. Start value 400.                                                                                                                            |
+| `pad`      | From the render, so that the open card stays inside its case. From the render: 64.                                                                           |
+| `height`   | From the render: 240.                                                                                                                                        |
 | States     | `Credits · one line` (`collapsible`), `Credits · open` (`collapsible`, `defaultOpen`), `Credits · full text`. Each has `showPolities` and `sources.sources`. |
 
-The card has no `width` and does not join `PHONE_CARDS`. The comment of `SHEET_BOX` names `Credits`.
+The card has no `width` and does not join `PHONE_CARDS`.
 
 **`DESIGN.md`.** In › Attributions, the line bullet starts with the bold name "Credits line", and the card bullet with "Credits card". The words of each bullet do not change.
 
@@ -135,3 +135,4 @@ The Spec's Out of scope: the scale bar, the phone boards and a clip for another 
 ## Deviations
 
 - `design/CANVAS.md` had no room for the `clip` text. The budget in `scripts/word-count.mts` and its pin in `scripts/__tests__/word-count.test.ts` rise from 1000 to 1050 words.
+- The first card image showed the open card over its caption in a 358px box. The box is `CREDITS_BOX`, 420px, so the card clears the caption.

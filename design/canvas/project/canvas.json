@@ -269,6 +269,94 @@
       "title": "Add a pin — phone",
       "page": "map"
     },
+    "Map-pin-count.dc.html": {
+      "x": 0,
+      "y": 2040,
+      "w": 1440,
+      "h": 900,
+      "title": "Pins — count marker and its four looks",
+      "page": "map"
+    },
+    "Map-pin-fan.dc.html": {
+      "x": 1520,
+      "y": 2040,
+      "w": 1440,
+      "h": 900,
+      "title": "Pins — fan-out, one Pin under hover",
+      "page": "map"
+    },
+    "Map-pin-fan-phone.dc.html": {
+      "x": 3040,
+      "y": 2040,
+      "w": 390,
+      "h": 844,
+      "title": "Pins — fan-out, phone, after the first tap",
+      "page": "map"
+    },
+    "Map-pin-popup.dc.html": {
+      "x": 0,
+      "y": 3060,
+      "w": 1440,
+      "h": 900,
+      "title": "Pin popup",
+      "page": "map"
+    },
+    "Map-pin-popup-loading.dc.html": {
+      "x": 1520,
+      "y": 3060,
+      "w": 1440,
+      "h": 900,
+      "title": "Pin popup — details loading",
+      "page": "map"
+    },
+    "Map-pin-popup-failed.dc.html": {
+      "x": 3040,
+      "y": 3060,
+      "w": 1440,
+      "h": 900,
+      "title": "Pin popup — details did not load",
+      "page": "map"
+    },
+    "Map-pin-popup-phone.dc.html": {
+      "x": 4560,
+      "y": 3060,
+      "w": 390,
+      "h": 844,
+      "title": "Pin popup — phone sheet",
+      "page": "map"
+    },
+    "Draft-pin-marker.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 720,
+      "h": 440,
+      "title": "Draft — count marker",
+      "page": "drafts"
+    },
+    "Draft-pin-fan.dc.html": {
+      "x": 800,
+      "y": 0,
+      "w": 820,
+      "h": 592,
+      "title": "Draft — fan of Pins",
+      "page": "drafts"
+    },
+    "Draft-pin-popup.dc.html": {
+      "x": 0,
+      "y": 672,
+      "w": 1040,
+      "h": 460,
+      "title": "Draft — Pin popup",
+      "page": "drafts"
+    },
+    "Draft-pin-popup-phone.dc.html": {
+      "x": 1120,
+      "y": 672,
+      "w": 390,
+      "h": 844,
+      "title": "Draft — Pin popup as a sheet",
+      "page": "drafts"
+    },
     "Sign-in-unavailable.dc.html": {
       "x": 0,
       "y": 1020,
@@ -584,6 +672,17 @@
     "Map-phone-filters.dc.html",
     "Add-pin.dc.html",
     "Add-pin-phone.dc.html",
+    "Map-pin-count.dc.html",
+    "Map-pin-fan.dc.html",
+    "Map-pin-fan-phone.dc.html",
+    "Map-pin-popup.dc.html",
+    "Map-pin-popup-loading.dc.html",
+    "Map-pin-popup-failed.dc.html",
+    "Map-pin-popup-phone.dc.html",
+    "Draft-pin-marker.dc.html",
+    "Draft-pin-fan.dc.html",
+    "Draft-pin-popup.dc.html",
+    "Draft-pin-popup-phone.dc.html",
     "Map-loading.dc.html",
     "Map-phone-loading.dc.html",
     "Map-empty-tree.dc.html",

@@ -39,6 +39,17 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Invalid date typed in the dock, phone             | [map-date-invalid-phone.jpg](map-date-invalid-phone.jpg)                     |
 | Add a pin (provisional)                           | [add-pin.jpg](add-pin.jpg)                                                   |
 | Add a pin, phone (provisional)                    | [add-pin-phone.jpg](add-pin-phone.jpg)                                       |
+| Pins, count marker and its four looks             | [map-pin-count.jpg](map-pin-count.jpg)                                       |
+| Pins, fan-out, one Pin under hover                | [map-pin-fan.jpg](map-pin-fan.jpg)                                           |
+| Pins, fan-out, phone, after the first tap         | [map-pin-fan-phone.jpg](map-pin-fan-phone.jpg)                               |
+| Pin popup                                         | [map-pin-popup.jpg](map-pin-popup.jpg)                                       |
+| Pin popup, details loading                        | [map-pin-popup-loading.jpg](map-pin-popup-loading.jpg)                       |
+| Pin popup, details did not load                   | [map-pin-popup-failed.jpg](map-pin-popup-failed.jpg)                         |
+| Pin popup, phone sheet                            | [map-pin-popup-phone.jpg](map-pin-popup-phone.jpg)                           |
+| Draft: count marker                               | [draft-pin-marker.jpg](draft-pin-marker.jpg)                                 |
+| Draft: fan of Pins                                | [draft-pin-fan.jpg](draft-pin-fan.jpg)                                       |
+| Draft: Pin popup                                  | [draft-pin-popup.jpg](draft-pin-popup.jpg)                                   |
+| Draft: Pin popup as a sheet, phone                | [draft-pin-popup-phone.jpg](draft-pin-popup-phone.jpg)                       |
 | People list                                       | [people-list.jpg](people-list.jpg)                                           |
 | People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |
 | People list, no people yet                        | [people-empty.jpg](people-empty.jpg)                                         |

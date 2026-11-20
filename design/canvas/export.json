@@ -156,6 +156,66 @@
       "viewport": { "height": 844, "width": 390 }
     },
     {
+      "file": "Map-pin-count.dc.html",
+      "name": "map-pin-count",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-pin-count.dc.html",
+      "name": "map-pin-fan",
+      "props": { "variant": "fan" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-pin-fan-phone.dc.html",
+      "name": "map-pin-fan-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Map-pin-count.dc.html",
+      "name": "map-pin-popup",
+      "props": { "variant": "popup" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-pin-count.dc.html",
+      "name": "map-pin-popup-loading",
+      "props": { "variant": "loading" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-pin-count.dc.html",
+      "name": "map-pin-popup-failed",
+      "props": { "variant": "failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-pin-fan-phone.dc.html",
+      "name": "map-pin-popup-phone",
+      "props": { "variant": "popup" },
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
+      "file": "Draft-pin-marker.dc.html",
+      "name": "draft-pin-marker",
+      "viewport": { "height": 440, "width": 720 }
+    },
+    {
+      "file": "Draft-pin-fan.dc.html",
+      "name": "draft-pin-fan",
+      "viewport": { "height": 592, "width": 820 }
+    },
+    {
+      "file": "Draft-pin-popup.dc.html",
+      "name": "draft-pin-popup",
+      "viewport": { "height": 460, "width": 1040 }
+    },
+    {
+      "file": "Draft-pin-popup-phone.dc.html",
+      "name": "draft-pin-popup-phone",
+      "viewport": { "height": 844, "width": 390 }
+    },
+    {
       "file": "Map-phone-states.dc.html",
       "name": "map-loading-phone",
       "props": { "variant": "loading" },

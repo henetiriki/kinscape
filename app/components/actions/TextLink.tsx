@@ -51,7 +51,7 @@ export const TextLink = ({
   ) : href === undefined && onClick ? (
     <button
       {...buttonAttributes(rest)}
-      className={styles.textLink}
+      className={`${styles.textLink} ${styles.button}`}
       data-size={size}
       data-state={state}
       onClick={onClick}
@@ -60,12 +60,12 @@ export const TextLink = ({
     </button>
   ) : (
     <KitLink
-      className={styles.textLink}
+      className={`${styles.textLink} ${styles.anchor}`}
       data-size={size}
       data-state={state}
       href={href!}
       onClick={onClick}
       {...rest}>
-      {children}
+      <span>{children}</span>
     </KitLink>
   );

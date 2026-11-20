@@ -33,6 +33,54 @@ it('gives an enabled link a centred touch-size hit area, and the disabled text n
   expect(css).not.toMatch(/aria-disabled='true'\]::before/);
 });
 
+// NFR-05, NFR-06
+it('gives each line of an anchor a touch-size hit area, and the button and disabled text none', () => {
+  const anchor = /\.anchor \{[^}]*\}/.exec(css)![0];
+
+  expect(anchor).toContain(
+    'padding-block: calc((var(--size-touch) - 1em) / 2)'
+  );
+  expect(css).toContain(
+    "composes: ringInner from '@ks/app/components/foundation/focus.module.css'"
+  );
+  expect(css).not.toMatch(/\.textLink \{[^}]*padding/);
+});
+
+// NFR-06
+it('puts the focus ring on the label of an anchor, so the ring keeps the size of the text', () => {
+  const ring = readFileSync(
+    join(process.cwd(), 'app/components/foundation/focus.module.css'),
+    'utf8'
+  );
+
+  expect(ring).toMatch(
+    /\.ringInner:is\(:focus-visible, \[data-state='focus'\]\) > span \{[^}]*outline: var\(--focus-width\) solid var\(--focus-ring\);[^}]*outline-offset: var\(--focus-offset\);/
+  );
+  render(
+    <TextLink href='#a' state='focus'>
+      Attributions
+    </TextLink>
+  );
+  expect(
+    screen.getByRole('link', { name: 'Attributions' }).firstElementChild
+      ?.tagName
+  ).toBe('SPAN');
+});
+
+it('keeps the ring on the button, and the disabled text has no label span', () => {
+  render(
+    <>
+      <TextLink onClick={vi.fn()}>Go</TextLink>
+      <TextLink disabled>Off</TextLink>
+    </>
+  );
+  expect(screen.getByRole('button').firstElementChild).toBeNull();
+  expect(screen.getByText('Off').firstElementChild).toBeNull();
+  expect(css).toMatch(
+    /\.button \{[^}]*composes: ring from '@ks\/app\/components\/foundation\/focus\.module\.css'/
+  );
+});
+
 // NFR-06
 it('is a link with a given state', () => {
   render(

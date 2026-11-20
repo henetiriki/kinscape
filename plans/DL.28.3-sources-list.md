@@ -40,37 +40,31 @@ A local session swaps the `sources` variant of both boards (step 7):
 
 **D5 · The placeholder line in `DESIGN.md`** · Decides: Tech lead
 
-`design/DESIGN.md` › Attributions says: "The JPGs show `[Source]` and `[Licence]` until someone completes the checks." After item 7, `map-sources.jpg` and `map-sources-phone.jpg` show the eight checked rows of `data/sources.json`. The drawn rows for District borders, Place names and Terrain go, because the file has no source for them. #1074 holds no value for this line.
+After item 7 the JPGs show the eight rows of `data/sources.json`, not `[Source]` and `[Licence]`.
 
-- **A.** Reword the line: "The boards show the rows of `data/sources.json`. A test keeps them in step." Cost: one line of a design system input.
-- **B.** Delete the line. Cost: `DESIGN.md` no longer says where the board rows come from.
-- **C.** Keep the line. Cost: `DESIGN.md` describes JPGs that no longer exist.
-- **Other:** your own.
-
-**Answer: A** (@henetiriki)
+**Answer: A** (@henetiriki). Reword the `DESIGN.md` › Attributions line: "The boards show the rows of `data/sources.json`. A test keeps them in step."
 
 **D6 · The 44px hit-area test on the `table` state** · Decides: Tech lead
 
-`npm run design:gallery` fails the test "each control under 44px tall or wide keeps a 44px hit area". At 390px the `table` state shows the link "SIL Open Font Licence 1.1" at 138x35px with no 44px hit area.
+At 390px the `table` link "SIL Open Font Licence 1.1" wraps and has no 44px hit area on each line.
 
-- **A.** File a Bug, and add its key to `UNDER_44`. Cost: a Bug and a key that stays until it is fixed.
-- **B.** The test skips this figure. Cost: a new rule in a shared test.
-- **C.** The card shows `table` at 1440px only. Cost: a new `Card` field.
-- **Other:** your own.
-
-**Answer: Other** (@henetiriki). Fix the hit area in `TextLink` in this PR. `gallery-looks.spec.ts` and `SourcesDialog.module.css` do not change, and `UNDER_44` stays empty.
+**Answer: Other** (@henetiriki). Fix `TextLink`. `gallery-looks.spec.ts` and `SourcesDialog.module.css` do not change, and `UNDER_44` stays empty. `gallery-textlink.spec.ts` tests the state `TextLink · wrapped`.
 
 **D7 · The focus ring of a wrapped `TextLink`** · Decides: Tech lead
 
-The `::before` hit area fails on a link that wraps in a line of text. The state `TextLink · wrapped` (150px box, form `running`) draws two lines of 15px, and `e2e/gallery-textlink.spec.ts` fails there: the points 21px above and below each line miss the link. A flex item is one block, so the old states never showed this.
+`padding-block` on an inline link gives each line a 44px hit area. A ring on the link would grow to 44px tall.
 
-`padding-block` on the inline link gives each line a 44px hit area and moves no text. But the focus ring is an `outline` on the border box (`focus.module.css`), so it grows from 15px to 44px tall. That changes visible pixels, so the build wrote no CSS.
+**Answer: Other** (@henetiriki). An anchor wraps its children in a `span`. The anchor takes `padding-block`. The `span` takes the `ring` tokens on `:focus-visible` or `data-state='focus'`. The button and the disabled text keep their form.
 
-- **A.** Accept the taller ring. Cost: `TextLink-1440.png` and each board with a focused link change.
-- **B.** Draw the ring from `background` on the text box, and add `padding-block`. Cost: a new ring for `TextLink` alone, and a test of its pixels.
+**D8 · The ring test reads the anchor** · Decides: Tech lead
+
+The test "Tab visits each enabled control with a 2px brand ring" in `gallery-looks.spec.ts` reads the outline of the focused element. With D7 the `span` has the ring, so it fails on `TextLink · default`. D6 says that file does not change.
+
+- **A.** The test reads the first child of a focused anchor. Cost: a change to a shared test.
+- **B.** Keep the outline on the anchor. Cost: the ring grows to 44px tall.
 - **Other:** your own.
 
-Recommended: A, because a 44px ring marks the real target.
+Recommended: A.
 
 ## Files that change
 
@@ -91,6 +85,8 @@ Recommended: A, because a 44px ring marks the real target.
 | `design/__tests__/sources-boards.test.ts`                    | new           | Item 7.                                                                                                                           |
 | `design/cards/SourcesList-1440.png`                          | new           | The workflow writes it.                                                                                                           |
 | `e2e/gallery-textlink.spec.ts`, `e2e/gallery.config.ts`      | new, changed  | D6: the wrapped-link test, and its entry in `testMatch`.                                                                          |
+| `TextLink.tsx`, `TextLink.module.css`, `focus.module.css`    | changed       | D6, D7: the label `span`, the anchor padding, and `ringInner`. Under `app/components/` in `actions/` and `foundation/`.           |
+| `app/components/actions/__tests__/TextLink.test.tsx`         | changed       | D7: the padding, the ring on the `span`, and the button form.                                                                     |
 | `design/canvas/project/Map.dc.html`                          | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/canvas/project/Map-phone-states.dc.html`             | changed       | Step 7: the `sources` variant.                                                                                                    |
 | `design/source/map-sources*.html`, `design/map-sources*.jpg` | changed       | The workflow writes them.                                                                                                         |

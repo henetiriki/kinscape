@@ -1,5 +1,4 @@
 .textLink {
-  composes: ring from '@ks/app/components/foundation/focus.module.css';
   border-radius: var(--radius-link);
   color: var(--brand);
   cursor: pointer;
@@ -11,6 +10,21 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
+}
+
+/* The button and the disabled text keep the ring on themselves. */
+.button {
+  composes: ring from '@ks/app/components/foundation/focus.module.css';
+}
+
+/* Padding gives each line of a wrapped link a 44px hit area. It adds no height to the line, so no text moves. */
+.anchor {
+  composes: ringInner from '@ks/app/components/foundation/focus.module.css';
+  padding-block: calc((var(--size-touch) - 1em) / 2);
+}
+
+.anchor > span {
+  border-radius: var(--radius-link);
 }
 
 /* A 44px hit area, centred on the link. The anchor keeps its line height, so a link in running text does not grow. */

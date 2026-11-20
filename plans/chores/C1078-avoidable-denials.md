@@ -8,7 +8,7 @@
 The shared Bash hook in `settings.json` and `review-settings.json` changes in three places, and the two files keep the same text:
 
 - It loses the `ls` row.
-- It gets a pipe row as the last row of the table. The row matches a `|` in `$api` that has no `|` before or after it. `$api` has quoted text and heredoc bodies blanked, so a `|` in `--jq '.a | .b'`, `"a|b"` or a body passes. As the last row, it keeps the reason of each row above it. For example, `gh pr view 1 | gh pr comment 1 --body-file x` still gets the heredoc reason.
+- It gets a pipe row as the last row of the table. The row matches a `|` in `$api` that has no `|` before or after it. `$api` has quoted text and heredoc bodies blanked, so a `|` in `--jq '.a | .b'`, `"a|b"` or a body passes. As the last row, it keeps the reason of each row above it. For example, `gh pr view 1 | gh pr comment 1 --body-file x` still gets the heredoc reason. The row skips a call that holds `$(cat <<`, Claude Code's commit form, where a `"` in the message breaks the quote step.
 - The quote-blanking step reads a double-quoted string as `"`, then any run of a character that is not `"` or `\`, or of `\` and the next character, then `"`. A string with `\"` is then one string, and `-f query="…"` blanks to `-f query=""`, which the GraphQL read step already passes.
 
 The allow lists get the forms in "What to change". `review.md` gets one Commands line. The tests in "How we'll know it's done" go in `agent-settings.test.ts`.
@@ -100,6 +100,6 @@ The tech lead builds this hand-back in a local session (`/build-local <n>`).
 - The pipe row also skips a `|` after a `\`, so an unquoted `git grep -E a\|b` stays allowed.
 - `review.md` had 3 words of room, and the new line has 8. The build cut 5 words from other lines and changed no rule: `in each` to `per`, `that is`, `file under` to `file`, and `ones`.
 - Per D2 B, the build did not allow `wc`. It added tests that the review does not allow `wc` or `wc --files0-from=…`.
-- `review.md` keeps its own copy of the heredoc rule that `rules.md` line 6 gives. The review loads `review.md` and `review-code.md`, not `rules.md`, and no file that every workflow loads can hold a shell rule: `AGENTS.md` also governs local sessions, which must not use heredocs in `gh` calls. The tech lead chose this in the fix review of #1079.
-- The pipe row is skipped for a call that holds `$(cat <<`, Claude Code's commit form. The review of #1079 found that a `"` in a commit message makes the quote step pair the wrong quotes, so a `|` in the message shows and the pipe row denied the commit. The tech lead asked for this fix. Only the pipe row skips, because the allowlist still judges each part. Another row would turn a `'` in the message into a way past the hook. Two tests cover the form.
+- `review.md` keeps its own copy of the heredoc rule in `rules.md` line 6. The review loads `review.md` and `review-code.md`, not `rules.md`. No file that every workflow loads can hold a shell rule. `AGENTS.md` also governs local sessions, and they must not use heredocs in `gh` calls. The tech lead chose this.
+- The pipe row skips a call that holds `$(cat <<`, Claude Code's commit form. A `"` in the commit message breaks the quote step, so a `|` in the message shows. Only the pipe row skips. The allowlist still judges each part. A skip in another row would let a `'` in the message hide a command. Three tests cover the form.
 - `denial-audit.test.ts` also changes line 345 (`ls` to `sed x`), because the hook no longer denies `ls`.

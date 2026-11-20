@@ -9,10 +9,13 @@ import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { polityLayer } from '@ks/features/map/layers/polities';
 
 const maplibre = vi.hoisted(() => {
+  const source = { setData: vi.fn() };
   const map = {
     addControl: vi.fn(),
+    addImage: vi.fn(),
     fitBounds: vi.fn(),
     getMinZoom: vi.fn(() => 3),
+    getSource: vi.fn(() => source),
     getZoom: vi.fn(() => 5),
     isStyleLoaded: vi.fn(() => true),
     off: vi.fn(),
@@ -22,6 +25,7 @@ const maplibre = vi.hoisted(() => {
     setFilter: vi.fn(),
     setLayoutProperty: vi.fn(),
     setMinZoom: vi.fn(),
+    setMissingStyleImageResolver: vi.fn(),
     setPadding: vi.fn(),
     zoomIn: vi.fn(),
     zoomOut: vi.fn(),
@@ -31,8 +35,10 @@ const maplibre = vi.hoisted(() => {
     Map: vi.fn(
       class {
         addControl = map.addControl;
+        addImage = map.addImage;
         fitBounds = map.fitBounds;
         getMinZoom = map.getMinZoom;
+        getSource = map.getSource;
         getZoom = map.getZoom;
         isStyleLoaded = map.isStyleLoaded;
         off = map.off;
@@ -42,6 +48,7 @@ const maplibre = vi.hoisted(() => {
         setFilter = map.setFilter;
         setLayoutProperty = map.setLayoutProperty;
         setMinZoom = map.setMinZoom;
+        setMissingStyleImageResolver = map.setMissingStyleImageResolver;
         setPadding = map.setPadding;
         zoomIn = map.zoomIn;
         zoomOut = map.zoomOut;
@@ -50,14 +57,23 @@ const maplibre = vi.hoisted(() => {
     map,
     ScaleControl: vi.fn(),
     setWorkerUrl: vi.fn(),
+    source,
   };
 });
 
 vi.mock('maplibre-gl', () => maplibre);
 vi.mock('maplibre-gl/dist/maplibre-gl.css', () => ({}));
+vi.mock('@ks/features/map/icons', () => ({
+  iconImage: vi.fn((path: string, ratio: number) => ({
+    data: new Uint8ClampedArray(4),
+    height: ratio,
+    width: path.length,
+  })),
+}));
 
 import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { MapView, MAX_BOUNDS } from '@ks/features/map/components/MapView';
+import { iconImage } from '@ks/features/map/icons';
 import { asDay } from '@ks/lib/domain/boundaries/model.mts';
 import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 import { coverZoom } from '@ks/lib/domain/map/zoom.mts';
@@ -83,6 +99,7 @@ const [workerUrl] = maplibre.setWorkerUrl.mock.calls[0];
 describe('MapView', () => {
   beforeEach(() => {
     for (const fn of Object.values(maplibre.map)) fn.mockClear();
+    maplibre.source.setData.mockClear();
     maplibre.Map.mockClear();
     maplibre.map.isStyleLoaded.mockReturnValue(true);
   });
@@ -485,6 +502,175 @@ describe('MapView', () => {
     onIdle();
     expect(measure).toHaveBeenCalledWith('map-date-redraw', 'map-date-change');
     measure.mockRestore();
+  });
+
+  // PIN-03
+  describe('icons', () => {
+    const iconLayer: Layer = {
+      ...testLayer,
+      icons: { 'pin-birth': 'M0 0H24V24Z' },
+    };
+    const missing = () =>
+      maplibre.map.setMissingStyleImageResolver.mock.calls.findLast(
+        ([resolver]) => resolver !== null
+      )![0] as (id: string) => Promise<void>;
+
+    it('draws a missing image of a layer as an SDF image at the device pixel ratio', async () => {
+      render(
+        <MapView
+          layers={[iconLayer]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      await missing()('pin-birth');
+
+      expect(iconImage).toHaveBeenCalledWith(
+        'M0 0H24V24Z',
+        window.devicePixelRatio
+      );
+      expect(maplibre.map.addImage).toHaveBeenCalledExactlyOnceWith(
+        'pin-birth',
+        expect.objectContaining({ width: 'M0 0H24V24Z'.length }),
+        { pixelRatio: window.devicePixelRatio, sdf: true }
+      );
+    });
+
+    it('ignores an image that no layer names', async () => {
+      render(
+        <MapView
+          layers={[iconLayer, polityLayer]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      await missing()('basemap-sprite');
+
+      expect(maplibre.map.addImage).not.toHaveBeenCalled();
+    });
+
+    it('stops resolving images on unmount', () => {
+      const { unmount } = render(
+        <MapView
+          layers={[iconLayer]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+
+      unmount();
+      expect(
+        maplibre.map.setMissingStyleImageResolver
+      ).toHaveBeenLastCalledWith(null);
+    });
+  });
+
+  // NFR-01
+  describe('source data', () => {
+    const dataLayer = (data: object): Layer => ({
+      ...testLayer,
+      sources: { 'test-layer': { data, type: 'geojson' } as never },
+    });
+    const FIRST = { features: [], type: 'FeatureCollection' };
+    const SECOND = { features: [], type: 'FeatureCollection' };
+
+    it('does not send the data the style was built with', () => {
+      render(
+        <MapView
+          layers={[dataLayer(FIRST)]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+
+      expect(maplibre.source.setData).not.toHaveBeenCalled();
+    });
+
+    it('sends new data once, and not again for a Map date change', () => {
+      const { rerender } = render(
+        <MapView
+          layers={[dataLayer(FIRST)]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      const next = [dataLayer(SECOND)];
+
+      rerender(
+        <MapView layers={next} mapDay={FIVE} padding={padding} visible={on} />
+      );
+      expect(maplibre.map.getSource).toHaveBeenCalledWith('test-layer');
+      expect(maplibre.source.setData).toHaveBeenCalledExactlyOnceWith(SECOND);
+
+      rerender(
+        <MapView layers={next} mapDay={NINE} padding={padding} visible={on} />
+      );
+      rerender(
+        <MapView
+          layers={[dataLayer(SECOND)]}
+          mapDay={NINE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(maplibre.source.setData).toHaveBeenCalledOnce();
+    });
+
+    it('leaves a source that has a URL alone', () => {
+      const { rerender } = render(
+        <MapView
+          layers={[polityLayer]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+
+      rerender(
+        <MapView
+          layers={[{ ...polityLayer }]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(maplibre.source.setData).not.toHaveBeenCalled();
+    });
+
+    it('waits for the style to load before it sends data', () => {
+      maplibre.map.isStyleLoaded.mockReturnValue(false);
+
+      const { rerender, unmount } = render(
+        <MapView
+          layers={[dataLayer(FIRST)]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+
+      rerender(
+        <MapView
+          layers={[dataLayer(SECOND)]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(maplibre.source.setData).not.toHaveBeenCalled();
+
+      for (const [event, onLoad] of maplibre.map.once.mock.calls) {
+        if (event === 'load') onLoad();
+      }
+
+      expect(maplibre.source.setData).toHaveBeenCalledExactlyOnceWith(SECOND);
+      unmount();
+    });
   });
 
   it('puts the map on window only in browser-test builds', () => {

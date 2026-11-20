@@ -1,5 +1,7 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import { useRef, useState } from 'react';
 
 import type {
@@ -43,6 +45,7 @@ export const MapShell = ({
   layers,
   onSignOut,
   sources,
+  toast,
 }: {
   /** The days with a Boundary version; the first one is where the notice card jumps to. */
   coverage: Validity[];
@@ -54,6 +57,8 @@ export const MapShell = ({
   layers: Layer[];
   onSignOut: () => Promise<unknown>;
   sources: Source[];
+  /** A `Toast` for the result of an action, at the bottom centre above the dock. */
+  toast?: ReactNode;
 }) => {
   const phone = usePhone();
   // The Map date starts on today, which is also the last date.
@@ -81,6 +86,7 @@ export const MapShell = ({
     />
   );
   const layerProps = {
+    day: mapDay,
     layers,
     onChange: (id: LayerId, show: boolean) =>
       setVisible(current => ({ ...current, [id]: show })),
@@ -171,6 +177,7 @@ export const MapShell = ({
           padding={freeArea(phone)}
           visible={visible}
         />
+        {toast && <div className={styles.toast}>{toast}</div>}
       </MapLayout>
       {phone && (
         <Sheet

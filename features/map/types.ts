@@ -12,12 +12,24 @@ export type DrawingLayer = {
   before?: string;
 } & LayerSpecification;
 
+/** The image data MapLibre takes for `addImage`. */
+export type IconImage = {
+  data: Uint8ClampedArray;
+  height: number;
+  width: number;
+};
+
 /** A set of drawing layers the map shows, hides and filters together. */
 export type Layer = {
-  /** The help text under the layer's row in the Layers panel. */
-  description: string;
+  /** The help text under the layer's row in the Layers panel; a function gives it for the Map date. */
+  description: ((day: Day) => string) | string;
   /** The filter for each drawing layer id on `day`. */
   filters: (day: Day) => Record<string, ExpressionSpecification>;
+  /**
+   * The icons the layer's symbols use: an image id mapped to a 24 × 24 path. The map draws each
+   * as an SDF image when the style asks for it.
+   */
+  icons?: Record<string, string>;
   id: LayerId;
   /** The name on the layer's row in the Layers panel. */
   label: string;

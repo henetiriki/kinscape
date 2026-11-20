@@ -1,9 +1,10 @@
 'use client';
 
+import type { GeoJSONSource } from 'maplibre-gl';
 import type { Ref } from 'react';
 
 import { Map as MapLibreMap, ScaleControl, setWorkerUrl } from 'maplibre-gl';
-import { useEffect, useImperativeHandle, useRef } from 'react';
+import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -17,6 +18,7 @@ import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 
 import { PHONE } from '@ks/app/components/foundation/usePhone';
 import { freeArea } from '@ks/app/components/layout/MapLayout';
+import { iconImage } from '@ks/features/map/icons';
 import { buildStyle } from '@ks/features/map/style';
 import { FIRST_VIEW } from '@ks/lib/domain/map/view.mts';
 import { coverZoom } from '@ks/lib/domain/map/zoom.mts';
@@ -82,6 +84,19 @@ export const MapView = ({
   }));
   // The first style uses the values from the first render; later changes go through the effect below.
   const initial = useRef({ layers, mapDay, visible });
+  // The data objects the map already holds: those the first style was built with.
+  const [sent] = useState(
+    () =>
+      new WeakSet<object>(
+        layers.flatMap(layer =>
+          Object.values(layer.sources).flatMap(source =>
+            source.type === 'geojson' && typeof source.data === 'object'
+              ? [source.data]
+              : []
+          )
+        )
+      )
+  );
   // `load` fires once. After it, isStyleLoaded() is false while tiles reload, so it can't gate later changes.
   const loaded = useRef(false);
 
@@ -157,6 +172,68 @@ export const MapView = ({
 
     map.current.setPadding({ bottom, left, right, top });
   }, [bottom, left, right, top]);
+
+  // A Map date change must not reload a source (NFR-01), so each data object goes to its source once.
+  useEffect(() => {
+    const current = map.current;
+
+    /* v8 ignore next -- the effect above has created the map by now; the guard only narrows the type */
+    if (!current) return;
+
+    const send = () => {
+      for (const layer of layers) {
+        for (const [id, source] of Object.entries(layer.sources)) {
+          if (
+            source.type === 'geojson' &&
+            typeof source.data === 'object' &&
+            !sent.has(source.data)
+          ) {
+            sent.add(source.data);
+            (current.getSource(id) as GeoJSONSource).setData(source.data);
+          }
+        }
+      }
+    };
+
+    if (loaded.current || current.isStyleLoaded()) {
+      send();
+
+      return;
+    }
+
+    current.once('load', send);
+
+    return () => {
+      current.off('load', send);
+    };
+  }, [layers, sent]);
+
+  // A symbol asks for its image by id; the layer that names the id draws it. The resolver runs
+  // before the tile is laid out, so the first draw already has the icon (`styleimagemissing` fires
+  // after the layout, which leaves the symbol out).
+  useEffect(() => {
+    const current = map.current;
+
+    /* v8 ignore next -- the effect above has created the map by now; the guard only narrows the type */
+    if (!current) return;
+
+    current.setMissingStyleImageResolver(async id => {
+      const path = layers.map(layer => layer.icons?.[id]).find(Boolean);
+
+      if (path === undefined) return;
+
+      const ratio = window.devicePixelRatio;
+
+      current.addImage(id, iconImage(path, ratio), {
+        pixelRatio: ratio,
+        sdf: true,
+      });
+    });
+
+    return () => {
+      current.setMissingStyleImageResolver(null);
+    };
+  }, [layers]);
 
   useEffect(() => {
     const current = map.current;

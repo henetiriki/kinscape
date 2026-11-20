@@ -11,7 +11,7 @@ import { isDevPage } from '#ks/server/dev-pages.mts';
 // - Tree scoping
 // - the sign-in gate
 // - the client/server boundary
-// - Tree data stays private (cache, addresses, memory only)
+// - Tree data stays private (cache, addresses, memory only, one fetch path)
 // The fitness tests run them over the repo. eslint.config.mjs reads the lists of the
 // scoping and boundary rows, so lint and test agree on those.
 
@@ -638,6 +638,87 @@ export const memoryOnlyBreaks = (files: Record<string, string>): string[] =>
             `${path}: Memory rule: no file imports a persistence package (${specifier}).`
         ),
     ]);
+
+/** The files under `app/` or `features/` that may call `fetch` and name a Tree data URL: the query layer. */
+export const QUERY_FILES = ['features/pins/query.ts'];
+
+const GLOBAL_OBJECTS = ['globalThis', 'self', 'window'];
+
+/** The files under `app/` or `features/` outside the query layer, as `[path, source]`. */
+const outsideQuery = (files: Record<string, string>): [string, string][] =>
+  Object.entries(files).filter(
+    ([path]) =>
+      /^(?:app|features)\//.test(path) &&
+      !TEST_FILE.test(path) &&
+      !QUERY_FILES.includes(path)
+  );
+
+const isGlobalObject = (node: ts.Expression): boolean =>
+  ts.isIdentifier(node) && GLOBAL_OBJECTS.includes(node.text);
+
+/**
+ * Whether a source reads the name `fetch`, or `fetch` on a global object by name or string key. A
+ * local `fetch` counts.
+ */
+const readsFetch = (path: string, source: string): boolean => {
+  let found = false;
+  const visit = (node: ts.Node): void => {
+    const { parent } = node;
+
+    found ||=
+      (ts.isIdentifier(node) &&
+        node.text === 'fetch' &&
+        (!ts.isPropertyAccessExpression(parent) ||
+          parent.name !== node ||
+          isGlobalObject(parent.expression))) ||
+      (ts.isStringLiteralLike(node) &&
+        node.text === 'fetch' &&
+        ts.isElementAccessExpression(parent) &&
+        parent.argumentExpression === node &&
+        isGlobalObject(parent.expression));
+    ts.forEachChild(node, visit);
+  };
+
+  visit(parse(path, source));
+
+  return found;
+};
+
+/** Each `file: rule` line where a file outside the query layer reads `fetch`. */
+export const fetchBreaks = (files: Record<string, string>): string[] =>
+  outsideQuery(files)
+    .filter(([path, source]) => readsFetch(path, source))
+    .map(([path]) => `${path}: Fetch rule: only the query layer reads fetch.`);
+
+/** The URLs of the route handlers that send no Tree data: the ones a file may name. */
+const referenceUrls = (): string[] =>
+  appRoutes(Object.keys(JSON_EXEMPT)).map(({ path }) => path);
+
+/** Whether a source holds a string, or the start of a template, that starts with `/data/` and is not a reference URL. */
+const namesTreeUrl = (path: string, source: string): boolean => {
+  const reference = referenceUrls();
+  let found = false;
+  const visit = (node: ts.Node): void => {
+    found ||=
+      (ts.isStringLiteralLike(node) || ts.isTemplateHead(node)) &&
+      node.text.startsWith('/data/') &&
+      !reference.includes(node.text);
+    ts.forEachChild(node, visit);
+  };
+
+  visit(parse(path, source));
+
+  return found;
+};
+
+/** Each `file: rule` line where a file outside the query layer names a Tree data URL. */
+export const treeUrlBreaks = (files: Record<string, string>): string[] =>
+  outsideQuery(files)
+    .filter(([path, source]) => namesTreeUrl(path, source))
+    .map(
+      ([path]) =>
+        `${path}: Fetch rule: only the query layer names a Tree data URL.`
+    );
 
 /** A node that names a module, as ESLint hands it over. */
 interface Sourced {

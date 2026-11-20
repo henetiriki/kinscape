@@ -24,7 +24,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
 ## Changing the design system
 
 - **When.** A change to `design/tokens.json`, `design/DESIGN.md`, a font, an icon, `CONTROLS` in `lib/design/bundle.mts`, `lib/design/cards.mts`, `lib/design/samples.mts`, `lib/design/states.mts` or a component in `CONTROLS`.
-- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh and the workflow in steps 6 and 7 each commit. If the branch merges a `main` that holds another design system change, run steps 3 to 5 again.
+- **Where.** Run the steps on the branch of the Spec or Chore that makes the change, before its pull request merges. Never run them from `main`. The refresh in step 5, the session in step 7 and the workflow each commit. If the branch merges a `main` that holds another design system change, run steps 3 to 5 again.
 - **Order.**
   1. Change the code.
   2. Run `npm run design-system`.
@@ -34,7 +34,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
   6. If no board shows the change, push the branch. The tech lead runs the workflow Design: Render snapshots on it.
   7. If a board shows the change, step 6 does not run. A local session does these steps in order:
      1. Edit each board that the plan lists in the repo copy, `design/canvas/project/` ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
-     2. Run `npm run design:export`. If it fails, stop and publish nothing.
+     2. Run `npm run design:export`. If it fails, stop. Publish nothing.
      3. Publish each edited board to the canvas.
      4. `list` the canvas. Read back only the boards that the session published. Compare each sha256 with the repo copy. Set line 2 of `canvas/VERSION`.
      5. Discard the exported `source/` changes. Commit `design/canvas/` alone. Push the branch.

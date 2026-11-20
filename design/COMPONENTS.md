@@ -20,7 +20,7 @@ If the app has the component and the design system does not, do steps 2 and 3 ab
 Follow these rules:
 
 - If the real component draws differently from the board, do not swap that part. Raise a Bug that names the board and the difference. The Bug does not block the other swaps.
-- Fix the component first, then swap.
+- Fix the component first. Then swap it.
 - Never change a component to make it mount on a board or to make a check pass.
 
 Paste this prompt into a local session:

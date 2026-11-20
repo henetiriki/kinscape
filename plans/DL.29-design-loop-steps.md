@@ -6,7 +6,7 @@
 
 ## Approach
 
-Edit the text of `design/CANVAS.md`, `design/COMPONENTS.md`, `docs/code-rules.md` and one skill description, item by item as the Spec lists them. Change no heading, so the anchors that `scripts/__tests__/load-agent-files.test.ts` pins stay. Then raise the two word budgets to the next multiple of 50 that holds the new text, and change their pins. This Spec is a hand-back ([hand-back rule](README.md#hand-back)): the tech lead, or a local session that the tech lead starts, builds it.
+Edit the text of `design/CANVAS.md`, `design/COMPONENTS.md`, `docs/code-rules.md` and one skill description, item by item as the Spec lists them. Change no heading, so the anchors that `scripts/__tests__/load-agent-files.test.ts` pins stay. Then raise the two word budgets to the next multiple of 50 that holds the new text. Change their pins. This Spec is a hand-back ([hand-back rule](README.md#hand-back)): the tech lead, or a local session that the tech lead starts, builds it.
 
 ## Files that change
 
@@ -27,7 +27,7 @@ Edit the text of `design/CANVAS.md`, `design/COMPONENTS.md`, `docs/code-rules.md
    - Add the merge rule to **Where**.
    - Change the order list for items 1 and 4 to 6.
    - Change **Issue text** for item 2.
-2. `design/CANVAS.md`, "Updating the install": delete 4.7, and change the paste prompt to "4.1 to 4.6".
+2. `design/CANVAS.md`, "Updating the install": delete 4.7. Change the paste prompt to "4.1 to 4.6".
 3. `design/CANVAS.md`, "Refreshing the canvas copy": name the two cases in the lead paragraph. In 5.5, the workflow renders the snapshots.
 4. `design/CANVAS.md`, "Making the snapshots and JPGs": add the gallery check of item 8 to the card-image paragraph.
 5. `design/COMPONENTS.md`: add the three swap rules, then the new prompt. The prompt does these things:
@@ -36,7 +36,7 @@ Edit the text of `design/CANVAS.md`, `design/COMPONENTS.md`, `docs/code-rules.md
    - It asks for no pixel compare.
 6. `docs/code-rules.md`: add the four lines of item 12.
 7. The skill description: add the two files, in the order of the **When** list.
-8. Run `npm run words`. Raise each budget to the next multiple of 50 that holds the file, and change its pin.
+8. Run `npm run words`. Raise each budget to the next multiple of 50 that holds the file. Change its pin.
 9. Run the checks in `AGENTS.md` › Commands.
 
 No step changes a design system input, so the steps of [Changing the design system](../design/CANVAS.md#changing-the-design-system) do not run.

@@ -15,6 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CanvasSnapshot } from '@ks/scripts/types.ts';
 
 import {
+  clipPage,
   defineBuilder,
   defineStyleHelpers,
   exportSnapshots,
@@ -1111,6 +1112,36 @@ describe('pageHtml', () => {
   });
 });
 
+describe('clipPage', () => {
+  const CLIP = { height: 120, width: 800, x: 0, y: 780 };
+  const VIEWPORT = { height: 900, width: 800 };
+
+  it('moves the page into a box of the viewport size, in an outer box of the clip size', () => {
+    document.body.innerHTML = '<p>A</p><i>B</i>';
+
+    clipPage({ clip: CLIP, viewport: VIEWPORT });
+
+    expect(document.body.innerHTML).toBe(
+      '<div style="height: 120px; overflow: hidden; width: 800px;"><div style="height: 900px; left: 0px; position: relative; top: -780px; width: 800px;"><p>A</p><i>B</i></div></div>'
+    );
+  });
+
+  it('moves the box left by x and up by y', () => {
+    document.body.innerHTML = '<p>A</p>';
+
+    clipPage({
+      clip: { height: 50, width: 60, x: 30, y: 40 },
+      viewport: VIEWPORT,
+    });
+
+    expect(
+      document.body.querySelector<HTMLElement>('div div')?.style.cssText
+    ).toBe(
+      'height: 900px; left: -30px; position: relative; top: -40px; width: 800px;'
+    );
+  });
+});
+
 describe('exportSnapshots', () => {
   const snapshots: CanvasSnapshot[] = [
     { file: 'A.dc.html', name: 'a', viewport: DESKTOP },
@@ -1188,6 +1219,71 @@ describe('exportSnapshots', () => {
       'A.dc.html → a.html: #123456 is not in design/tokens.json'
     );
     expect(existsSync(join(root, 'design/source'))).toBe(false);
+  });
+
+  describe('a clip', () => {
+    const clipped = (clip: CanvasSnapshot['clip']) => {
+      setup();
+      put(
+        'design/canvas/export.json',
+        JSON.stringify({
+          icon: '/_blob/i',
+          links: {},
+          snapshots: [
+            { clip, file: 'A.dc.html', name: 'a', viewport: DESKTOP },
+            { file: 'B.dc.html', name: 'b', viewport: DESKTOP },
+          ],
+        })
+      );
+    };
+
+    it('reaches render in the snapshot', async () => {
+      const clip = { height: 120, width: 1440, x: 0, y: 780 };
+      const seen = vi.fn(async (html: string) => page(html));
+
+      clipped(clip);
+      await exportSnapshots(root, ['a'], { render: seen });
+
+      expect(seen).toHaveBeenCalledWith(
+        expect.any(String),
+        { clip, file: 'A.dc.html', name: 'a', viewport: DESKTOP },
+        expect.any(Array)
+      );
+    });
+
+    it('is the same as no clip when it covers the viewport', async () => {
+      clipped({ ...DESKTOP, x: 0, y: 0 });
+
+      expect(await exportSnapshots(root, ['a'], { render })).toEqual(['a']);
+    });
+
+    it.each([
+      ['x', { height: 100, width: 100, x: -1, y: 0 }],
+      ['y', { height: 100, width: 100, x: 0, y: -1 }],
+      ['no width', { height: 100, width: 0, x: 0, y: 0 }],
+      ['no height', { height: 0, width: 100, x: 0, y: 0 }],
+      ['right edge', { height: 100, width: 100, x: 1341, y: 0 }],
+      ['bottom edge', { height: 100, width: 100, x: 0, y: 801 }],
+    ])(
+      'writes nothing and names the snapshot when its clip is not inside the viewport: %s',
+      async (_name, clip) => {
+        const only = vi.fn(async (html: string) => page(html));
+
+        clipped(clip);
+
+        await expect(
+          exportSnapshots(root, [], { render: only })
+        ).rejects.toThrow('a: the clip is not inside the viewport');
+        expect(only).not.toHaveBeenCalled();
+        expect(existsSync(join(root, 'design/source'))).toBe(false);
+      }
+    );
+
+    it('is not read for a snapshot that is not named', async () => {
+      clipped({ height: 0, width: 0, x: 0, y: 0 });
+
+      expect(await exportSnapshots(root, ['b'], { render })).toEqual(['b']);
+    });
   });
 
   it('loads the design system from files for a board that uses <x-import>', async () => {

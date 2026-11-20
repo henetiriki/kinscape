@@ -281,8 +281,8 @@ The FuzzyDateField component card shows it. It is a label, a 44px input and one 
 NFR-08 requires the app to credit every source. The design fixes the format. The licence checks (NFR-08, BND-06) supply the text.
 
 - One sources file in the repo lists each source: layer, title, author, licence, licence link, attribution text and the date of the check. After you check its licence, add a source to the map.
-- The credits line under the date dock is one line at every desktop width: a "Credits" button with the `info` icon, " · " and an "Attributions" link. 11px, `--credits`.
-- The "Credits" button sets `aria-expanded`. It opens a card above the line with the attribution text of the sources on screen, joined with " · ". The card covers the dock's corner and moves nothing. A second press, a press outside it or Esc closes it. A dialog on top keeps the card open.
+- **Credits line** under the date dock is one line at every desktop width: a "Credits" button with the `info` icon, " · " and an "Attributions" link. 11px, `--credits`.
+- **Credits card:** The "Credits" button sets `aria-expanded`. It opens a card above the line with the attribution text of the sources on screen, joined with " · ". The card covers the dock's corner and moves nothing. A second press, a press outside it or Esc closes it. A dialog on top keeps the card open.
 - The scale bar sits under the Layers panel: left at the gutter, bottom at `credits-bottom`. It uses 11px `--credits` on `--white-60`, with a 1px `--credits` rule on the left, bottom and right. MapLibre sets the distance and the width. A phone hides it.
 - **Sources and attributions dialog** opens from the "Attributions" link or the account menu. It lists every source as layer, source (with its detail line), licence and date checked.
 - The boards show the rows of `data/sources.json`. A test keeps them in step.

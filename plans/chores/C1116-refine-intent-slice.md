@@ -138,3 +138,6 @@ Three lines say that the skill files no Intent with `gh`:
 - A milestone for #292: the tech lead sets it in the issue sidebar.
 
 ## Deviations
+
+- Big: the run denied each write to `.claude/skills/refine/`. The skill rows are not built: `SKILL.md`, `slice-intent.md`, `slice-milestone.md`, `spec.md`, `filing.md`, `design.md`. A local session builds them, then sets their budgets in `word-count.mts`.
+- The `how-we-work.md` budget is 1080 (was 1030). The `design/CANVAS.md` and `plans/README.md` edits fit their budgets.

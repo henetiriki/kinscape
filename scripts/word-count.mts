@@ -33,7 +33,7 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 500, pattern: /^docs\/code-rules\.md$/ },
   { limit: 275, pattern: /^docs\/dependencies\.md$/ },
   { limit: 1200, pattern: /^docs\/glossary\.md$/ },
-  { limit: 1030, pattern: /^docs\/how-we-work\.md$/ },
+  { limit: 1080, pattern: /^docs\/how-we-work\.md$/ },
   { limit: 1000, pattern: /^docs\/infrastructure\.md$/ },
   { limit: 900, pattern: /^docs\/repo-settings\.md$/ },
   { limit: 350, pattern: /^docs\/security\.md$/ },

@@ -1,6 +1,8 @@
 import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
+import type { MapPin } from '@ks/lib/domain/pins/types.ts';
+
 import { QueryProvider } from '@ks/app/QueryProvider';
 import { usePinDetails, usePins } from '@ks/features/pins';
 import { fetchPinDetails, fetchPins } from '@ks/features/pins/query';
@@ -9,7 +11,7 @@ import { fetchPinDetails, fetchPins } from '@ks/features/pins/query';
 const PIN = {
   date1: '1850-03-04',
   eventType: 'baptism',
-  id: '01900000-0000-7000-b000-0000000000d1',
+  id: '01900000-0000-7000-b000-0000000000d1' as MapPin['id'],
   latitude: -33.9,
   longitude: 18.4,
   qualifier: 'EXACT',

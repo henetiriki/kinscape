@@ -1,7 +1,6 @@
-import { unstable_rethrow } from 'next/navigation';
 import { z } from 'zod';
 
-import { privateJson } from '@ks/app/data/private-json';
+import { answerOf, guarded } from '@ks/app/data/tree-route';
 import { parsePinId } from '@ks/lib/domain/ids/ids.mts';
 import { pinDetails } from '@ks/lib/domain/pins/pin-details.mts';
 import { ok } from '@ks/lib/domain/result/result.mts';
@@ -20,36 +19,13 @@ const readDetails = treeAction(z.string(), async (tree, text) => {
   return ok(pin && person ? pinDetails(pin, person) : undefined);
 });
 
-/**
- * A request with no session, or a session with no Tree, gets 401 and no body. An unknown Pin gets
- * 404 and no body. A throw leaves a log of the error name only: its message can hold Person data.
- */
-export const GET = async (
+/** A request with no session gets 401 and no body. An unknown Pin gets 404 and no body. */
+export const GET = (
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
-) => {
-  try {
-    if ((await currentSession()) === undefined) {
-      return new Response(null, { status: 401 });
-    }
-
-    const { id } = await params;
-    const details = await readDetails(id);
-
-    if (!details.ok) {
-      return new Response(null, { status: 401 });
-    }
-
-    return details.value === undefined
-      ? new Response(null, { status: 404 })
-      : privateJson(details.value);
-  } catch (error) {
-    unstable_rethrow(error);
-    console.error(
-      'Pin details route failed:',
-      error instanceof Error ? error.name : 'unknown'
-    );
-
-    return new Response(null, { status: 500 });
-  }
-};
+) =>
+  guarded('Pin details route', async () =>
+    (await currentSession()) === undefined
+      ? new Response(null, { status: 401 })
+      : answerOf(await readDetails((await params).id))
+  );

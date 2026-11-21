@@ -8,79 +8,19 @@ vi.mock('@ks/server/adapters.mts', () => ({
   appAdapters: () => adapters.current,
 }));
 
+import { OTHER_PIN, PIN, seedTrees } from '@ks/app/__tests__/pin-trees';
 import { GET } from '@ks/app/data/pins/[id]/route';
-import { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
-import { memorySessions } from '@ks/server/auth/memory-sessions.mts';
-import { startSession } from '@ks/server/auth/sessions.mts';
-import { memoryStore } from '@ks/server/trees/memory-store.mts';
-import { openTree } from '@ks/server/trees/repository.mts';
 
 // PIN-02, NFR-03, NFR-10. Data is synthetic.
-const PERSON = '01900000-0000-7000-8000-0000000000a1';
-const PLACE = '01900000-0000-7000-a000-0000000000c1';
-const PIN = '01900000-0000-7000-b000-0000000000d1';
-const OTHER_PIN = '01900000-0000-7000-b000-0000000000d2';
 const NO_PIN = '01900000-0000-7000-b000-0000000000d9';
 
 const ask = (id: string) =>
   GET(new Request('http://x'), { params: Promise.resolve({ id }) });
 
 const setup = async () => {
-  const store = memoryStore();
-  const sessions = memorySessions();
-  const tokens: Record<string, string> = {};
+  const { sessions, store, tokens } = await seedTrees();
 
   adapters.current = { sessions, store };
-
-  for (const [subject, pin] of [
-    ['a', PIN],
-    ['b', OTHER_PIN],
-  ] as const) {
-    const added = await store.addAccount({
-      issuer: 'test',
-      subject,
-      treeName: `Tree ${subject}`,
-    });
-
-    if (!added.ok) {
-      throw new Error('setup failed');
-    }
-
-    tokens[subject] = await startSession(sessions, () => new Date(), {
-      accountId: added.value.accountId,
-      email: `${subject}@example.test`,
-    });
-
-    const opened = await openTree({ sessions, store }, tokens[subject]);
-
-    if (!opened.ok) {
-      throw new Error('open failed');
-    }
-
-    await opened.value.persons.create({
-      givenNames: 'Ana',
-      id: PERSON,
-      surname: `Smit ${subject}`,
-    } as never);
-    await opened.value.places.create({
-      id: PLACE,
-      latitude: -33.9,
-      longitude: 18.4,
-      precision: 'town',
-    } as never);
-    await opened.value.pins.create(
-      pinInputSchema.parse({
-        address: '1 Church Street',
-        date: '1850',
-        eventType: 'baptism',
-        id: pin,
-        notes: 'A private note',
-        personId: PERSON,
-        placeId: PLACE,
-        sources: 'A parish register',
-      })
-    );
-  }
 
   return {
     signInAs: (subject: 'a' | 'b') =>

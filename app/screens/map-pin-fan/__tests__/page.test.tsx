@@ -29,9 +29,10 @@ it('fans the three Pins of Example Farm out, with the pointer on Birth', async (
   expect(
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, 'hover']);
-  expect((marker.parentElement!.parentElement as HTMLElement).style.left).toBe(
-    '940px'
-  );
+  expect(
+    (marker.parentElement!.parentElement!.parentElement as HTMLElement).style
+      .left
+  ).toBe('940px');
 });
 
 // NFR-05
@@ -48,9 +49,10 @@ it('fans them out at the phone point with no hover look on a phone', async () =>
   expect(
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, undefined]);
-  expect((marker.parentElement!.parentElement as HTMLElement).style.left).toBe(
-    '264px'
-  );
+  expect(
+    (marker.parentElement!.parentElement!.parentElement as HTMLElement).style
+      .left
+  ).toBe('264px');
   screen.getByRole('button', { name: 'Layers and filters' });
 });
 

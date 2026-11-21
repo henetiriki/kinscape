@@ -56,7 +56,7 @@ export const PinFan = ({
             <line className={styles.line} key={`${x},${y}`} x2={x} y2={y} />
           ))}
       </svg>
-      {children}
+      {children && <div className={styles.place}>{children}</div>}
       {pins.map((pin, index) => (
         <button
           aria-label={fanPinName(pin)}

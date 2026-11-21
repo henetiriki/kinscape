@@ -1,30 +1,33 @@
-/* The fan of `map-pin-fan`: the Place is the centre of a 44px box, and every part is placed from it. */
+/*
+ * The fan of `map-pin-fan`: a box as large as the fan, so a card or a page leaves it room. The Place
+ * is its centre, and every part is placed from it.
+ */
 .fan {
-  height: var(--size-touch);
+  height: calc(var(--reach) * 2);
   position: relative;
-  width: var(--size-touch);
+  width: calc(var(--reach) * 2);
 }
 
 /* The clear disc under the fan: the pointer stays inside it on the way from the marker to a Pin. */
 .reach {
   border-radius: 50%;
-  height: calc(var(--reach) * 2);
-  left: 50%;
+  inset: 0;
   position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(var(--reach) * 2);
 }
 
 .lines {
-  height: calc(var(--reach) * 2);
-  left: 50%;
+  inset: 0;
   overflow: visible;
   pointer-events: none;
   position: absolute;
+}
+
+/* The count marker at the Place. */
+.place {
+  left: 50%;
+  position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: calc(var(--reach) * 2);
 }
 
 .line {
@@ -50,7 +53,7 @@
   display: flex;
   height: var(--size-touch);
   justify-content: center;
-  margin: calc(var(--size-touch) / 2) 0 0 calc(var(--size-touch) / 2);
+  margin: var(--reach) 0 0 var(--reach);
   outline: none;
   padding: 0;
   position: absolute;

@@ -918,7 +918,7 @@ export const CARDS: Card[] = [
     design: ['Fan of Pins'],
     group: 'Map',
     handlers: ['onOpen'],
-    height: 300,
+    height: 320,
     name: 'PinFan',
     pad: 0,
     states: [

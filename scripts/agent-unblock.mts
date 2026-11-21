@@ -8,8 +8,8 @@ import type { Gh } from '#ks/scripts/types.ts';
 //   - labelled `status: blocked`: say so, mention the repo owner, and swap the label for
 //     `status: ready-for-dev`; the tech lead then sets `status: ready-for-agent`
 //   - a Spec (its issue Type) whose closed blocker's merged PR changed a path under
-//     `design/canvas/`: swap the label for `status: draft` instead. The comment tells the owner to run `/refine spec`. A design
-//     change makes the Spec's size and checks stale.
+//     `design/canvas/`: swap the label for `status: draft` instead. The comment tells the owner to run `/refine spec <the Spec's
+//     own number>`. A design change makes the Spec's size and checks stale.
 //   - with an open PR that closes it (a plan PR whose build the gate stopped): comment on the PR
 // Usage: node scripts/agent-unblock.mts <closed issue number>, with GH_REPO and GH_OWNER set.
 // KINSCAPE_BOT_LOGIN, the agent App's login (`kinscape-agent[bot]`), is optional. If it is unset, the
@@ -24,7 +24,6 @@ import type { Gh } from '#ks/scripts/types.ts';
 
 type Linked = {
   author_association?: string;
-  body?: null | string;
   labels?: { name: string }[];
   number: number;
   state: string;
@@ -39,8 +38,6 @@ const BOT = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}(?:\[bot\])?$/i;
 const RUN_URL = /^https:\/\/\S+$/;
 const TRUSTED = ['OWNER', 'MEMBER', 'COLLABORATOR'];
 const DESIGN_PATH = 'design/canvas/';
-// The Spec form's "Intent or milestone" box. The script reads only `#<n>` or `M<n>`. The body is untrusted text.
-const INTENT = /^### Intent or milestone\s+(?:#(\d+)|(M\d+))\s*$/m;
 
 type Pr = { closingIssuesReferences: { number: number }[]; number: number };
 
@@ -94,13 +91,6 @@ const designBlockers = (
         )
     );
 
-// The argument of `/refine spec` that the Spec's Intent box gives: `12` for `#12`, `M0` for `M0`.
-const refineArg = (body: null | string | undefined): string | undefined => {
-  const [, issue, milestone] = INTENT.exec(body ?? '') ?? [];
-
-  return issue ?? milestone;
-};
-
 const readyLines = (closed: number, owner: string): string[] => [
   `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
   '',
@@ -111,21 +101,13 @@ const draftLines = (
   closed: number,
   design: number[],
   owner: string,
-  body: null | string | undefined
-): string[] => {
-  const arg = refineArg(body);
-  const command =
-    arg === undefined
-      ? '`/refine spec` with the Intent or milestone of this Spec'
-      : `\`/refine spec ${arg}\``;
-
-  return [
-    `#${closed} is closed, so nothing blocks this any more.`,
-    `${design.map(number => `#${number}`).join(', ')} changed the design in \`${DESIGN_PATH}\`, so this Spec needs a new size and a new check. The label is now \`status: draft\`.`,
-    '',
-    `@${owner}: run ${command}. Then set the status.`,
-  ];
-};
+  issue: number
+): string[] => [
+  `#${closed} is closed, so nothing blocks this any more.`,
+  `${design.map(number => `#${number}`).join(', ')} changed the design in \`${DESIGN_PATH}\`, so this Spec needs a new size and a new check. The label is now \`status: draft\`.`,
+  '',
+  `@${owner}: run \`/refine spec ${issue}\`. Then set the status.`,
+];
 
 // Comments on a freed issue and swaps its `status: blocked` label: `status: draft` if a blocker
 // changed the design, else `status: ready-for-dev`.
@@ -144,7 +126,7 @@ const swapLabel = (
   comment(
     issue.number,
     draft
-      ? draftLines(closed, design, owner, issue.body)
+      ? draftLines(closed, design, owner, issue.number)
       : readyLines(closed, owner)
   );
   gh([

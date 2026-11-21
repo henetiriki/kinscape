@@ -1,4 +1,4 @@
-# `/refine spec <M<n> | intent issue number>`: for the tech lead
+# `/refine spec <M<n> | issue number>`: for the tech lead
 
 Slice a milestone or an accepted Intent into **Specs**, each small enough for one plan and one pull request.
 
@@ -63,3 +63,15 @@ File each Spec with form `2-spec.yml`, as [filing.md](filing.md) says. A workflo
 After you replace a Spec's body, check the blocker links and the status label of each Spec the change touched. Add `Superseded: the earlier decisions are in <comment link>` under Out of scope.
 
 The tech lead sets the status label, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.
+
+## Edit a filed Spec
+
+`SKILL.md` sends a Spec number here. Do not slice its Intent.
+
+1. Follow Read in [Editing a filed issue](filing.md#editing-a-filed-issue). Stop at a closed Spec.
+2. Read its Intent, from the Intent box.
+3. Ask only about what the user wants to change, and about what the repo now contradicts.
+4. Redraft each box of `2-spec.yml`. Measure the Estimate again as _Step 1: slice_ says. Write the line as _Step 2: draft each Spec_ says.
+5. Keep each answered decision with its Answer line. If the change contradicts an answered decision, add a new decision that cites it.
+6. Run the check round on _Acceptance checks_.
+7. Follow Write in [Editing a filed issue](filing.md#editing-a-filed-issue).

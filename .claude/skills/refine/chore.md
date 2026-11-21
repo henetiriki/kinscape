@@ -1,6 +1,8 @@
-# `/refine chore [idea]`: for the tech lead
+# `/refine chore [idea | Chore number]`: for the tech lead
 
 Draft one **Chore** issue: tooling, CI, docs, process or settings. Any text after `chore` is the first description of the idea. A Chore says **what** will change and how we'll know it's done; the agent's plan says how.
+
+`SKILL.md` sends a Chore number here. Follow [Edit a filed Chore](#edit-a-filed-chore).
 
 ## Before the first question
 
@@ -47,3 +49,11 @@ Write each box in [STE](../../../docs/writing.md#ste). Then run the check round 
 File the Chore with form `4-chore.yml`, as [filing.md](filing.md) says.
 
 The tech lead sets the status label, except `status: blocked`, as [Roles and labels](../../../docs/how-we-work.md#roles-and-labels-whose-turn-is-it) says. Stop there.
+
+## Edit a filed Chore
+
+1. Follow Read in [Editing a filed issue](filing.md#editing-a-filed-issue). Stop at a closed Chore.
+2. Ask only about what the user wants to change, and about what the repo now contradicts.
+3. Redraft each box of `4-chore.yml`. Run the Screen again.
+4. Run the check round on _How we'll know it's done_.
+5. Follow Write in [Editing a filed issue](filing.md#editing-a-filed-issue).

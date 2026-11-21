@@ -505,7 +505,7 @@ describe('run', () => {
       expect(body).toContain('a new size and a new check');
       expect(body).toContain('`status: draft`');
       expect(body).not.toContain('ready-for-dev');
-      expect(body).toContain('@tech-lead: run `/refine spec 12`');
+      expect(body).toContain('@tech-lead: run `/refine spec 8`');
       expect(edits()[0][0]).toEqual([
         'issue',
         'edit',
@@ -612,37 +612,15 @@ describe('run', () => {
       expect(edits()[0][0].at(-1)).toBe('status: draft');
     });
 
-    it.each([
-      ['#12', '/refine spec 12'],
-      ['M0', '/refine spec M0'],
-      ['M2', '/refine spec M2'],
-    ])('reads the Intent box %j', (value, command) => {
+    it("names the Spec's own number, not the number in its Intent box", () => {
       fakeGh({
         ...DESIGN,
-        blocking: [{ body: intent(value), ...SPEC, number: 8 }],
+        blocking: [{ body: intent('#12'), ...SPEC, number: 8 }],
       });
       run(['5'], ENV, gh, append);
 
-      expect(comments()[0][1]).toContain(`run \`${command}\`.`);
-    });
-
-    it.each([
-      ['no body', undefined],
-      ['no box', 'Some text'],
-      ['an empty box', intent('')],
-      ['a link', intent('https://example.com/issues/12')],
-      ['text after the number', intent('#12 and more')],
-      ['a number with no #', intent('12')],
-      ['code in backticks', intent('`rm -rf /`')],
-      ['a milestone with text', intent('M0; echo')],
-    ])('names plain /refine spec for %s', (_, body) => {
-      fakeGh({ ...DESIGN, blocking: [{ body, ...SPEC, number: 8 }] });
-      run(['5'], ENV, gh, append);
-
-      expect(comments()[0][1]).toContain(
-        'run `/refine spec` with the Intent or milestone of this Spec.'
-      );
-      expect(comments()[0][1]).not.toContain('/refine spec 12');
+      expect(comments()[0][1]).toContain('run `/refine spec 8`.');
+      expect(comments()[0][1]).not.toContain('12');
     });
 
     it.each([

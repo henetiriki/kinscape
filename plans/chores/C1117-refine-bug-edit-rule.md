@@ -1,7 +1,7 @@
 # Plan: C1117: /refine bug <n> follows the shared edit rule, and a fix review never returns a PR to draft
 
 - **Spec:** #1117
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -53,7 +53,7 @@ D1 to D5 are on #1117. The build rewords the issue as the answers say ([reword s
 - **B.** Do A, and add an entry for `bug.md` and `fix-review-local/SKILL.md` at the new count, rounded up to the next 10. Cost: two more entries and two test rows. Each later edit to those files then needs a budget change.
 - **Other:** your own.
 
-Recommended: A, because C1115 kept the wildcard for `bug.md` and set an entry only when a file passes its budget.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

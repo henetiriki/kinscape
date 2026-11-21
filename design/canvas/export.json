@@ -416,6 +416,103 @@
       "file": "Fuzzy-date-readings.dc.html",
       "name": "fuzzy-date-readings",
       "viewport": { "height": 1240, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "map-add-pin",
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-click-popup",
+      "props": { "variant": "click-popup" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form-empty",
+      "props": { "variant": "form-empty" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form",
+      "props": { "variant": "form" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form-errors",
+      "props": { "variant": "form-errors" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form-existing-place",
+      "props": { "variant": "form-existing-place" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form-saving",
+      "props": { "variant": "form-saving" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form-save-failed",
+      "props": { "variant": "form-save-failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-form-no-people",
+      "props": { "variant": "form-no-people" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-edit",
+      "props": { "variant": "edit" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-edit-moved",
+      "props": { "variant": "edit-moved" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-edit-loading",
+      "props": { "variant": "edit-loading" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Map-add-pin.dc.html",
+      "name": "pin-edit-load-failed",
+      "props": { "variant": "edit-load-failed" },
+      "viewport": { "height": 900, "width": 1440 }
+    },
+    {
+      "file": "Draft-pin-click-popup.dc.html",
+      "name": "draft-pin-click-popup",
+      "viewport": { "height": 360, "width": 760 }
+    },
+    {
+      "file": "Draft-pin-person-field.dc.html",
+      "name": "draft-pin-person-field",
+      "viewport": { "height": 560, "width": 1040 }
+    },
+    {
+      "file": "Draft-pin-add-button.dc.html",
+      "name": "draft-pin-add-button",
+      "viewport": { "height": 440, "width": 760 }
+    },
+    {
+      "file": "Draft-pin-field-errors.dc.html",
+      "name": "draft-pin-field-errors",
+      "viewport": { "height": 440, "width": 760 }
     }
   ]
 }

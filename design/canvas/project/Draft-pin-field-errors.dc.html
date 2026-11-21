@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Draft, field errors</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<script src="./board-helpers.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 760px; height: 440px; position: relative; overflow: hidden; box-sizing: border-box; background: var(--surface-2); font-family: var(--font-body); color: var(--ink)">
+<div style="padding: 32px 32px 0; display: flex; flex-direction: column; gap: var(--space-4)">
+  <x-import component-from-global-scope="KinScape.Text" variant="h2" as="h2">Field errors</x-import>
+  <x-import component-from-global-scope="KinScape.Text" variant="body" as="span">SelectField and TextAreaField have no error look. Both take the marked look of TextField: a 2 px --error-border, the error icon in the box and the message in place of the helper.</x-import>
+</div>
+<span style="position: absolute; left: 32px; top: 128px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Select field</x-import></span>
+<div style="position: absolute; left: 32px; top: 156px; width: 336px; display: flex; flex-direction: column; gap: var(--space-8)">
+  <x-import component-from-global-scope="KinScape.Text" variant="label" as="label" html-for="draft-event">Event type</x-import>
+  <span style="display: flex; align-items: center; gap: var(--space-8); box-sizing: border-box; height: 44px; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); padding: 0 11px">
+    <select id="draft-event" aria-invalid="true" aria-describedby="draft-event-message" aria-required="true" style="flex: 1; min-width: 0; height: 44px; margin: -2px 0; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; appearance: none"><option value="" selected>Choose an event type</option><option value="birth">Birth</option></select>
+    <span style="display: flex; flex: none"><x-import component-from-global-scope="KinScape.Icon" name="chevronDown" size="20"></x-import></span>
+    <span style="display: flex; flex: none; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="error" size="20"></x-import></span>
+  </span>
+  <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="draft-event-message" role="alert" tone="error">Choose an event type.</x-import>
+</div>
+<span style="position: absolute; left: 392px; top: 128px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Text area</x-import></span>
+<div style="position: absolute; left: 392px; top: 156px; width: 336px; display: flex; flex-direction: column; gap: var(--space-8)">
+  <x-import component-from-global-scope="KinScape.Text" variant="label" as="label" html-for="draft-notes">Notes</x-import>
+  <span style="display: flex; align-items: flex-start; gap: var(--space-8); box-sizing: border-box; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); padding: 8px 11px">
+    <textarea id="draft-notes" rows="2" aria-invalid="true" aria-describedby="draft-notes-message" style="flex: 1; min-width: 0; box-sizing: border-box; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; padding: 0; resize: none">Example text that runs past the end of the field.</textarea>
+    <span style="display: flex; flex: none; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="error" size="20"></x-import></span>
+  </span>
+  <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="draft-notes-message" role="alert" tone="error">Use 10,000 characters or fewer.</x-import>
+</div>
+<div style="position: absolute; left: 32px; top: 300px; width: 696px; display: flex; flex-direction: column; gap: var(--space-8)">
+  <x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Notes</x-import>
+  <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">The select is 44 px high. The text area keeps its rows, and the icon sits at its top right, 8 px from the top.</x-import>
+  <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">The message is type.small in the error colour with role “alert”. Set aria-invalid on the control and link the message with aria-describedby.</x-import>
+  <x-import component-from-global-scope="KinScape.Text" variant="small" as="p">Build: add an error prop to both components, as TextField has one.</x-import>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":760,"height":440}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

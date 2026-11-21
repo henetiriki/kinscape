@@ -140,4 +140,5 @@ The design system artifact holds the bundle of the #863 branch (`3160ca5`), with
 
 - The folder line says "The design system also holds components from …", not "shared components": `docs/architecture.md` calls `features/map/components/` UI that only the map uses (`f6f0dbb2`).
 - "In the repo" opens with "The design system README does not include this section." The reader needs to know why the section is apart (`8932ae96`).
+- `CANVAS.md` step 6 is conditional, and the local session starts the workflow, not the tech lead: the session's token can dispatch it, and the `design` and `gallery` jobs already fail on a stale snapshot or card image. The same edit changes the "Who" line and two sentences that named the tech lead.
 - Done check 13: the local step 5.4 rewrote 41 sources with sub-pixel text widths only. The tech lead accepts the workflow run on `5055c401` as the proof: it changed no snapshot.

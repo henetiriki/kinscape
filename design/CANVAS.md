@@ -10,13 +10,13 @@ A design follows this path:
 
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot (`*.html`) in `source/` from its board in `canvas/`. `source/kse-*.svg` and `source/fonts.css` are hand-kept sources. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+The exporter writes each HTML snapshot (`*.html`) in `source/` from its board in `canvas/`. `source/kse-*.svg` and `source/fonts.css` are hand-kept sources. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The session then runs the workflow **Design: Render snapshots** on it (`gh workflow run design-agent-shots.yml --ref <branch>`, or the Actions tab). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
 An `export.json` snapshot can hold a `clip`: the `x`, `y`, `width` and `height` in px of the part to keep. The snapshot and its JPG show only that part, and the JPG keeps its size. The export fails on a clip outside the viewport, and on `position: fixed` content.
 
 The workflow also renders the card image of each component card (in `design/cards/`) in the pinned Playwright image. It commits those that changed. Nobody edits them by hand. A deletion follows [the rule](#who-deletes-a-generated-file).
 
-`npm run design:gallery` writes the gallery and opens each component card. The CI job `gallery` runs it. Outside the pinned image, the run skips the card images. If a card image differs in the `gallery` job, the tech lead runs the workflow. The workflow commits the new card image.
+`npm run design:gallery` writes the gallery and opens each component card. The CI job `gallery` runs it. Outside the pinned image, the run skips the card images. If a card image differs in the `gallery` job, the session runs the workflow. The workflow commits the new card image.
 
 ### Who deletes a generated file
 
@@ -37,7 +37,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
   3. Run `/publish-design-system` (steps 3.1 to 3.11 of the skill).
   4. Run "Updating the install" (4.1 to 4.6).
   5. Run "Refreshing the canvas copy" (5.1 to 5.5).
-  6. If no board shows the change, push the branch. The tech lead runs the workflow Design: Render snapshots on it.
+  6. If no board shows the change, push the branch. If the `design` or `gallery` job then fails on a snapshot or a card image, run the workflow Design: Render snapshots on it.
   7. If a board shows the change, step 6 does not run. A local session does these steps in order:
      1. Edit each board that the plan lists in the repo copy, `design/canvas/project/` ([board swap prompt](COMPONENTS.md#board-swap-prompt)).
      2. Run `npm run design:export`. If it fails, stop. Publish nothing.
@@ -45,12 +45,12 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
      4. `list` the canvas. Read back only the boards that the session published. Compare each sha256 with the repo copy. Set line 2 of `canvas/VERSION`.
      5. Discard the exported `source/` changes. Commit `design/canvas/` alone. Push the branch.
 
-     The tech lead then runs the workflow Design: Render snapshots once. That run renders the card images and the boards.
+     The session then runs the workflow Design: Render snapshots once. That run renders the card images and the boards.
 
      A local `npm run design:export` proves only that the export does not fail: another machine can write different values. The workflow runs in the pinned Playwright image. It is the proof of the snapshots, the JPGs and the card images.
 
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 6, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
-- **Who.** A local Claude Code session that the tech lead starts runs steps 2 to 5 and 7. It needs a signed-in account. The tech lead runs step 6.
+- **Who.** A local Claude Code session that the tech lead starts runs these steps, including the workflow. It needs a signed-in account.
 
 ## Updating the install
 

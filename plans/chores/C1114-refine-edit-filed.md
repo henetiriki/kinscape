@@ -124,3 +124,5 @@ The plan check reads the label after the _Links_ steps, so a Chore that gets a b
 - `.github/workflows/claude-unblock.yml` line 7 says "with `/refine spec`". The text stays true, and the file is a hand-back path.
 
 ## Deviations
+
+- The run denied each write to `.claude/skills/refine/`. This build did not change `SKILL.md`, `spec.md`, `chore.md` or `filing.md`. It did not change `word-count.mts` or its test, because the budgets follow the skill text. A local session builds these rows.

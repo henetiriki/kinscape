@@ -131,7 +131,11 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a `type.label` title and one line in `type.small`.
 - **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
-Every control has the five states on its component card. The states are default, hover, focus, pressed and disabled. A Button with an `href` has no disabled state. A disabled Text link is plain text. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
+Every control has the five states on its component card.
+
+The states are default, hover, focus, pressed and disabled. A Button with an `href` has no disabled state. A disabled Text link is plain text.
+
+Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
 
 ## States
 

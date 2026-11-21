@@ -96,7 +96,7 @@
   },
   "blobs": {},
   "createdOnFiles": {
-    "at": "2026-11-21T10:18:21.000Z",
+    "at": "2026-11-21T10:54:32.000Z",
     "v": 1
   },
   "docs": {
@@ -109,10 +109,10 @@
     "Icons"
   ],
   "lastChange": {
-    "at": "2026-11-21T10:18:21.000Z",
+    "at": "2026-11-21T10:54:32.000Z",
     "by": "louw swart",
-    "note": "npm run design-system at 950e6a0",
-    "via": "code · henetiriki/kinscape@950e6a0"
+    "note": "npm run design-system at 6691de8",
+    "via": "code · henetiriki/kinscape@6691de8"
   },
   "layout": "files",
   "libraries": [

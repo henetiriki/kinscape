@@ -82,4 +82,5 @@ On `main`, `build.md` Hand-back step 2 adds the row and writes a plain `## Devia
 ## Deviations
 
 - The CI run denied writes to `.claude/skills/build-local/SKILL.md` and `.claude/skills/fix-review-local/SKILL.md`. A local session built those two rows.
-- The "Only step 8 follows a successful push, and only after a "Big:" line" sentence in `fix-review.md` is the new push-last text. Words cut in `plans/README.md`, `build.md` and `fix-review.md` kept each rule.
+- Big: the budget of `plans/README.md` rises from 1200 to 1290 words, and the budget of `fix-review.md` from 450 to 490 (`scripts/word-count.mts` and `scripts/__tests__/word-count.test.ts`). The new rule does not fit the old budgets, and the first build cut rules and vertical lists to fit. Each file now keeps the text of `main`, except the big-departure, failing-tests and ready-check rules. The plan Risks said that the build does not raise a budget. The tech lead chose the rise in the review of this PR.
+- The "Only step 8 follows a successful push, and only after a "Big:" line" sentence in `fix-review.md` is the new push-last text.

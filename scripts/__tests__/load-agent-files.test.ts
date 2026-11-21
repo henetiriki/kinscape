@@ -991,6 +991,33 @@ describe('the stale-facts step of build.md', () => {
   });
 });
 
+// A big departure is built and recorded as a "Big:" line, and the PR stays a draft
+// (plans/chores/C1111-big-departure-draft.md).
+describe('the big-departure rules of build.md', () => {
+  const build = () => agent('build.md');
+
+  it('builds the rest and writes a "Big:" line when a plan needs a package', () => {
+    expect(build()).toContain(
+      'If a plan needs one, build the rest and write a "Big:" line'
+    );
+    expect(build()).not.toContain('If a plan needs one, stop');
+  });
+
+  it('keeps the PR a draft when the plan has a "Big:" line', () => {
+    expect(build()).toContain('- The plan has a "Big:" line.');
+  });
+
+  it('lists each "Big:" line first in the final comment', () => {
+    expect(build()).toContain(
+      'comment on the PR last. List each "Big:" line first.'
+    );
+  });
+
+  it('writes a "Big:" line for a hand-back path that the table does not name', () => {
+    expect(build()).toContain('Write a "Big:" line under `## Deviations`.');
+  });
+});
+
 // A run that pushed a commit and left no comment gets its own text, so a build that passed does
 // not read as a failure (plans/chores/C693-build-comment-on-pass.md).
 describe('the safety net of claude-run.yml', () => {
@@ -1851,12 +1878,20 @@ describe('the fix-review workflow', () => {
     );
   });
 
-  // A big departure is built and recorded, not a stop (plans/chores/C1111-big-departure-draft.md).
-  it('names the "Big:" line in build.md and has no stop for a big departure', () => {
-    const text = agent('build.md');
+  // A big departure is built and recorded, not left (plans/chores/C1111-big-departure-draft.md).
+  it('makes a big-departure fix and writes a "Big:" line, in fix-review.md', () => {
+    const text = agent('fix-review.md');
 
-    expect(text).toContain('"Big:" line');
-    expect(text).not.toContain('If a plan needs one, stop');
+    expect(text).toContain(
+      'big-departures rule](../../plans/README.md#big-departures)), make it. Write a "Big:" line under `## Deviations` in the plan.'
+    );
+    expect(text).not.toContain("don't make it");
+    expect(text).toContain(
+      'Post one final PR comment. List each "Big:" line first.'
+    );
+    expect(text).toContain(
+      '8. If you wrote a "Big:" line, run `gh pr ready <n> --undo`.'
+    );
   });
 
   // A failed push must not drop the fixes without a word, and must not lose the commits of another

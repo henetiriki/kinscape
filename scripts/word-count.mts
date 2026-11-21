@@ -13,7 +13,7 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
     pattern: /^\.claude\/skills\/(.+\/)?(?!NOTICE\.md$)[^/]+\.md$/,
   },
   { limit: 600, pattern: /^\.github\/agent\/build\.md$/ },
-  { limit: 450, pattern: /^\.github\/agent\/fix-review\.md$/ },
+  { limit: 490, pattern: /^\.github\/agent\/fix-review\.md$/ },
   { limit: 330, pattern: /^\.github\/agent\/refresh\.md$/ },
   { limit: 750, pattern: /^\.github\/agent\/review-code\.md$/ },
   { limit: 550, pattern: /^\.github\/agent\/review\.md$/ },
@@ -36,7 +36,7 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 900, pattern: /^docs\/repo-settings\.md$/ },
   { limit: 350, pattern: /^docs\/security\.md$/ },
   { limit: 600, pattern: /^docs\/writing\.md$/ },
-  { limit: 1200, pattern: /^plans\/README\.md$/ },
+  { limit: 1290, pattern: /^plans\/README\.md$/ },
   {
     limit: 1500,
     pattern: /^plans\/(?:(?:bugs|chores)\/)?[^/]+\.md$/,

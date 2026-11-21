@@ -29,7 +29,7 @@ Only these need no issue and no plan:
 
 Before you draft or build, check that a Bug still reproduces.
 
-If a check fails, stop. Comment each mismatch and name who fixes it. If the PO fixes it, swap the status label of the issue for `status: ready-for-po`. Do not edit the issue, except as the refresh does.
+If a check fails, stop. Comment each mismatch. Name who fixes each one. If the PO fixes it, swap the status label of the issue for `status: ready-for-po`. Do not edit the issue, except as the refresh does.
 
 <a id="related-issues"></a>**Related issues.** Before you draft or revise a plan, read each related issue:
 
@@ -40,59 +40,96 @@ If a check fails, stop. Comment each mismatch and name who fixes it. If the PO f
   - a milestone Spec.
 - Each open sub-issue of the parent that shares a requirement ID.
 
-In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. Only the build edits a related issue.
+In a [decision's](../docs/how-we-work.md#decisions) question, name each related issue that holds a value for the same thing, with its value. Name the issues that each differing option changes. If the plan sets a value that differs from a related issue, write a decision for it. A clash never stops a run. Only the build edits a related issue.
 
 ## Plan PR
 
 <a id="plan-pr-flow"></a>**In GitHub Actions**, do these steps:
 
 - Refresh the issue ([stale-facts rule](#stale-facts)).
-- Commit the plan as `plan(<id>): draft` with `Status: draft`, on the plan path and branch from the [table](#item-types).
-- Open a draft PR with the plan PR title from the table, and `Closes #<issue>` in its body.
+- Commit the plan as `plan(<id>): draft` with `Status: draft`.
+- Use the plan path and the branch from the [table](#item-types).
+- Open a draft PR with the plan PR title from the table.
+- Put `Closes #<issue>` in its body.
 - Stop.
 
-Only the tech lead's approving review approves the plan. [`agent-approve.mts`](../scripts/agent-approve.mts) commits the approval as `plan(<id>): approved by @<tech-lead>`. A `@claude` comment is feedback: revise the plan only. A respond run records a plan answer in the plan. The build rewords the issues ([reword step](../.github/agent/build.md#reword)).
+Only the tech lead's approving review approves the plan. [`agent-approve.mts`](../scripts/agent-approve.mts) commits the approval as `plan(<id>): approved by @<tech-lead>`. A `@claude` comment is feedback: revise the plan only. A respond run records a plan answer in the plan only. The build rewords the issues ([reword step](../.github/agent/build.md#reword)).
 
-After the tech lead approves the plan, the build agent drops `(plan)` from the title, rewrites the PR body and marks the PR ready. The title and the body describe the work that the PR merges now. Evidence is the exception ([test-first rule](#test-first)).
+After the tech lead approves the plan, the build agent does these steps:
 
-**In a local session**, a plan has `Status: approved` and the same commit text.
+- It drops `(plan)` from the title.
+- It rewrites the PR body.
+- It marks the PR ready.
+
+The title and the body describe the work that the PR merges now. Evidence is the exception ([test-first rule](#test-first)).
+
+**In a local session**, a plan that `agent-approve.mts` does not commit has `Status: approved` and the same commit text.
 
 ## Who builds
 
-<a id="build-ownership"></a>**Build ownership.** The CI agent builds the rows of an approved plan that are not hand-back paths ([building](../docs/building.md#specs-bugs-and-chores)). Before a person builds by hand, the person runs `git fetch` and reads the PR comments. If the PR has a "Building…" comment, wait. The workflow deletes it when the run ends. If not, continue from the last pushed commit.
+<a id="build-ownership"></a>**Build ownership.** The CI agent builds the rows of an approved plan that are not hand-back paths ([building](../docs/building.md#specs-bugs-and-chores)). Before a person builds by hand, the person does these steps:
 
-<a id="hand-back"></a>**Hand-back.** The CI build agent never edits a hand-back path. A hand-back path matches a pattern of `HAND_BACK` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits one, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. The CI agent builds the other rows ([`build.md`](../.github/agent/build.md#hand-back)). If each row is a hand-back path, no build runs. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead builds the hand-back rows in a local agent session, and plans a Chore that gets no plan PR. Comment the reason on its issue.
+- Run `git fetch`. Then read the PR comments.
+- If the PR has a "Building…" comment, wait. The workflow deletes it when the run ends.
+- If the PR has no "Building…" comment, continue from the last pushed commit.
 
-<a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent cannot reach claude.ai, so it asks in the PR and keeps the PR a draft.
+<a id="hand-back"></a>**Hand-back.** The CI build agent never edits a hand-back path. A hand-back path matches a pattern of `HAND_BACK` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. The CI agent builds the other rows ([`build.md`](../.github/agent/build.md#hand-back)). If each row is a hand-back path, no build runs. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead builds the hand-back rows in a local agent session. The tech lead also plans a Chore that gets no plan PR. If there is no plan PR, comment the reason on the issue.
+
+<a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent cannot get access to claude.ai, so it asks in the PR. It keeps the PR as a draft. A canvas-only follow-up has its own plan: [`C689-canvas-refresh.md`](chores/C689-canvas-refresh.md).
 
 ## While you build
 
 <a id="test-first"></a>**Test first.** This rule applies to logic that a unit test covers. Before you write the code, see the test fail on the behaviour, not on an import error. Paste that failing line in the Evidence of the PR.
 
-<a id="missing-components"></a>**Missing components.** A screen plan has a `## Components` table. If the diff fits the size cap in the [too-big rule](#too-big), build a missing component in the same Spec, in its own commit with its test.
+<a id="missing-components"></a>**Missing components.** A screen plan has a `## Components` table. If the diff fits the size cap in the [too-big rule](#too-big), build a missing component in the same Spec. Give the component its own commit, with its test.
 
-If the diff does not fit, stop. File a Spec for the component. Set the screen Spec to `status: blocked`, with its "blocked by" link to that Spec ([linking issues](../docs/how-we-work.md#linking-issues)). Build no stand-in. A style that you copy from another component is a stand-in.
+If the diff does not fit, do these steps:
+
+- Stop.
+- File a Spec for the component.
+- Set the screen Spec to `status: blocked`.
+- Set its "blocked by" link to that Spec ([linking issues](../docs/how-we-work.md#linking-issues)).
+
+Build no stand-in. A style that you copy from another component is a stand-in.
 
 A Spec that builds a shared component adds it to `CONTROLS`. Run steps 2 to 7 of [Changing the design system](../design/CANVAS.md#changing-the-design-system) on the same branch ([`COMPONENTS.md`](../design/COMPONENTS.md)).
 
 <a id="failing-tests"></a>**Failing tests.** Fix the code, not the test. If the plan changes the behaviour that a test checks, you can do one of these to the test:
 
-- Change, skip or delete the test.
+- Change the test.
+- Skip the test.
+- Delete the test.
 - Loosen an assertion.
 
 The plan must list that test under Files that change. In each other case, leave a test that looks wrong as it is. Write a "Big:" line that names the test and the reason ([big-departures rule](#big-departures)).
 
 ## When the plan changes
 
-<a id="small-departures"></a>**Small departures.** A small departure does not change the intent of the plan, such as a file name, the step order or an extra helper.
+<a id="small-departures"></a>**Small departures.** A small departure does not change the intent of the plan. These are examples:
 
-Update the plan in the same commit as the code. Write one line under `## Deviations`.
+- a file name;
+- the step order;
+- an extra helper.
 
-<a id="big-departures"></a>**Big departures.** A big departure alters the scope, the data model, a public API or an acceptance check, or adds a dependency. Build a change that alters one of the first four. Write a "Big:" line under `## Deviations` that names the change and the reason. Keep the PR a draft.
+Update the plan in the same commit as the code. Write one line under `## Deviations`. The tech lead's PR approval approves the code and the final plan together.
 
-If the plan needs a package that is not installed, build the work that needs no package. Write a "Big:" line that names the package. Keep the PR a draft.
+<a id="big-departures"></a>**Big departures.** A big departure is a change that does one of these:
 
-If two readings of the plan are equally correct, build the one that changes less. A "Big:" line never changes a Decisions box.
+- It alters the scope.
+- It alters the data model.
+- It alters a public API.
+- It alters an acceptance check.
+- It adds a dependency.
+
+If a change alters the scope, the data model, a public API or an acceptance check, do these steps:
+
+- Build the change that you judge correct.
+- Write one line under `## Deviations` that starts with "Big:". Give the reason.
+- Keep the PR a draft.
+
+If a change adds a dependency, build the work that needs no package. Write a "Big:" line that names the package. Keep the PR a draft.
+
+If two readings of the plan are equally correct, build the one that changes less. Name the other reading in the "Big:" line. A "Big:" line never changes a Decisions box.
 
 <a id="too-big"></a>**Too big.** A plan is too big if it does not fit its word budget. It is also too big if the diff will pass the line cap in `/refine spec` › Step 1. If the plan is too big, do these steps:
 

@@ -646,6 +646,32 @@ describe('MapView', () => {
     measure.mockRestore();
   });
 
+  // NFR-01, PIN-02
+  it('marks a Map date change, and not an open Pin or a layer toggle', () => {
+    const mark = vi.spyOn(performance, 'mark');
+    const open = { id: 'p1', position: [18.4, -33.9] as [number, number] };
+    const view = (day: number, extra = {}, visible = on) => (
+      <MapView
+        layers={layers}
+        mapDay={day as typeof FIVE}
+        padding={padding}
+        visible={visible}
+        {...extra}
+      />
+    );
+    const { rerender } = render(view(FIVE));
+    const first = mark.mock.calls.length;
+
+    expect(first).toBeGreaterThan(0);
+    rerender(view(FIVE, { open }));
+    rerender(view(FIVE, { open }, { ...on, [polityLayer.id]: false }));
+    rerender(view(FIVE));
+    expect(mark).toHaveBeenCalledTimes(first);
+    rerender(view(NINE));
+    expect(mark).toHaveBeenCalledTimes(first + 1);
+    mark.mockRestore();
+  });
+
   // PIN-03
   describe('icons', () => {
     const iconLayer: Layer = {

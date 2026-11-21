@@ -82,6 +82,8 @@ export const MapView = ({
   const onOpenPinRef = useRef(onOpenPin);
   const onOpenPointRef = useRef(onOpenPoint);
   const selectRef = useRef<string[]>([]);
+  /** The Map date that the last NFR-01 timing started for. */
+  const timedDay = useRef<Day>(undefined);
 
   useEffect(() => {
     onZoomLimitsRef.current = onZoomLimits;
@@ -279,11 +281,14 @@ export const MapView = ({
     if (!current) return;
 
     const apply = () => {
-      // NFR-01: from the Map date change to the next idle frame.
-      performance.mark('map-date-change');
-      current.once('idle', () => {
-        performance.measure('map-date-redraw', 'map-date-change');
-      });
+      // NFR-01: from the Map date change to the next idle frame. An open Pin or a layer toggle is no date change.
+      if (timedDay.current !== mapDay) {
+        timedDay.current = mapDay;
+        performance.mark('map-date-change');
+        current.once('idle', () => {
+          performance.measure('map-date-redraw', 'map-date-change');
+        });
+      }
 
       for (const layer of layers) {
         const filters = layer.filters(mapDay, openId);

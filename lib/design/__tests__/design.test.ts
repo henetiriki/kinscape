@@ -25,7 +25,7 @@ describe('the design snapshots', () => {
   );
 
   it('are all checked', () => {
-    expect(snapshots).toHaveLength(77);
+    expect(snapshots).toHaveLength(75);
   });
 
   it.each(snapshots)('%s uses only token colours', name => {
@@ -49,7 +49,7 @@ describe('colour literals', () => {
   ).toSorted();
 
   it('finds the components and the CSS modules', () => {
-    expect(components).toHaveLength(77);
+    expect(components).toHaveLength(79);
     expect(modules.length).toBeGreaterThanOrEqual(9);
   });
 
@@ -100,14 +100,20 @@ describe('layout tokens', () => {
     );
   });
 
-  it('places the popup from popup-gap and popup-point-y, pointer on the right edge', () => {
-    const css = read('app/components/overlays/Popup.module.css');
+  it('places a popup from its gap and popup-point-y, pointer on the right edge', () => {
+    const placed = read('app/components/overlays/PlacedAt.module.css');
+    const popup = read('app/components/overlays/Popup.module.css');
 
-    expect(css).toContain('-100% - var(--layout-popup-gap)');
-    expect(css).toContain('calc(-1 * var(--layout-popup-point-y))');
-    expect(css).toMatch(/\.placedPointer \{[^}]*left: 100%/);
-    expect(css).toMatch(
-      /\.placedPointer \{[^}]*top: var\(--layout-popup-point-y\)/
+    expect(placed).toContain('-100% - var(--gap)');
+    expect(placed).toContain('var(--y) - var(--layout-popup-point-y)');
+    expect(placed).toContain('var(--layout-furniture-top)');
+    expect(placed).toContain('z-index: var(--z-popup)');
+    expect(read('app/components/overlays/Popup.tsx')).toContain(
+      "gap='popup-gap'"
+    );
+    expect(popup).toMatch(/\.placedPointer \{[^}]*left: 100%/);
+    expect(popup).toMatch(
+      /\.placedPointer \{[^}]*top: var\(--pointer-y, var\(--layout-popup-point-y\)\)/
     );
   });
 

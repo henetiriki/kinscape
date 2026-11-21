@@ -13,6 +13,9 @@ export type MenuEntry = {
   label: string;
 };
 
+/** The states of the Pin popup: the details loaded, loading or failed. */
+export type PinPopupState = 'failed' | 'loaded' | 'loading';
+
 export type PopupPin = {
   date: string;
   event: EventType;

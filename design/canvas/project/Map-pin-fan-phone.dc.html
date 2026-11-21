@@ -37,7 +37,6 @@ class Component extends DCLogic {
     const variant = this.props.variant ?? 'fan';
     // Example Farm, in board pixels.
     const P = { x: 264, y: 310 };
-    const TEXT = (kind, text) => `<x-import component-from-global-scope="KinScape.Text" variant="${kind}" as="span">${text}</x-import>`;
 
     // The count marker and the Pins of the fan. A phone shows the same looks as a desktop.
     const marker = (count, label, place) => [
@@ -106,54 +105,20 @@ class Component extends DCLogic {
       </g>
       <text x="742" y="463" text-anchor="middle" fill="#6B3412" font-style="italic" font-size="7.9">contested · Orange River Colony</text>
     </g>
+    <g transform="translate(531 323) scale(${279 / 390} ${603 / 844})">${below}</g>
   </svg>`;
-    const overlayBelow = `<svg viewBox="0 0 390 844" width="390" height="844" style="position: absolute; left: 0; top: 0; display: block" aria-hidden="true">${below}</svg>`;
-
-    const STEP = 'width: 44px; height: 44px; border: 1px solid #C9CFC5; border-radius: 8px; background: #FFFFFF; color: #18211B; display: flex; align-items: center; justify-content: center';
-    const LABEL = 'font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #4A544C';
-    const MONO = "font-family: 'JetBrains Mono', monospace; color: #4A544C";
-    // The Pin popup as a sheet, like the look-up sheet of the Jurisdiction popup. It has no "Add a pin here" and no "Edit" (NFR-05).
-    // The lines join with no space between them. A space between two tags makes a text node, and the sheet has no text node there.
-    const sheet = mount([
-      `<section aria-label="Map date and Pin details" style="position: absolute; left: 0; right: 0; bottom: 0; height: 432px; box-sizing: border-box; padding: 8px 16px 20px; background: #FFFFFF; border-radius: 18px 18px 0 0; box-shadow: 0 -6px 24px rgba(24,33,27,0.16); display: flex; flex-direction: column; gap: 12px">`,
-      `<span style="align-self: center; width: 40px; height: 4px; border-radius: 2px; background: #C9CFC5"></span>`,
-      `<div style="display: flex; align-items: center; gap: 6px">`,
-      `<button type="button" aria-label="Back one year" style="${STEP}"><x-import component-from-global-scope="KinScape.Icon" name="back" size="16"></x-import></button>`,
-      `<input aria-label="Map date" value="1901" readonly style="flex: 1; min-width: 0; height: 44px; box-sizing: border-box; text-align: center; border: 1px solid #C9CFC5; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: #18211B">`,
-      `<button type="button" aria-label="Forward one year" style="${STEP}"><x-import component-from-global-scope="KinScape.Icon" name="forward" size="16"></x-import></button>`,
-      `<button type="button" aria-label="Play through time" style="width: 44px; height: 44px; border: 0; border-radius: 22px; background: #264F29; color: #FFFFFF; display: flex; align-items: center; justify-content: center; margin-left: 4px"><x-import component-from-global-scope="KinScape.Icon" name="play" size="16"></x-import></button>`,
-      `</div>`,
-      `<div style="position: relative; height: 34px">`,
-      `<span style="position: absolute; left: 0; right: 0; top: 12px; height: 4px; border-radius: 2px; background: #D6DAD2"></span>`,
-      `<button type="button" aria-label="Map date slider, 1901" style="position: absolute; left: calc(66.4% - 13px); top: 1px; width: 26px; height: 26px; padding: 0; border-radius: 13px; border: 4px solid #FFFFFF; background: #264F29; box-shadow: 0 0 0 1px #264F29, 0 2px 6px rgba(24,33,27,0.3)"></button>`,
-      `<span style="position: absolute; left: 0; top: 22px; font-size: 11px; ${MONO}">1652</span>`,
-      `<span style="position: absolute; right: 0; top: 22px; font-size: 11px; ${MONO}">Today</span>`,
-      `</div>`,
-      `<div style="height: 1px; background: #E2E5DD"></div>`,
-      `<div role="group" aria-label="Pin details" style="display: flex; flex-direction: column; gap: 12px">`,
-      `<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">`,
-      `<div style="display: flex; flex-direction: column; gap: 4px">`,
-      `<span style="display: flex; align-items: center; gap: 8px; color: #9A3B12; font-size: 16px"><x-import component-from-global-scope="KinScape.EventGlyph" event="residence"></x-import>${TEXT('overline', 'Residence')}</span>`,
-      TEXT('h3', 'Example Person'),
-      `</div>`,
-      `<x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import>`,
-      `</div>`,
-      `<div style="display: flex; flex-direction: column; gap: 2px">${TEXT('title', 'From 1890 to 1905')}${TEXT('mono', 'FROM 1890 TO 1905')}</div>`,
-      `<div style="display: flex; flex-direction: column; gap: 4px; padding: 12px; border-radius: 8px; background: #F4F5F0">${TEXT('overline', 'Address as recorded')}${TEXT('body', 'Farm Example, district Example')}</div>`,
-      `</div>`,
-      `<p style="margin: auto 0 0; font-size: 12.5px; color: #4A544C">Look-up only on a phone. Add people and pins on a tablet or computer.</p>`,
-      `</section>`
-    ].join(''));
 
     // A Day counts days since 1652-01-01: 91109 is 1901-06-14 and 136894 is 2026-10-21.
-    const collapsed = h(K.DateDock, { day: 91109, lastDay: 136894, onChange: noop, onPlay: noop, sheet: { expanded: false, onExpandedChange: noop } });
+    const dock = details => h(K.DateDock, { day: 91109, lastDay: 136894, onChange: noop, onPlay: noop, sheet: { expanded: details !== undefined, onExpandedChange: noop }, details });
+    // The Pin popup sits in the Map date sheet, under the slider. It has no "Add a pin here" and no "Edit" (NFR-05).
+    const popup = h(K.PinPopup, { address: 'Farm Example, district Example', event: 'residence', form: 'inline', name: 'Example Person', onClose: noop, onRetry: noop, reading: 'From 1890 to 1905', recorded: 'FROM 1890 TO 1905', state: 'loaded' });
 
     return {
-      dock: variant === 'popup' ? sheet : collapsed,
+      dock: dock(variant === 'popup' ? popup : undefined),
       layers: h(K.LayersButton),
       map: h(React.Fragment, null,
         drawn(svg),
-        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 390, height: 844 } }, drawn(overlayBelow), mount(above))
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 390, height: 844 } }, mount(above))
       ),
       search: h(K.SearchBar, { account: h(K.Avatar, { initial: 'R' }), form: 'pill' })
     };

@@ -1,0 +1,18 @@
+/*
+ * At --x, --y: the popup's right edge sits --gap left of the point, which is popup-point-y down it.
+ * The top edge stops at furniture-top, so the popup never sits under the search bar or the zoom
+ * controls. --pointer-y is how far down the popup the point is; the pointer reads it.
+ */
+.placed {
+  --top: max(
+    calc(var(--y) - var(--layout-popup-point-y)),
+    var(--layout-furniture-top)
+  );
+  --pointer-y: calc(var(--y) - var(--top));
+
+  left: var(--x);
+  position: absolute;
+  top: var(--top);
+  translate: calc(-100% - var(--gap));
+  z-index: var(--z-popup);
+}

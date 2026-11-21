@@ -1,0 +1,110 @@
+/* The Pin popup: 304 wide on a desktop, a region of the bottom sheet on a phone */
+.popup {
+  composes: floating from '@ks/app/components/foundation/Surface.module.css';
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  position: relative;
+  width: var(--layout-popup-width);
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-8) var(--space-16) var(--space-12);
+}
+
+.inline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.handle {
+  align-self: center;
+  background: var(--line-strong);
+  border-radius: var(--radius-full);
+  height: 4px;
+  width: 40px;
+}
+
+.top {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-8);
+  justify-content: space-between;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.header h3 {
+  margin: 0;
+}
+
+.event {
+  align-items: center;
+  color: var(--pin);
+  display: flex;
+  font-size: 16px;
+  gap: var(--space-8);
+}
+
+/* The negative margin pulls Close 8px up and right, so the popup keeps its padding. */
+.close {
+  flex: none;
+  margin: calc(-1 * var(--space-8)) calc(-1 * var(--space-8)) 0 0;
+}
+
+.dates {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.address {
+  background: var(--surface-2);
+  border-radius: var(--radius-control);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-12);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-8);
+}
+
+.note {
+  color: var(--ink-3);
+  font-size: 12.5px;
+  margin: 0;
+}
+
+/* In the date sheet the note sits at the foot of the sheet. */
+.foot {
+  margin: auto 0 0;
+}
+
+/* The loading bar stands where the name or the address will be. */
+.bar {
+  background: var(--line);
+  border-radius: var(--radius-small);
+  display: block;
+  height: 20px;
+  max-width: 100%;
+}
+
+/* The pointer sits on the right edge, at the point: popup-point-y down, or less when the popup stops at the free area. */
+.popup > .pointer {
+  left: 100%;
+  top: var(--pointer-y, var(--layout-popup-point-y));
+  translate: -50% -50%;
+}

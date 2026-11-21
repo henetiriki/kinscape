@@ -3,6 +3,9 @@
 export type TestWindow = {
   kinscapeMap: {
     getCenter: () => { lat: number; lng: number };
+    getContainer: () => {
+      getBoundingClientRect: () => { left: number; top: number };
+    };
     getMaxZoom: () => number;
     getMinZoom: () => number;
     getPadding: () => {
@@ -13,15 +16,21 @@ export type TestWindow = {
     };
     getZoom: () => number;
     hasImage: (id: string) => boolean;
-    jumpTo: (options: { zoom: number }) => void;
+    jumpTo: (options: { center?: [number, number]; zoom?: number }) => void;
     project: (point: [number, number] | { lat: number; lng: number }) => {
       x: number;
       y: number;
     };
     queryRenderedFeatures: (
-      geometry: undefined,
+      geometry:
+        | [[number, number], [number, number]]
+        | { x: number; y: number }
+        | undefined,
       options: { layers: string[] }
-    ) => { properties: Record<string, string> }[];
+    ) => {
+      geometry: { coordinates: [number, number] };
+      properties: Record<string, string>;
+    }[];
     querySourceFeatures: (source: string) => unknown[];
   };
 };

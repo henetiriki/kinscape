@@ -97,6 +97,7 @@ describe('pinsLayer', () => {
             geometry: { coordinates: [18.4, -33.9], type: 'Point' },
             properties: {
               eventType: 'residence',
+              id: 'pin-1',
               validFrom: RESIDENCE.span.validFrom,
               validTo: RESIDENCE.span.validTo,
             },
@@ -116,7 +117,7 @@ describe('pinsLayer', () => {
   });
 
   it('draws each event type with its own icon and lets Pins on one Place overlap', () => {
-    const [drawing] = layer.layers;
+    const drawing = layer.layers.find(({ id }) => id === 'pins');
 
     expect(Object.keys(layer.icons ?? {})).toEqual(
       EVENT_ORDER.map(event => `pin-${event}`)
@@ -144,10 +145,88 @@ describe('pinsLayer', () => {
     });
   });
 
-  it('names its panel row and the filter of its one layer', () => {
+  it('names its panel row and the filter of each drawing layer', () => {
     expect(layer.label).toBe('Pins');
     expect(layer.id).toBe('pins');
-    expect(Object.keys(layer.filters(toDay('1850-01-01')))).toEqual(['pins']);
+    expect(Object.keys(layer.filters(toDay('1850-01-01'))).toSorted()).toEqual(
+      layer.layers.map(({ id }) => id).toSorted()
+    );
+  });
+
+  // PIN-02: a click picks the Pin symbol, not its ring
+  it('lets a click pick only the Pin symbols', () => {
+    expect(layer.select).toEqual(['pins']);
+  });
+
+  // PIN-02, #862 D3
+  describe('selection ring', () => {
+    const [halo, ring, symbols] = layer.layers;
+    const ringShows = (id: string, day: string, open?: string) => {
+      const filter = layer.filters(toDay(day), open)['pins-selected'];
+
+      return featureFilter(filter, 'filter').filter(
+        { zoom: 0 },
+        {
+          geometry: [],
+          id: 1,
+          properties: {
+            id,
+            validFrom: RESIDENCE.span.validFrom,
+            validTo: RESIDENCE.span.validTo,
+          },
+          type: 1,
+        }
+      );
+    };
+
+    it('draws two rings under the symbols, from the map.selected tokens', () => {
+      expect([halo.id, ring.id, symbols.id]).toEqual([
+        'pins-halo',
+        'pins-selected',
+        'pins',
+      ]);
+      // The Map-pin-count board: a brand ring of r 16 and a white ring of r 20.5 at 0.8, as svg circles.
+      expect(halo).toMatchObject({
+        paint: {
+          'circle-color': 'transparent',
+          'circle-radius': 19.5,
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-opacity': 0.8,
+          'circle-stroke-width': 2,
+        },
+        source: 'pins',
+        type: 'circle',
+      });
+      expect(ring).toMatchObject({
+        paint: {
+          'circle-color': 'transparent',
+          'circle-radius': 14.75,
+          'circle-stroke-color': expect.stringMatching(/^#/),
+          'circle-stroke-width': 2.5,
+        },
+        source: 'pins',
+        type: 'circle',
+      });
+    });
+
+    it('shows on the open Pin only', () => {
+      expect(ringShows('pin-1', '1850-06-01', 'pin-1')).toBe(true);
+      expect(ringShows('pin-2', '1850-06-01', 'pin-1')).toBe(false);
+    });
+
+    it('shows on no Pin when none is open', () => {
+      expect(ringShows('pin-1', '1850-06-01')).toBe(false);
+    });
+
+    it('goes when the Map date hides the Pin', () => {
+      expect(ringShows('pin-1', '1860-06-01', 'pin-1')).toBe(false);
+    });
+
+    it('filters both circles the same way', () => {
+      const filters = layer.filters(toDay('1850-06-01'), 'pin-1');
+
+      expect(filters['pins-halo']).toEqual(filters['pins-selected']);
+    });
   });
 
   it('counts the Pins true on the Map date in the caption', () => {

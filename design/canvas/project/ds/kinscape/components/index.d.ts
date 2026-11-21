@@ -75,6 +75,8 @@ export type MenuEntry = {
     id: string;
     label: string;
 };
+/** The states of the Pin popup: the details loaded, loading or failed. */
+export type PinPopupState = 'failed' | 'loaded' | 'loading';
 export type PopupPin = {
     date: string;
     event: EventType;
@@ -555,7 +557,7 @@ export type LayersButtonProps = Parameters<typeof LayersButton>[0];
  * With `sheet` it is the phone's bottom sheet: the stepper and round Play, and the slider once expanded.
  * The Play, Jump to and contested parts show only when their props are passed.
  */
-export declare const DateDock: ({ contestedCount, contestedYears, day, defaultText, epochs, hasBorders, lastDay, onChange, onPlay, sheet, }: {
+export declare const DateDock: ({ contestedCount, contestedYears, day, defaultText, details, epochs, hasBorders, lastDay, onChange, onPlay, sheet, }: {
     /** Contested claims on the Map date. */
     contestedCount?: number;
     /** Year spans drawn hatched on the slider. */
@@ -563,6 +565,8 @@ export declare const DateDock: ({ contestedCount, contestedYears, day, defaultTe
     day: Day;
     /** Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. */
     defaultText?: string;
+    /** The phone sheet only: content under the slider, such as the Pin popup. The sheet shows it when expanded. */
+    details?: ReactNode;
     /** Epochs for Jump to; they are also the slider's ticks. */
     epochs?: Epoch[];
     /** Whether a Boundary version is valid on a day; a typed date without one shows the warning. */
@@ -960,6 +964,35 @@ declare const PopupPointer: ({ className }: {
     className?: string;
 }) => import("react").JSX.Element;
 export type PopupProps = Parameters<typeof Popup>[0];
+
+type PinPopupArgs = {
+    /** The address as recorded; the loaded state shows it, and an empty one reads as no address. */
+    address?: string;
+    /** The Event type of the Pin. */
+    event: EventType;
+    /** A floating popup on a desktop; a sheet region on a phone; `inline` fills the details of the date sheet. */
+    form?: 'floating' | 'inline' | 'sheet';
+    /** The Person's name; the loaded state shows it. */
+    name?: string;
+    /** Called by Close and by Esc inside the floating popup. */
+    onClose?: () => void;
+    /** Called by "Try again" in the failed state. */
+    onRetry?: () => void;
+    /** The reading of the date, such as "From 1890 to 1905". */
+    reading: string;
+    /** The date as recorded, such as "FROM 1890 TO 1905". */
+    recorded: string;
+    /** Loading and failed show the event type and both date lines only. */
+    state: PinPopupState;
+};
+/** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
+export declare const PinPopup: ({ address, event, form, name, onClose, onRetry, reading, recorded, state, }: PinPopupArgs) => import("react").JSX.Element;
+/** The floating popup at a map point, in pixels from the corner of the overlay area. */
+declare const PlacedPinPopup: ({ x, y, ...rest }: {
+    x: number;
+    y: number;
+} & Omit<PinPopupArgs, "form">) => import("react").JSX.Element;
+export type PinPopupProps = Parameters<typeof PinPopup>[0];
 
 /** The phone's non-modal date sheet: the map stays usable behind it. Collapsed or expanded; the grabber toggles it. */
 export declare const BottomSheet: ({ children, expanded, onExpandedChange, }: {

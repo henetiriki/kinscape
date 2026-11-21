@@ -229,6 +229,7 @@
   --layout-credits-bottom: 6px;
   --layout-popup-gap: 14px;
   --layout-popup-point-y: 114px;
+  --layout-pin-popup-gap: 30px;
   --layout-page-header: 64px;
   --layout-page-header-phone: 60px;
   --layout-page-header-divider: 28px;
@@ -257,5 +258,6 @@
   --breakpoint-phone-height: 499.98px;
   --z-furniture: 1;
   --z-action-bar: 5;
+  --z-popup: 6;
   --z-menu: 10;
 }

@@ -1,12 +1,19 @@
 import type { Ref } from 'react';
 
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Layer, MapHandle } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
 
-import { toDay } from '@ks/lib/domain/boundaries/model.mts';
+import { asDay, toDay } from '@ks/lib/domain/boundaries/model.mts';
 import { dayOf } from '@ks/lib/domain/map/map-date.mts';
 
 const mapView = vi.hoisted(() => vi.fn());
@@ -40,6 +47,7 @@ vi.mock('@ks/features/map/components/MapView', async () => {
 import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { MapShell } from '@ks/features/map/components/MapShell';
+import { PINS_LAYER_ID } from '@ks/features/map/layers/pins';
 import { polityLayer } from '@ks/features/map/layers/polities';
 
 const sources: Source[] = [
@@ -554,5 +562,200 @@ describe('the pre-boundary notice', () => {
         .getByText('No borders are mapped for 1750 yet.')
         .getAttribute('role')
     ).toBe('status');
+  });
+});
+
+// PIN-02
+describe('the Pin popup', () => {
+  const today = dayOf(new Date());
+  const open = { id: 'p1', position: [18.4, -33.9] as [number, number] };
+  const popup = vi.fn((form: string, place?: { x: number; y: number }) => (
+    <div data-testid={`popup-${form}`}>
+      {place ? `${place.x},${place.y}` : 'no place'}
+    </div>
+  ));
+  const renderPin = (
+    props: Partial<Parameters<typeof MapShell>[0]> = {},
+    span = { validFrom: asDay(today - 100), validTo: null }
+  ) =>
+    render(
+      <MapShell
+        {...account}
+        coverage={coverage}
+        layers={layers}
+        pin={{ open, popup, span }}
+        sources={sources}
+        {...props}
+      />
+    );
+
+  beforeEach(() => {
+    popup.mockClear();
+  });
+
+  it('gives the map the open Pin and reports a click on a Pin or on empty map', () => {
+    const onClosePin = vi.fn();
+    const onOpenPin = vi.fn();
+
+    renderPin({ onClosePin, onOpenPin });
+    expect(lastProps().open).toEqual(open);
+    lastProps().onOpenPin('p2');
+    expect(onOpenPin).toHaveBeenCalledWith('p2');
+    lastProps().onEmptyClick();
+    expect(onClosePin).toHaveBeenCalledOnce();
+  });
+
+  it('takes a click on a Pin when the page gives no handler', () => {
+    renderPin();
+    expect(() => lastProps().onOpenPin('p2')).not.toThrow();
+  });
+
+  it('places the popup at the point of the Pin on a desktop, once the map reports it', () => {
+    renderPin();
+    expect(screen.queryByTestId('popup-floating')).toBeNull();
+
+    act(() => lastProps().onOpenPoint({ x: 400, y: 300 }));
+    expect(screen.getByTestId('popup-floating').textContent).toBe('400,300');
+    expect(screen.queryByTestId('popup-inline')).toBeNull();
+    act(() => lastProps().onOpenPoint({ x: 410, y: 310 }));
+    expect(screen.getByTestId('popup-floating').textContent).toBe('410,310');
+    act(() => lastProps().onOpenPoint(null));
+    expect(screen.queryByTestId('popup-floating')).toBeNull();
+  });
+
+  it('draws no popup and no map open Pin when no Pin is open', () => {
+    renderPin({ pin: undefined });
+    expect(lastProps().open).toBeUndefined();
+    expect(popup).not.toHaveBeenCalled();
+  });
+
+  it('closes the popup on Esc', () => {
+    const onClosePin = vi.fn();
+
+    renderPin({ onClosePin });
+    fireEvent.keyDown(document, { key: 'a' });
+    expect(onClosePin).not.toHaveBeenCalled();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClosePin).toHaveBeenCalledOnce();
+  });
+
+  it('keeps the popup when a dialog owns the Esc', () => {
+    const onClosePin = vi.fn();
+
+    renderPin({ onClosePin });
+    fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+    fireEvent.click(
+      screen.getByRole('menuitem', { name: 'Sources and attributions' })
+    );
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(onClosePin).not.toHaveBeenCalled();
+  });
+
+  it('keeps the popup when another handler prevented the Esc', () => {
+    const onClosePin = vi.fn();
+    const press = createEvent.keyDown(document, { key: 'Escape' });
+
+    renderPin({ onClosePin });
+    press.preventDefault();
+    fireEvent(document, press);
+    expect(onClosePin).not.toHaveBeenCalled();
+  });
+
+  it('listens for Esc only while a Pin is open', () => {
+    const onClosePin = vi.fn();
+
+    renderPin({ onClosePin, pin: undefined });
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClosePin).not.toHaveBeenCalled();
+  });
+
+  it('closes the popup when the Map date hides its Pin, and not before', () => {
+    const onClosePin = vi.fn();
+
+    renderPin({ onClosePin });
+    expect(onClosePin).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(onClosePin).toHaveBeenCalledOnce();
+  });
+
+  it('keeps the popup while the Map date still shows its Pin', () => {
+    const onClosePin = vi.fn();
+
+    renderPin({ onClosePin }, { validFrom: asDay(0), validTo: null });
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(onClosePin).not.toHaveBeenCalled();
+  });
+
+  it('closes the popup when the Pins row is switched off, and for no other row', () => {
+    const onClosePin = vi.fn();
+    const pins = { ...testLayer, id: PINS_LAYER_ID, label: 'Pins' };
+
+    renderPin({ layers: [polityLayer, testLayer, pins], onClosePin });
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Test layer' }));
+    expect(onClosePin).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Pins' }));
+    expect(onClosePin).toHaveBeenCalledOnce();
+  });
+
+  // NFR-05
+  describe('on a phone', () => {
+    const desktop = window.matchMedia;
+
+    beforeEach(() => {
+      window.matchMedia = (() => ({
+        addEventListener: () => {},
+        matches: true,
+        removeEventListener: () => {},
+      })) as unknown as typeof window.matchMedia;
+    });
+
+    afterEach(() => {
+      window.matchMedia = desktop;
+    });
+
+    it('puts the details in the date sheet, and floats none', () => {
+      renderPin();
+
+      expect(
+        within(screen.getByRole('region', { name: 'Map date' })).getByTestId(
+          'popup-inline'
+        ).textContent
+      ).toBe('no place');
+      act(() => lastProps().onOpenPoint({ x: 400, y: 300 }));
+      expect(screen.queryByTestId('popup-floating')).toBeNull();
+      expect(popup).toHaveBeenCalledWith('inline');
+    });
+
+    it('expands the sheet when a Pin opens, and keeps it expanded after a close', () => {
+      const onOpenPin = vi.fn();
+      const { rerender } = renderPin({ onOpenPin, pin: undefined });
+      const grabber = () =>
+        screen.getByRole('button', { name: 'Expand the sheet' });
+
+      expect(grabber().getAttribute('aria-expanded')).toBe('false');
+      act(() => lastProps().onOpenPin('p1'));
+      expect(onOpenPin).toHaveBeenCalledWith('p1');
+      expect(grabber().getAttribute('aria-expanded')).toBe('true');
+      rerender(
+        <MapShell
+          {...account}
+          coverage={coverage}
+          layers={layers}
+          onOpenPin={onOpenPin}
+          sources={sources}
+        />
+      );
+      expect(grabber().getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('leaves the sheet as it was with no Pin open', () => {
+      renderPin({ pin: undefined });
+      expect(screen.queryByTestId('popup-inline')).toBeNull();
+      expect(
+        screen
+          .getByRole('button', { name: 'Expand the sheet' })
+          .getAttribute('aria-expanded')
+      ).toBe('false');
+    });
   });
 });

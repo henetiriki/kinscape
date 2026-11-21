@@ -98,7 +98,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 | `actions`    | Button, IconButton, TextLink, ArrowLink, PersonRow, RelationshipRow, PickerRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
 | `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                           |
 | `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                                               |
-| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup                                                                                       |
+| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup, PinPopup                                                                             |
 | `layout`     | ColumnLayout, SignInLayout, MapLayout                                                                                                |
 | `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                       |
 
@@ -127,6 +127,10 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Date dock:** step back, a typed date field, step forward, Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that is the 1652–today slider with epoch ticks and the contested years hatched. The thumb snaps to each step at the chosen precision. The date field is the only date readout. Then "Jump to" epoch buttons and keyboard hints.
 - **Phone date sheet:** a non-modal bottom sheet, 152px collapsed and 432px expanded, with a grabber ("Expand the sheet"). Collapsed: the stepper around the date field and a round Play, 8px after Forward. Expanded adds the slider. No precision, speed, Jump to or hints.
 - **Jurisdiction popup:** "On this spot in {year}", the place name valid on that date, coordinates in mono, then the jurisdiction chain as level / name rows, then pins at that spot.
+- **Pin popup:** A click on a Pin opens it. The popup is 304px wide and sits `pin-popup-gap` left of the Pin, with its pointer on the right edge. Near the top the popup stops at the free area, and the pointer still marks the Pin.
+- **Pin popup, content:** The header holds the Event glyph in `--pin` and the event type in an overline. Under it are the Person's name in `type.h3` and a Close icon button, 8px up and right. Then come the date reading in `type.title` and the recorded date in `type.mono`. A `--surface-2` box (radius `radius.control`, padding 12) holds the overline "Address as recorded" and the address. A desktop popup ends with a primary "Add a pin here" and a secondary "Edit".
+- **Pin popup, phone:** A phone shows the popup in the Map date sheet, under the slider and a 1px `--line` rule. The popup has neither "Add a pin here" nor "Edit". A 12.5px line in `--ink-3` says "Look-up only on a phone. Add people and pins on a tablet or computer."
+- **Pin popup, loading and failed:** The event type and both date lines show. While loading, a 168px bar replaces the name and a 220px bar replaces the address, each 20px high in `--line`, and both buttons are disabled. If the details fail, an error Alert "Couldn't load this Pin" with the text "The details didn't load." replaces the address. A secondary "Try again" replaces the other buttons.
 - **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. A button can be a link. It shows empty and loading states.
 - **Banner:** `--ink` background, white text, the `floating` shadow, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.

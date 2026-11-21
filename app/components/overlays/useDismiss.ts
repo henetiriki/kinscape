@@ -11,6 +11,12 @@ const OWNS_ESC = `${DIALOG}, textarea, input:not([type=checkbox], [type=radio], 
 const within = (target: EventTarget | null, selector: string) =>
   target instanceof Element && target.closest(selector) !== null;
 
+/** An Esc that nothing else owns: no handler prevented it, and it is not inside a dialog or a text field. */
+export const isFreeEscape = (event: KeyboardEvent) =>
+  event.key === 'Escape' &&
+  !event.defaultPrevented &&
+  !within(event.target, OWNS_ESC);
+
 /**
  * Calls `onDismiss` while `active`: on Esc (`escape`), and on a press outside the element in `outside`.
  * An Esc that a dialog, a text field or another handler owns is left alone, and a press in a dialog is not outside.
@@ -24,12 +30,7 @@ export const useDismiss = (
     if (!active) return;
 
     const onEsc = (event: KeyboardEvent) => {
-      if (
-        event.key === 'Escape' &&
-        !event.defaultPrevented &&
-        !within(event.target, OWNS_ESC)
-      )
-        onDismiss();
+      if (isFreeEscape(event)) onDismiss();
     };
     const onPress = (event: PointerEvent) => {
       if (

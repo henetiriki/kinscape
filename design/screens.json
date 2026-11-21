@@ -31,6 +31,34 @@
       "mode": "blocking"
     },
     {
+      "name": "map-pin-popup",
+      "route": "/screens/map-pin-popup",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "map-pin-popup-loading",
+      "route": "/screens/map-pin-popup/loading",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "map-pin-popup-failed",
+      "route": "/screens/map-pin-popup/failed",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "map-pin-popup-phone",
+      "route": "/screens/map-pin-popup",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
+    },
+    {
       "name": "people-list",
       "account": "r.family@example.com",
       "route": "/people",

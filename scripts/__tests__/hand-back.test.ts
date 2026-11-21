@@ -12,6 +12,19 @@ import {
 const ENV = { GH_REPO: 'owner/repo' };
 const SHA = 'a'.repeat(40);
 
+// One path for each HAND_BACK pattern, in the list's order.
+const SAMPLES = [
+  ['.github/workflows/**', '.github/workflows/a/b.yml'],
+  ['.github/actions/**', '.github/actions/a/action.yml'],
+  ['.github/CODEOWNERS', '.github/CODEOWNERS'],
+  ['.claude/settings*.json', '.claude/settings.local.json'],
+  ['AGENTS.md', 'AGENTS.md'],
+  ['docs/security.md', 'docs/security.md'],
+  ['docs/writing.md', 'docs/writing.md'],
+  ['docs/code-rules.md', 'docs/code-rules.md'],
+  ['.github/agent/spec-checks.md', '.github/agent/spec-checks.md'],
+] as const;
+
 type File = { filename: string; previous_filename?: string; status?: string };
 
 type World = {
@@ -34,6 +47,10 @@ ${paths}
 `;
 
 describe('isHandBack', () => {
+  it('has a sample path for each pattern', () => {
+    expect(SAMPLES.map(([pattern]) => pattern)).toEqual(HAND_BACK);
+  });
+
   it('lists the paths that CI cannot build or that guard CI', () => {
     expect(HAND_BACK).toEqual([
       '.github/workflows/**',
@@ -345,17 +362,13 @@ describe('run', () => {
     expect(labelled()).toHaveLength(0);
   });
 
-  it.each(HAND_BACK)('labels a PR that changes %s', pattern => {
-    const path = pattern.replace('**', 'a/b.yml').replace('*', 'x');
-
+  it.each(SAMPLES)('labels a PR that changes %s', (_pattern, path) => {
     go({ files: [{ filename: path }] });
 
     expect(labelled()).toHaveLength(1);
   });
 
-  it.each(HAND_BACK)('labels a PR whose plan names %s', pattern => {
-    const path = pattern.replace('**', 'a/b.yml').replace('*', 'x');
-
+  it.each(SAMPLES)('labels a PR whose plan names %s', (_pattern, path) => {
     go({
       files: [{ filename: 'plans/chores/C1-x.md' }],
       plans: { 'plans/chores/C1-x.md': PLAN_WITH(`| \`${path}\` | x |`) },

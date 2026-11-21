@@ -41,7 +41,7 @@ Rules for every step:
 ## Overrides
 
 - Use the local `gh` token.
-- If the plan's "Files that change" table names a hand-back path, edit it. Any other hand-back path is a big departure: ask the tech lead.
+- Start from the last CI commit. Build the hand-back rows that the CI comment lists, or all of them if no CI build ran. A hand-back path that the plan's table does not name is a big departure: ask the tech lead. After the ready check, run `gh pr ready <n>`.
 - If the browser cannot start for `npm run e2e`, write that under Evidence. Name the CI e2e job as the check.
 - If the plan changes a design system input, run the steps that the [design-system rule](../../../plans/README.md#design-system) gives a local session. If a step needs a claude.ai sign-in that the session lacks, ask the tech lead. Then leave the PR a draft.
 - If the session ran every design-system step, ignore the design-system bullet of `build.md`.

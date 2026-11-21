@@ -1576,9 +1576,10 @@ export const runTreeStoreContract = (
             ...place,
             version: 1,
           });
-          expect(
-            await store.findPlace({ ...a, placeId: PLACE_1 })
-          ).toBeDefined();
+          expect(await store.findPlace({ ...a, placeId: PLACE_1 })).toEqual({
+            ...placeOf(PLACE_1, {}),
+            version: 1,
+          });
 
           const placed = (await store.listPins(a)).map(saved => saved.placeId);
 

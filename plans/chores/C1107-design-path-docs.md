@@ -135,3 +135,9 @@ The design system artifact holds the bundle of the #863 branch (`3160ca5`), with
 - The "Used for" text of the current type rows, such as "Credits, footnotes" for Caption.
 - The `tokens.json` notes.
 - The loop line in `docs/how-we-work.md`: it still names a Design stage.
+
+## Deviations
+
+- The folder line says "The design system also holds components from …", not "shared components": `docs/architecture.md` calls `features/map/components/` UI that only the map uses (`f6f0dbb2`).
+- "In the repo" opens with "The design system README does not include this section." The reader needs to know why the section is apart (`8932ae96`).
+- Done check 13: the local step 5.4 rewrote 41 sources with sub-pixel text widths only. The tech lead accepts the workflow run on `5055c401` as the proof: it changed no snapshot.

@@ -97,7 +97,7 @@ Not built. The sign-in rows show Google sign-in: see [Components](#components). 
 
 ## In the repo
 
-The design system README leaves out this section.
+The design system README does not include this section.
 
 `docs/architecture.md` has the component-folder rule. Import a component as `@ks/app/components/<folder>/<Name>`. These folders hold the shared components:
 
@@ -111,7 +111,7 @@ The design system README leaves out this section.
 | `layout`     | ColumnLayout, SignInLayout, MapLayout                                                                                                          |
 | `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                                 |
 
-The design system also holds components from `features/map/components/`, `features/people/components/` and `lib/ui/`. `CONTROLS` in `lib/design/bundle.mts` lists every design system component.
+The design system also holds components from `features/map/components/`, `features/people/components/` and `lib/ui/`.
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/screens` is exempt.
 
@@ -252,7 +252,11 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a `type.label` title and one line in `type.small`.
 - **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
-Every control has the five states on its component card. The states are default, hover, focus, pressed and disabled. A Button with an `href` has no disabled state. A disabled Text link is plain text. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
+Every control has the five states on its component card.
+
+The states are default, hover, focus, pressed and disabled. A Button with an `href` has no disabled state. A disabled Text link is plain text.
+
+Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
 
 ## States
 

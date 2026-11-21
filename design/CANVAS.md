@@ -50,7 +50,7 @@ The tech lead, or a local session that the tech lead starts, deletes these gener
      A local `npm run design:export` proves only that the export does not fail: another machine can write different values. The workflow runs in the pinned Playwright image. It is the proof of the snapshots, the JPGs and the card images.
 
 - **Issue text.** A Spec or Chore that changes these inputs has two done checks. The first lists steps 2 to 6, or 2 to 7 if a board shows the change. The second says: every file under `canvas/project/ds/kinscape/` has the same sha256 as `.design-system/project/`. The Constraints say: "Edit no board in `design/canvas/` except those the plan lists. The design system steps may also edit `design/canvas/project/ds/`, `design/canvas/project/canvas.json` and `design/canvas/VERSION`."
-- **Who.** The tech lead, or a local session. The session needs a signed-in account.
+- **Who.** A local Claude Code session that the tech lead starts runs steps 2 to 5 and 7. It needs a signed-in account. The tech lead runs step 6.
 
 ## Updating the install
 

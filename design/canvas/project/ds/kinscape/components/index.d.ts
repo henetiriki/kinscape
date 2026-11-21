@@ -1,4 +1,5 @@
 import type { CSSProperties, ComponentProps, ComponentPropsWithoutRef, ComponentType, KeyboardEvent, ReactNode, Ref } from 'react';
+import type { ExpressionSpecification, LayerSpecification, SourceSpecification } from 'maplibre-gl';
 import type { z } from 'zod';
 import { z } from 'zod';
 
@@ -87,6 +88,72 @@ export type PopupPin = {
     title: string;
 };
 
+/** A MapLibre layer that can name the basemap layer it draws in front of. */
+export type DrawingLayer = {
+    /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
+    before?: string;
+} & LayerSpecification;
+/** A Pin of a fan: its id, its Event type and the reading of its date, such as "From 1890 to 1905". */
+export type FanPin = {
+    event: EventType;
+    id: string;
+    reading: string;
+};
+/** The image data MapLibre takes for `addImage`. */
+export type IconImage = {
+    data: Uint8ClampedArray;
+    height: number;
+    width: number;
+};
+/** A set of drawing layers the map shows, hides and filters together. */
+export type Layer = {
+    /** The help text under the layer's row in the Layers panel; a function gives it for the Map date. */
+    description: ((day: Day) => string) | string;
+    /** The filter for each drawing layer id on `day`. `open` is the id of the Pin whose popup is open. */
+    filters: (day: Day, open?: string) => Record<string, ExpressionSpecification>;
+    /**
+     * The icons the layer's symbols use: an image id mapped to a 24 × 24 path. The map draws each
+     * as an SDF image when the style asks for it.
+     */
+    icons?: Record<string, string>;
+    id: LayerId;
+    /** The name on the layer's row in the Layers panel. */
+    label: string;
+    layers: DrawingLayer[];
+    /**
+     * The HTML markers the layer places on the map on `day`, such as the count marker of a shared
+     * Place. `open` is the id of the open Pin; `onOpen` opens a Pin, as a click on a feature does.
+     */
+    markers?: (day: Day, open: string | undefined, onOpen: (id: string) => void) => MapMarker[];
+    /** The ids of the drawing layers a click can pick. The `id` property of the picked feature is what a click reports. */
+    select?: string[];
+    sources: Record<string, SourceSpecification>;
+};
+/** A layer's key: in the `visible` record and, with `-help`, in its panel row's DOM ids. */
+export type LayerId = string;
+/** What `MapShell` calls to drive the map from the zoom card. */
+export type MapHandle = {
+    fit: () => void;
+    zoomIn: () => void;
+    zoomOut: () => void;
+};
+/** An HTML marker at a map point: a key that stays the same from day to day, the point as longitude and latitude, and what it draws. */
+export type MapMarker = {
+    key: string;
+    node: ReactNode;
+    position: [number, number];
+};
+/** The Pin whose popup is open: its id and its position, as longitude and latitude. */
+export type OpenPin = {
+    id: string;
+    position: [number, number];
+};
+/** Whether the map zoom is at its minimum or maximum. */
+export type ZoomLimits = {
+    atMax: boolean;
+    atMin: boolean;
+};
+
 declare const boundaryProperties: z.ZodObject<{
     confidence: z.ZodEnum<{
         high: "high";
@@ -168,6 +235,17 @@ export type PolityName = z.output<typeof nameRow>;
 /** `processing` is what was done to the data, such as clipping and simplifying. */
 export type Source = z.output<typeof sourceRow>;
 
+/** A ring of a fan of Pins: its radius in px and the number of Pins on it. */
+export type FanRing = {
+    count: number;
+    radius: number;
+};
+/** Where a Pin of a fan sits: its ring, counted from 0, and its offset in px from the Place, with y down. */
+export type FanSpot = {
+    ring: number;
+    x: number;
+    y: number;
+};
 /** A one-click way out of a problem: the day to go to, shown at `precision`. */
 export type Fix = {
     day: Day;
@@ -589,6 +667,35 @@ declare const LEGEND_VARS: CSSProperties;
 export declare const Legend: () => import("react").JSX.Element;
 export type LegendProps = Parameters<typeof Legend>[0];
 
+/**
+ * One marker for a Place that shows several Pins (PIN-06). It shows the number of Pins and has the
+ * name "{count} Pins". `selected` draws the ring of the open Pin. `state`
+ * shows a look for the component card.
+ */
+export declare const CountMarker: ({ count, selected, state, ...rest }: {
+    count: number;
+    selected?: boolean;
+    state?: ControlState;
+} & Omit<ComponentProps<"button">, "aria-label" | "children" | "className">) => import("react").JSX.Element;
+export type CountMarkerProps = Parameters<typeof CountMarker>[0];
+
+/** The name of a fan Pin: its event type and the reading of its date, as "Birth, about 1850". */
+declare const fanPinName: ({ event, reading }: Omit<FanPin, "id">) => string;
+/**
+ * The Pins of one Place, spread around it (PIN-06). Each Pin is a 44px target with its Event glyph.
+ * Lines join the Pins of ring 1 to the Place; a fan of more than one ring also draws each ring.
+ * A clear disc out past the outer ring keeps the fan open while the pointer crosses the gaps.
+ * `children` is the count marker at the Place. `looks` shows a look on a Pin, for the boards.
+ */
+export declare const PinFan: ({ children, looks, onOpen, pins, }: {
+    children?: ReactNode;
+    looks?: Partial<Record<string, ControlState>>;
+    /** A click on a Pin, with its id. */
+    onOpen?: (id: string) => void;
+    pins: FanPin[];
+}) => import("react").JSX.Element;
+export type PinFanProps = Parameters<typeof PinFan>[0];
+
 /** Each Event type's path, copied from design/source/kse-*.svg (DESIGN.md › Event glyphs). A test keeps them in step. */
 declare const EVENT_PATHS: {
     readonly baptism: "M2.5 16.18V12.8Q2.5 10.49 3.77 9.15Q5.04 7.81 7.26 7.81Q8.84 7.81 9.91 8.47Q10.97 9.12 11.78 10.07Q12.59 11.02 13.31 11.99Q14.03 12.96 14.89 13.61Q15.75 14.26 16.96 14.26Q18.13 14.26 18.79 13.45Q19.44 12.64 19.44 11.2V7.82H21.5V11.2Q21.5 13.56 20.3 14.87Q19.09 16.19 16.96 16.19Q15.33 16.19 14.23 15.53Q13.12 14.88 12.31 13.91Q11.5 12.94 10.78 11.99Q10.05 11.04 9.24 10.39Q8.43 9.74 7.26 9.74Q6 9.74 5.28 10.55Q4.56 11.36 4.56 12.8V16.18Z";
@@ -604,6 +711,8 @@ declare const EVENT_PATHS: {
 };
 /** The order Event types are listed in, everywhere. */
 declare const EVENT_ORDER: EventType[];
+/** The name of an Event type, as the UI writes it: "Residence". */
+declare const eventLabel: (event: EventType) => string;
 /** An Event type's glyph, 1em square in `--pin`. Decorative: the Event's name sits beside it. */
 export declare const EventGlyph: ({ event }: {
     event: EventType;

@@ -4,7 +4,7 @@ How the canvas, the snapshots and the JPGs stay in step. The path for a new or u
 
 A design follows this path:
 
-1. For a user-visible Intent, `/refine spec` slices a design Spec first.
+1. For a user-visible Intent, `/refine intent <n>` slices a design Spec first.
 2. The tech lead starts a local Claude Code session. The session builds the design Spec with [Drawing a board](#drawing-a-board), then step 7 of [Changing the design system](#changing-the-design-system).
 3. Only a local Claude Code session edits the canvas.
 

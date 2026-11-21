@@ -1,4 +1,4 @@
-# Design branches for `/refine spec`
+# Design branches for `/refine intent <n>`
 
 Settle these for a slice that builds or changes what the user sees. Ask as described in `SKILL.md`.
 

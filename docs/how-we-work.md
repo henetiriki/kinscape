@@ -4,9 +4,9 @@ Claude writes most drafts and code; people make the decisions. The **product own
 
 ## Intent, Spec, Plan
 
-- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, and it starts approved.
-- **Spec:** one slice of an Intent: what will change and how we'll know it works. It is small enough for one pull request. The PO approves a Spec that changes what the user sees. The tech lead approves an engineering-only Spec. Its id is the milestone and a sequence (`M1.4`). An Intent outside the milestones gets a short prefix (`DM.1`).
-- File a Spec with its Intent's number, not `M<n>` (except M0). Otherwise GitHub does not link it as a sub-issue. When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`. The PO checks the outcome and closes it.
+- **Intent:** the outcome wanted, and why. Each milestone in [the requirements](requirements.md#build-milestones) (M1–M6) has its own Intent issue, and it starts approved. A milestone's Intent is the umbrella of its child Intents (`M2.16`). The tech lead files each child Intent, and it starts approved too.
+- **Spec:** one slice of an Intent: what will change and how we'll know it works. It is small enough for one pull request. The PO approves a Spec that changes what the user sees. The tech lead approves an engineering-only Spec. Its id is the milestone and a sequence (`M1.4`). A Spec of a child Intent adds its number (`M2.16.1`). An Intent outside the milestones gets a short prefix (`DM.1`).
+- File a Spec with its Intent's number, not `M<n>` (except M0). Otherwise GitHub does not link it as a sub-issue. When its last Spec closes, a workflow sets the Intent to `status: ready-for-po`. The PO checks the outcome and closes it. When the last child Intent of an umbrella closes, the PO checks the umbrella and closes it.
 - **Bug, Chore:** take a Spec's path, with ids `B<n>` and `C<n>`.
 - **Plan:** how to build a Spec, Bug or Chore: files, order of work, risks and proof. Commit it with the code as `plans/M0.1-hello-vercel.md` ([rules](../plans/README.md)).
 
@@ -20,7 +20,7 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 | Stage            | What happens                                                                                                                                                                                                                | Who decides                   |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| **Intent**       | A milestone's Intent issue, or a new idea the PO files                                                                                                                                                                      | PO                            |
+| **Intent**       | A milestone's Intent issue, a child Intent that the tech lead files, or a new idea the PO files                                                                                                                             | PO                            |
 | **Design**       | A user-visible Intent gets a design Spec. The tech lead's local Claude Code session draws its boards ([design path](../design/CANVAS.md)). A [workflow](../design/CANVAS.md#making-the-snapshots-and-jpgs) renders the JPGs | Tech lead                     |
 | **Spec**         | Claude slices the Intent and flags decisions; an undesigned screen is a Flagged concern                                                                                                                                     | PO or tech lead (see _Spec_)  |
 | **Plan**         | Claude plans each Spec, Bug or Chore                                                                                                                                                                                        | Tech lead                     |
@@ -33,7 +33,7 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 | I want to...                                                                                                          | Open a                                                                                                 | Who approves | Starts as               |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------ | ----------------------- |
-| Start the next milestone                                                                                              | Nothing: the tech lead runs `/refine spec <Intent number>`                                             | See _Spec_   | n/a                     |
+| Start the next milestone                                                                                              | Nothing: the tech lead runs `/refine intent M<n>`                                                      | None         | `status: ready-for-dev` |
 | Add or change something not in a milestone                                                                            | **Intent**                                                                                             | PO           | `status: draft`         |
 | Change a requirement, key term, number, priority or acceptance check in [the requirements](requirements.md)           | **Intent**                                                                                             | PO           | `status: draft`         |
 | Fix links, anchors, headings, table layout or typos in [the requirements](requirements.md). Keep each `<a id>` anchor | **Chore**                                                                                              | Tech lead    | `status: ready-for-dev` |
@@ -47,7 +47,7 @@ The `/refine` skill asks questions until you agree, then drafts the issue.
 **Before you start, choose Opus and High effort** (terminal: `/model opus`, `/effort high`).
 
 - **PO:** run `/refine intent` and answer in plain language.
-- **Tech lead:** run `/refine spec <Intent number>`.
+- **Tech lead:** run `/refine intent M<n>` to slice a milestone into child Intents. Run `/refine intent <Intent number>` to slice an Intent into Specs.
 
 ## Decisions
 
@@ -84,7 +84,7 @@ Answer with `D1: B` or `D1: other, <your option>`:
 ## Roles and labels: whose turn is it?
 
 - **Product owner:** writes Intents, answers questions, approves Specs that change what the user sees, tries previews, reports bugs.
-- **Tech lead:** approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns secrets.
+- **Tech lead:** files the child Intents of a milestone, approves plans and engineering-only Specs, sets `status: ready-for-agent`, reviews and merges pull requests, owns secrets.
 - **Claude:** drafts Specs and plans, builds, tests and fixes review comments. Approves nothing.
 
 Each issue has one Type (Intent, Spec, Bug, Chore) and one status label.

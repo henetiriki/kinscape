@@ -84,6 +84,7 @@
   --map-pin-halo: var(--white);
   --map-pin-halo-colour: var(--pin);
   --map-selected-colour: var(--brand);
+  --map-selected-halo-colour: var(--white);
   --shadow-raised: 0 1px 2px rgb(24 33 27 / 0.08), 0 6px 20px rgb(24 33 27 / 0.12);
   --shadow-floating: 0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2);
   --shadow-modal: 0 10px 40px rgb(24 33 27 / 0.3);
@@ -146,6 +147,7 @@
   --layout-credits-bottom: 6px;
   --layout-popup-gap: 14px;
   --layout-popup-point-y: 114px;
+  --layout-pin-popup-gap: 30px;
   --layout-page-header: 64px;
   --layout-page-header-phone: 60px;
   --layout-page-header-divider: 28px;

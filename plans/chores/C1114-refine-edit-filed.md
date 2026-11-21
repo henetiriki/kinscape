@@ -1,7 +1,7 @@
 # Plan: C1114: /refine edits a filed Spec or Chore
 
 - **Spec:** #1114
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -38,7 +38,7 @@ The plan check reads the label after the _Links_ steps, so a Chore that gets a b
 - **B.** `chore <n>` trusts the number. Cost: none, but the skill redrafts a Spec or Bug with the Chore form.
 - **Other:** your own.
 
-Recommended: A, because a wrong form loses the boxes of the other form.
+**Answer: A** (@henetiriki)
 
 **D2 · No Type, or a failed Type read** · Decides: Tech lead
 
@@ -48,7 +48,7 @@ Recommended: A, because a wrong form loses the boxes of the other form.
 - **B.** Say why and edit nothing. Cost: none, but an Intent number without `gh` no longer slices.
 - **Other:** your own.
 
-Recommended: A, because it keeps the slicing mode as it is now.
+**Answer: A** (@henetiriki)
 
 **D3 · What "check the blocker links" does** · Decides: Tech lead
 
@@ -58,7 +58,7 @@ Recommended: A, because it keeps the slicing mode as it is now.
 - **B.** The section only shows the current links and sets none. Cost: none, but an edit that adds a need gives no "blocked by" link.
 - **Other:** your own.
 
-Recommended: A, because a changed Spec or Chore can need a new blocker.
+**Answer: A** (@henetiriki)
 
 **D4 · A failed `gh issue edit`** · Decides: Tech lead
 
@@ -68,7 +68,7 @@ Recommended: A, because a changed Spec or Chore can need a new blocker.
 - **B.** Say why and print nothing. Cost: none, but the user loses the draft.
 - **Other:** your own.
 
-Recommended: A, because it matches `bug.md`. A prefilled form link opens a new issue, so it does not help.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

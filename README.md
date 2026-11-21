@@ -25,7 +25,7 @@ Who acts at each stage and the `status:` label that hands it on. Detail: [how we
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/media/workflow-dark.svg">
-  <img src="docs/media/workflow-light.svg" alt="The workflow in three lanes: PO, Tech lead, and Claude and CI. An Intent, Bug or Chore starts the work. For an Intent, the PO designs the screens and Claude drafts the Spec, which the PO or the tech lead approves. The tech lead sets ready-for-agent, Claude drafts the plan, the tech lead approves it, Claude builds, and CI and Claude check the pull request. The tech lead reviews and merges, the PO previews a visible change, and the PO gives feedback that starts new Intents or Bugs.">
+  <img src="docs/media/workflow-light.svg" alt="The workflow in three lanes: PO, Tech lead, and Claude and CI. An Intent, Bug or Chore starts the work. For an Intent, Claude drafts the Spec. For a user-visible Intent, Claude first slices a design Spec, and the tech lead's Claude session draws the boards. When the boards merge, Claude drafts the Spec, which the PO or the tech lead approves. The tech lead sets ready-for-agent, Claude drafts the plan, the tech lead approves it, Claude builds, and CI and Claude check the pull request. The tech lead reviews and merges, the PO previews a visible change, and the PO gives feedback that starts new Intents or Bugs.">
 </picture>
 
 ## Contributions

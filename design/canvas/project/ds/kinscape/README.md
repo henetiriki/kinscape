@@ -19,33 +19,38 @@ Components set these styles with `<Text variant>` (`app/components/foundation/Te
 
 All three are OFL fonts. The app and the snapshots load the same `@fontsource` files, pinned in `package-lock.json`. Map labels need Public Sans Regular, SemiBold and Italic as glyph PBFs too (see Map style).
 
-| Style          | Font · size / line · weight                | Used for                       |
-| -------------- | ------------------------------------------ | ------------------------------ |
-| Display        | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline               |
-| H1             | Bricolage 32 / 40 · 500 · −0.015em         | Page title                     |
-| H1 phone       | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone          |
-| H2             | Bricolage 24 / 32 · 700                    | Dialog and section titles      |
-| H3             | Bricolage 22 / 28 · 700                    | Place name in a popup, cards   |
-| Title          | Public Sans 15 / 22 · 600                  | Notice titles, row titles      |
-| Body L         | Public Sans 16 / 24 · 400                  | Sign-in, fields                |
-| Body           | Public Sans 15 / 22 · 400                  | Panels, popups                 |
-| Label          | Public Sans 14 / 20 · 600                  | Field labels, layer rows       |
-| Small          | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                    |
-| Caption        | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes             |
-| Overline       | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings               |
-| Overline tight | Public Sans 11 / 12 · 600, caps, 0.1em     | Layer group headings           |
-| Button         | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)         |
-| Control        | Public Sans 15 / 22 · 600                  | 44px buttons and controls      |
-| Button S       | Public Sans 14 / 20 · 600                  | 40px and 36px buttons          |
-| Mono L         | JetBrains Mono 22 / 28 · 500               | Map date field                 |
-| Mono M         | JetBrains Mono 15 / 22 · 400               | Fuzzy date field               |
-| Mono           | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists |
+| Style                             | Font · size / line · weight                | Used for                           |
+| --------------------------------- | ------------------------------------------ | ---------------------------------- |
+| Display (`display`)               | Bricolage 52 / 56 · 700 · tracking −0.02em | Sign-in headline                   |
+| H1 (`h1`)                         | Bricolage 32 / 40 · 500 · −0.015em         | Page title                         |
+| H1 phone (`h1-phone`)             | Bricolage 28 / 32 · 500 · −0.015em         | Page title on a phone              |
+| H2 (`h2`)                         | Bricolage 24 / 32 · 700                    | Dialog and section titles          |
+| H3 (`h3`)                         | Bricolage 22 / 28 · 700                    | Place name in a popup, cards       |
+| Title (`title`)                   | Public Sans 15 / 22 · 600                  | Notice titles, row titles          |
+| Body L (`body-l`)                 | Public Sans 16 / 24 · 400                  | Sign-in, fields                    |
+| Body (`body`)                     | Public Sans 15 / 22 · 400                  | Panels, popups                     |
+| Label (`label`)                   | Public Sans 14 / 20 · 600                  | Field labels, layer rows           |
+| Small (`small`)                   | Public Sans 13 / 20 · 400, `--ink-3`       | Helper text                        |
+| Caption (`caption`)               | Public Sans 12.5 / 18 · 400, `--ink-3`     | Credits, footnotes                 |
+| Credits (`credits`)               | Public Sans 11 / 16 · 400, `--credits`     | Credits line and scale bar         |
+| Overline (`overline`)             | Public Sans 11 / 16 · 600, caps, 0.1em     | Section headings                   |
+| Overline tight (`overline-tight`) | Public Sans 11 / 12 · 600, caps, 0.1em     | Layer group headings               |
+| Button (`button`)                 | Public Sans 16 / 24 · 600                  | 50px buttons (sign-in)             |
+| Control (`control`)               | Public Sans 15 / 22 · 600                  | 44px buttons and controls          |
+| Chip (`chip`)                     | Public Sans 13.5 / 20 · 600                | Chip that is on                    |
+| Chip off (`chip-off`)             | Public Sans 13.5 / 20 · 400                | Chip that is off                   |
+| Button S (`button-s`)             | Public Sans 14 / 20 · 600                  | 40px and 36px buttons              |
+| Link (`link`)                     | Public Sans 15 / 22 · 500                  | Links in running text              |
+| Link S (`link-s`)                 | Public Sans 13 / 20 · 500                  | Links in helper text and footnotes |
+| Mono L (`mono-l`)                 | JetBrains Mono 22 / 28 · 500               | Map date field                     |
+| Mono M (`mono-m`)                 | JetBrains Mono 15 / 22 · 400               | Fuzzy date field                   |
+| Mono (`mono`)                     | JetBrains Mono 12 / 16 · 400               | Dates and coordinates in lists     |
 
 Line height is 1.1–1.25 for headings, 1.45–1.55 for sentences and 1.3–1.4 for one-line UI text. Keep running text under 68 characters a line. Set no body text below 12.5px and no map label below 11px.
 
 ## Colours
 
-`tokens.json` holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). `npm run tokens` writes it to `app/tokens.css` as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `notes` group of `tokens.json` says where each token is used.
+`tokens.json` holds every value (colours, type, spacing, radii, shadows, focus, motion and the map). The app reads the tokens as CSS custom properties. Colours are `--brand` and `--ink-3`; other groups keep their group name (`--radius-panel`). Use a token, never its value. The usage text of a colour token in the design system gives its role and its contrast ratio. The `notes` group of `tokens.json` says where each token is used.
 
 Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colour passes on its own background. Field borders, system borders and icons, and the focus ring pass 3:1. Colour never carries meaning alone: event types have shapes, the map hatches contested claims and dashes approximate borders (NFR-06).
 
@@ -54,7 +59,7 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 - Desktop first. The map fills the window and everything else floats on it with a 24px gutter.
 - Desktop: search bar top left. The Layers / Filters panel sits below it, 320px wide. The date dock runs along the bottom, right of the panel. Account and zoom controls are top right. The credits line sits under the dock.
 - Phone: search pill on top, a layers button under it, and a bottom sheet. When collapsed, the sheet holds only the date stepper and Play. When the user taps the map, the sheet opens with the look-up result. A user cannot edit on a phone.
-- Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`. A media query can't read a variable, so a test checks each against `breakpoint`.
+- Sizes, offsets and stacking come from the `layout`, `breakpoint` and `z` tokens in `tokens.json`.
 - `MapLayout` places the search, account, zoom, panel, dock, credits and overlay slots from those tokens. On a phone only, it also places a Layers button. Its overlay area runs from `dock-left` to the gutter and from `furniture-top` to the dock's top. A popup sits left of its map point (`popup-gap`, `popup-point-y`), with the pointer on its right edge.
 - A notice centres in the free map area, not the window.
 - `SignInLayout` places the sign-in hero and form from `layout.sign-in`. On desktop the hero is left, and the form pane is at least 440 wide with a form of at most 360. On a phone, a 188px hero with the wordmark over it comes first, then the form. `SignInHero`'s coast and border lines are a hand-drawn sketch, traced from no dataset (NFR-08).
@@ -63,10 +68,10 @@ Text colours pass 4.5:1 on `--surface` and `--surface-2`. Each system text colou
 
 ## Shape and depth
 
+The `radius` and `shadow` notes in `tokens.json` say where each value goes.
+
 | Token   | Value                                                                                                                                                                    |
 | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Radius  | See the `radius` notes in `tokens.json`                                                                                                                                  |
-| Shadow  | See the `shadow` notes in `tokens.json`                                                                                                                                  |
 | Spacing | 4px steps; 16–20 inside panels, 24 between floating elements on desktop                                                                                                  |
 | Touch   | Targets at least 44px. Buttons and fields 44–50px tall                                                                                                                   |
 | Focus   | 2px `--focus-ring` outline, 2px offset, on `:focus-visible` only. Fields: see Text field                                                                                 |
@@ -90,32 +95,18 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 
 ## Components
 
-`docs/architecture.md` has the component-folder rule. Import a component as `@ks/app/components/<folder>/<Name>`. These folders hold the shared components:
-
-| Folder       | Holds                                                                                                                                |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                                                                    |
-| `actions`    | Button, IconButton, TextLink, ArrowLink, PersonRow, RelationshipRow, PickerRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar |
-| `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                           |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, Callout                                                                               |
-| `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup, PinPopup                                                                             |
-| `layout`     | ColumnLayout, SignInLayout, MapLayout                                                                                                |
-| `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                       |
-
-**Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/screens` is exempt.
-
 - **Buttons:** by height. L 50 (sign-in, full width): `type.button`. M 44: `type.control`, padding 16. S 40: `type.button-s`, padding 16. XS 36: `type.button-s`, padding 12.
 - **Primary button:** `--brand` fill, white text.
-- **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states, and it has no disabled state.
+- **Secondary button:** white, 1px `--line-strong` border, `--ink` text. With an `href`, a button is a plain link with the same look and states.
 - **Icon button:** raised variant: 48px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
 - **Text link:** with `onClick` and no `href`, it is a button with the same look.
 - **Page header:** a 64px white bar (60px on a phone) with a bottom `--line` border. It holds the Wordmark (icon only on a phone), a divider, the back link and the Avatar at the right.
 - **Back link:** a 44px link with the back icon and the name of the page above. It takes its hover, focus and pressed looks from the icon button.
 - **Action bar:** a 72px white bar fixed to the bottom of the window, with a top `--line` border. It holds the primary button, then the secondary one. On a phone it adds the safe area of the device below the 72px.
-- **Google sign-in (proposed):** not in the requirements yet. Before you build it, file an Intent issue. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
-- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, radius 8. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
-- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, radius 8, padding 10 12, `type.body` (`type.body-l` on phones). It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border.
-- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono-m` (`type.body-l` size on phones), ligatures off. 1px `--field-border`, radius 8. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
+- **Google sign-in (proposed):** not in the requirements yet. It goes under "Sign in", after an "or" divider. White, 1px `--google-border` border, `--google-text` text, "Continue with Google". Use Google's own button or the official "G" mark, never a redrawn one. The dashed box in the JPG marks the spot. If Google sign-in is off, hide the button and the divider.
+- **Text field:** M 44px with `type.body` (`type.body-l` on phones); L 48px with `type.body-l` on sign-in; 1px `--field-border`, `radius.control`. Hover: `--ink-3` border. Focus: 2px `--brand` border, no outline. Error: see Feedback and validation. Clear the password after a failed sign-in.
+- **Long text field:** a label, a textarea and a helper. 1px `--field-border`, `radius.control`, padding 10 12, `type.body` (`type.body-l` on phones). It resizes up and down only, scrolls long content inside, and takes a `maxLength`. Hover: `--ink-3` border. Focus: 2px `--brand` border.
+- **Fuzzy date field:** a label, a 44px input and one line under it, in `type.mono-m` (`type.body-l` size on phones), ligatures off. 1px `--field-border`, `radius.control`. Hover, focus and error follow the Text field. The line shows the helper, the reading or the error: see Fuzzy date field.
 - **Arrow link:** a text and the forward icon (16px, 4px gap) in `type.link`, with no underline. With an `href` it is a link: hover `--brand-hover`, pressed `--brand-pressed`, focus the ring. Without one it is a label for a row that is one link, and it turns `--brand-pressed` while that link is pressed.
 - **Person row:** the whole row is a link to edit. Grid: name, a 200px Dates column, then an Arrow link label "Edit". Minimum height `size.row-l`. The name is "Surname, Given names" in `type.title`. A `type.small` line shows "née {maiden}" and "Matches the spelling “{variant}”" only when needed. The dates are one `type.mono` line: "1889 – 1932", "1889 –", "? – 1932", "1889 – ?" or "? – ?". A missing death date reads "?" only when the Person is marked deceased. A screen reader skips the line and hears the dates in words. An optional "Relationships" text link sits after the row link. Hover: `--surface-2` fill. Pressed: `--segment` fill and a `--brand-pressed` "Edit". Focus: the ring.
 - **Relationship row:** the other Person's name, the Person row's line of dates, and an Arrow link "Edit". A parent or child row adds a `type.small` subtype: Biological, Adoptive or Step. A spouse row adds a second `type.mono` line: "Mar. 1875, div. 1890", "Mar. 1875" or "Div. 1890". It has no remove control and no phone form.
@@ -123,7 +114,7 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Segmented control** (date precision, play speed): a `--segment` track; the selected segment is white with a small shadow.
 - **Chips** (event type filters): 36px pills. On: `--brand` border, `--brand-tint` fill. Off: `--line-strong` border, white.
 - **Tabs** (Layers / Filters): the selected tab gets `--brand-tint`. A count badge in `--brand` shows active filters.
-- **Layer rows:** a checkbox (accent `--brand`), name 14/600, a one-line description in `--ink-3`. The description gives live facts, such as how many pins are true on the date.
+- **Layer rows:** a checkbox (accent `--brand`), the name in `type.label`, a one-line description in `--ink-3`. The description gives live facts, such as how many pins are true on the date.
 - **Date dock:** step back, a typed date field, step forward, Year / Month / Day, a contested-claims note and Play with 1, 5 or 10 yr/s. Under that is the 1652–today slider with epoch ticks and the contested years hatched. The thumb snaps to each step at the chosen precision. The date field is the only date readout. Then "Jump to" epoch buttons and keyboard hints.
 - **Phone date sheet:** a non-modal bottom sheet, 152px collapsed and 432px expanded, with a grabber ("Expand the sheet"). Collapsed: the stepper around the date field and a round Play, 8px after Forward. Expanded adds the slider. No precision, speed, Jump to or hints.
 - **Jurisdiction popup:** "On this spot in {year}", the place name valid on that date, coordinates in mono, then the jurisdiction chain as level / name rows, then pins at that spot.
@@ -131,16 +122,20 @@ Under `prefers-reduced-motion`, drop every transition except a colour change. Ma
 - **Fan of Pins:** Hover or a first tap spreads the Pins in rings, from below the Place, clockwise in date order. Name: "Birth, about 1850".
 - **Pin popup:** A click on a Pin opens it. The popup is 304px wide and sits `pin-popup-gap` left of the Pin, with its pointer on the right edge. Near the top the popup stops at the free area, and the pointer still marks the Pin.
 - **Pin popup, content:** The header holds the Event glyph in `--pin` and the event type in an overline. Under it are the Person's name in `type.h3` and a Close icon button, 8px up and right. Then come the date reading in `type.title` and the recorded date in `type.mono`. A `--surface-2` box (radius `radius.control`, padding 12) holds the overline "Address as recorded" and the address. A desktop popup ends with a primary "Add a pin here" and a secondary "Edit".
-- **Pin popup, phone:** A phone shows the popup in the Map date sheet, under the slider and a 1px `--line` rule. The popup has neither "Add a pin here" nor "Edit". A 12.5px line in `--ink-3` says "Look-up only on a phone. Add people and pins on a tablet or computer."
+- **Pin popup, phone:** A phone shows the popup in the Map date sheet, under the slider and a 1px `--line` rule. The popup has neither "Add a pin here" nor "Edit". A `type.caption` line in `--ink-3` says "Look-up only on a phone. Add people and pins on a tablet or computer."
 - **Pin popup, loading and failed:** The event type and both date lines show. While loading, a 168px bar replaces the name and a 220px bar replaces the address, each 20px high in `--line`, and both buttons are disabled. If the details fail, an error Alert "Couldn't load this Pin" with the text "The details didn't load." replaces the address. A secondary "Try again" replaces the other buttons.
-- **Notice card:** white card with the panel shadow, an icon, a 15/600 title and one line of help, plus up to two buttons. A button can be a link. It shows empty and loading states.
+- **Notice card:** white card with the panel shadow, an icon, a `type.title` title and one line of help, plus up to two buttons. A button can be a link. It shows empty and loading states.
 - **Banner:** `--ink` background, white text, the `floating` shadow, top centre of the map, with one action. For problems that don't block the map.
 - **Menu:** white card, popup shadow, 44px rows with an icon.
-- **Dialog:** centred over a `--scrim`, radius 12, close button top right.
-- **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a 14/600 title and one line in `type.small`.
+- **Dialog:** centred over a `--scrim`, `radius.panel`, close button top right.
+- **Alert:** 1px system border, system background and text, padding 12 16, gap 12, a filled 20px icon, a `type.label` title and one line in `type.small`.
 - **Toast:** white, popup shadow, bottom centre above the dock. A success toast leaves after 4 seconds. An error toast stays and offers a retry.
 
-Every control has the five states on its component card. Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
+Every control has the five states on its component card.
+
+The states are default, hover, focus, pressed and disabled. A Button with an `href` has no disabled state. A disabled Text link is plain text.
+
+Hover darkens or tints. Pressed goes a step darker (`--brand-pressed`, or `--brand-tint` for secondary controls). Disabled uses `--ink-disabled` on `--line` or `--surface-2`. Toggles keep their "on" look after release. Nothing important appears only on hover.
 
 ## States
 
@@ -196,7 +191,7 @@ The FuzzyDateField component card shows it. It is a label, a 44px input and one 
 
 ## Event glyphs
 
-Each Event type is one 24 × 24 path in `design/source/`. It uses `currentColor` (`--pin`) as its fill and is 1em square. The order below is the same everywhere. `EventGlyph` copies the paths. A test keeps them in step.
+Each Event type is one 24 × 24 path. It uses `currentColor` (`--pin`) as its fill and is 1em square. The order below is the same everywhere.
 
 | Event      | SVG                           |
 | ---------- | ----------------------------- |
@@ -233,7 +228,9 @@ Every map visual is something MapLibre GL can draw: flat fills, solid or dashed 
 | Place label             | Public Sans Medium; `map.place-label`; dot `map.place-dot`                                          |
 | Water and river labels  | Public Sans Italic; `map.water-label`, `map.river-label`; sizes in tokens                           |
 | Context labels          | Public Sans Italic, uppercase, `map.context-label`                                                  |
+| Quiet labels            | `map.muted-label`                                                                                   |
 | Label halo              | `map.label-halo`, the land colour                                                                   |
+| Pins                    | `map.pin`, with its `halo` ring                                                                     |
 | Uncertainty halo        | `map.pin-halo`; radius grows with the date range                                                    |
 | Selected point          | `map.selected` (`--brand`)                                                                          |
 

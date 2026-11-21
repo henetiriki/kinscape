@@ -306,7 +306,7 @@ export const CARDS: Card[] = [
     ],
   },
   {
-    design: [],
+    design: ['Icon button'],
     group: 'Actions',
     handlers: [],
     height: 240,
@@ -391,7 +391,7 @@ export const CARDS: Card[] = [
     })),
   },
   {
-    design: [],
+    design: ['Text link'],
     group: 'Actions',
     handlers: ['onClick'],
     height: 200,

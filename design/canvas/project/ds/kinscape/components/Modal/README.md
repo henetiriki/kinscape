@@ -2,7 +2,7 @@ A modal on a native `<dialog>`: the browser handles Esc, the inert page and focu
 
 ## Design
 
-- **Dialog:** centred over a `--scrim`, radius 12, close button top right.
+- **Dialog:** centred over a `--scrim`, `radius.panel`, close button top right.
 
 ## Props
 

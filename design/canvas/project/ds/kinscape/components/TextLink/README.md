@@ -1,5 +1,9 @@
 An anchor has no disabled state, so a disabled link is plain text that says so.
 
+## Design
+
+- **Text link:** with `onClick` and no `href`, it is a button with the same look.
+
 ## Props
 
 | Prop | Type | Required | Description |

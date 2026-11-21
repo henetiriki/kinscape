@@ -114,15 +114,33 @@ const pickPin = async (page: Page) => {
     })) {
       const point = map.project(feature.geometry.coordinates);
       const [top1] = map.queryRenderedFeatures(point, { layers: ['pins'] });
+      const x = left + point.x;
+      const y = top + point.y;
+      // A count marker, its fan or a card over the Pin would take the click instead.
+      const covered =
+        !document
+          .elementFromPoint(x, y)
+          ?.classList.contains('maplibregl-canvas') ||
+        [...document.querySelectorAll('.maplibregl-marker')].some(marker => {
+          const box = marker.getBoundingClientRect();
+
+          return (
+            x > box.left - 24 &&
+            x < box.right + 24 &&
+            y > box.top - 24 &&
+            y < box.bottom + 24
+          );
+        });
 
       if (
+        !covered &&
         point.x > window.innerWidth / 2 &&
         point.x < window.innerWidth - 60 &&
         point.y > 160 &&
         point.y < window.innerHeight - 300 &&
         top1
       ) {
-        return { id: top1.properties.id, x: left + point.x, y: top + point.y };
+        return { id: top1.properties.id, x, y };
       }
     }
 

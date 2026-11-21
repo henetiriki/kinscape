@@ -28,6 +28,8 @@ export const freeArea = (phone: boolean) =>
 interface MapLayoutSlots {
   /** The account control, on desktop. */
   account?: ReactNode;
+  /** The "Add a pin" button, on desktop: 12px left of the account control. */
+  action?: ReactNode;
   /** The map. */
   children?: ReactNode;
   /** The source credits, on desktop. */

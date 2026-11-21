@@ -1,5 +1,6 @@
 /** Synthetic samples: the component cards draw them. */
 
+import type { PersonSummary } from '#ks/lib/domain/persons/types.ts';
 import type { ContestedYears, Epoch } from '#ks/lib/ui/types.ts';
 
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
@@ -23,6 +24,65 @@ export const LONG_NOTES = Array.from(
 /** The line under an empty or unreadable fuzzy date field, on its component card. */
 export const FUZZY_DATE_HELPER =
   'For example 1850, ABT 1850 or BET 1850 AND 1855.';
+
+/** Four synthetic Persons for the `PersonField` and `PersonFieldList` cards: a maiden name, a variant and a fourth row to scroll to. */
+export const PICK_PEOPLE: PersonSummary[] = [
+  {
+    born: '1861',
+    bornReading: 'In 1861',
+    deceased: false,
+    died: '1932',
+    diedReading: 'In 1932',
+    givenNames: 'Person',
+    id: 'p1',
+    maidenName: '',
+    surname: 'Example',
+    variants: [],
+  },
+  {
+    born: '1865',
+    bornReading: 'In 1865',
+    deceased: false,
+    died: 'bef. 1940',
+    diedReading: 'Before 1940',
+    givenNames: 'Anna',
+    id: 'p2',
+    maidenName: 'Sample',
+    surname: 'Example',
+    variants: [],
+  },
+  {
+    born: 'abt. 1840',
+    bornReading: 'About 1840',
+    deceased: true,
+    died: '',
+    diedReading: '',
+    givenNames: 'Johan',
+    id: 'p3',
+    maidenName: '',
+    surname: 'Example',
+    variants: ['Exemple'],
+  },
+  {
+    born: '1870',
+    bornReading: 'In 1870',
+    deceased: false,
+    died: '1944',
+    diedReading: 'In 1944',
+    givenNames: 'Piet',
+    id: 'p4',
+    maidenName: '',
+    surname: 'Example',
+    variants: [],
+  },
+];
+
+/** The first `count` of `PICK_PEOPLE` as the rows of a `PersonFieldList`: a row shows the variant that matched. */
+export const personRows = (count: number) =>
+  PICK_PEOPLE.slice(0, count).map(person => ({
+    person,
+    variant: person.variants[0],
+  }));
 
 /** The Map date of the `Map` board, and the last day a Map date can take. */
 export const MAP_DATE = toDay('1901-06-14');

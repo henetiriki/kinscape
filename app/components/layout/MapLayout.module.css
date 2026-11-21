@@ -7,6 +7,7 @@
 }
 
 .search,
+.action,
 .account,
 .zoom,
 .layers,
@@ -20,6 +21,7 @@
 
 /* The menu card hangs from these two slots, so they paint above the other furniture, such as the Layers button. */
 .search,
+.action,
 .account {
   z-index: var(--z-menu);
 }
@@ -31,6 +33,12 @@
 
 .account {
   right: var(--size-gutter);
+  top: var(--layout-account-top);
+}
+
+/* Level with the account control, one `space-12` left of its avatar. */
+.action {
+  right: calc(var(--size-gutter) + var(--size-touch) + var(--space-12));
   top: var(--layout-account-top);
 }
 
@@ -99,6 +107,7 @@
     top: var(--layout-phone-layers-top);
   }
 
+  .action,
   .account,
   .zoom,
   .credits {

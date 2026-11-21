@@ -70,6 +70,7 @@ import { PinPopup } from '@ks/app/components/overlays/PinPopup';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import sourceData from '@ks/data/sources.json';
+import { AddPinButton } from '@ks/features/map/components/AddPinButton';
 import { CountMarker } from '@ks/features/map/components/CountMarker';
 import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
@@ -84,6 +85,10 @@ import { SearchBar } from '@ks/features/map/components/SearchBar';
 import { SourcesList } from '@ks/features/map/components/SourcesDialog';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { FuzzyDateField } from '@ks/features/people/components/FuzzyDateField';
+import {
+  PersonField,
+  PersonFieldList,
+} from '@ks/features/people/components/PersonField';
 import { CONTROLS } from '@ks/lib/design/bundle.mts';
 import { FORM_ATTRIBUTE } from '@ks/lib/design/cards.mts';
 import {
@@ -100,6 +105,8 @@ import {
   LONG_NOTES,
   MAP_DATE,
   panelTabs,
+  personRows,
+  PICK_PEOPLE,
   PINS,
   SURNAME_HELPER,
   TODAY,
@@ -189,6 +196,7 @@ const OTHERS = Object.keys(DEFAULT_TAG) as (keyof typeof DEFAULT_TAG)[];
 
 const COMPONENTS = {
   ActionBar,
+  AddPinButton,
   Alert,
   ArrowLink,
   Avatar,
@@ -225,6 +233,8 @@ const COMPONENTS = {
   NoticeCard,
   PageHeader,
   Panel,
+  PersonField,
+  PersonFieldList,
   PersonRow,
   PickerRow,
   PinFan,
@@ -686,6 +696,73 @@ const CASES: [string, ReactElement][] = [
     'FuzzyDateField · error, range in reverse',
     fuzzyDateField({ defaultValue: 'BET 1855 AND 1850' }),
   ],
+  [
+    'PersonField · empty',
+    <PersonField key='e' onChange={noop} people={PICK_PEOPLE} />,
+  ],
+  [
+    'PersonField · focus',
+    <PersonField key='f' onChange={noop} people={PICK_PEOPLE} state='focus' />,
+  ],
+  [
+    'PersonField · picked',
+    <PersonField
+      defaultPerson={PICK_PEOPLE[0]}
+      key='p'
+      onChange={noop}
+      people={PICK_PEOPLE}
+    />,
+  ],
+  [
+    'PersonField · error',
+    <PersonField
+      error='Choose a person.'
+      key='r'
+      onChange={noop}
+      people={PICK_PEOPLE}
+    />,
+  ],
+  [
+    'PersonFieldList · three rows',
+    <PersonFieldList
+      id='three'
+      key='three'
+      onPick={noop}
+      query='Exa'
+      rows={personRows(3)}
+    />,
+  ],
+  [
+    'PersonFieldList · active row',
+    <PersonFieldList
+      activeId='active-p2'
+      id='active'
+      key='active'
+      onPick={noop}
+      query='Exa'
+      rows={personRows(3)}
+    />,
+  ],
+  [
+    'PersonFieldList · four rows, scrolls',
+    <PersonFieldList
+      id='four'
+      key='four'
+      onPick={noop}
+      query='Exa'
+      rows={personRows(4)}
+    />,
+  ],
+  [
+    'PersonFieldList · no match',
+    <PersonFieldList
+      id='none'
+      key='none'
+      onPick={noop}
+      query='Zzz'
+      rows={[]}
+    />,
+  ],
   ...states('SelectField', (state, disabled) => (
     <SelectField
       disabled={disabled}
@@ -773,6 +850,7 @@ const CASES: [string, ReactElement][] = [
   ...states('LayersButton', (state, disabled) => (
     <LayersButton disabled={disabled} state={state} />
   )),
+  ...links('AddPinButton', state => <AddPinButton state={state} />),
   [
     'DateDock · Map date',
     <DateDock
@@ -1336,6 +1414,7 @@ const CASES: [string, ReactElement][] = [
     'MapLayout · text in each slot',
     <MapLayout
       account={<Text variant='small'>account</Text>}
+      action={<Text variant='small'>action</Text>}
       credits={<Text variant='small'>credits</Text>}
       dock={<Text variant='small'>dock</Text>}
       key='map'

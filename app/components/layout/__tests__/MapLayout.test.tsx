@@ -17,6 +17,7 @@ it('places each slot it is given, with the map as children', () => {
   const { container } = render(
     <MapLayout
       account='a'
+      action='x'
       credits='c'
       dock='d'
       layers='l'
@@ -35,6 +36,7 @@ it('places each slot it is given, with the map as children', () => {
     )
   ).toEqual([
     'search:s',
+    'action:x',
     'account:a',
     'zoom:z',
     'layers:l',
@@ -96,6 +98,15 @@ it('turns the overlay slot into map padding from the same tokens', () => {
     right: 16,
     top: 144,
   });
+});
+
+// PIN-01, NFR-05
+it('puts the action slot 12px left of the account control and hides it on a phone', () => {
+  expect(desktop).toMatch(
+    /\.action \{[^}]*right: calc\(var\(--size-gutter\) \+ var\(--size-touch\) \+ var\(--space-12\)\)/
+  );
+  expect(desktop).toMatch(/\.action \{[^}]*top: var\(--layout-account-top\)/);
+  expect(media).toMatch(/\.action,\s*\.account,[^{]*\{[^}]*display: none/);
 });
 
 it('puts the phone Layers button on the right and lets the dock grow', () => {

@@ -69,6 +69,9 @@ describe('PlaceMarker', () => {
 
     fireEvent.pointerDown(screen.getByText('Elsewhere'));
     expect(fanned()).toBe(false);
+    expect(
+      view.container.firstElementChild!.firstElementChild!.className
+    ).not.toMatch(/open/);
   });
 
   it('opens a tapped Pin and folds the fan (#860 plan D3)', () => {

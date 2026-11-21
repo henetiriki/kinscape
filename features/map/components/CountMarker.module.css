@@ -83,25 +83,37 @@
 }
 
 /*
- * The ring of the open Pin, drawn with the `map.selected` tokens of a single Pin's ring. It keeps
- * that ring's gaps: the ring reaches a radius of 21px, and its halo 25.5px.
+ * The ring of the open Pin, drawn with the `map.selected` tokens of a single Pin's ring. The 32px
+ * disc is 5px wider in radius than the 22px Pin, so the ring and its halo sit 5px further out.
  */
 .ring {
+  --gap: 5px;
+
   border: calc(var(--map-selected-width) * 1px) solid var(--map-selected-colour);
   border-radius: 50%;
   box-sizing: border-box;
-  height: 44.5px;
+  height: calc(
+    var(--map-selected-radius) * 2px + var(--gap) * 2 +
+      var(--map-selected-width) * 1px
+  );
   position: absolute;
-  width: 44.5px;
+  width: calc(
+    var(--map-selected-radius) * 2px + var(--gap) * 2 +
+      var(--map-selected-width) * 1px
+  );
 }
 
+/* The halo, placed from the inner edge of the ring. */
 .ring::after {
   border: calc(var(--map-selected-halo-width) * 1px) solid
     var(--map-selected-halo-colour);
   border-radius: 50%;
   box-sizing: border-box;
   content: '';
-  inset: -6.75px;
+  inset: calc(
+    (var(--map-selected-radius) - var(--map-selected-halo-radius)) * 1px -
+      (var(--map-selected-halo-width) + var(--map-selected-width)) * 0.5px
+  );
   opacity: var(--map-selected-halo-opacity);
   position: absolute;
 }

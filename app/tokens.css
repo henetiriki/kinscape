@@ -262,7 +262,6 @@
   --z-menu: 10;
   --map-pin-halo-colour: var(--pin);
   --map-pin-halo-opacity: 0.24;
-  --map-pin-halo-blur: 0.8;
   --map-selected-colour: var(--brand);
   --map-selected-width: 2.5;
   --map-selected-radius: 16;

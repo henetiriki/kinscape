@@ -46,14 +46,11 @@ export const MAX_BOUNDS: [[number, number], [number, number]] = [
 export const MIN_ZOOM = 3;
 export const MAX_ZOOM = 10;
 
-/** The events that MapLibre reads from the map container, which a marker keeps to itself. */
-const MAP_EVENTS = [
-  'click',
-  'dblclick',
-  'mousedown',
-  'touchstart',
-  'touchend',
-] as const;
+/**
+ * The map events that a marker keeps to itself. A drag or a pinch can still start on a marker,
+ * because the map gets its mouse and touch events.
+ */
+const MAP_EVENTS = ['click', 'dblclick'] as const;
 
 /** The map zoom is a float, so "at a limit" allows this much slack. */
 const ZOOM_TOLERANCE = 0.001;
@@ -348,10 +345,9 @@ export const MapView = ({
           if (!marker) {
             const element = document.createElement('div');
 
-            // An HTML marker handles its own clicks and taps. A fold can remove the clicked element
-            // before the event reaches the map, so the map must never see the event at all: it
-            // would read a click on empty map, or two taps as a zoom. Pointer events still bubble,
-            // so a tap on another marker folds an open fan.
+            // An HTML marker handles its own clicks. A fold can remove the clicked element before
+            // the event reaches the map. The map would then read a click on empty map, so it never
+            // gets the click. Pointer events still bubble, so a tap on another marker folds a fan.
             for (const type of MAP_EVENTS) {
               element.addEventListener(type, event => event.stopPropagation());
             }

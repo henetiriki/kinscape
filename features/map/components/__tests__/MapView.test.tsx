@@ -537,7 +537,7 @@ describe('MapView', () => {
       });
 
       // PIN-06: a fold removes the clicked Pin, so the map must not read the click as one on empty map.
-      it('keeps the clicks and taps of a marker from the map, and lets a pointer press bubble', () => {
+      it('keeps the clicks of a marker from the map, and lets its presses and touches bubble', () => {
         view({ layers: [marking] });
 
         const { element } = maplibre.markers[0];
@@ -558,7 +558,12 @@ describe('MapView', () => {
           element.dispatchEvent(new Event(type, { bubbles: true }));
         }
 
-        expect(heard).toEqual(['pointerdown']);
+        expect(heard).toEqual([
+          'mousedown',
+          'touchstart',
+          'touchend',
+          'pointerdown',
+        ]);
       });
     });
 

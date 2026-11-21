@@ -53,17 +53,32 @@ const walk = (node: Tree, path: string[]): [string, string][] =>
  * the open Pin. The map layers read them from `tokens.json`, and the count marker and the fan of
  * Pins from these variables, so each value lives in one place.
  */
-const MAP_SHARED = ['pin-halo', 'selected'];
+const MAP_SHARED = ['pin-halo.colour', 'pin-halo.opacity', 'selected'];
 
 /** Every token outside `map` and `notes`, and the shared `map` tokens, as `[--name, value]` pairs. */
 export const cssVariables = (tokens: Tree): [string, string][] =>
-  Object.entries(tokens).flatMap(([group, child]) => {
+  Object.entries(tokens).flatMap(([group, child]): [string, string][] => {
     if (!isTree(child) || group === 'notes') return [];
 
     if (group === 'map') {
-      return MAP_SHARED.flatMap(key =>
-        isTree(child[key]) ? walk(child[key], [group, key]) : []
-      );
+      return MAP_SHARED.flatMap((shared): [string, string][] => {
+        const path = shared.split('.');
+        const node = path.reduce<number | string | Tree | undefined>(
+          (at, key) => (isTree(at) ? at[key] : undefined),
+          child
+        );
+
+        if (isTree(node)) return walk(node, [group, ...path]);
+
+        return node === undefined
+          ? []
+          : [
+              [
+                cssName([group, ...path]),
+                cssValue([group, ...path], String(node)),
+              ],
+            ];
+      });
     }
 
     return walk(child, [group]);

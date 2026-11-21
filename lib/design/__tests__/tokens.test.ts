@@ -50,7 +50,7 @@ describe('cssVariables', () => {
         colour: { pin: '#9a3b12' },
         map: {
           land: '#e9ebe2',
-          'pin-halo': { colour: '{colour.pin}', opacity: 0.24 },
+          'pin-halo': { blur: 0.8, colour: '{colour.pin}', opacity: 0.24 },
           selected: { halo: { opacity: 0.8 }, width: 2.5 },
         },
       })

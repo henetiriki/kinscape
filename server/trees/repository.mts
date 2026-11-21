@@ -101,6 +101,11 @@ const pinGroup = (
 
       return saved.ok ? ok(pinView(viewer, saved.value)) : saved;
     },
+    createAt: async (pin, place) => {
+      const saved = await store.addPinAt({ ...scope, pin, place });
+
+      return saved.ok ? ok(pinView(viewer, saved.value)) : saved;
+    },
     get: async pinId => {
       const row = await store.findPin({ ...scope, pinId });
 

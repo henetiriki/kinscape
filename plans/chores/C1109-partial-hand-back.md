@@ -1,7 +1,7 @@
 # Plan: C1109: Hand back only the paths CI cannot build, and build the rest of a hand-back PR in CI
 
 - **Spec:** #1109
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ Step 1 makes `HAND_BACK` the list, and step 2 names it as the source. A Constrai
 - **B.** A path is a hand-back path if it matches `HAND_BACK` and a CODEOWNERS line after the catch-all. The script still reads CODEOWNERS, as the Constraint says. `claude-build.yml` adds `.github/CODEOWNERS` to the sparse checkout of the `approve` job, and `agent-approve.mts` reads the file. Cost: two lists to keep in step, and one more workflow edit.
 - **Other:** your own.
 
-Recommended: A, because one list then defines the hand-back paths ([code rules](../../docs/code-rules.md): define a constant once). The base-commit checkout keeps the guard that the Constraint protects. B keeps the Constraint's words true, but a `HAND_BACK` pattern with no owner line then hands nothing back.
+**Answer: A** (@henetiriki)
 
 **D2 · Text outside the issue that the change makes wrong** · Decides: Tech lead
 
@@ -37,7 +37,7 @@ The issue does not name these lines. Each one says that a CODEOWNERS line hands 
 - **B.** Leave them. File a follow-up Chore. Cost: the docs contradict the rule from the merge until that Chore merges.
 - **Other:** your own.
 
-Recommended: A, because a reader then finds one rule in each file.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

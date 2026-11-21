@@ -20,6 +20,13 @@ const { map } = resolveTokens(rawTokens);
 /** A Pin draws at 22 px, as the glyphs of `map-pin-fan`; an icon image is 24 px wide. */
 const ICON_SIZE = 22 / 24;
 
+/**
+ * A token's `radius` is the centre line of its ring, as an svg circle takes it. MapLibre draws a
+ * circle stroke outside `circle-radius`, so the fill radius is half the stroke width less.
+ */
+const ringRadius = ({ radius, width }: { radius: number; width: number }) =>
+  radius - width / 2;
+
 /** The image id of an Event type is this prefix and its name; the style builds it the same way. */
 const PREFIX = 'pin-';
 
@@ -77,10 +84,11 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
       {
         id: 'pins-halo',
         paint: {
-          'circle-blur': map['pin-halo'].blur,
-          'circle-color': map['pin-halo'].colour,
-          'circle-opacity': map['pin-halo'].opacity,
-          'circle-radius': map.selected.radius,
+          'circle-color': 'transparent',
+          'circle-radius': ringRadius(map.selected.halo),
+          'circle-stroke-color': map.selected.halo.colour,
+          'circle-stroke-opacity': map.selected.halo.opacity,
+          'circle-stroke-width': map.selected.halo.width,
         },
         source: 'pins',
         type: 'circle',
@@ -89,7 +97,7 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
         id: 'pins-selected',
         paint: {
           'circle-color': 'transparent',
-          'circle-radius': map.selected.radius,
+          'circle-radius': ringRadius(map.selected),
           'circle-stroke-color': map.selected.colour,
           'circle-stroke-width': map.selected.width,
         },

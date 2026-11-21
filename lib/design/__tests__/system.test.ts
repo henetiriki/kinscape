@@ -96,7 +96,7 @@ describe('systemTokens', () => {
         value: follow(value),
       }))
     ).toEqual(expected.toSorted((a, b) => a.name.localeCompare(b.name)));
-    expect(all(system).length).toBe(172);
+    expect(all(system).length).toBe(173);
   });
 
   // NFR-06

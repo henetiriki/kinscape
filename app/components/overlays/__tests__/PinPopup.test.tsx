@@ -58,6 +58,50 @@ it('shows the event type and both date lines with bars in place of the name and 
   expect(container.querySelectorAll('[data-bar]').length).toBe(2);
 });
 
+it('marks each form busy while loading, and no form busy otherwise', () => {
+  const { rerender } = render(
+    <PinPopup
+      event='residence'
+      reading='In 1890'
+      recorded='1890'
+      state='loading'
+    />
+  );
+
+  expect(screen.getByRole('dialog').getAttribute('aria-busy')).toBe('true');
+  rerender(
+    <PinPopup
+      event='residence'
+      form='sheet'
+      reading='In 1890'
+      recorded='1890'
+      state='loading'
+    />
+  );
+  expect(screen.getByRole('region').getAttribute('aria-busy')).toBe('true');
+  rerender(
+    <PinPopup
+      event='residence'
+      form='inline'
+      reading='In 1890'
+      recorded='1890'
+      state='loading'
+    />
+  );
+  expect(screen.getByRole('group').getAttribute('aria-busy')).toBe('true');
+  rerender(
+    <PinPopup
+      event='residence'
+      form='inline'
+      name='A B'
+      reading='In 1890'
+      recorded='1890'
+      state='loaded'
+    />
+  );
+  expect(screen.getByRole('group').getAttribute('aria-busy')).toBeNull();
+});
+
 it('disables "Add a pin here" and "Edit" while loading', () => {
   show({ address: undefined, name: undefined, state: 'loading' });
 
@@ -130,6 +174,10 @@ it('draws the inline form as a group with no handle, for the date sheet', () => 
   const { container } = show({ form: 'inline' });
 
   expect(screen.getByRole('group', { name: 'Pin details' })).toBeTruthy();
+  // The note is a sibling of the group, at the foot of the sheet.
+  expect(
+    screen.getByRole('group').contains(screen.getByText(/^Look-up only/))
+  ).toBe(false);
   expect(screen.queryByRole('region')).toBeNull();
   expect(container.querySelector('[aria-hidden="true"]:not(svg)')).toBeNull();
   expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();

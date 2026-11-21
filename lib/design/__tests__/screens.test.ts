@@ -15,6 +15,11 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-account-menu',
   },
   {
+    blocker:
+      'The map has no Pin popup in the loading or failed state until a request is slow or fails.',
+    folder: 'map-pin-popup',
+  },
+  {
     blocker: 'No app route holds the loading state.',
     folder: 'people-loading',
   },
@@ -74,10 +79,6 @@ const NO_ENTRY = [
   'map-pin-count',
   'map-pin-fan',
   'map-pin-fan-phone',
-  'map-pin-popup',
-  'map-pin-popup-failed',
-  'map-pin-popup-loading',
-  'map-pin-popup-phone',
   'map-sources',
   'map-sources-phone',
   'map-style',

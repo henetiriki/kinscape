@@ -122,24 +122,35 @@ export const PinPopup = ({
         {dates}
         {body}
         {retry}
-        {loaded && (
-          <p className={styles.note}>
-            Look-up only on a phone. Add people and pins on a tablet or
-            computer.
-          </p>
-        )}
       </>
     );
+    const note = (className: string) =>
+      loaded && (
+        <p className={className}>
+          Look-up only on a phone. Add people and pins on a tablet or computer.
+        </p>
+      );
 
-    // Inside the date sheet the sheet's own handle and surface are there already.
+    // Inside the date sheet the sheet's own handle and surface are there already, and the note sits at the foot of the sheet.
     return form === 'inline' ? (
-      <div aria-label='Pin details' className={styles.inline} role='group'>
-        {content}
-      </div>
+      <>
+        <div
+          aria-busy={loading || undefined}
+          aria-label='Pin details'
+          className={styles.inline}
+          role='group'>
+          {content}
+        </div>
+        {note(`${styles.note} ${styles.foot}`)}
+      </>
     ) : (
-      <section aria-label={`Pin details, ${state}`} className={styles.sheet}>
+      <section
+        aria-busy={loading || undefined}
+        aria-label={`Pin details, ${state}`}
+        className={styles.sheet}>
         <span aria-hidden='true' className={styles.handle} />
         {content}
+        {note(styles.note)}
       </section>
     );
   }
@@ -148,6 +159,7 @@ export const PinPopup = ({
     // Esc inside the popup closes it; the popup itself is not a tab stop.
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
+      aria-busy={loading || undefined}
       aria-label='Pin details'
       className={styles.popup}
       onKeyDown={press => {

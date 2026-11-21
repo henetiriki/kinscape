@@ -179,18 +179,20 @@ describe('pinsLayer', () => {
       );
     };
 
-    it('draws two circles under the symbols, from the selected and pin-halo tokens', () => {
+    it('draws two rings under the symbols, from the map.selected tokens', () => {
       expect([halo.id, ring.id, symbols.id]).toEqual([
         'pins-halo',
         'pins-selected',
         'pins',
       ]);
+      // The Map-pin-count board: a brand ring of r 16 and a white ring of r 20.5 at 0.8, as svg circles.
       expect(halo).toMatchObject({
         paint: {
-          'circle-blur': 0.8,
-          'circle-color': '#9a3b12',
-          'circle-opacity': 0.24,
-          'circle-radius': 17,
+          'circle-color': 'transparent',
+          'circle-radius': 19.5,
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-opacity': 0.8,
+          'circle-stroke-width': 2,
         },
         source: 'pins',
         type: 'circle',
@@ -198,7 +200,7 @@ describe('pinsLayer', () => {
       expect(ring).toMatchObject({
         paint: {
           'circle-color': 'transparent',
-          'circle-radius': 17,
+          'circle-radius': 14.75,
           'circle-stroke-color': expect.stringMatching(/^#/),
           'circle-stroke-width': 2.5,
         },

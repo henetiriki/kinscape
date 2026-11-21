@@ -88,6 +88,11 @@
   margin: 0;
 }
 
+/* In the date sheet the note sits at the foot of the sheet. */
+.foot {
+  margin: auto 0 0;
+}
+
 /* The loading bar stands where the name or the address will be. */
 .bar {
   background: var(--line);

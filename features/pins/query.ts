@@ -4,19 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import type { MapPin, PinDetails } from '@ks/lib/domain/pins/types.ts';
 
-/**
- * The error of a response from `/data/pins` that is not OK. Its `status` lets the retry rule of
- * `QueryProvider` skip a 401 or a 404.
- */
-const requestError = (status: number) =>
-  Object.assign(new Error(`Pins request failed: ${status}`), { status });
+import { requestError } from '@ks/lib/domain/requests/request-error.mts';
 
 /** The Pins of the Viewer's Tree from `/data/pins`. A response that is not OK throws. */
 export const fetchPins = async (): Promise<MapPin[]> => {
   const response = await fetch('/data/pins');
 
   if (!response.ok) {
-    throw requestError(response.status);
+    throw requestError('Pins', response.status);
   }
 
   return (await response.json()) as MapPin[];
@@ -36,7 +31,7 @@ export const fetchPinDetails = async (
   const response = await fetch(`/data/pins/${id}`);
 
   if (!response.ok) {
-    throw requestError(response.status);
+    throw requestError('Pins', response.status);
   }
 
   return (await response.json()) as PinDetails;

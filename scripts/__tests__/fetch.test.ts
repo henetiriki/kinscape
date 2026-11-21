@@ -9,6 +9,7 @@ describe('the repo', () => {
   it('calls fetch only in the query layer', () => {
     const files = readSources(['app', 'features']);
 
+    expect(Object.keys(files)).toContain('features/people/query.ts');
     expect(Object.keys(files)).toContain('features/pins/query.ts');
     expect(fetchBreaks(files)).toEqual([]);
   });

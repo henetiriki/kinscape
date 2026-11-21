@@ -640,7 +640,10 @@ export const memoryOnlyBreaks = (files: Record<string, string>): string[] =>
     ]);
 
 /** The files under `app/` or `features/` that may call `fetch` and name a Tree data URL: the query layer. */
-export const QUERY_FILES = ['features/pins/query.ts'];
+export const QUERY_FILES = [
+  'features/people/query.ts',
+  'features/pins/query.ts',
+];
 
 const GLOBAL_OBJECTS = ['globalThis', 'self', 'window'];
 

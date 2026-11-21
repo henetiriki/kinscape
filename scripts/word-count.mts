@@ -15,7 +15,7 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
     pattern: /^\.claude\/skills\/(.+\/)?(?!NOTICE\.md$)[^/]+\.md$/,
   },
   { limit: 600, pattern: /^\.github\/agent\/build\.md$/ },
-  { limit: 599, pattern: /^\.github\/agent\/fix-review\.md$/ },
+  { limit: 470, pattern: /^\.github\/agent\/fix-review\.md$/ },
   { limit: 330, pattern: /^\.github\/agent\/refresh\.md$/ },
   { limit: 750, pattern: /^\.github\/agent\/review-code\.md$/ },
   { limit: 550, pattern: /^\.github\/agent\/review\.md$/ },

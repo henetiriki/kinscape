@@ -102,9 +102,11 @@ describe('PinFan', () => {
       </PinFan>
     );
 
-    expect(screen.getByText('Marker').parentElement?.className).toMatch(
-      /place/
-    );
+    // The marker sits at the Place: over the lines and under the Pins.
+    const place = screen.getByText('Marker').parentElement!;
+
+    expect(place.previousElementSibling?.tagName.toLowerCase()).toBe('svg');
+    expect(place.nextElementSibling?.tagName.toLowerCase()).toBe('button');
     expect(
       screen.getByRole('button', { name: 'Birth, about 1850' }).dataset.state
     ).toBe('hover');

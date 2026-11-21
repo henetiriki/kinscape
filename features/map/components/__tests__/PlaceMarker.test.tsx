@@ -35,6 +35,7 @@ describe('PlaceMarker', () => {
     expect(fanned()).toBe(false);
   });
 
+  // PIN-06
   it('fans the Pins out on hover and folds them when the mouse leaves', () => {
     const { view } = setup();
     const place = view.container.firstElementChild!.firstElementChild!;
@@ -46,6 +47,7 @@ describe('PlaceMarker', () => {
     expect(fanned()).toBe(false);
   });
 
+  // PIN-06
   it('does not fan out when a touch enters it', () => {
     const { marker } = setup();
 
@@ -54,6 +56,7 @@ describe('PlaceMarker', () => {
     expect(fanned()).toBe(false);
   });
 
+  // PIN-06
   it('fans the Pins out on the first tap, and folds them on a tap elsewhere', () => {
     const { marker, view } = setup();
 
@@ -61,8 +64,9 @@ describe('PlaceMarker', () => {
     expect(fanned()).toBe(true);
     // The open marker rises over its neighbours on the map.
     expect(
-      view.container.firstElementChild!.firstElementChild!.className
-    ).toMatch(/open/);
+      (view.container.firstElementChild!.firstElementChild as HTMLElement)
+        .dataset.open
+    ).toBe('true');
 
     fireEvent.pointerDown(marker());
     expect(fanned()).toBe(true);
@@ -70,10 +74,12 @@ describe('PlaceMarker', () => {
     fireEvent.pointerDown(screen.getByText('Elsewhere'));
     expect(fanned()).toBe(false);
     expect(
-      view.container.firstElementChild!.firstElementChild!.className
-    ).not.toMatch(/open/);
+      (view.container.firstElementChild!.firstElementChild as HTMLElement)
+        .dataset.open
+    ).toBeUndefined();
   });
 
+  // PIN-06
   it('opens a tapped Pin and folds the fan (#860 plan D3)', () => {
     const { marker, onOpen } = setup();
 

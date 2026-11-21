@@ -88,3 +88,8 @@ The issue does not name these lines. Each one says that a CODEOWNERS line hands 
 
 - The big-departure rule in `build.md` and `build-local/SKILL.md` (#1111).
 - Who may push to a hand-back path: the ruleset and CODEOWNERS stay as they are.
+
+## Deviations
+
+- `scripts/word-count.mts` and its test change: the `build.md` budget goes from 530 to 600 words for the new `## Hand-back` section.
+- The `build-local/SKILL.md` and `refine/chore.md` edits wait for a session that can write `.claude/skills`.

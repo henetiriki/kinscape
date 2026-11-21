@@ -1,4 +1,4 @@
-# The first line covers every path; the lines after it are the hand-back paths (scripts/hand-back.mts).
+# The first line covers every path; the lines after it need the tech lead's review. HAND_BACK in scripts/hand-back.mts lists the hand-back paths.
 * @henetiriki @starforms
 .claude/settings*.json @henetiriki
 .claude/skills/** @henetiriki

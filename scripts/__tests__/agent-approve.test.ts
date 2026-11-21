@@ -534,6 +534,67 @@ describe('run', () => {
       expect(written).toEqual(['go=false']);
     });
 
+    describe('with a row that is not a hand-back path', () => {
+      const rows = (status: string, ...paths: string[]) =>
+        plan(status).replace(
+          'Nothing here.',
+          paths.map(path => `| \`${path}\` | x |`).join('\n')
+        );
+      const MIXED = ['scripts/a.mts', '.github/workflows/b.yml'];
+
+      it('goes to the build, with no comment, and moves the issue to ready-for-agent', () => {
+        fakeGh({
+          prLabels: ['hand-back'],
+          reviews: answered,
+          text: rows('draft', ...MIXED),
+        });
+
+        expect(run(['504'], ENV, gh, write)).toBe(0);
+        expect(put()).toHaveLength(1);
+        expect(comments()).toEqual([]);
+        expect(written).toEqual(['go=true', `head=${MADE}`]);
+        expect(edits()).toEqual([moved('8', DEV, AGENT)]);
+      });
+
+      it('goes to the build for a plan already approved, with the head as it is', () => {
+        fakeGh({
+          prLabels: ['hand-back'],
+          text: rows('approved', ...MIXED),
+        });
+
+        expect(run(['504'], ENV, gh, write)).toBe(0);
+        expect(put()).toEqual([]);
+        expect(comments()).toEqual([]);
+        expect(written).toEqual(['go=true', `head=${HEAD}`]);
+        expect(edits()).toEqual([moved('8', DEV, AGENT)]);
+      });
+
+      it('still stops on an open decision, and leaves the issue alone', () => {
+        fakeGh({ prLabels: ['hand-back'], text: rows('draft', ...MIXED) });
+
+        expect(run(['504'], ENV, gh, write)).toBe(0);
+        expect(written).toEqual(['go=false']);
+        expect(reply()).toContain('Not approved yet');
+        expect(edits()).toEqual([]);
+      });
+    });
+
+    it('does not go when every row is a hand-back path', () => {
+      fakeGh({
+        prLabels: ['hand-back'],
+        reviews: answered,
+        text: plan('draft').replace(
+          'Nothing here.',
+          '| `.github/workflows/a.yml` | x |\n| `AGENTS.md` | x |'
+        ),
+      });
+
+      expect(run(['504'], ENV, gh, write)).toBe(0);
+      expect(reply()).toContain('tech lead builds it');
+      expect(written).toEqual(['go=false']);
+      expect(edits()).toEqual([]);
+    });
+
     it('comments for a plan already approved, committing nothing', () => {
       fakeGh({ prLabels: ['hand-back'], text: plan('approved') });
 

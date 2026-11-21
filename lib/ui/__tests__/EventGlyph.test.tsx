@@ -3,7 +3,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 
-import { EVENT_ORDER, EVENT_PATHS, EventGlyph } from '@ks/lib/ui/EventGlyph';
+import {
+  EVENT_ORDER,
+  EVENT_PATHS,
+  EventGlyph,
+  eventLabel,
+} from '@ks/lib/ui/EventGlyph';
 
 const css = readFileSync(
   join(import.meta.dirname, '../EventGlyph.module.css'),
@@ -43,6 +48,11 @@ it('lists every Event type once, in the order the design draws them', () => {
     'other',
   ]);
   expect([...EVENT_ORDER].sort()).toEqual(Object.keys(EVENT_PATHS).sort());
+});
+
+it('names an Event type with a capital first letter', () => {
+  expect(eventLabel('residence')).toBe('Residence');
+  expect(eventLabel('land')).toBe('Land');
 });
 
 it('sizes a glyph 1em square in --pin, so it follows the text around it', () => {

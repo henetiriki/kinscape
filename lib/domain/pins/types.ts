@@ -5,6 +5,9 @@ import type { pinInputSchema } from '@ks/lib/domain/pins/schemas.mts';
 import type { Place, PlaceInput } from '@ks/lib/domain/places/types.ts';
 import type { Validity } from '@ks/lib/domain/validity/types.ts';
 
+/** The days on which a Pin is the only Pin that its Place shows. */
+export type AlonePart = { id: Pin['id'] } & Validity;
+
 /** What `checkPin` returns: the Pin, and its new Place for a new point. */
 export type CheckedPin = { pin: PinInput; place?: PlaceInput };
 
@@ -52,6 +55,9 @@ export type PinFieldErrors = {
 
 /** What a client saves for a Pin. */
 export type PinInput = z.output<typeof pinInputSchema>;
+
+/** A Place that shows two or more Pins on a day: its position, as longitude and latitude, and those Pins. */
+export type SharedPlace = { pins: MapPin[]; position: [number, number] };
 
 /** A Pin with the days it shows: its date clipped by the birth and death of its Person. */
 export type SpannedPin = { span: Validity } & Pin;

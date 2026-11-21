@@ -4,13 +4,23 @@
 import type { Feature, FeatureCollection, Point } from 'geojson';
 import type { ExpressionSpecification } from 'maplibre-gl';
 
-import type { Layer } from '@ks/features/map/types';
+import { createElement } from 'react';
+
+import type { FanPin, Layer } from '@ks/features/map/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
+import type { Validity } from '@ks/lib/domain/validity/types.ts';
 
 import rawTokens from '@ks/design/tokens.json';
 import { resolveTokens } from '@ks/design/tokens.mts';
+import { PlaceMarker } from '@ks/features/map/components/PlaceMarker';
 import { spanFilter } from '@ks/features/map/filter';
+import { readFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
+import {
+  aloneParts,
+  groupByPlace,
+  sharedPlaces,
+} from '@ks/lib/domain/pins/shared-places.mts';
 import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 import { EVENT_ORDER, EVENT_PATHS } from '@ks/lib/ui/EventGlyph';
 
@@ -30,35 +40,44 @@ const ringRadius = ({ radius, width }: { radius: number; width: number }) =>
 /** The image id of an Event type is this prefix and its name; the style builds it the same way. */
 const PREFIX = 'pin-';
 
-const featureOf = ({
-  eventType,
-  id,
-  latitude,
-  longitude,
-  span,
-}: MapPin): Feature<Point> => ({
+/** A single Pin for the days of `part`, on which its Place shows no other Pin. */
+const featureOf = (
+  { eventType, id, latitude, longitude }: MapPin,
+  part: Validity
+): Feature<Point> => ({
   geometry: { coordinates: [longitude, latitude], type: 'Point' },
   properties: {
     eventType,
     id,
-    validFrom: span.validFrom,
-    validTo: span.validTo,
+    validFrom: part.validFrom,
+    validTo: part.validTo,
   },
   type: 'Feature',
+});
+
+const fanPinOf = (pin: MapPin): FanPin => ({
+  event: pin.eventType,
+  id: pin.id,
+  reading: readFuzzyDate(pin),
 });
 
 /** The id of the "Pins" row, which the map shell reads to close the popup of a Pin that the row hides. */
 export const PINS_LAYER_ID = 'pins';
 
 /**
- * The "Pins" row: one symbol for each Pin at the position of its Place. The Map date only changes
- * the filter, so the source holds every Pin and no request is sent (NFR-01). Pins on one Place
- * overlap (PIN-06). Two circles under the symbols draw the selection ring; their filter keeps only
- * the open Pin (PIN-02), so no ring shows while none is open.
+ * The "Pins" row: one symbol for each Pin at the position of its Place, on the days its Place shows
+ * no other Pin. On the other days the Place has a count marker with a fan of its Pins (PIN-06).
+ * The Map date only changes the filter and the markers, so the source holds every Pin and no
+ * request is sent (NFR-01). Two circles under the symbols draw the selection ring; their filter
+ * keeps only the open Pin (PIN-02), so no ring shows while none is open.
  */
 export const pinsLayer = (pins: MapPin[]): Layer => {
+  const groups = groupByPlace(pins);
+  const byId = new Map(pins.map(pin => [pin.id, pin]));
   const data: FeatureCollection<Point> = {
-    features: pins.map(featureOf),
+    features: groups
+      .flatMap(aloneParts)
+      .map(({ id, ...part }) => featureOf(byId.get(id)!, part)),
     type: 'FeatureCollection',
   };
 
@@ -124,6 +143,16 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
         type: 'symbol',
       },
     ],
+    markers: (day, open, onOpen) =>
+      sharedPlaces(groups, day).map(({ pins: shown, position }) => ({
+        key: position.join(','),
+        node: createElement(PlaceMarker, {
+          onOpen,
+          pins: shown.map(fanPinOf),
+          selected: shown.some(({ id }) => id === open),
+        }),
+        position,
+      })),
     select: ['pins'],
     sources: { pins: { data, type: 'geojson' } },
   };

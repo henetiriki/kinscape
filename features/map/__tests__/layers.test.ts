@@ -1,7 +1,11 @@
+import type { Feature } from 'geojson';
+import type { ComponentProps, ReactElement } from 'react';
+
 import { featureFilter } from '@maplibre/maplibre-gl-style-spec';
 import { globSync, readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
+import type { PlaceMarker } from '@ks/features/map/components/PlaceMarker';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
 import type { MapPin } from '@ks/lib/domain/pins/types.ts';
 
@@ -247,6 +251,65 @@ describe('pinsLayer', () => {
     expect((caption as (day: Day) => string)(toDay('2000-06-01'))).toBe(
       '1 of 3 true on this date'
     );
+  });
+
+  describe('a Place with several Pins', () => {
+    const shared = [
+      pinOn(2, '1890-01-01', '1906-01-01'),
+      { ...pinOn(3, '1899-01-01', '1900-01-01', 'marriage'), date1: '1899' },
+      pinOn(4, '1901-01-01', '1902-01-01', 'birth'),
+    ];
+    const marked = pinsLayer(shared);
+    const markersOn = (day: string, open?: string) =>
+      marked.markers!(toDay(day), open, () => {});
+
+    it('draws a single Pin only on the days its Place shows no other Pin', () => {
+      const features = (
+        marked.sources.pins as { data: { features: Feature[] } }
+      ).data.features.map(({ properties }) => [
+        properties!.id,
+        properties!.validFrom,
+        properties!.validTo,
+      ]);
+
+      expect(features).toEqual([
+        ['pin-2', toDay('1890-01-01'), toDay('1899-01-01')],
+        ['pin-2', toDay('1900-01-01'), toDay('1901-01-01')],
+        ['pin-2', toDay('1902-01-01'), toDay('1906-01-01')],
+      ]);
+    });
+
+    it('places a count marker with the Pins of the Map date, in date order (#863 D2)', () => {
+      const [marker] = markersOn('1899-06-01');
+      const { props } = marker.node as ReactElement<
+        ComponentProps<typeof PlaceMarker>
+      >;
+
+      expect(marker.key).toBe('18.4,-33.9');
+      expect(marker.position).toEqual([18.4, -33.9]);
+      expect(props.pins).toEqual([
+        { event: 'residence', id: 'pin-2', reading: 'In 1890' },
+        { event: 'marriage', id: 'pin-3', reading: 'In 1899' },
+      ]);
+      expect(props.selected).toBe(false);
+    });
+
+    it('places no marker on a day the Place shows one Pin', () => {
+      expect(markersOn('1895-06-01')).toEqual([]);
+    });
+
+    // PIN-02
+    it('selects the marker whose Place holds the open Pin, and passes on an open (#863 D4)', () => {
+      const onOpen = vi.fn();
+      const [marker] = marked.markers!(toDay('1901-06-01'), 'pin-4', onOpen);
+      const { props } = marker.node as ReactElement<
+        ComponentProps<typeof PlaceMarker>
+      >;
+
+      expect(props.selected).toBe(true);
+      props.onOpen('pin-2');
+      expect(onOpen).toHaveBeenCalledWith('pin-2');
+    });
   });
 
   it('has no feature and reads "0 of 0" for no Pins', () => {

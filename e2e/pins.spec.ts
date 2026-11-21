@@ -41,12 +41,13 @@ const goTo = async (page: Page, date: string) => {
 const caption = (page: Page) =>
   page.getByText(/^\d+ of \d+ true on this date$/);
 
-// PIN-03: pin 0 of the seed is a residence from 1840 to 1855.
+// The tests use 1950: borders are mapped then, so no notice card covers the map.
+// PIN-03
 test('draws the Pins of the Map date, each with the glyph of its event type', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
   await expect
     .poll(async () => (await shownTypes(page)).length)
     .toBeGreaterThan(0);
@@ -66,7 +67,7 @@ test('the Pins row counts the Pins that are true on the Map date', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
   await expect(caption(page)).toHaveText(new RegExp(`of ${SEEDED} true`));
   await expect(caption(page)).not.toHaveText(
     `0 of ${SEEDED} true on this date`
@@ -81,7 +82,7 @@ test('switching the Pins row off hides every Pin, and on shows them again', asyn
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
   await expect
     .poll(async () => (await shownTypes(page)).length)
     .toBeGreaterThan(0);
@@ -114,15 +115,33 @@ const pickPin = async (page: Page) => {
     })) {
       const point = map.project(feature.geometry.coordinates);
       const [top1] = map.queryRenderedFeatures(point, { layers: ['pins'] });
+      const x = left + point.x;
+      const y = top + point.y;
+      // A count marker, its fan or a card over the Pin would take the click instead.
+      const covered =
+        !document
+          .elementFromPoint(x, y)
+          ?.classList.contains('maplibregl-canvas') ||
+        [...document.querySelectorAll('.maplibregl-marker')].some(marker => {
+          const box = marker.getBoundingClientRect();
+
+          return (
+            x > box.left - 24 &&
+            x < box.right + 24 &&
+            y > box.top - 24 &&
+            y < box.bottom + 24
+          );
+        });
 
       if (
+        !covered &&
         point.x > window.innerWidth / 2 &&
         point.x < window.innerWidth - 60 &&
         point.y > 160 &&
         point.y < window.innerHeight - 300 &&
         top1
       ) {
-        return { id: top1.properties.id, x: left + point.x, y: top + point.y };
+        return { id: top1.properties.id, x, y };
       }
     }
 
@@ -149,30 +168,42 @@ const pinPoint = (page: Page, id: string) =>
   }, id);
 
 /**
- * A point on the empty map that a click can reach: in the free area, right of `pin` (the popup sits
- * left of its Pin), with no Pin within 24 px, so the click is not on a Pin or on the dock.
+ * A point on the empty map, at least `away` px from `from`. The map canvas is the top element there,
+ * so no count marker, fan, popup or card covers it, and no Pin symbol is within 24 px.
  */
-const emptyPoint = (page: Page, pin: { x: number; y: number }) =>
-  page.evaluate(wanted => {
-    const { kinscapeMap: map } = window as unknown as TestWindow;
-    const { left, top } = map.getContainer().getBoundingClientRect();
+const emptyPoint = (page: Page, from: { x: number; y: number }, away = 60) =>
+  page.evaluate(
+    ({ away: distance, from: wanted }) => {
+      const { kinscapeMap: map } = window as unknown as TestWindow;
+      const { left, top } = map.getContainer().getBoundingClientRect();
 
-    for (let y = 160; y < window.innerHeight - 300; y += 20) {
-      for (let x = wanted.x - left + 60; x < window.innerWidth - 60; x += 20) {
-        const near = map.queryRenderedFeatures(
-          [
-            [x - 24, y - 24],
-            [x + 24, y + 24],
-          ],
-          { layers: ['pins'] }
-        );
+      for (let y = 100; y < window.innerHeight - 100; y += 20) {
+        for (let x = 20; x < window.innerWidth - 20; x += 20) {
+          const onCanvas = document
+            .elementFromPoint(x, y)
+            ?.classList.contains('maplibregl-canvas');
+          const near = map.queryRenderedFeatures(
+            [
+              [x - left - 24, y - top - 24],
+              [x - left + 24, y - top + 24],
+            ],
+            { layers: ['pins'] }
+          );
 
-        if (near.length === 0) return { x: left + x, y: top + y };
+          if (
+            onCanvas &&
+            near.length === 0 &&
+            Math.hypot(x - wanted.x, y - wanted.y) >= distance
+          ) {
+            return { x, y };
+          }
+        }
       }
-    }
 
-    throw new Error('No empty point in the free area');
-  }, pin);
+      throw new Error('No empty point on the map');
+    },
+    { away, from }
+  );
 
 // PIN-02: no request for the details before a click, then one for that Pin.
 test('a click on a Pin opens its popup, and asks for its details once', async ({
@@ -186,7 +217,7 @@ test('a click on a Pin opens its popup, and asks for its details once', async ({
     }
   });
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -209,7 +240,7 @@ test('the popup stays at its Pin after a pan and after a zoom', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -246,7 +277,7 @@ test('Close, Esc and a click on empty map close the popup', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
   const open = async () => {
@@ -270,7 +301,7 @@ test('Close, Esc and a click on empty map close the popup', async ({
 // PIN-02, MAP-02: the Pins row hides the Pin, so the popup closes.
 test('switching the Pins row off closes the popup', async ({ page }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -283,7 +314,7 @@ test('switching the Pins row off closes the popup', async ({ page }) => {
 // PIN-02: the Map date hides the Pin, so the popup closes.
 test('a Map date that hides the Pin closes its popup', async ({ page }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -291,6 +322,87 @@ test('a Map date that hides the Pin closes its popup', async ({ page }) => {
   await expect(popup(page)).toBeVisible();
   await goTo(page, '2020');
   await expect(popup(page)).toBeHidden();
+});
+
+/**
+ * A count marker in the free area: its centre on the page and its count. The seed puts 20 Pins on
+ * each Place, so some Places show two or more on a Map date.
+ */
+const pickMarker = async (page: Page) => {
+  await expect(page.locator('.maplibregl-marker').first()).toBeAttached();
+
+  return page.evaluate(() => {
+    for (const marker of document.querySelectorAll('.maplibregl-marker')) {
+      const { height, left, top, width } = marker.getBoundingClientRect();
+      const x = left + width / 2;
+      const y = top + height / 2;
+
+      if (
+        x > window.innerWidth / 2 &&
+        x < window.innerWidth - 160 &&
+        y > 200 &&
+        y < window.innerHeight - 340
+      ) {
+        return { count: Number(marker.textContent), x, y };
+      }
+    }
+
+    throw new Error('No count marker is in the free area');
+  });
+};
+
+/** The Pins of the open fan. */
+const fanPins = (page: Page) =>
+  page.locator('.maplibregl-marker button:not([aria-label$=" Pins"])');
+
+// PIN-06: one marker with the count; hover fans the Pins out and leaving folds them.
+test('a count marker fans its Pins out on hover and folds them when the pointer leaves', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await goTo(page, '1950');
+
+  const marker = await pickMarker(page);
+
+  expect(marker.count).toBeGreaterThan(1);
+  await expect(
+    page.getByRole('button', { name: `${marker.count} Pins` }).first()
+  ).toBeVisible();
+  await page.mouse.move(marker.x, marker.y);
+  await expect(fanPins(page)).toHaveCount(marker.count);
+
+  // #863 D6: the event type and the date reading of the popup.
+  for (const name of await fanPins(page).evaluateAll(pins =>
+    pins.map(pin => pin.getAttribute('aria-label'))
+  )) {
+    expect(name).toMatch(
+      /^[A-Z][a-z]+, (in|on|from|about|before|after|between|calculated as|estimated as) /
+    );
+  }
+
+  const away = await emptyPoint(page, marker, 200);
+
+  await page.mouse.move(away.x, away.y);
+  await expect(fanPins(page)).toHaveCount(0);
+});
+
+// PIN-02, #863 D4: a fan Pin opens its popup; the marker shows the ring until the popup closes.
+test('a fan Pin opens its popup, and its marker shows the ring until the popup closes', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await goTo(page, '1950');
+
+  const marker = await pickMarker(page);
+
+  await page.mouse.move(marker.x, marker.y);
+  await fanPins(page).first().click();
+  await expect(popup(page)).toBeVisible();
+  await expect(fanPins(page)).toHaveCount(0);
+  await expect(page.locator('.maplibregl-marker [data-ring]')).toHaveCount(1);
+
+  await popup(page).getByRole('button', { name: 'Close' }).click();
+  await expect(page.locator('.maplibregl-marker [data-ring]')).toHaveCount(0);
 });
 
 // NFR-05: a tap is a map `click`; the sheet has no "Add a pin here".
@@ -301,7 +413,7 @@ test.describe('on a phone', () => {
     page,
   }) => {
     await page.goto('/');
-    await goTo(page, '1850');
+    await goTo(page, '1950');
 
     const pin = await pickPin(page);
 
@@ -310,6 +422,48 @@ test.describe('on a phone', () => {
     await expect(
       page.getByRole('button', { name: 'Add a pin here' })
     ).toHaveCount(0);
+  });
+
+  // PIN-06: the first tap fans the Pins out, a tap elsewhere folds them, and a tap on a Pin opens it.
+  test('a tap fans a count marker out, a tap elsewhere folds it, and a tap on a Pin opens it', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await goTo(page, '1950');
+
+    const pickPhoneMarker = () =>
+      page.evaluate(() => {
+        for (const marker of document.querySelectorAll('.maplibregl-marker')) {
+          const { height, left, top, width } = marker.getBoundingClientRect();
+          const x = left + width / 2;
+          const y = top + height / 2;
+
+          if (x > 120 && x < window.innerWidth - 120 && y > 220 && y < 420) {
+            return { x, y };
+          }
+        }
+
+        throw new Error('No count marker is in the free area');
+      });
+
+    await expect(page.locator('.maplibregl-marker').first()).toBeAttached();
+
+    const marker = await pickPhoneMarker();
+
+    await page.touchscreen.tap(marker.x, marker.y);
+    await expect(fanPins(page).first()).toBeVisible();
+    const away = await emptyPoint(page, marker, 120);
+
+    await page.touchscreen.tap(away.x, away.y);
+    await expect(fanPins(page)).toHaveCount(0);
+
+    await page.touchscreen.tap(marker.x, marker.y);
+
+    const pin = (await fanPins(page).first().boundingBox())!;
+
+    await page.touchscreen.tap(pin.x + pin.width / 2, pin.y + pin.height / 2);
+    await expect(popup(page).getByRole('heading', { level: 3 })).toBeVisible();
+    await expect(fanPins(page)).toHaveCount(0);
   });
 });
 
@@ -327,7 +481,7 @@ test(
     });
     await page.goto('/');
     await page.getByRole('radio', { name: 'Day' }).click();
-    await goTo(page, '1850-01-01');
+    await goTo(page, '1950-01-01');
     await expect
       .poll(async () => (await shownTypes(page)).length)
       .toBeGreaterThan(0);

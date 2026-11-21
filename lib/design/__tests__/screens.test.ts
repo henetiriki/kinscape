@@ -20,6 +20,16 @@ const SCREEN_ONLY: { blocker: string; folder: string }[] = [
     folder: 'map-pin-popup',
   },
   {
+    blocker:
+      'The card of the count marker looks is part of the board, not a state of the map.',
+    folder: 'map-pin-count',
+  },
+  {
+    blocker:
+      'The map needs a Tree with three Pins on Example Farm, and the board holds a hover look.',
+    folder: 'map-pin-fan',
+  },
+  {
     blocker: 'No app route holds the loading state.',
     folder: 'people-loading',
   },
@@ -49,8 +59,6 @@ const screenOnlyProblems = (
 
 /** Images in `design/` that `screens.json` has no entry for: draft boards, and screens that the app has not built. Remove a name when its slice adds the entry, or when a PR deletes its draft board. */
 const NO_ENTRY = [
-  'draft-pin-fan',
-  'draft-pin-marker',
   'fuzzy-date-readings',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',
@@ -74,9 +82,6 @@ const NO_ENTRY = [
   'map-phone-collapsed',
   'map-phone-filters',
   'map-phone-layers',
-  'map-pin-count',
-  'map-pin-fan',
-  'map-pin-fan-phone',
   'map-sources',
   'map-sources-phone',
   'map-style',

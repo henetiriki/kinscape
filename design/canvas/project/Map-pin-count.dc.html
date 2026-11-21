@@ -37,33 +37,11 @@ class Component extends DCLogic {
     const TEXT = (variant, text, as) => `<x-import component-from-global-scope="KinScape.Text" variant="${variant}" as="${as || 'span'}">${text}</x-import>`;
     const BUTTON = (text, kind, extra) => `<x-import component-from-global-scope="KinScape.Button" variant="${kind}"${extra || ''}>${text}</x-import>`;
 
-    // The count marker. MapLibre draws the circle layer pin-cluster; this HTML button adds the looks and the 44px target.
-    // Default 32px. Hover 36px with a halo. Focus keeps the size and adds the ring. Pressed shrinks to 28px with a halo.
-    const marker = (look, count, label, place) => {
-      const size = { default: 32, focus: 32, hover: 36, pressed: 28 }[look];
-      const halo = { hover: 52, pressed: 40 }[look];
-      const frame = place
-        ? `position: absolute; left: ${place.x - 22}px; top: ${place.y - 22}px`
-        : 'position: relative';
-      const ring = look === 'focus' ? '; box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--brand)' : '';
-      return [
-        `<button type="button" aria-label="${label}" style="${frame}; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center">`,
-        halo ? `<span aria-hidden="true" style="position: absolute; width: ${halo}px; height: ${halo}px; border-radius: ${halo / 2}px; background: var(--pin); opacity: 0.24"></span>` : '',
-        `<span style="position: relative; width: ${size}px; height: ${size}px; box-sizing: border-box; border: 2px solid var(--white); border-radius: ${size / 2}px; background: var(--pin); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-size: 14px; line-height: 1; font-weight: 600${ring}">${count}</span>`,
-        `</button>`
-      ].join('');
-    };
-
-    // A Pin of the fan: a 44px target with a white disc and the Event glyph. The hover look is larger, with a halo.
-    const fanPin = (event, look, label, at) => {
-      const disc = look === 'hover' ? 40 : 36;
-      const halo = look === 'hover' ? 52 : 0;
-      return [
-        `<button type="button" aria-label="${label}" style="position: absolute; left: ${at.x - 22}px; top: ${at.y - 22}px; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center">`,
-        halo ? `<span aria-hidden="true" style="position: absolute; width: ${halo}px; height: ${halo}px; border-radius: ${halo / 2}px; background: var(--pin); opacity: 0.24"></span>` : '',
-        `<span style="position: relative; width: ${disc}px; height: ${disc}px; box-sizing: border-box; border: 1px solid var(--line-strong); border-radius: ${disc / 2}px; background: var(--surface); box-shadow: var(--shadow-raised); color: var(--pin); font-size: 22px; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.EventGlyph" event="${event}"></x-import></span>`,
-        `</button>`
-      ].join('');
+    // The count marker, drawn by KinScape.CountMarker on its 44px target. A look of the card is its `state`: pressed is "active".
+    const marker = (look, place) => {
+      const props = look === "selected" ? ' selected="true"' : look === "default" ? "" : ` state="${look === "pressed" ? "active" : look}"`;
+      const tag = `<x-import component-from-global-scope="KinScape.CountMarker" count="3"${props}></x-import>`;
+      return place ? `<div style="position: absolute; left: ${place.x - 22}px; top: ${place.y - 22}px">${tag}</div>` : tag;
     };
 
     // The Pin popup. Event type and the reading of the date come with the Pin on the map. The Person and the address load when the popup opens.
@@ -108,30 +86,36 @@ class Component extends DCLogic {
     const others = [pin(1150, 318), pin(1262, 566), pin(560, 250)].join('');
     const selected = `<circle cx="${P.x}" cy="${P.y}" r="16" fill="none" stroke="#264F29" stroke-width="2.5"></circle><circle cx="${P.x}" cy="${P.y}" r="20.5" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="2"></circle>`;
 
-    // The fan: three Pins on a ring of 56px around the Place, joined to it by a thin line.
-    const R = 56;
-    const around = deg => ({ x: Math.round(P.x + R * Math.cos(deg * Math.PI / 180)), y: Math.round(P.y + R * Math.sin(deg * Math.PI / 180)) });
-    const fan = [['residence', 'normal', 'Residence, 1890 to 1905', around(-150)], ['birth', 'hover', 'Birth, 1901', around(-30)], ['marriage', 'normal', 'Marriage, 1899', around(90)]];
-    const lines = fan.map(([, , , at]) => `<line x1="${P.x}" y1="${P.y}" x2="${at.x}" y2="${at.y}" stroke="#9A3B12" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"></line>`).join('');
+    // The fan, drawn by KinScape.PinFan around the marker: its rings, its lines and the Pins, the first below the Place. The pointer is on Birth.
+    // The fan box is 78px from the Place to its edge: ring 1 of 56px and half a 44px target.
+    const fan = h('div', { style: { position: 'absolute', left: P.x - 78, top: P.y - 78 } },
+      h(K.PinFan, {
+        looks: { birth: 'hover' },
+        onOpen: noop,
+        pins: [
+          { event: 'marriage', id: 'marriage', reading: 'In 1899' },
+          { event: 'residence', id: 'residence', reading: 'From 1890 to 1905' },
+          { event: 'birth', id: 'birth', reading: 'In 1901' }
+        ]
+      }, h(K.CountMarker, { count: 3 })));
 
     let below = others;
     let above = '';
 
     if (variant === 'count') {
-      const looks = [['default', 'Default'], ['hover', 'Hover'], ['focus', 'Focus'], ['pressed', 'Pressed']];
+      const looks = [['default', 'Default'], ['hover', 'Hover'], ['focus', 'Focus'], ['pressed', 'Pressed'], ['selected', 'Selected']];
       above = [
-        marker('default', 3, '3 Pins at Example Farm', P),
-        `<section aria-label="Count marker looks" style="position: absolute; left: 400px; top: 130px; width: 340px; box-sizing: border-box; padding: var(--space-16); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); display: flex; flex-direction: column; gap: var(--space-12)">`,
+        marker('default', P),
+        `<section aria-label="Count marker looks" style="position: absolute; left: 400px; top: 130px; width: 400px; box-sizing: border-box; padding: var(--space-16); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-raised); display: flex; flex-direction: column; gap: var(--space-12)">`,
         TEXT('overline', 'Count marker looks'),
         `<div style="display: flex; justify-content: space-between">`,
-        ...looks.map(([look, name]) => `<span style="display: flex; flex-direction: column; align-items: center; gap: var(--space-4)"><span style="display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: var(--radius-control); background: var(--map-land)">${marker(look, 3, '3 Pins at Example Farm')}</span>${TEXT('caption', name)}</span>`),
+        ...looks.map(([look, name]) => `<span style="display: flex; flex-direction: column; align-items: center; gap: var(--space-4)"><span style="display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: var(--radius-control); background: var(--map-land)">${marker(look)}</span>${TEXT('caption', name)}</span>`),
         `</div>`,
-        TEXT('small', 'Accessible name: “3 Pins at Example Farm”.'),
+        TEXT('small', 'Accessible name: “3 Pins”.'),
         `</section>`
       ].join('');
     } else if (variant === 'fan') {
-      below += lines;
-      above = [marker('default', 3, '3 Pins at Example Farm', P), ...fan.map(([event, look, label, at]) => fanPin(event, look === 'hover' ? 'hover' : 'default', label, at))].join('');
+      above = '';
     } else {
       below += pin(P.x, P.y) + selected;
       above = popup(variant === 'popup' ? 'loaded' : variant);
@@ -199,7 +183,7 @@ class Component extends DCLogic {
       }),
       map: h(React.Fragment, null,
         drawn(svg),
-        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above))
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above), variant === 'fan' ? fan : null)
       ),
       panel: h(K.Panel, {
         bodyId: 'map-panel-body',

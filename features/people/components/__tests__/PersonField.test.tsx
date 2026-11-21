@@ -63,14 +63,14 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 // PIN-01
-it('opens a row per match when the user types, and shows at most three rows', () => {
+it('opens a row per match when the user types', () => {
   const { field } = setup();
 
   expect(screen.queryByRole('listbox')).toBeNull();
   expect(field.getAttribute('aria-expanded')).toBe('false');
   type(field, 'Exa');
   expect(field.getAttribute('aria-expanded')).toBe('true');
-  // Five Persons match: the list holds every row and scrolls past three.
+  // Four of the five Persons match "Exa". The list holds every row; the height test below limits the view to three.
   expect(rows()).toHaveLength(4);
   expect(screen.getByRole('listbox').getAttribute('aria-label')).toBe('People');
 });
@@ -80,7 +80,7 @@ it('shows the spelling variant that matched', () => {
 
   type(field, 'Exemple');
   expect(rows()).toHaveLength(1);
-  expect(within(rows()[0]).getByText(/Exemple/)).toBeTruthy();
+  expect(within(rows()[0]).queryByText(/Exemple/)).not.toBeNull();
 });
 
 it('shows the no-match notice, and no row', () => {
@@ -88,12 +88,14 @@ it('shows the no-match notice, and no row', () => {
 
   type(field, 'Zzz');
   expect(rows()).toHaveLength(0);
-  expect(screen.getByText('No one matches “Zzz”')).toBeTruthy();
+  expect(screen.queryByText('No one matches “Zzz”')).not.toBeNull();
   expect(
-    screen.getByText('Check the spelling, or add the person to the Tree first.')
-  ).toBeTruthy();
+    screen.queryByText(
+      'Check the spelling, or add the person to the Tree first.'
+    )
+  ).not.toBeNull();
   fireEvent.keyDown(field, { key: 'Enter' });
-  expect(screen.getByRole('listbox')).toBeTruthy();
+  expect(screen.queryByRole('listbox')).not.toBeNull();
 });
 
 it('opens the notice on Down when no Person matches, with no active row', () => {
@@ -102,7 +104,7 @@ it('opens the notice on Down when no Person matches, with no active row', () => 
   type(field, 'Zzz');
   fireEvent.keyDown(field, { key: 'Escape' });
   fireEvent.keyDown(field, { key: 'ArrowDown' });
-  expect(screen.getByRole('listbox')).toBeTruthy();
+  expect(screen.queryByRole('listbox')).not.toBeNull();
   expect(field.getAttribute('aria-activedescendant')).toBeNull();
 });
 
@@ -245,7 +247,7 @@ it('clears the pick and opens the list when the user types after a pick', () => 
   onChange.mockClear();
   type(field, 'Person Exampl');
   expect(onChange).toHaveBeenCalledExactlyOnceWith(undefined);
-  expect(screen.getByRole('listbox')).toBeTruthy();
+  expect(screen.queryByRole('listbox')).not.toBeNull();
 });
 
 it('starts with a given Person picked and the list closed', () => {
@@ -260,11 +262,17 @@ it('closes the list on a press outside, and keeps the text and the pick', () => 
   const { field, onChange } = setup();
 
   type(field, 'Exa');
+  fireEvent.keyDown(field, { key: 'ArrowDown' });
+  fireEvent.keyDown(field, { key: 'Enter' });
+  expect(field.value).toBe('Anna Example');
+  onChange.mockClear();
+  // Down opens the list again with no typing, so the pick stays.
+  fireEvent.keyDown(field, { key: 'ArrowDown' });
   fireEvent.mouseDown(rows()[0].querySelector('button')!);
-  expect(screen.getByRole('listbox')).toBeTruthy();
+  expect(screen.queryByRole('listbox')).not.toBeNull();
   fireEvent.mouseDown(document.body);
   expect(screen.queryByRole('listbox')).toBeNull();
-  expect(field.value).toBe('Exa');
+  expect(field.value).toBe('Anna Example');
   expect(onChange).not.toHaveBeenCalled();
 });
 
@@ -274,7 +282,7 @@ it('ignores a press inside the field, and closes the list when the focus leaves'
   field.focus();
   type(field, 'Exa');
   fireEvent.mouseDown(field);
-  expect(screen.getByRole('listbox')).toBeTruthy();
+  expect(screen.queryByRole('listbox')).not.toBeNull();
   fireEvent.blur(field);
   expect(screen.queryByRole('listbox')).toBeNull();
   expect(field.value).toBe('Exa');
@@ -287,7 +295,7 @@ it('opens the list again when a closed field gets a key that types', () => {
   fireEvent.keyDown(field, { key: 'Escape' });
   expect(screen.queryByRole('listbox')).toBeNull();
   type(field, 'Exam');
-  expect(screen.getByRole('listbox')).toBeTruthy();
+  expect(screen.queryByRole('listbox')).not.toBeNull();
 });
 
 it('places the list 4px under the field box, on its left edge, and follows scroll and resize', () => {
@@ -335,7 +343,7 @@ it('passes the error and the required state to the text field', () => {
 
 it('draws the focus look from a state prop', () => {
   setup({ state: 'focus' });
-  expect(document.querySelector('[data-state="focus"]')).toBeTruthy();
+  expect(document.querySelector('[data-state="focus"]')).not.toBeNull();
 });
 
 // A row with a note is 58px, so a max-height of three rows would cut the third.
@@ -409,11 +417,11 @@ it('draws the list part with a given row active, and the notice with no row', ()
   expect(rows()[0].id).toBe('list-1');
   expect(rows()[0].getAttribute('aria-selected')).toBe('false');
   expect(rows()[1].getAttribute('aria-selected')).toBe('true');
-  expect(rows()[1].querySelector('[data-state="focus"]')).toBeTruthy();
+  expect(rows()[1].querySelector('[data-state="focus"]')).not.toBeNull();
   fireEvent.click(within(rows()[1]).getByRole('button'));
   expect(onPick).toHaveBeenCalledWith(PEOPLE[1]);
   rerender(
     <PersonFieldList id='list' onPick={onPick} query=' Zzz ' rows={[]} />
   );
-  expect(screen.getByText('No one matches “Zzz”')).toBeTruthy();
+  expect(screen.queryByText('No one matches “Zzz”')).not.toBeNull();
 });

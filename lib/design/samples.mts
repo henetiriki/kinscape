@@ -4,6 +4,7 @@ import type { PersonSummary } from '#ks/lib/domain/persons/types.ts';
 import type { ContestedYears, Epoch } from '#ks/lib/ui/types.ts';
 
 import { toDay } from '#ks/lib/domain/boundaries/model.mts';
+import { findPeople } from '#ks/lib/domain/persons/list.mts';
 import { EVENT_TYPES } from '#ks/lib/domain/pins/schemas.mts';
 
 export const CHAIN = [
@@ -77,12 +78,11 @@ export const PICK_PEOPLE: PersonSummary[] = [
   },
 ];
 
-/** The first `count` of `PICK_PEOPLE` as the rows of a `PersonFieldList`: a row shows the variant that matched. */
-export const personRows = (count: number) =>
-  PICK_PEOPLE.slice(0, count).map(person => ({
-    person,
-    variant: person.variants[0],
-  }));
+/** The rows that `PersonField` builds for `query` from `PICK_PEOPLE`: sorted by name, each with the variant that matched. The first `count` of them. */
+export const personRows = (query: string, count = Infinity) =>
+  findPeople(PICK_PEOPLE, query)
+    .slice(0, count)
+    .map(({ match, person }) => ({ person, variant: match.variant }));
 
 /** The Map date of the `Map` board, and the last day a Map date can take. */
 export const MAP_DATE = toDay('1901-06-14');

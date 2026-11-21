@@ -21,7 +21,6 @@
 
 /* The menu card hangs from these two slots, so they paint above the other furniture, such as the Layers button. */
 .search,
-.action,
 .account {
   z-index: var(--z-menu);
 }

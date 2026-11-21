@@ -1,10 +1,11 @@
-/* A picker row needs about 440px. */
+/* A picker row needs about 440px. The list is positioned, so a row's `offsetTop` counts from the list, also in the first render before the field fixes it. */
 .list {
   composes: floating from '@ks/app/components/foundation/Surface.module.css';
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   padding: var(--space-4) 0;
+  position: relative;
   width: 480px;
 }
 

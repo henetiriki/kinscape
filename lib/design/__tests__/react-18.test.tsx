@@ -729,7 +729,7 @@ const CASES: [string, ReactElement][] = [
       key='three'
       onPick={noop}
       query='Exa'
-      rows={personRows(3)}
+      rows={personRows('Exa', 3)}
     />,
   ],
   [
@@ -740,7 +740,7 @@ const CASES: [string, ReactElement][] = [
       key='active'
       onPick={noop}
       query='Exa'
-      rows={personRows(3)}
+      rows={personRows('Exa', 3)}
     />,
   ],
   [
@@ -750,7 +750,17 @@ const CASES: [string, ReactElement][] = [
       key='four'
       onPick={noop}
       query='Exa'
-      rows={personRows(4)}
+      rows={personRows('Exa')}
+    />,
+  ],
+  [
+    'PersonFieldList · spelling variant',
+    <PersonFieldList
+      id='variant'
+      key='variant'
+      onPick={noop}
+      query='Exemple'
+      rows={personRows('Exemple')}
     />,
   ],
   [

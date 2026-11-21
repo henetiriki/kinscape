@@ -46,6 +46,15 @@ export const MAX_BOUNDS: [[number, number], [number, number]] = [
 export const MIN_ZOOM = 3;
 export const MAX_ZOOM = 10;
 
+/** The events that MapLibre reads from the map container, which a marker keeps to itself. */
+const MAP_EVENTS = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'touchstart',
+  'touchend',
+] as const;
+
 /** The map zoom is a float, so "at a limit" allows this much slack. */
 const ZOOM_TOLERANCE = 0.001;
 
@@ -188,12 +197,7 @@ export const MapView = ({
     created.on('resize', reportLimits);
     created.once('load', reportLimits);
     // A click on a pickable feature opens it; a click that picks none is a click on empty map.
-    // An HTML marker handles its own clicks, so the map ignores a click inside one.
-    created.on('click', ({ originalEvent, point }) => {
-      if ((originalEvent.target as Element).closest('.maplibregl-marker')) {
-        return;
-      }
-
+    created.on('click', ({ point }) => {
       const pickable = selectRef.current;
       const hit =
         pickable.length === 0
@@ -342,9 +346,17 @@ export const MapView = ({
           let marker = markers.current.get(key);
 
           if (!marker) {
-            marker = new Marker({ element: document.createElement('div') })
-              .setLngLat(position)
-              .addTo(current);
+            const element = document.createElement('div');
+
+            // An HTML marker handles its own clicks and taps. A fold can remove the clicked element
+            // before the event reaches the map, so the map must never see the event at all: it
+            // would read a click on empty map, or two taps as a zoom. Pointer events still bubble,
+            // so a tap on another marker folds an open fan.
+            for (const type of MAP_EVENTS) {
+              element.addEventListener(type, event => event.stopPropagation());
+            }
+
+            marker = new Marker({ element }).setLngLat(position).addTo(current);
             markers.current.set(key, marker);
           }
 

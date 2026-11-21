@@ -527,23 +527,38 @@ describe('MapView', () => {
       });
 
       // PIN-02
-      it('opens the Pin a marker asks for, and ignores the map click inside a marker', () => {
-        const onEmptyClick = vi.fn();
+      it('opens the Pin a marker asks for', () => {
         const onOpenPin = vi.fn();
 
-        view({ layers: [marking], onEmptyClick, onOpenPin });
-
-        const element = maplibre.markers[0].element;
-
-        element.className = 'maplibregl-marker';
-        element.querySelector('button')!.click();
-        handler('click')({
-          originalEvent: { target: element.querySelector('button') },
-          point: { x: 1, y: 1 },
-        });
+        view({ layers: [marking], onOpenPin });
+        maplibre.markers[0].element.querySelector('button')!.click();
 
         expect(onOpenPin).toHaveBeenCalledExactlyOnceWith('p2');
-        expect(onEmptyClick).not.toHaveBeenCalled();
+      });
+
+      // PIN-06: a fold removes the clicked Pin, so the map must not read the click as one on empty map.
+      it('keeps the clicks and taps of a marker from the map, and lets a pointer press bubble', () => {
+        view({ layers: [marking] });
+
+        const { element } = maplibre.markers[0];
+        const parent = document.createElement('div');
+        const heard: string[] = [];
+
+        parent.append(element);
+
+        for (const type of [
+          'click',
+          'dblclick',
+          'mousedown',
+          'touchstart',
+          'touchend',
+          'pointerdown',
+        ]) {
+          parent.addEventListener(type, () => heard.push(type));
+          element.dispatchEvent(new Event(type, { bubbles: true }));
+        }
+
+        expect(heard).toEqual(['pointerdown']);
       });
     });
 

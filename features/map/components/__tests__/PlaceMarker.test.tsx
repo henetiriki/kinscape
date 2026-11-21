@@ -55,10 +55,14 @@ describe('PlaceMarker', () => {
   });
 
   it('fans the Pins out on the first tap, and folds them on a tap elsewhere', () => {
-    const { marker } = setup();
+    const { marker, view } = setup();
 
     fireEvent.click(marker());
     expect(fanned()).toBe(true);
+    // The open marker rises over its neighbours on the map.
+    expect(
+      view.container.firstElementChild!.firstElementChild!.className
+    ).toMatch(/open/);
 
     fireEvent.pointerDown(marker());
     expect(fanned()).toBe(true);

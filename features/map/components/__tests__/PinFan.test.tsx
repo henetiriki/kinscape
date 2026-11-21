@@ -102,7 +102,9 @@ describe('PinFan', () => {
       </PinFan>
     );
 
-    expect(screen.getByText('Marker')).toBeTruthy();
+    expect(screen.getByText('Marker').parentElement?.className).toMatch(
+      /place/
+    );
     expect(
       screen.getByRole('button', { name: 'Birth, about 1850' }).dataset.state
     ).toBe('hover');

@@ -149,30 +149,42 @@ const pinPoint = (page: Page, id: string) =>
   }, id);
 
 /**
- * A point on the empty map that a click can reach: in the free area, right of `pin` (the popup sits
- * left of its Pin), with no Pin within 24 px, so the click is not on a Pin or on the dock.
+ * A point on the empty map, at least `away` px from `from`. The map canvas is the top element there,
+ * so no count marker, fan, popup or card covers it, and no Pin symbol is within 24 px.
  */
-const emptyPoint = (page: Page, pin: { x: number; y: number }) =>
-  page.evaluate(wanted => {
-    const { kinscapeMap: map } = window as unknown as TestWindow;
-    const { left, top } = map.getContainer().getBoundingClientRect();
+const emptyPoint = (page: Page, from: { x: number; y: number }, away = 60) =>
+  page.evaluate(
+    ({ away: distance, from: wanted }) => {
+      const { kinscapeMap: map } = window as unknown as TestWindow;
+      const { left, top } = map.getContainer().getBoundingClientRect();
 
-    for (let y = 160; y < window.innerHeight - 300; y += 20) {
-      for (let x = wanted.x - left + 60; x < window.innerWidth - 60; x += 20) {
-        const near = map.queryRenderedFeatures(
-          [
-            [x - 24, y - 24],
-            [x + 24, y + 24],
-          ],
-          { layers: ['pins'] }
-        );
+      for (let y = 100; y < window.innerHeight - 100; y += 20) {
+        for (let x = 20; x < window.innerWidth - 20; x += 20) {
+          const onCanvas = document
+            .elementFromPoint(x, y)
+            ?.classList.contains('maplibregl-canvas');
+          const near = map.queryRenderedFeatures(
+            [
+              [x - left - 24, y - top - 24],
+              [x - left + 24, y - top + 24],
+            ],
+            { layers: ['pins'] }
+          );
 
-        if (near.length === 0) return { x: left + x, y: top + y };
+          if (
+            onCanvas &&
+            near.length === 0 &&
+            Math.hypot(x - wanted.x, y - wanted.y) >= distance
+          ) {
+            return { x, y };
+          }
+        }
       }
-    }
 
-    throw new Error('No empty point in the free area');
-  }, pin);
+      throw new Error('No empty point on the map');
+    },
+    { away, from }
+  );
 
 // PIN-02: no request for the details before a click, then one for that Pin.
 test('a click on a Pin opens its popup, and asks for its details once', async ({
@@ -324,12 +336,13 @@ const pickMarker = async (page: Page) => {
 const fanPins = (page: Page) =>
   page.locator('.maplibregl-marker button:not([aria-label$=" Pins"])');
 
+// In 1950 borders are mapped, so no notice card covers the map.
 // PIN-06: one marker with the count; hover fans the Pins out and leaving folds them.
 test('a count marker fans its Pins out on hover and folds them when the pointer leaves', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const marker = await pickMarker(page);
 
@@ -349,7 +362,9 @@ test('a count marker fans its Pins out on hover and folds them when the pointer 
     );
   }
 
-  await page.mouse.move(marker.x - 300, marker.y);
+  const away = await emptyPoint(page, marker, 200);
+
+  await page.mouse.move(away.x, away.y);
   await expect(fanPins(page)).toHaveCount(0);
 });
 
@@ -358,7 +373,7 @@ test('a fan Pin opens its popup, and its marker shows the ring until the popup c
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const marker = await pickMarker(page);
 
@@ -396,7 +411,7 @@ test.describe('on a phone', () => {
     page,
   }) => {
     await page.goto('/');
-    await goTo(page, '1850');
+    await goTo(page, '1950');
 
     const pickPhoneMarker = () =>
       page.evaluate(() => {
@@ -419,7 +434,9 @@ test.describe('on a phone', () => {
 
     await page.touchscreen.tap(marker.x, marker.y);
     await expect(fanPins(page).first()).toBeVisible();
-    await page.touchscreen.tap(20, 200);
+    const away = await emptyPoint(page, marker, 120);
+
+    await page.touchscreen.tap(away.x, away.y);
     await expect(fanPins(page)).toHaveCount(0);
 
     await page.touchscreen.tap(marker.x, marker.y);

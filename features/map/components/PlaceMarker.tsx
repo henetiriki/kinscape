@@ -9,6 +9,8 @@ import type { FanPin } from '@ks/features/map/types';
 import { CountMarker } from '@ks/features/map/components/CountMarker';
 import { PinFan } from '@ks/features/map/components/PinFan';
 
+import styles from '@ks/features/map/components/PlaceMarker.module.css';
+
 /**
  * The count marker of a Place that shows several Pins, and its fan (PIN-06). A mouse fans the Pins
  * out on hover and folds them when it leaves. On touch, the first tap fans them out and a tap
@@ -51,7 +53,11 @@ export const PlaceMarker = ({
   );
 
   return (
-    <div onPointerEnter={hover(true)} onPointerLeave={hover(false)} ref={root}>
+    <div
+      className={open ? styles.open : undefined}
+      onPointerEnter={hover(true)}
+      onPointerLeave={hover(false)}
+      ref={root}>
       {open ? (
         <PinFan
           onOpen={id => {

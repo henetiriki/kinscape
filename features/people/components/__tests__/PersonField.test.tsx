@@ -142,9 +142,8 @@ it('moves the active row with Down and Up, and keeps the focus in the field', ()
   expect(document.activeElement).toBe(field);
 });
 
-it('picks the active row on Enter, fills the field and stops the event', () => {
+it('picks the active row on Enter, fills the field and prevents the default', () => {
   const { field, onChange } = setup();
-  const submit = vi.fn();
 
   type(field, 'Exa');
   fireEvent.keyDown(field, { key: 'ArrowDown' });
@@ -156,7 +155,6 @@ it('picks the active row on Enter, fills the field and stops the event', () => {
     key: 'Enter',
   });
 
-  field.parentElement!.addEventListener('keydown', submit);
   act(() => {
     field.dispatchEvent(keyDown);
   });

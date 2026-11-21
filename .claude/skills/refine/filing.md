@@ -1,6 +1,6 @@
-# Filing a Spec, Chore or Bug with `gh`
+# Filing a Spec, Chore, Bug or child Intent with `gh`
 
-`SKILL.md` links here. `bug.md` files a new Bug with these steps, and edits a filed Bug.
+`SKILL.md` links here. `bug.md` files a new Bug with these steps, and edits a filed Bug. `slice-milestone.md` files a child Intent: see _Filing a child Intent_.
 
 After the check round, follow these steps:
 
@@ -25,6 +25,16 @@ After the check round, follow these steps:
 4. For each reason that `relatesTo` lacks, run `gh api graphql -f issue=<id> -f other=<reason id> -f query='mutation($issue: ID!, $other: ID!) { addRelatesTo(input: {issueId: $issue, relatedIssueId: $other}) { issue { number } } }'`.
 5. For a blocked Bug or Chore, run `gh issue view <number> --json labels`. If it has no `status: blocked` label, run `gh issue edit <number> --remove-label '<its status label>' --add-label 'status: blocked'`.
 6. If a call fails, stop. File nothing again. Tell the user the issue number and each link still to set. They set it in the issue sidebar.
+
+## Filing a child Intent
+
+`slice-milestone.md` links here. The umbrella is the milestone's Intent.
+
+1. Run `gh api repos/{owner}/{repo}/milestones`. Take the milestone whose title starts `M<n> `. Do not copy the milestone of the umbrella: #292 (M4) has none. If no milestone matches, stop. Tell the user to create it.
+2. Ask "File the child Intents now?" as a question of its own. If the answer is not yes, file nothing.
+3. For each child, write the body as filing steps 4 and 5 say, from form `1-intent.yml`. Run `gh issue create --title '<title>' --type Intent --label 'status: ready-for-dev' --milestone '<milestone title>' --body-file <file>`. The label replaces the `status: draft` of the form.
+4. Run one `addSubIssue` call for each child: `gh api graphql -f umbrella=<umbrella id> -f url=<child URL> -f query='mutation($umbrella: ID!, $url: String!) { addSubIssue(input: {issueId: $umbrella, subIssueUrl: $url}) { issue { number } } }'`. The umbrella id is from _Links_ step 1. The child URL is what `gh issue create` prints.
+5. If a call fails, follow _Links_ step 6.
 
 ## Editing a filed issue
 

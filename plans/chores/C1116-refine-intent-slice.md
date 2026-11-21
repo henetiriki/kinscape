@@ -139,5 +139,8 @@ Three lines say that the skill files no Intent with `gh`:
 
 ## Deviations
 
-- Big: the run denied each write to `.claude/skills/refine/`. The skill rows are not built: `SKILL.md`, `slice-intent.md`, `slice-milestone.md`, `spec.md`, `filing.md`, `design.md`. A local session builds them, then sets their budgets in `word-count.mts`.
+- The CI run denied each write to `.claude/skills/refine/`. A local session built the six skill rows and their budgets.
 - The `how-we-work.md` budget is 1080 (was 1030). The `design/CANVAS.md` and `plans/README.md` edits fit their budgets.
+- The budgets are `SKILL.md` 940, `filing.md` 1000 and `slice-intent.md` 820. `spec.md` and `slice-milestone.md` fit the default 650, so `spec.md` has no entry.
+- `slice-milestone.md` skips a child that already exists, so a re-run files no duplicate.
+- `filing.md` stops if no milestone has the title `M<n> `.

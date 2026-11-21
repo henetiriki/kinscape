@@ -1,8 +1,8 @@
 ---
 name: refine
-description: Interview the user until you both agree on the idea. Then draft a KinScape Intent, the Specs for a milestone or Intent, or a Chore, or refine a filed Spec, Chore or Bug. `gh` files a Spec or Chore. An Intent gets a prefilled form link. Use `/refine intent` (product owner) or `/refine spec`, `chore` or `bug` (tech lead).
+description: Interview the user until you both agree on the idea. Then draft a KinScape Intent, the Specs for a milestone or Intent, or a Chore, or refine a filed Spec, Chore or Bug. `gh` files a Spec, Chore or Bug. An Intent gets a prefilled form link. Use `/refine intent` (product owner) or `/refine spec`, `chore` or `bug` (tech lead).
 disable-model-invocation: true
-argument-hint: intent [your idea] | spec <M<n> or issue number> | chore [your idea or Chore number] | bug <issue number>
+argument-hint: intent [your idea] | spec <M<n> or issue number> | chore [your idea or Chore number] | bug <number or description>
 ---
 
 # Refine
@@ -14,7 +14,7 @@ The argument picks the mode. Read the matching file and follow it, with the meth
 - `intent [idea]` → [intent.md](intent.md). For the product owner (PO), in plain language. Any text after `intent` is the PO's first description of the idea.
 - `spec <M<n> | number>` → [spec.md](spec.md). For the tech lead. Slices a milestone or an accepted Intent into Specs. Edits a filed Spec.
 - `chore [idea | number]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue, or redrafts a filed Chore. Digits, with an optional `#`, are an issue number. Any other text is an idea.
-- `bug <number>` → [bug.md](bug.md). For the tech lead. Adds four sections to a filed Bug.
+- `bug <number | description>` → [bug.md](bug.md). For the tech lead. Drafts and files a new Bug, or adds four sections to a filed Bug. Digits only, with an optional `#`, are a Bug number. Any other text is a description. If nothing follows `bug`, ask for a Bug number or a description.
 - No argument, or anything else: ask which of the four they want.
 
 ## The Type of a number
@@ -61,7 +61,7 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 ## Filing with gh
 
-After the check round, file a Spec or Chore as [filing.md](filing.md) says. [spec.md](spec.md) and [chore.md](chore.md) edit a filed Spec or Chore. [bug.md](bug.md) edits a filed Bug.
+After the check round, file a Spec, Chore or Bug as [filing.md](filing.md) says. [spec.md](spec.md) and [chore.md](chore.md) edit a filed Spec or Chore. [bug.md](bug.md) files a new Bug or edits a filed one.
 
 ## Prefilled links
 

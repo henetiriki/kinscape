@@ -24,10 +24,9 @@
 
 /* The count marker at the Place. */
 .place {
-  left: 50%;
+  left: calc(var(--reach) - var(--size-touch) / 2);
   position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: calc(var(--reach) - var(--size-touch) / 2);
 }
 
 .line {
@@ -44,7 +43,7 @@
   stroke-width: 1.5;
 }
 
-/* A fan Pin: a 44px target, centred on its spot. `left` and `top` are its offset from the Place. */
+/* A fan Pin: a 44px target. The margin puts its centre on the Place, and `left` and `top` move it to its spot. */
 .pin {
   align-items: center;
   background: transparent;
@@ -53,11 +52,11 @@
   display: flex;
   height: var(--size-touch);
   justify-content: center;
-  margin: var(--reach) 0 0 var(--reach);
+  margin: calc(var(--reach) - var(--size-touch) / 2) 0 0
+    calc(var(--reach) - var(--size-touch) / 2);
   outline: none;
   padding: 0;
   position: absolute;
-  transform: translate(-50%, -50%);
   width: var(--size-touch);
 }
 

@@ -100,11 +100,7 @@
   border-radius: 50%;
   box-sizing: border-box;
   content: '';
-  height: 53px;
-  left: 50%;
+  inset: -6.75px;
   opacity: 0.8;
   position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 53px;
 }

@@ -1,7 +1,7 @@
 # Plan: C1116: /refine intent slices a milestone into Intents and an Intent into Specs
 
 - **Spec:** #1116
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -42,7 +42,7 @@ D1 to D4 have answers. The issue body holds each answer, cited as "#1116 plan D<
 - **B.** The skill shows each list comment and asks which one to edit. Cost: one more question per run, and a wrong answer writes over a list.
 - **Other:** your own.
 
-Recommended: A, because each mode finds its own list without a question.
+**Answer: A** (@henetiriki)
 
 **D6 · `/refine intent M0`** · Decides: Tech lead
 
@@ -52,7 +52,7 @@ M0 has no Intent issue (`spec.md` step 1), and its milestone has no open issue. 
 - **B.** `intent M0` slices M0 into Specs, as `spec M0` does now. Cost: one exception in `SKILL.md` and one bullet in `slice-intent.md`. `intent M<n>` then has two meanings.
 - **Other:** your own.
 
-Recommended: A, because M0 is done.
+**Answer: A** (@henetiriki)
 
 **D7 · The umbrella after its last child Intent closes** · Decides: Tech lead
 
@@ -62,7 +62,7 @@ Recommended: A, because M0 is done.
 - **B.** Leave line 9. Cost: none, but the line is false for an umbrella.
 - **Other:** your own.
 
-Recommended: A, because the doc then matches the workflow.
+**Answer: A** (@henetiriki)
 
 **D8 · Lines outside the Chore's list that become false** · Decides: Tech lead
 
@@ -76,7 +76,7 @@ Three lines say that the skill files no Intent with `gh`:
 - **B.** Change only the lines that the Chore names. Cost: none, but three lines contradict "Filing a child Intent".
 - **Other:** your own.
 
-Recommended: A, because each line then tells the true rule.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

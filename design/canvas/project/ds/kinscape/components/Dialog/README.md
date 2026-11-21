@@ -2,7 +2,7 @@ A modal for a task or a long read: centred over the scrim, or a bottom sheet on 
 
 ## Design
 
-- **Dialog:** centred over a `--scrim`, radius 12, close button top right.
+- **Dialog:** centred over a `--scrim`, `radius.panel`, close button top right.
 
 ## Props
 

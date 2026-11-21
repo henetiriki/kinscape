@@ -1,5 +1,9 @@
 An action shown only as an icon, such as zoom, close or step, named by its `label`.
 
+## Design
+
+- **Icon button:** raised variant: 48px, `--radius-panel`, `--shadow-raised`, no border. Same states as the plain one.
+
 ## Props
 
 | Prop | Type | Required | Description |

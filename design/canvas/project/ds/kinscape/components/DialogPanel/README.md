@@ -2,7 +2,7 @@ The Dialog as drawn: a modal Surface with a fixed head and a body that scrolls.
 
 ## Design
 
-- **Dialog:** centred over a `--scrim`, radius 12, close button top right.
+- **Dialog:** centred over a `--scrim`, `radius.panel`, close button top right.
 
 ## Props
 

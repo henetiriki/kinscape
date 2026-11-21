@@ -1,8 +1,6 @@
 'use client';
 
-import type { ComponentProps } from 'react';
-
-import type { PinState } from '@ks/app/screens/map-pin-popup/types';
+import type { PinPopupState } from '@ks/app/components/overlays/types';
 
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { MapLayout } from '@ks/app/components/layout/MapLayout';
@@ -15,41 +13,29 @@ import { Legend } from '@ks/features/map/components/Legend';
 import { Panel } from '@ks/features/map/components/Panel';
 import { SearchBar } from '@ks/features/map/components/SearchBar';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
-import { asDay } from '@ks/lib/domain/boundaries/model.mts';
+import {
+  CONTESTED_COUNT,
+  CONTESTED_YEARS,
+  EPOCHS,
+  LAYER_GROUPS,
+  MAP_DATE,
+  panelTabs,
+  PIN_DETAILS,
+  PIN_POPUP,
+  TODAY,
+} from '@ks/lib/design/samples.mts';
 
-/** The Map date of the boards, 14 June 1901, and the last day of the slider. */
-const DAY = asDay(91109);
-const LAST_DAY = asDay(136894);
-const EPOCHS: { label?: string; year: number }[] = [
-  ...[1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994].map(year => ({ year })),
-  { label: 'Today', year: 2026 },
-];
 /** Example Farm, in the pixels of the desktop boards. */
 const FARM = { x: 940, y: 400 };
 
 const noop = () => {};
-const rows = (
-  items: [string, string, string, boolean][],
-  size?: 'm'
-): ComponentProps<typeof LayerGroup>['rows'] =>
-  items.map(([id, label, description, checked]) => ({
-    checked,
-    description,
-    id,
-    label,
-    onChange: noop,
-    size,
-  }));
 
 /** What the Pin of the map and the details give the popup. Synthetic. */
-const popupProps = (state: PinState) => ({
-  address: state === 'loaded' ? 'Farm Example, district Example' : undefined,
-  event: 'residence' as const,
-  name: state === 'loaded' ? 'Example Person' : undefined,
+const popupProps = (state: PinPopupState) => ({
+  ...PIN_POPUP,
+  ...(state === 'loaded' ? PIN_DETAILS : {}),
   onClose: noop,
   onRetry: noop,
-  reading: 'From 1890 to 1905',
-  recorded: 'FROM 1890 TO 1905',
   state,
 });
 
@@ -58,7 +44,7 @@ const popupProps = (state: PinState) => ({
  * `map-pin-popup`, `map-pin-popup-loading`, `map-pin-popup-failed` and `map-pin-popup-phone`.
  * Synthetic data throughout.
  */
-export const MapPinPopupScreen = ({ state }: { state: PinState }) => {
+export const MapPinPopupScreen = ({ state }: { state: PinPopupState }) => {
   const phone = usePhone();
   const menu = (
     <AccountMenu
@@ -70,17 +56,17 @@ export const MapPinPopupScreen = ({ state }: { state: PinState }) => {
   );
   const dock = (
     <DateDock
-      contestedCount={phone ? undefined : 2}
-      contestedYears={phone ? undefined : [{ from: 1900, to: 1901 }]}
-      day={DAY}
+      contestedCount={phone ? undefined : CONTESTED_COUNT}
+      contestedYears={phone ? undefined : CONTESTED_YEARS}
+      day={MAP_DATE}
       details={
         phone ? <PinPopup {...popupProps(state)} form='inline' /> : undefined
       }
       epochs={phone ? undefined : EPOCHS}
-      lastDay={LAST_DAY}
+      lastDay={TODAY}
       onChange={noop}
       onPlay={noop}
-      sheet={phone ? { expanded: false, onExpandedChange: noop } : undefined}
+      sheet={phone ? { expanded: true, onExpandedChange: noop } : undefined}
     />
   );
 
@@ -106,58 +92,14 @@ export const MapPinPopupScreen = ({ state }: { state: PinState }) => {
           label='Layers and filters'
           onSelect={noop}
           selected='layers'
-          tabs={[
-            { controls: 'map-panel-body', label: 'Layers', value: 'layers' },
-            {
-              controls: 'map-panel-body',
-              count: 1,
-              label: 'Filters',
-              value: 'filters',
-            },
-          ]}>
-          <LayerGroup
-            heading='Boundaries'
-            rows={rows([
-              [
-                'polities',
-                'Polities',
-                'Colonies, republics, provinces, homelands',
-                true,
-              ],
-              [
-                'districts',
-                'Districts',
-                'Drostdy and magisterial districts',
-                false,
-              ],
-            ])}
-          />
-          <LayerGroup
-            heading='Basemap'
-            rows={rows(
-              [
-                ['names', 'Place names', 'As they were on the map date', true],
-                ['rivers', 'Rivers', 'Many early borders follow them', true],
-                ['terrain', 'Terrain', 'Hillshade, no modern borders', true],
-              ],
-              'm'
-            )}
-          />
-          <LayerGroup
-            heading='Pins'
-            rows={rows(
-              [
-                ['pins', 'Pins', '8 of 214 true on this date', true],
-                [
-                  'halos',
-                  'Uncertainty halos',
-                  'Grow with the date range',
-                  true,
-                ],
-              ],
-              'm'
-            )}
-          />
+          tabs={panelTabs('map-panel-body')}>
+          {LAYER_GROUPS.map(({ heading, rows }) => (
+            <LayerGroup
+              heading={heading}
+              key={heading}
+              rows={rows.map(row => ({ ...row, onChange: noop }))}
+            />
+          ))}
         </Panel>
       }
       search={<SearchBar form='bar' />}

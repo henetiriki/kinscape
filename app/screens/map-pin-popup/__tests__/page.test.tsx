@@ -30,18 +30,16 @@ it('shows the loaded popup at Example Farm, with the panel of the boards, on a d
 
   expect(popup.parentElement?.style.getPropertyValue('--x')).toBe('940px');
   expect(popup.parentElement?.style.getPropertyValue('--y')).toBe('400px');
-  expect(
-    within(popup).getByRole('heading', { name: 'Example Person' })
-  ).toBeTruthy();
-  expect(within(popup).getByText('From 1890 to 1905')).toBeTruthy();
-  expect(within(popup).getByText('FROM 1890 TO 1905')).toBeTruthy();
-  expect(
-    within(popup).getByRole('button', { name: 'Add a pin here' })
-  ).toBeTruthy();
-  expect(
-    screen.getByRole('complementary', { name: 'Layers and filters' })
-  ).toBeTruthy();
-  expect(screen.getByRole('region', { name: 'Map date' })).toBeTruthy();
+  within(popup).getByRole('heading', { name: 'Example Person' });
+  expect(within(popup).getByText('From 1890 to 1905').textContent).toBe(
+    'From 1890 to 1905'
+  );
+  expect(within(popup).getByText('FROM 1890 TO 1905').textContent).toBe(
+    'FROM 1890 TO 1905'
+  );
+  within(popup).getByRole('button', { name: 'Add a pin here' });
+  screen.getByRole('complementary', { name: 'Layers and filters' });
+  screen.getByRole('region', { name: 'Map date' });
 });
 
 it('does nothing but close the account menu on each of its items', async () => {
@@ -67,8 +65,10 @@ it('shows the loading state on its own route', async () => {
 
 it('shows the failed state on its own route', async () => {
   await show(FailedPage as typeof Page);
-  expect(screen.getByText("Couldn't load this Pin")).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
+  expect(screen.getByText("Couldn't load this Pin").textContent).toBe(
+    "Couldn't load this Pin"
+  );
+  screen.getByRole('button', { name: 'Try again' });
 });
 
 // NFR-05
@@ -80,15 +80,10 @@ it('puts the details in the date sheet on a phone, with the Layers button and no
   })) as unknown as typeof window.matchMedia;
   await show(Page);
 
-  expect(
-    within(screen.getByRole('region', { name: 'Map date' })).getByRole(
-      'group',
-      { name: 'Pin details' }
-    )
-  ).toBeTruthy();
-  expect(
-    screen.getByRole('button', { name: 'Layers and filters' })
-  ).toBeTruthy();
+  within(screen.getByRole('region', { name: 'Map date' })).getByRole('group', {
+    name: 'Pin details',
+  });
+  screen.getByRole('button', { name: 'Layers and filters' });
   expect(screen.queryByRole('button', { name: 'Add a pin here' })).toBeNull();
   expect(screen.queryByRole('dialog')).toBeNull();
 });

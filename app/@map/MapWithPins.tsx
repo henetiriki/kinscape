@@ -15,9 +15,9 @@ import { readFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
 import { formatFuzzyDate } from '@ks/lib/domain/dates/fuzzy-date.mts';
 
 /**
- * The popup of the open Pin. It asks for the details when it mounts, so no request goes out before
- * a click. The loading and failed states show the event type and both date lines from the Pin of
- * the map.
+ * The popup of the open Pin. It asks for the details when it mounts, so the popup sends no
+ * request before a click. The loading and failed states show the event type and both date lines
+ * from the Pin of the map.
  */
 const OpenPinPopup = ({
   onClose,

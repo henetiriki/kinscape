@@ -56,7 +56,7 @@
   gap: var(--space-8);
 }
 
-/* Close is pulled 8 up and right, so the popup keeps its padding. */
+/* The negative margin pulls Close 8px up and right, so the popup keeps its padding. */
 .close {
   flex: none;
   margin: calc(-1 * var(--space-8)) calc(-1 * var(--space-8)) 0 0;
@@ -102,19 +102,9 @@
   max-width: 100%;
 }
 
-/* At --x, --y: the popup's right edge sits pin-popup-gap left of the point, which is popup-point-y down it. */
-.placed {
-  left: var(--x);
-  position: absolute;
-  top: var(--y);
-  z-index: var(--z-furniture);
-  translate: calc(-100% - var(--layout-pin-popup-gap))
-    calc(-1 * var(--layout-popup-point-y));
-}
-
-/* The pointer sits on the right edge, popup-point-y down. */
+/* The pointer sits on the right edge, at the point: popup-point-y down, or less when the popup stops at the free area. */
 .popup > .pointer {
   left: 100%;
-  top: var(--layout-popup-point-y);
+  top: var(--pointer-y, var(--layout-popup-point-y));
   translate: -50% -50%;
 }

@@ -1,7 +1,5 @@
 'use client';
 
-import type { CSSProperties } from 'react';
-
 import { useId } from 'react';
 
 import type { ChainLevel, PopupPin } from '@ks/app/components/overlays/types';
@@ -10,6 +8,7 @@ import { Button } from '@ks/app/components/actions/Button';
 import { TextLink } from '@ks/app/components/actions/TextLink';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
+import { PlacedAt } from '@ks/app/components/overlays/PlacedAt';
 import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/components/overlays/Popup.module.css';
@@ -166,12 +165,10 @@ export const PlacedPopup = ({
   y,
   ...rest
 }: { x: number; y: number } & Omit<Parameters<typeof Popup>[0], 'form'>) => (
-  <div
-    className={styles.placed}
-    style={{ '--x': `${x}px`, '--y': `${y}px` } as CSSProperties}>
+  <PlacedAt gap='popup-gap' x={x} y={y}>
     <Popup {...rest} form='floating' />
     <PopupPointer className={styles.placedPointer} />
-  </div>
+  </PlacedAt>
 );
 
 /** Decoration, never read: a square turned 45°. The caller sets `bottom` and `left` on `className`. */

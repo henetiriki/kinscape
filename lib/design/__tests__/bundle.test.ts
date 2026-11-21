@@ -97,6 +97,10 @@ const EXCLUDED: { path: string; reason: string }[] = [
     path: 'app/components/actions/DateText.tsx',
     reason: 'An inner part of PersonRow, RelationshipRow and PickerRow.',
   },
+  {
+    path: 'app/components/overlays/PlacedAt.tsx',
+    reason: 'The wrapper that Popup and PinPopup share to sit at a map point.',
+  },
 ];
 
 /** The `.tsx` files in a folder and its subfolders, except `__tests__`. */

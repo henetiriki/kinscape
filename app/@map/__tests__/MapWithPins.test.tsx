@@ -250,13 +250,15 @@ describe('the Pin popup', () => {
     renderMap();
     await click(FIRST.id);
 
-    expect(
-      await screen.findByRole('heading', { name: 'Example Person' })
-    ).toBeTruthy();
-    expect(screen.getByText('Residence')).toBeTruthy();
-    expect(screen.getByText('From 1840 to 1854')).toBeTruthy();
-    expect(screen.getByText('FROM 1840 TO 1854')).toBeTruthy();
-    expect(screen.getByText('Farm Example, district Example')).toBeTruthy();
+    await screen.findByRole('heading', { name: 'Example Person' });
+    expect(screen.getByText('Residence').textContent).toBe('Residence');
+    expect(screen.getByText('From 1840 to 1854').textContent).toBe(
+      'From 1840 to 1854'
+    );
+    expect(screen.getByText('FROM 1840 TO 1854').textContent).toBe(
+      'FROM 1840 TO 1854'
+    );
+    screen.getByText('Farm Example, district Example');
     expect(lastShell().pin.open).toEqual({
       id: FIRST.id,
       position: [18.4, -33.9],
@@ -271,9 +273,13 @@ describe('the Pin popup', () => {
     renderMap();
     await click(FIRST.id);
 
-    expect(screen.getByText('Residence')).toBeTruthy();
-    expect(screen.getByText('From 1840 to 1854')).toBeTruthy();
-    expect(screen.getByText('FROM 1840 TO 1854')).toBeTruthy();
+    expect(screen.getByText('Residence').textContent).toBe('Residence');
+    expect(screen.getByText('From 1840 to 1854').textContent).toBe(
+      'From 1840 to 1854'
+    );
+    expect(screen.getByText('FROM 1840 TO 1854').textContent).toBe(
+      'FROM 1840 TO 1854'
+    );
     expect(screen.queryByRole('heading')).toBeNull();
   });
 
@@ -293,13 +299,13 @@ describe('the Pin popup', () => {
         '[role=alert]'
       )
     ).toBeTruthy();
-    expect(screen.getByText('From 1840 to 1854')).toBeTruthy();
+    expect(screen.getByText('From 1840 to 1854').textContent).toBe(
+      'From 1840 to 1854'
+    );
 
     failing = false;
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
-    expect(
-      await screen.findByRole('heading', { name: 'Example Person' })
-    ).toBeTruthy();
+    await screen.findByRole('heading', { name: 'Example Person' });
     expect(
       fetchStub.mock.calls.filter(([url]) => url === `/data/pins/${FIRST.id}`)
     ).toHaveLength(2);
@@ -312,9 +318,7 @@ describe('the Pin popup', () => {
     await screen.findByRole('heading', { name: 'Example Person' });
 
     act(() => lastShell().onOpenPin(SECOND.id));
-    expect(
-      await screen.findByRole('heading', { name: 'Other Person' })
-    ).toBeTruthy();
+    await screen.findByRole('heading', { name: 'Other Person' });
     expect(
       screen.queryByRole('heading', { name: 'Example Person' })
     ).toBeNull();
@@ -355,10 +359,8 @@ describe('the Pin popup', () => {
     render(<div data-testid='inline'>{popup('inline')}</div>, {
       wrapper: QueryProvider,
     });
-    expect(
-      await within(screen.getByTestId('inline')).findByRole('group', {
-        name: 'Pin details',
-      })
-    ).toBeTruthy();
+    await within(screen.getByTestId('inline')).findByRole('group', {
+      name: 'Pin details',
+    });
   });
 });

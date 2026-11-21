@@ -22,7 +22,10 @@ export type TestWindow = {
       y: number;
     };
     queryRenderedFeatures: (
-      geometry: { x: number; y: number } | undefined,
+      geometry:
+        | [[number, number], [number, number]]
+        | { x: number; y: number }
+        | undefined,
       options: { layers: string[] }
     ) => {
       geometry: { coordinates: [number, number] };

@@ -77,7 +77,7 @@ export const DateDock = ({
   day: Day;
   /** Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. */
   defaultText?: string;
-  /** The phone sheet only: content under the slider, such as the Pin popup. With it the sheet is open. */
+  /** The phone sheet only: content under the slider, such as the Pin popup. The sheet shows it when expanded. */
   details?: ReactNode;
   /** Epochs for Jump to; they are also the slider's ticks. */
   epochs?: Epoch[];
@@ -171,13 +171,12 @@ export const DateDock = ({
   );
 
   if (sheet) {
-    // Details open the sheet, so the slider and the details show together.
-    const open = sheet.expanded || details !== undefined;
-
     return (
-      <BottomSheet expanded={open} onExpandedChange={sheet.onExpandedChange}>
+      <BottomSheet
+        expanded={sheet.expanded}
+        onExpandedChange={sheet.onExpandedChange}>
         <div className={styles.sheetField}>{field}</div>
-        {open && slider}
+        {sheet.expanded && slider}
         {details !== undefined && (
           <>
             <hr className={styles.rule} />

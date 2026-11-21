@@ -38,6 +38,19 @@ export const EPOCHS: Epoch[] = [
 export const CONTESTED_COUNT = 2;
 export const CONTESTED_YEARS: ContestedYears[] = [{ from: 1900, to: 1901 }];
 
+/** The Pin of the `PinPopup` cards and the Pin popup boards: a residence at Example Farm. */
+export const PIN_POPUP = {
+  event: 'residence' as const,
+  reading: 'From 1890 to 1905',
+  recorded: 'FROM 1890 TO 1905',
+};
+
+/** What the details add to a loaded `PinPopup`. */
+export const PIN_DETAILS = {
+  address: 'Farm Example, district Example',
+  name: 'Example Person',
+};
+
 /** The tabs of a `Panel` card state: Layers and Filters, with one active filter. `body` is the id of the state's tabpanel. */
 export const panelTabs = (body: string) => [
   { controls: body, label: 'Layers', value: 'layers' },

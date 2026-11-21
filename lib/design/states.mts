@@ -20,6 +20,8 @@ import {
   LONG_NOTES,
   MAP_DATE,
   panelTabs,
+  PIN_DETAILS,
+  PIN_POPUP,
   PINS,
   SURNAME_HELPER,
   TODAY,
@@ -260,20 +262,8 @@ const BAD_DATES = [
 /** The `sheet` prop of a collapsed `DateDock` phone sheet. A preview gives it `onExpandedChange`. */
 const PHONE_SHEET = { expanded: false };
 
-/** The props that every `PinPopup` state shares: the Pin of the map. */
-const PIN_POPUP = {
-  event: 'residence',
-  form: 'floating',
-  reading: 'From 1890 to 1905',
-  recorded: 'FROM 1890 TO 1905',
-  state: 'loaded',
-};
-
-/** What the details add to a loaded `PinPopup`. */
-const PIN_DETAILS = {
-  address: 'Farm Example, district Example',
-  name: 'Example Person',
-};
+/** The props that every `PinPopup` state shares: the Pin of the map, in a floating popup. */
+const PIN_STATE = { ...PIN_POPUP, form: 'floating', state: 'loaded' };
 
 const checkboxes = (name: string, make: (checked: boolean) => Make) =>
   [false, true].flatMap(checked =>
@@ -1322,18 +1312,23 @@ export const CARDS: Card[] = [
     ),
   },
   {
-    design: ['Pin popup'],
+    design: [
+      'Pin popup',
+      'Pin popup, content',
+      'Pin popup, phone',
+      'Pin popup, loading and failed',
+    ],
     group: 'Overlays',
     handlers: ['onClose', 'onRetry'],
     height: 420,
     name: 'PinPopup',
     pad: 0,
     states: [
-      one('PinPopup · loaded', { ...PIN_POPUP, ...PIN_DETAILS }),
-      one('PinPopup · loading', { ...PIN_POPUP, state: 'loading' }),
-      one('PinPopup · failed', { ...PIN_POPUP, state: 'failed' }),
+      one('PinPopup · loaded', { ...PIN_STATE, ...PIN_DETAILS }),
+      one('PinPopup · loading', { ...PIN_STATE, state: 'loading' }),
+      one('PinPopup · failed', { ...PIN_STATE, state: 'failed' }),
       one('PinPopup · sheet', {
-        ...PIN_POPUP,
+        ...PIN_STATE,
         ...PIN_DETAILS,
         form: 'sheet',
       }),

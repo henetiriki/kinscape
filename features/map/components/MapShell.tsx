@@ -19,6 +19,7 @@ import { NoticeCard } from '@ks/app/components/feedback/NoticeCard';
 import { usePhone } from '@ks/app/components/foundation/usePhone';
 import { freeArea, MapLayout } from '@ks/app/components/layout/MapLayout';
 import { Sheet } from '@ks/app/components/overlays/Sheet';
+import { isFreeEscape } from '@ks/app/components/overlays/useDismiss';
 import {
   AccountMenu,
   accountSlots,
@@ -33,6 +34,7 @@ import {
 import { MapView } from '@ks/features/map/components/MapView';
 import { SourcesDialog } from '@ks/features/map/components/SourcesDialog';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
+import { PINS_LAYER_ID } from '@ks/features/map/layers/pins';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
 import { todayDay, yearOf } from '@ks/lib/domain/map/map-date.mts';
@@ -60,7 +62,7 @@ export const MapShell = ({
   initial: string;
   /** The layers the map draws. */
   layers: Layer[];
-  /** A click on empty map, Esc, or a Map date that hides the open Pin. Keep its identity stable. */
+  /** A click on empty map, Esc, a Map date that hides the open Pin, or the Pins row switched off. Keep its identity stable. */
   onClosePin?: () => void;
   /** A click on a Pin, with its id. */
   onOpenPin?: (id: string) => void;
@@ -100,7 +102,9 @@ export const MapShell = ({
   // The pixel point of the open Pin in the map, which the popup follows.
   const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
   const shown = pin !== undefined;
-  const hidden = pin !== undefined && !isCurrentOn(pin.span, mapDay);
+  const hidden =
+    pin !== undefined &&
+    (!isCurrentOn(pin.span, mapDay) || visible[PINS_LAYER_ID] === false);
 
   useEffect(() => {
     if (hidden) onClosePin?.();
@@ -109,8 +113,8 @@ export const MapShell = ({
   useEffect(() => {
     if (!shown) return;
 
-    const close = ({ key }: KeyboardEvent) => {
-      if (key === 'Escape') onClosePin?.();
+    const close = (event: KeyboardEvent) => {
+      if (isFreeEscape(event)) onClosePin?.();
     };
 
     document.addEventListener('keydown', close);
@@ -216,7 +220,11 @@ export const MapShell = ({
           layers={layers}
           mapDay={mapDay}
           onEmptyClick={onClosePin}
-          onOpenPin={onOpenPin}
+          onOpenPin={id => {
+            // A tap on a Pin opens the date sheet on a phone, so a close leaves it open under the finger.
+            if (phone) setSheetExpanded(true);
+            onOpenPin?.(id);
+          }}
           onOpenPoint={setPoint}
           onZoomLimits={setLimits}
           open={pin?.open}

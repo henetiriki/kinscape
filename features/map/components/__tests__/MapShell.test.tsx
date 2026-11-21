@@ -1,6 +1,13 @@
 import type { Ref } from 'react';
 
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Layer, MapHandle } from '@ks/features/map/types';
@@ -40,6 +47,7 @@ vi.mock('@ks/features/map/components/MapView', async () => {
 import { freeArea } from '@ks/app/components/layout/MapLayout';
 import { testLayer } from '@ks/features/map/__tests__/test-layer';
 import { MapShell } from '@ks/features/map/components/MapShell';
+import { PINS_LAYER_ID } from '@ks/features/map/layers/pins';
 import { polityLayer } from '@ks/features/map/layers/polities';
 
 const sources: Source[] = [
@@ -597,6 +605,11 @@ describe('the Pin popup', () => {
     expect(onClosePin).toHaveBeenCalledOnce();
   });
 
+  it('takes a click on a Pin when the page gives no handler', () => {
+    renderPin();
+    expect(() => lastProps().onOpenPin('p2')).not.toThrow();
+  });
+
   it('places the popup at the point of the Pin on a desktop, once the map reports it', () => {
     renderPin();
     expect(screen.queryByTestId('popup-floating')).toBeNull();
@@ -626,6 +639,28 @@ describe('the Pin popup', () => {
     expect(onClosePin).toHaveBeenCalledOnce();
   });
 
+  it('keeps the popup when a dialog owns the Esc', () => {
+    const onClosePin = vi.fn();
+
+    renderPin({ onClosePin });
+    fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+    fireEvent.click(
+      screen.getByRole('menuitem', { name: 'Sources and attributions' })
+    );
+    fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+    expect(onClosePin).not.toHaveBeenCalled();
+  });
+
+  it('keeps the popup when another handler prevented the Esc', () => {
+    const onClosePin = vi.fn();
+    const press = createEvent.keyDown(document, { key: 'Escape' });
+
+    renderPin({ onClosePin });
+    press.preventDefault();
+    fireEvent(document, press);
+    expect(onClosePin).not.toHaveBeenCalled();
+  });
+
   it('listens for Esc only while a Pin is open', () => {
     const onClosePin = vi.fn();
 
@@ -649,6 +684,17 @@ describe('the Pin popup', () => {
     renderPin({ onClosePin }, { validFrom: asDay(0), validTo: null });
     fireEvent.click(screen.getByRole('button', { name: 'Back' }));
     expect(onClosePin).not.toHaveBeenCalled();
+  });
+
+  it('closes the popup when the Pins row is switched off, and for no other row', () => {
+    const onClosePin = vi.fn();
+    const pins = { ...testLayer, id: PINS_LAYER_ID, label: 'Pins' };
+
+    renderPin({ layers: [polityLayer, testLayer, pins], onClosePin });
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Test layer' }));
+    expect(onClosePin).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Pins' }));
+    expect(onClosePin).toHaveBeenCalledOnce();
   });
 
   // NFR-05
@@ -678,6 +724,28 @@ describe('the Pin popup', () => {
       act(() => lastProps().onOpenPoint({ x: 400, y: 300 }));
       expect(screen.queryByTestId('popup-floating')).toBeNull();
       expect(popup).toHaveBeenCalledWith('inline');
+    });
+
+    it('expands the sheet when a Pin opens, and keeps it expanded after a close', () => {
+      const onOpenPin = vi.fn();
+      const { rerender } = renderPin({ onOpenPin, pin: undefined });
+      const grabber = () =>
+        screen.getByRole('button', { name: 'Expand the sheet' });
+
+      expect(grabber().getAttribute('aria-expanded')).toBe('false');
+      act(() => lastProps().onOpenPin('p1'));
+      expect(onOpenPin).toHaveBeenCalledWith('p1');
+      expect(grabber().getAttribute('aria-expanded')).toBe('true');
+      rerender(
+        <MapShell
+          {...account}
+          coverage={coverage}
+          layers={layers}
+          onOpenPin={onOpenPin}
+          sources={sources}
+        />
+      );
+      expect(grabber().getAttribute('aria-expanded')).toBe('true');
     });
 
     it('leaves the sheet as it was with no Pin open', () => {

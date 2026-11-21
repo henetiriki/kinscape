@@ -21,15 +21,19 @@ const show = (props: Partial<Parameters<typeof PinPopup>[0]> = {}) =>
 it('shows the event type, name, both date lines and the address when loaded', () => {
   const { container } = show();
 
-  expect(screen.getByRole('dialog', { name: 'Pin details' })).toBeTruthy();
-  expect(screen.getByText('Residence')).toBeTruthy();
-  expect(
-    screen.getByRole('heading', { level: 3, name: 'Example Person' })
-  ).toBeTruthy();
-  expect(screen.getByText('From 1890 to 1905')).toBeTruthy();
-  expect(screen.getByText('FROM 1890 TO 1905')).toBeTruthy();
-  expect(screen.getByText('Address as recorded')).toBeTruthy();
-  expect(screen.getByText('Farm Example, district Example')).toBeTruthy();
+  screen.getByRole('dialog', { name: 'Pin details' });
+  expect(screen.getByText('Residence').textContent).toBe('Residence');
+  screen.getByRole('heading', { level: 3, name: 'Example Person' });
+  expect(screen.getByText('From 1890 to 1905').textContent).toBe(
+    'From 1890 to 1905'
+  );
+  expect(screen.getByText('FROM 1890 TO 1905').textContent).toBe(
+    'FROM 1890 TO 1905'
+  );
+  expect(screen.getByText('Address as recorded').textContent).toBe(
+    'Address as recorded'
+  );
+  screen.getByText('Farm Example, district Example');
   expect(
     container
       .querySelector('[data-event="residence"]')
@@ -40,7 +44,9 @@ it('shows the event type, name, both date lines and the address when loaded', ()
 it('shows a note for an address that is empty', () => {
   show({ address: '' });
 
-  expect(screen.getByText('No address recorded')).toBeTruthy();
+  expect(screen.getByText('No address recorded').textContent).toBe(
+    'No address recorded'
+  );
 });
 
 // PIN-02: the Pin of the map holds the event type and both date lines
@@ -51,9 +57,13 @@ it('shows the event type and both date lines with bars in place of the name and 
     state: 'loading',
   });
 
-  expect(screen.getByText('Residence')).toBeTruthy();
-  expect(screen.getByText('From 1890 to 1905')).toBeTruthy();
-  expect(screen.getByText('FROM 1890 TO 1905')).toBeTruthy();
+  expect(screen.getByText('Residence').textContent).toBe('Residence');
+  expect(screen.getByText('From 1890 to 1905').textContent).toBe(
+    'From 1890 to 1905'
+  );
+  expect(screen.getByText('FROM 1890 TO 1905').textContent).toBe(
+    'FROM 1890 TO 1905'
+  );
   expect(screen.queryByRole('heading')).toBeNull();
   expect(container.querySelectorAll('[data-bar]').length).toBe(2);
 });
@@ -125,7 +135,9 @@ it('shows an error alert and "Try again" when failed, and asks again on a press'
   expect(screen.getByRole('alert').textContent).toContain(
     "Couldn't load this Pin"
   );
-  expect(screen.getByText('From 1890 to 1905')).toBeTruthy();
+  expect(screen.getByText('From 1890 to 1905').textContent).toBe(
+    'From 1890 to 1905'
+  );
   expect(screen.queryByText('Address as recorded')).toBeNull();
   expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();
 
@@ -138,8 +150,8 @@ it('shows an error alert and "Try again" when failed, and asks again on a press'
 it('has "Add a pin here" and "Edit" on a desktop, and neither on a phone', () => {
   const { unmount } = show();
 
-  expect(screen.getByRole('button', { name: 'Add a pin here' })).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Edit' })).toBeTruthy();
+  screen.getByRole('button', { name: 'Add a pin here' });
+  screen.getByRole('button', { name: 'Edit' });
 
   unmount();
   show({ form: 'sheet' });
@@ -149,31 +161,29 @@ it('has "Add a pin here" and "Edit" on a desktop, and neither on a phone', () =>
   expect(
     screen.getByText(
       'Look-up only on a phone. Add people and pins on a tablet or computer.'
-    )
-  ).toBeTruthy();
+    ).textContent
+  ).toBe(
+    'Look-up only on a phone. Add people and pins on a tablet or computer.'
+  );
 });
 
 it('draws the sheet as a labelled region with a handle, and the failed sheet has "Try again"', () => {
   show({ form: 'sheet', state: 'failed' });
 
-  expect(
-    screen.getByRole('region', { name: 'Pin details, failed' })
-  ).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Try again' })).toBeTruthy();
+  screen.getByRole('region', { name: 'Pin details, failed' });
+  screen.getByRole('button', { name: 'Try again' });
 });
 
 it('names the sheet by its state', () => {
   show({ form: 'sheet' });
 
-  expect(
-    screen.getByRole('region', { name: 'Pin details, loaded' })
-  ).toBeTruthy();
+  screen.getByRole('region', { name: 'Pin details, loaded' });
 });
 
 it('draws the inline form as a group with no handle, for the date sheet', () => {
   const { container } = show({ form: 'inline' });
 
-  expect(screen.getByRole('group', { name: 'Pin details' })).toBeTruthy();
+  screen.getByRole('group', { name: 'Pin details' });
   // The note is a sibling of the group, at the foot of the sheet.
   expect(
     screen.getByRole('group').contains(screen.getByText(/^Look-up only/))
@@ -220,5 +230,8 @@ it('places the popup at a point in pixels', () => {
 
   expect(placed.style.getPropertyValue('--x')).toBe('120px');
   expect(placed.style.getPropertyValue('--y')).toBe('80px');
-  expect(screen.getByText('Birth')).toBeTruthy();
+  expect(placed.style.getPropertyValue('--gap')).toBe(
+    'var(--layout-pin-popup-gap)'
+  );
+  expect(screen.getByText('Birth').textContent).toBe('Birth');
 });

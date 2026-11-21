@@ -216,6 +216,9 @@ it('places a popup at a point, with the pointer on its right edge', () => {
 
   expect(placed.style.getPropertyValue('--x')).toBe('420px');
   expect(placed.style.getPropertyValue('--y')).toBe('300px');
+  expect(placed.style.getPropertyValue('--gap')).toBe(
+    'var(--layout-popup-gap)'
+  );
   expect(screen.getByRole('dialog')).toBeTruthy();
   expect(placed.lastElementChild!.className).toContain('placedPointer');
   expect(placed.lastElementChild!.getAttribute('aria-hidden')).toBe('true');

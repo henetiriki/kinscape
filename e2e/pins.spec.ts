@@ -148,6 +148,32 @@ const pinPoint = (page: Page, id: string) =>
     return { x: left + point.x, y: top + point.y };
   }, id);
 
+/**
+ * A point on the empty map that a click can reach: in the free area, right of `pin` (the popup sits
+ * left of its Pin), with no Pin within 24 px, so the click is not on a Pin or on the dock.
+ */
+const emptyPoint = (page: Page, pin: { x: number; y: number }) =>
+  page.evaluate(wanted => {
+    const { kinscapeMap: map } = window as unknown as TestWindow;
+    const { left, top } = map.getContainer().getBoundingClientRect();
+
+    for (let y = 160; y < window.innerHeight - 300; y += 20) {
+      for (let x = wanted.x - left + 60; x < window.innerWidth - 60; x += 20) {
+        const near = map.queryRenderedFeatures(
+          [
+            [x - 24, y - 24],
+            [x + 24, y + 24],
+          ],
+          { layers: ['pins'] }
+        );
+
+        if (near.length === 0) return { x: left + x, y: top + y };
+      }
+    }
+
+    throw new Error('No empty point in the free area');
+  }, pin);
+
 // PIN-02: no request for the details before a click, then one for that Pin.
 test('a click on a Pin opens its popup, and asks for its details once', async ({
   page,
@@ -235,8 +261,22 @@ test('Close, Esc and a click on empty map close the popup', async ({
   await page.keyboard.press('Escape');
   await expect(popup(page)).toBeHidden();
   await open();
-  // The map has no Pin 200 px right of the one that is open, in the free area.
-  await page.mouse.click(pin.x - 5, pin.y + 120);
+  const empty = await emptyPoint(page, pin);
+
+  await page.mouse.click(empty.x, empty.y);
+  await expect(popup(page)).toBeHidden();
+});
+
+// PIN-02, MAP-02: the Pins row hides the Pin, so the popup closes.
+test('switching the Pins row off closes the popup', async ({ page }) => {
+  await page.goto('/');
+  await goTo(page, '1850');
+
+  const pin = await pickPin(page);
+
+  await page.mouse.click(pin.x, pin.y);
+  await expect(popup(page)).toBeVisible();
+  await page.getByRole('checkbox', { name: 'Pins' }).uncheck();
   await expect(popup(page)).toBeHidden();
 });
 

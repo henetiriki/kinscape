@@ -47,6 +47,9 @@ const featureOf = ({
   type: 'Feature',
 });
 
+/** The id of the "Pins" row, which the map shell reads to close the popup of a Pin that the row hides. */
+export const PINS_LAYER_ID = 'pins';
+
 /**
  * The "Pins" row: one symbol for each Pin at the position of its Place. The Map date only changes
  * the filter, so the source holds every Pin and no request is sent (NFR-01). Pins on one Place
@@ -78,7 +81,7 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
     icons: Object.fromEntries(
       EVENT_ORDER.map(event => [`${PREFIX}${event}`, EVENT_PATHS[event]])
     ),
-    id: 'pins',
+    id: PINS_LAYER_ID,
     label: 'Pins',
     layers: [
       {

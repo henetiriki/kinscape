@@ -234,14 +234,14 @@ it('draws the slider in the expanded phone sheet', () => {
 });
 
 // PIN-02 (#862)
-it('opens the phone sheet and shows the details under the slider', () => {
+it('shows the details under the slider in an expanded phone sheet', () => {
   render(
     <DateDock
       day={today}
       details={<p>Pin details</p>}
       lastDay={today}
       onChange={vi.fn()}
-      sheet={{ expanded: false, onExpandedChange: vi.fn() }}
+      sheet={{ expanded: true, onExpandedChange: vi.fn() }}
     />
   );
 
@@ -256,6 +256,25 @@ it('opens the phone sheet and shows the details under the slider', () => {
   expect(
     slider.compareDocumentPosition(details) & Node.DOCUMENT_POSITION_FOLLOWING
   ).toBeTruthy();
+});
+
+it('keeps a collapsed phone sheet collapsed when it has details', () => {
+  render(
+    <DateDock
+      day={today}
+      details={<p>Pin details</p>}
+      lastDay={today}
+      onChange={vi.fn()}
+      sheet={{ expanded: false, onExpandedChange: vi.fn() }}
+    />
+  );
+
+  expect(
+    screen
+      .getByRole('button', { name: 'Expand the sheet' })
+      .getAttribute('aria-expanded')
+  ).toBe('false');
+  expect(screen.queryByRole('slider', { name: 'Map date' })).toBeNull();
 });
 
 it('ignores details on the desktop dock', () => {

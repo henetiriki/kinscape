@@ -1,7 +1,6 @@
 'use client';
 
-import type { CSSProperties } from 'react';
-
+import type { PinPopupState } from '@ks/app/components/overlays/types';
 import type { EventType } from '@ks/lib/ui/types';
 
 import { Button } from '@ks/app/components/actions/Button';
@@ -9,6 +8,7 @@ import { IconButton } from '@ks/app/components/actions/IconButton';
 import { Alert } from '@ks/app/components/feedback/Alert';
 import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
+import { PlacedAt } from '@ks/app/components/overlays/PlacedAt';
 import { PopupPointer } from '@ks/app/components/overlays/Popup';
 import { EventGlyph } from '@ks/lib/ui/EventGlyph';
 
@@ -32,7 +32,7 @@ type PinPopupArgs = {
   /** The date as recorded, such as "FROM 1890 TO 1905". */
   recorded: string;
   /** Loading and failed show the event type and both date lines only. */
-  state: 'failed' | 'loaded' | 'loading';
+  state: PinPopupState;
 };
 
 const label = (event: EventType) => event[0].toUpperCase() + event.slice(1);
@@ -192,9 +192,7 @@ export const PlacedPinPopup = ({
   y,
   ...rest
 }: { x: number; y: number } & Omit<PinPopupArgs, 'form'>) => (
-  <div
-    className={styles.placed}
-    style={{ '--x': `${x}px`, '--y': `${y}px` } as CSSProperties}>
+  <PlacedAt gap='pin-popup-gap' x={x} y={y}>
     <PinPopup {...rest} form='floating' />
-  </div>
+  </PlacedAt>
 );

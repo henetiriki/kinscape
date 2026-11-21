@@ -125,5 +125,7 @@ The plan check reads the label after the _Links_ steps, so a Chore that gets a b
 
 ## Deviations
 
+- Reverses [C829 D6](C829-design-blocker-draft.md): the unblock comment names the Spec's own number, not its Intent box (#1114 item 5).
+- The shared read and write steps of both edit modes are in `filing.md`, as "Read" and "Write". `spec.md` and `chore.md` keep their own steps. `filing.md` has an own word budget.
 - `SKILL.md` has a new table, "The Type of a number", for D1 and D2. The plan named only a rule.
 - The `filing.md` section has seven steps. The plan listed six. The failed-edit print (D4) is its own step.

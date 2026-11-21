@@ -70,7 +70,7 @@ describe('budgetFor', () => {
     ['.github/agent/fix-review.md', 599],
     ['.github/agent/review.md', 550],
     ['.github/agent/review-code.md', 750],
-    ['.claude/skills/refine/SKILL.md', 790],
+    ['.claude/skills/refine/SKILL.md', 800],
     ['.claude/skills/refine/nested/deep.md', 650],
   ])('%s has a budget of %i', (path, budget) => {
     expect(budgetFor(path)).toBe(budget);

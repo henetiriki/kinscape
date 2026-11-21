@@ -13,7 +13,7 @@ The argument picks the mode. Read the matching file and follow it, with the meth
 
 - `intent [idea]` → [intent.md](intent.md). For the product owner (PO), in plain language. Any text after `intent` is the PO's first description of the idea.
 - `spec <M<n> | number>` → [spec.md](spec.md). For the tech lead. Slices a milestone or an accepted Intent into Specs. Edits a filed Spec.
-- `chore [idea | number]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue, or redrafts a filed Chore. Digits, with an optional `#`, are a filed Chore. Any other text is an idea.
+- `chore [idea | number]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue, or redrafts a filed Chore. Digits, with an optional `#`, are an issue number. Any other text is an idea.
 - `bug <number>` → [bug.md](bug.md). For the tech lead. Adds four sections to a filed Bug.
 - No argument, or anything else: ask which of the four they want.
 
@@ -29,7 +29,7 @@ For a number after `spec` or `chore`, run `gh issue view <n> --json issueType --
 | Chore  | `chore`: redrafts it |
 
 - If the Type is not the mode that the user typed, say "#<n> is a <Type>: run `/refine <mode> <n>`". Edit nothing.
-- If the issue has no Type, or `gh` fails, say why. Ask the user whether #<n> is an Intent, a Spec, a Bug or a Chore. Ask for the issue body. Then follow that mode.
+- If the issue has no Type, or `gh` fails, say why. Ask the user whether #<n> is an Intent, a Spec, a Bug or a Chore. Ask the user to paste the issue body. Then follow that mode. If `gh` failed, [filing.md](filing.md#editing-a-filed-issue) says what to skip.
 
 ## Method
 

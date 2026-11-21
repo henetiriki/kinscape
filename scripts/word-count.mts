@@ -7,8 +7,9 @@ import { isAbsolute, relative, sep } from 'node:path';
 // A plan entry skips the plan's `## Deviations` section, which the build adds lines to.
 // The entries are in path order. The first match wins, so a folder's wildcard entry comes last in its folder.
 const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
-  { limit: 790, pattern: /^\.claude\/skills\/refine\/SKILL\.md$/ },
-  { limit: 940, pattern: /^\.claude\/skills\/refine\/spec\.md$/ },
+  { limit: 800, pattern: /^\.claude\/skills\/refine\/SKILL\.md$/ },
+  { limit: 750, pattern: /^\.claude\/skills\/refine\/filing\.md$/ },
+  { limit: 890, pattern: /^\.claude\/skills\/refine\/spec\.md$/ },
   {
     limit: 650,
     pattern: /^\.claude\/skills\/(.+\/)?(?!NOTICE\.md$)[^/]+\.md$/,

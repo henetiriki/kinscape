@@ -1871,13 +1871,9 @@ describe('the fix-review workflow', () => {
     expect(steps).toEqual([...steps].sort((a, b) => a - b));
     expect(at('"Fixed in <sha>."')).toBeLessThan(at('Push to the PR branch'));
     expect(text).toContain('Leave a thread for a person open');
-    expect(text).toContain(
-      'Only step 8 follows a successful push, and only after a "Big:" line'
-    );
+    expect(text).not.toContain('except in step 8');
+    expect(text).not.toContain('gh pr ready');
     expect(text).toContain('"Big:" line');
-    expect(at('Push to the PR branch')).toBeLessThan(
-      at('gh pr ready <n> --undo')
-    );
   });
 
   // A big departure is built and recorded, not left (plans/chores/C1111-big-departure-draft.md).
@@ -1891,9 +1887,7 @@ describe('the fix-review workflow', () => {
     expect(text).toContain(
       'Post one final PR comment. List each "Big:" line first.'
     );
-    expect(text).toContain(
-      '8. If you wrote a "Big:" line, run `gh pr ready <n> --undo`.'
-    );
+    expect(text).not.toContain('8. If you wrote');
   });
 
   // A failed push must not drop the fixes without a word, and must not lose the commits of another
@@ -1941,6 +1935,7 @@ describe('the fix-review workflow', () => {
       'If the merge fails or the second push fails, also tell the tech lead in the session'
     );
     expect(text).not.toContain('After the push, reply');
+    expect(text).not.toContain('--undo');
   });
 
   it('opens a review with the findings that no thread shows, and posts the others inline, in review.md', () => {

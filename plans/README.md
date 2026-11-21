@@ -125,9 +125,9 @@ If a change alters the scope, the data model, a public API or an acceptance chec
 
 - Build the change that you judge correct.
 - Write one line under `## Deviations` that starts with "Big:". Give the reason.
-- Keep the PR a draft.
+- In a build, keep the PR a draft. A fix review leaves the draft state to the tech lead.
 
-If a change adds a dependency, build the work that needs no package. Write a "Big:" line that names the package. Keep the PR a draft.
+If a change adds a dependency, build the work that needs no package. Write a "Big:" line that names the package. In a build, keep the PR a draft.
 
 If two readings of the plan are equally correct, build the one that changes less. Name the other reading in the "Big:" line. A "Big:" line never changes a Decisions box.
 

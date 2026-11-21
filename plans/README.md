@@ -101,7 +101,7 @@ A Spec that builds a shared component adds it to `CONTROLS`. Run steps 2 to 7 of
 - Delete the test.
 - Loosen an assertion.
 
-The plan must list that test under Files that change. In each other case, a test that looks wrong is a big departure ([big-departures rule](#big-departures)).
+The plan must list that test under Files that change. In each other case, leave a test that looks wrong as it is. Write a "Big:" line that names the test and the reason ([big-departures rule](#big-departures)).
 
 ## When the plan changes
 
@@ -121,7 +121,15 @@ Update the plan in the same commit as the code. Write one line under `## Deviati
 - It alters an acceptance check.
 - It adds a dependency.
 
-If a change is a big departure, stop. Revise the plan. The tech lead approves the plan again before the work continues.
+If a change alters the scope, the data model, a public API or an acceptance check, do these steps:
+
+- Build the change that you judge correct.
+- Write one line under `## Deviations` that starts with "Big:". Give the reason.
+- Keep the PR a draft.
+
+If a change adds a dependency, build the work that needs no package. Write a "Big:" line that names the package. Keep the PR a draft.
+
+If two readings of the plan are equally correct, build the one that changes less. Name the other reading in the "Big:" line. A "Big:" line never changes a Decisions box.
 
 <a id="too-big"></a>**Too big.** A plan is too big if it does not fit its word budget. It is also too big if the diff will pass the line cap in `/refine spec` › Step 1. If the plan is too big, do these steps:
 
@@ -145,4 +153,4 @@ If a Chore gets no plan PR, follow the [hand-back rule](#hand-back).
   - "Acceptance checks";
   - "Must not break".
 
-Do not list an edit that a step of [Changing the design system](../design/CANVAS.md#changing-the-design-system) makes. List each other difference under `## Deviations`. If a difference changes a done check, stop for the tech lead ([big-departures rule](#big-departures)).
+Do not list an edit that a step of [Changing the design system](../design/CANVAS.md#changing-the-design-system) makes. List each other difference under `## Deviations`. If a difference changes a done check, write it as a "Big:" line ([big-departures rule](#big-departures)).

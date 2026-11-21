@@ -1,10 +1,16 @@
 'use client';
 
 import type { GeoJSONSource } from 'maplibre-gl';
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
-import { Map as MapLibreMap, ScaleControl, setWorkerUrl } from 'maplibre-gl';
+import {
+  Map as MapLibreMap,
+  Marker,
+  ScaleControl,
+  setWorkerUrl,
+} from 'maplibre-gl';
 import { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -84,6 +90,12 @@ export const MapView = ({
   const selectRef = useRef<string[]>([]);
   /** The Map date that the last NFR-01 timing started for. */
   const timedDay = useRef<Day>(undefined);
+  /** The MapLibre marker of each layer marker on the map, by its key. */
+  const markers = useRef(new Map<string, Marker>());
+  /** What each marker element draws: React renders it there through a portal. */
+  const [placed, setPlaced] = useState<
+    { element: HTMLElement; key: string; node: ReactNode }[]
+  >([]);
 
   useEffect(() => {
     onZoomLimitsRef.current = onZoomLimits;
@@ -176,7 +188,12 @@ export const MapView = ({
     created.on('resize', reportLimits);
     created.once('load', reportLimits);
     // A click on a pickable feature opens it; a click that picks none is a click on empty map.
-    created.on('click', ({ point }) => {
+    // An HTML marker handles its own clicks, so the map ignores a click inside one.
+    created.on('click', ({ originalEvent, point }) => {
+      if ((originalEvent.target as Element).closest('.maplibregl-marker')) {
+        return;
+      }
+
       const pickable = selectRef.current;
       const hit =
         pickable.length === 0
@@ -302,6 +319,38 @@ export const MapView = ({
           );
         }
       }
+
+      // The markers change after the mark, so the NFR-01 timing covers them too.
+      const wanted = layers
+        .filter(layer => visible[layer.id] !== false)
+        .flatMap(
+          layer =>
+            layer.markers?.(mapDay, openId, id => onOpenPinRef.current?.(id)) ??
+            []
+        );
+      const keys = new Set(wanted.map(({ key }) => key));
+
+      for (const [key, marker] of markers.current) {
+        if (!keys.has(key)) {
+          marker.remove();
+          markers.current.delete(key);
+        }
+      }
+
+      setPlaced(
+        wanted.map(({ key, node, position }) => {
+          let marker = markers.current.get(key);
+
+          if (!marker) {
+            marker = new Marker({ element: document.createElement('div') })
+              .setLngLat(position)
+              .addTo(current);
+            markers.current.set(key, marker);
+          }
+
+          return { element: marker.getElement(), key, node };
+        })
+      );
     };
 
     if (loaded.current || current.isStyleLoaded()) {
@@ -344,5 +393,10 @@ export const MapView = ({
     };
   }, [openId, openLatitude, openLongitude]);
 
-  return <div className='map' ref={container} />;
+  return (
+    <>
+      <div className='map' ref={container} />
+      {placed.map(({ element, key, node }) => createPortal(node, element, key))}
+    </>
+  );
 };

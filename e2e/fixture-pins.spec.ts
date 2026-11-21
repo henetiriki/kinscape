@@ -13,10 +13,12 @@ const failing = FIXTURES.find(
 
 // One synthetic Pin of each Event type, each at its own position and shown from 1797 on.
 const EACH_TYPE = EVENT_TYPES.map((eventType, index) => ({
+  date1: '1797',
   eventType,
   id: `01900000-0000-7000-b000-00000000000${index}`,
   latitude: -33 + index * 0.6,
   longitude: 20 + index * 0.9,
+  qualifier: 'EXACT',
   span: { validFrom: 53_000, validTo: null },
 }));
 

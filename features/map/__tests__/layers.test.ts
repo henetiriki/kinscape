@@ -47,10 +47,12 @@ const pinOn = (
   to: null | string,
   eventType: MapPin['eventType'] = 'residence'
 ): MapPin => ({
+  date1: from.slice(0, 4),
   eventType,
   id: `pin-${id}` as MapPin['id'],
   latitude: -33.9,
   longitude: 18.4,
+  qualifier: 'EXACT',
   span: { validFrom: toDay(from), validTo: to === null ? null : toDay(to) },
 });
 // The span that a Pin dated FROM 1840 TO 1855 gets: it ends on 1856-01-01.

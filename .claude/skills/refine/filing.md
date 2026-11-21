@@ -23,8 +23,22 @@ After the check round, follow these steps:
 2. Read the issue's links: `gh api graphql -f id=<id> -f query='query($id: ID!) { node(id: $id) { ... on Issue { blockedBy(first: 50) { nodes { number } } relatesTo(first: 50) { nodes { number } } } } }'`.
 3. For each blocker that `blockedBy` lacks, run `gh issue edit <number> --add-blocked-by <blocker>`.
 4. For each reason that `relatesTo` lacks, run `gh api graphql -f issue=<id> -f other=<reason id> -f query='mutation($issue: ID!, $other: ID!) { addRelatesTo(input: {issueId: $issue, relatedIssueId: $other}) { issue { number } } }'`.
-5. For a blocked Bug, run `gh issue view <number> --json labels`. If it has no `status: blocked` label, run `gh issue edit <number> --remove-label '<its status label>' --add-label 'status: blocked'`.
+5. For a blocked Bug or Chore, run `gh issue view <number> --json labels`. If it has no `status: blocked` label, run `gh issue edit <number> --remove-label '<its status label>' --add-label 'status: blocked'`.
 6. If a call fails, stop. File nothing again. Tell the user the issue number and each link still to set. They set it in the issue sidebar.
+
+## Editing a filed issue
+
+`spec.md` and `chore.md` link here. Follow these steps in order:
+
+1. Run `gh issue view <n> --json state`. If the issue is closed, stop. Edit nothing. Say that a change to merged work needs a new Spec or Chore.
+2. Show the current `blockedBy` and `relatesTo` links (_Links_ steps 1 and 2). Ask the question of step 1 above. To remove a link, the user uses the issue sidebar.
+3. Ask "Edit #<n> now?" as a question of its own. A yes covers the new links. If the answer is not yes, edit nothing.
+4. Write the new body to a new file outside the repo, as steps 4 and 5 above say. Run one `gh issue edit <n> --body-file <file>`.
+5. If the edit fails, say why. Print the whole new body. The tech lead pastes it into the issue's Edit box.
+6. Set the new links as _Links_ says.
+7. Run `gh issue view <n> --json labels`. If the issue has a plan file or an open plan PR, name it:
+   - If the issue has `status: blocked`, say that the label stays. Offer nothing.
+   - If not, ask "Set `status: draft`?" as a question of its own. After a yes, swap the status label.
 
 ## If `gh` fails
 

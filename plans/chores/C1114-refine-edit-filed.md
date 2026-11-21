@@ -125,4 +125,5 @@ The plan check reads the label after the _Links_ steps, so a Chore that gets a b
 
 ## Deviations
 
-- The run denied each write to `.claude/skills/refine/`. This build did not change `SKILL.md`, `spec.md`, `chore.md` or `filing.md`. It did not change `word-count.mts` or its test, because the budgets follow the skill text. A local session builds these rows.
+- `SKILL.md` has a new table, "The Type of a number", for D1 and D2. The plan named only a rule.
+- The `filing.md` section has seven steps. The plan listed six. The failed-edit print (D4) is its own step.

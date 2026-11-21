@@ -1,8 +1,8 @@
 ---
 name: refine
-description: Interview the user until you both agree on the idea. Then draft a KinScape Intent, the Specs for a milestone or Intent, or a Chore, or refine a filed Bug. `gh` files a Spec or Chore. An Intent gets a prefilled form link. Use `/refine intent` (product owner) or `/refine spec`, `chore` or `bug` (tech lead).
+description: Interview the user until you both agree on the idea. Then draft a KinScape Intent, the Specs for a milestone or Intent, or a Chore, or refine a filed Spec, Chore or Bug. `gh` files a Spec or Chore. An Intent gets a prefilled form link. Use `/refine intent` (product owner) or `/refine spec`, `chore` or `bug` (tech lead).
 disable-model-invocation: true
-argument-hint: intent [your idea] | spec <M<n> or intent issue number> | chore [your idea] | bug <issue number>
+argument-hint: intent [your idea] | spec <M<n> or issue number> | chore [your idea or Chore number] | bug <issue number>
 ---
 
 # Refine
@@ -12,10 +12,24 @@ Ask questions first. Draft last.
 The argument picks the mode. Read the matching file and follow it, with the method below:
 
 - `intent [idea]` → [intent.md](intent.md). For the product owner (PO), in plain language. Any text after `intent` is the PO's first description of the idea.
-- `spec <M<n> | number>` → [spec.md](spec.md). For the tech lead. Slices a milestone or an accepted Intent into Specs.
-- `chore [idea]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue.
+- `spec <M<n> | number>` → [spec.md](spec.md). For the tech lead. Slices a milestone or an accepted Intent into Specs. Edits a filed Spec.
+- `chore [idea | number]` → [chore.md](chore.md). For the tech lead. Drafts one Chore issue, or redrafts a filed Chore. Digits, with an optional `#`, are a filed Chore. Any other text is an idea.
 - `bug <number>` → [bug.md](bug.md). For the tech lead. Adds four sections to a filed Bug.
 - No argument, or anything else: ask which of the four they want.
+
+## The Type of a number
+
+For a number after `spec` or `chore`, run `gh issue view <n> --json issueType --jq .issueType.name`. `M<n>` needs no Type.
+
+| Type   | Mode                 |
+| ------ | -------------------- |
+| Intent | `spec`: slices it    |
+| Spec   | `spec`: edits it     |
+| Bug    | `bug`                |
+| Chore  | `chore`: redrafts it |
+
+- If the Type is not the mode that the user typed, say "#<n> is a <Type>: run `/refine <mode> <n>`". Edit nothing.
+- If the issue has no Type, or `gh` fails, say why. Ask the user whether #<n> is an Intent, a Spec, a Bug or a Chore. Ask for the issue body. Then follow that mode.
 
 ## Method
 
@@ -47,7 +61,7 @@ Treat the topic as a **design tree**: every decision opens smaller decisions ben
 
 ## Filing with gh
 
-After the check round, file a Spec or Chore as [filing.md](filing.md) says. [bug.md](bug.md) edits a filed Bug.
+After the check round, file a Spec or Chore as [filing.md](filing.md) says. [spec.md](spec.md) and [chore.md](chore.md) edit a filed Spec or Chore. [bug.md](bug.md) edits a filed Bug.
 
 ## Prefilled links
 

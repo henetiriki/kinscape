@@ -341,22 +341,6 @@
       "title": "Draft — fan of Pins",
       "page": "drafts"
     },
-    "Draft-pin-popup.dc.html": {
-      "x": 0,
-      "y": 672,
-      "w": 1040,
-      "h": 460,
-      "title": "Draft — Pin popup",
-      "page": "drafts"
-    },
-    "Draft-pin-popup-phone.dc.html": {
-      "x": 1120,
-      "y": 672,
-      "w": 390,
-      "h": 844,
-      "title": "Draft — Pin popup as a sheet",
-      "page": "drafts"
-    },
     "Sign-in-unavailable.dc.html": {
       "x": 0,
       "y": 1020,
@@ -681,8 +665,6 @@
     "Map-pin-popup-phone.dc.html",
     "Draft-pin-marker.dc.html",
     "Draft-pin-fan.dc.html",
-    "Draft-pin-popup.dc.html",
-    "Draft-pin-popup-phone.dc.html",
     "Map-loading.dc.html",
     "Map-phone-loading.dc.html",
     "Map-empty-tree.dc.html",

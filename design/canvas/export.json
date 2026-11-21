@@ -206,16 +206,6 @@
       "viewport": { "height": 592, "width": 820 }
     },
     {
-      "file": "Draft-pin-popup.dc.html",
-      "name": "draft-pin-popup",
-      "viewport": { "height": 460, "width": 1040 }
-    },
-    {
-      "file": "Draft-pin-popup-phone.dc.html",
-      "name": "draft-pin-popup-phone",
-      "viewport": { "height": 844, "width": 390 }
-    },
-    {
       "file": "Map-phone-states.dc.html",
       "name": "map-loading-phone",
       "props": { "variant": "loading" },

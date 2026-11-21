@@ -51,8 +51,6 @@ const screenOnlyProblems = (
 const NO_ENTRY = [
   'draft-pin-fan',
   'draft-pin-marker',
-  'draft-pin-popup',
-  'draft-pin-popup-phone',
   'fuzzy-date-readings',
   'map-account-menu-phone-proposed',
   'map-account-menu-proposed',

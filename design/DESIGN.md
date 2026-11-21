@@ -48,8 +48,6 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Pin popup, phone sheet                            | [map-pin-popup-phone.jpg](map-pin-popup-phone.jpg)                           |
 | Draft: count marker                               | [draft-pin-marker.jpg](draft-pin-marker.jpg)                                 |
 | Draft: fan of Pins                                | [draft-pin-fan.jpg](draft-pin-fan.jpg)                                       |
-| Draft: Pin popup                                  | [draft-pin-popup.jpg](draft-pin-popup.jpg)                                   |
-| Draft: Pin popup as a sheet, phone                | [draft-pin-popup-phone.jpg](draft-pin-popup-phone.jpg)                       |
 | People list                                       | [people-list.jpg](people-list.jpg)                                           |
 | People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |
 | People list, no people yet                        | [people-empty.jpg](people-empty.jpg)                                         |

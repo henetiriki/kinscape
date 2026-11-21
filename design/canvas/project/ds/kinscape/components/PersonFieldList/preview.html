@@ -1,0 +1,59 @@
+<!-- @dsCard group="Forms" height=1200 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+body { margin: 0; padding: 16px; font-family: var(--font-body); }
+#root { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px 24px; }
+.ks-case { margin: 0; display: flex; flex-direction: column; gap: 8px; padding: 0px 0; }
+.ks-label { color: var(--ink-3); }
+.ks-case[data-form='running'] { display: block; }
+.ks-case[data-form='running'] > .ks-label { display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var h = React.createElement;
+  var noop = function () {};
+  var Control = window.KinScape["PersonFieldList"];
+  var handlers = ["onPick"];
+  var states = [{"label":"PersonFieldList · three rows","props":{"id":"three","query":"Exa","rows":[{"person":{"born":"1865","bornReading":"In 1865","deceased":false,"died":"bef. 1940","diedReading":"Before 1940","givenNames":"Anna","id":"p2","maidenName":"Sample","surname":"Example","variants":[]}},{"person":{"born":"abt. 1840","bornReading":"About 1840","deceased":true,"died":"","diedReading":"","givenNames":"Johan","id":"p3","maidenName":"","surname":"Example","variants":["Exemple"]}},{"person":{"born":"1861","bornReading":"In 1861","deceased":false,"died":"1932","diedReading":"In 1932","givenNames":"Person","id":"p1","maidenName":"","surname":"Example","variants":[]}}]}},{"label":"PersonFieldList · active row","props":{"activeId":"active-p2","id":"active","query":"Exa","rows":[{"person":{"born":"1865","bornReading":"In 1865","deceased":false,"died":"bef. 1940","diedReading":"Before 1940","givenNames":"Anna","id":"p2","maidenName":"Sample","surname":"Example","variants":[]}},{"person":{"born":"abt. 1840","bornReading":"About 1840","deceased":true,"died":"","diedReading":"","givenNames":"Johan","id":"p3","maidenName":"","surname":"Example","variants":["Exemple"]}},{"person":{"born":"1861","bornReading":"In 1861","deceased":false,"died":"1932","diedReading":"In 1932","givenNames":"Person","id":"p1","maidenName":"","surname":"Example","variants":[]}}]}},{"label":"PersonFieldList · four rows, scrolls","props":{"id":"four","query":"Exa","rows":[{"person":{"born":"1865","bornReading":"In 1865","deceased":false,"died":"bef. 1940","diedReading":"Before 1940","givenNames":"Anna","id":"p2","maidenName":"Sample","surname":"Example","variants":[]}},{"person":{"born":"abt. 1840","bornReading":"About 1840","deceased":true,"died":"","diedReading":"","givenNames":"Johan","id":"p3","maidenName":"","surname":"Example","variants":["Exemple"]}},{"person":{"born":"1861","bornReading":"In 1861","deceased":false,"died":"1932","diedReading":"In 1932","givenNames":"Person","id":"p1","maidenName":"","surname":"Example","variants":[]}},{"person":{"born":"1870","bornReading":"In 1870","deceased":false,"died":"1944","diedReading":"In 1944","givenNames":"Piet","id":"p4","maidenName":"","surname":"Example","variants":[]}}]}},{"label":"PersonFieldList · spelling variant","props":{"id":"variant","query":"Exemple","rows":[{"person":{"born":"abt. 1840","bornReading":"About 1840","deceased":true,"died":"","diedReading":"","givenNames":"Johan","id":"p3","maidenName":"","surname":"Example","variants":["Exemple"]},"variant":"Exemple"}]}},{"label":"PersonFieldList · no match","props":{"id":"none","query":"Zzz","rows":[]}}];
+  var give = function (props, names) {
+    names.forEach(function (name) {
+      var at = name.indexOf('.');
+      if (at < 0) { props[name] = noop; return; }
+      var prop = name.slice(0, at);
+      var key = name.slice(at + 1);
+      var withKey = function (item) {
+        var copy = Object.assign({}, item);
+        copy[key] = noop;
+        return copy;
+      };
+      if (props[prop] === undefined) return;
+      props[prop] = Array.isArray(props[prop]) ? props[prop].map(withKey) : withKey(props[prop]);
+    });
+  };
+  var make = function (slot, key) {
+    var props = Object.assign({ key: key }, slot.props);
+    give(props, slot.handlers || []);
+    var part = window.KinScape[slot.control];
+    return slot.children === undefined ? h(part, props) : h(part, props, slot.children);
+  };
+  var items = states.map(function (state, index) {
+    var props = Object.assign({ key: index }, state.props);
+    give(props, handlers);
+    Object.keys(state.slots || {}).forEach(function (name) { props[name] = make(state.slots[name], name); });
+    var children = Array.isArray(state.children) ? state.children.map(make) : state.children;
+    var control = children === undefined ? h(Control, props) : h(Control, props, children);
+    return h('figure', Object.assign({ className: 'ks-case', key: index }, state.form ? { 'data-form': state.form.name, style: { width: state.form.box } } : {}), h('figcaption', { className: 'small ks-label', id: 'ks-case-' + index }, state.label), control);
+  });
+  ReactDOM.flushSync(function () {
+    ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null, items));
+  });
+})();
+</script>
+</body>
+</html>

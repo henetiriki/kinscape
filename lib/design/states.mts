@@ -21,6 +21,8 @@ import {
   LONG_NOTES,
   MAP_DATE,
   panelTabs,
+  personRows,
+  PICK_PEOPLE,
   PIN_DETAILS,
   PIN_POPUP,
   PINS,
@@ -754,6 +756,60 @@ export const CARDS: Card[] = [
     ],
   },
   {
+    // The panel's 320px less its padding.
+    box: '280px',
+    design: ['Person field'],
+    group: 'Forms',
+    handlers: ['onChange'],
+    height: 600,
+    name: 'PersonField',
+    pad: 0,
+    states: [
+      one('PersonField · empty', { people: PICK_PEOPLE }),
+      one('PersonField · focus', { people: PICK_PEOPLE, state: 'focus' }),
+      one('PersonField · picked', {
+        defaultPerson: PICK_PEOPLE[0],
+        people: PICK_PEOPLE,
+      }),
+      one('PersonField · error', {
+        error: 'Choose a person.',
+        people: PICK_PEOPLE,
+      }),
+    ],
+  },
+  {
+    design: ['Person field'],
+    group: 'Forms',
+    handlers: ['onPick'],
+    height: 1200,
+    name: 'PersonFieldList',
+    pad: 0,
+    states: [
+      one('PersonFieldList · three rows', {
+        id: 'three',
+        query: 'Exa',
+        rows: personRows('Exa', 3),
+      }),
+      one('PersonFieldList · active row', {
+        activeId: 'active-p2',
+        id: 'active',
+        query: 'Exa',
+        rows: personRows('Exa', 3),
+      }),
+      one('PersonFieldList · four rows, scrolls', {
+        id: 'four',
+        query: 'Exa',
+        rows: personRows('Exa'),
+      }),
+      one('PersonFieldList · spelling variant', {
+        id: 'variant',
+        query: 'Exemple',
+        rows: personRows('Exemple'),
+      }),
+      one('PersonFieldList · no match', { id: 'none', query: 'Zzz', rows: [] }),
+    ],
+  },
+  {
     design: [],
     group: 'Forms',
     handlers: [],
@@ -849,6 +905,15 @@ export const CARDS: Card[] = [
     states: grid('LayersButton', (state, disabled) => ({
       props: { disabled, state },
     })),
+  },
+  {
+    design: ['Add a pin button'],
+    group: 'Map',
+    handlers: [],
+    height: 260,
+    name: 'AddPinButton',
+    pad: 0,
+    states: linkGrid('AddPinButton', state => ({ props: { state } })),
   },
   {
     // The dock fills its slot and the sheet fills the phone, so each state fills the card.

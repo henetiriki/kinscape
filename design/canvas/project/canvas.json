@@ -735,22 +735,6 @@
       "title": "Draft — click popup",
       "page": "drafts"
     },
-    "Draft-pin-person-field.dc.html": {
-      "x": 840,
-      "y": 0,
-      "w": 1040,
-      "h": 560,
-      "title": "Draft — Person field",
-      "page": "drafts"
-    },
-    "Draft-pin-add-button.dc.html": {
-      "x": 0,
-      "y": 640,
-      "w": 760,
-      "h": 440,
-      "title": "Draft — Add a pin button",
-      "page": "drafts"
-    },
     "Draft-pin-field-errors.dc.html": {
       "x": 840,
       "y": 640,
@@ -886,8 +870,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1795258504-4d32",
-      "copiedAt": "2026-11-21T11:00:00Z"
+      "version": "1795298021-cc02",
+      "copiedAt": "2026-11-21T21:54:14Z"
     }
   ]
 }

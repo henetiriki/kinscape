@@ -17,7 +17,7 @@ body{margin:0}
 </style>
 </helmet>
 <div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--map-sea); font-family: var(--font-body); color: var(--ink)">
-  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" account="{{account}}" zoom="{{zoom}}" panel="{{panel}}" dock="{{dock}}"></x-import>
+  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" action="{{action}}" account="{{account}}" zoom="{{zoom}}" panel="{{panel}}" dock="{{dock}}"></x-import>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["add-button","click-popup","form-empty","form","form-errors","form-existing-place","form-saving","form-save-failed","form-no-people","edit","edit-moved","edit-loading","edit-load-failed"],"default":"add-button"},"$preview":{"width":1440,"height":900}}'>
@@ -102,12 +102,14 @@ class Component extends DCLogic {
     const fixedPlace = coordinatesFixed || variant === 'edit';
     const saving = variant === 'form-saving';
 
+    // The Persons of the Tree that the Person field filters. The first one is the pick of the filled variants.
+    const PEOPLE = [{ born: '1861', bornReading: 'In 1861', deceased: false, died: '1932', diedReading: 'In 1932', givenNames: 'Person', id: 'p1', maidenName: '', surname: 'Example', variants: [] }];
     const field = (Part, props) => h(Part, Object.assign({ autoComplete: 'off', spellCheck: false }, props));
     const person = variant === 'form-no-people'
       ? h('div', { style: { display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' } },
         mount(TEXT('label', 'Person')),
         h(K.NoticeCard, { actions: [{ href: 'Person-new.dc.html', label: 'Add a person' }], icon: 'people', title: 'No people yet' }, 'Add a person before you add a pin.'))
-      : field(K.TextField, { 'aria-expanded': 'false', 'aria-haspopup': 'listbox', 'aria-required': 'true', defaultValue: values.person, error: errors ? 'Choose a person.' : undefined, label: 'Person', role: 'combobox' });
+      : h(K.PersonField, { defaultPerson: values.person ? PEOPLE[0] : undefined, error: errors ? 'Choose a person.' : undefined, onChange: noop, people: PEOPLE });
     const event = errors
       ? mount(markedSelect('Event type', 'pin-event', eventHtml(''), 'Choose an event type.'))
       : h(K.SelectField, { 'aria-required': 'true', defaultValue: values.event, label: 'Event type', options: eventOptions });
@@ -158,8 +160,8 @@ class Component extends DCLogic {
         h('div', { style: { display: 'flex', flexDirection: 'column', flex: 1, gap: 'var(--space-12)', minHeight: 0, overflowY: 'auto', padding: '0 var(--space-20) var(--space-16)' } }, body),
         mount(`<div style="display: flex; gap: var(--space-8); padding: var(--space-16) var(--space-20) var(--space-20); border-top: 1px solid var(--line)">${footer}</div>`)));
 
-    // The Add a pin button is the primary button at the top right, 12px left of the account control (draft-pin-add-button).
-    const addButton = `<div style="position: absolute; right: 80px; top: 24px">${BUTTON('Add a pin', 'primary')}</div>`;
+    // The Add a pin button sits in the `action` slot of MapLayout, 12px left of the account control. The panel has replaced it on the form variants.
+    const action = variant === 'add-button' || variant === 'click-popup' ? h(K.AddPinButton) : undefined;
 
     // The click popup: the frame of the Pin popup, popup-gap (14px) left of the point, the pointer on its right edge at popup-point-y (114px).
     const clickPopup = `<div role="dialog" aria-label="Add a pin here" style="position: absolute; left: ${E.x - 14 - 304}px; top: ${E.y - 114}px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">`
@@ -184,11 +186,9 @@ class Component extends DCLogic {
     const newPoint = variant === 'form' || variant === 'form-saving' || variant === 'form-save-failed' || variant === 'edit-moved';
     const onPin = variant === 'form-existing-place' || variant === 'edit' || variant === 'edit-loading' || variant === 'edit-load-failed';
 
-    if (variant === 'add-button') {
-      above = addButton;
-    } else if (variant === 'click-popup') {
+    if (variant === 'click-popup') {
       below += dot(E);
-      above = addButton + clickPopup;
+      above = clickPopup;
     } else if (newPoint) {
       below += pin(E.x, E.y) + selected(E);
     } else if (onPin) {
@@ -246,6 +246,7 @@ class Component extends DCLogic {
 
     return {
       account: h(K.Avatar, { initial: 'R' }),
+      action,
       dock: h(K.DateDock, {
         contestedCount: 2,
         contestedYears: [{ from: 1900, to: 1901 }],

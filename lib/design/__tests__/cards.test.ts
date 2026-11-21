@@ -492,11 +492,11 @@ describe('CARDS', () => {
     );
   });
 
-  it('has the groups: 14 Actions, 6 Feedback, 8 Forms, 13 Map, 8 Foundation, 10 Overlays and 3 Layout', () => {
+  it('has the groups: 14 Actions, 6 Feedback, 10 Forms, 14 Map, 8 Foundation, 10 Overlays and 3 Layout', () => {
     const count = (group: string) =>
       CARDS.filter(card => card.group === group).length;
 
-    expect(GROUPS.map(count)).toEqual([14, 6, 8, 13, 8, 10, 3]);
+    expect(GROUPS.map(count)).toEqual([14, 6, 10, 14, 8, 10, 3]);
   });
 
   it.each(CARDS.map(card => [card.name, card] as const))(

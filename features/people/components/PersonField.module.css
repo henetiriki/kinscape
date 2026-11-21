@@ -1,0 +1,27 @@
+/* A picker row needs about 440px. The list is positioned, so a row's `offsetTop` counts from the list, also in the first render before the field fixes it. */
+.list {
+  composes: floating from '@ks/app/components/foundation/Surface.module.css';
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: var(--space-4) 0;
+  position: relative;
+  width: 480px;
+}
+
+/* The panel body scrolls and would clip an absolute list, so the field fixes the list and sets its left and top. */
+.list[data-fixed] {
+  position: fixed;
+  z-index: var(--z-menu);
+}
+
+/* The no-match notice is as wide as the 280px field. */
+.list[data-empty] {
+  gap: var(--space-4);
+  padding: var(--space-16);
+  width: 280px;
+}
+
+.item {
+  flex: none;
+}

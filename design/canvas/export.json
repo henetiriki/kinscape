@@ -500,16 +500,6 @@
       "viewport": { "height": 400, "width": 760 }
     },
     {
-      "file": "Draft-pin-person-field.dc.html",
-      "name": "draft-pin-person-field",
-      "viewport": { "height": 560, "width": 1040 }
-    },
-    {
-      "file": "Draft-pin-add-button.dc.html",
-      "name": "draft-pin-add-button",
-      "viewport": { "height": 440, "width": 760 }
-    },
-    {
       "file": "Draft-pin-field-errors.dc.html",
       "name": "draft-pin-field-errors",
       "viewport": { "height": 440, "width": 760 }

@@ -329,6 +329,64 @@ test.describe('on a phone', () => {
   });
 });
 
+// PIN-01: the Person field list and the Add a pin button, from their cards.
+test.describe('the Person field list and the Add a pin button', () => {
+  test('the list is 480px wide, the no-match notice 280px, and three rows fit with no scroll', async ({
+    page,
+  }) => {
+    await open(page, 'PersonFieldList');
+
+    const list = (label: string) =>
+      state(page, label).getByRole('listbox', { name: 'People' });
+
+    expect(
+      Math.round(
+        (await list('PersonFieldList · three rows').boundingBox())!.width
+      )
+    ).toBe(480);
+    expect(
+      Math.round(
+        (await list('PersonFieldList · no match').boundingBox())!.width
+      )
+    ).toBe(280);
+
+    const fit = await list('PersonFieldList · three rows').evaluate(node => ({
+      client: node.clientHeight,
+      scroll: node.scrollHeight,
+    }));
+
+    expect(fit.scroll).toBeLessThanOrEqual(fit.client);
+
+    const four = await list('PersonFieldList · four rows, scrolls').evaluate(
+      node => {
+        const rows = [...node.querySelectorAll('[role="option"]')];
+        const third = rows[2].getBoundingClientRect();
+
+        return {
+          client: node.clientHeight,
+          scroll: node.scrollHeight,
+          // The third row ends inside the list.
+          thirdFits: third.bottom <= node.getBoundingClientRect().bottom + 0.5,
+        };
+      }
+    );
+
+    expect(four.scroll).toBeGreaterThan(four.client);
+    expect(four.thirdFits).toBe(true);
+  });
+
+  test('the button is 44px high in each look', async ({ page }) => {
+    await open(page, 'AddPinButton');
+
+    for (const look of ['default', 'hover', 'active', 'focus']) {
+      expect(
+        await buttonHeight(page, `AddPinButton · ${look}`, 'Add a pin'),
+        look
+      ).toBe(44);
+    }
+  });
+});
+
 test.describe('the row cards at their width', () => {
   for (const name of ['PersonRow', 'RelationshipRow', 'PickerRow']) {
     const card = CARDS.find(item => item.name === name)!;

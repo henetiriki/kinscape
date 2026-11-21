@@ -5,6 +5,7 @@ The map screen's frame: the map is `children`, and each slot is a placed box ove
 | Prop | Type | Required | Description |
 | --- | --- | --- | --- |
 | `account` | `ReactNode` | no | The account control, on desktop. |
+| `action` | `ReactNode` | no | The "Add a pin" button, on desktop: 12px left of the account control. |
 | `children` | `ReactNode` | no | The map. |
 | `credits` | `ReactNode` | no | The source credits, on desktop. |
 | `dock` | `ReactNode` | no | The date dock. |

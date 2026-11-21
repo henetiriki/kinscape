@@ -81,5 +81,5 @@ On `main`, `build.md` Hand-back step 2 adds the row and writes a plain `## Devia
 
 ## Deviations
 
-- Big: the run denied writes to `.claude/skills/build-local/SKILL.md` and `.claude/skills/fix-review-local/SKILL.md`. The tech lead builds those two rows locally (acceptance check 7).
+- The CI run denied writes to `.claude/skills/build-local/SKILL.md` and `.claude/skills/fix-review-local/SKILL.md`. A local session built those two rows.
 - The "Only step 8 follows a successful push, and only after a "Big:" line" sentence in `fix-review.md` is the new push-last text. Words cut in `plans/README.md`, `build.md` and `fix-review.md` kept each rule.

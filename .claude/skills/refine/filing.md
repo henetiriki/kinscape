@@ -1,6 +1,6 @@
-# Filing a Spec or Chore with `gh`
+# Filing a Spec, Chore or Bug with `gh`
 
-`SKILL.md` links here. A Bug is already filed: `bug.md` edits it.
+`SKILL.md` links here. `bug.md` files a new Bug with these steps, and edits a filed Bug.
 
 After the check round, follow these steps:
 
@@ -10,7 +10,7 @@ After the check round, follow these steps:
    - If the user asks for a link, give one as _Prefilled links_ in `SKILL.md` describes. File nothing.
 3. Read the title prefix, `type:` and `labels:` from the form in `.github/ISSUE_TEMPLATE/`. If a Chore has a blocker, use `status: blocked` in place of its status label ([Linking issues](../../../docs/how-we-work.md#linking-issues)).
 4. Write the body to a new file outside the repo, in the scratchpad or `$TMPDIR`.
-5. Write one `### <label>` heading per form box, in the form's order. The Spec-link workflow reads "Intent or milestone". Under an empty optional box, write `_No response_`.
+5. Write one `### <label>` heading per form box, in the form's order. The Spec-link workflow reads "Intent or milestone". Under an empty optional box, write `_No response_`. For a new Bug, then write the `<!-- refine bug -->` line and the four sections of `bug.md`.
 6. Put the title and each label in single quotes. Write a `'` in the title as `'\''`.
 7. Run `gh issue create --title '<title>' --type <Type> --label '<label>' --body-file <file>` once. Give one `--label` for each form label.
 8. Report the issue number. If step 1 named an issue, set the links as _Links_ says.
@@ -55,3 +55,5 @@ If `gh` failed, the user pastes the body. Skip each `gh` call here and Write ste
 If `gh` is missing, signed out or fails, say why. Then give a prefilled link, as _Prefilled links_ in `SKILL.md` describes.
 
 If the link does not work, tell the user: **Issues → New issue → the form's name**. Then they copy each block into the box with the same name.
+
+For a new Bug, the link holds the three boxes. Print the `<!-- refine bug -->` line and the four sections too. The tech lead adds them at the end of the body. Do the same if the user asks for a link at filing step 2.

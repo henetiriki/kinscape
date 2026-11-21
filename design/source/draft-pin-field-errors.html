@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape — Draft, field errors</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 760px; height: 440px; position: relative; overflow: hidden; box-sizing: border-box; background: #f4f5f0; font-family: 'Public Sans', system-ui, sans-serif; color: #18211b">
+      <div
+        style="padding: 32px 32px 0; display: flex; flex-direction: column; gap: 4px">
+        <h2
+          class="_h2_1ler9_21"
+          style='font-family: "Bricolage Grotesque", sans-serif; font-size: 24px; font-weight: 700; letter-spacing: normal; line-height: 32px; margin: 0px;'>
+          Field errors
+        </h2>
+        <span
+          class="_body_1ler9_48"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+          SelectField and TextAreaField have no error look. Both take the marked
+          look of TextField: a 2 px --error-border, the error icon in the box
+          and the message in place of the helper.
+        </span>
+      </div>
+      <span style="position: absolute; left: 32px; top: 128px">
+        <span
+          class="_overline_1ler9_95"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+          Select field
+        </span>
+      </span>
+      <div
+        style="position: absolute; left: 32px; top: 156px; width: 336px; display: flex; flex-direction: column; gap: 8px">
+        <label
+          class="_label_1ler9_66"
+          for="draft-event"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          Event type
+        </label>
+        <span
+          style="display: flex; align-items: center; gap: 8px; box-sizing: border-box; height: 44px; border: 2px solid #b4412f; border-radius: 8px; background: #ffffff; color: #18211b; padding: 0 11px">
+          <select
+            id="draft-event"
+            aria-invalid="true"
+            aria-describedby="draft-event-message"
+            aria-required="true"
+            style="flex: 1; min-width: 0; height: 44px; margin: -2px 0; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; appearance: none">
+            <option value="" selected="">Choose an event type</option>
+            <option value="birth">Birth</option>
+          </select>
+          <span style="display: flex; flex: none">
+            <svg
+              aria-hidden="true"
+              data-icon="chevronDown"
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="20">
+              <path d="M6 9l6 6 6-6"></path>
+            </svg>
+          </span>
+          <span style="display: flex; flex: none; color: #b4412f">
+            <svg
+              aria-hidden="true"
+              data-icon="error"
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="20">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 7.5v5.5M12 16.5v.01"></path>
+            </svg>
+          </span>
+        </span>
+        <p
+          class="_small_1ler9_75 _error_1ler9_226"
+          id="draft-event-message"
+          role="alert"
+          style='color: rgb(126, 35, 22); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          Choose an event type.
+        </p>
+      </div>
+      <span style="position: absolute; left: 392px; top: 128px">
+        <span
+          class="_overline_1ler9_95"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+          Text area
+        </span>
+      </span>
+      <div
+        style="position: absolute; left: 392px; top: 156px; width: 336px; display: flex; flex-direction: column; gap: 8px">
+        <label
+          class="_label_1ler9_66"
+          for="draft-notes"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 14px; font-weight: 600; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          Notes
+        </label>
+        <span
+          style="display: flex; align-items: flex-start; gap: 8px; box-sizing: border-box; border: 2px solid #b4412f; border-radius: 8px; background: #ffffff; color: #18211b; padding: 8px 11px">
+          <textarea
+            id="draft-notes"
+            rows="2"
+            aria-invalid="true"
+            aria-describedby="draft-notes-message"
+            style="flex: 1; min-width: 0; box-sizing: border-box; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; padding: 0; resize: none">
+Example text that runs past the end of the field.</textarea>
+          <span style="display: flex; flex: none; color: #b4412f">
+            <svg
+              aria-hidden="true"
+              data-icon="error"
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="20">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 7.5v5.5M12 16.5v.01"></path>
+            </svg>
+          </span>
+        </span>
+        <p
+          class="_small_1ler9_75 _error_1ler9_226"
+          id="draft-notes-message"
+          role="alert"
+          style='color: rgb(126, 35, 22); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          Use 10,000 characters or fewer.
+        </p>
+      </div>
+      <div
+        style="position: absolute; left: 32px; top: 300px; width: 696px; display: flex; flex-direction: column; gap: 8px">
+        <span
+          class="_overline_1ler9_95"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+          Notes
+        </span>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          The select is 44 px high. The text area keeps its rows, and the icon
+          sits at its top right, 8 px from the top.
+        </p>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          The message is type.small in the error colour with role “alert”. Set
+          aria-invalid on the control and link the message with
+          aria-describedby.
+        </p>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          Build: add an error prop to both components, as TextField has one.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -38,29 +38,23 @@ class Component extends DCLogic {
     // Example Farm, in board pixels.
     const P = { x: 264, y: 310 };
 
-    // The count marker and the Pins of the fan. A phone shows the same looks as a desktop.
-    const marker = (count, label, place) => [
-      `<button type="button" aria-label="${label}" style="position: absolute; left: ${place.x - 22}px; top: ${place.y - 22}px; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center">`,
-      `<span style="position: relative; width: 32px; height: 32px; box-sizing: border-box; border: 2px solid var(--white); border-radius: 16px; background: var(--pin); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-size: 14px; line-height: 1; font-weight: 600">${count}</span>`,
-      `</button>`
-    ].join('');
-    const fanPin = (event, label, at) => [
-      `<button type="button" aria-label="${label}" style="position: absolute; left: ${at.x - 22}px; top: ${at.y - 22}px; width: 44px; height: 44px; padding: 0; border: 0; background: transparent; display: flex; align-items: center; justify-content: center">`,
-      `<span style="position: relative; width: 36px; height: 36px; box-sizing: border-box; border: 1px solid var(--line-strong); border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-raised); color: var(--pin); font-size: 22px; display: flex; align-items: center; justify-content: center"><x-import component-from-global-scope="KinScape.EventGlyph" event="${event}"></x-import></span>`,
-      `</button>`
-    ].join('');
-
     const pin = (x, y) => `<path transform="translate(${x - 11} ${y - 11}) scale(0.9167)" d="M6 18V6H18V18Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>`;
     let below = pin(96, 300) + pin(345, 470);
     let above = '';
 
-    if (variant === 'fan') {
-      const R = 56;
-      const around = deg => ({ x: Math.round(P.x + R * Math.cos(deg * Math.PI / 180)), y: Math.round(P.y + R * Math.sin(deg * Math.PI / 180)) });
-      const fan = [['residence', 'Residence, 1890 to 1905', around(-150)], ['birth', 'Birth, 1901', around(-30)], ['marriage', 'Marriage, 1899', around(90)]];
-      below += fan.map(([, , at]) => `<line x1="${P.x}" y1="${P.y}" x2="${at.x}" y2="${at.y}" stroke="#9A3B12" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"></line>`).join('');
-      above = [marker(3, '3 Pins at Example Farm', P), ...fan.map(([event, label, at]) => fanPin(event, label, at))].join('');
-    } else {
+    // The fan, drawn by KinScape.PinFan around the marker, as on a desktop with no hover look.
+    // The fan box is 78px from the Place to its edge: ring 1 of 56px and half a 44px target.
+    const fan = h('div', { style: { position: 'absolute', left: P.x - 78, top: P.y - 78 } },
+      h(K.PinFan, {
+        onOpen: noop,
+        pins: [
+          { event: 'marriage', id: 'marriage', reading: 'In 1899' },
+          { event: 'residence', id: 'residence', reading: 'From 1890 to 1905' },
+          { event: 'birth', id: 'birth', reading: 'In 1901' }
+        ]
+      }, h(K.CountMarker, { count: 3 })));
+
+    if (variant !== 'fan') {
       below += pin(P.x, P.y) + `<circle cx="${P.x}" cy="${P.y}" r="16" fill="none" stroke="#264F29" stroke-width="2.5"></circle><circle cx="${P.x}" cy="${P.y}" r="20.5" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="2"></circle>`;
     }
 
@@ -118,7 +112,7 @@ class Component extends DCLogic {
       layers: h(K.LayersButton),
       map: h(React.Fragment, null,
         drawn(svg),
-        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 390, height: 844 } }, mount(above))
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 390, height: 844 } }, mount(above), variant === 'fan' ? fan : null)
       ),
       search: h(K.SearchBar, { account: h(K.Avatar, { initial: 'R' }), form: 'pill' })
     };

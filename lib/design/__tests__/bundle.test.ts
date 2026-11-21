@@ -45,6 +45,8 @@ describe('CONTROLS', () => {
       'LayersButton',
       'DateDock',
       'Legend',
+      'CountMarker',
+      'PinFan',
       'EventGlyph',
       'Panel',
       'LayerGroup',

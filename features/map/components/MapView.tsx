@@ -1,10 +1,16 @@
 'use client';
 
 import type { GeoJSONSource } from 'maplibre-gl';
-import type { Ref } from 'react';
+import type { ReactNode, Ref } from 'react';
 
-import { Map as MapLibreMap, ScaleControl, setWorkerUrl } from 'maplibre-gl';
+import {
+  Map as MapLibreMap,
+  Marker,
+  ScaleControl,
+  setWorkerUrl,
+} from 'maplibre-gl';
 import { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -39,6 +45,12 @@ export const MAX_BOUNDS: [[number, number], [number, number]] = [
 
 export const MIN_ZOOM = 3;
 export const MAX_ZOOM = 10;
+
+/**
+ * The map events that a marker keeps to itself. A drag or a pinch can still start on a marker,
+ * because the map gets its mouse and touch events.
+ */
+const MAP_EVENTS = ['click', 'dblclick'] as const;
 
 /** The map zoom is a float, so "at a limit" allows this much slack. */
 const ZOOM_TOLERANCE = 0.001;
@@ -84,6 +96,12 @@ export const MapView = ({
   const selectRef = useRef<string[]>([]);
   /** The Map date that the last NFR-01 timing started for. */
   const timedDay = useRef<Day>(undefined);
+  /** The MapLibre marker of each layer marker on the map, by its key. */
+  const markers = useRef(new Map<string, Marker>());
+  /** What each marker element draws: React renders it there through a portal. */
+  const [placed, setPlaced] = useState<
+    { element: HTMLElement; key: string; node: ReactNode }[]
+  >([]);
 
   useEffect(() => {
     onZoomLimitsRef.current = onZoomLimits;
@@ -302,6 +320,45 @@ export const MapView = ({
           );
         }
       }
+
+      // The markers change after the mark, so the NFR-01 timing covers them too.
+      const wanted = layers
+        .filter(layer => visible[layer.id] !== false)
+        .flatMap(
+          layer =>
+            layer.markers?.(mapDay, openId, id => onOpenPinRef.current?.(id)) ??
+            []
+        );
+      const keys = new Set(wanted.map(({ key }) => key));
+
+      for (const [key, marker] of markers.current) {
+        if (!keys.has(key)) {
+          marker.remove();
+          markers.current.delete(key);
+        }
+      }
+
+      setPlaced(
+        wanted.map(({ key, node, position }) => {
+          let marker = markers.current.get(key);
+
+          if (!marker) {
+            const element = document.createElement('div');
+
+            // An HTML marker handles its own clicks. A fold can remove the clicked element before
+            // the event reaches the map. The map would then read a click on empty map, so it never
+            // gets the click. Pointer events still bubble, so a tap on another marker folds a fan.
+            for (const type of MAP_EVENTS) {
+              element.addEventListener(type, event => event.stopPropagation());
+            }
+
+            marker = new Marker({ element }).setLngLat(position).addTo(current);
+            markers.current.set(key, marker);
+          }
+
+          return { element: marker.getElement(), key, node };
+        })
+      );
     };
 
     if (loaded.current || current.isStyleLoaded()) {
@@ -344,5 +401,10 @@ export const MapView = ({
     };
   }, [openId, openLatitude, openLongitude]);
 
-  return <div className='map' ref={container} />;
+  return (
+    <>
+      <div className='map' ref={container} />
+      {placed.map(({ element, key, node }) => createPortal(node, element, key))}
+    </>
+  );
 };

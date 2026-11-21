@@ -11,6 +11,7 @@ import {
   CONTESTED_COUNT,
   CONTESTED_YEARS,
   EPOCHS,
+  FAN_PINS,
   FILTER_BRANCHES,
   FILTER_EVENT_TYPES,
   FILTER_PEOPLE,
@@ -25,6 +26,7 @@ import {
   PINS,
   SURNAME_HELPER,
   TODAY,
+  TWELVE_PINS,
 } from '#ks/lib/design/samples.mts';
 import { EVENT_TYPES } from '#ks/lib/domain/pins/schemas.mts';
 
@@ -898,6 +900,37 @@ export const CARDS: Card[] = [
     name: 'Legend',
     pad: 0,
     states: [one('Legend · default', {})],
+  },
+  {
+    design: ['Count marker'],
+    group: 'Map',
+    handlers: ['onClick'],
+    height: 140,
+    name: 'CountMarker',
+    pad: 0,
+    states: [
+      ...linkGrid('CountMarker', state => ({ props: { count: 3, state } })),
+      one('CountMarker · selected', { count: 3, selected: true }),
+      one('CountMarker · 99 Pins', { count: 99 }),
+    ],
+  },
+  {
+    design: ['Fan of Pins'],
+    group: 'Map',
+    handlers: ['onOpen'],
+    height: 320,
+    name: 'PinFan',
+    pad: 0,
+    states: [
+      one(
+        'PinFan · three Pins, one under hover',
+        { looks: { birth: 'hover' }, pins: FAN_PINS },
+        [{ control: 'CountMarker', props: { count: 3 } }]
+      ),
+      one('PinFan · twelve Pins', { pins: TWELVE_PINS }, [
+        { control: 'CountMarker', props: { count: 12 } },
+      ]),
+    ],
   },
   {
     design: [],

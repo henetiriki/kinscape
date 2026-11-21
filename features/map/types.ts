@@ -3,14 +3,19 @@ import type {
   LayerSpecification,
   SourceSpecification,
 } from 'maplibre-gl';
+import type { ReactNode } from 'react';
 
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
+import type { EventType } from '@ks/lib/ui/types';
 
 /** A MapLibre layer that can name the basemap layer it draws in front of. */
 export type DrawingLayer = {
   /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
   before?: string;
 } & LayerSpecification;
+
+/** A Pin of a fan: its id, its Event type and the reading of its date, such as "From 1890 to 1905". */
+export type FanPin = { event: EventType; id: string; reading: string };
 
 /** The image data MapLibre takes for `addImage`. */
 export type IconImage = {
@@ -34,6 +39,15 @@ export type Layer = {
   /** The name on the layer's row in the Layers panel. */
   label: string;
   layers: DrawingLayer[];
+  /**
+   * The HTML markers the layer places on the map on `day`, such as the count marker of a shared
+   * Place. `open` is the id of the open Pin; `onOpen` opens a Pin, as a click on a feature does.
+   */
+  markers?: (
+    day: Day,
+    open: string | undefined,
+    onOpen: (id: string) => void
+  ) => MapMarker[];
   /** The ids of the drawing layers a click can pick. The `id` property of the picked feature is what a click reports. */
   select?: string[];
   sources: Record<string, SourceSpecification>;
@@ -47,6 +61,13 @@ export type MapHandle = {
   fit: () => void;
   zoomIn: () => void;
   zoomOut: () => void;
+};
+
+/** An HTML marker at a map point: a key that stays the same from day to day, the point as longitude and latitude, and what it draws. */
+export type MapMarker = {
+  key: string;
+  node: ReactNode;
+  position: [number, number];
 };
 
 /** The Pin whose popup is open: its id and its position, as longitude and latitude. */

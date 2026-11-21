@@ -65,6 +65,15 @@ export type TreeStore = {
     input: { pin: PinInput } & TreeScope
   ) => Promise<Result<Pin, 'not-found'>>;
   /**
+   * Saves a new Place and a Pin at it, or neither. The Pin joins `place`, whatever `pin.placeId`
+   * says. A second call with the same ids changes nothing and returns the Pin already saved.
+   * `not-found` if the Person is not in the Tree, or the Account may not access the Tree, or an id
+   * is not a UUID. A Place saved before the call stays.
+   */
+  addPinAt: (
+    input: { pin: PinInput; place: PlaceInput } & TreeScope
+  ) => Promise<Result<Pin, 'not-found'>>;
+  /**
    * Saves a new Place at version 1 and returns it. A second call with the same id changes nothing
    * and returns the Place already saved. `not-found` if the Account may not access the Tree or the
    * id is not a UUID.

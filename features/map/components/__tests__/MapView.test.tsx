@@ -33,6 +33,12 @@ const maplibre = vi.hoisted(() => {
     zoomOut: vi.fn(),
   };
 
+  const markers: {
+    element: HTMLElement;
+    lngLat?: [number, number];
+    remove: ReturnType<typeof vi.fn<() => void>>;
+  }[] = [];
+
   return {
     Map: vi.fn(
       class {
@@ -59,6 +65,30 @@ const maplibre = vi.hoisted(() => {
       }
     ),
     map,
+    Marker: vi.fn(
+      class {
+        element: HTMLElement;
+        entry: (typeof markers)[number];
+
+        // MapLibre news a Marker, so the fake is a class with a constructor.
+        // eslint-disable-next-line no-restricted-syntax
+        constructor({ element }: { element: HTMLElement }) {
+          this.element = element;
+          this.entry = { element, remove: vi.fn<() => void>() };
+          markers.push(this.entry);
+        }
+
+        addTo = () => this;
+        getElement = () => this.element;
+        remove = () => this.entry.remove();
+        setLngLat = (lngLat: [number, number]) => {
+          this.entry.lngLat = lngLat;
+
+          return this;
+        };
+      }
+    ),
+    markers,
     ScaleControl: vi.fn(),
     setWorkerUrl: vi.fn(),
     source,
@@ -433,6 +463,110 @@ describe('MapView', () => {
         />
       );
 
+    describe('markers', () => {
+      // A marker for each day up to 9, at a point that moves with the day; day 9 has none.
+      const marking: Layer = {
+        ...picking,
+        markers: (day, open, onOpen) =>
+          day >= NINE
+            ? []
+            : [
+                {
+                  key: 'farm',
+                  node: (
+                    <button onClick={() => onOpen('p2')} type='button'>
+                      {`Farm on ${day}, open ${open}`}
+                    </button>
+                  ),
+                  position: [26.1, -29.1],
+                },
+              ],
+      };
+
+      beforeEach(() => {
+        maplibre.markers.length = 0;
+        maplibre.Marker.mockClear();
+      });
+
+      // PIN-06
+      it('places each marker of a layer at its point and draws its node there', () => {
+        view({ layers: [marking], open: { id: 'p1', position: [0, 0] } });
+
+        expect(maplibre.markers).toHaveLength(1);
+        expect(maplibre.markers[0].lngLat).toEqual([26.1, -29.1]);
+        expect(maplibre.markers[0].element.textContent).toBe(
+          `Farm on ${FIVE}, open p1`
+        );
+      });
+
+      it('keeps a marker from day to day, and removes it when the day has none', () => {
+        const { rerender } = view({ layers: [marking] });
+        const at = (mapDay: typeof FIVE) => (
+          <MapView
+            layers={[marking]}
+            mapDay={mapDay}
+            padding={padding}
+            visible={on}
+          />
+        );
+
+        rerender(at(asDay(6)));
+        expect(maplibre.Marker).toHaveBeenCalledOnce();
+        expect(maplibre.markers[0].element.textContent).toBe(
+          'Farm on 6, open undefined'
+        );
+
+        rerender(at(NINE));
+        expect(maplibre.markers[0].remove).toHaveBeenCalledOnce();
+      });
+
+      it('places no marker of a layer that is switched off', () => {
+        view({ layers: [marking], visible: { [picking.id]: false } });
+
+        expect(maplibre.markers).toHaveLength(0);
+      });
+
+      // PIN-02
+      it('opens the Pin a marker asks for', () => {
+        const onOpenPin = vi.fn();
+
+        view({ layers: [marking], onOpenPin });
+        maplibre.markers[0].element.querySelector('button')!.click();
+
+        expect(onOpenPin).toHaveBeenCalledExactlyOnceWith('p2');
+      });
+
+      // PIN-06: a fold removes the clicked Pin, so the map must not read the click as one on empty map.
+      it('keeps the clicks of a marker from the map, and lets its presses and touches bubble', () => {
+        view({ layers: [marking] });
+
+        const { element } = maplibre.markers[0];
+        const parent = document.createElement('div');
+        const heard: string[] = [];
+
+        parent.append(element);
+
+        for (const type of [
+          'click',
+          'dblclick',
+          'mousedown',
+          'touchstart',
+          'touchend',
+          'pointerdown',
+        ]) {
+          parent.addEventListener(type, () => heard.push(type));
+          element.dispatchEvent(new Event(type, { bubbles: true }));
+        }
+
+        expect(heard).toEqual([
+          'mousedown',
+          'touchstart',
+          'touchend',
+          'pointerdown',
+        ]);
+      });
+    });
+
     // PIN-02
     it('reports the id of the Pin under a click', () => {
       const onOpenPin = vi.fn();
@@ -442,7 +576,10 @@ describe('MapView', () => {
       maplibre.map.queryRenderedFeatures.mockReturnValueOnce([
         { properties: { id: 'p1' } },
       ]);
-      handler('click')({ point: { x: 3, y: 4 } });
+      handler('click')({
+        originalEvent: { target: document.body },
+        point: { x: 3, y: 4 },
+      });
 
       expect(maplibre.map.queryRenderedFeatures).toHaveBeenCalledWith(
         { x: 3, y: 4 },
@@ -456,13 +593,21 @@ describe('MapView', () => {
       const onEmptyClick = vi.fn();
       const { rerender } = view({ onEmptyClick });
 
-      handler('click')({ point: { x: 1, y: 1 } });
+      handler('click')({
+        originalEvent: { target: document.body },
+        point: { x: 1, y: 1 },
+      });
       expect(onEmptyClick).toHaveBeenCalledOnce();
 
       maplibre.map.queryRenderedFeatures.mockReturnValueOnce([
         { properties: { id: 'p1' } },
       ]);
-      expect(() => handler('click')({ point: { x: 1, y: 1 } })).not.toThrow();
+      expect(() =>
+        handler('click')({
+          originalEvent: { target: document.body },
+          point: { x: 1, y: 1 },
+        })
+      ).not.toThrow();
       rerender(
         <MapView
           layers={[picking]}
@@ -471,12 +616,20 @@ describe('MapView', () => {
           visible={on}
         />
       );
-      expect(() => handler('click')({ point: { x: 1, y: 1 } })).not.toThrow();
+      expect(() =>
+        handler('click')({
+          originalEvent: { target: document.body },
+          point: { x: 1, y: 1 },
+        })
+      ).not.toThrow();
     });
 
     it('asks no layer when no layer can be picked', () => {
       view({ layers });
-      handler('click')({ point: { x: 1, y: 1 } });
+      handler('click')({
+        originalEvent: { target: document.body },
+        point: { x: 1, y: 1 },
+      });
 
       expect(maplibre.map.queryRenderedFeatures).not.toHaveBeenCalled();
     });

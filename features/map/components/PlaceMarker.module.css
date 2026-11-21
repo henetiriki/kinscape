@@ -1,0 +1,4 @@
+/* An open fan lies over the count markers of nearby Places: the map draws markers in DOM order. */
+:global(.maplibregl-marker):has(> .place[data-open]) {
+  z-index: 1;
+}

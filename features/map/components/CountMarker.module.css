@@ -1,0 +1,119 @@
+/* The count marker of `map-pin-count`: a 32px disc in --pin with a 2px white border, on a 44px target. */
+.marker {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  height: var(--size-touch);
+  justify-content: center;
+  outline: none;
+  padding: 0;
+  position: relative;
+  width: var(--size-touch);
+}
+
+.disc {
+  align-items: center;
+  background: var(--pin);
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: var(--white);
+  display: flex;
+  font-family: var(--type-label-font);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  height: 32px;
+  justify-content: center;
+  line-height: 1;
+  position: relative;
+  width: 32px;
+}
+
+/* The halo of hover and pressed: the halo of a Pin on the map. */
+.marker::before {
+  background: var(--map-pin-halo-colour);
+  border-radius: 50%;
+  content: '';
+  display: none;
+  opacity: var(--map-pin-halo-opacity);
+  position: absolute;
+}
+
+@media (hover: hover) {
+  .marker:hover .disc {
+    height: 36px;
+    width: 36px;
+  }
+
+  .marker:hover::before {
+    display: block;
+    height: 52px;
+    width: 52px;
+  }
+}
+
+.marker[data-state='hover'] .disc {
+  height: 36px;
+  width: 36px;
+}
+
+.marker[data-state='hover']::before {
+  display: block;
+  height: 52px;
+  width: 52px;
+}
+
+.marker:is(:active, [data-state='active']) .disc {
+  height: 28px;
+  width: 28px;
+}
+
+.marker:is(:active, [data-state='active'])::before {
+  display: block;
+  height: 40px;
+  width: 40px;
+}
+
+.marker:is(:focus-visible, [data-state='focus']) .disc {
+  box-shadow:
+    0 0 0 var(--focus-offset) var(--white),
+    0 0 0 calc(var(--focus-offset) + var(--focus-width)) var(--focus-ring);
+}
+
+/*
+ * The ring of the open Pin, drawn with the `map.selected` tokens of a single Pin's ring. The 32px
+ * disc is 5px wider in radius than the 22px Pin, so the ring and its halo sit 5px further out.
+ */
+.ring {
+  --gap: 5px;
+
+  border: calc(var(--map-selected-width) * 1px) solid var(--map-selected-colour);
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: calc(
+    var(--map-selected-radius) * 2px + var(--gap) * 2 +
+      var(--map-selected-width) * 1px
+  );
+  position: absolute;
+  width: calc(
+    var(--map-selected-radius) * 2px + var(--gap) * 2 +
+      var(--map-selected-width) * 1px
+  );
+}
+
+/* The halo, placed from the inner edge of the ring. */
+.ring::after {
+  border: calc(var(--map-selected-halo-width) * 1px) solid
+    var(--map-selected-halo-colour);
+  border-radius: 50%;
+  box-sizing: border-box;
+  content: '';
+  inset: calc(
+    (var(--map-selected-radius) - var(--map-selected-halo-radius)) * 1px -
+      (var(--map-selected-halo-width) + var(--map-selected-width)) * 0.5px
+  );
+  opacity: var(--map-selected-halo-opacity);
+  position: absolute;
+}

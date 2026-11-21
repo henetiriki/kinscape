@@ -48,11 +48,41 @@ const walk = (node: Tree, path: string[]): [string, string][] =>
       : [[cssName([...path, key]), cssValue([...path, key], String(child))]]
   );
 
-/** Every token outside `map` and `notes`, as `[--name, value]` pairs. */
+/**
+ * The `map` tokens that HTML markers on the map draw with too: the halo of a Pin and the ring of
+ * the open Pin. The map layers read them from `tokens.json`, and the count marker and the fan of
+ * Pins from these variables, so each value lives in one place.
+ */
+const MAP_SHARED = ['pin-halo.colour', 'pin-halo.opacity', 'selected'];
+
+/** Every token outside `map` and `notes`, and the shared `map` tokens, as `[--name, value]` pairs. */
 export const cssVariables = (tokens: Tree): [string, string][] =>
-  Object.entries(tokens)
-    .filter(([group]) => group !== 'map' && group !== 'notes')
-    .flatMap(([group, child]) => (isTree(child) ? walk(child, [group]) : []));
+  Object.entries(tokens).flatMap(([group, child]): [string, string][] => {
+    if (!isTree(child) || group === 'notes') return [];
+
+    if (group === 'map') {
+      return MAP_SHARED.flatMap((shared): [string, string][] => {
+        const path = shared.split('.');
+        const node = path.reduce<number | string | Tree | undefined>(
+          (at, key) => (isTree(at) ? at[key] : undefined),
+          child
+        );
+
+        if (isTree(node)) return walk(node, [group, ...path]);
+
+        return node === undefined
+          ? []
+          : [
+              [
+                cssName([group, ...path]),
+                cssValue([group, ...path], String(node)),
+              ],
+            ];
+      });
+    }
+
+    return walk(child, [group]);
+  });
 
 /** The text of `app/tokens.css`. */
 export const renderCss = (tokens: Tree): string =>

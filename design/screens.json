@@ -31,6 +31,27 @@
       "mode": "blocking"
     },
     {
+      "name": "map-pin-count",
+      "route": "/screens/map-pin-count",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "map-pin-fan",
+      "route": "/screens/map-pin-fan",
+      "width": 1440,
+      "height": 900,
+      "mode": "blocking"
+    },
+    {
+      "name": "map-pin-fan-phone",
+      "route": "/screens/map-pin-fan",
+      "width": 390,
+      "height": 844,
+      "mode": "blocking"
+    },
+    {
       "name": "map-pin-popup",
       "route": "/screens/map-pin-popup",
       "width": 1440,

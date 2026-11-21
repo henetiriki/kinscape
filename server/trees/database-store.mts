@@ -358,6 +358,9 @@ const updated = async <Row, Entity>(
   return err((await exists()) === undefined ? 'not-found' : 'conflict');
 };
 
+/** `addPinAt` throws this error to cancel the transaction, then catches it and gives `not-found`. */
+class PinRefused extends Error {}
+
 /**
  * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
  * throws on a malformed `uuid`, so a read given an id that isn't a UUID finds nothing, as in memory.
@@ -432,6 +435,29 @@ export const databaseStore = (db: Db): TreeStore => ({
             .executeTakeFirstOrThrow(),
       })
     ),
+  addPinAt: async ({ pin, place, ...scope }) => {
+    try {
+      return await db.transaction().execute(async trx => {
+        const inner = databaseStore(trx);
+        const placed = await inner.addPlace({ ...scope, place });
+        const saved = placed.ok
+          ? await inner.addPin({ ...scope, pin: { ...pin, placeId: place.id } })
+          : placed;
+
+        if (!saved.ok) {
+          throw new PinRefused();
+        }
+
+        return saved;
+      });
+    } catch (error) {
+      if (error instanceof PinRefused) {
+        return err('not-found');
+      }
+
+      throw error;
+    }
+  },
   addPlace: async ({ place, ...scope }) =>
     savedOrNotFound(
       await added(db, scope, {

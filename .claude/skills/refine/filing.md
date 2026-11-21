@@ -7,7 +7,7 @@ After the check round, follow these steps:
 1. Ask "Must an open issue close first? Is an earlier issue the reason?" as a question of its own. List each answer under the draft as a link, not as a line of the body.
 2. Ask "File it now?" as a question of its own. A yes covers the links.
    - If the answer is not yes, file nothing.
-   - If the user asks for a link, give one as _Prefilled links_ in `SKILL.md` describes. File nothing.
+   - If the user asks for a link, give one as _Prefilled links_ in `SKILL.md` describes. For a new Bug, also print the sections that _If `gh` fails_ names. File nothing.
 3. Read the title prefix, `type:` and `labels:` from the form in `.github/ISSUE_TEMPLATE/`. If a Chore has a blocker, use `status: blocked` in place of its status label ([Linking issues](../../../docs/how-we-work.md#linking-issues)).
 4. Write the body to a new file outside the repo, in the scratchpad or `$TMPDIR`.
 5. Write one `### <label>` heading per form box, in the form's order. The Spec-link workflow reads "Intent or milestone". Under an empty optional box, write `_No response_`. For a new Bug, then write the `<!-- refine bug -->` line and the four sections of `bug.md`.
@@ -56,4 +56,4 @@ If `gh` is missing, signed out or fails, say why. Then give a prefilled link, as
 
 If the link does not work, tell the user: **Issues → New issue → the form's name**. Then they copy each block into the box with the same name.
 
-For a new Bug, the link holds the three boxes. Print the `<!-- refine bug -->` line and the four sections too. The tech lead adds them at the end of the body. Do the same if the user asks for a link at filing step 2.
+For a new Bug, the link holds the three boxes. Print the `<!-- refine bug -->` line and the four sections too. The tech lead adds them at the end of the body.

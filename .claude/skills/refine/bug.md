@@ -9,8 +9,8 @@ If the argument is a description, go to [New Bug](#new-bug). If it is a number, 
 The tech lead's description is the first report. Follow these steps:
 
 1. Find the facts as steps 3 and 4 of _Before the first question_ say. Ask only about decisions.
-2. Draft the title and the three boxes of `.github/ISSUE_TEMPLATE/3-bug.yml`. Start the title with the form's `Bug: `. Keep the tech lead's own words in _What happened?_.
-3. Settle the four sections as _What to settle_ says. Show them as _The draft_ says. Run the check round on _Acceptance checks_.
+2. Draft the title and the three boxes of `.github/ISSUE_TEMPLATE/3-bug.yml`. Start the title with the form's `Bug: `. Keep the tech lead's own words in _What happened?_. Show the title and each box as a `###` heading before the four sections.
+3. Settle the four sections as _What to settle_ says. Show them as _The draft_ says.
 4. File the Bug as [filing.md](filing.md) says. Do not use _Hand-over_: it edits a filed Bug.
 
 ## Before the first question

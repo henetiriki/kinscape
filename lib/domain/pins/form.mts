@@ -1,10 +1,17 @@
 import type { FuzzyDateError } from '#ks/lib/domain/dates/types.ts';
 import type { FormIssue } from '#ks/lib/domain/forms/types.ts';
-import type { CheckedPin, PinFieldErrors } from '#ks/lib/domain/pins/types.ts';
+import type {
+  CheckedPin,
+  CheckedPinUpdate,
+  PinFieldErrors,
+} from '#ks/lib/domain/pins/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
 import { collectFieldErrors } from '#ks/lib/domain/forms/field-errors.mts';
-import { pinFormSchema } from '#ks/lib/domain/pins/schemas.mts';
+import {
+  pinFormSchema,
+  pinUpdateSchema,
+} from '#ks/lib/domain/pins/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
 type Fields = PinFieldErrors['fields'];
@@ -88,6 +95,18 @@ const pinFieldError = (
     : undefined;
 };
 
+/** The error of a failed parse: a field error for each bad field, or `invalid` for the input. */
+const failure = (
+  issues: FormIssue[],
+  raw: unknown
+): Result<never, 'invalid' | PinFieldErrors> => {
+  const fields = collectFieldErrors<Fields>(issues, issue =>
+    pinFieldError(issue, raw)
+  );
+
+  return fields ? err({ fields }) : err('invalid');
+};
+
 /**
  * Checks a Pin from the form (PIN-01, PIN-02, PIN-04). These inputs give an error for their field:
  * - a required field with no value
@@ -113,9 +132,30 @@ export const checkPin = (
     });
   }
 
-  const fields = collectFieldErrors<Fields>(parsed.error.issues, issue =>
-    pinFieldError(issue, raw)
-  );
+  return failure(parsed.error.issues, raw);
+};
 
-  return fields ? err({ fields }) : err('invalid');
+/**
+ * Checks a Pin update (PIN-02, PIN-04) with the field rules and errors of `checkPin`. A bad
+ * `version` or a wrong `place.kind` gives `invalid`. A new point gives its Place, and "stays" gives
+ * none.
+ */
+export const checkPinUpdate = (
+  raw: unknown
+): Result<CheckedPinUpdate, 'invalid' | PinFieldErrors> => {
+  const parsed = pinUpdateSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    return failure(parsed.error.issues, raw);
+  }
+
+  const { place, version, ...pin } = parsed.data;
+
+  if (place.kind === 'stays') {
+    return ok({ pin, version });
+  }
+
+  const { id, latitude, longitude, precision } = place;
+
+  return ok({ pin, place: { id, latitude, longitude, precision }, version });
 };

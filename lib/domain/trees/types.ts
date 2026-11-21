@@ -151,6 +151,14 @@ export type TreeStore = {
     input: { pin: PinInput; version: number } & TreeScope
   ) => Promise<Result<Pin, 'conflict' | 'not-found'>>;
   /**
+   * Saves a new Place and the update of a Pin at it, or neither. The Pin joins `place`, whatever
+   * `pin.placeId` says, as in `addPinAt`. Results as `updatePin`. A Place saved before the call
+   * stays, so a repeat of an update that saved gives `conflict` and saves no second Place.
+   */
+  updatePinAt: (
+    input: { pin: PinInput; place: PlaceInput; version: number } & TreeScope
+  ) => Promise<Result<Pin, 'conflict' | 'not-found'>>;
+  /**
    * Replaces the latitude, longitude and precision if `version` is the one saved. `conflict` for a
    * stale version; `not-found` for a missing Place, another Account's Tree or an id that isn't a UUID.
    */

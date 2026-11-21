@@ -7,6 +7,7 @@ import {
   MAX_SOURCES,
   pinFormSchema,
   pinInputSchema,
+  pinUpdateSchema,
 } from '@ks/lib/domain/pins/schemas.mts';
 import { EVENT_ORDER } from '@ks/lib/ui/EventGlyph';
 
@@ -128,5 +129,43 @@ describe('pinFormSchema', () => {
         place: { id: PLACE, kind: 'existing' },
       }).success
     ).toBe(false);
+  });
+});
+
+// PIN-02
+describe('pinUpdateSchema', () => {
+  const base = Object.fromEntries(
+    Object.entries(pin()).filter(([key]) => key !== 'placeId')
+  );
+  const update = (over: Record<string, unknown>) =>
+    pinUpdateSchema.safeParse({ ...base, version: 1, ...over });
+
+  it('reads a Place that stays', () => {
+    const result = update({ place: { kind: 'stays' } });
+
+    expect(result.success && result.data.place).toEqual({ kind: 'stays' });
+  });
+
+  it('reads a new point with a default precision', () => {
+    const result = update({
+      place: { id: PLACE, kind: 'new', latitude: 1, longitude: 2 },
+    });
+
+    expect(result.success && result.data.place).toMatchObject({
+      id: PLACE,
+      precision: 'approximate',
+    });
+  });
+
+  it.each([
+    ['an existing Place', { id: PLACE, kind: 'existing' }],
+    ['a stays Place with an id', { id: PLACE, kind: 'stays' }],
+    ['no Place', undefined],
+  ])('refuses %s', (_what, place) => {
+    expect(update({ place }).success).toBe(false);
+  });
+
+  it.each([0, -1, 1.5, '1', undefined])('refuses a version of %j', version => {
+    expect(update({ place: { kind: 'stays' }, version }).success).toBe(false);
   });
 });

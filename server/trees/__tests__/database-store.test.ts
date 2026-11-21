@@ -11,29 +11,33 @@ const shared = contractDb();
 
 afterAll(() => shared.close());
 
-// PIN-01: only a refused Pin gives `not-found`. Any other error reaches the caller.
-describe('addPinAt on a closed database', () => {
-  it('throws the database error', async () => {
-    const db = await shared.fresh();
-    const id = '01900000-0000-7000-a000-0000000000c1';
+// PIN-01, PIN-02: only a refused Pin gives a result. Any other error reaches the caller.
+describe('the one-step Pin writes on a closed database', () => {
+  it.each(['addPinAt', 'updatePinAt'] as const)(
+    '%s throws the database error',
+    async method => {
+      const db = await shared.fresh();
+      const id = '01900000-0000-7000-a000-0000000000c1';
 
-    await db.destroy();
+      await db.destroy();
 
-    await expect(
-      databaseStore(db).addPinAt({
-        accountId: parseAccountId('01900000-0000-7000-8000-0000000000a1')!,
-        pin: pinInputSchema.parse({
-          date: '1850',
-          eventType: 'residence',
-          id: '01900000-0000-7000-b000-0000000000d1',
-          personId: '01900000-0000-7000-8000-0000000000a1',
-          placeId: id,
-        }),
-        place: placeInputSchema.parse({ id, latitude: 1, longitude: 2 }),
-        treeId: parseTreeId('01900000-0000-7000-9000-0000000000e1')!,
-      })
-    ).rejects.toThrow();
-  });
+      await expect(
+        databaseStore(db)[method]({
+          accountId: parseAccountId('01900000-0000-7000-8000-0000000000a1')!,
+          pin: pinInputSchema.parse({
+            date: '1850',
+            eventType: 'residence',
+            id: '01900000-0000-7000-b000-0000000000d1',
+            personId: '01900000-0000-7000-8000-0000000000a1',
+            placeId: id,
+          }),
+          place: placeInputSchema.parse({ id, latitude: 1, longitude: 2 }),
+          treeId: parseTreeId('01900000-0000-7000-9000-0000000000e1')!,
+          version: 1,
+        })
+      ).rejects.toThrow();
+    }
+  );
 });
 
 runTreeStoreContract('database', async seed => {

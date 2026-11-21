@@ -31,13 +31,13 @@
   width: 32px;
 }
 
-/* The halo of hover and pressed: --pin at 24%. */
+/* The halo of hover and pressed: the halo of a Pin on the map. */
 .marker::before {
-  background: var(--pin);
+  background: var(--map-pin-halo-colour);
   border-radius: 50%;
   content: '';
   display: none;
-  opacity: 0.24;
+  opacity: var(--map-pin-halo-opacity);
   position: absolute;
 }
 
@@ -83,11 +83,11 @@
 }
 
 /*
- * The ring of the open Pin. It keeps the gaps of a single Pin's ring (`map.selected`): a 2.5px
- * --brand ring out to a radius of 21px, and a 2px white halo at 80% out to 25.5px.
+ * The ring of the open Pin, drawn with the `map.selected` tokens of a single Pin's ring. It keeps
+ * that ring's gaps: the ring reaches a radius of 21px, and its halo 25.5px.
  */
 .ring {
-  border: 2.5px solid var(--brand);
+  border: calc(var(--map-selected-width) * 1px) solid var(--map-selected-colour);
   border-radius: 50%;
   box-sizing: border-box;
   height: 44.5px;
@@ -96,11 +96,12 @@
 }
 
 .ring::after {
-  border: 2px solid var(--white);
+  border: calc(var(--map-selected-halo-width) * 1px) solid
+    var(--map-selected-halo-colour);
   border-radius: 50%;
   box-sizing: border-box;
   content: '';
   inset: -6.75px;
-  opacity: 0.8;
+  opacity: var(--map-selected-halo-opacity);
   position: absolute;
 }

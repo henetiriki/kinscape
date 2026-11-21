@@ -396,7 +396,7 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 
 These have no design: see `AGENTS.md`.
 
-- The screens that add or edit a Pin are designed on the `pin-*` and `draft-pin-*` boards. `/screens/add-pin` stays provisional until M2.14.3 swaps them in.
+- The `pin-*` and `draft-pin-*` boards design the screens that add or edit a Pin. `/screens/add-pin` stays provisional until M2.14.3 builds them.
 - The screens that add or edit sources.
 - The popup for a click inside a contested area: how it shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).

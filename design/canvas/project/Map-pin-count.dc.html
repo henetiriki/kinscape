@@ -181,8 +181,8 @@ class Component extends DCLogic {
       </g>
       <text x="852" y="576" text-anchor="middle" fill="#2E2C22" font-weight="600" font-size="5.2" style="letter-spacing: 0.7px">BASUTOLAND</text>
     </g>
+    <g transform="translate(292.7 363.2) scale(${654.5 / 1440} ${409.1 / 900})">${below}</g>
   </svg>`;
-    const overlayBelow = `<svg viewBox="0 0 1440 900" width="1440" height="900" style="position: absolute; left: 0; top: 0; display: block" aria-hidden="true">${below}</svg>`;
 
     const rows = (items, size) => items.map(([id, name, description, checked]) => ({ checked, description, id, label: name, onChange: noop, size }));
 
@@ -199,7 +199,7 @@ class Component extends DCLogic {
       }),
       map: h(React.Fragment, null,
         drawn(svg),
-        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, drawn(overlayBelow), mount(above))
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above))
       ),
       panel: h(K.Panel, {
         bodyId: 'map-panel-body',

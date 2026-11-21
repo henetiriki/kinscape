@@ -92,4 +92,5 @@ The issue does not name these lines. Each one says that a CODEOWNERS line hands 
 ## Deviations
 
 - `scripts/word-count.mts` and its test change: the `build.md` budget goes from 530 to 600 words for the new `## Hand-back` section.
-- The `build-local/SKILL.md` and `refine/chore.md` edits wait for a session that can write `.claude/skills`.
+- The `build-local/SKILL.md` bullet also covers a PR that had no CI build: the tech lead builds every hand-back row then.
+- `docs/repo-settings.md` has realigned table columns. `npm run format` requires them after the line 28 edit.

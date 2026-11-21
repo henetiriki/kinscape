@@ -358,7 +358,7 @@ const updated = async <Row, Entity>(
   return err((await exists()) === undefined ? 'not-found' : 'conflict');
 };
 
-/** Thrown inside a transaction to roll it back. `addPinAt` catches it and gives `not-found`. */
+/** `addPinAt` throws this error to cancel the transaction, then catches it and gives `not-found`. */
 class PinRefused extends Error {}
 
 /**

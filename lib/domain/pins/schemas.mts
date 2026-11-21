@@ -49,8 +49,8 @@ export const pinInputSchema = z.strictObject({
 });
 
 /**
- * The Place of a form Pin (PIN-02): a new point, with the id that the client made so a repeat saves
- * no second Place, or the id of an existing Place.
+ * The Place of a form Pin (PIN-02). It is a new point or an existing Place. A new point carries the
+ * id that the client made, so a repeat saves no second Place.
  */
 const formPlaceSchema = z.discriminatedUnion('kind', [
   z.strictObject({ ...placeInputSchema.shape, kind: z.literal('new') }),

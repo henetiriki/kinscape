@@ -93,10 +93,14 @@ const addIssue = (
 };
 
 /**
- * Checks a Pin from the form (PIN-01, PIN-02, PIN-04). A required field with no value, a value
- * outside its list or range, a date that does not read or a text that is too long gives an error
- * for that field. Any other bad input gives `invalid` for the whole input. An error names a kind,
- * never the input text.
+ * Checks a Pin from the form (PIN-01, PIN-02, PIN-04). These inputs give an error for their field:
+ * - a required field with no value
+ * - a value outside its list or range
+ * - a date that does not read
+ * - a text that is too long
+ *
+ * Any other bad input gives `invalid` for the whole input. An error names a kind, never the input
+ * text.
  */
 export const checkPin = (
   raw: unknown

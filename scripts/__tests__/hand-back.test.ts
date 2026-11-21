@@ -1,24 +1,29 @@
-import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Gh } from '@ks/scripts/types.ts';
 
-import { EXEMPT, matcher, run, tablePaths } from '@ks/scripts/hand-back.mts';
+import {
+  HAND_BACK,
+  isHandBack,
+  run,
+  tablePaths,
+} from '@ks/scripts/hand-back.mts';
 
 const ENV = { GH_REPO: 'owner/repo' };
 const SHA = 'a'.repeat(40);
-const CODEOWNERS = [
-  '# Owners',
-  '',
-  'AGENTS.md @lead',
-  'plans/README.md @lead',
-  '.github/workflows/** @lead  # trailing comment',
-  '.github/agent/** @lead',
-  '.claude/skills/** @lead',
-  'scripts/agent-*.mts @lead',
-  'server/** @lead',
-  'scripts/layers.mts @lead',
-].join('\n');
+
+// One path for each HAND_BACK pattern, in the list's order.
+const SAMPLES = [
+  ['.github/workflows/**', '.github/workflows/a/b.yml'],
+  ['.github/actions/**', '.github/actions/a/action.yml'],
+  ['.github/CODEOWNERS', '.github/CODEOWNERS'],
+  ['.claude/settings*.json', '.claude/settings.local.json'],
+  ['AGENTS.md', 'AGENTS.md'],
+  ['docs/security.md', 'docs/security.md'],
+  ['docs/writing.md', 'docs/writing.md'],
+  ['docs/code-rules.md', 'docs/code-rules.md'],
+  ['.github/agent/spec-checks.md', '.github/agent/spec-checks.md'],
+] as const;
 
 type File = { filename: string; previous_filename?: string; status?: string };
 
@@ -41,119 +46,64 @@ ${paths}
 ## Risks
 `;
 
-describe('matcher', () => {
-  const owned = (patterns: string, path: string) =>
-    matcher(`${patterns} @lead`)(path);
+describe('isHandBack', () => {
+  it('has a sample path for each pattern', () => {
+    expect(SAMPLES.map(([pattern]) => pattern)).toEqual(HAND_BACK);
+  });
+
+  it('lists the paths that CI cannot build or that guard CI', () => {
+    expect(HAND_BACK).toEqual([
+      '.github/workflows/**',
+      '.github/actions/**',
+      '.github/CODEOWNERS',
+      '.claude/settings*.json',
+      'AGENTS.md',
+      'docs/security.md',
+      'docs/writing.md',
+      'docs/code-rules.md',
+      '.github/agent/spec-checks.md',
+    ]);
+  });
 
   it.each([
-    ['client/**', 'client/a.mts', true],
-    ['client/**', 'client/a/b/c.mts', true],
-    ['client/**', 'client', false],
-    ['client/**', 'x/client/a.mts', false],
-    ['scripts/agent-*.mts', 'scripts/agent-gate.mts', true],
-    ['scripts/agent-*.mts', 'scripts/agent-.mts', true],
-    ['scripts/agent-*.mts', 'scripts/agent-a/b.mts', false],
-    ['scripts/agent-*.mts', 'scripts/sub/agent-a.mts', false],
-    ['.claude/settings*.json', '.claude/settings.local.json', true],
-    ['AGENTS.md', 'AGENTS.md', true],
-    ['AGENTS.md', 'docs/AGENTS.md', true],
-    ['AGENTS.md', 'AGENTS.mdx', false],
-    ['/AGENTS.md', 'AGENTS.md', true],
-    ['/AGENTS.md', 'docs/AGENTS.md', false],
-    ['docs/', 'docs/a.md', true],
-    ['docs/', 'docs/x/y.md', true],
-    ['docs/', 'src/docs/a.md', true],
-    ['/docs/', 'src/docs/a.md', false],
-    ['docs/*', 'src/docs/a.md', false],
-    ['docs', 'docs/a.md', true],
-    ['a/**/b', 'a/b', true],
-    ['a/**/b', 'a/x/b', true],
-    ['a/**/b', 'a/x/y/b', true],
-    ['a/**/b', 'a/xb', false],
-    ['**/logs', 'logs', true],
-    ['**/logs', 'a/b/logs/c.txt', true],
-    ['**/logs', 'blogs', false],
-    ['file?.md', 'file1.md', true],
-    ['file?.md', 'file.md', false],
-    ['file?.md', 'file12.md', false],
-    ['file?.md', 'file/.md', false],
-    ['a+b(1).md', 'a+b(1).md', true],
-    ['a+b(1).md', 'aab(1).md', false],
-    ['.github/CODEOWNERS', '.github/CODEOWNERS', true],
-    ['.github/CODEOWNERS', 'xgithub/CODEOWNERS', false],
-  ])('%s matches %s: %s', (pattern, path, expected) => {
-    expect(owned(pattern, path)).toBe(expected);
+    '.github/workflows/claude-hand-back.yml',
+    '.github/workflows/a/b.yml',
+    '.github/actions/run-claude/action.yml',
+    '.github/CODEOWNERS',
+    '.claude/settings.json',
+    '.claude/settings.local.json',
+    'AGENTS.md',
+    'docs/security.md',
+    'docs/writing.md',
+    'docs/code-rules.md',
+    '.github/agent/spec-checks.md',
+  ])('is a hand-back path: %s', path => {
+    expect(isHandBack(path)).toBe(true);
   });
 
-  it.each(['!docs/', '[ab].md', 'a]b', String.raw`a\.md`])(
-    'throws on the syntax it does not handle: %s',
-    pattern => {
-      expect(() => matcher(`${pattern} @lead`)).toThrow(
-        `Unsupported CODEOWNERS pattern: ${pattern}`
-      );
-    }
-  );
-
-  it('skips comments, blank lines and patterns with no owner', () => {
-    const match = matcher(
-      ['# docs/ @lead', '', '   ', 'docs/', 'plans/ @lead # note'].join('\n')
-    );
-
-    expect(match('docs/a.md')).toBe(false);
-    expect(match('plans/a.md')).toBe(true);
+  it.each([
+    '.github/agent/build.md',
+    '.claude/skills/refine/SKILL.md',
+    'plans/README.md',
+    'scripts/agent-approve.mts',
+    'scripts/hand-back.mts',
+    'scripts/github/labels.sh',
+    'CLAUDE.md',
+    'server/boundaries/load.mts',
+    'app/page.tsx',
+    '.github/workflows',
+    '.github/CODEOWNERSX',
+    '.claude/settings.jsonx',
+    'xgithub/CODEOWNERS',
+    '.claude/settings/a.json',
+    'docs/security.mdx',
+    'docs/other.md',
+  ])('is not a hand-back path: %s', path => {
+    expect(isHandBack(path)).toBe(false);
   });
 
-  it('skips a catch-all line: `*` or `**` alone owns nothing', () => {
-    const match = matcher('* @lead\n** @lead\nplans/** @lead');
-
-    expect(match('app/page.tsx')).toBe(false);
-    expect(match('plans/README.md')).toBe(true);
-  });
-
-  it('takes the first token as the pattern and ignores the owners', () => {
-    expect(matcher('docs/ @a @b team@example.com')('docs/a.md')).toBe(true);
-  });
-
-  it('excludes EXEMPT paths even when another pattern matches them', () => {
-    const match = matcher('scripts/* @lead\nserver/** @lead\nplans/** @lead');
-
-    expect(EXEMPT).toEqual(['server/**', 'scripts/layers.mts']);
-    expect(match('scripts/layers.mts')).toBe(false);
-    expect(match('server/a.mts')).toBe(false);
-    expect(match('scripts/other.mts')).toBe(true);
-    expect(match('plans/README.md')).toBe(true);
-  });
-
-  describe('the real .github/CODEOWNERS', () => {
-    const match = matcher(readFileSync('.github/CODEOWNERS', 'utf8'));
-
-    it.each([
-      '.github/workflows/claude-hand-back.yml',
-      '.github/agent/build.md',
-      '.github/CODEOWNERS',
-      '.claude/skills/x/SKILL.md',
-      '.claude/settings.json',
-      'plans/README.md',
-      'AGENTS.md',
-      'docs/code-rules.md',
-      'scripts/setup-github.sh',
-      'scripts/github/ruleset-main.json',
-      'scripts/agent-gate.mts',
-      'scripts/hand-back.mts',
-    ])('owns %s', path => {
-      expect(match(path)).toBe(true);
-    });
-
-    it.each([
-      'server/boundaries/load.mts',
-      'scripts/layers.mts',
-      'scripts/word-count.mts',
-      'plans/chores/C443-hand-back-label.md',
-      'app/page.tsx',
-      '.github/pull_request_template.md',
-    ])('does not own %s', path => {
-      expect(match(path)).toBe(false);
-    });
+  it('matches a file name with no slash at any depth, as CODEOWNERS does', () => {
+    expect(isHandBack('docs/AGENTS.md')).toBe(true);
   });
 });
 
@@ -254,10 +204,10 @@ describe('run', () => {
   const fetched = () =>
     gh.mock.calls.filter(([args]) => args.some(a => a.includes('/contents/')));
 
-  const go = (world: World = {}, codeowners = CODEOWNERS) => {
+  const go = (world: World = {}) => {
     fakeGh(world);
 
-    return run(['7'], ENV, gh, codeowners);
+    return run(['7'], ENV, gh);
   };
 
   beforeEach(() => {
@@ -279,7 +229,7 @@ describe('run', () => {
     ])('rejects %j with env %j', (args, env) => {
       fakeGh();
 
-      expect(run(args, env, gh, CODEOWNERS)).toBe(1);
+      expect(run(args, env, gh)).toBe(1);
       expect(console.error).toHaveBeenCalledWith(
         expect.stringContaining('Usage')
       );
@@ -311,7 +261,7 @@ describe('run', () => {
       go({
         files: [
           { filename: 'app/page.tsx' },
-          { filename: '.github/agent/build.md' },
+          { filename: '.github/workflows/a.yml' },
         ],
       })
     ).toBe(0);
@@ -325,7 +275,7 @@ describe('run', () => {
       'labels[]=hand-back',
     ]);
     expect(console.log).toHaveBeenCalledWith(
-      'Hand back: .github/agent/build.md is in the diff.'
+      'Hand back: .github/workflows/a.yml is in the diff.'
     );
     expect(fetched()).toHaveLength(0);
   });
@@ -335,7 +285,7 @@ describe('run', () => {
       files: [
         {
           filename: 'docs/agent.md',
-          previous_filename: '.github/agent/build.md',
+          previous_filename: '.github/workflows/a.yml',
           status: 'renamed',
         },
       ],
@@ -353,14 +303,14 @@ describe('run', () => {
         ],
         plans: {
           'plans/chores/C406-x.md': PLAN_WITH(
-            '| `app/page.tsx` | x |\n| `.claude/skills/x/SKILL.md` | x |'
+            '| `app/page.tsx` | x |\n| `.github/actions/x/action.yml` | x |'
           ),
         },
       })
     ).toBe(0);
     expect(labelled()).toHaveLength(1);
     expect(console.log).toHaveBeenCalledWith(
-      'Hand back: .claude/skills/x/SKILL.md is in the Files that change of plans/chores/C406-x.md.'
+      'Hand back: .github/actions/x/action.yml is in the Files that change of plans/chores/C406-x.md.'
     );
   });
 
@@ -391,22 +341,40 @@ describe('run', () => {
     expect(console.log).toHaveBeenCalledWith('Hand back: no hand-back path.');
   });
 
-  it('does nothing when only exempt paths change or are named', () => {
+  it.each([
+    '.github/agent/build.md',
+    '.claude/skills/refine/SKILL.md',
+    'plans/README.md',
+    'scripts/agent-approve.mts',
+    'server/boundaries/load.mts',
+    'scripts/layers.mts',
+  ])('does nothing when only %s changes or is named', path => {
     expect(
       go({
-        files: [
-          { filename: 'server/boundaries/load.mts' },
-          { filename: 'scripts/layers.mts' },
-          { filename: 'plans/chores/C1-x.md' },
-        ],
+        files: [{ filename: path }, { filename: 'plans/chores/C1-x.md' }],
         plans: {
-          'plans/chores/C1-x.md': PLAN_WITH(
-            '| `server/a.mts` | x |\n| `scripts/layers.mts` | x |'
-          ),
+          'plans/chores/C1-x.md': PLAN_WITH(`| \`${path}\` | x |`),
+          // `run` reads plans/README.md as a plan too; its row is not a hand-back path.
+          'plans/README.md': PLAN_WITH('| `a.md` | x |'),
         },
       })
     ).toBe(0);
     expect(labelled()).toHaveLength(0);
+  });
+
+  it.each(SAMPLES)('labels a PR that changes %s', (_pattern, path) => {
+    go({ files: [{ filename: path }] });
+
+    expect(labelled()).toHaveLength(1);
+  });
+
+  it.each(SAMPLES)('labels a PR whose plan names %s', (_pattern, path) => {
+    go({
+      files: [{ filename: 'plans/chores/C1-x.md' }],
+      plans: { 'plans/chores/C1-x.md': PLAN_WITH(`| \`${path}\` | x |`) },
+    });
+
+    expect(labelled()).toHaveLength(1);
   });
 
   it('fetches only added or changed markdown files under plans/', () => {
@@ -427,7 +395,7 @@ describe('run', () => {
   it('changes nothing on a rerun: the label is already there', () => {
     expect(
       go({
-        files: [{ filename: '.github/agent/build.md' }],
+        files: [{ filename: '.github/workflows/a.yml' }],
         view: { labels: ['hand-back'] },
       })
     ).toBe(0);
@@ -440,7 +408,7 @@ describe('run', () => {
 
   it('does not treat another label as the marker', () => {
     go({
-      files: [{ filename: '.github/agent/build.md' }],
+      files: [{ filename: '.github/workflows/a.yml' }],
       view: { labels: ['hand-back-not'] },
     });
 
@@ -450,7 +418,7 @@ describe('run', () => {
   it('leaves a fork alone', () => {
     expect(
       go({
-        files: [{ filename: '.github/agent/build.md' }],
+        files: [{ filename: '.github/workflows/a.yml' }],
         view: { isCrossRepository: true },
       })
     ).toBe(0);
@@ -480,7 +448,10 @@ describe('run', () => {
 
     it('adding the label', () => {
       expect(
-        go({ failing: 'label', files: [{ filename: '.github/agent/a.md' }] })
+        go({
+          failing: 'label',
+          files: [{ filename: '.github/workflows/b.yml' }],
+        })
       ).toBe(1);
       expect(console.error).toHaveBeenCalledWith(
         'Hand back: adding the label failed: label down'
@@ -507,7 +478,7 @@ describe('run', () => {
           ],
           plans: {
             'plans/a.md': new Error('404'),
-            'plans/b.md': PLAN_WITH('| `.github/agent/x.md` | x |'),
+            'plans/b.md': PLAN_WITH('| `.github/workflows/x.yml` | x |'),
             'plans/c.md': PLAN_WITH('| `AGENTS.md` | x |'),
           },
         })
@@ -517,12 +488,5 @@ describe('run', () => {
       );
       expect(labelled()).toHaveLength(1);
     });
-  });
-
-  it('throws on a CODEOWNERS pattern it cannot read, before any gh call', () => {
-    fakeGh();
-
-    expect(() => run(['7'], ENV, gh, '[ab] @lead')).toThrow('Unsupported');
-    expect(gh).not.toHaveBeenCalled();
   });
 });

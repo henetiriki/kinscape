@@ -1,13 +1,12 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
 // Runs on a pull request (claude-hand-back.yml): the marker of plans/README.md#hand-back. Adds the
 // label `hand-back` when a path in the diff, or in the Files that change table of a plan the PR
-// changes (read from the head commit as data), matches a pattern in the base commit's
-// .github/CODEOWNERS, apart from the catch-all (`*` or `**` alone) and EXEMPT. Does nothing for a
-// fork or a PR that has the label.
+// changes (read from the head commit as data), matches a pattern of HAND_BACK. Does nothing for a
+// fork or a PR that has the label. The workflow runs this file from the base commit, so a PR cannot
+// change the list that judges it.
 // A failed `gh` call is logged and the exit code is 1; a failed plan fetch skips that plan only.
 // Usage: node scripts/hand-back.mts <PR number>, with GH_REPO set.
 
@@ -19,59 +18,45 @@ type View = {
   labels: { name: string }[];
 };
 
-// Owned paths that don't hand a PR back; the one place they are listed.
-export const EXEMPT = ['server/**', 'scripts/layers.mts'];
+// The paths that CI cannot build or that guard CI: the build has no `workflows` permission, and it
+// writes main's copy over each rule file. Every other path in .github/CODEOWNERS needs the tech
+// lead's review at merge, and CI builds it.
+export const HAND_BACK = [
+  '.github/workflows/**',
+  '.github/actions/**',
+  '.github/CODEOWNERS',
+  '.claude/settings*.json',
+  'AGENTS.md',
+  'docs/security.md',
+  'docs/writing.md',
+  'docs/code-rules.md',
+  '.github/agent/spec-checks.md',
+];
 
-const LABEL = 'hand-back';
-// The line that gives every path a code owner; it hands nothing back.
-const CATCH_ALL = /^\*{1,2}$/;
+export const LABEL = 'hand-back';
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const PLAN = /^plans\/.+\.md$/;
 const SECTION = /^#{1,6}\s+Files that change\s*$/i;
 const HEADING = /^#{1,6}\s/;
-const UNSUPPORTED = /[![\]\\]/;
-const TOKENS: Record<string, string> = {
-  '?': '[^/]',
-  '*': '[^/]*',
-  '**': '.*',
-  '**/': '(?:.*/)?',
-  '/**': '/.*',
-};
 
-// A CODEOWNERS pattern as gitignore reads it: with a `/` before its end it is anchored to the
-// root, otherwise it matches at any depth; it also matches everything below a directory.
+// A pattern as gitignore reads it: with a `/` in it, it matches from the root, otherwise it
+// matches at any depth; it also matches everything below a directory. `*` stays inside one
+// directory, and a closing `/**` takes the whole subtree.
 const toRegExp = (pattern: string): RegExp => {
-  if (UNSUPPORTED.test(pattern)) {
-    throw new Error(`Unsupported CODEOWNERS pattern: ${pattern}`);
-  }
-
-  const body = pattern.replace(/\/$/, '');
-  const source = body
-    .replace(/^\//, '')
-    .replace(/\*\*\/|\/\*\*$|\*\*|\*|\?|[.+^${}()|]/g, token =>
-      Object.hasOwn(TOKENS, token) ? TOKENS[token] : `\\${token}`
-    );
+  const source = pattern.replace(/\/\*\*$|\*|[.+^${}()|?]/g, token =>
+    token === '/**' ? '/.*' : token === '*' ? '[^/]*' : `\\${token}`
+  );
 
   return new RegExp(
-    `^${body.includes('/') ? '' : '(?:.*/)?'}${source}(?:/.*)?$`
+    `^${pattern.includes('/') ? '' : '(?:.*/)?'}${source}(?:/.*)?$`
   );
 };
 
-export const matcher = (codeowners: string): ((path: string) => boolean) => {
-  const exempt = EXEMPT.map(toRegExp);
-  const owned = codeowners
-    .split('\n')
-    .map(line => line.replace(/#.*/, '').trim().split(/\s+/))
-    .filter(
-      ([pattern, owner]) =>
-        pattern !== '' && owner !== undefined && !CATCH_ALL.test(pattern)
-    )
-    .map(([pattern]) => toRegExp(pattern));
+const patterns = HAND_BACK.map(toRegExp);
 
-  return path =>
-    !exempt.some(re => re.test(path)) && owned.some(re => re.test(path));
-};
+export const isHandBack = (path: string): boolean =>
+  patterns.some(re => re.test(path));
 
 // The backticked paths in the first column of a plan's Files that change table.
 export const tablePaths = (plan: string): string[] => {
@@ -96,8 +81,7 @@ export const tablePaths = (plan: string): string[] => {
 export const run = (
   args: string[],
   env: Record<string, string | undefined>,
-  gh: Gh,
-  codeowners: string
+  gh: Gh
 ): number => {
   const [pr] = args;
   const repo = env.GH_REPO ?? '';
@@ -110,7 +94,6 @@ export const run = (
     return 1;
   }
 
-  const owned = matcher(codeowners);
   let failed = false;
   const attempt = <T,>(what: string, action: () => T): T | undefined => {
     try {
@@ -182,7 +165,7 @@ export const run = (
         ? [filename]
         : [filename, previous_filename]
     )
-    .find(owned);
+    .find(isHandBack);
 
   if (inDiff !== undefined) {
     return label(`${inDiff} is in the diff`);
@@ -199,7 +182,7 @@ export const run = (
         `repos/${repo}/contents/${filename.split('/').map(encodeURIComponent).join('/')}?ref=${view.headRefOid}`,
       ])
     );
-    const named = tablePaths(plan ?? '').find(owned);
+    const named = tablePaths(plan ?? '').find(isHandBack);
 
     if (named !== undefined) {
       return label(`${named} is in the Files that change of ${filename}`);
@@ -211,17 +194,13 @@ export const run = (
   return failed ? 1 : 0;
 };
 
-/* v8 ignore next 14 -- only true when run directly with node, not when imported */
+/* v8 ignore next 12 -- only true when run directly with node, not when imported */
 if (import.meta.main) {
-  process.exitCode = run(
-    process.argv.slice(2),
-    process.env,
-    (args, input) =>
-      execFileSync('gh', args, {
-        encoding: 'utf8',
-        input,
-        maxBuffer: 16 * 1024 * 1024,
-      }),
-    readFileSync('.github/CODEOWNERS', 'utf8')
+  process.exitCode = run(process.argv.slice(2), process.env, (args, input) =>
+    execFileSync('gh', args, {
+      encoding: 'utf8',
+      input,
+      maxBuffer: 16 * 1024 * 1024,
+    })
   );
 }

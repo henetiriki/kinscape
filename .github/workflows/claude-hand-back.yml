@@ -2,8 +2,8 @@ name: 'Claude: Hand back'
 
 # Labels a pull request `hand-back` when a path it changes, or its plan's "Files that change" table
 # names, is a hand-back path (plans/README.md#hand-back). The label stays until merge. It is a
-# signal, not a guard: the ruleset still requires code-owner review. The script and CODEOWNERS come
-# from the base commit, so the PR can't change what runs. Never `pull_request_target`.
+# signal, not a guard: the ruleset still requires code-owner review. The script and its HAND_BACK
+# list come from the base commit, so the PR can't change what runs. Never `pull_request_target`.
 #
 # The title shown for each run in the Actions tab: "Hand back: <PR title>". The job has no `if:`
 # (the script skips a fork), so a fork PR shows the same title and there is no "Skipped" form.

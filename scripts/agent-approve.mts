@@ -4,6 +4,7 @@ import { appendFileSync } from 'node:fs';
 import type { Gh } from '#ks/scripts/types.ts';
 
 import { approve } from '#ks/scripts/approve-plan.mts';
+import { isHandBack, LABEL, tablePaths } from '#ks/scripts/hand-back.mts';
 
 // Records a plan's approval before any model runs (see claude-build.yml). The owner approved a draft
 // plan PR; this reads the answers to its `## Decisions` from the owner's reviews and PR comments
@@ -11,12 +12,13 @@ import { approve } from '#ks/scripts/approve-plan.mts';
 // `Status: approved` into the plan, and commits `plan(<id>): approved by @<owner>` to the PR branch.
 //   open decision: comment which, commit nothing, `go=false`
 //   plan already approved: change nothing, `go=true`
-// On `go=true`, a `hand-back` PR (plans/README.md#hand-back) gets a comment that the tech lead
-// builds it, and `go=false`: no build run starts.
+// A `hand-back` PR (plans/README.md#hand-back) whose plan table has a row that is not a hand-back
+// path goes like any other: CI builds the other rows. If each row is a hand-back path, or the table
+// has no row, it gets a comment that the tech lead builds it, and `go=false`: no build run starts.
 // It is the one writer of the label for that approval: each issue the PR closes is set to
 // `status: ready-for-agent` on `go=true` and `status: ready-for-dev` on `go=false`. It skips a
-// `hand-back` PR, a `status: blocked` issue and one already on its target; a failed move is
-// logged and changes neither `go` nor the exit code.
+// `hand-back` PR on `go=false`, a `status: blocked` issue and one already on its target; a failed
+// move is logged and changes neither `go` nor the exit code.
 // Usage: node scripts/agent-approve.mts <PR number>, with GH_REPO, APPROVER (the review's author)
 // and COMMIT (the commit the review approved) set. An https RUN_URL, if set, is linked at the end of
 // a stop comment.
@@ -54,7 +56,6 @@ const RUN_URL = /^https:\/\/\S+$/;
 const AGENT = 'status: ready-for-agent';
 const DEV = 'status: ready-for-dev';
 const BLOCKED = 'status: blocked';
-const HAND_BACK = 'hand-back';
 const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
 const ANSWER =
   /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
@@ -161,7 +162,7 @@ export const run = (
         labels: { name: string }[];
       }>(gh, ['pr', 'view', raw, '--json', 'closingIssuesReferences,labels']);
 
-      if (pr.labels.some(({ name: label }) => label === HAND_BACK)) {
+      if (!go && pr.labels.some(({ name: label }) => label === LABEL)) {
         return;
       }
 
@@ -204,11 +205,13 @@ export const run = (
 
     return 0;
   };
-  // The plan is approved at `head`: the tech lead builds a `hand-back` PR
-  // (plans/README.md#hand-back), so no build run starts. The approval is already committed, so a
-  // failed comment is not the catch's "Approve the plan again": log it and stop.
-  const proceed = (handBack: boolean, head: string): number => {
-    if (handBack) {
+  // The plan is approved at `head`. A `hand-back` PR whose plan has no row that CI can build goes to
+  // the tech lead (plans/README.md#hand-back), so no build run starts. The approval is already
+  // committed, so a failed comment is not the catch's "Approve the plan again": log it and stop.
+  const proceed = (handBack: boolean, head: string, text: string): number => {
+    const tech = handBack && tablePaths(text).every(isHandBack);
+
+    if (tech) {
       try {
         post(
           'The plan is approved. This PR has `hand-back`, so the tech lead builds it (plans/README.md, hand-back rule); no build run starts.'
@@ -221,7 +224,7 @@ export const run = (
       }
     }
 
-    finish(!handBack, head);
+    finish(!tech, head);
 
     return 0;
   };
@@ -237,7 +240,7 @@ export const run = (
     const plans = pr.files
       .map(({ path }) => path)
       .filter(path => PLAN.test(path));
-    const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
+    const handBack = pr.labels.some(({ name }) => name === LABEL);
 
     // The head is not the commit the owner read.
     const stopMoved = (): number =>
@@ -303,7 +306,7 @@ export const run = (
 
       console.log(`${file} is already approved.`);
 
-      return proceed(handBack, pr.headRefOid);
+      return proceed(handBack, pr.headRefOid, text);
     }
 
     if (pr.headRefOid !== commit) {
@@ -352,7 +355,7 @@ export const run = (
 
     console.log(`Recorded the approval of ${file} by @${approver} as ${made}.`);
 
-    return proceed(handBack, made);
+    return proceed(handBack, made, result.text);
   } catch (error) {
     console.error(`#${raw}: ${(error as Error).message}`);
     finish(false);

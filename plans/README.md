@@ -67,13 +67,13 @@ The title and the body describe the work that the PR merges now. Evidence is the
 
 ## Who builds
 
-<a id="build-ownership"></a>**Build ownership.** The CI agent builds an approved plan, except a hand-back ([building](../docs/building.md#specs-bugs-and-chores)). Before a person builds by hand, the person does these steps:
+<a id="build-ownership"></a>**Build ownership.** The CI agent builds the rows of an approved plan that are not hand-back paths ([building](../docs/building.md#specs-bugs-and-chores)). Before a person builds by hand, the person does these steps:
 
 - Run `git fetch`. Then read the PR comments.
 - If the PR has a "Building…" comment, wait. The workflow deletes it when the run ends.
 - If the PR has no "Building…" comment, continue from the last pushed commit.
 
-<a id="hand-back"></a>**Hand-back.** The CI build agent does not build a hand-back. A hand-back path matches a `.github/CODEOWNERS` line after the catch-all and is not in `EXEMPT` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead builds a hand-back in a local agent session. The tech lead also plans a Chore that gets no plan PR. If there is no plan PR, comment the reason on the issue.
+<a id="hand-back"></a>**Hand-back.** The CI build agent never edits a hand-back path. A hand-back path matches a pattern of `HAND_BACK` ([`scripts/hand-back.mts`](../scripts/hand-back.mts)). If a plan edits a hand-back path, [`claude-hand-back.yml`](../.github/workflows/claude-hand-back.yml) labels its PR `hand-back`. The CI agent builds the other rows ([`build.md`](../.github/agent/build.md#hand-back)). If each row is a hand-back path, no build runs. A chore gets no plan PR if it needs a secret or is too big ([too-big rule](#too-big)). The tech lead builds the hand-back rows in a local agent session. The tech lead also plans a Chore that gets no plan PR. If there is no plan PR, comment the reason on the issue.
 
 <a id="design-system"></a>**Design system.** This rule applies if a plan changes a [design system input](../design/CANVAS.md#changing-the-design-system). The tech lead runs steps 3 to 5, or a local Claude Code session that the tech lead starts runs them. If a board changed, the same person or session also runs step 7. The CI build agent cannot get access to claude.ai, so it asks in the PR. It keeps the PR as a draft. A canvas-only follow-up has its own plan: [`C689-canvas-refresh.md`](chores/C689-canvas-refresh.md).
 

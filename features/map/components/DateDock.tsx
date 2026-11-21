@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 import { useEffect, useState } from 'react';
 
@@ -62,6 +62,7 @@ export const DateDock = ({
   contestedYears,
   day,
   defaultText,
+  details,
   epochs,
   hasBorders,
   lastDay,
@@ -76,6 +77,8 @@ export const DateDock = ({
   day: Day;
   /** Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. */
   defaultText?: string;
+  /** The phone sheet only: content under the slider, such as the Pin popup. With it the sheet is open. */
+  details?: ReactNode;
   /** Epochs for Jump to; they are also the slider's ticks. */
   epochs?: Epoch[];
   /** Whether a Boundary version is valid on a day; a typed date without one shows the warning. */
@@ -167,15 +170,23 @@ export const DateDock = ({
     />
   );
 
-  if (sheet)
+  if (sheet) {
+    // Details open the sheet, so the slider and the details show together.
+    const open = sheet.expanded || details !== undefined;
+
     return (
-      <BottomSheet
-        expanded={sheet.expanded}
-        onExpandedChange={sheet.onExpandedChange}>
+      <BottomSheet expanded={open} onExpandedChange={sheet.onExpandedChange}>
         <div className={styles.sheetField}>{field}</div>
-        {sheet.expanded && slider}
+        {open && slider}
+        {details !== undefined && (
+          <>
+            <hr className={styles.rule} />
+            {details}
+          </>
+        )}
       </BottomSheet>
     );
+  }
 
   return (
     <section aria-label='Map date' className={styles.dock}>

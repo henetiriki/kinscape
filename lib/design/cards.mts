@@ -217,7 +217,7 @@ export const cardImage = (name: string, width: number): string =>
 
 /**
  * The cards that also have an image at the phone width, because the component changes with the
- * width. These are the 19 cards whose CSS has a width rule, and three more. `Modal` fills the viewport.
+ * width. These are the 20 cards whose CSS has a width rule, and three more. `Modal` fills the viewport.
  * The sheet of `DateDock` fills the width, and the callout of its `DateField` changes at 640px.
  * `Banner` has the phone rules of `Toast.module.css`, which the test does not read for it.
  * A test reads the stylesheet of each `CONTROLS` entry, named for the card or for the file in its `path`.
@@ -238,6 +238,7 @@ export const PHONE_CARDS = [
   'Modal',
   'NoticeCard',
   'PageHeader',
+  'PinPopup',
   'RemovableChip',
   'Sheet',
   'SheetPanel',

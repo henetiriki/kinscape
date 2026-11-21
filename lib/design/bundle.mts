@@ -73,6 +73,7 @@ export const CONTROLS: Control[] = [
   { name: 'Menu', path: 'app/components/overlays/Menu.tsx' },
   { name: 'MenuPanel', path: 'app/components/overlays/Menu.tsx' },
   { name: 'Popup', path: 'app/components/overlays/Popup.tsx' },
+  { name: 'PinPopup', path: 'app/components/overlays/PinPopup.tsx' },
   { name: 'BottomSheet', path: 'app/components/overlays/BottomSheet.tsx' },
   { name: 'Modal', path: 'app/components/overlays/Modal.tsx' },
   { name: 'Dialog', path: 'app/components/overlays/Dialog.tsx' },

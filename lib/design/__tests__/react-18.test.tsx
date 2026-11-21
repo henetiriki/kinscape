@@ -66,6 +66,7 @@ import { BottomSheet } from '@ks/app/components/overlays/BottomSheet';
 import { Dialog, DialogPanel } from '@ks/app/components/overlays/Dialog';
 import { Menu, MenuPanel } from '@ks/app/components/overlays/Menu';
 import { Modal } from '@ks/app/components/overlays/Modal';
+import { PinPopup } from '@ks/app/components/overlays/PinPopup';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import sourceData from '@ks/data/sources.json';
@@ -221,6 +222,7 @@ const COMPONENTS = {
   Panel,
   PersonRow,
   PickerRow,
+  PinPopup,
   Popup,
   ProgressBar,
   RelationshipRow,
@@ -1126,6 +1128,28 @@ const CASES: [string, ReactElement][] = [
       pins={PINS}
       place='Kimberley'
       year={1901}
+    />,
+  ]),
+  ...(
+    [
+      ['loaded', 'floating'],
+      ['loading', 'floating'],
+      ['failed', 'floating'],
+      ['loaded', 'sheet'],
+    ] as const
+  ).map(([state, form]): [string, ReactElement] => [
+    `PinPopup · ${form === 'sheet' ? 'sheet' : state}`,
+    <PinPopup
+      address={
+        state === 'loaded' ? 'Farm Example, district Example' : undefined
+      }
+      event='residence'
+      form={form}
+      key={`${state}-${form}`}
+      name={state === 'loaded' ? 'Example Person' : undefined}
+      reading='From 1890 to 1905'
+      recorded='FROM 1890 TO 1905'
+      state={state}
     />,
   ]),
   ...([false, true] as const).map((expanded): [string, ReactElement] => [

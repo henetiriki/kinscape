@@ -2,15 +2,7 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
-// The map is on window only in builds made with NEXT_PUBLIC_E2E=1 (playwright.config.ts).
-type TestWindow = {
-  kinscapeMap: {
-    queryRenderedFeatures: (
-      geometry: undefined,
-      options: { layers: string[] }
-    ) => { properties: { polity: string } }[];
-  };
-};
+import type { TestWindow } from '@ks/e2e/types';
 
 // Fills, not labels: label collision can hide a Polity's name at small viewports.
 const drawnPolities = async (page: Page) => {

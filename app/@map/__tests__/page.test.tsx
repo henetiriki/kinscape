@@ -14,12 +14,11 @@ vi.mock('@ks/server/auth/current.mts', () => ({
   currentSession: session,
   signOut: vi.fn(),
 }));
-vi.mock('@ks/features/map', () => ({
-  MapShell: (props: {
+vi.mock('@ks/app/@map/MapWithPins', () => ({
+  MapWithPins: (props: {
     coverage: unknown[];
     email: string;
     initial: string;
-    layers: unknown[];
     onSignOut: unknown;
     sources: unknown[];
   }) => {
@@ -27,7 +26,6 @@ vi.mock('@ks/features/map', () => ({
 
     return <div data-testid='map-shell' />;
   },
-  polityLayer: { name: 'polity layer' },
 }));
 
 import MapSlot from '@ks/app/@map/page';
@@ -47,7 +45,6 @@ describe('the map slot page', () => {
     getByTestId('map-shell');
     expect(shell.mock.calls[0][0].sources.length).toBeGreaterThan(0);
     expect(shell.mock.calls[0][0].coverage.length).toBeGreaterThan(0);
-    expect(shell.mock.calls[0][0].layers).toEqual([{ name: 'polity layer' }]);
   });
 
   it("passes the session's email, its upper-case first letter and the sign-out action", async () => {

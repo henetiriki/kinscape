@@ -33,6 +33,10 @@ const memorySignIn = process.env.KINSCAPE_MEMORY_SIGN_IN === '1';
 const split = process.env.E2E_SPLIT === '1';
 const noDesign = split || memorySignIn;
 
+// The specs that need the Pins of scripts/seed-ci.mts. Only the Postgres of the CI `e2e` job has
+// them: the memory adapters hold none.
+const seededOnly = memorySignIn ? [] : ['pins.spec.ts'];
+
 // The server with the memory adapters, which has the fixture Accounts. The memory sign-in has none.
 const fixtureURL = 'http://localhost:3002';
 
@@ -94,6 +98,7 @@ export default defineConfig({
         // The `fixture` project runs these on the server with the memory adapters.
         'fixture-*.spec.ts',
         'fixture.setup.ts',
+        ...seededOnly,
       ],
       use: { ...use, ...failures, storageState: signedIn },
     },
@@ -115,7 +120,7 @@ export default defineConfig({
         : ['chromium', 'design', 'fixture'],
       grep: /@perf/,
       name: 'perf',
-      testIgnore: 'auth.setup.ts',
+      testIgnore: ['auth.setup.ts', ...seededOnly],
       use: { ...use, storageState: signedIn },
     },
   ].filter(({ name }) => !noDesign || name !== 'design'),

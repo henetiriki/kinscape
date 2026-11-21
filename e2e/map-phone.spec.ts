@@ -2,17 +2,7 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
-// The map is on window only in builds made with NEXT_PUBLIC_E2E=1 (playwright.config.ts).
-type TestWindow = {
-  kinscapeMap: {
-    getCenter: () => { lat: number; lng: number };
-    project: (point: { lat: number; lng: number }) => { x: number; y: number };
-    queryRenderedFeatures: (
-      geometry: undefined,
-      options: { layers: string[] }
-    ) => { properties: { polity: string } }[];
-  };
-};
+import type { TestWindow } from '@ks/e2e/types';
 
 const drawnPolities = async (page: Page) => {
   await page.waitForFunction(() => 'kinscapeMap' in window);

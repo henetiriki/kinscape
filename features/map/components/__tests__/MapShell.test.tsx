@@ -205,6 +205,59 @@ it('moves the Map date from the date dock', () => {
   expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
 });
 
+// PIN-03
+it('gives a layer the Map date for its row text, and again when the date moves', () => {
+  const dated: Layer = {
+    ...testLayer,
+    description: day => `Shows day ${day}`,
+  };
+
+  render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={[dated]}
+      sources={sources}
+    />
+  );
+  // The row text is the description of the checkbox.
+  const rowText = () =>
+    document.getElementById(
+      screen
+        .getByRole('checkbox', { name: 'Test layer' })
+        .getAttribute('aria-describedby')!
+    )?.textContent;
+
+  expect(rowText()).toBe(`Shows day ${dayOf(new Date())}`);
+  fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+  expect(rowText()).toBe(`Shows day ${lastProps().mapDay}`);
+  expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
+});
+
+// PIN-03
+it('shows what the page puts in the toast slot', () => {
+  const { rerender } = render(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+    />
+  );
+
+  expect(screen.queryByText('Your pins did not load.')).toBeNull();
+  rerender(
+    <MapShell
+      {...account}
+      coverage={coverage}
+      layers={layers}
+      sources={sources}
+      toast={<p>Your pins did not load.</p>}
+    />
+  );
+  expect(screen.getByText('Your pins did not load.').tagName).toBe('P');
+});
+
 // MAP-02
 it('hides and restores the Polity borders from the Layers panel', () => {
   render(

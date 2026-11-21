@@ -41,12 +41,13 @@ const goTo = async (page: Page, date: string) => {
 const caption = (page: Page) =>
   page.getByText(/^\d+ of \d+ true on this date$/);
 
-// PIN-03: pin 0 of the seed is a residence from 1840 to 1855.
+// The tests use 1950: borders are mapped then, so no notice card covers the map.
+// PIN-03
 test('draws the Pins of the Map date, each with the glyph of its event type', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
   await expect
     .poll(async () => (await shownTypes(page)).length)
     .toBeGreaterThan(0);
@@ -66,7 +67,7 @@ test('the Pins row counts the Pins that are true on the Map date', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
   await expect(caption(page)).toHaveText(new RegExp(`of ${SEEDED} true`));
   await expect(caption(page)).not.toHaveText(
     `0 of ${SEEDED} true on this date`
@@ -81,7 +82,7 @@ test('switching the Pins row off hides every Pin, and on shows them again', asyn
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
   await expect
     .poll(async () => (await shownTypes(page)).length)
     .toBeGreaterThan(0);
@@ -216,7 +217,7 @@ test('a click on a Pin opens its popup, and asks for its details once', async ({
     }
   });
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -239,7 +240,7 @@ test('the popup stays at its Pin after a pan and after a zoom', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -276,7 +277,7 @@ test('Close, Esc and a click on empty map close the popup', async ({
   page,
 }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
   const open = async () => {
@@ -300,7 +301,7 @@ test('Close, Esc and a click on empty map close the popup', async ({
 // PIN-02, MAP-02: the Pins row hides the Pin, so the popup closes.
 test('switching the Pins row off closes the popup', async ({ page }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -313,7 +314,7 @@ test('switching the Pins row off closes the popup', async ({ page }) => {
 // PIN-02: the Map date hides the Pin, so the popup closes.
 test('a Map date that hides the Pin closes its popup', async ({ page }) => {
   await page.goto('/');
-  await goTo(page, '1850');
+  await goTo(page, '1950');
 
   const pin = await pickPin(page);
 
@@ -354,7 +355,6 @@ const pickMarker = async (page: Page) => {
 const fanPins = (page: Page) =>
   page.locator('.maplibregl-marker button:not([aria-label$=" Pins"])');
 
-// In 1950 borders are mapped, so no notice card covers the map.
 // PIN-06: one marker with the count; hover fans the Pins out and leaving folds them.
 test('a count marker fans its Pins out on hover and folds them when the pointer leaves', async ({
   page,
@@ -413,7 +413,7 @@ test.describe('on a phone', () => {
     page,
   }) => {
     await page.goto('/');
-    await goTo(page, '1850');
+    await goTo(page, '1950');
 
     const pin = await pickPin(page);
 
@@ -481,7 +481,7 @@ test(
     });
     await page.goto('/');
     await page.getByRole('radio', { name: 'Day' }).click();
-    await goTo(page, '1850-01-01');
+    await goTo(page, '1950-01-01');
     await expect
       .poll(async () => (await shownTypes(page)).length)
       .toBeGreaterThan(0);

@@ -75,6 +75,55 @@ it('puts the padding on the textarea, so the resize handle sits at the padded co
   expect(css).toMatch(/:focus-within[^{]*\.area[^{]*\{[^}]*padding: 9px 11px/);
 });
 
+// PIN-02
+it('shows an error in place of the helper, with the error box, icon and aria links', () => {
+  render(
+    <TextAreaField
+      error='Add a note.'
+      helper='Add what the sources say.'
+      label='Notes'
+    />
+  );
+
+  const area = screen.getByRole('textbox', { name: 'Notes' });
+  const alert = screen.getByRole('alert');
+
+  expect(alert.textContent).toBe('Add a note.');
+  expect(screen.queryByText('Add what the sources say.')).toBeNull();
+  expect(area.getAttribute('aria-invalid')).toBe('true');
+  expect(area.getAttribute('aria-describedby')).toBe(alert.id);
+  expect(area.parentElement!.dataset.mark).toBe('error');
+  expect(area.parentElement!.querySelector('svg')).toBeTruthy();
+  expect((area as HTMLTextAreaElement).rows).toBe(4);
+});
+
+// PIN-02
+it('joins a given aria-describedby with the helper id, and marks nothing without an error', () => {
+  render(
+    <TextAreaField aria-describedby='other' helper='Help' label='Notes' />
+  );
+
+  const area = screen.getByRole('textbox', { name: 'Notes' });
+
+  expect(area.getAttribute('aria-describedby')).toBe(
+    `other ${screen.getByText('Help').id}`
+  );
+  expect(area.hasAttribute('aria-invalid')).toBe(false);
+  expect(area.parentElement!.hasAttribute('data-mark')).toBe(false);
+  expect(screen.queryByRole('alert')).toBeNull();
+});
+
+// PIN-02
+it('puts the icon at the top right and keeps the text clear of it in error', () => {
+  expect(css).toMatch(/\.field > \.box\[data-mark\] \{[^}]*padding: 0;/);
+  expect(css).toMatch(
+    /\.field > \.box\[data-mark\] \.area \{[^}]*padding: 9px 37px 9px 11px/
+  );
+  expect(css).toMatch(
+    /\.field > \.box\[data-mark\] > svg \{[^}]*position: absolute[^}]*right: 11px[^}]*top: 8px/s
+  );
+});
+
 // PPL-01
 it('takes the text field box, padding 10 12, and 16 / 24 text on a phone', () => {
   expect(css).toContain("composes: box from '@ks/app/components/forms/");

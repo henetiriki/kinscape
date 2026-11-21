@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 import { useId } from 'react';
 
@@ -11,12 +11,15 @@ import styles from '@ks/app/components/forms/TextField.module.css';
 
 /** A native select with its label and a drawn chevron. The open list is the browser's. */
 export const SelectField = ({
+  error,
   hideLabel,
   label,
   options,
   state,
   ...rest
 }: {
+  /** The problem, shown under the field. Marks the field as in error. */
+  error?: ReactNode;
   /** Names the select without showing the label. */
   hideLabel?: boolean;
   label: string;
@@ -24,6 +27,10 @@ export const SelectField = ({
   state?: ControlState;
 } & Omit<ComponentProps<'select'>, 'children' | 'className' | 'id'>) => {
   const id = useId();
+  const messageId = `${id}-message`;
+  const describedBy = [rest['aria-describedby'], error ? messageId : null]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className={styles.field}>
@@ -32,11 +39,16 @@ export const SelectField = ({
           {label}
         </Text>
       )}
-      <span className={styles.box} data-state={state}>
+      <span
+        className={styles.box}
+        data-mark={error ? 'error' : undefined}
+        data-state={state}>
         <select
           aria-label={hideLabel ? label : undefined}
           className={styles.select}
           {...rest}
+          aria-describedby={describedBy || undefined}
+          aria-invalid={error ? true : undefined}
           id={id}>
           {options.map(option => (
             <option key={option.value} value={option.value}>
@@ -47,7 +59,13 @@ export const SelectField = ({
         <span className={styles.chevron}>
           <Icon name='chevronDown' />
         </span>
+        {error && <Icon name='error' />}
       </span>
+      {error && (
+        <Text id={messageId} role='alert' tone='error' variant='small'>
+          {error}
+        </Text>
+      )}
     </div>
   );
 };

@@ -607,6 +607,7 @@ const CASES: [string, ReactElement][] = [
       ['hover', { state: 'hover' }],
       ['focus', { state: 'focus' }],
       ['disabled', { disabled: true }],
+      ['error', { error: 'Add a note.' }],
       ['long content', { defaultValue: LONG_NOTES, maxLength: 10000 }],
     ] as const
   ).map(([name, props]): [string, ReactElement] => [
@@ -781,6 +782,15 @@ const CASES: [string, ReactElement][] = [
       state={state}
     />
   )),
+  [
+    'SelectField · error',
+    <SelectField
+      error='Choose a polity.'
+      key='error'
+      label='Polity'
+      options={POLITIES}
+    />,
+  ],
   [
     'SelectField · hidden label',
     <SelectField hideLabel key='hidden' label='Polity' options={POLITIES} />,

@@ -743,6 +743,38 @@ test.describe('at 1440px', () => {
     expect(await height('Button · size xs')).toBe(36);
   });
 
+  // PIN-02
+  test('a select in error stays 44px tall, with the icon 8px after the chevron', async ({
+    page,
+  }) => {
+    await open(page, 'SelectField');
+
+    const figure = state(page, 'SelectField · error');
+    const wrap = figure.getByRole('combobox').locator('xpath=..');
+    const chevron = (await wrap.locator('span').boundingBox())!;
+    const icon = (await wrap.locator('> svg').boundingBox())!;
+
+    expect(Math.round((await wrap.boundingBox())!.height)).toBe(44);
+    expect(Math.round(icon.x - (chevron.x + chevron.width))).toBe(8);
+  });
+
+  // PIN-02
+  test('a text area in error has the icon at the top right and keeps its rows', async ({
+    page,
+  }) => {
+    await open(page, 'TextAreaField');
+
+    const figure = state(page, 'TextAreaField · error');
+    const area = figure.getByRole('textbox', { name: 'Notes' });
+    const wrap = area.locator('xpath=..');
+    const icon = (await wrap.locator('> svg').boundingBox())!;
+    const outer = (await wrap.boundingBox())!;
+
+    expect(Math.round(outer.x + outer.width - (icon.x + icon.width))).toBe(13);
+    expect(Math.round(icon.y - outer.y)).toBe(10);
+    await expect(area).toHaveAttribute('rows', '4');
+  });
+
   test('"Clear filters" on the Panel is 44px tall and narrower than the body', async ({
     page,
   }) => {

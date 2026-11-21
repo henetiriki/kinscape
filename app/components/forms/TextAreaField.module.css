@@ -26,6 +26,22 @@
   padding: 9px 11px;
 }
 
+/* In error the box keeps no padding, as in focus. The text takes the focus padding, 1px less than the 2px border takes,
+   plus room on the right (11px, the 18px icon and an 8px gap) so it never runs under the icon. */
+.field > .box[data-mark] {
+  padding: 0;
+}
+
+.field > .box[data-mark] .area {
+  padding: 9px 37px 9px 11px;
+}
+
+.field > .box[data-mark] > svg {
+  position: absolute;
+  right: 11px;
+  top: 8px;
+}
+
 /* Only a vertical resize; content past the height scrolls inside the box. */
 .area {
   background: transparent;

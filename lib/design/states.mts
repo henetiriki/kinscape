@@ -619,6 +619,11 @@ export const CARDS: Card[] = [
         helper: 'Helper text',
         label: 'Notes',
       }),
+      one('TextAreaField · error', {
+        error: 'Add a note.',
+        helper: 'Helper text',
+        label: 'Notes',
+      }),
       one('TextAreaField · long content', {
         defaultValue: LONG_NOTES,
         helper: 'Helper text',
@@ -810,16 +815,21 @@ export const CARDS: Card[] = [
     ],
   },
   {
-    design: [],
+    design: ['Select field'],
     group: 'Forms',
     handlers: [],
-    height: 280,
+    height: 340,
     name: 'SelectField',
     pad: 0,
     states: [
       ...grid('SelectField', (state, disabled) => ({
         props: { disabled, label: 'Polity', options: POLITIES, state },
       })),
+      one('SelectField · error', {
+        error: 'Choose a polity.',
+        label: 'Polity',
+        options: POLITIES,
+      }),
       one('SelectField · hidden label', {
         hideLabel: true,
         label: 'Polity',

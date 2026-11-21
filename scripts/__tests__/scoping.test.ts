@@ -59,6 +59,7 @@ describe('treeMethods', () => {
     expect(METHODS).toEqual([
       'addPerson',
       'addPin',
+      'addPinAt',
       'addPlace',
       'addRelationship',
       'findPerson',

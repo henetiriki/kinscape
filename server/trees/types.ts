@@ -34,6 +34,14 @@ export type PersonGroup = {
 export type PinGroup = {
   /** Saves a new Pin; `not-found` if its Person or Place is not in the Tree. */
   create: (pin: PinInput) => Promise<Result<Pin, 'not-found'>>;
+  /**
+   * Saves a new Place and a Pin at it, or neither; `not-found` if the Person is not in the Tree. A
+   * repeat of the same ids returns the Pin saved first.
+   */
+  createAt: (
+    pin: PinInput,
+    place: PlaceInput
+  ) => Promise<Result<Pin, 'not-found'>>;
   get: (id: PinId) => Promise<Pin | undefined>;
   /** Each Pin comes with its span (PIN-04). */
   list: () => Promise<SpannedPin[]>;

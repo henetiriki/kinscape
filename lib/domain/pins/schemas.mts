@@ -8,6 +8,7 @@ import {
 } from '#ks/lib/domain/ids/ids.mts';
 import { idField } from '#ks/lib/domain/ids/schemas.mts';
 import { MAX_NOTES } from '#ks/lib/domain/persons/schemas.mts';
+import { placeInputSchema } from '#ks/lib/domain/places/schemas.mts';
 import { textField } from '#ks/lib/domain/text/schemas.mts';
 
 /** The caps of a Pin's address and sources. A form uses them to set the same limit. */
@@ -45,4 +46,22 @@ export const pinInputSchema = z.strictObject({
   personId: idField(parsePersonId),
   placeId: idField(parsePlaceId),
   sources: textField(MAX_SOURCES).default(''),
+});
+
+/**
+ * The Place of a form Pin (PIN-02): a new point, with the id that the client made so a repeat saves
+ * no second Place, or the id of an existing Place.
+ */
+const formPlaceSchema = z.discriminatedUnion('kind', [
+  z.strictObject({ ...placeInputSchema.shape, kind: z.literal('new') }),
+  z.strictObject({
+    id: idField(parsePlaceId),
+    kind: z.literal('existing'),
+  }),
+]);
+
+/** What `createPinAction` takes: `pinInputSchema` with `place` in the place of `placeId`. */
+export const pinFormSchema = z.strictObject({
+  ...pinInputSchema.omit({ placeId: true }).shape,
+  place: formPlaceSchema,
 });

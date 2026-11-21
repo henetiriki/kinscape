@@ -5,6 +5,7 @@ import {
   EVENT_TYPES,
   MAX_ADDRESS,
   MAX_SOURCES,
+  pinFormSchema,
   pinInputSchema,
 } from '@ks/lib/domain/pins/schemas.mts';
 import { EVENT_ORDER } from '@ks/lib/ui/EventGlyph';
@@ -91,5 +92,41 @@ describe('pinInputSchema', () => {
 
   it('refuses a key it does not know', () => {
     expect(ok({ treeId: ID })).toBe(false);
+  });
+});
+
+// PIN-02
+describe('pinFormSchema', () => {
+  const form = (place: unknown) => {
+    const withoutPlaceId = Object.fromEntries(
+      Object.entries(pin()).filter(([key]) => key !== 'placeId')
+    );
+
+    return pinFormSchema.safeParse({ ...withoutPlaceId, place });
+  };
+
+  it('reads a new point with the Place id and a default precision', () => {
+    const result = form({ id: PLACE, kind: 'new', latitude: 1, longitude: 2 });
+
+    expect(result.success && result.data.place).toEqual({
+      id: PLACE,
+      kind: 'new',
+      latitude: 1,
+      longitude: 2,
+      precision: 'approximate',
+    });
+  });
+
+  it('reads an existing Place', () => {
+    expect(form({ id: PLACE, kind: 'existing' }).success).toBe(true);
+  });
+
+  it('refuses a placeId beside the place', () => {
+    expect(
+      pinFormSchema.safeParse({
+        ...pin(),
+        place: { id: PLACE, kind: 'existing' },
+      }).success
+    ).toBe(false);
   });
 });

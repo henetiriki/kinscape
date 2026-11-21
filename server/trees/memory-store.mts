@@ -51,7 +51,7 @@ const identityOf = (issuer: string, subject: string) =>
 
 /**
  * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
- * A seed Tree may hold People and Relationships, saved at version 1. The eight writes refuse a Tree
+ * A seed Tree may hold People and Relationships, saved at version 1. The nine writes refuse a Tree
  * in `readOnly` as they refuse a Tree the Account may not access. The list reads of a Tree in
  * `failing` throw.
  */
@@ -240,6 +240,19 @@ export const memoryStore = (
     return ok(structuredClone(next));
   };
 
+  const addPin: TreeStore['addPin'] = async ({ pin, ...scope }) => {
+    const pinned = pinnable(scope, pin);
+
+    return savedOrNotFound(
+      added(scope, pinsOf(scope), pinned?.id, pinned ?? pin)
+    );
+  };
+
+  const addPlace: TreeStore['addPlace'] = async ({ place, ...scope }) =>
+    savedOrNotFound(
+      added(scope, placesOf(scope), parsePlaceId(place.id), place)
+    );
+
   return {
     addAccount: async ({ issuer, subject, treeName }) => {
       const identity = identityOf(issuer, subject);
@@ -266,17 +279,29 @@ export const memoryStore = (
         parsePersonId(person.id) === undefined ? undefined : person.id,
         person
       ),
-    addPin: async ({ pin, ...scope }) => {
-      const pinned = pinnable(scope, pin);
+    addPin,
+    addPinAt: async ({ pin, place, ...scope }) => {
+      const placeId = parsePlaceId(place.id);
+      const existed =
+        placeId !== undefined && placesOf(scope)?.has(placeId) === true;
+      const placed = await addPlace({ ...scope, place });
 
-      return savedOrNotFound(
-        added(scope, pinsOf(scope), pinned?.id, pinned ?? pin)
-      );
+      if (!placed.ok) {
+        return placed;
+      }
+
+      const saved = await addPin({
+        ...scope,
+        pin: { ...pin, placeId: place.id },
+      });
+
+      if (!saved.ok && !existed) {
+        placesOf(scope)?.delete(placeId as PlaceId);
+      }
+
+      return saved;
     },
-    addPlace: async ({ place, ...scope }) =>
-      savedOrNotFound(
-        added(scope, placesOf(scope), parsePlaceId(place.id), place)
-      ),
+    addPlace,
     addRelationship: async ({ relationship, ...scope }) =>
       savedOrNotFound(
         added(

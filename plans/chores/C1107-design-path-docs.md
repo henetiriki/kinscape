@@ -46,6 +46,17 @@ Item 18 puts "A Button with an `href` has no disabled state" in the states parag
 
 **Answer: A** (@henetiriki)
 
+**D6 · When to run steps 3 to 5** · Decides: Tech lead
+
+The design system artifact holds the bundle of the #863 branch (`3160ca5`), with `CountMarker` and `PinFan`. #863 has not merged. A publish from this branch sends `bundle.js`, `bundle.css`, `index.d.ts` and `README.md` without them.
+
+- **A.** Wait for #863. After it merges, merge `main` into this branch, then run steps 3 to 5.
+- **B.** Publish now. The #863 session publishes again before its boards work on the canvas.
+- **C.** Merge the #863 branch into this branch and publish both.
+- **Other:** your own.
+
+**Answer: A** (Tech lead)
+
 ## Files that change
 
 | File                                                                                               | New / changed | What                                                                              |

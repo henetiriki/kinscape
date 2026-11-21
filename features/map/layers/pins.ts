@@ -2,6 +2,7 @@
 'use client';
 
 import type { Feature, FeatureCollection, Point } from 'geojson';
+import type { ExpressionSpecification } from 'maplibre-gl';
 
 import type { Layer } from '@ks/features/map/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
@@ -24,6 +25,7 @@ const PREFIX = 'pin-';
 
 const featureOf = ({
   eventType,
+  id,
   latitude,
   longitude,
   span,
@@ -31,6 +33,7 @@ const featureOf = ({
   geometry: { coordinates: [longitude, latitude], type: 'Point' },
   properties: {
     eventType,
+    id,
     validFrom: span.validFrom,
     validTo: span.validTo,
   },
@@ -40,7 +43,8 @@ const featureOf = ({
 /**
  * The "Pins" row: one symbol for each Pin at the position of its Place. The Map date only changes
  * the filter, so the source holds every Pin and no request is sent (NFR-01). Pins on one Place
- * overlap (PIN-06).
+ * overlap (PIN-06). Two circles under the symbols draw the selection ring; their filter keeps only
+ * the open Pin (PIN-02), so no ring shows while none is open.
  */
 export const pinsLayer = (pins: MapPin[]): Layer => {
   const data: FeatureCollection<Point> = {
@@ -51,13 +55,47 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
   return {
     description: (day: Day) =>
       `${pins.filter(({ span }) => isCurrentOn(span, day)).length} of ${pins.length} true on this date`,
-    filters: day => ({ pins: spanFilter(day) }),
+    filters: (day, open) => {
+      const ring: ExpressionSpecification = [
+        'all',
+        spanFilter(day),
+        ['==', ['get', 'id'], open ?? ''],
+      ];
+
+      return {
+        pins: spanFilter(day),
+        'pins-halo': ring,
+        'pins-selected': ring,
+      };
+    },
     icons: Object.fromEntries(
       EVENT_ORDER.map(event => [`${PREFIX}${event}`, EVENT_PATHS[event]])
     ),
     id: 'pins',
     label: 'Pins',
     layers: [
+      {
+        id: 'pins-halo',
+        paint: {
+          'circle-blur': map['pin-halo'].blur,
+          'circle-color': map['pin-halo'].colour,
+          'circle-opacity': map['pin-halo'].opacity,
+          'circle-radius': map.selected.radius,
+        },
+        source: 'pins',
+        type: 'circle',
+      },
+      {
+        id: 'pins-selected',
+        paint: {
+          'circle-color': 'transparent',
+          'circle-radius': map.selected.radius,
+          'circle-stroke-color': map.selected.colour,
+          'circle-stroke-width': map.selected.width,
+        },
+        source: 'pins',
+        type: 'circle',
+      },
       {
         id: 'pins',
         layout: {
@@ -75,6 +113,7 @@ export const pinsLayer = (pins: MapPin[]): Layer => {
         type: 'symbol',
       },
     ],
+    select: ['pins'],
     sources: { pins: { data, type: 'geojson' } },
   };
 };

@@ -177,7 +177,9 @@ const formatDate = (date: string): string => {
     .join(' ');
 };
 
-export const formatFuzzyDate = (date: FuzzyDate): string => {
+export const formatFuzzyDate = (
+  date: Pick<FuzzyDate, 'date1' | 'date2' | 'qualifier'>
+): string => {
   const first = formatDate(date.date1);
 
   if (date.date2 !== undefined) {

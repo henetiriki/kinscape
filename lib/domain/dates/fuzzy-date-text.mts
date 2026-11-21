@@ -39,7 +39,9 @@ const spoken = (date: string): string => {
 };
 
 /** A plain reading of a parsed date, such as `Between 1850 and 1855`. */
-export const readFuzzyDate = (date: FuzzyDate): string => {
+export const readFuzzyDate = (
+  date: Pick<FuzzyDate, 'date1' | 'date2' | 'qualifier'>
+): string => {
   const first = spoken(date.date1);
 
   if (date.qualifier === 'BET')

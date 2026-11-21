@@ -1,4 +1,13 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
+
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Layer } from '@ks/features/map/types';
@@ -6,7 +15,16 @@ import type { Layer } from '@ks/features/map/types';
 const shell = vi.hoisted(() => vi.fn());
 
 vi.mock('@ks/features/map', async () => ({
-  MapShell: (props: { layers: Layer[]; toast?: unknown }) => {
+  MapShell: (props: {
+    layers: Layer[];
+    pin?: {
+      popup: (
+        form: 'floating' | 'inline',
+        place?: { x: number; y: number }
+      ) => ReactNode;
+    };
+    toast?: unknown;
+  }) => {
     shell(props);
 
     return (
@@ -19,6 +37,7 @@ vi.mock('@ks/features/map', async () => ({
           </p>
         ))}
         {props.toast as never}
+        {props.pin?.popup('floating', { x: 10, y: 20 })}
       </div>
     );
   },
@@ -32,10 +51,13 @@ import { toDay } from '@ks/lib/domain/boundaries/model.mts';
 
 // PIN-03, NFR-01. Data is synthetic.
 const pinOf = (id: number, from: string, to: null | string) => ({
+  date1: from.slice(0, 4),
+  date2: to === null ? undefined : String(Number(to.slice(0, 4)) - 1),
   eventType: 'residence',
   id: `01900000-0000-7000-b000-00000000000${id}`,
   latitude: -33.9,
   longitude: 18.4,
+  qualifier: to === null ? 'EXACT' : 'FROM',
   span: { validFrom: toDay(from), validTo: to === null ? null : toDay(to) },
 });
 const PINS = [
@@ -177,5 +199,166 @@ describe('MapWithPins', () => {
       true
     );
     window.matchMedia = desktop;
+  });
+});
+
+// PIN-02, #861 D3. Data is synthetic.
+describe('the Pin popup', () => {
+  const [FIRST, SECOND] = PINS;
+  const DETAILS = {
+    address: 'Farm Example, district Example',
+    eventType: 'residence',
+    givenNames: 'Example',
+    surname: 'Person',
+  };
+  const answer = (url: string) => {
+    if (url === '/data/pins') return Promise.resolve(Response.json(PINS));
+
+    return Promise.resolve(
+      url === `/data/pins/${FIRST.id}`
+        ? Response.json(DETAILS)
+        : Response.json({ ...DETAILS, givenNames: 'Other' })
+    );
+  };
+  const lastShell = () => shell.mock.calls.at(-1)![0];
+  const click = async (id: string) => {
+    await waitFor(() => {
+      expect(captions()).toBe(LOADED);
+    });
+    act(() => lastShell().onOpenPin(id));
+  };
+
+  it('sends no request for details until a Pin is clicked, then one for that Pin', async () => {
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await waitFor(() => {
+      expect(captions()).toBe(LOADED);
+    });
+    expect(fetchStub).toHaveBeenCalledExactlyOnceWith('/data/pins');
+    expect(lastShell().pin).toBeUndefined();
+
+    await click(FIRST.id);
+    await screen.findByText('Farm Example, district Example');
+    expect(fetchStub.mock.calls.map(([url]) => url)).toEqual([
+      '/data/pins',
+      `/data/pins/${FIRST.id}`,
+    ]);
+  });
+
+  it('shows the Person, event type, both dates and the address', async () => {
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+
+    expect(
+      await screen.findByRole('heading', { name: 'Example Person' })
+    ).toBeTruthy();
+    expect(screen.getByText('Residence')).toBeTruthy();
+    expect(screen.getByText('From 1840 to 1854')).toBeTruthy();
+    expect(screen.getByText('FROM 1840 TO 1854')).toBeTruthy();
+    expect(screen.getByText('Farm Example, district Example')).toBeTruthy();
+    expect(lastShell().pin.open).toEqual({
+      id: FIRST.id,
+      position: [18.4, -33.9],
+    });
+    expect(lastShell().pin.span).toEqual(FIRST.span);
+  });
+
+  it('shows the event type and both date lines before the details arrive', async () => {
+    fetchStub.mockImplementation((url: string) =>
+      url === '/data/pins' ? answer(url) : new Promise(() => {})
+    );
+    renderMap();
+    await click(FIRST.id);
+
+    expect(screen.getByText('Residence')).toBeTruthy();
+    expect(screen.getByText('From 1840 to 1854')).toBeTruthy();
+    expect(screen.getByText('FROM 1840 TO 1854')).toBeTruthy();
+    expect(screen.queryByRole('heading')).toBeNull();
+  });
+
+  it('says the details did not load, and asks again on "Try again"', async () => {
+    let failing = true;
+
+    fetchStub.mockImplementation((url: string) =>
+      url !== '/data/pins' && failing
+        ? Promise.resolve(new Response(null, { status: 404 }))
+        : answer(url)
+    );
+    renderMap();
+    await click(FIRST.id);
+
+    expect(
+      (await screen.findByText("Couldn't load this Pin")).closest(
+        '[role=alert]'
+      )
+    ).toBeTruthy();
+    expect(screen.getByText('From 1840 to 1854')).toBeTruthy();
+
+    failing = false;
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    expect(
+      await screen.findByRole('heading', { name: 'Example Person' })
+    ).toBeTruthy();
+    expect(
+      fetchStub.mock.calls.filter(([url]) => url === `/data/pins/${FIRST.id}`)
+    ).toHaveLength(2);
+  });
+
+  it('replaces the popup when another Pin is clicked', async () => {
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+    await screen.findByRole('heading', { name: 'Example Person' });
+
+    act(() => lastShell().onOpenPin(SECOND.id));
+    expect(
+      await screen.findByRole('heading', { name: 'Other Person' })
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole('heading', { name: 'Example Person' })
+    ).toBeNull();
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  });
+
+  it('closes the popup, and ignores a click on a Pin the Tree does not hold', async () => {
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+    await screen.findByRole('heading', { name: 'Example Person' });
+
+    act(() => lastShell().onClosePin());
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(lastShell().pin).toBeUndefined();
+
+    act(() => lastShell().onOpenPin('missing'));
+    expect(lastShell().pin).toBeUndefined();
+  });
+
+  it('closes from the Close button of the popup', async () => {
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+    fireEvent.click(await screen.findByRole('button', { name: 'Close' }));
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  // NFR-05
+  it('draws the inline form when the shell gives no place', async () => {
+    fetchStub.mockImplementation(answer);
+    renderMap();
+    await click(FIRST.id);
+
+    const { popup } = lastShell().pin;
+
+    render(<div data-testid='inline'>{popup('inline')}</div>, {
+      wrapper: QueryProvider,
+    });
+    expect(
+      await within(screen.getByTestId('inline')).findByRole('group', {
+        name: 'Pin details',
+      })
+    ).toBeTruthy();
   });
 });

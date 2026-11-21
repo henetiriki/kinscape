@@ -23,8 +23,8 @@ export type IconImage = {
 export type Layer = {
   /** The help text under the layer's row in the Layers panel; a function gives it for the Map date. */
   description: ((day: Day) => string) | string;
-  /** The filter for each drawing layer id on `day`. */
-  filters: (day: Day) => Record<string, ExpressionSpecification>;
+  /** The filter for each drawing layer id on `day`. `open` is the id of the Pin whose popup is open. */
+  filters: (day: Day, open?: string) => Record<string, ExpressionSpecification>;
   /**
    * The icons the layer's symbols use: an image id mapped to a 24 × 24 path. The map draws each
    * as an SDF image when the style asks for it.
@@ -34,6 +34,8 @@ export type Layer = {
   /** The name on the layer's row in the Layers panel. */
   label: string;
   layers: DrawingLayer[];
+  /** The ids of the drawing layers a click can pick. The `id` property of the picked feature is what a click reports. */
+  select?: string[];
   sources: Record<string, SourceSpecification>;
 };
 
@@ -46,6 +48,9 @@ export type MapHandle = {
   zoomIn: () => void;
   zoomOut: () => void;
 };
+
+/** The Pin whose popup is open: its id and its position, as longitude and latitude. */
+export type OpenPin = { id: string; position: [number, number] };
 
 /** Whether the map zoom is at its minimum or maximum. */
 export type ZoomLimits = { atMax: boolean; atMin: boolean };

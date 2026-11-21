@@ -12,6 +12,7 @@ import type {
   Layer,
   LayerId,
   MapHandle,
+  OpenPin,
   ZoomLimits,
 } from '@ks/features/map/types';
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
@@ -46,7 +47,11 @@ export const MapView = ({
   handle,
   layers,
   mapDay,
+  onEmptyClick,
+  onOpenPin,
+  onOpenPoint,
   onZoomLimits,
+  open,
   padding,
   visible,
 }: {
@@ -55,8 +60,16 @@ export const MapView = ({
   /** The layers the map draws; the Map date filters each and `visible` shows or hides them. */
   layers: Layer[];
   mapDay: Day;
+  /** A click that picks no feature. */
+  onEmptyClick?: () => void;
+  /** A click on a feature of a layer's `select` ids, with the feature's `id` property. */
+  onOpenPin?: (id: string) => void;
+  /** The pixel point of the open Pin in the map, now and after each move; `null` once no Pin is open. */
+  onOpenPoint?: (point: { x: number; y: number } | null) => void;
   /** `MapView` calls it on load and after each zoom and resize, with whether the zoom is at a limit. */
   onZoomLimits?: (limits: ZoomLimits) => void;
+  /** The Pin whose popup is open. Its id goes to each layer's filters. */
+  open?: OpenPin;
   /** The free map area, from `freeArea`; the first view and the centre stay inside it. */
   padding: Padding;
   /** Each layer is on unless its entry is `false`. */
@@ -65,9 +78,17 @@ export const MapView = ({
   const container = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const onZoomLimitsRef = useRef(onZoomLimits);
+  const onEmptyClickRef = useRef(onEmptyClick);
+  const onOpenPinRef = useRef(onOpenPin);
+  const onOpenPointRef = useRef(onOpenPoint);
+  const selectRef = useRef<string[]>([]);
 
   useEffect(() => {
     onZoomLimitsRef.current = onZoomLimits;
+    onEmptyClickRef.current = onEmptyClick;
+    onOpenPinRef.current = onOpenPin;
+    onOpenPointRef.current = onOpenPoint;
+    selectRef.current = layers.flatMap(layer => layer.select ?? []);
   });
 
   useImperativeHandle(handle, () => ({
@@ -152,6 +173,20 @@ export const MapView = ({
     created.on('zoomend', reportLimits);
     created.on('resize', reportLimits);
     created.once('load', reportLimits);
+    // A click on a pickable feature opens it; a click that picks none is a click on empty map.
+    created.on('click', ({ point }) => {
+      const pickable = selectRef.current;
+      const hit =
+        pickable.length === 0
+          ? undefined
+          : created.queryRenderedFeatures(point, { layers: pickable })[0];
+
+      if (hit) {
+        onOpenPinRef.current?.(String(hit.properties.id));
+      } else {
+        onEmptyClickRef.current?.();
+      }
+    });
     map.current = created;
 
     // Only builds made for the browser tests (NEXT_PUBLIC_E2E=1) expose the map.
@@ -164,6 +199,8 @@ export const MapView = ({
   }, []);
 
   const { bottom, left, right, top } = padding;
+  const openId = open?.id;
+  const [openLongitude, openLatitude] = open?.position ?? [0, 0];
 
   useEffect(() => {
     // The form changed (a rotation, a resize): keep the centre in the free area.
@@ -249,7 +286,7 @@ export const MapView = ({
       });
 
       for (const layer of layers) {
-        const filters = layer.filters(mapDay);
+        const filters = layer.filters(mapDay, openId);
 
         for (const { id } of layer.layers) {
           current.setFilter(id, filters[id] ?? null);
@@ -273,7 +310,34 @@ export const MapView = ({
     return () => {
       current.off('load', apply);
     };
-  }, [layers, mapDay, visible]);
+  }, [layers, mapDay, openId, visible]);
+
+  // The popup follows its Pin: the point is read again after each move, pan, zoom and resize.
+  useEffect(() => {
+    const current = map.current;
+
+    /* v8 ignore next -- the effect above has created the map by now; the guard only narrows the type */
+    if (!current) return;
+
+    if (openId === undefined) {
+      onOpenPointRef.current?.(null);
+
+      return;
+    }
+
+    const report = () => {
+      const { x, y } = current.project([openLongitude, openLatitude]);
+
+      onOpenPointRef.current?.({ x, y });
+    };
+
+    report();
+    current.on('move', report);
+
+    return () => {
+      current.off('move', report);
+    };
+  }, [openId, openLatitude, openLongitude]);
 
   return <div className='map' ref={container} />;
 };

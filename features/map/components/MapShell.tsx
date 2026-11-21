@@ -2,12 +2,13 @@
 
 import type { ReactNode } from 'react';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type {
   Layer,
   LayerId,
   MapHandle,
+  OpenPin,
   ZoomLimits,
 } from '@ks/features/map/types';
 import type { Source } from '@ks/lib/domain/boundaries/types.ts';
@@ -35,6 +36,7 @@ import { ZoomControls } from '@ks/features/map/components/ZoomControls';
 import { polityLayer } from '@ks/features/map/layers/polities';
 import { hasBorders } from '@ks/lib/domain/map/coverage.mts';
 import { todayDay, yearOf } from '@ks/lib/domain/map/map-date.mts';
+import { isCurrentOn } from '@ks/lib/domain/validity/validity.mts';
 
 import styles from '@ks/features/map/components/MapShell.module.css';
 
@@ -43,7 +45,10 @@ export const MapShell = ({
   email,
   initial,
   layers,
+  onClosePin,
+  onOpenPin,
   onSignOut,
+  pin,
   sources,
   toast,
 }: {
@@ -55,7 +60,22 @@ export const MapShell = ({
   initial: string;
   /** The layers the map draws. */
   layers: Layer[];
+  /** A click on empty map, Esc, or a Map date that hides the open Pin. Keep its identity stable. */
+  onClosePin?: () => void;
+  /** A click on a Pin, with its id. */
+  onOpenPin?: (id: string) => void;
   onSignOut: () => Promise<unknown>;
+  /** The Pin whose popup is open. */
+  pin?: {
+    open: OpenPin;
+    /** `popup` draws the popup: floating at the `place` of the Pin on a desktop, `inline` in the date sheet on a phone. */
+    popup: (
+      form: 'floating' | 'inline',
+      place?: { x: number; y: number }
+    ) => ReactNode;
+    /** The days the Pin shows; the popup closes when the Map date leaves them. */
+    span: Validity;
+  };
   sources: Source[];
   /** A `Toast` for the result of an action, at the bottom centre above the dock. */
   toast?: ReactNode;
@@ -76,6 +96,27 @@ export const MapShell = ({
     atMax: false,
     atMin: false,
   });
+
+  // The pixel point of the open Pin in the map, which the popup follows.
+  const [point, setPoint] = useState<{ x: number; y: number } | null>(null);
+  const shown = pin !== undefined;
+  const hidden = pin !== undefined && !isCurrentOn(pin.span, mapDay);
+
+  useEffect(() => {
+    if (hidden) onClosePin?.();
+  }, [hidden, onClosePin]);
+
+  useEffect(() => {
+    if (!shown) return;
+
+    const close = ({ key }: KeyboardEvent) => {
+      if (key === 'Escape') onClosePin?.();
+    };
+
+    document.addEventListener('keydown', close);
+
+    return () => document.removeEventListener('keydown', close);
+  }, [onClosePin, shown]);
 
   const credits = (
     <Credits
@@ -117,6 +158,7 @@ export const MapShell = ({
               <div className={styles.credits}>{credits}</div>
               <DateDock
                 day={mapDay}
+                details={pin?.popup('inline')}
                 hasBorders={borders}
                 lastDay={lastDay}
                 onChange={setMapDay}
@@ -173,10 +215,15 @@ export const MapShell = ({
           handle={map}
           layers={layers}
           mapDay={mapDay}
+          onEmptyClick={onClosePin}
+          onOpenPin={onOpenPin}
+          onOpenPoint={setPoint}
           onZoomLimits={setLimits}
+          open={pin?.open}
           padding={freeArea(phone)}
           visible={visible}
         />
+        {!phone && pin && point && pin.popup('floating', point)}
         {toast && <div className={styles.toast}>{toast}</div>}
       </MapLayout>
       {phone && (

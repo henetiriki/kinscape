@@ -102,6 +102,7 @@
   left: var(--x);
   position: absolute;
   top: var(--y);
+  z-index: var(--z-furniture);
   translate: calc(-100% - var(--layout-pin-popup-gap))
     calc(-1 * var(--layout-popup-point-y));
 }

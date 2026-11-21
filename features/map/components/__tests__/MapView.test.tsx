@@ -21,6 +21,8 @@ const maplibre = vi.hoisted(() => {
     off: vi.fn(),
     on: vi.fn(),
     once: vi.fn(),
+    project: vi.fn(() => ({ x: 0, y: 0 })),
+    queryRenderedFeatures: vi.fn(() => [] as unknown[]),
     remove: vi.fn(),
     setFilter: vi.fn(),
     setLayoutProperty: vi.fn(),
@@ -44,6 +46,8 @@ const maplibre = vi.hoisted(() => {
         off = map.off;
         on = map.on;
         once = map.once;
+        project = map.project;
+        queryRenderedFeatures = map.queryRenderedFeatures;
         remove = map.remove;
         setFilter = map.setFilter;
         setLayoutProperty = map.setLayoutProperty;
@@ -245,7 +249,7 @@ describe('MapView', () => {
 
     const events = maplibre.map.on.mock.calls.map(([event]) => event);
 
-    expect(events).toEqual(['zoomend', 'resize']);
+    expect(events).toEqual(['zoomend', 'resize', 'click']);
 
     const [, report] = maplibre.map.on.mock.calls[0];
 
@@ -399,6 +403,144 @@ describe('MapView', () => {
       'visibility',
       'none'
     );
+  });
+
+  describe('Pins', () => {
+    const picking: Layer = {
+      description: 'd',
+      filters: (day, open) => ({
+        'pick-ring': ['==', ['literal', `${day}:${open}`], 'x'] as never,
+      }),
+      id: 'pick',
+      label: 'Pick',
+      layers: [
+        { id: 'pick-ring', source: 'pick', type: 'circle' },
+        { id: 'pick-symbols', source: 'pick', type: 'symbol' },
+      ],
+      select: ['pick-symbols'],
+      sources: { pick: { data: '/pick.geojson', type: 'geojson' } },
+    };
+    const handler = (event: string) =>
+      maplibre.map.on.mock.calls.find(([name]) => name === event)![1];
+    const view = (props: Partial<Parameters<typeof MapView>[0]> = {}) =>
+      render(
+        <MapView
+          layers={[picking]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+          {...props}
+        />
+      );
+
+    // PIN-02
+    it('reports the id of the Pin under a click', () => {
+      const onOpenPin = vi.fn();
+      const onEmptyClick = vi.fn();
+
+      view({ onEmptyClick, onOpenPin });
+      maplibre.map.queryRenderedFeatures.mockReturnValueOnce([
+        { properties: { id: 'p1' } },
+      ]);
+      handler('click')({ point: { x: 3, y: 4 } });
+
+      expect(maplibre.map.queryRenderedFeatures).toHaveBeenCalledWith(
+        { x: 3, y: 4 },
+        { layers: ['pick-symbols'] }
+      );
+      expect(onOpenPin).toHaveBeenCalledWith('p1');
+      expect(onEmptyClick).not.toHaveBeenCalled();
+    });
+
+    it('reports a click on empty map, and ignores a click when nothing listens', () => {
+      const onEmptyClick = vi.fn();
+      const { rerender } = view({ onEmptyClick });
+
+      handler('click')({ point: { x: 1, y: 1 } });
+      expect(onEmptyClick).toHaveBeenCalledOnce();
+
+      maplibre.map.queryRenderedFeatures.mockReturnValueOnce([
+        { properties: { id: 'p1' } },
+      ]);
+      expect(() => handler('click')({ point: { x: 1, y: 1 } })).not.toThrow();
+      rerender(
+        <MapView
+          layers={[picking]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(() => handler('click')({ point: { x: 1, y: 1 } })).not.toThrow();
+    });
+
+    it('asks no layer when no layer can be picked', () => {
+      view({ layers });
+      handler('click')({ point: { x: 1, y: 1 } });
+
+      expect(maplibre.map.queryRenderedFeatures).not.toHaveBeenCalled();
+    });
+
+    // PIN-02: the popup stays at its Pin
+    it('reports the pixel point of the open Pin now and after each move, then none', () => {
+      const onOpenPoint = vi.fn();
+      const open = { id: 'p1', position: [18.4, -33.9] as [number, number] };
+
+      maplibre.map.project.mockReturnValue({ x: 10, y: 20 });
+
+      const { rerender } = view({ onOpenPoint, open });
+
+      expect(maplibre.map.project).toHaveBeenCalledWith([18.4, -33.9]);
+      expect(onOpenPoint).toHaveBeenLastCalledWith({ x: 10, y: 20 });
+
+      maplibre.map.project.mockReturnValue({ x: 30, y: 40 });
+      handler('move')();
+      expect(onOpenPoint).toHaveBeenLastCalledWith({ x: 30, y: 40 });
+
+      rerender(
+        <MapView
+          layers={[picking]}
+          mapDay={FIVE}
+          onOpenPoint={onOpenPoint}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(maplibre.map.off).toHaveBeenCalledWith(
+        'move',
+        expect.any(Function)
+      );
+      expect(onOpenPoint).toHaveBeenLastCalledWith(null);
+      maplibre.map.project.mockReturnValue({ x: 0, y: 0 });
+    });
+
+    // PIN-02
+    it('gives the open Pin to the filters, so the ring follows it', () => {
+      const { rerender } = view({
+        open: { id: 'p1', position: [18.4, -33.9] },
+      });
+
+      expect(maplibre.map.setFilter).toHaveBeenCalledWith('pick-ring', [
+        '==',
+        ['literal', `${FIVE}:p1`],
+        'x',
+      ]);
+
+      maplibre.map.setFilter.mockClear();
+      rerender(
+        <MapView
+          layers={[picking]}
+          mapDay={FIVE}
+          padding={padding}
+          visible={on}
+        />
+      );
+      expect(maplibre.map.setFilter).toHaveBeenCalledWith('pick-ring', [
+        '==',
+        ['literal', `${FIVE}:undefined`],
+        'x',
+      ]);
+    });
   });
 
   // MAP-05

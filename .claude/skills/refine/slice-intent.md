@@ -10,7 +10,7 @@ Slice an accepted Intent into **Specs**. Each Spec is small enough for one plan 
    - `Intent: M<n> <name>` is a milestone's Intent. Its Specs get `M<n>.<j>`. Read the milestone in `docs/requirements.md` › _Build milestones_. Take its requirement IDs, their acceptance checks and the _Open questions_ that touch it.
    - `Intent: M<n>.<k> <name>` is a child Intent. Its Specs get `M<n>.<k>.<j>`.
    - Any other Intent gets a short prefix (`DM.1`). Ask the user for it.
-4. Find an earlier slice list in the comments. Its first line is `Slice list: Specs`. A list with no first line is a Spec list. Ignore a list with the first line `Slice list: child Intents`. If you find a Spec list, start from it. Ask only about what changed.
+4. Find an earlier slice list in the comments. Its first line is `Slice list: Specs`. Ignore each other comment, including an old list with no first line. If you find a Spec list, start from it. Ask only about what changed.
 5. Read `docs/requirements.md` (the named requirements, _Key concepts_, _Suggested tech approach_), `docs/how-we-work.md` and `design/DESIGN.md`.
 6. Read the repository as needed.
 7. If the Intent isn't clear enough to design from, say so and stop: the PO answers on the Intent. For a milestone's Intent, a question only the PO can answer becomes a PO decision on the Spec it affects.
@@ -45,8 +45,8 @@ Confirm the slices before you draft.
 - For each slice, list what it needs from the other slices. List the blocker of each need. Set each link as [filing.md](filing.md) › Links says. Order the slices by need, not by number.
 - Every behaviour lands in exactly one slice, or you list it as carried forward.
 - After the user confirms the slices, ask "Post the slice list now?" as a question of its own. After a yes, write the list to a file outside the repo. Start it with the line `Slice list: Specs`.
-  - If the earlier Spec list exists, run `gh api --method PATCH repos/{owner}/{repo}/issues/comments/<id> --field body=@<file>`. The `<id>` ends the comment URL (`#issuecomment-<id>`). Post no second list.
-  - If not, run `gh issue comment <number> --body-file <file>`.
+  - If a comment starts with `Slice list: Specs`, run `gh api --method PATCH repos/{owner}/{repo}/issues/comments/<id> --field body=@<file>`. The `<id>` ends the comment URL (`#issuecomment-<id>`). Post no second list.
+  - If not, leave each old list as it is and run `gh issue comment <number> --body-file <file>`.
 - Without `gh`, print the list.
 
 ## Step 2: draft each Spec

@@ -108,7 +108,7 @@ Three lines say that the skill files no Intent with `gh`:
 
 ## Risks
 
-- The CI run of C1111 had its writes to `.claude/skills/` denied. On the same denial, the build builds the other rows, a local session builds the skill rows, and `## Deviations` records it.
+- The CI run of C1111 could not write to `.claude/skills/`. On the same denial, the build builds the other rows, a local session builds the skill rows, and `## Deviations` records it.
 - `docs/how-we-work.md`, `plans/README.md` and `design/CANVAS.md` are near their budgets. Item 9 allows a raised budget.
 - #1117 also edits `filing.md`. The PR that merges second rebases.
 - No unit test runs a skill, so review proves each skill check.
@@ -143,4 +143,9 @@ Three lines say that the skill files no Intent with `gh`:
 - The `how-we-work.md` budget is 1080 (was 1030). The `design/CANVAS.md` and `plans/README.md` edits fit their budgets.
 - The budgets are `SKILL.md` 940, `filing.md` 1000 and `slice-intent.md` 820. `spec.md` and `slice-milestone.md` fit the default 650, so `spec.md` has no entry.
 - `slice-milestone.md` skips a child that already exists, so a re-run files no duplicate.
-- `filing.md` stops if no milestone has the title `M<n> `.
+- `filing.md` stops if no milestone has the title `M<n> `. The call adds `?state=all`, so a closed milestone matches (#1121 review, tech lead).
+- The `filing.md` title and section are "File a child Intent", not "Filing …" (STE rule 8). The anchor is `#file-a-child-intent`.
+- "File a child Intent" sets a blocker link for each child that must close before another (_Links_ step 3).
+- Big: `slice-intent.md` edits only a comment whose first line is `Slice list: Specs`. A list with no first line is not a Spec list: #57 holds about 15 such lists. If no comment has the first line, the skill posts a new list. This changes D5 A (#1121 review, tech lead).
+- Big: `slice-milestone.md` starts the child number `<k>` after the highest `M<n>.<k>` in the title of any filed issue, Spec or Intent. Numbers from 1 clash with Specs such as `M2.1`. `docs/how-we-work.md` examples are `M2.16` and `M2.16.1` (#1121 review, tech lead).
+- `docs/how-we-work.md`: a child Intent starts approved, with no approver. The tech lead files it. The Loop table, the milestone row and the Tech lead role say so. The budget is 1110 (#1121 review, tech lead).

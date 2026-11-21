@@ -1,6 +1,6 @@
 ---
 name: refine
-description: Interview the user until you both agree on the idea. Then draft a KinScape Intent, the child Intents of a milestone, the Specs of an Intent, or a Chore, or refine a filed Spec, Chore or Bug. `gh` files a Spec, Chore, Bug or child Intent. The PO's Intent gets a prefilled form link. Use `/refine intent [idea]` (product owner), or `/refine intent M<n>`, `intent <number>`, `spec`, `chore` or `bug` (tech lead).
+description: Interview the user until you both agree on the idea. Then draft a KinScape Intent, the child Intents of a milestone, the Specs of an Intent or a Chore. Or refine a filed Spec, Chore or Bug. `gh` files a Spec, Chore, Bug or child Intent. The PO's Intent gets a prefilled form link. Use `/refine intent [idea]` (product owner), or `/refine intent M<n>`, `intent <number>`, `spec`, `chore` or `bug` (tech lead).
 disable-model-invocation: true
 argument-hint: intent [your idea | M<n> | Intent number] | spec <Spec number> | chore [your idea or Chore number] | bug <number or description>
 ---

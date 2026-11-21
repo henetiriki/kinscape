@@ -26,7 +26,7 @@ Ask as `SKILL.md` says. Typical branches:
 Confirm the children before you draft.
 
 - Each child is one outcome that the PO can check.
-- Give each the title `Intent: M<n>.<k> <name>`. Number the children from 1. Keep the number of each child that is already filed.
+- Give each the title `Intent: M<n>.<k> <name>`. Run `gh issue list --state all --limit 1000 --json number,title`. Start `<k>` after the highest `M<n>.<k>` in a title, Spec or Intent. Keep the number of each child that is already filed.
 - Every requirement ID and acceptance check of the milestone lands in exactly one child, or you list it as carried forward.
 - Give each a title, its requirement IDs, and the check that shows its outcome. Say which comes first and why.
 - After the user confirms the children, ask "Post the slice list now?" as a question of its own. After a yes, write the list to a file outside the repo. Start it with the line `Slice list: child Intents`.
@@ -44,4 +44,4 @@ Write each decision in the _Open questions_ box in the [decision format](../../.
 
 Do not file a child twice. For each child, run `gh issue list --type Intent --state all --search "M<n>.<k> in:title"`. Skip a child that exists.
 
-File each other child as [Filing a child Intent](filing.md#filing-a-child-intent) says. The child starts as `status: ready-for-dev`. Stop there.
+File each other child as [File a child Intent](filing.md#file-a-child-intent) says. The child starts as `status: ready-for-dev`. Stop there.

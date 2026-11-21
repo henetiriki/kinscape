@@ -354,7 +354,7 @@ describe('run', () => {
         files: [{ filename: path }, { filename: 'plans/chores/C1-x.md' }],
         plans: {
           'plans/chores/C1-x.md': PLAN_WITH(`| \`${path}\` | x |`),
-          // plans/README.md is read as a plan too; it names no row.
+          // `run` reads plans/README.md as a plan too; its row is not a hand-back path.
           'plans/README.md': PLAN_WITH('| `a.md` | x |'),
         },
       })

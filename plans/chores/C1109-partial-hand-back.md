@@ -17,6 +17,8 @@ This Chore is a full hand-back under the rules on `main`, because it edits `.git
 
 Step 1 makes `HAND_BACK` the list, and step 2 names it as the source. A Constraint says that `claude-hand-back.yml` still reads the script and `.github/CODEOWNERS` from the base commit.
 
+Option A reverses the matcher decision of [C443](C443-hand-back-label.md) and keeps no part of [C585](C585-codeowners-catch-all.md)'s test: #1109 asks for the change.
+
 - **A.** `HAND_BACK` alone. The script stops reading `.github/CODEOWNERS`. `run` and `matcher` take no CODEOWNERS text, and the CODEOWNERS parser tests go. The workflow still checks out the base commit, so a PR cannot change the list that runs. Its comment on lines 5 and 6 names `HAND_BACK`, not CODEOWNERS. Cost: about 40 fewer lines in the script and the tests.
 - **B.** A path is a hand-back path if it matches `HAND_BACK` and a CODEOWNERS line after the catch-all. The script still reads CODEOWNERS, as the Constraint says. `claude-build.yml` adds `.github/CODEOWNERS` to the sparse checkout of the `approve` job, and `agent-approve.mts` reads the file. Cost: two lists to keep in step, and one more workflow edit.
 - **Other:** your own.
@@ -94,3 +96,5 @@ The issue does not name these lines. Each one says that a CODEOWNERS line hands 
 - `scripts/word-count.mts` and its test change: the `build.md` budget goes from 530 to 600 words for the new `## Hand-back` section.
 - The `build-local/SKILL.md` bullet also covers a PR that had no CI build: the tech lead builds every hand-back row then.
 - `docs/repo-settings.md` has realigned table columns. `npm run format` requires them after the line 28 edit.
+- Three more lines said that CI builds nothing on a hand-back PR (review finding): the `hand-back` label text in `scripts/github/labels.sh`, a comment in `scripts/__tests__/load-agent-files.test.ts`, and the description of `build-local/SKILL.md`.
+- The tech lead applies the new label text to GitHub with `scripts/setup-github.sh` after the merge. `check-github.sh` reports the difference until then.

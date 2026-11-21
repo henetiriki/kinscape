@@ -1,6 +1,6 @@
 ---
 name: build-local
-description: Build an approved KinScape plan PR in this checkout, as the tech lead. Use `/build-local <PR number>` for a plan PR that CI cannot build, such as a hand-back.
+description: Build an approved KinScape plan PR in this checkout, as the tech lead. Use `/build-local <PR number>` for a plan PR that CI cannot fully build, such as a hand-back.
 disable-model-invocation: true
 argument-hint: <PR number>
 ---
@@ -41,7 +41,7 @@ Rules for every step:
 ## Overrides
 
 - Use the local `gh` token.
-- Start from the last CI commit. Build the hand-back rows that the CI comment lists, or all of them if no CI build ran. A hand-back path that the plan's table does not name is a big departure: ask the tech lead. After the ready check, run `gh pr ready <n>`.
+- Start from the last CI commit. If no CI build ran, build all hand-back rows. If not, build the hand-back rows that the CI comment lists. A hand-back path that the plan's table does not name is a big departure: ask the tech lead. After the ready check, run `gh pr ready <n>`.
 - If the browser cannot start for `npm run e2e`, write that under Evidence. Name the CI e2e job as the check.
 - If the plan changes a design system input, run the steps that the [design-system rule](../../../plans/README.md#design-system) gives a local session. If a step needs a claude.ai sign-in that the session lacks, ask the tech lead. Then leave the PR a draft.
 - If the session ran every design-system step, ignore the design-system bullet of `build.md`.

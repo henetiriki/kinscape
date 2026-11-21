@@ -2,7 +2,7 @@ name: 'Claude: Build'
 
 # The title shown for each run in the Actions tab:
 #   "Build: <title>"         - the tech lead approved a draft plan PR, so the approval is recorded and Claude builds it
-#                              (a `hand-back` PR whose plan has no row that CI can build is recorded and commented on, but not built; the title is the same)
+#                              (`approve` records a `hand-back` PR whose plan has no row that CI can build and comments on the PR, but Claude does not build it; the title is the same)
 #   "Skipped Build: <title>" - anything else, so nothing runs
 # This repeats the `if:` of the `approve` job (run-name cannot see job results): change them together.
 run-name: >-
@@ -43,10 +43,10 @@ jobs:
   # (plans/README.md#plan-pr-flow; the build drops the suffix). It records the approval and the
   # owner's answers to the plan's decisions in the plan and commits it to the PR branch
   # (scripts/agent-approve.mts), before any model runs. With a decision open it comments which and
-  # `build` is skipped; a `hand-back` PR (plans/README.md#hand-back) whose plan has no row that is
-  # not a hand-back path gets a comment that the tech lead builds it, and `build` is skipped. It also
-  # sets the issue's status label from the outcome (`ready-for-agent` on go, `ready-for-dev` on stop;
-  # a `hand-back` PR's issue is left alone on a stop). The
+  # the workflow skips `build`. A `hand-back` PR (plans/README.md#hand-back) whose plan has no row
+  # that is not a hand-back path gets a comment that the tech lead builds it, and the workflow skips
+  # `build`. It also sets the issue's status label from the outcome (`ready-for-agent` on go,
+  # `ready-for-dev` on stop). On a stop it does not change the issue of a `hand-back` PR. The
   # review approved one commit: a PR whose head has moved since stops too, and `head` names the
   # commit the build must fetch. The script comes from main and the PR head is never fetched: it
   # reads and writes the plan through the API.

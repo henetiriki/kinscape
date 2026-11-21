@@ -44,7 +44,7 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
 
 ## Hand-back
 
-<a id="hand-back"></a>A hand-back path is a pattern of `HAND_BACK` in `scripts/hand-back.mts`. If the plan's Files that change table names one, do these steps:
+<a id="hand-back"></a>If the plan's Files that change table names a [hand-back path](../../plans/README.md#hand-back), do these steps:
 
 1. Build and push the other rows. Edit no hand-back path.
 2. If the build needs a hand-back path that the table does not name, add its row to the table. Write a line under `## Deviations`. Edit no hand-back path.

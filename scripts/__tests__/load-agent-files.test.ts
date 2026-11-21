@@ -612,7 +612,7 @@ describe('the main_files input of the run-claude action', () => {
     });
   });
 
-  // These callers check out a PR branch, and they skip a hand-back PR. A plan run checks out main.
+  // These callers check out a PR branch. All but the build skip a hand-back PR. A plan run checks out main.
   // A respond run sets no files, because tag mode fetches the PR branch after the copy.
   describe('the callers', () => {
     const given = (file: string) =>

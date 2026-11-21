@@ -12,7 +12,7 @@ status: ready-for-dev|10B981|Approved, a person picks it up
 status: ready-for-agent|0EA5E9|Claude plans it in GitHub Actions
 status: blocked|7F1D1D|Waiting on someone outside the team, or a failed agent run
 # Applied by claude-hand-back.yml to a pull request that changes a hand-back path
-hand-back|B60205|The tech lead builds this: it changes a hand-back path
+hand-back|B60205|It changes a hand-back path: the tech lead builds that part
 # Added by the tech lead to a pull request to start claude-fix-review.yml; the run removes it
 fix-review|FBCA04|Claude fixes the review's findings on this PR
 # Added by the tech lead to a pull request to start claude-resolve-conflict.yml; the run removes it

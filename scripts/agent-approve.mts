@@ -4,7 +4,7 @@ import { appendFileSync } from 'node:fs';
 import type { Gh } from '#ks/scripts/types.ts';
 
 import { approve } from '#ks/scripts/approve-plan.mts';
-import { isHandBack, tablePaths } from '#ks/scripts/hand-back.mts';
+import { isHandBack, LABEL, tablePaths } from '#ks/scripts/hand-back.mts';
 
 // Records a plan's approval before any model runs (see claude-build.yml). The owner approved a draft
 // plan PR; this reads the answers to its `## Decisions` from the owner's reviews and PR comments
@@ -56,7 +56,6 @@ const RUN_URL = /^https:\/\/\S+$/;
 const AGENT = 'status: ready-for-agent';
 const DEV = 'status: ready-for-dev';
 const BLOCKED = 'status: blocked';
-const HAND_BACK = 'hand-back';
 const PLAN = /^plans\/(?:(?:bugs|chores)\/)?(?!README|TEMPLATE)[\w.-]+\.md$/;
 const ANSWER =
   /^[\s>*-]*D(\d+)\s*[:=]\s*(?:([A-Za-z])\b|other\b[\s,:]*(\S.*))/i;
@@ -163,7 +162,7 @@ export const run = (
         labels: { name: string }[];
       }>(gh, ['pr', 'view', raw, '--json', 'closingIssuesReferences,labels']);
 
-      if (!go && pr.labels.some(({ name: label }) => label === HAND_BACK)) {
+      if (!go && pr.labels.some(({ name: label }) => label === LABEL)) {
         return;
       }
 
@@ -241,7 +240,7 @@ export const run = (
     const plans = pr.files
       .map(({ path }) => path)
       .filter(path => PLAN.test(path));
-    const handBack = pr.labels.some(({ name }) => name === HAND_BACK);
+    const handBack = pr.labels.some(({ name }) => name === LABEL);
 
     // The head is not the commit the owner read.
     const stopMoved = (): number =>

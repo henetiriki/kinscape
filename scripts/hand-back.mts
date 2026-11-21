@@ -33,14 +33,14 @@ export const HAND_BACK = [
   '.github/agent/spec-checks.md',
 ];
 
-const LABEL = 'hand-back';
+export const LABEL = 'hand-back';
 const NUMBER = /^[1-9]\d*$/;
 const REPO = /^[\w.-]+\/[\w.-]+$/;
 const PLAN = /^plans\/.+\.md$/;
 const SECTION = /^#{1,6}\s+Files that change\s*$/i;
 const HEADING = /^#{1,6}\s/;
 
-// A pattern as gitignore reads it: with a `/` in it, it is anchored to the root, otherwise it
+// A pattern as gitignore reads it: with a `/` in it, it matches from the root, otherwise it
 // matches at any depth; it also matches everything below a directory. `*` stays inside one
 // directory, and a closing `/**` takes the whole subtree.
 const toRegExp = (pattern: string): RegExp => {

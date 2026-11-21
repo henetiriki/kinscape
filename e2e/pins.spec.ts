@@ -293,6 +293,85 @@ test('a Map date that hides the Pin closes its popup', async ({ page }) => {
   await expect(popup(page)).toBeHidden();
 });
 
+/**
+ * A count marker in the free area: its centre on the page and its count. The seed puts 20 Pins on
+ * each Place, so some Places show two or more on a Map date.
+ */
+const pickMarker = async (page: Page) => {
+  await expect(page.locator('.maplibregl-marker').first()).toBeAttached();
+
+  return page.evaluate(() => {
+    for (const marker of document.querySelectorAll('.maplibregl-marker')) {
+      const { height, left, top, width } = marker.getBoundingClientRect();
+      const x = left + width / 2;
+      const y = top + height / 2;
+
+      if (
+        x > window.innerWidth / 2 &&
+        x < window.innerWidth - 160 &&
+        y > 200 &&
+        y < window.innerHeight - 340
+      ) {
+        return { count: Number(marker.textContent), x, y };
+      }
+    }
+
+    throw new Error('No count marker is in the free area');
+  });
+};
+
+/** The Pins of the open fan. */
+const fanPins = (page: Page) =>
+  page.locator('.maplibregl-marker button:not([aria-label$=" Pins"])');
+
+// PIN-06: one marker with the count; hover fans the Pins out and leaving folds them.
+test('a count marker fans its Pins out on hover and folds them when the pointer leaves', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await goTo(page, '1850');
+
+  const marker = await pickMarker(page);
+
+  expect(marker.count).toBeGreaterThan(1);
+  await expect(
+    page.getByRole('button', { name: `${marker.count} Pins` }).first()
+  ).toBeVisible();
+  await page.mouse.move(marker.x, marker.y);
+  await expect(fanPins(page)).toHaveCount(marker.count);
+
+  // #863 D6: the event type and the date reading of the popup.
+  for (const name of await fanPins(page).evaluateAll(pins =>
+    pins.map(pin => pin.getAttribute('aria-label'))
+  )) {
+    expect(name).toMatch(
+      /^[A-Z][a-z]+, (in|on|from|about|before|after|between|calculated as|estimated as) /
+    );
+  }
+
+  await page.mouse.move(marker.x - 300, marker.y);
+  await expect(fanPins(page)).toHaveCount(0);
+});
+
+// PIN-02, #863 D4: a fan Pin opens its popup; the marker shows the ring until the popup closes.
+test('a fan Pin opens its popup, and its marker shows the ring until the popup closes', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await goTo(page, '1850');
+
+  const marker = await pickMarker(page);
+
+  await page.mouse.move(marker.x, marker.y);
+  await fanPins(page).first().click();
+  await expect(popup(page)).toBeVisible();
+  await expect(fanPins(page)).toHaveCount(0);
+  await expect(page.locator('.maplibregl-marker [data-ring]')).toHaveCount(1);
+
+  await popup(page).getByRole('button', { name: 'Close' }).click();
+  await expect(page.locator('.maplibregl-marker [data-ring]')).toHaveCount(0);
+});
+
 // NFR-05: a tap is a map `click`; the sheet has no "Add a pin here".
 test.describe('on a phone', () => {
   test.use({ hasTouch: true, viewport: { height: 844, width: 390 } });
@@ -310,6 +389,46 @@ test.describe('on a phone', () => {
     await expect(
       page.getByRole('button', { name: 'Add a pin here' })
     ).toHaveCount(0);
+  });
+
+  // PIN-06: the first tap fans the Pins out, a tap elsewhere folds them, and a tap on a Pin opens it.
+  test('a tap fans a count marker out, a tap elsewhere folds it, and a tap on a Pin opens it', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await goTo(page, '1850');
+
+    const pickPhoneMarker = () =>
+      page.evaluate(() => {
+        for (const marker of document.querySelectorAll('.maplibregl-marker')) {
+          const { height, left, top, width } = marker.getBoundingClientRect();
+          const x = left + width / 2;
+          const y = top + height / 2;
+
+          if (x > 120 && x < window.innerWidth - 120 && y > 220 && y < 420) {
+            return { x, y };
+          }
+        }
+
+        throw new Error('No count marker is in the free area');
+      });
+
+    await expect(page.locator('.maplibregl-marker').first()).toBeAttached();
+
+    const marker = await pickPhoneMarker();
+
+    await page.touchscreen.tap(marker.x, marker.y);
+    await expect(fanPins(page).first()).toBeVisible();
+    await page.touchscreen.tap(20, 200);
+    await expect(fanPins(page)).toHaveCount(0);
+
+    await page.touchscreen.tap(marker.x, marker.y);
+
+    const pin = (await fanPins(page).first().boundingBox())!;
+
+    await page.touchscreen.tap(pin.x + pin.width / 2, pin.y + pin.height / 2);
+    await expect(popup(page).getByRole('heading', { level: 3 })).toBeVisible();
+    await expect(fanPins(page)).toHaveCount(0);
   });
 });
 

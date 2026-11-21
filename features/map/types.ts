@@ -5,12 +5,16 @@ import type {
 } from 'maplibre-gl';
 
 import type { Day } from '@ks/lib/domain/boundaries/types.ts';
+import type { EventType } from '@ks/lib/ui/types';
 
 /** A MapLibre layer that can name the basemap layer it draws in front of. */
 export type DrawingLayer = {
   /** The id of the basemap layer this one is placed ahead of; the end of the stack if absent. */
   before?: string;
 } & LayerSpecification;
+
+/** A Pin of a fan: its id, its Event type and the reading of its date, such as "From 1890 to 1905". */
+export type FanPin = { event: EventType; id: string; reading: string };
 
 /** The image data MapLibre takes for `addImage`. */
 export type IconImage = {

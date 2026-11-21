@@ -70,6 +70,7 @@ import { PinPopup } from '@ks/app/components/overlays/PinPopup';
 import { Popup } from '@ks/app/components/overlays/Popup';
 import { Sheet, SheetPanel } from '@ks/app/components/overlays/Sheet';
 import sourceData from '@ks/data/sources.json';
+import { CountMarker } from '@ks/features/map/components/CountMarker';
 import { Credits } from '@ks/features/map/components/Credits';
 import { DateDock } from '@ks/features/map/components/DateDock';
 import { DateField } from '@ks/features/map/components/DateField';
@@ -78,6 +79,7 @@ import { LayerGroup } from '@ks/features/map/components/LayerGroup';
 import { LayersButton } from '@ks/features/map/components/LayersButton';
 import { Legend } from '@ks/features/map/components/Legend';
 import { Panel } from '@ks/features/map/components/Panel';
+import { PinFan } from '@ks/features/map/components/PinFan';
 import { SearchBar } from '@ks/features/map/components/SearchBar';
 import { SourcesList } from '@ks/features/map/components/SourcesDialog';
 import { ZoomControls } from '@ks/features/map/components/ZoomControls';
@@ -89,6 +91,7 @@ import {
   CONTESTED_COUNT,
   CONTESTED_YEARS,
   EPOCHS,
+  FAN_PINS,
   FILTER_BRANCHES,
   FILTER_EVENT_TYPES,
   FILTER_PEOPLE,
@@ -100,6 +103,7 @@ import {
   PINS,
   SURNAME_HELPER,
   TODAY,
+  TWELVE_PINS,
 } from '@ks/lib/design/samples.mts';
 import { CARDS } from '@ks/lib/design/states.mts';
 import { MIN_DAY } from '@ks/lib/domain/map/map-date.mts';
@@ -198,6 +202,7 @@ const COMPONENTS = {
   Chip,
   ChipGroup,
   ColumnLayout,
+  CountMarker,
   Credits,
   DateDock,
   DateField,
@@ -222,6 +227,7 @@ const COMPONENTS = {
   Panel,
   PersonRow,
   PickerRow,
+  PinFan,
   PinPopup,
   Popup,
   ProgressBar,
@@ -833,6 +839,26 @@ const CASES: [string, ReactElement][] = [
       onPlay={noop}
       sheet={{ expanded: false, onExpandedChange: noop }}
     />,
+  ],
+  ...([undefined, 'active', 'focus', 'hover'] as const).map(
+    (state): [string, ReactElement] => [
+      `CountMarker · ${state ?? 'default'}`,
+      <CountMarker count={3} key={state ?? 'default'} state={state} />,
+    ]
+  ),
+  ['CountMarker · selected', <CountMarker count={3} key='selected' selected />],
+  ['CountMarker · 99 Pins', <CountMarker count={99} key='99' />],
+  [
+    'PinFan · three Pins, one under hover',
+    <PinFan key='three' looks={{ birth: 'hover' }} pins={FAN_PINS}>
+      {[<CountMarker count={3} key='marker' />]}
+    </PinFan>,
+  ],
+  [
+    'PinFan · twelve Pins',
+    <PinFan key='twelve' pins={TWELVE_PINS}>
+      {[<CountMarker count={12} key='marker' />]}
+    </PinFan>,
   ],
   ['Legend · default', <Legend key='legend' />],
   ...EVENT_TYPES.map((event): [string, ReactElement] => [

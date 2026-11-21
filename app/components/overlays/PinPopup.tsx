@@ -10,7 +10,7 @@ import { Icon } from '@ks/app/components/foundation/Icon';
 import { Text } from '@ks/app/components/foundation/Text';
 import { PlacedAt } from '@ks/app/components/overlays/PlacedAt';
 import { PopupPointer } from '@ks/app/components/overlays/Popup';
-import { EventGlyph } from '@ks/lib/ui/EventGlyph';
+import { EventGlyph, eventLabel } from '@ks/lib/ui/EventGlyph';
 
 import styles from '@ks/app/components/overlays/PinPopup.module.css';
 
@@ -34,8 +34,6 @@ type PinPopupArgs = {
   /** Loading and failed show the event type and both date lines only. */
   state: PinPopupState;
 };
-
-const label = (event: EventType) => event[0].toUpperCase() + event.slice(1);
 
 const Bar = ({ width }: { width: number }) => (
   <span
@@ -67,7 +65,7 @@ export const PinPopup = ({
       <div className={styles.header}>
         <span className={styles.event}>
           <EventGlyph event={event} />
-          <Text variant='overline'>{label(event)}</Text>
+          <Text variant='overline'>{eventLabel(event)}</Text>
         </span>
         {loaded && (
           <Text as='h3' variant='h3'>

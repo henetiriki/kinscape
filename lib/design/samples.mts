@@ -45,6 +45,40 @@ export const PIN_POPUP = {
   recorded: 'FROM 1890 TO 1905',
 };
 
+/**
+ * The three Pins of Example Farm on the fan boards, in board order: Marriage below the Place, then
+ * Residence and Birth clockwise.
+ */
+export const FAN_PINS = [
+  { event: 'marriage' as const, id: 'marriage', reading: 'In 1899' },
+  {
+    event: 'residence' as const,
+    id: 'residence',
+    reading: 'From 1890 to 1905',
+  },
+  { event: 'birth' as const, id: 'birth', reading: 'In 1901' },
+];
+
+/** Twelve Pins on one Place: a fan of two rings. */
+export const TWELVE_PINS = [
+  'residence',
+  'birth',
+  'marriage',
+  'death',
+  'burial',
+  'land',
+  'occupation',
+  'baptism',
+  'divorce',
+  'other',
+  'residence',
+  'birth',
+].map((event, index) => ({
+  event: event as (typeof EVENT_TYPES)[number],
+  id: `pin-${index}`,
+  reading: `In ${1888 + index * 2}`,
+}));
+
 /** What the details add to a loaded `PinPopup`. */
 export const PIN_DETAILS = {
   address: 'Farm Example, district Example',

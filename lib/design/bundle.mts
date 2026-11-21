@@ -50,6 +50,8 @@ export const CONTROLS: Control[] = [
   { name: 'LayersButton', path: 'features/map/components/LayersButton.tsx' },
   { name: 'DateDock', path: 'features/map/components/DateDock.tsx' },
   { name: 'Legend', path: 'features/map/components/Legend.tsx' },
+  { name: 'CountMarker', path: 'features/map/components/CountMarker.tsx' },
+  { name: 'PinFan', path: 'features/map/components/PinFan.tsx' },
   { name: 'EventGlyph', path: 'lib/ui/EventGlyph.tsx' },
   { name: 'Panel', path: 'features/map/components/Panel.tsx' },
   { name: 'LayerGroup', path: 'features/map/components/LayerGroup.tsx' },

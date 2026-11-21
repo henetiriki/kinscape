@@ -35,6 +35,10 @@ export const EVENT_ORDER: EventType[] = [
   'other',
 ];
 
+/** The name of an Event type, as the UI writes it: "Residence". */
+export const eventLabel = (event: EventType) =>
+  event[0].toUpperCase() + event.slice(1);
+
 /** An Event type's glyph, 1em square in `--pin`. Decorative: the Event's name sits beside it. */
 export const EventGlyph = ({ event }: { event: EventType }) => (
   <svg

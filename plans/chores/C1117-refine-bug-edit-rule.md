@@ -25,6 +25,8 @@ The fix-review skills never change the draft state:
 
 D1 to D5 are on #1117. The build rewords the issue as the answers say ([reword step](../../.github/agent/build.md#reword)).
 
+#1117 reverses the C1111 step that runs `gh pr ready <n> --undo` after a "Big:" line ([C1111](C1111-big-departure-draft.md)). The tech lead sets the draft state.
+
 **D1 · Closed-Bug message** · Decides: Tech lead
 
 **Answer: A** (@henetiriki). Read step 2 in `filing.md` says "a new issue of the same type". Only `bug.md` holds the Bug sentence with the "relates to" link.
@@ -63,8 +65,9 @@ D1 to D5 are on #1117. The build rewords the issue as the answers say ([reword s
 | `.claude/skills/refine/filing.md`            | changed       | Read step 2 only.                                                                                                                                                            |
 | `.github/agent/fix-review.md`                | changed       | Line 21, step 7 and step 8, as the Approach says.                                                                                                                            |
 | `.claude/skills/fix-review-local/SKILL.md`   | changed       | The big-departure override, as the Approach says.                                                                                                                            |
-| `scripts/word-count.mts`                     | changed       | The `filing.md` and `fix-review.md` entries (D6).                                                                                                                            |
-| `scripts/__tests__/word-count.test.ts`       | changed       | Line 70 expects the new `fix-review.md` budget.                                                                                                                              |
+| `scripts/word-count.mts`                     | changed       | The `fix-review.md` entry (D6), and the `plans/README.md` entry (Big: line).                                                                                                 |
+| `scripts/__tests__/word-count.test.ts`       | changed       | Line 70 expects the new `fix-review.md` budget. Two rows expect the new `plans/README.md` budget.                                                                            |
+| `plans/README.md`                            | changed       | The big-departures rule: a build keeps the PR a draft, and a fix review leaves the draft state to the tech lead (Big: line).                                                 |
 | `scripts/__tests__/load-agent-files.test.ts` | changed       | Lines 1874 to 1880 and 1894 to 1896 expect step 8. They expect no `gh pr ready` in `fix-review.md` and no "except in step 8". The fix-review-local test expects no `--undo`. |
 
 `scripts/doc-links.mts` does not change. `bug.md` already links to `filing.md`, and `filing.md` gets no link to `bug.md`.
@@ -80,10 +83,7 @@ D1 to D5 are on #1117. The build rewords the issue as the answers say ([reword s
 
 ## Risks
 
-- An earlier respond run on #1117 had each write to `.claude/` denied. The builds of C1114 and C1115 wrote `.claude/skills/refine/` in CI. If the build cannot write a `.claude/` path, it commits the other rows and names each denied path in the PR.
-- The [big-departures rule](../README.md#big-departures) says "Keep the PR a draft". `fix-review.md` then says "Never change the PR's draft state", so a fix review keeps the state of a ready PR. The plan does not change `plans/README.md`, because the Chore does not list it.
 - No unit test runs a skill. Review proves each `/refine bug` check, as for C1114 and C1115.
-- Branch `claude/issue-1117-20261121-1947` (`8bb205a`) holds an earlier `fix-review.md` edit with no PR. The build does not use it.
 
 ## Proof
 
@@ -108,5 +108,4 @@ D1 to D5 are on #1117. The build rewords the issue as the answers say ([reword s
 
 ## Deviations
 
-- The `filing.md` budget stays at 1030. The new count is 1023, which rounds up to 1030 (D6 A).
-- The `fix-review.md` budget is 460, not 470. The count is 456 (D6 A).
+- Big: The build edits `plans/README.md` (lines 128 and 130) and raises its budget to 1310 in `scripts/word-count.mts` and its test. The big-departures rule said "Keep the PR a draft", which conflicts with "Never change the PR's draft state" in `fix-review.md`. The tech lead chose the edit in a local fix review.

@@ -26,8 +26,8 @@ body{margin:0}
   <x-import component-from-global-scope="KinScape.Text" variant="label" as="label" html-for="draft-event">Event type</x-import>
   <span style="display: flex; align-items: center; gap: var(--space-8); box-sizing: border-box; height: 44px; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); padding: 0 11px">
     <select id="draft-event" aria-invalid="true" aria-describedby="draft-event-message" aria-required="true" style="flex: 1; min-width: 0; height: 44px; margin: -2px 0; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; appearance: none"><option value="" selected>Choose an event type</option><option value="birth">Birth</option></select>
-    <span style="display: flex; flex: none"><x-import component-from-global-scope="KinScape.Icon" name="chevronDown" size="20"></x-import></span>
-    <span style="display: flex; flex: none; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="error" size="20"></x-import></span>
+    <span style="display: flex; flex: none"><x-import component-from-global-scope="KinScape.Icon" name="chevronDown" size="18"></x-import></span>
+    <span style="display: flex; flex: none; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="error" size="18"></x-import></span>
   </span>
   <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="draft-event-message" role="alert" tone="error">Choose an event type.</x-import>
 </div>
@@ -36,7 +36,7 @@ body{margin:0}
   <x-import component-from-global-scope="KinScape.Text" variant="label" as="label" html-for="draft-notes">Notes</x-import>
   <span style="display: flex; align-items: flex-start; gap: var(--space-8); box-sizing: border-box; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); padding: 8px 11px">
     <textarea id="draft-notes" rows="2" aria-invalid="true" aria-describedby="draft-notes-message" style="flex: 1; min-width: 0; box-sizing: border-box; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; padding: 0; resize: none">Example text that runs past the end of the field.</textarea>
-    <span style="display: flex; flex: none; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="error" size="20"></x-import></span>
+    <span style="display: flex; flex: none; color: var(--error-border)"><x-import component-from-global-scope="KinScape.Icon" name="error" size="18"></x-import></span>
   </span>
   <x-import component-from-global-scope="KinScape.Text" variant="small" as="p" id="draft-notes-message" role="alert" tone="error">Use 10,000 characters or fewer.</x-import>
 </div>

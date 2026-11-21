@@ -48,7 +48,7 @@ class Component extends DCLogic {
     // The marked look of a select and a text area: SelectField and TextAreaField have no error look, so the board draws it (draft-pin-field-errors).
     // It follows the marked TextField: a 2px --error-border, the error icon in the box and the message in place of the helper.
     const MARK = 'display: flex; align-items: center; gap: var(--space-8); box-sizing: border-box; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); padding: 0 11px';
-    const ICON = (name, extra) => `<x-import component-from-global-scope="KinScape.Icon" name="${name}" size="20"${extra || ''}></x-import>`;
+    const ICON = (name, extra) => `<x-import component-from-global-scope="KinScape.Icon" name="${name}" size="18"${extra || ''}></x-import>`;
     const MESSAGE = (id, text) => TEXT('small', text, 'p', ` id="${id}" role="alert" tone="error"`);
     const markedSelect = (label, id, options, message) => [
       `<div style="display: flex; flex-direction: column; gap: var(--space-8)">`,
@@ -97,7 +97,9 @@ class Component extends DCLogic {
     }[variant] || EMPTY;
     const editing = variant.startsWith('edit');
     const errors = variant === 'form-errors';
-    const fixedPlace = variant === 'form-existing-place' || variant === 'edit';
+    // The point is the Place's own only after "Add a pin here" on a Pin. An edit leaves the coordinates free (D10), and its precision is fixed until the point moves.
+    const coordinatesFixed = variant === 'form-existing-place';
+    const fixedPlace = coordinatesFixed || variant === 'edit';
     const saving = variant === 'form-saving';
 
     const field = (Part, props) => h(Part, Object.assign({ autoComplete: 'off', spellCheck: false }, props));
@@ -113,9 +115,9 @@ class Component extends DCLogic {
     const coordinates = field(K.TextField, {
       'aria-required': 'true',
       defaultValue: errors ? '28°44′33″S 25°18′42″E' : values.coordinates,
-      disabled: fixedPlace,
+      disabled: coordinatesFixed,
       error: errors ? 'Use decimal degrees, not degrees, minutes and seconds. For example -33.93, 18.42.' : undefined,
-      helper: fixedPlace ? 'This Place is fixed. You cannot change its point.' : 'In decimal degrees, such as -33.93, 18.42.',
+      helper: coordinatesFixed ? 'This Place is fixed. You cannot change its point.' : 'In decimal degrees, such as -33.93, 18.42.',
       label: 'Coordinates'
     });
     const address = field(K.TextField, { defaultValue: errors ? 'Farm Example, district Example, '.repeat(16).slice(0, 501) : values.address, error: errors ? 'Use 500 characters or fewer.' : undefined, label: 'Address as recorded' });

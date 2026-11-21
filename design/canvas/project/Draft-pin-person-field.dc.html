@@ -22,11 +22,11 @@ body{margin:0}
   <x-import component-from-global-scope="KinScape.Text" variant="body" as="span">A text field that picks one Person. The panel is 320 px wide, so the field is 280 px. A Picker row needs about 440 px, so the list is a popover 480 px wide. It opens 4 px under the field, on its left edge, over the map.</x-import>
 </div>
 <span style="position: absolute; left: 32px; top: 128px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">Closed</x-import></span>
-<div style="position: absolute; left: 32px; top: 156px; width: 304px">
+<div style="position: absolute; left: 32px; top: 156px; width: 280px">
   <x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Example Person" role="combobox" aria-expanded="false" aria-haspopup="listbox" autocomplete="off" spell-check="false"></x-import>
 </div>
 <span style="position: absolute; left: 32px; top: 270px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">No match</x-import></span>
-<div style="position: absolute; left: 32px; top: 298px; width: 304px; display: flex; flex-direction: column; gap: 4px">
+<div style="position: absolute; left: 32px; top: 298px; width: 280px; display: flex; flex-direction: column; gap: 4px">
   <x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Zzz" state="focus" role="combobox" aria-expanded="true" aria-haspopup="listbox" autocomplete="off" spell-check="false"></x-import>
   <div role="listbox" aria-label="People" style="box-sizing: border-box; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-4); background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
     <x-import component-from-global-scope="KinScape.Text" variant="title" as="span">No one matches “Zzz”</x-import>
@@ -35,7 +35,7 @@ body{margin:0}
 </div>
 <span style="position: absolute; left: 368px; top: 128px"><x-import component-from-global-scope="KinScape.Text" variant="overline" as="span">List open</x-import></span>
 <div style="position: absolute; left: 368px; top: 156px; width: 480px; display: flex; flex-direction: column; gap: 4px">
-  <div style="width: 304px"><x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Exa" state="focus" role="combobox" aria-expanded="true" aria-haspopup="listbox" autocomplete="off" spell-check="false"></x-import></div>
+  <div style="width: 280px"><x-import component-from-global-scope="KinScape.TextField" label="Person" default-value="Exa" state="focus" role="combobox" aria-expanded="true" aria-haspopup="listbox" autocomplete="off" spell-check="false"></x-import></div>
   <div role="listbox" aria-label="People" style="box-sizing: border-box; padding: var(--space-4) 0; display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">
     <x-import component-from-global-scope="KinScape.PickerRow" surname="Example" given-names="Person" born="1861" born-reading="In 1861" died="1932" died-reading="In 1932"></x-import>
     <x-import component-from-global-scope="KinScape.PickerRow" surname="Example" given-names="Anna" maiden-name="Sample" born="1865" born-reading="In 1865" died="bef. 1940" died-reading="Before 1940" state="hover"></x-import>

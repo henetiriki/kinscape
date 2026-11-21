@@ -2,7 +2,7 @@
 
 - **Chore:** #1107
 - **Requirement IDs:** None. The Chore changes docs, the workflow picture and two card bullet lists.
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -44,7 +44,7 @@ Item 18 puts "A Button with an `href` has no disabled state" in the states parag
 - **B.** Keep the bullet as it is. The fact is in two places. No cost.
 - **Other:** your own.
 
-Recommended: A, because the writing rules say each fact once, and the README still holds the fact.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

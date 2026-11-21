@@ -109,7 +109,7 @@ class Component extends DCLogic {
   </svg>`;
 
     // A Day counts days since 1652-01-01: 91109 is 1901-06-14 and 136894 is 2026-10-21.
-    const dock = details => h(K.DateDock, { day: 91109, lastDay: 136894, onChange: noop, onPlay: noop, sheet: { expanded: false, onExpandedChange: noop }, details });
+    const dock = details => h(K.DateDock, { day: 91109, lastDay: 136894, onChange: noop, onPlay: noop, sheet: { expanded: details !== undefined, onExpandedChange: noop }, details });
     // The Pin popup sits in the Map date sheet, under the slider. It has no "Add a pin here" and no "Edit" (NFR-05).
     const popup = h(K.PinPopup, { address: 'Farm Example, district Example', event: 'residence', form: 'inline', name: 'Example Person', onClose: noop, onRetry: noop, reading: 'From 1890 to 1905', recorded: 'FROM 1890 TO 1905', state: 'loaded' });
 

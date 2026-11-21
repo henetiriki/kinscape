@@ -12,7 +12,7 @@ The Map date control.
 | `contestedYears` | `ContestedYears[]` | no | Year spans drawn hatched on the slider. |
 | `day` | `Day` | yes |  |
 | `defaultText` | `string` | no | Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. |
-| `details` | `ReactNode` | no | The phone sheet only: content under the slider, such as the Pin popup. With it the sheet is open. |
+| `details` | `ReactNode` | no | The phone sheet only: content under the slider, such as the Pin popup. The sheet shows it when expanded. |
 | `epochs` | `Epoch[]` | no | Epochs for Jump to; they are also the slider's ticks. |
 | `hasBorders` | `((day: Day) => boolean)` | no | Whether a Boundary version is valid on a day; a typed date without one shows the warning. |
 | `lastDay` | `Day` | yes |  |

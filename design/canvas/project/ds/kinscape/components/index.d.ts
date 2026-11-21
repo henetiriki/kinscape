@@ -75,6 +75,8 @@ export type MenuEntry = {
     id: string;
     label: string;
 };
+/** The states of the Pin popup: the details loaded, loading or failed. */
+export type PinPopupState = 'failed' | 'loaded' | 'loading';
 export type PopupPin = {
     date: string;
     event: EventType;
@@ -563,7 +565,7 @@ export declare const DateDock: ({ contestedCount, contestedYears, day, defaultTe
     day: Day;
     /** Text the date field starts with instead of the date, checked on the first render. A design board sets it; the app does not. */
     defaultText?: string;
-    /** The phone sheet only: content under the slider, such as the Pin popup. With it the sheet is open. */
+    /** The phone sheet only: content under the slider, such as the Pin popup. The sheet shows it when expanded. */
     details?: ReactNode;
     /** Epochs for Jump to; they are also the slider's ticks. */
     epochs?: Epoch[];
@@ -981,7 +983,7 @@ type PinPopupArgs = {
     /** The date as recorded, such as "FROM 1890 TO 1905". */
     recorded: string;
     /** Loading and failed show the event type and both date lines only. */
-    state: 'failed' | 'loaded' | 'loading';
+    state: PinPopupState;
 };
 /** The popup of a Pin (PIN-02): the Person, the event type, both date lines and the address. */
 export declare const PinPopup: ({ address, event, form, name, onClose, onRetry, reading, recorded, state, }: PinPopupArgs) => import("react").JSX.Element;

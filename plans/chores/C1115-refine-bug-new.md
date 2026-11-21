@@ -1,7 +1,7 @@
 # Plan: C1115: /refine bug drafts and files a new Bug
 
 - **Spec:** #1115
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -39,7 +39,7 @@ Filing step 3 puts `status: blocked` on a new Chore with a blocker at `gh issue 
 - **B.** Step 3 names "a Bug or a Chore", so `gh issue create` uses `status: blocked`. Cost: three words in `filing.md`. The create label then differs from `status: ready-for-dev` in the done check.
 - **Other:** your own.
 
-Recommended: A, because both done checks then hold as written. B saves one `gh` call. With A, the Bug has `status: ready-for-dev` for one call, and no workflow starts on that label.
+**Answer: A** (@henetiriki)
 
 **D2 · Lines outside the Chore's list that say a Bug is only edited** · Decides: Tech lead
 
@@ -56,7 +56,7 @@ The Chore names the mode list, the `argument-hint`, "Filing with gh" and `filing
 - **B.** Change only the lines that the Chore names. Cost: none, but four lines say that the skill never files a Bug.
 - **Other:** your own.
 
-Recommended: A, because a reader of the title or the description must find the new mode.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

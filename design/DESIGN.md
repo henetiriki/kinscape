@@ -113,7 +113,7 @@ The design system README leaves out this section.
 | `layout`     | ColumnLayout, SignInLayout, MapLayout                                                                                                          |
 | `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                                 |
 
-The other shared components are in `features/map/components/`, `features/people/components/` and `lib/ui/`.
+The design system also holds components from `features/map/components/`, `features/people/components/` and `lib/ui/`. `CONTROLS` in `lib/design/bundle.mts` lists every design system component.
 
 **Page rule.** A screen's Spec names the components it needs and lists any that are missing under **Flagged concerns**. A page composes components: it has no stylesheet or `className` of its own. If other pages reuse a part, or it has states of its own, make it a component. Never build it inside a page. The dev-only `app/screens` is exempt.
 

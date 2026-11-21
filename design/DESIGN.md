@@ -60,8 +60,6 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Edit a pin, loading                               | [pin-edit-loading.jpg](pin-edit-loading.jpg)                                 |
 | Edit a pin, did not load                          | [pin-edit-load-failed.jpg](pin-edit-load-failed.jpg)                         |
 | Draft: click popup                                | [draft-pin-click-popup.jpg](draft-pin-click-popup.jpg)                       |
-| Draft: Person field                               | [draft-pin-person-field.jpg](draft-pin-person-field.jpg)                     |
-| Draft: Add a pin button                           | [draft-pin-add-button.jpg](draft-pin-add-button.jpg)                         |
 | Draft: field errors                               | [draft-pin-field-errors.jpg](draft-pin-field-errors.jpg)                     |
 | People list                                       | [people-list.jpg](people-list.jpg)                                           |
 | People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |

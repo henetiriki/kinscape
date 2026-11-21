@@ -1003,8 +1003,10 @@ describe('the big-departure rules of build.md', () => {
     expect(build()).not.toContain('If a plan needs one, stop');
   });
 
-  it('keeps the PR a draft when the plan has a "Big:" line', () => {
-    expect(build()).toContain('- The plan has a "Big:" line.');
+  // An approved "Big:" line stays in the plan, so only a line that the run wrote keeps a draft.
+  it('keeps the PR a draft when this run wrote a "Big:" line', () => {
+    expect(build()).toContain('- This run wrote a "Big:" line.');
+    expect(build()).not.toContain('The plan has a "Big:" line');
   });
 
   it('lists each "Big:" line first in the final comment', () => {

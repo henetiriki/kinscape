@@ -40,7 +40,7 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
    - The ready check stops you.
    - The plan changes a design system input (the [design-system rule](../../plans/README.md#design-system)).
    - The PR has the `hand-back` label.
-   - The plan has a "Big:" line.
+   - This run wrote a "Big:" line.
 9. Whether the checks pass or fail, comment on the PR last. List each "Big:" line first. Say what you did. If a check failed, say what blocked you. List each hand-back row that you did not build.
 
 ## Hand-back

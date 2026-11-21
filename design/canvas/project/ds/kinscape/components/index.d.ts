@@ -235,6 +235,25 @@ export type PolityName = z.output<typeof nameRow>;
 /** `processing` is what was done to the data, such as clipping and simplifying. */
 export type Source = z.output<typeof sourceRow>;
 
+/**
+ * A GEDCOM date. `date1` and `date2` are `1850`, `1850-03` or `1850-03-15`.
+ * `earliest` and `latest` are ISO days, both inclusive. As a Validity it runs
+ * from `earliestDay` to `latestDay + 1`, so `isCurrentOn` applies.
+ * `precision` is the coarser of the stored dates.
+ */
+export type FuzzyDate = {
+    date1: string;
+    date2?: string;
+    earliest: string;
+    earliestDay: Day;
+    latest: string;
+    latestDay: Day;
+    precision: Precision;
+    qualifier: Qualifier;
+} & Validity;
+export type FuzzyDateError = 'no-such-day' | 'reversed' | 'syntax' | 'year';
+export type Qualifier = 'ABT' | 'AFT' | 'BEF' | 'BET' | 'CAL' | 'EST' | 'EXACT' | 'FROM';
+
 /** A ring of a fan of Pins: its radius in px and the number of Pins on it. */
 export type FanRing = {
     count: number;
@@ -256,6 +275,97 @@ export type Precision = 'day' | 'month' | 'year';
 export type Problem = {
     fix?: Fix;
     message: string;
+};
+
+/** The most Persons a list returns: the NFR sizing of a Tree, so a response has a cap. */
+declare const MAX_LISTED = 2000;
+/** The caps of a name and of notes, so a form can stop typing at the same point. */
+declare const MAX_NAME = 200;
+declare const MAX_NOTES = 10000;
+/** What a client may save (PPL-01): no field is required, and the schema trims and caps text. */
+declare const personInputSchema: z.ZodObject<{
+    birth: z.ZodOptional<z.ZodPipe<z.ZodOptional<z.ZodString>, z.ZodTransform<import("../dates/types.ts").FuzzyDate | undefined, string | undefined>>>;
+    death: z.ZodOptional<z.ZodPipe<z.ZodOptional<z.ZodString>, z.ZodTransform<import("../dates/types.ts").FuzzyDate | undefined, string | undefined>>>;
+    deceased: z.ZodDefault<z.ZodBoolean>;
+    givenNames: z.ZodDefault<z.ZodString>;
+    id: z.ZodPipe<z.ZodString, z.ZodTransform<import("../ids/types.ts").PersonId, string>>;
+    maidenName: z.ZodDefault<z.ZodString>;
+    notes: z.ZodDefault<z.ZodString>;
+    sex: z.ZodDefault<z.ZodEnum<{
+        F: "F";
+        M: "M";
+        U: "U";
+        X: "X";
+    }>>;
+    surname: z.ZodDefault<z.ZodString>;
+    variants: z.ZodDefault<z.ZodArray<z.ZodString>>;
+}, z.core.$strip>;
+/** What the form saves (PPL-01): `personInputSchema` with given names and surname required. */
+declare const personFormSchema: z.ZodObject<{
+    birth: z.ZodOptional<z.ZodPipe<z.ZodOptional<z.ZodString>, z.ZodTransform<import("../dates/types.ts").FuzzyDate | undefined, string | undefined>>>;
+    death: z.ZodOptional<z.ZodPipe<z.ZodOptional<z.ZodString>, z.ZodTransform<import("../dates/types.ts").FuzzyDate | undefined, string | undefined>>>;
+    deceased: z.ZodDefault<z.ZodBoolean>;
+    id: z.ZodPipe<z.ZodString, z.ZodTransform<import("../ids/types.ts").PersonId, string>>;
+    maidenName: z.ZodDefault<z.ZodString>;
+    notes: z.ZodDefault<z.ZodString>;
+    sex: z.ZodDefault<z.ZodEnum<{
+        F: "F";
+        M: "M";
+        U: "U";
+        X: "X";
+    }>>;
+    variants: z.ZodDefault<z.ZodArray<z.ZodString>>;
+    givenNames: z.ZodDefault<z.ZodString>;
+    surname: z.ZodDefault<z.ZodString>;
+}, z.core.$strip>;
+
+/** A saved Person. `version` counts saves; an update names the one it read. */
+export type Person = {
+    version: number;
+} & PersonInput;
+/** The error kind of each form field that failed. A kind never holds input text. */
+export type PersonFieldErrors = {
+    fields: {
+        birth?: FuzzyDateError;
+        death?: FuzzyDateError;
+        givenNames?: 'required';
+        surname?: 'required';
+        variants?: 'too-many';
+    };
+};
+/** What a client saves. A name or note with nothing in it is the empty string. */
+export type PersonInput = z.output<typeof personInputSchema>;
+/**
+ * One row of the People list. The server shortens the dates to text and leaves out the notes, so
+ * a notes text never reaches the browser.
+ */
+export type PersonSummary = {
+    /** Short text for the birth date. Empty is unknown. */
+    born: string;
+    /** Full reading of the birth date, such as "Before 1840". Empty is unknown. */
+    bornReading: string;
+    deceased: boolean;
+    /** Short text for the death date. Empty is unknown. */
+    died: string;
+    /** Full reading of the death date. Empty is unknown. */
+    diedReading: string;
+    givenNames: string;
+    id: string;
+    maidenName: string;
+    surname: string;
+    variants: string[];
+};
+/** A Person as a Viewer sees it. The server derives `living` on read and never stores it. */
+export type PersonView = {
+    living: boolean;
+} & Person;
+/** GEDCOM 7 codes: male, female, intersex (X) and unknown. */
+export type Sex = PersonInput['sex'];
+
+/** The days a fact holds: `[validFrom, validTo)`, so `validTo` is exclusive; null = still current. */
+export type Validity = {
+    validFrom: Day;
+    validTo: Day | null;
 };
 
 export type ContestedYears = {
@@ -570,6 +680,47 @@ export declare const FuzzyDateField: ({ defaultValue, helper, label, state, ...r
 } & Omit<ComponentProps<"input">, "className" | "defaultValue" | "id" | "onBlur" | "onChange" | "onKeyDown" | "type" | "value">) => import("react").JSX.Element;
 export type FuzzyDateFieldProps = Parameters<typeof FuzzyDateField>[0];
 
+/**
+ * The list of a `PersonField`: a row for each match, or the no-match notice. It shows three rows
+ * and scrolls past them. With `place` it is fixed at that point; without it, it sits in the flow.
+ */
+export declare const PersonFieldList: ({ activeId, id, onPick, place, query, rows, }: {
+    /** The id of the row with the focus look: `id`, a hyphen and the Person's id. */
+    activeId?: string;
+    id: string;
+    onPick: (person: PersonSummary) => void;
+    /** The viewport point of the list's top left corner. */
+    place?: {
+        left: number;
+        top: number;
+    };
+    /** The text that the user typed. The no-match notice quotes it. */
+    query: string;
+    /** Each match, with the spelling variant that matched. */
+    rows: {
+        person: PersonSummary;
+        variant?: string;
+    }[];
+}) => import("react").JSX.Element;
+/**
+ * A text field that picks one Person (PIN-01). Typing filters the Persons as the People list does,
+ * and a list of at most three rows opens under the field. The focus stays in the text box: Down and
+ * Up move the active row, Enter picks it and Esc closes the list. Typing after a pick clears it.
+ */
+export declare const PersonField: ({ defaultPerson, error, onChange, people, state, }: {
+    /** A Person to start with, picked. */
+    defaultPerson?: PersonSummary;
+    /** The problem, shown under the field. The field is also required. */
+    error?: ReactNode;
+    /** Called with the Person that a pick chose, and with `undefined` when typing clears the pick. */
+    onChange: (person: PersonSummary | undefined) => void;
+    /** Every Person of the Tree. The caller gives no empty list. */
+    people: PersonSummary[];
+    state?: ControlState;
+}) => import("react").JSX.Element;
+export type PersonFieldProps = Parameters<typeof PersonField>[0];
+export type PersonFieldListProps = Parameters<typeof PersonFieldList>[0];
+
 /** A native select with its label and a drawn chevron. The open list is the browser's. */
 export declare const SelectField: ({ hideLabel, label, options, state, ...rest }: {
     /** Names the select without showing the label. */
@@ -629,6 +780,15 @@ export declare const LayersButton: ({ state, ...rest }: {
     state?: ControlState;
 } & Omit<ComponentProps<"button">, "aria-label" | "children" | "className">) => import("react").JSX.Element;
 export type LayersButtonProps = Parameters<typeof LayersButton>[0];
+
+/**
+ * The map's "Add a pin" button (PIN-01): the primary Button, 44px high. It goes in the `action`
+ * slot of `MapLayout`, which hides it on a phone.
+ */
+export declare const AddPinButton: ({ state, ...rest }: {
+    state?: ControlState;
+} & Omit<ComponentProps<"button">, "aria-label" | "children" | "className" | "type">) => import("react").JSX.Element;
+export type AddPinButtonProps = Parameters<typeof AddPinButton>[0];
 
 /**
  * The Map date control. On desktop a dock: steps, the typed date, precision, then the optional contested note, Play and speed, the slider, Jump to and key hints.
@@ -1219,6 +1379,8 @@ declare const freeArea: (phone: boolean) => {
 interface MapLayoutSlots {
     /** The account control, on desktop. */
     account?: ReactNode;
+    /** The "Add a pin" button, on desktop: 12px left of the account control. */
+    action?: ReactNode;
     /** The map. */
     children?: ReactNode;
     /** The source credits, on desktop. */

@@ -46,6 +46,23 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Pin popup, details loading                        | [map-pin-popup-loading.jpg](map-pin-popup-loading.jpg)                       |
 | Pin popup, details did not load                   | [map-pin-popup-failed.jpg](map-pin-popup-failed.jpg)                         |
 | Pin popup, phone sheet                            | [map-pin-popup-phone.jpg](map-pin-popup-phone.jpg)                           |
+| Add a pin, the map with the button                | [map-add-pin.jpg](map-add-pin.jpg)                                           |
+| Add a pin, click popup                            | [pin-click-popup.jpg](pin-click-popup.jpg)                                   |
+| Add a pin, empty panel                            | [pin-form-empty.jpg](pin-form-empty.jpg)                                     |
+| Add a pin, panel filled after a click             | [pin-form.jpg](pin-form.jpg)                                                 |
+| Add a pin, field errors                           | [pin-form-errors.jpg](pin-form-errors.jpg)                                   |
+| Add a pin, Place fixed                            | [pin-form-existing-place.jpg](pin-form-existing-place.jpg)                   |
+| Add a pin, saving                                 | [pin-form-saving.jpg](pin-form-saving.jpg)                                   |
+| Add a pin, save failed                            | [pin-form-save-failed.jpg](pin-form-save-failed.jpg)                         |
+| Add a pin, no people in the Tree                  | [pin-form-no-people.jpg](pin-form-no-people.jpg)                             |
+| Edit a pin                                        | [pin-edit.jpg](pin-edit.jpg)                                                 |
+| Edit a pin, point moved                           | [pin-edit-moved.jpg](pin-edit-moved.jpg)                                     |
+| Edit a pin, loading                               | [pin-edit-loading.jpg](pin-edit-loading.jpg)                                 |
+| Edit a pin, did not load                          | [pin-edit-load-failed.jpg](pin-edit-load-failed.jpg)                         |
+| Draft: click popup                                | [draft-pin-click-popup.jpg](draft-pin-click-popup.jpg)                       |
+| Draft: Person field                               | [draft-pin-person-field.jpg](draft-pin-person-field.jpg)                     |
+| Draft: Add a pin button                           | [draft-pin-add-button.jpg](draft-pin-add-button.jpg)                         |
+| Draft: field errors                               | [draft-pin-field-errors.jpg](draft-pin-field-errors.jpg)                     |
 | People list                                       | [people-list.jpg](people-list.jpg)                                           |
 | People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |
 | People list, no people yet                        | [people-empty.jpg](people-empty.jpg)                                         |
@@ -379,7 +396,8 @@ Avoid what MapLibre can't do: shadows, glows or gradients on polygons, dashed ci
 
 These have no design: see `AGENTS.md`.
 
-- The screens that add or edit pins and sources. "Add a pin" is provisional: plain Person and Place fields, no date qualifiers. `/screens/add-pin` builds it to prove the export.
+- The `pin-*` and `draft-pin-*` boards design the screens that add or edit a Pin. `/screens/add-pin` stays provisional until M2.14.3 builds them.
+- The screens that add or edit sources.
 - The popup for a click inside a contested area: how it shows both claims (BND-04, MAP-07).
 - Search results (EXP-04).
 - Person panel, life trail and migration view (EXP-05 to EXP-07).

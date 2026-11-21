@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KinScape — Draft, click popup</title>
+    <link rel="stylesheet" href="fonts.css" />
+
+    <style>
+      body{margin:0}
+    </style>
+  </head>
+  <body>
+    <div
+      style="width: 760px; height: 400px; position: relative; overflow: hidden; box-sizing: border-box; background: #f4f5f0; font-family: 'Public Sans', system-ui, sans-serif; color: #18211b">
+      <div
+        style="padding: 32px 32px 0; display: flex; flex-direction: column; gap: 4px">
+        <h2
+          class="_h2_1ler9_21"
+          style='font-family: "Bricolage Grotesque", sans-serif; font-size: 24px; font-weight: 700; letter-spacing: normal; line-height: 32px; margin: 0px;'>
+          Click popup
+        </h2>
+        <span
+          class="_body_1ler9_48"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 400; letter-spacing: normal; line-height: 22px; margin: 0px;'>
+          A click on empty map opens it, 14 px left of the point. The pointer is
+          on the right edge, 114 px from the top. The popup is 304 px wide.
+        </span>
+      </div>
+      <div
+        role="dialog"
+        aria-label="Add a pin here"
+        style="position: absolute; left: 32px; top: 152px; width: 304px; box-sizing: border-box; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 2px rgb(24 33 27 / 0.1), 0 10px 30px rgb(24 33 27 / 0.2)">
+        <span
+          aria-hidden="true"
+          style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: #ffffff; transform: rotate(45deg); border-radius: 2px"></span>
+        <div
+          style="position: relative; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+          <div
+            style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span
+                class="_overline_1ler9_95"
+                style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+                Point on the map
+              </span>
+              <span
+                class="_mono_1ler9_124"
+                style='font-family: "JetBrains Mono", monospace; font-size: 12px; font-variant-ligatures: none; font-weight: 400; letter-spacing: normal; line-height: 16px; margin: 0px;'>
+                -28.74, 25.31
+              </span>
+            </div>
+            <div style="margin: -8px -8px 0px 0px;">
+              <button
+                aria-label="Close"
+                class="_iconBtn_5950n_1 _ring_17j5c_3"
+                type="button"
+                style="background: rgb(255, 255, 255); border: 1px solid rgb(226, 229, 221); border-radius: 8px; box-sizing: border-box; color: rgb(24, 33, 27); cursor: pointer; height: 44px; width: 44px; justify-content: center; align-items: center; padding: 0px; display: inline-flex; position: relative;">
+                <svg
+                  aria-hidden="true"
+                  data-icon="close"
+                  fill="none"
+                  height="20"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="20">
+                  <path d="M6 6l12 12M18 6L6 18"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <p
+            class="_small_1ler9_75"
+            style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+            The panel opens with this point filled in.
+          </p>
+          <div style="display: flex">
+            <button
+              class="_btn_1kclf_1 _ring_17j5c_3 _btnPrimary_1kclf_73"
+              type="button"
+              style='border-radius: 8px; box-sizing: border-box; cursor: pointer; font-family: "Public Sans", system-ui, sans-serif; font-size: 15px; font-weight: 600; align-items: center; gap: 8px; height: 44px; line-height: 22px; padding: 0px 16px; white-space: nowrap; justify-content: center; text-decoration: rgb(255, 255, 255); display: inline-flex; position: relative; background: rgb(38, 79, 41); color: rgb(255, 255, 255); border: 0px rgb(255, 255, 255);'>
+              Add a pin here
+            </button>
+          </div>
+        </div>
+      </div>
+      <span
+        aria-hidden="true"
+        style="position: absolute; left: 344px; top: 260px; width: 12px; height: 12px; box-sizing: border-box; border: 2.5px solid #ffffff; border-radius: 50%; background: #264f29"></span>
+      <div
+        style="position: absolute; left: 392px; top: 152px; width: 336px; display: flex; flex-direction: column; gap: 8px">
+        <span
+          class="_overline_1ler9_95"
+          style='font-family: "Public Sans", system-ui, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.1px; line-height: 16px; text-transform: uppercase; margin: 0px;'>
+          Notes
+        </span>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          The popup is at least 134 px high, so the pointer clears the bottom
+          corner.
+        </p>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          The point shows as a 12 px dot in --brand with a white edge.
+        </p>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          The coordinates are in decimal degrees with 2 decimals, in type.mono.
+        </p>
+        <p
+          class="_small_1ler9_75"
+          style='color: rgb(74, 84, 76); font-family: "Public Sans", system-ui, sans-serif; font-size: 13px; font-weight: 400; letter-spacing: normal; line-height: 20px; margin: 0px;'>
+          Close and Esc close it. M3 adds the jurisdiction chain between the
+          coordinates and the button.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

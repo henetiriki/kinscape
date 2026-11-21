@@ -622,6 +622,142 @@
       "h": 900,
       "title": "Credits at 800px — expanded",
       "page": "states"
+    },
+    "Map-add-pin.dc.html": {
+      "x": 0,
+      "y": 4080,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — the map with the button",
+      "page": "map"
+    },
+    "Pin-click-popup.dc.html": {
+      "x": 1520,
+      "y": 4080,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — click popup",
+      "page": "map"
+    },
+    "Pin-form-empty.dc.html": {
+      "x": 3040,
+      "y": 4080,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — panel from the button",
+      "page": "map"
+    },
+    "Pin-form.dc.html": {
+      "x": 4560,
+      "y": 4080,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — panel filled after a click",
+      "page": "map"
+    },
+    "Pin-form-errors.dc.html": {
+      "x": 0,
+      "y": 5100,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — field errors",
+      "page": "map"
+    },
+    "Pin-form-existing-place.dc.html": {
+      "x": 1520,
+      "y": 5100,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — Place fixed",
+      "page": "map"
+    },
+    "Pin-form-saving.dc.html": {
+      "x": 3040,
+      "y": 5100,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — saving",
+      "page": "map"
+    },
+    "Pin-form-save-failed.dc.html": {
+      "x": 4560,
+      "y": 5100,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — save failed",
+      "page": "map"
+    },
+    "Pin-form-no-people.dc.html": {
+      "x": 0,
+      "y": 6120,
+      "w": 1440,
+      "h": 900,
+      "title": "Add a pin — no people in the Tree",
+      "page": "map"
+    },
+    "Pin-edit.dc.html": {
+      "x": 1520,
+      "y": 6120,
+      "w": 1440,
+      "h": 900,
+      "title": "Edit a pin",
+      "page": "map"
+    },
+    "Pin-edit-moved.dc.html": {
+      "x": 3040,
+      "y": 6120,
+      "w": 1440,
+      "h": 900,
+      "title": "Edit a pin — point moved, precision free",
+      "page": "map"
+    },
+    "Pin-edit-loading.dc.html": {
+      "x": 4560,
+      "y": 6120,
+      "w": 1440,
+      "h": 900,
+      "title": "Edit a pin — loading",
+      "page": "map"
+    },
+    "Pin-edit-load-failed.dc.html": {
+      "x": 0,
+      "y": 7140,
+      "w": 1440,
+      "h": 900,
+      "title": "Edit a pin — did not load",
+      "page": "map"
+    },
+    "Draft-pin-click-popup.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 760,
+      "h": 400,
+      "title": "Draft — click popup",
+      "page": "drafts"
+    },
+    "Draft-pin-person-field.dc.html": {
+      "x": 840,
+      "y": 0,
+      "w": 1040,
+      "h": 560,
+      "title": "Draft — Person field",
+      "page": "drafts"
+    },
+    "Draft-pin-add-button.dc.html": {
+      "x": 0,
+      "y": 640,
+      "w": 760,
+      "h": 440,
+      "title": "Draft — Add a pin button",
+      "page": "drafts"
+    },
+    "Draft-pin-field-errors.dc.html": {
+      "x": 840,
+      "y": 640,
+      "w": 760,
+      "h": 440,
+      "title": "Draft — field errors",
+      "page": "drafts"
     }
   },
   "order": [

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KinScape — Map, add a pin</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kinscape/tokens.css">
+<link rel="stylesheet" href="ds/kinscape/components/bundle.css">
+<script src="ds/kinscape/components/bundle.js"></script>
+<script src="./board-helpers.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: var(--map-sea); font-family: var(--font-body); color: var(--ink)">
+  <x-import component-from-global-scope="KinScape.MapLayout" children="{{map}}" search="{{search}}" account="{{account}}" zoom="{{zoom}}" panel="{{panel}}" dock="{{dock}}"></x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["add-button","click-popup","form-empty","form","form-errors","form-existing-place","form-saving","form-save-failed","form-no-people","edit","edit-moved","edit-loading","edit-load-failed"],"default":"add-button"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const React = window.React;
+    const K = window.KinScape;
+
+    if (!React || !K) return {};
+
+    const h = React.createElement;
+    const { drawn, mount } = window.KinScapeBoard;
+    const noop = () => {};
+    const variant = this.props.variant ?? 'add-button';
+    const isForm = variant !== 'add-button' && variant !== 'click-popup';
+    // Example Farm, where a Pin already sits, and an empty point that the user clicked. Both are in board pixels.
+    const P = { x: 940, y: 400 };
+    const E = { x: 760, y: 330 };
+    const TEXT = (kind, text, as, extra) => `<x-import component-from-global-scope="KinScape.Text" variant="${kind}" as="${as || 'span'}"${extra || ''}>${text}</x-import>`;
+    const BUTTON = (text, kind, extra) => `<x-import component-from-global-scope="KinScape.Button" variant="${kind}"${extra || ''}>${text}</x-import>`;
+
+    // The ten Event types of PIN-03 and the nine precisions of PIN-02, as the form lists them.
+    const EVENTS = [['birth', 'Birth'], ['baptism', 'Baptism or christening'], ['residence', 'Residence'], ['marriage', 'Marriage'], ['divorce', 'Divorce'], ['death', 'Death'], ['burial', 'Burial'], ['land', 'Land ownership'], ['occupation', 'Occupation'], ['other', 'Other']];
+    const PRECISIONS = [['street', 'Street address'], ['building', 'Building'], ['erf', 'Erf'], ['farm', 'Farm'], ['suburb', 'Suburb'], ['town', 'Town or city'], ['district', 'District'], ['province', 'Province'], ['approximate', 'Approximate']];
+    const eventOptions = [{ label: 'Choose an event type', value: '' }].concat(EVENTS.map(([value, name]) => ({ label: name, value })));
+    const precisionOptions = PRECISIONS.map(([value, name]) => ({ label: name, value }));
+
+    // The marked look of a select and a text area: SelectField and TextAreaField have no error look, so the board draws it (draft-pin-field-errors).
+    // It follows the marked TextField: a 2px --error-border, the error icon in the box and the message in place of the helper.
+    const MARK = 'display: flex; align-items: center; gap: var(--space-8); box-sizing: border-box; border: 2px solid var(--error-border); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); padding: 0 11px';
+    const ICON = (name, extra) => `<x-import component-from-global-scope="KinScape.Icon" name="${name}" size="18"${extra || ''}></x-import>`;
+    const MESSAGE = (id, text) => TEXT('small', text, 'p', ` id="${id}" role="alert" tone="error"`);
+    const markedSelect = (label, id, options, message) => [
+      `<div style="display: flex; flex-direction: column; gap: var(--space-8)">`,
+      TEXT('label', label, 'label', ` html-for="${id}"`),
+      `<span style="${MARK}; height: 44px">`,
+      `<select id="${id}" aria-invalid="true" aria-describedby="${id}-message" aria-required="true" style="flex: 1; min-width: 0; height: 44px; margin: -2px 0; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; appearance: none">${options}</select>`,
+      `<span style="display: flex; flex: none">${ICON('chevronDown')}</span>`,
+      `<span style="display: flex; flex: none; color: var(--error-border)">${ICON('error')}</span>`,
+      `</span>`,
+      MESSAGE(`${id}-message`, message),
+      `</div>`
+    ].join('');
+    const markedArea = (label, id, text, message) => [
+      `<div style="display: flex; flex-direction: column; gap: var(--space-8)">`,
+      TEXT('label', label, 'label', ` html-for="${id}"`),
+      `<span style="${MARK}; align-items: flex-start; padding: 8px 11px">`,
+      `<textarea id="${id}" rows="2" aria-invalid="true" aria-describedby="${id}-message" style="flex: 1; min-width: 0; box-sizing: border-box; border: 0; background: transparent; color: inherit; font: inherit; outline: 0; padding: 0; resize: none">${text}</textarea>`,
+      `<span style="display: flex; flex: none; color: var(--error-border)">${ICON('error')}</span>`,
+      `</span>`,
+      MESSAGE(`${id}-message`, message),
+      `</div>`
+    ].join('');
+    const eventHtml = value => [['', 'Choose an event type']].concat(EVENTS).map(([v, name]) => `<option value="${v}"${v === value ? ' selected' : ''}>${name}</option>`).join('');
+    const LONG = 'Example text that runs past the end of the field. '.repeat(11);
+
+    // The loading look of the edit panel: the 20px bars of the Pin popup, one for each field.
+    const bar = width => `<span aria-hidden="true" style="display: block; width: ${width}px; max-width: 100%; height: 20px; border-radius: var(--radius-small); background: var(--line)"></span>`;
+    const loadingField = (name, width, tall) => `<div style="display: flex; flex-direction: column; gap: var(--space-8)">${TEXT('label', name)}<div style="display: flex; flex-direction: column; justify-content: center; gap: var(--space-8); min-height: ${tall ? 68 : 44}px">${bar(width)}${tall ? bar(width - 60) : ''}</div></div>`;
+
+    // What each variant puts in the fields.
+    const FILLED = { address: 'Farm Example, district Example', coordinates: '-28.742600, 25.311800', date: 'FROM 1890 TO 1905', event: 'residence', notes: 'Lived here with the Example family.', person: 'Example Person', precision: 'farm', sources: 'Example parish register, 1890.' };
+    const EMPTY = { address: '', coordinates: '', date: '', event: '', notes: '', person: '', precision: 'approximate', sources: '' };
+    const SAVED = Object.assign({}, FILLED, { coordinates: '-29.12, 26.21' });
+    const values = {
+      edit: SAVED,
+      'edit-load-failed': EMPTY,
+      'edit-loading': EMPTY,
+      'edit-moved': Object.assign({}, SAVED, { coordinates: '-28.74, 25.31' }),
+      form: FILLED,
+      'form-empty': EMPTY,
+      'form-errors': EMPTY,
+      'form-existing-place': Object.assign({}, EMPTY, { coordinates: '-29.12, 26.21', precision: 'farm' }),
+      'form-no-people': EMPTY,
+      'form-save-failed': FILLED,
+      'form-saving': FILLED
+    }[variant] || EMPTY;
+    const editing = variant.startsWith('edit');
+    const errors = variant === 'form-errors';
+    // The point is the Place's own only after "Add a pin here" on a Pin. An edit leaves the coordinates free (D10), and its precision is fixed until the point moves.
+    const coordinatesFixed = variant === 'form-existing-place';
+    const fixedPlace = coordinatesFixed || variant === 'edit';
+    const saving = variant === 'form-saving';
+
+    const field = (Part, props) => h(Part, Object.assign({ autoComplete: 'off', spellCheck: false }, props));
+    const person = variant === 'form-no-people'
+      ? h('div', { style: { display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' } },
+        mount(TEXT('label', 'Person')),
+        h(K.NoticeCard, { actions: [{ href: 'Person-new.dc.html', label: 'Add a person' }], icon: 'people', title: 'No people yet' }, 'Add a person before you add a pin.'))
+      : field(K.TextField, { 'aria-expanded': 'false', 'aria-haspopup': 'listbox', 'aria-required': 'true', defaultValue: values.person, error: errors ? 'Choose a person.' : undefined, label: 'Person', role: 'combobox' });
+    const event = errors
+      ? mount(markedSelect('Event type', 'pin-event', eventHtml(''), 'Choose an event type.'))
+      : h(K.SelectField, { 'aria-required': 'true', defaultValue: values.event, label: 'Event type', options: eventOptions });
+    const date = field(K.FuzzyDateField, { 'aria-required': 'true', defaultValue: errors ? '14/03/1850' : values.date, helper: 'For example 1850, ABT 1850 or BET 1850 AND 1855.', label: 'Date' });
+    const coordinates = field(K.TextField, {
+      'aria-required': 'true',
+      defaultValue: errors ? '28°44′33″S 25°18′42″E' : values.coordinates,
+      disabled: coordinatesFixed,
+      error: errors ? 'Use decimal degrees, not degrees, minutes and seconds. For example -33.93, 18.42.' : undefined,
+      helper: coordinatesFixed ? 'This Place is fixed. You cannot change its point.' : 'In decimal degrees, such as -33.93, 18.42.',
+      label: 'Coordinates'
+    });
+    const address = field(K.TextField, { defaultValue: errors ? 'Farm Example, district Example, '.repeat(16).slice(0, 501) : values.address, error: errors ? 'Use 500 characters or fewer.' : undefined, label: 'Address as recorded' });
+    const precision = h('div', { style: { display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' } },
+      h(K.SelectField, { defaultValue: values.precision, disabled: fixedPlace, label: 'Precision', options: precisionOptions }),
+      fixedPlace ? mount(TEXT('small', 'This is the precision of the Place.', 'p')) : null);
+    const sources = errors
+      ? mount(markedArea('Sources', 'pin-sources', LONG, 'Use 10,000 characters or fewer.'))
+      : h(K.TextAreaField, { defaultValue: values.sources, label: 'Sources', rows: 2 });
+    const notes = errors
+      ? mount(markedArea('Notes', 'pin-notes', LONG, 'Use 10,000 characters or fewer.'))
+      : h(K.TextAreaField, { defaultValue: values.notes, label: 'Notes', rows: 2 });
+
+    const loading = variant === 'edit-loading';
+    const loadFailed = variant === 'edit-load-failed';
+    let body;
+
+    if (loading) {
+      body = [['Person', 168], ['Event type', 140], ['Date', 150], ['Coordinates', 190], ['Address as recorded', 220], ['Precision', 120]].map(([name, width]) => loadingField(name, width, false)).concat([loadingField('Sources', 220, true), loadingField('Notes', 220, true)]).join('');
+      body = mount(body);
+    } else if (loadFailed) {
+      body = h(React.Fragment, null,
+        mount(`<x-import component-from-global-scope="KinScape.Alert" tone="error" title="Couldn't load this Pin">The details didn't load.</x-import><div style="display: flex">${BUTTON('Try again', 'secondary')}</div>`));
+    } else {
+      body = h(React.Fragment, null,
+        variant === 'form-save-failed' ? mount(`<x-import component-from-global-scope="KinScape.Alert" tone="error" title="Couldn't save the pin">Your values are still here. Try again.</x-import>`) : null,
+        person, event, date, coordinates, address, precision, sources, notes);
+    }
+
+    const footer = loadFailed
+      ? `${BUTTON('Cancel', 'secondary')}`
+      : `${BUTTON('Save', 'primary', saving || loading ? ' disabled="true"' : '')}${BUTTON('Cancel', 'secondary')}`;
+    const busy = saving || loading;
+    // The panel is the Surface of the `panel` slot: 784px high, from furniture-top to furniture-bottom. Its body scrolls and its buttons stay.
+    const formPanel = h(K.Surface, { level: 'raised' },
+      h('aside', { 'aria-busy': busy ? 'true' : undefined, 'aria-labelledby': 'pin-panel-title', style: { display: 'flex', flexDirection: 'column', height: 784, overflow: 'hidden' } },
+        mount(`<div style="padding: var(--space-20) var(--space-20) var(--space-8)">${TEXT('h2', editing ? 'Edit a pin' : 'Add a pin', 'h2', ' id="pin-panel-title"')}</div>`),
+        h('div', { style: { display: 'flex', flexDirection: 'column', flex: 1, gap: 'var(--space-12)', minHeight: 0, overflowY: 'auto', padding: '0 var(--space-20) var(--space-16)' } }, body),
+        mount(`<div style="display: flex; gap: var(--space-8); padding: var(--space-16) var(--space-20) var(--space-20); border-top: 1px solid var(--line)">${footer}</div>`)));
+
+    // The Add a pin button is the primary button at the top right, 12px left of the account control (draft-pin-add-button).
+    const addButton = `<div style="position: absolute; right: 80px; top: 24px">${BUTTON('Add a pin', 'primary')}</div>`;
+
+    // The click popup: the frame of the Pin popup, popup-gap (14px) left of the point, the pointer on its right edge at popup-point-y (114px).
+    const clickPopup = `<div role="dialog" aria-label="Add a pin here" style="position: absolute; left: ${E.x - 14 - 304}px; top: ${E.y - 114}px; width: 304px; box-sizing: border-box; background: var(--surface); border-radius: var(--radius-panel); box-shadow: var(--shadow-floating)">`
+      + `<span aria-hidden="true" style="position: absolute; right: -8px; top: 106px; width: 16px; height: 16px; background: var(--surface); transform: rotate(45deg); border-radius: 2px"></span>`
+      + `<div style="position: relative; padding: var(--space-16); display: flex; flex-direction: column; gap: var(--space-12)">`
+      + `<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-8)">`
+      + `<div style="display: flex; flex-direction: column; gap: var(--space-4)">${TEXT('overline', 'Point on the map')}${TEXT('mono', '-28.74, 25.31')}</div>`
+      + `<x-import component-from-global-scope="KinScape.IconButton" label="Close" style="margin: -8px -8px 0 0"><x-import component-from-global-scope="KinScape.Icon" name="close" size="20"></x-import></x-import>`
+      + `</div>`
+      + TEXT('small', 'The panel opens with this point filled in.', 'p')
+      + `<div style="display: flex">${BUTTON('Add a pin here', 'primary')}</div>`
+      + `</div></div>`;
+
+    // A single Pin on the map, as the layer draws it: the glyph in --pin with a white halo.
+    const pin = (x, y) => `<path transform="translate(${x - 11} ${y - 11}) scale(0.9167)" d="M6 18V6H18V18Z" fill="#9A3B12" stroke="#ffffff" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linejoin="round" paint-order="stroke"></path>`;
+    const selected = at => `<circle cx="${at.x}" cy="${at.y}" r="16" fill="none" stroke="#264F29" stroke-width="2.5"></circle><circle cx="${at.x}" cy="${at.y}" r="20.5" fill="none" stroke="#ffffff" stroke-opacity="0.8" stroke-width="2"></circle>`;
+    const dot = at => `<circle cx="${at.x}" cy="${at.y}" r="6" fill="#264F29" stroke="#ffffff" stroke-width="2.5"></circle>`;
+    const others = [pin(1150, 318), pin(1262, 566), pin(560, 250)].join('');
+
+    let below = others;
+    let above = '';
+    const newPoint = variant === 'form' || variant === 'form-saving' || variant === 'form-save-failed' || variant === 'edit-moved';
+    const onPin = variant === 'form-existing-place' || variant === 'edit' || variant === 'edit-loading' || variant === 'edit-load-failed';
+
+    if (variant === 'add-button') {
+      above = addButton;
+    } else if (variant === 'click-popup') {
+      below += dot(E);
+      above = addButton + clickPopup;
+    } else if (newPoint) {
+      below += pin(E.x, E.y) + selected(E);
+    } else if (onPin) {
+      below += pin(P.x, P.y) + selected(P);
+    }
+
+    const label = 'Map of South Africa on 1901 around Example Farm in the Orange Free State';
+    const svg = `<svg viewBox="292.7 363.2 654.5 409.1" width="1440" height="900" style="position: absolute; left: 0; top: 0; display: block" role="img" aria-label="${label}">
+    <defs>
+      <filter id="hsP" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="5" seed="11"></feTurbulence>
+        <feDiffuseLighting surfaceScale="3" lighting-color="#ffffff" diffuseConstant="1.1"><feDistantLight azimuth="315" elevation="38"></feDistantLight></feDiffuseLighting>
+      </filter>
+      <pattern id="hatchP" patternUnits="userSpaceOnUse" width="4.1" height="4.1" patternTransform="rotate(45)"><rect width="1.4" height="4.1" fill="#8B4A1C" fill-opacity="0.34"></rect></pattern>
+      <path id="rvp-vaal" d="M691 445 L714 429 L770 389 L808 381"></path>
+      <path id="rvp-orange" d="M665 575 L706 608 L733 600 L772 611"></path>
+    </defs>
+    <rect x="200" y="300" width="800" height="560" fill="#C9D5D2"></rect>
+    <path id="landP" d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z" fill="#E9EBE2"></path>
+    <clipPath id="landClipP"><path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699 L921 668 L945 645 L955 635 L969 614 L987 582 L999 562 L1018 534 L1037 507 L1052 498 L1071 473 L1082 426 L1097 382 L1098 348 L1082 328 L1102 294 L1144 270 L1197 246 L1228 210 L1234 150 L1228 96 L1218 54 L1202 0 L1202 -90 L63 -90 L63 0 L234 488 Z"></path></clipPath>
+    <path d="M234 488 L283 495 L325 504 L368 507 L399 486 L420 474 L420 256 L441 306 L456 383 L515 372 L567 330 L620 306 L672 318 L714 312 L703 366 L690 414 L691 445 L694 472 L684 500 L634 547 L665 575 L706 608 L733 600 L772 611 L798 603 L808 600 L840 611 L877 594 L903 567 L924 594 L955 635 L945 645 L921 668 L892 699 L866 726 L835 751 L814 765 L782 786 L761 795 L722 798 L714 808 L682 809 L674 822 L640 817 L598 813 L580 815 L557 812 L532 821 L504 833 L478 834 L446 837 L420 860 Z" fill="#D3DCC4"></path>
+    <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z" fill="#E3D2B2"></path>
+    <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z" fill="#D9CFBA"></path>
+    <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534 L903 567 L877 594 L840 611 L808 600 L788 582 Z" fill="#D9CFD9"></path>
+    <g fill="url(#hatchP)">
+      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+      <path d="M691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L935 438 L1005 402 L1048 327 L1047 240 L1013 115 L756 255 L714 312 L703 366 L690 414 Z"></path>
+    </g>
+    <g clip-path="url(#landClipP)"><rect x="200" y="300" width="800" height="560" filter="url(#hsP)" style="mix-blend-mode: multiply" opacity="0.28"></rect></g>
+    <path d="M234 488 L256 525 L268 564 L278 594 L299 630 L318 666 L331 696 L328 726 L312 735 L315 753 L325 774 L339 804 L333 816 L340 831 L347 814 L360 816 L359 833 L381 835 L399 847 L420 860 L446 837 L478 834 L504 833 L532 821 L557 812 L580 815 L598 813 L640 817 L674 822 L682 809 L714 808 L722 798 L761 795 L782 786 L814 765 L835 751 L866 726 L892 699" fill="none" stroke="#7E9A98" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+    <g fill="none" stroke="#6E99A3" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M887 516 L877 546 L861 576 L835 600 L798 603 L772 611 L733 600 L706 608 L665 575 L634 547 L625 514 L598 534 L564 550 L525 504"></path>
+      <path d="M950 369 L929 381 L905 387 L872 378 L836 370 L808 381 L770 389 L714 429 L691 445 L662 483 L625 514"></path>
+    </g>
+    <g fill="none" stroke="#3B3A2F" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round">
+      <path d="M634 547 L684 500 L694 472 L691 445 L714 429 L770 389 L808 381 L836 370 L872 378 L905 387 L911 408 L900 450 L890 486 L872 484 L840 501 L811 531 L790 552 L788 582 L798 603 L772 611 L733 600 L706 608 L665 575 Z"></path>
+      <path d="M690 414 L703 366 L714 312"></path>
+      <path d="M790 552 L811 531 L840 501 L872 484 L898 504 L916 534"></path>
+    </g>
+    <g font-family="Public Sans, sans-serif" stroke="#E9EBE2" stroke-width="1.6" stroke-linejoin="round" paint-order="stroke">
+      <g font-size="5" font-style="italic" fill="#3F646C">
+        <text dy="-2"><textPath href="#rvp-vaal" startOffset="50%" text-anchor="middle">Vaal</textPath></text>
+        <text dy="-2"><textPath href="#rvp-orange" startOffset="50%" text-anchor="middle">Orange</textPath></text>
+      </g>
+      <g fill="#2E2C22" font-weight="600" font-size="5.9" style="letter-spacing: 0.9px">
+        <text x="800" y="452" text-anchor="middle">ORANGE FREE STATE</text>
+        <text x="520" y="650" text-anchor="middle">CAPE COLONY</text>
+      </g>
+      <text x="852" y="576" text-anchor="middle" fill="#2E2C22" font-weight="600" font-size="5.2" style="letter-spacing: 0.7px">BASUTOLAND</text>
+    </g>
+    <g transform="translate(292.7 363.2) scale(${654.5 / 1440} ${409.1 / 900})">${below}</g>
+  </svg>`;
+
+    const rows = (items, size) => items.map(([id, name, description, checked]) => ({ checked, description, id, label: name, onChange: noop, size }));
+
+    return {
+      account: h(K.Avatar, { initial: 'R' }),
+      dock: h(K.DateDock, {
+        contestedCount: 2,
+        contestedYears: [{ from: 1900, to: 1901 }],
+        day: 91109,
+        epochs: [1652, 1806, 1854, 1880, 1902, 1910, 1976, 1994].map(year => ({ year })).concat([{ label: 'Today', year: 2026 }]),
+        lastDay: 136894,
+        onChange: noop,
+        onPlay: noop
+      }),
+      map: h(React.Fragment, null,
+        drawn(svg),
+        h('div', { style: { position: 'absolute', left: 0, top: 0, width: 1440, height: 900 } }, mount(above))
+      ),
+      panel: isForm ? formPanel : h(K.Panel, {
+        bodyId: 'map-panel-body',
+        end: h(K.Legend),
+        gap: 14,
+        label: 'Layers and filters',
+        onSelect: noop,
+        selected: 'layers',
+        tabs: [{ controls: 'map-panel-body', label: 'Layers', value: 'layers' }, { controls: 'map-panel-body', count: 1, label: 'Filters', value: 'filters' }]
+      },
+        h(K.LayerGroup, { heading: 'Boundaries', rows: rows([['polities', 'Polities', 'Colonies, republics, provinces, homelands', true], ['districts', 'Districts', 'Drostdy and magisterial districts', false]]) }),
+        h(K.LayerGroup, { heading: 'Basemap', rows: rows([['names', 'Place names', 'As they were on the map date', true], ['rivers', 'Rivers', 'Many early borders follow them', true], ['terrain', 'Terrain', 'Hillshade, no modern borders', true]], 'm') }),
+        h(K.LayerGroup, { heading: 'Pins', rows: rows([['pins', 'Pins', '8 of 214 true on this date', true], ['halos', 'Uncertainty halos', 'Grow with the date range', true]], 'm') })
+      ),
+      search: h(K.SearchBar, { form: 'bar' }),
+      zoom: h(K.ZoomControls)
+    };
+  }
+}
+</script>
+</body>
+</html>

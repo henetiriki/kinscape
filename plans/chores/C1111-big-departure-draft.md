@@ -1,7 +1,7 @@
 # Plan: C1111: Record a big departure and stay a draft, instead of stopping the build
 
 - **Spec:** #1111
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -21,7 +21,7 @@ The [failing-tests rule](../README.md#failing-tests) calls a wrong-looking test 
 - **B.** No. The failing-tests rule says: leave that test as it is, write a "Big:" line that names the test and the reason, and keep the PR a draft. Cost: one sentence in `plans/README.md`.
 - **Other:** your own.
 
-Recommended: B, because "Fix the code, not the test" keeps the check that proves the work, and a red test shows the tech lead the real state.
+**Answer: B** (@henetiriki)
 
 **D2 · A hand-back path that the plan's table does not name** · Decides: Tech lead
 
@@ -31,7 +31,7 @@ On `main`, `build.md` Hand-back step 2 adds the row and writes a plain `## Devia
 - **B.** Only `build-local/SKILL.md` changes. `build.md` keeps its plain `## Deviations` line. Cost: none, but the two files give one case two rules.
 - **Other:** your own.
 
-Recommended: A, because a new hand-back row alters the scope, and the final comment then lists it first.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

@@ -107,3 +107,6 @@ D1 to D5 are on #1117. The build rewords the issue as the answers say ([reword s
 - `docs/how-we-work.md` line 40 names `/refine bug <number>`. The text stays true.
 
 ## Deviations
+
+- The `filing.md` budget stays at 1030. The new count is 1023, which rounds up to 1030 (D6 A).
+- The `fix-review.md` budget is 460, not 470. The count is 456 (D6 A).

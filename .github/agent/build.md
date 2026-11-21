@@ -10,7 +10,7 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
 
 ## Rules
 
-- If you need a path that hands a PR back (the [hand-back rule](../../plans/README.md#hand-back)), stop. Push nothing. Comment why.
+- Never edit a hand-back path. Follow [Hand-back](#hand-back).
 - Add no package: `npm install` is off. If a plan needs one, stop (the [big-departures rule](../../plans/README.md#big-departures)).
 - Write an unlikely case in your final PR comment, not in code ([AGENTS.md](../../AGENTS.md#workflow-rules)).
 - Write each unit test for logic first (the [test-first rule](../../plans/README.md#test-first)).
@@ -39,4 +39,13 @@ The plan is approved and its decisions are recorded: `scripts/agent-approve.mts`
    - A check failed.
    - The ready check stops you.
    - The plan changes a design system input (the [design-system rule](../../plans/README.md#design-system)).
-9. Whether the checks pass or fail, comment on the PR last. Say what you did. If a check failed, say what blocked you.
+   - The PR has the `hand-back` label.
+9. Whether the checks pass or fail, comment on the PR last. Say what you did. If a check failed, say what blocked you. List each hand-back row that you did not build.
+
+## Hand-back
+
+<a id="hand-back"></a>A hand-back path is a pattern of `HAND_BACK` in `scripts/hand-back.mts`. If the plan's Files that change table names one, do these steps:
+
+1. Build and push the other rows. Edit no hand-back path.
+2. If the build needs a hand-back path that the table does not name, add its row to the table. Write a line under `## Deviations`. Edit no hand-back path.
+3. Keep the PR a draft. The push makes `claude-hand-back.yml` add the `hand-back` label.

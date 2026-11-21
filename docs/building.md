@@ -11,7 +11,7 @@ A Bug or Chore takes the same path; below, "Spec" means all three. Branch names,
 3. Claude records them (and rewords the Spec if one changes its text), builds, rewrites the PR description and marks it ready. A draft runs only the words check.
 4. Claude reviews each ready pull request. It skips Dependabot's PRs, the bot's action-pin PR (a person's push gets a review) and `plans/`-only PRs. A change to `claude-code-review.yml` gets a comment. `Review` is a required check: it fails while a finding is open, and a skipped PR gets a green one. To clear a wrong finding, reply with the reason and push. The tech lead adds the `fix-review` label to have Claude fix the findings and push. The run removes the label, and the push starts a new review. A fork or `hand-back` PR never runs. A draft, or anyone else's label, does nothing and the label stays. When the PR is ready, remove the label and add it again.
 5. The tech lead adds `resolve-conflict` to have Claude merge `main` into the PR and push, or comment why not. As `fix-review`, but a draft runs too.
-6. For a `hand-back` PR, the tech lead runs [`/build-local <n>`](../.claude/skills/build-local/SKILL.md) or [`/fix-review-local <n>`](../.claude/skills/fix-review-local/SKILL.md) in a local session.
+6. For a `hand-back` PR, CI builds the rows that are not hand-back paths. Then the tech lead runs [`/build-local <n>`](../.claude/skills/build-local/SKILL.md) or [`/fix-review-local <n>`](../.claude/skills/fix-review-local/SKILL.md) in a local session.
 
 ### If a run stalls
 

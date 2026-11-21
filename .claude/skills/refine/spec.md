@@ -18,7 +18,7 @@ Ask as `SKILL.md` says. Typical branches:
 - **Behaviour:** what the user sees and does.
 - **Design:** for a UI slice, the branches in [design.md](design.md).
 - **Design system:** does a slice build or change a shared component, or change another [design system input](../../../design/CANVAS.md#changing-the-design-system)? If it does, add the done checks from that section's _Issue text_ to _Acceptance checks_. Use that section's Constraint sentence.
-- **Components:** name the component of each screen element ([page rule](../../../design/DESIGN.md#components)). For a missing one, write a decision: build it here or in its own Spec.
+- **Components:** name the component of each screen element ([page rule](../../../design/DESIGN.md#in-the-repo)). For a missing one, write a decision: build it here or in its own Spec.
 - **Outside formats:** map each output field to its source. Ask about each field with no source.
 - **Hard-to-reverse choices:** a library, a data model change, or a departure from _Suggested tech approach_. Each is a tech-lead decision.
 - **Data:** anything that stores people, owners or visibility, and boundary data licences (`AGENTS.md` › Data rules).
@@ -32,6 +32,7 @@ Write every unresolved choice as a [decision](../../../docs/how-we-work.md#decis
 
 Confirm the slices before you draft.
 
+- For a user-visible Intent, slice a design Spec first ([design path](../../../design/CANVAS.md)).
 - Each slice is one pull request with something to check on a preview. Prefer thin vertical slices to layers.
 - Cap each slice at about 600 changed lines. Do not count lockfiles, data files, fonts and the plan. Slice a Spec that passes the cap now. Never write that the plan splits it.
 - Estimate each slice from a merged Spec of the same kind:

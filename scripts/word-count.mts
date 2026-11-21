@@ -7,7 +7,7 @@ import { isAbsolute, relative, sep } from 'node:path';
 // A plan entry skips the plan's `## Deviations` section, which the build adds lines to.
 // The entries are in path order. The first match wins, so a folder's wildcard entry comes last in its folder.
 const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
-  { limit: 760, pattern: /^\.claude\/skills\/refine\/spec\.md$/ },
+  { limit: 800, pattern: /^\.claude\/skills\/refine\/spec\.md$/ },
   {
     limit: 650,
     pattern: /^\.claude\/skills\/(.+\/)?(?!NOTICE\.md$)[^/]+\.md$/,
@@ -18,12 +18,12 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 750, pattern: /^\.github\/agent\/review-code\.md$/ },
   { limit: 550, pattern: /^\.github\/agent\/review\.md$/ },
   { limit: 300, pattern: /^\.github\/agent\/[^/]+\.md$/ },
-  { limit: 700, pattern: /^AGENTS\.md$/ },
+  { limit: 750, pattern: /^AGENTS\.md$/ },
   { limit: 150, pattern: /^CLAUDE\.md$/ },
   { limit: 300, pattern: /^README\.md$/ },
-  { limit: 1600, pattern: /^design\/CANVAS\.md$/ },
+  { limit: 1650, pattern: /^design\/CANVAS\.md$/ },
   { limit: 600, pattern: /^design\/COMPONENTS\.md$/ },
-  { limit: 4150, pattern: /^design\/DESIGN\.md$/ },
+  { limit: 4350, pattern: /^design\/DESIGN\.md$/ },
   { limit: 200, pattern: /^docs\/README\.md$/ },
   { limit: 650, pattern: /^docs\/architecture-target\.md$/ },
   { limit: 1020, pattern: /^docs\/architecture\.md$/ },

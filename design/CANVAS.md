@@ -2,9 +2,15 @@
 
 How the canvas, the snapshots and the JPGs stay in step. The path for a new or updated component is in [`COMPONENTS.md`](COMPONENTS.md).
 
+A design follows this path:
+
+1. For a user-visible Intent, `/refine spec` slices a design Spec first.
+2. The tech lead starts a local Claude Code session. The session builds the design Spec with [Drawing a board](#drawing-a-board), then step 7 of [Changing the design system](#changing-the-design-system).
+3. Only a local Claude Code session edits the canvas.
+
 ## Making the snapshots and JPGs
 
-The exporter writes each HTML snapshot in `source/` from its board in `canvas/`. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
+The exporter writes each HTML snapshot (`*.html`) in `source/` from its board in `canvas/`. `source/kse-*.svg` and `source/fonts.css` are hand-kept sources. The snapshot is the source of its JPG. It holds written values only (no `var()`, `calc()` or scripts) and works offline. After a board changes, push the branch. The tech lead then runs the workflow **Design: Render snapshots** on it (Actions tab, or `gh workflow run design-agent-shots.yml --ref <branch>`). It exports every HTML snapshot, renders every JPG and commits those that changed. The `design` job exports again. If a snapshot in `source/` differs, the job fails and names the file.
 
 An `export.json` snapshot can hold a `clip`: the `x`, `y`, `width` and `height` in px of the part to keep. The snapshot and its JPG show only that part, and the JPG keeps its size. The export fails on a clip outside the viewport, and on `position: fixed` content.
 
@@ -68,7 +74,7 @@ Change nothing else on the canvas. Touch no board. Leave the repo alone.
 
 ## Refreshing the canvas copy
 
-Refresh `canvas/` in two cases: after an install update, and after a person changes a board on the canvas. Step 7 of "Changing the design system" does not run it. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
+Refresh `canvas/` after an install update. Step 7 of "Changing the design system" does not run it. Keep the canvas private: a write from outside the organization blocks Claude Code's read access.
 
 - **5.1** `list` the canvas with `scope: "files"` (its link is line 1 of `canvas/VERSION`).
 - **5.2** `read` each file with `paths` into `canvas/project/` (long files in parts). Compare its `sha256` from `read` with `shasum -a 256` of the repo copy. Files under `project/ds/kinscape/` come from `.design-system/project/`.

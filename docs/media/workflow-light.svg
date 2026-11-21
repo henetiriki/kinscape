@@ -32,8 +32,9 @@
   <text x="664" y="122" class="h">Claude and CI</text>
 
   <!-- arrows (drawn first, boxes sit on top) -->
-  <path class="a" d="M240,222 V250"/>
-  <path class="a" d="M312,286 H660"/>
+  <path class="a" d="M240,222 V236 H784 V254"/>
+  <path class="a" d="M660,270 H552"/>
+  <path class="a" d="M552,302 H660"/>
   <path class="a" d="M784,318 V346 H240 V376"/>
   <path class="a" d="M444,346 V376"/>
   <path class="a" d="M572,222 V468 H500 V490"/>
@@ -64,8 +65,8 @@
   <text class="t" x="464" y="174">Chore</text><text class="d" x="464" y="193">Tech lead files</text><text class="d" x="464" y="209">upkeep</text>
 
   <!-- Design / Draft -->
-  <rect class="b" x="96" y="250" width="216" height="72"/>
-  <text class="t" x="108" y="274">Design</text><text class="d" x="108" y="293">PO designs the</text><text class="d" x="108" y="309">screens</text>
+  <rect class="b" x="336" y="250" width="216" height="72"/>
+  <text class="t" x="350" y="274">Design Spec</text><text class="d" x="350" y="293">Tech lead's Claude session</text><text class="d" x="350" y="309">draws the boards</text>
   <rect class="b" x="660" y="254" width="248" height="64"/>
   <text class="t" x="674" y="280">Draft the Spec</text><text class="d" x="674" y="300">Claude slices the Intent</text>
 
@@ -112,7 +113,11 @@
   <!-- arrow labels -->
   <text class="l" x="342" y="340" text-anchor="middle">ready-for-po</text>
   <text class="l" x="690" y="340" text-anchor="middle">ready-for-dev</text>
-  <text class="l" x="566" y="244" text-anchor="end">ready-for-dev</text>
+  <text class="l" x="566" y="366" text-anchor="end">ready-for-dev</text>
+  <text class="l" x="579" y="252">user-visible</text>
+  <text class="l" x="579" y="264">Intent</text>
+  <text class="l" x="579" y="318">boards</text>
+  <text class="l" x="579" y="330">merged</text>
   <text class="l" x="288" y="516" text-anchor="middle">ready-for-dev</text>
   <text class="l" x="438" y="474" text-anchor="end">ready-for-dev</text>
   <text class="l" x="606" y="502" text-anchor="middle">ready-for-agent</text>

@@ -163,6 +163,14 @@ describe('memoryStore seed', () => {
       expect(
         await store.addPinAt({ ...scope, pin: PIN, place: PLACE })
       ).toEqual(NOT_FOUND);
+      expect(
+        await store.updatePinAt({
+          ...scope,
+          pin: PIN,
+          place: PLACE,
+          version: 1,
+        })
+      ).toEqual(NOT_FOUND);
       expect(await store.findPin({ ...scope, pinId: PIN.id })).toEqual({
         ...PIN,
         version: 1,

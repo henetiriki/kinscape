@@ -75,6 +75,7 @@ describe('treeMethods', () => {
       'listRelationships',
       'updatePerson',
       'updatePin',
+      'updatePinAt',
       'updatePlace',
       'updateRelationship',
     ]);

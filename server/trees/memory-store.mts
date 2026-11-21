@@ -11,11 +11,12 @@ import type {
 } from '#ks/lib/domain/ids/types.ts';
 import type { Person } from '#ks/lib/domain/persons/types.ts';
 import type { Pin, PinInput } from '#ks/lib/domain/pins/types.ts';
-import type { Place } from '#ks/lib/domain/places/types.ts';
+import type { Place, PlaceInput } from '#ks/lib/domain/places/types.ts';
 import type {
   Relationship,
   RelationshipInput,
 } from '#ks/lib/domain/relationships/types.ts';
+import type { Result } from '#ks/lib/domain/result/types.ts';
 import type {
   SeedAccount,
   Tree,
@@ -51,7 +52,7 @@ const identityOf = (issuer: string, subject: string) =>
 
 /**
  * A TreeStore in memory, for tests and the test-only adapters. `seed` Accounts may have no Tree.
- * A seed Tree may hold People and Relationships, saved at version 1. The nine writes refuse a Tree
+ * A seed Tree may hold People and Relationships, saved at version 1. The ten writes refuse a Tree
  * in `readOnly` as they refuse a Tree the Account may not access. The list reads of a Tree in
  * `failing` throw.
  */
@@ -248,10 +249,47 @@ export const memoryStore = (
     );
   };
 
+  const updatePin: TreeStore['updatePin'] = async ({
+    pin,
+    version,
+    ...scope
+  }) => {
+    const pinned = pinnable(scope, pin);
+
+    return updated(scope, pinsOf(scope), pinned?.id, pinned ?? pin, version);
+  };
+
   const addPlace: TreeStore['addPlace'] = async ({ place, ...scope }) =>
     savedOrNotFound(
       added(scope, placesOf(scope), parsePlaceId(place.id), place)
     );
+
+  /**
+   * Saves `place`, then runs `write`. If `write` fails, the Place goes, unless it was saved before
+   * the call.
+   */
+  const placedPin = async <Refusal extends 'conflict' | 'not-found'>(
+    scope: TreeScope,
+    place: PlaceInput,
+    write: () => Promise<Result<Pin, Refusal>>
+  ): Promise<Result<Pin, 'not-found' | Refusal>> => {
+    const placeId = parsePlaceId(place.id);
+    const existed =
+      placeId !== undefined && placesOf(scope)?.has(placeId) === true;
+    const placed = await addPlace({ ...scope, place });
+
+    if (!placed.ok) {
+      return placed;
+    }
+
+    const saved = await write();
+
+    if (!saved.ok && !existed) {
+      placesOf(scope)?.delete(placeId as PlaceId);
+    }
+
+    return saved;
+  };
 
   return {
     addAccount: async ({ issuer, subject, treeName }) => {
@@ -280,27 +318,10 @@ export const memoryStore = (
         person
       ),
     addPin,
-    addPinAt: async ({ pin, place, ...scope }) => {
-      const placeId = parsePlaceId(place.id);
-      const existed =
-        placeId !== undefined && placesOf(scope)?.has(placeId) === true;
-      const placed = await addPlace({ ...scope, place });
-
-      if (!placed.ok) {
-        return placed;
-      }
-
-      const saved = await addPin({
-        ...scope,
-        pin: { ...pin, placeId: place.id },
-      });
-
-      if (!saved.ok && !existed) {
-        placesOf(scope)?.delete(placeId as PlaceId);
-      }
-
-      return saved;
-    },
+    addPinAt: async ({ pin, place, ...scope }) =>
+      placedPin(scope, place, () =>
+        addPin({ ...scope, pin: { ...pin, placeId: place.id } })
+      ),
     addPlace,
     addRelationship: async ({ relationship, ...scope }) =>
       savedOrNotFound(
@@ -372,11 +393,15 @@ export const memoryStore = (
         .slice(0, MAX_RELATIONSHIPS),
     updatePerson: async ({ person, version, ...scope }) =>
       updated(scope, personsOf(scope), person.id, person, version),
-    updatePin: async ({ pin, version, ...scope }) => {
-      const pinned = pinnable(scope, pin);
-
-      return updated(scope, pinsOf(scope), pinned?.id, pinned ?? pin, version);
-    },
+    updatePin,
+    updatePinAt: async ({ pin, place, version, ...scope }) =>
+      placedPin(scope, place, () =>
+        updatePin({
+          ...scope,
+          pin: { ...pin, placeId: place.id },
+          version,
+        })
+      ),
     updatePlace: async ({ place, version, ...scope }) =>
       updated(scope, placesOf(scope), parsePlaceId(place.id), place, version),
     updateRelationship: async ({ relationship, version, ...scope }) =>

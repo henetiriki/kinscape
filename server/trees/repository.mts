@@ -125,6 +125,11 @@ const pinGroup = (
 
       return saved.ok ? ok(pinView(viewer, saved.value)) : saved;
     },
+    updateAt: async (pin, place, version) => {
+      const saved = await store.updatePinAt({ ...scope, pin, place, version });
+
+      return saved.ok ? ok(pinView(viewer, saved.value)) : saved;
+    },
   };
 };
 

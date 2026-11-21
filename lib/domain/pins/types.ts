@@ -11,6 +11,16 @@ export type AlonePart = { id: Pin['id'] } & Validity;
 /** What `checkPin` returns: the Pin, and its new Place for a new point. */
 export type CheckedPin = { pin: PinInput; place?: PlaceInput };
 
+/**
+ * What `checkPinUpdate` returns: the Pin without a Place id, the new Place for a new point, and the
+ * `version` that the client read.
+ */
+export type CheckedPinUpdate = {
+  pin: Omit<PinInput, 'placeId'>;
+  place?: PlaceInput;
+  version: number;
+};
+
 /** The kind of life event a Pin records. `lib/ui/types.ts` has the same list for the UI. */
 export type EventType = PinInput['eventType'];
 

@@ -358,8 +358,41 @@ const updated = async <Row, Entity>(
   return err((await exists()) === undefined ? 'not-found' : 'conflict');
 };
 
-/** `addPinAt` throws this error to cancel the transaction, then catches it and gives `not-found`. */
-class PinRefused extends Error {}
+/** `placedPin` throws this error to cancel the transaction. It carries the error of the refused write. */
+class PinRefused extends Error {
+  refusal: 'conflict' | 'not-found' = 'not-found';
+}
+
+/**
+ * Saves `place`, then runs `write` on the same transaction. If either fails, nothing saves, and the
+ * result is the error of the failed step.
+ */
+const placedPin = async <Refusal extends 'conflict' | 'not-found'>(
+  db: Db,
+  scope: TreeScope,
+  place: PlaceInput,
+  write: (inner: TreeStore) => Promise<Result<Pin, Refusal>>
+): Promise<Result<Pin, 'not-found' | Refusal>> => {
+  try {
+    return await db.transaction().execute(async trx => {
+      const inner = databaseStore(trx);
+      const placed = await inner.addPlace({ ...scope, place });
+      const saved = placed.ok ? await write(inner) : placed;
+
+      if (!saved.ok) {
+        throw Object.assign(new PinRefused(), { refusal: saved.error });
+      }
+
+      return saved;
+    });
+  } catch (error) {
+    if (error instanceof PinRefused) {
+      return err(error.refusal as Refusal);
+    }
+
+    throw error;
+  }
+};
 
 /**
  * A TreeStore over Postgres. The ids are branded, but a cast can hold anything and Postgres
@@ -435,29 +468,10 @@ export const databaseStore = (db: Db): TreeStore => ({
             .executeTakeFirstOrThrow(),
       })
     ),
-  addPinAt: async ({ pin, place, ...scope }) => {
-    try {
-      return await db.transaction().execute(async trx => {
-        const inner = databaseStore(trx);
-        const placed = await inner.addPlace({ ...scope, place });
-        const saved = placed.ok
-          ? await inner.addPin({ ...scope, pin: { ...pin, placeId: place.id } })
-          : placed;
-
-        if (!saved.ok) {
-          throw new PinRefused();
-        }
-
-        return saved;
-      });
-    } catch (error) {
-      if (error instanceof PinRefused) {
-        return err('not-found');
-      }
-
-      throw error;
-    }
-  },
+  addPinAt: ({ pin, place, ...scope }) =>
+    placedPin(db, scope, place, inner =>
+      inner.addPin({ ...scope, pin: { ...pin, placeId: place.id } })
+    ),
   addPlace: async ({ place, ...scope }) =>
     savedOrNotFound(
       await added(db, scope, {
@@ -669,6 +683,14 @@ export const databaseStore = (db: Db): TreeStore => ({
           .executeTakeFirst(),
       version,
     }),
+  updatePinAt: ({ pin, place, version, ...scope }) =>
+    placedPin(db, scope, place, inner =>
+      inner.updatePin({
+        ...scope,
+        pin: { ...pin, placeId: place.id },
+        version,
+      })
+    ),
   updatePlace: ({ place, version, ...scope }) =>
     updated(db, scope, {
       exists: () =>

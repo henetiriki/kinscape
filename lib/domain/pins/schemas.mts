@@ -48,12 +48,15 @@ export const pinInputSchema = z.strictObject({
   sources: textField(MAX_SOURCES).default(''),
 });
 
-/**
- * The Place of a form Pin (PIN-02). It is a new point or an existing Place. A new point carries the
- * id that the client made, so a repeat saves no second Place.
- */
+/** A new point: the id that the client made, so a repeat saves no second Place, and the point. */
+const newPointSchema = z.strictObject({
+  ...placeInputSchema.shape,
+  kind: z.literal('new'),
+});
+
+/** The Place of a form Pin (PIN-02). It is a new point or an existing Place. */
 const formPlaceSchema = z.discriminatedUnion('kind', [
-  z.strictObject({ ...placeInputSchema.shape, kind: z.literal('new') }),
+  newPointSchema,
   z.strictObject({
     id: idField(parsePlaceId),
     kind: z.literal('existing'),
@@ -64,4 +67,18 @@ const formPlaceSchema = z.discriminatedUnion('kind', [
 export const pinFormSchema = z.strictObject({
   ...pinInputSchema.omit({ placeId: true }).shape,
   place: formPlaceSchema,
+});
+
+/**
+ * What `updatePinAction` takes: `pinFormSchema` with the `version` that the client read, and a
+ * Place that stays or is a new point. "Stays" carries no precision: an update never changes a
+ * Place that other Pins hold.
+ */
+export const pinUpdateSchema = z.strictObject({
+  ...pinInputSchema.omit({ placeId: true }).shape,
+  place: z.discriminatedUnion('kind', [
+    newPointSchema,
+    z.strictObject({ kind: z.literal('stays') }),
+  ]),
+  version: z.number().int().positive(),
 });

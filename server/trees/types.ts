@@ -52,6 +52,15 @@ export type PinGroup = {
     pin: PinInput,
     version: number
   ) => Promise<Result<Pin, 'conflict' | 'not-found'>>;
+  /**
+   * Saves a new Place and updates the Pin to join it, or neither. `version` is the one the client
+   * read; a stale one gives `conflict` and saves no Place.
+   */
+  updateAt: (
+    pin: PinInput,
+    place: PlaceInput,
+    version: number
+  ) => Promise<Result<Pin, 'conflict' | 'not-found'>>;
 };
 
 /** The Places of the opened Tree. Each read passes `placeView`. */

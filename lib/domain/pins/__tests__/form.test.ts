@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { checkPin } from '@ks/lib/domain/pins/form.mts';
+import { checkPin, checkPinUpdate } from '@ks/lib/domain/pins/form.mts';
 
 const PIN = '00000000-0000-4000-8000-0000000000a1';
 const PERSON = '00000000-0000-4000-8000-0000000000b1';
@@ -189,5 +189,101 @@ describe('checkPin', () => {
     ['a bad id with a field error', { ...valid, date: 'SOMETIME', id: 'nope' }],
   ])('gives invalid for %s', (_what, input) => {
     expect(checkPin(input)).toEqual({ error: 'invalid', ok: false });
+  });
+});
+
+const update = {
+  date: 'ABT 1850',
+  eventType: 'residence',
+  id: PIN,
+  personId: PERSON,
+  place: point,
+  version: 3,
+};
+const stays = { ...update, place: { kind: 'stays' } };
+
+// PIN-02, PIN-04
+describe('checkPinUpdate', () => {
+  it('returns the Pin, the new Place and the version for a new point', () => {
+    const result = checkPinUpdate({ ...update, address: ' Kloof Street ' });
+
+    expect(result).toMatchObject({
+      ok: true,
+      value: {
+        pin: { address: 'Kloof Street', id: PIN },
+        place: { id: PLACE, latitude: -33.93, precision: 'approximate' },
+        version: 3,
+      },
+    });
+    expect(result.ok && 'kind' in result.value.place!).toBe(false);
+  });
+
+  it('returns no Place and no Place id for "stays"', () => {
+    const result = checkPinUpdate(stays);
+
+    expect(result.ok && result.value.place).toBeUndefined();
+    expect(result.ok && 'placeId' in result.value.pin).toBe(false);
+    expect(result.ok && result.value.version).toBe(3);
+  });
+
+  it.each([
+    [
+      'a missing Person',
+      { ...stays, personId: undefined },
+      { personId: 'required' },
+    ],
+    ['a blank date', { ...stays, date: ' ' }, { date: 'required' }],
+    [
+      'a date that does not read',
+      { ...stays, date: 'SOMETIME' },
+      { date: 'syntax' },
+    ],
+    [
+      'an unknown event type',
+      { ...stays, eventType: 'wedding' },
+      { eventType: 'unknown' },
+    ],
+    [
+      'an address of 501',
+      { ...stays, address: 'x'.repeat(501) },
+      { address: 'too-long' },
+    ],
+    [
+      'notes of 10,001',
+      { ...stays, notes: 'x'.repeat(10_001) },
+      { notes: 'too-long' },
+    ],
+    [
+      'a latitude of 91',
+      { ...update, place: { ...point, latitude: 91 } },
+      { latitude: 'out-of-range' },
+    ],
+    [
+      'a longitude that is not a number',
+      { ...update, place: { ...point, longitude: 'east' } },
+      { longitude: 'not-a-number' },
+    ],
+    [
+      'an unknown precision',
+      { ...update, place: { ...point, precision: 'planet' } },
+      { precision: 'unknown' },
+    ],
+    ['a missing Place', { ...update, place: undefined }, { place: 'required' }],
+  ])('gives the field error for %s', (_what, input, fields) => {
+    expect(checkPinUpdate(input)).toEqual(failed(fields));
+  });
+
+  it.each([
+    ['no version', { ...stays, version: undefined }],
+    ['a version of 0', { ...stays, version: 0 }],
+    ['a fractional version', { ...stays, version: 1.5 }],
+    ['a text version', { ...stays, version: '1' }],
+    ['an unknown key', { ...stays, treeId: PIN }],
+    ['a wrong kind', { ...update, place: { ...point, kind: 'existing' } }],
+    ['"stays" with a point', { ...update, place: { ...point, kind: 'stays' } }],
+    ['a bad Pin id', { ...stays, id: 'nope' }],
+    ['no object', 'Ana'],
+  ])('gives invalid for %s', (_what, input) => {
+    expect(checkPinUpdate(input)).toEqual({ error: 'invalid', ok: false });
   });
 });

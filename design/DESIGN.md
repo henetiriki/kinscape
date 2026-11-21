@@ -46,8 +46,6 @@ The look of KinScape: fonts, colours, components and the map style. The JPGs in 
 | Pin popup, details loading                        | [map-pin-popup-loading.jpg](map-pin-popup-loading.jpg)                       |
 | Pin popup, details did not load                   | [map-pin-popup-failed.jpg](map-pin-popup-failed.jpg)                         |
 | Pin popup, phone sheet                            | [map-pin-popup-phone.jpg](map-pin-popup-phone.jpg)                           |
-| Draft: count marker                               | [draft-pin-marker.jpg](draft-pin-marker.jpg)                                 |
-| Draft: fan of Pins                                | [draft-pin-fan.jpg](draft-pin-fan.jpg)                                       |
 | People list                                       | [people-list.jpg](people-list.jpg)                                           |
 | People list, filter finds nothing                 | [people-list-no-match.jpg](people-list-no-match.jpg)                         |
 | People list, no people yet                        | [people-empty.jpg](people-empty.jpg)                                         |

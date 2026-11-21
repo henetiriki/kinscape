@@ -196,16 +196,6 @@
       "viewport": { "height": 844, "width": 390 }
     },
     {
-      "file": "Draft-pin-marker.dc.html",
-      "name": "draft-pin-marker",
-      "viewport": { "height": 440, "width": 720 }
-    },
-    {
-      "file": "Draft-pin-fan.dc.html",
-      "name": "draft-pin-fan",
-      "viewport": { "height": 592, "width": 820 }
-    },
-    {
       "file": "Map-phone-states.dc.html",
       "name": "map-loading-phone",
       "props": { "variant": "loading" },

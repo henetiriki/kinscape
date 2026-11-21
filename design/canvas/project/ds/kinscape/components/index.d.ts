@@ -703,16 +703,17 @@ export declare const PersonFieldList: ({ activeId, id, onPick, place, query, row
     }[];
 }) => import("react").JSX.Element;
 /**
- * A text field that picks one Person (PIN-01). Typing filters the Persons as the People list does,
- * and a list of at most three rows opens under the field. The focus stays in the text box: Down and
- * Up move the active row, Enter picks it and Esc closes the list. Typing after a pick clears it.
+ * A text field that picks one Person (PIN-01). When the user types, the field filters the Persons
+ * as the People list does, and a list of at most three rows opens under the field. The focus stays
+ * in the text box: Down and Up move the active row, Enter picks it and Esc closes the list. When
+ * the user types after a pick, the pick clears.
  */
 export declare const PersonField: ({ defaultPerson, error, onChange, people, state, }: {
     /** A Person to start with, picked. */
     defaultPerson?: PersonSummary;
     /** The problem, shown under the field. The field is also required. */
     error?: ReactNode;
-    /** Called with the Person that a pick chose, and with `undefined` when typing clears the pick. */
+    /** Called with the Person that a pick chose, and with `undefined` when the user types after a pick. */
     onChange: (person: PersonSummary | undefined) => void;
     /** Every Person of the Tree. The caller gives no empty list. */
     people: PersonSummary[];

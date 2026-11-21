@@ -140,8 +140,8 @@ Three lines say that the skill files no Intent with `gh`:
 ## Deviations
 
 - The CI run denied each write to `.claude/skills/refine/`. A local session built the six skill rows and their budgets.
-- The `how-we-work.md` budget is 1080 (was 1030). The `design/CANVAS.md` and `plans/README.md` edits fit their budgets.
-- The budgets are `SKILL.md` 940, `filing.md` 1000 and `slice-intent.md` 820. `spec.md` and `slice-milestone.md` fit the default 650, so `spec.md` has no entry.
+- The `design/CANVAS.md` and `plans/README.md` edits fit their budgets.
+- The budgets are `SKILL.md` 940, `filing.md` 1030 and `slice-intent.md` 820. `spec.md` and `slice-milestone.md` fit the default 650, so `spec.md` has no entry.
 - `slice-milestone.md` skips a child that already exists, so a re-run files no duplicate.
 - `filing.md` stops if no milestone has the title `M<n> `. The call adds `?state=all`, so a closed milestone matches (#1121 review, tech lead).
 - The `filing.md` title and section are "File a child Intent", not "Filing …" (STE rule 8). The anchor is `#file-a-child-intent`.

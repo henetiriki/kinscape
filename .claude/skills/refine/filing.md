@@ -31,7 +31,7 @@ After the check round, follow these steps:
 `slice-milestone.md` links here. The umbrella is the milestone's Intent.
 
 1. Run `gh api 'repos/{owner}/{repo}/milestones?state=all'`. Take the milestone whose title starts `M<n> `. Do not copy the milestone of the umbrella: #292 (M4) has none. If no milestone matches, stop. Tell the user to create it.
-2. Ask "File the child Intents now?" as a question of its own. If the answer is not yes, file nothing.
+2. Ask "File the child Intents now?" as a question of its own. List each blocker link of step 5 under it. If the answer is not yes, file nothing.
 3. For each child, write the body as filing steps 4 and 5 say, from form `1-intent.yml`. Run `gh issue create --title '<title>' --type Intent --label 'status: ready-for-dev' --milestone '<milestone title>' --body-file <file>`. The label replaces the `status: draft` of the form.
 4. Run one `addSubIssue` call for each child: `gh api graphql -f umbrella=<umbrella id> -f url=<child URL> -f query='mutation($umbrella: ID!, $url: String!) { addSubIssue(input: {issueId: $umbrella, subIssueUrl: $url}) { issue { number } } }'`. The umbrella id is from _Links_ step 1. The child URL is what `gh issue create` prints.
 5. For each child that must close before another, run _Links_ step 3. The yes of step 2 covers these links.

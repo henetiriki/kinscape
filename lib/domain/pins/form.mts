@@ -1,7 +1,9 @@
 import type { FuzzyDateError } from '#ks/lib/domain/dates/types.ts';
+import type { FormIssue } from '#ks/lib/domain/forms/types.ts';
 import type { CheckedPin, PinFieldErrors } from '#ks/lib/domain/pins/types.ts';
 import type { Result } from '#ks/lib/domain/result/types.ts';
 
+import { collectFieldErrors } from '#ks/lib/domain/forms/field-errors.mts';
 import { pinFormSchema } from '#ks/lib/domain/pins/schemas.mts';
 import { err, ok } from '#ks/lib/domain/result/result.mts';
 
@@ -46,50 +48,44 @@ const fieldOf = (path: PropertyKey[]): keyof Fields | undefined => {
     : undefined;
 };
 
-/**
- * Adds the error kind of one issue to `fields`. Gives false for an issue that no form field owns
- * or that the form already stops.
- */
-const addIssue = (
-  fields: Fields,
-  raw: unknown,
-  issue: { code: string; message: string; path: PropertyKey[] }
-): boolean => {
+/** The field table of the Pin form: the field and error kind of an issue. */
+const pinFieldError = (
+  issue: FormIssue,
+  raw: unknown
+): [keyof Fields, Fields[keyof Fields]] | undefined => {
   const field = fieldOf(issue.path);
   const { code, message, path } = issue;
 
   if (field === undefined) {
-    return false;
+    return undefined;
   }
 
-  const set = fields as Record<string, string>;
-
   if (REQUIRED.has(field) && isBlank(valueAt(raw, path))) {
-    set[field] = 'required';
-  } else if (
+    return [field, 'required'];
+  }
+
+  if (
     (field === 'eventType' || field === 'precision') &&
     code === 'invalid_value'
   ) {
-    set[field] = 'unknown';
-  } else if (field === 'date' && code === 'custom') {
-    fields.date = message as FuzzyDateError;
-  } else if (
-    (field === 'latitude' || field === 'longitude') &&
-    (code === 'too_big' || code === 'too_small')
-  ) {
-    set[field] = 'out-of-range';
-  } else if (
-    (field === 'latitude' || field === 'longitude') &&
-    code === 'invalid_type'
-  ) {
-    set[field] = 'not-a-number';
-  } else if (TOO_LONG.has(field) && code === 'too_big') {
-    set[field] = 'too-long';
-  } else {
-    return false;
+    return [field, 'unknown'];
   }
 
-  return true;
+  if (field === 'date' && code === 'custom') {
+    return [field, message as FuzzyDateError];
+  }
+
+  if (field === 'latitude' || field === 'longitude') {
+    if (code === 'too_big' || code === 'too_small') {
+      return [field, 'out-of-range'];
+    }
+
+    return [field, 'not-a-number'];
+  }
+
+  return TOO_LONG.has(field) && code === 'too_big'
+    ? [field, 'too-long']
+    : undefined;
 };
 
 /**
@@ -117,13 +113,9 @@ export const checkPin = (
     });
   }
 
-  const fields: Fields = {};
+  const fields = collectFieldErrors<Fields>(parsed.error.issues, issue =>
+    pinFieldError(issue, raw)
+  );
 
-  for (const issue of parsed.error.issues) {
-    if (!addIssue(fields, raw, issue)) {
-      return err('invalid');
-    }
-  }
-
-  return err({ fields });
+  return fields ? err({ fields }) : err('invalid');
 };

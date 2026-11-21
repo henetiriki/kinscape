@@ -1,1 +1,1 @@
-export { usePins } from '@ks/features/pins/query';
+export { usePinDetails, usePins } from '@ks/features/pins/query';

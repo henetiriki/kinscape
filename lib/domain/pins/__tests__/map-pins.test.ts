@@ -37,22 +37,50 @@ const pin = (last: string, placeLast: string): SpannedPin => ({
 });
 
 describe('mapPins', () => {
-  it('holds only the id, the position, the span and the event type of each Pin', () => {
+  it('holds only the id, the position, the span, the event type and the date of a single-date Pin', () => {
     const [mapped] = mapPins([pin('a1', 'b1')], [place('b1', -33.9, 18.4)]);
 
     expect(Object.keys(mapped).sort()).toEqual([
+      'date1',
       'eventType',
       'id',
       'latitude',
       'longitude',
+      'qualifier',
       'span',
     ]);
     expect(mapped).toEqual({
+      date1: '1850-03-04',
       eventType: 'baptism',
       id: id('a1'),
       latitude: -33.9,
       longitude: 18.4,
+      qualifier: 'EXACT',
       span: { validFrom: toDay('1850-03-04'), validTo: toDay('1850-03-05') },
+    });
+  });
+
+  it('adds date2 for a Pin with two dates', () => {
+    const range: SpannedPin = {
+      ...pin('a1', 'b1'),
+      date: fuzzyDateOf('BET', '1890', '1905'),
+    };
+    const [mapped] = mapPins([range], [place('b1', -33.9, 18.4)]);
+
+    expect(Object.keys(mapped).sort()).toEqual([
+      'date1',
+      'date2',
+      'eventType',
+      'id',
+      'latitude',
+      'longitude',
+      'qualifier',
+      'span',
+    ]);
+    expect(mapped).toMatchObject({
+      date1: '1890',
+      date2: '1905',
+      qualifier: 'BET',
     });
   });
 

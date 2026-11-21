@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import type { MapPin } from '@ks/lib/domain/pins/types.ts';
+import type { MapPin, PinDetails } from '@ks/lib/domain/pins/types.ts';
 
 /**
  * The error of a response from `/data/pins` that is not OK. Its `status` lets the retry rule of
@@ -28,3 +28,27 @@ export const fetchPins = async (): Promise<MapPin[]> => {
  */
 export const usePins = () =>
   useQuery({ queryFn: fetchPins, queryKey: ['pins'], staleTime: Infinity });
+
+/** The details of one Pin from `/data/pins/{id}`. A response that is not OK throws. */
+export const fetchPinDetails = async (
+  id: MapPin['id']
+): Promise<PinDetails> => {
+  const response = await fetch(`/data/pins/${id}`);
+
+  if (!response.ok) {
+    throw requestError(response.status);
+  }
+
+  return (await response.json()) as PinDetails;
+};
+
+/**
+ * The details of one Pin. The key starts with `['pins']`, so a reload of the Pins also marks each
+ * held details query as stale. The answer stays in memory only (NFR-03).
+ */
+export const usePinDetails = (id: MapPin['id']) =>
+  useQuery({
+    queryFn: () => fetchPinDetails(id),
+    queryKey: ['pins', id],
+    staleTime: Infinity,
+  });

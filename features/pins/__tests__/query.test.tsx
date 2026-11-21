@@ -1,17 +1,36 @@
 import { render, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
+import type { MapPin } from '@ks/lib/domain/pins/types.ts';
+
 import { QueryProvider } from '@ks/app/QueryProvider';
-import { usePins } from '@ks/features/pins';
-import { fetchPins } from '@ks/features/pins/query';
+import { usePinDetails, usePins } from '@ks/features/pins';
+import { fetchPinDetails, fetchPins } from '@ks/features/pins/query';
 
 // PIN-02, NFR-01, NFR-03. Data is synthetic.
 const PIN = {
+  date1: '1850-03-04',
   eventType: 'baptism',
-  id: '01900000-0000-7000-b000-0000000000d1',
+  id: '01900000-0000-7000-b000-0000000000d1' as MapPin['id'],
   latitude: -33.9,
   longitude: 18.4,
+  qualifier: 'EXACT',
   span: { validFrom: 1, validTo: 2 },
+};
+
+const DETAILS = {
+  address: '1 Church Street',
+  eventType: 'baptism',
+  givenNames: 'Ana',
+  surname: 'Smit',
+};
+
+const DetailsProbe = ({ name }: { name: string }) => {
+  const { data, isError } = usePinDetails(PIN.id);
+
+  return (
+    <p>{`${name}: ${isError ? 'error' : (data?.surname ?? 'loading')}`}</p>
+  );
 };
 
 const fetchStub = vi.fn();
@@ -136,4 +155,59 @@ it('gives the Pins that fetchPins reads', async () => {
   fetchStub.mockResolvedValue(Response.json([PIN]));
 
   await expect(fetchPins()).resolves.toEqual([PIN]);
+});
+
+it('sends one request for the details when two parts ask, and none for a late third', async () => {
+  fetchStub.mockResolvedValue(Response.json(DETAILS));
+
+  const { rerender } = render(
+    <QueryProvider>
+      <DetailsProbe name='one' />
+      <DetailsProbe name='two' />
+    </QueryProvider>
+  );
+
+  await waitFor(() => {
+    expect(document.body.textContent).toContain('one: Smit');
+  });
+  expect(document.body.textContent).toContain('two: Smit');
+
+  rerender(
+    <QueryProvider>
+      <DetailsProbe name='one' />
+      <DetailsProbe name='two' />
+      <DetailsProbe name='late' />
+    </QueryProvider>
+  );
+
+  expect(document.body.textContent).toContain('late: Smit');
+  expect(fetchStub).toHaveBeenCalledTimes(1);
+  expect(fetchStub.mock.calls[0][0]).toBe(`/data/pins/${PIN.id}`);
+});
+
+it('shows the error state of the details after one request when the response is 404', async () => {
+  fetchStub.mockResolvedValue(new Response(null, { status: 404 }));
+
+  render(
+    <QueryProvider>
+      <DetailsProbe name='one' />
+    </QueryProvider>
+  );
+
+  await waitFor(() => {
+    expect(document.body.textContent).toContain('one: error');
+  });
+  expect(fetchStub).toHaveBeenCalledTimes(1);
+});
+
+it('rejects fetchPinDetails on a response that is not OK', async () => {
+  fetchStub.mockResolvedValue(new Response(null, { status: 404 }));
+
+  await expect(fetchPinDetails(PIN.id)).rejects.toThrow('404');
+});
+
+it('gives the details that fetchPinDetails reads', async () => {
+  fetchStub.mockResolvedValue(Response.json(DETAILS));
+
+  await expect(fetchPinDetails(PIN.id)).resolves.toEqual(DETAILS);
 });

@@ -1842,7 +1842,21 @@ describe('the fix-review workflow', () => {
     expect(steps).toEqual([...steps].sort((a, b) => a - b));
     expect(at('"Fixed in <sha>."')).toBeLessThan(at('Push to the PR branch'));
     expect(text).toContain('Leave a thread for a person open');
-    expect(text).toContain('No step follows a successful push');
+    expect(text).toContain(
+      'Only step 8 follows a successful push, and only after a "Big:" line'
+    );
+    expect(text).toContain('"Big:" line');
+    expect(at('Push to the PR branch')).toBeLessThan(
+      at('gh pr ready <n> --undo')
+    );
+  });
+
+  // A big departure is built and recorded, not a stop (plans/chores/C1111-big-departure-draft.md).
+  it('names the "Big:" line in build.md and has no stop for a big departure', () => {
+    const text = agent('build.md');
+
+    expect(text).toContain('"Big:" line');
+    expect(text).not.toContain('If a plan needs one, stop');
   });
 
   // A failed push must not drop the fixes without a word, and must not lose the commits of another

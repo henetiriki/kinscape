@@ -1,0 +1,1 @@
+../../docs/patterns/ci-images.md

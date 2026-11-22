@@ -66,19 +66,37 @@ runs:
         token: ${{ inputs.github_token }}
 
     # Claude reads these files from the checkout, which is the PR branch. The log shows an M for each
-    # copy that differs from the branch. --skip-worktree marks each copy, so `git add -A` stages none
+    # copy that differs from the branch. --skip-worktree marks each tracked copy, and
+    # .git/info/exclude lists each copy that the branch does not track, so `git add -A` stages none
     # of them. A marked copy stops the merge of main, so resolve-conflict.md clears the marks first.
+    # Git overwrites an excluded file in a merge.
     - name: Put main's rule files in the checkout
       if: inputs.main_files != ''
       shell: bash
       env:
         MAIN_FILES: ${{ inputs.main_files }}
       run: |
+        # A file that main lacks (a pull request adds it) is not main's to trust, so delete it.
         for f in $MAIN_FILES; do
-          cp "$RUNNER_TEMP/agent/main/$f" "$f"
+          if [ -f "$RUNNER_TEMP/agent/main/$f" ]; then
+            mkdir -p "$(dirname "$f")"
+            cp "$RUNNER_TEMP/agent/main/$f" "$f"
+          else
+            rm -f "$f"
+          fi
         done
         git status --short -- $MAIN_FILES
-        git update-index --skip-worktree -- $MAIN_FILES
+        tracked=$(git ls-files -- $MAIN_FILES)
+        if [ -n "$tracked" ]; then
+          git update-index --skip-worktree -- $tracked
+        fi
+        exclude=$(git rev-parse --git-path info/exclude)
+        mkdir -p "$(dirname "$exclude")"
+        for f in $MAIN_FILES; do
+          if [ -f "$f" ] && ! git ls-files --error-unmatch -- "$f" > /dev/null 2>&1; then
+            echo "/$f" >> "$exclude"
+          fi
+        done
 
     - name: Run Claude Code
       uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276

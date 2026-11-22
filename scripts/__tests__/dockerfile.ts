@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect } from 'vitest';
 
-// Each CI image is the one FROM line of its Dockerfile (docs/architecture.md › Patterns).
+// Each CI image is the one FROM line of its Dockerfile (docs/patterns/ci-images.md).
 const root = process.cwd();
 
 /** The FROM lines of a Dockerfile, or none if it is missing. Dependabot reads only the first. */

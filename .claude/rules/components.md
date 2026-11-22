@@ -1,0 +1,1 @@
+../../docs/patterns/components.md

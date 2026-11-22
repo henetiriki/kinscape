@@ -7,7 +7,7 @@ import { SOURCE_EXTENSION, targetOf } from '#ks/scripts/layers.mts';
 import { parse, specifiersOf, TEST_FILE } from '#ks/scripts/sources.mts';
 import { isDevPage } from '#ks/server/dev-pages.mts';
 
-// The four safety rows of docs/architecture.md › Patterns:
+// The four safety rows of docs/patterns/tree-data.md and docs/patterns/auth.md:
 // - Tree scoping
 // - the sign-in gate
 // - the client/server boundary

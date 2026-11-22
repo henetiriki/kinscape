@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import { isAbsolute, relative, sep } from 'node:path';
 
 // The single home of the word budgets. To change one, edit it here in a PR.
@@ -28,18 +28,19 @@ const BUDGETS: { limit: number; pattern: RegExp; plan?: true }[] = [
   { limit: 4700, pattern: /^design\/DESIGN\.md$/ },
   { limit: 200, pattern: /^docs\/README\.md$/ },
   { limit: 650, pattern: /^docs\/architecture-target\.md$/ },
-  { limit: 1020, pattern: /^docs\/architecture\.md$/ },
+  { limit: 570, pattern: /^docs\/architecture\.md$/ },
   { limit: 450, pattern: /^docs\/building\.md$/ },
   { limit: 500, pattern: /^docs\/code-rules\.md$/ },
   { limit: 275, pattern: /^docs\/dependencies\.md$/ },
   { limit: 1200, pattern: /^docs\/glossary\.md$/ },
   { limit: 1110, pattern: /^docs\/how-we-work\.md$/ },
   { limit: 1000, pattern: /^docs\/infrastructure\.md$/ },
+  { limit: 130, pattern: /^docs\/patterns\/[^/]+\.md$/ },
   { limit: 900, pattern: /^docs\/repo-settings\.md$/ },
   { limit: 350, pattern: /^docs\/security\.md$/ },
   { limit: 600, pattern: /^docs\/writing\.md$/ },
   { limit: 570, pattern: /^plans\/BUILD\.md$/ },
-  { limit: 760, pattern: /^plans\/README\.md$/ },
+  { limit: 780, pattern: /^plans\/README\.md$/ },
   {
     limit: 1500,
     pattern: /^plans\/(?:(?:bugs|chores)\/)?[^/]+\.md$/,
@@ -95,7 +96,12 @@ export const checkFiles = (root: string, paths: string[]): string[] =>
   paths.flatMap(path => {
     const entry = entryFor(path);
 
-    if (entry === undefined || !existsSync(`${root}/${path}`)) {
+    // A symlink has the text of its target, which has its own budget.
+    if (
+      entry === undefined ||
+      !existsSync(`${root}/${path}`) ||
+      lstatSync(`${root}/${path}`).isSymbolicLink()
+    ) {
       return [];
     }
 

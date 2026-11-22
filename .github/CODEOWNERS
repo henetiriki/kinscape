@@ -1,5 +1,6 @@
 # The first line covers every path; the lines after it need the tech lead's review. HAND_BACK in scripts/hand-back.mts lists the hand-back paths.
 * @henetiriki @starforms
+.claude/rules/** @henetiriki
 .claude/settings*.json @henetiriki
 .claude/skills/** @henetiriki
 .github/CODEOWNERS @henetiriki
@@ -10,6 +11,7 @@
 AGENTS.md @henetiriki
 CLAUDE.md @henetiriki
 docs/code-rules.md @henetiriki
+docs/patterns/** @henetiriki
 docs/security.md @henetiriki
 docs/writing.md @henetiriki
 plans/README.md @henetiriki

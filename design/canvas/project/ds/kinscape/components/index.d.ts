@@ -1066,9 +1066,10 @@ export declare const LoadingBar: ({ width }: {
 export type LoadingBarProps = Parameters<typeof LoadingBar>[0];
 
 /**
- * A field that is still loading: its label over one bar, or over two bars for a text area. The
- * height matches the field that replaces it, so the form does not jump. The form that holds it sets
- * `aria-busy`, so a screen reader skips the bars.
+ * A field that is still loading: its label over one bar, or over two bars for a text area. Two bars
+ * are 68px high, as `pin-edit-loading` draws them. A text area of two rows is 66px high, so the form
+ * moves when the field replaces them. The form that holds it sets `aria-busy`, so a screen reader
+ * skips the bars.
  */
 export declare const LoadingField: ({ label, widths, }: {
     label: string;

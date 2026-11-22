@@ -250,7 +250,7 @@ export default defineConfig([
       ...testingLibrary.configs['flat/react'].rules,
       'testing-library/prefer-implicit-assert': 'error',
     },
-    // A test helper that calls `render` is not a custom render: the rules would flag its queries.
+    // A test helper that calls `render` is not a custom render: the rules flag its queries.
     settings: { 'testing-library/custom-renders': 'off' },
   },
   {

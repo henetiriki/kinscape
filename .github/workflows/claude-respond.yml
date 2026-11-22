@@ -88,10 +88,11 @@ jobs:
       agent_files: rules.md respond.md spec-checks.md build.md
       # Same tools, denials and Bash timeout as the CI agent (settings.json); the rules, the
       # respond and build instructions and the Spec checks are the system prompt. Planning is
-      # the hard thinking, so a plan PR (its title ends "(plan)") gets the stronger Opus model
-      # and everything else Sonnet.
+      # the hard thinking, so a plan PR (its title ends "(plan)") gets the stronger Opus model.
+      # A run on an issue also gets Opus. It edits the body and runs the Spec checks, and the
+      # plan run then reads that body on Opus. Every other thread gets Sonnet.
       model_args: >-
-        ${{ contains(github.event.issue.title || github.event.pull_request.title, '(plan)') && '--model opus --effort high' || '--model sonnet' }}
+        ${{ (contains(github.event.issue.title || github.event.pull_request.title, '(plan)') || github.event.issue && !github.event.issue.pull_request) && '--model opus --effort high' || '--model sonnet' }}
     secrets:
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
       KINSCAPE_APP_PRIVATE_KEY: ${{ secrets.KINSCAPE_APP_PRIVATE_KEY }}

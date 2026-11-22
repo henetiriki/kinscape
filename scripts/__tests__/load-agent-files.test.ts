@@ -60,16 +60,15 @@ const SPEC_CHECKS = '.github/agent/spec-checks.md';
 // A run follows each file of docs/patterns/ as a rule, through its symlink in .claude/rules/. The
 // symlink reads the file from the checkout. So each caller takes main's copy, and a new file with no
 // entry fails the tests below (plans/chores/C1146-area-patterns.md).
-const PATTERN_FILES = readdirSync(join(root, 'docs/patterns'))
-  .filter(name => name.endsWith('.md'))
-  .sort()
-  .map(name => `docs/patterns/${name}`);
+const rulesIn = (folder: string) =>
+  readdirSync(join(root, folder))
+    .filter(name => name.endsWith('.md'))
+    .sort()
+    .map(name => `${folder}/${name}`);
+const PATTERN_FILES = rulesIn('docs/patterns');
 // The path-scoped sections of the code rules load the same way, through .claude/rules/code-rules-*.md
 // (plans/chores/C1147-code-rules-scoped.md).
-const CODE_RULE_FILES = readdirSync(join(root, 'docs/code-rules'))
-  .filter(name => name.endsWith('.md'))
-  .sort()
-  .map(name => `docs/code-rules/${name}`);
+const CODE_RULE_FILES = rulesIn('docs/code-rules');
 const imports = () =>
   readFileSync(join(root, 'CLAUDE.md'), 'utf8')
     .match(/^@(\S+)$/gm)

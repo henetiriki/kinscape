@@ -58,6 +58,17 @@ describe('patternFiles', () => {
       { globs: [], path: 'docs/patterns/b.md' },
     ]);
   });
+
+  it('lists the files of another folder when given one', () => {
+    const files = {
+      list: (dir: string) => (dir === 'docs/code-rules' ? ['scale.md'] : []),
+      read: () => frontmatter('  - server/**'),
+    };
+
+    expect(patternFiles(files, 'docs/code-rules')).toEqual([
+      { globs: ['server/**'], path: 'docs/code-rules/scale.md' },
+    ]);
+  });
 });
 
 describe('citedPaths', () => {
@@ -125,17 +136,14 @@ describe('patternsFor', () => {
   });
 });
 
-const tracked = () =>
-  execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
-    .split('\0')
-    .filter(path => path !== '' && existsSync(path));
+const TRACKED = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
+  .split('\0')
+  .filter(path => path !== '' && existsSync(path));
 const matchesTracked = (globs: string[]) => {
-  const paths = tracked();
-
   expect(globs.length).toBeGreaterThan(0);
   for (const glob of globs) {
     expect(
-      paths.some(path => posix.matchesGlob(path, glob)),
+      TRACKED.some(path => posix.matchesGlob(path, glob)),
       glob
     ).toBe(true);
   }
@@ -153,18 +161,12 @@ const expectIndexed = (doc: string, link: string, globs: string[]) => {
 };
 // The sections of docs/code-rules.md that apply only to some paths: each loads as a rule through its
 // symlink .claude/rules/code-rules-<name>.md (plans/chores/C1147-code-rules-scoped.md).
-const CODE_RULE_FILES = readdirSync('docs/code-rules')
-  .filter(name => name.endsWith('.md'))
-  .sort()
-  .map(name => {
-    const path = `docs/code-rules/${name}`;
-
-    return {
-      globs: globsOf(readFileSync(path, 'utf8')),
-      link: `.claude/rules/code-rules-${name}`,
-      path,
-    };
-  });
+const CODE_RULE_FILES = patternFiles(FILES, 'docs/code-rules')
+  .sort((a, b) => a.path.localeCompare(b.path))
+  .map(file => ({
+    ...file,
+    link: `.claude/rules/code-rules-${posix.basename(file.path)}`,
+  }));
 
 describe('the code rule files of the repo', () => {
   it('are the three path-scoped sections', () => {

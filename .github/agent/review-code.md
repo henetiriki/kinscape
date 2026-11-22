@@ -1,6 +1,6 @@
 # What to look for
 
-Read `docs/code-rules.md` and the three files in `docs/code-rules/` in the checkout.
+Read `docs/code-rules.md` and each file in `docs/code-rules/` in the checkout.
 
 ## Rules
 

@@ -21,6 +21,33 @@ Recommended: A, because B leaves a branch that fails `npm test` between two hand
 
 Answer: A.
 
+**D2 · Scale globs for pages and server actions** · Decides: Tech lead
+
+The issue gives _Scale_ the paths `server/**`, `app/data/**` and `app/**/route.ts`. A page such as `app/people/(list)/page.tsx` and a server action such as `app/people/actions.ts` also run on each request.
+
+- **A.** Add `app/**/page.tsx` and `app/**/actions.ts`. The dev pages in `app/screens/` also match.
+- **B.** Keep the issue's globs. Write the gap under Risks.
+- **Other:** your own.
+
+Recommended: A, because the rule is about request paths.
+
+Answer: A. The build rewords step 1 of #1147.
+
+**D3 · How a planner gets the scoped rules** · Decides: Tech lead
+
+`AGENTS.md` tells a planner to read `docs/code-rules.md`, which now holds only an index of the scoped files.
+
+- **A.** Add one sentence to the index: "Before you plan tests or a request path, read the file for it."
+- **B.** List `docs/code-rules/*.md` in the plan list of `AGENTS.md`. Each plan then loads all three files.
+- **C.** Accept the gap.
+- **Other:** your own.
+
+Recommended: A, because it keeps the saving and costs about 15 words.
+
+Answer: A.
+
+The `var(--token)` bullet came from [C1096](C1096-component-css-tokens.md) (_Approach_). Step 3 of #1147 removes it, because the _Tokens are the one source_ row of `docs/architecture.md` holds the rule.
+
 ## Files that change
 
 | File                                                                           | New / changed | What                                                                                                                                                                                                                                                         |
@@ -41,10 +68,10 @@ Answer: A.
 Each commit passes `npm test`.
 
 1. Branch `chore/C1147-code-rules-scoped` from `origin/main` in `.claude/worktrees/`. Hand the tech lead `! npm run plan:new -- 1147 code-rules-scoped`. Commit this plan as `plan(C1147): approved by @henetiriki`.
-2. The three files, the symlinks, the `docs/code-rules.md` edit, the `review-code.md` edit, and the test changes of `pattern-files.test.ts` and rows 187–189. Check the move with `git diff --word-diff`: only the frontmatter is new.
+2. Add the three files, the symlinks, the `docs/code-rules.md` edit, the `review-code.md` edit, and the test changes of `pattern-files.test.ts` and rows 187–189. Check the move with `git diff --word-diff`: only the frontmatter is new.
 3. `HAND_BACK`, CODEOWNERS and the hand-back test.
-4. The word budgets and their test. Run `npm run words`.
-5. Test first: the `CODE_RULE_FILES` changes and the `git status` test fail. Then the four workflows.
+4. Change the word budgets and their test. Run `npm run words`.
+5. Write the `CODE_RULE_FILES` changes and the `git status` test first, and see them fail. Then change the four workflows.
 6. Scoping proof. Hand the tech lead two `! claude -p "<prompt>" --allowedTools Read` commands. Each prompt reads one file, then quotes the first bullet of each `.claude/rules` file in context, or "none":
    - a file under `features/map/__tests__/`: the _Test quality_ bullet, and no _Scale_ bullet;
    - a file under `server/`: the _Scale_ bullet, and no _Test quality_ bullet.
@@ -53,7 +80,7 @@ Each commit passes `npm test`.
 ## Risks
 
 - **`Review` does not start on this PR.** The PR changes `claude-code-review.yml`, so it differs from main's copy. The tech lead merges past it, as for #1146.
-- **The scoped text drops out of a session that never reads a matching file.** That is the point of the Chore. A plan that cites a test file reads it before it plans tests.
+- **The scoped text drops out of a session that never reads a matching file.** That is the point of the Chore. The index in `docs/code-rules.md` tells a planner to read the file for tests or a request path (D3).
 - **`server/**` overlaps the scoping of `tree-data.md` and `auth.md`.** Both load on a `server/` read. That is fine: each holds other text.
 - **The proof asks the model what it loaded.** A wrong answer is possible. The quoted bullet is unique, so a made-up quote shows.
 
@@ -73,10 +100,11 @@ Each commit passes `npm test`.
 
 ## Out of scope
 
-- `plan:new` does not list the `docs/code-rules/` files. `patternFiles` reads only `docs/patterns/`.
+- `plan:new` does not list the `docs/code-rules/` files. It calls `patternFiles` with its default folder, `docs/patterns/`.
 - `.github/agent/build.md` and `AGENTS.md` keep their link to `docs/code-rules.md`. The index there names the scoped files.
 
 ## Deviations
 
 - The session wrote this plan from the approved text, not from the `plan:new` stub. The related issues (#1137, #1138, #1139, #1146) are merged.
 - Steps 2 to 5 are one commit, because `load-agent-files.test.ts` and `pattern-files.test.ts` change in more than one step. Commit ea6b6b2e.
+- `scripts/pattern-files.mts`: `patternFiles` takes a folder, so the code-rule tests reuse it. The review of the PR found this.

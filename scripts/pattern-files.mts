@@ -24,15 +24,17 @@ export const globsOf = (text: string): string[] => {
     : [];
 };
 
-export const patternFiles = ({
-  list,
-  read,
-}: Pick<PlanNewDeps['files'], 'list' | 'read'>): PatternFile[] =>
-  list(FOLDER)
+// The rule files of a folder: docs/patterns/ by default, or docs/code-rules/ for the path-scoped
+// code rules.
+export const patternFiles = (
+  { list, read }: Pick<PlanNewDeps['files'], 'list' | 'read'>,
+  folder = FOLDER
+): PatternFile[] =>
+  list(folder)
     .filter(name => name.endsWith('.md'))
     .map(name => ({
-      globs: globsOf(read(`${FOLDER}/${name}`)),
-      path: `${FOLDER}/${name}`,
+      globs: globsOf(read(`${folder}/${name}`)),
+      path: `${folder}/${name}`,
     }));
 
 /** The code spans of a text that name a file or a folder, without a `:<line>` suffix, once each. */

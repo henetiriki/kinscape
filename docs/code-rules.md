@@ -19,8 +19,8 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 
 ## Path-scoped rules
 
-A session loads each of these files when it reads a file in its paths:
+A session loads each of these files when it reads a file in its paths. Before you plan tests or a request path, read the file for it.
 
 - [Pattern table](code-rules/pattern-table.md): `docs/architecture.md`, `docs/patterns/**`, `scripts/__tests__/**`
-- [Scale](code-rules/scale.md): `server/**`, `app/data/**`, `app/**/route.ts`
+- [Scale](code-rules/scale.md): `server/**`, `app/data/**`, `app/**/route.ts`, `app/**/page.tsx`, `app/**/actions.ts`
 - [Test quality](code-rules/test-quality.md): `**/__tests__/**`, `e2e/**`, `vitest.config.mts`, `playwright.config.ts`

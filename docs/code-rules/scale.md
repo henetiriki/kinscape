@@ -3,6 +3,8 @@ paths:
   - 'server/**'
   - 'app/data/**'
   - 'app/**/route.ts'
+  - 'app/**/page.tsx'
+  - 'app/**/actions.ts'
 ---
 
 ## Scale

@@ -106,3 +106,8 @@ The approving review starts the CI build at once ([building](../../docs/building
 - The reason format of each disable: #1155 does it.
 
 ## Deviations
+
+- Big: `@testing-library/jest-dom` is not on the branch (D5 A did not happen), and `npm install` is off. The build skips the focus checks, the `vitest.setup.ts` import, the `Menu` rewrite and the disable removals in the test files that those checks change. A local session adds the package, then a second build pass does these rows.
+- Lint reported `scripts/__tests__/*.test.ts` disables as errors (the plugin no longer applies to `.ts`), so the build removed them: 5 in `run-summary.test.ts` and 1 in `design-export.test.ts`. `layout.test.tsx` lost 2, and `react-18.test.tsx` lost 15.
+- `SignInHero.test.tsx` keeps its 6 disables: lint does not report them as unused.
+- The 2 raw-markup files are `react-18.test.tsx` and `react-18-bundle.test.tsx`.

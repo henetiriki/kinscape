@@ -8,7 +8,10 @@ const TESTS = [
   '{app,design,features,lib,scripts,server}/**/__tests__/**/*.test.{ts,tsx}',
   '__tests__/*.test.ts',
 ];
-const REACT_18_TEST = 'lib/design/__tests__/react-18.test.tsx';
+const REACT_18_TESTS = [
+  'lib/design/__tests__/react-18.test.tsx',
+  'lib/design/__tests__/react-18-bundle.test.tsx',
+];
 const DATABASE_TESTS = [
   'server/auth/__tests__/database-*.test.ts',
   'server/db/__tests__/*.test.ts',
@@ -69,7 +72,7 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          exclude: ['**/node_modules/**', REACT_18_TEST, ...DATABASE_TESTS],
+          exclude: ['**/node_modules/**', ...REACT_18_TESTS, ...DATABASE_TESTS],
           include: TESTS,
           name: 'react-19',
         },
@@ -143,7 +146,7 @@ export default defineConfig({
               },
             },
           },
-          include: [REACT_18_TEST],
+          include: REACT_18_TESTS,
           name: 'react-18',
         },
       },

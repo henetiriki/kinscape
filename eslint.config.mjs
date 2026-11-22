@@ -245,10 +245,23 @@ export default defineConfig([
   {
     // A Testing Library query finds an element as a user does; e2e/ uses Playwright locators.
     ...testingLibrary.configs['flat/react'],
-    files: ['**/__tests__/**'],
+    files: ['**/__tests__/**/*.tsx'],
     rules: {
       ...testingLibrary.configs['flat/react'].rules,
       'testing-library/prefer-implicit-assert': 'error',
+    },
+    // A test helper that calls `render` is not a custom render: the rules would flag its queries.
+    settings: { 'testing-library/custom-renders': 'off' },
+  },
+  {
+    // These files read raw markup: the exported preview page, and the root of a panel that has no role.
+    files: [
+      'lib/design/__tests__/react-18.test.tsx',
+      'lib/design/__tests__/react-18-bundle.test.tsx',
+    ],
+    rules: {
+      'testing-library/no-container': 'off',
+      'testing-library/no-node-access': 'off',
     },
   },
   {

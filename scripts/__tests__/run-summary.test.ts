@@ -49,7 +49,6 @@ describe('render', () => {
   });
 
   it('shows n/a for figures a run did not reach', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention -- this render returns the Markdown summary, not a Testing Library result
     const markdown = render(
       transcript({
         costUsd: undefined,
@@ -75,7 +74,6 @@ describe('render', () => {
   });
 
   it('lists each denial as code, with backticks neutralised', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention -- this render returns the Markdown summary, not a Testing Library result
     const markdown = render(
       transcript({
         denials: [
@@ -93,7 +91,6 @@ describe('render', () => {
   });
 
   it("puts Claude's message in a fenced block inside details", () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention -- this render returns the Markdown summary, not a Testing Library result
     const markdown = render(transcript());
 
     expect(markdown).toContain("<summary>Claude's final message</summary>");
@@ -101,14 +98,12 @@ describe('render', () => {
   });
 
   it('fences longer than any backticks in the message', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention -- this render returns the Markdown summary, not a Testing Library result
     const markdown = render(transcript({ finalText: 'a ```` b' }));
 
     expect(markdown).toContain('`````\na ```` b\n`````');
   });
 
   it('cuts a long message', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention -- this render returns the Markdown summary, not a Testing Library result
     const markdown = render(transcript({ finalText: 'y'.repeat(5000) }));
 
     expect(markdown).toContain(`${'y'.repeat(2500)}…`);

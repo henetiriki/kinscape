@@ -16,6 +16,7 @@ it('puts the button of the add-pin hook in the action slot of the map frame', as
   addPin.mockReturnValue({ action: <button type='button'>Add a pin</button> });
   render(await Page());
 
+  // eslint-disable-next-line testing-library/no-node-access -- the slot div has no role; the test checks what the action slot holds
   expect(document.querySelector('[data-slot="action"]')?.textContent).toBe(
     'Add a pin'
   );
@@ -28,6 +29,7 @@ it('puts the panel of the hook in the place of the tabbed panel', async () => {
   addPin.mockReturnValue({ panel: <p>The form panel</p> });
   render(await Page());
 
+  // eslint-disable-next-line testing-library/no-node-access -- the slot div has no role; the test checks what the panel slot holds
   expect(document.querySelector('[data-slot="panel"]')?.textContent).toBe(
     'The form panel'
   );

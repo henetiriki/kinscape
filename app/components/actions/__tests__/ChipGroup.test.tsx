@@ -22,7 +22,7 @@ it('is a group of ten toggle chips, each with its glyph before its name and aria
       selected={['birth']}
     />
   );
-  expect(screen.getByRole('group', { name: 'Event type' })).toBeTruthy();
+  screen.getByRole('group', { name: 'Event type' });
 
   const chips = screen.getAllByRole('button');
 
@@ -30,6 +30,7 @@ it('is a group of ten toggle chips, each with its glyph before its name and aria
   expect(chips.map(chip => chip.getAttribute('aria-pressed'))).toEqual(
     OPTIONS.map(({ value }) => String(value === 'birth'))
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the glyph is an aria-hidden svg with no role or text
   expect(chips.every(chip => chip.querySelector('[data-event]'))).toBe(true);
   expect(
     chips.every(chip => chip.firstElementChild?.tagName.toLowerCase() === 'svg')
@@ -53,5 +54,5 @@ it('draws a chip without a glyph', () => {
       selected={[]}
     />
   );
-  expect(screen.getByRole('button', { name: 'Any' })).toBeTruthy();
+  screen.getByRole('button', { name: 'Any' });
 });

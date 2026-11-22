@@ -3,6 +3,7 @@ import type { ReactElement } from 'react';
 
 import {
   act,
+  // eslint-disable-next-line testing-library/no-manual-cleanup -- the test unmounts before the last check, so a React log on unmount fails the test
   cleanup,
   fireEvent,
   render,
@@ -1499,7 +1500,7 @@ it('runs on React 18, with one React', () => {
   expect(React.version).toMatch(/^18\./);
   expect(ReactDOM.version).toMatch(/^18\./);
   render(<Hook />);
-  expect(screen.getByText('hooked')).toBeTruthy();
+  screen.getByText('hooked');
   quiet();
 });
 
@@ -1519,6 +1520,7 @@ it('names the form attribute that DialogPanel sets, and the form of the list sta
   const list = CARDS.find(({ name }) => name === 'SourcesList')!.states[1];
 
   expect(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the DialogPanel root div has no role; the test checks its form attribute
     container.querySelector(`[${FORM_ATTRIBUTE}]`)?.getAttribute(FORM_ATTRIBUTE)
   ).toBe(list.form?.name);
   quiet();
@@ -1656,37 +1658,46 @@ describe('bundle', () => {
         page.document.body.innerHTML = '<div id="root"></div>';
         page.eval(script);
         expect(
+          // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
           [...page.document.querySelectorAll('figcaption')].map(
             caption => caption.textContent
           )
         ).toEqual(card.states.map(({ label }) => label));
         // A control can render a fragment, so a state holds one element or more.
+        // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
         const figures = [...page.document.querySelectorAll('figure')];
 
         expect(figures).toHaveLength(card.states.length);
         expect(
           figures.filter(
+            // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
             figure => figure.querySelector(':scope > :not(figcaption)') === null
           )
         ).toEqual([]);
         expect(
+          // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
           [...page.document.querySelectorAll('[aria-labelledby]')].filter(
             each =>
+              // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
               !page.document.getElementById(
                 each.getAttribute('aria-labelledby')!
               )
           )
         ).toEqual([]);
         expect(
+          // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
           [...page.document.querySelectorAll('[role="radiogroup"]')]
+            // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
             .map(group => group.querySelectorAll('input:checked').length)
             .filter(checked => checked !== 1)
         ).toEqual([]);
         // A card with a radio sets `radios`, so each state is its own radio group.
         expect(
+          // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
           page.document.querySelector('input[type="radio"]') !== null
         ).toBe(card.radios === true);
 
+        // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
         for (const form of page.document.querySelectorAll('form')) {
           const submit = new page.Event('submit', {
             bubbles: true,
@@ -1698,6 +1709,7 @@ describe('bundle', () => {
         }
 
         // A click reaches the control's handler. A missing one throws in the page.
+        // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
         for (const box of page.document.querySelectorAll<HTMLInputElement>(
           'input[type="checkbox"]'
         )) {
@@ -1705,6 +1717,7 @@ describe('bundle', () => {
         }
 
         // A click on a sheet grabber reaches `onExpandedChange`. In a `DateDock` state it is a key of the object prop `sheet`.
+        // eslint-disable-next-line testing-library/no-node-access -- the check reads the markup of the exported preview page
         for (const grabber of page.document.querySelectorAll<HTMLButtonElement>(
           'button[aria-label="Expand the sheet"]'
         )) {
@@ -1829,6 +1842,7 @@ describe('interactions', () => {
 
     fireEvent.keyDown(layers, { key: 'ArrowRight' });
     expect(onSelect).toHaveBeenLastCalledWith('filters');
+    // eslint-disable-next-line testing-library/no-node-access -- no query reads the focused element; the test checks where the focus goes
     expect(document.activeElement).toBe(filters);
     quiet();
   });
@@ -1842,7 +1856,7 @@ describe('interactions', () => {
 
     fireEvent.change(field, { target: { value: '1652-13-01' } });
     fireEvent.keyDown(field, { key: 'Enter' });
-    expect(screen.getByRole('alert')).toBeTruthy();
+    screen.getByRole('alert');
     expect(field.getAttribute('aria-invalid')).toBe('true');
     expect(onChange).not.toHaveBeenCalled();
     quiet();
@@ -1897,10 +1911,12 @@ describe('interactions', () => {
     expect(avatar.getAttribute('aria-expanded')).toBe('true');
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.queryByRole('menu')).toBeNull();
+    // eslint-disable-next-line testing-library/no-node-access -- no query reads the focused element; the test checks where the focus goes
     expect(document.activeElement).toBe(avatar);
     fireEvent.click(avatar);
     fireEvent.click(screen.getByRole('menuitem', { name: /Sources/ }));
     expect(onSelect).toHaveBeenCalledWith('sources');
+    // eslint-disable-next-line testing-library/no-node-access -- no query reads the focused element; the test checks where the focus goes
     expect(document.activeElement).toBe(avatar);
     quiet();
   });

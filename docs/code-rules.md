@@ -25,7 +25,7 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 
 ## Test quality
 
-- Write a test that can fail: no `toBeTruthy()` on a `getBy*` result, no `toBeDefined()` where you know the value.
+- Write a test that can fail: no `toBeDefined()` where you know the value.
 - Make an `include` pattern in `vitest.config.mts` match each test file.
 - When a database adapter exists, test a behaviour on it, not only on the memory adapter.
 - Use an existing fake, not a hand-rolled one.

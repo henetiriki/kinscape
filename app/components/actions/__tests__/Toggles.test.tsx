@@ -57,7 +57,7 @@ it('shows a segment state and works without a change handler', () => {
       value='year'
     />
   );
-  expect(screen.getByRole('radiogroup', { name: 'Precision' })).toBeTruthy();
+  screen.getByRole('radiogroup', { name: 'Precision' });
   expect(screen.getByText('Month').dataset.state).toBe('focus');
   expect(
     (screen.getByRole('radio', { name: 'Month' }) as HTMLInputElement).disabled

@@ -1,5 +1,5 @@
 // PIN-04
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
@@ -23,7 +23,8 @@ const setup = (props: Partial<Parameters<typeof FuzzyDateField>[0]> = {}) => {
 const type = (field: HTMLInputElement, text: string) =>
   fireEvent.change(field, { target: { value: text } });
 
-const slot = () => document.querySelector('[aria-live="polite"]')!;
+// eslint-disable-next-line testing-library/no-node-access -- the live region div has no role; the test reads what it holds
+const slot = () => document.querySelector<HTMLElement>('[aria-live="polite"]')!;
 
 it('shows the helper when empty, and an empty check is no error', () => {
   const field = setup();
@@ -49,7 +50,7 @@ it('shows the reading as soon as the date parses', () => {
 
   type(field, 'BET 1850 AND 1855');
   expect(slot().textContent).toBe('Reads as Between 1850 and 1855');
-  expect(slot().querySelector('strong')!.textContent).toBe(
+  expect(within(slot()).getByRole('strong').textContent).toBe(
     'Between 1850 and 1855'
   );
 });
@@ -79,6 +80,7 @@ it('checks on blur: 31 FEB 1850 keeps its text and shows the message', () => {
     'February 1850 has 28 days.'
   );
   expect(slot().contains(screen.getByRole('alert'))).toBe(true);
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its error mark
   expect(field.closest('span')!.getAttribute('data-mark')).toBe('error');
 });
 
@@ -164,6 +166,7 @@ it('shows the error of the caller in the slot, with the error mark', () => {
 
   expect(screen.getByRole('alert').textContent).toBe('Enter a date.');
   expect(field.getAttribute('aria-invalid')).toBe('true');
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its error mark
   expect(document.querySelector('[data-mark="error"]')).not.toBeNull();
 });
 
@@ -232,6 +235,7 @@ it.each([
 
   expect(screen.getByRole('alert').textContent).toBe(message);
   expect(field.getAttribute('aria-invalid')).toBe('true');
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its error mark
   expect(field.closest('span')!.getAttribute('data-mark')).toBe('error');
 });
 
@@ -263,11 +267,14 @@ it('sets the input in 15 / 22 Mono from a token, ligatures off, and 16 / 24 on a
 it('draws the line under the box as a 20px paragraph, not an inline span in a taller line', () => {
   const field = setup();
 
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks the tag of the line under the box
   expect(slot().firstElementChild!.tagName).toBe('P');
   type(field, 'BET 1850 AND 1855');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks the tag of the line under the box
   expect(slot().firstElementChild!.tagName).toBe('P');
   type(field, '31 FEB 1850');
   fireEvent.blur(field);
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks the tag of the line under the box
   expect(slot().firstElementChild!.tagName).toBe('P');
 });
 
@@ -275,7 +282,7 @@ it('sets the reading in 600 weight and the ink colour, as the Fuzzy-date-reading
   const reading = /^\.reading \{[^}]*\}/m.exec(css)?.[0] ?? '';
 
   setup({ defaultValue: 'ABT 1850' });
-  expect(slot().querySelector('strong')!.className).toContain('reading');
+  expect(within(slot()).getByRole('strong').className).toContain('reading');
   expect(reading).toContain('color: var(--ink)');
   expect(reading).toContain('font-weight: var(--type-label-weight)');
 });

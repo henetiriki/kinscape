@@ -55,12 +55,10 @@ it('lists each source with its layer, licence link and date checked', () => {
       .getAllByRole('link', { hidden: true, name: 'BSD-3-Clause' })
       .map(link => link.getAttribute('href'))
   ).toEqual(['https://example.com/bsd', 'https://example.com/bsd']);
-  expect(
-    screen.getByRole('dialog', {
-      hidden: true,
-      name: 'Sources and attributions',
-    })
-  ).toBeTruthy();
+  screen.getByRole('dialog', {
+    hidden: true,
+    name: 'Sources and attributions',
+  });
 });
 
 // NFR-06
@@ -80,12 +78,10 @@ it('draws every licence as a small Link that opens in a new tab', () => {
 it('says the board 07 words and has a list for a phone beside the table', () => {
   renderDialog();
 
-  expect(
-    screen.getByText(
-      "Where every layer on the map comes from, and the licence it's used under."
-    )
-  ).toBeTruthy();
-  expect(screen.getByText(/A source isn't used until/)).toBeTruthy();
+  screen.getByText(
+    "Where every layer on the map comes from, and the licence it's used under."
+  );
+  screen.getByText(/A source isn't used until/);
   expect(
     screen
       .getAllByRole('columnheader', { hidden: true })
@@ -95,8 +91,8 @@ it('says the board 07 words and has a list for a phone beside the table', () => 
   const items = screen.getAllByRole('listitem', { hidden: true });
 
   expect(items).toHaveLength(2);
-  expect(within(items[0]).getByText('Checked 2026-10-19')).toBeTruthy();
-  expect(within(items[0]).getByText('Natural Earth land')).toBeTruthy();
+  within(items[0]).getByText('Checked 2026-10-19');
+  within(items[0]).getByText('Natural Earth land');
 });
 
 it('is closed until open, and closes from the button', () => {

@@ -79,6 +79,7 @@ const props = {
 const fetchStub = vi.fn();
 // The row text of the Pins layer at 1850 and at 1860.
 const captions = () =>
+  // eslint-disable-next-line testing-library/no-node-access -- the mock layer row is a bare p with no role or label; the test reads its text
   document.querySelector('[data-layer="pins"]')?.textContent;
 const EMPTY = '0 of 0 true on this date | 0 of 0 true on this date';
 const LOADED = '1 of 3 true on this date | 0 of 3 true on this date';
@@ -323,11 +324,9 @@ describe('the Pin popup', () => {
     renderMap();
     await click(FIRST.id);
 
-    expect(
-      (await screen.findByText("Couldn't load this Pin")).closest(
-        '[role=alert]'
-      )
-    ).toBeTruthy();
+    within(await screen.findByRole('alert')).getByText(
+      "Couldn't load this Pin"
+    );
     expect(screen.getByText('From 1840 to 1854').textContent).toBe(
       'From 1840 to 1854'
     );

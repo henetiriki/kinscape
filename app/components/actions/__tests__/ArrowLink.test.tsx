@@ -19,6 +19,7 @@ describe('with an href', () => {
 
     expect(link.getAttribute('href')).toBe('/people/1');
     expect(link.textContent).toBe('Edit');
+    // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
     expect(link.querySelector('svg[data-icon="forward"]')).not.toBeNull();
   });
 
@@ -74,6 +75,7 @@ describe('without an href', () => {
     const label = screen.getByText('Edit');
 
     expect(label).toBeInstanceOf(HTMLSpanElement);
+    // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
     expect(label.querySelector('svg[data-icon="forward"]')).not.toBeNull();
   });
 

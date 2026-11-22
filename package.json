@@ -76,6 +76,7 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-package-json": "1.14.0",
     "eslint-plugin-perfectionist": "5.13.0",
+    "eslint-plugin-testing-library": "7.16.2",
     "fontnik": "0.7.7",
     "husky": "9.1.7",
     "jsdom": "31.0.1",

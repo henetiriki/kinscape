@@ -80,7 +80,7 @@ it('shows the spelling variant that matched', () => {
 
   type(field, 'Exemple');
   expect(rows()).toHaveLength(1);
-  expect(within(rows()[0]).queryByText(/Exemple/)).not.toBeNull();
+  within(rows()[0]).getByText(/Exemple/);
 });
 
 it('shows the no-match notice, and no row', () => {
@@ -88,14 +88,10 @@ it('shows the no-match notice, and no row', () => {
 
   type(field, 'Zzz');
   expect(rows()).toHaveLength(0);
-  expect(screen.queryByText('No one matches “Zzz”')).not.toBeNull();
-  expect(
-    screen.queryByText(
-      'Check the spelling, or add the person to the Tree first.'
-    )
-  ).not.toBeNull();
+  screen.getByText('No one matches “Zzz”');
+  screen.getByText('Check the spelling, or add the person to the Tree first.');
   fireEvent.keyDown(field, { key: 'Enter' });
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  screen.getByRole('listbox');
 });
 
 it('opens the notice on Down when no Person matches, with no active row', () => {
@@ -104,7 +100,7 @@ it('opens the notice on Down when no Person matches, with no active row', () => 
   type(field, 'Zzz');
   fireEvent.keyDown(field, { key: 'Escape' });
   fireEvent.keyDown(field, { key: 'ArrowDown' });
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  screen.getByRole('listbox');
   expect(field.getAttribute('aria-activedescendant')).toBeNull();
 });
 
@@ -139,6 +135,7 @@ it('moves the active row with Down and Up, and keeps the focus in the field', ()
   expect(field.getAttribute('aria-activedescendant')).toBe(rows().at(-1)!.id);
   fireEvent.keyDown(field, { key: 'ArrowDown' });
   expect(field.getAttribute('aria-activedescendant')).toBe(rows()[0].id);
+  // eslint-disable-next-line testing-library/no-node-access -- no query reads the focused element; the test checks the focus stays in the field
   expect(document.activeElement).toBe(field);
 });
 
@@ -247,7 +244,7 @@ it('clears the pick and opens the list when the user types after a pick', () => 
   onChange.mockClear();
   type(field, 'Person Exampl');
   expect(onChange).toHaveBeenCalledExactlyOnceWith(undefined);
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  screen.getByRole('listbox');
 });
 
 it('starts with a given Person picked and the list closed', () => {
@@ -268,8 +265,8 @@ it('closes the list on a press outside, and keeps the text and the pick', () => 
   onChange.mockClear();
   // Down opens the list again with no typing, so the pick stays.
   fireEvent.keyDown(field, { key: 'ArrowDown' });
-  fireEvent.mouseDown(rows()[0].querySelector('button')!);
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  fireEvent.mouseDown(within(rows()[0]).getByRole('button'));
+  screen.getByRole('listbox');
   fireEvent.mouseDown(document.body);
   expect(screen.queryByRole('listbox')).toBeNull();
   expect(field.value).toBe('Anna Example');
@@ -282,7 +279,7 @@ it('ignores a press inside the field, and closes the list when the focus leaves'
   field.focus();
   type(field, 'Exa');
   fireEvent.mouseDown(field);
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  screen.getByRole('listbox');
   fireEvent.blur(field);
   expect(screen.queryByRole('listbox')).toBeNull();
   expect(field.value).toBe('Exa');
@@ -295,7 +292,7 @@ it('opens the list again when a closed field gets a key that types', () => {
   fireEvent.keyDown(field, { key: 'Escape' });
   expect(screen.queryByRole('listbox')).toBeNull();
   type(field, 'Exam');
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  screen.getByRole('listbox');
 });
 
 it('places the list 4px under the field box, on its left edge, and follows a resize', () => {
@@ -323,7 +320,9 @@ it('renders the list in the document body, outside the field', () => {
 
   const list = screen.getByRole('listbox');
 
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks where the list sits in the DOM tree
   expect(list.parentElement).toBe(document.body);
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks where the list sits in the DOM tree
   expect(field.closest('div')!.contains(list)).toBe(false);
 });
 
@@ -333,7 +332,7 @@ it('closes the list when something outside it scrolls, and not when the list scr
 
   type(field, 'Exa');
   fireEvent.scroll(screen.getByRole('listbox'));
-  expect(screen.queryByRole('listbox')).not.toBeNull();
+  screen.getByRole('listbox');
   fireEvent.scroll(document.body);
   expect(screen.queryByRole('listbox')).toBeNull();
 });
@@ -360,6 +359,7 @@ it('passes the error and the required state to the text field', () => {
 
 it('draws the focus look from a state prop', () => {
   setup({ state: 'focus' });
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its state mark
   expect(document.querySelector('[data-state="focus"]')).not.toBeNull();
 });
 
@@ -386,7 +386,7 @@ it('scrolls the list to keep the active row in view', () => {
   vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(100);
   // The scroll code reads only the active row, so the offset follows the active row.
   vi.spyOn(HTMLElement.prototype, 'offsetTop', 'get').mockImplementation(() => {
-    const { id } = document.querySelector('[aria-selected="true"]')!;
+    const { id } = screen.getByRole('option', { selected: true });
 
     return id.endsWith('-3') ? 200 : id.endsWith('-1') ? 0 : 50;
   });
@@ -434,11 +434,13 @@ it('draws the list part with a given row active, and the notice with no row', ()
   expect(rows()[0].id).toBe('list-1');
   expect(rows()[0].getAttribute('aria-selected')).toBe('false');
   expect(rows()[1].getAttribute('aria-selected')).toBe('true');
-  expect(rows()[1].querySelector('[data-state="focus"]')).not.toBeNull();
+  expect(within(rows()[1]).getByRole('button').getAttribute('data-state')).toBe(
+    'focus'
+  );
   fireEvent.click(within(rows()[1]).getByRole('button'));
   expect(onPick).toHaveBeenCalledWith(PEOPLE[1]);
   rerender(
     <PersonFieldList id='list' onPick={onPick} query=' Zzz ' rows={[]} />
   );
-  expect(screen.queryByText('No one matches “Zzz”')).not.toBeNull();
+  screen.getByText('No one matches “Zzz”');
 });

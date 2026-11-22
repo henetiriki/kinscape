@@ -26,9 +26,11 @@ it('draws the tick as a hidden `<svg>` after the input', () => {
   render(<Checkbox aria-label='On' defaultChecked />);
 
   const input = screen.getByRole('checkbox', { name: 'On' });
+  // eslint-disable-next-line testing-library/no-node-access -- the tick is an aria-hidden svg; the test checks that it comes after the input
   const tick = input.nextElementSibling;
 
   expect(tick?.tagName.toLowerCase()).toBe('svg');
   expect(tick?.getAttribute('aria-hidden')).toBe('true');
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks how many children it holds
   expect(input.parentElement?.children).toHaveLength(2);
 });

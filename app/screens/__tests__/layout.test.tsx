@@ -33,7 +33,7 @@ it('sends a visitor with no valid session to the sign-in page', async () => {
 it('shows the screen', async () => {
   render(await ScreensLayout({ children: <p>screen</p> }));
 
-  expect(screen.getByText('screen')).toBeTruthy();
+  screen.getByText('screen');
 });
 
 it('titles each screen after its page', () => {

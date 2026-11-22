@@ -26,13 +26,16 @@ it('calls its click handler', () => {
 it('draws the selection ring only while selected (#862 D3)', () => {
   const { container, rerender } = render(<CountMarker count={3} selected />);
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
   expect(container.querySelectorAll('[data-ring]')).toHaveLength(1);
-  expect(
-    container.querySelector('[data-ring]')!.getAttribute('aria-hidden')
-  ).toBe('true');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
+  const ring = container.querySelector('[data-ring]')!;
+
+  expect(ring.getAttribute('aria-hidden')).toBe('true');
 
   rerender(<CountMarker count={3} />);
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
   expect(container.querySelector('[data-ring]')).toBeNull();
 });
 

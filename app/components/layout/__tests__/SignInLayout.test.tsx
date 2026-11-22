@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
@@ -23,15 +23,13 @@ it('puts the hero before the form and the desktop wordmark above the form', () =
       <form>form</form>
     </SignInLayout>
   );
-  const slots = [...container.querySelectorAll('[data-slot]')];
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot divs have no role; the test checks their order
+  const slots = [...container.querySelectorAll<HTMLElement>('[data-slot]')];
 
-  expect(slots.map(slot => (slot as HTMLElement).dataset.slot)).toEqual([
-    'hero',
-    'form',
-  ]);
+  expect(slots.map(slot => slot.dataset.slot)).toEqual(['hero', 'form']);
   expect(slots[0]?.textContent).toContain('hero');
-  expect(slots[1]?.querySelector('form')).toBeTruthy();
-  expect(slots[1]?.querySelector('img')?.getAttribute('height')).toBe('44');
+  expect(within(slots[1]!).getByText('form').tagName).toBe('FORM');
+  expect(within(slots[1]!).getByAltText('').getAttribute('height')).toBe('44');
 });
 
 it('draws a 36px wordmark in the hero for a phone', () => {
@@ -41,9 +39,10 @@ it('draws a 36px wordmark in the hero for a phone', () => {
     </SignInLayout>
   );
 
-  expect(
-    container.querySelector('[data-slot="hero"] img')?.getAttribute('height')
-  ).toBe('36');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the hero slot div has no role; the test checks the size of its wordmark
+  const icon = container.querySelector('[data-slot="hero"] img');
+
+  expect(icon?.getAttribute('height')).toBe('36');
 });
 
 it('sets the sea colour from the map tokens', () => {
@@ -53,11 +52,10 @@ it('sets the sea colour from the map tokens', () => {
     </SignInLayout>
   );
 
-  expect(
-    (container.firstElementChild as HTMLElement).style.getPropertyValue(
-      '--auth-sea'
-    )
-  ).toBe(map.sea);
+  // eslint-disable-next-line testing-library/no-node-access -- the layout div has no role; the test checks its inline style
+  const layoutDiv = container.firstElementChild as HTMLElement;
+
+  expect(layoutDiv.style.getPropertyValue('--auth-sea')).toBe(map.sea);
 });
 
 // jsdom computes no CSS, so these read the stylesheet.

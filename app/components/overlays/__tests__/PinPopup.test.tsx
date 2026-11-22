@@ -34,11 +34,10 @@ it('shows the event type, name, both date lines and the address when loaded', ()
     'Address as recorded'
   );
   screen.getByText('Farm Example, district Example');
-  expect(
-    container
-      .querySelector('[data-event="residence"]')
-      ?.getAttribute('aria-hidden')
-  ).toBe('true');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the event glyph is aria-hidden with no role or text
+  const glyph = container.querySelector('[data-event="residence"]');
+
+  expect(glyph?.getAttribute('aria-hidden')).toBe('true');
 });
 
 it('shows a note for an address that is empty', () => {
@@ -65,6 +64,7 @@ it('shows the event type and both date lines with bars in place of the name and 
     'FROM 1890 TO 1905'
   );
   expect(screen.queryByRole('heading')).toBeNull();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- a bar is an aria-hidden span with no role or text
   expect(container.querySelectorAll('[data-bar]').length).toBe(2);
 });
 
@@ -109,7 +109,7 @@ it('marks each form busy while loading, and no form busy otherwise', () => {
       state='loaded'
     />
   );
-  expect(screen.getByRole('group').getAttribute('aria-busy')).toBeNull();
+  expect(screen.getByRole('group').hasAttribute('aria-busy')).toBe(false);
 });
 
 it('disables "Add a pin here" and "Edit" while loading', () => {
@@ -189,6 +189,7 @@ it('draws the inline form as a group with no handle, for the date sheet', () => 
     screen.getByRole('group').contains(screen.getByText(/^Look-up only/))
   ).toBe(false);
   expect(screen.queryByRole('region')).toBeNull();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the handle is an aria-hidden span with no role or text
   expect(container.querySelector('[aria-hidden="true"]:not(svg)')).toBeNull();
   expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();
 });
@@ -226,6 +227,7 @@ it('places the popup at a point in pixels', () => {
       y={80}
     />
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
   const placed = container.firstElementChild as HTMLElement;
 
   expect(placed.style.getPropertyValue('--x')).toBe('120px');

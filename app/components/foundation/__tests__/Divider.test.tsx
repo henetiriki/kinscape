@@ -12,6 +12,6 @@ it('draws a hairline separator, or one with a word between two lines', () => {
     </>
   );
 
-  expect(screen.getByRole('separator')).toBeTruthy();
-  expect(screen.getByText('or').getAttribute('aria-hidden')).toBeNull();
+  screen.getByRole('separator');
+  expect(screen.getByText('or').hasAttribute('aria-hidden')).toBe(false);
 });

@@ -49,6 +49,7 @@ const open = (form?: Form) => {
 
 const items = () => screen.getAllByRole('menuitem');
 const key = (name: string) =>
+  // eslint-disable-next-line testing-library/no-node-access -- the key goes to the focused node, and no query returns it
   fireEvent.keyDown(document.activeElement!, { key: name });
 
 // NFR-05, NFR-06
@@ -65,10 +66,11 @@ it('opens a menu named "Account" and focuses its first item', () => {
   const { avatar } = open();
 
   expect(avatar.getAttribute('aria-expanded')).toBe('true');
-  expect(screen.getByRole('menu', { name: 'Account' })).toBeTruthy();
+  screen.getByRole('menu', { name: 'Account' });
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(items()[0]);
-  expect(screen.getByText('researcher@example.com')).toBeTruthy();
-  expect(screen.getByText('Last backup: today, 02:00')).toBeTruthy();
+  screen.getByText('researcher@example.com');
+  screen.getByText('Last backup: today, 02:00');
 });
 
 it('keeps the header and footer out of the menu, so arrow keys skip them', () => {
@@ -91,11 +93,14 @@ it('keeps the header and footer out of the menu, so arrow keys skip them', () =>
 it('moves with the arrow keys and wraps at both ends', () => {
   open();
   key('ArrowDown');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(items()[1]);
   key('ArrowUp');
   key('ArrowUp');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(items()[3]);
   key('ArrowDown');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(items()[0]);
 });
 
@@ -104,19 +109,22 @@ it('keeps a disabled item in the key order, aria-disabled, and does nothing on E
 
   key('ArrowDown');
   key('ArrowDown');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(items()[2]);
   expect(items()[2].getAttribute('aria-disabled')).toBe('true');
   fireEvent.click(items()[2]);
   expect(onSelect).not.toHaveBeenCalled();
-  expect(screen.getByRole('menu')).toBeTruthy();
+  screen.getByRole('menu');
 });
 
 it('focuses the Avatar, closes, then runs onSelect', () => {
   const focused: unknown[] = [];
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   const { avatar } = setup(() => focused.push(document.activeElement));
 
   fireEvent.click(avatar);
   key('ArrowDown');
+  // eslint-disable-next-line testing-library/no-node-access -- the click goes to the focused node, and no query returns it
   fireEvent.click(document.activeElement!);
 
   expect(focused).toEqual([avatar]);
@@ -143,13 +151,14 @@ it('closes on Esc with focus on the Avatar, and the Esc goes no further', () => 
   expect(event.defaultPrevented).toBe(true);
   expect(outer).not.toHaveBeenCalled();
   expect(screen.queryByRole('menu')).toBeNull();
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(avatar);
 });
 
 it('closes on Tab, and ignores other keys', () => {
   open();
   key('a');
-  expect(screen.getByRole('menu')).toBeTruthy();
+  screen.getByRole('menu');
   key('Tab');
   expect(screen.queryByRole('menu')).toBeNull();
 });
@@ -158,7 +167,7 @@ it('closes on a press outside, not on one inside, and stops listening once close
   const { avatar } = open();
 
   fireEvent.pointerDown(items()[0]);
-  expect(screen.getByRole('menu')).toBeTruthy();
+  screen.getByRole('menu');
   fireEvent.pointerDown(document.body);
   expect(screen.queryByRole('menu')).toBeNull();
   fireEvent.click(avatar);
@@ -177,6 +186,7 @@ it('draws no footer line when there is no footer, and the groups stay', () => {
   expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual(
     ['ExportJSON and GeoJSON', 'Sources', 'Sign out', 'About']
   );
+  // eslint-disable-next-line testing-library/prefer-presence-queries, testing-library/no-node-access -- the test checks that no node follows the menu
   expect(screen.getByRole('menu').nextElementSibling).toBeNull();
 });
 
@@ -187,6 +197,7 @@ it('opens a Menu with no footer and the same items', () => {
   render(<Menu {...bare} onSelect={vi.fn()} />);
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
   expect(items()).toHaveLength(4);
+  // eslint-disable-next-line testing-library/prefer-presence-queries, testing-library/no-node-access -- the test checks that no node follows the menu
   expect(screen.getByRole('menu').nextElementSibling).toBeNull();
 });
 
@@ -197,6 +208,7 @@ it('sets data-form on the anchor and the drop only in the phone form', () => {
   );
 
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the anchor and the drop are divs with no role or text
   expect(container.querySelectorAll('[data-form=phone]')).toHaveLength(2);
 });
 
@@ -204,6 +216,7 @@ it('sets no data-form without a form', () => {
   const { container } = render(<Menu {...MENU} onSelect={vi.fn()} />);
 
   fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the anchor and the drop are divs with no role or text
   expect(container.querySelector('[data-form]')).toBeNull();
 });
 
@@ -213,9 +226,11 @@ it.each(FORMS)(
     const { avatar } = open(form);
 
     key('ArrowDown');
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
     expect(document.activeElement).toBe(items()[1]);
     key('Escape');
     expect(screen.queryByRole('menu')).toBeNull();
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
     expect(document.activeElement).toBe(avatar);
     fireEvent.click(avatar);
     key('Tab');
@@ -229,11 +244,13 @@ it.each(FORMS)(
 it('draws a panel inert, with one item hovered', () => {
   const { container } = render(<MenuPanel {...MENU} hovered='sources' inert />);
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the inert wrapper is a div with no role or text
   expect(container.querySelector('[inert]')).toBeTruthy();
   expect(
-    [...container.querySelectorAll('[data-state]')].map(
-      item => item.textContent
-    )
+    screen
+      .getAllByRole('menuitem', { hidden: true })
+      .filter(item => item.hasAttribute('data-state'))
+      .map(item => item.textContent)
   ).toEqual(['Sources']);
 });
 

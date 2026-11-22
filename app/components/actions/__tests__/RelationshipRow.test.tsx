@@ -53,7 +53,9 @@ describe('a relationship row', () => {
     const link = screen.getByRole('link');
 
     expect(link.className).toMatch(/link/);
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks that the link is the last child of the row
     expect(link.parentElement?.lastElementChild).toBe(link);
+    // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
     expect(link.querySelector('svg[data-icon="forward"]')).not.toBeNull();
     expect(css).not.toContain('.edit');
   });

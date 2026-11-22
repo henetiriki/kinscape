@@ -8,7 +8,7 @@ describe('the @ks/ alias', () => {
   it('resolves a component', () => {
     render(<Button>Go</Button>);
 
-    expect(screen.getByRole('button', { name: 'Go' })).toBeTruthy();
+    screen.getByRole('button', { name: 'Go' });
   });
 
   it('resolves an .mts module', () => {

@@ -369,12 +369,14 @@ it('opens a message above the field with no fix when the date has none', () => {
 it('takes the width of its row when asked to fill it', () => {
   const { field } = setup({ fill: true });
 
+  // eslint-disable-next-line testing-library/no-node-access -- the fill mark is on a span with no role around the field
   expect(field.closest('[data-fill]')).toBeTruthy();
 });
 
 it('keeps its own width unless asked to fill the row', () => {
   const { field } = setup();
 
+  // eslint-disable-next-line testing-library/no-node-access -- the fill mark is on a span with no role around the field
   expect(field.closest('[data-fill]')).toBeNull();
 });
 
@@ -387,7 +389,7 @@ it('shows a notice while it is passed, as a status', () => {
   expect(screen.getByRole('textbox').getAttribute('aria-describedby')).toBe(
     notice.id
   );
-  expect(screen.getByRole('textbox').getAttribute('aria-invalid')).toBeNull();
+  expect(screen.getByRole('textbox').hasAttribute('aria-invalid')).toBe(false);
 });
 
 // MAP-03
@@ -426,6 +428,7 @@ it('marks a warning without blocking', () => {
   });
 
   expect(field.getAttribute('aria-invalid')).toBeNull();
+  // eslint-disable-next-line testing-library/no-node-access -- the mark is on a wrapper with no role around the field
   expect(field.closest('[data-mark]')?.getAttribute('data-mark')).toBe(
     'warning'
   );

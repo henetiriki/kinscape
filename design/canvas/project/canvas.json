@@ -253,22 +253,6 @@
       "y": 0,
       "page": "map-style"
     },
-    "Add-pin.dc.html": {
-      "x": 0,
-      "y": 1020,
-      "w": 1440,
-      "h": 900,
-      "title": "Add a pin — desktop",
-      "page": "map"
-    },
-    "Add-pin-phone.dc.html": {
-      "x": 1520,
-      "y": 1020,
-      "w": 390,
-      "h": 844,
-      "title": "Add a pin — phone",
-      "page": "map"
-    },
     "Map-pin-count.dc.html": {
       "x": 0,
       "y": 2040,
@@ -750,8 +734,6 @@
     "Map-phone-collapsed.dc.html",
     "Map-phone-states.dc.html",
     "Map-phone-filters.dc.html",
-    "Add-pin.dc.html",
-    "Add-pin-phone.dc.html",
     "Map-pin-count.dc.html",
     "Map-pin-fan.dc.html",
     "Map-pin-fan-phone.dc.html",
@@ -862,8 +844,8 @@
       "title": "KinScape design system",
       "namespace": "kinscape",
       "artifact": "https://claude.ai/artifact/3beQGzd1oHSga2LhPanAVi",
-      "version": "1795323114-3706",
-      "copiedAt": "2026-11-22T04:52:50Z"
+      "version": "1795329009-5d8c",
+      "copiedAt": "2026-11-22T06:31:08Z"
     }
   ]
 }

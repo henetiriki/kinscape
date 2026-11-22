@@ -191,6 +191,11 @@ The FuzzyDateField component card shows it. It is a label, a 44px input and one 
 2. The reading follows the typing. The error shows on Enter or when focus leaves, never while the user types.
 3. An error keeps the text. It shows a 2px `--error-border` and an error icon inside the field. Set `aria-invalid` and link the message with `aria-describedby`.
 4. Empty text shows the helper, not an error. A good date gets no success styling.
+5. The `error` prop sets a form error. The slot shows the field's own error first.
+
+### Loading bar
+
+The LoadingBar card shows a 20px `--line` bar.
 
 ## Event glyphs
 

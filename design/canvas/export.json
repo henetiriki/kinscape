@@ -146,16 +146,6 @@
       "viewport": { "height": 844, "width": 390 }
     },
     {
-      "file": "Add-pin.dc.html",
-      "name": "add-pin",
-      "viewport": { "height": 900, "width": 1440 }
-    },
-    {
-      "file": "Add-pin-phone.dc.html",
-      "name": "add-pin-phone",
-      "viewport": { "height": 844, "width": 390 }
-    },
-    {
       "file": "Map-pin-count.dc.html",
       "name": "map-pin-count",
       "viewport": { "height": 900, "width": 1440 }

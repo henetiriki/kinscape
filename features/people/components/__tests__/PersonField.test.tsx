@@ -80,7 +80,7 @@ it('shows the spelling variant that matched', () => {
 
   type(field, 'Exemple');
   expect(rows()).toHaveLength(1);
-  expect(within(rows()[0]).getByText(/Exemple/)).not.toBeNull();
+  within(rows()[0]).getByText(/Exemple/);
 });
 
 it('shows the no-match notice, and no row', () => {

@@ -6,7 +6,14 @@
 
 ## Approach
 
-A local session adds `eslint-plugin-testing-library` as a pinned devDependency ([D1](#decisions)). The CI build then adds one `eslint.config.mjs` block for `**/__tests__/**`, with the plugin's `flat/react` rules and `testing-library/prefer-implicit-assert`. The build runs `npm run lint:fix` first, then fixes each remaining hit by hand, one rule at a time. A fix changes only the query or the assert: `getBy*` alone for a presence check, `queryBy*` for an absence check, `screen` for a render result, and a role or text query for a node access. If no query can reach what the test checks, the build adds an `eslint-disable-next-line` with its reason ([D2](#decisions)). The tech lead changes the first _Test quality_ bullet of `docs/code-rules.md` in `/build-local`.
+A local session adds `eslint-plugin-testing-library` as a pinned devDependency ([D1](#decisions)). The CI build then adds one `eslint.config.mjs` block for `**/__tests__/**`, with the plugin's `flat/react` rules and `testing-library/prefer-implicit-assert`. The build runs `npm run lint:fix` first, then fixes each remaining hit by hand, one rule at a time. A fix changes only the query or the assert:
+
+- a presence check uses `getBy*` alone;
+- an absence check uses `queryBy*`;
+- a render result uses `screen`;
+- a node access uses a role or text query.
+
+If no query can reach what the test checks, the build adds an `eslint-disable-next-line` with its reason ([D2](#decisions)). The tech lead changes the first _Test quality_ bullet of `docs/code-rules.md` in `/build-local`.
 
 ## Decisions
 
@@ -14,8 +21,8 @@ A local session adds `eslint-plugin-testing-library` as a pinned devDependency (
 
 The approving review starts the CI build at once ([building](../../docs/building.md#specs-bugs-and-chores), step 2). The build cannot add a package (`npm install` is off). Without the plugin, the build cannot run the rules or find the hits.
 
-- **A.** Before the approving review, the tech lead's local session adds the plugin to this branch and pushes `package.json` and `package-lock.json`. The CI build then turns on the rules and fixes each hit. Cost: one local step before approval.
-- **B.** Approve first. The CI build fixes only what it can find without the plugin, such as the 88 `toBeTruthy()` asserts, and writes a "Big:" line for the package. Then the local session adds the plugin, turns on the rules and fixes the rest. Cost: most of the 700 fixes move to the local session.
+- **A.** Before the approving review, the tech lead's local session adds the plugin to this branch and pushes `package.json` and `package-lock.json`. The CI build then enables the rules and fixes each hit. Cost: one local step before approval.
+- **B.** Approve first. The CI build fixes only what it can find without the plugin, such as the 88 `toBeTruthy()` asserts, and writes a "Big:" line for the package. Then the local session adds the plugin, enables the rules and fixes the rest. Cost: most of the 700 fixes move to the local session.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -31,8 +38,8 @@ Some tests check markup that no Testing Library query can reach. The Constraint 
 The options:
 
 - **A.** Put one `eslint-disable-next-line` with a reason on each hit that no query can fix. The PR lists each one, as the done check says. Cost: about 40 disable lines.
-- **B.** In `eslint.config.mjs`, turn the reported rules off for these named files, with a comment that gives the reason. Cost: fewer lines; the done check on `eslint-disable-next-line` does not cover these files, so the build writes a "Big:" line.
-- **C.** Turn the plugin on only for `**/__tests__/**/*.tsx`. Cost: `design-export.test.ts` and `groups.test.ts` stay outside the rules; this changes step 2 of "What to change" and the first done check.
+- **B.** In `eslint.config.mjs`, disable the reported rules for these named files, with a comment that gives the reason. Cost: fewer lines; the done check on `eslint-disable-next-line` does not cover these files, so the build writes a "Big:" line.
+- **C.** Enable the plugin only for `**/__tests__/**/*.tsx`. Cost: `design-export.test.ts` and `groups.test.ts` stay outside the rules; this changes step 2 of "What to change" and the first done check.
 - **Other:** your own.
 
 **Answer: A** (@henetiriki)
@@ -41,7 +48,7 @@ The options:
 
 The build needs 215 disables under D2 A. Of these, 102 are on nodes with no role, 61 on aria-hidden icons and 35 are focus checks.
 
-- **A.** Keep the 215 disables and mark the PR ready. A later Chore adds `@testing-library/jest-dom` for the focus checks. Cost: 215 disable lines for now.
+- **A.** Keep the 215 disables. Mark the PR ready. A later Chore adds `@testing-library/jest-dom` for the focus checks. Cost: 215 disable lines for now.
 - **B.** Keep the disables and leave the PR a draft for review. Cost: a later ready step.
 - **C.** Add `@testing-library/jest-dom` here for the 35 focus checks. Cost: a new package and a "Big:" line.
 - **Other:** your own.
@@ -55,14 +62,14 @@ The build needs 215 disables under D2 A. Of these, 102 are on nodes with no role
 
 ## Files that change
 
-| File                                                                                                                                        | New / changed | What                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
-| `package.json`                                                                                                                              | Changed       | Local session: the pinned plugin; an `overrides` entry if its peer range omits ESLint 10       |
-| `package-lock.json`                                                                                                                         | Changed       | Local session: the plugin and its dependencies                                                 |
-| `eslint.config.mjs`                                                                                                                         | Changed       | A block for `**/__tests__/**`: `flat/react` rules and `testing-library/prefer-implicit-assert` |
-| `app/**/__tests__/*.test.tsx`, `features/**/__tests__/*.test.tsx`, `lib/**/__tests__/*.test.tsx`, `scripts/__tests__/design-export.test.ts` | Changed       | The query and assert fixes; the disables of D2                                                 |
-| `docs/code-rules.md`                                                                                                                        | Changed       | Hand-back (tech lead): the first _Test quality_ bullet reads as step 4 of the issue            |
-| `plans/chores/C1139-testing-library-lint.md`                                                                                                | New           | This plan                                                                                      |
+| File                                                                                                                                                                                 | New / changed | What                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ---------------------------------------------------------------------------------------------- |
+| `package.json`                                                                                                                                                                       | Changed       | Local session: the pinned plugin; an `overrides` entry if its peer range omits ESLint 10       |
+| `package-lock.json`                                                                                                                                                                  | Changed       | Local session: the plugin and its dependencies                                                 |
+| `eslint.config.mjs`                                                                                                                                                                  | Changed       | A block for `**/__tests__/**`: `flat/react` rules and `testing-library/prefer-implicit-assert` |
+| `app/**/__tests__/*.test.tsx`, `features/**/__tests__/*.test.tsx`, `lib/**/__tests__/*.test.tsx`, `scripts/__tests__/design-export.test.ts`, `scripts/__tests__/run-summary.test.ts` | Changed       | The query and assert fixes; the disables of D2                                                 |
+| `docs/code-rules.md`                                                                                                                                                                 | Changed       | Hand-back (tech lead): the first _Test quality_ bullet reads as step 4 of the issue            |
+| `plans/chores/C1139-testing-library-lint.md`                                                                                                                                         | New           | This plan                                                                                      |
 
 ## Order of work
 
@@ -70,7 +77,7 @@ The build needs 215 disables under D2 A. Of these, 102 are on nodes with no role
    - Run `npm install --save-dev --save-exact eslint-plugin-testing-library`.
    - If npm reports an ESLint peer conflict, add an `overrides` entry as `eslint-plugin-jsx-a11y` has.
    - Push `package.json` and `package-lock.json` to this branch.
-2. CI build: add the `eslint.config.mjs` block. Run `npm run lint` and record the count of each rule in the PR.
+2. CI build: add the `eslint.config.mjs` block. Run `npm run lint`. Record the count of each rule in the PR.
 3. CI build: run `npm run lint:fix`. Commit.
 4. CI build: fix the hits, one rule per commit, in this order:
    - `prefer-implicit-assert`;
@@ -115,3 +122,4 @@ The build needs 215 disables under D2 A. Of these, 102 are on nodes with no role
 - `npm run lint:fix` changed 12 `getBy*` reads of an attribute or a child node to `queryBy*`. The build reverts these. It reads an absent attribute with `hasAttribute(...)` and `toBe(false)`.
 - The build adds 215 disables, not about 40 ([D3](#decisions)).
 - `prefer-implicit-assert` had 87 hits, not about 280.
+- `scripts/__tests__/run-summary.test.ts` gets 5 disables. Its `render` returns a Markdown string, not a Testing Library result.

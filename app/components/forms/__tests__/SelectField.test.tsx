@@ -25,6 +25,7 @@ it('is a native select named by its label, with a state', () => {
     'Anyone',
     'Maria',
   ]);
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its data-state
   expect(select.parentElement!.dataset.state).toBe('hover');
   fireEvent.change(select, { target: { value: 'maria' } });
   expect(onChange).toHaveBeenCalledOnce();
@@ -46,8 +47,11 @@ it('shows an error in place of nothing: error box, icon, alert and aria links', 
   expect(alert.textContent).toBe('Choose a polity.');
   expect(select.getAttribute('aria-invalid')).toBe('true');
   expect(select.getAttribute('aria-describedby')).toBe(alert.id);
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its data-mark
   expect(select.parentElement!.dataset.mark).toBe('error');
+  // eslint-disable-next-line testing-library/no-node-access -- the chevron and error icons are aria-hidden svgs; no query reaches them
   expect(select.parentElement!.querySelectorAll('svg')).toHaveLength(2);
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the error icon is an aria-hidden svg; the test checks that it comes last in the box
   expect(container.querySelector('[data-mark] > svg:last-child')).toBeTruthy();
 });
 
@@ -77,6 +81,7 @@ it('has no mark, alert or description without an error', () => {
 
   const select = screen.getByRole('combobox', { name: 'Polity' });
 
+  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks that it has no data-mark
   expect(select.parentElement!.hasAttribute('data-mark')).toBe(false);
   expect(select.hasAttribute('aria-invalid')).toBe(false);
   expect(select.hasAttribute('aria-describedby')).toBe(false);
@@ -92,6 +97,6 @@ it('names a select whose label is hidden', () => {
     />
   );
 
-  expect(screen.getByRole('combobox', { name: 'Person, hover' })).toBeTruthy();
+  screen.getByRole('combobox', { name: 'Person, hover' });
   expect(screen.queryByText('Person, hover')).toBeNull();
 });

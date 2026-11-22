@@ -119,7 +119,7 @@ it('shows the map for today with Polity borders on', () => {
     />
   );
 
-  expect(screen.getByTestId('map-view')).toBeTruthy();
+  screen.getByTestId('map-view');
   expect(lastProps()).toMatchObject({
     layers,
     mapDay: dayOf(new Date()),
@@ -157,8 +157,10 @@ describe('the zoom card', () => {
       'true'
     );
     expect(
-      screen.getByRole('button', { name: 'Zoom in' }).ariaDisabled
-    ).toBeNull();
+      screen
+        .getByRole('button', { name: 'Zoom in' })
+        .hasAttribute('aria-disabled')
+    ).toBe(false);
     act(() => lastProps().onZoomLimits({ atMax: true, atMin: false }));
     expect(screen.getByRole('button', { name: 'Zoom in' }).ariaDisabled).toBe(
       'true'
@@ -229,16 +231,12 @@ it('gives a layer the Map date for its row text, and again when the date moves',
     />
   );
   // The row text is the description of the checkbox.
-  const rowText = () =>
-    document.getElementById(
-      screen
-        .getByRole('checkbox', { name: 'Test layer' })
-        .getAttribute('aria-describedby')!
-    )?.textContent;
+  const checkbox = (rowText: string) =>
+    screen.getByRole('checkbox', { description: rowText, name: 'Test layer' });
 
-  expect(rowText()).toBe(`Shows day ${dayOf(new Date())}`);
+  checkbox(`Shows day ${dayOf(new Date())}`);
   fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-  expect(rowText()).toBe(`Shows day ${lastProps().mapDay}`);
+  checkbox(`Shows day ${lastProps().mapDay}`);
   expect(lastProps().mapDay).toBeLessThan(dayOf(new Date()));
 });
 
@@ -297,7 +295,7 @@ it('opens and closes the sources dialog from the credits line', () => {
 
   expect(screen.queryByRole('dialog')).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: 'Attributions' }));
-  expect(screen.getByRole('dialog')).toBeTruthy();
+  screen.getByRole('dialog');
   fireEvent.click(screen.getByRole('button', { name: 'Close' }));
   expect(screen.queryByRole('dialog')).toBeNull();
 });
@@ -333,9 +331,11 @@ it('puts `action` in the action slot and `panel` in the place of the Layers pane
     />
   );
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
   expect(container.querySelector('[data-slot="action"]')?.textContent).toBe(
     'Add a pin'
   );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
   expect(container.querySelector('[data-slot="panel"]')?.textContent).toBe(
     'The form panel'
   );
@@ -348,7 +348,9 @@ it('puts `action` in the action slot and `panel` in the place of the Layers pane
       sources={sources}
     />
   );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
   expect(container.querySelector('[data-slot="action"]')).toBeNull();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
   expect(container.querySelector('[data-slot="panel"]')?.textContent).toContain(
     'Polities'
   );
@@ -381,6 +383,7 @@ describe('on a phone', () => {
       />
     );
 
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot is a div with no role; the test checks what it holds
     expect(container.querySelector('[data-slot="panel"]')).toBeNull();
   });
 
@@ -413,11 +416,9 @@ describe('on a phone', () => {
       />
     );
 
-    expect(screen.getByRole('region', { name: 'Map date' })).toBeTruthy();
-    expect(
-      screen.getByRole('button', { name: 'Layers and filters' })
-    ).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Attributions' })).toBeTruthy();
+    screen.getByRole('region', { name: 'Map date' });
+    screen.getByRole('button', { name: 'Layers and filters' });
+    screen.getByRole('button', { name: 'Attributions' });
     expect(screen.queryByRole('button', { name: 'Credits' })).toBeNull();
     expect(screen.queryByRole('complementary', { name: 'Layers' })).toBeNull();
     expect(screen.queryByRole('radiogroup')).toBeNull();
@@ -457,13 +458,14 @@ describe('on a phone', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: /Polity borders/ }));
     expect(lastProps().visible[polityLayer.id]).toBe(false);
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
-    expect(
-      (
-        screen
-          .getByRole('heading', { hidden: true, name: 'Layers' })
-          .closest('dialog') as HTMLDialogElement
-      ).open
-    ).toBe(false);
+    const heading = screen.getByRole('heading', {
+      hidden: true,
+      name: 'Layers',
+    });
+    // eslint-disable-next-line testing-library/no-node-access -- jsdom gives the closed dialog no name, so a role query cannot find it
+    const sheet = heading.closest('dialog') as HTMLDialogElement;
+
+    expect(sheet.open).toBe(false);
   });
 });
 
@@ -507,7 +509,7 @@ it('keeps an impossible day in the field and the map where it was', () => {
   const before = lastProps().mapDay;
 
   typeDate('1901-02-30');
-  expect(screen.getByText('February 1901 has 28 days.')).toBeTruthy();
+  screen.getByText('February 1901 has 28 days.');
   expect(
     (screen.getByRole('textbox', { name: 'Date shown' }) as HTMLInputElement)
       .value
@@ -537,8 +539,8 @@ describe('the pre-boundary notice', () => {
     renderOn();
     typeDate('1900-06-01');
     expect(title('1900')).toBeTruthy();
-    expect(screen.getByText('The map has borders from 1910.')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Jump to 1910' })).toBeTruthy();
+    screen.getByText('The map has borders from 1910.');
+    screen.getByRole('button', { name: 'Jump to 1910' });
   });
 
   // MAP-03
@@ -554,9 +556,7 @@ describe('the pre-boundary notice', () => {
   it('jumps to the first date, dropping the card and the warning', () => {
     renderOn();
     typeDate('1750-01-01');
-    expect(
-      screen.getByText('No borders are mapped for 1750 yet.')
-    ).toBeTruthy();
+    screen.getByText('No borders are mapped for 1750 yet.');
     fireEvent.click(screen.getByRole('button', { name: 'Jump to 1910' }));
     expect(lastProps().mapDay).toBe(toDay('1910-05-31'));
     expect(title('1910')).toBeNull();
@@ -568,7 +568,7 @@ describe('the pre-boundary notice', () => {
   it('names whatever the first date is', () => {
     renderOn(coverage);
     typeDate('1900-06-01');
-    expect(screen.getByRole('button', { name: 'Jump to 1994' })).toBeTruthy();
+    screen.getByRole('button', { name: 'Jump to 1994' });
   });
 
   // MAP-02

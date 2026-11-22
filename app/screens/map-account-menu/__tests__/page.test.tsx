@@ -21,10 +21,11 @@ const open = () =>
 it('puts the menu in the account slot on desktop, with no Layers button', async () => {
   const { container } = render(await Page());
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot div has no role; the test checks which slot holds the control
+  const account = container.querySelector('[data-slot="account"]')!;
+
   expect(
-    container
-      .querySelector('[data-slot="account"]')!
-      .contains(screen.getByRole('button', { name: 'Account menu' }))
+    account.contains(screen.getByRole('button', { name: 'Account menu' }))
   ).toBe(true);
   expect(
     screen.queryByRole('button', { name: 'Layers and filters' })
@@ -56,15 +57,15 @@ it('puts the menu in the search pill on a phone, with the Layers button', async 
 
   const { container } = render(await Page());
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot div has no role; the test checks which slot holds the control
+  const search = container.querySelector('[data-slot="search"]')!;
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot div has no role; the test checks which slot holds the control
+  const layers = container.querySelector('[data-slot="layers"]')!;
+
+  expect(search.contains(screen.getByRole('search'))).toBe(true);
+
   expect(
-    container
-      .querySelector('[data-slot="search"]')!
-      .contains(screen.getByRole('search'))
-  ).toBe(true);
-  expect(
-    container
-      .querySelector('[data-slot="layers"]')!
-      .contains(screen.getByRole('button', { name: 'Layers and filters' }))
+    layers.contains(screen.getByRole('button', { name: 'Layers and filters' }))
   ).toBe(true);
 });
 

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
@@ -27,9 +27,10 @@ it('is a header with one back link that shows the back icon', () => {
   expect(links).toHaveLength(1);
   expect(links[0]!.textContent).toBe('Map');
   expect(links[0]!.getAttribute('href')).toBe('/map');
-  expect(links[0]!.querySelector('svg')!.getAttribute('data-icon')).toBe(
-    'back'
-  );
+  // eslint-disable-next-line testing-library/no-node-access -- the back icon is an aria-hidden svg; no query reaches it
+  const icon = links[0]!.querySelector('svg')!;
+
+  expect(icon.getAttribute('data-icon')).toBe('back');
   expect(screen.getByRole('button', { name: 'Account menu' }).textContent).toBe(
     'R'
   );
@@ -42,7 +43,7 @@ it('draws the full Wordmark and the icon-only one for the phone CSS to pick', ()
   );
 
   expect(container.textContent).toContain('KinScape');
-  expect(container.querySelectorAll('img')).toHaveLength(2);
+  expect(screen.getAllByAltText(/^(KinScape)?$/)).toHaveLength(2);
   expect(screen.getAllByAltText('KinScape')).toHaveLength(1);
   expect(screen.queryByRole('button')).toBeNull();
 });
@@ -78,7 +79,7 @@ it('ends a long back label in an ellipsis, so it stays on one line in the 44px l
   render(<BackLink href='/people' label='Back to the people list' />);
 
   const link = screen.getByRole('link', { name: 'Back to the people list' });
-  const label = link.querySelector('span')!;
+  const label = within(link).getByText('Back to the people list');
 
   expect(label.textContent).toBe('Back to the people list');
   expect(label.className).toBe('label');

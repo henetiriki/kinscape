@@ -9,6 +9,7 @@ const type = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
 const submit = async () => {
+  // eslint-disable-next-line testing-library/no-unnecessary-act -- the click starts a form action; the async act waits for its state update
   await act(async () => {
     fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
   });
@@ -22,15 +23,13 @@ describe('SignInForm', () => {
   it('shows the title, the lede, both fields and no-sign-up', () => {
     render(<SignInForm action={async () => undefined} />);
 
-    expect(screen.getByRole('heading', { name: 'Sign in' })).toBeTruthy();
-    expect(
-      screen.getByText('Your tree is private. Sign in to open the map.')
-    ).toBeTruthy();
+    screen.getByRole('heading', { name: 'Sign in' });
+    screen.getByText('Your tree is private. Sign in to open the map.');
     expect(field('Email').getAttribute('autocomplete')).toBe('username');
     expect(field('Password').getAttribute('autocomplete')).toBe(
       'current-password'
     );
-    expect(screen.getByText(/There's no sign-up/)).toBeTruthy();
+    screen.getByText(/There's no sign-up/);
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
@@ -79,29 +78,28 @@ describe('SignInForm', () => {
     expect(field('Password').value).toBe('');
     expect(field('Email').getAttribute('aria-invalid')).toBe('true');
     expect(field('Password').getAttribute('aria-invalid')).toBe('true');
-    expect(
-      screen.getByText('Password cleared after a failed attempt.')
-    ).toBeTruthy();
+    screen.getByText('Password cleared after a failed attempt.');
   });
 
   it('marks empty fields instead of using browser validation, and does not call the action', async () => {
     const action = vi.fn(async (): Promise<SignInState> => undefined);
     const { container } = render(<SignInForm action={action} />);
 
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the form has no name, so it has no role
     expect(container.querySelector('form')?.noValidate).toBe(true);
 
     await submit();
 
     expect(action).not.toHaveBeenCalled();
-    expect(screen.getByText('Enter your email.')).toBeTruthy();
-    expect(screen.getByText('Enter your password.')).toBeTruthy();
+    screen.getByText('Enter your email.');
+    screen.getByText('Enter your password.');
     expect(field('Email').getAttribute('aria-invalid')).toBe('true');
     expect(field('Password').getAttribute('aria-invalid')).toBe('true');
 
     type('Email', 'a@example.com');
 
     expect(screen.queryByText('Enter your email.')).toBeNull();
-    expect(screen.getByText('Enter your password.')).toBeTruthy();
+    screen.getByText('Enter your password.');
 
     type('Password', 'x');
 
@@ -165,9 +163,10 @@ describe('on a phone', () => {
   it('is the phone form with the phone title', () => {
     const { container } = render(<SignInForm action={async () => undefined} />);
 
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the form has no name, so it has no role
     expect(container.querySelector('form')?.getAttribute('data-form')).toBe(
       'phone'
     );
-    expect(screen.getByRole('heading', { name: 'Sign in' })).toBeTruthy();
+    screen.getByRole('heading', { name: 'Sign in' });
   });
 });

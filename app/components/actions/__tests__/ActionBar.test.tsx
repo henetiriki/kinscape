@@ -29,11 +29,12 @@ it('holds its buttons and an in-flow spacer of its own height', () => {
   expect(
     screen.getByRole('link', { name: 'Cancel' }).getAttribute('href')
   ).toBe('/people');
-  expect(container.querySelectorAll('[data-spacer]')).toHaveLength(1);
-  expect(container.querySelector('[data-spacer]')!.textContent).toBe('');
-  expect(
-    container.querySelector('[data-spacer]')!.hasAttribute('aria-hidden')
-  ).toBe(true);
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the spacer is an aria-hidden div with no role or text
+  const spacers = container.querySelectorAll('[data-spacer]');
+
+  expect(spacers).toHaveLength(1);
+  expect(spacers[0].textContent).toBe('');
+  expect(spacers[0].hasAttribute('aria-hidden')).toBe(true);
 });
 
 // PPL-01

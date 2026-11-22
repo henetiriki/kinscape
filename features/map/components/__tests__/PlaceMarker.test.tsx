@@ -38,6 +38,7 @@ describe('PlaceMarker', () => {
   // PIN-06
   it('fans the Pins out on hover and folds them when the mouse leaves', () => {
     const { view } = setup();
+    // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test fires pointer events on it or reads its data-open
     const place = view.container.firstElementChild!.firstElementChild!;
 
     fireEvent.pointerEnter(place, { pointerType: 'mouse' });
@@ -51,6 +52,7 @@ describe('PlaceMarker', () => {
   it('does not fan out when a touch enters it', () => {
     const { marker } = setup();
 
+    // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test fires pointer events on it or reads its data-open
     fireEvent.pointerEnter(marker().parentElement!, { pointerType: 'touch' });
 
     expect(fanned()).toBe(false);
@@ -64,6 +66,7 @@ describe('PlaceMarker', () => {
     expect(fanned()).toBe(true);
     // The open marker rises over its neighbours on the map.
     expect(
+      // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test fires pointer events on it or reads its data-open
       (view.container.firstElementChild!.firstElementChild as HTMLElement)
         .dataset.open
     ).toBe('true');
@@ -74,6 +77,7 @@ describe('PlaceMarker', () => {
     fireEvent.pointerDown(screen.getByText('Elsewhere'));
     expect(fanned()).toBe(false);
     expect(
+      // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test fires pointer events on it or reads its data-open
       (view.container.firstElementChild!.firstElementChild as HTMLElement)
         .dataset.open
     ).toBeUndefined();
@@ -94,6 +98,7 @@ describe('PlaceMarker', () => {
   it('shows the selection ring when the open Pin is one of its Pins (#862 D3)', () => {
     const { view } = setup(true);
 
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the ring is an aria-hidden span with no role or text
     expect(view.container.querySelectorAll('[data-ring]')).toHaveLength(1);
   });
 });

@@ -100,14 +100,14 @@ it('shows a bad typed date as a message above the field', () => {
 
   fireEvent.change(field(), { target: { value: '1500' } });
   fireEvent.keyDown(field(), { key: 'Enter' });
-  expect(screen.getByText(/The map still shows 2026/)).toBeTruthy();
+  screen.getByText(/The map still shows 2026/);
   expect(onChange).not.toHaveBeenCalled();
 });
 
 it('shows the key hints at the precision', () => {
   setup(today);
   fireEvent.click(screen.getByRole('radio', { name: 'Day' }));
-  expect(screen.getByText(/1 day · with/)).toBeTruthy();
+  screen.getByText(/1 day · with/);
 });
 
 it('has no Play, Jump to or contested note unless they are passed', () => {
@@ -139,13 +139,15 @@ const full = (onPlay = vi.fn(), onChange = vi.fn()) => {
 it('reaches Play and each speed by keyboard, with a checked speed', () => {
   const { onPlay } = full();
 
-  expect(screen.getByText('2 contested claims on this date')).toBeTruthy();
+  screen.getByText('2 contested claims on this date');
 
   const play = screen.getByRole('button', { name: 'Play through time' });
 
   play.focus();
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(play);
   screen.getByRole('radio', { name: '1' }).focus();
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(screen.getByRole('radio', { name: '1' }));
   fireEvent.click(play);
   expect(onPlay).toHaveBeenLastCalledWith(5);
@@ -156,9 +158,7 @@ it('reaches Play and each speed by keyboard, with a checked speed', () => {
   ).toBe(true);
   fireEvent.click(play);
   expect(onPlay).toHaveBeenLastCalledWith(10);
-  expect(
-    screen.getByRole('radiogroup', { name: /Playback speed/ })
-  ).toBeTruthy();
+  screen.getByRole('radiogroup', { name: /Playback speed/ });
 });
 
 it('jumps to an epoch, within the last date', () => {
@@ -206,16 +206,15 @@ it('shows the phone sheet collapsed without slider, precision, speed, Jump to or
   const onPlay = vi.fn();
   const onExpandedChange = sheet(false, onPlay);
 
-  expect(screen.getByRole('region', { name: 'Map date' })).toBeTruthy();
+  screen.getByRole('region', { name: 'Map date' });
   expect(field().value).toBe('2026');
   fireEvent.click(screen.getByRole('button', { name: 'Play through time' }));
   expect(onPlay).toHaveBeenCalledWith(5);
+  // eslint-disable-next-line testing-library/no-node-access -- the stepper row is a div with no role; the test checks that Play is in it
+  const row = screen.getByRole('button', { name: 'Back' }).parentElement!;
+
   expect(
-    screen
-      .getByRole('button', { name: 'Back' })
-      .parentElement!.contains(
-        screen.getByRole('button', { name: 'Play through time' })
-      )
+    row.contains(screen.getByRole('button', { name: 'Play through time' }))
   ).toBe(true);
   expect(screen.queryByRole('slider')).toBeNull();
   expect(screen.queryByRole('radiogroup')).toBeNull();
@@ -227,7 +226,7 @@ it('shows the phone sheet collapsed without slider, precision, speed, Jump to or
 
 it('draws the slider in the expanded phone sheet', () => {
   sheet(true);
-  expect(screen.getByRole('slider', { name: 'Map date' })).toBeTruthy();
+  screen.getByRole('slider', { name: 'Map date' });
   expect(
     screen.queryByRole('button', { name: 'Play through time' })
   ).toBeNull();
@@ -349,7 +348,7 @@ it('says each bad date once and leaves the Map date alone', () => {
     ['2026-12', "That's after today."],
   ]) {
     typeDate(text);
-    expect(screen.getByText(message)).toBeTruthy();
+    screen.getByText(message);
     expect(field().value).toBe(text);
   }
 
@@ -366,7 +365,7 @@ it('clears the error on Esc and the slider', () => {
   render(<Host />);
 
   typeDate('abc');
-  expect(screen.getByText(/The map still shows/)).toBeTruthy();
+  screen.getByText(/The map still shows/);
   fireEvent.keyDown(field(), { key: 'Escape' });
   expect(screen.queryByText(/The map still shows/)).toBeNull();
   expect(field().value).toBe('2020');
@@ -398,7 +397,7 @@ describe('the precision note', () => {
       'Switched to month precision.'
     );
     act(() => vi.advanceTimersByTime(3999));
-    expect(screen.getByRole('status')).toBeTruthy();
+    screen.getByRole('status');
     act(() => vi.advanceTimersByTime(1));
     expect(screen.queryByRole('status')).toBeNull();
   });

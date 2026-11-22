@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const jar = vi.hoisted(() => ({
@@ -80,9 +80,10 @@ describe('the sign-in page', () => {
     const page = await SignIn({
       searchParams: Promise.resolve({ returnTo: '/screens/add-pin' }),
     });
-    const { getByTestId } = render(page);
 
-    expect(getByTestId('form').getAttribute('data-return-to')).toBe(
+    render(page);
+
+    expect(screen.getByTestId('form').getAttribute('data-return-to')).toBe(
       '/screens/add-pin'
     );
   });
@@ -92,9 +93,9 @@ describe('the sign-in page', () => {
       searchParams: Promise.resolve({ returnTo: 'https://example.test/' }),
     });
 
-    expect(
-      render(page).getByTestId('form').getAttribute('data-return-to')
-    ).toBe('/');
+    render(page);
+
+    expect(screen.getByTestId('form').getAttribute('data-return-to')).toBe('/');
   });
 
   it('sends a valid session to the map', async () => {
@@ -118,11 +119,9 @@ describe('the sign-in page', () => {
   ])('shows the form for %s', async (_what, value) => {
     jar.get.mockReturnValue({ value });
 
-    expect(
-      render(await SignIn({ searchParams: Promise.resolve({}) })).getByTestId(
-        'form'
-      )
-    ).toBeTruthy();
+    render(await SignIn({ searchParams: Promise.resolve({}) }));
+
+    screen.getByTestId('form');
   });
 
   it('shows the form when the session store is down', async () => {
@@ -135,11 +134,9 @@ describe('the sign-in page', () => {
     };
     jar.get.mockReturnValue({ value: 'x'.repeat(43) });
 
-    expect(
-      render(await SignIn({ searchParams: Promise.resolve({}) })).getByTestId(
-        'form'
-      )
-    ).toBeTruthy();
+    render(await SignIn({ searchParams: Promise.resolve({}) }));
+
+    screen.getByTestId('form');
   });
 });
 

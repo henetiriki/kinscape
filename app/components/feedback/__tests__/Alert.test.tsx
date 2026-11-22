@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { Alert } from '@ks/app/components/feedback/Alert';
@@ -54,7 +54,7 @@ it('announces a banner at once and runs its one action', () => {
   expect(screen.getByRole('alert').textContent).toBe(
     "Terrain didn't load.Retry"
   );
-  screen.getByRole('button', { name: 'Retry' }).click();
+  fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
   expect(calls).toEqual(['retry']);
 });
 

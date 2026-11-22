@@ -12,13 +12,11 @@ it('names the pill and the round Play the same', () => {
   const { unmount } = render(<PlayButton onClick={onClick} />);
 
   fireEvent.click(screen.getByRole('button', { name: 'Play through time' }));
-  expect(screen.getByText('Play')).toBeTruthy();
+  screen.getByText('Play');
   expect(onClick).toHaveBeenCalled();
   unmount();
   render(<PlayButton round />);
-  expect(
-    screen.getByRole('button', { name: 'Play through time' })
-  ).toBeTruthy();
+  screen.getByRole('button', { name: 'Play through time' });
   expect(screen.queryByText('Play')).toBeNull();
 });
 
@@ -36,8 +34,8 @@ it('jumps to an epoch and marks the current one', () => {
     screen.getByRole('button', { name: '1902' }).getAttribute('aria-current')
   ).toBe('true');
   expect(
-    screen.getByRole('button', { name: '1652' }).getAttribute('aria-current')
-  ).toBeNull();
+    screen.getByRole('button', { name: '1652' }).hasAttribute('aria-current')
+  ).toBe(false);
   fireEvent.click(screen.getByRole('button', { name: '1652' }));
   expect(onJump).toHaveBeenCalledWith(1652);
   fireEvent.click(screen.getByRole('button', { name: 'Today' }));
@@ -48,15 +46,15 @@ it('jumps to an epoch and marks the current one', () => {
 it('counts the contested claims, and shows nothing at none', () => {
   const { container, rerender } = render(<ContestedNote count={2} />);
 
-  expect(screen.getByText('2 contested claims on this date')).toBeTruthy();
+  screen.getByText('2 contested claims on this date');
   rerender(<ContestedNote count={1} />);
-  expect(screen.getByText('1 contested claim on this date')).toBeTruthy();
+  screen.getByText('1 contested claim on this date');
   rerender(<ContestedNote count={0} />);
   expect(container.textContent).toBe('');
 });
 
 it('says what the arrows do at the precision', () => {
   render(<DateKeyHints precision='month' />);
-  expect(screen.getByText(/1 month · with/)).toBeTruthy();
-  expect(screen.getByText('Shift')).toBeTruthy();
+  screen.getByText(/1 month · with/);
+  screen.getByText('Shift');
 });

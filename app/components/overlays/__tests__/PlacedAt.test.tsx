@@ -10,6 +10,7 @@ it('sets the point and the gap token of its popup, and draws the child', () => {
       <p>Popup</p>
     </PlacedAt>
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
   const placed = container.firstElementChild as HTMLElement;
 
   expect(placed.style.getPropertyValue('--x')).toBe('120px');
@@ -26,8 +27,10 @@ it('takes the other gap token for the Jurisdiction popup', () => {
       <p>Popup</p>
     </PlacedAt>
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
+  const placed = container.firstElementChild as HTMLElement;
 
-  expect(
-    (container.firstElementChild as HTMLElement).style.getPropertyValue('--gap')
-  ).toBe('var(--layout-popup-gap)');
+  expect(placed.style.getPropertyValue('--gap')).toBe(
+    'var(--layout-popup-gap)'
+  );
 });

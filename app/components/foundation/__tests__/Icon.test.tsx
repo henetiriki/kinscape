@@ -7,6 +7,7 @@ import { FilledIcon, Icon, PATHS } from '@ks/app/components/foundation/Icon';
 
 const NAMES = Object.keys(PATHS) as IconName[];
 
+// eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; no query reaches it
 const svgOf = (container: HTMLElement) => container.querySelector('svg')!;
 
 // NFR-06
@@ -29,6 +30,7 @@ it.each(NAMES)('%s is decorative and draws in currentColor', name => {
 
   expect(svg.getAttribute('aria-hidden')).toBe('true');
   expect(svg.getAttribute('stroke')).toBe('currentColor');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that the svg holds a shape; no query reaches it
   expect(svg.querySelector('path, circle')).toBeTruthy();
 });
 
@@ -47,6 +49,7 @@ it('draws a decorative icon in both forms', () => {
     </>
   );
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the icons are aria-hidden svgs; no query reaches them
   const [success, info, filled] = Array.from(container.querySelectorAll('svg'));
 
   expect(success.getAttribute('data-icon')).toBe('success');
@@ -56,9 +59,9 @@ it('draws a decorative icon in both forms', () => {
 });
 
 it('draws layers with butt caps', () => {
-  const paths = svgOf(
-    render(<Icon name='layers' />).container
-  ).querySelectorAll('path');
+  const svg = svgOf(render(<Icon name='layers' />).container);
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks the paths of an aria-hidden svg; no query reaches them
+  const paths = svg.querySelectorAll('path');
 
   expect(paths).toHaveLength(2);
   paths.forEach(path =>
@@ -67,9 +70,9 @@ it('draws layers with butt caps', () => {
 });
 
 it('fills play with no stroke', () => {
-  const path = svgOf(render(<Icon name='play' />).container).querySelector(
-    'path'
-  )!;
+  const svg = svgOf(render(<Icon name='play' />).container);
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks the path of an aria-hidden svg; no query reaches it
+  const path = svg.querySelector('path')!;
 
   expect(path.getAttribute('fill')).toBe('currentColor');
   expect(path.getAttribute('stroke')).toBe('none');

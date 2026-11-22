@@ -68,6 +68,7 @@ const type = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
 const save = async () => {
+  // eslint-disable-next-line testing-library/no-unnecessary-act -- the async act waits for the save promise that the click starts
   await act(async () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   });
@@ -160,6 +161,7 @@ describe('a new Person', () => {
     open({ create });
     fill();
     await save();
+    // eslint-disable-next-line testing-library/no-unnecessary-act -- the async act waits for the save promise that the click starts
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     });

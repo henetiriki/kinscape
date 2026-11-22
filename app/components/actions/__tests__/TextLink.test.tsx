@@ -87,7 +87,9 @@ it('keeps the ring on the button, and the disabled text has no label span', () =
       <TextLink disabled>Off</TextLink>
     </>
   );
+  // eslint-disable-next-line testing-library/prefer-presence-queries, testing-library/no-node-access -- the test checks that the button has no child element
   expect(screen.getByRole('button').firstElementChild).toBeNull();
+  // eslint-disable-next-line testing-library/prefer-presence-queries, testing-library/no-node-access -- the test checks that the text has no child element
   expect(screen.getByText('Off').firstElementChild).toBeNull();
   expect(css).toMatch(
     /\.button \{[^}]*composes: ring from '@ks\/app\/components\/foundation\/focus\.module\.css'/

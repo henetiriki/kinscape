@@ -145,7 +145,7 @@ describe('PeopleList', () => {
     filter('hend');
     expect(screen.getByRole('status').textContent).toBe('1 of 3 people match');
     expect(
-      screen.getByText('Botha, Hendrik').closest('a')!.getAttribute('href')
+      screen.getByRole('link', { name: /^Botha, Hendrik/ }).getAttribute('href')
     ).toBe('/people/hendrik');
     expect(screen.queryByText('Cloete, Anna')).toBeNull();
   });
@@ -155,7 +155,7 @@ describe('PeopleList', () => {
     filter('v.d.');
     expect(screen.getByRole('status').textContent).toBe('1 of 3 people match');
     expect(
-      screen.getByText('Matches the spelling “v.d. Merwe”').closest('a')!
+      screen.getByRole('link', { name: /Matches the spelling “v\.d\. Merwe”/ })
         .textContent
     ).toBe(
       'du Toit, MariaMatches the spelling “v.d. Merwe”Born in 18501850 –Edit'
@@ -166,9 +166,9 @@ describe('PeopleList', () => {
   it('has a Name and a Dates header, and no Born or Died header', () => {
     open();
 
-    const heads = screen.getByRole('region', {
-      name: 'People, by surname',
-    }).firstElementChild!;
+    const list = screen.getByRole('region', { name: 'People, by surname' });
+    // eslint-disable-next-line testing-library/no-node-access -- the header row is aria-hidden; no query reaches it
+    const heads = list.firstElementChild!;
 
     expect(heads.textContent).toBe('NameDates');
     expect(
@@ -181,9 +181,9 @@ describe('PeopleList', () => {
 
   it('shows the maiden name as a note', () => {
     open();
-    expect(screen.getByText('née Pretorius').closest('a')!.textContent).toBe(
-      'Cloete, Annanée PretoriusBorn unknown, died unknown? – ?Edit'
-    );
+    expect(
+      screen.getByRole('link', { name: /née Pretorius/ }).textContent
+    ).toBe('Cloete, Annanée PretoriusBorn unknown, died unknown? – ?Edit');
   });
 
   it('offers the filter with its helper and the / shortcut', () => {
@@ -218,7 +218,7 @@ describe('PeopleList', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear the filter' }));
 
     expect(
-      screen.getByText('Botha, Hendrik').closest('a')!.getAttribute('href')
+      screen.getByRole('link', { name: /^Botha, Hendrik/ }).getAttribute('href')
     ).toBe('/people/hendrik');
     expect(screen.getByRole<HTMLInputElement>('searchbox').value).toBe('');
   });

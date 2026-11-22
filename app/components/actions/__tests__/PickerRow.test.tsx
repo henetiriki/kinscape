@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -39,17 +39,17 @@ describe('a picker row', () => {
   });
 
   it('shows "née" alone, the matched spelling alone, or both', () => {
-    const first = row({ maidenName: 'Fourie' });
+    const { unmount: unmountFirst } = row({ maidenName: 'Fourie' });
 
     expect(screen.getByText('née Fourie')).toBeInstanceOf(HTMLSpanElement);
-    first.unmount();
+    unmountFirst();
 
-    const second = row({ matchedVariant: 'Bota' });
+    const { unmount: unmountSecond } = row({ matchedVariant: 'Bota' });
 
     expect(screen.getByText('Matches the spelling “Bota”')).toBeInstanceOf(
       HTMLSpanElement
     );
-    second.unmount();
+    unmountSecond();
     row({ maidenName: 'Fourie', matchedVariant: 'Bota' });
     expect(screen.getByText(/^née Fourie/).textContent).toBe(
       'née Fourie · Matches the spelling “Bota”'
@@ -66,7 +66,7 @@ describe('a picker row', () => {
     let clicked = 0;
 
     row({ onClick: () => (clicked += 1), state: 'active' });
-    screen.getByRole('button').click();
+    fireEvent.click(screen.getByRole('button'));
     expect(clicked).toBe(1);
     expect(screen.getByRole('button').dataset.state).toBe('active');
   });

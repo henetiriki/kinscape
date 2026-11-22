@@ -39,11 +39,14 @@ describe('PinFan', () => {
       'Birth, about 1850',
       'Marriage, in 1899',
     ]);
-    expect(
-      [...container.querySelectorAll('[data-event]')].map(
-        glyph => (glyph as HTMLElement).dataset.event
-      )
-    ).toEqual(['residence', 'birth', 'marriage']);
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the Event glyphs are aria-hidden SVGs with no role or text
+    const glyphs = [...container.querySelectorAll('[data-event]')];
+
+    expect(glyphs.map(glyph => (glyph as HTMLElement).dataset.event)).toEqual([
+      'residence',
+      'birth',
+      'marriage',
+    ]);
   });
 
   it('places the first Pin below the Place, then the others clockwise (#863 plan D4)', () => {
@@ -61,29 +64,30 @@ describe('PinFan', () => {
   it('joins the Pins of ring 1 to the Place, and draws no ring for one ring', () => {
     const { container } = render(<PinFan pins={PINS} />);
 
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
     expect(container.querySelectorAll('line')).toHaveLength(3);
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
     expect(container.querySelectorAll('circle')).toHaveLength(0);
   });
 
   it('draws each ring of a fan of more than one ring, and lines to ring 1 only', () => {
     const { container } = render(<PinFan pins={many(12)} />);
 
-    expect(
-      [...container.querySelectorAll('circle')].map(ring =>
-        ring.getAttribute('r')
-      )
-    ).toEqual(['56', '104']);
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
+    const rings = [...container.querySelectorAll('circle')];
+
+    expect(rings.map(ring => ring.getAttribute('r'))).toEqual(['56', '104']);
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the lines and rings are in an aria-hidden SVG with no role
     expect(container.querySelectorAll('line')).toHaveLength(7);
   });
 
   it('reaches 22px past the outer ring, so the pointer can cross to a Pin', () => {
     const { container } = render(<PinFan pins={many(12)} />);
 
-    expect(
-      (container.firstElementChild as HTMLElement).style.getPropertyValue(
-        '--reach'
-      )
-    ).toBe('126px');
+    // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
+    const fan = container.firstElementChild as HTMLElement;
+
+    expect(fan.style.getPropertyValue('--reach')).toBe('126px');
   });
 
   it('opens the Pin that is clicked', () => {
@@ -103,6 +107,7 @@ describe('PinFan', () => {
     );
 
     // The marker sits at the Place: over the lines and under the Pins.
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks the order of the Place box and its siblings, which have no role
     const place = screen.getByText('Marker').parentElement!;
 
     expect(place.previousElementSibling?.tagName.toLowerCase()).toBe('svg');

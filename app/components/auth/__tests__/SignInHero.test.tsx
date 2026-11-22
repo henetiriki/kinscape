@@ -18,6 +18,7 @@ const media = css.slice(css.indexOf('@media'));
 // NFR-06
 it('hides both drawings from assistive tech', () => {
   const { container } = render(<SignInHero />);
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the drawings are aria-hidden svgs with no role
   const art = [...container.querySelectorAll('svg')];
 
   expect(art.map(svg => svg.dataset.art)).toEqual(['wide', 'phone']);
@@ -30,15 +31,12 @@ it('keeps the headline, tagline and caption as text', () => {
   expect(screen.getByRole('heading', { level: 2 }).textContent).toBe(
     "Borders move.Places don't."
   );
-  expect(
-    screen.getByText(
-      'South Africa as it was on any date from 1652 to today, with your family where they were.'
-    )
-  ).toBeTruthy();
-  expect(
-    screen.getByText('Map date 1901-01-01 · borders as recorded')
-  ).toBeTruthy();
-  expect(screen.getByText('approximate')).toBeTruthy();
+  screen.getByText(
+    'South Africa as it was on any date from 1652 to today, with your family where they were.'
+  );
+  screen.getByText('Map date 1901-01-01 · borders as recorded');
+  screen.getByText('approximate');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the caption keys are aria-hidden spans with no role or text
   expect(container.querySelectorAll('span[aria-hidden="true"]')).toHaveLength(
     2
   );
@@ -52,15 +50,18 @@ it('draws the approximate line dashed and the recorded line solid', () => {
 // NFR-03
 it('refers to nothing outside the page', () => {
   const { container } = render(<SignInHero />);
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test reads the attributes of every element
   const refs = [...container.querySelectorAll('*')].flatMap(element =>
     [...element.attributes]
       .filter(({ name }) => ['href', 'src', 'xlink:href'].includes(name))
       .map(({ value }) => value)
   );
+  // eslint-disable-next-line testing-library/no-container -- the test reads the url() references in the markup
   const urls = [...container.innerHTML.matchAll(/url\(([^)]*)\)/g)].map(
     ([, value]) => value
   );
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- no query finds an img, image, use or script element
   expect(container.querySelector('img, image, use, script')).toBeNull();
   expect(refs).toEqual([]);
   expect(urls.length).toBeGreaterThan(0);
@@ -75,6 +76,7 @@ it('gives each hero its own filter and clip ids', () => {
       <SignInHero />
     </>
   );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test reads the id of every element
   const ids = [...container.querySelectorAll('[id]')].map(el => el.id);
 
   expect(ids).toHaveLength(6);

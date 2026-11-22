@@ -43,6 +43,7 @@ it('draws Person, Surname, Event type and Branch in that order', () => {
   show();
 
   expect(
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks the order of the labels and legends, and no query returns them
     [...document.querySelectorAll('label, legend')].map(
       node => node.textContent
     )
@@ -67,7 +68,7 @@ it('reports each change and shows only the values it is given', () => {
   expect(on.onEventToggle).toHaveBeenCalledWith('birth');
   expect(on.onSurnamesChange).toHaveBeenCalledWith([]);
   // Controlled: the chip stays until the caller changes `surnames`.
-  expect(screen.getByRole('button', { name: 'Remove Rossouw' })).toBeTruthy();
+  screen.getByRole('button', { name: 'Remove Rossouw' });
 });
 
 it('shows the Surname helper only when it is given', () => {

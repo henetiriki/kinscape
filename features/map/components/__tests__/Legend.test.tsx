@@ -11,34 +11,31 @@ const { map } = resolveTokens(rawTokens);
 it('names its heading and the four meanings, then the four Event glyphs', () => {
   const { container } = render(<Legend />);
 
+  screen.getByRole('heading', { level: 3, name: 'Reading the map' });
   expect(
-    screen.getByRole('heading', { level: 3, name: 'Reading the map' })
-  ).toBeTruthy();
-  expect(
-    [...container.querySelectorAll('span')]
+    screen
+      .getAllByText(/^(Approximate border|Border as recorded|Contested claim)$/)
       .map(row => row.textContent?.trim())
-      .filter(text =>
-        [
-          'Approximate border',
-          'Border as recorded',
-          'Contested claim',
-        ].includes(text ?? '')
-      )
   ).toEqual(['Border as recorded', 'Approximate border', 'Contested claim']);
-  expect(screen.getByText('Uncertain date (ABT, BEF, AFT…)')).toBeTruthy();
-  expect(
-    [...container.querySelectorAll('[data-event]')].map(
-      glyph => (glyph as HTMLElement).dataset.event
-    )
-  ).toEqual(['birth', 'residence', 'marriage', 'death']);
+  screen.getByText('Uncertain date (ABT, BEF, AFT…)');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the Event glyphs are aria-hidden SVGs with no role or text
+  const glyphs = [...container.querySelectorAll('[data-event]')];
+
+  expect(glyphs.map(glyph => (glyph as HTMLElement).dataset.event)).toEqual([
+    'birth',
+    'residence',
+    'marriage',
+    'death',
+  ]);
 });
 
 // NFR-06
 it('draws each Event glyph before its name, with no glyph character', () => {
   const { container } = render(<Legend />);
-  const rows = [...container.querySelectorAll('[data-event]')].map(
-    glyph => glyph.parentElement!
-  );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the Event glyphs are aria-hidden SVGs with no role or text
+  const glyphs = [...container.querySelectorAll('[data-event]')];
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that each glyph's row starts with the glyph
+  const rows = glyphs.map(glyph => glyph.parentElement!);
 
   expect(rows.map(row => row.textContent?.trim())).toEqual([
     'Birth',
@@ -55,13 +52,16 @@ it('draws each Event glyph before its name, with no glyph character', () => {
 it('hides every swatch from assistive tech', () => {
   const { container } = render(<Legend />);
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatches, which no query returns
   expect(container.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(7);
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the test checks the aria-hidden swatches, which no query returns
   expect(container.querySelector('span[aria-hidden="true"]')).toBeTruthy();
 });
 
 // MAP-05, NFR-05
 it('reads each swatch value from the map tokens', () => {
   const { container } = render(<Legend />);
+  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
   const legend = container.firstElementChild as HTMLElement;
   const value = (name: string) => legend.style.getPropertyValue(name);
 

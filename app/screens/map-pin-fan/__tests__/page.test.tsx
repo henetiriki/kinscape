@@ -30,6 +30,7 @@ it('fans the three Pins of Example Farm out, with the pointer on Birth', async (
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, 'hover']);
   expect(
+    // eslint-disable-next-line testing-library/no-node-access -- the placed wrapper div has no role; the test checks its position
     (marker.parentElement!.parentElement!.parentElement as HTMLElement).style
       .left
   ).toBe('940px');
@@ -50,6 +51,7 @@ it('fans them out at the phone point with no hover look on a phone', async () =>
     NAMES.map(name => screen.getByRole('button', { name }).dataset.state)
   ).toEqual([undefined, undefined, undefined]);
   expect(
+    // eslint-disable-next-line testing-library/no-node-access -- the placed wrapper div has no role; the test checks its position
     (marker.parentElement!.parentElement!.parentElement as HTMLElement).style
       .left
   ).toBe('264px');

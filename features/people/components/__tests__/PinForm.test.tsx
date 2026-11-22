@@ -114,6 +114,7 @@ it('shows the precision, the sources and the notes after the address', async () 
     'Notes',
   ].map(name => screen.getByLabelText(name, { exact: true }));
   const order = Array.from(
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks the document order of the fields
     document.querySelectorAll('input, select, textarea')
   ).filter(node => labels.includes(node as HTMLElement));
 
@@ -202,7 +203,7 @@ it('shows an error and saves nothing for a precision outside the nine', async ()
   fireEvent.change(precision, { target: { value: 'planet' } });
   save();
 
-  expect(await screen.findByText('Choose a precision.')).toBeTruthy();
+  await screen.findByText('Choose a precision.');
   expect(precision.getAttribute('aria-invalid')).toBe('true');
   expect(onSave).not.toHaveBeenCalled();
 });
@@ -231,23 +232,20 @@ it('shows the loading look until the Persons arrive, with the Save button off', 
   expect(screen.getByRole('heading', { name: 'Add a pin' })).toBeInstanceOf(
     HTMLElement
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the loading bars are aria-hidden; no query reaches them
   expect(document.querySelectorAll('[data-bar]')).toHaveLength(10);
-  expect(
-    Array.from(document.querySelectorAll('label, span'))
-      .map(node => node.textContent)
-      .filter(text =>
-        [
-          'Address as recorded',
-          'Coordinates',
-          'Date',
-          'Event type',
-          'Notes',
-          'Person',
-          'Precision',
-          'Sources',
-        ].includes(text ?? '')
-      )
-  ).toHaveLength(8);
+  for (const name of [
+    'Address as recorded',
+    'Coordinates',
+    'Date',
+    'Event type',
+    'Notes',
+    'Person',
+    'Precision',
+    'Sources',
+  ]) {
+    screen.getByText(name, { selector: 'label, span' });
+  }
   expect(
     screen.getByRole('form', { name: 'Add a pin' }).getAttribute('aria-busy')
   ).toBe('true');

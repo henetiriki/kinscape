@@ -21,7 +21,7 @@ it('has a title head: named by its title, with the children and a Close', () => 
     screen.getByRole('heading', { hidden: true, name: 'Menu' }).id
   );
   expect(sheet().hasAttribute('open')).toBe(true);
-  expect(screen.getByText('Content')).toBeTruthy();
+  screen.getByText('Content');
   fireEvent.click(close());
   expect(onClose).toHaveBeenCalledTimes(1);
 });
@@ -35,7 +35,7 @@ it('has a title and subtitle head', () => {
     </Sheet>
   );
 
-  expect(screen.getByText('Under it')).toBeTruthy();
+  screen.getByText('Under it');
   fireEvent.click(close());
   expect(onClose).toHaveBeenCalledTimes(1);
 });

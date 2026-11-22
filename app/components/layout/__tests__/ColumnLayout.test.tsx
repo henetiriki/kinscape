@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
@@ -79,17 +79,23 @@ it('puts the header, the column and the action bar in slots, in that order', () 
       <p>body</p>
     </ColumnLayout>
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the frame div has no role; the test checks the order of its slots
   const root = container.firstElementChild as HTMLElement;
 
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks the tag order of the frame's children
   expect([...root.children].map(child => child.tagName)).toEqual([
     'DIV',
     'MAIN',
     'DIV',
   ]);
+
   expect(root.children[0]?.textContent).toBe('head');
-  expect(root.querySelector('main p')?.textContent).toBe('body');
+  expect(within(screen.getByRole('main')).getByText('body').textContent).toBe(
+    'body'
+  );
+  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it is in the last slot
   expect(root.children[2]?.querySelector('[data-spacer]')?.tagName).toBe('DIV');
-  expect(root.querySelector('button')?.textContent).toBe('Save');
+  expect(screen.getByRole('button').textContent).toBe('Save');
 });
 
 it('draws no action bar without actions, and sets data-column on the frame', () => {
@@ -98,10 +104,13 @@ it('draws no action bar without actions, and sets data-column on the frame', () 
       <p>body</p>
     </ColumnLayout>
   );
+  // eslint-disable-next-line testing-library/no-node-access -- the frame div has no role; the test checks its data-column
   const root = container.firstElementChild as HTMLElement;
 
   expect(root.dataset.column).toBe('notice');
+  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it does not exist
   expect(root.querySelector('[data-spacer]')).toBeNull();
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that the frame has no action bar slot
   expect(root.children).toHaveLength(2);
 });
 

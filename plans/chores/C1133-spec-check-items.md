@@ -94,3 +94,6 @@ Three run types load `spec-checks.md`: the refresh (`refresh.md`), a respond run
 - Spec checks in `/refine intent [idea]` and `/refine intent M<n>`.
 
 ## Deviations
+
+- Steps 2–4: the tech lead built them in a local session, because the CI run could not write `SKILL.md` and `chore.md`.
+- `docs/how-we-work.md` "Drafting with Claude": the model line links to the `SKILL.md` model step and does not name the commands. The skill is the one home of that rule.

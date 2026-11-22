@@ -96,6 +96,16 @@ The script reads `sub_issues` of the parent's number in this repo.
 
 **Answer: A** (@henetiriki)
 
+**D9 · A sibling with the issue's own number** · Decides: Tech lead
+
+The script skips a sibling whose number is the issue's number. A sibling in another repo can have the same number.
+
+- **A.** Skip a sibling only if its `html_url` is the issue's `url`. Cost: about three lines and one test.
+- **B.** No change. Cost: that sibling is not listed.
+- **Other:** your own.
+
+**Answer: A** (@henetiriki)
+
 ## Files that change
 
 | File                                         | New / changed | What                                                                                                           |
@@ -156,3 +166,5 @@ The script reads `sub_issues` of the parent's number in this repo.
 - D5 A, D6 A, D7 A and D8 A: the fix review adds them.
 - `ghList` in `scripts/gh-list.mts` replaces the copied list reader in `hand-back.mts` and `issue-status.mts`.
 - `run` calls `names`, `findExisting`, `readRelated` and `prepare`, so each function does one phase.
+- D8 A: the check adds `--untracked-files=no`, because a CI runner can add an untracked file and a switch commits none.
+- D9 A: the fix review adds it.

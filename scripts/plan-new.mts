@@ -18,9 +18,11 @@ type Issue = {
   body: string;
   issueType: { name: string } | null;
   title: string;
+  url: string;
 };
 type Item = {
   body?: string;
+  html_url?: string;
   number: number;
   state: string;
   title: string;
@@ -145,13 +147,12 @@ const findExisting = (
 };
 
 const related = (
-  number: string,
-  body: string,
+  issue: Issue,
   blocking: Item[],
   intent: Item | undefined,
   siblings: Item[]
 ): string[] => {
-  const mine = requirementIds(body);
+  const mine = requirementIds(issue.body);
 
   return [
     ...blocking.map(
@@ -167,8 +168,9 @@ const related = (
         ),
       ];
 
+      // A sibling in another repo can have the same number, so the URL tells the issue itself apart.
       return sibling.state === 'open' &&
-        sibling.number !== Number(number) &&
+        sibling.html_url !== issue.url &&
         shared.length > 0
         ? [`#${sibling.number} ${sibling.title} (shares ${shared.join(', ')})`]
         : [];
@@ -176,7 +178,7 @@ const related = (
   ];
 };
 
-const readRelated = (gh: Gh, number: string, body: string): string[] => {
+const readRelated = (gh: Gh, number: string, issue: Issue): string[] => {
   const blocking = ghList<Item>(gh, api(`${number}/dependencies/blocking`));
   let parent: Parent | undefined;
 
@@ -191,7 +193,7 @@ const readRelated = (gh: Gh, number: string, body: string): string[] => {
   const intent = parent?.type?.name === 'Intent' ? parent : undefined;
 
   if (intent === undefined) {
-    return related(number, body, blocking, undefined, []);
+    return related(issue, blocking, undefined, []);
   }
 
   // The parent can live in another repo, so read its sub-issues there.
@@ -206,12 +208,13 @@ const readRelated = (gh: Gh, number: string, body: string): string[] => {
     `${repo}/issues/${intent.number}/sub_issues`
   );
 
-  return related(number, body, blocking, intent, siblings);
+  return related(issue, blocking, intent, siblings);
 };
 
 const prepare = ({ files, git }: PlanNewDeps, n: Names, number: string) => {
   // A switch takes uncommitted changes onto the new branch, and the plan commit can then hold them.
-  if (git(['status', '--porcelain']) !== '') {
+  // Untracked files stay out of the check: a CI runner can add one, and a switch commits none.
+  if (git(['status', '--porcelain', '--untracked-files=no']) !== '') {
     throw new Stop(
       'The working tree has changes. Commit or stash them, then run plan:new again.'
     );
@@ -249,7 +252,7 @@ export const run = (args: string[], deps: PlanNewDeps): number => {
         'view',
         number,
         '--json',
-        'body,issueType,number,title',
+        'body,issueType,number,title,url',
       ])
     ) as Issue;
     const asked = names(issue, number, slug);
@@ -263,7 +266,7 @@ export const run = (args: string[], deps: PlanNewDeps): number => {
     console.log(`Branch: ${n.branch}`);
     console.log(`Plan PR title: ${n.prTitle}`);
 
-    const lines = readRelated(deps.gh, number, issue.body);
+    const lines = readRelated(deps.gh, number, issue);
 
     console.log(
       lines.length === 0

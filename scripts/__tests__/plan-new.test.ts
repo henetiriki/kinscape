@@ -13,9 +13,16 @@ type Parent = {
   repository_url?: string;
   type?: { name: string };
 } & Related;
-type Related = { body?: string; number: number; state: string; title: string };
+type Related = {
+  body?: string;
+  html_url?: string;
+  number: number;
+  state: string;
+  title: string;
+};
 
 const HOME = 'https://api.github.com/repos/owner/home';
+const SELF = 'https://github.com/owner/home/issues/7';
 const FOLDERS = { Bug: 'plans/bugs', Chore: 'plans/chores', Spec: 'plans' };
 const PREFIXES = { Bug: 'bug', Chore: 'chore', Spec: 'spec' };
 
@@ -51,6 +58,7 @@ const setup = (
         issueType: issue.type === null ? null : { name: type },
         number: 7,
         title: issue.title,
+        url: SELF,
       });
     }
 
@@ -115,7 +123,7 @@ const setup = (
         return options.remote ?? '';
       }
 
-      if (args.join(' ') === 'status --porcelain') {
+      if (args.join(' ') === 'status --porcelain --untracked-files=no') {
         return options.dirty ?? '';
       }
 
@@ -227,7 +235,13 @@ describe('plan-new', () => {
           { body: body('PIN-02'), number: 20, state: 'open', title: 'Shares' },
           { body: body('MAP-01'), number: 21, state: 'open', title: 'Other' },
           { body: body('PIN-01'), number: 22, state: 'closed', title: 'Done' },
-          { body: body('PIN-01'), number: 7, state: 'open', title: 'Self' },
+          {
+            body: body('PIN-01'),
+            html_url: SELF,
+            number: 7,
+            state: 'open',
+            title: 'Self',
+          },
           { body: 'PIN-09 only', number: 23, state: 'open', title: 'No sect' },
           { number: 24, state: 'open', title: 'No body' },
         ],
@@ -240,6 +254,29 @@ describe('plan-new', () => {
     expect(out).not.toContain('#22');
     expect(out).not.toContain('#23');
     expect(out).not.toContain('#7 ');
+  });
+
+  it('lists a sibling in another repo that has the same number', () => {
+    const { deps } = setup(
+      {
+        body: '### Requirement IDs covered\n\nPIN-01',
+        title: 'Spec: M1.1 A',
+      },
+      {
+        parent: intent,
+        siblings: [
+          {
+            body: '### Requirement IDs covered\n\nPIN-01',
+            html_url: 'https://github.com/other/place/issues/7',
+            number: 7,
+            state: 'open',
+            title: 'Twin',
+          },
+        ],
+      }
+    );
+
+    expect(go(['7', 'a'], deps).out).toContain('#7 Twin (shares PIN-01)');
   });
 
   it("reads the siblings from the parent's own repo", () => {

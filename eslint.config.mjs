@@ -5,6 +5,7 @@ import prettier from 'eslint-config-prettier/flat';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import packageJson from 'eslint-plugin-package-json';
 import perfectionist from 'eslint-plugin-perfectionist';
+import testingLibrary from 'eslint-plugin-testing-library';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 import { plugin as layers } from '#ks/scripts/layers.mts';
@@ -239,6 +240,15 @@ export default defineConfig([
         ...BASE_SYNTAX,
         ...envReads(TEST_ONLY_VARIABLES),
       ],
+    },
+  },
+  {
+    // A Testing Library query finds an element as a user does; e2e/ uses Playwright locators.
+    ...testingLibrary.configs['flat/react'],
+    files: ['**/__tests__/**'],
+    rules: {
+      ...testingLibrary.configs['flat/react'].rules,
+      'testing-library/prefer-implicit-assert': 'error',
     },
   },
   {

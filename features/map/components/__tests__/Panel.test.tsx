@@ -36,10 +36,8 @@ it('shows a badge on the Filters tab and calls onSelect', () => {
 it('is an aside with a tablist and a scrolling tabpanel body', () => {
   const { rerender } = show();
 
-  expect(screen.getByRole('complementary', { name: 'Map panel' })).toBeTruthy();
-  expect(
-    screen.getByRole('tablist', { name: 'Map panel sections' })
-  ).toBeTruthy();
+  screen.getByRole('complementary', { name: 'Map panel' });
+  screen.getByRole('tablist', { name: 'Map panel sections' });
 
   const body = screen.getByRole('tabpanel');
 
@@ -62,7 +60,9 @@ it('puts the end node inside the tabpanel, after the children', () => {
   const end = screen.getByText('Legend');
 
   expect(body.textContent).toBe('RowsLegend');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that the end node is the last block in the tabpanel
   expect(body.lastElementChild!.contains(end)).toBe(true);
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that the tabpanel is the last child of the aside
   expect(screen.getByRole('complementary').lastElementChild).toBe(body);
 });
 
@@ -89,5 +89,6 @@ it('puts a Clear filters button inside the tabpanel, after the fields', () => {
 
 it('has no end block without an end node', () => {
   show();
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks that the tabpanel has no end block, which has no role
   expect(screen.getByRole('tabpanel').children).toHaveLength(0);
 });

@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render, within } from '@testing-library/react';
 import { createRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -151,6 +151,7 @@ describe('MapView', () => {
       expect.objectContaining({
         attributionControl: false,
         bounds: FIRST_VIEW,
+        // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the MapLibre container is a div with no role
         container: container.querySelector('.map'),
         maxBounds: MAX_BOUNDS,
         maxZoom: 10,
@@ -531,7 +532,9 @@ describe('MapView', () => {
         const onOpenPin = vi.fn();
 
         view({ layers: [marking], onOpenPin });
-        maplibre.markers[0].element.querySelector('button')!.click();
+        fireEvent.click(
+          within(maplibre.markers[0].element).getByRole('button')
+        );
 
         expect(onOpenPin).toHaveBeenCalledExactlyOnceWith('p2');
       });

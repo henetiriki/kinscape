@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
 
 import { SearchBar } from '@ks/features/map/components/SearchBar';
@@ -11,20 +11,21 @@ it('wraps a search input named "Search people and places" in a search form', () 
     name: 'Search people and places',
   });
 
-  expect(screen.getByRole('search')).toBeTruthy();
+  const form = screen.getByRole('search');
+
   expect(input.getAttribute('type')).toBe('search');
   expect(input.getAttribute('aria-keyshortcuts')).toBe('/');
-  expect(
-    screen.getByRole('search').querySelector('[data-icon="search"]')
-  ).toBeTruthy();
+  // eslint-disable-next-line testing-library/no-node-access -- the search icon is an aria-hidden SVG with no role or text
+  expect(form.querySelector('[data-icon="search"]')).toBeTruthy();
 });
 
 it('draws the bar as the Wordmark, a divider and the field, with a decorative icon', () => {
   const { container } = render(<SearchBar form='bar' />);
   const bar = screen.getByRole('search');
 
-  expect(bar.querySelector('img')!.getAttribute('alt')).toBe('');
-  expect(screen.getByText('KinScape')).toBeTruthy();
+  expect(within(bar).getByRole('presentation').getAttribute('alt')).toBe('');
+  screen.getByText('KinScape');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the divider is an empty aria-hidden span with no role
   expect(container.querySelector('[aria-hidden="true"]:empty')).toBeTruthy();
 });
 
@@ -33,14 +34,14 @@ it('draws the pill as the named icon, the bare field and the account slot', () =
     <SearchBar account={<button type='button'>Account</button>} form='pill' />
   );
 
-  expect(screen.getByRole('img', { name: 'KinScape' })).toBeTruthy();
+  screen.getByRole('img', { name: 'KinScape' });
   expect(screen.queryByText('KinScape')).toBeNull();
-  expect(screen.getByRole('button', { name: 'Account' })).toBeTruthy();
+  screen.getByRole('button', { name: 'Account' });
   expect(
     screen
       .getByRole('searchbox', { name: 'Search people and places' })
-      .getAttribute('aria-keyshortcuts')
-  ).toBeNull();
+      .hasAttribute('aria-keyshortcuts')
+  ).toBe(false);
 });
 
 it('does not submit the page', () => {
@@ -54,12 +55,14 @@ it('focuses the bar on "/" and leaves the pill alone', () => {
 
   fireEvent.keyDown(document.body, { key: '/' });
 
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(screen.getByRole('searchbox'));
 
   unmount();
   render(<SearchBar form='pill' />);
   fireEvent.keyDown(document.body, { key: '/' });
 
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(document.body);
 });
 
@@ -79,10 +82,12 @@ it.each(['bar', 'pill'] as const)(
     expect(fireEvent.keyDown(input, { key: 'Escape' })).toBe(false);
     expect(input.value).toBe('');
     expect(onChange).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
     expect(document.activeElement).toBe(input);
 
     fireEvent.keyDown(input, { key: 'Escape' });
 
+    // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
     expect(document.activeElement).not.toBe(input);
   }
 );
@@ -96,6 +101,7 @@ it('ignores other keys', () => {
   fireEvent.keyDown(input, { key: 'a' });
 
   expect(input.value).toBe('Kimberley');
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(input);
 });
 
@@ -109,5 +115,6 @@ it('lets the first of two bars take "/"', () => {
 
   fireEvent.keyDown(document.body, { key: '/' });
 
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(screen.getAllByRole('searchbox')[0]);
 });

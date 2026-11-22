@@ -22,8 +22,8 @@ it('names the three zoom buttons and calls their handlers', () => {
   expect(
     screen
       .getByRole('button', { name: 'Zoom in' })
-      .getAttribute('aria-disabled')
-  ).toBeNull();
+      .hasAttribute('aria-disabled')
+  ).toBe(false);
 });
 
 it('marks Zoom out aria-disabled at the minimum: still focusable, no call', () => {
@@ -38,6 +38,7 @@ it('marks Zoom out aria-disabled at the minimum: still focusable, no call', () =
 
   expect(out.getAttribute('aria-disabled')).toBe('true');
   expect(out.hasAttribute('disabled')).toBe(false);
+  // eslint-disable-next-line testing-library/no-node-access -- the test checks focus, and no query returns the focused node
   expect(document.activeElement).toBe(out);
   expect(onZoomOut).not.toHaveBeenCalled();
 

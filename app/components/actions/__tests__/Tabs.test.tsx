@@ -63,18 +63,15 @@ it('selects and focuses the next or previous tab on Left and Right, wrapping at 
 
   fireEvent.keyDown(layers, { key: 'ArrowRight' });
   expect(onSelect).toHaveBeenLastCalledWith('filters');
-  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
-  expect(document.activeElement).toBe(filters);
+  expect(filters).toHaveFocus();
 
   fireEvent.keyDown(layers, { key: 'ArrowLeft' });
   expect(onSelect).toHaveBeenLastCalledWith('more');
-  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
-  expect(document.activeElement).toBe(more);
+  expect(more).toHaveFocus();
 
   fireEvent.keyDown(more, { key: 'ArrowRight' });
   expect(onSelect).toHaveBeenLastCalledWith('layers');
-  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
-  expect(document.activeElement).toBe(layers);
+  expect(layers).toHaveFocus();
 });
 
 it('ignores other keys, and arrows work without a handler', () => {
@@ -83,9 +80,7 @@ it('ignores other keys, and arrows work without a handler', () => {
   const [layers, filters] = screen.getAllByRole('tab');
 
   fireEvent.keyDown(layers, { key: 'a' });
-  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
-  expect(document.activeElement).not.toBe(filters);
+  expect(filters).not.toHaveFocus();
   fireEvent.keyDown(layers, { key: 'ArrowRight' });
-  // eslint-disable-next-line testing-library/no-node-access -- no query finds the focused element; the test checks focus
-  expect(document.activeElement).toBe(filters);
+  expect(filters).toHaveFocus();
 });

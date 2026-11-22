@@ -22,6 +22,7 @@ it('removes a chip with its × and moves focus to the input', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Remove Rossouw' }));
 
   expect(chips()).toEqual(['Remove Naidoo']);
+  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
   expect(document.activeElement).toBe(screen.getByLabelText('Surname'));
   expect(onChange).toHaveBeenCalledWith(['Naidoo']);
 });
@@ -111,8 +112,8 @@ it('sets no aria-invalid without an error', () => {
   render(<TokenField label='Spelling variants' />);
 
   expect(
-    screen.getByLabelText('Spelling variants').getAttribute('aria-invalid')
-  ).toBeNull();
+    screen.getByLabelText('Spelling variants').hasAttribute('aria-invalid')
+  ).toBe(false);
 });
 
 it('disables the input and the ×, and shows a state and placeholder', () => {
@@ -133,6 +134,6 @@ it('disables the input and the ×, and shows a state and placeholder', () => {
     (screen.getByRole('button', { name: 'Remove A' }) as HTMLButtonElement)
       .disabled
   ).toBe(true);
-  expect(screen.getByPlaceholderText('Add a surname')).toBeTruthy();
+  screen.getByPlaceholderText('Add a surname');
   expect(screen.getByRole('group').dataset.state).toBe('focus');
 });

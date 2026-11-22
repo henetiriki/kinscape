@@ -29,8 +29,10 @@ it('places each slot it is given, with the map as children', () => {
     </MapLayout>
   );
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the canvas has no role; the test checks that the map child renders
   expect(container.querySelector('canvas')).toBeTruthy();
   expect(
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot divs have no role; the test checks their order
     [...container.querySelectorAll('[data-slot]')].map(
       slot => `${(slot as HTMLElement).dataset.slot}:${slot.textContent}`
     )
@@ -50,6 +52,7 @@ it('places each slot it is given, with the map as children', () => {
 it('top-aligns the overlay only when asked', () => {
   const { container, rerender } = render(<MapLayout overlay='o' search='s' />);
   const at = () =>
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot divs have no role; the test checks their data-at
     [...container.querySelectorAll('[data-slot]')].map(slot =>
       slot.getAttribute('data-at')
     );
@@ -65,6 +68,7 @@ it('top-aligns the overlay only when asked', () => {
 it('draws no box for a slot left empty', () => {
   const { container } = render(<MapLayout search='s' />);
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot divs have no role; the test checks how many exist
   expect(container.querySelectorAll('[data-slot]')).toHaveLength(1);
 });
 

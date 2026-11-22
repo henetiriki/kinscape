@@ -41,10 +41,12 @@ it('can be disabled and shows a state', () => {
 
 it('draws a 44 row with size m', () => {
   render(<CheckboxField label='Pins' size='m' />);
-  expect(
-    (screen.getByRole('checkbox').closest('[data-size]') as HTMLElement).dataset
-      .size
-  ).toBe('m');
+
+  const box = screen.getByRole('checkbox');
+  // eslint-disable-next-line testing-library/no-node-access -- the row div has no role; the test checks its data-size
+  const row = box.closest('[data-size]') as HTMLElement;
+
+  expect(row.dataset.size).toBe('m');
 });
 
 it('draws the plain sign-in form, still named by its label', () => {
@@ -54,7 +56,8 @@ it('draws the plain sign-in form, still named by its label', () => {
     name: 'Keep me signed in on this device',
   });
 
-  expect((box.closest('[data-plain]') as HTMLElement).dataset.plain).toBe(
-    'true'
-  );
+  // eslint-disable-next-line testing-library/no-node-access -- the row div has no role; the test checks its data-plain
+  const row = box.closest('[data-plain]') as HTMLElement;
+
+  expect(row.dataset.plain).toBe('true');
 });

@@ -46,7 +46,7 @@ it('names the input by its label and links the helper text', () => {
 it('names a field whose label is hidden', () => {
   render(<TextField hideLabel label='Search places' />);
 
-  expect(screen.getByRole('textbox', { name: 'Search places' })).toBeTruthy();
+  screen.getByRole('textbox', { name: 'Search places' });
   expect(screen.queryByText('Search places')).toBeNull();
 });
 
@@ -66,6 +66,7 @@ it('shows an error in place of the helper text, with an icon and aria-invalid', 
   expect(screen.queryByText('Helper')).toBeNull();
   expect(input.getAttribute('aria-invalid')).toBe('true');
   expect(input.getAttribute('aria-describedby')).toBe(alert.id);
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the error icon is an aria-hidden svg; no query reaches it
   expect(container.querySelector('[data-icon="error"]')).not.toBeNull();
 });
 
@@ -78,6 +79,7 @@ it('marks a field without a message of its own, and keeps the caller’s descrip
 
   expect(input.getAttribute('aria-describedby')).toBe('elsewhere');
   expect(input.getAttribute('aria-invalid')).toBeNull();
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the warning icon is an aria-hidden svg; no query reaches it
   expect(container.querySelector('[data-icon="warning"]')).not.toBeNull();
 });
 
@@ -86,11 +88,12 @@ it('takes a state for its component card and passes input props through', () => 
     <TextField date disabled label='Date' placeholder='1901' state='hover' />
   );
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the box span has no role; the test checks its data-state
   expect(container.querySelector('[data-state="hover"]')).not.toBeNull();
   expect(
     (screen.getByRole('textbox', { name: 'Date' }) as HTMLInputElement).disabled
   ).toBe(true);
-  expect(screen.getByPlaceholderText('1901')).toBeTruthy();
+  screen.getByPlaceholderText('1901');
 });
 
 it('switches a password field between hidden and shown', () => {
@@ -147,6 +150,7 @@ it('takes an email type and the large size', () => {
   expect((screen.getByLabelText('Email') as HTMLInputElement).type).toBe(
     'email'
   );
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the box span has no role; the test checks its data-size
   expect(container.querySelector('[data-size="l"]')).not.toBeNull();
 });
 
@@ -158,10 +162,9 @@ it('shows a search field with its icon and a hidden key hint', () => {
   const input = screen.getByRole('searchbox', { name: 'Search' });
 
   expect(input.getAttribute('aria-keyshortcuts')).toBe('/');
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the search icon is an aria-hidden svg; no query reaches it
   expect(container.querySelector('[data-icon="search"]')).not.toBeNull();
-  expect(container.querySelector('kbd')!.getAttribute('aria-hidden')).toBe(
-    'true'
-  );
+  expect(screen.getByText('/').getAttribute('aria-hidden')).toBe('true');
 });
 
 it('shows no key hint on a search field without a shortcut', () => {
@@ -169,6 +172,7 @@ it('shows no key hint on a search field without a shortcut', () => {
     <TextField hideLabel label='Search' type='search' />
   );
 
+  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the hint has no text without a shortcut; the test checks that no kbd exists
   expect(container.querySelector('kbd')).toBeNull();
 });
 
@@ -187,18 +191,22 @@ it('focuses the field on its shortcut unless a text input has focus', () => {
   fireEvent.keyDown(document.body, { ctrlKey: true, key: '/' });
   fireEvent.keyDown(document.body, { altKey: true, key: '/' });
   fireEvent.keyDown(document.body, { key: '/', metaKey: true });
+  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
   expect(document.activeElement).not.toBe(search);
 
   // A handled key is cancelled so the "/" is not typed into the field.
   expect(fireEvent.keyDown(document.body, { key: '/' })).toBe(false);
+  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
   expect(document.activeElement).toBe(search);
 
   search.blur();
   fireEvent.keyDown(document, { key: '/' });
+  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
   expect(document.activeElement).toBe(search);
 
   search.blur();
   unmount();
   fireEvent.keyDown(document.body, { key: '/' });
+  // eslint-disable-next-line testing-library/no-node-access -- no query reads focus; the test checks which element has it
   expect(document.activeElement).not.toBe(search);
 });

@@ -1,7 +1,7 @@
 # Plan: C1133: Check each part of the body in the Spec checks, and run them in /refine on Opus
 
 - **Spec:** #1133
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -28,7 +28,7 @@ Three run types load `spec-checks.md`: the refresh (`refresh.md`), a respond run
 - **B.** Only a refresh comment and `/refine`. `spec-checks.md` says that a respond run and a build write only the four check lines. Cost: one more sentence in `spec-checks.md`.
 - **Other:** your own.
 
-Recommended: A, because a respond run or a reword edits a body and can add a clash, and the item list shows each part that the run checked. B loses little: the next plan run lists the items.
+**Answer: B** (@henetiriki)
 
 **D2 · What a mismatch line says in /refine** · Decides: Tech lead
 
@@ -38,7 +38,7 @@ Recommended: A, because a respond run or a reword edits a body and can add a cla
 - **B.** `<part> <n>: mismatch`, then the question. Cost: the same clause, and the PO can't see which question answers which line.
 - **Other:** your own.
 
-Recommended: A, because the Method already numbers each question, and the line then points to the answer.
+**Answer: A** (@henetiriki)
 
 ## Alternatives considered
 

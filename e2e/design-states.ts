@@ -21,6 +21,21 @@ const openPinForm = async (page: Page) => {
     .waitFor();
 };
 
+/** A field of the add panel. The map has its own "Precision" and "Sources" controls. */
+const panelField = (page: Page, name: string) =>
+  page
+    .getByRole('form', { name: 'Add a pin' })
+    .getByLabel(name, { exact: true });
+
+/**
+ * Scrolls the panel body and each text area to the top. A fill puts the caret at the end and the
+ * browser scrolls to it, but the boards show the start.
+ */
+const showTop = (page: Page) =>
+  page.getByRole('form', { name: 'Add a pin' }).evaluate(form => {
+    for (const node of form.querySelectorAll('*')) node.scrollTop = 0;
+  });
+
 /** What the boards `pin-form`, `pin-form-saving` and `pin-form-save-failed` hold in the fields. */
 const fillPinForm = async (page: Page) => {
   await page.getByRole('combobox', { name: 'Person' }).fill('Maria Magdalena');
@@ -35,8 +50,12 @@ const fillPinForm = async (page: Page) => {
   await page
     .getByLabel('Address as recorded')
     .fill('Farm Example, district Example');
+  await panelField(page, 'Precision').selectOption('farm');
+  await panelField(page, 'Sources').fill('Example parish register, 1890.');
+  await panelField(page, 'Notes').fill('Lived here with the Example family.');
+  await showTop(page);
   // The boards show no focus border.
-  await page.getByLabel('Address as recorded').blur();
+  await panelField(page, 'Notes').blur();
 };
 
 /** Fills the panel and chooses "Save". The server action then never answers (`hold`) or fails as a network failure does (`abort`). */
@@ -98,7 +117,7 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await fillPinForm(page);
   },
   'pin-form-empty': openPinForm,
-  // The board's coordinates are in degrees, minutes and seconds, its date has the wrong format and its address has 501 characters.
+  // The board's coordinates are in degrees, minutes and seconds, and its date has the wrong format. Its address has 501 characters, and its sources and notes have 10,001.
   'pin-form-errors': async page => {
     await openPinForm(page);
     await page.getByLabel('Date', { exact: true }).fill('14/03/1850');
@@ -106,8 +125,16 @@ export const states: Record<string, (page: Page) => Promise<void>> = {
     await page
       .getByLabel('Address as recorded')
       .fill('Farm Example, district Example, '.repeat(16).slice(0, 501));
+    const long = 'Example text that runs past the end of the field. '
+      .repeat(201)
+      .slice(0, 10_001);
+
+    await panelField(page, 'Sources').fill(long);
+    await panelField(page, 'Notes').fill(long);
     await page.getByRole('button', { name: 'Save' }).click();
     await page.getByText('Choose a person.').waitFor();
+    await showTop(page);
+    await page.getByRole('button', { name: 'Save' }).blur();
   },
   // The Researcher Tree has no Person.
   'pin-form-no-people': async page => {

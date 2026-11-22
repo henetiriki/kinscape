@@ -71,6 +71,7 @@ export const CONTROLS: Control[] = [
   { name: 'NoticeCard', path: 'app/components/feedback/NoticeCard.tsx' },
   { name: 'ProgressBar', path: 'app/components/feedback/ProgressBar.tsx' },
   { name: 'LoadingBar', path: 'app/components/feedback/LoadingBar.tsx' },
+  { name: 'LoadingField', path: 'app/components/feedback/LoadingField.tsx' },
   { name: 'Avatar', path: 'app/components/foundation/Avatar.tsx' },
   { name: 'Divider', path: 'app/components/foundation/Divider.tsx' },
   { name: 'Icon', path: 'app/components/foundation/Icon.tsx' },

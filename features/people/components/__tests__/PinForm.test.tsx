@@ -2,9 +2,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { QueryProvider } from '@ks/app/QueryProvider';
-import { EVENT_OPTIONS } from '@ks/features/people/components/pin-messages.ts';
+import {
+  EVENT_OPTIONS,
+  PRECISION_OPTIONS,
+} from '@ks/features/people/components/pin-messages.ts';
 import { PinForm } from '@ks/features/people/components/PinForm';
 import { EVENT_TYPES } from '@ks/lib/domain/pins/schemas.mts';
+import { PLACE_PRECISIONS } from '@ks/lib/domain/places/schemas.mts';
 
 // PIN-01, PIN-02, PIN-04, NFR-03. Data is synthetic.
 const PERSON = {
@@ -88,6 +92,134 @@ it('lists the Event types of the schema, after the empty choice', () => {
   });
 });
 
+it('lists the Place precisions of the schema, with no empty choice', () => {
+  expect(PRECISION_OPTIONS.map(({ value }) => value).sort()).toEqual(
+    [...PLACE_PRECISIONS].sort()
+  );
+  expect(PRECISION_OPTIONS).toHaveLength(9);
+});
+
+it('shows the precision, the sources and the notes after the address', async () => {
+  setup();
+  await ready();
+
+  const labels = [
+    'Person',
+    'Event type',
+    'Date',
+    'Coordinates',
+    'Address as recorded',
+    'Precision',
+    'Sources',
+    'Notes',
+  ].map(name => screen.getByLabelText(name, { exact: true }));
+  const order = Array.from(
+    document.querySelectorAll('input, select, textarea')
+  ).filter(node => labels.includes(node as HTMLElement));
+
+  expect(order).toEqual(labels);
+  expect((screen.getByLabelText('Precision') as HTMLSelectElement).value).toBe(
+    'approximate'
+  );
+  expect(
+    (screen.getByLabelText('Precision') as HTMLSelectElement).options
+  ).toHaveLength(9);
+  expect((screen.getByLabelText('Sources') as HTMLTextAreaElement).rows).toBe(
+    2
+  );
+  expect((screen.getByLabelText('Notes') as HTMLTextAreaElement).rows).toBe(2);
+});
+
+it('saves the precision, the sources and the notes', async () => {
+  const { onSave } = setup();
+
+  await fill();
+  fireEvent.change(screen.getByLabelText('Precision'), {
+    target: { value: 'farm' },
+  });
+  fireEvent.change(screen.getByLabelText('Sources'), {
+    target: { value: 'Deeds office, 1890' },
+  });
+  fireEvent.change(screen.getByLabelText('Notes'), {
+    target: { value: 'Moved here after the war.' },
+  });
+  save();
+
+  await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+  expect(vi.mocked(onSave).mock.calls[0][0]).toMatchObject({
+    notes: 'Moved here after the war.',
+    place: { kind: 'new', precision: 'farm' },
+    sources: 'Deeds office, 1890',
+  });
+});
+
+it('saves "approximate" when the precision is left alone', async () => {
+  const { onSave } = setup();
+
+  await fill();
+  save();
+
+  await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+  expect(vi.mocked(onSave).mock.calls[0][0]).toMatchObject({
+    notes: '',
+    place: { precision: 'approximate' },
+    sources: '',
+  });
+});
+
+it('shows an error and saves nothing for sources or notes over 10,000 characters', async () => {
+  const { onSave } = setup();
+
+  await fill();
+  fireEvent.change(screen.getByLabelText('Sources'), {
+    target: { value: 'x'.repeat(10_001) },
+  });
+  fireEvent.change(screen.getByLabelText('Notes'), {
+    target: { value: 'y'.repeat(10_001) },
+  });
+  save();
+
+  expect(
+    await screen.findAllByText('Use 10,000 characters or fewer.')
+  ).toHaveLength(2);
+  expect(screen.getByLabelText('Sources').getAttribute('aria-invalid')).toBe(
+    'true'
+  );
+  expect(screen.getByLabelText('Notes').getAttribute('aria-invalid')).toBe(
+    'true'
+  );
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('shows an error and saves nothing for a precision outside the nine', async () => {
+  const { onSave } = setup();
+
+  await fill();
+
+  const precision = screen.getByLabelText('Precision') as HTMLSelectElement;
+
+  precision.add(new Option('Planet', 'planet'));
+  fireEvent.change(precision, { target: { value: 'planet' } });
+  save();
+
+  expect(await screen.findByText('Choose a precision.')).toBeTruthy();
+  expect(precision.getAttribute('aria-invalid')).toBe('true');
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+it('saves nothing when "Cancel" follows filled fields', async () => {
+  const { onCancel, onSave } = setup();
+
+  await fill();
+  fireEvent.change(screen.getByLabelText('Sources'), {
+    target: { value: 'Deeds office' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+  expect(onCancel).toHaveBeenCalledTimes(1);
+  expect(onSave).not.toHaveBeenCalled();
+});
+
 it('shows the loading look until the Persons arrive, with the Save button off', async () => {
   fetchStub.mockImplementation(() => new Promise(() => {}));
   render(
@@ -99,7 +231,23 @@ it('shows the loading look until the Persons arrive, with the Save button off', 
   expect(screen.getByRole('heading', { name: 'Add a pin' })).toBeInstanceOf(
     HTMLElement
   );
-  expect(document.querySelectorAll('[data-bar]')).toHaveLength(5);
+  expect(document.querySelectorAll('[data-bar]')).toHaveLength(10);
+  expect(
+    Array.from(document.querySelectorAll('label, span'))
+      .map(node => node.textContent)
+      .filter(text =>
+        [
+          'Address as recorded',
+          'Coordinates',
+          'Date',
+          'Event type',
+          'Notes',
+          'Person',
+          'Precision',
+          'Sources',
+        ].includes(text ?? '')
+      )
+  ).toHaveLength(8);
   expect(
     screen.getByRole('form', { name: 'Add a pin' }).getAttribute('aria-busy')
   ).toBe('true');
@@ -216,6 +364,15 @@ it('sends the checked input to onSave, then calls onSaved', async () => {
   const { onSave, onSaved } = setup();
 
   await fill();
+  fireEvent.change(screen.getByLabelText('Precision'), {
+    target: { value: 'farm' },
+  });
+  fireEvent.change(screen.getByLabelText('Sources'), {
+    target: { value: 'Deeds office, 1890' },
+  });
+  fireEvent.change(screen.getByLabelText('Notes'), {
+    target: { value: 'Moved here after the war.' },
+  });
   save();
 
   await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
@@ -237,8 +394,15 @@ it('sends the checked input to onSave, then calls onSaved', async () => {
     address: 'Farm Example, district Example',
     date: 'FROM 1840 TO 1855',
     eventType: 'residence',
+    notes: 'Moved here after the war.',
     personId: PERSON.id,
-    place: { kind: 'new', latitude: -33.93, longitude: 18.42 },
+    place: {
+      kind: 'new',
+      latitude: -33.93,
+      longitude: 18.42,
+      precision: 'farm',
+    },
+    sources: 'Deeds office, 1890',
   });
   expect(input.id).toMatch(/^[0-9a-f-]{36}$/);
   expect(input.place.id).toMatch(/^[0-9a-f-]{36}$/);

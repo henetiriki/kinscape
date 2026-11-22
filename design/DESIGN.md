@@ -118,7 +118,7 @@ The design system README does not include this section.
 | `foundation` | Text, Icon, Surface, Divider, focus, Avatar, Wordmark, PageHeader                                                                              |
 | `actions`    | Button, IconButton, TextLink, ArrowLink, PersonRow, RelationshipRow, PickerRow, Chip, ChipGroup, Segmented, Tabs, KeyHint, ActionBar, DateText |
 | `forms`      | TextField, TextAreaField, SelectField, TokenField, Checkbox, CheckboxField                                                                     |
-| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, LoadingBar, Callout                                                                             |
+| `feedback`   | Alert, Banner, Toast, NoticeCard, ProgressBar, LoadingBar, LoadingField, Callout                                                               |
 | `overlays`   | Modal, Dialog, Sheet, BottomSheet, Menu, Popup, PinPopup, PlacedAt                                                                             |
 | `layout`     | ColumnLayout, SignInLayout, MapLayout                                                                                                          |
 | `auth`       | What only sign-in uses: SignInHero, SignInForm                                                                                                 |
@@ -328,7 +328,7 @@ The FuzzyDateField component card shows it. It is a label, a 44px input and one 
 
 ### Loading bar
 
-The LoadingBar card shows a 20px `--line` bar.
+The LoadingBar card shows a 20px `--line` bar. The LoadingField card shows a label over one or two bars.
 
 ## Attributions
 

@@ -1065,6 +1065,19 @@ export declare const LoadingBar: ({ width }: {
 }) => import("react").JSX.Element;
 export type LoadingBarProps = Parameters<typeof LoadingBar>[0];
 
+/**
+ * A field that is still loading: its label over one bar, or over two bars for a text area. Two bars
+ * are 68px high, as `pin-edit-loading` draws them. A text area of two rows is 66px high, so the form
+ * moves when the field replaces them. The form that holds it sets `aria-busy`, so a screen reader
+ * skips the bars.
+ */
+export declare const LoadingField: ({ label, widths, }: {
+    label: string;
+    /** The width of each bar, top to bottom. One bar stands for an input, two for a text area. */
+    widths: readonly [number, number] | readonly [number];
+}) => import("react").JSX.Element;
+export type LoadingFieldProps = Parameters<typeof LoadingField>[0];
+
 /** The 44 round button that opens the account Menu; `expanded` is its open look. */
 export declare const Avatar: ({ expanded, initial, state, ...rest }: {
     expanded?: boolean;

@@ -3,7 +3,8 @@ import type { PinFieldErrors } from '@ks/lib/domain/pins/types.ts';
 import type { CoordinateError } from '@ks/lib/domain/places/types.ts';
 
 import { fuzzyDateMessage } from '@ks/lib/domain/dates/fuzzy-date-text.mts';
-import { MAX_ADDRESS } from '@ks/lib/domain/pins/schemas.mts';
+import { MAX_NOTES } from '@ks/lib/domain/persons/schemas.mts';
+import { MAX_ADDRESS, MAX_SOURCES } from '@ks/lib/domain/pins/schemas.mts';
 
 /** The Event types as the form lists them, after the empty choice. A test keeps the list equal to `EVENT_TYPES`. */
 export const EVENT_OPTIONS = [
@@ -20,6 +21,19 @@ export const EVENT_OPTIONS = [
   { label: 'Other', value: 'other' },
 ];
 
+/** The Place precisions as the form lists them, widest last. A test keeps the values equal to `PLACE_PRECISIONS`. */
+export const PRECISION_OPTIONS = [
+  { label: 'Street address', value: 'street' },
+  { label: 'Building', value: 'building' },
+  { label: 'Erf', value: 'erf' },
+  { label: 'Farm', value: 'farm' },
+  { label: 'Suburb', value: 'suburb' },
+  { label: 'Town or city', value: 'town' },
+  { label: 'District', value: 'district' },
+  { label: 'Province', value: 'province' },
+  { label: 'Approximate', value: 'approximate' },
+];
+
 const DECIMAL = 'Use decimal degrees, such as -33.93, 18.42.';
 
 const COORDINATE_MESSAGES: Record<CoordinateError, string> = {
@@ -28,6 +42,9 @@ const COORDINATE_MESSAGES: Record<CoordinateError, string> = {
   'out-of-range': DECIMAL,
   required: 'Enter the coordinates.',
 };
+
+const tooLong = (max: number) =>
+  `Use ${max.toLocaleString('en-US')} characters or fewer.`;
 
 /**
  * The texts of the field errors (PIN-01, PIN-02). `coordinates` is the reading error of the point
@@ -38,7 +55,7 @@ export const pinMessages = (
   coordinates: CoordinateError | undefined,
   dateText: string
 ): PinMessages => ({
-  address: fields.address && `Use ${MAX_ADDRESS} characters or fewer.`,
+  address: fields.address && tooLong(MAX_ADDRESS),
   coordinates: coordinates && COORDINATE_MESSAGES[coordinates],
   date:
     fields.date &&
@@ -46,5 +63,8 @@ export const pinMessages = (
       ? 'Enter a date.'
       : fuzzyDateMessage(fields.date, dateText)),
   eventType: fields.eventType && 'Choose an event type.',
+  notes: fields.notes && tooLong(MAX_NOTES),
   personId: fields.personId && 'Choose a person.',
+  precision: fields.precision && 'Choose a precision.',
+  sources: fields.sources && tooLong(MAX_SOURCES),
 });

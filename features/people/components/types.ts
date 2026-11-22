@@ -35,7 +35,10 @@ export type PinMessages = {
   coordinates?: string;
   date?: string;
   eventType?: string;
+  notes?: string;
   personId?: string;
+  precision?: string;
+  sources?: string;
 };
 
 /** The two Relationship actions, as the page passes them to the dialog. */

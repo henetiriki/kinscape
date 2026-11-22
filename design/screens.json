@@ -13,7 +13,6 @@
       "account": "r.family@example.com",
       "route": "/screens/pin-form",
       "state": "pin-form-empty",
-      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -23,7 +22,6 @@
       "account": "r.family@example.com",
       "route": "/screens/pin-form",
       "state": "pin-form",
-      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -33,7 +31,6 @@
       "account": "r.family@example.com",
       "route": "/screens/pin-form",
       "state": "pin-form-errors",
-      "ignore": [{ "x": 24, "y": 740, "width": 320, "height": 51 }],
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -43,7 +40,6 @@
       "account": "r.family@example.com",
       "route": "/screens/pin-form",
       "state": "pin-form-saving",
-      "ignore": [{ "x": 24, "y": 636, "width": 320, "height": 155 }],
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -53,7 +49,6 @@
       "account": "r.family@example.com",
       "route": "/screens/pin-form",
       "state": "pin-form-save-failed",
-      "ignore": [{ "x": 24, "y": 696, "width": 320, "height": 95 }],
       "width": 1440,
       "height": 900,
       "mode": "blocking"
@@ -63,7 +58,6 @@
       "account": "researcher@example.com",
       "route": "/screens/pin-form",
       "state": "pin-form-no-people",
-      "ignore": [{ "x": 24, "y": 746, "width": 320, "height": 45 }],
       "width": 1440,
       "height": 900,
       "mode": "blocking"

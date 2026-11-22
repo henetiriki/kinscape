@@ -1284,6 +1284,18 @@ export const CARDS: Card[] = [
   },
   {
     design: [],
+    group: 'Feedback',
+    handlers: [],
+    height: 160,
+    name: 'LoadingField',
+    pad: 0,
+    states: [
+      one('LoadingField · one bar', { label: 'Precision', widths: [120] }),
+      one('LoadingField · two bars', { label: 'Sources', widths: [220, 160] }),
+    ],
+  },
+  {
+    design: [],
     group: 'Foundation',
     handlers: [],
     height: 220,

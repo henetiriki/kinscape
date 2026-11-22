@@ -60,7 +60,7 @@ jobs:
       (contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association) ||
         github.event.issue.user.login == vars.KINSCAPE_BOT_LOGIN) &&
       github.actor == github.repository_owner
-    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@41b23c73c72468f120674640d8700870d2806098
+    uses: henetiriki/kinscape/.github/workflows/claude-run.yml@2cf54f953e6e219fc67c554d26cb65cc42a54058
     with:
       thread: ${{ github.event.issue.number }}
       plan: true

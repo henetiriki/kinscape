@@ -1,7 +1,7 @@
 # Plan: C1137: Lint the page rule and the KINSCAPE\_ variable rule
 
 - **Spec:** #1137
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -29,7 +29,7 @@ The issue asks for two ESLint rules. `eslint.config.mjs` already uses `no-restri
 - **B.** `no-restricted-syntax` selectors in `eslint.config.mjs`. The Test-only names go in a selector regular expression. Cost: no new module. Each block replaces the options of the rule, so the page block and the test block must list `ARROW_FUNCTIONS`, `TEST_MODIFIERS` and the two type selectors again. The list test must read the names out of a regular expression.
 - **Other:** your own.
 
-Recommended: A, because each rule then has one block, and the list test compares two plain lists.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

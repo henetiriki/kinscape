@@ -785,18 +785,14 @@ describe('the plan run', () => {
     expect(plan).toContain('dependencies/blocked_by');
   });
 
-  // The related-issues rule (plans/README.md) needs three reads. The parent call exits 1 on a 404, so
-  // the prompt says what a 404 means. The settings already allow `gh api` reads.
-  it('names the three commands that read the related issues, and the comment line', () => {
+  // `npm run plan:new` lists the related issues (plans/README.md, related-issues rule).
+  it('runs plan:new for the related issues, and keeps the comment line', () => {
     const plan = read('claude-plan.yml');
-    const issue = 'repos/${{ github.repository }}/issues';
-    const number = '${{ github.event.issue.number }}';
 
+    expect(plan).toContain(
+      'Run `npm run plan:new -- ${{ github.event.issue.number }} <slug>`.'
+    );
     expect(plan).toContain('plans/README.md, related-issues rule');
-    expect(plan).toContain(`gh api ${issue}/${number}/dependencies/blocking`);
-    expect(plan).toContain(`gh api ${issue}/${number}/parent`);
-    expect(plan).toContain('A 404 means no parent.');
-    expect(plan).toContain(`gh api ${issue}/<parent>/sub_issues --paginate`);
     expect(plan).toContain('"Related issues read: none"');
   });
 

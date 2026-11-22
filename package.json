@@ -20,6 +20,7 @@
     "lint": "eslint . --max-warnings 0 && knip",
     "lint:fix": "eslint . --max-warnings 0 --fix",
     "map:prepare": "node scripts/prepare-map-data.mts",
+    "plan:new": "node scripts/plan-new.mts",
     "plan-approve": "node scripts/approve-plan.mts",
     "prepare": "husky",
     "review:threads": "node scripts/review-threads.mts",

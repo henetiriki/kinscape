@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 
 import type { Gh } from '#ks/scripts/types.ts';
 
+import { ghList } from '#ks/scripts/gh-list.mts';
 import { invisible } from '#ks/scripts/vercel-ignore.mts';
 
 // Runs on a pull request event (backlog-issue-status.yml): keeps the `status:` label of each
@@ -217,17 +218,8 @@ export const run = (
     hasForThePo(pull.body) &&
     issues.some(({ type }) => isVisibleType(type))
   ) {
-    const files = attempt('listing the changed files', (): Changed[] =>
-      gh([
-        'api',
-        '--paginate',
-        `repos/${repo}/pulls/${pull.number}/files`,
-        '--jq',
-        '.[] | @json',
-      ])
-        .split('\n')
-        .filter(line => line !== '')
-        .map(line => JSON.parse(line))
+    const files = attempt('listing the changed files', () =>
+      ghList<Changed>(gh, `repos/${repo}/pulls/${pull.number}/files`)
     );
 
     visible = files?.some(({ filename, previous_filename }) =>

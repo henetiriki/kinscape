@@ -30,8 +30,7 @@ export const Modal = ({ children, onClose, open, ...rest }: ModalArgs) => {
 
   return (
     // The dialog is filled by its content, so a click on the dialog itself is a click on the scrim.
-    // The scrim is a pointer shortcut: Esc and Close are the keyboard's.
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- the scrim is a pointer shortcut: Esc and Close are the keyboard's
     <dialog
       onClick={event => {
         if (event.target === event.currentTarget) {

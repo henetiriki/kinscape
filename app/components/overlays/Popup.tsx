@@ -119,8 +119,7 @@ export const Popup = ({
   }
 
   return (
-    // Esc inside the popup closes it; the popup itself is not a tab stop.
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Esc inside the popup closes it; the popup itself is not a tab stop
     <div
       aria-label='Jurisdiction at this point'
       className={styles.popup}

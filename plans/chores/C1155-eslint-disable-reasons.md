@@ -91,6 +91,11 @@ The approving review starts the CI build at once ([building](../../docs/building
 | `git grep "react/no-children-prop\|testing-library/no-unnecessary-act"` finds no disable  | The grep output in the PR                                     |
 | `npm run lint` and `npm test` pass, with the same test count                              | The `npm run lint` and `npm test` output; the count of step 2 |
 
+## Deviations
+
+- Big: `@eslint-community/eslint-plugin-eslint-comments` is not on the branch, so `npm install` is off and the build wrote no `eslint.config.mjs` change. Steps 1, 3 (config) and 4 (lint failure Evidence) remain for a local session. D1 A applies there.
+- `link.ts` casts the function child to `ReactNode`, because the types of `createElement` take a node as a child.
+
 ## Out of scope
 
 - The other Testing Library disables: #1157 and later Chores change them.

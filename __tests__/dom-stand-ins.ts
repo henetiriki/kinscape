@@ -9,8 +9,7 @@ type Dom = {
  * the call names, and a desktop that never changes. A test swaps in its own `matchMedia`.
  */
 export const standInDom = (dom: Dom) => {
-  // A method reads `this`, which an arrow function cannot.
-  /* eslint-disable no-restricted-syntax */
+  /* eslint-disable no-restricted-syntax -- a method reads `this`, which an arrow function cannot */
   Object.assign(dom.HTMLDialogElement.prototype, {
     close(this: HTMLDialogElement) {
       this.removeAttribute('open');

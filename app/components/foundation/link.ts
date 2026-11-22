@@ -1,6 +1,6 @@
 'use client';
 
-import type { ComponentPropsWithoutRef, ElementType } from 'react';
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
 
 import { createContext, createElement } from 'react';
 
@@ -19,9 +19,6 @@ export const LinkContext = createContext<LinkComponent>('a');
 export const KitLink = (
   props: { href: string } & ComponentPropsWithoutRef<'a'>
 ) =>
-  // A Consumer's child is a function, which the rule reads as a prop it forbids.
-  // eslint-disable-next-line react/no-children-prop
-  createElement(LinkContext.Consumer, {
-    children: (Link: LinkComponent) =>
-      createElement(Link as ElementType, props),
-  });
+  // The types of `createElement` take a node as a child; a Consumer's child is a function.
+  createElement(LinkContext.Consumer, null, ((Link: LinkComponent) =>
+    createElement(Link as ElementType, props)) as unknown as ReactNode);

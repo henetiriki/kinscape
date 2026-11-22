@@ -1,5 +1,5 @@
-// Runs a workflow's own expressions (GitHub's syntax is a subset of JavaScript's for these) so the
-// tests check what the workflow does, not how the condition is written. GitHub compares strings without
+// Runs a workflow's own expressions, so the tests check what the workflow does. GitHub's syntax is a
+// subset of JavaScript's for these expressions. GitHub compares strings without
 // regard to case and JavaScript does not: the cases use one spelling of each value. A missing property
 // gives undefined, as in GitHub, because each `.` becomes `?.`. The code under test is this repo's own
 // workflow file, never input from outside, so `new Function` is safe here.

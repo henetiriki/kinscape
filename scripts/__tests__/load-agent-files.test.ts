@@ -693,8 +693,8 @@ describe('the refresh job of claude-unblock.yml', () => {
     );
   });
 
-  // The refresh edits no issue body, so it needs no Opus; claude-respond.yml gives Opus to a plan PR
-  // and to an issue thread.
+  // #1132 keeps the refresh on Sonnet, but claude-respond.yml gives Opus to a plan PR and to an issue
+  // thread.
   it('runs on Sonnet, as an @claude comment on a PR that is not a plan PR does', () => {
     expect(claude()?.with?.claude_args).toMatch(/^--model sonnet /);
   });

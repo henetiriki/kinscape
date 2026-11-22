@@ -12,7 +12,7 @@ model_args: >-
   ${{ (contains(github.event.issue.title || github.event.pull_request.title, '(plan)') || github.event.issue && !github.event.issue.pull_request) && '--model opus --effort high' || '--model sonnet' }}
 ```
 
-The comment above `model_args` gives the reason: a respond run on an issue edits the body and runs the Spec checks, and the plan run reads that body on Opus.
+The comment above `model_args` gives the reason. A respond run on an issue edits the body and runs the Spec checks. The plan run then reads that body on Opus.
 
 A new test in `load-agent-files.test.ts` evaluates `model_args` against one event payload for each trigger of the workflow. `review-condition.test.ts` already has an `evaluate` helper for this. D1 decides where the test gets its evaluator.
 
@@ -72,3 +72,5 @@ The new test must evaluate a GitHub expression. `evaluate` in `scripts/__tests__
 - The models of `claude-build.yml`, `claude-fix-review.yml`, `claude-resolve-conflict.yml`, `claude-plan.yml` and `claude-unblock.yml`.
 
 ## Deviations
+
+- `expression.ts` changes `.` to `?.` and extends `contains` to strings, because a review event has no `issue`.

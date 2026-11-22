@@ -2,7 +2,7 @@
 
 - **Spec:** #1157
 - **Requirement IDs:** [NFR-05](../docs/requirements.md#nfr-05), [NFR-06](../docs/requirements.md#nfr-06), [MAP-05](../docs/requirements.md#map-05)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -41,7 +41,7 @@ Two kept disables lose the line that they read:
 - **B.** The gallery checks the drawn position of each slot, such as the hero left of the form. This changes the asserted values (Constraint 1), and it does not prove the reading order. About 60 lines.
 - **Other:** your own.
 
-Recommended: A, because it keeps the asserted value and still proves the reading order.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

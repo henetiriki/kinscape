@@ -432,10 +432,13 @@ describe('the Bash hook', () => {
   };
 
   it('is the same in settings.json and review-settings.json', () => {
-    const { hooks } = settingsOf('settings.json');
+    const bashOf = (file: string) =>
+      settingsOf(file).hooks?.PreToolUse?.filter(
+        ({ matcher }) => matcher === 'Bash'
+      );
 
-    expect(hooks?.PreToolUse).toHaveLength(1);
-    expect(settingsOf('review-settings.json').hooks).toEqual(hooks);
+    expect(bashOf('settings.json')).toHaveLength(1);
+    expect(bashOf('review-settings.json')).toEqual(bashOf('settings.json'));
   });
 
   // The rest goes on to the allowlist, so there is no permissionDecision; the marker tells the agent.
@@ -809,5 +812,155 @@ describe('the Bash hook', () => {
     ])('leaves %j to the allowlist', command => {
       expect(hook(command, file, { ISSUE: '5' })).toBeUndefined();
     });
+  });
+});
+
+// The Edit|Write hooks (plan C1134) deny an edit of a file that the workflow Design: Render
+// snapshots makes, and name the fix. The CI hook also denies design/canvas/.
+describe('the Edit|Write hook', () => {
+  const main = '/work/kin.x';
+  const workspace = '/work/ci.y';
+  const reasonOf = (output: { permissionDecisionReason?: string }) =>
+    output.permissionDecisionReason;
+
+  const hookOf = (settings: string) => {
+    const entry = (
+      JSON.parse(readFileSync(join(process.cwd(), settings), 'utf8')) as {
+        hooks?: {
+          PreToolUse?: { hooks: { command: string }[]; matcher: string }[];
+        };
+      }
+    ).hooks?.PreToolUse?.find(({ matcher }) => matcher === 'Edit|Write');
+
+    return (
+      path: string,
+      env: Record<string, string | undefined> = {},
+      tool = 'Edit'
+    ) => {
+      const output = execFileSync(
+        'bash',
+        ['-c', entry?.hooks[0].command ?? ''],
+        {
+          encoding: 'utf8',
+          env: {
+            ...process.env,
+            CLAUDE_PROJECT_DIR: main,
+            GITHUB_ACTIONS: undefined,
+            GITHUB_WORKSPACE: workspace,
+            ...env,
+          },
+          input: JSON.stringify({
+            tool_input: { file_path: path },
+            tool_name: tool,
+          }),
+        }
+      ).trim();
+
+      return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
+    };
+  };
+
+  const ci = hookOf('.github/agent/settings.json');
+  const local = hookOf('.claude/settings.json');
+
+  const page = 'design/source/map-desktop.html';
+  const jpg = 'design/map-desktop.jpg';
+  const card = 'design/cards/Alert-1440.png';
+  const render = 'by the workflow Design: Render snapshots';
+  const canvasReason =
+    'Only the tech lead, or a local session that the tech lead starts, edits `design/canvas/`. Ask in the PR.';
+
+  const localReason = (path: string) =>
+    path.startsWith('design/cards/')
+      ? `\`${path}\` is generated ${render} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its component or its states in \`lib/design/states.mts\`, then run the workflow. If a card image looks wrong, raise a Bug that names the component.`
+      : `\`${path}\` is generated ${render} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its board in \`design/canvas/\`, then run the workflow. If a snapshot looks wrong, raise a Bug that names the screen.`;
+
+  const ciReason = (path: string) =>
+    `\`${path}\` is generated ${render}. Never edit it. In a merge conflict, run \`git checkout --theirs -- ${path}\`, then ask in the PR for a run of the workflow. If a snapshot looks wrong or the app can't match it, say so in the PR and raise a Bug that names the screen.`;
+
+  it('has one entry in settings.json and none in review-settings.json', () => {
+    const matchers = (file: string) =>
+      (
+        JSON.parse(
+          readFileSync(join(process.cwd(), '.github/agent', file), 'utf8')
+        ) as { hooks?: { PreToolUse?: { matcher: string }[] } }
+      ).hooks?.PreToolUse?.map(({ matcher }) => matcher);
+
+    expect(matchers('settings.json')).toEqual(['Bash', 'Edit|Write']);
+    expect(matchers('review-settings.json')).toEqual(['Bash']);
+  });
+
+  it.each([page, jpg, card])('the CI hook denies %s', path => {
+    const output = ci(path);
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(reasonOf(output)).toBe(ciReason(path));
+  });
+
+  it.each([page, jpg, card])('the local hook denies %s', path => {
+    const output = local(path);
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(reasonOf(output)).toBe(localReason(path));
+  });
+
+  it('gives the card image reason for a card image and not for a snapshot', () => {
+    expect(reasonOf(local(card))).toContain('lib/design/states.mts');
+    expect(reasonOf(local(page))).not.toContain('lib/design/states.mts');
+  });
+
+  it('denies design/canvas/ in the CI hook only', () => {
+    const output = ci('design/canvas/project/index.html');
+
+    expect(output.permissionDecision).toBe('deny');
+    expect(reasonOf(output)).toBe(canvasReason);
+    expect(local('design/canvas/project/index.html')).toBeUndefined();
+  });
+
+  it.each([
+    'design/source/kse-birth.svg',
+    'design/source/fonts.css',
+    'design/DESIGN.md',
+    'app/page.tsx',
+  ])('allows %s', path => {
+    expect(ci(path)).toBeUndefined();
+    expect(local(path)).toBeUndefined();
+  });
+
+  it.each([
+    [`${main}/${page}`, page],
+    [`${main}/.claude/worktrees/feat-x/${page}`, page],
+    [`${workspace}/${page}`, page],
+    [`${main}/${card}`, card],
+    [`${workspace}/.claude/worktrees/feat-x/${jpg}`, jpg],
+  ])('treats %s as %s', (absolute, relative) => {
+    expect(reasonOf(ci(absolute))).toBe(ciReason(relative));
+    expect(reasonOf(local(absolute))).toBe(localReason(relative));
+  });
+
+  it('treats an absolute path to an allowed file as the relative path', () => {
+    expect(ci(`${main}/app/page.tsx`)).toBeUndefined();
+    expect(local(`${workspace}/design/source/kse-birth.svg`)).toBeUndefined();
+    expect(ci(`${workspace}/design/canvas/project/index.html`)).toMatchObject({
+      permissionDecision: 'deny',
+    });
+  });
+
+  it('does not match a path that only ends like a generated one', () => {
+    expect(ci('app/design/source/map-desktop.html')).toBeUndefined();
+    expect(ci('design/source/sub/map-desktop.html')).toBeUndefined();
+    expect(ci('design/cards/Alert-1440.jpg')).toBeUndefined();
+  });
+
+  it('denies a Write as an Edit', () => {
+    expect(ci(page, {}, 'Write').permissionDecision).toBe('deny');
+  });
+
+  it('makes the local hook silent when GITHUB_ACTIONS is true', () => {
+    const env = { GITHUB_ACTIONS: 'true' };
+
+    expect(local(page, env)).toBeUndefined();
+    expect(local(card, env)).toBeUndefined();
+    expect(ci(page, env).permissionDecision).toBe('deny');
   });
 });

@@ -87,3 +87,5 @@ The line 434 test asserts that `settings.json` has one `PreToolUse` entry. Step 
 - `CANVAS.md` line 13 ("`source/kse-*.svg` and `source/fonts.css` are hand-kept sources"). The Chore removes only the `AGENTS.md` copy.
 
 ## Deviations
+
+- The "has one entry" test also checks that `review-settings.json` keeps only the Bash entry.

@@ -49,7 +49,7 @@ const floatingShadow = (page: Page) =>
 // The banner of "Banner · offline": its background, shadow and height, and the gaps from Retry to its top, bottom and right edge.
 // The caller opens the file first.
 const bannerLook = async (page: Page) => {
-  const banner = state(page, 'Banner · offline').getByRole('alert');
+  const banner = state(page, 'Banner · offline').getByRole('status');
   const box = (await banner.boundingBox())!;
   const retry = (await banner
     .getByRole('button', { name: 'Retry' })
@@ -316,7 +316,7 @@ test.describe('on a phone', () => {
       return (await control.boundingBox())!;
     };
 
-    const top = await place('Banner', 'Banner · offline', 'alert');
+    const top = await place('Banner', 'Banner · offline', 'status');
     const bottom = await place('Toast', 'Toast · success', 'status');
 
     expect(top.y).toBe(80);

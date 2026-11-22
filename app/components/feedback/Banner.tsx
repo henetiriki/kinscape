@@ -22,7 +22,7 @@ export const Banner = ({
   <div
     className={`${styles.shape} ${styles.banner}`}
     data-placed={placed ? '' : undefined}
-    role='alert'>
+    role='status'>
     <Icon name={icon} />
     <span className={styles.message}>{children}</span>
     <button

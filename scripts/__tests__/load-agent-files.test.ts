@@ -15,6 +15,7 @@ import { parse } from 'yaml';
 
 import type { Job, Step } from '@ks/scripts/__tests__/types';
 
+import { evaluate } from '@ks/scripts/__tests__/expression';
 import {
   MAIN_COPY_CHECK,
   reviewJob,
@@ -692,8 +693,9 @@ describe('the refresh job of claude-unblock.yml', () => {
     );
   });
 
-  // The level an @claude comment on a Spec runs at (claude-respond.yml); only a plan PR gets Opus.
-  it('runs on Sonnet, as an @claude comment on a Spec does', () => {
+  // #1132 keeps the refresh on Sonnet, but claude-respond.yml gives Opus to a plan PR and to an issue
+  // thread.
+  it('runs on Sonnet, as an @claude comment on a PR that is not a plan PR does', () => {
     expect(claude()?.with?.claude_args).toMatch(/^--model sonnet /);
   });
 
@@ -2551,5 +2553,41 @@ describe('the own-PR check', () => {
     ].join('\n');
 
     expect(all.match(/restrict_untrusted_prs: .*false/g)).toHaveLength(1);
+  });
+});
+
+describe('the model of claude-respond.yml', () => {
+  const respond = parse(read('claude-respond.yml')) as {
+    jobs: { respond: { with: { model_args: string } } };
+  };
+  const OPUS = '--model opus --effort high';
+  const SONNET = '--model sonnet';
+  const issue = { title: 'A Spec' };
+  const pr = { pull_request: {}, title: 'A PR' };
+  const plan = { pull_request: {}, title: 'C.1: A chore (plan)' };
+
+  // Opus is for a plan PR, and for an issue thread, where Claude edits the body that the plan run reads.
+  const cases: [string, object, string][] = [
+    ['an issue is opened', { event: { issue } }, OPUS],
+    ['a comment on an issue', { event: { comment: {}, issue } }, OPUS],
+    ['a comment on a PR', { event: { comment: {}, issue: pr } }, SONNET],
+    ['a comment on a plan PR', { event: { comment: {}, issue: plan } }, OPUS],
+    ['a review of a PR', { event: { pull_request: pr, review: {} } }, SONNET],
+    [
+      'a review of a plan PR',
+      { event: { pull_request: plan, review: {} } },
+      OPUS,
+    ],
+    [
+      'a review comment on a PR',
+      { event: { comment: {}, pull_request: pr } },
+      SONNET,
+    ],
+  ];
+
+  it.each(cases)('for %s', (_name, github, expected) => {
+    expect(evaluate(respond.jobs.respond.with.model_args, github)).toBe(
+      expected
+    );
   });
 });

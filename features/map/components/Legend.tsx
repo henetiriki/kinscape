@@ -41,13 +41,13 @@ export const Legend = () => (
       Reading the map
     </Text>
     <span className={styles.row}>
-      <svg aria-hidden='true' height='12' width='32'>
+      <svg aria-hidden='true' height='12' role='img' width='32'>
         <path className={styles.line} d='M1 6h30' />
       </svg>
       Border as recorded
     </span>
     <span className={styles.row}>
-      <svg aria-hidden='true' height='12' width='32'>
+      <svg aria-hidden='true' height='12' role='img' width='32'>
         <path className={`${styles.line} ${styles.dashed}`} d='M1 6h30' />
       </svg>
       Approximate border
@@ -57,7 +57,7 @@ export const Legend = () => (
       Contested claim
     </span>
     <span className={styles.row}>
-      <svg aria-hidden='true' height='24' width='32'>
+      <svg aria-hidden='true' height='24' role='img' width='32'>
         <circle className={styles.halo} cx='16' cy='12' r='11' />
         <circle className={styles.pin} cx='16' cy='12' r='5' />
       </svg>

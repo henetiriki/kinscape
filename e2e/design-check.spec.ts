@@ -40,7 +40,7 @@ if (unknown.length > 0) {
 
 // The built page draws its map on a canvas, the snapshot in an svg.
 const HIDE_MAP =
-  '.maplibregl-canvas, svg[role="img"] { visibility: hidden !important; }';
+  '.maplibregl-canvas, svg[role="img"]:not([aria-hidden="true"]) { visibility: hidden !important; }';
 
 // A built <dialog> draws its text on its own layer, so letter edges differ
 // from a snapshot that draws the sheet in the page. Give the snapshot the same.

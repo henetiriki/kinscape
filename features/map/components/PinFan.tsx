@@ -45,6 +45,7 @@ export const PinFan = ({
       <svg
         aria-hidden='true'
         className={styles.lines}
+        role='img'
         viewBox={`${-reach} ${-reach} ${reach * 2} ${reach * 2}`}>
         {rings.length > 1 &&
           rings.map(({ radius }) => (

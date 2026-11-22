@@ -1167,6 +1167,25 @@ test.describe('at 1440px', () => {
     );
   });
 
+  // NFR-06
+  test('an SVG with role img stays out of the accessibility tree', async ({
+    page,
+  }) => {
+    for (const file of ['Icon', 'Legend']) {
+      await open(page, file);
+
+      const drawn = page.locator('svg[role="img"][aria-hidden="true"]');
+
+      expect(await drawn.count(), file).toBeGreaterThan(0);
+      expect(
+        await page.locator('svg[role="img"]:not([aria-hidden])').count()
+      ).toBe(0);
+      expect(await page.locator('body').ariaSnapshot(), file).not.toMatch(
+        /^\s*- img/m
+      );
+    }
+  });
+
   // PIN-06
   test('a fan of twelve Pins is 252px wide and tall, twice its 126px reach', async ({
     page,

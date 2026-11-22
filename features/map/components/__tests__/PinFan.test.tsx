@@ -30,7 +30,7 @@ describe('fanPinName', () => {
 describe('PinFan', () => {
   // PIN-06
   it('draws a named button with an Event glyph for each Pin, in the order given', () => {
-    const { container } = render(<PinFan pins={PINS} />);
+    render(<PinFan pins={PINS} />);
 
     expect(
       screen.getAllByRole('button').map(({ ariaLabel }) => ariaLabel)
@@ -39,10 +39,11 @@ describe('PinFan', () => {
       'Birth, about 1850',
       'Marriage, in 1899',
     ]);
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the Event glyphs are aria-hidden SVGs with no role or text
-    const glyphs = [...container.querySelectorAll('[data-event]')];
+    const glyphs = screen
+      .getAllByRole('img', { hidden: true })
+      .filter(glyph => glyph.dataset.event);
 
-    expect(glyphs.map(glyph => (glyph as HTMLElement).dataset.event)).toEqual([
+    expect(glyphs.map(glyph => glyph.dataset.event)).toEqual([
       'residence',
       'birth',
       'marriage',

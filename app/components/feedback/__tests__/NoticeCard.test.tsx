@@ -60,8 +60,7 @@ it('draws the plain, phone and large forms', () => {
   const { rerender } = render(<NoticeCard title='Title'>Line</NoticeCard>);
   const card = () => screen.getByRole('status');
 
-  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg with no role or text
-  expect(card().querySelector('svg')).toBeNull();
+  expect(within(card()).queryByRole('img', { hidden: true })).toBeNull();
   expect(within(card()).queryByRole('button', { hidden: true })).toBeNull();
 
   rerender(
@@ -77,8 +76,9 @@ it('draws the plain, phone and large forms', () => {
     </NoticeCard>
   );
   expect(card().getAttribute('data-size')).toBe('large');
-  // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg with no role or text
-  expect(card().querySelector('svg')!.getAttribute('width')).toBe('28');
+  expect(
+    within(card()).getByRole('img', { hidden: true }).getAttribute('width')
+  ).toBe('28');
 });
 
 it('announces politely in its loading form and follows the value', () => {

@@ -50,6 +50,7 @@ export const SignInHero = () => {
         className={`${styles.art} ${styles.wide}`}
         data-art='wide'
         preserveAspectRatio='xMidYMid meet'
+        role='img'
         viewBox='180 40 1000 880'>
         <defs>
           <clipPath id={clip}>
@@ -118,6 +119,7 @@ export const SignInHero = () => {
         className={`${styles.art} ${styles.phone}`}
         data-art='phone'
         preserveAspectRatio='xMidYMid slice'
+        role='img'
         viewBox='200 90 960 790'>
         <path className={styles.land} d={LAND} />
         <g className={styles.rivers}>

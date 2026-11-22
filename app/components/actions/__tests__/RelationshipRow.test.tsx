@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -55,8 +55,11 @@ describe('a relationship row', () => {
     expect(link.className).toMatch(/link/);
     // eslint-disable-next-line testing-library/no-node-access -- the test checks that the link is the last child of the row
     expect(link.parentElement?.lastElementChild).toBe(link);
-    // eslint-disable-next-line testing-library/no-node-access -- the icon is an aria-hidden svg; the test checks its data-icon
-    expect(link.querySelector('svg[data-icon="forward"]')).not.toBeNull();
+    expect(
+      within(link)
+        .getAllByRole('img', { hidden: true })
+        .map(icon => icon.dataset.icon)
+    ).toContain('forward');
     expect(css).not.toContain('.edit');
   });
 

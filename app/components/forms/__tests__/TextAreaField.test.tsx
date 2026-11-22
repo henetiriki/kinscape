@@ -95,8 +95,7 @@ it('shows an error in place of the helper, with the error box, icon and aria lin
   expect(area.getAttribute('aria-describedby')).toBe(alert.id);
   // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its data-mark
   expect(area.parentElement!.dataset.mark).toBe('error');
-  // eslint-disable-next-line testing-library/no-node-access -- the error icon is an aria-hidden svg; no query reaches it
-  expect(area.parentElement!.querySelector('svg')).toBeTruthy();
+  screen.getByRole('img', { hidden: true });
   expect((area as HTMLTextAreaElement).rows).toBe(4);
 });
 

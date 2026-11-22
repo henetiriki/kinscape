@@ -61,6 +61,37 @@ const permissionsOf = (file: string) =>
     ) as { permissions: { allow: string[]; deny: string[] } }
   ).permissions;
 
+// The PreToolUse hooks of a settings file, by its path from the repo root.
+const preToolUseOf = (path: string) =>
+  (
+    JSON.parse(readFileSync(join(process.cwd(), path), 'utf8')) as {
+      hooks?: {
+        PreToolUse?: {
+          hooks: { command: string; type: string }[];
+          matcher: string;
+        }[];
+      };
+    }
+  ).hooks?.PreToolUse;
+
+// Runs a hook as Claude Code does: through the shell, with the call as JSON on stdin and the
+// job's environment. No output means the hook lets the call go on.
+const runHook = (
+  path: string,
+  matcher: string,
+  input: object,
+  env: Record<string, string | undefined>
+) => {
+  const entry = preToolUseOf(path)?.find(hook => hook.matcher === matcher);
+  const output = execFileSync('bash', ['-c', entry?.hooks[0].command ?? ''], {
+    encoding: 'utf8',
+    env: { ...process.env, ...env },
+    input: JSON.stringify(input),
+  }).trim();
+
+  return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
+};
+
 // A deny rule, as Claude Code reads one: `*` matches any text, the rule matches the whole command,
 // and a rule ending in ` *` matches the bare command too.
 const deniedBy = (deny: string[]) => (command: string) =>
@@ -220,6 +251,11 @@ describe('review-settings.json', () => {
   const { allow, deny } = permissionsOf('review-settings.json');
   const allowed = allowedBy(allow);
   const denied = deniedBy(deny);
+
+  // The review gets no Edit|Write hook (plan C1134): it may not edit at all.
+  it('denies Edit and Write', () => {
+    expect(deny).toEqual(expect.arrayContaining(['Edit', 'Write']));
+  });
 
   it.each([
     'git grep -n foo -- src',
@@ -398,44 +434,26 @@ describe('refresh-settings.json', () => {
 // rules.md warns against are denied with the alternative. The build and the review carry the same
 // hook, so neither gets other behaviour.
 describe('the Bash hook', () => {
-  const settingsOf = (file: string) =>
-    JSON.parse(
-      readFileSync(join(process.cwd(), '.github/agent', file), 'utf8')
-    ) as {
-      hooks?: {
-        PreToolUse?: {
-          hooks: { command: string; type: string }[];
-          matcher: string;
-        }[];
-      };
-    };
+  const agentHooksOf = (file: string) => preToolUseOf(`.github/agent/${file}`);
 
   const cwd = '/work/kin.x';
 
-  // Runs the hook as Claude Code does: through the shell, with the call as JSON on stdin and the
-  // job's environment. No output means it leaves the call to the allowlist.
+  // No output means the hook leaves the call to the allowlist.
   const hook = (
     command: string,
     file = 'settings.json',
     env: Record<string, string | undefined> = {}
-  ) => {
-    const entry = settingsOf(file).hooks?.PreToolUse?.find(
-      ({ matcher }) => matcher === 'Bash'
+  ) =>
+    runHook(
+      `.github/agent/${file}`,
+      'Bash',
+      { cwd, tool_input: { command } },
+      { ISSUE: undefined, ...env }
     );
-    const output = execFileSync('bash', ['-c', entry?.hooks[0].command ?? ''], {
-      encoding: 'utf8',
-      env: { ...process.env, ISSUE: undefined, ...env },
-      input: JSON.stringify({ cwd, tool_input: { command } }),
-    }).trim();
-
-    return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
-  };
 
   it('is the same in settings.json and review-settings.json', () => {
     const bashOf = (file: string) =>
-      settingsOf(file).hooks?.PreToolUse?.filter(
-        ({ matcher }) => matcher === 'Bash'
-      );
+      agentHooksOf(file)?.filter(({ matcher }) => matcher === 'Bash');
 
     expect(bashOf('settings.json')).toHaveLength(1);
     expect(bashOf('review-settings.json')).toEqual(bashOf('settings.json'));
@@ -711,7 +729,7 @@ describe('the Bash hook', () => {
       `gh issue edit ${issue} --body-file - <<'EOF'\n${body}\nEOF`;
 
     it('is the one hook of the file', () => {
-      expect(settingsOf(file).hooks?.PreToolUse).toHaveLength(1);
+      expect(agentHooksOf(file)).toHaveLength(1);
     });
 
     it.each([
@@ -823,42 +841,24 @@ describe('the Edit|Write hook', () => {
   const reasonOf = (output: { permissionDecisionReason?: string }) =>
     output.permissionDecisionReason;
 
-  const hookOf = (settings: string) => {
-    const entry = (
-      JSON.parse(readFileSync(join(process.cwd(), settings), 'utf8')) as {
-        hooks?: {
-          PreToolUse?: { hooks: { command: string }[]; matcher: string }[];
-        };
-      }
-    ).hooks?.PreToolUse?.find(({ matcher }) => matcher === 'Edit|Write');
-
-    return (
+  const hookOf =
+    (settings: string) =>
+    (
       path: string,
       env: Record<string, string | undefined> = {},
       tool = 'Edit'
-    ) => {
-      const output = execFileSync(
-        'bash',
-        ['-c', entry?.hooks[0].command ?? ''],
+    ) =>
+      runHook(
+        settings,
+        'Edit|Write',
+        { tool_input: { file_path: path }, tool_name: tool },
         {
-          encoding: 'utf8',
-          env: {
-            ...process.env,
-            CLAUDE_PROJECT_DIR: main,
-            GITHUB_ACTIONS: undefined,
-            GITHUB_WORKSPACE: workspace,
-            ...env,
-          },
-          input: JSON.stringify({
-            tool_input: { file_path: path },
-            tool_name: tool,
-          }),
+          CLAUDE_PROJECT_DIR: main,
+          GITHUB_ACTIONS: undefined,
+          GITHUB_WORKSPACE: workspace,
+          ...env,
         }
-      ).trim();
-
-      return output === '' ? undefined : JSON.parse(output).hookSpecificOutput;
-    };
-  };
+      );
 
   const ci = hookOf('.github/agent/settings.json');
   const local = hookOf('.claude/settings.json');
@@ -866,25 +866,23 @@ describe('the Edit|Write hook', () => {
   const page = 'design/source/map-desktop.html';
   const jpg = 'design/map-desktop.jpg';
   const card = 'design/cards/Alert-1440.png';
-  const render = 'by the workflow Design: Render snapshots';
+  // The reasons are in the active voice (plan C1134, D3).
+  const writes = (path: string) =>
+    `The workflow Design: Render snapshots writes \`${path}\``;
   const canvasReason =
     'Only the tech lead, or a local session that the tech lead starts, edits `design/canvas/`. Ask in the PR.';
 
   const localReason = (path: string) =>
     path.startsWith('design/cards/')
-      ? `\`${path}\` is generated ${render} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its component or its states in \`lib/design/states.mts\`, then run the workflow. If a card image looks wrong, raise a Bug that names the component.`
-      : `\`${path}\` is generated ${render} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its board in \`design/canvas/\`, then run the workflow. If a snapshot looks wrong, raise a Bug that names the screen.`;
+      ? `${writes(path)} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its component or its states in \`lib/design/states.mts\`, then run the workflow. If a card image looks wrong, raise a Bug that names the component.`
+      : `${writes(path)} (design/CANVAS.md#making-the-snapshots-and-jpgs). Change its board in \`design/canvas/\`, then run the workflow. If a snapshot looks wrong, raise a Bug that names the screen.`;
 
   const ciReason = (path: string) =>
-    `\`${path}\` is generated ${render}. Never edit it. In a merge conflict, run \`git checkout --theirs -- ${path}\`, then ask in the PR for a run of the workflow. If a snapshot looks wrong or the app can't match it, say so in the PR and raise a Bug that names the screen.`;
+    `${writes(path)}. Never edit it. In a merge conflict, run \`git checkout --theirs -- ${path}\`, then ask in the PR for a run of the workflow. If a snapshot looks wrong or the app can't match it, say so in the PR and raise a Bug that names the screen.`;
 
   it('has one entry in settings.json and none in review-settings.json', () => {
     const matchers = (file: string) =>
-      (
-        JSON.parse(
-          readFileSync(join(process.cwd(), '.github/agent', file), 'utf8')
-        ) as { hooks?: { PreToolUse?: { matcher: string }[] } }
-      ).hooks?.PreToolUse?.map(({ matcher }) => matcher);
+      preToolUseOf(`.github/agent/${file}`)?.map(({ matcher }) => matcher);
 
     expect(matchers('settings.json')).toEqual(['Bash', 'Edit|Write']);
     expect(matchers('review-settings.json')).toEqual(['Bash']);

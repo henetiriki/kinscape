@@ -1,7 +1,7 @@
 # Plan: C1143: Set up each plan draft and list its related issues with npm run plan:new
 
 - **Spec:** #1143
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -23,7 +23,7 @@ The item-types table gives `<spec-id>: <Spec title> (plan)`. The table does not 
 - **B.** Drop "Spec: " only: `M2.15.3: M2.15.3 Cache Pin writes with setQueryData (plan)`. Cost: the id shows twice.
 - **Other:** your own.
 
-Recommended: A, because it matches the plan PRs on `main`.
+**Answer: A** (@henetiriki)
 
 **D2 · What counts as an existing branch or plan file** · Decides: Tech lead
 
@@ -33,7 +33,7 @@ Step 2 sets up only if "neither the branch nor the plan file exists". A respond 
 - **B.** Any local or `origin` branch `<prefix>/<id>-*`, or any file `<plan folder>/<id>-*.md`. The script prints the names that it finds. Cost: about 15 lines and three tests.
 - **Other:** your own.
 
-Recommended: B, because the run then never makes a second plan for one issue.
+**Answer: B** (@henetiriki)
 
 **D3 · Where the requirement IDs come from** · Decides: Tech lead
 
@@ -43,7 +43,7 @@ A sibling is related if it shares a requirement ID with #<n>. A Spec lists its I
 - **B.** Each `[A-Z]+-\d+` in the body that `docs/requirements.md` defines. Cost: a sibling that only cites a shared ID shows as related.
 - **Other:** your own.
 
-Recommended: A, because the section is the list that the Spec claims. Only a Spec can have an Intent parent, and each Spec has the section.
+**Answer: A** (@henetiriki)
 
 **D4 · The place of the new Plan PR step** · Decides: Tech lead
 
@@ -53,7 +53,7 @@ Step 5 replaces "Use the plan path and the branch from the table." with "Run `np
 - **B.** Put "Run `npm run plan:new`." second, after "Refresh the issue", and delete the old line. Cost: one Deviations line.
 - **Other:** your own.
 
-Recommended: B, because the steps then read in the order that a run does them.
+**Answer: B** (@henetiriki)
 
 ## Files that change
 

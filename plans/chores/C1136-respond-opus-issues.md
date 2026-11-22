@@ -1,7 +1,7 @@
 # Plan: C1136: Run @claude replies on issues with Opus on high effort
 
 - **Spec:** #1136
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -29,7 +29,7 @@ The new test must evaluate a GitHub expression. `evaluate` in `scripts/__tests__
 - **C.** The new test has its own copy of `evaluate`. Cost: one copied helper, which the reviewer flags.
 - **Other:** your own.
 
-Recommended: A, because the test then proves the model for each thread, and one evaluator serves both tests.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

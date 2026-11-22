@@ -40,7 +40,8 @@ export const SelectField = ({
       <span
         className={styles.box}
         data-mark={error ? 'error' : undefined}
-        data-state={state}>
+        data-state={state}
+        data-testid='field-box'>
         <select
           aria-label={hideLabel ? label : undefined}
           className={styles.select}

@@ -37,7 +37,8 @@ export const CheckboxField = ({
       className={styles.row}
       data-disabled={rest.disabled || undefined}
       data-plain={plain || undefined}
-      data-size={size}>
+      data-size={size}
+      data-testid='field-row'>
       <Checkbox
         {...rest}
         aria-describedby={description ? descriptionId : undefined}

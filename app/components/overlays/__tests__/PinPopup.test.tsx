@@ -51,7 +51,7 @@ it('shows a note for an address that is empty', () => {
 
 // PIN-02: the Pin of the map holds the event type and both date lines
 it('shows the event type and both date lines with bars in place of the name and address while loading', () => {
-  const { container } = show({
+  show({
     address: undefined,
     name: undefined,
     state: 'loading',
@@ -65,8 +65,7 @@ it('shows the event type and both date lines with bars in place of the name and 
     'FROM 1890 TO 1905'
   );
   expect(screen.queryByRole('heading')).toBeNull();
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- a bar is an aria-hidden span with no role or text
-  expect(container.querySelectorAll('[data-bar]').length).toBe(2);
+  expect(screen.getAllByTestId('loading-bar').length).toBe(2);
 });
 
 it('marks each form busy while loading, and no form busy otherwise', () => {
@@ -182,7 +181,7 @@ it('names the sheet by its state', () => {
 });
 
 it('draws the inline form as a group with no handle, for the date sheet', () => {
-  const { container } = show({ form: 'inline' });
+  show({ form: 'inline' });
 
   screen.getByRole('group', { name: 'Pin details' });
   // The note is a sibling of the group, at the foot of the sheet.
@@ -190,8 +189,7 @@ it('draws the inline form as a group with no handle, for the date sheet', () => 
     screen.getByRole('group').contains(screen.getByText(/^Look-up only/))
   ).toBe(false);
   expect(screen.queryByRole('region')).toBeNull();
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the handle is an aria-hidden span with no role or text
-  expect(container.querySelector('[aria-hidden="true"]:not(svg)')).toBeNull();
+  expect(screen.queryByTestId('handle')).toBeNull();
   expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull();
 });
 

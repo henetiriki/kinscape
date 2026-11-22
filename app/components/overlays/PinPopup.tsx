@@ -138,7 +138,11 @@ export const PinPopup = ({
         aria-busy={loading || undefined}
         aria-label={`Pin details, ${state}`}
         className={styles.sheet}>
-        <span aria-hidden='true' className={styles.handle} />
+        <span
+          aria-hidden='true'
+          className={styles.handle}
+          data-testid='handle'
+        />
         {content}
         {note(styles.note)}
       </section>

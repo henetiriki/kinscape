@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
@@ -41,10 +41,9 @@ it('top-aligns the overlay only when asked', () => {
 });
 
 it('draws no box for a slot left empty', () => {
-  const { container } = render(<MapLayout search='s' />);
+  render(<MapLayout search='s' />);
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the slot divs have no role; the test checks how many exist
-  expect(container.querySelectorAll('[data-slot]')).toHaveLength(1);
+  expect(screen.getAllByTestId(/-slot$/)).toHaveLength(1);
 });
 
 // jsdom computes no CSS, so these read the stylesheet.

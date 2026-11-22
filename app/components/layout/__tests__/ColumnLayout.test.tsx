@@ -87,23 +87,21 @@ it('puts the header, the column and the action bar in slots, in that order', () 
   // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it is in the slot after main
   const bar = screen.getByRole('main').nextElementSibling!;
 
-  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it is in the slot after main
-  expect(bar.querySelector('[data-spacer]')?.tagName).toBe('DIV');
+  expect(within(bar as HTMLElement).getByTestId('spacer').tagName).toBe('DIV');
   expect(screen.getByRole('button').textContent).toBe('Save');
 });
 
 it('draws no action bar without actions, and sets data-column on the frame', () => {
-  const { container } = render(
+  render(
     <ColumnLayout column='notice' header={<div>head</div>}>
       <p>body</p>
     </ColumnLayout>
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the frame div has no role; the test checks its data-column
-  const root = container.firstElementChild as HTMLElement;
+
+  const root = screen.getByTestId('column-frame');
 
   expect(root.dataset.column).toBe('notice');
-  // eslint-disable-next-line testing-library/no-node-access -- the spacer div has no role; the test checks that it does not exist
-  expect(root.querySelector('[data-spacer]')).toBeNull();
+  expect(screen.queryByTestId('spacer')).toBeNull();
   // eslint-disable-next-line testing-library/no-node-access -- the test checks that the frame has no action bar slot
   expect(root.children).toHaveLength(2);
 });

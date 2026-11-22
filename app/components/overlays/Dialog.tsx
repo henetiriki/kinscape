@@ -34,7 +34,7 @@ export const DialogPanel = ({
   title,
   titleId,
 }: DialogPanelArgs) => (
-  <div className={styles.panel} data-form={form}>
+  <div className={styles.panel} data-form={form} data-testid='dialog-panel'>
     <span aria-hidden='true' className={styles.handle} />
     <div className={styles.head}>
       <div className={styles.titles}>

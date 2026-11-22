@@ -36,7 +36,8 @@ export const TextAreaField = ({
       <span
         className={styles.box}
         data-mark={error ? 'error' : undefined}
-        data-state={state}>
+        data-state={state}
+        data-testid='field-box'>
         <textarea
           className={styles.area}
           rows={4}

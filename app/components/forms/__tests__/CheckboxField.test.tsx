@@ -42,12 +42,7 @@ it('can be disabled and shows a state', () => {
 it('draws the plain sign-in form, still named by its label', () => {
   render(<CheckboxField label='Keep me signed in on this device' plain />);
 
-  const box = screen.getByRole('checkbox', {
-    name: 'Keep me signed in on this device',
-  });
-
-  // eslint-disable-next-line testing-library/no-node-access -- the row div has no role; the test checks its data-plain
-  const row = box.closest('[data-plain]') as HTMLElement;
+  const row = screen.getByTestId('field-row');
 
   expect(row.dataset.plain).toBe('true');
 });

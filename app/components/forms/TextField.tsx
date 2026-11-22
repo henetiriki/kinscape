@@ -95,6 +95,7 @@ export const TextField = ({
         data-mark={marked}
         data-size={size}
         data-state={state}
+        data-testid='field-box'
         data-type={type === 'search' ? 'search' : undefined}>
         {type === 'search' && <Icon name='search' />}
         <input

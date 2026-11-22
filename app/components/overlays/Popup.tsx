@@ -107,7 +107,11 @@ export const Popup = ({
   if (!floating) {
     return (
       <section aria-labelledby={overlineId} className={styles.sheet}>
-        <span aria-hidden='true' className={styles.handle} />
+        <span
+          aria-hidden='true'
+          className={styles.handle}
+          data-testid='handle'
+        />
         {header}
         {list}
         <Pins pins={pins} />
@@ -175,5 +179,6 @@ export const PopupPointer = ({ className }: { className?: string }) => (
   <span
     aria-hidden
     className={className ? `${styles.pointer} ${className}` : styles.pointer}
+    data-testid='pointer'
   />
 );

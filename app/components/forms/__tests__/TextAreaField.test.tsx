@@ -26,8 +26,7 @@ it('is a textarea named by its label, with helper text and a state', () => {
   const area = screen.getByRole('textbox', { name: 'Notes' });
 
   expect(area.tagName).toBe('TEXTAREA');
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its data-state
-  expect(area.parentElement!.dataset.state).toBe('hover');
+  expect(screen.getByTestId('field-box').dataset.state).toBe('hover');
   expect(area.getAttribute('aria-describedby')).toBe(
     screen.getByText('Add what the sources say.').id
   );
@@ -93,8 +92,7 @@ it('shows an error in place of the helper, with the error box, icon and aria lin
   expect(screen.queryByText('Add what the sources say.')).toBeNull();
   expect(area.getAttribute('aria-invalid')).toBe('true');
   expect(area.getAttribute('aria-describedby')).toBe(alert.id);
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks its data-mark
-  expect(area.parentElement!.dataset.mark).toBe('error');
+  expect(screen.getByTestId('field-box').dataset.mark).toBe('error');
   screen.getByRole('img', { hidden: true });
   expect((area as HTMLTextAreaElement).rows).toBe(4);
 });
@@ -111,8 +109,7 @@ it('joins a given aria-describedby with the helper id, and marks nothing without
     `other ${screen.getByText('Help').id}`
   );
   expect(area.hasAttribute('aria-invalid')).toBe(false);
-  // eslint-disable-next-line testing-library/no-node-access -- the box span has no role; the test checks that it has no data-mark
-  expect(area.parentElement!.hasAttribute('data-mark')).toBe(false);
+  expect(screen.getByTestId('field-box').hasAttribute('data-mark')).toBe(false);
   expect(screen.queryByRole('alert')).toBeNull();
 });
 

@@ -1,17 +1,16 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
 import { PlacedAt } from '@ks/app/components/overlays/PlacedAt';
 
 // PIN-02, MAP-05
 it('sets the point and the gap token of its popup, and draws the child', () => {
-  const { container } = render(
+  render(
     <PlacedAt gap='pin-popup-gap' x={120} y={80}>
       <p>Popup</p>
     </PlacedAt>
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
-  const placed = container.firstElementChild as HTMLElement;
+  const placed = screen.getByTestId('placed-at');
 
   expect(placed.style.getPropertyValue('--x')).toBe('120px');
   expect(placed.style.getPropertyValue('--y')).toBe('80px');
@@ -22,13 +21,12 @@ it('sets the point and the gap token of its popup, and draws the child', () => {
 });
 
 it('takes the other gap token for the Jurisdiction popup', () => {
-  const { container } = render(
+  render(
     <PlacedAt gap='popup-gap' x={0} y={0}>
       <p>Popup</p>
     </PlacedAt>
   );
-  // eslint-disable-next-line testing-library/no-node-access -- the root div has no role; the test checks its style
-  const placed = container.firstElementChild as HTMLElement;
+  const placed = screen.getByTestId('placed-at');
 
   expect(placed.style.getPropertyValue('--gap')).toBe(
     'var(--layout-popup-gap)'

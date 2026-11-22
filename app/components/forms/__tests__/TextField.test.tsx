@@ -86,12 +86,11 @@ it('marks a field without a message of its own, and keeps the caller’s descrip
 });
 
 it('takes a state for its component card and passes input props through', () => {
-  const { container } = render(
+  render(
     <TextField date disabled label='Date' placeholder='1901' state='hover' />
   );
 
-  // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access -- the box span has no role; the test checks its data-state
-  expect(container.querySelector('[data-state="hover"]')).not.toBeNull();
+  expect(screen.getByTestId('field-box').dataset.state).toBe('hover');
   expect(
     (screen.getByRole('textbox', { name: 'Date' }) as HTMLInputElement).disabled
   ).toBe(true);

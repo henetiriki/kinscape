@@ -756,6 +756,17 @@ describe('the refresh job of claude-unblock.yml', () => {
     expect(prompt).toContain("join(matrix.spec.blockers, ', #')");
     expect(prompt).not.toMatch(/github\.event\.issue\.(title|body)/);
   });
+
+  it('has the "Unblock run" section hold the no-drift line, then the closing line', () => {
+    const section = agent('refresh.md').split('## Unblock run')[1];
+    const at = indexIn(section, 'the Unblock run section');
+    const closing = at(
+      'End the comment with "The plan run checks all of `main` and can find more."'
+    );
+
+    expect(at('"No drift from the blockers."')).toBeLessThan(closing);
+    expect(section.slice(closing)).toContain('after the Spec-check lines');
+  });
 });
 
 // The plan run refreshes the Spec first, with the same file (plans/README.md#plan-pr-flow).

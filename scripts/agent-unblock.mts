@@ -17,6 +17,7 @@ import type { Gh } from '#ks/scripts/types.ts';
 // An https RUN_URL, if set, is linked at the end of each comment.
 // With GITHUB_OUTPUT set it writes `unblocked=[{"number":8,"blockers":[5]}]`.
 // The list holds each swapped issue whose author is the owner, a member, a collaborator or the bot.
+// The comment on such an issue says that a refresh runs and tells the owner to wait for it.
 // Each entry names the issues that blocked it. claude-unblock.yml refreshes each against main
 // (.github/agent/refresh.md).
 // If a `gh` call for one issue fails, the script logs it and sets exit code 1. This includes a read of a
@@ -91,22 +92,56 @@ const designBlockers = (
         )
     );
 
-const readyLines = (closed: number, owner: string): string[] => [
+// One check for the refresh list and for the wait lines, so they cannot disagree.
+const trusted = (issue: Linked, bot: string): boolean =>
+  TRUSTED.includes(issue.author_association ?? '') ||
+  (bot !== '' && issue.user?.login === bot);
+
+const waitLines = (owner: string): string[] => [
+  'A refresh against `main` is running.',
+  `@${owner}: wait for its comment.`,
+];
+
+// A trusted owner waits for the refresh comment, then acts; another owner acts at once.
+const nextLines = (
+  owner: string,
+  refresh: boolean,
+  then: string,
+  plain: string
+): string[] =>
+  refresh ? [...waitLines(owner), '', `Then ${then}`] : [`@${owner}: ${plain}`];
+
+const readyLines = (
+  closed: number,
+  owner: string,
+  refresh: boolean
+): string[] => [
   `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
   '',
-  `@${owner}: set \`status: ready-for-agent\` to start the plan.`,
+  ...nextLines(
+    owner,
+    refresh,
+    'set `status: ready-for-agent` to start the plan.',
+    'set `status: ready-for-agent` to start the plan.'
+  ),
 ];
 
 const draftLines = (
   closed: number,
   design: number[],
   owner: string,
-  issue: number
+  issue: number,
+  refresh: boolean
 ): string[] => [
   `#${closed} is closed, so nothing blocks this any more.`,
   `${design.map(number => `#${number}`).join(', ')} changed the design in \`${DESIGN_PATH}\`, so this Spec needs a new size and a new check. The label is now \`status: draft\`.`,
   '',
-  `@${owner}: run \`/refine spec ${issue}\`. Then set the status.`,
+  ...nextLines(
+    owner,
+    refresh,
+    `run \`/refine spec ${issue}\` and set the status.`,
+    `run \`/refine spec ${issue}\`. Then set the status.`
+  ),
 ];
 
 // Comments on a freed issue and swaps its `status: blocked` label: `status: draft` if a blocker
@@ -119,15 +154,22 @@ const swapLabel = (
     design,
     issue,
     owner,
-  }: { closed: number; design: number[]; issue: Linked; owner: string }
+    refresh,
+  }: {
+    closed: number;
+    design: number[];
+    issue: Linked;
+    owner: string;
+    refresh: boolean;
+  }
 ): void => {
   const draft = design.length > 0;
 
   comment(
     issue.number,
     draft
-      ? draftLines(closed, design, owner, issue.number)
-      : readyLines(closed, owner)
+      ? draftLines(closed, design, owner, issue.number, refresh)
+      : readyLines(closed, owner, refresh)
   );
   gh([
     'issue',
@@ -221,13 +263,12 @@ export const run = (
             ? designBlockers(gh, repo, mergedPrs(), blockers)
             : [];
 
-        swapLabel(gh, comment, { closed, design, issue, owner });
+        const refresh = trusted(issue, bot);
+
+        swapLabel(gh, comment, { closed, design, issue, owner, refresh });
         console.log(`#${issue.number} is unblocked.`);
 
-        if (
-          TRUSTED.includes(issue.author_association ?? '') ||
-          (bot !== '' && issue.user?.login === bot)
-        ) {
+        if (refresh) {
           unblocked.push({ blockers, number: issue.number });
         }
       }

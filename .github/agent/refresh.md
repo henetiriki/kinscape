@@ -20,4 +20,7 @@ If the prompt says this is a plan run and there is any drift: open no branch or 
 
 ## Unblock run
 
-If the prompt says this is an unblock run, change no label and start no plan.
+If the prompt says this is an unblock run, change no label and start no plan. Add these to the comment of step 5:
+
+- If there is no drift, write "No drift from the blockers." after the `## Refreshed` lines.
+- End the comment with "The plan run checks all of `main` and can find more.", after the Spec-check lines.

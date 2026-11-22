@@ -5,9 +5,11 @@ import type { Gh, PlanNewDeps } from '#ks/scripts/types.ts';
 
 import { ghList } from '#ks/scripts/gh-list.mts';
 import { TYPES } from '#ks/scripts/issue-status.mts';
+import { patternFiles, patternsFor } from '#ks/scripts/pattern-files.mts';
 
-// Prints the id, plan path, branch and plan PR title of a Spec, Bug or Chore (plans/README.md#item-types)
-// and its related issues (plans/README.md#related-issues). If no branch and no plan file exist yet, it
+// Prints the id, plan path, branch and plan PR title of a Spec, Bug or Chore (plans/README.md#item-types),
+// its related issues (plans/README.md#related-issues) and the pattern files whose paths match a path
+// that the issue cites in a code span (docs/architecture.md › Patterns). If no branch and no plan file exist yet, it
 // also makes the branch from origin/main and copies plans/TEMPLATE.md to the plan path. It commits
 // nothing and edits no issue.
 // Usage: npm run plan:new -- <issue number> <slug>
@@ -272,6 +274,14 @@ export const run = (args: string[], deps: PlanNewDeps): number => {
       lines.length === 0
         ? 'Related issues: none'
         : `Related issues:\n${lines.map(line => `- ${line}`).join('\n')}`
+    );
+
+    const patterns = patternsFor(issue.body, patternFiles(deps.files));
+
+    console.log(
+      patterns.length === 0
+        ? 'Pattern files: none'
+        : `Pattern files:\n${patterns.map(path => `- ${path}`).join('\n')}`
     );
 
     if (first !== undefined) {

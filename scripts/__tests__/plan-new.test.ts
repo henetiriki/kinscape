@@ -38,6 +38,7 @@ const setup = (
     dirty?: string;
     files?: string[];
     parent?: 'broken' | 'none' | Error | Parent;
+    patterns?: Record<string, string>;
     remote?: string;
     siblings?: Related[];
   } = {}
@@ -93,8 +94,16 @@ const setup = (
   const deps: Deps = {
     files: {
       // Only the plan folder of the Type holds the files, so a wrong folder finds nothing.
-      list: dir => (dir === FOLDERS[type] ? (options.files ?? []) : []),
-      read: () => '# Plan: x\n\n- **Spec:** #\n- **Status:** draft\n',
+      list: dir =>
+        dir === 'docs/patterns'
+          ? Object.keys(options.patterns ?? {})
+          : dir === FOLDERS[type]
+            ? (options.files ?? [])
+            : [],
+      read: path =>
+        path.startsWith('docs/patterns/')
+          ? (options.patterns?.[path.slice('docs/patterns/'.length)] ?? '')
+          : '# Plan: x\n\n- **Spec:** #\n- **Status:** draft\n',
       write: (path, text) => {
         written.push([path, text]);
       },
@@ -335,6 +344,59 @@ describe('plan-new', () => {
     );
 
     expect(go(['7', 'a'], deps).out).not.toContain('#5');
+  });
+
+  describe('the pattern files', () => {
+    const patterns = {
+      'domain.md': "---\npaths:\n  - 'lib/domain/**'\n---\n# Domain\n",
+      'tree-data.md': "---\npaths:\n  - 'server/trees/**'\n---\n# Tree\n",
+    };
+
+    it('lists the file whose paths match a path that the issue cites', () => {
+      const { out } = go(
+        ['7', 'x'],
+        setup(
+          {
+            body: 'Change `server/trees/repository.mts:40`.',
+            title: 'Chore: A',
+            type: 'Chore',
+          },
+          { patterns }
+        ).deps
+      );
+
+      expect(out).toContain('Pattern files:\n- docs/patterns/tree-data.md');
+      expect(out).not.toContain('domain.md');
+    });
+
+    it('lists none when the issue cites no matching path', () => {
+      const { out } = go(
+        ['7', 'x'],
+        setup(
+          {
+            body: 'Change `README.md` and server/trees/repository.mts.',
+            title: 'Chore: A',
+            type: 'Chore',
+          },
+          { patterns }
+        ).deps
+      );
+
+      expect(out).toContain('Pattern files: none');
+    });
+
+    it('lists them when the setup is skipped too', () => {
+      const { out } = go(
+        ['7', 'x'],
+        setup(
+          { body: '`lib/domain/a.mts`', title: 'Chore: A', type: 'Chore' },
+          { branches: 'chore/C7-x', patterns }
+        ).deps
+      );
+
+      expect(out).toContain('Pattern files:\n- docs/patterns/domain.md');
+      expect(out).toContain('Skipped the setup');
+    });
   });
 
   it('prints none when nothing is related', () => {

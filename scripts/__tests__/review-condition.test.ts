@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
 
+import { BOT, evaluate } from '@ks/scripts/__tests__/expression';
+
 const text = readFileSync(
   join(process.cwd(), '.github/workflows/claude-code-review.yml'),
   'utf8'
@@ -38,11 +40,7 @@ describe('the pin-PR skip condition of claude-code-review.yml', () => {
   });
 });
 
-// Runs the workflow's own expressions (GitHub's syntax is a subset of JavaScript's for these) so the
-// tests check who is reviewed, not how the condition is written. GitHub compares strings without regard
-// to case and JavaScript does not: the cases use one spelling of each login. The code under test is this
-// repo's own workflow file, never input from outside, so `new Function` is safe here.
-const BOT = 'kinscape-bot[bot]';
+// The tests check who is reviewed, not how the condition is written (see expression.ts).
 
 type Pr = {
   actor: string;
@@ -63,9 +61,8 @@ const BOT_BUILD: Pr = {
 };
 const PIN_PR_BY_BOT: Pr = { ...BOT_BUILD, ref: 'bot/update-action-pins' };
 
-const evaluate = (source: string, pr: Pr) => {
-  const expression = source.replace(/^\s*\$\{\{|\}\}\s*$/g, '');
-  const github = {
+const evaluateFor = (source: string, pr: Pr) =>
+  evaluate(source, {
     actor: pr.actor,
     event: {
       pull_request: {
@@ -77,26 +74,7 @@ const evaluate = (source: string, pr: Pr) => {
       },
     },
     repository: 'henetiriki/kinscape',
-  };
-  const contains = (list: string[], item: string) => list.includes(item);
-  const format = (template: string, ...args: string[]) =>
-    template.replace(/\{(\d+)\}/g, (_, i: string) => args[Number(i)] ?? '');
-
-  return new Function(
-    'github',
-    'vars',
-    'fromJSON',
-    'contains',
-    'format',
-    `return (${expression});`
-  )(
-    github,
-    { KINSCAPE_BOT_LOGIN: BOT },
-    JSON.parse,
-    contains,
-    format
-  ) as unknown;
-};
+  });
 
 describe('who the review runs on', () => {
   const cases: [string, Pr, boolean][] = [
@@ -156,8 +134,8 @@ describe('who the review runs on', () => {
   it.each(cases)('%s', (_name, pr, reviewed) => {
     const job = workflow.jobs['claude-review']?.if ?? '';
 
-    expect(evaluate(job, pr)).toBe(reviewed);
-    expect(evaluate(workflow['run-name'], pr)).toBe(
+    expect(evaluateFor(job, pr)).toBe(reviewed);
+    expect(evaluateFor(workflow['run-name'], pr)).toBe(
       `${reviewed ? 'Review' : 'Skipped Review'}: chore: update repo action pins`
     );
   });

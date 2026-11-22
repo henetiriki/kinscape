@@ -44,7 +44,7 @@ Intent ──► Design ──► Spec ──► Plan ──► Build & test ─
 
 The `/refine` skill asks questions until you agree, then drafts the issue.
 
-**`/refine` runs on Opus.** On another model, it stops and says what to run ([`SKILL.md`](../.claude/skills/refine/SKILL.md)).
+**Run `/refine` on Opus with High effort.** On another model, it says what to run ([`SKILL.md`](../.claude/skills/refine/SKILL.md)).
 
 - **PO:** run `/refine intent` and answer in plain language.
 - **Tech lead:** run `/refine intent M<n>` to slice a milestone into child Intents. Run `/refine intent <Intent number>` to slice an Intent into Specs.

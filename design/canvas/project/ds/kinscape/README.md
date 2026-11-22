@@ -195,7 +195,7 @@ The FuzzyDateField component card shows it. It is a label, a 44px input and one 
 
 ### Loading bar
 
-The LoadingBar card shows a 20px `--line` bar.
+The LoadingBar card shows a 20px `--line` bar. The LoadingField card shows a label over one or two bars.
 
 ## Event glyphs
 

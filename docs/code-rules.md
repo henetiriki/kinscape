@@ -9,7 +9,7 @@ Write code that follows these rules. The reviewer flags a change that breaks one
 - Build no stand-in for a missing component: see the [missing-components rule](../plans/README.md#missing-components).
 - Define a type or constant once. Search for its name first.
 - Use a domain type where one exists (`Day`, branded ids, `lib/domain/validity/`), not a list of primitives.
-- Wire each export, component or file you add to a route, page, script or workflow. Tests do not count. Skip this only if the plan names the slice that wires it.
+- An export or file that only a test uses is not wired. Skip this only if the plan names the slice that wires it.
 - When a token holds the value for that role, use `var(--token)` in a `.module.css` file. A part's own dimension may stay a literal. A shared value with no token gets a token: see [Tokens are the one source](architecture.md#patterns).
 
 ## Placement

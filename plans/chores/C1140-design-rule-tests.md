@@ -2,7 +2,7 @@
 
 - **Chore:** #1140
 - **Requirement IDs:** [NFR-06](../../docs/requirements.md#nfr-06)
-- **Status:** draft
+- **Status:** approved
 
 ## Approach
 
@@ -24,7 +24,7 @@ Two new checks replace two prose rules of `design/DESIGN.md`. Tests on `main` al
 - **B.** A style on the list may have any size. If `mono` grows, the test still passes, and the list keeps an entry that is not true.
 - **Other:** your own.
 
-Recommended: A, because the list then states the facts of `tokens.json` and its reasons stay true. B loses only the stale-entry check.
+**Answer: A** (@henetiriki)
 
 ## Files that change
 

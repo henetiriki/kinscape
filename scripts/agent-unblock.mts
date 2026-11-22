@@ -102,6 +102,15 @@ const waitLines = (owner: string): string[] => [
   `@${owner}: wait for its comment.`,
 ];
 
+// A trusted owner waits for the refresh comment, then acts; another owner acts at once.
+const nextLines = (
+  owner: string,
+  refresh: boolean,
+  then: string,
+  plain: string
+): string[] =>
+  refresh ? [...waitLines(owner), '', `Then ${then}`] : [`@${owner}: ${plain}`];
+
 const readyLines = (
   closed: number,
   owner: string,
@@ -109,13 +118,12 @@ const readyLines = (
 ): string[] => [
   `#${closed} is closed, so nothing blocks this any more. The label is now \`status: ready-for-dev\`.`,
   '',
-  ...(refresh
-    ? [
-        ...waitLines(owner),
-        '',
-        'Then set `status: ready-for-agent` to start the plan.',
-      ]
-    : [`@${owner}: set \`status: ready-for-agent\` to start the plan.`]),
+  ...nextLines(
+    owner,
+    refresh,
+    'set `status: ready-for-agent` to start the plan.',
+    'set `status: ready-for-agent` to start the plan.'
+  ),
 ];
 
 const draftLines = (
@@ -128,13 +136,12 @@ const draftLines = (
   `#${closed} is closed, so nothing blocks this any more.`,
   `${design.map(number => `#${number}`).join(', ')} changed the design in \`${DESIGN_PATH}\`, so this Spec needs a new size and a new check. The label is now \`status: draft\`.`,
   '',
-  ...(refresh
-    ? [
-        ...waitLines(owner),
-        '',
-        `Then run \`/refine spec ${issue}\` and set the status.`,
-      ]
-    : [`@${owner}: run \`/refine spec ${issue}\`. Then set the status.`]),
+  ...nextLines(
+    owner,
+    refresh,
+    `run \`/refine spec ${issue}\` and set the status.`,
+    `run \`/refine spec ${issue}\`. Then set the status.`
+  ),
 ];
 
 // Comments on a freed issue and swaps its `status: blocked` label: `status: draft` if a blocker

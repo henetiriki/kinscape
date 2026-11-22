@@ -5,7 +5,7 @@
 
 ## Approach
 
-In `scripts/agent-unblock.mts`, a new helper `trusted(issue, bot)` holds the author check that the loop has now. The loop calls it once for each freed issue. The result selects the comment lines and the entry in the refresh list, so the two cannot disagree. One constant, `waitLines(owner)`, holds the two shared lines: "A refresh against `main` is running." and "@owner: wait for its comment." For a trusted author, `readyLines` and `draftLines` put these lines in place of the "@owner:" line. They then add the "Then …" line that the Chore gives. For another author, the lines stay as they are.
+In `scripts/agent-unblock.mts`, a new helper `trusted(issue, bot)` holds the author check that the loop has now. The loop calls it once for each freed issue. The result selects the comment lines and the entry in the refresh list, so the two cannot disagree. One helper, `waitLines(owner)`, holds the two shared lines: "A refresh against `main` is running." and "@owner: wait for its comment." For a trusted author, `readyLines` and `draftLines` put these lines in place of the "@owner:" line. They then add the "Then …" line that the Chore gives. For another author, the lines stay as they are.
 
 In `.github/agent/refresh.md`, the "Unblock run" section gets two rules for the comment of step 5:
 
@@ -23,7 +23,7 @@ A run with no drift runs no Spec checks (step 4), so the no-drift line comes aft
 
 | File                                         | New / changed | What                                                                                                                            |
 | -------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `scripts/agent-unblock.mts`                  | Changed       | `trusted`, `waitLines`; `readyLines`, `draftLines` and `swapLabel` take the result; header comment                              |
+| `scripts/agent-unblock.mts`                  | Changed       | `trusted`, `waitLines`, `nextLines`; `readyLines`, `draftLines` and `swapLabel` take the result; header comment                 |
 | `scripts/__tests__/agent-unblock.test.ts`    | Changed       | Four new tests; the test "swaps the label for draft, names the blocker and gives the refine command" expects the new draft line |
 | `.github/agent/refresh.md`                   | Changed       | "Unblock run": the no-drift line and the closing line                                                                           |
 | `scripts/__tests__/load-agent-files.test.ts` | Changed       | One test: the "Unblock run" section holds both lines, in order                                                                  |

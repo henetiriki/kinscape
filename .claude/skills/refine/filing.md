@@ -2,7 +2,7 @@
 
 `SKILL.md` links here. `bug.md` files a new Bug with these steps, and edits a filed Bug. `slice-milestone.md` files a child Intent: see _File a child Intent_.
 
-After the check round, follow these steps:
+After step 8 in `SKILL.md`, follow these steps:
 
 1. Ask "Must an open issue close first? Is an earlier issue the reason?" as a question of its own. List each answer under the draft as a link, not as a line of the body.
 2. Ask "File it now?" as a question of its own. A yes covers the links.
@@ -51,6 +51,8 @@ If `gh` failed, the user pastes the body. Skip each `gh` call here and Write ste
 4. Find its open plan PR: run `gh issue view <n> --json closedByPullRequestsReferences`. Then run `gh pr view <pr> --json state`.
 
 ### Write
+
+Start after step 8 in `SKILL.md`.
 
 1. Show the current `blockedBy` and `relatesTo` links (_Links_ steps 1 and 2). Ask the question of filing step 1. To remove a link, the user uses the issue sidebar.
 2. Ask "Edit #<n> now?" as a question of its own. A yes covers the new links. If the answer is not yes, edit nothing.

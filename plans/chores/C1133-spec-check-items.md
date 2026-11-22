@@ -97,3 +97,4 @@ Three run types load `spec-checks.md`: the refresh (`refresh.md`), a respond run
 
 - Steps 2–4: the tech lead built them in a local session, because the CI run could not write `SKILL.md` and `chore.md`.
 - `docs/how-we-work.md` "Drafting with Claude": the model line keeps "Opus with High effort" and leaves the commands to the `SKILL.md` model step. It has no link, because a link back to `SKILL.md` makes a link cycle. The skill checks only the model.
+- `.claude/skills/refine/filing.md`: the filing steps and the Write steps of "Editing a filed issue" start after step 8 in `SKILL.md`. Each of the four step-8 modes files or edits through one of them, so none skips the Spec checks.

@@ -83,6 +83,9 @@ export type HeaderRule = {
   source: string;
 };
 
+/** A rule file of `docs/patterns/` and the globs of its `paths:` frontmatter. */
+export type PatternFile = { globs: string[]; path: string };
+
 /** The `gh`, `git` and file calls of `plan-new.mts`; a test passes fakes. */
 export type PlanNewDeps = {
   files: {

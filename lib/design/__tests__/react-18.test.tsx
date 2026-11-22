@@ -182,7 +182,7 @@ describe('interactions', () => {
     fireEvent.keyDown(layers, { key: 'ArrowRight' });
     expect(onSelect).toHaveBeenLastCalledWith('filters');
 
-    expect(document.activeElement).toBe(filters);
+    expect(filters).toHaveFocus();
     quiet();
   });
 
@@ -251,12 +251,12 @@ describe('interactions', () => {
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.queryByRole('menu')).toBeNull();
 
-    expect(document.activeElement).toBe(avatar);
+    expect(avatar).toHaveFocus();
     fireEvent.click(avatar);
     fireEvent.click(screen.getByRole('menuitem', { name: /Sources/ }));
     expect(onSelect).toHaveBeenCalledWith('sources');
 
-    expect(document.activeElement).toBe(avatar);
+    expect(avatar).toHaveFocus();
     quiet();
   });
 

@@ -24,10 +24,17 @@ A map of South Africa from 1652 to today. Historical boundaries redraw as a date
 
 ## Plans
 
-One plan per Spec, Bug or Chore, under `plans/` (names and paths: the [item-types table](plans/README.md#item-types)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft, build or change a plan, read these files:
+One plan per Spec, Bug or Chore, under `plans/` (names and paths: the [item-types table](plans/README.md#item-types)), committed with the code. Plan before code: don't edit files until the tech lead approves the plan. Before you draft or change a plan, read these files:
 
 - [`plans/README.md`](plans/README.md)
 - [`plans/TEMPLATE.md`](plans/TEMPLATE.md)
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/code-rules.md`](docs/code-rules.md)
+- Your own plan
+
+Before you build, read these files:
+
+- [`plans/BUILD.md`](plans/BUILD.md)
 - [`docs/architecture.md`](docs/architecture.md)
 - [`docs/code-rules.md`](docs/code-rules.md)
 - Your own plan
@@ -64,7 +71,7 @@ Node 24 (`.nvmrc`). Tests go in `__tests__`. A `v8 ignore` needs a reason.
 
 ## Verifying your work
 
-Run the checks in [Commands](#commands) before you report done. Paste the output. If a test fails, follow the [failing-tests rule](plans/README.md#failing-tests).
+Run the checks in [Commands](#commands) before you report done. Paste the output. If a test fails, follow the [failing-tests rule](plans/BUILD.md#failing-tests).
 
 ## Known mistakes
 

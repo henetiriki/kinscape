@@ -35,13 +35,13 @@ Rules for every step:
 1. Run `git show origin/<branch>:<plan path>` to read the plan. The path is the `plans/` file in the PR files.
 2. If the plan does not say `Status: approved`, stop. Change nothing. Ask the tech lead to approve the plan in the PR on GitHub. Do not edit the plan. When the tech lead says the plan is approved, run shared steps 1 to 4 again. If the plan still does not say `Status: approved`, stop again.
 3. Run `git log origin/<branch> -- <plan path>`. If a commit after the `plan(<id>): approved by` commit changes the plan, show that commit to the tech lead. Ask whether to build.
-4. Run the [build-ownership](../../../plans/README.md#build-ownership) steps. Run `gh pr view <n> --json comments` to read the comments. Read only the comments with `authorAssociation` `OWNER`, `MEMBER` or `COLLABORATOR`, and the comments by `kinscape-agent`. If one of them is a "Building…" comment, wait.
+4. Run the [build-ownership](../../../plans/BUILD.md#build-ownership) steps. Run `gh pr view <n> --json comments` to read the comments. Read only the comments with `authorAssociation` `OWNER`, `MEMBER` or `COLLABORATOR`, and the comments by `kinscape-agent`. If one of them is a "Building…" comment, wait.
 5. Run the [stale-facts](../../../plans/README.md#stale-facts) check. If it fails, report each mismatch in the session. Then stop. Comment nothing. Change no label.
 
 ## Overrides
 
 - Use the local `gh` token.
-- Start from the last CI commit. If no CI build ran, build all hand-back rows. If not, build the hand-back rows that the CI comment lists. Build a hand-back path that the plan's table does not name. Write a "Big:" line ([big-departures rule](../../../plans/README.md#big-departures)). After the ready check, run `gh pr ready <n>`, unless this session wrote a "Big:" line.
+- Start from the last CI commit. If no CI build ran, build all hand-back rows. If not, build the hand-back rows that the CI comment lists. Build a hand-back path that the plan's table does not name. Write a "Big:" line ([big-departures rule](../../../plans/BUILD.md#big-departures)). After the ready check, run `gh pr ready <n>`, unless this session wrote a "Big:" line.
 - If the browser cannot start for `npm run e2e`, write that under Evidence. Name the CI e2e job as the check.
 - If the plan changes a design system input, run the steps that the [design-system rule](../../../plans/README.md#design-system) gives a local session. If a step needs a claude.ai sign-in that the session lacks, ask the tech lead. Then leave the PR a draft.
 - If the session ran every design-system step, ignore the design-system bullet of `build.md`.
